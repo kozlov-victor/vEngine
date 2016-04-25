@@ -1,0 +1,40 @@
+
+html, body {
+    height: 100%;
+}
+
+html, body, div {
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.table {
+    display: table;
+}
+
+.row {
+    display: table-row;
+}
+
+.cell {
+    display: table-cell;
+}
+
+.width100 {
+    width: 100%;
+}
+
+.width20 {
+    width: 20%;
+}
+
+.width1 {
+    width: 1px;
+}
+
+input[type="file"] {
+    display: inline-block;
+    height: 0;
+    opacity: 0;
+}

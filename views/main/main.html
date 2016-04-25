@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="css/main.css">
+    <link type="text/css" rel="stylesheet" href="css/lib/jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="css/lib/jquery-ui.theme.css">
+    <script type="text/javascript" src="js/lib/angular.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
+    <script type="text/javascript">window.app = angular.module('main', [])</script>
+    <script type="text/javascript" src="js/factories/factories.js"></script>
+    <script type="text/javascript" src="js/main.js"></script></head>
+<body ng-app="main" ng-controller="mainCtrl">
+    <div class="table width100">
+        <div class="row">
+            <div class="cell width20">
+                <div id="leftMenu">
+                    <h3><%=i18n.assets%></h3>
+                    <div>
+                        <div>
+                            {{editData.resourceList.size()}}
+                        </div>
+                        <button>
+                            <%=i18n.addAsset%>
+                        </button>
+                        <input type="file"/>
+                    </div>
+                    <h3>other</h3>
+                    <div>
+                        <div>
+                            other block here
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="cell">
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
