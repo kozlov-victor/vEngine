@@ -22,10 +22,10 @@
                         <div>
                             {{editData.resourceList.size()}}
                         </div>
-                        <button>
+                        <button data-action="upload">
                             <%=i18n.addAsset%>
                         </button>
-                        <input type="file"/>
+                        <input app-on-file-upload="onResourceUpload($formData)" type="file"/>
                     </div>
                     <h3>other</h3>
                     <div>
@@ -34,7 +34,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <div class="cell">
 
