@@ -20,7 +20,11 @@
                     <h3><%=i18n.assets%></h3>
                     <div>
                         <div>
-                            {{editData.resourceList.size()}}
+                            <ul>
+                                <li ng-repeat="item in rList">
+                                    {{item.name}}
+                                </li>
+                            </ul>
                         </div>
                         <button data-action="upload">
                             <%=i18n.addAsset%>

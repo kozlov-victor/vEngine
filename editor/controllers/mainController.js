@@ -9,7 +9,7 @@ module.exports.initFolderStructure = function(){
     fs.createFolderSync('project/resources/audios');
     fs.createFolderSync('project/resources/scripts');
 
-    fs.writeFileSync('project/resources/images/map.json','{}');
-    fs.writeFileSync('project/resources/audios/map.json','{}');
-    fs.writeFileSync('project/resources/scripts/map.json','{}');
+    fs.writeFileSync('project/resources/images/map.json','[]');
+    fs.writeFileSync('project/resources/audios/map.json','[]');
+    fs.writeFileSync('project/resources/scripts/map.json','[]');
 };

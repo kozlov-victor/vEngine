@@ -25,6 +25,7 @@ window.app
 .factory('Resource',function(){
     return function(){
         this.type = '';
+        this.url = '';
     }
 })
 

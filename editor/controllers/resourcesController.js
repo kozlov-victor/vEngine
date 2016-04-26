@@ -3,11 +3,15 @@ var fs = require('../base/fs');
 
 module.exports.addResourceImageFile = function(name,path){
     fs.copyFileSync(path,'project/resources/images/'+name);
-    var map = JSON.parse(fs.readFileSync('project/resources/images/map.json'));
-    map[name] = {type:'image'};
-    fs.writeFileSync('project/resources/images/map.json',JSON.stringify(map));
+    var arr = JSON.parse(fs.readFileSync('project/resources/images/map.json'));
+    var item = {};
+    item.name = name;
+    item.type = 'image';
+    item.url = 'project/resources/images/'+name;
+    arr.push(item);
+    fs.writeFileSync('project/resources/images/map.json',JSON.stringify(arr));
     fs.deleteFileSync(path);
-    return map[name];
+    return item;
 };
 
 module.exports.getAll = function(type){
