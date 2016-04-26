@@ -2,13 +2,14 @@
 var fs = require('../base/fs');
 
 module.exports.initFolderStructure = function(){
+    fs.createFolderSync('project');
     fs.createFolderSync('project/resources');
+
     fs.createFolderSync('project/resources/images');
     fs.createFolderSync('project/resources/audios');
     fs.createFolderSync('project/resources/scripts');
-};
 
-module.exports.addResourceImageFile = function(name,path){
-    fs.copyFileSync(path,'project/resources/images/'+name);
-    fs.deleteFileSync(path);
+    fs.writeFileSync('project/resources/images/map.json','{}');
+    fs.writeFileSync('project/resources/audios/map.json','{}');
+    fs.writeFileSync('project/resources/scripts/map.json','{}');
 };

@@ -15,13 +15,16 @@ window.app
         };
         this.size = function() {
             return rs.length;
+        };
+        this.getAll = function(){
+           return rs;
         }
     };
 })
 
 .factory('Resource',function(){
     return function(){
-        this.type = 'hui';
+        this.type = '';
     }
 })
 

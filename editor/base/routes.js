@@ -19,5 +19,5 @@ var setup = function(app){
 
 module.exports.setUpRotes = function(app){
     setup(app);
-    require('../routes/mainRoute').init(app);
+    require('../routes/resourcesRoute').init(app);
 };

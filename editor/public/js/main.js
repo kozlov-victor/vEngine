@@ -14,12 +14,13 @@ window.app.
 
         s.onResourceUpload = function(formData){
             $http({
-                url: '/uploadImageResource',
+                url: '/imageResource/create',
                 method: "POST",
                 data: formData,
                 headers: {'Content-Type': undefined}
-            }).success(function (response) {
-
+            }).
+            success(function (response) {
+                console.log(response);
             });
         }
 
