@@ -6,7 +6,8 @@ _i18n.bundle = {
     'en': {
         assets:'assets',
         addAsset:'add asset',
-        gameObjects:'game objects'
+        gameObjects:'game objects',
+        create:'create'
     }
 };
 

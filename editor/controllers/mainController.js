@@ -5,11 +5,11 @@ module.exports.initFolderStructure = function(){
     fs.createFolderSync('project');
     fs.createFolderSync('project/resources');
 
-    fs.createFolderSync('project/resources/images');
-    fs.createFolderSync('project/resources/audios');
-    fs.createFolderSync('project/resources/scripts');
+    fs.createFolderSync('project/resources/image');
+    fs.createFolderSync('project/resources/audio');
+    fs.createFolderSync('project/resources/script');
 
-    fs.writeFileSync('project/resources/images/map.json','[]');
-    fs.writeFileSync('project/resources/audios/map.json','[]');
-    fs.writeFileSync('project/resources/scripts/map.json','[]');
+    fs.createFileSync('project/resources/image/map.json','[]');
+    fs.createFileSync('project/resources/audio/map.json','[]');
+    fs.createFileSync('project/resources/script/map.json','[]');
 };

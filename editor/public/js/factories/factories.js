@@ -2,7 +2,7 @@ window.app
 
     .factory('editData', function (Models) {
         return {
-            resourceList: new Models.ResourceList()
+            resourceList: new Models.Collection()
         }
     })
 
@@ -33,7 +33,7 @@ window.app
             });
         };
 
-        this.ResourceList = function () {
+        this.Collection = function () {
             var self = this;
             this.rs = [];
             this.addResource = function (r) {
@@ -44,6 +44,24 @@ window.app
             };
             this.getAll = function () {
                 return self.rs;
+            };
+            this.removeIf = function(obj){
+                if (!obj) return;
+                var i = 0;
+                self.rs.some(function(item){
+                    var isCandidate = true;
+                    Object.keys(obj).some(function(conditionKey){
+                        if (obj[conditionKey]!=item[conditionKey]) {
+                            isCandidate = false;
+                            return true;
+                        }
+                    });
+                    if (isCandidate) {
+                        self.rs.splice(i,1);
+                        return true;
+                    }
+                    i++;
+                });
             }
         };
 

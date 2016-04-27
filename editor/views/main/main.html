@@ -37,19 +37,22 @@
                     <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'gameObjects')"><%=i18n.gameObjects%></h3>
                     <div ng-show="leftMenuIndex=='gameObjects'">
                         <button>
-                            {{i18n.add}}
+                            <%=i18n.create%>
                         </button>
                     </div>
                     <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'assets')"><%=i18n.assets%></h3>
                     <div ng-show="leftMenuIndex=='assets'">
                         <div>
-                            <div class="table">
+                            <div class="table width100">
                                 <div class="row" ng-repeat="item in editData.resourceList.rs">
                                     <div class="cell vAlign">
-                                        <img height="20" ng-src="{{'resources/images/'+item.name}}"/>
+                                        <img height="20" ng-src="{{'resources/image/'+item.name}}"/>
                                     </div>
                                     <div class="cell vAlign">
                                         <span>{{item.name}}</span>
+                                    </div>
+                                    <div class="cell vAlign" ng-click="deleteResource(item.name)">
+                                        -
                                     </div>
                                 </div>
                             </div>

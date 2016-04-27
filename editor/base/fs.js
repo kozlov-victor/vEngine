@@ -18,11 +18,16 @@ module.exports.copyFileSync = function (source, target) {
 };
 
 module.exports.deleteFileSync = function (source) {
-
+    fs.existsSync(source) && fs.unlinkSync(source);
 };
 
 module.exports.readFileSync = function (path) {
     return fs.readFileSync(path, "utf8");
+};
+
+module.exports.createFileSync = function(path,content){
+    if (fs.existsSync(path)) return;
+    fs.writeFileSync(path, content||'');
 };
 
 module.exports.writeFileSync = function (path, content) {

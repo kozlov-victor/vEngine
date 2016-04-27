@@ -13,8 +13,9 @@ window.app.
         s.uiHelper = uiHelper;
 
         s.onResourceUpload = function(formData){
+            formData.append('type', 'image');
             $http({
-                url: '/imageResource/create',
+                url: '/resource/create',
                 method: "POST",
                 data: formData,
                 headers: {'Content-Type': undefined}
@@ -24,10 +25,22 @@ window.app.
             });
         };
 
+        s.deleteResource = function(name){
+            $http({
+                url: '/resource/delete',
+                method: "POST",
+                data: {name:name,type:'image'}
+            }).
+            success(function (res) {
+                    editData.resourceList.removeIf({name:name});
+            });
+        };
+
         (function(){
             $http({
-                url: '/imageResource/getAll',
-                method: "GET"
+                url: '/resource/getAll',
+                method: "POST",
+                data: {type:'image'}
             }).
             success(function (response) {
                 response && response.forEach && response.forEach(function(item){

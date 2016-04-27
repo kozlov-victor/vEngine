@@ -19,16 +19,25 @@ module.exports.init = function(app) {
         res.render('main/main',utils.parametrize());
     });
 
-    app.post('/imageResource/create',multipart,function(req,res){
+    app.post('/resource/create',multipart,function(req,res){
         var name = req.files.file.name;
         var path = req.files.file.path;
-        var result = resourcesController.addResourceImageFile(name,path);
+        var type = req.body.type;
+        var result = resourcesController.create(name,type,path);
         res.send(result);
     });
 
-    app.get('/imageResource/getAll',multipart,function(req,res){
-        var result = resourcesController.getAll('images');
+    app.post('/resource/getAll',function(req,res){
+        var type = req.body.type;
+        var result = resourcesController.getAll(type);
         res.send(result);
+    });
+
+    app.post('/resource/delete',function(req,res){
+        var nameOfItem = req.body.name;
+        var type = req.body.type;
+        resourcesController.delete(nameOfItem,type);
+        res.send({});
     });
 
 };
