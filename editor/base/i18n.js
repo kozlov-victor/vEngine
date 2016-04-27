@@ -5,7 +5,8 @@ _i18n.locale = 'en';
 _i18n.bundle = {
     'en': {
         assets:'assets',
-        addAsset:'add asset'
+        addAsset:'add asset',
+        gameObjects:'game objects'
     }
 };
 
