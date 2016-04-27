@@ -1,0 +1,19 @@
+sudo apt-get install phpmyadmin
+sudo /etc/init.d/apache2 restart
+проверяем:
+http://localhost/phpmyadmin
+если вы устанавливаете phpmyadmin не на локальном сервере – подставьте лечим:
+просто добавьте в конец файла /etc/apache2/apache2.conf следующую строку:
+Include /etc/phpmyadmin/apache.conf
+и снова перезапускаем апач
+
+sudo apt-get update
+sudo apt-get install git
+
+
+
+
+
+
+
+
