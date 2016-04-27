@@ -1,5 +1,5 @@
 $(function () {
-    $("#leftMenu").accordion();
+    //$("#leftMenu").accordion();
     $(document).on('click','button[data-action="upload"]',function(){
         var input = $(this).next('input[type="file"]');
         input.click();
@@ -7,10 +7,10 @@ $(function () {
 });
 
 window.app.
-    controller('mainCtrl', function ($scope, $http, editData, Resource, ResourceList) {
+    controller('mainCtrl', function ($scope, $http, editData, Models, uiHelper) {
         var s = $scope;
         s.editData = editData;
-        s.rList = [];
+        s.uiHelper = uiHelper;
 
         s.onResourceUpload = function(formData){
             $http({
@@ -19,14 +19,21 @@ window.app.
                 data: formData,
                 headers: {'Content-Type': undefined}
             }).
-            success(function (response) {
-                var r = new Resource();
-                    r.type = response.type;
-                    r.url = response.url;
-                    r.name = response.name;
-                    editData.resourceList.addResource(r);
-                    s.rList = editData.resourceList.getAll();
+            success(function (item) {
+                editData.resourceList.addResource(new Models.Resource(item));
             });
-        }
+        };
+
+        (function(){
+            $http({
+                url: '/imageResource/getAll',
+                method: "GET"
+            }).
+            success(function (response) {
+                response && response.forEach && response.forEach(function(item){
+                    editData.resourceList.addResource(new Models.Resource(item));
+                });
+            });
+        })();
 
     });

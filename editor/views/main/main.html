@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <link type="text/css" rel="stylesheet" href="css/main.css">
+    <link type="text/css" rel="stylesheet" href="css/angular.css">
     <link type="text/css" rel="stylesheet" href="css/lib/jquery-ui.css">
     <link type="text/css" rel="stylesheet" href="css/lib/jquery-ui.theme.css">
     <script type="text/javascript" src="js/lib/angular.js"></script>
@@ -13,26 +14,31 @@
     <script type="text/javascript" src="js/factories/factories.js"></script>
     <script type="text/javascript" src="js/main.js"></script></head>
 <body ng-app="main" ng-controller="mainCtrl">
-    <div class="table width100">
+    <div class="table width100 withMargin">
         <div class="row">
             <div class="cell width20">
-                <div id="leftMenu">
-                    <h3><%=i18n.assets%></h3>
-                    <div>
+                <div class="leftMenu" ng-init="leftMenuIndex=0">
+                    <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,1)"><%=i18n.assets%></h3>
+                    <div ng-show="leftMenuIndex==1">
                         <div>
-                            <ul>
-                                <li ng-repeat="item in rList">
-                                    {{item.name}}
-                                </li>
-                            </ul>
+                            <div class="table">
+                                <div class="row" ng-repeat="item in editData.resourceList.rs">
+                                    <div class="cell vAlign">
+                                        <img height="20" ng-src="{{'resources/images/'+item.name}}"/>
+                                    </div>
+                                    <div class="cell vAlign">
+                                        <span>{{item.name}}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <button data-action="upload">
                             <%=i18n.addAsset%>
                         </button>
                         <input app-on-file-upload="onResourceUpload($formData)" type="file"/>
                     </div>
-                    <h3>other</h3>
-                    <div>
+                    <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,2)">other</h3>
+                    <div ng-show="leftMenuIndex==2">
                         <div>
                             other block here
                         </div>

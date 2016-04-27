@@ -11,6 +11,7 @@ var setup = function(app){
         secret: 'session_cookie_secret'
     }));
     app.use(express.static('editor/public'));
+    app.use(express.static('project'));
     app.use( bodyParser.json() );       // to support JSON-encoded bodies
     app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
         extended: true

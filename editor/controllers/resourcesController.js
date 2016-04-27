@@ -7,7 +7,6 @@ module.exports.addResourceImageFile = function(name,path){
     var item = {};
     item.name = name;
     item.type = 'image';
-    item.url = 'project/resources/images/'+name;
     arr.push(item);
     fs.writeFileSync('project/resources/images/map.json',JSON.stringify(arr));
     fs.deleteFileSync(path);
