@@ -1,3 +1,4 @@
+'use strict';
 
 window.app
 
@@ -13,7 +14,9 @@ window.app
                 gameObjects:'game objects',
                 create:'create',
                 name:'name',
-                imageResource: 'image resource'
+                imageResource: 'image resource',
+                numOfFramesH: 'num of frames horizontally',
+                numOfFramesV: 'num of frames vertically'
             }
         };
 

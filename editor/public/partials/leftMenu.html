@@ -1,7 +1,20 @@
 <div class="leftMenu" ng-init="leftMenuIndex=''">
     <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'gameObjects')">{{i18n.gameObjects}}</h3>
     <div ng-show="leftMenuIndex=='gameObjects'">
-        <button ng-click="uiHelper.showDialog('createGameObject')">
+        <div class="table width100">
+            <div class="row" ng-repeat="item in editData.gameObjectList.rs">
+                <div class="cell vAlign">
+                    <span>{{item.name}}</span>
+                </div>
+                <div class="cell vAlign rightAlign" ng-click="showEditGameObjectDialog(item)">
+                    edit
+                </div>
+                <div class="cell vAlign rightAlign" ng-click="deleteResource(item.name)">
+                    -
+                </div>
+            </div>
+        </div>
+        <button ng-click="showCreateGameObjectDialog()">
             {{i18n.create}}
         </button>
     </div>
@@ -16,7 +29,7 @@
                     <div class="cell vAlign">
                         <span>{{item.name}}</span>
                     </div>
-                    <div class="cell vAlign" ng-click="deleteResource(item.name)">
+                    <div class="cell vAlign rightAlign" ng-click="deleteResource(item.name)">
                         -
                     </div>
                 </div>

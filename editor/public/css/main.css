@@ -57,6 +57,10 @@ img {
     vertical-align: middle;
 }
 
+.rightAlign {
+    text-align: right;
+}
+
 input[type="file"] {
     display: inline-block;
     height: 0;
@@ -130,6 +134,13 @@ input[type="file"] {
     right: -25px;
     top:-25px;
     cursor:pointer;
+}
+
+.ng-valid{
+
+}
+input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
+    color: #c10000;
 }
 
 

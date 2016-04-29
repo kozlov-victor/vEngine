@@ -1,8 +1,11 @@
+'use strict';
+
 window.app
 
     .factory('editData', function (Models) {
         return {
-            resourceList: new Models.Collection()
+            resourceList: new Models.Collection(),
+            gameObjectList: new Models.Collection()
         }
     })
 
@@ -14,6 +17,9 @@ window.app
             },
             showDialog: function(name){
                 _.dialogName = name;
+            },
+            closeDialog: function(){
+                _.dialogName = '';
             }
         }
     })
@@ -29,13 +35,6 @@ window.app
             Child.super = Parent.prototype;
         };
 
-        var BaseModel = function () {};
-        BaseModel.prototype.fromJsonObj = function(jsonObj){
-            var self = this;
-            Object.keys(jsonObj).forEach(function(key){
-                if (key in self) self[key] = jsonObj[key];
-            });
-        };
 
         this.Collection = function () {
             var self = this;
@@ -69,6 +68,22 @@ window.app
             }
         };
 
+        var BaseModel = function () {};
+        BaseModel.prototype.fromJsonObj = function(jsonObj){
+            var self = this;
+            Object.keys(jsonObj).forEach(function(key){
+                if (key in self) self[key] = jsonObj[key];
+            });
+        };
+        BaseModel.prototype.clone = function(classFn){
+            var self = this;
+            var res = {};
+            Object.keys(this).forEach(function(key){
+                res[key]=self[key];
+            });
+            return new classFn(res);
+        };
+
         this.Resource = function (jSonObj) {
             var self = this;
             this.type = '';
@@ -78,6 +93,20 @@ window.app
             })();
         };
         extent(this.Resource,BaseModel);
+
+
+        this.GameObject = function(jSonObj){
+            var self = this;
+            this.name = '';
+            this.imageResource = '';
+            this.numOfFramesH = 1;
+            this.numOfFramesV = 1;
+            (function(){
+                self.fromJsonObj(jSonObj);
+            })();
+        };
+        extent(this.GameObject,BaseModel);
+
 
         return this;
     })
