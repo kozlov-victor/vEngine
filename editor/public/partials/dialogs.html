@@ -1,0 +1,33 @@
+<div class="shadow" ng-show="!!uiHelper.dialogName"></div>
+
+<div class="dialogWrapper" ng-show="!!uiHelper.dialogName">
+    <div class="dialog">
+        <div class="dialogContent">
+            <div class="dialogClose" ng-click="uiHelper.dialogName=''">
+                X
+            </div>
+            <div ng-show="uiHelper.dialogName=='createGameObject'" ng-init="modelNewGO={}">
+                <table class="width100">
+                    <tr>
+                        <td>
+                            {{i18n.name}}
+                        </td>
+                        <td>
+                            <input ng-model="modelNewGO.name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.imageResource}}
+                        </td>
+                        <td>
+                            <select>
+                                <option ng-repeat="item in editData.resourceList.rs" ng-model="modelNewGO.imageResource">{{item.name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

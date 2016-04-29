@@ -94,3 +94,42 @@ input[type="file"] {
     border-right: none;
     border-bottom: 5px solid transparent;
 }
+
+.shadow {
+    position: fixed;
+    left:0;top:0;right:0;bottom:0;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 100;
+}
+
+.dialogWrapper {
+    display: table;
+    width: 100%;
+    position: fixed;
+    left:0;top:0;right:0;bottom:0;
+    height: 100%;
+    text-align: center;
+    z-index:200;
+}
+
+.dialog {
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+    width: 100%;
+}
+
+.dialogContent {
+    display: inline-block;
+    position: relative;
+    background-color: #f8f8f8;
+}
+
+.dialogClose {
+    position: absolute;
+    right: -25px;
+    top:-25px;
+    cursor:pointer;
+}
+
+

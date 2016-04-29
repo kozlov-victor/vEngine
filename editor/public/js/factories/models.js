@@ -7,9 +7,13 @@ window.app
     })
 
     .factory('uiHelper', function () {
-        return {
+        var _;
+        return _ = {
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
+            },
+            showDialog: function(name){
+                _.dialogName = name;
             }
         }
     })

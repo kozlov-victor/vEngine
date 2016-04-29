@@ -5,7 +5,6 @@ var session = require('express-session');
 
 var multipart = require('connect-multiparty')();
 
-var i18n = require('../base/i18n');
 var utils = require('../utils/utils');
 var mainController = require('../controllers/mainController');
 var resourcesController = require('../controllers/resourcesController');
@@ -16,7 +15,7 @@ module.exports.init = function(app) {
     mainController.initFolderStructure();
 
     app.get('/',function(req,res){
-        res.render('main/main',utils.parametrize());
+        res.render('main/main',utils.parametrize({}));
     });
 
     app.post('/resource/create',multipart,function(req,res){
