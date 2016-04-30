@@ -19,10 +19,22 @@ module.exports.init = function(app) {
     });
 
     app.post('/resource/create',multipart,function(req,res){
-        var name = req.files.file.name;
-        var path = req.files.file.path;
-        var type = req.body.type;
-        var result = resourcesController.create(name,type,path);
+        var pathToUploadedFile = req.files.file.path;
+        var item = {};
+        req.body && Object.keys(req.body).forEach(function(key){
+            item[key] = req.body[key];
+        });
+        var result = resourcesController.create(item,pathToUploadedFile);
+        res.send(result);
+    });
+
+    app.post('/resource/edit',multipart,function(req,res){
+        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
+        var item = {};
+        req.body && Object.keys(req.body).forEach(function(key){
+            item[key] = req.body[key];
+        });
+        var result = resourcesController.edit(item,pathToUploadedFile);
         res.send(result);
     });
 
@@ -33,9 +45,9 @@ module.exports.init = function(app) {
     });
 
     app.post('/resource/delete',function(req,res){
-        var nameOfItem = req.body.name;
+        var id = req.body.id;
         var type = req.body.type;
-        resourcesController.delete(nameOfItem,type);
+        resourcesController.delete(id,type);
         res.send({});
     });
 

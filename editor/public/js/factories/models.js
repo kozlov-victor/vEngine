@@ -4,7 +4,7 @@ window.app
 
     .factory('editData', function (Models) {
         return {
-            resourceList: new Models.Collection(),
+            spriteSheetList: new Models.Collection(),
             gameObjectList: new Models.Collection()
         }
     })
@@ -27,7 +27,7 @@ window.app
 
     .factory('Models', function () {
 
-        var extent = function (Child, Parent) {
+        var extend = function (Child, Parent) {
             var F = function () {};
             F.prototype = Parent.prototype;
             Child.prototype = new F();
@@ -35,11 +35,10 @@ window.app
             Child.super = Parent.prototype;
         };
 
-
         this.Collection = function () {
             var self = this;
             this.rs = [];
-            this.addResource = function (r) {
+            this.add = function (r) {
                 self.rs.push(r);
             };
             this.size = function () {
@@ -48,9 +47,9 @@ window.app
             this.getAll = function () {
                 return self.rs;
             };
-            this.removeIf = function(obj){
-                if (!obj) return;
+            this.indexOf = function(obj){
                 var i = 0;
+                var success = false;
                 self.rs.some(function(item){
                     var isCandidate = true;
                     Object.keys(obj).some(function(conditionKey){
@@ -60,11 +59,19 @@ window.app
                         }
                     });
                     if (isCandidate) {
-                        self.rs.splice(i,1);
+                        success = true;
                         return true;
                     }
                     i++;
                 });
+                return success?i:-1;
+            };
+            this.removeIf = function(obj){
+                if (!obj) return;
+                var index = self.indexOf(obj);
+                console.log('found index',obj,index);
+                console.log(self.rs);
+                if (index>-1) self.rs.splice(index,1);
             }
         };
 
@@ -72,40 +79,68 @@ window.app
         BaseModel.prototype.fromJsonObj = function(jsonObj){
             var self = this;
             Object.keys(jsonObj).forEach(function(key){
-                if (key in self) self[key] = jsonObj[key];
+                if (key in self) {
+                    self[key] = jsonObj[key];
+                    self[key] = +self[key]||self[key];
+                }
             });
         };
         BaseModel.prototype.clone = function(classFn){
+            var self =this;
+            return new classFn(self.toJsonObj());
+        };
+        BaseModel.prototype.toJsonObj = function(){
             var self = this;
             var res = {};
             Object.keys(this).forEach(function(key){
                 res[key]=self[key];
             });
-            return new classFn(res);
+            return res;
+        };
+        BaseModel.prototype.toJsonArr = function(){
+            var self = this;
+            var res = [];
+            Object.keys(this).forEach(function(key){
+                res.push({key:key,value:self[key]});
+            });
+            return res;
         };
 
         this.Resource = function (jSonObj) {
             var self = this;
-            this.type = '';
             this.name = '';
+            this.resourcePath = '';
             (function(){
                 self.fromJsonObj(jSonObj);
             })();
         };
-        extent(this.Resource,BaseModel);
+        extend(this.Resource,BaseModel);
 
-
-        this.GameObject = function(jSonObj){
+        this.SpriteSheet = function(jSonObj){
             var self = this;
+            this.id = null;
+            this.type = 'spriteSheet';
             this.name = '';
-            this.imageResource = '';
+            this.resourcePath = '';
+            this.width = 0;
+            this.height = 0;
             this.numOfFramesH = 1;
             this.numOfFramesV = 1;
             (function(){
                 self.fromJsonObj(jSonObj);
             })();
         };
-        extent(this.GameObject,BaseModel);
+        extend(this.SpriteSheet,BaseModel);
+
+        this.GameObject = function(jSonObj){
+            var self = this;
+            this.numOfFramesH = 1;
+            this.numOfFramesV = 1;
+            (function(){
+                self.fromJsonObj(jSonObj);
+            })();
+        };
+        extend(this.GameObject,BaseModel);
 
 
         return this;
@@ -118,11 +153,12 @@ window.app
             scope: true,
             link: function (scope, element, attrs) {
                 element.bind('change', function () {
-                    var formData = new FormData();
                     var fn = $parse(attrs.appOnFileUpload);
-                    formData.append('file', element[0].files[0]);
+                    var file = element[0] && element[0].files[0];
+                    var url = window.URL || window.webkitURL;
+                    var src = url.createObjectURL(file);
                     scope.$apply(function () {
-                        fn(scope, {$formData: formData});
+                        fn(scope, {$file: element[0].files[0],$src:src});
                     });
                 });
             }

@@ -10,13 +10,19 @@ window.app
         _i18n.bundle = {
             'en': {
                 assets:'assets',
-                addAsset:'add asset',
+                addSpriteSheet:'add sprite sheet',
+                loadImage:'load image',
                 gameObjects:'game objects',
                 create:'create',
+                edit:'edit',
                 name:'name',
+                spriteSheers:'sprite sheets',
+                width:'width',
+                height:'height',
                 imageResource: 'image resource',
                 numOfFramesH: 'num of frames horizontally',
-                numOfFramesV: 'num of frames vertically'
+                numOfFramesV: 'num of frames vertically',
+                image: 'image'
             }
         };
 

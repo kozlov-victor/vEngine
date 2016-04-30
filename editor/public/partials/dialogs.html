@@ -6,7 +6,70 @@
             <div class="dialogClose" ng-click="uiHelper.dialogName=''">
                 X
             </div>
-            <form name="frmCreateGO" ng-show="uiHelper.dialogName=='createGO'" ng-init="modelGO=currGameObjectInEdit" novalidate>
+
+            <form name="frmCreateSpriteSheet" ng-show="uiHelper.dialogName=='frmCreateSpriteSheet'"  novalidate>
+                <table class="width100">
+                    <tr>
+                        <td>
+                            {{i18n.name}}
+                        </td>
+                        <td>
+                            <input required ng-model="currSpriteSheetInEdit.name"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.image}}
+                        </td>
+                        <td>
+                            <img src="{{currSpriteSheetInEdit.resourcePath}}" height="15"/>
+                            <button data-action="upload">
+                                {{i18n.loadImage}}
+                            </button>
+                            <input accept="image/*" app-on-file-upload="onSpriteSheetUpload($file,$src)" type="file"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.width}}
+                        </td>
+                        <td>
+                            {{currSpriteSheetInEdit.width}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.height}}
+                        </td>
+                        <td>
+                            {{currSpriteSheetInEdit.height}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.numOfFramesH}}
+                        </td>
+                        <td>
+                            <input required min="1" type="number" ng-model="currSpriteSheetInEdit.numOfFramesH"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.numOfFramesV}}
+                        </td>
+                        <td>
+                            <input required min="1" type="number" ng-model="currSpriteSheetInEdit.numOfFramesV"/>
+                        </td>
+                    </tr>
+                </table>
+                <button
+                        ng-click="createOrEditSpriteSheet();"
+                        ng-disabled="!(frmCreateSpriteSheet.$valid && currSpriteSheetInEdit.resourcePath)">
+                    {{currSpriteSheetInEdit.id?i18n.edit:i18n.create}}
+                </button>
+            </form>
+
+            <form name="frmCreateGO" ng-show="uiHelper.dialogName=='frmCreateGO'" ng-init="modelGO=currGameObjectInEdit" novalidate>
                 <table class="width100">
                     <tr>
                         <td>
@@ -27,8 +90,7 @@
                             </select>
                         </td>
                         <td>
-                            <button data-action="upload">+</button>
-                            <input app-on-file-upload="onResourceUpload($formData)" type="file"/>
+                            <button ng-click="uiHelper.showDialog('frmCreateSpriteSheet')">+</button>
                         </td>
                     </tr>
                     <tr>

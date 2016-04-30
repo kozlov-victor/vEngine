@@ -4,12 +4,14 @@
 html, body {
     height: 100%;
     font-family: monospace;
+    background-color: #ebebeb;
 }
 
 html, body, div {
     margin: 0;
     padding: 0;
     border: none;
+    box-sizing: border-box;
 }
 
 ul {
@@ -19,6 +21,10 @@ ul {
 
 img {
     display: inline-block;
+}
+
+.pointer {
+    cursor:pointer;
 }
 
 .table {
@@ -31,6 +37,11 @@ img {
 
 .cell {
     display: table-cell;
+}
+
+.noSelect {
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .width100 {
