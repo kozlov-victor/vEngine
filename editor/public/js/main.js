@@ -39,7 +39,6 @@ window.app.
 
         s.showEditSpriteSheetDialog = function(currObj){
             s.currSpriteSheetInEdit = currObj.clone(Models.SpriteSheet);
-            console.log('cloned', s.currSpriteSheetInEdit);
             uiHelper.showDialog('frmCreateSpriteSheet');
         };
 
@@ -94,7 +93,7 @@ window.app.
         };
 
         s.createGameObject = function(item){
-            editData.gameObjectList.add(new Models.Resource(item));
+            //editData.gameObjectList.add(new Models.Resource(item)); todo
             s.uiHelper.closeDialog();
         };
 

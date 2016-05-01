@@ -5,6 +5,7 @@
     <title></title>
     <link type="text/css" rel="stylesheet" href="css/main.css">
     <link type="text/css" rel="stylesheet" href="css/angular.css">
+    <script type="text/javascript" src="js/lib/oop.js"></script>
     <script type="text/javascript" src="js/lib/angular.js"></script>
     <script type="text/javascript" src="js/lib/jquery.js"></script>
     <script type="text/javascript" src="js/lib/jquery-ui.js"></script>
@@ -13,7 +14,7 @@
     <script type="text/javascript" src="js/factories/i18n.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
 </head>
-    <body ng-app="main" ng-controller="mainCtrl" ng-include src="'main.html'">
-        loading...
+    <body ng-app="main" ng-controller="mainCtrl">
+        <div ng-include src="'main.html'" class="withPadding"></div>
     </body>
 </html>

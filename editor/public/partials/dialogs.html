@@ -3,7 +3,7 @@
 <div class="dialogWrapper" ng-show="!!uiHelper.dialogName">
     <div class="dialog">
         <div class="dialogContent">
-            <div class="dialogClose" ng-click="uiHelper.dialogName=''">
+            <div class="dialogClose" ng-click="uiHelper.closeDialog()">
                 X
             </div>
 
@@ -85,31 +85,13 @@
                             {{i18n.imageResource}}
                         </td>
                         <td>
-                            <select required ng-model="modelGO.imageResource" ng-init="modelGO.imageResource=editData.resourceList.rs[0].name">
-                                <option ng-repeat="item in editData.resourceList.rs">{{item.name}}</option>
+                            <select required ng-model="modelGO.imageResource" ng-init="modelGO.imageResource=editData.spriteSheetList.rs[0].name">
+                                <option ng-repeat="item in editData.spriteSheetList.rs">{{item.name}}</option>
                             </select>
                         </td>
                         <td>
-                            <button ng-click="uiHelper.showDialog('frmCreateSpriteSheet')">+</button>
+                            <button ng-click="showCreateSpriteSheetDialog()">+</button>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{i18n.numOfFramesH}}
-                        </td>
-                        <td>
-                            <input required min="1" type="number" ng-model="modelGO.numOfFramesH"/>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {{i18n.numOfFramesV}}
-                        </td>
-                        <td>
-                            <input required min="1" type="number" ng-model="modelGO.numOfFramesV"/>
-                        </td>
-                        <td></td>
                     </tr>
                 </table>
                 <button ng-disabled="!frmCreateGO.$valid" ng-click="createGameObject(modelGO)">{{i18n.create}}</button>

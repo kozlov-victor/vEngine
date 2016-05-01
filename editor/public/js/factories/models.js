@@ -15,25 +15,20 @@ window.app
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
             },
+            _dialogsStack: [],
             showDialog: function(name){
                 _.dialogName = name;
+                _._dialogsStack.push(name);
             },
             closeDialog: function(){
-                _.dialogName = '';
+                _._dialogsStack.pop();
+                _.dialogName = _._dialogsStack[_._dialogsStack.length-1];
             }
         }
     })
 
 
     .factory('Models', function () {
-
-        var extend = function (Child, Parent) {
-            var F = function () {};
-            F.prototype = Parent.prototype;
-            Child.prototype = new F();
-            Child.prototype.constructor = Child;
-            Child.super = Parent.prototype;
-        };
 
         this.Collection = function () {
             var self = this;
@@ -75,73 +70,64 @@ window.app
             }
         };
 
-        var BaseModel = function () {};
-        BaseModel.prototype.fromJsonObj = function(jsonObj){
-            var self = this;
-            Object.keys(jsonObj).forEach(function(key){
-                if (key in self) {
-                    self[key] = jsonObj[key];
-                    self[key] = +self[key]||self[key];
+        var BaseModel = Class.extend({
+            id:null,
+            name:'',
+            toJsonObj: function(){
+                var res = {};
+                for (var key in this) {
+                    //if (!this.hasOwnProperty(key)) continue;
+                    //if (!this.key) continue;
+                    if (this[key] && this[key].call) continue;
+                    res[key]=this[key];
                 }
-            });
-        };
-        BaseModel.prototype.clone = function(classFn){
-            var self =this;
-            return new classFn(self.toJsonObj());
-        };
-        BaseModel.prototype.toJsonObj = function(){
-            var self = this;
-            var res = {};
-            Object.keys(this).forEach(function(key){
-                res[key]=self[key];
-            });
-            return res;
-        };
-        BaseModel.prototype.toJsonArr = function(){
-            var self = this;
-            var res = [];
-            Object.keys(this).forEach(function(key){
-                res.push({key:key,value:self[key]});
-            });
-            return res;
-        };
+                return res;
+            },
+            toJsonArr: function(){
+                var res = [];
+                for (var key in this) {
+                    //if (!this.hasOwnProperty(key)) continue;
+                    //if (!this.key) continue;
+                    if (this[key] && this[key].call) continue;
+                    res.push({key:key,value:this[key]});
+                }
+                return res;
+            },
+            fromJsonObject:function(jsonObj){
+                var self = this;
+                Object.keys(jsonObj).forEach(function(key){
+                    if (key in self) {
+                        self[key] = jsonObj[key];
+                        self[key] = +self[key]||self[key];
+                    }
+                });
+            },
+            clone: function(classFn){
+                var self =this;
+                return new classFn(self.toJsonObj());
+            },
+            init:function(){
+                arguments && arguments[0] && this.fromJsonObject(arguments[0]);
+            }
+        });
 
-        this.Resource = function (jSonObj) {
-            var self = this;
-            this.name = '';
-            this.resourcePath = '';
-            (function(){
-                self.fromJsonObj(jSonObj);
-            })();
-        };
-        extend(this.Resource,BaseModel);
+        var Resource = BaseModel.extend({
+            resourcePath:''
+        });
 
-        this.SpriteSheet = function(jSonObj){
-            var self = this;
-            this.id = null;
-            this.type = 'spriteSheet';
-            this.name = '';
-            this.resourcePath = '';
-            this.width = 0;
-            this.height = 0;
-            this.numOfFramesH = 1;
-            this.numOfFramesV = 1;
-            (function(){
-                self.fromJsonObj(jSonObj);
-            })();
-        };
-        extend(this.SpriteSheet,BaseModel);
+        this.SpriteSheet = Resource.extend({
+            type:'spriteSheet',
+            width:0,
+            height:0,
+            numOfFramesH:1,
+            numOfFramesV:1
+        });
 
-        this.GameObject = function(jSonObj){
-            var self = this;
-            this.numOfFramesH = 1;
-            this.numOfFramesV = 1;
-            (function(){
-                self.fromJsonObj(jSonObj);
-            })();
-        };
-        extend(this.GameObject,BaseModel);
-
+        this.GameObject = BaseModel.extend({
+            type:'gameObject',
+            width:0,
+            height:0
+        });
 
         return this;
     })
