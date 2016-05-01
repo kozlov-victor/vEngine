@@ -67,6 +67,9 @@ window.app
                 console.log('found index',obj,index);
                 console.log(self.rs);
                 if (index>-1) self.rs.splice(index,1);
+            };
+            this.getIf = function(obj){
+                return self.rs[self.indexOf(obj)];
             }
         };
 
@@ -125,8 +128,10 @@ window.app
 
         this.GameObject = BaseModel.extend({
             type:'gameObject',
+            spriteSheetName:'',
             width:0,
-            height:0
+            height:0,
+            currFrameIndex:0
         });
 
         return this;

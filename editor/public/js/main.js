@@ -82,18 +82,37 @@ window.app.
             });
         };
 
+        s.recalcGameObjectSize = function(gameObject){
+            var spriteSheet = s.editData.spriteSheetList.getIf({name:gameObject.spriteSheetName});
+            if (!spriteSheet) return;
+            gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
+            gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
+            gameObject._spriteSheet = spriteSheet;
+        };
+
+        s.refreshGameObjectFramePreview = function(gameObject){
+            var spriteSheet = gameObject._spriteSheet;
+            var frWidth = spriteSheet.width / spriteSheet.numOfFramesH;
+            var frHeight = spriteSheet.height / spriteSheet.numOfFramesV;
+            gameObject._spPosY = ~~(gameObject.currFrameIndex/spriteSheet.numOfFramesH)*frHeight;
+            gameObject._spPosX = (gameObject.currFrameIndex%spriteSheet.numOfFramesH)*frWidth;
+        };
+
         s.showCreateGameObjectDialog = function() {
-            s.currGameObjectInEdit = new Models.GameObject({});
-            uiHelper.showDialog('frmCreateGO');
+            s.currGameObjectInEdit = new Models.GameObject();
+            s.currGameObjectInEdit.spriteSheetName = s.editData.spriteSheetList.rs[0].name;
+            s.recalcGameObjectSize(s.currGameObjectInEdit);
+            uiHelper.showDialog('frmCreateGameObject');
         };
 
         s.showEditGameObjectDialog = function(currObj) {
             s.currGameObjectInEdit = currObj.clone(Models.GameObject);
-            uiHelper.showDialog('frmCreateGO');
+            uiHelper.showDialog('frmCreateGameObject');
         };
 
         s.createGameObject = function(item){
             //editData.gameObjectList.add(new Models.Resource(item)); todo
+            console.log(item)
             s.uiHelper.closeDialog();
         };
 

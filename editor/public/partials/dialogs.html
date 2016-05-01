@@ -69,23 +69,64 @@
                 </button>
             </form>
 
-            <form name="frmCreateGO" ng-show="uiHelper.dialogName=='frmCreateGO'" ng-init="modelGO=currGameObjectInEdit" novalidate>
+            <form name="frmCreateGameObject" ng-show="uiHelper.dialogName=='frmCreateGameObject'" novalidate>
                 <table class="width100">
                     <tr>
                         <td>
                             {{i18n.name}}
                         </td>
                         <td>
-                            <input required ng-model="modelGO.name"/>
+                            <input required ng-model="currGameObjectInEdit.name"/>
+                        </td>
+                        <td></td>
+                        <td rowspan="5">
+                            <div style="
+                               width:{{currGameObjectInEdit.width}}px;
+                               height:{{currGameObjectInEdit.height}}px;
+                               background-image:url({{currGameObjectInEdit._spriteSheet.resourcePath}});
+                               background-position-y: -{{currGameObjectInEdit._spPosY}}px;
+                               background-position-x:-{{currGameObjectInEdit._spPosX}}px;
+                               background-repeat:no-repeat;
+                            "></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.width}}
+                        </td>
+                        <td>
+                            <input type="number" required ng-model="currGameObjectInEdit.width"/>
                         </td>
                         <td></td>
                     </tr>
                     <tr>
                         <td>
-                            {{i18n.imageResource}}
+                            {{i18n.height}}
                         </td>
                         <td>
-                            <select required ng-model="modelGO.imageResource" ng-init="modelGO.imageResource=editData.spriteSheetList.rs[0].name">
+                            <input type="number" required ng-model="currGameObjectInEdit.height"/>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.currFrameIndex}}
+                        </td>
+                        <td>
+                            <input type="number"
+                                   ng-change="refreshGameObjectFramePreview(currGameObjectInEdit)"
+                                   required ng-model="currGameObjectInEdit.currFrameIndex"/>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.spriteSheet}}
+                        </td>
+                        <td>
+                            <select
+                                    ng-change="recalcGameObjectSize(currGameObjectInEdit)"
+                                    required ng-model="currGameObjectInEdit.spriteSheetName">
                                 <option ng-repeat="item in editData.spriteSheetList.rs">{{item.name}}</option>
                             </select>
                         </td>
@@ -94,7 +135,7 @@
                         </td>
                     </tr>
                 </table>
-                <button ng-disabled="!frmCreateGO.$valid" ng-click="createGameObject(modelGO)">{{i18n.create}}</button>
+                <button ng-disabled="!frmCreateGameObject.$valid" ng-click="createGameObject(currGameObjectInEdit)">{{i18n.create}}</button>
             </form>
         </div>
     </div>

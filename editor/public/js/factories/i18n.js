@@ -19,7 +19,8 @@ window.app
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',
-                imageResource: 'image resource',
+                currFrameIndex:'current frame index',
+                spriteSheet: 'sprite sheet',
                 numOfFramesH: 'num of frames horizontally',
                 numOfFramesV: 'num of frames vertically',
                 image: 'image'
