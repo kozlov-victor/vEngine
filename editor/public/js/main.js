@@ -55,31 +55,41 @@ window.app.
         };
 
         var createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList){
-            var formData = new FormData();
-            formData.append('file',currResourceInEdit._file);
-            currResourceInEdit.toJsonArr().forEach(function(item){
-                formData.append(item.key,item.value);
-            });
-            var op = currResourceInEdit.id?'edit':'create';
-            $http({
-                url: '/resource/'+op,
-                method: "POST",
-                data: formData,
-                headers: {'Content-Type': undefined}
-            }).
-            success(function (item) {
-                if (op=='create') {
-                    resourceList.add(new ResourceClass(item));
-                } else {
-                    var index = resourceList.indexOf({id:item.id});
-                    resourceList.rs[index] = new ResourceClass(item);
-                }
-                uiHelper.closeDialog();
+            return new Promise(function(resolve){
+                var formData = new FormData();
+                formData.append('file',currResourceInEdit._file);
+                currResourceInEdit.toJsonArr().forEach(function(item){
+                    formData.append(item.key,item.value);
+                });
+                var op = currResourceInEdit.id?'edit':'create';
+                $http({
+                    url: '/resource/'+op,
+                    method: "POST",
+                    data: formData,
+                    headers: {'Content-Type': undefined}
+                }).
+                    success(function (item) {
+                        if (op=='create') {
+                            var r = new ResourceClass(item);
+                            resourceList.add(r);
+                            resolve(r);
+                        } else {
+                            var index = resourceList.indexOf({id:item.id});
+                            resourceList.rs[index] = new ResourceClass(item);
+                            resolve(resourceList.rs[index]);
+                        }
+                        uiHelper.closeDialog();
+                    });
             });
         };
 
         s.createOrEditSpriteSheet = function(){
             createOrEditResource(s.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
+            //then(function(spriteSheet){
+            //    if (s.currGameObjectInEdit) {
+            //        if (!s.currGameObjectInEdit._spriteSheet) s.currGameObjectInEdit._spriteSheet = spriteSheet;
+            //    }
+            //});
         };
 
         s.recalcGameObjectSize = function(gameObject){
@@ -91,7 +101,6 @@ window.app.
             gameObject._spriteSheet = spriteSheet;
             gameObject._sprPosX = spriteSheet.getFramePosX(gameObject.currFrameIndex);
             gameObject._sprPosY = spriteSheet.getFramePosY(gameObject.currFrameIndex);
-            s.maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
         };
 
         s.refreshGameObjectFramePreview = function(gameObject){
@@ -101,12 +110,16 @@ window.app.
             var frHeight = spriteSheet.height / spriteSheet.numOfFramesV;
             gameObject._spPosY = ~~(gameObject.currFrameIndex/spriteSheet.numOfFramesH)*frHeight;
             gameObject._spPosX = (gameObject.currFrameIndex%spriteSheet.numOfFramesH)*frWidth;
+            var maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
+            if (s.currGameObjectInEdit.currFrameIndex>=maxNumOfFrame) {
+                s.currGameObjectInEdit.currFrameIndex = 0;
+            }
         };
 
         s.showCreateGameObjectDialog = function() {
             s.currGameObjectInEdit = new Models.GameObject();
-            s.currGameObjectInEdit.spriteSheetName = s.editData.spriteSheetList.rs[0].name;
-            s.recalcGameObjectSize(s.currGameObjectInEdit);
+            s.editData.spriteSheetList.rs[0] && (s.currGameObjectInEdit.spriteSheetName = s.editData.spriteSheetList.rs[0].name);
+            s.currGameObjectInEdit && s.recalcGameObjectSize(s.currGameObjectInEdit);
             uiHelper.showDialog('frmCreateGameObject');
         };
 
