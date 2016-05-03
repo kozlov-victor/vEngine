@@ -55,41 +55,32 @@ window.app.
         };
 
         var createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList){
-            return new Promise(function(resolve){
-                var formData = new FormData();
-                formData.append('file',currResourceInEdit._file);
-                currResourceInEdit.toJsonArr().forEach(function(item){
-                    formData.append(item.key,item.value);
-                });
-                var op = currResourceInEdit.id?'edit':'create';
-                $http({
-                    url: '/resource/'+op,
-                    method: "POST",
-                    data: formData,
-                    headers: {'Content-Type': undefined}
-                }).
-                    success(function (item) {
-                        if (op=='create') {
-                            var r = new ResourceClass(item);
-                            resourceList.add(r);
-                            resolve(r);
-                        } else {
-                            var index = resourceList.indexOf({id:item.id});
-                            resourceList.rs[index] = new ResourceClass(item);
-                            resolve(resourceList.rs[index]);
-                        }
-                        uiHelper.closeDialog();
-                    });
+            var formData = new FormData();
+            formData.append('file',currResourceInEdit._file);
+            currResourceInEdit.toJsonArr().forEach(function(item){
+                formData.append(item.key,item.value);
+            });
+            var op = currResourceInEdit.id?'edit':'create';
+            $http({
+                url: '/resource/'+op,
+                method: "POST",
+                data: formData,
+                headers: {'Content-Type': undefined}
+            }).
+            success(function (item) {
+                if (op=='create') {
+                    var r = new ResourceClass(item);
+                    resourceList.add(r);
+                } else {
+                    var index = resourceList.indexOf({id:item.id});
+                    resourceList.rs[index] = new ResourceClass(item);
+                }
+                uiHelper.closeDialog();
             });
         };
 
         s.createOrEditSpriteSheet = function(){
             createOrEditResource(s.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
-            //then(function(spriteSheet){
-            //    if (s.currGameObjectInEdit) {
-            //        if (!s.currGameObjectInEdit._spriteSheet) s.currGameObjectInEdit._spriteSheet = spriteSheet;
-            //    }
-            //});
         };
 
         s.recalcGameObjectSize = function(gameObject){
