@@ -72,6 +72,10 @@ img {
     text-align: right;
 }
 
+.relative {
+    position: relative;
+}
+
 input[type="file"] {
     display: inline-block;
     height: 0;

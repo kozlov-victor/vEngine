@@ -2,10 +2,10 @@
 
 window.app
 
-    .factory('editData', function (Models) {
+    .factory('editData', function (Collections) {
         return {
-            spriteSheetList: new Models.Collection(),
-            gameObjectList: new Models.Collection()
+            spriteSheetList: new Collections.Collection(),
+            gameObjectList: new Collections.Collection()
         }
     })
 
@@ -27,8 +27,7 @@ window.app
         }
     })
 
-
-    .factory('Models', function () {
+    .factory('Collections',function(){
 
         this.Collection = function () {
             var self = this;
@@ -64,13 +63,27 @@ window.app
             this.removeIf = function(obj){
                 if (!obj) return;
                 var index = self.indexOf(obj);
-                console.log('found index',obj,index);
-                console.log(self.rs);
                 if (index>-1) self.rs.splice(index,1);
             };
             this.getIf = function(obj){
                 return self.rs[self.indexOf(obj)];
             }
+        };
+
+        return this;
+
+    })
+
+
+    .factory('Models', function (editData) {
+
+        var resourceHolder = editData;
+
+        var isPropNotFit = function(el,key){
+            if (!key) return true;
+            if (!el[key]) return true;
+            if (el[key].call) return true;
+            if (key.indexOf('_')==0) return true;
         };
 
         var BaseModel = Class.extend({
@@ -79,9 +92,7 @@ window.app
             toJsonObj: function(){
                 var res = {};
                 for (var key in this) {
-                    //if (!this.hasOwnProperty(key)) continue;
-                    //if (!this.key) continue;
-                    if (this[key] && this[key].call) continue;
+                    if (isPropNotFit(this,key)) continue;
                     res[key]=this[key];
                 }
                 return res;
@@ -89,9 +100,7 @@ window.app
             toJsonArr: function(){
                 var res = [];
                 for (var key in this) {
-                    //if (!this.hasOwnProperty(key)) continue;
-                    //if (!this.key) continue;
-                    if (this[key] && this[key].call) continue;
+                    if (isPropNotFit(this,key)) continue;
                     res.push({key:key,value:this[key]});
                 }
                 return res;
@@ -105,11 +114,11 @@ window.app
                     }
                 });
             },
-            clone: function(classFn){
+            clone: function(Class){
                 var self =this;
-                return new classFn(self.toJsonObj());
+                return new Class(self.toJsonObj());
             },
-            init:function(){
+            _init:function(){
                 arguments && arguments[0] && this.fromJsonObject(arguments[0]);
             }
         });
@@ -123,7 +132,23 @@ window.app
             width:0,
             height:0,
             numOfFramesH:1,
-            numOfFramesV:1
+            numOfFramesV:1,
+            _frameWidth:0,
+            _frameHeight:0,
+            getFramePosX: function(frameIndex){
+                return (frameIndex%this.numOfFramesH)*this._frameWidth;
+            },
+            getFramePosY: function(frameIndex){
+                return ~~(frameIndex/this.numOfFramesH)*this._frameHeight;
+            },
+            calcFrameSize: function(){
+                if (!(this.numOfFramesH && this.numOfFramesV)) return;
+                this._frameWidth = this.width/this.numOfFramesH;
+                this._frameHeight = this.height/this.numOfFramesV;
+            },
+            constructor: function(){
+                this.calcFrameSize();
+            }
         });
 
         this.GameObject = BaseModel.extend({
@@ -131,7 +156,10 @@ window.app
             spriteSheetName:'',
             width:0,
             height:0,
-            currFrameIndex:0
+            currFrameIndex:0,
+            constructor: function(){
+                this._spriteSheet = resourceHolder.spriteSheetList.getIf({name:this.spriteSheetName});
+            }
         });
 
         return this;

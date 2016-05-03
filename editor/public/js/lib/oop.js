@@ -14,30 +14,31 @@
         }
 
         // эта функция будет возвращена как результат работы extend
-        function Constructor() {
-            this.init && this.init.apply(this, arguments);
+        function Instance() {
+            this._init && this._init.apply(this, arguments);
+            this.constructor && this.constructor();
         }
 
         // this -- это класс "перед точкой", для которого вызван extend (Animal.extend)
         // наследуем от него:
-        Constructor.prototype = Class.inherit(this.prototype);
+        Instance.prototype = Class.inherit(this.prototype);
 
         // constructor был затёрт вызовом inherit
-        Constructor.prototype.constructor = Constructor;
+        Instance.prototype.constructor = Instance;
 
         // добавим возможность наследовать дальше
-        Constructor.extend = Class.extend;
+        Instance.extend = Class.extend;
 
         // скопировать в Constructor статические свойства
-        copyWrappedProps(staticProps, Constructor, this);
+        copyWrappedProps(staticProps, Instance, this);
 
         // скопировать в Constructor.prototype свойства из примесей и props
         for (var i = 0; i < mixins.length; i++) {
-            copyWrappedProps(mixins[i], Constructor.prototype, this.prototype);
+            copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
         }
-        copyWrappedProps(props, Constructor.prototype, this.prototype);
+        copyWrappedProps(props, Instance.prototype, this.prototype);
 
-        return Constructor;
+        return Instance;
     };
 
 

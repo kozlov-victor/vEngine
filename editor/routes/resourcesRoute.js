@@ -19,11 +19,12 @@ module.exports.init = function(app) {
     });
 
     app.post('/resource/create',multipart,function(req,res){
-        var pathToUploadedFile = req.files.file.path;
+        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
         var item = {};
         req.body && Object.keys(req.body).forEach(function(key){
             item[key] = req.body[key];
         });
+        delete item.file;
         var result = resourcesController.create(item,pathToUploadedFile);
         res.send(result);
     });
@@ -34,6 +35,7 @@ module.exports.init = function(app) {
         req.body && Object.keys(req.body).forEach(function(key){
             item[key] = req.body[key];
         });
+        delete item.file;
         var result = resourcesController.edit(item,pathToUploadedFile);
         res.send(result);
     });

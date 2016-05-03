@@ -16,13 +16,36 @@
                         <td>
                             <input required ng-model="currSpriteSheetInEdit.name"/>
                         </td>
+                        <td rowspan="6">
+                            <div style="max-height: 60vh;max-width:60vw;overflow: scroll;"
+                                    >
+                                <div class="relative"
+                                    style="
+                                        background-image: url('{{currSpriteSheetInEdit.resourcePath}}');
+                                        width:{{currSpriteSheetInEdit.width}}px;
+                                        height: {{currSpriteSheetInEdit.height}}px;
+                                    ">
+                                    <div
+                                        ng-repeat="i in getArray(currSpriteSheetInEdit.numOfFramesH*currSpriteSheetInEdit.numOfFramesV)"
+                                        style="
+                                            display:inline-block;
+                                            left:{{currSpriteSheetInEdit.getFramePosX(i)}}px;
+                                            top:{{currSpriteSheetInEdit.getFramePosY(i)}}px;
+                                            position:absolute;
+                                            text-align: left;
+                                            border:1px solid red;
+                                            width:{{currSpriteSheetInEdit._frameWidth}}px;
+                                            height:{{currSpriteSheetInEdit._frameHeight}}px;
+                                        ">{{i}}</div>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>
                             {{i18n.image}}
                         </td>
                         <td>
-                            <img src="{{currSpriteSheetInEdit.resourcePath}}" height="15"/>
                             <button data-action="upload">
                                 {{i18n.loadImage}}
                             </button>
@@ -50,7 +73,7 @@
                             {{i18n.numOfFramesH}}
                         </td>
                         <td>
-                            <input required min="1" type="number" ng-model="currSpriteSheetInEdit.numOfFramesH"/>
+                            <input required min="1" type="number" ng-change="currSpriteSheetInEdit.calcFrameSize()" ng-model="currSpriteSheetInEdit.numOfFramesH"/>
                         </td>
                     </tr>
                     <tr>
@@ -58,7 +81,7 @@
                             {{i18n.numOfFramesV}}
                         </td>
                         <td>
-                            <input required min="1" type="number" ng-model="currSpriteSheetInEdit.numOfFramesV"/>
+                            <input required min="1" type="number" ng-change="currSpriteSheetInEdit.calcFrameSize()" ng-model="currSpriteSheetInEdit.numOfFramesV"/>
                         </td>
                     </tr>
                 </table>
@@ -80,13 +103,22 @@
                         </td>
                         <td></td>
                         <td rowspan="5">
+                            <div class="relative">
+                                <div style="
+                                   width:{{currGameObjectInEdit.width}}px;
+                                   height:{{currGameObjectInEdit.height}}px;
+                                   background-image:url({{currGameObjectInEdit._spriteSheet.resourcePath}});
+                                   background-position-y: -{{currGameObjectInEdit._spPosY}}px;
+                                   background-position-x:-{{currGameObjectInEdit._spPosX}}px;
+                                   background-repeat:no-repeat;
+                                   border: 1px solid blue;
+                                "></div>
+                            </div>
                             <div style="
-                               width:{{currGameObjectInEdit.width}}px;
-                               height:{{currGameObjectInEdit.height}}px;
-                               background-image:url({{currGameObjectInEdit._spriteSheet.resourcePath}});
-                               background-position-y: -{{currGameObjectInEdit._spPosY}}px;
-                               background-position-x:-{{currGameObjectInEdit._spPosX}}px;
-                               background-repeat:no-repeat;
+                                position: absolute;
+                                left:0;
+                                right: 0;
+
                             "></div>
                         </td>
                     </tr>
@@ -114,6 +146,8 @@
                         </td>
                         <td>
                             <input type="number"
+                                   min="0"
+                                   max="{{maxNumOfFrame}}"
                                    ng-change="refreshGameObjectFramePreview(currGameObjectInEdit)"
                                    required ng-model="currGameObjectInEdit.currFrameIndex"/>
                         </td>
@@ -135,7 +169,9 @@
                         </td>
                     </tr>
                 </table>
-                <button ng-disabled="!frmCreateGameObject.$valid" ng-click="createGameObject(currGameObjectInEdit)">{{i18n.create}}</button>
+                <button
+                        ng-disabled="!frmCreateGameObject.$valid"
+                        ng-click="createOrEditGameObject(currGameObjectInEdit)">{{i18n.create}}</button>
             </form>
         </div>
     </div>

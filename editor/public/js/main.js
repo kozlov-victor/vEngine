@@ -23,12 +23,7 @@ window.app.
                 data: {id:id,type:type}
             }).
             success(function (res) {
-                    switch (type) {
-                        case 'spriteSheet':
-                            editData.spriteSheetList.removeIf({id:id});
-                            break;
-                    }
-
+                editData[type+'List'].removeIf({id:id});
             });
         };
 
@@ -39,6 +34,7 @@ window.app.
 
         s.showEditSpriteSheetDialog = function(currObj){
             s.currSpriteSheetInEdit = currObj.clone(Models.SpriteSheet);
+            s.currSpriteSheetInEdit.calcFrameSize();
             uiHelper.showDialog('frmCreateSpriteSheet');
         };
 
@@ -58,13 +54,13 @@ window.app.
             fr.readAsDataURL(file);
         };
 
-        s.createOrEditSpriteSheet = function(){
+        var createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList){
             var formData = new FormData();
-            formData.append('file',s.currSpriteSheetInEdit._file);
-            s.currSpriteSheetInEdit.toJsonArr().forEach(function(item){
+            formData.append('file',currResourceInEdit._file);
+            currResourceInEdit.toJsonArr().forEach(function(item){
                 formData.append(item.key,item.value);
             });
-            var op = s.currSpriteSheetInEdit.id?'edit':'create';
+            var op = currResourceInEdit.id?'edit':'create';
             $http({
                 url: '/resource/'+op,
                 method: "POST",
@@ -73,25 +69,34 @@ window.app.
             }).
             success(function (item) {
                 if (op=='create') {
-                    editData.spriteSheetList.add(new Models.SpriteSheet(item));
+                    resourceList.add(new ResourceClass(item));
                 } else {
-                    var index = editData.spriteSheetList.indexOf({id:item.id});
-                    editData.spriteSheetList.rs[index] = new Models.SpriteSheet(item);
+                    var index = resourceList.indexOf({id:item.id});
+                    resourceList.rs[index] = new ResourceClass(item);
                 }
                 uiHelper.closeDialog();
             });
         };
 
+        s.createOrEditSpriteSheet = function(){
+            createOrEditResource(s.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
+        };
+
         s.recalcGameObjectSize = function(gameObject){
             var spriteSheet = s.editData.spriteSheetList.getIf({name:gameObject.spriteSheetName});
             if (!spriteSheet) return;
+            spriteSheet.calcFrameSize();
             gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
             gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
             gameObject._spriteSheet = spriteSheet;
+            gameObject._sprPosX = spriteSheet.getFramePosX(gameObject.currFrameIndex);
+            gameObject._sprPosY = spriteSheet.getFramePosY(gameObject.currFrameIndex);
+            s.maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
         };
 
         s.refreshGameObjectFramePreview = function(gameObject){
             var spriteSheet = gameObject._spriteSheet;
+            if (!spriteSheet) return;
             var frWidth = spriteSheet.width / spriteSheet.numOfFramesH;
             var frHeight = spriteSheet.height / spriteSheet.numOfFramesV;
             gameObject._spPosY = ~~(gameObject.currFrameIndex/spriteSheet.numOfFramesH)*frHeight;
@@ -107,26 +112,48 @@ window.app.
 
         s.showEditGameObjectDialog = function(currObj) {
             s.currGameObjectInEdit = currObj.clone(Models.GameObject);
+            s.currGameObjectInEdit._spriteSheet = editData.spriteSheetList.getIf({name: s.currGameObjectInEdit.spriteSheetName});
             uiHelper.showDialog('frmCreateGameObject');
         };
 
-        s.createGameObject = function(item){
-            //editData.gameObjectList.add(new Models.Resource(item)); todo
-            console.log(item)
-            s.uiHelper.closeDialog();
+        s.createOrEditGameObject = function(item){
+            createOrEditResource(s.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
+        };
+
+        s.getArray = function(num) {
+            if (!num) return [];
+            var res = [];
+            for (var i=0;i<num;i++) {
+                res.push(i);
+            }
+            return res;
         };
 
         (function(){
-            $http({
-                url: '/resource/getAll',
-                method: "POST",
-                data: {type:'spriteSheet'}
-            }).
-            success(function (response) {
-                response && response.forEach && response.forEach(function(item){
-                    editData.spriteSheetList.add(new Models.SpriteSheet(item));
+
+            var loadResource = function(type,ResourceClass,resourceList){
+                $http({
+                    url: '/resource/getAll',
+                    method: "POST",
+                    data: {type:type}
+                }).
+                success(function (response) {
+                    response && response.forEach && response.forEach(function(item){
+                        var sh = new ResourceClass(item);
+                        resourceList.add(sh);
+                    });
                 });
-            });
+            };
+
+            Promise.
+                resolve().
+                then(function(){
+                    loadResource('spriteSheet',Models.SpriteSheet,editData.spriteSheetList);
+                }).
+                then(function(){
+                    loadResource('gameObject',Models.GameObject,editData.gameObjectList);
+                });
+
         })();
 
     });
