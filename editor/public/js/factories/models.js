@@ -5,7 +5,9 @@ window.app
     .factory('editData', function (Collections) {
         return {
             spriteSheetList: new Collections.Collection(),
-            gameObjectList: new Collections.Collection()
+            gameObjectList: new Collections.Collection(),
+            currGameObjectInEdit: null,
+            currSpriteSheetInEdit: null
         }
     })
 
@@ -25,6 +27,20 @@ window.app
                 _.dialogName = _._dialogsStack[_._dialogsStack.length-1];
             }
         }
+    })
+
+    .factory('utils',function(editData){
+        this.recalcGameObjectSize = function(gameObject){
+            var spriteSheet = editData.spriteSheetList.getIf({name:gameObject.spriteSheetName});
+            if (!spriteSheet) return;
+            spriteSheet.calcFrameSize();
+            gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
+            gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
+            gameObject._spriteSheet = spriteSheet;
+            gameObject._sprPosX = spriteSheet.getFramePosX(gameObject.currFrameIndex);
+            gameObject._sprPosY = spriteSheet.getFramePosY(gameObject.currFrameIndex);
+        };
+        return this;
     })
 
     .factory('Collections',function(){

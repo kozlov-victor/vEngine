@@ -1,0 +1,81 @@
+<table class="width100">
+    <tr>
+        <td>
+            {{i18n.name}}
+        </td>
+        <td>
+            <input required ng-model="editData.currGameObjectInEdit.name"/>
+        </td>
+        <td></td>
+        <td rowspan="5">
+            <div class="relative"
+                 style="
+                                        display: inline-block;
+                                        overflow: scroll;
+                                        max-width:60vw;
+                                        max-height:60vh;
+                                    "
+                    >
+                <div style="
+                                   width:{{editData.currGameObjectInEdit.width}}px;
+                                   height:{{editData.currGameObjectInEdit.height}}px;
+                                   background-image:url({{editData.currGameObjectInEdit._spriteSheet.resourcePath}});
+                                   background-position-y: -{{editData.currGameObjectInEdit._spPosY}}px;
+                                   background-position-x:-{{editData.currGameObjectInEdit._spPosX}}px;
+                                   background-repeat:no-repeat;
+                                   border: 1px solid blue;
+                                "></div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.width}}
+        </td>
+        <td>
+            <input type="number" required ng-model="editData.currGameObjectInEdit.width"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.height}}
+        </td>
+        <td>
+            <input type="number" required ng-model="editData.currGameObjectInEdit.height"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.currFrameIndex}}
+        </td>
+        <td>
+            <input type="number"
+                   min="0"
+                   ng-change="refreshGameObjectFramePreview(editData.currGameObjectInEdit)"
+                   required ng-model="editData.currGameObjectInEdit.currFrameIndex"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.spriteSheet}}
+        </td>
+        <td>
+            <select
+                    ng-change="recalcGameObjectSize(editData.currGameObjectInEdit)"
+                    required ng-model="editData.currGameObjectInEdit.spriteSheetName">
+                <option ng-repeat="item in editData.spriteSheetList.rs">{{item.name}}</option>
+            </select>
+        </td>
+        <td>
+            <button ng-click="showCreateSpriteSheetDialog()">+</button>
+        </td>
+    </tr>
+</table>
+<button
+        ng-disabled="!frmCreateGameObject.$valid"
+        ng-click="createOrEditGameObject(editData.currGameObjectInEdit)">
+    {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
+</button>

@@ -1,4 +1,4 @@
-<div class="leftMenu noSelect" ng-init="leftMenuIndex=''">
+<div class="leftMenu noSelect" ng-init="leftMenuIndex=''" ng-controller="leftMenuCtrl">
     <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'gameObjects')">{{i18n.gameObjects}}</h3>
     <div ng-show="leftMenuIndex=='gameObjects'" class="withPadding">
         <div class="table width100">
