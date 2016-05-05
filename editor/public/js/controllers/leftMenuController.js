@@ -30,8 +30,8 @@ window.app.
 
         s.showCreateGameObjectDialog = function() {
             s.editData.currGameObjectInEdit = new Models.GameObject();
-            s.editData.spriteSheetList.rs[0] && (s.currGameObjectInEdit.spriteSheetName = s.editData.spriteSheetList.rs[0].name);
-            s.editData.currGameObjectInEdit && utils.recalcGameObjectSize(s.editData.editData.currGameObjectInEdit);
+            s.editData.spriteSheetList.rs[0] && (s.editData.currGameObjectInEdit.spriteSheetName = s.editData.spriteSheetList.rs[0].name);
+            s.editData.currGameObjectInEdit && utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             uiHelper.showDialog('frmCreateGameObject');
         };
 

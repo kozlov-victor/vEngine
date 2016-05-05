@@ -23,7 +23,10 @@ window.app
                 spriteSheet: 'sprite sheet',
                 numOfFramesH: 'num of frames horizontally',
                 numOfFramesV: 'num of frames vertically',
-                image: 'image'
+                image: 'image',
+                frAnimations:'frame animations',
+                duration:'duration, msec',
+                frames:'frames (i.e 1,2,3)'
             }
         };
 

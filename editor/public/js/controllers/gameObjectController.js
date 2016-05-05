@@ -1,34 +1,9 @@
 window.app.
-    controller('gameObjectCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n) {
+    controller('gameObjectCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n, utils) {
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
-
-        var createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList){
-            var formData = new FormData();
-            formData.append('file',currResourceInEdit._file);
-            currResourceInEdit.toJsonArr().forEach(function(item){
-                formData.append(item.key,item.value);
-            });
-            var op = currResourceInEdit.id?'edit':'create';
-            $http({
-                url: '/resource/'+op,
-                method: "POST",
-                data: formData,
-                headers: {'Content-Type': undefined}
-            }).
-            success(function (item) {
-                if (op=='create') {
-                    var r = new ResourceClass(item);
-                    resourceList.add(r);
-                } else {
-                    var index = resourceList.indexOf({id:item.id});
-                    resourceList.rs[index] = new ResourceClass(item);
-                }
-                uiHelper.closeDialog();
-            });
-        };
 
 
         s.refreshGameObjectFramePreview = function(gameObject){
@@ -45,7 +20,12 @@ window.app.
         };
 
         s.createOrEditGameObject = function(item){
-            createOrEditResource(s.editData.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
+            utils.createOrEditResource(s.editData.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
+        };
+
+        s.showCreateAnimationDialog = function() {
+            s.editData.currFrAnimationInEdit = new Models.FrameAnimation();
+            uiHelper.showDialog('frmCreateAnimation');
         };
 
         s.getArray = function(num) {

@@ -1,0 +1,33 @@
+<table class="width100">
+    <tr>
+        <td>
+            {{i18n.name}}
+        </td>
+        <td>
+            <input required ng-model="editData.currGameObjectInEdit.name"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.duration}}
+        </td>
+        <td>
+            <input
+                    type="number"
+                    min="1"
+                    required
+                    ng-model="editData.currGameObjectInEdit.duration"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.frames}}
+        </td>
+        <td>
+            <input
+                required
+                pattern="d,"
+                ng-model="editData.currGameObjectInEdit.frames"/>
+        </td>
+    </tr>
+</table>
