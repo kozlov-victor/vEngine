@@ -27,6 +27,9 @@ window.app
             this.getAll = function () {
                 return self.rs;
             };
+            this.clear = function(){
+                self.rs = [];
+            };
             this.indexOf = function(obj){
                 var i = 0;
                 var success = false;
@@ -61,7 +64,7 @@ window.app
     })
 
 
-    .factory('Models', function (editData) {
+    .factory('Models', function (editData,Collections) {
 
         var resourceHolder = editData;
 
@@ -69,7 +72,7 @@ window.app
             if (!key) return true;
             if (!el[key]) return true;
             if (el[key].call) return true;
-            if (key.indexOf('_')==0) return true;
+            if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
         };
 
         var BaseModel = Class.extend({
@@ -121,6 +124,7 @@ window.app
             numOfFramesV:1,
             _frameWidth:0,
             _frameHeight:0,
+            _numOfFrames:0,
             getFramePosX: function(frameIndex){
                 return (frameIndex%this.numOfFramesH)*this._frameWidth;
             },
@@ -131,6 +135,7 @@ window.app
                 if (!(this.numOfFramesH && this.numOfFramesV)) return;
                 this._frameWidth = this.width/this.numOfFramesH;
                 this._frameHeight = this.height/this.numOfFramesV;
+                this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
             },
             constructor: function(){
                 this.calcFrameSize();
@@ -139,22 +144,62 @@ window.app
 
         this.GameObject = BaseModel.extend({
             type:'gameObject',
-            spriteSheetName:'',
+            spriteSheetId:null,
+            _spriteSheet:null,
             width:0,
             height:0,
             currFrameIndex:0,
+            _sprPosX:0,
+            _sprPosY:0,
+            _frameAnimations:new Collections.Collection(),
+            frameAnimationIds:[],
+            _currFrameAnimation:null,
             constructor: function(){
-                this.spriteSheetName && (this._spriteSheet = resourceHolder.spriteSheetList.getIf({name:this.spriteSheetName}));
+                this.spriteSheetId && (this._spriteSheet = resourceHolder.spriteSheetList.getIf({id:this.spriteSheetId}));
+                var self = this;
+                self._frameAnimations.clear();
+                this.frameAnimationIds.forEach(function(id){
+                    var a = resourceHolder.frameAnimationList.getIf({id:id});
+                    a._gameObject = self;
+                    self._frameAnimations.add(a);
+                });
+            },
+            getFrAnimation: function(animationName){
+                return this._frameAnimations.getIf({name:animationName});
+            },
+            setFrameIndex: function(index){
+                this.currFrameIndex = index;
+                this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
+                this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
+            },
+            update: function(time) {
+                this._currFrameAnimation && this._currFrameAnimation.update(time);
             }
         });
 
         this.FrameAnimation = BaseModel.extend({
             type:'frameAnimation',
-            spriteSheetName:'',
-            frames:null,
-            duration:0,
+            name:'',
+            frames:[],
+            duration:1000,
+            _gameObject:null,
+            _startTime:null,
+            _timeForOneFrame:0,
             constructor: function(){
-                this.spriteSheetName && (this._spriteSheet = resourceHolder.spriteSheetList.getIf({name:this.spriteSheetName}));
+                this._timeForOneFrame = ~~(this.duration / this.frames.length);
+            },
+            play: function(){
+                this._gameObject._currFrameAnimation = this;
+            },
+            stop:function(){
+                this._gameObject._currFrameAnimation = null;
+                this._startTime = null;
+            },
+            update: function(time){
+                if (!this._startTime) this._startTime = time;
+                var delta = (time - this._startTime)%this.duration;
+                var ind = ~~((delta/this._timeForOneFrame)%this.duration);
+                this._gameObject.currFrameIndex = this.frames[ind];
             }
         });
 

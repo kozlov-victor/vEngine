@@ -26,7 +26,11 @@ window.app
                 image: 'image',
                 frAnimations:'frame animations',
                 duration:'duration, msec',
-                frames:'frames (i.e 1,2,3)'
+                frames:'frames (i.e 1,2,3)',
+                playAnim:'play animation',
+                stopAnim:'stop animation',
+                saveObjectFirst:'save object first',
+                all: 'all'
             }
         };
 

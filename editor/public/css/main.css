@@ -68,6 +68,14 @@ img {
     vertical-align: middle;
 }
 
+.block {
+    display: block;
+}
+
+.inlineBlock {
+    display: inline-block;
+}
+
 .rightAlign {
     text-align: right;
 }

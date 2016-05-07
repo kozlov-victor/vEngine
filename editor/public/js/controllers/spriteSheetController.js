@@ -4,6 +4,7 @@ window.app.
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
+        s.utils = utils;
 
 
         s.onSpriteSheetUpload = function(file,src) {
@@ -24,15 +25,6 @@ window.app.
 
         s.createOrEditSpriteSheet = function(){
             utils.createOrEditResource(s.editData.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
-        };
-
-        s.getArray = function(num) {
-            if (!num) return [];
-            var res = [];
-            for (var i=0;i<num;i++) {
-                res.push(i);
-            }
-            return res;
         };
 
 

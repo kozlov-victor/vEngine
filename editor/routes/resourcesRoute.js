@@ -18,25 +18,19 @@ module.exports.init = function(app) {
         res.render('main/main',utils.parametrize({}));
     });
 
+    var getModelFromBody = function(req) {
+        return JSON.parse((req.body && req.body.model)||'{}');
+    };
+
     app.post('/resource/create',multipart,function(req,res){
         var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
-        var item = {};
-        req.body && Object.keys(req.body).forEach(function(key){
-            item[key] = req.body[key];
-        });
-        delete item.file;
-        var result = resourcesController.create(item,pathToUploadedFile);
+        var result = resourcesController.create(getModelFromBody(req),pathToUploadedFile);
         res.send(result);
     });
 
     app.post('/resource/edit',multipart,function(req,res){
         var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
-        var item = {};
-        req.body && Object.keys(req.body).forEach(function(key){
-            item[key] = req.body[key];
-        });
-        delete item.file;
-        var result = resourcesController.edit(item,pathToUploadedFile);
+        var result = resourcesController.edit(getModelFromBody(req),pathToUploadedFile);
         res.send(result);
     });
 

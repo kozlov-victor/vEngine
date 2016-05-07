@@ -6,36 +6,45 @@ window.app.
         s.i18n = i18n.getAll();
 
 
-        s.refreshGameObjectFramePreview = function(gameObject){
+        s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
             if (!spriteSheet) return;
-            var frWidth = spriteSheet.width / spriteSheet.numOfFramesH;
-            var frHeight = spriteSheet.height / spriteSheet.numOfFramesV;
-            gameObject._spPosY = ~~(gameObject.currFrameIndex/spriteSheet.numOfFramesH)*frHeight;
-            gameObject._spPosX = (gameObject.currFrameIndex%spriteSheet.numOfFramesH)*frWidth;
             var maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
             if (s.editData.currGameObjectInEdit.currFrameIndex>=maxNumOfFrame) {
                 s.editData.currGameObjectInEdit.currFrameIndex = 0;
             }
+            gameObject.setFrameIndex(ind);
         };
 
-        s.createOrEditGameObject = function(item){
+        s.createOrEditGameObject = function(){
             utils.createOrEditResource(s.editData.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
         };
 
         s.showCreateAnimationDialog = function() {
             s.editData.currFrAnimationInEdit = new Models.FrameAnimation();
+            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             uiHelper.showDialog('frmCreateAnimation');
         };
 
-        s.getArray = function(num) {
-            if (!num) return [];
-            var res = [];
-            for (var i=0;i<num;i++) {
-                res.push(i);
-            }
-            return res;
+        s.deleteFrameAnimation = function(item) {
+            utils.deleteResource(item.id,item.type,function(){
+                s.editData.currGameObjectInEdit.frameAnimationIds.splice(
+                    s.editData.currGameObjectInEdit.frameAnimationIds.indexOf(item.id),
+                    1
+                );
+                utils.createOrEditResource(
+                    s.editData.currGameObjectInEdit,
+                    Models.GameObject,
+                    editData.gameObjectList,
+                    null,true
+                );
+            });
         };
 
+        s.showEditAnimationDialog = function(item) {
+            s.editData.currFrAnimationInEdit = item.clone(Models.FrameAnimation);
+            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            uiHelper.showDialog('frmCreateAnimation');
+        };
 
     });

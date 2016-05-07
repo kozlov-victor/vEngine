@@ -4,7 +4,61 @@
             {{i18n.name}}
         </td>
         <td>
-            <input required ng-model="editData.currGameObjectInEdit.name"/>
+            <input required ng-model="editData.currFrAnimationInEdit.name"/>
+        </td>
+        <td rowspan="3">
+            <div style="max-height: 60vh;max-width:60vw;overflow: scroll;"
+                    >
+
+
+                <div style="
+                                   width:{{editData.currGameObjectInEdit.width}}px;
+                                   height:{{editData.currGameObjectInEdit.height}}px;
+                                   background-image:url({{editData.currGameObjectInEdit._spriteSheet.resourcePath}});
+                                   background-position-y: -{{editData.currGameObjectInEdit._sprPosY}}px;
+                                   background-position-x:-{{editData.currGameObjectInEdit._sprPosX}}px;
+                                   background-repeat:no-repeat;
+                                   border: 1px solid blue;
+                                "></div>
+
+                <div>
+                    <button
+                            ng-click="playAnimation()"
+                            ng-disabled="!frmCreateAnimation.$valid" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
+                    <button
+                            ng-click="stopAnimation()"
+                            ng-disabled="!frmCreateAnimation.$valid" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
+                </div>
+
+
+
+                <div class="relative"
+                     style="
+                                        background-image: url('{{editData.currGameObjectInEdit._spriteSheet.resourcePath}}');
+                                        width:{{editData.currGameObjectInEdit._spriteSheet.width}}px;
+                                        height: {{editData.currGameObjectInEdit._spriteSheet.height}}px;
+                                    ">
+                    <div
+                            ng-repeat=
+                            "i  in
+                                utils.getArray(
+                                    editData.currGameObjectInEdit._spriteSheet.numOfFramesH
+                                    *
+                                    editData.currGameObjectInEdit._spriteSheet.numOfFramesV
+                                )
+                            "
+                            style="
+                                    display:inline-block;
+                                    left:{{editData.currGameObjectInEdit._spriteSheet.getFramePosX(i)}}px;
+                                    top:{{editData.currGameObjectInEdit._spriteSheet.getFramePosY(i)}}px;
+                                    position:absolute;
+                                    text-align: left;
+                                    border:1px solid red;
+                                    width:{{editData.currGameObjectInEdit._spriteSheet._frameWidth}}px;
+                                    height:{{editData.currGameObjectInEdit._spriteSheet._frameHeight}}px;
+                                ">{{i}}</div>
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
@@ -16,18 +70,24 @@
                     type="number"
                     min="1"
                     required
-                    ng-model="editData.currGameObjectInEdit.duration"/>
+                    ng-model="editData.currFrAnimationInEdit.duration"/>
         </td>
     </tr>
     <tr>
         <td>
             {{i18n.frames}}
+            <button ng-click="editData.currFrAnimationInEdit.frames=allIndexes()">{{i18n.all}}</button>
         </td>
         <td>
             <input
                 required
-                pattern="d,"
-                ng-model="editData.currGameObjectInEdit.frames"/>
+                app-validator="toArray(editData.currFrAnimationInEdit.frames).length>0"
+                ng-model="editData.currFrAnimationInEdit.frames"/>
         </td>
     </tr>
 </table>
+<button
+        ng-click="createOrEditFrAnimation()"
+        ng-disabled="!(frmCreateAnimation.$valid)">
+    {{editData.currFrAnimationInEdit.id?i18n.edit:i18n.create}}
+</button>
