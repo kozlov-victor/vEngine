@@ -4,6 +4,7 @@ window.app.
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
+        s.utils = utils;
 
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){

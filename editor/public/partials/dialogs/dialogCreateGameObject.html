@@ -64,13 +64,12 @@
         </td>
         <td>
             <select
-                    ng-change="recalcGameObjectSize(editData.currGameObjectInEdit)"
+                    ng-change="utils.recalcGameObjectSize(editData.currGameObjectInEdit)"
                     required ng-model="editData.currGameObjectInEdit.spriteSheetId">
                 <option value="{{item.id}}" ng-repeat="item in editData.spriteSheetList.rs">{{item.name}}</option>
             </select>
         </td>
         <td>
-            <button ng-click="showCreateSpriteSheetDialog()">+</button>
         </td>
     </tr>
     <tr>

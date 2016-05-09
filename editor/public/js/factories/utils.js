@@ -21,8 +21,9 @@ window.app
     })
 
     .factory('utils',function(editData, $http, uiHelper){
+
         this.recalcGameObjectSize = function(gameObject){
-            var spriteSheet = gameObject._spriteSheet || editData.spriteSheetList.getIf({id:gameObject.spriteSheetId});
+            var spriteSheet = editData.spriteSheetList.getIf({id:gameObject.spriteSheetId});
             if (!spriteSheet) return;
             spriteSheet.calcFrameSize();
             gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
@@ -76,6 +77,11 @@ window.app
             }
             return res;
         };
+
+        this.test = function(){
+            console.log(1)
+        }
+
         return this;
     })
 

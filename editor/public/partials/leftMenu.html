@@ -6,6 +6,15 @@
                 <div class="cell vAlign">
                     <span>{{item.name}}</span>
                 </div>
+                <div class="cell">
+                    <div style="
+                                   width:{{item.width}}px;
+                                   height:{{item.height}}px;
+                                   background-image:url({{item._spriteSheet.resourcePath}});
+                                   background-repeat:no-repeat;
+                                   zoom:{{item.height>30?30/item.height:1}};
+                                "></div>
+                </div>
                 <div class="cell vAlign rightAlign" ng-click="showEditGameObjectDialog(item)">
                     edit
                 </div>

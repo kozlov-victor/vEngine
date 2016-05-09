@@ -44,7 +44,6 @@ window.app.
             return res.join(',')
         };
 
-
         s.playAnimation = function(){
             try {
                 s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
