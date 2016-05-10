@@ -9,7 +9,7 @@
         <td rowspan="3">
             <div style="max-height: 60vh;max-width:60vw;overflow: scroll;"
                     >
-
+                {{editData.currGameObjectInEdit.currFrameIndex||0}}
 
                 <div style="
                                    width:{{editData.currGameObjectInEdit.width}}px;
@@ -19,7 +19,8 @@
                                    background-position-x:-{{editData.currGameObjectInEdit._sprPosX}}px;
                                    background-repeat:no-repeat;
                                    border: 1px solid blue;
-                                "></div>
+                                ">
+                </div>
 
                 <div>
                     <button
