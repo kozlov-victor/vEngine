@@ -58,6 +58,16 @@ window.app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
+        this.saveGameProps = function(gameProps){
+            var formData = new FormData();
+            formData.append('model',JSON.stringify(gameProps));
+            $http({
+                url: '/gameProps/save',
+                method: "POST",
+                data: formData,
+                headers: {'Content-Type': undefined}
+            })
+        };
         this.deleteResource = function(id,type,callBack){
             $http({
                 url: '/resource/delete',
@@ -80,7 +90,7 @@ window.app
 
         this.test = function(){
             console.log(1)
-        }
+        };
 
         return this;
     })

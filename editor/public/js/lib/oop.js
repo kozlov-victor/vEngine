@@ -16,7 +16,7 @@
         // эта функция будет возвращена как результат работы extend
         function Instance() {
             this._init && this._init.apply(this, arguments);
-            this.constructor && this.constructor();
+            this.construct && this.construct();
         }
 
         // this -- это класс "перед точкой", для которого вызван extend (Animal.extend)

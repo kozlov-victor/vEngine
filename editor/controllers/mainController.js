@@ -12,7 +12,10 @@ module.exports.initFolderStructure = function(){
 
     fs.createFolderSync('project');
     fs.createFolderSync('project/resources');
-    createFolderWithFiles('audio,script,spriteSheet,gameObject,frameAnimation');
-    fs.createFileSync('project/meta.json','{}');
+    createFolderWithFiles('audio,script,spriteSheet,gameObject,frameAnimation,scene');
+    fs.createFileSync('project/gameProps.json',JSON.stringify({
+        width:800,
+        height:600
+    }));
 
 };

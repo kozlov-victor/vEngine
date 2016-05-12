@@ -30,7 +30,38 @@ window.app.
             uiHelper.showDialog('frmCreateGameObject');
         };
 
+        s.saveGameProps = function(){
+            delete editData.gameProps.$objectId;
+            delete editData.gameProps.objectId;
+            utils.saveGameProps(editData.gameProps);
+        };
+
+        s.showCreateSceneDialog = function(){
+            s.editData.currSceneInEdit = new Models.Scene({});
+            uiHelper.showDialog('frmCreateScene');
+        };
+
+        s.showEditSceneDialog = function(currObj){
+            s.editData.currSceneInEdit = currObj.clone(Models.Scene);
+            uiHelper.showDialog('frmCreateScene');
+        };
+
         (function(){
+
+            var loadGameProps = function(){
+                return new Promise(function(resolve){
+
+                    $http({
+                        url: '/gameProps/get',
+                        method: "POST"
+                    }).
+                    success(function (gameProps) {
+                        editData.gameProps = gameProps;
+                        resolve();
+                    });
+
+                });
+            };
 
             var loadResource = function(type,ResourceClass,resourceList){
                 return new Promise(function(resolve){
@@ -61,6 +92,12 @@ window.app.
                 }).
                 then(function(){
                     return loadResource('gameObject',Models.GameObject,editData.gameObjectList);
+                }).
+                then(function(){
+                    return loadResource('scene',Models.Scene,editData.sceneList);
+                }).
+                then(function(){
+                    return loadGameProps();
                 }).
                 then(function(){
                     s.$apply();

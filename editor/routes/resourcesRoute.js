@@ -47,4 +47,13 @@ module.exports.init = function(app) {
         res.send({});
     });
 
+    app.post('/gameProps/save',multipart,function(req,res){
+        resourcesController.saveGameProps(getModelFromBody(req));
+        res.send({});
+    });
+
+    app.post('/gameProps/get',function(req,res){
+        res.send(resourcesController.getGameProps());
+    });
+
 };

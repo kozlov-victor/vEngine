@@ -73,3 +73,11 @@ module.exports.delete = function(id,type){
         writeResource(arr,'project/resources/'+type+'/map.json');
     }
 };
+
+module.exports.saveGameProps = function(model){
+    writeResource(model,'project/gameProps.json');
+};
+
+module.exports.getGameProps = function(){
+    return readResource('project/gameProps.json');
+};

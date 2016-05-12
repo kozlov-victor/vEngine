@@ -1,60 +1,8 @@
 <div class="leftMenu noSelect" ng-init="leftMenuIndex=''" ng-controller="leftMenuCtrl">
-    <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'gameObjects')">{{i18n.gameObjects}}</h3>
-    <div ng-show="leftMenuIndex=='gameObjects'" class="withPadding">
-        <div class="table width100">
-            <div class="row" ng-repeat="item in editData.gameObjectList.rs">
-                <div class="cell vAlign">
-                    <span>{{item.name}}</span>
-                </div>
-                <div class="cell">
-                    <div style="
-                                   width:{{item.width}}px;
-                                   height:{{item.height}}px;
-                                   background-image:url({{item._spriteSheet.resourcePath}});
-                                   background-repeat:no-repeat;
-                                   zoom:{{item.height>30?30/item.height:1}};
-                                "></div>
-                </div>
-                <div class="cell vAlign rightAlign" ng-click="showEditGameObjectDialog(item)">
-                    edit
-                </div>
-                <div class="cell pointer vAlign rightAlign" ng-click="utils.deleteResource(item.id,'gameObject')">
-                    X
-                </div>
-            </div>
-        </div>
-        <button ng-click="showCreateGameObjectDialog()">
-            {{i18n.create}}
-        </button>
-    </div>
-    <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'spriteSheers')">{{i18n.spriteSheers}}</h3>
-    <div ng-show="leftMenuIndex=='spriteSheers'" class="withPadding">
-        <div>
-            <div class="table width100">
-                <div class="row" ng-repeat="item in editData.spriteSheetList.rs">
-                    <div class="cell vAlign">
-                        <img height="20" ng-src="{{item.resourcePath}}"/>
-                    </div>
-                    <div class="cell vAlign">
-                        <span>{{item.name}}</span>
-                    </div>
-                    <div class="cell vAlign rightAlign" ng-click="showEditSpriteSheetDialog(item)">
-                        edit
-                    </div>
-                    <div class="cell pointer vAlign rightAlign" ng-click="utils.deleteResource(item.id,'spriteSheet')">
-                        X
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button ng-click="showCreateSpriteSheetDialog()">
-            {{i18n.addSpriteSheet}}
-        </button>
-    </div>
-    <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'other')">other</h3>
-    <div ng-show="leftMenuIndex=='other'">
-        <div>
-            other block here
-        </div>
-    </div>
+
+    <ng-include src="'partials/leftMenu/gameProps.html'"></ng-include>
+    <ng-include src="'partials/leftMenu/scenes.html'"></ng-include>
+    <ng-include src="'partials/leftMenu/gameObjects.html'"></ng-include>
+    <ng-include src="'partials/leftMenu/spriteSheets.html'"></ng-include>
+
 </div>

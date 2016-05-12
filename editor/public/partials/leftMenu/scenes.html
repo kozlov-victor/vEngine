@@ -1,0 +1,17 @@
+<h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'scenes')">{{i18n.scenes}}</h3>
+<div ng-show="leftMenuIndex=='scenes'" class="withPadding">
+    <div class="table width100">
+        <div ng-repeat="item in editData.sceneList.rs" class="row">
+            <div class="cell width100">
+                {{item.name}}
+            </div>
+            <div class="cell vAlign rightAlign" ng-click="showEditSceneDialog(item)">
+                edit
+            </div>
+            <div class="cell pointer vAlign rightAlign" ng-click="utils.deleteResource(item.id,'scene')">
+                X
+            </div>
+        </div>
+    </div>
+    <button ng-click="showCreateSceneDialog()">{{i18n.create}}</button>
+</div>

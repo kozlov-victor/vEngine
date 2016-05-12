@@ -30,7 +30,9 @@ window.app
                 playAnim:'play animation',
                 stopAnim:'stop animation',
                 saveObjectFirst:'save object first',
-                all: 'all'
+                all: 'all',
+                game:'game',
+                scenes:'scenes'
             }
         };
 

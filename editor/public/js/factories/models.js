@@ -7,9 +7,12 @@ window.app
             spriteSheetList: new Collections.Collection(),
             gameObjectList: new Collections.Collection(),
             frameAnimationList: new Collections.Collection(),
+            sceneList: new Collections.Collection(),
             currGameObjectInEdit: null,
             currSpriteSheetInEdit: null,
-            currFrAnimationInEdit: null
+            currFrAnimationInEdit: null,
+            currSceneInEdit:null,
+            gameProps: {}
         }
     })
 
@@ -137,7 +140,7 @@ window.app
                 this._frameHeight = this.height/this.numOfFramesV;
                 this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
             },
-            constructor: function(){
+            construct: function(){
                 this.calcFrameSize();
             }
         });
@@ -154,7 +157,7 @@ window.app
             _frameAnimations:new Collections.Collection(),
             frameAnimationIds:[],
             _currFrameAnimation:null,
-            constructor: function(){
+            construct: function(){
                 this.spriteSheetId && (this._spriteSheet = resourceHolder.spriteSheetList.getIf({id:this.spriteSheetId}));
                 var self = this;
                 self._frameAnimations.clear();
@@ -185,7 +188,7 @@ window.app
             _gameObject:null,
             _startTime:null,
             _timeForOneFrame:0,
-            constructor: function(){
+            construct: function(){
                 this._timeForOneFrame = ~~(this.duration / this.frames.length);
             },
             play: function(){
@@ -201,6 +204,10 @@ window.app
                 var ind = ~~((delta/this._timeForOneFrame)%this.duration);
                 this._gameObject.currFrameIndex = this.frames[ind];
             }
+        });
+
+        this.Scene = BaseModel.extend({
+            type:'scene'
         });
 
         return this;

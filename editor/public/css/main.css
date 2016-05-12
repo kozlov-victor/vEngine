@@ -49,7 +49,7 @@ img {
 }
 
 .width20 {
-    width: 20%;
+    width: 20vw;
 }
 
 .width1 {
@@ -64,8 +64,16 @@ img {
     padding: 10px;
 }
 
+.withPaddingLeft {
+    padding-left: 10px;
+}
+
 .vAlign {
     vertical-align: middle;
+}
+
+.topAlign {
+    vertical-align: top;
 }
 
 .block {
@@ -165,5 +173,21 @@ input[type="file"] {
 input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     color: #c10000;
 }
+
+.gameSceneWrapper {
+    max-width: calc(80vw - 20px);
+    max-height: 90vh;
+    overflow: auto;
+}
+
+.gameScene {
+    background-color: #aaa;
+}
+
+[draggable] {
+    cursor: copy;
+}
+
+
 
 
