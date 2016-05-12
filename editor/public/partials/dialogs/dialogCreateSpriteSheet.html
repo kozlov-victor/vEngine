@@ -10,23 +10,23 @@
             <div style="max-height: 60vh;max-width:60vw;overflow: scroll;"
                     >
                 <div class="relative"
-                     style="
-                                        background-image: url('{{editData.currSpriteSheetInEdit.resourcePath}}');
-                                        width:{{editData.currSpriteSheetInEdit.width}}px;
-                                        height: {{editData.currSpriteSheetInEdit.height}}px;
-                                    ">
+                     ng-style="{
+                                    'background-image':   'url('+editData.currSpriteSheetInEdit.resourcePath+')',
+                                    'width':              editData.currSpriteSheetInEdit.width+'px',
+                                    'height':             editData.currSpriteSheetInEdit.height+'px',
+                               }">
                     <div
-                            ng-repeat="i in utils.getArray(editData.currSpriteSheetInEdit.numOfFramesH*editData.currSpriteSheetInEdit.numOfFramesV)"
-                            style="
-                                            display:inline-block;
-                                            left:{{editData.currSpriteSheetInEdit.getFramePosX(i)}}px;
-                                            top:{{editData.currSpriteSheetInEdit.getFramePosY(i)}}px;
-                                            position:absolute;
-                                            text-align: left;
-                                            border:1px solid red;
-                                            width:{{editData.currSpriteSheetInEdit._frameWidth}}px;
-                                            height:{{editData.currSpriteSheetInEdit._frameHeight}}px;
-                                        ">{{i}}</div>
+                        ng-repeat="i in utils.getArray(editData.currSpriteSheetInEdit.numOfFramesH*editData.currSpriteSheetInEdit.numOfFramesV)"
+                        ng-style="{
+                                    'display':        'inline-block',
+                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',
+                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',
+                                    'position':       'absolute',
+                                    'text-align':     'left',
+                                    'border':         '1px solid red',
+                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',
+                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'
+                                }">{{i}}</div>
                 </div>
             </div>
         </td>

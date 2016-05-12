@@ -11,15 +11,15 @@
                     >
                 {{editData.currGameObjectInEdit.currFrameIndex||0}}
 
-                <div style="
-                                   width:{{editData.currGameObjectInEdit.width}}px;
-                                   height:{{editData.currGameObjectInEdit.height}}px;
-                                   background-image:url({{editData.currGameObjectInEdit._spriteSheet.resourcePath}});
-                                   background-position-y: -{{editData.currGameObjectInEdit._sprPosY}}px;
-                                   background-position-x:-{{editData.currGameObjectInEdit._sprPosX}}px;
-                                   background-repeat:no-repeat;
-                                   border: 1px solid blue;
-                                ">
+                <div ng-style="{
+                                   'width':                     editData.currGameObjectInEdit.width+'px',
+                                   'height':                    editData.currGameObjectInEdit.height+'px',
+                                   'background-image':          'url('+editData.currGameObjectInEdit._spriteSheet.resourcePath+')',
+                                   'background-position-y':     -editData.currGameObjectInEdit._sprPosY+'px',
+                                   'background-position-x':     -editData.currGameObjectInEdit._sprPosX+'px',
+                                   'background-repeat':         'no-repeat',
+                                   'border':                    '1px solid blue',
+                               }">
                 </div>
 
                 <div>
@@ -34,11 +34,11 @@
 
 
                 <div class="relative"
-                     style="
-                                        background-image: url('{{editData.currGameObjectInEdit._spriteSheet.resourcePath}}');
-                                        width:{{editData.currGameObjectInEdit._spriteSheet.width}}px;
-                                        height: {{editData.currGameObjectInEdit._spriteSheet.height}}px;
-                                    ">
+                            ng-style="{
+                                        'background-image':     'url('+editData.currGameObjectInEdit._spriteSheet.resourcePath+')',
+                                        'width':                editData.currGameObjectInEdit._spriteSheet.width+'px',
+                                        'height':               editData.currGameObjectInEdit._spriteSheet.height+'px'
+                                      }">
                     <div
                             ng-repeat=
                             "i  in
@@ -48,16 +48,16 @@
                                     editData.currGameObjectInEdit._spriteSheet.numOfFramesV
                                 )
                             "
-                            style="
-                                    display:inline-block;
-                                    left:{{editData.currGameObjectInEdit._spriteSheet.getFramePosX(i)}}px;
-                                    top:{{editData.currGameObjectInEdit._spriteSheet.getFramePosY(i)}}px;
-                                    position:absolute;
-                                    text-align: left;
-                                    border:1px solid red;
-                                    width:{{editData.currGameObjectInEdit._spriteSheet._frameWidth}}px;
-                                    height:{{editData.currGameObjectInEdit._spriteSheet._frameHeight}}px;
-                                ">{{i}}</div>
+                            ng-style="{
+                                            'display':        'inline-block',
+                                            'left':           editData.currGameObjectInEdit._spriteSheet.getFramePosX(i)+'px',
+                                            'top':            editData.currGameObjectInEdit._spriteSheet.getFramePosY(i)+'px',
+                                            'position':       'absolute',
+                                            'text-align':     'left',
+                                            'border':         '1px solid red',
+                                            'width':          editData.currGameObjectInEdit._spriteSheet._frameWidth+'px',
+                                            'height':         editData.currGameObjectInEdit._spriteSheet._frameHeight+'px'
+                                      }">{{i}}</div>
                 </div>
             </div>
         </td>
