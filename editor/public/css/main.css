@@ -188,6 +188,10 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     cursor: copy;
 }
 
+.droppable {
+    outline: 1px dashed green;
+}
+
 
 
 

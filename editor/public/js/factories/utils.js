@@ -158,14 +158,36 @@ window.app
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
+
+                var canAccept = attrs.appDroppable;
+
+                var isAcceptable = function(e){
+                    var accepted = e.dataTransfer.getData('text/plain');
+                    console.log(accepted,'z',canAccept);
+                    return canAccept==accepted;
+                };
+
                 element.bind('dragover', function (e) {
+                    console.log('over',e.dataTransfer.getData('text/plain'));
+                    //if (isAcceptable(e)) {
+                        element.addClass('droppable');
+                    //}
                     e.preventDefault();
+                });
+                element.bind('dragenter', function (e) {
+                    e.preventDefault();
+                    element.removeClass('enter');
+
+                });
+                element.bind('dragleave', function (e) {
+                    e.preventDefault();
+                    element.removeClass('droppable');
+
                 });
                 element.bind('drop', function (e) {
                     e.preventDefault();
-                    var canAccept = attrs.appDroppable;
-                    var accepted = e.dataTransfer.getData('text/plain');
-                    if (canAccept!=accepted) return;
+                    element.removeClass('droppable');
+                    if (!isAcceptable(e)) return;
                     var model = appDraggableUtil.lastObject;
                     var fn = $parse(attrs.appOnDropped);
                     if (!fn) return;
