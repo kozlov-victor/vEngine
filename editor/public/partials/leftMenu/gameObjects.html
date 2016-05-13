@@ -6,7 +6,9 @@
                 <span>{{item.name}}</span>
             </div>
             <div class="cell">
-                <div draggable="true" ng-style="{
+                <div app-draggable="gameObjFromLeftPanel"
+                     ng-model="item"
+                     ng-style="    {
                                        'width':             item.width+'px',
                                        'height':            item.height+'px',
                                        'background-image':  'url('+item._spriteSheet.resourcePath+')',

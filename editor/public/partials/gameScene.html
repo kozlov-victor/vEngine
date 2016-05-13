@@ -1,7 +1,13 @@
+
 <div class="gameSceneWrapper withPaddingLeft">
-    <div class="gameScene" ng-style="{
-        width:  editData.gameProps.width+'px',
-        height: editData.gameProps.height+'px',
-    }">
+    <div
+            class="gameScene"
+            ng-controller="sceneCtrl"
+            app-droppable="gameObjFromLeftPanel"
+            app-on-dropped="onGameObjectDropped($object)"
+            ng-style="{
+                width:  editData.gameProps.width+'px',
+                height: editData.gameProps.height+'px',
+            }">
     </div>
 </div>

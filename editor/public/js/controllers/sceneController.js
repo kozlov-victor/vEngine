@@ -10,4 +10,8 @@ window.app.
             utils.createOrEditResource(s.editData.currSceneInEdit,Models.Scene,editData.sceneList);
         };
 
+        s.onGameObjectDropped = function(obj) {
+            console.log('dropped',obj);
+        }
+
     });
