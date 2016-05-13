@@ -70,6 +70,7 @@ window.app
     .factory('Models', function (editData,Collections) {
 
         var resourceHolder = editData;
+        var Models = this;
 
         var isPropNotFit = function(el,key){
             if (!key) return true;
@@ -149,6 +150,8 @@ window.app
             type:'gameObject',
             spriteSheetId:null,
             _spriteSheet:null,
+            posX:0,
+            posY:0,
             width:0,
             height:0,
             currFrameIndex:0,
@@ -207,7 +210,17 @@ window.app
         });
 
         this.Scene = BaseModel.extend({
-            type:'scene'
+            type:'scene',
+            gameObjectProps:[],
+            _gameObjects:new Collections.Collection(),
+            construct: function(){
+                var self = this;
+                this.gameObjectProps.forEach(function(prop){
+                    var obj = resourceHolder.gameObjectList.getIf({id:prop.id});
+                    obj.fromJsonObject(prop);
+                    self._gameObjects.add(new Models.GameObject(obj.clone(Models.GameObject)));
+                });
+            }
         });
 
         return this;

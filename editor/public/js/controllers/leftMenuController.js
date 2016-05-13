@@ -101,6 +101,7 @@ window.app.
                 }).
                 then(function(){
                     s.$apply();
+                    console.log(s.editData.sceneList);
                 });
 
         })();
