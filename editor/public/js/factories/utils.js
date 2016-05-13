@@ -148,6 +148,7 @@ window.app
                 element.bind('dragstart', function (e) {
                     e.dataTransfer.setData('text/plain', emit); //cannot be empty string
                     e.dataTransfer.effectAllowed='move';
+                    e.dataTransfer.setDragImage(e.target, 0, 0);
                     appDraggableUtil.lastObject = model;
                 });
             }
