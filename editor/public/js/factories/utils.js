@@ -169,7 +169,7 @@ window.app
                     var fn = $parse(attrs.appOnDropped);
                     if (!fn) return;
                     scope.$apply(function () {
-                        fn(scope, {$object:model});
+                        fn(scope, {$object:model,$event:e});
                     });
                 });
             }

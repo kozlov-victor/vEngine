@@ -1,13 +1,15 @@
 
 <div class="gameSceneWrapper withPaddingLeft">
     <div
-            class="gameScene"
+            class="gameScene relative"
             ng-controller="sceneCtrl"
             app-droppable="gameObjFromLeftPanel"
-            app-on-dropped="onGameObjectDropped($object)"
+            app-on-dropped="onGameObjectDropped($object,$event)"
             ng-style="{
                 width:  editData.gameProps.width+'px',
                 height: editData.gameProps.height+'px',
             }">
+        <div style="position:absolute;border: 1px solid red;width:10px;height:10px;left:{{testLeft}}px;top:{{testTop}}px;"></div>
+
     </div>
 </div>
