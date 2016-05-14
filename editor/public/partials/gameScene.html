@@ -3,13 +3,26 @@
     <div
             class="gameScene relative"
             ng-controller="sceneCtrl"
-            app-droppable="gameObjFromLeftPanel"
-            app-on-dropped="onGameObjectDropped($object,$event)"
+            app-droppable="gameObjFromLeftPanel,gameObjFromSelf"
+            app-on-dropped="onGameObjectDropped($object,$draggable,$event)"
             ng-style="{
                 width:  editData.gameProps.width+'px',
                 height: editData.gameProps.height+'px',
             }">
-        <div style="position:absolute;border: 1px solid red;width:10px;height:10px;left:{{testLeft}}px;top:{{testTop}}px;"></div>
-        <!--{{editData.sceneList.rs[0]._gameObjects.rs[0]}}-->
+        <div
+                app-draggable="gameObjFromSelf"
+                ng-model="item"
+                ng-repeat="item in editData.sceneList.rs[0]._gameObjects.rs"
+                ng-style="utils.merge(
+                        utils.getGameObjectCss(item),
+                        {
+                            position:'absolute',
+                            left:item.posX+'px',
+                            top: item.posY+'px',
+                            outline:'1px solid green'
+                        }
+                    )"
+                >
+        </div>
     </div>
 </div>

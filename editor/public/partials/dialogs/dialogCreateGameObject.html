@@ -16,15 +16,13 @@
                                         max-height:60vh;
                                     "
                     >
-                <div ng-style="{
-                                   'width':                 editData.currGameObjectInEdit.width+'px',
-                                   'height':                editData.currGameObjectInEdit.height+'px',
-                                   'background-image':      'url('+editData.currGameObjectInEdit._spriteSheet.resourcePath+')',
-                                   'background-position-y': -editData.currGameObjectInEdit._sprPosY+'px',
-                                   'background-position-x': -editData.currGameObjectInEdit._sprPosX+'px',
-                                   'background-repeat':     'no-repeat',
-                                   'border':                '1px solid blue'
-                                }"></div>
+                <div ng-style="utils.merge(
+                        utils.getGameObjectCss(editData.currGameObjectInEdit)
+                        ,
+                        {
+                            'border':'1px solid blue'
+                        }
+                    )"></div>
             </div>
         </td>
     </tr>
