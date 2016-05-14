@@ -107,9 +107,6 @@ window.app
             return res;
         };
 
-        this.test = function(){
-            console.log(1)
-        };
 
         return this;
     })

@@ -11,17 +11,16 @@ window.app.
         };
 
         s.onGameObjectDropped = function(obj,draggable,e) {
-            console.log('dropped',obj,draggable,e);
-            s.testLeft = e.offsetX;
-            s.testTop = e.offsetY;
+
             switch (draggable) {
                 case 'gameObjFromLeftPanel':
                     var newGameObj = obj.clone(Models.GameObject);
-                    newGameObj.fromJsonObject({posX:e.offsetX,posY:e.offsetY});
-                    editData.sceneList.rs[0]._gameObjects.add(newGameObj);
+                    newGameObj.fromJsonObject({posX:e.x,posY:e.y});
+                    editData.currSceneInEdit._gameObjects.add(newGameObj);
+                    //utils.addGameObjectToScene(editData.currSceneInEdit.id,);
                     break;
                 case 'gameObjFromSelf':
-                    obj.fromJsonObject({posX:e.offsetX,posY:e.offsetY});
+                    obj.fromJsonObject({posX:e.x,posY:e.y});
             }
         }
 

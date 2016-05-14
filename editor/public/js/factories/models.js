@@ -12,6 +12,7 @@ window.app
             currSpriteSheetInEdit: null,
             currFrAnimationInEdit: null,
             currSceneInEdit:null,
+            currSceneGameObjectInEdit:null,
             gameProps: {}
         }
     })
@@ -157,10 +158,11 @@ window.app
             currFrameIndex:0,
             _sprPosX:0,
             _sprPosY:0,
-            _frameAnimations:new Collections.Collection(),
+            _frameAnimations: null,
             frameAnimationIds:[],
             _currFrameAnimation:null,
             construct: function(){
+                this._frameAnimations = new Collections.Collection();
                 this.spriteSheetId && (this._spriteSheet = resourceHolder.spriteSheetList.getIf({id:this.spriteSheetId}));
                 var self = this;
                 self._frameAnimations.clear();
@@ -212,9 +214,10 @@ window.app
         this.Scene = BaseModel.extend({
             type:'scene',
             gameObjectProps:[],
-            _gameObjects:new Collections.Collection(),
+            _gameObjects:null,
             construct: function(){
                 var self = this;
+                self._gameObjects = new Collections.Collection();
                 this.gameObjectProps.forEach(function(prop){
                     var obj = resourceHolder.gameObjectList.getIf({id:prop.id});
                     obj.fromJsonObject(prop);

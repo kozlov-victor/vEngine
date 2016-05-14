@@ -37,7 +37,11 @@ app
     .factory('appDraggableUtil',function(){
         return {
             lastObject:null,
-            lastDraggable:null
+            lastDraggable:null,
+            clientX:0,
+            clientY:0,
+            offsetX:0,
+            offsetY:0
         }
     })
     .directive('appDraggable', function(appDraggableUtil) {
@@ -55,9 +59,15 @@ app
                 element.bind('dragstart', function (e) {
                     e.dataTransfer.setData('text/plain', emit); //cannot be empty string
                     e.dataTransfer.effectAllowed='move';
-                    e.dataTransfer.setDragImage(e.target, 0, 0);
                     appDraggableUtil.lastObject = model;
                     appDraggableUtil.lastDraggable = emit;
+                    appDraggableUtil.offsetX = e.offsetX;
+                    appDraggableUtil.offsetY = e.offsetY;
+                    var orig = e.target;
+                    //var orig = document.createElement('div');
+                    //orig.style.cssText = 'width:100px;height:100px;border: 1px solid red;position:absolute;left:-1000px;';
+                    //document.body.appendChild(orig);
+                    //e.dataTransfer.setDragImage(orig, appDraggableUtil.offsetX, appDraggableUtil.offsetY);
                 });
             }
         };
@@ -96,11 +106,17 @@ app
                     var model = appDraggableUtil.lastObject;
                     var fn = $parse(attrs.appOnDropped);
                     if (!fn) return;
+                    console.log(e);
+                    var evt = {
+                        x: e.offsetX - appDraggableUtil.offsetX,
+                        y: e.offsetY - appDraggableUtil.offsetY
+                    };
+
                     scope.$apply(function () {
-                        fn(scope, {$object:model,$draggable:appDraggableUtil.lastDraggable,$event:e});
+                        fn(scope, {$object:model,$draggable:appDraggableUtil.lastDraggable,$event:evt});
+                        appDraggableUtil.lastObject = null;
+                        appDraggableUtil.lastDraggable = null;
                     });
-                    appDraggableUtil.lastObject = null;
-                    appDraggableUtil.lastDraggable = null;
                 });
             }
         };

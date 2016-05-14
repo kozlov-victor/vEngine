@@ -12,15 +12,16 @@
         <div
                 app-draggable="gameObjFromSelf"
                 ng-model="item"
-                ng-repeat="item in editData.sceneList.rs[0]._gameObjects.rs"
+                ng-repeat="item in editData.currSceneInEdit._gameObjects.rs"
+                ng-click="editData.currSceneGameObjectInEdit=item"
                 ng-style="utils.merge(
-                        utils.getGameObjectCss(item),
-                        {
-                            position:'absolute',
-                            left:item.posX+'px',
-                            top: item.posY+'px',
-                            outline:'1px solid green'
-                        }
+                            utils.getGameObjectCss(item),
+                            {
+                                position:'absolute',
+                                left:item.posX+'px',
+                                top: item.posY+'px',
+                                outline:item==editData.currSceneGameObjectInEdit?'1px solid green':''
+                            }
                     )"
                 >
         </div>

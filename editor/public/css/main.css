@@ -192,6 +192,10 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     outline: 1px dashed green;
 }
 
+.selected {
+    background-color: rgba(3, 158, 180, 0.31);
+}
+
 
 
 
