@@ -25,6 +25,12 @@ window.app
             this.add = function (r) {
                 self.rs.push(r);
             };
+            this.get = function(index){
+                return self.rs[index];
+            };
+            this.isEmpty = function(){
+                return self.size()==0;
+            };
             this.size = function () {
                 return self.rs.length;
             };

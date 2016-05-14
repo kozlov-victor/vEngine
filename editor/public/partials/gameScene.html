@@ -3,6 +3,7 @@
     <div
             class="gameScene relative"
             ng-controller="sceneCtrl"
+            app-key-press="onKeyPress($event)"
             app-droppable="gameObjFromLeftPanel,gameObjFromSelf"
             app-on-dropped="onGameObjectDropped($object,$draggable,$event)"
             ng-style="{

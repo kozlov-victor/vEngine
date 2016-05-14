@@ -25,10 +25,42 @@ app
         return {
             require: 'ngModel',
             restrict: 'A',
-            link: function(scope, ele, attrs, ngModelController) {
+            link: function(scope, element, attrs, ngModelController) {
                 scope.$watch(attrs.ngModel, function(value) {
                     var booleanResult = $parse(attrs.appValidator)(scope);
                     ngModelController.$setValidity('expression', booleanResult);
+                });
+            }
+        };
+    })
+
+
+    .directive('appKeyPress', function($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var fn = $parse(attrs.appKeyPress);
+                if (!fn) return;
+                window.addEventListener('keydown',function(e){
+                    scope.$apply(function () {
+                        fn(scope, {$event:e});
+                    });
+                });
+            }
+        };
+    })
+
+
+    .directive('appKeyUp', function($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var fn = $parse(attrs.appKeyPress);
+                if (!fn) return;
+                window.addEventListener('keyup',function(e){
+                    scope.$apply(function () {
+                        fn(scope, {$event:e});
+                    });
                 });
             }
         };
@@ -106,7 +138,7 @@ app
                     var model = appDraggableUtil.lastObject;
                     var fn = $parse(attrs.appOnDropped);
                     if (!fn) return;
-                    console.log(e);
+
                     var evt = {
                         x: e.offsetX - appDraggableUtil.offsetX,
                         y: e.offsetY - appDraggableUtil.offsetY

@@ -100,8 +100,8 @@ window.app.
                     return loadGameProps();
                 }).
                 then(function(){
+                    if (!s.editData.sceneList.isEmpty()) s.editData.currSceneInEdit = s.editData.sceneList.get(0);
                     s.$apply();
-                    console.log(s.editData.sceneList);
                 });
 
         })();

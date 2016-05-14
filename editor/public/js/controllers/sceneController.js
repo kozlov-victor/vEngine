@@ -10,6 +10,25 @@ window.app.
             utils.createOrEditResource(s.editData.currSceneInEdit,Models.Scene,editData.sceneList);
         };
 
+        s.onKeyPress = function(e){
+           //console.log(e.which);
+           if (!editData.currSceneGameObjectInEdit) return;
+           switch (e.which) {
+               case 38: // up
+                   editData.currSceneGameObjectInEdit.posY-=1;
+                   break;
+               case 40: // down
+                   editData.currSceneGameObjectInEdit.posY+=1;
+                   break;
+               case 37: // left
+                   editData.currSceneGameObjectInEdit.posX-=1;
+                   break;
+               case 39: // right
+                   editData.currSceneGameObjectInEdit.posX+=1;
+                   break;
+           }
+        };
+
         s.onGameObjectDropped = function(obj,draggable,e) {
 
             switch (draggable) {
@@ -17,10 +36,12 @@ window.app.
                     var newGameObj = obj.clone(Models.GameObject);
                     newGameObj.fromJsonObject({posX:e.x,posY:e.y});
                     editData.currSceneInEdit._gameObjects.add(newGameObj);
-                    //utils.addGameObjectToScene(editData.currSceneInEdit.id,);
+                    editData.currSceneGameObjectInEdit = newGameObj;
                     break;
                 case 'gameObjFromSelf':
                     obj.fromJsonObject({posX:e.x,posY:e.y});
+                    editData.currSceneGameObjectInEdit = obj;
+                    break;
             }
         }
 
