@@ -225,7 +225,7 @@ window.app
                 var self = this;
                 self._gameObjects = new Collections.Collection();
                 this.gameObjectProps.forEach(function(prop){
-                    var obj = resourceHolder.gameObjectList.getIf({id:prop.id});
+                    var obj = resourceHolder.gameObjectList.getIf({id:prop.protoId});
                     obj.fromJsonObject(prop);
                     self._gameObjects.add(new Models.GameObject(obj.clone(Models.GameObject)));
                 });

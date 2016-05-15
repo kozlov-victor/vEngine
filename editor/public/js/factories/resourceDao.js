@@ -25,20 +25,6 @@ app
 
             });
         };
-        this.loadGameProps = function(){
-            return new Promise(function(resolve){
-
-                $http({
-                    url: '/gameProps/get',
-                    method: "POST"
-                }).
-                    success(function (gameProps) {
-                        editData.gameProps = gameProps;
-                        resolve();
-                    });
-
-            });
-        };
         this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack, preserveDialog){
             var formData = new FormData();
             formData.append('file',currResourceInEdit._file);
@@ -54,28 +40,18 @@ app
                 data: formData,
                 headers: {'Content-Type': undefined}
             }).
-                success(function (item) {
-                    if (op=='create') {
-                        var r = new ResourceClass(item);
-                        resourceList.add(r);
-                        callBack && callBack({type:'create',r:r});
-                    } else {
-                        var index = resourceList.indexOf({id:item.id});
-                        resourceList.rs[index] = new ResourceClass(item);
-                        callBack && callBack({type:'edit',r:resourceList.rs[index]});
-                    }
-                    !preserveDialog && uiHelper.closeDialog();
-                });
-        };
-        this.saveGameProps = function(gameProps){
-            var formData = new FormData();
-            formData.append('model',JSON.stringify(gameProps));
-            $http({
-                url: '/gameProps/save',
-                method: "POST",
-                data: formData,
-                headers: {'Content-Type': undefined}
-            })
+            success(function (item) {
+                if (op=='create') {
+                    var r = new ResourceClass(item);
+                    resourceList.add(r);
+                    callBack && callBack({type:'create',r:r});
+                } else {
+                    var index = resourceList.indexOf({id:item.id});
+                    resourceList.rs[index] = new ResourceClass(item);
+                    callBack && callBack({type:'edit',r:resourceList.rs[index]});
+                }
+                !preserveDialog && uiHelper.closeDialog();
+            });
         };
         this.deleteResource = function(id,type,callBack){
             $http({
@@ -87,6 +63,43 @@ app
                     editData[type+'List'].removeIf({id:id});
                     callBack && callBack();
                 });
+        };
+        this.loadGameProps = function(){
+            return new Promise(function(resolve){
+
+                $http({
+                    url: '/gameProps/get',
+                    method: "POST"
+                }).
+                    success(function (gameProps) {
+                        editData.gameProps = gameProps;
+                        resolve();
+                    });
+
+            });
+        };
+        this.saveGameProps = function(gameProps){
+            var formData = new FormData();
+            formData.append('model',JSON.stringify(gameProps));
+            $http({
+                url: '/gameProps/save',
+                method: "POST",
+                data: formData,
+                headers: {'Content-Type': undefined}
+            })
+        };
+        this.createOrEditObjectInResource = function(resourceType,resourceId,object){
+            if (!object.type) throw 'object type must be specified';
+            var op = object.id?'edit':'create';
+            $http({
+                url: '/resource/'+resourceType+'/'+object.type,
+                method: "POST",
+                data: object,
+                headers: {'Content-Type': undefined}
+            }).
+            success(function (item) {
+
+            });
         };
         return this;
     });
