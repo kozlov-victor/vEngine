@@ -1,11 +1,21 @@
 window.app.
-    controller('spriteSheetCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n, utils) {
+    controller('spriteSheetCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        Models,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-
+        s.resourceDao = resourceDao;
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -24,7 +34,7 @@ window.app.
         };
 
         s.createOrEditSpriteSheet = function(){
-            utils.createOrEditResource(s.editData.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
+            resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
         };
 
 

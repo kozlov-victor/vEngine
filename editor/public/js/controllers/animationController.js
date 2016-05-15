@@ -1,10 +1,22 @@
 window.app.
-    controller('animationCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n, utils) {
+    controller('animationCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        Models,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
+        s.resourceDao = resourceDao;
+
         var isStopped = false;
 
 
@@ -18,7 +30,7 @@ window.app.
 
         s.createOrEditFrAnimation = function(){
             s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
-            utils.createOrEditResource(
+            resourceDao.createOrEditResource(
                 s.editData.currFrAnimationInEdit,
                 Models.FrameAnimation,
                 s.editData.frameAnimationList,
@@ -26,7 +38,7 @@ window.app.
                     if (res.type=='create') {
                         s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
                         s.editData.currGameObjectInEdit.constructor();
-                        utils.createOrEditResource(
+                        resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
                             Models.GameObject,
                             editData.gameObjectList,

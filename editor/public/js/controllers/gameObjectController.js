@@ -1,11 +1,21 @@
 window.app.
-    controller('gameObjectCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n, utils) {
+    controller('gameObjectCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        Models,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-
+        s.resourceDao = resourceDao;
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -18,7 +28,7 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            utils.createOrEditResource(s.editData.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
         };
 
         s.showCreateAnimationDialog = function() {
@@ -28,12 +38,12 @@ window.app.
         };
 
         s.deleteFrameAnimation = function(item) {
-            utils.deleteResource(item.id,item.type,function(){
+            resourceDao.deleteResource(item.id,item.type,function(){
                 s.editData.currGameObjectInEdit.frameAnimationIds.splice(
                     s.editData.currGameObjectInEdit.frameAnimationIds.indexOf(item.id),
                     1
                 );
-                utils.createOrEditResource(
+                resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
                     Models.GameObject,
                     editData.gameObjectList,

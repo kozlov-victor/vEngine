@@ -10,12 +10,14 @@ var writeResource = function(res,path) {
     fs.writeFileSync(path,JSON.stringify(res));
 };
 
+var uidCnt = 0;
+
 var uid = function(){
     return ''+(~~(Math.random()*10));
 };
 
 var uuid = function() {
-    return  uid()+uid()+uid()+uid() + '_' + new Date().getTime();
+    return  uid()+uid()+uid()+uid() + '_' + new Date().getTime()+'_'+(uidCnt++);
 };
 
 var processUploadedFile = function(item,pathToUploadedFile){

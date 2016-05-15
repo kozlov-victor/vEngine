@@ -1,11 +1,22 @@
 
 window.app.
-    controller('leftMenuCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n, utils) {
+    controller('leftMenuCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        Models,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
+        s.resourceDao = resourceDao;
 
         s.showCreateSpriteSheetDialog = function(){
             s.editData.currSpriteSheetInEdit = new Models.SpriteSheet({});
@@ -33,7 +44,7 @@ window.app.
         s.saveGameProps = function(){
             delete editData.gameProps.$objectId;
             delete editData.gameProps.objectId;
-            utils.saveGameProps(editData.gameProps);
+            resourceDao.saveGameProps(editData.gameProps);
         };
 
         s.showCreateSceneDialog = function(){
@@ -48,56 +59,23 @@ window.app.
 
         (function(){
 
-            var loadGameProps = function(){
-                return new Promise(function(resolve){
-
-                    $http({
-                        url: '/gameProps/get',
-                        method: "POST"
-                    }).
-                    success(function (gameProps) {
-                        editData.gameProps = gameProps;
-                        resolve();
-                    });
-
-                });
-            };
-
-            var loadResource = function(type,ResourceClass,resourceList){
-                return new Promise(function(resolve){
-
-                    $http({
-                        url: '/resource/getAll',
-                        method: "POST",
-                        data: {type:type}
-                    }).
-                    success(function (response) {
-                        response && response.forEach && response.forEach(function(item){
-                            var r = new ResourceClass(item);
-                            resourceList.add(r);
-                        });
-                        resolve();
-                    });
-
-                });
-            };
 
             Promise.
                 resolve().
                 then(function(){
-                    return loadResource('spriteSheet',Models.SpriteSheet,editData.spriteSheetList);
+                    return resourceDao.loadResource('spriteSheet',Models.SpriteSheet,editData.spriteSheetList);
                 }).
                 then(function(){
-                    return loadResource('frameAnimation',Models.FrameAnimation,editData.frameAnimationList);
+                    return resourceDao.loadResource('frameAnimation',Models.FrameAnimation,editData.frameAnimationList);
                 }).
                 then(function(){
-                    return loadResource('gameObject',Models.GameObject,editData.gameObjectList);
+                    return resourceDao.loadResource('gameObject',Models.GameObject,editData.gameObjectList);
                 }).
                 then(function(){
-                    return loadResource('scene',Models.Scene,editData.sceneList);
+                    return resourceDao.loadResource('scene',Models.Scene,editData.sceneList);
                 }).
                 then(function(){
-                    return loadGameProps();
+                    return resourceDao.loadGameProps();
                 }).
                 then(function(){
                     if (!s.editData.sceneList.isEmpty()) s.editData.currSceneInEdit = s.editData.sceneList.get(0);

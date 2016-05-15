@@ -1,13 +1,24 @@
 window.app.
-    controller('sceneCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n, utils) {
+    controller('sceneCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        Models,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
+        s.resourceDao = resourceDao;
 
         s.createOrEditScene = function(){
-            utils.createOrEditResource(s.editData.currSceneInEdit,Models.Scene,editData.sceneList);
+            resourceDao.createOrEditResource(s.editData.currSceneInEdit,Models.Scene,editData.sceneList);
         };
 
         s.onKeyPress = function(e){
