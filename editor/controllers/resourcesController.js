@@ -29,6 +29,7 @@ var processUploadedFile = function(item,pathToUploadedFile){
     item.resourcePath = resourcePath;
 };
 
+
 module.exports.create = function(item,pathToUploadedFile){
     processUploadedFile(item,pathToUploadedFile);
     var arr = readResource('project/resources/'+item.type+'/map.json');
@@ -48,7 +49,6 @@ module.exports.edit = function(item,pathToUploadedFile){
     Object.keys(item).forEach(function(key){
         editItem[key]=item[key];
     });
-    console.log('arr',arr);
     writeResource(arr,'project/resources/'+item.type+'/map.json');
     return editItem;
 };
@@ -82,4 +82,26 @@ module.exports.saveGameProps = function(model){
 
 module.exports.getGameProps = function(){
     return readResource('project/gameProps.json');
+};
+
+module.exports.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object) {
+    var path = 'project/resources/'+resourceType+'/map.json';
+    var resources = readResource(path);
+    var resource = resources.filter(function(itm){
+        return itm.id==resourceId;
+    })[0];
+    var objectsInResource = resource[objectType];
+    if (object.id) {
+        var objectInResource = objectsInResource.filter(function(itm){return itm.id==object.id})[0];
+        Object.keys(object).forEach(function(key){
+            objectInResource[key]=object[key];
+            writeResource(resources,path);
+            return {};
+        });
+    } else {
+        object.id = uuid();
+        objectsInResource.push(object);
+        writeResource(resources,path);
+        return {id:object.id};
+    }
 };

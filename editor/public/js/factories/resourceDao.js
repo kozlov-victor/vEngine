@@ -88,17 +88,18 @@ app
                 headers: {'Content-Type': undefined}
             })
         };
-        this.createOrEditObjectInResource = function(resourceType,resourceId,object){
-            if (!object.type) throw 'object type must be specified';
-            var op = object.id?'edit':'create';
+        this.createOrEditObjectInResource = function(resource,objectType,object,callback){
             $http({
-                url: '/resource/'+resourceType+'/'+object.type,
+                url: '/resource/'+resource.type+'/'+objectType,
                 method: "POST",
-                data: object,
-                headers: {'Content-Type': undefined}
+                data: {
+                    model:JSON.stringify(object),
+                    resourceId:resource.id
+                },
+                headers: {'Content-Type': 'application/json'}
             }).
-            success(function (item) {
-
+            success(function (resp) {
+                callback && callback(resp);
             });
         };
         return this;

@@ -56,4 +56,12 @@ module.exports.init = function(app) {
         res.send(resourcesController.getGameProps());
     });
 
+    app.post('/resource/scene/gameObjectProps',function(req,res){
+        var model = getModelFromBody(req);
+        var resourceId = req.body.resourceId;
+        res.send(
+            resourcesController.createOrEditObjectInResource('scene',resourceId,'gameObjectProps',model)
+        );
+    });
+
 };

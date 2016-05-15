@@ -57,6 +57,11 @@ window.app.
             uiHelper.showDialog('frmCreateScene');
         };
 
+        s.deleteScene = function(item){
+            resourceDao.deleteResource(item.id,'scene');
+            editData.currSceneInEdit = null;
+        };
+
         (function(){
 
 

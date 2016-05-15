@@ -93,11 +93,8 @@ app
                     e.dataTransfer.effectAllowed='move';
                     appDraggableUtil.lastObject = model;
                     appDraggableUtil.lastDraggable = emit;
-                    var style = getComputedStyle(element[0]);
-                    var posX = 0;//parseInt(style.left)||0;
-                    var posY = 0;//parseInt(style.top)||0;
-                    appDraggableUtil.offsetX = e.clientX;
-                    appDraggableUtil.offsetY = e.clientY;
+                    appDraggableUtil.offsetX = e.offsetX;
+                    appDraggableUtil.offsetY = e.offsetY;
                 });
             }
         };
@@ -141,8 +138,8 @@ app
                     if (!fn) return;
 
                     var evt = {
-                        x: e.clientX - appDraggableUtil.offsetX,
-                        y: e.clientY - appDraggableUtil.offsetY
+                        x: e.offsetX - appDraggableUtil.offsetX,
+                        y: e.offsetY - appDraggableUtil.offsetY
                     };
 
                     scope.$apply(function () {
