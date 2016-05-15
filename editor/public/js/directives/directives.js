@@ -93,13 +93,11 @@ app
                     e.dataTransfer.effectAllowed='move';
                     appDraggableUtil.lastObject = model;
                     appDraggableUtil.lastDraggable = emit;
-                    appDraggableUtil.offsetX = e.offsetX;
-                    appDraggableUtil.offsetY = e.offsetY;
-                    var orig = e.target;
-                    //var orig = document.createElement('div');
-                    //orig.style.cssText = 'width:100px;height:100px;border: 1px solid red;position:absolute;left:-1000px;';
-                    //document.body.appendChild(orig);
-                    //e.dataTransfer.setDragImage(orig, appDraggableUtil.offsetX, appDraggableUtil.offsetY);
+                    var style = getComputedStyle(element[0]);
+                    var posX = 0;//parseInt(style.left)||0;
+                    var posY = 0;//parseInt(style.top)||0;
+                    appDraggableUtil.offsetX = e.clientX;
+                    appDraggableUtil.offsetY = e.clientY;
                 });
             }
         };
@@ -130,6 +128,9 @@ app
                     e.preventDefault();
                     element.removeClass('droppable');
                 });
+                element.bind('dragover',function(e){
+                    e.preventDefault();
+                });
                 element.bind('drop', function (e) {
                     console.log('drop');
                     e.preventDefault();
@@ -140,8 +141,8 @@ app
                     if (!fn) return;
 
                     var evt = {
-                        x: e.offsetX - appDraggableUtil.offsetX,
-                        y: e.offsetY - appDraggableUtil.offsetY
+                        x: e.clientX - appDraggableUtil.offsetX,
+                        y: e.clientY - appDraggableUtil.offsetY
                     };
 
                     scope.$apply(function () {
