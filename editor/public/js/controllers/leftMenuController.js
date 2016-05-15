@@ -19,25 +19,25 @@ window.app.
         s.resourceDao = resourceDao;
 
         s.showCreateSpriteSheetDialog = function(){
-            s.editData.currSpriteSheetInEdit = new Models.SpriteSheet({});
+            editData.currSpriteSheetInEdit = new Models.SpriteSheet({});
             uiHelper.showDialog('frmCreateSpriteSheet');
         };
 
         s.showEditSpriteSheetDialog = function(currObj){
-            s.editData.currSpriteSheetInEdit = currObj.clone(Models.SpriteSheet);
-            s.editData.currSpriteSheetInEdit.calcFrameSize();
+            editData.currSpriteSheetInEdit = currObj.clone(Models.SpriteSheet);
+            editData.currSpriteSheetInEdit.calcFrameSize();
             uiHelper.showDialog('frmCreateSpriteSheet');
         };
 
         s.showCreateGameObjectDialog = function() {
-            s.editData.currGameObjectInEdit = new Models.GameObject({spriteSheetId:s.editData.spriteSheetList.rs[0] && s.editData.spriteSheetList.rs[0].id});
+            editData.currGameObjectInEdit = new Models.GameObject({spriteSheetId:s.editData.spriteSheetList.rs[0] && s.editData.spriteSheetList.rs[0].id});
             utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             uiHelper.showDialog('frmCreateGameObject');
         };
 
         s.showEditGameObjectDialog = function(currObj) {
-            s.editData.currGameObjectInEdit = currObj.clone(Models.GameObject);
-            s.editData.currGameObjectInEdit.spriteSheet = editData.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
+            editData.currGameObjectInEdit = currObj.clone(Models.GameObject);
+            editData.currGameObjectInEdit.spriteSheet = editData.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
             uiHelper.showDialog('frmCreateGameObject');
         };
 
@@ -48,18 +48,19 @@ window.app.
         };
 
         s.showCreateSceneDialog = function(){
-            s.editData.currSceneInEdit = new Models.Scene({});
+            editData.currSceneInEdit = new Models.Scene({});
             uiHelper.showDialog('frmCreateScene');
         };
 
         s.showEditSceneDialog = function(currObj){
-            s.editData.currSceneInEdit = currObj.clone(Models.Scene);
+            editData.currSceneInEdit = currObj.clone(Models.Scene);
             uiHelper.showDialog('frmCreateScene');
         };
 
         s.deleteScene = function(item){
+            console.log('del');
+            item._gameObjects.clear();
             resourceDao.deleteResource(item.id,'scene');
-            editData.currSceneInEdit = null;
         };
 
         (function(){
@@ -83,7 +84,7 @@ window.app.
                     return resourceDao.loadGameProps();
                 }).
                 then(function(){
-                    if (!s.editData.sceneList.isEmpty()) s.editData.currSceneInEdit = s.editData.sceneList.get(0);
+                    if (!editData.sceneList.isEmpty()) s.editData.currSceneInEdit = editData.sceneList.get(0);
                     s.$apply();
                 });
 
