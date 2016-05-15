@@ -8,7 +8,7 @@ var multipart = require('connect-multiparty')();
 var utils = require('../utils/utils');
 var mainController = require('../controllers/mainController');
 var resourcesController = require('../controllers/resourcesController');
-
+var generatorController = require('../controllers/generatorController');
 
 module.exports.init = function(app) {
 
@@ -62,6 +62,11 @@ module.exports.init = function(app) {
         res.send(
             resourcesController.createOrEditObjectInResource('scene',resourceId,'gameObjectProps',model)
         );
+    });
+
+    app.get('/generate',function(req,res){
+        generatorController.generate();
+        res.send({done:1});
     });
 
 };

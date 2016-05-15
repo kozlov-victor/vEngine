@@ -2,9 +2,6 @@
 
 module.exports.parametrize = function(params) {
 
-    params=params||{};
-    return params;
+    return {};
 
 };
-
-var cnt=0;
