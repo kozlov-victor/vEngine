@@ -4,5 +4,6 @@ var resourceSet = {
     frameAnimation: '%frameAnimation%',
     gameObject: '%gameObject%',
     scene: '%scene%',
-    spriteSheet: '%spriteSheet%'
+    spriteSheet: '%spriteSheet%',
+    gameProps: '%gameProps%'
 };

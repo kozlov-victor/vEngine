@@ -47,14 +47,15 @@ module.exports.generate = function(){
         frameAnimation: fs.readFileSync('project/resources/frameAnimation/map.json'),
         gameObject: fs.readFileSync('project/resources/gameObject/map.json'),
         scene: fs.readFileSync('project/resources/scene/map.json'),
-        spriteSheet: fs.readFileSync('project/resources/spriteSheet/map.json')
+        spriteSheet: fs.readFileSync('project/resources/spriteSheet/map.json'),
+        gameProps: fs.readFileSync('project/gameProps.json')
     });
     sourceMain.addFiles([
         'editor/public/js/dataStructure/models.js',
         'editor/public/js/dataStructure/dataSource.js',
         'editor/generatorResources/static/toDataSource.js'
     ]);
-
+    sourceMain.addFile('editor/generatorResources/static/renderer.js');
 
 
     fs.deleteFolderSync('project/out');
@@ -63,7 +64,7 @@ module.exports.generate = function(){
     fs.writeFileSync('project/out/main.js',sourceMain.get());
     fs.writeFileSync('project/out/index.html',fs.readFileSync('editor/generatorResources/static/index.html'));
 
-    minifier.minify('project/out/main.js');
+    //minifier.minify('project/out/main.js');
 
     return {generated:1};
 };

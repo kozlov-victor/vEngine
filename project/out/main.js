@@ -160,7 +160,8 @@ var resourceSet = {
     frameAnimation: [{"name":"qa","duration":22,"frames":[2],"type":"frameAnimation","id":"4800_1462625822109"},{"name":"asdf","duration":22,"frames":[2],"type":"frameAnimation","id":"7025_1462625883255"},{"name":"ccc","duration":12,"frames":[12],"type":"frameAnimation","id":"3063_1462628634531"},{"name":"ccc","duration":12,"frames":[12],"type":"frameAnimation","id":"8920_1462628638253"},{"name":"fly","duration":1000,"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13],"type":"frameAnimation","id":"7994_1462628924199"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,12,11,10,9,8,7,6,5,4,3,2,1],"name":"fire","type":"frameAnimation","duration":1000,"id":"1074_1462655124441"},{"name":"goDown","frames":[0,1,2,3],"type":"frameAnimation","duration":1000,"id":"3709_1462788434049"},{"name":"goLeft","frames":[4,5,6,7],"type":"frameAnimation","duration":1000,"id":"5623_1462788455523"},{"name":"goRight","frames":[8,9,10,11],"type":"frameAnimation","duration":1000,"id":"6246_1462788475148"},{"name":"goUp","frames":[12,13,14,15],"type":"frameAnimation","duration":1000,"id":"8822_1462788491369"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69],"name":"man2","type":"frameAnimation","duration":1000,"id":"5181_1462811068697"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"name":"rotate","duration":2000,"type":"frameAnimation","id":"6443_1462811606705"},{"name":"plyPart","frames":[1,2,3],"type":"frameAnimation","duration":1000,"id":"1526_1463238865434"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"name":"rotate","type":"frameAnimation","duration":1000,"id":"1524_1463239460174"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"name":"rt","type":"frameAnimation","duration":1000,"id":"1549_1463312151886_3"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"name":"rt","type":"frameAnimation","duration":100,"id":"5895_1463312206382_4"},{"name":"fly","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13],"type":"frameAnimation","duration":1000,"id":"5843_1463341628155_6"}],
     gameObject: [{"spriteSheetId":"7200_1463341589577_4","width":110,"height":101,"name":"bird","type":"gameObject","frameAnimationIds":[],"id":"6786_1463344290065_0"}],
     scene: [{"name":"mainScene","type":"scene","gameObjectProps":[{"type":"gameObject","posX":26,"posY":71,"protoId":"6786_1463344290065_0","id":"8822_1463345270386_32"}],"id":"3227_1463345267193_31"},{"name":"a2","type":"scene","gameObjectProps":[{"type":"gameObject","posX":81,"posY":128,"protoId":"8822_1463345270386_32","id":"3644_1463347194295_1"}],"id":"4442_1463347188202_0"}],
-    spriteSheet: [{"name":"bird","resourcePath":"resources/spriteSheet/bird.png","width":551,"height":304,"numOfFramesH":5,"numOfFramesV":3,"type":"spriteSheet","id":"7200_1463341589577_4"}]
+    spriteSheet: [{"name":"bird","resourcePath":"resources/spriteSheet/bird.png","width":551,"height":304,"numOfFramesH":5,"numOfFramesV":3,"type":"spriteSheet","id":"7200_1463341589577_4"}],
+    gameProps: {"width":320,"height":240}
 };
 
 var Models = {};
@@ -324,7 +325,8 @@ var DataSource = {
     spriteSheetList: new Collections.Collection(),
     gameObjectList: new Collections.Collection(),
     frameAnimationList: new Collections.Collection(),
-    sceneList: new Collections.Collection()
+    sceneList: new Collections.Collection(),
+    gameProps: {}
 };
 
 var capitalize = function(s){
@@ -338,6 +340,8 @@ var toDataSource = function(ResourceClass,dataList,resourceList){
     });
 };
 
+
+DataSource.gameProps = resourceSet.gameProps;
 Models.DataSource = DataSource;
 
 ['audio','spriteSheet','gameObject','frameAnimation','scene'].forEach(function(itm){
@@ -346,3 +350,46 @@ Models.DataSource = DataSource;
 
 resourceSet = null;
 
+
+
+var CanvasRenderer = function(){
+
+    var ctx;
+    var scene;
+    var self = this;
+    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+
+    this.init = function(){
+        var canvas = document.querySelector('canvas');
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            canvas.width = DataSource.gameProps.width;
+            canvas.height = DataSource.gameProps.height;
+            document.body.appendChild(canvas);
+        }
+        ctx = canvas.getContext('2d');
+    };
+
+    var drawObject = function(gameObj){
+
+    };
+    var drawScene = function(){
+        reqAnimFrame(drawScene);
+        if (!scene) return;
+        scene._gameObjects.rs.forEach(function(obj){
+            drawObject(obj);
+        });
+    };
+    this.setScene = function(_scene){
+        scene = _scene;
+    };
+
+    drawScene();
+
+};
+
+var renderer = new CanvasRenderer();
+window.addEventListener('load',function(){
+    renderer.init();
+    renderer.setScene(DataSource.sceneList.get(0));
+});
