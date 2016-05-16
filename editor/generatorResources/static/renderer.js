@@ -36,7 +36,3 @@ var CanvasRenderer = function(){
 };
 
 var renderer = new CanvasRenderer();
-window.addEventListener('load',function(){
-    renderer.init();
-    renderer.setScene(DataSource.sceneList.get(0));
-});

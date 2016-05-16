@@ -14,7 +14,7 @@ var toDataSource = function(ResourceClass,dataList,resourceList){
 DataSource.gameProps = resourceSet.gameProps;
 Models.DataSource = DataSource;
 
-['audio','spriteSheet','gameObject','frameAnimation','scene'].forEach(function(itm){
+['audio','spriteSheet','frameAnimation','gameObject','scene'].forEach(function(itm){
     toDataSource(Models[capitalize(itm)],resourceSet[itm],DataSource[itm+'List']);
 });
 

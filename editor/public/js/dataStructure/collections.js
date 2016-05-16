@@ -49,3 +49,29 @@ Collections.Collection = function () {
         return self.rs[self.indexOf(obj)];
     }
 };
+
+Collections.Set = function(){
+    var self = this;
+    this.rs = {};
+    this.add = function(itm){
+        self.rs[itm.id]=itm;
+    };
+    this.get = function(itm){
+        return self.rs[itm.id];
+    };
+    this.has = function(key){
+        return key in self.rs;
+    };
+    this.combine = function(another){
+        Object.keys(another.rs).forEach(function(key){
+            self.add(key,another[key]);
+        });
+    };
+    this.asArray = function(){
+        var res = [];
+        Object.keys(self.rs).forEach(function(key){
+            res.push(self.rs[key]);
+        });
+        return res;
+    }
+};

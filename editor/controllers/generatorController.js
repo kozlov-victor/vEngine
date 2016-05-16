@@ -55,11 +55,17 @@ module.exports.generate = function(){
         'editor/public/js/dataStructure/dataSource.js',
         'editor/generatorResources/static/toDataSource.js'
     ]);
-    sourceMain.addFile('editor/generatorResources/static/renderer.js');
+    sourceMain.addFiles([
+        'editor/generatorResources/static/renderer.js',
+        'editor/generatorResources/static/sceneManager.js'
+    ]);
 
 
     fs.deleteFolderSync('project/out');
     fs.createFolderSync('project/out');
+    fs.createFolderSync('project/out/resources');
+    fs.copyFolderSync('project/resources/spriteSheet','project/out/resources');
+    fs.deleteFileSync('project/out/resources/map.json');
 
     fs.writeFileSync('project/out/main.js',sourceMain.get());
     fs.writeFileSync('project/out/index.html',fs.readFileSync('editor/generatorResources/static/index.html'));

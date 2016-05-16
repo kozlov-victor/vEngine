@@ -60,6 +60,7 @@ Models.SpriteSheet = Resource.extend({
     _frameWidth:0,
     _frameHeight:0,
     _numOfFrames:0,
+    _img: null,
     getFramePosX: function(frameIndex){
         return (frameIndex%this.numOfFramesH)*this._frameWidth;
     },
@@ -153,5 +154,13 @@ Models.Scene = BaseModel.extend({
             obj.fromJsonObject(prop);
             self._gameObjects.add(new Models.GameObject(obj.clone(Models.GameObject)));
         });
+    },
+    getAllSpriteSheets:function() {
+        var set = new Collections.Set();
+        this._gameObjects.rs.forEach(function(obj){
+            set.add(obj._spriteSheet);
+        });
+        return set;
     }
+
 });

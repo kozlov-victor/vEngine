@@ -34,14 +34,14 @@ module.exports.writeFileSync = function (path, content) {
     fs.writeFileSync(path, content);
 };
 
-module.exports.copyFolderSync = function (src, dest) {
+module.exports.copyFolderSync = function cpf(src, dest) {
     var exists = fs.existsSync(src);
     var stats = exists && fs.statSync(src);
     var isDirectory = exists && stats.isDirectory();
     if (exists && isDirectory) {
         !fs.existsSync(dest) && fs.mkdirSync(dest);
         fs.readdirSync(src).forEach(function (childItemName) {
-            copyFolderSync(path.join(src, childItemName),
+            cpf(path.join(src, childItemName),
                 path.join(dest, childItemName));
         });
     } else {
@@ -49,12 +49,12 @@ module.exports.copyFolderSync = function (src, dest) {
     }
 };
 
-module.exports.deleteFolderSync = function (path) {
+module.exports.deleteFolderSync = function delFldr(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach(function (file, index) {
             var curPath = path + "/" + file;
             if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolderSync(curPath);
+                delFldr(curPath);
             } else { // delete file
                 fs.unlinkSync(curPath);
             }
