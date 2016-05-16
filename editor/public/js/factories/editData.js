@@ -3,19 +3,15 @@
 window.app
 
     .factory('editData', function () {
-        var res = {
-            spriteSheetList: new Collections.Collection(),
-            gameObjectList: new Collections.Collection(),
-            frameAnimationList: new Collections.Collection(),
-            sceneList: new Collections.Collection(),
-            gameProps: {},
 
-            currGameObjectInEdit: null,
-            currSpriteSheetInEdit: null,
-            currFrAnimationInEdit: null,
-            currSceneInEdit:null,
-            currSceneGameObjectInEdit:null
-        };
+        var res = window.DataSource;
+        res.gameProps = {};
+        res.currGameObjectInEdit = null;
+        res.currSpriteSheetInEdit = null;
+        res.currFrAnimationInEdit = null;
+        res.currSceneInEdit = null;
+        res.currSceneGameObjectInEdit = null;
+
         Models.DataSource = res;
         return res;
     })

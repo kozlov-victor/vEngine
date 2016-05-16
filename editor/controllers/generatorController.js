@@ -1,4 +1,5 @@
 var fs = require('../base/fs');
+var minifier = require('minifier');
 
 var generateResources = function(){
 
@@ -48,7 +49,12 @@ module.exports.generate = function(){
         scene: fs.readFileSync('project/resources/scene/map.json'),
         spriteSheet: fs.readFileSync('project/resources/spriteSheet/map.json')
     });
-    sourceMain.addFile('editor/public/js/dataStructure/models.js');
+    sourceMain.addFiles([
+        'editor/public/js/dataStructure/models.js',
+        'editor/public/js/dataStructure/dataSource.js',
+        'editor/generatorResources/static/toDataSource.js'
+    ]);
+
 
 
     fs.deleteFolderSync('project/out');
@@ -56,5 +62,8 @@ module.exports.generate = function(){
 
     fs.writeFileSync('project/out/main.js',sourceMain.get());
     fs.writeFileSync('project/out/index.html',fs.readFileSync('editor/generatorResources/static/index.html'));
+
+    minifier.minify('project/out/main.js');
+
     return {generated:1};
 };
