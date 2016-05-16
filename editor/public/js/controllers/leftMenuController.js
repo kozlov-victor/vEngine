@@ -5,7 +5,6 @@ window.app.
         $http,
         $sce,
         editData,
-        Models,
         uiHelper,
         i18n,
         utils,

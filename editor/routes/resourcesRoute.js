@@ -65,8 +65,8 @@ module.exports.init = function(app) {
     });
 
     app.get('/generate',function(req,res){
-        generatorController.generate();
-        res.send({done:1});
+        var gen = generatorController.generate();
+        res.send(gen);
     });
 
 };

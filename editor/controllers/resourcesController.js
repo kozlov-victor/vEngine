@@ -105,3 +105,5 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
         return {id:object.id};
     }
 };
+
+module.exports.readResource = readResource;

@@ -9,7 +9,14 @@ $(function () {
 
 
 window.app.
-    controller('mainCtrl', function ($scope, $http, $sce, editData, Models, uiHelper, i18n) {
+    controller('mainCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        uiHelper,
+        i18n) {
+
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
