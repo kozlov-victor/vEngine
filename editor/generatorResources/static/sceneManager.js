@@ -21,22 +21,26 @@ var SceneManager = function(){
     }
 };
 
-var resourceSet = new ResourceSet({
-    audio: '%audio%',
-    frameAnimation: '%frameAnimation%',
-    gameObject: '%gameObject%',
-    scene: '%scene%',
-    spriteSheet: '%spriteSheet%',
-    gameProps: '%gameProps%'
-});
-var renderer = new CanvasRenderer();
-var sceneManager = new SceneManager();
+(function(){
 
-window.addEventListener('load',function(){
-    renderer.init();
-    if (DataSource.sceneList.size()==0) throw 'create scene first!';
-    // for test only
-    var go = DataSource.gameObjectList.get(0);
-    go._frameAnimations.get(0).play();
-    sceneManager.setScene(DataSource.sceneList.get(0));
-});
+    var resourceSet = new ResourceSet({
+        audio: '%audio%',
+        frameAnimation: '%frameAnimation%',
+        gameObject: '%gameObject%',
+        scene: '%scene%',
+        spriteSheet: '%spriteSheet%',
+        gameProps: '%gameProps%'
+    });
+    var renderer = new CanvasRenderer();
+    var sceneManager = new SceneManager();
+
+    window.addEventListener('load',function(){
+        renderer.init();
+        if (DataSource.sceneList.size()==0) throw 'create scene first!';
+        // for test only
+        var go = DataSource.gameObjectList.get(0);
+        go._frameAnimations.get(0).play();
+        sceneManager.setScene(DataSource.sceneList.get(0));
+    });
+
+})();
