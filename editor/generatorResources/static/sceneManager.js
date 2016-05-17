@@ -25,8 +25,13 @@ var SceneManager = function(){
             renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
-        console.log('allSprSheets',allSprSheets.asArray());
-
+        allSprSheets.asArray().forEach(function(spSheet){
+            spSheet._img = new Image();
+            spSheet._img.src = './'+spSheet.resourcePath;
+            if (!spSheet._img.src.complete) q.addTask();
+            spSheet._img.onload = q.resolveTask;
+        });
+        if (q.size()==0) q.onResolved();
     };
 
     this.setScene = function(scene){
@@ -38,5 +43,6 @@ var sceneManager = new SceneManager();
 
 window.addEventListener('load',function(){
     renderer.init();
+    if (DataSource.sceneList.size()==0) throw 'create scene first!';
     sceneManager.setScene(DataSource.sceneList.get(0));
 });

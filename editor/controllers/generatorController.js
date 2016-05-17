@@ -64,8 +64,9 @@ module.exports.generate = function(){
     fs.deleteFolderSync('project/out');
     fs.createFolderSync('project/out');
     fs.createFolderSync('project/out/resources');
-    fs.copyFolderSync('project/resources/spriteSheet','project/out/resources');
-    fs.deleteFileSync('project/out/resources/map.json');
+    fs.createFolderSync('project/out/resources/spriteSheet');
+    fs.copyFolderSync('project/resources/spriteSheet','project/out/resources/spriteSheet');
+    fs.deleteFileSync('project/out/resources/spriteSheet/map.json');
 
     fs.writeFileSync('project/out/main.js',sourceMain.get());
     fs.writeFileSync('project/out/index.html',fs.readFileSync('editor/generatorResources/static/index.html'));

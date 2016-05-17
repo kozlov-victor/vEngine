@@ -184,10 +184,10 @@ Collections.Set = function(){
 var resourceSet = {
     audio: [],
     frameAnimation: [],
-    gameObject: [{"spriteSheetId":"7200_1463341589577_4","width":110,"height":101,"name":"bird","type":"gameObject","frameAnimationIds":[],"id":"6786_1463344290065_0"}],
-    scene: [{"name":"mainScene","type":"scene","gameObjectProps":[{"type":"gameObject","posX":26,"posY":71,"protoId":"6786_1463344290065_0","id":"8822_1463345270386_32"},{"type":"gameObject","posX":170,"posY":73,"protoId":"3644_1463347194295_1","id":"4485_1463410721824_0"}],"id":"3227_1463345267193_31"},{"name":"a2","type":"scene","gameObjectProps":[{"type":"gameObject","posX":81,"posY":128,"protoId":"8822_1463345270386_32","id":"3644_1463347194295_1"}],"id":"4442_1463347188202_0"}],
-    spriteSheet: [{"name":"bird","resourcePath":"resources/spriteSheet/bird.png","width":551,"height":304,"numOfFramesH":5,"numOfFramesV":3,"type":"spriteSheet","id":"7200_1463341589577_4"}],
-    gameProps: {"width":320,"height":240}
+    gameObject: [{"spriteSheetId":"0851_1463476870431_0","width":320,"height":320,"name":"roo","type":"gameObject","frameAnimationIds":[],"id":"9334_1463476881447_1"}],
+    scene: [{"name":"s1","type":"scene","gameObjectProps":[{"type":"gameObject","posX":248,"posY":7,"protoId":"9334_1463476881447_1","id":"3233_1463477794007_3"}],"id":"3769_1463477790645_2"}],
+    spriteSheet: [{"resourcePath":"resources/spriteSheet/roo.png","width":1920,"height":1600,"numOfFramesH":6,"numOfFramesV":5,"name":"roo","type":"spriteSheet","id":"0851_1463476870431_0"}],
+    gameProps: {"width":800,"height":600}
 };
 
 var Models = {};
@@ -341,9 +341,7 @@ Models.Scene = BaseModel.extend({
         var self = this;
         self._gameObjects = new Collections.Collection();
         this.gameObjectProps.forEach(function(prop){
-            console.log('prptoid',prop.protoId);
             var obj = Models.DataSource.gameObjectList.getIf({id:prop.protoId});
-            console.log('obj',obj);
             obj.fromJsonObject(prop);
             self._gameObjects.add(new Models.GameObject(obj.clone(Models.GameObject)));
         });
@@ -408,12 +406,34 @@ var CanvasRenderer = function(){
     };
 
     var drawObject = function(gameObj){
-
+        ctx.drawImage(
+            gameObj._spriteSheet._img,
+            gameObj._sprPosX,
+            gameObj._sprPosY,
+            gameObj._spriteSheet._frameWidth,
+            gameObj._spriteSheet._frameHeight,
+            gameObj.posX,
+            gameObj.posY,
+            gameObj.width,
+            gameObj.height
+        );
+        console.log(
+            gameObj._spriteSheet._img,
+            gameObj._sprPosX,
+            gameObj._sprPosY,
+            gameObj._spriteSheet._frameWidth,
+            gameObj._spriteSheet._frameHeight,
+            gameObj.posX,
+            gameObj.posY,
+            gameObj.width,
+            gameObj.height
+        );
     };
     var drawScene = function(){
         reqAnimFrame(drawScene);
         if (!scene) return;
         scene._gameObjects.rs.forEach(function(obj){
+            obj.update(Date.now());
             drawObject(obj);
         });
     };
@@ -453,8 +473,13 @@ var SceneManager = function(){
             renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
-        console.log('allSprSheets',allSprSheets.asArray());
-
+        allSprSheets.asArray().forEach(function(spSheet){
+            spSheet._img = new Image();
+            spSheet._img.src = './'+spSheet.resourcePath;
+            if (!spSheet._img.src.complete) q.addTask();
+            spSheet._img.onload = q.resolveTask;
+        });
+        if (q.size()==0) q.onResolved();
     };
 
     this.setScene = function(scene){
@@ -466,5 +491,6 @@ var sceneManager = new SceneManager();
 
 window.addEventListener('load',function(){
     renderer.init();
+    if (DataSource.sceneList.size()==0) throw 'create scene first!';
     sceneManager.setScene(DataSource.sceneList.get(0));
 });
