@@ -46,5 +46,3 @@ var CanvasRenderer = function(){
     drawScene();
 
 };
-
-var renderer = new CanvasRenderer();

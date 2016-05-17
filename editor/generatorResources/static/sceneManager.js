@@ -1,26 +1,8 @@
-var Queue = function(){
-    var self = this;
-    this.size = function(){
-        return tasksTotal;
-    };
-    this.onResolved = null;
-    var tasksTotal = 0;
-    var tasksResolved = 0;
-    this.addTask = function() {
-        tasksTotal++;
-    };
-    this.resolveTask = function(){
-        tasksResolved++;
-        if (tasksTotal==tasksResolved) {
-            if (self.onResolved) self.onResolved();
-        }
-    };
-};
 
 var SceneManager = function(){
 
     var preloadAndSet = function(scene){
-        var q = new Queue();
+        var q = new ve.utils.Queue();
         q.onResolved = function(){
             renderer.setScene(scene);
         };
@@ -39,6 +21,15 @@ var SceneManager = function(){
     }
 };
 
+var resourceSet = new ResourceSet({
+    audio: '%audio%',
+    frameAnimation: '%frameAnimation%',
+    gameObject: '%gameObject%',
+    scene: '%scene%',
+    spriteSheet: '%spriteSheet%',
+    gameProps: '%gameProps%'
+});
+var renderer = new CanvasRenderer();
 var sceneManager = new SceneManager();
 
 window.addEventListener('load',function(){
