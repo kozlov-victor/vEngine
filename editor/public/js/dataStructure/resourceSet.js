@@ -1,6 +1,12 @@
 
 var ResourceSet = function(data){
 
+    this.spriteSheetList = new Collections.Collection();
+    this.gameObjectList = new Collections.Collection();
+    this.frameAnimationList = new Collections.Collection();
+    this.sceneList = new Collections.Collection();
+    this.gameProps = {};
+
     var toDataSource = function(ResourceClass,dataList,resourceList){
         dataList.forEach(function(item){
             resourceList.add(new ResourceClass(item));
@@ -14,7 +20,7 @@ var ResourceSet = function(data){
 
     (function(){
         ['audio','spriteSheet','frameAnimation','gameObject','scene'].forEach(function(itm){
-            toDataSource(Models[capitalize(itm)],resourceSet[itm],DataSource[itm+'List']);
+            toDataSource(ve.Models[capitalize(itm)],data[itm],this[itm+'List']);
         });
     })();
 
