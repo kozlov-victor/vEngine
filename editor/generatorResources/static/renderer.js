@@ -29,21 +29,11 @@ var CanvasRenderer = function(){
             gameObj.width,
             gameObj.height
         );
-        console.log(
-            gameObj._spriteSheet._img,
-            gameObj._sprPosX,
-            gameObj._sprPosY,
-            gameObj._spriteSheet._frameWidth,
-            gameObj._spriteSheet._frameHeight,
-            gameObj.posX,
-            gameObj.posY,
-            gameObj.width,
-            gameObj.height
-        );
     };
     var drawScene = function(){
         reqAnimFrame(drawScene);
         if (!scene) return;
+        ctx.clearRect(0,0,DataSource.gameProps.width,DataSource.gameProps.height);
         scene._gameObjects.rs.forEach(function(obj){
             obj.update(Date.now());
             drawObject(obj);

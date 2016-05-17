@@ -183,8 +183,8 @@ Collections.Set = function(){
 
 var resourceSet = {
     audio: [],
-    frameAnimation: [],
-    gameObject: [{"spriteSheetId":"0851_1463476870431_0","width":320,"height":320,"name":"roo","type":"gameObject","frameAnimationIds":[],"id":"9334_1463476881447_1"}],
+    frameAnimation: [{"name":"jump","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"type":"frameAnimation","duration":1000,"id":"1913_1463483934271_0"}],
+    gameObject: [{"spriteSheetId":"0851_1463476870431_0","width":320,"height":320,"name":"roo","type":"gameObject","frameAnimationIds":["1913_1463483934271_0"],"id":"9334_1463476881447_1"}],
     scene: [{"name":"s1","type":"scene","gameObjectProps":[{"type":"gameObject","posX":248,"posY":7,"protoId":"9334_1463476881447_1","id":"3233_1463477794007_3"}],"id":"3769_1463477790645_2"}],
     spriteSheet: [{"resourcePath":"resources/spriteSheet/roo.png","width":1920,"height":1600,"numOfFramesH":6,"numOfFramesV":5,"name":"roo","type":"spriteSheet","id":"0851_1463476870431_0"}],
     gameProps: {"width":800,"height":600}
@@ -326,10 +326,14 @@ Models.FrameAnimation = BaseModel.extend({
         this._startTime = null;
     },
     update: function(time){
+        console.log('anim update',time);
         if (!this._startTime) this._startTime = time;
         var delta = (time - this._startTime)%this.duration;
         var ind = ~~((delta/this._timeForOneFrame)%this.duration);
-        this._gameObject.currFrameIndex = this.frames[ind];
+        var lastFrIndex = this._gameObject.currFrameIndex;
+        if (lastFrIndex!=ind) {
+            this._gameObject.setFrameIndex(ind);
+        }
     }
 });
 
@@ -417,21 +421,11 @@ var CanvasRenderer = function(){
             gameObj.width,
             gameObj.height
         );
-        console.log(
-            gameObj._spriteSheet._img,
-            gameObj._sprPosX,
-            gameObj._sprPosY,
-            gameObj._spriteSheet._frameWidth,
-            gameObj._spriteSheet._frameHeight,
-            gameObj.posX,
-            gameObj.posY,
-            gameObj.width,
-            gameObj.height
-        );
     };
     var drawScene = function(){
         reqAnimFrame(drawScene);
         if (!scene) return;
+        ctx.clearRect(0,0,DataSource.gameProps.width,DataSource.gameProps.height);
         scene._gameObjects.rs.forEach(function(obj){
             obj.update(Date.now());
             drawObject(obj);
@@ -492,5 +486,8 @@ var sceneManager = new SceneManager();
 window.addEventListener('load',function(){
     renderer.init();
     if (DataSource.sceneList.size()==0) throw 'create scene first!';
+    // for test only
+    var go = DataSource.gameObjectList.get(0);
+    go._frameAnimations.get(0).play();
     sceneManager.setScene(DataSource.sceneList.get(0));
 });

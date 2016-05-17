@@ -138,7 +138,10 @@ Models.FrameAnimation = BaseModel.extend({
         if (!this._startTime) this._startTime = time;
         var delta = (time - this._startTime)%this.duration;
         var ind = ~~((delta/this._timeForOneFrame)%this.duration);
-        this._gameObject.currFrameIndex = this.frames[ind];
+        var lastFrIndex = this._gameObject.currFrameIndex;
+        if (lastFrIndex!=ind) {
+            this._gameObject.setFrameIndex(ind);
+        }
     }
 });
 
