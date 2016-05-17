@@ -31,16 +31,16 @@ window.app.
             s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
             resourceDao.createOrEditResource(
                 s.editData.currFrAnimationInEdit,
-                Models.FrameAnimation,
-                s.editData.frameAnimationList,
+                ve.models.FrameAnimation,
+                ve_local.bundle.frameAnimationList,
                 function(res){
                     if (res.type=='create') {
                         s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
                         s.editData.currGameObjectInEdit.constructor();
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
-                            Models.GameObject,
-                            editData.gameObjectList,
+                            ve.models.GameObject,
+                            ve_local.bundle.gameObjectList,
                             null,true
                         );
                     } else {

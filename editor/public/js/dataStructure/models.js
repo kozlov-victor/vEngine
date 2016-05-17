@@ -44,8 +44,6 @@
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
-    },{
-        dataSource:null
     });
 
     var Resource = BaseModel.extend({
@@ -95,11 +93,12 @@
         _currFrameAnimation:null,
         construct: function(){
             var self = this;
-            this._frameAnimations = new Collections.Collection();
-            this.spriteSheetId && (this._spriteSheet = models.DataSource.spriteSheetList.getIf({id:this.spriteSheetId}));
+            this._frameAnimations = new ve.collections.List();
+            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
-                var a = models.DataSource.frameAnimationList.getIf({id:id});
+                var a = ve_local.bundle.frameAnimationList.getIf({id:id});
+                a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
@@ -152,19 +151,20 @@
         _gameObjects:null,
         construct: function(){
             var self = this;
-            self._gameObjects = new Collections.Collection();
+            self._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
-                var obj = models.DataSource.gameObjectList.getIf({id:prop.protoId});
+                var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
+                obj = obj.clone(ve.models.GameObject);
                 obj.fromJsonObject(prop);
-                self._gameObjects.add(new models.GameObject(obj.clone(models.GameObject)));
+                self._gameObjects.add(obj);
             });
         },
         getAllSpriteSheets:function() {
-            var set = new Collections.Set();
+            var dataSet = new ve.collections.Set();
             this._gameObjects.rs.forEach(function(obj){
-                set.add(obj._spriteSheet);
+                dataSet.add(obj._spriteSheet);
             });
-            return set;
+            return dataSet;
         }
 
     });

@@ -35,8 +35,11 @@ module.exports.init = function(app) {
     });
 
     app.post('/resource/getAll',function(req,res){
-        var type = req.body.type;
-        var result = resourcesController.getAll(type);
+        var result = {};
+        ['audio','spriteSheet','frameAnimation','gameObject','scene'].forEach(function(key){
+            result[key] = resourcesController.getAll(key);
+        });
+        result.gameProps = resourcesController.getGameProps();
         res.send(result);
     });
 
@@ -50,10 +53,6 @@ module.exports.init = function(app) {
     app.post('/gameProps/save',multipart,function(req,res){
         resourcesController.saveGameProps(getModelFromBody(req));
         res.send({});
-    });
-
-    app.post('/gameProps/get',function(req,res){
-        res.send(resourcesController.getGameProps());
     });
 
     app.post('/resource/scene/gameObjectProps',function(req,res){

@@ -18,25 +18,25 @@ window.app.
         s.resourceDao = resourceDao;
 
         s.showCreateSpriteSheetDialog = function(){
-            editData.currSpriteSheetInEdit = new Models.SpriteSheet({});
+            editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
             uiHelper.showDialog('frmCreateSpriteSheet');
         };
 
         s.showEditSpriteSheetDialog = function(currObj){
-            editData.currSpriteSheetInEdit = currObj.clone(Models.SpriteSheet);
+            editData.currSpriteSheetInEdit = currObj.clone(ve.models.SpriteSheet);
             editData.currSpriteSheetInEdit.calcFrameSize();
             uiHelper.showDialog('frmCreateSpriteSheet');
         };
 
         s.showCreateGameObjectDialog = function() {
-            editData.currGameObjectInEdit = new Models.GameObject({spriteSheetId:s.editData.spriteSheetList.rs[0] && s.editData.spriteSheetList.rs[0].id});
+            editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
             utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             uiHelper.showDialog('frmCreateGameObject');
         };
 
         s.showEditGameObjectDialog = function(currObj) {
-            editData.currGameObjectInEdit = currObj.clone(Models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = editData.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
+            editData.currGameObjectInEdit = currObj.clone(ve.models.GameObject);
+            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
             uiHelper.showDialog('frmCreateGameObject');
         };
 
@@ -47,12 +47,12 @@ window.app.
         };
 
         s.showCreateSceneDialog = function(){
-            editData.currSceneInEdit = new Models.Scene({});
+            editData.currSceneInEdit = new ve.models.Scene({});
             uiHelper.showDialog('frmCreateScene');
         };
 
         s.showEditSceneDialog = function(currObj){
-            editData.currSceneInEdit = currObj.clone(Models.Scene);
+            editData.currSceneInEdit = currObj.clone(ve.models.Scene);
             uiHelper.showDialog('frmCreateScene');
         };
 
@@ -68,22 +68,10 @@ window.app.
             Promise.
                 resolve().
                 then(function(){
-                    return resourceDao.loadResource('spriteSheet',Models.SpriteSheet,editData.spriteSheetList);
+                    return resourceDao.loadResources();
                 }).
                 then(function(){
-                    return resourceDao.loadResource('frameAnimation',Models.FrameAnimation,editData.frameAnimationList);
-                }).
-                then(function(){
-                    return resourceDao.loadResource('gameObject',Models.GameObject,editData.gameObjectList);
-                }).
-                then(function(){
-                    return resourceDao.loadResource('scene',Models.Scene,editData.sceneList);
-                }).
-                then(function(){
-                    return resourceDao.loadGameProps();
-                }).
-                then(function(){
-                    if (!editData.sceneList.isEmpty()) s.editData.currSceneInEdit = editData.sceneList.get(0);
+                    if (!ve_local.bundle.sceneList.isEmpty()) s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
                     s.$apply();
                 });
 

@@ -7,22 +7,22 @@ app
         editData,
         uiHelper
     ){
-        this.loadResource = function(type,ResourceClass,resourceList){
+        this.loadResources = function(){
             return new Promise(function(resolve){
-
                 $http({
                     url: '/resource/getAll',
-                    method: "POST",
-                    data: {type:type}
+                    method: "POST"
                 }).
                 success(function (response) {
-                    response && response.forEach && response.forEach(function(item){
-                        var r = new ResourceClass(item);
-                        resourceList.add(r);
+                    ve_local.bundle = new ve_local.Bundle(response);
+                    ve_local.bundle.prepare();
+                    Object.keys(ve_local.bundle).forEach(function(key){
+                        if (ve_local.bundle[key] && ve_local.bundle[key].call) return;
+                        editData[key] = ve_local.bundle[key];
                     });
+                    editData.gameProps = ve_local.bundle.gameProps;
                     resolve();
                 });
-
             });
         };
         this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack, preserveDialog){

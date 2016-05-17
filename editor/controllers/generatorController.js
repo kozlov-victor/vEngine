@@ -41,8 +41,17 @@ var Source = function(){
 
 module.exports.generate = function(){
     var sourceMain = new Source();
-    sourceMain.addFiles(['editor/public/js/lib/oop.js','editor/public/js/dataStructure/collections.js']);
-    sourceMain.addTemplate('editor/generatorResources/templates/resourceSet.js',{
+    sourceMain.addFiles([
+        'editor/public/js/lib/oop.js',
+        'editor/generatorResources/static/envVariables.js',
+        'editor/public/js/dataStructure/collections.js',
+        'editor/public/js/dataStructure/models.js',
+        'editor/public/js/dataStructure/bundle.js',
+        'editor/generatorResources/static/utils.js',
+        'editor/generatorResources/static/renderer.js',
+        'editor/generatorResources/static/sceneManager.js'
+    ]);
+    sourceMain.addTemplate('editor/generatorResources/templates/main.js',{
         audio: fs.readFileSync('project/resources/audio/map.json'),
         frameAnimation: fs.readFileSync('project/resources/frameAnimation/map.json'),
         gameObject: fs.readFileSync('project/resources/gameObject/map.json'),
@@ -50,15 +59,6 @@ module.exports.generate = function(){
         spriteSheet: fs.readFileSync('project/resources/spriteSheet/map.json'),
         gameProps: fs.readFileSync('project/gameProps.json')
     });
-    sourceMain.addFiles([
-        'editor/public/js/dataStructure/models.js',
-        'editor/public/js/dataStructure/dataSource.js',
-        'editor/generatorResources/static/toDataSource.js'
-    ]);
-    sourceMain.addFiles([
-        'editor/generatorResources/static/renderer.js',
-        'editor/generatorResources/static/sceneManager.js'
-    ]);
 
 
     fs.deleteFolderSync('project/out');

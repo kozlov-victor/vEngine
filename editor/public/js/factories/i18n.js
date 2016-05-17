@@ -32,7 +32,8 @@ window.app
                 saveObjectFirst:'save object first',
                 all: 'all',
                 game:'game',
-                scenes:'scenes'
+                scenes:'scenes',
+                run:'run'
             }
         };
 

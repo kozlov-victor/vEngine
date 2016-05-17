@@ -1,4 +1,4 @@
-!function() {
+(function() {
 
     window.Class = function() {};
 
@@ -98,7 +98,7 @@
             F.prototype = proto;
             return new F;
         };
-}();
+})();
 
 
 

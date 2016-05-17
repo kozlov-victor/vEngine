@@ -27,11 +27,11 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,Models.GameObject,editData.gameObjectList);
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList);
         };
 
         s.showCreateAnimationDialog = function() {
-            s.editData.currFrAnimationInEdit = new Models.FrameAnimation();
+            s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             uiHelper.showDialog('frmCreateAnimation');
         };
@@ -44,15 +44,15 @@ window.app.
                 );
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    Models.GameObject,
-                    editData.gameObjectList,
+                    ve.models.GameObject,
+                    ve_local.bundle.gameObjectList,
                     null,true
                 );
             });
         };
 
         s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone(Models.FrameAnimation);
+            s.editData.currFrAnimationInEdit = item.clone(ve.models.FrameAnimation);
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             uiHelper.showDialog('frmCreateAnimation');
         };

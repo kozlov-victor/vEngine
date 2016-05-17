@@ -33,7 +33,7 @@ window.app.
         };
 
         s.createOrEditSpriteSheet = function(){
-            resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,Models.SpriteSheet,editData.spriteSheetList);
+            resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,ve.models.SpriteSheet,ve_local.bundle.spriteSheetList);
         };
 
 

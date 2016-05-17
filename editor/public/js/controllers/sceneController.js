@@ -17,7 +17,7 @@ window.app.
         s.resourceDao = resourceDao;
 
         s.createOrEditScene = function(){
-            resourceDao.createOrEditResource(s.editData.currSceneInEdit,Models.Scene,editData.sceneList);
+            resourceDao.createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList);
         };
 
         var tid = 0;
@@ -65,7 +65,7 @@ window.app.
                         posY:e.y,
                         protoId:obj.id
                     },function(resp){
-                        var newGameObj = obj.clone(Models.GameObject);
+                        var newGameObj = obj.clone(ve.models.GameObject);
                         newGameObj.fromJsonObject({posX:e.x,posY:e.y,protoId:newGameObj.id,id:resp.id});
                         editData.currSceneInEdit._gameObjects.add(newGameObj);
                         editData.currSceneGameObjectInEdit = newGameObj;
