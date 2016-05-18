@@ -62,6 +62,10 @@ window.app.
             resourceDao.deleteResource(item.id,'scene');
         };
 
+        s.deleteGameObjectFromScene = function(scene,object){
+            console.log(scene,object);
+        };
+
         (function(){
 
 

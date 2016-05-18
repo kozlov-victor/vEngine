@@ -228,8 +228,8 @@ var ve_local = {};
         },
         clone: function(Class){
             var self =this;
-            return new Class(self.toJsonObj());
-        },
+        return new Class(self.toJsonObj());
+},
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }

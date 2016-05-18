@@ -81,6 +81,6 @@ window.app.
                     editData.currSceneGameObjectInEdit = obj;
                     break;
             }
-        }
+        };
 
     });
