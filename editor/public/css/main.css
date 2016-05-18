@@ -128,6 +128,10 @@ input[type="file"] {
     border-bottom: none;
 }
 
+.active {
+    outline:1px solid green;
+}
+
 .closed {
     display: inline-block;
     width: 0;

@@ -12,7 +12,14 @@
                 </div>
 
                 <div class="table width100">
-                    <div class="row" ng-repeat="gObj in scene._gameObjects.rs">
+                    <div class="row"
+                         ng-repeat="gObj in scene._gameObjects.rs"
+                         ng-click="editData.currSceneGameObjectInEdit=gObj"
+                         ng-class="{
+                                row:1,
+                                active:gObj==editData.currSceneGameObjectInEdit
+                         }"
+                         >
                         <div class="cell vAlign">
                             <span>{{gObj.name}}</span>
                         </div>

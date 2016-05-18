@@ -63,7 +63,7 @@ window.app.
         };
 
         s.deleteGameObjectFromScene = function(scene,object){
-            console.log(scene,object);
+            scene._gameObjects.removeIf({id:object.id});
         };
 
         (function(){

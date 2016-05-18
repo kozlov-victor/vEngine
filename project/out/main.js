@@ -228,8 +228,8 @@ var ve_local = {};
         },
         clone: function(Class){
             var self =this;
-        return new Class(self.toJsonObj());
-},
+            return new Class(self.toJsonObj());
+        },
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
@@ -494,10 +494,10 @@ var SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [{"name":"globus","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],"type":"frameAnimation","duration":1000,"id":"8943_1463516607654_2"}],
-        gameObject: [{"spriteSheetId":"4630_1463516572231_0","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["8943_1463516607654_2"],"id":"5917_1463516585790_1"}],
-        scene: [{"name":"main","type":"scene","gameObjectProps":[{"type":"gameObject","posX":375,"posY":358,"protoId":"5917_1463516585790_1","id":"5533_1463516624196_4"},{"type":"gameObject","posX":256,"posY":301,"protoId":"5917_1463516585790_1","id":"8258_1463516634662_5"},{"type":"gameObject","posX":221,"posY":369,"protoId":"5917_1463516585790_1","id":"0691_1463517615902_6"},{"type":"gameObject","posX":227,"posY":312,"protoId":"5917_1463516585790_1","id":"3603_1463518228972_7"}],"id":"7799_1463516617615_3"}],
-        spriteSheet: [{"resourcePath":"resources/spriteSheet/globus.png","width":320,"height":256,"numOfFramesV":4,"numOfFramesH":5,"name":"globus","type":"spriteSheet","id":"4630_1463516572231_0"}],
+        frameAnimation: [{"name":"globus","frames":[0,16,17,18],"type":"frameAnimation","duration":3000,"id":"8943_1463516607654_2"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],"name":"rt","type":"frameAnimation","duration":600,"id":"0246_1463605460545_7"}],
+        gameObject: [{"spriteSheetId":"7044_1463585723796_0","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["0246_1463605460545_7"],"id":"7829_1463604867562_0"}],
+        scene: [{"name":"s","type":"scene","gameObjectProps":[{"type":"gameObject","posX":325,"posY":143,"protoId":"7829_1463604867562_0","id":"4198_1463604886789_2"},{"type":"gameObject","posX":250,"posY":94,"protoId":"7829_1463604867562_0","id":"4157_1463604889096_3"},{"type":"gameObject","posX":280,"posY":113,"protoId":"7829_1463604867562_0","id":"4702_1463604892326_4"},{"type":"gameObject","posX":313,"posY":113,"protoId":"7829_1463604867562_0","id":"1852_1463605572626_8"},{"type":"gameObject","posX":142,"posY":109,"protoId":"7829_1463604867562_0","id":"4674_1463605762329_9"},{"type":"gameObject","posX":239,"posY":38,"protoId":"7829_1463604867562_0","id":"8427_1463605764330_10"},{"type":"gameObject","posX":254,"posY":229,"protoId":"7829_1463604867562_0","id":"1799_1463605786171_11"},{"type":"gameObject","posX":9,"posY":26,"protoId":"7829_1463604867562_0","id":"6389_1463605824434_12"},{"type":"gameObject","posX":154,"posY":245,"protoId":"7829_1463604867562_0","id":"9182_1463605825387_13"},{"type":"gameObject","posX":13,"posY":12,"protoId":"7829_1463604867562_0","id":"0963_1463605826161_14"},{"type":"gameObject","posX":161,"posY":194,"protoId":"7829_1463604867562_0","id":"2781_1463605827081_15"},{"type":"gameObject","posX":107,"posY":241,"protoId":"7829_1463604867562_0","id":"5369_1463605829501_16"},{"type":"gameObject","posX":43,"posY":189,"protoId":"7829_1463604867562_0","id":"6771_1463605830726_17"},{"type":"gameObject","posX":40,"posY":108,"protoId":"7829_1463604867562_0","id":"5273_1463605831981_18"},{"type":"gameObject","posX":178,"posY":50,"protoId":"7829_1463604867562_0","id":"3919_1463605833481_19"},{"type":"gameObject","posX":99,"posY":174,"protoId":"7829_1463604867562_0","id":"7244_1463605835223_20"},{"type":"gameObject","posX":235,"posY":161,"protoId":"7829_1463604867562_0","id":"2823_1463605837309_21"},{"type":"gameObject","posX":87,"posY":294,"protoId":"7829_1463604867562_0","id":"0725_1463605838986_22"},{"type":"gameObject","posX":91,"posY":66,"protoId":"7829_1463604867562_0","id":"3389_1463605840963_23"},{"type":"gameObject","posX":-13,"posY":49,"protoId":"7829_1463604867562_0","id":"9744_1463605842555_24"},{"type":"gameObject","posX":36,"posY":-10,"protoId":"7829_1463604867562_0","id":"0996_1463605843843_25"}],"id":"9394_1463604880170_1"},{"name":"s2","type":"scene","gameObjectProps":[{"type":"gameObject","posX":111,"posY":131,"protoId":"7829_1463604867562_0","id":"6267_1463605387426_6"}],"id":"9708_1463605382177_5"}],
+        spriteSheet: [{"resourcePath":"resources/spriteSheet/close.png","width":320,"height":256,"name":"close","type":"spriteSheet","numOfFramesH":5,"numOfFramesV":4,"id":"7044_1463585723796_0"}],
         gameProps: {"width":800,"height":600}
     });
     ve_local.bundle.prepare();
