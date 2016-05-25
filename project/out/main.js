@@ -329,7 +329,7 @@ var ve_local = {};
             var ind = ~~((delta/this._timeForOneFrame)%this.duration);
             var lastFrIndex = this._gameObject.currFrameIndex;
             if (lastFrIndex!=ind) {
-                this._gameObject.setFrameIndex(ind);
+                this._gameObject.setFrameIndex(this.frames[ind]);
             }
         }
     });
@@ -494,10 +494,10 @@ var SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [{"name":"globus","frames":[0,16,17,18],"type":"frameAnimation","duration":3000,"id":"8943_1463516607654_2"},{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],"name":"rt","type":"frameAnimation","duration":600,"id":"0246_1463605460545_7"}],
-        gameObject: [{"spriteSheetId":"7044_1463585723796_0","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["0246_1463605460545_7"],"id":"7829_1463604867562_0"}],
-        scene: [{"name":"a1","type":"scene","gameObjectProps":[{"type":"gameObject","posX":344,"posY":208,"protoId":"7829_1463604867562_0","id":"6190_1464214346216_3"},{"type":"gameObject","posX":228,"posY":201,"protoId":"7829_1463604867562_0","id":"9321_1464214347674_4"}],"id":"8024_1464214330033_0"}],
-        spriteSheet: [{"resourcePath":"resources/spriteSheet/close.png","width":320,"height":256,"name":"close","type":"spriteSheet","numOfFramesH":5,"numOfFramesV":4,"id":"7044_1463585723796_0"}],
+        frameAnimation: [{"frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13],"name":"fly","type":"frameAnimation","duration":1000,"id":"0801_1464214820425_2"}],
+        gameObject: [{"spriteSheetId":"4337_1464214792239_0","width":110,"height":101,"name":"bird","type":"gameObject","frameAnimationIds":["0801_1464214820425_2"],"id":"4145_1464214802528_1"}],
+        scene: [{"name":"a1","type":"scene","gameObjectProps":[{"type":"gameObject","posX":424,"posY":70,"protoId":"4145_1464214802528_1","id":"7009_1464215502852_26"}],"id":"5338_1464215128376_7"}],
+        spriteSheet: [{"resourcePath":"resources/spriteSheet/bird.png","width":551,"height":304,"numOfFramesH":5,"numOfFramesV":3,"name":"bird","type":"spriteSheet","id":"4337_1464214792239_0"}],
         gameProps: {"width":800,"height":600}
     });
     ve_local.bundle.prepare();

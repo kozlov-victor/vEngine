@@ -17,7 +17,13 @@ window.app.
         s.resourceDao = resourceDao;
 
         s.createOrEditScene = function(){
-            resourceDao.createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList);
+            resourceDao.
+                createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList,
+                function(){
+                    if (ve_local.bundle.sceneList.size()==1) {
+                        s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    }
+                });
         };
 
         var tid = 0;

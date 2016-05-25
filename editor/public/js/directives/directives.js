@@ -129,7 +129,6 @@ app
                     e.preventDefault();
                 });
                 element.bind('drop', function (e) {
-                    console.log('drop');
                     e.preventDefault();
                     element.removeClass('droppable');
                     if (!isAcceptable()) return;
@@ -137,9 +136,13 @@ app
                     var fn = $parse(attrs.appOnDropped);
                     if (!fn) return;
 
+                    var elementRect = element[0].getBoundingClientRect();
+                    var realCoordX = e.x - elementRect.left;
+                    var realCoordY = e.y - elementRect.top;
+
                     var evt = {
-                        x: e.offsetX - appDraggableUtil.offsetX,
-                        y: e.offsetY - appDraggableUtil.offsetY
+                        x: realCoordX - appDraggableUtil.offsetX,
+                        y: realCoordY - appDraggableUtil.offsetY
                     };
 
                     scope.$apply(function () {
