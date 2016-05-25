@@ -140,7 +140,7 @@
             var ind = ~~((delta/this._timeForOneFrame)%this.duration);
             var lastFrIndex = this._gameObject.currFrameIndex;
             if (lastFrIndex!=ind) {
-                this._gameObject.setFrameIndex(ind);
+                this._gameObject.setFrameIndex(this.frames[ind]);
             }
         }
     });
