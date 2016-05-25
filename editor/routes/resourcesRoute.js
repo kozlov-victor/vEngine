@@ -50,6 +50,12 @@ module.exports.init = function(app) {
         res.send({});
     });
 
+    app.post('/resource/deleteGameObjectFromScene',function(req,res){
+        var sceneId = req.body.sceneId;
+        var objectId = req.body.objectId;
+        resourcesController.deleteGameObjectFromScene(sceneId,objectId);
+    });
+
     app.post('/gameProps/save',multipart,function(req,res){
         resourcesController.saveGameProps(getModelFromBody(req));
         res.send({});

@@ -53,16 +53,27 @@ app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
+        this.deleteGameObjectFromScene = function(sceneId,objectId){
+            $http({
+                url: '/resource/deleteGameObjectFromScene',
+                method: "POST",
+                headers: {'Content-Type': 'application/json'},
+                data: {sceneId:sceneId,objectId:objectId}
+            }).
+            success(function (res) {
+
+            });
+        };
         this.deleteResource = function(id,type,callBack){
             $http({
                 url: '/resource/delete',
                 method: "POST",
                 data: {id:id,type:type}
             }).
-                success(function (res) {
-                    editData[type+'List'].removeIf({id:id});
-                    callBack && callBack();
-                });
+            success(function (res) {
+                editData[type+'List'].removeIf({id:id});
+                callBack && callBack();
+            });
         };
         this.loadGameProps = function(){
             return new Promise(function(resolve){
@@ -71,10 +82,10 @@ app
                     url: '/gameProps/get',
                     method: "POST"
                 }).
-                    success(function (gameProps) {
-                        editData.gameProps = gameProps;
-                        resolve();
-                    });
+                success(function (gameProps) {
+                    editData.gameProps = gameProps;
+                    resolve();
+                });
 
             });
         };

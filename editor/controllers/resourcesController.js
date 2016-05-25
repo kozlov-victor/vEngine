@@ -10,6 +10,19 @@ var writeResource = function(res,path) {
     fs.writeFileSync(path,JSON.stringify(res));
 };
 
+var getIndexById = function(arr,id){
+    var indexToDel = null;
+    var i = 0;
+    arr.some(function(item){
+        if (item.id==id) {
+            indexToDel = i;
+            return true;
+        }
+        i++;
+    });
+    return indexToDel;
+};
+
 var uidCnt = 0;
 
 var uid = function(){
@@ -59,21 +72,23 @@ module.exports.getAll = function(type){
 
 module.exports.delete = function(id,type){
     var arr = readResource('project/resources/'+type+'/map.json');
-    var indexToDel = null;
-    var i = 0;
-    arr.some(function(item){
-        if (item.id==id) {
-            indexToDel = i;
-            return true;
-        }
-        i++;
-    });
+    var indexToDel = getIndexById(arr,id);
     if (indexToDel!==null) {
         var resourcePath = arr[indexToDel].resourcePath;
         fs.deleteFileSync('project/'+resourcePath);
         arr.splice(indexToDel,1);
         writeResource(arr,'project/resources/'+type+'/map.json');
     }
+};
+
+module.exports.deleteGameObjectFromScene = function(sceneId,gameObjectId){
+    var scenes = readResource('project/resources/scene/map.json');
+    var scene = scenes.filter(function(sc){return sc.id==sceneId})[0];
+    if (!scene) throw 'can not find scene with id ' + sceneId;
+    var gameObjectProps = scene.gameObjectProps;
+    var index = getIndexById(gameObjectProps,gameObjectId);
+    if (index!=null) gameObjectProps.splice(index,1);
+    writeResource(scenes,'project/resources/scene/map.json');
 };
 
 module.exports.saveGameProps = function(model){

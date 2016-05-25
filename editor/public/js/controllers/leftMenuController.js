@@ -1,6 +1,7 @@
 
 window.app.
     controller('leftMenuCtrl', function (
+
         $scope,
         $http,
         $sce,
@@ -9,7 +10,9 @@ window.app.
         i18n,
         utils,
         resourceDao
+
     ) {
+
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
@@ -64,10 +67,10 @@ window.app.
 
         s.deleteGameObjectFromScene = function(scene,object){
             scene._gameObjects.removeIf({id:object.id});
+            resourceDao.deleteGameObjectFromScene(scene.id,object.id);
         };
 
         (function(){
-
 
             Promise.
                 resolve().
