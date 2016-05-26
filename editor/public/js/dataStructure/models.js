@@ -145,13 +145,13 @@
         }
     });
 
-    models.Scene = BaseModel.extend({
-        type:'scene',
+    models.Layer = BaseModel.extend({
+        type:'layer',
         gameObjectProps:[],
         _gameObjects:null,
         construct: function(){
             var self = this;
-            self._gameObjects = new ve.collections.List();
+            this._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
                 obj = obj.clone(ve.models.GameObject);
@@ -163,6 +163,27 @@
             var dataSet = new ve.collections.Set();
             this._gameObjects.rs.forEach(function(obj){
                 dataSet.add(obj._spriteSheet);
+            });
+            return dataSet;
+        }
+    });
+
+    models.Scene = BaseModel.extend({
+        type:'scene',
+        layerProps:[],
+        _layers:null,
+        construct: function(){
+            var self = this;
+            self._layers = new ve.collections.List();
+            this.layerProps.forEach(function(prop){
+                var obj = ve_local.bundle.layerList.getIf({id:prop.id});
+                obj.fromJsonObject(prop);
+            });
+        },
+        getAllSpriteSheets:function() {
+            var dataSet = new ve.collections.Set();
+            this._layers.forEach(function(l){
+                dataSet.combine(l.getAllSpriteSheets());
             });
             return dataSet;
         }

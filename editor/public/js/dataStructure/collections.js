@@ -23,6 +23,11 @@
         this.clear = function(){
             self.rs = [];
         };
+        this.forEach = function(callback){
+            for (var i = 0,l=this.rs.length;i<l;i++){
+               callback(this.rs[i]);
+            }
+        };
         this.indexOf = function(obj){
             var i = 0;
             var success = false;

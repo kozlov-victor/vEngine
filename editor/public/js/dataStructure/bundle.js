@@ -6,6 +6,7 @@
         this.spriteSheetList = new ve.collections.List();
         this.gameObjectList = new ve.collections.List();
         this.frameAnimationList = new ve.collections.List();
+        this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
         this.gameProps = {};
 
