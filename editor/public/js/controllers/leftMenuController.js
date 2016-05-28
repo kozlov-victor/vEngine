@@ -72,6 +72,7 @@ window.app.
 
         s.showCreateLayerDialog = function(scene){
             editData.currLayerInEdit = new ve.models.Layer({sceneId:scene.id});
+            editData.currLayerInEdit._scene = editData.currSceneInEdit;
             uiHelper.showDialog('frmCreateLayer');
         };
 

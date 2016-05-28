@@ -106,9 +106,12 @@ module.exports.getGameProps = function(){
 module.exports.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object) {
     var path = 'project/resources/'+resourceType+'/map.json';
     var resources = readResource(path);
+    console.log('loaded resources',resources);
+    console.log('search by id');
     var resource = resources.filter(function(itm){
         return itm.id==resourceId;
     })[0];
+    console.log('found',resource);
     var objectsInResource = resource[objectType];
     if (object.id) {
         var objectInResource = objectsInResource.filter(function(itm){return itm.id==object.id})[0];

@@ -8,6 +8,13 @@
         if (el[key].call) return true;
         if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
+    var merge = function(a,b){
+        var res = Object.create(a);
+        Object.keys(b).forEach(function(key){
+            res[key] = b[key];
+        });
+        return res;
+    };
 
     var BaseModel = Class.extend({
         id:null,
@@ -149,16 +156,15 @@
         type:'layer',
         gameObjectProps:[],
         _gameObjects:null,
-        sceneId:null,
         _scene:null,
         construct: function(){
             var self = this;
-            if (!self.sceneId) throw 'can not create Layer instance: sceneId property must be specified';
             self._gameObjects = new ve.collections.List();
-            self._scene = ve_local.bundle.sceneList.getIf({id:self.sceneId});
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
+                var id = obj.id;
                 obj = obj.clone(ve.models.GameObject);
+                obj.id = id;
                 obj.fromJsonObject(prop);
                 self._gameObjects.add(obj);
             });
@@ -180,8 +186,13 @@
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
-                var obj = ve_local.bundle.layerList.getIf({id:prop.id});
-                obj.fromJsonObject(prop);
+                var l = ve_local.bundle.layerList.getIf({id:prop.protoId});
+                var id = l.id;
+                l = l.clone(ve.models.Layer);
+                l.fromJsonObject(prop);
+                l.id = id;
+                l._scene = self;
+                self._layers.add(l);
             });
         },
         getAllSpriteSheets:function() {

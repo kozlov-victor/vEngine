@@ -17,7 +17,13 @@ window.app.
         s.utils = utils;
 
         s.createOrEditLayer = function(){
-            resourceDao.createOrEditResource(s.editData.currLayerInEdit,ve.models.Layer,ve_local.bundle.layerList);
+            resourceDao.createOrEditResource(s.editData.currLayerInEdit,ve.models.Layer,ve_local.bundle.layerList,
+                function(item){
+                    resourceDao.createOrEditObjectInResource(editData.currSceneInEdit,'layerProps',{
+                        type:'layer',
+                        protoId:item.r.id
+                    },function(resp){});
+                });
         };
 
     });

@@ -69,13 +69,16 @@ module.exports.init = function(app) {
         );
     });
 
-    app.post('/resource/scene/addLayer',function(req,res){
+    app.post('/createOrEditObjectInResource',function(req,res){
         var model = getModelFromBody(req);
-        var sceneId = req.body.sceneId;
+        var resourceId = req.body.resourceId;
+        var resourceType = req.body.resourceType;
+        var objectType = req.body.objectType;
         res.send(
-            resourcesController.createOrEditObjectInResource('scene',sceneId,'layerProps',model)
+            resourcesController.createOrEditObjectInResource(resourceType,resourceId,objectType,model)
         );
     });
+
 
     app.get('/generate',function(req,res){
         var gen = generatorController.generate();

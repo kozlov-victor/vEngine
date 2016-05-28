@@ -65,7 +65,8 @@ window.app.
 
             switch (draggable) {
                 case 'gameObjFromLeftPanel':
-                    resourceDao.createOrEditObjectInResource(editData.currSceneInEdit,'gameObjectProps',{
+                    console.log('currLayer',editData.currLayerInEdit);
+                    resourceDao.createOrEditObjectInResource(editData.currLayerInEdit,'gameObjectProps',{
                         type:'gameObject',
                         posX:e.x,
                         posY:e.y,
@@ -73,12 +74,12 @@ window.app.
                     },function(resp){
                         var newGameObj = obj.clone(ve.models.GameObject);
                         newGameObj.fromJsonObject({posX:e.x,posY:e.y,protoId:newGameObj.id,id:resp.id});
-                        editData.currSceneInEdit._gameObjects.add(newGameObj);
+                        editData.currLayerInEdit._gameObjects.add(newGameObj);
                         editData.currSceneGameObjectInEdit = newGameObj;
                     });
                     break;
                 case 'gameObjFromSelf':
-                    resourceDao.createOrEditObjectInResource(editData.currSceneInEdit,'gameObjectProps',{
+                    resourceDao.createOrEditObjectInResource(editData.currLayerInEdit,'gameObjectProps',{
                         posX:e.x,
                         posY:e.y,
                         id:obj.id

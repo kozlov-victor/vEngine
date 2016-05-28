@@ -13,7 +13,7 @@
         <div
                 app-draggable="gameObjFromSelf"
                 ng-model="item"
-                ng-repeat="item in editData.currSceneInEdit._gameObjects.rs"
+                ng-repeat="item in editData.currLayerInEdit._gameObjects.rs"
                 ng-click="editData.currSceneGameObjectInEdit=item"
                 ng-style="utils.merge(
                             utils.getGameObjectCss(item),

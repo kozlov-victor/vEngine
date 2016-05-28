@@ -101,11 +101,13 @@ app
         };
         this.createOrEditObjectInResource = function(resource,objectType,object,callback){
             $http({
-                url: '/resource/'+resource.type+'/'+objectType,
+                url: '/createOrEditObjectInResource',
                 method: "POST",
                 data: {
                     model:JSON.stringify(object),
-                    resourceId:resource.id
+                    resourceId:resource.id,
+                    resourceType:resource.type,
+                    objectType:objectType
                 },
                 headers: {'Content-Type': 'application/json'}
             }).

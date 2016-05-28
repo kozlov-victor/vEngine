@@ -29,6 +29,7 @@ img {
 
 .table {
     display: table;
+    border-collapse: collapse;
 }
 
 .row {
@@ -37,6 +38,7 @@ img {
 
 .cell {
     display: table-cell;
+    padding: 3px;
 }
 
 .noSelect {
@@ -208,8 +210,20 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     background-color: rgba(3, 158, 180, 0.31);
 }
 
+.unselected {
+    background-color: rgba(3, 158, 180, 0.08);
+}
+
 .centerText {
     text-align: center;
+}
+
+.layers {
+    background-color: #8c8c8c;
+}
+
+.table.borderedRows>.row,.table.borderedCells>.row>.cell {
+    border: 1px solid #504c4e;
 }
 
 

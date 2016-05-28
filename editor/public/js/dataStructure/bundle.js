@@ -25,7 +25,7 @@
         };
 
         this.prepare = function(){
-            ['audio','spriteSheet','frameAnimation','gameObject','scene','layer'].forEach(function(itm){
+            ['audio','spriteSheet','frameAnimation','gameObject','layer','scene'].forEach(function(itm){
                 toDataSource(ve.models[capitalize(itm)],data[itm],self[itm+'List']);
             });
             self.gameProps = data.gameProps;
