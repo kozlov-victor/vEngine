@@ -10,6 +10,7 @@ window.app
         res.currFrAnimationInEdit = null;
         res.currSceneInEdit = null;
         res.currSceneGameObjectInEdit = null;
+        res.currLayerInEdit = null;
 
         return res;
     })

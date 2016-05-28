@@ -2,6 +2,10 @@
 var fs = require('../base/fs');
 var utils = require('../utils/utils');
 
+module.exports.RESOURCE_NAMES =
+    'audio,script,spriteSheet,gameObject,frameAnimation,scene,layer'
+    .split(',');
+
 var readResource = function(path) {
     return JSON.parse(fs.readFileSync(path));
 };

@@ -33,7 +33,10 @@ window.app
                 all: 'all',
                 game:'game',
                 scenes:'scenes',
-                run:'run'
+                scene:'scene',
+                run:'run',
+                layers: 'layers',
+                layer:'layer'
             }
         };
 

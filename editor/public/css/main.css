@@ -208,6 +208,10 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     background-color: rgba(3, 158, 180, 0.31);
 }
 
+.centerText {
+    text-align: center;
+}
+
 
 
 

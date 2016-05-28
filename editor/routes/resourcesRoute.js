@@ -36,7 +36,7 @@ module.exports.init = function(app) {
 
     app.post('/resource/getAll',function(req,res){
         var result = {};
-        ['audio','spriteSheet','frameAnimation','gameObject','scene'].forEach(function(key){
+        resourcesController.RESOURCE_NAMES.forEach(function(key){
             result[key] = resourcesController.getAll(key);
         });
         result.gameProps = resourcesController.getGameProps();
@@ -66,6 +66,14 @@ module.exports.init = function(app) {
         var resourceId = req.body.resourceId;
         res.send(
             resourcesController.createOrEditObjectInResource('scene',resourceId,'gameObjectProps',model)
+        );
+    });
+
+    app.post('/resource/scene/addLayer',function(req,res){
+        var model = getModelFromBody(req);
+        var sceneId = req.body.sceneId;
+        res.send(
+            resourcesController.createOrEditObjectInResource('scene',sceneId,'layerProps',model)
         );
     });
 

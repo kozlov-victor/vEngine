@@ -70,6 +70,11 @@ window.app.
             resourceDao.deleteGameObjectFromScene(scene.id,object.id);
         };
 
+        s.showCreateLayerDialog = function(scene){
+            editData.currLayerInEdit = new ve.models.Layer({sceneId:scene.id});
+            uiHelper.showDialog('frmCreateLayer');
+        };
+
         (function(){
 
             Promise.

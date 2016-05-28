@@ -149,9 +149,13 @@
         type:'layer',
         gameObjectProps:[],
         _gameObjects:null,
+        sceneId:null,
+        _scene:null,
         construct: function(){
             var self = this;
-            this._gameObjects = new ve.collections.List();
+            if (!self.sceneId) throw 'can not create Layer instance: sceneId property must be specified';
+            self._gameObjects = new ve.collections.List();
+            self._scene = ve_local.bundle.sceneList.getIf({id:self.sceneId});
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
                 obj = obj.clone(ve.models.GameObject);

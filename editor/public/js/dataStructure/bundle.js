@@ -8,6 +8,7 @@
         this.frameAnimationList = new ve.collections.List();
         this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
+        this.layerList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -24,7 +25,7 @@
         };
 
         this.prepare = function(){
-            ['audio','spriteSheet','frameAnimation','gameObject','scene'].forEach(function(itm){
+            ['audio','spriteSheet','frameAnimation','gameObject','scene','layer'].forEach(function(itm){
                 toDataSource(ve.models[capitalize(itm)],data[itm],self[itm+'List']);
             });
             self.gameProps = data.gameProps;

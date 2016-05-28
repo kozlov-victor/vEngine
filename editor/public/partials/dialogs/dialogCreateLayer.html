@@ -1,0 +1,23 @@
+<div class="withPadding">
+    <div>
+        {{i18n.scene}}: {{editData.currLayerInEdit._scene.name}}
+    </div>
+    <b class="block centerText">{{i18n.layer}}</b>
+    <div class="table width100">
+        <div class="row">
+            <div class="cell">
+                {{i18n.name}}
+            </div>
+            <div class="cell">
+                <input ng-model="editData.currLayerInEdit.name"/>
+            </div>
+        </div>
+    </div>
+    <div>
+        <button
+                ng-disabled="!frmCreateLayer.$valid"
+                ng-click="createOrEditLayer(editData.currLayerInEdit)">
+            {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}
+        </button>
+    </div>
+</div>

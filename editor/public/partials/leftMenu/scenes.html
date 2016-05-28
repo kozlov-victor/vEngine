@@ -1,5 +1,7 @@
 <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'scenes')">{{i18n.scenes}}</h3>
 <div ng-show="leftMenuIndex=='scenes'" class="withPadding">
+
+    <!--scenes-->
     <div class="table width100">
         <div
                 ng-click="editData.currSceneInEdit=scene"
@@ -10,32 +12,53 @@
                     <div class="cell" ng-click="showEditSceneDialog(scene)">{{i18n.edit}}</div>
                     <div class="cell rightAlign" ng-click="deleteScene(scene)">X</div>
                 </div>
-
+                {{scene._layers}}
+                <!--layers-->
                 <div class="table width100">
-                    <div class="row"
-                         ng-repeat="gObj in scene._gameObjects.rs"
-                         ng-click="editData.currSceneGameObjectInEdit=gObj"
-                         ng-class="{
-                                row:1,
-                                active:gObj==editData.currSceneGameObjectInEdit
-                         }"
-                         >
-                        <div class="cell vAlign">
-                            <span>{{gObj.name}}</span>
-                        </div>
-                        <div class="cell">
-                            <div
-                                ng-style="utils.merge(
-                                        utils.getGameObjectCss(gObj),
-                                        {zoom:gObj.height>30?30/gObj.height:1}
-                                )">
+                    <div class="cell">
+                        {{i18n.layers}}
+                    </div>
+                    <div class="cell">
+                        <div class="table">
+                            <div ng-repeat="layer in scene._layers.rs" class="row">
+                                <div class="cell">
+                                    {{layer.name}}
+                                </div>
+                                <div>
+
+                                </div>
                             </div>
                         </div>
-                        <div class="cell pointer vAlign rightAlign" ng-click="deleteGameObjectFromScene(scene,gObj)">
-                            X
-                        </div>
                     </div>
+                    <button ng-click="showCreateLayerDialog(scene)">+</button>
                 </div>
+
+
+                <!--<div class="table width100">-->
+                    <!--<div class="row"-->
+                         <!--ng-repeat="gObj in scene._gameObjects.rs"-->
+                         <!--ng-click="editData.currSceneGameObjectInEdit=gObj"-->
+                         <!--ng-class="{-->
+                                <!--row:1,-->
+                                <!--active:gObj==editData.currSceneGameObjectInEdit-->
+                         <!--}"-->
+                         <!-->-->
+                        <!--<div class="cell vAlign">-->
+                            <!--<span>{{gObj.name}}</span>-->
+                        <!--</div>-->
+                        <!--<div class="cell">-->
+                            <!--<div-->
+                                <!--ng-style="utils.merge(-->
+                                        <!--utils.getGameObjectCss(gObj),-->
+                                        <!--{zoom:gObj.height>30?30/gObj.height:1}-->
+                                <!--)">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="cell pointer vAlign rightAlign" ng-click="deleteGameObjectFromScene(scene,gObj)">-->
+                            <!--X-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
 
             </div>
         </div>
