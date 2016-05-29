@@ -18,6 +18,7 @@
 
     var BaseModel = Class.extend({
         id:null,
+        protoId:null,
         name:'',
         toJsonObj: function(){
             var res = {};
@@ -162,11 +163,9 @@
             self._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
-                var id = obj.id;
-                obj = obj.clone(ve.models.GameObject);
-                obj.id = id;
-                obj.fromJsonObject(prop);
-                self._gameObjects.add(obj);
+                var objCloned = obj.clone(ve.models.GameObject);
+                objCloned.fromJsonObject(prop);
+                self._gameObjects.add(objCloned);
             });
         },
         getAllSpriteSheets:function() {
@@ -187,12 +186,10 @@
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
                 var l = ve_local.bundle.layerList.getIf({id:prop.protoId});
-                var id = l.id;
-                l = l.clone(ve.models.Layer);
-                l.fromJsonObject(prop);
-                l.id = id;
-                l._scene = self;
-                self._layers.add(l);
+                var lCloned = l.clone(ve.models.Layer);
+                lCloned.fromJsonObject(prop);
+                lCloned._scene = self;
+                self._layers.add(lCloned);
             });
         },
         getAllSpriteSheets:function() {
@@ -202,7 +199,6 @@
             });
             return dataSet;
         }
-
     });
 
     ve.models = models;

@@ -50,10 +50,14 @@ module.exports.init = function(app) {
         res.send({});
     });
 
-    app.post('/resource/deleteGameObjectFromScene',function(req,res){
-        var sceneId = req.body.sceneId;
+
+    app.post('/deleteObjectFromResource',function(req,res){
+        var resourceType = req.body.resourceType;
+        var resourceId = req.body.resourceId;
+        var objectType = req.body.objectType;
         var objectId = req.body.objectId;
-        resourcesController.deleteGameObjectFromScene(sceneId,objectId);
+        resourcesController.deleteObjectFromResource(resourceType,resourceId,objectType,objectId);
+        res.send({});
     });
 
     app.post('/gameProps/save',multipart,function(req,res){
@@ -61,13 +65,6 @@ module.exports.init = function(app) {
         res.send({});
     });
 
-    app.post('/resource/scene/gameObjectProps',function(req,res){
-        var model = getModelFromBody(req);
-        var resourceId = req.body.resourceId;
-        res.send(
-            resourcesController.createOrEditObjectInResource('scene',resourceId,'gameObjectProps',model)
-        );
-    });
 
     app.post('/createOrEditObjectInResource',function(req,res){
         var model = getModelFromBody(req);
@@ -78,7 +75,6 @@ module.exports.init = function(app) {
             resourcesController.createOrEditObjectInResource(resourceType,resourceId,objectType,model)
         );
     });
-
 
     app.get('/generate',function(req,res){
         var gen = generatorController.generate();

@@ -85,14 +85,22 @@ module.exports.delete = function(id,type){
     }
 };
 
-module.exports.deleteGameObjectFromScene = function(sceneId,gameObjectId){
-    var scenes = readResource('project/resources/scene/map.json');
-    var scene = scenes.filter(function(sc){return sc.id==sceneId})[0];
-    if (!scene) throw 'can not find scene with id ' + sceneId;
-    var gameObjectProps = scene.gameObjectProps;
-    var index = getIndexById(gameObjectProps,gameObjectId);
-    if (index!=null) gameObjectProps.splice(index,1);
-    writeResource(scenes,'project/resources/scene/map.json');
+// todo remove dependencies
+module.exports.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId){
+    console.log('deleteObjectFromResource invoked');
+    var resources = readResource('project/resources/'+resourceType+'/map.json');
+    var resource = resources.filter(function(r){return r.id==resourceId})[0];
+    console.log('found resource',resource);
+    var objectsInResource = resource[objectType];
+    var index = getIndexById(objectsInResource,objectId);
+    console.log('curr index',index);
+    if (index!=null) {
+        objectsInResource.splice(index,1);
+    }
+    else {
+        throw 'can not find object with id '+ objectId + ' in resource ' + resourceType + ':' + objectType;
+    }
+    writeResource(resources,'project/resources/'+resourceType+'/map.json');
 };
 
 module.exports.saveGameProps = function(model){

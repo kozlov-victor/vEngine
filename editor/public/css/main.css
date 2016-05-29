@@ -134,6 +134,10 @@ input[type="file"] {
     outline:1px solid green;
 }
 
+.bold {
+    font-weight: bold;
+}
+
 .closed {
     display: inline-block;
     width: 0;
@@ -208,6 +212,7 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
 
 .selected {
     background-color: rgba(3, 158, 180, 0.31);
+    outline: 2px solid rgba(3, 158, 180, 0.31);
 }
 
 .unselected {
@@ -224,6 +229,14 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
 
 .table.borderedRows>.row,.table.borderedCells>.row>.cell {
     border: 1px solid #504c4e;
+}
+
+.borderBottom {
+    border-bottom: 1px solid grey;
+}
+
+.hovered:hover {
+    background-color: #dbdbdb;
 }
 
 

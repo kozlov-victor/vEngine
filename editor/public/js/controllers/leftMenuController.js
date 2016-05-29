@@ -60,20 +60,30 @@ window.app.
         };
 
         s.deleteScene = function(item){
-            console.log('del');
-            item._gameObjects.clear();
+            item._layers.clear();
             resourceDao.deleteResource(item.id,'scene');
         };
 
-        s.deleteGameObjectFromScene = function(scene,object){
-            scene._gameObjects.removeIf({id:object.id});
-            resourceDao.deleteGameObjectFromScene(scene.id,object.id);
+        s.deleteGameObjectFromLayer = function(layer,object){
+            layer._gameObjects.removeIf({id:object.id});
+            resourceDao.deleteObjectFromResource(layer,'gameObjectProps',object.id);
         };
 
         s.showCreateLayerDialog = function(scene){
             editData.currLayerInEdit = new ve.models.Layer({sceneId:scene.id});
             editData.currLayerInEdit._scene = editData.currSceneInEdit;
             uiHelper.showDialog('frmCreateLayer');
+        };
+
+        s.showEditLayerDialog = function(layer){
+            editData.currLayerInEdit = layer.clone(ve.models.Layer);
+            uiHelper.showDialog('frmCreateLayer');
+        };
+
+        s.deleteLayer = function(scene,l){
+            l._gameObjects.clear();
+            scene._layers.removeIf({id: l.id});
+            resourceDao.deleteObjectFromResource(scene,'layerProps', l.id);
         };
 
         (function(){
@@ -85,6 +95,11 @@ window.app.
                 }).
                 then(function(){
                     if (!ve_local.bundle.sceneList.isEmpty()) s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (s.editData.currSceneInEdit) {
+                        if (s.editData.currSceneInEdit._layers.size()) {
+                            s.editData.currLayerInEdit = s.editData.currSceneInEdit._layers.get(0);
+                        }
+                    }
                     s.$apply();
                 });
 
