@@ -77,8 +77,9 @@ module.exports.init = function(app) {
     });
 
     app.get('/generate',function(req,res){
-        var gen = generatorController.generate();
-        res.send(gen);
+        generatorController.generate(function(result){
+            res.send(result)
+        });
     });
 
 };

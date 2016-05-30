@@ -1,6 +1,7 @@
 var fs = require('../base/fs');
 var minifier = require('minifier');
 var resourcesController = require('./resourcesController');
+var nodeHint = require('node-hint');
 
 var Source = function(){
     var res = [];
@@ -36,7 +37,7 @@ var Source = function(){
     };
 };
 
-module.exports.generate = function(){
+module.exports.generate = function(callback){
     var sourceMain = new Source();
     sourceMain.addFiles([
         'editor/public/js/lib/oop.js',
@@ -62,10 +63,23 @@ module.exports.generate = function(){
     fs.copyFolderSync('project/resources/spriteSheet','project/out/resources/spriteSheet');
     fs.deleteFileSync('project/out/resources/spriteSheet/map.json');
 
+    sourceMain.add('sdcds;+99;');
     fs.writeFileSync('project/out/main.js',sourceMain.get());
     fs.writeFileSync('project/out/index.html',fs.readFileSync('editor/generatorResources/static/index.html'));
 
+    console.log('check',sourceMain.get());
+
+    //nodeHint.hint(
+    //    {
+    //        source:sourceMain.get()
+    //    },
+    //    function(result){
+    //
+    //    }
+    //);
+
+    callback({ok:1});
+
     //minifier.minify('project/out/main.js');
 
-    return {generated:1};
 };
