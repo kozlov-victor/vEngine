@@ -23,6 +23,23 @@ window.app.
                 }
                 w && w.focus();
             });
+        };
+
+        s.debug = function(){
+            $http({
+                url: '/generate?r='+Math.random(),
+                method: "GET"
+            }).
+            success(function (resp) {
+                editData.isInDebugRunning = true;
+                editData.debugFrameUrl = '/out';
+            });
+        };
+
+        s.stop = function(){
+            editData.isInDebugRunning = false;
+            editData.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         }
+
 
     });

@@ -2,7 +2,7 @@
 
 window.app
 
-    .factory('editData', function () {
+    .factory('editData', function ($sce) {
 
         var res = {};
         res.currGameObjectInEdit = null;
@@ -11,6 +11,8 @@ window.app
         res.currSceneInEdit = null;
         res.currSceneGameObjectInEdit = null;
         res.currLayerInEdit = null;
+        res.isInDebugRunning = false;
+        res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
 
         return res;
     })

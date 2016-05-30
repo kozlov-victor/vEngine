@@ -215,6 +215,10 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     outline: 2px solid rgba(3, 158, 180, 0.31);
 }
 
+.selected2 {
+    background-color: #dbdbdb;
+}
+
 .unselected {
     background-color: rgba(3, 158, 180, 0.08);
 }
@@ -235,9 +239,6 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     border-bottom: 1px solid grey;
 }
 
-.hovered:hover {
-    background-color: #dbdbdb;
-}
 
 .triangleRight {
     display: inline-block;

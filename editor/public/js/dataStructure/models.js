@@ -135,10 +135,14 @@
             this._gameObject._currFrameAnimation = null;
             this._startTime = null;
         },
+
+        //delta sec = x frame
+        //duration sec = l - 1 frame
+
         update: function(time){
             if (!this._startTime) this._startTime = time;
             var delta = (time - this._startTime)%this.duration;
-            var ind = ~~((delta/this._timeForOneFrame)%this.duration);
+            var ind = ~~((this.frames.length)*delta/this.duration);
             var lastFrIndex = this._gameObject.currFrameIndex;
             if (lastFrIndex!=ind) {
                 this._gameObject.setFrameIndex(this.frames[ind]);

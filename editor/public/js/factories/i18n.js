@@ -36,7 +36,9 @@ window.app
                 scene:'scene',
                 run:'run',
                 layers: 'layers',
-                layer:'layer'
+                layer:'layer',
+                debug: 'debug',
+                stop: 'stop'
             }
         };
 

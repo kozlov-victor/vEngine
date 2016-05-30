@@ -1,6 +1,7 @@
 
 <div class="gameSceneWrapper withPaddingLeft">
     <div
+            ng-show="!editData.isInDebugRunning"
             class="gameScene relative"
             ng-controller="sceneCtrl"
             app-key-press="onKeyPress($event)"
@@ -28,3 +29,13 @@
         </div>
     </div>
 </div>
+
+<div ng-if="editData.isInDebugRunning" class="gameSceneWrapper withPaddingLeft">
+    <iframe
+            width="{{editData.gameProps.width}}"
+            height="{{editData.gameProps.height}}"
+            src="{{editData.debugFrameUrl}}"
+            frameborder="0" scrolling="no"
+            ></iframe>
+</div>
+
