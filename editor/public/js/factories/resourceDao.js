@@ -42,8 +42,10 @@ app
                 headers: {'Content-Type': undefined}
             }).
             success(function (item) {
-                if (!ResourceClass) return;
-                if (!resourceList) return;
+                if (!(ResourceClass && resourceList)) {
+                    uiHelper.closeDialog();
+                    return;
+                }
                 if (op=='create') {
                     var r = new ResourceClass(item);
                     resourceList.add(r);

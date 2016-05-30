@@ -1,6 +1,6 @@
 
 window.app.
-    controller('layerCtrl', function (
+    controller('stubCtrl', function (
         $scope,
         $http,
         $sce,

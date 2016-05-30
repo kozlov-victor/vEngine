@@ -63,6 +63,7 @@ module.exports.edit = function(item,pathToUploadedFile){
     var editItem = arr.filter(function(_itm){
         return _itm.id==item.id;
     })[0];
+    if (!editItem) throw 'can not find item with id ' + item.id + ' in ' + item.type + ' resource';
     Object.keys(item).forEach(function(key){
         editItem[key]=item[key];
     });

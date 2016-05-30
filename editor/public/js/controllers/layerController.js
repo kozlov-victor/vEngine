@@ -17,10 +17,11 @@ window.app.
         s.utils = utils;
 
 
-
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                resourceDao.createOrEditResource(s.editData.currLayerInEdit);
+                var dataToEdit = s.editData.currLayerInEdit.clone(ve.models.Layer);
+                dataToEdit.id = dataToEdit.protoId;
+                resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
                 resourceDao.createOrEditLayer(s.editData.currLayerInEdit);
             }

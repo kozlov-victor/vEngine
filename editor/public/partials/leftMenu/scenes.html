@@ -8,12 +8,16 @@
                 ng-repeat="scene in editData.sceneList.rs" class="row">
             <div class="cell width100 vAlign">
                 <div ng-class="{table:1,width100:1,selected:editData.currSceneInEdit==scene,unselected:editData.currSceneInEdit!=scene}">
-                    <div class="cell width20">{{scene.name}}</div>
+                    <div class="cell width20" ng-click="scene._opened=!scene._opened">
+                        {{scene.name}}
+                        <div ng-show="!scene._opened" class="triangleRight"></div>
+                        <div ng-show="scene._opened" class="triangleBottom"></div>
+                    </div>
                     <div class="cell" ng-click="showEditSceneDialog(scene)">{{i18n.edit}}</div>
                     <div class="cell rightAlign" ng-click="deleteScene(scene)">X</div>
                 </div>
                 <!--layers-->
-                <div class="table width100">
+                <div ng-show="scene._opened" class="table width100">
                     <div class="cell width1">
                         {{i18n.layers}}
                         <button class="block" ng-click="showCreateLayerDialog(scene)">+</button>
@@ -32,7 +36,16 @@
                                 <div class="cell">
                                     <!--game objects-->
                                     <div class="table width100">
-                                        <div class="row"
+                                        <div class="row">
+                                            <div class="cell valign">
+                                                {{i18n.gameObjects}}
+                                            </div>
+                                            <div class="cell" ng-click="layer._opened=!layer._opened">
+                                                <div ng-show="!layer._opened" class="triangleRight"></div>
+                                                <div ng-show="layer._opened" class="triangleBottom"></div>
+                                            </div>
+                                        </div>
+                                        <div ng-show="layer._opened" class="row"
                                              ng-repeat="gObj in layer._gameObjects.rs"
                                              ng-click="editData.currSceneGameObjectInEdit=gObj"
                                              ng-class="{
@@ -51,7 +64,7 @@
                                                             )">
                                                 </div>
                                             </div>
-                                            <div class="cell pointer vAlign rightAlign"
+                                            <div class="cell vAlign rightAlign"
                                                  ng-click="deleteGameObjectFromLayer(layer,gObj)">
                                                 X
                                             </div>

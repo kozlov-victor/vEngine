@@ -1,9 +1,6 @@
 var fs = require('../base/fs');
 var minifier = require('minifier');
-
-var generateResources = function(){
-
-};
+var resourcesController = require('./resourcesController');
 
 var Source = function(){
     var res = [];
@@ -51,15 +48,12 @@ module.exports.generate = function(){
         'editor/generatorResources/static/renderer.js',
         'editor/generatorResources/static/sceneManager.js'
     ]);
-    sourceMain.addTemplate('editor/generatorResources/templates/main.js',{
-        audio: fs.readFileSync('project/resources/audio/map.json'),
-        frameAnimation: fs.readFileSync('project/resources/frameAnimation/map.json'),
-        gameObject: fs.readFileSync('project/resources/gameObject/map.json'),
-        scene: fs.readFileSync('project/resources/scene/map.json'),
-        spriteSheet: fs.readFileSync('project/resources/spriteSheet/map.json'),
-        gameProps: fs.readFileSync('project/gameProps.json')
+    var templateObj = {};
+    resourcesController.RESOURCE_NAMES.forEach(function(r){
+        templateObj[r] = fs.readFileSync('project/resources/'+r+'/map.json')
     });
-
+    templateObj.gameProps = fs.readFileSync('project/gameProps.json');
+    sourceMain.addTemplate('editor/generatorResources/templates/main.js',templateObj);
 
     fs.deleteFolderSync('project/out');
     fs.createFolderSync('project/out');

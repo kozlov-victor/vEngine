@@ -239,6 +239,30 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
     background-color: #dbdbdb;
 }
 
+.triangleRight {
+    display: inline-block;
+    width:0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: none;
+    border-left: 5px solid #636363;
+}
+
+.triangleBottom {
+    display: inline-block;
+    width:0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: none;
+    border-top: 5px solid #636363;
+}
+
+[ng-click] {
+    cursor: pointer;
+}
+
 
 
 

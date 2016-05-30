@@ -6,6 +6,7 @@
         frameAnimation: '%frameAnimation%',
         gameObject: '%gameObject%',
         scene: '%scene%',
+        layer:'%layer%',
         spriteSheet: '%spriteSheet%',
         gameProps: '%gameProps%'
     });
@@ -17,8 +18,10 @@
         ve_local.renderer.init();
         if (ve_local.bundle.sceneList.size()==0) throw 'create scene first!';
         // for test only
-        ve_local.bundle.sceneList.get(0)._gameObjects.rs.forEach(function(go){
-            go._frameAnimations.get(0).play();
+        ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
+            layer._gameObjects.forEach(function(go){
+                go._frameAnimations.get(0) && go._frameAnimations.get(0).play();
+            });
         });
         sceneManager.setScene(ve_local.bundle.sceneList.get(0));
     });

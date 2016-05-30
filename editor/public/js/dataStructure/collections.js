@@ -25,7 +25,7 @@
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(this.rs[i]);
+               callback(self.rs[i]);
             }
         };
         this.indexOf = function(obj){
@@ -71,7 +71,7 @@
         };
         this.combine = function(another){
             Object.keys(another.rs).forEach(function(key){
-                self.add(key,another[key]);
+                self.add(another.rs[key]);
             });
         };
         this.asArray = function(){

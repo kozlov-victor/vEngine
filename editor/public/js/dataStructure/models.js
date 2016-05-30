@@ -8,13 +8,6 @@
         if (el[key].call) return true;
         if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
-    var merge = function(a,b){
-        var res = Object.create(a);
-        Object.keys(b).forEach(function(key){
-            res[key] = b[key];
-        });
-        return res;
-    };
 
     var BaseModel = Class.extend({
         id:null,
@@ -170,7 +163,7 @@
         },
         getAllSpriteSheets:function() {
             var dataSet = new ve.collections.Set();
-            this._gameObjects.rs.forEach(function(obj){
+            this._gameObjects.forEach(function(obj){
                 dataSet.add(obj._spriteSheet);
             });
             return dataSet;

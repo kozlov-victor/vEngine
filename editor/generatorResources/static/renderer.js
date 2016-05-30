@@ -29,15 +29,18 @@ var CanvasRenderer = function(){
             gameObj.width,
             gameObj.height
         );
+
     };
     var drawScene = function(){
         reqAnimFrame(drawScene);
         if (!scene) return;
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
-        scene._gameObjects.rs.forEach(function(obj){
-            obj.update(Date.now());
-            drawObject(obj);
+        scene._layers.forEach(function(layer){
+            layer._gameObjects.forEach(function(obj){
+                obj.update(Date.now());
+                drawObject(obj);
+            });
         });
     };
     this.setScene = function(_scene){
