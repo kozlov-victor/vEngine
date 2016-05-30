@@ -63,22 +63,21 @@ module.exports.generate = function(callback){
     fs.copyFolderSync('project/resources/spriteSheet','project/out/resources/spriteSheet');
     fs.deleteFileSync('project/out/resources/spriteSheet/map.json');
 
-    sourceMain.add('sdcds;+99;');
     fs.writeFileSync('project/out/main.js',sourceMain.get());
     fs.writeFileSync('project/out/index.html',fs.readFileSync('editor/generatorResources/static/index.html'));
 
-    console.log('check',sourceMain.get());
 
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()
     //    },
-    //    function(result){
-    //
+    //    function(result,lintData){
+    //        callback(lintData);
     //    }
     //);
 
-    callback({ok:1});
+    callback({});
+
 
     //minifier.minify('project/out/main.js');
 

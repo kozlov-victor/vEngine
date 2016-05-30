@@ -8,7 +8,9 @@ var setup = function(app){
     app.set('view engine', 'html');
     app.use(session({
         key: 'session_cookie_name',
-        secret: 'session_cookie_secret'
+        secret: 'session_cookie_secret' ,
+        resave: true,
+        saveUninitialized: true
     }));
     app.use(express.static('editor/public'));
     app.use(express.static('project'));
