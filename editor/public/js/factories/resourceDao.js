@@ -7,6 +7,7 @@ app
         editData,
         uiHelper
     ){
+        var self = this;
         this.loadResources = function(){
             return new Promise(function(resolve){
                 $http({
@@ -41,6 +42,8 @@ app
                 headers: {'Content-Type': undefined}
             }).
             success(function (item) {
+                if (!ResourceClass) return;
+                if (!resourceList) return;
                 if (op=='create') {
                     var r = new ResourceClass(item);
                     resourceList.add(r);
@@ -85,14 +88,14 @@ app
                 headers: {'Content-Type': undefined}
             })
         };
-        this.createOrEditObjectInResource = function(resource,objectType,object,callback){
+        this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
             $http({
                 url: '/createOrEditObjectInResource',
                 method: "POST",
                 data: {
                     model:JSON.stringify(object),
-                    resourceId:resource.id,
-                    resourceType:resource.type,
+                    resourceId:resourceId,
+                    resourceType:resourceType,
                     objectType:objectType
                 },
                 headers: {'Content-Type': 'application/json'}
@@ -100,6 +103,29 @@ app
             success(function (resp) {
                 callback && callback(resp);
             });
+        };
+        this.createOrEditLayer = function(l){
+            self.createOrEditResource(l,ve.models.Layer,ve_local.bundle.layerList,
+                function(item){
+                    if (item.type=='create') {
+                        self.createOrEditObjectInResource(
+                            editData.currSceneInEdit.type,
+                            editData.currSceneInEdit.id,
+                            'layerProps',
+                            {
+                                type:'layer',
+                                protoId:item.r.id
+                            },
+                            function(resp){
+                                var l = editData.currLayerInEdit.clone(ve.models.Layer);
+                                l.id = resp.id;
+                                l.protoId = item.r.id;
+                                l._scene = editData.currSceneInEdit;
+                                editData.currSceneInEdit._layers.add(l);
+                            }
+                        );
+                    }
+                });
         };
         return this;
     });

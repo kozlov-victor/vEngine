@@ -16,21 +16,15 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
 
+
+
         s.createOrEditLayer = function(){
-            resourceDao.createOrEditResource(s.editData.currLayerInEdit,ve.models.Layer,ve_local.bundle.layerList,
-                function(item){
-                    if (item.type=='create') {
-                        resourceDao.createOrEditObjectInResource(editData.currSceneInEdit,'layerProps',{
-                            type:'layer',
-                            protoId:item.r.id
-                        },function(resp){
-                            var l = editData.currLayerInEdit.clone(ve.models.Layer);
-                            l.id = item.r.id;
-                            l._scene = editData.currSceneInEdit;
-                            editData.currSceneInEdit._layers.add(l);
-                        });
-                    }
-                });
+            if (s.editData.currLayerInEdit.id) { // edit resource
+                resourceDao.createOrEditResource(s.editData.currLayerInEdit);
+            } else { // create object in resource
+                resourceDao.createOrEditLayer(s.editData.currLayerInEdit);
+            }
+
         };
 
     });

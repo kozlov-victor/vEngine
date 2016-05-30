@@ -75,7 +75,8 @@ window.app.
             uiHelper.showDialog('frmCreateLayer');
         };
 
-        s.showEditLayerDialog = function(layer){
+        s.showEditLayerDialog = function(e,layer){
+            e.stopPropagation();
             editData.currLayerInEdit = layer.clone(ve.models.Layer);
             uiHelper.showDialog('frmCreateLayer');
         };

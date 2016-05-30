@@ -16,7 +16,7 @@
     <div>
         <button
                 ng-disabled="!frmCreateLayer.$valid"
-                ng-click="createOrEditLayer(editData.currLayerInEdit)">
+                ng-click="createOrEditLayer()">
             {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}
         </button>
     </div>

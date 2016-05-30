@@ -21,7 +21,7 @@ window.app.
                 else {
                     w.location.reload();
                 }
-                w.focus();
+                w && w.focus();
             });
         }
 

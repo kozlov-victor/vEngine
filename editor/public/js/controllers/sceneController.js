@@ -19,9 +19,13 @@ window.app.
         s.createOrEditScene = function(){
             resourceDao.
                 createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList,
-                function(){
+                function(resp){
                     if (ve_local.bundle.sceneList.size()==1) {
                         s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    }
+                    if (resp.type=='create') {
+                        // todo currLayerInEdit can not be null
+                        //resourceDao.createOrEditLayer(new ve.models.Layer({name:'newLayer'}));
                     }
                 });
         };
@@ -52,11 +56,16 @@ window.app.
            if (edited) {
                clearTimeout(tid);
                tid = setTimeout(function(){
-                   resourceDao.createOrEditObjectInResource(editData.currSceneInEdit,'gameObjectProps',{
-                       posX:editData.currSceneGameObjectInEdit.posX,
-                       posY:editData.currSceneGameObjectInEdit.posY,
-                       id:editData.currSceneGameObjectInEdit.id
-                   });
+                   resourceDao.createOrEditObjectInResource(
+                       editData.currSceneInEdit.type,
+                       editData.currSceneInEdit.id,
+                       'gameObjectProps',
+                       {
+                            posX:editData.currSceneGameObjectInEdit.posX,
+                            posY:editData.currSceneGameObjectInEdit.posY,
+                            id:editData.currSceneGameObjectInEdit.id
+                       }
+                   );
                },200);
            }
         };
@@ -66,12 +75,17 @@ window.app.
             switch (draggable) {
                 case 'gameObjFromLeftPanel':
                     console.log('currLayer',editData.currLayerInEdit);
-                    resourceDao.createOrEditObjectInResource(editData.currLayerInEdit,'gameObjectProps',{
-                        type:'gameObject',
-                        posX:e.x,
-                        posY:e.y,
-                        protoId:obj.id
-                    },function(resp){
+                    resourceDao.createOrEditObjectInResource(
+                        editData.currLayerInEdit.type,
+                        editData.currLayerInEdit.protoId,
+                        'gameObjectProps',
+                        {
+                            type:'gameObject',
+                            posX:e.x,
+                            posY:e.y,
+                            protoId:obj.id
+                        },
+                        function(resp){
                         var newGameObj = obj.clone(ve.models.GameObject);
                         newGameObj.fromJsonObject({posX:e.x,posY:e.y,protoId:newGameObj.id,id:resp.id});
                         editData.currLayerInEdit._gameObjects.add(newGameObj);
@@ -79,11 +93,15 @@ window.app.
                     });
                     break;
                 case 'gameObjFromSelf':
-                    resourceDao.createOrEditObjectInResource(editData.currLayerInEdit,'gameObjectProps',{
-                        posX:e.x,
-                        posY:e.y,
-                        id:obj.id
-                    });
+                    resourceDao.createOrEditObjectInResource(
+                        editData.currLayerInEdit.type,
+                        editData.currLayerInEdit.protoId,
+                        'gameObjectProps',{
+                            posX:e.x,
+                            posY:e.y,
+                            id:obj.id
+                        }
+                    );
                     obj.fromJsonObject({posX:e.x,posY:e.y});
                     editData.currSceneGameObjectInEdit = obj;
                     break;
