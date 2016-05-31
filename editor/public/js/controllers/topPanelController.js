@@ -27,7 +27,7 @@ window.app.
 
         s.debug = function(){
             $http({
-                url: '/generate?r='+Math.random(),
+                url: '/generate?debug=1&r='+Math.random(),
                 method: "GET"
             }).
             success(function (resp) {

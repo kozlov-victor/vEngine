@@ -37,7 +37,7 @@ var Source = function(){
     };
 };
 
-module.exports.generate = function(callback){
+module.exports.generate = function(opts,callback){
     var sourceMain = new Source();
     sourceMain.addFiles([
         'editor/public/js/lib/oop.js',
@@ -49,6 +49,9 @@ module.exports.generate = function(callback){
         'editor/generatorResources/static/renderer.js',
         'editor/generatorResources/static/sceneManager.js'
     ]);
+    if (opts.debug) {
+        sourceMain.addFile('editor/generatorResources/static/debug.js')
+    }
     var templateObj = {};
     resourcesController.RESOURCE_NAMES.forEach(function(r){
         templateObj[r] = fs.readFileSync('project/resources/'+r+'/map.json')

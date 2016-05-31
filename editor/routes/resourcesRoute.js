@@ -2,6 +2,7 @@
 
 var express = require('express');
 var session = require('express-session');
+var url = require('url');
 
 var multipart = require('connect-multiparty')();
 
@@ -77,7 +78,10 @@ module.exports.init = function(app) {
     });
 
     app.get('/generate',function(req,res){
-        generatorController.generate(function(result){
+        var opts = {};
+        var queryData = url.parse(req.url, true).query;
+        opts.debug = !!queryData.debug;
+        generatorController.generate(opts,function(result){
             res.send(result)
         });
     });
