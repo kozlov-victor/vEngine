@@ -91,7 +91,7 @@ module.exports.deleteObjectFromResource = function(resourceType,resourceId,objec
     console.log('deleteObjectFromResource invoked');
     var resources = readResource('project/resources/'+resourceType+'/map.json');
     var resource = resources.filter(function(r){return r.id==resourceId})[0];
-    console.log('found resource',resource);
+    if (!resource) throw 'can not find resource with id ' + resourceId + ' in ' + resourceType + ' resource';
     var objectsInResource = resource[objectType];
     var index = getIndexById(objectsInResource,objectId);
     console.log('curr index',index);

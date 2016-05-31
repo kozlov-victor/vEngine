@@ -65,8 +65,8 @@ window.app.
         };
 
         s.deleteGameObjectFromLayer = function(layer,object){
-            layer._gameObjects.removeIf({id:object.id});
-            resourceDao.deleteObjectFromResource(layer,'gameObjectProps',object.id);
+            resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
+            layer._gameObjects.removeIf({id:object.protoId});
         };
 
         s.showCreateLayerDialog = function(scene){
@@ -84,7 +84,7 @@ window.app.
         s.deleteLayer = function(scene,l){
             l._gameObjects.clear();
             scene._layers.removeIf({id: l.id});
-            resourceDao.deleteObjectFromResource(scene,'layerProps', l.id);
+            resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
         };
 
         (function(){

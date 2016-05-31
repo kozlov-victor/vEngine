@@ -58,12 +58,12 @@ app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
-        this.deleteObjectFromResource = function(resource,objectType,objectId){
+        this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId){
             $http({
                 url: '/deleteObjectFromResource',
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
-                data: {resourceType:resource.type,resourceId:resource.id,objectType:objectType,objectId:objectId}
+                data: {resourceType:resourceType,resourceId:resourceId,objectType:objectType,objectId:objectId}
             }).
             success(function (res) {
 
