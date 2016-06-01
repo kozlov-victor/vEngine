@@ -16,9 +16,9 @@
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
-        if (ve_local.bundle.sceneList.size()==0) {
-           debug.error('at least one scene must be created');
-        }
+
+        if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
+
         // for test only
         ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(go){

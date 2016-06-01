@@ -38,9 +38,8 @@
                 }
             });
         },
-        clone: function(Class){
-            var self =this;
-            return new Class(self.toJsonObj());
+        clone: function(){
+            return new this.constructor(this.toJsonObj());
         },
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
