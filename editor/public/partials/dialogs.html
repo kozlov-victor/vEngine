@@ -10,28 +10,28 @@
             <form
                     name="frmCreateSpriteSheet"
                     ng-controller="spriteSheetCtrl"
-                    ng-show="uiHelper.dialogName=='frmCreateSpriteSheet'"
+                    ng-if="uiHelper.dialogName=='frmCreateSpriteSheet'"
                     ng-include src="'partials/dialogs/dialogCreateSpriteSheet.html'"
                     novalidate></form>
 
             <form
                     name="frmCreateGameObject"
                     ng-controller="gameObjectCtrl"
-                    ng-show="uiHelper.dialogName=='frmCreateGameObject'"
+                    ng-if="uiHelper.dialogName=='frmCreateGameObject'"
                     ng-include src="'partials/dialogs/dialogCreateGameObject.html'"
                     novalidate></form>
 
             <form
                     name="frmCreateAnimation"
                     ng-controller="animationCtrl"
-                    ng-show="uiHelper.dialogName=='frmCreateAnimation'"
+                    ng-if="uiHelper.dialogName=='frmCreateAnimation'"
                     ng-include src="'partials/dialogs/dialogCreateAnimation.html'"
                     novalidate></form>
 
             <form
                     name="frmCreateScene"
                     ng-controller="sceneCtrl"
-                    ng-show="uiHelper.dialogName=='frmCreateScene'"
+                    ng-if="uiHelper.dialogName=='frmCreateScene'"
                     ng-include src="'partials/dialogs/dialogCreateScene.html'"
                     novalidate></form>
 
@@ -39,7 +39,7 @@
             <form
                     name="frmCreateLayer"
                     ng-controller="layerCtrl"
-                    ng-show="uiHelper.dialogName=='frmCreateLayer'"
+                    ng-if="uiHelper.dialogName=='frmCreateLayer'"
                     ng-include src="'partials/dialogs/dialogCreateLayer.html'"
                     novalidate></form>
 

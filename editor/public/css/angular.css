@@ -17,3 +17,11 @@ ng\:form {
 .ng-anchor {
     position:absolute;
 }
+
+.ng-valid{
+
+}
+
+form.ng-dirty input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
+    color: #c10000;
+}

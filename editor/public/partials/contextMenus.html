@@ -1,0 +1,21 @@
+
+<div class="shadow" ng-if="!!uiHelper.ctxMenu.name" ng-click="uiHelper.ctxMenu.name=''"></div>
+
+<div
+    class="fixed contextMenu"
+    ng-style="
+        {
+            left:uiHelper.ctxMenu.x+'px',
+            top:uiHelper.ctxMenu.y+'px'
+        }"
+    ng-if="!!uiHelper.ctxMenu.name"
+>
+
+    <div
+            ng-if="uiHelper.ctxMenu.name=='ctxTest'"
+            ng-include
+            src="'partials/contextMenus/ctxTest.html'">
+    </div>
+
+
+</div>

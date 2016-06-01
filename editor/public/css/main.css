@@ -90,6 +90,10 @@ img {
     display: inline-block;
 }
 
+.fixed {
+    position: fixed;
+}
+
 .rightAlign {
     text-align: right;
 }
@@ -185,13 +189,6 @@ input[type="file"] {
     cursor:pointer;
 }
 
-.ng-valid{
-
-}
-input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
-    color: #c10000;
-}
-
 .gameSceneWrapper {
     max-width: calc(80vw - 20px);
     max-height: 90vh;
@@ -262,6 +259,23 @@ input.ng-invalid,textarea.ng-invalid,select.ng-invalid{
 
 [ng-click] {
     cursor: pointer;
+}
+
+
+.contextMenu {
+    padding: 5px;
+    background-color: #f4f4f4;
+    border: 1px solid #949494;
+    z-index: 120;
+}
+
+.menu li {
+    padding: 0;
+    display: block;
+}
+
+.menu li:hover {
+    background-color: #cdf7ff;
 }
 
 
