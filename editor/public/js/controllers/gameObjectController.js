@@ -57,4 +57,11 @@ window.app.
             uiHelper.showDialog('frmCreateAnimation');
         };
 
+        s.deleteGameObjectFromCtxMenu = function(object){
+            var layer = editData.currLayerInEdit;
+            resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
+            layer._gameObjects.removeIf({id:object.id});
+            uiHelper.closeContextMenu();
+        }
+
     });

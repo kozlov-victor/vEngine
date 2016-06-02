@@ -1,6 +1,7 @@
 'use strict';
 
 $(function () {
+    //document.body.oncontextmenu = function(){return false};
     $(document).on('click','button[data-action="upload"]',function(){
         var input = $(this).next('input[type="file"]');
         input.click();

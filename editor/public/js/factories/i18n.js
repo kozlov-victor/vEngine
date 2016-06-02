@@ -39,7 +39,8 @@ window.app
                 layer:'layer',
                 debug: 'debug',
                 stop: 'stop',
-                addGameObject:'add game object'
+                addGameObject:'add game object',
+                nothingToAdd:'nothing to add'
             }
         };
 

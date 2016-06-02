@@ -66,7 +66,7 @@ window.app.
 
         s.deleteGameObjectFromLayer = function(layer,object){
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
-            layer._gameObjects.removeIf({id:object.protoId});
+            layer._gameObjects.removeIf({id:object.id});
         };
 
         s.showCreateLayerDialog = function(scene){
