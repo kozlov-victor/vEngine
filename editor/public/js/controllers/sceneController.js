@@ -57,8 +57,8 @@ window.app.
                clearTimeout(tid);
                tid = setTimeout(function(){
                    resourceDao.createOrEditObjectInResource(
-                       editData.currSceneInEdit.type,
-                       editData.currSceneInEdit.id,
+                       editData.currLayerInEdit.type,
+                       editData.currLayerInEdit.protoId,
                        'gameObjectProps',
                        {
                             posX:editData.currSceneGameObjectInEdit.posX,
