@@ -1,5 +1,6 @@
 
-<div class="shadow" ng-if="!!uiHelper.ctxMenu.name" ng-click="uiHelper.ctxMenu.name=''"></div>
+<div
+        class="shadow" ng-if="!!uiHelper.ctxMenu.name" ng-click="uiHelper.ctxMenu.name=''"></div>
 
 <div
     class="fixed contextMenu"
@@ -12,10 +13,15 @@
 >
 
     <div
-            ng-if="uiHelper.ctxMenu.name=='ctxTest'"
-            ng-include
-            src="'partials/contextMenus/ctxTest.html'">
+            ng-controller="sceneCtrl"
+            ng-if="uiHelper.ctxMenu.name=='ctxScene'"
+            ng-include src="'partials/contextMenus/ctxScene.html'">
     </div>
 
+    <div
+            ng-controller="gameObjectCtrl"
+            ng-if="uiHelper.ctxMenu.name=='ctxGameObject'"
+            ng-include src="'partials/contextMenus/ctxScene.html'">
+    </div>
 
 </div>

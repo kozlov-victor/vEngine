@@ -13,7 +13,7 @@ app.factory('appDraggableUtil',function(){
     return {
         require: 'ngModel',
         restrict: 'A',
-        replace: true,
+        replace: false,
         scope: {
             ngModel : '='
         },

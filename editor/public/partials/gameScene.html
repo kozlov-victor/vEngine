@@ -1,6 +1,7 @@
 
 <div
-        app-context-menu="ctxTest"
+        app-context-menu="ctxScene"
+        ng-model="uiHelper"
         class="gameSceneWrapper withPaddingLeft"
         >
     <div
@@ -16,6 +17,7 @@
             }">
         <div
                 app-draggable="gameObjFromSelf"
+                app-context-menu="ctxGameObject"
                 ng-model="item"
                 ng-repeat="item in editData.currLayerInEdit._gameObjects.rs"
                 ng-click="editData.currSceneGameObjectInEdit=item"

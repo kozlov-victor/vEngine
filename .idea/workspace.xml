@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="script generator with scenes">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/directives/appFileUpload.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/directives/appKeyPress.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/directives/appKeyUp.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/directives/appValidator.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/partials/contextMenus.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/editor/public/js/directives/directives.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gruntfile.js" afterPath="$PROJECT_DIR$/Gruntfile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/css/angular.css" afterPath="$PROJECT_DIR$/editor/public/css/angular.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/partials/dialogs.html" afterPath="$PROJECT_DIR$/editor/public/partials/dialogs.html" />
+    <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/css/contextMenu.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxGameObject.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxScene.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/editor/public/js/factories/uiHelper.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js" afterPath="$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js" afterPath="$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/partials/contextMenus.html" afterPath="$PROJECT_DIR$/editor/public/partials/contextMenus.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/partials/gameScene.html" afterPath="$PROJECT_DIR$/editor/public/partials/gameScene.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/factories/i18n.js" afterPath="$PROJECT_DIR$/editor/public/js/factories/i18n.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/css/main.css" afterPath="$PROJECT_DIR$/editor/public/css/main.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/main.html" afterPath="$PROJECT_DIR$/editor/public/main.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/frameAnimation/map.json" afterPath="$PROJECT_DIR$/project/resources/frameAnimation/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/project/resources/gameObject/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/scene/map.json" afterPath="$PROJECT_DIR$/project/resources/scene/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/spriteSheet/map.json" afterPath="$PROJECT_DIR$/project/resources/spriteSheet/map.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/views/main/main.html" afterPath="$PROJECT_DIR$/editor/views/main/main.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/controllers/sceneController.js" afterPath="$PROJECT_DIR$/editor/public/js/controllers/sceneController.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/factories/utils.js" afterPath="$PROJECT_DIR$/editor/public/js/factories/utils.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -49,37 +44,7 @@
         <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="84" column="19" selection-start-line="80" selection-start-column="16" selection-end-line="84" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="appContextMenu.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dialogs.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/partials/dialogs.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="27" selection-start-line="0" selection-start-column="27" selection-end-line="0" selection-end-column="27" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="gameScene.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/partials/gameScene.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="2" column="33" selection-start-line="2" selection-start-column="33" selection-end-line="2" selection-end-column="33" />
+              <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -89,27 +54,77 @@
         <entry file="file://$PROJECT_DIR$/editor/public/js/factories/utils.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="27" column="32" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
+              <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/main.html">
+      <file leaf-file-name="uiHelper.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editor/public/js/factories/uiHelper.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="20" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
+              <caret line="28" column="39" selection-start-line="28" selection-start-column="39" selection-end-line="28" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ctxTest.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html">
+      <file leaf-file-name="gameScene.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editor/public/partials/gameScene.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-5.625">
+              <caret line="9" column="36" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="appContextMenu.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.19480519">
+              <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ctxScene.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus/ctxScene.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-9.375">
+              <caret line="15" column="12" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ctxGameObject.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus/ctxGameObject.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.25">
+              <caret line="2" column="33" selection-start-line="2" selection-start-column="33" selection-end-line="2" selection-end-column="33" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gameObjects.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editor/public/partials/leftMenu/gameObjects.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-14.375">
+              <caret line="23" column="14" selection-start-line="3" selection-start-column="8" selection-end-line="23" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sceneController.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/sceneController.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="15" selection-start-line="0" selection-start-column="11" selection-end-line="0" selection-end-column="15" />
+              <caret line="85" column="59" selection-start-line="85" selection-start-column="59" selection-end-line="85" selection-end-column="59" />
               <folding />
             </state>
           </provider>
@@ -118,28 +133,8 @@
       <file leaf-file-name="contextMenus.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.css" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/editor/public/css/main.css">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8113208">
-              <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="appValidator.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appValidator.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state vertical-scroll-proportion="-13.75">
+              <caret line="22" column="56" selection-start-line="22" selection-start-column="43" selection-end-line="22" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -150,6 +145,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="CSS File" />
         <option value="JavaScript File" />
         <option value="Html5" />
       </list>
@@ -174,16 +170,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/editor/public/partials/topPanel.html" />
-        <option value="$PROJECT_DIR$/project/out/main.js" />
-        <option value="$PROJECT_DIR$/editor/public/partials/leftMenu/gameObjects.html" />
-        <option value="$PROJECT_DIR$/project/resources/layer/map.json" />
-        <option value="$PROJECT_DIR$/project/resources/scene/map.json" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/sceneController.js" />
-        <option value="$PROJECT_DIR$/package.json.js" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/tasks/concat.js" />
-        <option value="$PROJECT_DIR$/editor/views/main/main.html" />
         <option value="$PROJECT_DIR$/editor/public/js/main.js" />
         <option value="$PROJECT_DIR$/server.js" />
         <option value="$PROJECT_DIR$/editor/public/js/controllers/stub.js" />
@@ -215,16 +203,24 @@
         <option value="$PROJECT_DIR$/editor/public/js/directives/appKeyUp.js" />
         <option value="$PROJECT_DIR$/editor/public/js/directives/appKeyPress.js" />
         <option value="$PROJECT_DIR$/editor/public/js/directives/appFileUpload.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js" />
         <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/contextMenus.html" />
-        <option value="$PROJECT_DIR$/editor/public/partials/gameScene.html" />
-        <option value="$PROJECT_DIR$/editor/public/main.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/utils.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js" />
         <option value="$PROJECT_DIR$/editor/public/partials/dialogs.html" />
-        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus.html" />
-        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html" />
+        <option value="$PROJECT_DIR$/cm.html" />
+        <option value="$PROJECT_DIR$/editor/views/main/main.html" />
+        <option value="$PROJECT_DIR$/editor/public/css/contextMenu.css" />
         <option value="$PROJECT_DIR$/editor/public/css/main.css" />
+        <option value="$PROJECT_DIR$/editor/public/main.html" />
+        <option value="$PROJECT_DIR$/editor/public/js/factories/i18n.js" />
+        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html" />
+        <option value="$PROJECT_DIR$/editor/public/js/controllers/sceneController.js" />
+        <option value="$PROJECT_DIR$/editor/public/js/factories/utils.js" />
+        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxScene.html" />
+        <option value="$PROJECT_DIR$/editor/public/js/factories/uiHelper.js" />
+        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxGameObject.html" />
+        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus.html" />
+        <option value="$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js" />
+        <option value="$PROJECT_DIR$/editor/public/partials/gameScene.html" />
+        <option value="$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js" />
       </list>
     </option>
   </component>
@@ -268,7 +264,8 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -338,6 +335,32 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="partials" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="editor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="partials" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="leftMenu" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -489,28 +512,9 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -518,6 +522,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -840,7 +845,8 @@
       <workItem from="1464687731271" duration="1675000" />
       <workItem from="1464725163012" duration="5098000" />
       <workItem from="1464771067976" duration="6486000" />
-      <workItem from="1464794255991" duration="211000" />
+      <workItem from="1464794255991" duration="359000" />
+      <workItem from="1464873560055" duration="8224000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1461599127469</created>
@@ -1070,11 +1076,17 @@
       <option name="project" value="LOCAL" />
       <updated>1464622485006</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="context menu">
+      <created>1464795563948</created>
+      <option name="number" value="00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1464795563948</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="188961000" />
+    <option name="totallyTimeSpent" value="197333000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1096,23 +1108,23 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36689815" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24899058" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23481782" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32962668" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22239873" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3287037" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6126543" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1147,7 +1159,8 @@
     <MESSAGE value="added grunt task manager&#10;" />
     <MESSAGE value="added grunt task manager&#10;node modules" />
     <MESSAGE value="script generator with scenes" />
-    <option name="LAST_COMMIT_MESSAGE" value="script generator with scenes" />
+    <MESSAGE value="context menu" />
+    <option name="LAST_COMMIT_MESSAGE" value="context menu" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1156,55 +1169,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/editor/public/js/dataStructure/collections.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="75" column="10" selection-start-line="75" selection-start-column="10" selection-end-line="75" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="3" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/node-hint/node-hint.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="59" column="39" selection-start-line="59" selection-start-column="31" selection-end-line="59" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/base/fs.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/controllers/mainController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/utils/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="28" selection-start-line="7" selection-start-column="28" selection-end-line="7" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/editor/base/routes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1452,38 +1416,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/gameScene.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="33" selection-start-line="2" selection-start-column="33" selection-end-line="2" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="20" selection-start-line="25" selection-start-column="20" selection-end-line="25" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="84" column="19" selection-start-line="80" selection-start-column="16" selection-end-line="84" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/editor/public/partials/dialogs.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0">
@@ -1492,18 +1424,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus.html">
+    <entry file="file://$PROJECT_DIR$/editor/views/main/main.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+        <state vertical-scroll-proportion="-4.375">
+          <caret line="7" column="69" selection-start-line="7" selection-start-column="69" selection-end-line="7" selection-end-column="69" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html">
+    <entry file="file://$PROJECT_DIR$/editor/public/css/contextMenu.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="15" selection-start-line="0" selection-start-column="11" selection-end-line="0" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="23" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="18" column="27" selection-start-line="18" selection-start-column="27" selection-end-line="18" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/main.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-15.0">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/js/factories/i18n.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="29" selection-start-line="41" selection-start-column="16" selection-end-line="41" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/partials/leftMenu/gameObjects.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-14.375">
+          <caret line="23" column="14" selection-start-line="3" selection-start-column="8" selection-end-line="23" selection-end-column="14" />
           <folding />
         </state>
       </provider>
@@ -1511,15 +1475,71 @@
     <entry file="file://$PROJECT_DIR$/editor/public/js/factories/utils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="32" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
+          <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/css/main.css">
+    <entry file="file://$PROJECT_DIR$/editor/public/js/factories/uiHelper.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8113208">
-          <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="28" column="39" selection-start-line="28" selection-start-column="39" selection-end-line="28" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/sceneController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="85" column="59" selection-start-line="85" selection-start-column="59" selection-end-line="85" selection-end-column="59" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus/ctxScene.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.375">
+          <caret line="15" column="12" selection-start-line="15" selection-start-column="12" selection-end-line="15" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.75">
+          <caret line="22" column="56" selection-start-line="22" selection-start-column="43" selection-end-line="22" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus/ctxGameObject.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.25">
+          <caret line="2" column="33" selection-start-line="2" selection-start-column="33" selection-end-line="2" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="22" selection-start-line="15" selection-start-column="22" selection-end-line="15" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/partials/gameScene.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.625">
+          <caret line="9" column="36" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.19480519">
+          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
           <folding />
         </state>
       </provider>

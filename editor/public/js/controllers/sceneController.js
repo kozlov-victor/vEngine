@@ -70,27 +70,30 @@ window.app.
            }
         };
 
+        var _addNewGameObject = function(obj,x,y){
+            resourceDao.createOrEditObjectInResource(
+                editData.currLayerInEdit.type,
+                editData.currLayerInEdit.protoId,
+                'gameObjectProps',
+                {
+                    type:'gameObject',
+                    posX:x,
+                    posY:y,
+                    protoId:obj.id
+                },
+                function(resp){
+                    var newGameObj = obj.clone(ve.models.GameObject);
+                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.id});
+                    editData.currLayerInEdit._gameObjects.add(newGameObj);
+                    editData.currSceneGameObjectInEdit = newGameObj;
+                });
+        };
+
         s.onGameObjectDropped = function(obj,draggable,e) {
 
             switch (draggable) {
                 case 'gameObjFromLeftPanel':
-                    console.log('currLayer',editData.currLayerInEdit);
-                    resourceDao.createOrEditObjectInResource(
-                        editData.currLayerInEdit.type,
-                        editData.currLayerInEdit.protoId,
-                        'gameObjectProps',
-                        {
-                            type:'gameObject',
-                            posX:e.x,
-                            posY:e.y,
-                            protoId:obj.id
-                        },
-                        function(resp){
-                        var newGameObj = obj.clone(ve.models.GameObject);
-                        newGameObj.fromJsonObject({posX:e.x,posY:e.y,protoId:newGameObj.id,id:resp.id});
-                        editData.currLayerInEdit._gameObjects.add(newGameObj);
-                        editData.currSceneGameObjectInEdit = newGameObj;
-                    });
+                    _addNewGameObject(obj, e.x, e.y);
                     break;
                 case 'gameObjFromSelf':
                     resourceDao.createOrEditObjectInResource(
@@ -107,5 +110,11 @@ window.app.
                     break;
             }
         };
+
+
+        s.addGameObjectFromCtxMenu = function(gameObject,x,y){
+            _addNewGameObject(gameObject, x, y);
+            uiHelper.closeContextMenu();
+        }
 
     });
