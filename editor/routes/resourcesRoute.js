@@ -18,6 +18,9 @@ module.exports.init = function(app) {
     app.get('/',function(req,res){
         res.render('main/main',utils.parametrize({}));
     });
+    app.get('/editor',function(req,res){
+        res.render('main/editor',utils.parametrize({}));
+    });
 
     var getModelFromBody = function(req) {
         return JSON.parse((req.body && req.body.model)||'{}');

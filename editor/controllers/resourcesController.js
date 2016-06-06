@@ -3,7 +3,7 @@ var fs = require('../base/fs');
 var utils = require('../utils/utils');
 
 module.exports.RESOURCE_NAMES =
-    'audio,script,spriteSheet,gameObject,frameAnimation,scene,layer'
+    'audio,script,spriteSheet,gameObject,frameAnimation,scene,layer,behaviour'
     .split(',');
 
 var readResource = function(path) {

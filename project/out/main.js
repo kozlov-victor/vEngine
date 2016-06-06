@@ -238,9 +238,9 @@ window.debug.error = function(err){
                 }
             });
         },
-        clone: function(Class){
+        clone: function(){
             var self =this;
-            return new Class(self.toJsonObj());
+            return new this.constructor(self.toJsonObj());
         },
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
@@ -281,6 +281,8 @@ window.debug.error = function(err){
     models.GameObject = BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
+        behaviourId:null,
+        _behaviour: null,
         _spriteSheet:null,
         posX:0,
         posY:0,
@@ -303,6 +305,7 @@ window.debug.error = function(err){
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
+            if (this.behaviourId) this._behaviour = ve_local.Bundle.behaviourList.getIf({id:this.behaviourId});
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
@@ -335,9 +338,6 @@ window.debug.error = function(err){
             this._gameObject._currFrameAnimation = null;
             this._startTime = null;
         },
-
-        //delta sec = x frame
-        //duration sec = l - 1 frame
 
         update: function(time){
             if (!this._startTime) this._startTime = time;
@@ -398,6 +398,11 @@ window.debug.error = function(err){
         }
     });
 
+    models.Behaviour = BaseModel.extend({
+        type:'behaviour',
+        code:''
+    });
+
     ve.models = models;
 
 })();
@@ -412,6 +417,7 @@ window.debug.error = function(err){
         this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
         this.layerList = new ve.collections.List();
+        this.behaviourList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -546,10 +552,10 @@ var SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [{"name":"a","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"6805_1464888916058_9"},{"name":"aa","frames":[0,1,2,3],"type":"frameAnimation","duration":1000,"id":"6694_1464902687566_12"}],
-        gameObject: [{"spriteSheetId":"1903_1464888779874_0","width":64,"height":64,"name":"d","type":"gameObject","frameAnimationIds":["6805_1464888916058_9"],"id":"8251_1464888785680_1"},{"spriteSheetId":"9295_1464902639310_9","width":62,"height":56,"name":"m","type":"gameObject","frameAnimationIds":["6694_1464902687566_12"],"id":"1134_1464902649272_10"}],
+        frameAnimation: [{"name":"aa","frames":[0,1,2,3],"type":"frameAnimation","duration":1000,"id":"6694_1464902687566_12"},{"name":"a","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"7004_1465166374583_3"}],
+        gameObject: [{"spriteSheetId":"1903_1464888779874_0","width":64,"height":64,"name":"d","type":"gameObject","frameAnimationIds":["7004_1465166374583_3"],"id":"8251_1464888785680_1","currFrameIndex":1},{"spriteSheetId":"9295_1464902639310_9","width":62,"height":56,"name":"m","type":"gameObject","frameAnimationIds":["6694_1464902687566_12"],"id":"1134_1464902649272_10"}],
         scene: [{"name":"a","type":"scene","layerProps":[{"type":"layer","protoId":"4324_1464888834773_3","id":"9849_1464888834807_4"}],"id":"0778_1464888830654_2"}],
-        layer:[{"name":"a","type":"layer","gameObjectProps":[{"type":"gameObject","posX":65,"posY":58,"protoId":"8251_1464888785680_1","id":"6080_1464901512325_1"},{"type":"gameObject","posX":145,"posY":29,"protoId":"1134_1464902649272_10","id":"9551_1464902657811_11"},{"type":"gameObject","posX":274,"posY":75,"protoId":"1134_1464902649272_10","id":"6725_1464902713648_13"}],"id":"4324_1464888834773_3"}],
+        layer:[{"name":"a","type":"layer","gameObjectProps":[{"type":"gameObject","posX":264,"posY":98,"protoId":"8251_1464888785680_1","id":"6080_1464901512325_1"},{"type":"gameObject","posX":139,"posY":17,"protoId":"1134_1464902649272_10","id":"9551_1464902657811_11"},{"type":"gameObject","posX":566,"posY":40,"protoId":"8251_1464888785680_1","id":"7674_1465166405672_5"}],"id":"4324_1464888834773_3"}],
         spriteSheet: [{"resourcePath":"resources/spriteSheet/d.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"name":"d","type":"spriteSheet","id":"1903_1464888779874_0"},{"resourcePath":"resources/spriteSheet/m.png","width":248,"height":224,"numOfFramesH":4,"numOfFramesV":4,"name":"m","type":"spriteSheet","id":"9295_1464902639310_9"}],
         gameProps: {"width":800,"height":200}
     });

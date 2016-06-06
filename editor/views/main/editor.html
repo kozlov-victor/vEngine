@@ -1,0 +1,30 @@
+<html>
+<body>
+<div id="editor" style="height: 500px; width: 100%"></div>
+<div id="commandline" style="position: absolute; bottom: 10px; height: 20px; width: 800px;"></div>
+</body>
+<script src="/js/lib/ace/src-min/ace.js" type="text/javascript"></script>
+<script src="/js/lib/ace/src-min/ext-language_tools.js" type="text/javascript"></script>
+<script src="/js/lib/jquery.js" type="text/javascript"></script>
+<script>
+    var langTools = ace.require("ace/ext/language_tools");
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/javascript");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+    var appCompleter = {
+        getCompletions: function(editor, session, pos, prefix, callback) {
+            callback(null,{name: 'name11', value: 'value11', score: 1, meta: "meta11"});
+        }
+    };
+    langTools.addCompleter(appCompleter);
+    editor.$blockScrolling = Infinity;
+    editor.on('change', function() {
+        console.log('code:',editor.getValue());
+    });
+    editor.setValue('var a=1;',1);
+</script>
+</html>

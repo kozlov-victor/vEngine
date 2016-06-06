@@ -9,6 +9,7 @@
         this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
         this.layerList = new ve.collections.List();
+        this.behaviourList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
