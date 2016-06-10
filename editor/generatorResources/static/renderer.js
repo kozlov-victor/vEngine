@@ -32,13 +32,15 @@ var CanvasRenderer = function(){
 
     };
     var drawScene = function(){
+        var time = Date.now();
         reqAnimFrame(drawScene);
         if (!scene) return;
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
-                obj.update(Date.now());
+                obj._behaviour.onUpdate.apply(obj,[time]);
+                obj.update(time);
                 drawObject(obj);
             });
         });

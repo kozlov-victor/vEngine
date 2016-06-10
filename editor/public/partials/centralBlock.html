@@ -43,11 +43,10 @@
             ></iframe>
 </div>
 
-<div ng-if="editData.isScriptEditorRunning" class="gameSceneWrapper withPaddingLeft height100">
+<div ng-if="editData.isScriptEditorRunning" class="gameSceneWrapper withPaddingLeft height100 noOverFlow relative">
     <iframe
             id="scriptEditor"
-            width="100%"
-            height="100%"
+            style="position:absolute;width:100%;height:100%;left:0;top:0;bottom:0;right:0"
             src="{{editData.scriptEditorUrl}}"
             frameborder="0" scrolling="no"
             ></iframe>

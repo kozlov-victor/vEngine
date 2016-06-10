@@ -144,8 +144,7 @@
             });
         },
         clone: function(){
-            var self =this;
-            return new this.constructor(self.toJsonObj());
+            return new this.constructor(this.toJsonObj());
         },
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
@@ -188,9 +187,8 @@
     models.GameObject = BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
-        behaviourId:null,
-        _behaviour: null,
         _spriteSheet:null,
+        _behaviour:null,
         posX:0,
         posY:0,
         width:0,
@@ -212,7 +210,6 @@
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
-            if (this.behaviourId) this._behaviour = ve_local.Bundle.behaviourList.getIf({id:this.behaviourId});
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
@@ -245,6 +242,9 @@
             this._gameObject._currFrameAnimation = null;
             this._startTime = null;
         },
+
+        //delta sec = x frame
+        //duration sec = l - 1 frame
 
         update: function(time){
             if (!this._startTime) this._startTime = time;
@@ -433,7 +433,26 @@
             });
             self.gameProps = data.gameProps;
             data = null;
-        }
+        };
+
+        this.compileGameObjectScripts = function(){
+
+            try {
+                self.sceneList.forEach(function(scene){
+                    scene._layers.forEach(function(layer){
+                        layer._gameObjects.forEach(function(obj){
+                            var script = self.scriptList.getIf({gameObjectId:obj.protoId});
+                            obj._behaviour = new Function('var clazz = '+script.code+';return new clazz();')();
+                            obj._behaviour.onCreate.apply(obj);
+                        });
+                    });
+                });
+            } catch(e){
+                console.log(e);
+                throw 'can not compile game object script: ' + e
+            }
+
+        };
 
     };
 
@@ -1231,7 +1250,7 @@ window.app
         //});
 
         var respondToTarget = function(target,data){
-            target.postMessage(data,'*');
+            target && target.postMessage(data,'*');
         };
 
         window.addEventListener('message',function(m){
@@ -1250,7 +1269,12 @@ window.app
                     resourceDao.createOrEditResource(currResourceInEdit.clone(),ve.models.Script,ve_local.bundle.scriptList);
             }
         });
-
+        window.addEventListener('resize',function(){
+            var fr = document.getElementById('scriptEditor');
+            if (!fr) return;
+            var wnd = fr.contentWindow;
+            respondToTarget(wnd,{command:'resizeWindow',height:fr.getBoundingClientRect().height});
+        });
         return this;
     })
 

@@ -13,6 +13,8 @@
     });
 
     ve_local.bundle.prepare();
+    ve_local.bundle.compileGameObjectScripts();
+
     ve_local.renderer = new CanvasRenderer();
     var sceneManager = new SceneManager();
 
