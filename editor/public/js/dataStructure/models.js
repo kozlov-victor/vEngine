@@ -116,6 +116,9 @@
         },
         update: function(time) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
+        },
+        stopFrAnimations: function(){
+            this._currFrameAnimation && this._currFrameAnimation.stop();
         }
     });
 

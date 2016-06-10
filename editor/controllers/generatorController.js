@@ -58,7 +58,8 @@ module.exports.generate = function(opts,callback){
         'editor/public/js/dataStructure/bundle.js',
         'editor/generatorResources/static/utils.js',
         'editor/generatorResources/static/renderer.js',
-        'editor/generatorResources/static/sceneManager.js'
+        'editor/generatorResources/static/sceneManager.js',
+        'editor/generatorResources/static/modules/keyboard.js'
     ]);
     if (opts.debug) {
         sourceMain.addFile('editor/generatorResources/static/debug.js')

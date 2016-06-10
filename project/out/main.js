@@ -317,6 +317,9 @@ window.debug.error = function(err){
         },
         update: function(time) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
+        },
+        stopFrAnimations: function(){
+            this._currFrameAnimation && this._currFrameAnimation.stop();
         }
     });
 
@@ -545,6 +548,8 @@ var CanvasRenderer = function(){
 
 var SceneManager = function(){
 
+    this.currScene = null;
+
     var preloadAndSet = function(scene){
         var q = new ve.utils.Queue();
         q.onResolved = function(){
@@ -561,10 +566,55 @@ var SceneManager = function(){
     };
 
     this.setScene = function(scene){
+        this.currScene = scene;
         preloadAndSet(scene);
     }
 };
 
+(function(){
+
+    var buffer = {};
+
+    var keyboard = {};
+
+    var JUST_PRESSED = 1;
+    var PRESSED = 2;
+    var UN_PRESSED = 0;
+    var JUST_UNPRESSED = -1;
+
+    keyboard.KEY_UP = 38;
+    keyboard.KEY_DOWN = 40;
+    keyboard.KEY_LEFT = 37;
+    keyboard.KEY_RIGHT = 39;
+
+    keyboard.isKeyPressed = function(key){
+        return buffer[key]>0;
+    };
+
+    keyboard.isKeyJustPressed = function(key){
+        var res = buffer[key]==JUST_PRESSED;
+        if (res) buffer[key] = PRESSED;
+        return res;
+    };
+
+    keyboard.isKeyJustUnPressed = function(key){
+        var res = buffer[key]==JUST_UNPRESSED;
+        if (res) buffer[key] = UN_PRESSED;
+        return res;
+    };
+
+    window.addEventListener('keydown',function(e){
+        if (!!buffer[e.keyCode]>0) return;
+        buffer[e.keyCode] = JUST_PRESSED;
+    });
+
+    window.addEventListener('keyup',function(e){
+        buffer[e.keyCode] = JUST_UNPRESSED;
+    });
+
+    ve.keyboard = keyboard;
+
+})();
 (function(){
 
     window.onerror = function(e){
@@ -577,20 +627,20 @@ var SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walk","type":"frameAnimation","duration":1000,"id":"3652_6957_3"}],
-        gameObject: [{"spriteSheetId":"1407_3585_0","width":184,"height":325,"name":"man","type":"gameObject","frameAnimationIds":["3652_6957_3"],"id":"1163_2963_1"}],
+        frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walkFwd","type":"frameAnimation","duration":1000,"id":"3652_6957_3"},{"name":"walkBack","frames":[7,6,5,4,3,2,1,0],"type":"frameAnimation","duration":1000,"id":"5239_1335_0"}],
+        gameObject: [{"spriteSheetId":"1407_3585_0","width":184,"height":325,"name":"man","type":"gameObject","frameAnimationIds":["3652_6957_3","5239_1335_0"],"id":"1163_2963_1","currFrameIndex":7}],
         scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"}],
-        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":102,"posY":102,"protoId":"1163_2963_1","id":"4480_9414_7"}],"id":"7353_5206_5"}],
+        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":-9,"posY":-3,"protoId":"1163_2963_1","id":"4480_9414_7"}],"id":"7353_5206_5"}],
         spriteSheet: [{"resourcePath":"resources/spriteSheet/man.png","width":1472,"height":325,"numOfFramesH":8,"name":"man","type":"spriteSheet","numOfFramesV":1,"id":"1407_3585_0"}],
-        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.posX = Math.random()*200;\n        this.delta = 1;\n        this.vel = Math.random()*5;\n    },\n\n    onUpdate: function(time) {\n        if (this.posX>300) this.delta = -1;\n        if (this.posX<0) this.delta = 1;\n        this.posX+=this.delta*this.vel;\n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"}],
-        gameProps: {"width":400,"height":500}
+        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        this.walkFwdAnimation = this.getFrAnimation('walkFwd');\n        this.walkBackAnimation = this.getFrAnimation('walkBack');\n    },\n\n    onUpdate: function(time) {\n        if (ve.keyboard.isKeyPressed(ve.keyboard.KEY_LEFT)) {\n            this.posX-=1;\n            this.walkBackAnimation.play();\n        }\n        if (ve.keyboard.isKeyPressed(ve.keyboard.KEY_RIGHT)) {\n            this.posX+=1;\n            this.walkFwdAnimation.play();\n        }\n        if (ve.keyboard.isKeyJustUnPressed(ve.keyboard.KEY_RIGHT) || ve.keyboard.isKeyJustUnPressed(ve.keyboard.KEY_LEFT)) {\n            this.stopFrAnimations();\n        }\n        \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"}],
+        gameProps: {"width":400,"height":310}
     });
 
     ve_local.bundle.prepare();
     ve_local.bundle.compileGameObjectScripts();
 
     ve_local.renderer = new CanvasRenderer();
-    var sceneManager = new SceneManager();
+    ve_local.sceneManager = new SceneManager();
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
@@ -598,12 +648,12 @@ var SceneManager = function(){
         if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
 
         // for test only
-        ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
-            layer._gameObjects.forEach(function(go){
-                go._frameAnimations.get(0) && go._frameAnimations.get(0).play();
-            });
-        });
-        sceneManager.setScene(ve_local.bundle.sceneList.get(0));
+        //ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
+        //    layer._gameObjects.forEach(function(go){
+        //        go._frameAnimations.get(0) && go._frameAnimations.get(0).play();
+        //    });
+        //});
+        ve_local.sceneManager.setScene(ve_local.bundle.sceneList.get(0));
     });
 
 })();

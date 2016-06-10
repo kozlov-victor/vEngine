@@ -1,6 +1,8 @@
 
 var SceneManager = function(){
 
+    this.currScene = null;
+
     var preloadAndSet = function(scene){
         var q = new ve.utils.Queue();
         q.onResolved = function(){
@@ -17,6 +19,7 @@ var SceneManager = function(){
     };
 
     this.setScene = function(scene){
+        this.currScene = scene;
         preloadAndSet(scene);
     }
 };

@@ -1,1 +1,1 @@
-[{"frames":[0,1,2,3,4,5,6,7],"name":"walk","type":"frameAnimation","duration":1000,"id":"3652_6957_3"}]
+[{"frames":[0,1,2,3,4,5,6,7],"name":"walkFwd","type":"frameAnimation","duration":1000,"id":"3652_6957_3"},{"name":"walkBack","frames":[7,6,5,4,3,2,1,0],"type":"frameAnimation","duration":1000,"id":"5239_1335_0"}]
