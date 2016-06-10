@@ -39,15 +39,12 @@
             });
         },
         clone: function(){
-            var self =this;
-            return new this.constructor(self.toJsonObj());
+            return new this.constructor(this.toJsonObj());
         },
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
     });
-
-    models.Behaviour = Class.extend({});
 
     var Resource = BaseModel.extend({
         resourcePath:''
@@ -83,8 +80,6 @@
     models.GameObject = BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
-        behaviourId:null,
-        _behaviour: null,
         _spriteSheet:null,
         posX:0,
         posY:0,
@@ -107,7 +102,6 @@
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
-            if (this.behaviourId) this._behaviour = ve_local.Bundle.behaviourList.getIf({id:this.behaviourId});
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
@@ -140,6 +134,9 @@
             this._gameObject._currFrameAnimation = null;
             this._startTime = null;
         },
+
+        //delta sec = x frame
+        //duration sec = l - 1 frame
 
         update: function(time){
             if (!this._startTime) this._startTime = time;
@@ -198,12 +195,6 @@
             });
             return dataSet;
         }
-    });
-
-    models.Script = BaseModel.extend({
-        type:'script',
-        gameObjectId:null,
-        code:''
     });
 
     ve.models = models;
