@@ -577,13 +577,13 @@ var SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [],
-        gameObject: [{"spriteSheetId":"7786_2664_0","width":128,"height":128,"name":"q","type":"gameObject","frameAnimationIds":[],"id":"8276_6408_1"}],
-        scene: [{"name":"ф","type":"scene","layerProps":[{"type":"layer","protoId":"0554_9611_6","id":"0970_9650_7"}],"id":"7494_5686_5"}],
-        layer:[{"name":"ф","type":"layer","gameObjectProps":[{"type":"gameObject","posX":75,"posY":129,"protoId":"8276_6408_1","id":"0731_8272_8"},{"type":"gameObject","posX":38,"posY":72,"protoId":"8276_6408_1","id":"7063_9259_9"}],"id":"0554_9611_6"}],
-        spriteSheet: [{"name":"q","resourcePath":"resources/spriteSheet/q.png","width":128,"height":128,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"7786_2664_0"}],
-        script:[{"gameObjectId":"8276_6408_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.posX = Math.random()*200;\n        this.delta = 1;\n        this.vel = Math.random();\n    },\n\n    onUpdate: function(time) {\n        if (this.posX>300) this.delta = -1;\n        if (this.posX<0) this.delta = 0;\n        this.posX+=this.delta*this.vel;\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n","type":"script","id":"3656_6418_2"},{"gameObjectId":"9545_0335_3","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n    }\n});    ","type":"script","id":"5173_0343_4"}],
-        gameProps: {"width":800,"height":200}
+        frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walk","type":"frameAnimation","duration":1000,"id":"3652_6957_3"}],
+        gameObject: [{"spriteSheetId":"1407_3585_0","width":184,"height":325,"name":"man","type":"gameObject","frameAnimationIds":["3652_6957_3"],"id":"1163_2963_1"}],
+        scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"}],
+        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":102,"posY":102,"protoId":"1163_2963_1","id":"4480_9414_7"}],"id":"7353_5206_5"}],
+        spriteSheet: [{"resourcePath":"resources/spriteSheet/man.png","width":1472,"height":325,"numOfFramesH":8,"name":"man","type":"spriteSheet","numOfFramesV":1,"id":"1407_3585_0"}],
+        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.posX = Math.random()*200;\n        this.delta = 1;\n        this.vel = Math.random()*5;\n    },\n\n    onUpdate: function(time) {\n        if (this.posX>300) this.delta = -1;\n        if (this.posX<0) this.delta = 1;\n        this.posX+=this.delta*this.vel;\n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"}],
+        gameProps: {"width":400,"height":500}
     });
 
     ve_local.bundle.prepare();
