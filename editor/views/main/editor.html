@@ -43,11 +43,19 @@
         };
 
         var setUpMessageDigest = function(){
+            var editorDiv = document.getElementById("editor");
             window.top.postMessage({command:'getCode',gameObjectId:locationParams.gameObjectId},'*');
             window.addEventListener('message',function(m){
                 if (!(m.data && m.data.code)) return;
                 editor.setValue(m.data.code,1);
                 codeId = m.data.id;
+            });
+            window.addEventListener('message',function(m){
+                if (!(m.data && m.data.command)) return;
+                switch (m.data.command) {
+                    case 'resizeWindow':
+                        $('#editor').css({height: m.data.height+'px'})
+                }
             });
             editor.on('change', function() {
                 clearTimeout(tid);
@@ -55,15 +63,52 @@
                     window.top.postMessage({command:'saveCode',id:codeId,code:editor.getValue()},'*');
                 },1000);
             });
+//            editor.on("change", function() {
+//                editor.resize();
+//            });
         };
+
+
+
+
 
         return function(){
             setUpEditor();
             setUpMessageDigest();
+
+//            $(document).ready(function(){
+//
+//                var heightUpdateFunction = function() {
+//
+//                    // http://stackoverflow.com/questions/11584061/
+//                    var newHeight =
+//                            editor.getSession().getScreenLength()
+//                            * editor.renderer.lineHeight
+//                            + editor.renderer.scrollBar.getWidth();
+//
+//                    $('#editor').height(newHeight.toString() + "px");
+//                    $('#editor-section').height(newHeight.toString() + "px");
+//
+//                    // This call is required for the editor to fix all of
+//                    // its inner structure for adapting to a change in size
+//                    editor.resize();
+//                };
+//
+//                // Set initial size to match initial content
+//                heightUpdateFunction();
+//
+//                // Whenever a change happens inside the ACE editor, update
+//                // the size again
+//                editor.getSession().on('change', heightUpdateFunction);
+//            });
+
         }
 
 
     }()();
+
+
+
 
 
 </script>

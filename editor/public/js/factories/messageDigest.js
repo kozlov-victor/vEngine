@@ -10,7 +10,7 @@ window.app
         //});
 
         var respondToTarget = function(target,data){
-            target.postMessage(data,'*');
+            target && target.postMessage(data,'*');
         };
 
         window.addEventListener('message',function(m){
@@ -29,7 +29,12 @@ window.app
                     resourceDao.createOrEditResource(currResourceInEdit.clone(),ve.models.Script,ve_local.bundle.scriptList);
             }
         });
-
+        window.addEventListener('resize',function(){
+            var fr = document.getElementById('scriptEditor');
+            if (!fr) return;
+            var wnd = fr.contentWindow;
+            respondToTarget(wnd,{command:'resizeWindow',height:fr.getBoundingClientRect().height});
+        });
         return this;
     })
 

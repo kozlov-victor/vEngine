@@ -46,6 +46,8 @@
         }
     });
 
+    models.Behaviour = Class.extend({});
+
     var Resource = BaseModel.extend({
         resourcePath:''
     });
@@ -81,6 +83,7 @@
         type:'gameObject',
         spriteSheetId:null,
         _spriteSheet:null,
+        _behaviour:null,
         posX:0,
         posY:0,
         width:0,
@@ -195,6 +198,12 @@
             });
             return dataSet;
         }
+    });
+
+    models.Script = BaseModel.extend({
+        type:'script',
+        gameObjectId:null,
+        code:''
     });
 
     ve.models = models;

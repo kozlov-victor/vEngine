@@ -67,6 +67,14 @@ img {
     height: 100%;
 }
 
+.height1 {
+    height: 1px;
+}
+
+.noOverFlow {
+    overflow: hidden !important;
+}
+
 .withMargin {
     margin: 5px;
 }

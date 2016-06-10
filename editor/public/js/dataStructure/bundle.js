@@ -31,7 +31,26 @@
             });
             self.gameProps = data.gameProps;
             data = null;
-        }
+        };
+
+        this.compileGameObjectScripts = function(){
+
+            try {
+                self.sceneList.forEach(function(scene){
+                    scene._layers.forEach(function(layer){
+                        layer._gameObjects.forEach(function(obj){
+                            var script = self.scriptList.getIf({gameObjectId:obj.protoId});
+                            obj._behaviour = new Function('var clazz = '+script.code+';return new clazz();')();
+                            obj._behaviour.onCreate.apply(obj);
+                        });
+                    });
+                });
+            } catch(e){
+                console.log(e);
+                throw 'can not compile game object script: ' + e
+            }
+
+        };
 
     };
 

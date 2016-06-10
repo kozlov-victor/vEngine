@@ -1,3 +1,13 @@
+
+var ve = {};
+var ve_local = {};
+ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","layer","scene","script"];
+
+window.debug = {};
+window.debug.error = function(err){
+   window.top.postMessage({err:err},'*');
+   throw err;
+};
 (function() {
 
     window.Class = function() {};
@@ -103,15 +113,6 @@
 
 
 
-
-var ve = {};
-var ve_local = {};
-
-window.debug = {};
-window.debug.error = function(err){
-   window.top.postMessage({err:err},'*');
-   throw err;
-};
 
 (function(){
 
@@ -239,13 +240,14 @@ window.debug.error = function(err){
             });
         },
         clone: function(){
-            var self =this;
-            return new this.constructor(self.toJsonObj());
+            return new this.constructor(this.toJsonObj());
         },
         _init:function(){
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
     });
+
+    models.Behaviour = Class.extend({});
 
     var Resource = BaseModel.extend({
         resourcePath:''
@@ -281,9 +283,8 @@ window.debug.error = function(err){
     models.GameObject = BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
-        behaviourId:null,
-        _behaviour: null,
         _spriteSheet:null,
+        _behaviour:null,
         posX:0,
         posY:0,
         width:0,
@@ -305,7 +306,6 @@ window.debug.error = function(err){
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
-            if (this.behaviourId) this._behaviour = ve_local.Bundle.behaviourList.getIf({id:this.behaviourId});
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
@@ -338,6 +338,9 @@ window.debug.error = function(err){
             this._gameObject._currFrameAnimation = null;
             this._startTime = null;
         },
+
+        //delta sec = x frame
+        //duration sec = l - 1 frame
 
         update: function(time){
             if (!this._startTime) this._startTime = time;
@@ -398,8 +401,9 @@ window.debug.error = function(err){
         }
     });
 
-    models.Behaviour = BaseModel.extend({
-        type:'behaviour',
+    models.Script = BaseModel.extend({
+        type:'script',
+        gameObjectId:null,
         code:''
     });
 
@@ -417,7 +421,7 @@ window.debug.error = function(err){
         this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
         this.layerList = new ve.collections.List();
-        this.behaviourList = new ve.collections.List();
+        this.scriptList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -434,12 +438,31 @@ window.debug.error = function(err){
         };
 
         this.prepare = function(){
-            ['audio','spriteSheet','frameAnimation','gameObject','layer','scene'].forEach(function(itm){
+            ve_local.RESOURCE_NAMES.forEach(function(itm){
                 toDataSource(ve.models[capitalize(itm)],data[itm],self[itm+'List']);
             });
             self.gameProps = data.gameProps;
             data = null;
-        }
+        };
+
+        this.compileGameObjectScripts = function(){
+
+            try {
+                self.sceneList.forEach(function(scene){
+                    scene._layers.forEach(function(layer){
+                        layer._gameObjects.forEach(function(obj){
+                            var script = self.scriptList.getIf({gameObjectId:obj.protoId});
+                            obj._behaviour = new Function('var clazz = '+script.code+';return new clazz();')();
+                            obj._behaviour.onCreate.apply(obj);
+                        });
+                    });
+                });
+            } catch(e){
+                console.log(e);
+                throw 'can not compile game object script: ' + e
+            }
+
+        };
 
     };
 
@@ -499,13 +522,15 @@ var CanvasRenderer = function(){
 
     };
     var drawScene = function(){
+        var time = Date.now();
         reqAnimFrame(drawScene);
         if (!scene) return;
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
-                obj.update(Date.now());
+                obj._behaviour.onUpdate.apply(obj,[time]);
+                obj.update(time);
                 drawObject(obj);
             });
         });
@@ -552,22 +577,26 @@ var SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [{"name":"aa","frames":[0,1,2,3],"type":"frameAnimation","duration":1000,"id":"6694_1464902687566_12"},{"name":"a","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"7004_1465166374583_3"}],
-        gameObject: [{"spriteSheetId":"1903_1464888779874_0","width":64,"height":64,"name":"d","type":"gameObject","frameAnimationIds":["7004_1465166374583_3"],"id":"8251_1464888785680_1","currFrameIndex":1},{"spriteSheetId":"9295_1464902639310_9","width":62,"height":56,"name":"m","type":"gameObject","frameAnimationIds":["6694_1464902687566_12"],"id":"1134_1464902649272_10"}],
-        scene: [{"name":"a","type":"scene","layerProps":[{"type":"layer","protoId":"4324_1464888834773_3","id":"9849_1464888834807_4"}],"id":"0778_1464888830654_2"}],
-        layer:[{"name":"a","type":"layer","gameObjectProps":[{"type":"gameObject","posX":264,"posY":98,"protoId":"8251_1464888785680_1","id":"6080_1464901512325_1"},{"type":"gameObject","posX":139,"posY":17,"protoId":"1134_1464902649272_10","id":"9551_1464902657811_11"},{"type":"gameObject","posX":566,"posY":40,"protoId":"8251_1464888785680_1","id":"7674_1465166405672_5"}],"id":"4324_1464888834773_3"}],
-        spriteSheet: [{"resourcePath":"resources/spriteSheet/d.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"name":"d","type":"spriteSheet","id":"1903_1464888779874_0"},{"resourcePath":"resources/spriteSheet/m.png","width":248,"height":224,"numOfFramesH":4,"numOfFramesV":4,"name":"m","type":"spriteSheet","id":"9295_1464902639310_9"}],
+        frameAnimation: [],
+        gameObject: [{"spriteSheetId":"7786_2664_0","width":128,"height":128,"name":"q","type":"gameObject","frameAnimationIds":[],"id":"8276_6408_1"}],
+        scene: [{"name":"ф","type":"scene","layerProps":[{"type":"layer","protoId":"0554_9611_6","id":"0970_9650_7"}],"id":"7494_5686_5"}],
+        layer:[{"name":"ф","type":"layer","gameObjectProps":[{"type":"gameObject","posX":75,"posY":129,"protoId":"8276_6408_1","id":"0731_8272_8"},{"type":"gameObject","posX":38,"posY":72,"protoId":"8276_6408_1","id":"7063_9259_9"}],"id":"0554_9611_6"}],
+        spriteSheet: [{"name":"q","resourcePath":"resources/spriteSheet/q.png","width":128,"height":128,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"7786_2664_0"}],
+        script:[{"gameObjectId":"8276_6408_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.posX = Math.random()*200;\n        this.delta = 1;\n        this.vel = Math.random();\n    },\n\n    onUpdate: function(time) {\n        if (this.posX>300) this.delta = -1;\n        if (this.posX<0) this.delta = 0;\n        this.posX+=this.delta*this.vel;\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n","type":"script","id":"3656_6418_2"},{"gameObjectId":"9545_0335_3","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n    }\n});    ","type":"script","id":"5173_0343_4"}],
         gameProps: {"width":800,"height":200}
     });
+
     ve_local.bundle.prepare();
+    ve_local.bundle.compileGameObjectScripts();
+
     ve_local.renderer = new CanvasRenderer();
     var sceneManager = new SceneManager();
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
-        if (ve_local.bundle.sceneList.size()==0) {
-           debug.error('at least one scene must be created');
-        }
+
+        if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
+
         // for test only
         ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(go){
