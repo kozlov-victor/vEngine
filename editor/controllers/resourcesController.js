@@ -3,8 +3,10 @@ var fs = require('../base/fs');
 var utils = require('../utils/utils');
 
 module.exports.RESOURCE_NAMES =
-    'audio,script,spriteSheet,gameObject,frameAnimation,scene,layer,behaviour'
+    'audio,spriteSheet,frameAnimation,gameObject,layer,scene,script'
     .split(',');
+
+module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('editor/generatorResources/static/defaultCodeScript.js');
 
 var readResource = function(path) {
     return JSON.parse(fs.readFileSync(path));
@@ -27,15 +29,18 @@ var getIndexById = function(arr,id){
     return indexToDel;
 };
 
-var uidCnt = 0;
-
-var uid = function(){
-    return ''+(~~(Math.random()*10));
-};
 
 var uuid = function() {
-    return  uid()+uid()+uid()+uid() + '_' + new Date().getTime()+'_'+(uidCnt++);
-};
+    var uidCnt = 0;
+
+    var uid = function(){
+        return ''+(~~(Math.random()*10));
+    };
+    return function(){
+        var timeStr = new Date().getTime().toString();
+        return  uid()+uid()+uid()+uid() + '_' + timeStr.substring(timeStr.length-4) +'_'+(uidCnt++);
+    };
+}();
 
 var processUploadedFile = function(item,pathToUploadedFile){
     if (!pathToUploadedFile) return;

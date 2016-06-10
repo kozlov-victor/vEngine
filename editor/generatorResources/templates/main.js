@@ -8,8 +8,10 @@
         scene: '%scene%',
         layer:'%layer%',
         spriteSheet: '%spriteSheet%',
+        script:'%script%',
         gameProps: '%gameProps%'
     });
+
     ve_local.bundle.prepare();
     ve_local.renderer = new CanvasRenderer();
     var sceneManager = new SceneManager();

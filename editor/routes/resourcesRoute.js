@@ -16,7 +16,10 @@ module.exports.init = function(app) {
     mainController.initFolderStructure();
 
     app.get('/',function(req,res){
-        res.render('main/main',utils.parametrize({}));
+        res.render('main/main',{
+            resourceNames:resourcesController.RESOURCE_NAMES,
+            defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT
+        });
     });
     app.get('/editor',function(req,res){
         res.render('main/editor',utils.parametrize({}));

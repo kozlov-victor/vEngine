@@ -152,6 +152,8 @@
         }
     });
 
+    models.Behaviour = Class.extend({});
+
     var Resource = BaseModel.extend({
         resourcePath:''
     });
@@ -303,8 +305,9 @@
         }
     });
 
-    models.Behaviour = BaseModel.extend({
-        type:'behaviour',
+    models.Script = BaseModel.extend({
+        type:'script',
+        gameObjectId:null,
         code:''
     });
 
@@ -408,7 +411,7 @@
         this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
         this.layerList = new ve.collections.List();
-        this.behaviourList = new ve.collections.List();
+        this.scriptList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -425,7 +428,7 @@
         };
 
         this.prepare = function(){
-            ['audio','spriteSheet','frameAnimation','gameObject','layer','scene'].forEach(function(itm){
+            ve_local.RESOURCE_NAMES.forEach(function(itm){
                 toDataSource(ve.models[capitalize(itm)],data[itm],self[itm+'List']);
             });
             self.gameProps = data.gameProps;
@@ -535,6 +538,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
+
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
             if (!spriteSheet) return;
@@ -546,7 +550,17 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList);
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
+                if (op.type=='create') {
+                    var script = new ve.models.Script({
+                        gameObjectId:op.r.id,
+                        code:ve_local.DEFAULT_CODE_SCRIPT
+                    });
+                    resourceDao.createOrEditResource(script,ve.models.Script,ve_local.bundle.scriptList);
+                } else {
+                    uiHelper.closeDialog();
+                }
+            },true);
         };
 
         s.showCreateAnimationDialog = function() {
@@ -626,8 +640,8 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao
-
+        resourceDao,
+        messageDigest
     ) {
 
         var s = $scope;
@@ -702,6 +716,12 @@ window.app.
             l._gameObjects.clear();
             scene._layers.removeIf({id: l.id});
             resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
+        };
+
+        s.showScript = function(gameObject){
+            console.log('showScript');
+            s.editData.isScriptEditorRunning = true;
+            s.editData.scriptEditorUrl = '/editor?gameObjectId='+gameObject.id;
         };
 
         (function(){
@@ -1130,6 +1150,8 @@ window.app
         res.currLayerInEdit = null;
         res.isInDebugRunning = false;
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
+        res.isScriptEditorRunning = false;
+        res.scriptEditorUrl = '';
 
         return res;
     })
@@ -1197,6 +1219,45 @@ window.app
     });
 
 
+
+
+
+window.app
+
+    .factory('messageDigest',function(resourceDao){
+
+        //window.addEventListener('message',function(e){
+        //    console.log('accepted message',e);
+        //});
+
+        var respondToTarget = function(target,data){
+            target.postMessage(data,'*');
+        };
+
+        window.addEventListener('message',function(m){
+            console.log('accepted msg',m);
+            if (!(m.data && m.data.command)) return;
+            switch (m.data.command) {
+                case 'getCode':
+                    var code = ve_local.bundle.scriptList.getIf({gameObjectId:m.data.gameObjectId});
+                    respondToTarget(document.getElementById('scriptEditor').contentWindow,code.toJsonObj());
+                    break;
+                case 'saveCode':
+                    code = m.data.code;
+                    var id = m.data.id;
+                    var currResourceInEdit = ve_local.bundle.scriptList.getIf({id:id});
+                    currResourceInEdit.code = code;
+                    resourceDao.createOrEditResource(currResourceInEdit.clone(),ve.models.Script,ve_local.bundle.scriptList);
+            }
+        });
+
+        return this;
+    })
+
+
+
+
+;
 
 app
 
@@ -1407,10 +1468,6 @@ window.app
             }
             return res;
         };
-
-        window.addEventListener('message',function(e){
-            console.log('accepted message',e);
-        });
 
         return this;
     })

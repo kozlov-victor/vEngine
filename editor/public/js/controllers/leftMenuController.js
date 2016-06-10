@@ -9,8 +9,8 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao
-
+        resourceDao,
+        messageDigest
     ) {
 
         var s = $scope;
@@ -85,6 +85,12 @@ window.app.
             l._gameObjects.clear();
             scene._layers.removeIf({id: l.id});
             resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
+        };
+
+        s.showScript = function(gameObject){
+            console.log('showScript');
+            s.editData.isScriptEditorRunning = true;
+            s.editData.scriptEditorUrl = '/editor?gameObjectId='+gameObject.id;
         };
 
         (function(){

@@ -16,6 +16,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
+
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
             if (!spriteSheet) return;
@@ -27,7 +28,17 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList);
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
+                if (op.type=='create') {
+                    var script = new ve.models.Script({
+                        gameObjectId:op.r.id,
+                        code:ve_local.DEFAULT_CODE_SCRIPT
+                    });
+                    resourceDao.createOrEditResource(script,ve.models.Script,ve_local.bundle.scriptList);
+                } else {
+                    uiHelper.closeDialog();
+                }
+            },true);
         };
 
         s.showCreateAnimationDialog = function() {

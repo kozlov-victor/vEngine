@@ -47,6 +47,8 @@
         }
     });
 
+    models.Behaviour = Class.extend({});
+
     var Resource = BaseModel.extend({
         resourcePath:''
     });
@@ -198,8 +200,9 @@
         }
     });
 
-    models.Behaviour = BaseModel.extend({
-        type:'behaviour',
+    models.Script = BaseModel.extend({
+        type:'script',
+        gameObjectId:null,
         code:''
     });
 

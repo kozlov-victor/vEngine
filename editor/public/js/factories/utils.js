@@ -40,10 +40,6 @@ window.app
             return res;
         };
 
-        window.addEventListener('message',function(e){
-            console.log('accepted message',e);
-        });
-
         return this;
     })
 

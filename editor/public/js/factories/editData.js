@@ -13,6 +13,8 @@ window.app
         res.currLayerInEdit = null;
         res.isInDebugRunning = false;
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
+        res.isScriptEditorRunning = false;
+        res.scriptEditorUrl = '';
 
         return res;
     })

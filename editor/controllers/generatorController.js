@@ -3,6 +3,7 @@ var minifier = require('minifier');
 var resourcesController = require('./resourcesController');
 var nodeHint = require('node-hint');
 
+
 var Source = function(){
     var res = [];
     var self = this;
@@ -32,6 +33,10 @@ var Source = function(){
         var content = parametrize(fs.readFileSync(path),params);
         self.add(content);
     };
+    this.addTemplateFromRaw = function(raw,params) {
+        var content = parametrize(raw,params);
+        self.add(content);
+    };
     this.get = function(){
         return res.join('\n');
     };
@@ -39,9 +44,15 @@ var Source = function(){
 
 module.exports.generate = function(opts,callback){
     var sourceMain = new Source();
+    sourceMain.addTemplate(
+        'editor/generatorResources/templates/envVariables.js',
+        {
+            RESOURCE_NAMES:JSON.stringify(resourcesController.RESOURCE_NAMES)
+        }
+    );
+
     sourceMain.addFiles([
         'editor/public/js/lib/oop.js',
-        'editor/generatorResources/static/envVariables.js',
         'editor/public/js/dataStructure/collections.js',
         'editor/public/js/dataStructure/models.js',
         'editor/public/js/dataStructure/bundle.js',

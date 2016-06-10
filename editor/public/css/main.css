@@ -63,6 +63,10 @@ img {
     width: 1px;
 }
 
+.height100 {
+    height: 100%;
+}
+
 .withMargin {
     margin: 5px;
 }
