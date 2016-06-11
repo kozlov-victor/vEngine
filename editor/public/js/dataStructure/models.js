@@ -86,6 +86,8 @@
         _behaviour:null,
         posX:0,
         posY:0,
+        velX:0,
+        velY:0,
         width:0,
         height:0,
         currFrameIndex:0,
@@ -114,8 +116,12 @@
             this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
         },
-        update: function(time) {
+        update: function(time,delta) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
+            var deltaX = this.velX * delta / 1000;
+            var deltaY = this.velY * delta / 1000;
+            this.posX+=deltaX;
+            this.posY+=deltaY;
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();

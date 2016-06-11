@@ -16,33 +16,25 @@ window.debug.error = function(err){
 
         var mixins = [];
 
-        // если первый аргумент -- массив, то переназначить аргументы
-        if ({}.toString.apply(arguments[0]) == "[object Array]") {
+        if (arguments[0].slice) {
             mixins = arguments[0];
             props = arguments[1];
             staticProps = arguments[2];
         }
 
-        // эта функция будет возвращена как результат работы extend
         function Instance() {
             this._init && this._init.apply(this, arguments);
             this.construct && this.construct();
         }
 
-        // this -- это класс "перед точкой", для которого вызван extend (Animal.extend)
-        // наследуем от него:
         Instance.prototype = Class.inherit(this.prototype);
 
-        // constructor был затёрт вызовом inherit
         Instance.prototype.constructor = Instance;
 
-        // добавим возможность наследовать дальше
         Instance.extend = Class.extend;
 
-        // скопировать в Constructor статические свойства
         copyWrappedProps(staticProps, Instance, this);
 
-        // скопировать в Constructor.prototype свойства из примесей и props
         for (var i = 0; i < mixins.length; i++) {
             copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
         }
@@ -51,25 +43,8 @@ window.debug.error = function(err){
         return Instance;
     };
 
-
-    //---------- вспомогательные методы ----------
-
-    // fnTest -- регулярное выражение,
-    // которое проверяет функцию на то, есть ли в её коде вызов _super
-    //
-    // для его объявления мы проверяем, поддерживает ли функция преобразование
-    // в код вызовом toString: /xyz/.test(function() {xyz})
-    // в редких мобильных браузерах -- не поддерживает, поэтому регэксп будет /./
     var fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
 
-
-    // копирует свойства из props в targetPropsObj
-    // третий аргумент -- это свойства родителя
-    //
-    // при копировании, если выясняется что свойство есть и в родителе тоже,
-    // и является функцией -- его вызов оборачивается в обёртку,
-    // которая ставит this._super на метод родителя,
-    // затем вызывает его, затем возвращает this._super
     function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
         if (!props) return;
 
@@ -86,8 +61,6 @@ window.debug.error = function(err){
 
     }
 
-    // возвращает обёртку вокруг method, которая ставит this._super на родителя
-    // и возвращает его потом
     function wrap(method, parentMethod) {
         return function() {
             var backup = this._super;
@@ -101,8 +74,7 @@ window.debug.error = function(err){
             }
         }
     }
-
-    // эмуляция Object.create для старых IE
+    
     Class.inherit = Object.create || function(proto) {
             function F() {}
             F.prototype = proto;
@@ -287,6 +259,8 @@ window.debug.error = function(err){
         _behaviour:null,
         posX:0,
         posY:0,
+        velX:0,
+        velY:0,
         width:0,
         height:0,
         currFrameIndex:0,
@@ -315,8 +289,12 @@ window.debug.error = function(err){
             this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
         },
-        update: function(time) {
+        update: function(time,delta) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
+            var deltaX = this.velX * delta / 1000;
+            var deltaY = this.velY * delta / 1000;
+            this.posX+=deltaX;
+            this.posY+=deltaY;
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
@@ -497,6 +475,8 @@ var CanvasRenderer = function(){
     var ctx;
     var scene;
     var self = this;
+    var currTime = 0;
+    var lastTime = 0;
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 
     this.init = function(){
@@ -525,18 +505,24 @@ var CanvasRenderer = function(){
 
     };
     var drawScene = function(){
-        var time = Date.now();
         reqAnimFrame(drawScene);
+
         if (!scene) return;
+
+        lastTime = currTime;
+        currTime = Date.now();
+        var deltaTime = lastTime ? lastTime - currTime : 0;
+
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
-                obj._behaviour.onUpdate.apply(obj,[time]);
-                obj.update(time);
+                obj._behaviour.onUpdate.apply(obj,[deltaTime]);
+                obj.update(currTime,deltaTime);
                 drawObject(obj);
             });
         });
+        ve.keyboard._onNextTick();
     };
     this.setScene = function(_scene){
         scene = _scene;
@@ -575,40 +561,68 @@ var SceneManager = function(){
 
     var keyboard = {};
 
+    var buffer = {};
+    var KEY_PRESSED = 1;
+    var KEY_JUST_PRESSED = 2;
+    var KEY_RELEASED = 0;
+    var KEY_JUST_RELEASED = -1;
+
     keyboard.KEY_UP = 38;
     keyboard.KEY_DOWN = 40;
     keyboard.KEY_LEFT = 37;
     keyboard.KEY_RIGHT = 39;
 
-    var keyDownFns = null;
-    var keyUpFns = null;
-
-    keyboard.onKeyDown = function(fn){
-        keyDownFns.push(fn);
-    };
-    keyboard.onKeyUp = function(fn){
-        keyUpFns.push(fn);
+    keyboard.isPressed = function(key){
+        return buffer[key]>0;
     };
 
-    keyboard._reset = function(){
-        keyDownFns = [];
-        keyUpFns = [];
+    keyboard.isJustPressed = function(key){
+        return buffer[key]==KEY_JUST_PRESSED;
     };
 
+    keyboard.isReleased = function(key) {
+        return  buffer[key]<=0 || !buffer[key];
+    };
+
+    keyboard.isJustReleased = function(key) {
+        return buffer[key] == KEY_JUST_RELEASED;
+    };
+
+    keyboard._onNextTick = function(){
+        [
+            keyboard.KEY_UP,
+            keyboard.KEY_DOWN,keyboard.KEY_LEFT,
+            keyboard.KEY_RIGHT
+        ].forEach(function(key){
+            if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
+            else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
+        });
+    };
 
     window.addEventListener('keydown',function(e){
-        keyDownFns.forEach(function(fn){
-            fn(e.keyCode);
-        });
+        var code = e.keyCode;
+        switch (code) {
+            case keyboard.KEY_UP:
+            case keyboard.KEY_DOWN:
+            case keyboard.KEY_LEFT:
+            case keyboard.KEY_RIGHT:
+                buffer[code] = KEY_PRESSED;
+                break;
+        }
     });
 
     window.addEventListener('keyup',function(e){
-        keyUpFns.forEach(function(fn){
-            fn(e.keyCode);
-        });
+        var code = e.keyCode;
+        switch (code) {
+            case keyboard.KEY_UP:
+            case keyboard.KEY_DOWN:
+            case keyboard.KEY_LEFT:
+            case keyboard.KEY_RIGHT:
+                buffer[code] = KEY_JUST_RELEASED;
+                break;
+        }
     });
 
-    keyboard._reset();
     ve.keyboard = keyboard;
 
 })();
@@ -618,12 +632,12 @@ var SceneManager = function(){
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
         frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walkFwd","type":"frameAnimation","duration":1000,"id":"3652_6957_3"},{"name":"walkBack","frames":[7,6,5,4,3,2,1,0],"type":"frameAnimation","duration":1000,"id":"5239_1335_0"},{"frames":[18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0],"name":"rotate","type":"frameAnimation","duration":1000,"id":"7238_1883_3"},{"frames":[96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111],"name":"left","type":"frameAnimation","duration":1000,"id":"5103_5846_11"},{"name":"right","frames":[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47],"type":"frameAnimation","duration":1000,"id":"5283_6546_12"},{"name":"up","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"type":"frameAnimation","duration":1000,"id":"4276_2328_13"},{"name":"down","frames":[64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],"type":"frameAnimation","duration":1000,"id":"8014_4428_14"},{"name":"rotate","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"5442_6561_21"}],
-        gameObject: [{"spriteSheetId":"5186_2116_8","width":64,"height":64,"name":"robot","type":"gameObject","frameAnimationIds":["5103_5846_11","5283_6546_12","4276_2328_13","8014_4428_14"],"id":"2701_0003_9","currFrameIndex":33},{"spriteSheetId":"3881_6862_16","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["5442_6561_21"],"id":"5791_8960_17"}],
+        gameObject: [{"spriteSheetId":"5186_2116_8","width":64,"height":64,"name":"robot","type":"gameObject","frameAnimationIds":["5103_5846_11","5283_6546_12","4276_2328_13","8014_4428_14"],"id":"2701_0003_9","currFrameIndex":34},{"spriteSheetId":"3881_6862_16","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["5442_6561_21"],"id":"5791_8960_17"}],
         scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"}],
-        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":156,"posY":118,"protoId":"2701_0003_9","id":"6864_8407_15"}],"id":"7353_5206_5"}],
+        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":164,"posY":114,"protoId":"2701_0003_9","id":"6864_8407_15"}],"id":"7353_5206_5"}],
         spriteSheet: [{"resourcePath":"resources/spriteSheet/robotSheet.png","width":1024,"height":512,"name":"robotSheet","numOfFramesH":16,"numOfFramesV":8,"type":"spriteSheet","id":"5186_2116_8"},{"name":"globus","resourcePath":"resources/spriteSheet/globus.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"type":"spriteSheet","id":"3881_6862_16"}],
-        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        var self = this;\n        self.walkFwdAnimation = self.getFrAnimation('walkFwd');\n        self.walkBackAnimation = self.getFrAnimation('walkBack');\n        ve.keyboard.onKeyDown(function(key){\n            switch (key) {\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.walkBackAnimation.play();\n                    break;\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.walkFwdAnimation.play();\n                    break;\n                default:\n                    break;\n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n            self.setFrameIndex(0);\n        });\n    },\n\n    onUpdate: function(time) {\n       \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"},{"gameObjectId":"1918_5880_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n       // console.log(this.currFrameIndex);\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7263_5894_2"},{"gameObjectId":"2701_0003_9","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        var self = this;\n        this.leftAnim = this.getFrAnimation('left');\n        this.rightAnim = this.getFrAnimation('right');\n        this.upAnim = this.getFrAnimation('up');\n        this.downAnim = this.getFrAnimation('down');\n        ve.keyboard.onKeyDown(function(key){\n            console.log(ve.keyboard.KEY_RIGHT,key);\n            switch (key) {\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.rightAnim.play();\n                    break;\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.leftAnim.play();\n                    break;\n                case ve.keyboard.KEY_UP:\n                    self.posY-=1;\n                    self.upAnim.play();\n                    break;\n                case ve.keyboard.KEY_DOWN:\n                    self.posY+=1;\n                    self.downAnim.play();\n                    break;    \n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n        });\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"1768_0050_10"},{"gameObjectId":"5791_8960_17","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7838_8971_18"}],
-        gameProps: {"width":400,"height":310}
+        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        var self = this;\n        self.walkFwdAnimation = self.getFrAnimation('walkFwd');\n        self.walkBackAnimation = self.getFrAnimation('walkBack');\n        ve.keyboard.onKeyDown(function(key){\n            switch (key) {\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.walkBackAnimation.play();\n                    break;\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.walkFwdAnimation.play();\n                    break;\n                default:\n                    break;\n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n            self.setFrameIndex(0);\n        });\n    },\n\n    onUpdate: function(time) {\n       \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"},{"gameObjectId":"1918_5880_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n       // console.log(this.currFrameIndex);\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7263_5894_2"},{"gameObjectId":"2701_0003_9","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        var self = this;\n        this.leftAnim = this.getFrAnimation('left');\n        this.rightAnim = this.getFrAnimation('right');\n        this.upAnim = this.getFrAnimation('up');\n        this.downAnim = this.getFrAnimation('down');\n        this.vel=100;\n    },\n\n    onUpdate: function(time) {\n        var self = this;\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {\n            self.velY = self.vel;\n            self.upAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {\n            self.velY = -self.vel;\n            self.downAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {\n            self.velX = self.vel;\n            self.leftAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {\n            self.velX = -self.vel;\n            self.rightAnim.play();\n        }\n        \n        if (\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN) \n        ) {\n            console.log('justreleased');\n            self.stopFrAnimations();\n            self.velX = 0;\n            self.velY = 0;\n        }\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"1768_0050_10"},{"gameObjectId":"5791_8960_17","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7838_8971_18"}],
+        gameProps: {"width":400,"height":300}
     });
 
     ve_local.bundle.prepare();

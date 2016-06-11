@@ -4,6 +4,8 @@ var CanvasRenderer = function(){
     var ctx;
     var scene;
     var self = this;
+    var currTime = 0;
+    var lastTime = 0;
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 
     this.init = function(){
@@ -32,18 +34,24 @@ var CanvasRenderer = function(){
 
     };
     var drawScene = function(){
-        var time = Date.now();
         reqAnimFrame(drawScene);
+
         if (!scene) return;
+
+        lastTime = currTime;
+        currTime = Date.now();
+        var deltaTime = lastTime ? lastTime - currTime : 0;
+
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
-                obj._behaviour.onUpdate.apply(obj,[time]);
-                obj.update(time);
+                obj._behaviour.onUpdate.apply(obj,[deltaTime]);
+                obj.update(currTime,deltaTime);
                 drawObject(obj);
             });
         });
+        ve.keyboard._onNextTick();
     };
     this.setScene = function(_scene){
         scene = _scene;
