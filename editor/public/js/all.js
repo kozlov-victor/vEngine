@@ -221,6 +221,9 @@
         },
         update: function(time) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
+        },
+        stopFrAnimations: function(){
+            this._currFrameAnimation && this._currFrameAnimation.stop();
         }
     });
 
@@ -251,7 +254,7 @@
             var delta = (time - this._startTime)%this.duration;
             var ind = ~~((this.frames.length)*delta/this.duration);
             var lastFrIndex = this._gameObject.currFrameIndex;
-            if (lastFrIndex!=ind) {
+            if (lastFrIndex!=this.frames[ind]) {
                 this._gameObject.setFrameIndex(this.frames[ind]);
             }
         }
@@ -536,6 +539,14 @@ window.app.
         s.stopAnimation = function(){
             s.editData.currFrAnimationInEdit.stop();
             isStopped = true;
+        };
+
+        s.setRange = function(from,to) {
+            if (isNaN(from) || isNaN(to)) return;
+            s.editData.currFrAnimationInEdit.frames = [];
+            for (var i=from;i<=to;i++) {
+                s.editData.currFrAnimationInEdit.frames.push(i);
+            }
         }
 
     });
@@ -1219,7 +1230,9 @@ window.app
                 debug: 'debug',
                 stop: 'stop',
                 addGameObject:'add game object',
-                nothingToAdd:'nothing to add'
+                nothingToAdd:'nothing to add',
+                from:'from',
+                to:'to'
             }
         };
 

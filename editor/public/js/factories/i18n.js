@@ -40,7 +40,9 @@ window.app
                 debug: 'debug',
                 stop: 'stop',
                 addGameObject:'add game object',
-                nothingToAdd:'nothing to add'
+                nothingToAdd:'nothing to add',
+                from:'from',
+                to:'to'
             }
         };
 

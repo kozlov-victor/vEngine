@@ -77,6 +77,14 @@ window.app.
         s.stopAnimation = function(){
             s.editData.currFrAnimationInEdit.stop();
             isStopped = true;
+        };
+
+        s.setRange = function(from,to) {
+            if (isNaN(from) || isNaN(to)) return;
+            s.editData.currFrAnimationInEdit.frames = [];
+            for (var i=from;i<=to;i++) {
+                s.editData.currFrAnimationInEdit.frames.push(i);
+            }
         }
 
     });

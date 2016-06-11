@@ -71,14 +71,40 @@
     </tr>
     <tr>
         <td>
-            {{i18n.frames}}
-            <button ng-click="editData.currFrAnimationInEdit.frames=allIndexes()">{{i18n.all}}</button>
+
+            <table>
+                <tr>
+                    <td>
+                        {{i18n.frames}}
+                    </td>
+                    <td>
+                        <button ng-click="editData.currFrAnimationInEdit.frames=allIndexes()">{{i18n.all}}</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{i18n.from}}
+                    </td>
+                    <td>
+                        <input type="number" ng-model="from" ng-change="setRange(from,to)">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        {{i18n.to}}
+                    </td>
+                    <td>
+                        <input type="number" ng-model="to" ng-change="setRange(from,to)">
+                    </td>
+                </tr>
+            </table>
+
         </td>
         <td>
-            <input
-                required
-                app-validator="toArray(editData.currFrAnimationInEdit.frames).length>0"
-                ng-model="editData.currFrAnimationInEdit.frames"/>
+           <textarea
+                   required
+                   app-validator="toArray(editData.currFrAnimationInEdit.frames).length>0"
+                   ng-model="editData.currFrAnimationInEdit.frames"></textarea>
         </td>
     </tr>
 </table>

@@ -1,1 +1,1 @@
-[{"spriteSheetId":"1407_3585_0","width":184,"height":325,"name":"man","type":"gameObject","frameAnimationIds":["3652_6957_3","5239_1335_0"],"id":"1163_2963_1","currFrameIndex":7}]
+[{"spriteSheetId":"5186_2116_8","width":64,"height":64,"name":"robot","type":"gameObject","frameAnimationIds":["5103_5846_11","5283_6546_12","4276_2328_13","8014_4428_14"],"id":"2701_0003_9","currFrameIndex":33},{"spriteSheetId":"3881_6862_16","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["5442_6561_21"],"id":"5791_8960_17"}]

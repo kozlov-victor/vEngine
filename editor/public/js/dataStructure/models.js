@@ -149,7 +149,7 @@
             var delta = (time - this._startTime)%this.duration;
             var ind = ~~((this.frames.length)*delta/this.duration);
             var lastFrIndex = this._gameObject.currFrameIndex;
-            if (lastFrIndex!=ind) {
+            if (lastFrIndex!=this.frames[ind]) {
                 this._gameObject.setFrameIndex(this.frames[ind]);
             }
         }
