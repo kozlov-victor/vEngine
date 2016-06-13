@@ -1,6 +1,7 @@
 
 var CanvasRenderer = function(){
 
+    var canvas;
     var ctx;
     var scene;
     var self = this;
@@ -9,7 +10,7 @@ var CanvasRenderer = function(){
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 
     this.init = function(){
-        var canvas = document.querySelector('canvas');
+        canvas = document.querySelector('canvas');
         if (!canvas) {
             canvas = document.createElement('canvas');
             canvas.width = ve_local.bundle.gameProps.width;
@@ -17,6 +18,10 @@ var CanvasRenderer = function(){
             document.body.appendChild(canvas);
         }
         ctx = canvas.getContext('2d');
+    };
+
+    this.getCanvas = function(){
+        return canvas;
     };
 
     var drawObject = function(gameObj){

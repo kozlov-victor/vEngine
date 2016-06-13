@@ -1,6 +1,8 @@
 
 var SceneManager = function(){
 
+    var self = this;
+
     this.currScene = null;
 
     var preloadAndSet = function(scene){
@@ -21,5 +23,10 @@ var SceneManager = function(){
     this.setScene = function(scene){
         this.currScene = scene;
         preloadAndSet(scene);
+    };
+
+    this.getScene = function(){
+        return this.currScene;
     }
+
 };

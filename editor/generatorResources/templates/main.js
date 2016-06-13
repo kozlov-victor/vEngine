@@ -17,6 +17,8 @@
 
     ve_local.renderer = new CanvasRenderer();
     ve_local.sceneManager = new SceneManager();
+    ve.keyboard = new ve_local.Keyboard();
+    ve_local.mouse = new ve_local.Mouse(ve_local.sceneManager.getCanvas());
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
