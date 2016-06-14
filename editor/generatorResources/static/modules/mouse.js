@@ -14,7 +14,7 @@
         }
 
         var resolveClick = function(e){
-            var scene = ve.sceneManager.getScene();
+            var scene = ve.sceneManager.getCurrScene();
             if (!scene) return;
             var point = {x: e.clientX,y: e.clientY};
             scene._layers.someReversed(function(l){

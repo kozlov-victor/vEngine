@@ -579,11 +579,19 @@ ve_local.SceneManager = function(){
     };
 
     this.setScene = function(scene){
+        if (!(scene instanceof ve.models.Scene)) throw 'object '+scene+' is not a scene';
         this.currScene = scene;
         preloadAndSet(scene);
     };
 
-    this.getScene = function(){
+    this.setSceneByName = function(sceneName){
+        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+        var scene = ve_local.bundle.sceneList.getIf({name:sceneName});
+        if (!scene) throw 'no scene with name ' + sceneName + ' found';
+        self.setScene(scene);
+    };
+
+    this.getCurrScene = function(){
         return this.currScene;
     }
 
@@ -675,7 +683,7 @@ ve_local.SceneManager = function(){
         }
 
         var resolveClick = function(e){
-            var scene = ve.sceneManager.getScene();
+            var scene = ve.sceneManager.getCurrScene();
             if (!scene) return;
             var point = {x: e.clientX,y: e.clientY};
             scene._layers.someReversed(function(l){
@@ -712,13 +720,6 @@ ve_local.SceneManager = function(){
     }
 
 })();
-(function(){
-
-    window.onerror = function(e){
-        window.top.postMessage(e,'*');
-    }
-
-})();
 
 (function(){
 
@@ -726,10 +727,10 @@ ve_local.SceneManager = function(){
         audio: [],
         frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walkFwd","type":"frameAnimation","duration":1000,"id":"3652_6957_3"},{"name":"walkBack","frames":[7,6,5,4,3,2,1,0],"type":"frameAnimation","duration":1000,"id":"5239_1335_0"},{"frames":[18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0],"name":"rotate","type":"frameAnimation","duration":1000,"id":"7238_1883_3"},{"frames":[96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111],"name":"left","type":"frameAnimation","duration":1000,"id":"5103_5846_11"},{"name":"right","frames":[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47],"type":"frameAnimation","duration":1000,"id":"5283_6546_12"},{"name":"up","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"type":"frameAnimation","duration":1000,"id":"4276_2328_13"},{"name":"down","frames":[64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],"type":"frameAnimation","duration":1000,"id":"8014_4428_14"},{"name":"rotate","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"5442_6561_21"}],
         gameObject: [{"spriteSheetId":"5186_2116_8","width":64,"height":64,"name":"robot","type":"gameObject","frameAnimationIds":["5103_5846_11","5283_6546_12","4276_2328_13","8014_4428_14"],"id":"2701_0003_9","currFrameIndex":34},{"spriteSheetId":"3881_6862_16","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["5442_6561_21"],"id":"5791_8960_17"}],
-        scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"}],
-        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":164,"posY":114,"protoId":"2701_0003_9","id":"6864_8407_15"},{"type":"gameObject","posX":183,"posY":74,"protoId":"5791_8960_17","id":"5397_9107_0"}],"id":"7353_5206_5"}],
+        scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"},{"name":"second","type":"scene","layerProps":[{"type":"layer","protoId":"8333_4477_2","id":"7432_4491_3"}],"id":"7139_4700_1"}],
+        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":63,"posY":78,"protoId":"2701_0003_9","id":"6864_8407_15"},{"type":"gameObject","posX":270,"posY":29,"protoId":"5791_8960_17","id":"5397_9107_0"}],"id":"7353_5206_5"},{"name":"main2","type":"layer","gameObjectProps":[{"type":"gameObject","posX":178,"posY":142,"protoId":"5791_8960_17","id":"6567_1979_4"}],"id":"8333_4477_2"}],
         spriteSheet: [{"resourcePath":"resources/spriteSheet/robotSheet.png","width":1024,"height":512,"name":"robotSheet","numOfFramesH":16,"numOfFramesV":8,"type":"spriteSheet","id":"5186_2116_8"},{"name":"globus","resourcePath":"resources/spriteSheet/globus.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"type":"spriteSheet","id":"3881_6862_16"}],
-        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        var self = this;\n        self.walkFwdAnimation = self.getFrAnimation('walkFwd');\n        self.walkBackAnimation = self.getFrAnimation('walkBack');\n        ve.keyboard.onKeyDown(function(key){\n            switch (key) {\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.walkBackAnimation.play();\n                    break;\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.walkFwdAnimation.play();\n                    break;\n                default:\n                    break;\n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n            self.setFrameIndex(0);\n        });\n    },\n\n    onUpdate: function(time) {\n       \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"},{"gameObjectId":"1918_5880_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n       // console.log(this.currFrameIndex);\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7263_5894_2"},{"gameObjectId":"2701_0003_9","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        var self = this;\n        this.leftAnim = this.getFrAnimation('left');\n        this.rightAnim = this.getFrAnimation('right');\n        this.upAnim = this.getFrAnimation('up');\n        this.downAnim = this.getFrAnimation('down');\n        this.vel=100;\n        this.onClick = function(){\n            console.log('clicked robot');\n        }\n    },\n\n    onUpdate: function(time) {\n        var self = this;\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {\n            self.velY = self.vel;\n            self.upAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {\n            self.velY = -self.vel;\n            self.downAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {\n            self.velX = self.vel;\n            self.leftAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {\n            self.velX = -self.vel;\n            self.rightAnim.play();\n        }\n        \n        if (\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN) \n        ) {\n            self.stopFrAnimations();\n            self.velX = 0;\n            self.velY = 0;\n        }\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"1768_0050_10"},{"gameObjectId":"5791_8960_17","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n        this.onClick = function(){\n            console.log('clicked sphere');\n        }\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7838_8971_18"}],
+        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        var self = this;\n        self.walkFwdAnimation = self.getFrAnimation('walkFwd');\n        self.walkBackAnimation = self.getFrAnimation('walkBack');\n        ve.keyboard.onKeyDown(function(key){\n            switch (key) {\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.walkBackAnimation.play();\n                    break;\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.walkFwdAnimation.play();\n                    break;\n                default:\n                    break;\n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n            self.setFrameIndex(0);\n        });\n    },\n\n    onUpdate: function(time) {\n       \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"},{"gameObjectId":"1918_5880_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n       // console.log(this.currFrameIndex);\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7263_5894_2"},{"gameObjectId":"2701_0003_9","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        var self = this;\n        this.leftAnim = this.getFrAnimation('left');\n        this.rightAnim = this.getFrAnimation('right');\n        this.upAnim = this.getFrAnimation('up');\n        this.downAnim = this.getFrAnimation('down');\n        this.vel=100;\n        this.onClick = function(){\n            console.log('clicked robot');\n        }\n    },\n\n    onUpdate: function(time) {\n        var self = this;\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {\n            self.velY = self.vel;\n            self.upAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {\n            self.velY = -self.vel;\n            self.downAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {\n            self.velX = self.vel;\n            self.leftAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {\n            self.velX = -self.vel;\n            self.rightAnim.play();\n        }\n        \n        if (\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN) \n        ) {\n            self.stopFrAnimations();\n            self.velX = 0;\n            self.velY = 0;\n        }\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"1768_0050_10"},{"gameObjectId":"5791_8960_17","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n        this.onClick = function(){\n            ve.sceneManager.setSceneByName('second');\n        }\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7838_8971_18"}],
         gameProps: {"width":400,"height":300}
     });
 

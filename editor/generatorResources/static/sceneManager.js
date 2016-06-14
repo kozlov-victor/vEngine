@@ -21,11 +21,19 @@ ve_local.SceneManager = function(){
     };
 
     this.setScene = function(scene){
+        if (!(scene instanceof ve.models.Scene)) throw 'object '+scene+' is not a scene';
         this.currScene = scene;
         preloadAndSet(scene);
     };
 
-    this.getScene = function(){
+    this.setSceneByName = function(sceneName){
+        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+        var scene = ve_local.bundle.sceneList.getIf({name:sceneName});
+        if (!scene) throw 'no scene with name ' + sceneName + ' found';
+        self.setScene(scene);
+    };
+
+    this.getCurrScene = function(){
         return this.currScene;
     }
 
