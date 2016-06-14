@@ -25,7 +25,24 @@
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(self.rs[i]);
+               callback(self.rs[i],i);
+            }
+        };
+        this.forEachReversed = function(callback){
+            for (var i = this.rs.length-1;i>=0;i--){
+                callback(self.rs[i],i);
+            }
+        };
+        this.some = function(callback){
+            for (var i = 0,l=this.rs.length;i<l;i++){
+                var res = callback(self.rs[i],i);
+                if (res) break;
+            }
+        };
+        this.someReversed = function(callback){
+            for (var i = this.rs.length-1;i>=0;i--){
+                var res = callback(self.rs[i],i);
+                if (res) break;
             }
         };
         this.indexOf = function(obj){

@@ -45,10 +45,10 @@
         window.addEventListener('keydown',function(e){
             var code = e.keyCode;
             switch (code) {
-                case keyboard.KEY_UP:
-                case keyboard.KEY_DOWN:
-                case keyboard.KEY_LEFT:
-                case keyboard.KEY_RIGHT:
+                case self.KEY_UP:
+                case self.KEY_DOWN:
+                case self.KEY_LEFT:
+                case self.KEY_RIGHT:
                     buffer[code] = KEY_PRESSED;
                     break;
             }
@@ -57,10 +57,10 @@
         window.addEventListener('keyup',function(e){
             var code = e.keyCode;
             switch (code) {
-                case keyboard.KEY_UP:
-                case keyboard.KEY_DOWN:
-                case keyboard.KEY_LEFT:
-                case keyboard.KEY_RIGHT:
+                case self.KEY_UP:
+                case self.KEY_DOWN:
+                case self.KEY_LEFT:
+                case self.KEY_RIGHT:
                     buffer[code] = KEY_JUST_RELEASED;
                     break;
             }

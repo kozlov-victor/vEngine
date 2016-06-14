@@ -6,33 +6,25 @@
 
         var mixins = [];
 
-        // если первый аргумент -- массив, то переназначить аргументы
-        if ({}.toString.apply(arguments[0]) == "[object Array]") {
+        if (arguments[0].slice) {
             mixins = arguments[0];
             props = arguments[1];
             staticProps = arguments[2];
         }
 
-        // эта функция будет возвращена как результат работы extend
         function Instance() {
             this._init && this._init.apply(this, arguments);
             this.construct && this.construct();
         }
 
-        // this -- это класс "перед точкой", для которого вызван extend (Animal.extend)
-        // наследуем от него:
         Instance.prototype = Class.inherit(this.prototype);
 
-        // constructor был затёрт вызовом inherit
         Instance.prototype.constructor = Instance;
 
-        // добавим возможность наследовать дальше
         Instance.extend = Class.extend;
 
-        // скопировать в Constructor статические свойства
         copyWrappedProps(staticProps, Instance, this);
 
-        // скопировать в Constructor.prototype свойства из примесей и props
         for (var i = 0; i < mixins.length; i++) {
             copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
         }
@@ -41,25 +33,8 @@
         return Instance;
     };
 
-
-    //---------- вспомогательные методы ----------
-
-    // fnTest -- регулярное выражение,
-    // которое проверяет функцию на то, есть ли в её коде вызов _super
-    //
-    // для его объявления мы проверяем, поддерживает ли функция преобразование
-    // в код вызовом toString: /xyz/.test(function() {xyz})
-    // в редких мобильных браузерах -- не поддерживает, поэтому регэксп будет /./
     var fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
 
-
-    // копирует свойства из props в targetPropsObj
-    // третий аргумент -- это свойства родителя
-    //
-    // при копировании, если выясняется что свойство есть и в родителе тоже,
-    // и является функцией -- его вызов оборачивается в обёртку,
-    // которая ставит this._super на метод родителя,
-    // затем вызывает его, затем возвращает this._super
     function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
         if (!props) return;
 
@@ -76,8 +51,6 @@
 
     }
 
-    // возвращает обёртку вокруг method, которая ставит this._super на родителя
-    // и возвращает его потом
     function wrap(method, parentMethod) {
         return function() {
             var backup = this._super;
@@ -91,8 +64,7 @@
             }
         }
     }
-
-    // эмуляция Object.create для старых IE
+    
     Class.inherit = Object.create || function(proto) {
             function F() {}
             F.prototype = proto;
@@ -191,6 +163,8 @@
         _behaviour:null,
         posX:0,
         posY:0,
+        velX:0,
+        velY:0,
         width:0,
         height:0,
         currFrameIndex:0,
@@ -211,6 +185,9 @@
                 self._frameAnimations.add(a);
             });
         },
+        getRect: function(){
+            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
+        },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
         },
@@ -219,8 +196,12 @@
             this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
         },
-        update: function(time) {
+        update: function(time,delta) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
+            var deltaX = this.velX * delta / 1000;
+            var deltaY = this.velY * delta / 1000;
+            this.posX+=deltaX;
+            this.posY+=deltaY;
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
@@ -344,7 +325,24 @@
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(self.rs[i]);
+               callback(self.rs[i],i);
+            }
+        };
+        this.forEachReversed = function(callback){
+            for (var i = this.rs.length-1;i>=0;i--){
+                callback(self.rs[i],i);
+            }
+        };
+        this.some = function(callback){
+            for (var i = 0,l=this.rs.length;i<l;i++){
+                var res = callback(self.rs[i],i);
+                if (res) break;
+            }
+        };
+        this.someReversed = function(callback){
+            for (var i = this.rs.length-1;i>=0;i--){
+                var res = callback(self.rs[i],i);
+                if (res) break;
             }
         };
         this.indexOf = function(obj){

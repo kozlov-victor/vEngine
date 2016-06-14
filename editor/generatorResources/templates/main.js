@@ -13,25 +13,18 @@
     });
 
     ve_local.bundle.prepare();
+    if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
+
     ve_local.bundle.compileGameObjectScripts();
 
-    ve_local.renderer = new CanvasRenderer();
-    ve_local.sceneManager = new SceneManager();
+    ve_local.renderer = new ve_local.CanvasRenderer();
+    ve.sceneManager = new ve_local.SceneManager();
     ve.keyboard = new ve_local.Keyboard();
-    ve_local.mouse = new ve_local.Mouse(ve_local.sceneManager.getCanvas());
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
-
-        if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
-
-        // for test only
-        //ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
-        //    layer._gameObjects.forEach(function(go){
-        //        go._frameAnimations.get(0) && go._frameAnimations.get(0).play();
-        //    });
-        //});
-        ve_local.sceneManager.setScene(ve_local.bundle.sceneList.get(0));
+        ve_local.mouse = new ve_local.Mouse(ve_local.renderer.getCanvas());
+        ve.sceneManager.setScene(ve_local.bundle.sceneList.get(0));
     });
 
 })();

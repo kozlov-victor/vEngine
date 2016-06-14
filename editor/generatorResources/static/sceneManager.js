@@ -1,5 +1,5 @@
 
-var SceneManager = function(){
+ve_local.SceneManager = function(){
 
     var self = this;
 

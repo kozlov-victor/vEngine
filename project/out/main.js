@@ -112,7 +112,24 @@ window.debug.error = function(err){
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(self.rs[i]);
+               callback(self.rs[i],i);
+            }
+        };
+        this.forEachReversed = function(callback){
+            for (var i = this.rs.length-1;i>=0;i--){
+                callback(self.rs[i],i);
+            }
+        };
+        this.some = function(callback){
+            for (var i = 0,l=this.rs.length;i<l;i++){
+                var res = callback(self.rs[i],i);
+                if (res) break;
+            }
+        };
+        this.someReversed = function(callback){
+            for (var i = this.rs.length-1;i>=0;i--){
+                var res = callback(self.rs[i],i);
+                if (res) break;
             }
         };
         this.indexOf = function(obj){
@@ -280,6 +297,9 @@ window.debug.error = function(err){
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
+        },
+        getRect: function(){
+            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
@@ -470,8 +490,9 @@ window.debug.error = function(err){
     }
 })();
 
-var CanvasRenderer = function(){
+ve_local.CanvasRenderer = function(){
 
+    var canvas;
     var ctx;
     var scene;
     var self = this;
@@ -480,7 +501,7 @@ var CanvasRenderer = function(){
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 
     this.init = function(){
-        var canvas = document.querySelector('canvas');
+        canvas = document.querySelector('canvas');
         if (!canvas) {
             canvas = document.createElement('canvas');
             canvas.width = ve_local.bundle.gameProps.width;
@@ -488,6 +509,10 @@ var CanvasRenderer = function(){
             document.body.appendChild(canvas);
         }
         ctx = canvas.getContext('2d');
+    };
+
+    this.getCanvas = function(){
+        return canvas;
     };
 
     var drawObject = function(gameObj){
@@ -532,7 +557,9 @@ var CanvasRenderer = function(){
 
 };
 
-var SceneManager = function(){
+ve_local.SceneManager = function(){
+
+    var self = this;
 
     this.currScene = null;
 
@@ -554,76 +581,142 @@ var SceneManager = function(){
     this.setScene = function(scene){
         this.currScene = scene;
         preloadAndSet(scene);
+    };
+
+    this.getScene = function(){
+        return this.currScene;
     }
+
 };
 
 (function(){
 
-    var keyboard = {};
+    ve_local.Keyboard = function(){
 
-    var buffer = {};
-    var KEY_PRESSED = 1;
-    var KEY_JUST_PRESSED = 2;
-    var KEY_RELEASED = 0;
-    var KEY_JUST_RELEASED = -1;
+        var buffer = {};
+        var KEY_PRESSED = 1;
+        var KEY_JUST_PRESSED = 2;
+        var KEY_RELEASED = 0;
+        var KEY_JUST_RELEASED = -1;
+        var self = this;
 
-    keyboard.KEY_UP = 38;
-    keyboard.KEY_DOWN = 40;
-    keyboard.KEY_LEFT = 37;
-    keyboard.KEY_RIGHT = 39;
+        this.KEY_UP = 38;
+        this.KEY_DOWN = 40;
+        this.KEY_LEFT = 37;
+        this.KEY_RIGHT = 39;
 
-    keyboard.isPressed = function(key){
-        return buffer[key]>0;
-    };
+        this.isPressed = function(key){
+            return buffer[key]>0;
+        };
 
-    keyboard.isJustPressed = function(key){
-        return buffer[key]==KEY_JUST_PRESSED;
-    };
+        this.isJustPressed = function(key){
+            return buffer[key]==KEY_JUST_PRESSED;
+        };
 
-    keyboard.isReleased = function(key) {
-        return  buffer[key]<=0 || !buffer[key];
-    };
+        this.isReleased = function(key) {
+            return  buffer[key]<=0 || !buffer[key];
+        };
 
-    keyboard.isJustReleased = function(key) {
-        return buffer[key] == KEY_JUST_RELEASED;
-    };
+        this.isJustReleased = function(key) {
+            return buffer[key] == KEY_JUST_RELEASED;
+        };
 
-    keyboard._onNextTick = function(){
-        [
-            keyboard.KEY_UP,
-            keyboard.KEY_DOWN,keyboard.KEY_LEFT,
-            keyboard.KEY_RIGHT
-        ].forEach(function(key){
-            if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
-            else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
+        this._onNextTick = function(){
+            [
+                this.KEY_UP,
+                this.KEY_DOWN,
+                this.KEY_LEFT,
+                this.KEY_RIGHT
+            ].forEach(function(key){
+                    if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
+                    else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
+                });
+        };
+
+        window.addEventListener('keydown',function(e){
+            var code = e.keyCode;
+            switch (code) {
+                case self.KEY_UP:
+                case self.KEY_DOWN:
+                case self.KEY_LEFT:
+                case self.KEY_RIGHT:
+                    buffer[code] = KEY_PRESSED;
+                    break;
+            }
+        });
+
+        window.addEventListener('keyup',function(e){
+            var code = e.keyCode;
+            switch (code) {
+                case self.KEY_UP:
+                case self.KEY_DOWN:
+                case self.KEY_LEFT:
+                case self.KEY_RIGHT:
+                    buffer[code] = KEY_JUST_RELEASED;
+                    break;
+            }
         });
     };
 
-    window.addEventListener('keydown',function(e){
-        var code = e.keyCode;
-        switch (code) {
-            case keyboard.KEY_UP:
-            case keyboard.KEY_DOWN:
-            case keyboard.KEY_LEFT:
-            case keyboard.KEY_RIGHT:
-                buffer[code] = KEY_PRESSED;
-                break;
-        }
-    });
+})();
 
-    window.addEventListener('keyup',function(e){
-        var code = e.keyCode;
-        switch (code) {
-            case keyboard.KEY_UP:
-            case keyboard.KEY_DOWN:
-            case keyboard.KEY_LEFT:
-            case keyboard.KEY_RIGHT:
-                buffer[code] = KEY_JUST_RELEASED;
-                break;
-        }
-    });
+(function(){
 
-    ve.keyboard = keyboard;
+    ve_local.Mouse = function(canvas){
+
+        if ('touchstart' in canvas) {
+            canvas.ontouchstart = function(e){
+                resolveClick(e);
+            }
+        } else {
+            canvas.onclick = function(e){
+                resolveClick(e);
+            }
+        }
+
+        var resolveClick = function(e){
+            var scene = ve.sceneManager.getScene();
+            if (!scene) return;
+            var point = {x: e.clientX,y: e.clientY};
+            scene._layers.someReversed(function(l){
+                var found = false;
+                l._gameObjects.someReversed(function(g){
+                    if (
+                        ve.Math.isPointInRect(point,g.getRect()) &&
+                        g.onClick
+                    ) {
+                        g.onClick();
+                        return found = true;
+                    }
+                });
+                return found;
+            })
+
+        }
+
+    };
+
+})();
+
+(function(){
+
+    var math = {};
+
+    ve.Math = math;
+
+    math.isPointInRect = function(point,rect) {
+        return  point.x>rect.x &&
+                point.x<(rect.x+rect.width) &&
+                point.y>rect.y &&
+                point.y<(rect.y+rect.height);
+    }
+
+})();
+(function(){
+
+    window.onerror = function(e){
+        window.top.postMessage(e,'*');
+    }
 
 })();
 
@@ -634,30 +727,25 @@ var SceneManager = function(){
         frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walkFwd","type":"frameAnimation","duration":1000,"id":"3652_6957_3"},{"name":"walkBack","frames":[7,6,5,4,3,2,1,0],"type":"frameAnimation","duration":1000,"id":"5239_1335_0"},{"frames":[18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0],"name":"rotate","type":"frameAnimation","duration":1000,"id":"7238_1883_3"},{"frames":[96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111],"name":"left","type":"frameAnimation","duration":1000,"id":"5103_5846_11"},{"name":"right","frames":[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47],"type":"frameAnimation","duration":1000,"id":"5283_6546_12"},{"name":"up","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"type":"frameAnimation","duration":1000,"id":"4276_2328_13"},{"name":"down","frames":[64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],"type":"frameAnimation","duration":1000,"id":"8014_4428_14"},{"name":"rotate","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"5442_6561_21"}],
         gameObject: [{"spriteSheetId":"5186_2116_8","width":64,"height":64,"name":"robot","type":"gameObject","frameAnimationIds":["5103_5846_11","5283_6546_12","4276_2328_13","8014_4428_14"],"id":"2701_0003_9","currFrameIndex":34},{"spriteSheetId":"3881_6862_16","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["5442_6561_21"],"id":"5791_8960_17"}],
         scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"}],
-        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":164,"posY":114,"protoId":"2701_0003_9","id":"6864_8407_15"}],"id":"7353_5206_5"}],
+        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":164,"posY":114,"protoId":"2701_0003_9","id":"6864_8407_15"},{"type":"gameObject","posX":183,"posY":74,"protoId":"5791_8960_17","id":"5397_9107_0"}],"id":"7353_5206_5"}],
         spriteSheet: [{"resourcePath":"resources/spriteSheet/robotSheet.png","width":1024,"height":512,"name":"robotSheet","numOfFramesH":16,"numOfFramesV":8,"type":"spriteSheet","id":"5186_2116_8"},{"name":"globus","resourcePath":"resources/spriteSheet/globus.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"type":"spriteSheet","id":"3881_6862_16"}],
-        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        var self = this;\n        self.walkFwdAnimation = self.getFrAnimation('walkFwd');\n        self.walkBackAnimation = self.getFrAnimation('walkBack');\n        ve.keyboard.onKeyDown(function(key){\n            switch (key) {\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.walkBackAnimation.play();\n                    break;\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.walkFwdAnimation.play();\n                    break;\n                default:\n                    break;\n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n            self.setFrameIndex(0);\n        });\n    },\n\n    onUpdate: function(time) {\n       \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"},{"gameObjectId":"1918_5880_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n       // console.log(this.currFrameIndex);\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7263_5894_2"},{"gameObjectId":"2701_0003_9","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        var self = this;\n        this.leftAnim = this.getFrAnimation('left');\n        this.rightAnim = this.getFrAnimation('right');\n        this.upAnim = this.getFrAnimation('up');\n        this.downAnim = this.getFrAnimation('down');\n        this.vel=100;\n    },\n\n    onUpdate: function(time) {\n        var self = this;\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {\n            self.velY = self.vel;\n            self.upAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {\n            self.velY = -self.vel;\n            self.downAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {\n            self.velX = self.vel;\n            self.leftAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {\n            self.velX = -self.vel;\n            self.rightAnim.play();\n        }\n        \n        if (\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN) \n        ) {\n            console.log('justreleased');\n            self.stopFrAnimations();\n            self.velX = 0;\n            self.velY = 0;\n        }\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"1768_0050_10"},{"gameObjectId":"5791_8960_17","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7838_8971_18"}],
+        script:[{"gameObjectId":"1163_2963_1","code":"ve.models.Behaviour.extend({\n\n    walkAnimation:null,\n\n    onCreate: function(){\n        var self = this;\n        self.walkFwdAnimation = self.getFrAnimation('walkFwd');\n        self.walkBackAnimation = self.getFrAnimation('walkBack');\n        ve.keyboard.onKeyDown(function(key){\n            switch (key) {\n                case ve.keyboard.KEY_LEFT:\n                    self.posX-=1;\n                    self.walkBackAnimation.play();\n                    break;\n                case ve.keyboard.KEY_RIGHT:\n                    self.posX+=1;\n                    self.walkFwdAnimation.play();\n                    break;\n                default:\n                    break;\n            }\n        });\n        ve.keyboard.onKeyUp(function(){\n            self.stopFrAnimations();\n            self.setFrameIndex(0);\n        });\n    },\n\n    onUpdate: function(time) {\n       \n    },\n\n    onDestroy: function(){\n\n    }\n\n});","type":"script","id":"2988_2970_2"},{"gameObjectId":"1918_5880_1","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n    },\n\n    onUpdate: function(time) {\n       // console.log(this.currFrameIndex);\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7263_5894_2"},{"gameObjectId":"2701_0003_9","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        var self = this;\n        this.leftAnim = this.getFrAnimation('left');\n        this.rightAnim = this.getFrAnimation('right');\n        this.upAnim = this.getFrAnimation('up');\n        this.downAnim = this.getFrAnimation('down');\n        this.vel=100;\n        this.onClick = function(){\n            console.log('clicked robot');\n        }\n    },\n\n    onUpdate: function(time) {\n        var self = this;\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {\n            self.velY = self.vel;\n            self.upAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {\n            self.velY = -self.vel;\n            self.downAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {\n            self.velX = self.vel;\n            self.leftAnim.play();\n        }\n        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {\n            self.velX = -self.vel;\n            self.rightAnim.play();\n        }\n        \n        if (\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||\n            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN) \n        ) {\n            self.stopFrAnimations();\n            self.velX = 0;\n            self.velY = 0;\n        }\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"1768_0050_10"},{"gameObjectId":"5791_8960_17","code":"ve.models.Behaviour.extend({\n\n    onCreate: function(){\n        this.getFrAnimation('rotate').play();\n        this.onClick = function(){\n            console.log('clicked sphere');\n        }\n    },\n\n    onUpdate: function(time) {\n\n    },\n\n    onDestroy: function(){\n\n    }\n\n});\n","type":"script","id":"7838_8971_18"}],
         gameProps: {"width":400,"height":300}
     });
 
     ve_local.bundle.prepare();
+    if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
+
     ve_local.bundle.compileGameObjectScripts();
 
-    ve_local.renderer = new CanvasRenderer();
-    ve_local.sceneManager = new SceneManager();
+    ve_local.renderer = new ve_local.CanvasRenderer();
+    ve.sceneManager = new ve_local.SceneManager();
+    ve.keyboard = new ve_local.Keyboard();
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
-
-        if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
-
-        // for test only
-        //ve_local.bundle.sceneList.get(0)._layers.forEach(function(layer){
-        //    layer._gameObjects.forEach(function(go){
-        //        go._frameAnimations.get(0) && go._frameAnimations.get(0).play();
-        //    });
-        //});
-        ve_local.sceneManager.setScene(ve_local.bundle.sceneList.get(0));
+        ve_local.mouse = new ve_local.Mouse(ve_local.renderer.getCanvas());
+        ve.sceneManager.setScene(ve_local.bundle.sceneList.get(0));
     });
 
 })();

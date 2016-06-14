@@ -108,6 +108,9 @@
                 self._frameAnimations.add(a);
             });
         },
+        getRect: function(){
+            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
+        },
         getFrAnimation: function(animationName){
             return this._frameAnimations.getIf({name:animationName});
         },

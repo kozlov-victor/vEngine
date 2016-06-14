@@ -1,5 +1,5 @@
 
-var CanvasRenderer = function(){
+ve_local.CanvasRenderer = function(){
 
     var canvas;
     var ctx;
