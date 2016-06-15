@@ -42,7 +42,6 @@
             if (typeof props[name] == "function"
                 && typeof parentPropsObj[name] == "function"
                 && fnTest.test(props[name])) {
-                // скопировать, завернув в обёртку
                 targetPropsObj[name] = wrap(props[name], parentPropsObj[name]);
             } else {
                 targetPropsObj[name] = props[name];
