@@ -42,6 +42,7 @@
             if (typeof props[name] == "function"
                 && typeof parentPropsObj[name] == "function"
                 && fnTest.test(props[name])) {
+                // скопировать, завернув в обёртку
                 targetPropsObj[name] = wrap(props[name], parentPropsObj[name]);
             } else {
                 targetPropsObj[name] = props[name];
@@ -122,7 +123,7 @@
         }
     });
 
-    models.Behaviour = Class.extend({});
+    models.Behaviour = BaseModel.extend({});
 
     var Resource = BaseModel.extend({
         resourcePath:''
@@ -288,11 +289,6 @@
         }
     });
 
-    models.Script = BaseModel.extend({
-        type:'script',
-        _code:''
-    });
-
     ve.models = models;
 
 })();
@@ -434,22 +430,22 @@
             data = null;
         };
 
-        this.compileGameObjectScripts = function(){
+        this.prepareGameObjectScripts = function(){
 
-            try {
-                self.sceneList.forEach(function(scene){
-                    scene._layers.forEach(function(layer){
-                        layer._gameObjects.forEach(function(obj){
-                            var script = self.scriptList.getIf({gameObjectId:obj.protoId});
-                            obj._behaviour = new Function('var clazz = '+script.code+';return new clazz();')();
-                            obj._behaviour.onCreate.apply(obj);
+            self.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(obj){
+                        var script = ve_local.scripts[obj.name+'.js'];
+                        if (!script) throw 'can not found script for ' +obj.name +' game object';
+                        var behaviourClass = script();
+                        obj._behaviour = new behaviourClass();
+                        obj._behaviour.toJsonArr().forEach(function(itm){
+                            obj[itm.key]=itm.value;
                         });
+                        obj._behaviour.onCreate.apply(obj);
                     });
                 });
-            } catch(e){
-                console.log(e);
-                throw 'can not compile game object script: ' + e
-            }
+            });
 
         };
 

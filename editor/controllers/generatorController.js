@@ -4,11 +4,6 @@ var resourcesController = require('./resourcesController');
 var nodeHint = require('node-hint');
 var ejs = require('ejs');
 
-ejs.helpers.out = function(name) {
-    return name;
-};
-
-
 var Source = function(){
     var res = [];
     var self = this;
@@ -76,8 +71,14 @@ module.exports.generate = function(opts,callback){
         templateObj[r] = fs.readFileSync('project/resources/'+r+'/map.json')
     });
     templateObj.gameProps = fs.readFileSync('project/gameProps.json');
-    templateObj.scripts = fs.readDirSync('project/resources/script/files');
-
+    templateObj.scripts = fs.readDirSync('project/resources/script/files').map(function(itm){
+        return {
+            name: itm.name,
+            content: itm.content.replace(/function\w|[ ]*({)/gi,function(){
+                return '{\nvar self = this;\n';
+            })
+        }
+    });
     sourceMain.addTemplate('editor/generatorResources/templates/main.ejs',templateObj);
 
     fs.deleteFolderSync('project/out');

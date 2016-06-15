@@ -719,36 +719,115 @@ ve_local.SceneManager = function(){
 
     ve_local.bundle = new ve_local.Bundle({
         audio: [],
-        frameAnimation: [],
-        gameObject: [{"spriteSheetId":"5787_3268_0","width":128,"height":128,"name":"del","type":"gameObject","frameAnimationIds":[],"id":"6529_9001_1"}],
-        scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"8264_1776_3","id":"7772_1801_4"}],"id":"9376_6186_2"}],
-        layer:[{"name":"l1","type":"layer","gameObjectProps":[{"type":"gameObject","posX":349,"posY":66,"protoId":"6529_9001_1","id":"4503_7941_5"}],"id":"8264_1776_3"}],
-        spriteSheet: [{"resourcePath":"resources/spriteSheet/del.png","width":128,"height":128,"name":"del","type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"5787_3268_0"}],
-        gameProps: {"width":800,"height":600}
+        frameAnimation: [{"frames":[0,1,2,3,4,5,6,7],"name":"walkFwd","type":"frameAnimation","duration":1000,"id":"3652_6957_3"},{"name":"walkBack","frames":[7,6,5,4,3,2,1,0],"type":"frameAnimation","duration":1000,"id":"5239_1335_0"},{"frames":[18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0],"name":"rotate","type":"frameAnimation","duration":1000,"id":"7238_1883_3"},{"frames":[96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111],"name":"left","type":"frameAnimation","duration":1000,"id":"5103_5846_11"},{"name":"right","frames":[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47],"type":"frameAnimation","duration":1000,"id":"5283_6546_12"},{"name":"up","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"type":"frameAnimation","duration":1000,"id":"4276_2328_13"},{"name":"down","frames":[64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],"type":"frameAnimation","duration":1000,"id":"8014_4428_14"},{"name":"rotate","frames":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],"type":"frameAnimation","duration":1000,"id":"5442_6561_21"}],
+        gameObject: [{"spriteSheetId":"5186_2116_8","width":64,"height":64,"name":"robot","type":"gameObject","frameAnimationIds":["5103_5846_11","5283_6546_12","4276_2328_13","8014_4428_14"],"id":"2701_0003_9","currFrameIndex":34},{"spriteSheetId":"3881_6862_16","width":64,"height":64,"name":"globus","type":"gameObject","frameAnimationIds":["5442_6561_21"],"id":"5791_8960_17"}],
+        scene: [{"name":"main","type":"scene","layerProps":[{"type":"layer","protoId":"7353_5206_5","id":"1183_5244_6"}],"id":"4403_9462_4"},{"name":"second","type":"scene","layerProps":[{"type":"layer","protoId":"8333_4477_2","id":"7432_4491_3"}],"id":"7139_4700_1"}],
+        layer:[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":152,"posY":103,"protoId":"2701_0003_9","id":"6864_8407_15"},{"type":"gameObject","posX":270,"posY":29,"protoId":"5791_8960_17","id":"5397_9107_0"}],"id":"7353_5206_5"},{"name":"main2","type":"layer","gameObjectProps":[{"type":"gameObject","posX":178,"posY":142,"protoId":"5791_8960_17","id":"6567_1979_4"}],"id":"8333_4477_2"}],
+        spriteSheet: [{"resourcePath":"resources/spriteSheet/robotSheet.png","width":1024,"height":512,"name":"robotSheet","numOfFramesH":16,"numOfFramesV":8,"type":"spriteSheet","id":"5186_2116_8"},{"name":"globus","resourcePath":"resources/spriteSheet/globus.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"type":"spriteSheet","id":"3881_6862_16"}],
+        gameProps: {"width":400,"height":300}
     });
 
     ve_local.scripts = {};
 
     
-    ve_local.scripts['del.js'] = function(){
+    ve_local.scripts['globus.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
+var self = this;
 
-    test:1,
-    test2:2,
 
     onCreate: function(){
+var self = this;
 
+        this.onClick = function(){
+var self = this;
+
+            console.log('clicked on globus');
+        }
     },
 
-    onUpdate: function(time) {
-        
+    onUpdate: function(time){
+var self = this;
+
+
     },
 
     onDestroy: function(){
+var self = this;
+
 
     }
 
+});;
+        return clazz;
+    };
+    
+    ve_local.scripts['robot.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+var self = this;
+
+
+    vel:100,
+
+    onCreate: function (){
+var self = this;
+
+        this.leftAnim = this.getFrAnimation('left');
+        this.rightAnim = this.getFrAnimation('right');
+        this.upAnim = this.getFrAnimation('up');
+        this.downAnim = this.getFrAnimation('down');
+    },
+
+    onUpdate: function (time){
+var self = this;
+
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)){
+var self = this;
+
+            self.velY = self.vel;
+            self.upAnim.play();
+        }
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)){
+var self = this;
+
+            self.velY = -self.vel;
+            self.downAnim.play();
+        }
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)){
+var self = this;
+
+            self.velX = self.vel;
+            self.leftAnim.play();
+        }
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)){
+var self = this;
+
+            self.velX = -self.vel;
+            self.rightAnim.play();
+        }
+
+        if (
+            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||
+            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||
+            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||
+            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)
+        ){
+var self = this;
+
+            self.stopFrAnimations();
+            self.velX = 0;
+            self.velY = 0;
+        }
+    },
+
+    onDestroy: function (){
+var self = this;
+
+
+    }
 });
+
+
+
 ;
         return clazz;
     };
@@ -757,11 +836,10 @@ ve_local.SceneManager = function(){
     ve_local.bundle.prepare();
     if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
 
-    ve_local.bundle.prepareGameObjectScripts();
-
     ve_local.renderer = new ve_local.CanvasRenderer();
     ve.sceneManager = new ve_local.SceneManager();
     ve.keyboard = new ve_local.Keyboard();
+    ve_local.bundle.prepareGameObjectScripts();
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();

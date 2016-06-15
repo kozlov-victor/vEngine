@@ -1,1 +1,1 @@
-[{"name":"l1","type":"layer","gameObjectProps":[{"type":"gameObject","posX":349,"posY":66,"protoId":"6529_9001_1","id":"4503_7941_5"}],"id":"8264_1776_3"}]
+[{"name":"main","type":"layer","gameObjectProps":[{"type":"gameObject","posX":152,"posY":103,"protoId":"2701_0003_9","id":"6864_8407_15"},{"type":"gameObject","posX":270,"posY":29,"protoId":"5791_8960_17","id":"5397_9107_0"}],"id":"7353_5206_5"},{"name":"main2","type":"layer","gameObjectProps":[{"type":"gameObject","posX":178,"posY":142,"protoId":"5791_8960_17","id":"6567_1979_4"}],"id":"8333_4477_2"}]
