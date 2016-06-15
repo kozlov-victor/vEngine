@@ -83,6 +83,23 @@ module.exports.init = function(app) {
         );
     });
 
+    app.post('/createFile',function(req,res){
+        var name = req.body.name;
+        var path = req.body.path;
+        var content = req.body.content;
+        res.send(
+            resourcesController.createFile(name,path,content)
+        );
+    });
+
+    app.post('/readFile',function(req,res){
+        var name = req.body.name;
+        var path = req.body.path;
+        res.send(
+            resourcesController.readFile(name,path)
+        );
+    });
+
     app.get('/generate',function(req,res){
         var opts = {};
         var queryData = url.parse(req.url, true).query;

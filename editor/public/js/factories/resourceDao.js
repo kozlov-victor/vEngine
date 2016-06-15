@@ -129,5 +129,34 @@ app
                     }
                 });
         };
+        this.createFile = function(name,path,content,callback){
+            $http({
+                url: '/createFile',
+                method: "POST",
+                data: {
+                    name:name,
+                    path:path,
+                    content:content
+                },
+                headers: {'Content-Type': 'application/json'}
+            }).
+                success(function (resp) {
+                    callback && callback(resp);
+                });
+        };
+        this.readFile = function(name,path,callback){
+            $http({
+                url: '/readFile',
+                method: "POST",
+                data: {
+                    name:name,
+                    path:path
+                },
+                headers: {'Content-Type': 'application/json'}
+            }).
+                success(function (resp) {
+                    callback && callback(resp);
+                });
+        };
         return this;
     });

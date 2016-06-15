@@ -33,22 +33,23 @@
             data = null;
         };
 
-        this.compileGameObjectScripts = function(){
+        this.prepareGameObjectScripts = function(){
 
-            try {
-                self.sceneList.forEach(function(scene){
-                    scene._layers.forEach(function(layer){
-                        layer._gameObjects.forEach(function(obj){
-                            var script = self.scriptList.getIf({gameObjectId:obj.protoId});
-                            obj._behaviour = new Function('var clazz = '+script.code+';return new clazz();')();
-                            obj._behaviour.onCreate.apply(obj);
+            self.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(obj){
+                        var script = ve_local.scripts[obj.name+'.js'];
+                        if (!script) throw 'can not found script for ' +obj.name +' game object';
+                        var behaviourClass = new script();
+                        obj._behaviour = new behaviourClass();
+                        console.log(obj._behaviour.toJsonArr());
+                        obj._behaviour.toJsonArr().forEach(function(itm){
+                            obj[itm.key]=itm.value;
                         });
+                        obj._behaviour.onCreate.apply(obj);
                     });
                 });
-            } catch(e){
-                console.log(e);
-                throw 'can not compile game object script: ' + e
-            }
+            });
 
         };
 

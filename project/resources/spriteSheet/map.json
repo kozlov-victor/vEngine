@@ -1,1 +1,1 @@
-[{"resourcePath":"resources/spriteSheet/robotSheet.png","width":1024,"height":512,"name":"robotSheet","numOfFramesH":16,"numOfFramesV":8,"type":"spriteSheet","id":"5186_2116_8"},{"name":"globus","resourcePath":"resources/spriteSheet/globus.png","width":320,"height":256,"numOfFramesH":5,"numOfFramesV":4,"type":"spriteSheet","id":"3881_6862_16"}]
+[{"resourcePath":"resources/spriteSheet/del.png","width":128,"height":128,"name":"del","type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"5787_3268_0"}]

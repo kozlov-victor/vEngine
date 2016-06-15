@@ -2,6 +2,7 @@ var fs = require('../base/fs');
 var minifier = require('minifier');
 var resourcesController = require('./resourcesController');
 var nodeHint = require('node-hint');
+var ejs = require('ejs');
 
 
 var Source = function(){
@@ -30,8 +31,8 @@ var Source = function(){
         })
     };
     this.addTemplate = function(path,params) {
-        var content = parametrize(fs.readFileSync(path),params);
-        self.add(content);
+        var content = fs.readFileSync(path);
+        self.add(ejs.render(content,params));
     };
     this.addTemplateFromRaw = function(raw,params) {
         var content = parametrize(raw,params);
@@ -71,6 +72,8 @@ module.exports.generate = function(opts,callback){
         templateObj[r] = fs.readFileSync('project/resources/'+r+'/map.json')
     });
     templateObj.gameProps = fs.readFileSync('project/gameProps.json');
+    templateObj.scripts = fs.readDirSync('project/resources/script/files');
+
     sourceMain.addTemplate('editor/generatorResources/templates/main.js',templateObj);
 
     fs.deleteFolderSync('project/out');

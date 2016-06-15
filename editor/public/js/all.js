@@ -291,8 +291,7 @@
 
     models.Script = BaseModel.extend({
         type:'script',
-        gameObjectId:null,
-        code:''
+        _code:''
     });
 
     ve.models = models;
@@ -580,15 +579,9 @@ window.app.
         s.createOrEditGameObject = function(){
             resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
                 if (op.type=='create') {
-                    var script = new ve.models.Script({
-                        gameObjectId:op.r.id,
-                        code:ve_local.DEFAULT_CODE_SCRIPT
-                    });
-                    resourceDao.createOrEditResource(script,ve.models.Script,ve_local.bundle.scriptList);
-                } else {
-                    uiHelper.closeDialog();
+                    resourceDao.createFile(s.editData.currGameObjectInEdit.name+'.js','script/files',ve_local.DEFAULT_CODE_SCRIPT);
                 }
-            },true);
+            });
         };
 
         s.showCreateAnimationDialog = function() {
@@ -749,7 +742,7 @@ window.app.
         s.showScript = function(gameObject){
             console.log('showScript');
             s.editData.isScriptEditorRunning = true;
-            s.editData.scriptEditorUrl = '/editor?gameObjectId='+gameObject.id;
+            s.editData.scriptEditorUrl = '/editor?name='+gameObject.name;
         };
 
         (function(){
@@ -1269,15 +1262,12 @@ window.app
             if (!(m.data && m.data.command)) return;
             switch (m.data.command) {
                 case 'getCode':
-                    var code = ve_local.bundle.scriptList.getIf({gameObjectId:m.data.gameObjectId});
-                    respondToTarget(document.getElementById('scriptEditor').contentWindow,code.toJsonObj());
+                    resourceDao.readFile(m.data.name+'.js','script/files',function(resp){
+                        respondToTarget(document.getElementById('scriptEditor').contentWindow,{code:resp});
+                    });
                     break;
                 case 'saveCode':
-                    code = m.data.code;
-                    var id = m.data.id;
-                    var currResourceInEdit = ve_local.bundle.scriptList.getIf({id:id});
-                    currResourceInEdit.code = code;
-                    resourceDao.createOrEditResource(currResourceInEdit.clone(),ve.models.Script,ve_local.bundle.scriptList);
+                    resourceDao.createFile(m.data.name+'.js','script/files', m.data.code);
             }
         });
         window.addEventListener('resize',function(){
@@ -1422,6 +1412,35 @@ app
                             }
                         );
                     }
+                });
+        };
+        this.createFile = function(name,path,content,callback){
+            $http({
+                url: '/createFile',
+                method: "POST",
+                data: {
+                    name:name,
+                    path:path,
+                    content:content
+                },
+                headers: {'Content-Type': 'application/json'}
+            }).
+                success(function (resp) {
+                    callback && callback(resp);
+                });
+        };
+        this.readFile = function(name,path,callback){
+            $http({
+                url: '/readFile',
+                method: "POST",
+                data: {
+                    name:name,
+                    path:path
+                },
+                headers: {'Content-Type': 'application/json'}
+            }).
+                success(function (resp) {
+                    callback && callback(resp);
                 });
         };
         return this;

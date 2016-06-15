@@ -30,15 +30,9 @@ window.app.
         s.createOrEditGameObject = function(){
             resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
                 if (op.type=='create') {
-                    var script = new ve.models.Script({
-                        gameObjectId:op.r.id,
-                        code:ve_local.DEFAULT_CODE_SCRIPT
-                    });
-                    resourceDao.createOrEditResource(script,ve.models.Script,ve_local.bundle.scriptList);
-                } else {
-                    uiHelper.closeDialog();
+                    resourceDao.createFile(s.editData.currGameObjectInEdit.name+'.js','script/files',ve_local.DEFAULT_CODE_SCRIPT);
                 }
-            },true);
+            });
         };
 
         s.showCreateAnimationDialog = function() {

@@ -11,7 +11,7 @@
 
         var tid = null;
         var editor;
-        var codeId = null;
+        var name;
 
         var locationParams = function(){
             var search = location.search && location.search.substring(1)||'';
@@ -45,12 +45,13 @@
 
         var setUpMessageDigest = function(){
             var editorDiv = document.getElementById("editor");
-            window.top.postMessage({command:'getCode',gameObjectId:locationParams.gameObjectId},'*');
+            window.top.postMessage({command:'getCode',name:locationParams.name},'*');
+            name = locationParams.name;
             window.addEventListener('message',function(m){
                 if (!(m.data && m.data.code)) return;
                 editor.setValue(m.data.code,1);
                 editor.session.getUndoManager().reset();
-                codeId = m.data.id;
+                editor.resize();
             });
             window.addEventListener('message',function(m){
                 if (!(m.data && m.data.command)) return;
@@ -62,17 +63,10 @@
             editor.on('change', function() {
                 clearTimeout(tid);
                 tid = setTimeout(function(){
-                    window.top.postMessage({command:'saveCode',id:codeId,code:editor.getValue()},'*');
+                    window.top.postMessage({command:'saveCode',name:name,code:editor.getValue()},'*');
                 },1000);
             });
-//            editor.on("change", function() {
-//                editor.resize();
-//            });
         };
-
-
-
-
 
         return function(){
             setUpEditor();

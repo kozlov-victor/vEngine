@@ -18,15 +18,12 @@ window.app
             if (!(m.data && m.data.command)) return;
             switch (m.data.command) {
                 case 'getCode':
-                    var code = ve_local.bundle.scriptList.getIf({gameObjectId:m.data.gameObjectId});
-                    respondToTarget(document.getElementById('scriptEditor').contentWindow,code.toJsonObj());
+                    resourceDao.readFile(m.data.name+'.js','script/files',function(resp){
+                        respondToTarget(document.getElementById('scriptEditor').contentWindow,{code:resp});
+                    });
                     break;
                 case 'saveCode':
-                    code = m.data.code;
-                    var id = m.data.id;
-                    var currResourceInEdit = ve_local.bundle.scriptList.getIf({id:id});
-                    currResourceInEdit.code = code;
-                    resourceDao.createOrEditResource(currResourceInEdit.clone(),ve.models.Script,ve_local.bundle.scriptList);
+                    resourceDao.createFile(m.data.name+'.js','script/files', m.data.code);
             }
         });
         window.addEventListener('resize',function(){

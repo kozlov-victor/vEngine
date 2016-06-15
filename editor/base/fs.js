@@ -49,6 +49,15 @@ module.exports.copyFolderSync = function cpf(src, dest) {
     }
 };
 
+module.exports.readDirSync = function(path){
+    var files = fs.readdirSync(path);
+    var res = [];
+    for(var i in files) {
+        res.push({name:files[i],content:fs.readFileSync(path+'/'+files[i], "utf8")})
+    }
+    return res;
+};
+
 module.exports.deleteFolderSync = function delFldr(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach(function (file, index) {

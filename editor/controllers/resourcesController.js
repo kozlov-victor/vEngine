@@ -3,7 +3,7 @@ var fs = require('../base/fs');
 var utils = require('../utils/utils');
 
 module.exports.RESOURCE_NAMES =
-    'audio,spriteSheet,frameAnimation,gameObject,layer,scene,script'
+    'audio,spriteSheet,frameAnimation,gameObject,layer,scene'
     .split(',');
 
 module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('editor/generatorResources/static/defaultCodeScript.js');
@@ -140,6 +140,15 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
         writeResource(resources,path);
         return {id:object.id};
     }
+};
+
+module.exports.createFile = function(name,path,content) {
+    fs.writeFileSync('project/resources/'+path+'/'+name,content);
+    return {};
+};
+
+module.exports.readFile = function(name,path) {
+    return fs.readFileSync('project/resources/'+path+'/'+name);
 };
 
 module.exports.readResource = readResource;

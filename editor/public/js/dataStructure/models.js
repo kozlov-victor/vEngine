@@ -46,7 +46,7 @@
         }
     });
 
-    models.Behaviour = Class.extend({});
+    models.Behaviour = BaseModel.extend({});
 
     var Resource = BaseModel.extend({
         resourcePath:''
@@ -210,12 +210,6 @@
             });
             return dataSet;
         }
-    });
-
-    models.Script = BaseModel.extend({
-        type:'script',
-        gameObjectId:null,
-        code:''
     });
 
     ve.models = models;

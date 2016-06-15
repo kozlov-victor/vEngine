@@ -90,7 +90,7 @@ window.app.
         s.showScript = function(gameObject){
             console.log('showScript');
             s.editData.isScriptEditorRunning = true;
-            s.editData.scriptEditorUrl = '/editor?gameObjectId='+gameObject.id;
+            s.editData.scriptEditorUrl = '/editor?name='+gameObject.name;
         };
 
         (function(){

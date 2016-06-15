@@ -14,6 +14,8 @@ module.exports.initFolderStructure = function(){
     fs.createFolderSync('project');
     fs.createFolderSync('project/resources');
     createFolderWithFiles(resourcesController.RESOURCE_NAMES);
+    fs.createFolderSync('project/resources/script');
+    fs.createFolderSync('project/resources/script/files');
     fs.createFileSync('project/gameProps.json',JSON.stringify({
         width:800,
         height:600

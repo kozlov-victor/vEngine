@@ -1,7 +1,7 @@
 
 var ve = {};
 var ve_local = {};
-ve_local.RESOURCE_NAMES = '%RESOURCE_NAMES%';
+ve_local.RESOURCE_NAMES = <%-RESOURCE_NAMES%>;
 
 window.debug = {};
 window.debug.error = function(err){
