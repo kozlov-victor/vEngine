@@ -447,9 +447,8 @@ window.debug.error = function(err){
                     layer._gameObjects.forEach(function(obj){
                         var script = ve_local.scripts[obj.name+'.js'];
                         if (!script) throw 'can not found script for ' +obj.name +' game object';
-                        var behaviourClass = new script();
+                        var behaviourClass = script();
                         obj._behaviour = new behaviourClass();
-                        console.log(obj._behaviour.toJsonArr());
                         obj._behaviour.toJsonArr().forEach(function(itm){
                             obj[itm.key]=itm.value;
                         });
@@ -735,6 +734,7 @@ ve_local.SceneManager = function(){
         var clazz = ve.models.Behaviour.extend({
 
     test:1,
+    test2:2,
 
     onCreate: function(){
 

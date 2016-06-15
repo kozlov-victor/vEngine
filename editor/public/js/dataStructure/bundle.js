@@ -40,9 +40,8 @@
                     layer._gameObjects.forEach(function(obj){
                         var script = ve_local.scripts[obj.name+'.js'];
                         if (!script) throw 'can not found script for ' +obj.name +' game object';
-                        var behaviourClass = new script();
+                        var behaviourClass = script();
                         obj._behaviour = new behaviourClass();
-                        console.log(obj._behaviour.toJsonArr());
                         obj._behaviour.toJsonArr().forEach(function(itm){
                             obj[itm.key]=itm.value;
                         });

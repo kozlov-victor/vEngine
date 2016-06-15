@@ -4,6 +4,10 @@ var resourcesController = require('./resourcesController');
 var nodeHint = require('node-hint');
 var ejs = require('ejs');
 
+ejs.helpers.out = function(name) {
+    return name;
+};
+
 
 var Source = function(){
     var res = [];
@@ -46,7 +50,7 @@ var Source = function(){
 module.exports.generate = function(opts,callback){
     var sourceMain = new Source();
     sourceMain.addTemplate(
-        'editor/generatorResources/templates/envVariables.js',
+        'editor/generatorResources/templates/envVariables.ejs',
         {
             RESOURCE_NAMES:JSON.stringify(resourcesController.RESOURCE_NAMES)
         }
@@ -74,7 +78,7 @@ module.exports.generate = function(opts,callback){
     templateObj.gameProps = fs.readFileSync('project/gameProps.json');
     templateObj.scripts = fs.readDirSync('project/resources/script/files');
 
-    sourceMain.addTemplate('editor/generatorResources/templates/main.js',templateObj);
+    sourceMain.addTemplate('editor/generatorResources/templates/main.ejs',templateObj);
 
     fs.deleteFolderSync('project/out');
     fs.createFolderSync('project/out');
