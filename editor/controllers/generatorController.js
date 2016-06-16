@@ -74,9 +74,7 @@ module.exports.generate = function(opts,callback){
     templateObj.scripts = fs.readDirSync('project/resources/script/files').map(function(itm){
         return {
             name: itm.name,
-            content: itm.content.replace(/function\w|[ ]*({)/gi,function(){
-                return '{\nvar self = this;\n';
-            })
+            content: itm.content //replace(/:[ ]*function\w|[ ]*({)/gi,'{\nvar self = this;\n')
         }
     });
     sourceMain.addTemplate('editor/generatorResources/templates/main.ejs',templateObj);

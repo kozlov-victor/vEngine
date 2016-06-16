@@ -732,28 +732,18 @@ ve_local.SceneManager = function(){
     
     ve_local.scripts['globus.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
-var self = this;
-
 
     onCreate: function(){
-var self = this;
-
         this.onClick = function(){
-var self = this;
-
             console.log('clicked on globus');
         }
     },
 
-    onUpdate: function(time){
-var self = this;
-
+    onUpdate: function(time) {
 
     },
 
     onDestroy: function(){
-var self = this;
-
 
     }
 
@@ -763,44 +753,31 @@ var self = this;
     
     ve_local.scripts['robot.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
-var self = this;
-
 
     vel:100,
 
-    onCreate: function (){
-var self = this;
-
+    onCreate: function () {
         this.leftAnim = this.getFrAnimation('left');
         this.rightAnim = this.getFrAnimation('right');
         this.upAnim = this.getFrAnimation('up');
         this.downAnim = this.getFrAnimation('down');
     },
 
-    onUpdate: function (time){
-var self = this;
-
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)){
-var self = this;
-
+    onUpdate: function (time) {
+        var self = this;
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
             self.velY = self.vel;
             self.upAnim.play();
         }
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)){
-var self = this;
-
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
             self.velY = -self.vel;
             self.downAnim.play();
         }
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)){
-var self = this;
-
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
             self.velX = self.vel;
             self.leftAnim.play();
         }
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)){
-var self = this;
-
+        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
             self.velX = -self.vel;
             self.rightAnim.play();
         }
@@ -810,18 +787,14 @@ var self = this;
             ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||
             ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||
             ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)
-        ){
-var self = this;
-
+        ) {
             self.stopFrAnimations();
             self.velX = 0;
             self.velY = 0;
         }
     },
 
-    onDestroy: function (){
-var self = this;
-
+    onDestroy: function () {
 
     }
 });

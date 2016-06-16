@@ -10,6 +10,7 @@ ve.models.Behaviour.extend({
     },
 
     onUpdate: function (time) {
+        var self = this;
         if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
             self.velY = self.vel;
             self.upAnim.play();
