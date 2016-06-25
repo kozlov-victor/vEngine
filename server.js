@@ -1,5 +1,4 @@
-var app = require('./editor/base/expressApp').app;
-require('./editor/base/routes').setUpRotes(app);
+var app = require.main.require('./application/base/expressApp').app;
 
 process.on('uncaughtException',function(e){
     console.log(e);

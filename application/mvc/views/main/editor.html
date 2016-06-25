@@ -1,0 +1,84 @@
+<html>
+<body>
+<div id="editor" style="height: 500px; width: 100%"></div>
+<div id="commandline" style="position: absolute; bottom: 10px; height: 20px; width: 800px;"></div>
+</body>
+<script src="/js/lib/ace/src-min/ace.js" type="text/javascript"></script>
+<script src="/js/lib/ace/src-min/ext-language_tools.js" type="text/javascript"></script>
+<script src="/js/lib/jquery.js" type="text/javascript"></script>
+<script>
+    !function(){
+
+        var tid = null;
+        var editor;
+        var name;
+
+        var locationParams = function(){
+            var search = location.search && location.search.substring(1)||'';
+            var pairs = search.split('&');
+            var res = {};
+            pairs.forEach(function(pair){
+                var operands = pair.split('=');
+                res[operands[0]] = decodeURIComponent(operands[1]);
+            });
+            return res;
+        }();
+
+        var setUpEditor = function(){
+            var langTools = ace.require("ace/ext/language_tools");
+            editor = ace.edit("editor");
+            window.editor = editor;
+            editor.session.setMode("ace/mode/javascript");
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true
+            });
+            var appCompleter = {
+                getCompletions: function(editor, session, pos, prefix, callback) {
+                    callback(null,{name: 'name11', value: 'value11', score: 1, meta: "meta11"});
+                }
+            };
+            langTools.addCompleter(appCompleter);
+            editor.$blockScrolling = Infinity;
+        };
+
+        var setUpMessageDigest = function(){
+            var editorDiv = document.getElementById("editor");
+            window.top.postMessage({command:'getCode',name:locationParams.name,path:locationParams.path},'*');
+            name = locationParams.name;
+            window.addEventListener('message',function(m){
+                if (!(m.data && m.data.code)) return;
+                editor.setValue(m.data.code,1);
+                editor.session.getUndoManager().reset();
+                editor.resize();
+            });
+            window.addEventListener('message',function(m){
+                if (!(m.data && m.data.command)) return;
+                switch (m.data.command) {
+                    case 'resizeWindow':
+                        $('#editor').css({height: m.data.height+'px'})
+                }
+            });
+            editor.on('change', function() {
+                clearTimeout(tid);
+                tid = setTimeout(function(){
+                    window.top.postMessage({command:'saveCode',name:name,path:locationParams.path,code:editor.getValue()},'*');
+                },1000);
+            });
+        };
+
+        return function(){
+            setUpEditor();
+            setUpMessageDigest();
+        }
+
+
+    }()();
+
+
+
+
+
+</script>
+</html>

@@ -1,0 +1,24 @@
+<h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'fonts')">{{i18n.commonBehaviour}}</h3>
+<div ng-show="leftMenuIndex=='fonts'" class="withPadding">
+    <form name="fonts" class="table width100 withPadding">
+        <div class="table width100">
+            <div class="row" ng-repeat="item in editData.CommonBehaviourList.rs">
+                <div class="cell vAlign">
+                    <span>{{item.name}}</span>
+                </div>
+                <div class="cell">
+
+                </div>
+                <div class="cell vAlign rightAlign" ng-click="showEditCommonBehaviourDialog(item)">
+                    edit
+                </div>
+                <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'commonBehaviour')">
+                    X
+                </div>
+            </div>
+        </div>
+        <button ng-click="showCreateCommonBehaviourDialog()">
+            {{i18n.create}}
+        </button>
+    </form>
+</div>
