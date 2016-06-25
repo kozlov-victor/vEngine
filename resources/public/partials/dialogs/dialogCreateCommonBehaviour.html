@@ -1,0 +1,23 @@
+
+<table class="width100">
+    <tr ng-repeat="prp in editData.currCommonBehaviourInEdit">
+        <td>
+            {{prp}}
+        </td>
+        <td>
+            <input type="text" ng-model="prp"/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <select>
+                <option ng-repeat="p in defaultParameters">{{p.key}} ({{p.value}})</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<button
+        ng-click="createOrEditFrAnimation()"
+        ng-disabled="!(frmCreateAnimation.$valid)">
+    {{editData.currFrAnimationInEdit.id?i18n.edit:i18n.create}}
+</button>

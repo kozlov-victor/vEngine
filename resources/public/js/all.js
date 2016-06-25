@@ -86,7 +86,7 @@
         if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
 
-    var BaseModel = Class.extend({
+    models.BaseModel = Class.extend({
         id:null,
         protoId:null,
         name:'',
@@ -123,9 +123,9 @@
         }
     });
 
-    models.Behaviour = BaseModel.extend({});
+    models.Behaviour = models.BaseModel.extend({});
 
-    var Resource = BaseModel.extend({
+    var Resource = models.BaseModel.extend({
         resourcePath:''
     });
 
@@ -156,12 +156,13 @@
         }
     });
 
-    models.GameObject = BaseModel.extend({
+    models.GameObject = models.BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
         commonBehaviours:[],
+        _commonBehaviours:null,
         posX:0,
         posY:0,
         velX:0,
@@ -184,6 +185,10 @@
                 a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
+            });
+            self._commonBehaviours = new ve.collections.List();
+            this.commonBehaviours.forEach(function(cb){
+                self._commonBehaviours.add(new ve.models.CommonBehaviour(cb));
             });
         },
         getRect: function(){
@@ -209,7 +214,7 @@
         }
     });
 
-    models.FrameAnimation = BaseModel.extend({
+    models.FrameAnimation = models.BaseModel.extend({
         type:'frameAnimation',
         name:'',
         frames:[],
@@ -242,7 +247,7 @@
         }
     });
 
-    models.Layer = BaseModel.extend({
+    models.Layer = models.BaseModel.extend({
         type:'layer',
         gameObjectProps:[],
         _gameObjects:null,
@@ -266,7 +271,7 @@
         }
     });
 
-    models.Scene = BaseModel.extend({
+    models.Scene = models.BaseModel.extend({
         type:'scene',
         layerProps:[],
         _layers:null,
@@ -291,8 +296,18 @@
     });
 
 
-    models.Font = BaseModel.extend({
+    models.Font = models.BaseModel.extend({
         type:'font'
+    });
+
+    models.CommonBehaviour = models.BaseModel.extend({
+        type:'commonBehaviour',
+        name:'',
+        description:'',
+        defaultParameters:[],
+        construct: function(){
+
+        }
     });
 
 
@@ -553,6 +568,34 @@ window.app.
     });
 
 window.app.
+    controller('commonBehaviourCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+        s.defaultParameters = [];
+        var params = editData.commonBehaviourList.getIf({
+            name:editData.currCommonBehaviourInEdit.name
+        }).defaultParameters;
+        Object.keys(params).forEach(function(key){
+            s.defaultParameters.push({key:key,value:params[key]});
+        });
+
+    });
+
+window.app.
     controller('fontCtrl', function (
         $scope,
         $http,
@@ -631,9 +674,14 @@ window.app.
         };
 
         s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone(ve.models.FrameAnimation);
+            s.editData.currFrAnimationInEdit = item.clone();
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             uiHelper.showDialog('frmCreateAnimation');
+        };
+
+        s.showEditCommonBehaviourDialog = function(item) {
+            s.editData.currCommonBehaviourInEdit = item.clone();
+            uiHelper.showDialog('frmCreateCommonBehaviour');
         };
 
         s.deleteGameObjectFromCtxMenu = function(object){
@@ -641,6 +689,12 @@ window.app.
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
             layer._gameObjects.removeIf({id:object.id});
             uiHelper.closeContextMenu();
+        };
+
+        s.editGameObjectFromCtxMenu = function(object){
+            editData.currGameObjectInEdit = object.clone(ve.models.GameObject);
+            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
+            uiHelper.showDialog('frmCreateGameObject');
         }
 
     });
@@ -770,8 +824,12 @@ window.app.
         };
 
         s.showScript = function(model){
-            s.editData.isScriptEditorRunning = true;
-            s.editData.scriptEditorUrl = '/editor?name='+model.name+'&path='+encodeURIComponent('script/'+model.type);
+            s.uiHelper.window = 'scriptWindow';
+            s.editData.scriptEditorUrl =
+                '/editor?name='+
+                model.name+
+                '&path='+encodeURIComponent('script/'+model.type
+            );
         };
 
     });
@@ -990,13 +1048,13 @@ window.app.
                 method: "GET"
             }).
             success(function (resp) {
-                editData.isInDebugRunning = true;
+                    s.uiHelper.window = 'debugRunWindow';
                 editData.debugFrameUrl = '/project/out';
             });
         };
 
         s.stop = function(){
-            editData.isInDebugRunning = false;
+            s.uiHelper.window = 'sceneWindow';
             editData.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         }
 
@@ -1180,6 +1238,7 @@ window.app
     .factory('editData', function ($sce) {
 
         var res = {};
+        res.commonBehaviourList = null;
         res.currGameObjectInEdit = null;
         res.currSpriteSheetInEdit = null;
         res.currFrAnimationInEdit = null;
@@ -1187,10 +1246,9 @@ window.app
         res.currSceneGameObjectInEdit = null;
         res.currLayerInEdit = null;
         res.currFontInEdit = null;
+        res.currCommonBehaviourInEdit = null;
 
-        res.isInDebugRunning = false;
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
-        res.isScriptEditorRunning = false;
         res.scriptEditorUrl = '';
 
         return res;
@@ -1232,6 +1290,8 @@ window.app
                 saveObjectFirst:'save object first',
                 all: 'all',
                 game:'game',
+                editThisGameObject:'edit this game object',
+                deleteThisGameObject:'delete this game object',
                 scenes:'scenes',
                 scene:'scene',
                 run:'run',
@@ -1327,6 +1387,10 @@ app
                         editData[key] = ve_local.bundle[key];
                     });
                     editData.gameProps = ve_local.bundle.gameProps;
+                    editData.commonBehaviourList = new ve.collections.List();
+                    response.commonBehaviour.forEach(function(cb){
+                        editData.commonBehaviourList.add(new ve.models.CommonBehaviour(cb));
+                    });
                     resolve();
                 });
             });
@@ -1493,6 +1557,7 @@ window.app
     .factory('uiHelper', function () {
         var _;
         return _ = {
+            window:'sceneWindow',
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
             },
@@ -1505,6 +1570,7 @@ window.app
             showDialog: function(name){
                 _.dialogName = name;
                 _._dialogsStack.push(name);
+                _.ctxMenu.name = null;
             },
             closeDialog: function(){
                 _._dialogsStack.pop();

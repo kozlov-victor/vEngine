@@ -5,6 +5,7 @@ window.app
     .factory('editData', function ($sce) {
 
         var res = {};
+        res.commonBehaviourList = null;
         res.currGameObjectInEdit = null;
         res.currSpriteSheetInEdit = null;
         res.currFrAnimationInEdit = null;
@@ -12,10 +13,9 @@ window.app
         res.currSceneGameObjectInEdit = null;
         res.currLayerInEdit = null;
         res.currFontInEdit = null;
+        res.currCommonBehaviourInEdit = null;
 
-        res.isInDebugRunning = false;
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
-        res.isScriptEditorRunning = false;
         res.scriptEditorUrl = '';
 
         return res;

@@ -50,6 +50,13 @@
                     ng-include src="'partials/dialogs/dialogCreateFont.html'"
                     novalidate></form>
 
+            <form
+                    name="frmCreateCommonBehaviour"
+                    ng-controller="commonBehaviourCtrl"
+                    ng-if="uiHelper.dialogName=='frmCreateCommonBehaviour'"
+                    ng-include src="'partials/dialogs/dialogCreateCommonBehaviour.html'"
+                    novalidate></form>
+
 
         </div>
     </div>

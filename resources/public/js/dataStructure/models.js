@@ -9,7 +9,7 @@
         if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
 
-    var BaseModel = Class.extend({
+    models.BaseModel = Class.extend({
         id:null,
         protoId:null,
         name:'',
@@ -46,9 +46,9 @@
         }
     });
 
-    models.Behaviour = BaseModel.extend({});
+    models.Behaviour = models.BaseModel.extend({});
 
-    var Resource = BaseModel.extend({
+    var Resource = models.BaseModel.extend({
         resourcePath:''
     });
 
@@ -79,12 +79,13 @@
         }
     });
 
-    models.GameObject = BaseModel.extend({
+    models.GameObject = models.BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
         commonBehaviours:[],
+        _commonBehaviours:null,
         posX:0,
         posY:0,
         velX:0,
@@ -107,6 +108,10 @@
                 a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
+            });
+            self._commonBehaviours = new ve.collections.List();
+            this.commonBehaviours.forEach(function(cb){
+                self._commonBehaviours.add(new ve.models.CommonBehaviour(cb));
             });
         },
         getRect: function(){
@@ -132,7 +137,7 @@
         }
     });
 
-    models.FrameAnimation = BaseModel.extend({
+    models.FrameAnimation = models.BaseModel.extend({
         type:'frameAnimation',
         name:'',
         frames:[],
@@ -165,7 +170,7 @@
         }
     });
 
-    models.Layer = BaseModel.extend({
+    models.Layer = models.BaseModel.extend({
         type:'layer',
         gameObjectProps:[],
         _gameObjects:null,
@@ -189,7 +194,7 @@
         }
     });
 
-    models.Scene = BaseModel.extend({
+    models.Scene = models.BaseModel.extend({
         type:'scene',
         layerProps:[],
         _layers:null,
@@ -214,8 +219,18 @@
     });
 
 
-    models.Font = BaseModel.extend({
+    models.Font = models.BaseModel.extend({
         type:'font'
+    });
+
+    models.CommonBehaviour = models.BaseModel.extend({
+        type:'commonBehaviour',
+        name:'',
+        description:'',
+        defaultParameters:[],
+        construct: function(){
+
+        }
     });
 
 

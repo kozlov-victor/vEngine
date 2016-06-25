@@ -75,7 +75,6 @@
             {{i18n.frAnimations}}
         </td>
         <td>
-
             <div class="table width100">
                 <div class="row" ng-repeat="animItm in editData.currGameObjectInEdit._frameAnimations.rs">
                     <div class="cell vAlign">
@@ -85,6 +84,29 @@
                         edit
                     </div>
                     <div class="cell pointer vAlign rightAlign" ng-click="deleteFrameAnimation(animItm)">
+                        X
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateAnimationDialog()">+</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.commonBehaviour}}
+        </td>
+        <td>
+            <div class="table width100">
+                <div class="row" ng-repeat="itm in editData.currGameObjectInEdit._commonBehaviours.rs">
+                    <div class="cell vAlign">
+                        <span>{{itm.name}}</span>
+                    </div>
+                    <div class="cell vAlign rightAlign" ng-click="showEditCommonBehaviourDialog(itm)">
+                        edit
+                    </div>
+                    <div class="cell pointer vAlign rightAlign" ng-click="deleteFrameAnimation(itm)">
                         X
                     </div>
                 </div>

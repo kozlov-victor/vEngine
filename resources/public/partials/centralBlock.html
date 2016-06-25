@@ -4,7 +4,7 @@
         class="gameSceneWrapper withPaddingLeft"
         >
     <div
-            ng-show="!editData.isScriptEditorRunning && !editData.isInDebugRunning"
+            ng-show="uiHelper.window=='sceneWindow'"
             class="gameScene relative"
             ng-controller="sceneCtrl"
             app-key-press="onKeyPress($event)"
@@ -34,7 +34,7 @@
     </div>
 </div>
 
-<div ng-if="!editData.isScriptEditorRunning && editData.isInDebugRunning" class="gameSceneWrapper withPaddingLeft">
+<div ng-if="uiHelper.window=='debugRunWindow'" class="gameSceneWrapper withPaddingLeft">
     <iframe
             width="{{editData.gameProps.width}}"
             height="{{editData.gameProps.height}}"
@@ -43,7 +43,7 @@
             ></iframe>
 </div>
 
-<div ng-if="editData.isScriptEditorRunning" class="gameSceneWrapper withPaddingLeft height100 noOverFlow relative">
+<div ng-if="uiHelper.window=='scriptWindow'" class="gameSceneWrapper withPaddingLeft height100 noOverFlow relative">
     <iframe
             id="scriptEditor"
             style="position:absolute;width:100%;height:100%;left:0;top:0;bottom:0;right:0"

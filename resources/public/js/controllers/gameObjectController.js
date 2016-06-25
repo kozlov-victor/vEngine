@@ -56,9 +56,14 @@ window.app.
         };
 
         s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone(ve.models.FrameAnimation);
+            s.editData.currFrAnimationInEdit = item.clone();
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             uiHelper.showDialog('frmCreateAnimation');
+        };
+
+        s.showEditCommonBehaviourDialog = function(item) {
+            s.editData.currCommonBehaviourInEdit = item.clone();
+            uiHelper.showDialog('frmCreateCommonBehaviour');
         };
 
         s.deleteGameObjectFromCtxMenu = function(object){
@@ -66,6 +71,12 @@ window.app.
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
             layer._gameObjects.removeIf({id:object.id});
             uiHelper.closeContextMenu();
+        };
+
+        s.editGameObjectFromCtxMenu = function(object){
+            editData.currGameObjectInEdit = object.clone(ve.models.GameObject);
+            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
+            uiHelper.showDialog('frmCreateGameObject');
         }
 
     });

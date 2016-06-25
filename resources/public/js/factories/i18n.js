@@ -32,6 +32,8 @@ window.app
                 saveObjectFirst:'save object first',
                 all: 'all',
                 game:'game',
+                editThisGameObject:'edit this game object',
+                deleteThisGameObject:'delete this game object',
                 scenes:'scenes',
                 scene:'scene',
                 run:'run',

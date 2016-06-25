@@ -16,13 +16,13 @@ module.exports.init = function(app) {
     mainController.initFolderStructure();
 
     app.get('/',function(req,res){
-        res.render('main/main',{
+        res.render('main',{
             resourceNames:resourcesController.RESOURCE_NAMES,
             defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT
         });
     });
     app.get('/editor',function(req,res){
-        res.render('main/editor',utils.parametrize({}));
+        res.render('editor',utils.parametrize({}));
     });
 
     var getModelFromBody = function(req) {
@@ -47,6 +47,7 @@ module.exports.init = function(app) {
             result[key] = resourcesController.getAll(key);
         });
         result.gameProps = resourcesController.getGameProps();
+        result.commonBehaviour = resourcesController.getCommonBehaviourAttrs();
         res.send(result);
     });
 

@@ -142,6 +142,32 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
     }
 };
 
+module.exports.getCommonBehaviourAttrs = function(){
+    // todo project name
+    var code = '';
+    var fileNames = [];
+    code+='var require = function(){};';
+    code+='var Class = {};var bundle = [];var fileNames = [];';
+    code+='Class.extend = function(a,b){bundle.push(b)};';
+    code+='var ve={};ve.commonBehaviour={};';
+    fs.readDirSync('workspace/project/resources/script/commonBehaviour').forEach(function(itm){
+        code+=itm.content+';';
+        fileNames.push(itm.name);
+    });
+    code+=';return bundle;';
+    var bundle = [];
+    try {
+        bundle = new Function(code)();
+    } catch(e){
+        console.error(e);
+    }
+    bundle.forEach(function(itm,i){
+        itm.id = uuid();
+        itm.name = fileNames[i].split('.')[0];
+    });
+    return bundle;
+};
+
 module.exports.createFile = function(name,path,content) {
     fs.writeFileSync('workspace/project/resources/'+path+'/'+name,content);
     return {};

@@ -1,5 +1,8 @@
 <menu class="menu rootMenu">
+    <li ng-click="editGameObjectFromCtxMenu(uiHelper.ctxMenu.model)">
+        <span>{{i18n.editThisGameObject}}</span>
+    </li>
     <li ng-click="deleteGameObjectFromCtxMenu(uiHelper.ctxMenu.model)">
-        <span>delete this game object</span>
+        <span>{{i18n.deleteThisGameObject}}</span>
     </li>
 </menu>

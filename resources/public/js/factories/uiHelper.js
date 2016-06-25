@@ -3,6 +3,7 @@ window.app
     .factory('uiHelper', function () {
         var _;
         return _ = {
+            window:'sceneWindow',
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
             },
@@ -15,6 +16,7 @@ window.app
             showDialog: function(name){
                 _.dialogName = name;
                 _._dialogsStack.push(name);
+                _.ctxMenu.name = null;
             },
             closeDialog: function(){
                 _._dialogsStack.pop();

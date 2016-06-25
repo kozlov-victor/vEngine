@@ -12,7 +12,15 @@
             "8014_4428_14"
         ],
         "id": "2701_0003_9",
-        "currFrameIndex": 34
+        "currFrameIndex": 34,
+        "commonBehaviours": [
+          {
+            "name":"walk4dir"
+          },
+          {
+            "name":"stub"
+          }
+        ]
     },
     {
         "spriteSheetId": "3881_6862_16",
@@ -24,7 +32,9 @@
             "5442_6561_21"
         ],
         "id": "5791_8960_17",
-        "commonBehaviours": []
+        "commonBehaviours": [
+
+        ]
     },
     {
         "spriteSheetId": "1408_4249_0",

@@ -1,5 +1,5 @@
 
-ve.commonBehaviour.Walk4Dir = Class.extend(
+Class.extend(
     {
         _parameters: {},
         _gameObject: null,

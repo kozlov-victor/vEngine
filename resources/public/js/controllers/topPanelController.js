@@ -32,13 +32,13 @@ window.app.
                 method: "GET"
             }).
             success(function (resp) {
-                editData.isInDebugRunning = true;
+                    s.uiHelper.window = 'debugRunWindow';
                 editData.debugFrameUrl = '/project/out';
             });
         };
 
         s.stop = function(){
-            editData.isInDebugRunning = false;
+            s.uiHelper.window = 'sceneWindow';
             editData.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         }
 

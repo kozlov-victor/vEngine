@@ -1,8 +1,8 @@
-<h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'scenes')">{{i18n.scenes}}</h3>
+<h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'scenes');">{{i18n.scenes}}</h3>
 <div ng-show="leftMenuIndex=='scenes'" class="withPadding">
 
     <!--scenes-->
-    <div class="table width100 borderedRows borderedCells">
+    <div class="table width100 borderedRows borderedCells" ng-click="uiHelper.window = 'sceneWindow';">
         <div
                 ng-click="editData.currSceneInEdit=scene"
                 ng-repeat="scene in editData.sceneList.rs" class="row">

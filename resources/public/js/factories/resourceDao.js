@@ -22,6 +22,10 @@ app
                         editData[key] = ve_local.bundle[key];
                     });
                     editData.gameProps = ve_local.bundle.gameProps;
+                    editData.commonBehaviourList = new ve.collections.List();
+                    response.commonBehaviour.forEach(function(cb){
+                        editData.commonBehaviourList.add(new ve.models.CommonBehaviour(cb));
+                    });
                     resolve();
                 });
             });

@@ -93,8 +93,12 @@ window.app.
         };
 
         s.showScript = function(model){
-            s.editData.isScriptEditorRunning = true;
-            s.editData.scriptEditorUrl = '/editor?name='+model.name+'&path='+encodeURIComponent('script/'+model.type);
+            s.uiHelper.window = 'scriptWindow';
+            s.editData.scriptEditorUrl =
+                '/editor?name='+
+                model.name+
+                '&path='+encodeURIComponent('script/'+model.type
+            );
         };
 
     });

@@ -194,7 +194,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
 
-    var BaseModel = Class.extend({
+    models.BaseModel = Class.extend({
         id:null,
         protoId:null,
         name:'',
@@ -231,9 +231,9 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         }
     });
 
-    models.Behaviour = BaseModel.extend({});
+    models.Behaviour = models.BaseModel.extend({});
 
-    var Resource = BaseModel.extend({
+    var Resource = models.BaseModel.extend({
         resourcePath:''
     });
 
@@ -264,7 +264,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         }
     });
 
-    models.GameObject = BaseModel.extend({
+    models.GameObject = models.BaseModel.extend({
         type:'gameObject',
         spriteSheetId:null,
         _spriteSheet:null,
@@ -317,7 +317,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         }
     });
 
-    models.FrameAnimation = BaseModel.extend({
+    models.FrameAnimation = models.BaseModel.extend({
         type:'frameAnimation',
         name:'',
         frames:[],
@@ -350,7 +350,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         }
     });
 
-    models.Layer = BaseModel.extend({
+    models.Layer = models.BaseModel.extend({
         type:'layer',
         gameObjectProps:[],
         _gameObjects:null,
@@ -374,7 +374,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         }
     });
 
-    models.Scene = BaseModel.extend({
+    models.Scene = models.BaseModel.extend({
         type:'scene',
         layerProps:[],
         _layers:null,
@@ -399,7 +399,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
     });
 
 
-    models.Font = BaseModel.extend({
+    models.Font = models.BaseModel.extend({
         type:'font'
     });
 
