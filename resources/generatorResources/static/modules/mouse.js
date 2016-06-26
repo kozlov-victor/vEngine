@@ -6,16 +6,23 @@
         var self = this;
         self.isMouseDown = false;
 
-        if ('touchstart' in canvas) {
+        if ('ontouchstart' in window) {
             canvas.ontouchstart = function(e){
-                resolveClick(e);
+                resolveClick(e.touches[0]);
             };
+            canvas.ontouchend = canvas.ontouchcancel = function(){
+                resolveMouseUp();
+            };
+            canvas.ontouchmove = function(e){
+                resolveMouseMove(e.touches[0]);
+            }
         } else {
+            console.log('not mobile');
             canvas.onmousedown = function(e){
                 resolveClick(e);
             };
             canvas.onmouseup = function(){
-                self.isMouseDown = false;
+                resolveMouseUp();
             };
             canvas.onmousemove = function(e){
                 resolveMouseMove(e);
@@ -53,7 +60,11 @@
                 screenX: e.clientX,
                 screenY: e.clientY
             });
-        }
+        };
+
+        var resolveMouseUp = function(){
+            self.isMouseDown = false;
+        };
 
     };
 

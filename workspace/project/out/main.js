@@ -742,16 +742,23 @@ ve_local.SceneManager = function(){
         var self = this;
         self.isMouseDown = false;
 
-        if ('touchstart' in canvas) {
+        if ('ontouchstart' in window) {
             canvas.ontouchstart = function(e){
-                resolveClick(e);
+                resolveClick(e.touches[0]);
             };
+            canvas.ontouchend = canvas.ontouchcancel = function(){
+                resolveMouseUp();
+            };
+            canvas.ontouchmove = function(e){
+                resolveMouseMove(e.touches[0]);
+            }
         } else {
+            console.log('not mobile');
             canvas.onmousedown = function(e){
                 resolveClick(e);
             };
             canvas.onmouseup = function(){
-                self.isMouseDown = false;
+                resolveMouseUp();
             };
             canvas.onmousemove = function(e){
                 resolveMouseMove(e);
@@ -789,7 +796,11 @@ ve_local.SceneManager = function(){
                 screenX: e.clientX,
                 screenY: e.clientY
             });
-        }
+        };
+
+        var resolveMouseUp = function(){
+            self.isMouseDown = false;
+        };
 
     };
 
@@ -1077,6 +1088,7 @@ Class.extend(
                 mY = e.objectY;
             });
             scene.on('mouseMove',function(e){
+                //console.log('scene mousemove'+ e.screenX+','+ e.screenY);
                 if (self._mouseDown) {
                     g.posX = e.screenX - mX;
                     g.posY = e.screenY - mY;
@@ -1171,20 +1183,6 @@ Class.extend(
         description:'allow character to walk up, down, left and right'
     }
 );
-(function(){
-
-    window.onerror = function(e){
-        window.top.postMessage(e,'*');
-        ve_local.renderer.cancel();
-    };
-
-    window.debug = {};
-    window.debug.error = function(err){
-        window.top.postMessage({err:err},'*');
-        throw err;
-    };
-
-})();
 
 (function(){
 
