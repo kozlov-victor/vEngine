@@ -558,6 +558,10 @@ ve_local.CanvasRenderer = function(){
         return canvas;
     };
 
+    this.cancel = function(){
+        cancelAnimationFrame(drawScene);
+    };
+
     var drawObject = function(gameObj){
         ctx.drawImage(
             gameObj._spriteSheet._img,
@@ -579,7 +583,7 @@ ve_local.CanvasRenderer = function(){
 
         lastTime = currTime;
         currTime = Date.now();
-        var deltaTime = lastTime ? lastTime - currTime : 0;
+        var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
@@ -931,7 +935,7 @@ ve_local.SceneManager = function(){
 
 })();
 
-ve.commonBehaviour.walk4dir = 
+ve.commonBehaviour.control4dir = 
 Class.extend(
     {
         _parameters: {},
@@ -967,19 +971,19 @@ Class.extend(
             var self = this;
             var go = self._gameObject;
             if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
-                go.velY = self._parameters.velocity;
+                go.velY = -self._parameters.velocity;
                 self._go('Up');
             }
             if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
-                go.velY = -self._parameters.velocity;
+                go.velY = self._parameters.velocity;
                 self._go('Down');
             }
             if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
-                go.velX = self._parameters.velocity;
+                go.velX = -self._parameters.velocity;
                 self._go('Left');
             }
             if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
-                go.velX = -self._parameters.velocity;
+                go.velX = self._parameters.velocity;
                 self._go('Right');
             }
 
@@ -1006,7 +1010,80 @@ Class.extend(
             idleUpAnimation:'idleUp',
             idleDownAnimation:'idleDown'
         },
-        description:'Walking up, down, left, right'
+        description:'control character with cursor to walk up, down, left and right'
+    }
+);
+ve.commonBehaviour.move4dir = 
+Class.extend(
+    {
+        _parameters: {},
+        _gameObject: null,
+        initialize: function(_gameObj,_params){
+            this._gameObject = _gameObj;
+            this._parameters = _params;
+        },
+        onCreate: function(){
+            var dirs = ['Left','Right','Up','Down'];
+            var self = this;
+            dirs.forEach(function(dir){
+                var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
+                self[keyWalk] = self._gameObject.getFrAnimation(self._parameters[keyWalk]);
+                if (!self[keyWalk]) throw 'can not find animation ' + self._parameters[keyWalk] +' an gameObject ' + self._gameObject.name;
+                self._parameters[keyIdle] && (self[keyIdle] = self._gameObject.getFrAnimation(self._parameters[keyIdle]));
+            });
+            var lastDir = '';
+            self._gameObject.go = function(direction){
+                self._go(direction);
+                lastDir = direction;
+            };
+            self._gameObject.stop = function(){
+                self._stop();
+            }
+        },
+        _stop: function(lastDirection){
+            var self = this;
+            var go = self._gameObject;
+            go.stopFrAnimations();
+            go.velX = 0;
+            go.velY = 0;
+            var idleKey = 'idle'+lastDirection+'Animation';
+            self[idleKey] && (self[idleKey].play());
+        },
+        _go: function(direction){
+            var self = this;
+            self['walk'+direction+'Animation'].play();
+            switch (direction) {
+                case 'Up':
+                    self._gameObject.velY = -self._parameters.velocity;
+                    break;
+                case 'Down':
+                    self._gameObject.velY = self._parameters.velocity;
+                    break;
+                case 'Left':
+                    self._gameObject.velX = -self._parameters.velocity;
+                    break;
+                case 'Right':
+                    self._gameObject.velX = self._parameters.velocity;
+                    break;
+            }
+        },
+        onUpdate: function(){
+
+        }
+    },
+    {
+        parameters: {
+            velocity: 100,
+            walkLeftAnimation: 'left',
+            walkRightAnimation: 'right',
+            walkUpAnimation:'up',
+            walkDownAnimation:'down',
+            idleLeftAnimation: 'idleLeft',
+            idleRightAnimation: 'idleRight',
+            idleUpAnimation:'idleUp',
+            idleDownAnimation:'idleDown'
+        },
+        description:'allow character to walk up, down, left and right'
     }
 );
 
@@ -1297,7 +1374,7 @@ Class.extend(
         "currFrameIndex": 34,
         "commonBehaviour": [
             {
-                "name": "walk4dir",
+                "name": "control4dir",
                 "parameters": {
                     "velocity": 100,
                     "walkLeftAnimation": "left",
@@ -1321,7 +1398,7 @@ Class.extend(
         "type": "gameObject",
         "commonBehaviour": [
             {
-                "name": "walk4dir",
+                "name": "move4dir",
                 "parameters": {
                     "velocity": 100,
                     "walkLeftAnimation": "left",
@@ -1333,7 +1410,7 @@ Class.extend(
                     "idleUpAnimation": "",
                     "idleDownAnimation": ""
                 },
-                "id": "3483_5282_9"
+                "id": "7406_0843_9"
             }
         ],
         "frameAnimationIds": [
@@ -1385,17 +1462,17 @@ Class.extend(
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 174,
-                "posY": 120,
-                "protoId": "9252_7967_1",
-                "id": "5004_0858_8"
+                "posX": 185,
+                "posY": 77,
+                "protoId": "2701_0003_9",
+                "id": "1960_0616_16"
             },
             {
                 "type": "gameObject",
-                "posX": 65,
-                "posY": 121,
-                "protoId": "2701_0003_9",
-                "id": "1960_0616_16"
+                "posX": 160,
+                "posY": 183,
+                "protoId": "9252_7967_1",
+                "id": "8018_4448_2"
             }
         ],
         "id": "7353_5206_5"
@@ -1515,7 +1592,7 @@ Class.extend(
     },
 
     onUpdate: function(time) {
-
+        this.go('Left');
     },
 
     onDestroy: function(){

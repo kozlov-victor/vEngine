@@ -16,6 +16,14 @@ Class.extend(
                 if (!self[keyWalk]) throw 'can not find animation ' + self._parameters[keyWalk] +' an gameObject ' + self._gameObject.name;
                 self._parameters[keyIdle] && (self[keyIdle] = self._gameObject.getFrAnimation(self._parameters[keyIdle]));
             });
+            var lastDir = '';
+            self._gameObject.go = function(direction){
+                self._go(direction);
+                lastDir = direction;
+            };
+            self._gameObject.stop = function(){
+                self._stop();
+            }
         },
         _stop: function(lastDirection){
             var self = this;
@@ -31,34 +39,7 @@ Class.extend(
             self['walk'+direction+'Animation'].play();
         },
         onUpdate: function(){
-            var self = this;
-            var go = self._gameObject;
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
-                go.velY = self._parameters.velocity;
-                self._go('Up');
-            }
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
-                go.velY = -self._parameters.velocity;
-                self._go('Down');
-            }
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
-                go.velX = self._parameters.velocity;
-                self._go('Left');
-            }
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
-                go.velX = -self._parameters.velocity;
-                self._go('Right');
-            }
 
-            if (ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT)) {
-                self._stop('Left');
-            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT)) {
-                self._stop('Right');
-            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_UP)) {
-                self._stop('Up');
-            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)) {
-                self._stop('Down');
-            }
         }
     },
     {
@@ -73,6 +54,6 @@ Class.extend(
             idleUpAnimation:'idleUp',
             idleDownAnimation:'idleDown'
         },
-        description:'Walking up, down, left, right'
+        description:'allow character to walk up, down, left and right'
     }
 );

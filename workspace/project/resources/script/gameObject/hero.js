@@ -5,7 +5,7 @@ ve.models.Behaviour.extend({
     },
 
     onUpdate: function(time) {
-
+        this.go('Left');
     },
 
     onDestroy: function(){

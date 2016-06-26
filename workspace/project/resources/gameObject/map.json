@@ -15,7 +15,7 @@
         "currFrameIndex": 34,
         "commonBehaviour": [
             {
-                "name": "walk4dir",
+                "name": "control4dir",
                 "parameters": {
                     "velocity": 100,
                     "walkLeftAnimation": "left",
@@ -39,7 +39,7 @@
         "type": "gameObject",
         "commonBehaviour": [
             {
-                "name": "walk4dir",
+                "name": "move4dir",
                 "parameters": {
                     "velocity": 100,
                     "walkLeftAnimation": "left",
@@ -51,7 +51,7 @@
                     "idleUpAnimation": "",
                     "idleDownAnimation": ""
                 },
-                "id": "3483_5282_9"
+                "id": "7406_0843_9"
             }
         ],
         "frameAnimationIds": [

@@ -73,6 +73,6 @@ Class.extend(
             idleUpAnimation:'idleUp',
             idleDownAnimation:'idleDown'
         },
-        description:'Walking up, down, left, right'
+        description:'control character with cursor to walk up, down, left and right'
     }
 );

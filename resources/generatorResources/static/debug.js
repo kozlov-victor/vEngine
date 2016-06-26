@@ -2,6 +2,7 @@
 
     window.onerror = function(e){
         window.top.postMessage(e,'*');
+        ve_local.renderer.cancel();
     };
 
     window.debug = {};

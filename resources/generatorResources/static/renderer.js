@@ -24,6 +24,10 @@ ve_local.CanvasRenderer = function(){
         return canvas;
     };
 
+    this.cancel = function(){
+        cancelAnimationFrame(drawScene);
+    };
+
     var drawObject = function(gameObj){
         ctx.drawImage(
             gameObj._spriteSheet._img,
@@ -45,7 +49,7 @@ ve_local.CanvasRenderer = function(){
 
         lastTime = currTime;
         currTime = Date.now();
-        var deltaTime = lastTime ? lastTime - currTime : 0;
+        var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.fillStyle="#FFFFFF";
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);

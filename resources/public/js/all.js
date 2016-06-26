@@ -179,6 +179,7 @@
             var self = this;
             this._frameAnimations = new ve.collections.List();
             this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
+            self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
                 var a = ve_local.bundle.frameAnimationList.getIf({id:id});
@@ -451,7 +452,7 @@
             data = null;
         };
 
-        var applyBehaviour = function(model){
+        var applyIndividualBehaviour = function(model){
             var script = ve_local.scripts[model.type][model.name+'.js'];
             if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
             var BehaviourClass = script();
@@ -460,14 +461,34 @@
                 model[itm.key]=itm.value;
             });
             model._behaviour.onCreate.apply(model);
+            model.__updateIndividualBehaviour__ = function(deltaTime){
+                model._behaviour.onUpdate.apply(model,[deltaTime]);
+            }
         };
 
+        var applyCommonBehaviour = function(model){
+            var cbList = [];
+            model._commonBehaviour.forEach(function(cb){
+                console.log(ve.commonBehaviour);
+                var instance = new ve.commonBehaviour[cb.name]();
+                instance.initialize(model,cb.parameters);
+                instance.onCreate();
+                cbList.push(instance);
+            });
+            model.__updateCommonBehaviour__ = function(){
+                cbList.forEach(function(cb){
+                    cb.onUpdate();
+                });
+            }
+        };
+        
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
-                applyBehaviour(scene);
+                applyIndividualBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
-                       applyBehaviour(gameObject);
+                        applyCommonBehaviour(gameObject);
+                        applyIndividualBehaviour(gameObject);
                     });
                 });
             });
