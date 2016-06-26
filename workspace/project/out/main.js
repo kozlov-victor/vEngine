@@ -146,12 +146,12 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             });
             return success?i:-1;
         };
-        this.removeIf = function(obj){
+        this.remove = function (obj){
             if (!obj) return;
             var index = self.indexOf(obj);
             if (index>-1) self.rs.splice(index,1);
         };
-        this.getIf = function(obj){
+        this.find = function (obj){
             return self.rs[self.indexOf(obj)];
         }
     };
@@ -226,7 +226,22 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         clone: function(){
             return new this.constructor(this.toJsonObj());
         },
+        on: function(eventName,callBackOrEvt){
+            var self = this;
+            if (callBackOrEvt.apply) {
+                self.__events__[eventName] = self.__events__[eventName] || [];
+                self.__events__[eventName].push(callBackOrEvt);
+            } else {
+                var es = self.__events__[eventName];
+                if (!es) return;
+                es.forEach(function(e){
+                    e(callBackOrEvt);
+                });
+            }
+
+        },
         _init:function(){
+            this.__events__ = {};
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
     });
@@ -283,14 +298,15 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
+        _layer:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
+            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
             self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
-                var a = ve_local.bundle.frameAnimationList.getIf({id:id});
+                var a = ve_local.bundle.frameAnimationList.find({id: id});
                 a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
@@ -300,11 +316,14 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
+        getScene: function(){
+            return this._layer._scene;
+        },
         getRect: function(){
             return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
         getFrAnimation: function(animationName){
-            return this._frameAnimations.getIf({name:animationName});
+            return this._frameAnimations.find({name: animationName});
         },
         setFrameIndex: function(index){
             this.currFrameIndex = index;
@@ -365,9 +384,10 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             var self = this;
             self._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
-                var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
+                var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
                 var objCloned = obj.clone(ve.models.GameObject);
                 objCloned.fromJsonObject(prop);
+                objCloned._layer = self;
                 self._gameObjects.add(objCloned);
             });
         },
@@ -388,7 +408,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
-                var l = ve_local.bundle.layerList.getIf({id:prop.protoId});
+                var l = ve_local.bundle.layerList.find({id: prop.protoId});
                 var lCloned = l.clone(ve.models.Layer);
                 lCloned.fromJsonObject(prop);
                 lCloned._scene = self;
@@ -474,7 +494,6 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         var applyCommonBehaviour = function(model){
             var cbList = [];
             model._commonBehaviour.forEach(function(cb){
-                console.log(ve.commonBehaviour);
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);
                 instance.onCreate();
@@ -634,7 +653,7 @@ ve_local.SceneManager = function(){
 
     this.setSceneByName = function(sceneName){
         if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-        var scene = ve_local.bundle.sceneList.getIf({name:sceneName});
+        var scene = ve_local.bundle.sceneList.find({name: sceneName});
         if (!scene) throw 'no scene with name ' + sceneName + ' found';
         self.setScene(scene);
     };
@@ -720,17 +739,27 @@ ve_local.SceneManager = function(){
 
     ve_local.Mouse = function(canvas){
 
+        var self = this;
+        self.isMouseDown = false;
+
         if ('touchstart' in canvas) {
             canvas.ontouchstart = function(e){
                 resolveClick(e);
-            }
+            };
         } else {
-            canvas.onclick = function(e){
+            canvas.onmousedown = function(e){
                 resolveClick(e);
+            };
+            canvas.onmouseup = function(){
+                self.isMouseDown = false;
+            };
+            canvas.onmousemove = function(e){
+                resolveMouseMove(e);
             }
         }
 
         var resolveClick = function(e){
+            self.isMouseDown = true;
             var scene = ve.sceneManager.getCurrScene();
             if (!scene) return;
             var point = {x: e.clientX,y: e.clientY};
@@ -738,16 +767,28 @@ ve_local.SceneManager = function(){
                 var found = false;
                 l._gameObjects.someReversed(function(g){
                     if (
-                        ve.Math.isPointInRect(point,g.getRect()) &&
-                        g.onClick
+                        ve.Math.isPointInRect(point,g.getRect())
                     ) {
-                        g.onClick();
+                        g.on('click',{
+                            screenX:point.x,
+                            screenY:point.Y,
+                            objectX:point.x- g.posX,
+                            objectY:point.y- g.posY
+                        });
                         return found = true;
                     }
                 });
                 return found;
             })
 
+        };
+
+        var resolveMouseMove = function(e){
+            var scene = ve.sceneManager.getCurrScene();
+            scene.on('mouseMove',{
+                screenX: e.clientX,
+                screenY: e.clientY
+            });
         }
 
     };
@@ -1013,6 +1054,46 @@ Class.extend(
         description:'control character with cursor to walk up, down, left and right'
     }
 );
+ve.commonBehaviour.draggable = 
+
+Class.extend(
+    {
+        _parameters: {},
+        _gameObject: null,
+        initialize: function(_gameObj,_params){
+            this._gameObject = _gameObj;
+            this._parameters = _params;
+        },
+        onCreate: function(){
+            var self = this;
+            var g = this._gameObject;
+            self._mouseDown = false;
+            var mX = 0;
+            var mY = 0;
+            var scene = g.getScene();
+            g.on('click',function(e){
+                self._mouseDown = true;
+                mX = e.objectX;
+                mY = e.objectY;
+            });
+            scene.on('mouseMove',function(e){
+                if (self._mouseDown) {
+                    g.posX = e.screenX - mX;
+                    g.posY = e.screenY - mY;
+                }
+            });
+        },
+        onUpdate: function(){
+            if (!ve.mouse.isMouseDown) this._mouseDown = false;
+        }
+    },
+    {
+        parameters: {
+
+        },
+        description:'draggable behaviour'
+    }
+);
 ve.commonBehaviour.move4dir = 
 Class.extend(
     {
@@ -1054,15 +1135,19 @@ Class.extend(
             self['walk'+direction+'Animation'].play();
             switch (direction) {
                 case 'Up':
+                    self._gameObject.velX = 0;
                     self._gameObject.velY = -self._parameters.velocity;
                     break;
                 case 'Down':
+                    self._gameObject.velX = 0;
                     self._gameObject.velY = self._parameters.velocity;
                     break;
                 case 'Left':
+                    self._gameObject.velY = 0;
                     self._gameObject.velX = -self._parameters.velocity;
                     break;
                 case 'Right':
+                    self._gameObject.velY = 0;
                     self._gameObject.velX = self._parameters.velocity;
                     break;
             }
@@ -1086,6 +1171,20 @@ Class.extend(
         description:'allow character to walk up, down, left and right'
     }
 );
+(function(){
+
+    window.onerror = function(e){
+        window.top.postMessage(e,'*');
+        ve_local.renderer.cancel();
+    };
+
+    window.debug = {};
+    window.debug.error = function(err){
+        window.top.postMessage({err:err},'*');
+        throw err;
+    };
+
+})();
 
 (function(){
 
@@ -1371,7 +1470,7 @@ Class.extend(
             "8014_4428_14"
         ],
         "id": "2701_0003_9",
-        "currFrameIndex": 34,
+        "currFrameIndex": 37,
         "commonBehaviour": [
             {
                 "name": "control4dir",
@@ -1387,6 +1486,12 @@ Class.extend(
                     "idleDownAnimation": ""
                 },
                 "id": "8745_4645_22"
+            },
+            {
+                "__events__": {},
+                "name": "draggable",
+                "parameters": {},
+                "id": "2635_8746_13"
             }
         ]
     },
@@ -1400,7 +1505,7 @@ Class.extend(
             {
                 "name": "move4dir",
                 "parameters": {
-                    "velocity": 100,
+                    "velocity": "10",
                     "walkLeftAnimation": "left",
                     "walkRightAnimation": "right",
                     "walkUpAnimation": "up",
@@ -1411,6 +1516,12 @@ Class.extend(
                     "idleDownAnimation": ""
                 },
                 "id": "7406_0843_9"
+            },
+            {
+                "name": "draggable",
+                "parameters": {},
+                "id": "7359_2567_4",
+                "type": "commonBehaviour"
             }
         ],
         "frameAnimationIds": [
@@ -1420,7 +1531,7 @@ Class.extend(
             "5828_3587_6"
         ],
         "id": "9252_7967_1",
-        "currFrameIndex": 4
+        "currFrameIndex": 5
     }
 ],
         scene: [
@@ -1462,17 +1573,17 @@ Class.extend(
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 185,
-                "posY": 77,
+                "posX": 173,
+                "posY": 101,
                 "protoId": "2701_0003_9",
-                "id": "1960_0616_16"
+                "id": "9314_9085_11"
             },
             {
                 "type": "gameObject",
-                "posX": 160,
-                "posY": 183,
+                "posX": 140,
+                "posY": 212,
                 "protoId": "9252_7967_1",
-                "id": "8018_4448_2"
+                "id": "1517_9636_12"
             }
         ],
         "id": "7353_5206_5"
@@ -1563,6 +1674,26 @@ Class.extend(
         return clazz;
     };
     
+    ve_local.scripts.gameObject['gl.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
     ve_local.scripts.gameObject['globus.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
@@ -1588,11 +1719,52 @@ Class.extend(
         var clazz = ve.models.Behaviour.extend({
 
     onCreate: function(){
+        var self = this;
+        setInterval(function(){
+            var dirNumber = ~~(Math.random()*4);
+            var dir = 'Left';
+            switch (dirNumber) {
+                case 0:
+                    dir = 'Right';
+                    break;
+                case 1:
+                    dir = 'Up';
+                    break;
+                case 2:
+                    dir = 'Down';
+                    break;
+
+                default:
+                    break;
+            }
+            self.go(dir);
+        },1000);
 
     },
 
     onUpdate: function(time) {
-        this.go('Left');
+        var self = this;
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['q.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
     },
 
     onDestroy: function(){
@@ -1609,7 +1781,10 @@ Class.extend(
 
 
     onCreate: function () {
-        
+        var self = this;
+        self.on('click',function(){
+            console.log('click robot');
+        });
     },
 
     onUpdate: function (time) {
@@ -1630,6 +1805,48 @@ Class.extend(
     };
     
     ve_local.scripts.gameObject['ss.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['w.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+        this.onClick = function(){
+            console.log('click');
+        }
+    },
+
+    onUpdate: function(time) {
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['wq.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
     onCreate: function(){
@@ -1762,7 +1979,7 @@ Class.extend(
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();
-        ve_local.mouse = new ve_local.Mouse(ve_local.renderer.getCanvas());
+        ve.mouse = new ve_local.Mouse(ve_local.renderer.getCanvas());
         ve.sceneManager.setScene(ve_local.bundle.sceneList.get(0));
     });
 

@@ -5,17 +5,17 @@
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 185,
-                "posY": 77,
+                "posX": 173,
+                "posY": 101,
                 "protoId": "2701_0003_9",
-                "id": "1960_0616_16"
+                "id": "9314_9085_11"
             },
             {
                 "type": "gameObject",
-                "posX": 160,
-                "posY": 183,
+                "posX": 140,
+                "posY": 212,
                 "protoId": "9252_7967_1",
-                "id": "8018_4448_2"
+                "id": "1517_9636_12"
             }
         ],
         "id": "7353_5206_5"

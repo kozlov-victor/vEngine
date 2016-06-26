@@ -2,17 +2,35 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/walk4dir.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/walk4dir.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/control4dir.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/draggable.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/draggable.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/gl.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/q.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/w.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/wq.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/all.js" afterPath="$PROJECT_DIR$/resources/public/js/all.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/debug.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/debug.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/collections.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/collections.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateFont.html" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateFont.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" afterPath="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/main.js" afterPath="$PROJECT_DIR$/workspace/project/out/main.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/modules/mouse.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/modules/mouse.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/resourceDao.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/resourceDao.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/robot.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/robot.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/stub.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/stub.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/utils.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/utils.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f8ca8907-a637-4910-a09f-c2a90f136754" name="Failed commit: Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -37,101 +55,51 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="renderer.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/renderer.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.23433875">
-              <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="debug.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/debug.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="control4dir.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="63" column="5" selection-start-line="0" selection-start-column="0" selection-end-line="77" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="move4dir.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="move4dir.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="37" column="28" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="control4dir.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/control4dir.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="48" column="26" selection-start-line="48" selection-start-column="26" selection-end-line="48" selection-end-column="26" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="hero.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="models.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="95" column="16" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="16" />
+              <caret line="134" column="38" selection-start-line="134" selection-start-column="38" selection-end-line="134" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utils.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
+      <file leaf-file-name="mouse.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/mouse.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
+              <caret line="6" column="24" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="map.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
+      <file leaf-file-name="keyboard.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/keyboard.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="8.125">
-              <caret line="17" column="32" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="draggable.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/draggable.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.9189189">
+              <caret line="39" column="2" selection-start-line="39" selection-start-column="2" selection-end-line="39" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="draggable.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/draggable.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="21" column="8" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -166,16 +134,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/test.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/gameObjectController.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/leftMenuController.js" />
-        <option value="$PROJECT_DIR$/editor/routes/resourcesRoute.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/resourceDao.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/messageDigest.js" />
-        <option value="$PROJECT_DIR$/editor/views/main/editor.html" />
-        <option value="$PROJECT_DIR$/editor/controllers/resourcesController.js" />
-        <option value="$PROJECT_DIR$/project/resources/script/map.json" />
-        <option value="$PROJECT_DIR$/editor/controllers/mainController.js" />
         <option value="$PROJECT_DIR$/editor/generatorResources/templates/script.js" />
         <option value="$PROJECT_DIR$/editor/generatorResources/templates/scripts.js" />
         <option value="$PROJECT_DIR$/editor/base/fs.js" />
@@ -193,30 +151,40 @@
         <option value="$PROJECT_DIR$/resources/public/partials/contextMenus/ctxGameObject.html" />
         <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html" />
         <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateCommonBehaviour.html" />
-        <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js" />
         <option value="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/all.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/sceneController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/factories/resourceDao.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js" />
-        <option value="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
         <option value="$PROJECT_DIR$/workspace/project/out/main.js" />
-        <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/stub.js" />
         <option value="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/stub.js" />
         <option value="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" />
         <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/walk4dir.js" />
-        <option value="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" />
-        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
         <option value="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/walk4dir.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
         <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js" />
         <option value="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" />
         <option value="$PROJECT_DIR$/resources/generatorResources/static/debug.js" />
-        <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js" />
-        <option value="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js" />
-        <option value="$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js" />
         <option value="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/control4dir.js" />
         <option value="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/collections.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html" />
+        <option value="$PROJECT_DIR$/a.html" />
+        <option value="$PROJECT_DIR$/application/mvc/views/bitMapFont.html" />
+        <option value="$PROJECT_DIR$/application/mvc/views/fonts.html" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateFont.html" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/script/gameObject/robot.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/stub.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/modules/mouse.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/draggable.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/draggable.js" />
       </list>
     </option>
   </component>
@@ -379,36 +347,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="gameObject" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="workspace" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="script" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="commonBehaviour" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -496,6 +434,10 @@
               <option name="myItemId" value="generatorResources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -516,6 +458,58 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generatorResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generatorResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="commonBehaviour" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -550,18 +544,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour" />
+      <recent name="$PROJECT_DIR$/resources/public/misc" />
       <recent name="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour" />
+      <recent name="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour" />
       <recent name="$PROJECT_DIR$/editor/public/partials" />
       <recent name="$PROJECT_DIR$/editor/public/css" />
-      <recent name="$PROJECT_DIR$/project/resources/scripts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources/public/misc" />
+      <recent name="$PROJECT_DIR$/application/mvc/views" />
       <recent name="$PROJECT_DIR$/project/resources/script/files" />
       <recent name="$PROJECT_DIR$/editor/generatorResources/static" />
       <recent name="$PROJECT_DIR$/editor/public/js/dataStructure" />
-      <recent name="$PROJECT_DIR$/editor/public/js" />
-      <recent name="$PROJECT_DIR$/editor/public/js/factories" />
     </key>
   </component>
   <component name="RunManager">
@@ -876,13 +870,7 @@
       <workItem from="1466020334266" duration="3295000" />
       <workItem from="1466932684457" duration="13136000" />
       <workItem from="1466947420859" duration="118000" />
-      <workItem from="1466948084830" duration="6119000" />
-    </task>
-    <task id="LOCAL-00002" summary="resource management">
-      <created>1461665929041</created>
-      <option name="number" value="00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1461665929041</updated>
+      <workItem from="1466948084830" duration="19822000" />
     </task>
     <task id="LOCAL-00003" summary="resource management">
       <created>1461685813976</created>
@@ -1172,11 +1160,17 @@
       <option name="project" value="LOCAL" />
       <updated>1466952583047</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="commonBehaviour&#10;">
+      <created>1466958521409</created>
+      <option name="number" value="00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1466958521409</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="266127000" />
+    <option name="totallyTimeSpent" value="279830000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1200,11 +1194,12 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14506173" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14471243" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25788498" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2693267" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25519535" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.49907234" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1215,7 +1210,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.49907234" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1268,82 +1262,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="71" column="48" selection-start-line="71" selection-start-column="12" selection-end-line="71" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="101" column="97" selection-start-line="101" selection-start-column="51" selection-end-line="101" selection-end-column="97" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/generatorController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/resourcesController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="129" column="20" selection-start-line="129" selection-start-column="20" selection-end-line="129" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/out/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1540" column="29" selection-start-line="1540" selection-start-column="12" selection-end-line="1540" selection-end-column="29" />
-          <folding>
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{&quot;type&quot;: 'gameObject'...}" />
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="15" column="24" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/layer/map.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="12" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/sceneController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="99" column="32" selection-start-line="99" selection-start-column="32" selection-end-line="99" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/js/factories/resourceDao.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1389,9 +1307,9 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="1540" column="29" selection-start-line="1540" selection-start-column="12" selection-end-line="1540" selection-end-column="29" />
           <folding>
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{&quot;type&quot;: 'gameObject'...}" />
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1466977632420" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1466977632420" expanded="true" signature="-1:-1" placeholder="{&quot;type&quot;: 'gameObject'...}" />
+            <marker date="1466977632420" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1505,42 +1423,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="71" column="48" selection-start-line="71" selection-start-column="12" selection-end-line="71" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="101" column="97" selection-start-line="101" selection-start-column="51" selection-end-line="101" selection-end-column="97" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/layer/map.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="12" selection-start-line="11" selection-start-column="12" selection-end-line="11" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/stub.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="18" selection-start-line="5" selection-start-column="8" selection-end-line="5" selection-end-column="18" />
           <folding />
         </state>
       </provider>
@@ -1566,9 +1452,9 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="1618" column="6" selection-start-line="1618" selection-start-column="6" selection-end-line="1618" selection-end-column="6" />
           <folding>
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{&quot;type&quot;: 'gameObject'...}" />
-            <marker date="1466958421840" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1466977632420" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1466977632420" expanded="true" signature="-1:-1" placeholder="{&quot;type&quot;: 'gameObject'...}" />
+            <marker date="1466977632420" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1581,46 +1467,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="47" selection-start-line="43" selection-start-column="18" selection-end-line="43" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="5" selection-start-line="0" selection-start-column="0" selection-end-line="77" selection-end-column="2" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="8.125">
-          <caret line="17" column="32" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/templates/main.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.66568047">
-          <caret line="33" column="21" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/debug.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1629,34 +1475,169 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/control4dir.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/renderer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="21" selection-start-line="7" selection-start-column="21" selection-end-line="7" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="28" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="28" />
+        <state vertical-scroll-proportion="0.29532164">
+          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/control4dir.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="1.0526316">
           <caret line="48" column="26" selection-start-line="48" selection-start-column="26" selection-end-line="48" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.61403507">
+          <caret line="26" column="8" selection-start-line="26" selection-start-column="8" selection-end-line="26" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.6132075">
+          <caret line="17" column="32" selection-start-line="17" selection-start-column="32" selection-end-line="17" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateFont.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/views/bitMapFont.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.53608245">
+          <caret line="137" column="9" selection-start-line="137" selection-start-column="9" selection-end-line="137" selection-end-column="9" />
+          <folding>
+            <element signature="n#style#0;n#canvas#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.12371134">
+          <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/collections.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.9449902">
+          <caret line="66" column="19" selection-start-line="66" selection-start-column="13" selection-end-line="66" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5874263">
+          <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/commonBehaviourController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7053045">
+          <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/layer/map.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.0833335">
+          <caret line="19" column="10" selection-start-line="19" selection-start-column="10" selection-end-line="19" selection-end-column="10" />
+          <folding>
+            <marker date="1466970019768" expanded="true" signature="-1:-1" placeholder="[...]" />
+            <marker date="1466970019768" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;main&quot;...}" />
+            <marker date="1466970019768" expanded="true" signature="-1:-1" placeholder="[...]" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/gameObject/hero.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="56" selection-start-line="50" selection-start-column="56" selection-end-line="50" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/gameObject/robot.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/stub.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="39" selection-start-line="7" selection-start-column="39" selection-end-line="7" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/move4dir.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="3.3139534">
+          <caret line="76" column="2" selection-start-line="76" selection-start-column="2" selection-end-line="76" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/move4dir.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6976744">
+          <caret line="47" column="12" selection-start-line="0" selection-start-column="0" selection-end-line="76" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/keyboard.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/templates/main.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.65625">
+          <caret line="41" column="11" selection-start-line="41" selection-start-column="11" selection-end-line="41" selection-end-column="11" />
           <folding />
         </state>
       </provider>
@@ -1664,15 +1645,31 @@
     <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="95" column="16" selection-start-line="95" selection-start-column="8" selection-end-line="95" selection-end-column="16" />
+          <caret line="134" column="38" selection-start-line="134" selection-start-column="38" selection-end-line="134" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/renderer.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/mouse.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23433875">
-          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="24" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/draggable.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="8" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour/draggable.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.9189189">
+          <caret line="39" column="2" selection-start-line="39" selection-start-column="2" selection-end-line="39" selection-end-column="2" />
           <folding />
         </state>
       </provider>

@@ -39,7 +39,7 @@ window.app.
 
         s.showEditGameObjectDialog = function(currObj) {
             editData.currGameObjectInEdit = currObj.clone(ve.models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
+            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             uiHelper.showDialog('frmCreateGameObject');
         };
 
@@ -66,7 +66,7 @@ window.app.
 
         s.deleteGameObjectFromLayer = function(layer,object){
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
-            layer._gameObjects.removeIf({id:object.id});
+            layer._gameObjects.remove({id: object.id});
         };
 
         s.showCreateLayerDialog = function(scene){
@@ -88,7 +88,7 @@ window.app.
 
         s.deleteLayer = function(scene,l){
             l._gameObjects.clear();
-            scene._layers.removeIf({id: l.id});
+            scene._layers.remove({id: l.id});
             resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
         };
 

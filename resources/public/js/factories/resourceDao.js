@@ -80,7 +80,7 @@ app
                 data: {id:id,type:type}
             }).
             success(function (res) {
-                editData[type+'List'].removeIf({id:id});
+                editData[type+'List'].remove({id: id});
                 callBack && callBack();
             });
         };

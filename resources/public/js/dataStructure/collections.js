@@ -64,12 +64,12 @@
             });
             return success?i:-1;
         };
-        this.removeIf = function(obj){
+        this.remove = function (obj){
             if (!obj) return;
             var index = self.indexOf(obj);
             if (index>-1) self.rs.splice(index,1);
         };
-        this.getIf = function(obj){
+        this.find = function (obj){
             return self.rs[self.indexOf(obj)];
         }
     };

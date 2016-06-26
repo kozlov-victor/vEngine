@@ -69,19 +69,19 @@ window.app.
         s.showCreateCommonBehaviourDialog = function(name){
             s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
             s.editData.currCommonBehaviourInEdit.name = name;
-            s.editData.currCommonBehaviourInEdit.parameters =
-                editData.commonBehaviourList.getIf({
-                    name:name
-                }).
-                    clone().
-                    parameters;
+            var obj =
+                editData.commonBehaviourList.find({
+                    name: name
+                });
+            if (!obj) return;
+            s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
             uiHelper.showDialog('frmCreateCommonBehaviour');
         };
 
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
-            layer._gameObjects.removeIf({id:object.id});
+            layer._gameObjects.remove({id: object.id});
             uiHelper.closeContextMenu();
         };
 
@@ -90,7 +90,7 @@ window.app.
             if (!s.editData.currGameObjectInEdit) return;
             var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
             s.editData.commonBehaviourList.forEach(function(cb){
-                if (appliedBehaviours.getIf({name:cb.name})) return;
+                if (appliedBehaviours.find({name: cb.name})) return;
                 s.availableCommonBehaviour.push(cb);
             });
             s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;

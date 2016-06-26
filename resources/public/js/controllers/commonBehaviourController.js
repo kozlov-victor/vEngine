@@ -17,8 +17,6 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        console.log(s.editData.currCommonBehaviourInEdit);
-
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
@@ -26,7 +24,8 @@ window.app.
                 function(resp){
                     if (resp.type=='create') {
                         obj.id = resp.r.id;
-                        editData.currGameObjectInEdit._commonBehaviour.add(obj);
+                        s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
+                        s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJsonObj());
                     }
                     uiHelper.closeDialog();
                 }

@@ -34,19 +34,19 @@ Class.extend(
             var self = this;
             var go = self._gameObject;
             if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
-                go.velY = self._parameters.velocity;
+                go.velY = -self._parameters.velocity;
                 self._go('Up');
             }
             if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
-                go.velY = -self._parameters.velocity;
+                go.velY = self._parameters.velocity;
                 self._go('Down');
             }
             if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
-                go.velX = self._parameters.velocity;
+                go.velX = -self._parameters.velocity;
                 self._go('Left');
             }
             if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
-                go.velX = -self._parameters.velocity;
+                go.velX = self._parameters.velocity;
                 self._go('Right');
             }
 

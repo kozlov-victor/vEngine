@@ -12,7 +12,7 @@
             "8014_4428_14"
         ],
         "id": "2701_0003_9",
-        "currFrameIndex": 34,
+        "currFrameIndex": 37,
         "commonBehaviour": [
             {
                 "name": "control4dir",
@@ -28,6 +28,12 @@
                     "idleDownAnimation": ""
                 },
                 "id": "8745_4645_22"
+            },
+            {
+                "__events__": {},
+                "name": "draggable",
+                "parameters": {},
+                "id": "2635_8746_13"
             }
         ]
     },
@@ -41,7 +47,7 @@
             {
                 "name": "move4dir",
                 "parameters": {
-                    "velocity": 100,
+                    "velocity": "10",
                     "walkLeftAnimation": "left",
                     "walkRightAnimation": "right",
                     "walkUpAnimation": "up",
@@ -52,6 +58,12 @@
                     "idleDownAnimation": ""
                 },
                 "id": "7406_0843_9"
+            },
+            {
+                "name": "draggable",
+                "parameters": {},
+                "id": "7359_2567_4",
+                "type": "commonBehaviour"
             }
         ],
         "frameAnimationIds": [
@@ -61,6 +73,6 @@
             "5828_3587_6"
         ],
         "id": "9252_7967_1",
-        "currFrameIndex": 4
+        "currFrameIndex": 5
     }
 ]

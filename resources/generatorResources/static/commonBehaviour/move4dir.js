@@ -37,6 +37,24 @@ Class.extend(
         _go: function(direction){
             var self = this;
             self['walk'+direction+'Animation'].play();
+            switch (direction) {
+                case 'Up':
+                    self._gameObject.velX = 0;
+                    self._gameObject.velY = -self._parameters.velocity;
+                    break;
+                case 'Down':
+                    self._gameObject.velX = 0;
+                    self._gameObject.velY = self._parameters.velocity;
+                    break;
+                case 'Left':
+                    self._gameObject.velY = 0;
+                    self._gameObject.velX = -self._parameters.velocity;
+                    break;
+                case 'Right':
+                    self._gameObject.velY = 0;
+                    self._gameObject.velX = self._parameters.velocity;
+                    break;
+            }
         },
         onUpdate: function(){
 

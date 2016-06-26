@@ -49,7 +49,6 @@
         var applyCommonBehaviour = function(model){
             var cbList = [];
             model._commonBehaviour.forEach(function(cb){
-                console.log(ve.commonBehaviour);
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);
                 instance.onCreate();

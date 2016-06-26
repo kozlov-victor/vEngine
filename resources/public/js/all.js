@@ -118,7 +118,22 @@
         clone: function(){
             return new this.constructor(this.toJsonObj());
         },
+        on: function(eventName,callBackOrEvt){
+            var self = this;
+            if (callBackOrEvt.apply) {
+                self.__events__[eventName] = self.__events__[eventName] || [];
+                self.__events__[eventName].push(callBackOrEvt);
+            } else {
+                var es = self.__events__[eventName];
+                if (!es) return;
+                es.forEach(function(e){
+                    e(callBackOrEvt);
+                });
+            }
+
+        },
         _init:function(){
+            this.__events__ = {};
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
     });
@@ -178,11 +193,11 @@
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
+            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
             self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
-                var a = ve_local.bundle.frameAnimationList.getIf({id:id});
+                var a = ve_local.bundle.frameAnimationList.find({id: id});
                 a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
@@ -196,7 +211,7 @@
             return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
         getFrAnimation: function(animationName){
-            return this._frameAnimations.getIf({name:animationName});
+            return this._frameAnimations.find({name: animationName});
         },
         setFrameIndex: function(index){
             this.currFrameIndex = index;
@@ -257,7 +272,7 @@
             var self = this;
             self._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
-                var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
+                var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
                 var objCloned = obj.clone(ve.models.GameObject);
                 objCloned.fromJsonObject(prop);
                 self._gameObjects.add(objCloned);
@@ -280,7 +295,7 @@
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
-                var l = ve_local.bundle.layerList.getIf({id:prop.protoId});
+                var l = ve_local.bundle.layerList.find({id: prop.protoId});
                 var lCloned = l.clone(ve.models.Layer);
                 lCloned.fromJsonObject(prop);
                 lCloned._scene = self;
@@ -381,12 +396,12 @@
             });
             return success?i:-1;
         };
-        this.removeIf = function(obj){
+        this.remove = function (obj){
             if (!obj) return;
             var index = self.indexOf(obj);
             if (index>-1) self.rs.splice(index,1);
         };
-        this.getIf = function(obj){
+        this.find = function (obj){
             return self.rs[self.indexOf(obj)];
         }
     };
@@ -469,7 +484,6 @@
         var applyCommonBehaviour = function(model){
             var cbList = [];
             model._commonBehaviour.forEach(function(cb){
-                console.log(ve.commonBehaviour);
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);
                 instance.onCreate();
@@ -606,8 +620,6 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        console.log(s.editData.currCommonBehaviourInEdit);
-
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
@@ -615,7 +627,8 @@ window.app.
                 function(resp){
                     if (resp.type=='create') {
                         obj.id = resp.r.id;
-                        editData.currGameObjectInEdit._commonBehaviour.add(obj);
+                        s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
+                        s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJsonObj());
                     }
                     uiHelper.closeDialog();
                 }
@@ -716,19 +729,19 @@ window.app.
         s.showCreateCommonBehaviourDialog = function(name){
             s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
             s.editData.currCommonBehaviourInEdit.name = name;
-            s.editData.currCommonBehaviourInEdit.parameters =
-                editData.commonBehaviourList.getIf({
-                    name:name
-                }).
-                    clone().
-                    parameters;
+            var obj =
+                editData.commonBehaviourList.find({
+                    name: name
+                });
+            if (!obj) return;
+            s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
             uiHelper.showDialog('frmCreateCommonBehaviour');
         };
 
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
-            layer._gameObjects.removeIf({id:object.id});
+            layer._gameObjects.remove({id: object.id});
             uiHelper.closeContextMenu();
         };
 
@@ -737,7 +750,7 @@ window.app.
             if (!s.editData.currGameObjectInEdit) return;
             var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
             s.editData.commonBehaviourList.forEach(function(cb){
-                if (appliedBehaviours.getIf({name:cb.name})) return;
+                if (appliedBehaviours.find({name: cb.name})) return;
                 s.availableCommonBehaviour.push(cb);
             });
             s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;
@@ -819,7 +832,7 @@ window.app.
 
         s.showEditGameObjectDialog = function(currObj) {
             editData.currGameObjectInEdit = currObj.clone(ve.models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
+            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             uiHelper.showDialog('frmCreateGameObject');
         };
 
@@ -846,7 +859,7 @@ window.app.
 
         s.deleteGameObjectFromLayer = function(layer,object){
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
-            layer._gameObjects.removeIf({id:object.id});
+            layer._gameObjects.remove({id: object.id});
         };
 
         s.showCreateLayerDialog = function(scene){
@@ -868,7 +881,7 @@ window.app.
 
         s.deleteLayer = function(scene,l){
             l._gameObjects.clear();
-            scene._layers.removeIf({id: l.id});
+            scene._layers.remove({id: l.id});
             resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
         };
 
@@ -1494,7 +1507,7 @@ app
                 data: {id:id,type:type}
             }).
             success(function (res) {
-                editData[type+'List'].removeIf({id:id});
+                editData[type+'List'].remove({id: id});
                 callBack && callBack();
             });
         };
@@ -1646,7 +1659,7 @@ window.app
     .factory('utils',function(editData, $http, uiHelper){
 
         this.recalcGameObjectSize = function(gameObject){
-            var spriteSheet = editData.spriteSheetList.getIf({id:gameObject.spriteSheetId});
+            var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
             if (!spriteSheet) return;
             spriteSheet.calcFrameSize();
             gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);

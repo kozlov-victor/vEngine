@@ -41,7 +41,22 @@
         clone: function(){
             return new this.constructor(this.toJsonObj());
         },
+        on: function(eventName,callBackOrEvt){
+            var self = this;
+            if (callBackOrEvt.apply) {
+                self.__events__[eventName] = self.__events__[eventName] || [];
+                self.__events__[eventName].push(callBackOrEvt);
+            } else {
+                var es = self.__events__[eventName];
+                if (!es) return;
+                es.forEach(function(e){
+                    e(callBackOrEvt);
+                });
+            }
+
+        },
         _init:function(){
+            this.__events__ = {};
             arguments && arguments[0] && this.fromJsonObject(arguments[0]);
         }
     });
@@ -98,14 +113,15 @@
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
+        _layer:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
+            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
             self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
-                var a = ve_local.bundle.frameAnimationList.getIf({id:id});
+                var a = ve_local.bundle.frameAnimationList.find({id: id});
                 a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
@@ -115,11 +131,14 @@
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
+        getScene: function(){
+            return this._layer._scene;
+        },
         getRect: function(){
             return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
         getFrAnimation: function(animationName){
-            return this._frameAnimations.getIf({name:animationName});
+            return this._frameAnimations.find({name: animationName});
         },
         setFrameIndex: function(index){
             this.currFrameIndex = index;
@@ -180,9 +199,10 @@
             var self = this;
             self._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
-                var obj = ve_local.bundle.gameObjectList.getIf({id:prop.protoId});
+                var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
                 var objCloned = obj.clone(ve.models.GameObject);
                 objCloned.fromJsonObject(prop);
+                objCloned._layer = self;
                 self._gameObjects.add(objCloned);
             });
         },
@@ -203,7 +223,7 @@
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
-                var l = ve_local.bundle.layerList.getIf({id:prop.protoId});
+                var l = ve_local.bundle.layerList.find({id: prop.protoId});
                 var lCloned = l.clone(ve.models.Layer);
                 lCloned.fromJsonObject(prop);
                 lCloned._scene = self;

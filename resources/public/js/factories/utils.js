@@ -5,7 +5,7 @@ window.app
     .factory('utils',function(editData, $http, uiHelper){
 
         this.recalcGameObjectSize = function(gameObject){
-            var spriteSheet = editData.spriteSheetList.getIf({id:gameObject.spriteSheetId});
+            var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
             if (!spriteSheet) return;
             spriteSheet.calcFrameSize();
             gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);

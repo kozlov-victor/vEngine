@@ -28,7 +28,7 @@ ve_local.SceneManager = function(){
 
     this.setSceneByName = function(sceneName){
         if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-        var scene = ve_local.bundle.sceneList.getIf({name:sceneName});
+        var scene = ve_local.bundle.sceneList.find({name: sceneName});
         if (!scene) throw 'no scene with name ' + sceneName + ' found';
         self.setScene(scene);
     };
