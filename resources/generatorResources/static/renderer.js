@@ -51,7 +51,8 @@ ve_local.CanvasRenderer = function(){
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
-                obj._behaviour.onUpdate.apply(obj,[deltaTime]);
+                obj.__updateCommonBehaviour__();
+                obj.__updateIndividualBehaviour__(deltaTime);
                 obj.update(currTime,deltaTime);
                 drawObject(obj);
             });

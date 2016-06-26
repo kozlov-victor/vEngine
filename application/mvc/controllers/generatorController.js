@@ -33,24 +33,21 @@ var Source = function(){
         var content = fs.readFileSync(path);
         self.add(ejs.render(content,params));
     };
-    this.addTemplateFromRaw = function(raw,params) {
-        var content = parametrize(raw,params);
-        self.add(content);
-    };
     this.get = function(){
         return res.join('\n');
     };
 };
 
-module.exports.generate = function(opts,callback){
-    var sourceMain = new Source();
+var addEnvVariables = function(sourceMain) {
     sourceMain.addTemplate(
         'resources/generatorResources/templates/envVariables.ejs',
         {
             resourceNames:resourcesController.RESOURCE_NAMES
         }
     );
+};
 
+var addStaticFiles = function(sourceMain){
     sourceMain.addFiles([
         'resources/public/js/lib/oop.js',
         'resources/public/js/dataStructure/collections.js',
@@ -64,9 +61,13 @@ module.exports.generate = function(opts,callback){
         'resources/generatorResources/static/modules/math.js',
         'resources/generatorResources/static/modules/physics.js'
     ]);
-    if (opts.debug) {
-        sourceMain.addFile('resources/generatorResources/static/debug.js')
-    }
+};
+
+var addDebug = function(sourceMain){
+    sourceMain.addFile('resources/generatorResources/static/debug.js');
+};
+
+var addGameResources = function(sourceMain){
     var templateObj = {};
     resourcesController.RESOURCE_NAMES.forEach(function(r){
         templateObj[r] = fs.readFileSync('workspace/project/resources/'+r+'/map.json')
@@ -75,7 +76,9 @@ module.exports.generate = function(opts,callback){
     templateObj.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject');
     templateObj.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene');
     sourceMain.addTemplate('resources/generatorResources/templates/main.ejs',templateObj);
+};
 
+var initFolderStructure = function(sourceMain){
     fs.deleteFolderSync('workspace/project/out');
     fs.createFolderSync('workspace/project/out/resources/spriteSheet');
     fs.copyFolderSync('workspace/project/resources/spriteSheet','workspace/project/out/resources/spriteSheet');
@@ -84,7 +87,23 @@ module.exports.generate = function(opts,callback){
     fs.writeFileSync('workspace/project/out/main.js',sourceMain.get());
     fs.writeFileSync('workspace/project/out/index.html',fs.readFileSync('resources/generatorResources/static/index.html'));
 
+};
 
+var addCommonBehaviour = function(sourceMain){
+    var gameObjects = JSON.parse(fs.readFileSync('workspace/project/resources/gameObject/map.json'));
+    var fileNames = {};
+    gameObjects.forEach(function(go){
+        go.commonBehaviour.forEach(function(cb){
+            fileNames[cb.name] = 1;
+        });
+    });
+    Object.keys(fileNames).forEach(function(name){
+        var res = 've.commonBehaviour.'+name+' = '+fs.readFileSync('workspace/project/resources/script/commonBehaviour/'+name+'.js');
+        sourceMain.add(res);
+    });
+};
+
+var unUsed = function(){
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()
@@ -93,10 +112,18 @@ module.exports.generate = function(opts,callback){
     //        callback(lintData);
     //    }
     //);
+    //minifier.minify('project/out/main.js');
+};
+
+module.exports.generate = function(opts,callback){
+
+    var sourceMain = new Source();
+    addEnvVariables(sourceMain);
+    addStaticFiles(sourceMain);
+    addCommonBehaviour(sourceMain);
+    if (opts.debug) addDebug(sourceMain);
+    addGameResources(sourceMain);
+    initFolderStructure(sourceMain);
 
     callback({});
-
-
-    //minifier.minify('project/out/main.js');
-
 };

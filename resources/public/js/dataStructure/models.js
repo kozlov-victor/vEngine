@@ -84,8 +84,8 @@
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
-        commonBehaviours:[],
-        _commonBehaviours:null,
+        commonBehaviour:[],
+        _commonBehaviour:null,
         posX:0,
         posY:0,
         velX:0,
@@ -102,6 +102,7 @@
             var self = this;
             this._frameAnimations = new ve.collections.List();
             this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
+            self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
                 var a = ve_local.bundle.frameAnimationList.getIf({id:id});
@@ -109,9 +110,9 @@
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
-            self._commonBehaviours = new ve.collections.List();
-            this.commonBehaviours.forEach(function(cb){
-                self._commonBehaviours.add(new ve.models.CommonBehaviour(cb));
+            self._commonBehaviour = new ve.collections.List();
+            this.commonBehaviour.forEach(function(cb){
+                self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
         getRect: function(){
@@ -227,7 +228,7 @@
         type:'commonBehaviour',
         name:'',
         description:'',
-        defaultParameters:[],
+        parameters:[],
         construct: function(){
 
         }

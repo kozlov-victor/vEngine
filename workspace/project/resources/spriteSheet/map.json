@@ -28,5 +28,15 @@
         "numOfFramesV": 5,
         "type": "spriteSheet",
         "id": "1408_4249_0"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/hero.png",
+        "width": 396,
+        "height": 280,
+        "name": "hero",
+        "type": "spriteSheet",
+        "numOfFramesH": 12,
+        "numOfFramesV": 8,
+        "id": "2116_8350_0"
     }
 ]

@@ -13,40 +13,54 @@
         ],
         "id": "2701_0003_9",
         "currFrameIndex": 34,
-        "commonBehaviours": [
-          {
-            "name":"walk4dir"
-          },
-          {
-            "name":"stub"
-          }
+        "commonBehaviour": [
+            {
+                "name": "walk4dir",
+                "parameters": {
+                    "velocity": 100,
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "",
+                    "idleRightAnimation": "",
+                    "idleUpAnimation": "",
+                    "idleDownAnimation": ""
+                },
+                "id": "8745_4645_22"
+            }
         ]
     },
     {
-        "spriteSheetId": "3881_6862_16",
-        "width": 64,
-        "height": 64,
-        "name": "globus",
+        "spriteSheetId": "2116_8350_0",
+        "width": 33,
+        "height": 35,
+        "name": "hero",
         "type": "gameObject",
-        "frameAnimationIds": [
-            "5442_6561_21"
+        "commonBehaviour": [
+            {
+                "name": "walk4dir",
+                "parameters": {
+                    "velocity": 100,
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "",
+                    "idleRightAnimation": "",
+                    "idleUpAnimation": "",
+                    "idleDownAnimation": ""
+                },
+                "id": "3483_5282_9"
+            }
         ],
-        "id": "5791_8960_17",
-        "commonBehaviours": [
-
-        ]
-    },
-    {
-        "spriteSheetId": "1408_4249_0",
-        "width": 110,
-        "height": 111,
-        "name": "ss",
-        "type": "gameObject",
-        "commonBehaviours": [],
         "frameAnimationIds": [
-            "3437_1809_4"
+            "7096_7787_3",
+            "5247_2393_4",
+            "5967_8313_5",
+            "5828_3587_6"
         ],
-        "id": "2039_1313_3",
-        "currFrameIndex": 18
+        "id": "9252_7967_1",
+        "currFrameIndex": 4
     }
 ]

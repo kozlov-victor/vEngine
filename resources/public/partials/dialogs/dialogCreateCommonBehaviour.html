@@ -1,23 +1,16 @@
 
 <table class="width100">
-    <tr ng-repeat="prp in editData.currCommonBehaviourInEdit">
+    <tr ng-repeat="(key, value) in editData.currCommonBehaviourInEdit.parameters">
         <td>
-            {{prp}}
+            {{key}}
         </td>
         <td>
-            <input type="text" ng-model="prp"/>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <select>
-                <option ng-repeat="p in defaultParameters">{{p.key}} ({{p.value}})</option>
-            </select>
+            <input type="text" ng-model="editData.currCommonBehaviourInEdit.parameters[key]"/>
         </td>
     </tr>
 </table>
 <button
-        ng-click="createOrEditFrAnimation()"
-        ng-disabled="!(frmCreateAnimation.$valid)">
-    {{editData.currFrAnimationInEdit.id?i18n.edit:i18n.create}}
+        ng-click="createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)"
+        ng-disabled="!(frmCreateCommonBehaviour.$valid)">
+    {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}
 </button>

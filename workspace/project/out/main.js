@@ -269,7 +269,8 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
-        commonBehaviours:[],
+        commonBehaviour:[],
+        _commonBehaviour:null,
         posX:0,
         posY:0,
         velX:0,
@@ -286,12 +287,17 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             var self = this;
             this._frameAnimations = new ve.collections.List();
             this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.getIf({id:this.spriteSheetId}));
+            self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
                 var a = ve_local.bundle.frameAnimationList.getIf({id:id});
                 a = a.clone(ve.models.FrameAnimation);
                 a._gameObject = self;
                 self._frameAnimations.add(a);
+            });
+            self._commonBehaviour = new ve.collections.List();
+            this.commonBehaviour.forEach(function(cb){
+                self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
         getRect: function(){
@@ -403,6 +409,16 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         type:'font'
     });
 
+    models.CommonBehaviour = models.BaseModel.extend({
+        type:'commonBehaviour',
+        name:'',
+        description:'',
+        parameters:[],
+        construct: function(){
+
+        }
+    });
+
 
     ve.models = models;
 
@@ -441,7 +457,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             data = null;
         };
 
-        var applyBehaviour = function(model){
+        var applyIndividualBehaviour = function(model){
             var script = ve_local.scripts[model.type][model.name+'.js'];
             if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
             var BehaviourClass = script();
@@ -450,14 +466,34 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
                 model[itm.key]=itm.value;
             });
             model._behaviour.onCreate.apply(model);
+            model.__updateIndividualBehaviour__ = function(deltaTime){
+                model._behaviour.onUpdate.apply(model,[deltaTime]);
+            }
         };
 
+        var applyCommonBehaviour = function(model){
+            var cbList = [];
+            model._commonBehaviour.forEach(function(cb){
+                console.log(ve.commonBehaviour);
+                var instance = new ve.commonBehaviour[cb.name]();
+                instance.initialize(model,cb.parameters);
+                instance.onCreate();
+                cbList.push(instance);
+            });
+            model.__updateCommonBehaviour__ = function(){
+                cbList.forEach(function(cb){
+                    cb.onUpdate();
+                });
+            }
+        };
+        
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
-                applyBehaviour(scene);
+                applyIndividualBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
-                       applyBehaviour(gameObject);
+                        applyCommonBehaviour(gameObject);
+                        applyIndividualBehaviour(gameObject);
                     });
                 });
             });
@@ -549,7 +585,8 @@ ve_local.CanvasRenderer = function(){
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
-                obj._behaviour.onUpdate.apply(obj,[deltaTime]);
+                obj.__updateCommonBehaviour__();
+                obj.__updateIndividualBehaviour__(deltaTime);
                 obj.update(currTime,deltaTime);
                 drawObject(obj);
             });
@@ -894,6 +931,84 @@ ve_local.SceneManager = function(){
 
 })();
 
+ve.commonBehaviour.walk4dir = 
+Class.extend(
+    {
+        _parameters: {},
+        _gameObject: null,
+        initialize: function(_gameObj,_params){
+            this._gameObject = _gameObj;
+            this._parameters = _params;
+        },
+        onCreate: function(){
+            var dirs = ['Left','Right','Up','Down'];
+            var self = this;
+            dirs.forEach(function(dir){
+                var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
+                self[keyWalk] = self._gameObject.getFrAnimation(self._parameters[keyWalk]);
+                if (!self[keyWalk]) throw 'can not find animation ' + self._parameters[keyWalk] +' an gameObject ' + self._gameObject.name;
+                self._parameters[keyIdle] && (self[keyIdle] = self._gameObject.getFrAnimation(self._parameters[keyIdle]));
+            });
+        },
+        _stop: function(lastDirection){
+            var self = this;
+            var go = self._gameObject;
+            go.stopFrAnimations();
+            go.velX = 0;
+            go.velY = 0;
+            var idleKey = 'idle'+lastDirection+'Animation';
+            self[idleKey] && (self[idleKey].play());
+        },
+        _go: function(direction){
+            var self = this;
+            self['walk'+direction+'Animation'].play();
+        },
+        onUpdate: function(){
+            var self = this;
+            var go = self._gameObject;
+            if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
+                go.velY = self._parameters.velocity;
+                self._go('Up');
+            }
+            if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
+                go.velY = -self._parameters.velocity;
+                self._go('Down');
+            }
+            if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
+                go.velX = self._parameters.velocity;
+                self._go('Left');
+            }
+            if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
+                go.velX = -self._parameters.velocity;
+                self._go('Right');
+            }
+
+            if (ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT)) {
+                self._stop('Left');
+            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT)) {
+                self._stop('Right');
+            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_UP)) {
+                self._stop('Up');
+            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)) {
+                self._stop('Down');
+            }
+        }
+    },
+    {
+        parameters: {
+            velocity: 100,
+            walkLeftAnimation: 'left',
+            walkRightAnimation: 'right',
+            walkUpAnimation:'up',
+            walkDownAnimation:'down',
+            idleLeftAnimation: 'idleLeft',
+            idleRightAnimation: 'idleRight',
+            idleUpAnimation:'idleUp',
+            idleDownAnimation:'idleDown'
+        },
+        description:'Walking up, down, left, right'
+    }
+);
 
 (function(){
 
@@ -1119,6 +1234,50 @@ ve_local.SceneManager = function(){
         "type": "frameAnimation",
         "duration": 1000,
         "id": "3437_1809_4"
+    },
+    {
+        "name": "left",
+        "frames": [
+            15,
+            16,
+            17
+        ],
+        "type": "frameAnimation",
+        "duration": 600,
+        "id": "7096_7787_3"
+    },
+    {
+        "name": "right",
+        "frames": [
+            27,
+            28,
+            29
+        ],
+        "type": "frameAnimation",
+        "duration": 600,
+        "id": "5247_2393_4"
+    },
+    {
+        "name": "up",
+        "frames": [
+            39,
+            40,
+            41
+        ],
+        "type": "frameAnimation",
+        "duration": 600,
+        "id": "5967_8313_5"
+    },
+    {
+        "name": "down",
+        "frames": [
+            3,
+            4,
+            5
+        ],
+        "type": "frameAnimation",
+        "duration": 600,
+        "id": "5828_3587_6"
     }
 ],
         gameObject: [
@@ -1135,32 +1294,56 @@ ve_local.SceneManager = function(){
             "8014_4428_14"
         ],
         "id": "2701_0003_9",
-        "currFrameIndex": 34
+        "currFrameIndex": 34,
+        "commonBehaviour": [
+            {
+                "name": "walk4dir",
+                "parameters": {
+                    "velocity": 100,
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "",
+                    "idleRightAnimation": "",
+                    "idleUpAnimation": "",
+                    "idleDownAnimation": ""
+                },
+                "id": "8745_4645_22"
+            }
+        ]
     },
     {
-        "spriteSheetId": "3881_6862_16",
-        "width": 64,
-        "height": 64,
-        "name": "globus",
+        "spriteSheetId": "2116_8350_0",
+        "width": 33,
+        "height": 35,
+        "name": "hero",
         "type": "gameObject",
-        "frameAnimationIds": [
-            "5442_6561_21"
+        "commonBehaviour": [
+            {
+                "name": "walk4dir",
+                "parameters": {
+                    "velocity": 100,
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "",
+                    "idleRightAnimation": "",
+                    "idleUpAnimation": "",
+                    "idleDownAnimation": ""
+                },
+                "id": "3483_5282_9"
+            }
         ],
-        "id": "5791_8960_17",
-        "commonBehaviours": []
-    },
-    {
-        "spriteSheetId": "1408_4249_0",
-        "width": 110,
-        "height": 111,
-        "name": "ss",
-        "type": "gameObject",
-        "commonBehaviours": [],
         "frameAnimationIds": [
-            "3437_1809_4"
+            "7096_7787_3",
+            "5247_2393_4",
+            "5967_8313_5",
+            "5828_3587_6"
         ],
-        "id": "2039_1313_3",
-        "currFrameIndex": 18
+        "id": "9252_7967_1",
+        "currFrameIndex": 4
     }
 ],
         scene: [
@@ -1202,10 +1385,17 @@ ve_local.SceneManager = function(){
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 167,
-                "posY": 93,
+                "posX": 174,
+                "posY": 120,
+                "protoId": "9252_7967_1",
+                "id": "5004_0858_8"
+            },
+            {
+                "type": "gameObject",
+                "posX": 65,
+                "posY": 121,
                 "protoId": "2701_0003_9",
-                "id": "6864_8407_15"
+                "id": "1960_0616_16"
             }
         ],
         "id": "7353_5206_5"
@@ -1213,36 +1403,13 @@ ve_local.SceneManager = function(){
     {
         "name": "main2",
         "type": "layer",
-        "gameObjectProps": [
-            {
-                "type": "gameObject",
-                "posX": 178,
-                "posY": 142,
-                "protoId": "5791_8960_17",
-                "id": "6567_1979_4"
-            }
-        ],
+        "gameObjectProps": [],
         "id": "8333_4477_2"
     },
     {
         "name": "sd",
         "type": "layer",
-        "gameObjectProps": [
-            {
-                "type": "gameObject",
-                "posX": 142,
-                "posY": 166,
-                "protoId": "2039_1313_3",
-                "id": "8344_0760_9"
-            },
-            {
-                "type": "gameObject",
-                "posX": 198,
-                "posY": 92,
-                "protoId": "2039_1313_3",
-                "id": "6632_4292_10"
-            }
-        ],
+        "gameObjectProps": [],
         "id": "7728_3928_7"
     }
 ],
@@ -1276,6 +1443,16 @@ ve_local.SceneManager = function(){
         "numOfFramesV": 5,
         "type": "spriteSheet",
         "id": "1408_4249_0"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/hero.png",
+        "width": 396,
+        "height": 280,
+        "name": "hero",
+        "type": "spriteSheet",
+        "numOfFramesH": 12,
+        "numOfFramesV": 8,
+        "id": "2116_8350_0"
     }
 ],
         gameProps: {
@@ -1288,6 +1465,26 @@ ve_local.SceneManager = function(){
     ve_local.scripts.gameObject = {};
     ve_local.scripts.scene = {};
 
+    
+    ve_local.scripts.gameObject['a.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
     
     ve_local.scripts.gameObject['globus.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
@@ -1310,47 +1507,38 @@ ve_local.SceneManager = function(){
         return clazz;
     };
     
+    ve_local.scripts.gameObject['hero.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
     ve_local.scripts.gameObject['robot.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
-    vel:100,
 
     onCreate: function () {
-        this.leftAnim = this.getFrAnimation('left');
-        this.rightAnim = this.getFrAnimation('right');
-        this.upAnim = this.getFrAnimation('up');
-        this.downAnim = this.getFrAnimation('down');
+        
     },
 
     onUpdate: function (time) {
-        var self = this;
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
-            self.velY = self.vel;
-            self.upAnim.play();
-        }
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
-            self.velY = -self.vel;
-            self.downAnim.play();
-        }
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
-            self.velX = self.vel;
-            self.leftAnim.play();
-        }
-        if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
-            self.velX = -self.vel;
-            self.rightAnim.play();
-        }
+        
 
-        if (
-            ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT) ||
-            ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT) ||
-            ve.keyboard.isJustReleased(ve.keyboard.KEY_UP) ||
-            ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)
-        ) {
-            self.stopFrAnimations();
-            self.velX = 0;
-            self.velY = 0;
-        }
+        
     },
 
     onDestroy: function () {
@@ -1493,6 +1681,7 @@ ve_local.SceneManager = function(){
     ve.sceneManager = new ve_local.SceneManager();
     ve.keyboard = new ve_local.Keyboard();
     ve_local.bundle.prepareGameObjectScripts();
+
 
     window.addEventListener('load',function(){
         ve_local.renderer.init();

@@ -95,6 +95,7 @@ app
             })
         };
         this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
+            var op = object.id?'edit':'create';
             $http({
                 url: '/createOrEditObjectInResource',
                 method: "POST",
@@ -107,7 +108,7 @@ app
                 headers: {'Content-Type': 'application/json'}
             }).
             success(function (resp) {
-                callback && callback(resp);
+                callback && callback({type:op,r:resp});
             });
         };
         this.createOrEditLayer = function(l){
@@ -124,7 +125,7 @@ app
                             },
                             function(resp){
                                 var l = editData.currLayerInEdit.clone(ve.models.Layer);
-                                l.id = resp.id;
+                                l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
                                 editData.currSceneInEdit._layers.add(l);

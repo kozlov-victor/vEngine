@@ -17,12 +17,20 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.defaultParameters = [];
-        var params = editData.commonBehaviourList.getIf({
-            name:editData.currCommonBehaviourInEdit.name
-        }).defaultParameters;
-        Object.keys(params).forEach(function(key){
-            s.defaultParameters.push({key:key,value:params[key]});
-        });
+        console.log(s.editData.currCommonBehaviourInEdit);
+
+        s.createOrEditCommonBehaviour = function(obj){
+            resourceDao.createOrEditObjectInResource(
+                s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
+                obj.type,obj,
+                function(resp){
+                    if (resp.type=='create') {
+                        obj.id = resp.r.id;
+                        editData.currGameObjectInEdit._commonBehaviour.add(obj);
+                    }
+                    uiHelper.closeDialog();
+                }
+            );
+        }
 
     });

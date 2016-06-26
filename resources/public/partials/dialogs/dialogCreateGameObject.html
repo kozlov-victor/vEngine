@@ -99,7 +99,7 @@
         </td>
         <td>
             <div class="table width100">
-                <div class="row" ng-repeat="itm in editData.currGameObjectInEdit._commonBehaviours.rs">
+                <div class="row" ng-repeat="itm in editData.currGameObjectInEdit._commonBehaviour.rs">
                     <div class="cell vAlign">
                         <span>{{itm.name}}</span>
                     </div>
@@ -113,7 +113,10 @@
             </div>
         </td>
         <td>
-            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateAnimationDialog()">+</button>
+            <select class="width20" ng-model="selectedBehaviourName">
+                <option value="{{cb.name}}" ng-repeat="cb in availableCommonBehaviour">{{cb.name}}</option>
+            </select>
+            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateCommonBehaviourDialog(selectedBehaviourName)">+</button>
         </td>
     </tr>
 </table>

@@ -5,10 +5,17 @@
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 167,
-                "posY": 93,
+                "posX": 174,
+                "posY": 120,
+                "protoId": "9252_7967_1",
+                "id": "5004_0858_8"
+            },
+            {
+                "type": "gameObject",
+                "posX": 65,
+                "posY": 121,
                 "protoId": "2701_0003_9",
-                "id": "6864_8407_15"
+                "id": "1960_0616_16"
             }
         ],
         "id": "7353_5206_5"
@@ -16,36 +23,13 @@
     {
         "name": "main2",
         "type": "layer",
-        "gameObjectProps": [
-            {
-                "type": "gameObject",
-                "posX": 178,
-                "posY": 142,
-                "protoId": "5791_8960_17",
-                "id": "6567_1979_4"
-            }
-        ],
+        "gameObjectProps": [],
         "id": "8333_4477_2"
     },
     {
         "name": "sd",
         "type": "layer",
-        "gameObjectProps": [
-            {
-                "type": "gameObject",
-                "posX": 142,
-                "posY": 166,
-                "protoId": "2039_1313_3",
-                "id": "8344_0760_9"
-            },
-            {
-                "type": "gameObject",
-                "posX": 198,
-                "posY": 92,
-                "protoId": "2039_1313_3",
-                "id": "6632_4292_10"
-            }
-        ],
+        "gameObjectProps": [],
         "id": "7728_3928_7"
     }
 ]

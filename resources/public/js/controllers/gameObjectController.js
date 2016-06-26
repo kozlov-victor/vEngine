@@ -66,6 +66,18 @@ window.app.
             uiHelper.showDialog('frmCreateCommonBehaviour');
         };
 
+        s.showCreateCommonBehaviourDialog = function(name){
+            s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
+            s.editData.currCommonBehaviourInEdit.name = name;
+            s.editData.currCommonBehaviourInEdit.parameters =
+                editData.commonBehaviourList.getIf({
+                    name:name
+                }).
+                    clone().
+                    parameters;
+            uiHelper.showDialog('frmCreateCommonBehaviour');
+        };
+
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
@@ -73,10 +85,18 @@ window.app.
             uiHelper.closeContextMenu();
         };
 
-        s.editGameObjectFromCtxMenu = function(object){
-            editData.currGameObjectInEdit = object.clone(ve.models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
-            uiHelper.showDialog('frmCreateGameObject');
-        }
+        (function(){
+            s.availableCommonBehaviour = [];
+            if (!s.editData.currGameObjectInEdit) return;
+            var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
+            s.editData.commonBehaviourList.forEach(function(cb){
+                if (appliedBehaviours.getIf({name:cb.name})) return;
+                s.availableCommonBehaviour.push(cb);
+            });
+            s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;
+        })();
+
+
+
 
     });

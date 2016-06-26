@@ -84,7 +84,7 @@ window.app.
                 },
                 function(resp){
                     var newGameObj = obj.clone(ve.models.GameObject);
-                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.id});
+                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
                     editData.currLayerInEdit._gameObjects.add(newGameObj);
                     editData.currSceneGameObjectInEdit = newGameObj;
                 });

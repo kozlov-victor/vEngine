@@ -132,14 +132,13 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
         Object.keys(object).forEach(function(key){
             objectInResource[key]=object[key];
             writeResource(resources,path);
-            return {};
         });
     } else {
         object.id = uuid();
         objectsInResource.push(object);
         writeResource(resources,path);
-        return {id:object.id};
     }
+    return object;
 };
 
 module.exports.getCommonBehaviourAttrs = function(){

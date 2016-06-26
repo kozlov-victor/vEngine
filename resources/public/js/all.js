@@ -161,8 +161,8 @@
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
-        commonBehaviours:[],
-        _commonBehaviours:null,
+        commonBehaviour:[],
+        _commonBehaviour:null,
         posX:0,
         posY:0,
         velX:0,
@@ -186,9 +186,9 @@
                 a._gameObject = self;
                 self._frameAnimations.add(a);
             });
-            self._commonBehaviours = new ve.collections.List();
-            this.commonBehaviours.forEach(function(cb){
-                self._commonBehaviours.add(new ve.models.CommonBehaviour(cb));
+            self._commonBehaviour = new ve.collections.List();
+            this.commonBehaviour.forEach(function(cb){
+                self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
         getRect: function(){
@@ -304,7 +304,7 @@
         type:'commonBehaviour',
         name:'',
         description:'',
-        defaultParameters:[],
+        parameters:[],
         construct: function(){
 
         }
@@ -585,13 +585,21 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.defaultParameters = [];
-        var params = editData.commonBehaviourList.getIf({
-            name:editData.currCommonBehaviourInEdit.name
-        }).defaultParameters;
-        Object.keys(params).forEach(function(key){
-            s.defaultParameters.push({key:key,value:params[key]});
-        });
+        console.log(s.editData.currCommonBehaviourInEdit);
+
+        s.createOrEditCommonBehaviour = function(obj){
+            resourceDao.createOrEditObjectInResource(
+                s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
+                obj.type,obj,
+                function(resp){
+                    if (resp.type=='create') {
+                        obj.id = resp.r.id;
+                        editData.currGameObjectInEdit._commonBehaviour.add(obj);
+                    }
+                    uiHelper.closeDialog();
+                }
+            );
+        }
 
     });
 
@@ -684,6 +692,18 @@ window.app.
             uiHelper.showDialog('frmCreateCommonBehaviour');
         };
 
+        s.showCreateCommonBehaviourDialog = function(name){
+            s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
+            s.editData.currCommonBehaviourInEdit.name = name;
+            s.editData.currCommonBehaviourInEdit.parameters =
+                editData.commonBehaviourList.getIf({
+                    name:name
+                }).
+                    clone().
+                    parameters;
+            uiHelper.showDialog('frmCreateCommonBehaviour');
+        };
+
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
@@ -691,11 +711,19 @@ window.app.
             uiHelper.closeContextMenu();
         };
 
-        s.editGameObjectFromCtxMenu = function(object){
-            editData.currGameObjectInEdit = object.clone(ve.models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.getIf({id: s.editData.currGameObjectInEdit.id});
-            uiHelper.showDialog('frmCreateGameObject');
-        }
+        (function(){
+            s.availableCommonBehaviour = [];
+            if (!s.editData.currGameObjectInEdit) return;
+            var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
+            s.editData.commonBehaviourList.forEach(function(cb){
+                if (appliedBehaviours.getIf({name:cb.name})) return;
+                s.availableCommonBehaviour.push(cb);
+            });
+            s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;
+        })();
+
+
+
 
     });
 
@@ -919,7 +947,7 @@ window.app.
                 },
                 function(resp){
                     var newGameObj = obj.clone(ve.models.GameObject);
-                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.id});
+                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
                     editData.currLayerInEdit._gameObjects.add(newGameObj);
                     editData.currSceneGameObjectInEdit = newGameObj;
                 });
@@ -1460,6 +1488,7 @@ app
             })
         };
         this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
+            var op = object.id?'edit':'create';
             $http({
                 url: '/createOrEditObjectInResource',
                 method: "POST",
@@ -1472,7 +1501,7 @@ app
                 headers: {'Content-Type': 'application/json'}
             }).
             success(function (resp) {
-                callback && callback(resp);
+                callback && callback({type:op,r:resp});
             });
         };
         this.createOrEditLayer = function(l){
@@ -1489,7 +1518,7 @@ app
                             },
                             function(resp){
                                 var l = editData.currLayerInEdit.clone(ve.models.Layer);
-                                l.id = resp.id;
+                                l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
                                 editData.currSceneInEdit._layers.add(l);
