@@ -13,7 +13,7 @@
         id:null,
         protoId:null,
         name:'',
-        toJsonObj: function(){
+        toJSON: function(){
             var res = {};
             for (var key in this) {
                 if (isPropNotFit(this,key)) continue;
@@ -21,7 +21,7 @@
             }
             return res;
         },
-        toJsonArr: function(){
+        toJSON_Array: function(){
             var res = [];
             for (var key in this) {
                 if (isPropNotFit(this,key)) continue;
@@ -29,7 +29,7 @@
             }
             return res;
         },
-        fromJsonObject:function(jsonObj){
+        fromJSON:function(jsonObj){
             var self = this;
             Object.keys(jsonObj).forEach(function(key){
                 if (key in self) {
@@ -39,25 +39,24 @@
             });
         },
         clone: function(){
-            return new this.constructor(this.toJsonObj());
+            return new this.constructor(this.toJSON());
         },
-        on: function(eventName,callBackOrEvt){
+        on: function(eventName,callBack){
             var self = this;
-            if (callBackOrEvt.apply) {
-                self.__events__[eventName] = self.__events__[eventName] || [];
-                self.__events__[eventName].push(callBackOrEvt);
-            } else {
-                var es = self.__events__[eventName];
-                if (!es) return;
-                es.forEach(function(e){
-                    e(callBackOrEvt);
-                });
-            }
-
+            self.__events__[eventName] = self.__events__[eventName] || [];
+            self.__events__[eventName].push(callBack);
+        },
+        trigger: function(eventName,data){
+            var self = this;
+            var es = self.__events__[eventName];
+            if (!es) return;
+            es.forEach(function(e){
+                e(data);
+            });
         },
         _init:function(){
             this.__events__ = {};
-            arguments && arguments[0] && this.fromJsonObject(arguments[0]);
+            arguments && arguments[0] && this.fromJSON(arguments[0]);
         }
     });
 
@@ -96,6 +95,7 @@
 
     models.GameObject = models.BaseModel.extend({
         type:'gameObject',
+        groupName:'',
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
@@ -131,6 +131,10 @@
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
+        kill: function(){
+            this._layer._gameObjects.remove({id:this.id});
+            this._layer._scene._allGameObjects.remove({id:this.id});
+        },
         getScene: function(){
             return this._layer._scene;
         },
@@ -149,8 +153,9 @@
             this._currFrameAnimation && this._currFrameAnimation.update(time);
             var deltaX = this.velX * delta / 1000;
             var deltaY = this.velY * delta / 1000;
-            this.posX+=deltaX;
-            this.posY+=deltaY;
+            var posX = this.posX+deltaX;
+            var posY = this.posY+deltaY;
+            ve_local.collider.check(this,posX,posY);
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
@@ -201,7 +206,7 @@
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
                 var objCloned = obj.clone(ve.models.GameObject);
-                objCloned.fromJsonObject(prop);
+                objCloned.fromJSON(prop);
                 objCloned._layer = self;
                 self._gameObjects.add(objCloned);
             });
@@ -219,13 +224,21 @@
         type:'scene',
         layerProps:[],
         _layers:null,
+        _allGameObjects:null,
+        __onResourcesReady: function(){
+            var self = this;
+            self._allGameObjects = new ve.collections.List();
+            self._layers.forEach(function(l){
+                self._allGameObjects.addAll(l._gameObjects);
+            });
+        },
         construct: function(){
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
                 var l = ve_local.bundle.layerList.find({id: prop.protoId});
                 var lCloned = l.clone(ve.models.Layer);
-                lCloned.fromJsonObject(prop);
+                lCloned.fromJSON(prop);
                 lCloned._scene = self;
                 self._layers.add(lCloned);
             });
@@ -236,12 +249,19 @@
                 dataSet.combine(l.getAllSpriteSheets());
             });
             return dataSet;
+        },
+        getAllGameObjects:function(){
+            return this._allGameObjects;
         }
     });
 
 
     models.Font = models.BaseModel.extend({
-        type:'font'
+        type:'font',
+        fontColor:'black',
+        fontSize:12,
+        fontFamily:'Monospace',
+        fontContext:null
     });
 
     models.CommonBehaviour = models.BaseModel.extend({

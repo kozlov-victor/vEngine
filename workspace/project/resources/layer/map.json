@@ -5,17 +5,59 @@
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 173,
-                "posY": 101,
+                "posX": 171,
+                "posY": 153,
                 "protoId": "2701_0003_9",
                 "id": "9314_9085_11"
             },
             {
                 "type": "gameObject",
-                "posX": 140,
-                "posY": 212,
+                "posX": 39,
+                "posY": 146,
                 "protoId": "9252_7967_1",
                 "id": "1517_9636_12"
+            },
+            {
+                "type": "gameObject",
+                "posX": 65,
+                "posY": 45,
+                "protoId": "9252_7967_1",
+                "id": "9207_6527_44"
+            },
+            {
+                "type": "gameObject",
+                "posX": 175,
+                "posY": 34,
+                "protoId": "9252_7967_1",
+                "id": "7136_3927_45"
+            },
+            {
+                "type": "gameObject",
+                "posX": 334,
+                "posY": 34,
+                "protoId": "9252_7967_1",
+                "id": "2348_0356_46"
+            },
+            {
+                "type": "gameObject",
+                "posX": 284,
+                "posY": 88,
+                "protoId": "1414_8788_140",
+                "id": "2619_0203_146"
+            },
+            {
+                "type": "gameObject",
+                "posX": 47,
+                "posY": 225,
+                "protoId": "1414_8788_140",
+                "id": "2228_2702_147"
+            },
+            {
+                "type": "gameObject",
+                "posX": 321,
+                "posY": 234,
+                "protoId": "1414_8788_140",
+                "id": "4786_4707_148"
             }
         ],
         "id": "7353_5206_5"

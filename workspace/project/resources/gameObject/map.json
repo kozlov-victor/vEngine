@@ -35,7 +35,8 @@
                 "parameters": {},
                 "id": "2635_8746_13"
             }
-        ]
+        ],
+        "groupName": "robot"
     },
     {
         "spriteSheetId": "2116_8350_0",
@@ -73,6 +74,40 @@
             "5828_3587_6"
         ],
         "id": "9252_7967_1",
-        "currFrameIndex": 5
+        "currFrameIndex": 5,
+        "groupName": "man"
+    },
+    {
+        "spriteSheetId": "2116_8350_0",
+        "width": 33,
+        "height": 35,
+        "name": "man",
+        "type": "gameObject",
+        "commonBehaviour": [
+            {
+                "name": "move4dir",
+                "parameters": {
+                    "velocity": 100,
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "",
+                    "idleRightAnimation": "",
+                    "idleUpAnimation": "",
+                    "idleDownAnimation": ""
+                },
+                "id": "5226_4551_145",
+                "type": "commonBehaviour"
+            }
+        ],
+        "frameAnimationIds": [
+            "3975_9138_141",
+            "1018_3675_142",
+            "9216_1203_143",
+            "8747_6072_144"
+        ],
+        "id": "1414_8788_140",
+        "groupName": "man"
     }
 ]

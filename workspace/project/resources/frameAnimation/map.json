@@ -262,5 +262,49 @@
         "type": "frameAnimation",
         "duration": 600,
         "id": "5828_3587_6"
+    },
+    {
+        "name": "left",
+        "frames": [
+            12,
+            13,
+            14
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "3975_9138_141"
+    },
+    {
+        "name": "right",
+        "frames": [
+            24,
+            25,
+            26
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "1018_3675_142"
+    },
+    {
+        "name": "up",
+        "frames": [
+            36,
+            37,
+            38
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "9216_1203_143"
+    },
+    {
+        "name": "down",
+        "frames": [
+            0,
+            1,
+            2
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "8747_6072_144"
     }
 ]

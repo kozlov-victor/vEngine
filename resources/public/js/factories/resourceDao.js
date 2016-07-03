@@ -34,7 +34,7 @@ app
             var formData = new FormData();
             formData.append('file',currResourceInEdit._file);
             var model = {};
-            currResourceInEdit.toJsonArr().forEach(function(item){
+            currResourceInEdit.toJSON_Array().forEach(function(item){
                 model[item.key] = item.value;
             });
             formData.append('model',JSON.stringify(model));
@@ -93,6 +93,28 @@ app
                 data: formData,
                 headers: {'Content-Type': undefined}
             })
+        };
+        this.post = function(url,data,callBack){
+            $http({
+                url: '/gameProps/save',
+                method: "POST",
+                data: data,
+                headers: {'Content-Type': undefined}
+            }).
+                success(function (resp) {
+                    callBack && callBack(resp);
+                });
+        };
+        this.postMultiPart = function(url,formData,callBack){
+            $http({
+                url: url,
+                method: "POST",
+                data: formData,
+                headers: {'Content-Type': undefined}
+            }).
+            success(function (resp) {
+                callBack && callBack(resp);
+            });
         };
         this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
             var op = object.id?'edit':'create';

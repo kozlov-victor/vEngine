@@ -14,6 +14,7 @@ module.exports.initFolderStructure = function(){
     fs.createFolderSync('workspace/project/resources');
     createFolderWithFiles(resourcesController.RESOURCE_NAMES);
     fs.createFolderSync('workspace/project/resources/script/gameObject');
+    fs.createFolderSync('workspace/project/resources/font');
     fs.createFolderSync('workspace/project/resources/script/scene');
 
     fs.createFolderSync('workspace/project/resources/script/commonBehaviour');

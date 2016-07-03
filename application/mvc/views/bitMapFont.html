@@ -94,18 +94,17 @@
         return str.split(a).join(b);
     }
 
-    function getFontHeight(strFont) {
-        var parent = document.createElement("span");
-        parent.appendChild(document.createTextNode("height!ДдЙЇ"));
-        document.body.appendChild(parent);
-        parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
-        var height = parent.offsetHeight;
-        document.body.removeChild(parent);
-        return height;
-    }
-
 
     function getSymbolsContext(arrFromTo, strFont, w) {
+        function getFontHeight(strFont) {
+            var parent = document.createElement("span");
+            parent.appendChild(document.createTextNode("height!ДдЙЇ"));
+            document.body.appendChild(parent);
+            parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
+            var height = parent.offsetHeight;
+            document.body.removeChild(parent);
+            return height;
+        }
         var cnv = document.createElement('canvas');
         var ctx = cnv.getContext('2d');
         ctx.font = strFont;

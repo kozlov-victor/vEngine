@@ -90,7 +90,7 @@
         id:null,
         protoId:null,
         name:'',
-        toJsonObj: function(){
+        toJSON: function(){
             var res = {};
             for (var key in this) {
                 if (isPropNotFit(this,key)) continue;
@@ -98,7 +98,7 @@
             }
             return res;
         },
-        toJsonArr: function(){
+        toJSON_Array: function(){
             var res = [];
             for (var key in this) {
                 if (isPropNotFit(this,key)) continue;
@@ -106,7 +106,7 @@
             }
             return res;
         },
-        fromJsonObject:function(jsonObj){
+        fromJSON:function(jsonObj){
             var self = this;
             Object.keys(jsonObj).forEach(function(key){
                 if (key in self) {
@@ -116,25 +116,24 @@
             });
         },
         clone: function(){
-            return new this.constructor(this.toJsonObj());
+            return new this.constructor(this.toJSON());
         },
-        on: function(eventName,callBackOrEvt){
+        on: function(eventName,callBack){
             var self = this;
-            if (callBackOrEvt.apply) {
-                self.__events__[eventName] = self.__events__[eventName] || [];
-                self.__events__[eventName].push(callBackOrEvt);
-            } else {
-                var es = self.__events__[eventName];
-                if (!es) return;
-                es.forEach(function(e){
-                    e(callBackOrEvt);
-                });
-            }
-
+            self.__events__[eventName] = self.__events__[eventName] || [];
+            self.__events__[eventName].push(callBack);
+        },
+        trigger: function(eventName,data){
+            var self = this;
+            var es = self.__events__[eventName];
+            if (!es) return;
+            es.forEach(function(e){
+                e(data);
+            });
         },
         _init:function(){
             this.__events__ = {};
-            arguments && arguments[0] && this.fromJsonObject(arguments[0]);
+            arguments && arguments[0] && this.fromJSON(arguments[0]);
         }
     });
 
@@ -173,6 +172,7 @@
 
     models.GameObject = models.BaseModel.extend({
         type:'gameObject',
+        groupName:'',
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
@@ -190,6 +190,7 @@
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
+        _layer:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -207,6 +208,13 @@
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
+        kill: function(){
+            this._layer._gameObjects.remove({id:this.id});
+            this._layer._scene._allGameObjects.remove({id:this.id});
+        },
+        getScene: function(){
+            return this._layer._scene;
+        },
         getRect: function(){
             return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
@@ -222,8 +230,9 @@
             this._currFrameAnimation && this._currFrameAnimation.update(time);
             var deltaX = this.velX * delta / 1000;
             var deltaY = this.velY * delta / 1000;
-            this.posX+=deltaX;
-            this.posY+=deltaY;
+            var posX = this.posX+deltaX;
+            var posY = this.posY+deltaY;
+            ve_local.collider.check(this,posX,posY);
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
@@ -274,7 +283,8 @@
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
                 var objCloned = obj.clone(ve.models.GameObject);
-                objCloned.fromJsonObject(prop);
+                objCloned.fromJSON(prop);
+                objCloned._layer = self;
                 self._gameObjects.add(objCloned);
             });
         },
@@ -291,13 +301,21 @@
         type:'scene',
         layerProps:[],
         _layers:null,
+        _allGameObjects:null,
+        __onResourcesReady: function(){
+            var self = this;
+            self._allGameObjects = new ve.collections.List();
+            self._layers.forEach(function(l){
+                self._allGameObjects.addAll(l._gameObjects);
+            });
+        },
         construct: function(){
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
                 var l = ve_local.bundle.layerList.find({id: prop.protoId});
                 var lCloned = l.clone(ve.models.Layer);
-                lCloned.fromJsonObject(prop);
+                lCloned.fromJSON(prop);
                 lCloned._scene = self;
                 self._layers.add(lCloned);
             });
@@ -308,12 +326,19 @@
                 dataSet.combine(l.getAllSpriteSheets());
             });
             return dataSet;
+        },
+        getAllGameObjects:function(){
+            return this._allGameObjects;
         }
     });
 
 
     models.Font = models.BaseModel.extend({
-        type:'font'
+        type:'font',
+        fontColor:'black',
+        fontSize:12,
+        fontFamily:'Monospace',
+        fontContext:null
     });
 
     models.CommonBehaviour = models.BaseModel.extend({
@@ -340,6 +365,11 @@
         this.add = function (r) {
             self.rs.push(r);
         };
+        this.addAll = function (list) {
+            list.forEach(function(itm){
+                self.rs.push(itm);
+            });
+        };
         this.get = function(index){
             return self.rs[index];
         };
@@ -357,7 +387,7 @@
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(self.rs[i],i);
+                callback(self.rs[i],i);
             }
         };
         this.forEachReversed = function(callback){
@@ -368,8 +398,9 @@
         this.some = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
                 var res = callback(self.rs[i],i);
-                if (res) break;
+                if (res) return true;
             }
+            return false;
         };
         this.someReversed = function(callback){
             for (var i = this.rs.length-1;i>=0;i--){
@@ -472,7 +503,7 @@
             if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
             var BehaviourClass = script();
             model._behaviour = new BehaviourClass();
-            model._behaviour.toJsonArr().forEach(function(itm){
+            model._behaviour.toJSON_Array().forEach(function(itm){
                 model[itm.key]=itm.value;
             });
             model._behaviour.onCreate.apply(model);
@@ -499,6 +530,7 @@
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
                 applyIndividualBehaviour(scene);
+                scene.__onResourcesReady();
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
                         applyCommonBehaviour(gameObject);
@@ -628,7 +660,7 @@ window.app.
                     if (resp.type=='create') {
                         obj.id = resp.r.id;
                         s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
-                        s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJsonObj());
+                        s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
                     }
                     uiHelper.closeDialog();
                 }
@@ -645,9 +677,9 @@ window.app.
         editData,
         resourceDao,
         uiHelper,
+        chrome,
         i18n,
         utils) {
-
 
         var s = $scope;
         s.editData = editData;
@@ -655,7 +687,90 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        s.fontSample = 'test this font!';
 
+        var getFontContext = function(arrFromTo, strFont, w) {
+            function getFontHeight(strFont) {
+                var parent = document.createElement("span");
+                parent.appendChild(document.createTextNode("height!ДдЙЇ"));
+                document.body.appendChild(parent);
+                parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
+                var height = parent.offsetHeight;
+                document.body.removeChild(parent);
+                return height;
+            }
+            var cnv = document.createElement('canvas');
+            var ctx = cnv.getContext('2d');
+            ctx.font = strFont;
+            var textHeight = getFontHeight(strFont);
+            var symbols = {};
+            var currX = 0, currY = 0, cnvHeight = textHeight;
+            for (var k = 0; k < arrFromTo.length; k++) {
+                var arrFromToCurr = arrFromTo[k];
+                for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
+                    var currentChar = String.fromCharCode(i);
+                    //if (currentChar == '\\' || currentChar == '\'') {
+                    //    currentChar = '\\' + currentChar
+                    //}
+                    ctx = cnv.getContext('2d');
+                    var textWidth = ctx.measureText(currentChar).width;
+                    if (textWidth == 0) continue;
+                    if (currX + textWidth > w) {
+                        currX = 0;
+                        currY += textHeight;
+                        cnvHeight = currY + textHeight;
+                    }
+                    var symbol = {};
+                    symbol.x = ~~currX;
+                    symbol.y = ~~currY;
+                    symbol.width = ~~textWidth;
+                    symbol.height = textHeight;
+                    symbols[currentChar] = symbol;
+                    currX += textWidth;
+                }
+            }
+            return {symbols: symbols, width: w, height: cnvHeight};
+        };
+
+
+        var getFontImage = function(symbolsContext,strFont,color){
+            var cnv = document.createElement('canvas');
+            cnv.width = symbolsContext.width;
+            cnv.height = symbolsContext.height;
+            var ctx = cnv.getContext('2d');
+            ctx.font = strFont;
+            ctx.fillStyle = color;
+            ctx.textBaseline = "top";
+            var symbols = symbolsContext.symbols;
+            for (var symbol in symbols) {
+                if (!symbols.hasOwnProperty(symbol)) continue;
+                ctx.fillText(symbol, symbols[symbol].x, symbols[symbol].y);
+            }
+            return cnv.toDataURL();
+        };
+
+        s.createOrEditFont = function(font){
+            var model = {};
+            model.font = font.toJSON();
+            model.strFont = font.fontSize +'px'+' '+font.fontFamily;
+            model.font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], model.strFont, 320);
+            var image = utils.dataURItoBlob(getFontImage(model.font.fontContext,model.strFont,model.font.fontColor));
+            var formData = new FormData();
+            formData.append('model',JSON.stringify(model));
+            formData.append('file',image);
+            resourceDao.postMultiPart('/editFont',formData,function(){
+                uiHelper.closeDialog();
+            });
+        };
+
+        (function(){
+            s.fontList = sessionStorage.fontList;
+            if (s.fontList) return;
+            chrome.requestToApi({method:'getFontList'},function(list){
+                s.fontList = list;
+                s.$apply();
+            })
+        })();
 
     });
 window.app.
@@ -981,7 +1096,7 @@ window.app.
                 },
                 function(resp){
                     var newGameObj = obj.clone(ve.models.GameObject);
-                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
+                    newGameObj.fromJSON({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
                     editData.currLayerInEdit._gameObjects.add(newGameObj);
                     editData.currSceneGameObjectInEdit = newGameObj;
                 });
@@ -1003,7 +1118,7 @@ window.app.
                             id:obj.id
                         }
                     );
-                    obj.fromJsonObject({posX:e.x,posY:e.y});
+                    obj.fromJSON({posX:e.x,posY:e.y});
                     editData.currSceneGameObjectInEdit = obj;
                     break;
             }
@@ -1293,6 +1408,28 @@ app.directive('appValidator', function($parse) {
         }
     };
 });
+window.app.
+
+service('chrome',function(){
+    var events = {};
+    window.addEventListener('message',function(resp){
+        var data = resp.data && resp.data.response;
+        if (!data) return;
+        var id = resp.data.eventUUID;
+        if (events[id]) {
+            var fn = events[id];
+            delete events[id];
+            fn && data && fn(data);
+        }
+    });
+    this.requestToApi = function(params,callBack) {
+        var eventUUID = (~~Math.random()*100)+new Date().getTime();
+        events[eventUUID] = callBack;
+        params.eventUUID = eventUUID;
+        window.top.postMessage(params,'*');
+    };
+    return this;
+});
 'use strict';
 
 window.app
@@ -1366,7 +1503,11 @@ window.app
                 from:'from',
                 to:'to',
                 fonts:'fonts',
-                commonBehaviour:'common behaviour'
+                commonBehaviour:'common behaviour',
+                groupName:'group name',
+                selectFont:'select font',
+                fontSize:'font size',
+                fontColor:'font color'
             }
         };
 
@@ -1461,7 +1602,7 @@ app
             var formData = new FormData();
             formData.append('file',currResourceInEdit._file);
             var model = {};
-            currResourceInEdit.toJsonArr().forEach(function(item){
+            currResourceInEdit.toJSON_Array().forEach(function(item){
                 model[item.key] = item.value;
             });
             formData.append('model',JSON.stringify(model));
@@ -1520,6 +1661,28 @@ app
                 data: formData,
                 headers: {'Content-Type': undefined}
             })
+        };
+        this.post = function(url,data,callBack){
+            $http({
+                url: '/gameProps/save',
+                method: "POST",
+                data: data,
+                headers: {'Content-Type': undefined}
+            }).
+                success(function (resp) {
+                    callBack && callBack(resp);
+                });
+        };
+        this.postMultiPart = function(url,formData,callBack){
+            $http({
+                url: url,
+                method: "POST",
+                data: formData,
+                headers: {'Content-Type': undefined}
+            }).
+            success(function (resp) {
+                callBack && callBack(resp);
+            });
         };
         this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
             var op = object.id?'edit':'create';
@@ -1693,6 +1856,27 @@ window.app
                 res.push(i);
             }
             return res;
+        };
+
+
+        this.dataURItoBlob =function (dataURI) {
+            // convert base64/URLEncoded data component to raw binary data held in a string
+            var byteString;
+            if (dataURI.split(',')[0].indexOf('base64') >= 0)
+                byteString = atob(dataURI.split(',')[1]);
+            else
+                byteString = unescape(dataURI.split(',')[1]);
+
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            return new Blob([ia], {type:mimeString});
         };
 
         return this;

@@ -59,7 +59,8 @@ var addStaticFiles = function(sourceMain){
         'resources/generatorResources/static/modules/keyboard.js',
         'resources/generatorResources/static/modules/mouse.js',
         'resources/generatorResources/static/modules/math.js',
-        'resources/generatorResources/static/modules/physics.js'
+        'resources/generatorResources/static/modules/physics.js',
+        'resources/generatorResources/static/modules/collider.js'
     ]);
 };
 

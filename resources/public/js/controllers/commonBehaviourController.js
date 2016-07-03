@@ -25,7 +25,7 @@ window.app.
                     if (resp.type=='create') {
                         obj.id = resp.r.id;
                         s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
-                        s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJsonObj());
+                        s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
                     }
                     uiHelper.closeDialog();
                 }

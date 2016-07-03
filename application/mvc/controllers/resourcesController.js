@@ -42,10 +42,20 @@ var uuid = function() {
     };
 }();
 
-var processUploadedFile = function(item,pathToUploadedFile){
+var getFileExtension = function(path) {
+    var arr = path.split('.');
+    if (!arr.length || arr.length==1) return '';
+    return arr.pop()||'';
+};
+
+var processUploadedFile = function(item,pathToUploadedFile,forcedFileExtension){
     if (!pathToUploadedFile) return;
-    var fileExtension = pathToUploadedFile.split('.').pop()||'';
+    console.log('processing file',pathToUploadedFile);
+    var fileExtension = getFileExtension(pathToUploadedFile);
+    console.log('fileExtension',fileExtension);
     var resourcePath = 'resources/'+item.type+'/'+item.name+(fileExtension?'.'+fileExtension:'');
+    if (!fileExtension && forcedFileExtension) resourcePath+='.'+forcedFileExtension;
+    console.log('resourcePath',resourcePath);
     fs.copyFileSync(pathToUploadedFile,'workspace/project/'+resourcePath);
     fs.deleteFileSync(pathToUploadedFile);
     item.resourcePath = resourcePath;
@@ -174,6 +184,13 @@ module.exports.createFile = function(name,path,content) {
 
 module.exports.readFile = function(name,path) {
     return fs.readFileSync('workspace/project/resources/'+path+'/'+name);
+};
+
+
+module.exports.editFont = function(model,pathToUploadedFile) {
+    writeResource(model.font,"workspace/project/resources/font/"+ model.font.name+'.json');
+    processUploadedFile(model.font,pathToUploadedFile,'png');
+    return {};
 };
 
 module.exports.readResource = readResource;

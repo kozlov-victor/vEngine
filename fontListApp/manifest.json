@@ -1,0 +1,32 @@
+{
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "*://*/"
+      ]
+    }
+  ],
+  "offline_enabled": true,
+  "name": "FontList",
+  "icons": {
+    "512": "icon.png"
+  },
+  "description": "FontList",
+  "manifest_version": 2,
+  "version": "1.0.3.5",
+  "permissions": [
+    "*://*/*",
+    "<all_urls>",
+    "fontSettings"
+  ]
+}

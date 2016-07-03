@@ -8,6 +8,11 @@
         this.add = function (r) {
             self.rs.push(r);
         };
+        this.addAll = function (list) {
+            list.forEach(function(itm){
+                self.rs.push(itm);
+            });
+        };
         this.get = function(index){
             return self.rs[index];
         };
@@ -25,7 +30,7 @@
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(self.rs[i],i);
+                callback(self.rs[i],i);
             }
         };
         this.forEachReversed = function(callback){
@@ -36,8 +41,9 @@
         this.some = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
                 var res = callback(self.rs[i],i);
-                if (res) break;
+                if (res) return true;
             }
+            return false;
         };
         this.someReversed = function(callback){
             for (var i = this.rs.length-1;i>=0;i--){

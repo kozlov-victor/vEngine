@@ -90,6 +90,11 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         this.add = function (r) {
             self.rs.push(r);
         };
+        this.addAll = function (list) {
+            list.forEach(function(itm){
+                self.rs.push(itm);
+            });
+        };
         this.get = function(index){
             return self.rs[index];
         };
@@ -107,7 +112,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         };
         this.forEach = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
-               callback(self.rs[i],i);
+                callback(self.rs[i],i);
             }
         };
         this.forEachReversed = function(callback){
@@ -118,8 +123,9 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         this.some = function(callback){
             for (var i = 0,l=this.rs.length;i<l;i++){
                 var res = callback(self.rs[i],i);
-                if (res) break;
+                if (res) return true;
             }
+            return false;
         };
         this.someReversed = function(callback){
             for (var i = this.rs.length-1;i>=0;i--){
@@ -198,7 +204,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         id:null,
         protoId:null,
         name:'',
-        toJsonObj: function(){
+        toJSON: function(){
             var res = {};
             for (var key in this) {
                 if (isPropNotFit(this,key)) continue;
@@ -206,7 +212,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             }
             return res;
         },
-        toJsonArr: function(){
+        toJSON_Array: function(){
             var res = [];
             for (var key in this) {
                 if (isPropNotFit(this,key)) continue;
@@ -214,7 +220,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             }
             return res;
         },
-        fromJsonObject:function(jsonObj){
+        fromJSON:function(jsonObj){
             var self = this;
             Object.keys(jsonObj).forEach(function(key){
                 if (key in self) {
@@ -224,25 +230,24 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             });
         },
         clone: function(){
-            return new this.constructor(this.toJsonObj());
+            return new this.constructor(this.toJSON());
         },
-        on: function(eventName,callBackOrEvt){
+        on: function(eventName,callBack){
             var self = this;
-            if (callBackOrEvt.apply) {
-                self.__events__[eventName] = self.__events__[eventName] || [];
-                self.__events__[eventName].push(callBackOrEvt);
-            } else {
-                var es = self.__events__[eventName];
-                if (!es) return;
-                es.forEach(function(e){
-                    e(callBackOrEvt);
-                });
-            }
-
+            self.__events__[eventName] = self.__events__[eventName] || [];
+            self.__events__[eventName].push(callBack);
+        },
+        trigger: function(eventName,data){
+            var self = this;
+            var es = self.__events__[eventName];
+            if (!es) return;
+            es.forEach(function(e){
+                e(data);
+            });
         },
         _init:function(){
             this.__events__ = {};
-            arguments && arguments[0] && this.fromJsonObject(arguments[0]);
+            arguments && arguments[0] && this.fromJSON(arguments[0]);
         }
     });
 
@@ -281,6 +286,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
 
     models.GameObject = models.BaseModel.extend({
         type:'gameObject',
+        groupName:'',
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
@@ -316,6 +322,10 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
         },
+        kill: function(){
+            this._layer._gameObjects.remove({id:this.id});
+            this._layer._scene._allGameObjects.remove({id:this.id});
+        },
         getScene: function(){
             return this._layer._scene;
         },
@@ -334,8 +344,9 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             this._currFrameAnimation && this._currFrameAnimation.update(time);
             var deltaX = this.velX * delta / 1000;
             var deltaY = this.velY * delta / 1000;
-            this.posX+=deltaX;
-            this.posY+=deltaY;
+            var posX = this.posX+deltaX;
+            var posY = this.posY+deltaY;
+            ve_local.collider.check(this,posX,posY);
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
@@ -386,7 +397,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             this.gameObjectProps.forEach(function(prop){
                 var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
                 var objCloned = obj.clone(ve.models.GameObject);
-                objCloned.fromJsonObject(prop);
+                objCloned.fromJSON(prop);
                 objCloned._layer = self;
                 self._gameObjects.add(objCloned);
             });
@@ -404,13 +415,21 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         type:'scene',
         layerProps:[],
         _layers:null,
+        _allGameObjects:null,
+        __onResourcesReady: function(){
+            var self = this;
+            self._allGameObjects = new ve.collections.List();
+            self._layers.forEach(function(l){
+                self._allGameObjects.addAll(l._gameObjects);
+            });
+        },
         construct: function(){
             var self = this;
             self._layers = new ve.collections.List();
             this.layerProps.forEach(function(prop){
                 var l = ve_local.bundle.layerList.find({id: prop.protoId});
                 var lCloned = l.clone(ve.models.Layer);
-                lCloned.fromJsonObject(prop);
+                lCloned.fromJSON(prop);
                 lCloned._scene = self;
                 self._layers.add(lCloned);
             });
@@ -421,6 +440,9 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
                 dataSet.combine(l.getAllSpriteSheets());
             });
             return dataSet;
+        },
+        getAllGameObjects:function(){
+            return this._allGameObjects;
         }
     });
 
@@ -482,7 +504,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
             if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
             var BehaviourClass = script();
             model._behaviour = new BehaviourClass();
-            model._behaviour.toJsonArr().forEach(function(itm){
+            model._behaviour.toJSON_Array().forEach(function(itm){
                 model[itm.key]=itm.value;
             });
             model._behaviour.onCreate.apply(model);
@@ -509,6 +531,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","gameObject","
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
                 applyIndividualBehaviour(scene);
+                scene.__onResourcesReady();
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
                         applyCommonBehaviour(gameObject);
@@ -608,6 +631,7 @@ ve_local.CanvasRenderer = function(){
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
+                if (!obj) return;
                 obj.__updateCommonBehaviour__();
                 obj.__updateIndividualBehaviour__(deltaTime);
                 obj.update(currTime,deltaTime);
@@ -618,6 +642,7 @@ ve_local.CanvasRenderer = function(){
     };
     this.setScene = function(_scene){
         scene = _scene;
+        ve_local.collider.setUp();
     };
 
     drawScene();
@@ -776,7 +801,7 @@ ve_local.SceneManager = function(){
                     if (
                         ve.Math.isPointInRect(point,g.getRect())
                     ) {
-                        g.on('click',{
+                        g.trigger('click',{
                             screenX:point.x,
                             screenY:point.Y,
                             objectX:point.x- g.posX,
@@ -792,7 +817,7 @@ ve_local.SceneManager = function(){
 
         var resolveMouseMove = function(e){
             var scene = ve.sceneManager.getCurrScene();
-            scene.on('mouseMove',{
+            scene.trigger('mouseMove',{
                 screenX: e.clientX,
                 screenY: e.clientY
             });
@@ -817,7 +842,16 @@ ve_local.SceneManager = function(){
                 point.x<(rect.x+rect.width) &&
                 point.y>rect.y &&
                 point.y<(rect.y+rect.height);
-    }
+    };
+
+    ns.isRectIntersectRect = function(r1,r2) {
+        var res =  ! ( r2.x > (r1.x+r1.width)
+            || (r2.x+r2.width) < r1.x
+            || r2.y > (r1.y+r1.height)
+            || (r2.y+r2.height) < r1.y
+        );
+        return res;
+    };
 
 })();
 
@@ -987,6 +1021,40 @@ ve_local.SceneManager = function(){
 
 })();
 
+
+(function(){
+
+    ve_local.Collider = function(){
+
+        var gos;
+
+        this.setUp = function(){
+            var scene = ve.sceneManager.getCurrScene();
+            gos = scene.getAllGameObjects();
+        };
+
+        this.check = function(obj,newX,newY){
+            var res = gos.some(function(go){
+                if (obj==go) return;
+                var objRect = obj.getRect();
+                objRect.x = newX;
+                objRect.y = newY;
+                if (ve.Math.isRectIntersectRect(objRect,go.getRect())) {
+                    res = true;
+                    obj.trigger('collide',go);
+                    return true;
+                }
+            });
+            if (!res) {
+                obj.posX = newX;
+                obj.posY = newY;
+            }
+            return res;
+        };
+
+    };
+
+})();
 ve.commonBehaviour.control4dir = 
 Class.extend(
     {
@@ -1183,6 +1251,20 @@ Class.extend(
         description:'allow character to walk up, down, left and right'
     }
 );
+(function(){
+
+    window.onerror = function(e){
+        window.top.postMessage(e,'*');
+        ve_local.renderer && ve_local.renderer.cancel();
+    };
+
+    window.debug = {};
+    window.debug.error = function(err){
+        window.top.postMessage({err:err},'*');
+        throw err;
+    };
+
+})();
 
 (function(){
 
@@ -1452,6 +1534,50 @@ Class.extend(
         "type": "frameAnimation",
         "duration": 600,
         "id": "5828_3587_6"
+    },
+    {
+        "name": "left",
+        "frames": [
+            12,
+            13,
+            14
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "3975_9138_141"
+    },
+    {
+        "name": "right",
+        "frames": [
+            24,
+            25,
+            26
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "1018_3675_142"
+    },
+    {
+        "name": "up",
+        "frames": [
+            36,
+            37,
+            38
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "9216_1203_143"
+    },
+    {
+        "name": "down",
+        "frames": [
+            0,
+            1,
+            2
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "8747_6072_144"
     }
 ],
         gameObject: [
@@ -1491,7 +1617,8 @@ Class.extend(
                 "parameters": {},
                 "id": "2635_8746_13"
             }
-        ]
+        ],
+        "groupName": "robot"
     },
     {
         "spriteSheetId": "2116_8350_0",
@@ -1529,7 +1656,41 @@ Class.extend(
             "5828_3587_6"
         ],
         "id": "9252_7967_1",
-        "currFrameIndex": 5
+        "currFrameIndex": 5,
+        "groupName": "man"
+    },
+    {
+        "spriteSheetId": "2116_8350_0",
+        "width": 33,
+        "height": 35,
+        "name": "man",
+        "type": "gameObject",
+        "commonBehaviour": [
+            {
+                "name": "move4dir",
+                "parameters": {
+                    "velocity": 100,
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "",
+                    "idleRightAnimation": "",
+                    "idleUpAnimation": "",
+                    "idleDownAnimation": ""
+                },
+                "id": "5226_4551_145",
+                "type": "commonBehaviour"
+            }
+        ],
+        "frameAnimationIds": [
+            "3975_9138_141",
+            "1018_3675_142",
+            "9216_1203_143",
+            "8747_6072_144"
+        ],
+        "id": "1414_8788_140",
+        "groupName": "man"
     }
 ],
         scene: [
@@ -1571,17 +1732,59 @@ Class.extend(
         "gameObjectProps": [
             {
                 "type": "gameObject",
-                "posX": 173,
-                "posY": 101,
+                "posX": 171,
+                "posY": 153,
                 "protoId": "2701_0003_9",
                 "id": "9314_9085_11"
             },
             {
                 "type": "gameObject",
-                "posX": 140,
-                "posY": 212,
+                "posX": 39,
+                "posY": 146,
                 "protoId": "9252_7967_1",
                 "id": "1517_9636_12"
+            },
+            {
+                "type": "gameObject",
+                "posX": 65,
+                "posY": 45,
+                "protoId": "9252_7967_1",
+                "id": "9207_6527_44"
+            },
+            {
+                "type": "gameObject",
+                "posX": 175,
+                "posY": 34,
+                "protoId": "9252_7967_1",
+                "id": "7136_3927_45"
+            },
+            {
+                "type": "gameObject",
+                "posX": 334,
+                "posY": 34,
+                "protoId": "9252_7967_1",
+                "id": "2348_0356_46"
+            },
+            {
+                "type": "gameObject",
+                "posX": 284,
+                "posY": 88,
+                "protoId": "1414_8788_140",
+                "id": "2619_0203_146"
+            },
+            {
+                "type": "gameObject",
+                "posX": 47,
+                "posY": 225,
+                "protoId": "1414_8788_140",
+                "id": "2228_2702_147"
+            },
+            {
+                "type": "gameObject",
+                "posX": 321,
+                "posY": 234,
+                "protoId": "1414_8788_140",
+                "id": "4786_4707_148"
             }
         ],
         "id": "7353_5206_5"
@@ -1754,6 +1957,47 @@ Class.extend(
         return clazz;
     };
     
+    ve_local.scripts.gameObject['man.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+        var self = this;
+        setInterval(function(){
+            var dirNumber = ~~(Math.random()*4);
+            var dir = 'Left';
+            switch (dirNumber) {
+                case 0:
+                    dir = 'Right';
+                    break;
+                case 1:
+                    dir = 'Up';
+                    break;
+                case 2:
+                    dir = 'Down';
+                    break;
+
+                default:
+                    break;
+            }
+            self.go(dir);
+        },1000);
+
+    },
+
+    onUpdate: function(time) {
+        var self = this;
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
     ve_local.scripts.gameObject['q.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
@@ -1782,6 +2026,9 @@ Class.extend(
         var self = this;
         self.on('click',function(){
             console.log('click robot');
+        });
+        self.on('collide',function(obj){
+            obj.kill();
         });
     },
 
@@ -1971,11 +2218,16 @@ Class.extend(
 
     ve_local.renderer = new ve_local.CanvasRenderer();
     ve.sceneManager = new ve_local.SceneManager();
+    ve_local.collider = new ve_local.Collider();
     ve.keyboard = new ve_local.Keyboard();
     ve_local.bundle.prepareGameObjectScripts();
 
 
     window.addEventListener('load',function(){
+        document.body.ontouchstart = function(e){
+            e.preventDefault();
+            return false;
+        };
         ve_local.renderer.init();
         ve.mouse = new ve_local.Mouse(ve_local.renderer.getCanvas());
         ve.sceneManager.setScene(ve_local.bundle.sceneList.get(0));

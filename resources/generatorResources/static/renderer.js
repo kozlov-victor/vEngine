@@ -55,6 +55,7 @@ ve_local.CanvasRenderer = function(){
         ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
+                if (!obj) return;
                 obj.__updateCommonBehaviour__();
                 obj.__updateIndividualBehaviour__(deltaTime);
                 obj.update(currTime,deltaTime);
@@ -65,6 +66,7 @@ ve_local.CanvasRenderer = function(){
     };
     this.setScene = function(_scene){
         scene = _scene;
+        ve_local.collider.setUp();
     };
 
     drawScene();

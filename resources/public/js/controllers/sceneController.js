@@ -84,7 +84,7 @@ window.app.
                 },
                 function(resp){
                     var newGameObj = obj.clone(ve.models.GameObject);
-                    newGameObj.fromJsonObject({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
+                    newGameObj.fromJSON({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
                     editData.currLayerInEdit._gameObjects.add(newGameObj);
                     editData.currSceneGameObjectInEdit = newGameObj;
                 });
@@ -106,7 +106,7 @@ window.app.
                             id:obj.id
                         }
                     );
-                    obj.fromJsonObject({posX:e.x,posY:e.y});
+                    obj.fromJSON({posX:e.x,posY:e.y});
                     editData.currSceneGameObjectInEdit = obj;
                     break;
             }

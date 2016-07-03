@@ -37,7 +37,7 @@
             if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
             var BehaviourClass = script();
             model._behaviour = new BehaviourClass();
-            model._behaviour.toJsonArr().forEach(function(itm){
+            model._behaviour.toJSON_Array().forEach(function(itm){
                 model[itm.key]=itm.value;
             });
             model._behaviour.onCreate.apply(model);
@@ -64,6 +64,7 @@
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
                 applyIndividualBehaviour(scene);
+                scene.__onResourcesReady();
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
                         applyCommonBehaviour(gameObject);

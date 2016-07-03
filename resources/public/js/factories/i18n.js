@@ -46,7 +46,11 @@ window.app
                 from:'from',
                 to:'to',
                 fonts:'fonts',
-                commonBehaviour:'common behaviour'
+                commonBehaviour:'common behaviour',
+                groupName:'group name',
+                selectFont:'select font',
+                fontSize:'font size',
+                fontColor:'font color'
             }
         };
 

@@ -33,11 +33,16 @@
 
     ve_local.renderer = new ve_local.CanvasRenderer();
     ve.sceneManager = new ve_local.SceneManager();
+    ve_local.collider = new ve_local.Collider();
     ve.keyboard = new ve_local.Keyboard();
     ve_local.bundle.prepareGameObjectScripts();
 
 
     window.addEventListener('load',function(){
+        document.body.ontouchstart = function(e){
+            e.preventDefault();
+            return false;
+        };
         ve_local.renderer.init();
         ve.mouse = new ve_local.Mouse(ve_local.renderer.getCanvas());
         ve.sceneManager.setScene(ve_local.bundle.sceneList.get(0));

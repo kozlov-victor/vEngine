@@ -40,7 +40,7 @@
                     if (
                         ve.Math.isPointInRect(point,g.getRect())
                     ) {
-                        g.on('click',{
+                        g.trigger('click',{
                             screenX:point.x,
                             screenY:point.Y,
                             objectX:point.x- g.posX,
@@ -56,7 +56,7 @@
 
         var resolveMouseMove = function(e){
             var scene = ve.sceneManager.getCurrScene();
-            scene.on('mouseMove',{
+            scene.trigger('mouseMove',{
                 screenX: e.clientX,
                 screenY: e.clientY
             });
