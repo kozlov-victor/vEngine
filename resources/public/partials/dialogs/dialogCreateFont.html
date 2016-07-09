@@ -5,7 +5,7 @@
         </td>
         <td>
             <select required ng-model="editData.currFontInEdit.fontFamily" class="width100">
-                <option value="{{fnt.displayName}}" ng-repeat="fnt in fontList">
+                <option value="{{fnt.displayName}}" ng-repeat="fnt in editData.systemFontList">
                     {{fnt.displayName}}
                 </option>
             </select>

@@ -9,6 +9,7 @@
         this.layerList = new ve.collections.List();
         this.sceneList = new ve.collections.List();
         this.layerList = new ve.collections.List();
+        this.fontList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -19,14 +20,10 @@
             });
         };
 
-        var capitalize = function(s){
-            return s.substr(0,1).toUpperCase() +
-                s.substr(1);
-        };
 
         this.prepare = function(){
             ve_local.RESOURCE_NAMES.forEach(function(itm){
-                toDataSource(ve.models[capitalize(itm)],data[itm],self[itm+'List']);
+                toDataSource(ve.models[ve.utils.capitalize(itm)],data[itm],self[itm+'List']);
             });
             self.gameProps = data.gameProps;
             data = null;
@@ -48,6 +45,7 @@
 
         var applyCommonBehaviour = function(model){
             var cbList = [];
+            if (!model._commonBehaviour) return;
             model._commonBehaviour.forEach(function(cb){
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);

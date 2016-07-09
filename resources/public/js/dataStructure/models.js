@@ -93,20 +93,24 @@
         }
     });
 
-    models.GameObject = models.BaseModel.extend({
-        type:'gameObject',
+    models.BaseGameObject = models.BaseModel.extend({
+        type:'baseGameObject',
         groupName:'',
+        posX:0,
+        posY:0,
+        width:0,
+        height:0
+    });
+
+    models.GameObject = models.BaseGameObject.extend({
+        type:'gameObject',
         spriteSheetId:null,
         _spriteSheet:null,
         _behaviour:null,
         commonBehaviour:[],
         _commonBehaviour:null,
-        posX:0,
-        posY:0,
         velX:0,
         velY:0,
-        width:0,
-        height:0,
         currFrameIndex:0,
         _sprPosX:0,
         _sprPosY:0,
@@ -180,10 +184,6 @@
             this._gameObject._currFrameAnimation = null;
             this._startTime = null;
         },
-
-        //delta sec = x frame
-        //duration sec = l - 1 frame
-
         update: function(time){
             if (!this._startTime) this._startTime = time;
             var delta = (time - this._startTime)%this.duration;
@@ -200,13 +200,21 @@
         gameObjectProps:[],
         _gameObjects:null,
         _scene:null,
-        construct: function(){
+        construct: function() {
             var self = this;
             self._gameObjects = new ve.collections.List();
             this.gameObjectProps.forEach(function(prop){
-                var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
-                var objCloned = obj.clone(ve.models.GameObject);
-                objCloned.fromJSON(prop);
+                var objCloned;
+                switch (prop.subType) {
+                    case 'textField':
+                        objCloned = new ve.models.TextField(prop);
+                        break;
+                    default:
+                        var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
+                        objCloned = obj.clone();
+                        objCloned.fromJSON(prop);
+                        break;
+                }
                 objCloned._layer = self;
                 self._gameObjects.add(objCloned);
             });
@@ -255,13 +263,36 @@
         }
     });
 
-
     models.Font = models.BaseModel.extend({
         type:'font',
         fontColor:'black',
         fontSize:12,
         fontFamily:'Monospace',
+        resourcePath:'',
         fontContext:null
+    });
+
+    models.TextField = models.BaseGameObject.extend({
+        type:'userInterface',
+        subType:'textField',
+        _chars:null,
+        _text:'',
+        _font:null,
+        setText: function(text) {
+            this._chars = [];
+            this._text = text;
+            this.width = 0;
+            for (var i= 0,max=text.length;i<max;i++) {
+                this._chars.push(text[i]);
+                var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
+                this.width+=currSymbolInFont.width;
+            }
+        },
+        construct: function(){
+            this._font = ve_local.bundle.fontList.find({name:'default'});
+            this.setText(this._text||this.subType);
+            this.height = this._font.fontContext.symbols[' '].height;
+        }
     });
 
     models.CommonBehaviour = models.BaseModel.extend({

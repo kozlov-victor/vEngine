@@ -3,7 +3,7 @@ var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');
 
 module.exports.RESOURCE_NAMES =
-    'audio,spriteSheet,frameAnimation,gameObject,layer,scene'
+    'audio,spriteSheet,frameAnimation,font,gameObject,layer,scene'
     .split(',');
 
 module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/static/defaultCodeScript.js');
@@ -48,13 +48,13 @@ var getFileExtension = function(path) {
     return arr.pop()||'';
 };
 
-var processUploadedFile = function(item,pathToUploadedFile,forcedFileExtension){
+var processUploadedFile = function(item,pathToUploadedFile){
     if (!pathToUploadedFile) return;
     console.log('processing file',pathToUploadedFile);
     var fileExtension = getFileExtension(pathToUploadedFile);
     console.log('fileExtension',fileExtension);
     var resourcePath = 'resources/'+item.type+'/'+item.name+(fileExtension?'.'+fileExtension:'');
-    if (!fileExtension && forcedFileExtension) resourcePath+='.'+forcedFileExtension;
+    if (!fileExtension) resourcePath+='.'+'png';
     console.log('resourcePath',resourcePath);
     fs.copyFileSync(pathToUploadedFile,'workspace/project/'+resourcePath);
     fs.deleteFileSync(pathToUploadedFile);
@@ -188,8 +188,8 @@ module.exports.readFile = function(name,path) {
 
 
 module.exports.editFont = function(model,pathToUploadedFile) {
-    writeResource(model.font,"workspace/project/resources/font/"+ model.font.name+'.json');
     processUploadedFile(model.font,pathToUploadedFile,'png');
+    writeResource(model.font,"workspace/project/resources/font/"+ model.font.name+'.json');
     return {};
 };
 

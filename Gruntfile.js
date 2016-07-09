@@ -8,9 +8,7 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                     'resources/public/js/lib/oop.js',
-                    'resources/public/js/dataStructure/models.js',
-                    'resources/public/js/dataStructure/collections.js',
-                    'resources/public/js/dataStructure/bundle.js',
+                    'resources/public/js/dataStructure/*.js',
                     'resources/public/js/controllers/*.js',
                     'resources/public/js/directives/*.js',
                     'resources/public/js/factories/*.js',

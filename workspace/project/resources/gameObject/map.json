@@ -109,5 +109,15 @@
         ],
         "id": "1414_8788_140",
         "groupName": "man"
+    },
+    {
+        "spriteSheetId": "3881_6862_16",
+        "width": 64,
+        "height": 64,
+        "name": "globus",
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "id": "4402_7102_4"
     }
 ]

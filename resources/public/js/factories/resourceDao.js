@@ -26,6 +26,7 @@ app
                     response.commonBehaviour.forEach(function(cb){
                         editData.commonBehaviourList.add(new ve.models.CommonBehaviour(cb));
                     });
+                    editData.userInterfaceList.add(new ve.models.TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });

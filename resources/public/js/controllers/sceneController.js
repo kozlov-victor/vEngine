@@ -71,50 +71,48 @@ window.app.
            }
         };
 
-        var _addNewGameObject = function(obj,x,y){
+        var _addOrEditGameObject = function(obj,x,y,idKey,idVal){
+            var editDataObj = obj.toJSON();
+            editDataObj.posX = x;
+            editDataObj.posY = y;
+            editDataObj[idKey]=idVal;
             resourceDao.createOrEditObjectInResource(
                 editData.currLayerInEdit.type,
                 editData.currLayerInEdit.protoId,
-                'gameObjectProps',
-                {
-                    type:'gameObject',
-                    posX:x,
-                    posY:y,
-                    protoId:obj.id
-                },
+                'gameObjectProps',editDataObj,
                 function(resp){
-                    var newGameObj = obj.clone(ve.models.GameObject);
-                    newGameObj.fromJSON({posX:x,posY:y,protoId:newGameObj.id,id:resp.r.id});
-                    editData.currLayerInEdit._gameObjects.add(newGameObj);
-                    editData.currSceneGameObjectInEdit = newGameObj;
+                    if (resp.type=='create') {
+                        var newGameObj = obj.clone(ve.models.GameObject);
+                        newGameObj.posX = x;
+                        newGameObj.posY = y;
+                        newGameObj.protoId = newGameObj.id;
+                        newGameObj.id = resp.r.id;
+                        editData.currLayerInEdit._gameObjects.add(newGameObj);
+                        editData.currSceneGameObjectInEdit = newGameObj;
+                    } else {
+                        obj.fromJSON({posX:x,posY:y});
+                        editData.currSceneGameObjectInEdit = obj;
+                    }
                 });
         };
 
-        s.onGameObjectDropped = function(obj,draggable,e) {
 
+        s.onGameObjectDropped = function(obj,draggable,e) {
             switch (draggable) {
-                case 'gameObjFromLeftPanel':
-                    _addNewGameObject(obj, e.x, e.y);
+                case 'gameObjectFromLeftPanel':
+                    _addOrEditGameObject(obj, e.x, e.y,'protoId',obj.id);
                     break;
-                case 'gameObjFromSelf':
-                    resourceDao.createOrEditObjectInResource(
-                        editData.currLayerInEdit.type,
-                        editData.currLayerInEdit.protoId,
-                        'gameObjectProps',{
-                            posX:e.x,
-                            posY:e.y,
-                            id:obj.id
-                        }
-                    );
-                    obj.fromJSON({posX:e.x,posY:e.y});
-                    editData.currSceneGameObjectInEdit = obj;
+                case 'gameObjectFromSelf':
+                    _addOrEditGameObject(obj, e.x, e.y,'id',obj.id);
                     break;
+                default:
+                    console.log('not supported',obj,draggable);
             }
         };
 
 
-        s.addGameObjectFromCtxMenu = function(gameObject,x,y){
-            _addNewGameObject(gameObject, x, y);
+        s.addGameObjectFromCtxMenu = function(obj,x,y){
+            _addOrEditGameObject(obj, x, y,'protoId',obj.id);
             uiHelper.closeContextMenu();
         }
 

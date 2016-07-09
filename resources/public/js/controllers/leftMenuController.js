@@ -86,6 +86,11 @@ window.app.
             uiHelper.showDialog('frmCreateFont');
         };
 
+        s.showEditFontDialog = function(font){
+            editData.currFontInEdit = font.clone();
+            uiHelper.showDialog('frmCreateFont');
+        };
+
         s.deleteLayer = function(scene,l){
             l._gameObjects.clear();
             scene._layers.remove({id: l.id});

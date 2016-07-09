@@ -101,14 +101,6 @@ module.exports.init = function(app) {
         );
     });
 
-    app.post('/editFont',multipart,function(req,res){
-        var model = JSON.parse(req.body.model);
-        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
-        console.log('pathToUploadedFile',pathToUploadedFile);
-        res.send(
-            resourcesController.editFont(model,pathToUploadedFile)
-        );
-    });
 
     app.get('/generate',function(req,res){
         var opts = {};

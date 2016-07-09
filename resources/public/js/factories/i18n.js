@@ -50,7 +50,9 @@ window.app
                 groupName:'group name',
                 selectFont:'select font',
                 fontSize:'font size',
-                fontColor:'font color'
+                fontColor:'font color',
+                userInterface:'user interface',
+                textField:'text field'
             }
         };
 

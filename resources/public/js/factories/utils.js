@@ -15,13 +15,13 @@ window.app
         this.getGameObjectCss = function(gameObj){
             if (!gameObj) return {};
             return {
-                'width':                 gameObj.width+'px',
-                'height':                gameObj.height+'px',
+                width:                 gameObj.width+'px',
+                height:                gameObj.height+'px',
                 // todo project name!
-                'background-image':      gameObj._spriteSheet && 'url('+'project/'+gameObj._spriteSheet.resourcePath+')',
-                'background-position-y': -gameObj._sprPosY+'px',
-                'background-position-x': -gameObj._sprPosX+'px',
-                'background-repeat':     'no-repeat'
+                backgroundImage:      gameObj._spriteSheet && 'url('+'project/'+gameObj._spriteSheet.resourcePath+')',
+                backgroundPositionY: -gameObj._sprPosY+'px',
+                backgroundPositionX: -gameObj._sprPosX+'px',
+                backgroundRepeat:     'no-repeat'
             }
         };
         this.merge = function(a,b){
@@ -37,6 +37,14 @@ window.app
             var res = [];
             for (var i=0;i<num;i++) {
                 res.push(i);
+            }
+            return res;
+        };
+
+        this.toArray = function(str){
+            var res = [];
+            for (var i= 0,max=str.length;i<max;i++) {
+                res.push({char:str[i]});
             }
             return res;
         };

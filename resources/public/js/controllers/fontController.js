@@ -80,24 +80,20 @@ window.app.
         };
 
         s.createOrEditFont = function(font){
-            var model = {};
-            model.font = font.toJSON();
-            model.strFont = font.fontSize +'px'+' '+font.fontFamily;
-            model.font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], model.strFont, 320);
-            var image = utils.dataURItoBlob(getFontImage(model.font.fontContext,model.strFont,model.font.fontColor));
-            var formData = new FormData();
-            formData.append('model',JSON.stringify(model));
-            formData.append('file',image);
-            resourceDao.postMultiPart('/editFont',formData,function(){
-                uiHelper.closeDialog();
-            });
+            var font = s.editData.currFontInEdit;
+            var strFont = font.fontSize +'px'+' '+font.fontFamily;
+            font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
+            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,font.fontColor));
+            resourceDao.createOrEditResource(
+                font,
+                ve.models.Font,
+                ve_local.bundle.fontList);
         };
 
         (function(){
-            s.fontList = sessionStorage.fontList;
-            if (s.fontList) return;
+            if (s.editData.systemFontList) return;
             chrome.requestToApi({method:'getFontList'},function(list){
-                s.fontList = list;
+                s.editData.systemFontList = list;
                 s.$apply();
             })
         })();

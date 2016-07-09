@@ -15,6 +15,8 @@ window.app
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
 
+        res.userInterfaceList = new ve.collections.List();
+
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         res.scriptEditorUrl = '';
 

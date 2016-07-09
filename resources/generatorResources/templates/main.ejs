@@ -2,28 +2,25 @@
 (function(){
 
     ve_local.bundle = new ve_local.Bundle({
-        audio: <%-audio%>,
-        frameAnimation: <%-frameAnimation%>,
-        gameObject: <%-gameObject%>,
-        scene: <%-scene%>,
-        layer:<%-layer%>,
-        spriteSheet: <%-spriteSheet%>,
-        gameProps: <%-gameProps%>
+        <%var l = Object.keys(commonResources).length;%>
+        <%Object.keys(commonResources).forEach(function(key,i){%>
+        <%-key%>:<%-commonResources[key]%><%if (i<l){%><%=','%><%}%>
+        <%})%>
     });
 
     ve_local.scripts = {};
     ve_local.scripts.gameObject = {};
     ve_local.scripts.scene = {};
 
-    <%for (var i = 0; i<gameObjectScripts.length;i++) {%>
-    ve_local.scripts.gameObject['<%-gameObjectScripts[i].name%>'] = function(){
-        var clazz = <%-gameObjectScripts[i].content%>;
+    <%for (var i = 0; i<specialResources.gameObjectScripts.length;i++) {%>
+    ve_local.scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function(){
+        var clazz = <%-specialResources.gameObjectScripts[i].content%>;
         return clazz;
     };
     <%}%>;
-    <%for (var i = 0; i<sceneScripts.length;i++) {%>
-    ve_local.scripts.scene['<%-sceneScripts[i].name%>'] = function(){
-    var clazz = <%-sceneScripts[i].content%>;
+    <%for (var i = 0; i<specialResources.sceneScripts.length;i++) {%>
+    ve_local.scripts.scene['<%-specialResources.sceneScripts[i].name%>'] = function(){
+    var clazz = <%-specialResources.sceneScripts[i].content%>;
     return clazz;
     };
     <%}%>;

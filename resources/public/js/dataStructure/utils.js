@@ -26,5 +26,9 @@
     };
     ns.clone = function(obj){
         return Object.create(obj);
-    }
+    };
+    ns.capitalize = function(s){
+        return s.substr(0,1).toUpperCase() +
+            s.substr(1);
+    };
 })();

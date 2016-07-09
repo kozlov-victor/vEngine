@@ -53,7 +53,7 @@ var addStaticFiles = function(sourceMain){
         'resources/public/js/dataStructure/collections.js',
         'resources/public/js/dataStructure/models.js',
         'resources/public/js/dataStructure/bundle.js',
-        'resources/generatorResources/static/utils.js',
+        'resources/public/js/dataStructure/utils.js',
         'resources/generatorResources/static/renderer.js',
         'resources/generatorResources/static/sceneManager.js',
         'resources/generatorResources/static/modules/keyboard.js',
@@ -70,12 +70,15 @@ var addDebug = function(sourceMain){
 
 var addGameResources = function(sourceMain){
     var templateObj = {};
+    templateObj.commonResources = {};
+    templateObj.specialResources = {};
     resourcesController.RESOURCE_NAMES.forEach(function(r){
-        templateObj[r] = fs.readFileSync('workspace/project/resources/'+r+'/map.json')
+        templateObj.commonResources[r] = fs.readFileSync('workspace/project/resources/'+r+'/map.json')
     });
-    templateObj.gameProps = fs.readFileSync('workspace/project/gameProps.json');
-    templateObj.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject');
-    templateObj.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene');
+    templateObj.commonResources.gameProps = fs.readFileSync('workspace/project/gameProps.json');
+
+    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject');
+    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene');
     sourceMain.addTemplate('resources/generatorResources/templates/main.ejs',templateObj);
 };
 
