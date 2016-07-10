@@ -122,6 +122,7 @@
 
         var applyCommonBehaviour = function(model){
             var cbList = [];
+            if (!model._commonBehaviour) return;
             model._commonBehaviour.forEach(function(cb){
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);
@@ -538,11 +539,11 @@
         type:'userInterface',
         subType:'textField',
         _chars:null,
-        _text:'',
+        text:'',
         _font:null,
         setText: function(text) {
             this._chars = [];
-            this._text = text;
+            this.text = text;
             this.width = 0;
             for (var i= 0,max=text.length;i<max;i++) {
                 this._chars.push(text[i]);
@@ -550,11 +551,17 @@
                 this.width+=currSymbolInFont.width;
             }
         },
+        clone:function(){
+            return this._super();
+        },
         construct: function(){
             this._font = ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this._text||this.subType);
+            this.setText(this.text||this.subType);
             this.height = this._font.fontContext.symbols[' '].height;
         }
+    },
+    {
+        _cnt:0
     });
 
     models.CommonBehaviour = models.BaseModel.extend({
@@ -1147,10 +1154,21 @@ window.app.
         };
 
         var _addOrEditGameObject = function(obj,x,y,idKey,idVal){
+
             var editDataObj = obj.toJSON();
+            delete editDataObj.id;
+            delete editDataObj.protoId;
             editDataObj.posX = x;
             editDataObj.posY = y;
             editDataObj[idKey]=idVal;
+
+            var needNewName = false;
+            if (!editDataObj.name) {
+                editDataObj.name = editDataObj.subType +
+                    (++ve.models[ve.utils.capitalize(editDataObj.subType)]._cnt);
+                needNewName = true;
+            }
+
             resourceDao.createOrEditObjectInResource(
                 editData.currLayerInEdit.type,
                 editData.currLayerInEdit.protoId,
@@ -1164,6 +1182,9 @@ window.app.
                         newGameObj.id = resp.r.id;
                         editData.currLayerInEdit._gameObjects.add(newGameObj);
                         editData.currSceneGameObjectInEdit = newGameObj;
+                        if (needNewName) {
+                            newGameObj.name = editDataObj.name;
+                        }
                     } else {
                         obj.fromJSON({posX:x,posY:y});
                         editData.currSceneGameObjectInEdit = obj;
@@ -1185,6 +1206,16 @@ window.app.
             }
         };
 
+        s.onTextFieldChanged = function(tfObj){
+
+            tfObj.setText(tfObj.text);tfObj._edit=false;
+
+            resourceDao.createOrEditObjectInResource(
+                editData.currLayerInEdit.type,
+                editData.currLayerInEdit.protoId,
+                'gameObjectProps',
+                tfObj.toJSON());
+        };
 
         s.addGameObjectFromCtxMenu = function(obj,x,y){
             _addOrEditGameObject(obj, x, y,'protoId',obj.id);
@@ -1572,7 +1603,8 @@ window.app
                 fontSize:'font size',
                 fontColor:'font color',
                 userInterface:'user interface',
-                textField:'text field'
+                textField:'text field',
+                noDataToEdit:'no data to edit provided'
             }
         };
 
@@ -1913,6 +1945,10 @@ window.app
                 res[key] = b[key];
             });
             return res;
+        };
+
+        this.size = function(obj) {
+            return Object.keys(obj).length;
         };
 
         this.getArray = function(num) {

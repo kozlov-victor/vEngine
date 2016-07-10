@@ -1,123 +1,21 @@
 [
     {
-        "spriteSheetId": "5186_2116_8",
-        "width": 64,
-        "height": 64,
-        "name": "robot",
-        "type": "gameObject",
-        "frameAnimationIds": [
-            "5103_5846_11",
-            "5283_6546_12",
-            "4276_2328_13",
-            "8014_4428_14"
-        ],
-        "id": "2701_0003_9",
-        "currFrameIndex": 37,
-        "commonBehaviour": [
-            {
-                "name": "control4dir",
-                "parameters": {
-                    "velocity": 100,
-                    "walkLeftAnimation": "left",
-                    "walkRightAnimation": "right",
-                    "walkUpAnimation": "up",
-                    "walkDownAnimation": "down",
-                    "idleLeftAnimation": "",
-                    "idleRightAnimation": "",
-                    "idleUpAnimation": "",
-                    "idleDownAnimation": ""
-                },
-                "id": "8745_4645_22"
-            },
-            {
-                "__events__": {},
-                "name": "draggable",
-                "parameters": {},
-                "id": "2635_8746_13"
-            }
-        ],
-        "groupName": "robot"
-    },
-    {
-        "spriteSheetId": "2116_8350_0",
-        "width": 33,
-        "height": 35,
-        "name": "hero",
-        "type": "gameObject",
-        "commonBehaviour": [
-            {
-                "name": "move4dir",
-                "parameters": {
-                    "velocity": "10",
-                    "walkLeftAnimation": "left",
-                    "walkRightAnimation": "right",
-                    "walkUpAnimation": "up",
-                    "walkDownAnimation": "down",
-                    "idleLeftAnimation": "",
-                    "idleRightAnimation": "",
-                    "idleUpAnimation": "",
-                    "idleDownAnimation": ""
-                },
-                "id": "7406_0843_9"
-            },
-            {
-                "name": "draggable",
-                "parameters": {},
-                "id": "7359_2567_4",
-                "type": "commonBehaviour"
-            }
-        ],
-        "frameAnimationIds": [
-            "7096_7787_3",
-            "5247_2393_4",
-            "5967_8313_5",
-            "5828_3587_6"
-        ],
-        "id": "9252_7967_1",
-        "currFrameIndex": 5,
-        "groupName": "man"
-    },
-    {
-        "spriteSheetId": "2116_8350_0",
-        "width": 33,
-        "height": 35,
-        "name": "man",
-        "type": "gameObject",
-        "commonBehaviour": [
-            {
-                "name": "move4dir",
-                "parameters": {
-                    "velocity": 100,
-                    "walkLeftAnimation": "left",
-                    "walkRightAnimation": "right",
-                    "walkUpAnimation": "up",
-                    "walkDownAnimation": "down",
-                    "idleLeftAnimation": "",
-                    "idleRightAnimation": "",
-                    "idleUpAnimation": "",
-                    "idleDownAnimation": ""
-                },
-                "id": "5226_4551_145",
-                "type": "commonBehaviour"
-            }
-        ],
-        "frameAnimationIds": [
-            "3975_9138_141",
-            "1018_3675_142",
-            "9216_1203_143",
-            "8747_6072_144"
-        ],
-        "id": "1414_8788_140",
-        "groupName": "man"
-    },
-    {
-        "spriteSheetId": "3881_6862_16",
+        "spriteSheetId": "8899_1840_8",
         "width": 64,
         "height": 64,
         "name": "globus",
         "type": "gameObject",
-        "commonBehaviour": [],
-        "frameAnimationIds": [],
-        "id": "4402_7102_4"
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": {},
+                "id": "4156_4459_22",
+                "type": "commonBehaviour"
+            }
+        ],
+        "frameAnimationIds": [
+            "9805_5997_24"
+        ],
+        "id": "1423_4987_21"
     }
 ]

@@ -32,6 +32,10 @@ window.app
             return res;
         };
 
+        this.size = function(obj) {
+            return Object.keys(obj).length;
+        };
+
         this.getArray = function(num) {
             if (!num) return [];
             var res = [];

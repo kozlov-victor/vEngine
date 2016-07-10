@@ -1,42 +1,12 @@
 [
     {
-        "resourcePath": "resources/spriteSheet/robotSheet.png",
-        "width": 1024,
-        "height": 512,
-        "name": "robotSheet",
-        "numOfFramesH": 16,
-        "numOfFramesV": 8,
-        "type": "spriteSheet",
-        "id": "5186_2116_8"
-    },
-    {
-        "name": "globus",
         "resourcePath": "resources/spriteSheet/globus.png",
         "width": 320,
         "height": 256,
         "numOfFramesH": 5,
         "numOfFramesV": 4,
+        "name": "globus",
         "type": "spriteSheet",
-        "id": "3881_6862_16"
-    },
-    {
-        "name": "ga",
-        "resourcePath": "resources/spriteSheet/ga.jpg",
-        "width": 660,
-        "height": 558,
-        "numOfFramesH": 6,
-        "numOfFramesV": 5,
-        "type": "spriteSheet",
-        "id": "1408_4249_0"
-    },
-    {
-        "resourcePath": "resources/spriteSheet/hero.png",
-        "width": 396,
-        "height": 280,
-        "name": "hero",
-        "type": "spriteSheet",
-        "numOfFramesH": 12,
-        "numOfFramesV": 8,
-        "id": "2116_8350_0"
+        "id": "8899_1840_8"
     }
 ]

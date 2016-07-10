@@ -52,7 +52,8 @@ window.app
                 fontSize:'font size',
                 fontColor:'font color',
                 userInterface:'user interface',
-                textField:'text field'
+                textField:'text field',
+                noDataToEdit:'no data to edit provided'
             }
         };
 

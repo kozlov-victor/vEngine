@@ -17,6 +17,11 @@ module.exports.initFolderStructure = function(){
     fs.createFolderSync('workspace/project/resources/font');
     fs.createFolderSync('workspace/project/resources/script/scene');
 
+    fs.copyFileSync('resources/generatorResources/static/fonts/default.png',
+        'workspace/project/resources/font/default.png');
+    fs.copyFileSync('resources/generatorResources/static/fonts/map.json',
+        'workspace/project/resources/font/map.json');
+
     fs.createFolderSync('workspace/project/resources/script/commonBehaviour');
     fs.readDirSync('resources/generatorResources/static/commonBehaviour').forEach(function(itm){
         fs.createFileSync('workspace/project/resources/script/commonBehaviour/'+itm.name,itm.content);

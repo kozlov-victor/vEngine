@@ -76,7 +76,7 @@
                 </div>
 
                 <form
-                        ng-submit="item.setText(item._text);item._edit=false;"
+                        ng-submit="onTextFieldChanged(item)"
                         ng-if="item._edit==true"
                         ng-style="{
                                 zIndex:20,
@@ -91,7 +91,7 @@
                                 width:item.width+'px',
                                 height:item.height+'px'
                             }"
-                              ng-model="item._text"
+                              ng-model="item.text"
                             >
                     </textarea>
                     <input type="submit" value="ok"/>

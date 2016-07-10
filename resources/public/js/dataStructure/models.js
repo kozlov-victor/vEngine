@@ -276,11 +276,11 @@
         type:'userInterface',
         subType:'textField',
         _chars:null,
-        _text:'',
+        text:'',
         _font:null,
         setText: function(text) {
             this._chars = [];
-            this._text = text;
+            this.text = text;
             this.width = 0;
             for (var i= 0,max=text.length;i<max;i++) {
                 this._chars.push(text[i]);
@@ -288,11 +288,17 @@
                 this.width+=currSymbolInFont.width;
             }
         },
+        clone:function(){
+            return this._super();
+        },
         construct: function(){
             this._font = ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this._text||this.subType);
+            this.setText(this.text||this.subType);
             this.height = this._font.fontContext.symbols[' '].height;
         }
+    },
+    {
+        _cnt:0
     });
 
     models.CommonBehaviour = models.BaseModel.extend({

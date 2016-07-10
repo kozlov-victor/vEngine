@@ -72,10 +72,21 @@ window.app.
         };
 
         var _addOrEditGameObject = function(obj,x,y,idKey,idVal){
+
             var editDataObj = obj.toJSON();
+            delete editDataObj.id;
+            delete editDataObj.protoId;
             editDataObj.posX = x;
             editDataObj.posY = y;
             editDataObj[idKey]=idVal;
+
+            var needNewName = false;
+            if (!editDataObj.name) {
+                editDataObj.name = editDataObj.subType +
+                    (++ve.models[ve.utils.capitalize(editDataObj.subType)]._cnt);
+                needNewName = true;
+            }
+
             resourceDao.createOrEditObjectInResource(
                 editData.currLayerInEdit.type,
                 editData.currLayerInEdit.protoId,
@@ -89,6 +100,9 @@ window.app.
                         newGameObj.id = resp.r.id;
                         editData.currLayerInEdit._gameObjects.add(newGameObj);
                         editData.currSceneGameObjectInEdit = newGameObj;
+                        if (needNewName) {
+                            newGameObj.name = editDataObj.name;
+                        }
                     } else {
                         obj.fromJSON({posX:x,posY:y});
                         editData.currSceneGameObjectInEdit = obj;
@@ -110,6 +124,16 @@ window.app.
             }
         };
 
+        s.onTextFieldChanged = function(tfObj){
+
+            tfObj.setText(tfObj.text);tfObj._edit=false;
+
+            resourceDao.createOrEditObjectInResource(
+                editData.currLayerInEdit.type,
+                editData.currLayerInEdit.protoId,
+                'gameObjectProps',
+                tfObj.toJSON());
+        };
 
         s.addGameObjectFromCtxMenu = function(obj,x,y){
             _addOrEditGameObject(obj, x, y,'protoId',obj.id);

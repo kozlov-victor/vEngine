@@ -21,7 +21,6 @@ Class.extend(
                 mY = e.objectY;
             });
             scene.on('mouseMove',function(e){
-                //console.log('scene mousemove'+ e.screenX+','+ e.screenY);
                 if (self._mouseDown) {
                     g.posX = e.screenX - mX;
                     g.posY = e.screenY - mY;
