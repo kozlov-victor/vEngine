@@ -2412,10 +2412,16 @@ Class.extend(
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
                 "groupName": "",
-                "posX": -5,
-                "posY": 73,
+                "posX": 18,
+                "posY": 167,
                 "protoId": "3315_7346_266",
-                "id": "7476_9556_267"
+                "id": "7476_9556_267",
+                "rigid": 0,
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0
             },
             {
                 "spriteSheetId": "1501_7424_265",
@@ -2426,10 +2432,16 @@ Class.extend(
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
                 "groupName": "",
-                "posX": 148,
-                "posY": 10,
+                "posX": 160,
+                "posY": -33,
                 "protoId": "3315_7346_266",
-                "id": "9709_5369_268"
+                "id": "9709_5369_268",
+                "rigid": 0,
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0
             },
             {
                 "spriteSheetId": "1501_7424_265",
@@ -2440,10 +2452,16 @@ Class.extend(
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
                 "groupName": "",
-                "posX": 62,
-                "posY": 80,
+                "posX": 314,
+                "posY": 83,
                 "protoId": "3315_7346_266",
-                "id": "2589_0321_269"
+                "id": "2589_0321_269",
+                "rigid": 0,
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0
             }
         ],
         "id": "3534_2050_13"
@@ -2466,7 +2484,7 @@ Class.extend(
 ],
         
         gameProps:{
-    "width": 340,
+    "width": 540,
     "height": 300
 },
         
@@ -2507,7 +2525,7 @@ Class.extend(
     },
 
     onUpdate: function(time) {
-        if (this.posX>400) this.posX = -300;
+        if (this.posX>800) this.posX = -300;
     },
 
     onDestroy: function(){
@@ -2527,7 +2545,7 @@ Class.extend(
         console.log('created');
         var textField = this.findGameObject('textField1');
         var bird = this.findGameObject('b');
-        textField.setText('Привет, я птичка поздравлялка');
+        textField.setText('Привет, я птичка поздравлялка(нажми на меня)');
         bird.on('click',function(){
             textField.setText('Ура!!!!!');
             bird.velX = 200;

@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns="library://ns.adobe.com/flex/mx">
+
+    <fx:Script>
+        <![CDATA[
+        import fnt.FntList;
+
+        import mx.controls.Alert;
+
+        public function getFonts():void{
+            if  (ExternalInterface.available) {
+                try {
+                    Security.allowDomain("*");
+                    var pageURL:String = ExternalInterface.call('window.toStr');
+                    Alert.show(pageURL);
+                     var fntList:FntList = new FntList();
+                    fntList.getDeviceFonts();
+                } catch(e:Error){
+
+                }
+            }
+        }
+
+
+        ]]>
+    </fx:Script>
+    <s:Button click="getFonts()" label="Say Hello"/>
+</s:Application>
