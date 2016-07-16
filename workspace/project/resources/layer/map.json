@@ -1,0 +1,116 @@
+[
+    {
+        "name": "ll",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "1879_7247_15",
+                "width": 110,
+                "height": 101,
+                "name": "b",
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "control4dir",
+                        "parameters": {
+                            "velocity": 100,
+                            "walkLeftAnimation": "left",
+                            "walkRightAnimation": "right",
+                            "walkUpAnimation": "up",
+                            "walkDownAnimation": "down",
+                            "idleLeftAnimation": "idleLeft",
+                            "idleRightAnimation": "idleRight",
+                            "idleUpAnimation": "idleUp",
+                            "idleDownAnimation": "idleDown"
+                        },
+                        "id": "5084_8174_18",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "frameAnimationIds": [],
+                "posX": 114,
+                "posY": 101,
+                "protoId": "5139_0458_16",
+                "id": "0906_4709_17",
+                "groupName": ""
+            },
+            {
+                "text": "",
+                "width": 252,
+                "height": 30,
+                "type": "userInterface",
+                "subType": "textField",
+                "posX": 6,
+                "posY": 15,
+                "protoId": null,
+                "name": "textField1",
+                "id": "7072_6855_8",
+                "$$hashKey": "object:43",
+                "_edit": false,
+                "rigid": false,
+                "groupName": ""
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 18,
+                "posY": 167,
+                "protoId": "3315_7346_266",
+                "id": "7476_9556_267",
+                "rigid": 0,
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 160,
+                "posY": -33,
+                "protoId": "3315_7346_266",
+                "id": "9709_5369_268",
+                "rigid": 0,
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 314,
+                "posY": 83,
+                "protoId": "3315_7346_266",
+                "id": "2589_0321_269",
+                "rigid": 0,
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0
+            }
+        ],
+        "id": "3534_2050_13"
+    }
+]

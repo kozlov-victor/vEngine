@@ -1,0 +1,145 @@
+<table class="width100">
+    <tr>
+        <td>
+            {{i18n.name}}
+        </td>
+        <td>
+            <input required ng-model="editData.currGameObjectInEdit.name"/>
+        </td>
+        <td></td>
+        <td rowspan="5">
+            <div class="relative"
+                 style="
+                                        display: inline-block;
+                                        overflow: scroll;
+                                        max-width:60vw;
+                                        max-height:60vh;
+                                    "
+                    >
+                <div ng-style="utils.merge(
+                        utils.getGameObjectCss(editData.currGameObjectInEdit)
+                        ,
+                        {
+                            'border':'1px solid blue'
+                        }
+                    )"></div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.groupName}}
+        </td>
+        <td>
+            <input ng-model="editData.currGameObjectInEdit.groupName"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.rigid}}
+        </td>
+        <td>
+            <input type="checkbox" ng-true-value="1" ng-false-value="0" ng-model="editData.currGameObjectInEdit.rigid"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.width}}
+        </td>
+        <td>
+            <input type="number" required ng-model="editData.currGameObjectInEdit.width"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.height}}
+        </td>
+        <td>
+            <input type="number" required ng-model="editData.currGameObjectInEdit.height"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.currFrameIndex}}
+        </td>
+        <td>
+            <input type="number"
+                   min="0"
+                   ng-change="refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)"
+                   required ng-model="editData.currGameObjectInEdit.currFrameIndex"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.spriteSheet}}
+        </td>
+        <td>
+            <select
+                    ng-change="utils.recalcGameObjectSize(editData.currGameObjectInEdit)"
+                    required ng-model="editData.currGameObjectInEdit.spriteSheetId">
+                <option value="{{item.id}}" ng-repeat="item in editData.spriteSheetList.rs">{{item.name}}</option>
+            </select>
+        </td>
+        <td>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.frAnimations}}
+        </td>
+        <td>
+            <div class="table width100">
+                <div class="row" ng-repeat="animItm in editData.currGameObjectInEdit._frameAnimations.rs">
+                    <div class="cell vAlign">
+                        <span>{{animItm.name}}</span>
+                    </div>
+                    <div class="cell vAlign rightAlign" ng-click="showEditAnimationDialog(animItm)">
+                        edit
+                    </div>
+                    <div class="cell pointer vAlign rightAlign" ng-click="deleteFrameAnimation(animItm)">
+                        X
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateAnimationDialog()">+</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.commonBehaviour}}
+        </td>
+        <td>
+            <div class="table width100">
+                <div class="row" ng-repeat="itm in editData.currGameObjectInEdit._commonBehaviour.rs">
+                    <div class="cell vAlign">
+                        <span>{{itm.name}}</span>
+                    </div>
+                    <div class="cell vAlign rightAlign" ng-click="showEditCommonBehaviourDialog(itm)">
+                        edit
+                    </div>
+                    <div class="cell pointer vAlign rightAlign" ng-click="deleteCommonBehaviour(itm)">
+                        X
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td>
+            <select class="width20" ng-model="selectedBehaviourName">
+                <option value="{{cb.name}}" ng-repeat="cb in availableCommonBehaviour">{{cb.name}}</option>
+            </select>
+            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateCommonBehaviourDialog(selectedBehaviourName)">+</button>
+        </td>
+    </tr>
+</table>
+<button
+        ng-disabled="!frmCreateGameObject.$valid"
+        ng-click="createOrEditGameObject(editData.currGameObjectInEdit)">
+    {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
+</button>

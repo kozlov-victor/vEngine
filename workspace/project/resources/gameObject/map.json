@@ -1,0 +1,49 @@
+[
+    {
+        "spriteSheetId": "1879_7247_15",
+        "width": 110,
+        "height": 101,
+        "name": "b",
+        "type": "gameObject",
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": {},
+                "id": "6616_0188_20",
+                "type": "commonBehaviour"
+            }
+        ],
+        "frameAnimationIds": [
+            "2195_5056_19"
+        ],
+        "id": "5139_0458_16",
+        "rigid": 0,
+        "groupName": "",
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "velX": 0,
+        "velY": 0,
+        "posX": 0,
+        "posY": 0
+    },
+    {
+        "spriteSheetId": "1501_7424_265",
+        "width": 300,
+        "height": 190,
+        "name": "cloud",
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "groupName": "",
+        "id": "3315_7346_266",
+        "rigid": 0,
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "velX": 0,
+        "velY": 0,
+        "posX": 0,
+        "posY": 0
+    }
+]

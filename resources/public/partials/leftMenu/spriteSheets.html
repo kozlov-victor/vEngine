@@ -1,0 +1,25 @@
+<h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'spriteSheers')">{{i18n.spriteSheers}}</h3>
+<div ng-show="leftMenuIndex=='spriteSheers'" class="withPadding">
+    <div>
+        <div class="table width100">
+            <div class="row" ng-repeat="item in editData.spriteSheetList.rs">
+                <div class="cell vAlign">
+                    <!-- todo project name-->
+                    <img height="20" ng-src="{{'project/'+'/'+item.resourcePath}}"/>
+                </div>
+                <div class="cell vAlign">
+                    <span>{{item.name}}</span>
+                </div>
+                <div class="cell vAlign rightAlign" ng-click="showEditSpriteSheetDialog(item)">
+                    edit
+                </div>
+                <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'spriteSheet')">
+                    X
+                </div>
+            </div>
+        </div>
+    </div>
+    <button ng-click="showCreateSpriteSheetDialog()">
+        {{i18n.addSpriteSheet}}
+    </button>
+</div>

@@ -1,0 +1,21 @@
+
+<table class="width100">
+    <tr ng-repeat="(key, value) in editData.currCommonBehaviourInEdit.parameters">
+        <td>
+            {{key}}
+        </td>
+        <td>
+            <input type="text" ng-model="editData.currCommonBehaviourInEdit.parameters[key]"/>
+        </td>
+    </tr>
+    <tr ng-if="utils.size(editData.currCommonBehaviourInEdit.parameters)==0">
+        <td colspan="2">
+            {{i18n.noDataToEdit}}
+        </td>
+    </tr>
+</table>
+<button
+        ng-click="createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)"
+        ng-disabled="!(frmCreateCommonBehaviour.$valid)">
+    {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}
+</button>

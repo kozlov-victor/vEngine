@@ -1,0 +1,28 @@
+<menu class="menu rootMenu">
+    <li>
+        <span>Favorite</span>
+    </li>
+    <li class="submenu">
+        <span>{{i18n.addGameObject}}</span>
+        <menu class="menu">
+            <li class="disabled" ng-if="!editData.gameObjectList.rs.length">{{i18n.nothingToAdd}}</li>
+            <li
+                    ng-repeat="item in editData.gameObjectList.rs"
+                    ng-click="addGameObjectFromCtxMenu(item,uiHelper.ctxMenu.elX,uiHelper.ctxMenu.elY)"
+            >
+                <div class="cell vAlign">
+                    <span>{{item.name}}</span>
+                </div>
+                <div class="cell">
+                    <div
+                         ng-style="utils.merge(
+                                    utils.getGameObjectCss(item),
+                                    {zoom:item.height>30?30/item.height:1}
+                               )"
+                            >
+                    </div>
+                </div>
+            </li>
+        </menu>
+    </li>
+</menu>

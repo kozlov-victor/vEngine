@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/project/out/resources/spriteSheet/globus.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/project/out/resources/spriteSheet/robotSheet.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/gameProps.json" afterPath="$PROJECT_DIR$/project/gameProps.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/generatorResources/static/modules/keyboard.js" afterPath="$PROJECT_DIR$/editor/generatorResources/static/modules/keyboard.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/out/main.js" afterPath="$PROJECT_DIR$/project/out/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/project/resources/gameObject/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/layer/map.json" afterPath="$PROJECT_DIR$/project/resources/layer/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project/resources/script/map.json" afterPath="$PROJECT_DIR$/project/resources/script/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/dataStructure/models.js" afterPath="$PROJECT_DIR$/editor/public/js/dataStructure/models.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/public/js/lib/oop.js" afterPath="$PROJECT_DIR$/editor/public/js/lib/oop.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/editor/generatorResources/static/renderer.js" afterPath="$PROJECT_DIR$/editor/generatorResources/static/renderer.js" />
+    <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/Main.swf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/out/resources/spriteSheet/bird.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/spriteSheet/bird.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/out/resources/spriteSheet/cloud.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/spriteSheet/cloud.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/out/resources/font/default.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/font/default.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/html-template/playerProductInstall.swf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/playerProductInstall.swf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/.name" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/Main.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/src/Main.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/src/Main.mxml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/b.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/cloud.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/compiler.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/flexCompiler.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/html-template/history/history.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/history/history.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/html-template/history/history.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/history/history.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/html-template/history/historyFrame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/history/historyFrame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/html-template/index.template.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/script/scene/m.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/project/resources/font/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/misc.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/modules.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/copyright/profiles_settings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/html-template/swfobject.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/out/production/flex/swfobject.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/uiDesigner.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/vcs.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/flex/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/gameProps.json" afterPath="$PROJECT_DIR$/workspace/project/gameProps.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/main.js" afterPath="$PROJECT_DIR$/workspace/project/out/main.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f8ca8907-a637-4910-a09f-c2a90f136754" name="Failed commit: Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -37,103 +63,101 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="keyboard.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/modules/keyboard.js">
+      <file leaf-file-name="models.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.5775862">
-              <caret line="61" column="48" selection-start-line="61" selection-start-column="48" selection-end-line="61" selection-end-column="48" />
+            <state vertical-scroll-proportion="0.5298913">
+              <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gameObjectController.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/gameObjectController.js">
+      <file leaf-file-name="collider.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/collider.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="31" column="40" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
+              <caret line="14" column="38" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/project/out/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/project/out/main.js">
+      <file leaf-file-name="bundle.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="641" column="0" selection-start-line="641" selection-start-column="0" selection-end-line="641" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="renderer.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/renderer.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="53" column="11" selection-start-line="53" selection-start-column="11" selection-end-line="53" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="models.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/dataStructure/models.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="123" column="30" selection-start-line="123" selection-start-column="30" selection-end-line="123" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="oop.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/lib/oop.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="66" column="4" selection-start-line="66" selection-start-column="4" selection-end-line="66" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="dialogCreateAnimation.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/partials/dialogs/dialogCreateAnimation.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.5">
-              <caret line="100" column="0" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#td#2;n#tr#0;n#table#0;n#!!top" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="animationController.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/animationController.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="85" column="64" selection-start-line="85" selection-start-column="64" selection-end-line="85" selection-end-column="64" />
+              <caret line="72" column="16" selection-start-line="72" selection-start-column="16" selection-end-line="72" selection-end-column="16" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="i18n.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/editor/public/js/factories/i18n.js">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/i18n.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="44" column="23" selection-start-line="44" selection-start-column="23" selection-end-line="44" selection-end-column="23" />
+              <caret line="56" column="23" selection-start-line="56" selection-start-column="23" selection-end-line="56" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dialogCreateGameObject.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-3.5833333">
+              <caret line="41" column="12" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sceneManager.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-13.064516">
+              <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="debug.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/debug.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="defaultCodeScript.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/defaultCodeScript.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="polifill.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/polifill.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="renderer.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/renderer.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-13.096774">
+              <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -168,63 +192,70 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/stub.js" />
-        <option value="$PROJECT_DIR$/editor/public/partials/dialogs/dialogCreateLayer.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/layerController.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/dataStructure/collections.js" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/editor/base/routes.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/debug.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/topPanelController.js" />
-        <option value="$PROJECT_DIR$/editor/routes/resourcesRoute.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/index.html" />
-        <option value="$PROJECT_DIR$/editor/controllers/resourcesController.js" />
-        <option value="$PROJECT_DIR$/editor/public/partials/leftMenu/scenes.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/resourceDao.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/leftMenuController.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/envVariables.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/debugController.js" />
-        <option value="$PROJECT_DIR$/editor/public/css/angular.css" />
+        <option value="$PROJECT_DIR$/resources/public/flex/src/fnt/FntList.as" />
+        <option value="$PROJECT_DIR$/resources/public/flex/src/Main.mxml" />
+        <option value="$PROJECT_DIR$/resources/public/main.html" />
+        <option value="$PROJECT_DIR$/fontListApp/manifest.json" />
+        <option value="$PROJECT_DIR$/fontListApp/content.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/chrome.js" />
+        <option value="$PROJECT_DIR$/fontListApp/background.js" />
+        <option value="$PROJECT_DIR$/application/mvc/views/bitMapFont.html" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/font/assa.json" />
+        <option value="$PROJECT_DIR$/application/mvc/routes/resourcesRoute.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/directives/appDragDrop.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/gameObjects.html" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/utils.js" />
+        <option value="$PROJECT_DIR$/resources/public/css/main.css" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs.html" />
+        <option value="$PROJECT_DIR$/resources/public/partials/contextMenus.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/fontController.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateFont.html" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/font/map.json" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/editData.js" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/userInterface.html" />
+        <option value="$PROJECT_DIR$/application/mvc/controllers/mainController.js" />
+        <option value="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/sceneController.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/spriteSheets.html" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateCommonBehaviour.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/resourceDao.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/lib/editorOnly.js" />
         <option value="$PROJECT_DIR$/Gruntfile.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/directives.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appValidator.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appKeyUp.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appKeyPress.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appFileUpload.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js" />
-        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/contextMenus.html" />
-        <option value="$PROJECT_DIR$/editor/public/partials/gameScene.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/utils.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js" />
-        <option value="$PROJECT_DIR$/editor/public/partials/dialogs.html" />
-        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus.html" />
-        <option value="$PROJECT_DIR$/editor/public/partials/contextMenus/ctxTest.html" />
-        <option value="$PROJECT_DIR$/editor/public/css/main.css" />
-        <option value="$PROJECT_DIR$/editor/public/partials/centralBlock.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/messageDigest.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/dataStructure/bundle.js" />
-        <option value="$PROJECT_DIR$/editor/public/main.html" />
-        <option value="$PROJECT_DIR$/project/resources/script/map.json" />
-        <option value="$PROJECT_DIR$/editor/controllers/generatorController.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/sceneManager.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/templates/main.js" />
-        <option value="$PROJECT_DIR$/editor/views/main/editor.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/factories/i18n.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/animationController.js" />
-        <option value="$PROJECT_DIR$/editor/public/partials/dialogs/dialogCreateAnimation.html" />
-        <option value="$PROJECT_DIR$/editor/public/js/lib/oop.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/modules/cursor.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/controllers/gameObjectController.js" />
-        <option value="$PROJECT_DIR$/project/out/main.js" />
-        <option value="$PROJECT_DIR$/editor/public/js/dataStructure/models.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/renderer.js" />
-        <option value="$PROJECT_DIR$/editor/generatorResources/static/modules/keyboard.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/collections.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/utils.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/templates/envVariables.ejs" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" />
+        <option value="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/directives/appContextMenu.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/scenes.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/all.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/centralBlock.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/modules/collider.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/i18n.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html" />
       </list>
     </option>
   </component>
   <component name="JsBuildToolGruntFileManager" detection-done="true" />
   <component name="JsGulpfileManager">
     <detection-done>true</detection-done>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Bundled (Maven 3)" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="NamedScopeManager">
     <order />
@@ -234,10 +265,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="65" />
-    <option name="y" value="24" />
-    <option name="width" value="1301" />
-    <option name="height" value="744" />
+    <option name="x" value="83" />
+    <option name="y" value="34" />
+    <option name="width" value="1257" />
+    <option name="height" value="711" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -263,7 +294,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -292,123 +322,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="out" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="out" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="spriteSheet" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="utils" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="routes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -426,7 +340,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -448,7 +362,33 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="partials" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="leftMenu" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -474,7 +414,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -496,33 +436,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -548,7 +462,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -574,65 +488,13 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="public" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="css" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="generatorResources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -644,7 +506,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -666,7 +528,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
@@ -682,61 +544,50 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="editor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../langTrainerManager" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="154" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="179" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="171" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="196" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="173" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="199" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="961" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="986" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="165" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="190" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="167" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth1" value="192" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="170" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth2" value="196" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="957" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth3" value="982" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
     <property name="FullScreen" value="false" />
+    <property name="SearchEverywhereHistoryKey" value="plug&#9;ACTION&#9;WelcomeScreen.Plugins&#10;plugins&#9;ACTION&#9;WelcomeScreen.Plugins" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/editor/public/partials" />
-      <recent name="$PROJECT_DIR$/editor/public/css" />
-      <recent name="$PROJECT_DIR$/project/resources/scripts" />
-      <recent name="$PROJECT_DIR$/project/resources/images" />
+      <recent name="$PROJECT_DIR$/resources/generatorResources/static/fonts" />
+      <recent name="$PROJECT_DIR$/fontListApp" />
+      <recent name="$PROJECT_DIR$/resources/public" />
+      <recent name="$PROJECT_DIR$/resources/public/misc" />
+      <recent name="$PROJECT_DIR$/resources/generatorResources/static/commonBehaviour" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/editor/public/js/dataStructure" />
-      <recent name="$PROJECT_DIR$/editor/generatorResources/static" />
-      <recent name="$PROJECT_DIR$/editor/public/js" />
-      <recent name="$PROJECT_DIR$/editor/public/js/factories" />
-      <recent name="$PROJECT_DIR$/editor/public" />
+      <recent name="$PROJECT_DIR$/resources/public/js/dataStructure" />
+      <recent name="$PROJECT_DIR$/resources/public/flex/src" />
+      <recent name="$PROJECT_DIR$/resources/public/misc" />
+      <recent name="$PROJECT_DIR$/application/mvc/views" />
+      <recent name="$PROJECT_DIR$/project/resources/script/files" />
     </key>
   </component>
   <component name="RunManager">
@@ -932,6 +783,16 @@
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
       <method />
     </configuration>
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner />
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
+    <configuration default="true" type="PhpUnitRemoteRunConfigurationType" factoryName="PHPUnit on Server">
+      <method />
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -1042,78 +903,27 @@
       <workItem from="1465569744967" duration="298000" />
       <workItem from="1465583338224" duration="4537000" />
       <workItem from="1465588107161" duration="17131000" />
-    </task>
-    <task id="LOCAL-00001" summary="first">
-      <created>1461599127469</created>
-      <option name="number" value="00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1461599127469</updated>
-    </task>
-    <task id="LOCAL-00002" summary="resource management">
-      <created>1461665929041</created>
-      <option name="number" value="00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1461665929041</updated>
-    </task>
-    <task id="LOCAL-00003" summary="resource management">
-      <created>1461685813976</created>
-      <option name="number" value="00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1461685813976</updated>
-    </task>
-    <task id="LOCAL-00004" summary="resource management">
-      <created>1461738000543</created>
-      <option name="number" value="00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1461738000543</updated>
-    </task>
-    <task id="LOCAL-00005" summary="resource management">
-      <created>1461749013387</created>
-      <option name="number" value="00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1461749013387</updated>
-    </task>
-    <task id="LOCAL-00006" summary="resource management">
-      <created>1461749075620</created>
-      <option name="number" value="00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1461749075620</updated>
-    </task>
-    <task id="LOCAL-00007" summary="resource management">
-      <created>1461766754411</created>
-      <option name="number" value="00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1461766754411</updated>
-    </task>
-    <task id="LOCAL-00008" summary="resource management">
-      <created>1461771171822</created>
-      <option name="number" value="00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1461771171822</updated>
-    </task>
-    <task id="LOCAL-00009" summary="resource management">
-      <created>1461927572736</created>
-      <option name="number" value="00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1461927572736</updated>
-    </task>
-    <task id="LOCAL-00010" summary="gameObject management">
-      <created>1461945647362</created>
-      <option name="number" value="00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1461945647362</updated>
-    </task>
-    <task id="LOCAL-00011" summary="refactored controllers">
-      <created>1462451310037</created>
-      <option name="number" value="00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1462451310037</updated>
-    </task>
-    <task id="LOCAL-00012" summary="animation resource management">
-      <created>1462465673058</created>
-      <option name="number" value="00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1462465673058</updated>
+      <workItem from="1465843054800" duration="3607000" />
+      <workItem from="1465935025077" duration="830000" />
+      <workItem from="1465937716205" duration="3486000" />
+      <workItem from="1465979385930" duration="15450000" />
+      <workItem from="1466002162586" duration="70000" />
+      <workItem from="1466002246436" duration="787000" />
+      <workItem from="1466020334266" duration="3295000" />
+      <workItem from="1466932684457" duration="13136000" />
+      <workItem from="1466947420859" duration="118000" />
+      <workItem from="1466948084830" duration="32475000" />
+      <workItem from="1467126806366" duration="1207000" />
+      <workItem from="1467532500483" duration="2815000" />
+      <workItem from="1467541691309" duration="853000" />
+      <workItem from="1467543000580" duration="3202000" />
+      <workItem from="1467547339502" duration="2787000" />
+      <workItem from="1467552127595" duration="13554000" />
+      <workItem from="1467567143772" duration="10306000" />
+      <workItem from="1467651620433" duration="1909000" />
+      <workItem from="1467838499211" duration="475000" />
+      <workItem from="1468088408222" duration="23424000" />
+      <workItem from="1468655776053" duration="17239000" />
     </task>
     <task id="LOCAL-00013" summary="ngStyle refactored">
       <created>1463058513007</created>
@@ -1307,11 +1117,113 @@
       <option name="project" value="LOCAL" />
       <updated>1465636080353</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="mouse&#10;">
+      <created>1465853487658</created>
+      <option name="number" value="00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1465853487658</updated>
+    </task>
+    <task id="LOCAL-00046" summary="mouse events">
+      <created>1465940789833</created>
+      <option name="number" value="00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1465940789833</updated>
+    </task>
+    <task id="LOCAL-00047" summary="script file manipulations">
+      <created>1466001075864</created>
+      <option name="number" value="00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1466001075864</updated>
+    </task>
+    <task id="LOCAL-00048" summary="script file manipulations">
+      <created>1466001087653</created>
+      <option name="number" value="00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1466001087653</updated>
+    </task>
+    <task id="LOCAL-00049" summary="script file manipulations">
+      <created>1466001572937</created>
+      <option name="number" value="00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1466001572937</updated>
+    </task>
+    <task id="LOCAL-00050" summary="commonBehaviour&#10;">
+      <created>1466952583007</created>
+      <option name="number" value="00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1466952583047</updated>
+    </task>
+    <task id="LOCAL-00051" summary="commonBehaviour&#10;">
+      <created>1466958521409</created>
+      <option name="number" value="00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1466958521409</updated>
+    </task>
+    <task id="LOCAL-00052" summary="commonBehaviour&#10;">
+      <created>1466977736595</created>
+      <option name="number" value="00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1466977736595</updated>
+    </task>
+    <task id="LOCAL-00053" summary="commonBehaviour (drugBehaviour for mobile)&#10;">
+      <created>1466980231713</created>
+      <option name="number" value="00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1466980231713</updated>
+    </task>
+    <task id="LOCAL-00054" summary="commonBehaviour (drugBehaviour for mobile)&#10;">
+      <created>1467565277443</created>
+      <option name="number" value="00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1467565277444</updated>
+    </task>
+    <task id="LOCAL-00055" summary="textField ui">
+      <created>1468102667443</created>
+      <option name="number" value="00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1468102667444</updated>
+    </task>
+    <task id="LOCAL-00056" summary="current bug fixes">
+      <created>1468183780222</created>
+      <option name="number" value="00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1468183780241</updated>
+    </task>
+    <task id="LOCAL-00057" summary="current bug fixes">
+      <created>1468659178565</created>
+      <option name="number" value="00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1468659178583</updated>
+    </task>
+    <task id="LOCAL-00058" summary="textField control">
+      <created>1468660510142</created>
+      <option name="number" value="00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1468660510142</updated>
+    </task>
+    <task id="LOCAL-00059" summary="textField control">
+      <created>1468678428710</created>
+      <option name="number" value="00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1468678428710</updated>
+    </task>
+    <task id="LOCAL-00060" summary="textField control">
+      <created>1468687574237</created>
+      <option name="number" value="00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1468687574237</updated>
+    </task>
+    <task id="LOCAL-00061" summary="textField control">
+      <created>1468690079970</created>
+      <option name="number" value="00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1468690079970</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="219229000" />
+    <option name="totallyTimeSpent" value="370254000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1323,34 +1235,34 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="1301" height="744" extended-state="6" />
-    <editor active="true" />
+    <frame x="83" y="34" width="1257" height="711" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32822084" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3250444" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6446499" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3867121" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.058641974" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32197616" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.36653388" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24277456" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1890971" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6126543" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1367,8 +1279,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="first" />
-    <MESSAGE value="resource management" />
     <MESSAGE value="gameObject management" />
     <MESSAGE value="refactored controllers" />
     <MESSAGE value="animation resource management" />
@@ -1386,7 +1296,15 @@
     <MESSAGE value="script generator with scenes" />
     <MESSAGE value="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
     <MESSAGE value="keyboard events" />
-    <option name="LAST_COMMIT_MESSAGE" value="keyboard events" />
+    <MESSAGE value="mouse&#10;" />
+    <MESSAGE value="mouse events" />
+    <MESSAGE value="script file manipulations" />
+    <MESSAGE value="commonBehaviour&#10;" />
+    <MESSAGE value="commonBehaviour (drugBehaviour for mobile)&#10;" />
+    <MESSAGE value="textField ui" />
+    <MESSAGE value="current bug fixes" />
+    <MESSAGE value="textField control" />
+    <option name="LAST_COMMIT_MESSAGE" value="textField control" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1394,345 +1312,354 @@
     </breakpoint-manager>
     <watches-manager />
   </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/editor/base/routes.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateFont.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
+          <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/topPanel.html">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/spriteSheetController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="4" />
+          <caret line="35" column="133" selection-start-line="35" selection-start-column="12" selection-end-line="35" selection-end-column="133" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/base/expressApp.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/main.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.041666668">
+          <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/topPanelController.js">
+    <entry file="file://$PROJECT_DIR$/application/mvc/views/bitMapFont.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="15" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
+        <state vertical-scroll-proportion="-0.625">
+          <caret line="69" column="12" selection-start-line="69" selection-start-column="12" selection-end-line="82" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/routes/resourcesRoute.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/contextMenus.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="81" column="55" selection-start-line="81" selection-start-column="55" selection-end-line="81" selection-end-column="55" />
+        <state vertical-scroll-proportion="-7.8333335">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.0">
-          <caret line="16" column="7" selection-start-line="16" selection-start-column="7" selection-end-line="16" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/controllers/resourcesController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="102" column="5" selection-start-line="102" selection-start-column="5" selection-end-line="102" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/layerController.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/editData.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/leftMenu/scenes.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.8727274">
-          <caret line="67" column="67" selection-start-line="67" selection-start-column="59" selection-end-line="67" selection-end-column="67" />
-        </state>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/fonts/default.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/factories/resourceDao.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="65" column="70" selection-start-line="65" selection-start-column="70" selection-end-line="65" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/leftMenuController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="68" column="61" selection-start-line="68" selection-start-column="61" selection-end-line="68" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="18" column="10" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/stub.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="7" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/fonts/map.json">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/uiDesigner.xml">
+    <entry file="file://$PROJECT_DIR$/application/mvc/views/main.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13824885">
-          <caret line="4" column="5" selection-start-line="4" selection-start-column="5" selection-end-line="4" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/css/angular.css">
+    <entry file="file://$PROJECT_DIR$/application/mvc/views/editor.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="4" selection-start-line="20" selection-start-column="4" selection-end-line="20" selection-end-column="4" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/userInterface.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.625">
+          <caret line="9" column="40" selection-start-line="9" selection-start-column="40" selection-end-line="9" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/oop.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="57" column="23" selection-start-line="57" selection-start-column="17" selection-end-line="57" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/resourcesController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="149" column="5" selection-start-line="149" selection-start-column="5" selection-end-line="149" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/mainController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/base/fs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/spriteSheets.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="56" selection-start-line="7" selection-start-column="56" selection-end-line="7" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="74" selection-start-line="14" selection-start-column="74" selection-end-line="14" selection-end-column="74" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#td#2;n#tr#0;n#table#0;n#!!top" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateCommonBehaviour.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/resourceDao.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="101" selection-start-line="65" selection-start-column="49" selection-end-line="65" selection-end-column="101" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/editorOnly.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Gruntfile.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="47" selection-start-line="25" selection-start-column="47" selection-end-line="25" selection-end-column="47" />
+          <caret line="9" column="53" selection-start-line="9" selection-start-column="53" selection-end-line="9" selection-end-column="53" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appKeyUp.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/collections.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="3" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="3" />
+          <caret line="70" column="32" selection-start-line="54" selection-start-column="12" selection-end-line="70" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appKeyPress.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="3" selection-start-line="1" selection-start-column="3" selection-end-line="1" selection-end-column="3" />
+          <caret line="74" column="14" selection-start-line="74" selection-start-column="14" selection-end-line="74" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appFileUpload.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <caret line="69" column="0" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appValidator.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/templates/main.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.125">
+          <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/angular.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6524823">
+          <caret line="502" column="0" selection-start-line="502" selection-start-column="0" selection-end-line="502" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/templates/envVariables.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.125">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/generatorController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.096774">
+          <caret line="133" column="0" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/directives/appContextMenu.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+          <caret line="8" column="38" selection-start-line="8" selection-start-column="38" selection-end-line="8" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appDragDrop.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="84" column="19" selection-start-line="80" selection-start-column="16" selection-end-line="84" selection-end-column="19" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/directives/appContextMenu.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/commonBehaviour.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/dialogs.html">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="27" selection-start-line="0" selection-start-column="27" selection-end-line="0" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/contextMenus.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/factories/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="32" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/defaultCodeScript.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/dataStructure/collections.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/views/main/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/css/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.444445">
-          <caret line="74" column="31" selection-start-line="74" selection-start-column="31" selection-end-line="74" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/centralBlock.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.791667">
-          <caret line="48" column="25" selection-start-line="48" selection-start-column="25" selection-end-line="48" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/factories/messageDigest.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="35" column="13" selection-start-line="35" selection-start-column="13" selection-end-line="35" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/controllers/mainController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/debug.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/gameObjects.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.38181818">
+          <caret line="4" column="12" selection-start-line="4" selection-start-column="12" selection-end-line="4" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/sceneController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="32" selection-start-line="3" selection-start-column="32" selection-end-line="3" selection-end-column="32" />
+          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/main.html">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.375">
+          <caret line="7" column="56" selection-start-line="7" selection-start-column="56" selection-end-line="7" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/scenes.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.3818183">
+          <caret line="23" column="62" selection-start-line="23" selection-start-column="62" selection-end-line="23" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="6" selection-start-line="31" selection-start-column="6" selection-end-line="31" selection-end-column="6" />
+          <caret line="99" column="20" selection-start-line="99" selection-start-column="10" selection-end-line="99" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/dataStructure/bundle.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/all.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+          <caret line="148" column="40" selection-start-line="148" selection-start-column="16" selection-end-line="148" selection-end-column="40" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/controllers/generatorController.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/centralBlock.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/sceneManager.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="31" selection-start-line="21" selection-start-column="31" selection-end-line="21" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/templates/main.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="29" selection-start-line="31" selection-start-column="8" selection-end-line="31" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/views/main/editor.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.625">
-          <caret line="29" column="35" selection-start-line="29" selection-start-column="35" selection-end-line="29" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/factories/i18n.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="44" column="23" selection-start-line="44" selection-start-column="23" selection-end-line="44" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/animationController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="85" column="64" selection-start-line="85" selection-start-column="64" selection-end-line="85" selection-end-column="64" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/partials/dialogs/dialogCreateAnimation.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.5">
-          <caret line="100" column="0" selection-start-line="100" selection-start-column="0" selection-end-line="100" selection-end-column="0" />
+        <state vertical-scroll-proportion="-5.4727273">
+          <caret line="121" column="6" selection-start-line="121" selection-start-column="6" selection-end-line="121" selection-end-column="6" />
           <folding>
-            <element signature="n#style#0;n#div#0;n#td#2;n#tr#0;n#table#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#iframe#0;n#div#2;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/lib/oop.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="4" selection-start-line="66" selection-start-column="4" selection-end-line="66" selection-end-column="4" />
+        <state vertical-scroll-proportion="-13.064516">
+          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/controllers/gameObjectController.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/renderer.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="40" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
+        <state vertical-scroll-proportion="-13.096774">
+          <caret line="61" column="0" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/project/out/index.html">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/polifill.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1740,37 +1667,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/project/out/main.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/defaultCodeScript.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="641" column="0" selection-start-line="641" selection-start-column="0" selection-end-line="641" selection-end-column="0" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/public/js/dataStructure/models.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/debug.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="123" column="30" selection-start-line="123" selection-start-column="30" selection-end-line="123" selection-end-column="30" />
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/renderer.js">
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="53" column="11" selection-start-line="53" selection-start-column="11" selection-end-line="53" selection-end-column="11" />
+          <caret line="72" column="16" selection-start-line="72" selection-start-column="16" selection-end-line="72" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/editor/generatorResources/static/modules/keyboard.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/collider.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.5775862">
-          <caret line="61" column="48" selection-start-line="61" selection-start-column="48" selection-end-line="61" selection-end-column="48" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="14" column="38" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
           <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/i18n.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="23" selection-start-line="56" selection-start-column="23" selection-end-line="56" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.5833333">
+          <caret line="41" column="12" selection-start-line="41" selection-start-column="12" selection-end-line="41" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5298913">
+          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>flex_sdk_4.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
   </component>
 </project>
