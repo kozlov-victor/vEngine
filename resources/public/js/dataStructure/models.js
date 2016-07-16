@@ -4,9 +4,11 @@
     var models = {};
     var isPropNotFit = function(el,key){
         if (!key) return true;
+        if (key.indexOf('$$')==0) return true;
+        if (el[key] && key.indexOf('_')==0) return true;
+        if (el[key] && el[key].call) return true;
+        if (typeof el[key] == 'string') return false;
         if (!el[key]) return true;
-        if (el[key].call) return true;
-        if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
 
     models.BaseModel = Class.extend({
@@ -16,7 +18,9 @@
         toJSON: function(){
             var res = {};
             for (var key in this) {
-                if (isPropNotFit(this,key)) continue;
+                if (isPropNotFit(this,key)) {
+                    continue;
+                }
                 res[key]=this[key];
             }
             return res;
@@ -251,6 +255,7 @@
         _layers:null,
         _allGameObjects:null,
         __onResourcesReady: function(){
+            console.log('resources ready');
             var self = this;
             self._allGameObjects = new ve.collections.List();
             self._layers.forEach(function(l){
@@ -274,6 +279,9 @@
                 dataSet.combine(l.getAllSpriteSheets());
             });
             return dataSet;
+        },
+        findGameObject: function(name){
+            return this._allGameObjects.find({name:name});
         },
         getAllGameObjects:function(){
             return this._allGameObjects;
@@ -311,7 +319,7 @@
         },
         construct: function(){
             this._font = ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text||this.subType);
+            this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
             this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
         },

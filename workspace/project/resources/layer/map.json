@@ -34,16 +34,20 @@
                 "id": "0906_4709_17"
             },
             {
-                "text": "hello, bird!",
-                "width": 101,
+                "text": "",
+                "width": 252,
                 "height": 30,
                 "type": "userInterface",
                 "subType": "textField",
-                "posX": 99,
-                "posY": 18,
+                "posX": 6,
+                "posY": 15,
                 "protoId": null,
                 "name": "textField1",
-                "id": "7072_6855_8"
+                "id": "7072_6855_8",
+                "$$hashKey": "object:43",
+                "_edit": false,
+                "rigid": false,
+                "groupName": ""
             }
         ],
         "id": "3534_2050_13"

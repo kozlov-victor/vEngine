@@ -145,8 +145,8 @@
         
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
-                applyIndividualBehaviour(scene);
                 scene.__onResourcesReady();
+                applyIndividualBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
                         applyCommonBehaviour(gameObject);
@@ -274,9 +274,11 @@
     var models = {};
     var isPropNotFit = function(el,key){
         if (!key) return true;
+        if (key.indexOf('$$')==0) return true;
+        if (el[key] && key.indexOf('_')==0) return true;
+        if (el[key] && el[key].call) return true;
+        if (typeof el[key] == 'string') return false;
         if (!el[key]) return true;
-        if (el[key].call) return true;
-        if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
 
     models.BaseModel = Class.extend({
@@ -286,7 +288,9 @@
         toJSON: function(){
             var res = {};
             for (var key in this) {
-                if (isPropNotFit(this,key)) continue;
+                if (isPropNotFit(this,key)) {
+                    continue;
+                }
                 res[key]=this[key];
             }
             return res;
@@ -545,6 +549,9 @@
             });
             return dataSet;
         },
+        findGameObject: function(searchObj){
+            return this._allGameObjects.find(searchObj);
+        },
         getAllGameObjects:function(){
             return this._allGameObjects;
         }
@@ -570,7 +577,7 @@
             this._chars = [];
             this.text = text;
             this.width = 0;
-            for (var i= 0,max=text.length;i<max;i++) {
+            for (var i=0,max=text.length;i<max;i++) {
                 this._chars.push(text[i]);
                 var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
                 this.width+=currSymbolInFont.width;
@@ -581,9 +588,29 @@
         },
         construct: function(){
             this._font = ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text||this.subType);
+            this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
             this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+        },
+        render: function(renderer){
+            var posX = this.posX;
+            var posY = this.posY;
+            var self = this;
+            this._chars.forEach(function(ch){
+                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+                renderer.drawImage(
+                    self._spriteSheet._img,
+                    charInCtx.x,
+                    charInCtx.y,
+                    charInCtx.width,
+                    charInCtx.height,
+                    posX,
+                    posY,
+                    charInCtx.width,
+                    charInCtx.height
+                );
+                posX+=charInCtx.width;
+            });
         }
     },
     {
@@ -1109,13 +1136,13 @@ window.app.
             resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
         };
 
-        s.showScript = function(model){
+        s.showScript = function(model,e){
+            e && e.stopPropagation();
             s.uiHelper.window = 'scriptWindow';
             s.editData.scriptEditorUrl =
                 '/editor?name='+
                 model.name+
-                '&path='+encodeURIComponent('script/'+model.type
-            );
+                '&path='+encodeURIComponent('script/'+model.type);
         };
 
     });

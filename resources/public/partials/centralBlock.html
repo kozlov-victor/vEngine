@@ -42,8 +42,7 @@
                     app-draggable="gameObjectFromSelf"
                     app-context-menu="ctxGameObject"
                     ng-model="item"
-
-                    ng-click="editData.currSceneGameObjectInEdit=item"
+                    ng-click="editData.currSceneGameObjectInEdit=item;item._edit=true"
                     ng-style="utils.merge(
                             utils.getGameObjectCss(item),
                             {
@@ -52,6 +51,8 @@
                                 top: item.posY+'px',
                                 backgroundColor:'rgb(0,222,0.1)',
                                 height:item.height+'px',
+                                width:item.width?item.width+'px':'10px',
+                                backgroundColor:item.width?'':'#ddd',
                                 backgroundImage:'none'
                             }
                     )"
@@ -71,7 +72,6 @@
                             backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',
                             backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'
                         }"
-                            ng-click="item._edit=true"
                             ng-repeat="ch in item._chars track by $index">
                         </span>
                 </div>
@@ -84,13 +84,12 @@
                                 left:0,
                                 top: 0,
                                 position:'absolute',
-                                width:item.width+'px',
-                                height:item.height+'px'
+                                width:item.width?item.width+'px':'50px'
                             }">
 
                     <textarea ng-style="{
-                                width:item.width+'px',
-                                height:item.height+'px'
+                                width:item.width?item.width+'px':'50px',
+                                height:item.height?item.height+'px':'50px'
                             }"
                               ng-model="item.text"
                             >
@@ -121,4 +120,3 @@
             frameborder="0" scrolling="no"
             ></iframe>
 </div>
-

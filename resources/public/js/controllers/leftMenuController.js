@@ -97,13 +97,13 @@ window.app.
             resourceDao.deleteObjectFromResource(scene.type,scene.id,'layerProps', l.id);
         };
 
-        s.showScript = function(model){
+        s.showScript = function(model,e){
+            e && e.stopPropagation();
             s.uiHelper.window = 'scriptWindow';
             s.editData.scriptEditorUrl =
                 '/editor?name='+
                 model.name+
-                '&path='+encodeURIComponent('script/'+model.type
-            );
+                '&path='+encodeURIComponent('script/'+model.type);
         };
 
     });

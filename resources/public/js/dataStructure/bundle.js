@@ -68,8 +68,8 @@
         
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
-                applyIndividualBehaviour(scene);
                 scene.__onResourcesReady();
+                applyIndividualBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
                         applyCommonBehaviour(gameObject);

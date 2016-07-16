@@ -196,9 +196,11 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
     var models = {};
     var isPropNotFit = function(el,key){
         if (!key) return true;
+        if (key.indexOf('$$')==0) return true;
+        if (el[key] && key.indexOf('_')==0) return true;
+        if (el[key] && el[key].call) return true;
+        if (typeof el[key] == 'string') return false;
         if (!el[key]) return true;
-        if (el[key].call) return true;
-        if (key.indexOf('_')==0 || key.indexOf('$$')==0) return true;
     };
 
     models.BaseModel = Class.extend({
@@ -208,7 +210,9 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         toJSON: function(){
             var res = {};
             for (var key in this) {
-                if (isPropNotFit(this,key)) continue;
+                if (isPropNotFit(this,key)) {
+                    continue;
+                }
                 res[key]=this[key];
             }
             return res;
@@ -443,6 +447,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         _layers:null,
         _allGameObjects:null,
         __onResourcesReady: function(){
+            console.log('resources ready');
             var self = this;
             self._allGameObjects = new ve.collections.List();
             self._layers.forEach(function(l){
@@ -466,6 +471,9 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
                 dataSet.combine(l.getAllSpriteSheets());
             });
             return dataSet;
+        },
+        findGameObject: function(name){
+            return this._allGameObjects.find({name:name});
         },
         getAllGameObjects:function(){
             return this._allGameObjects;
@@ -503,7 +511,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         },
         construct: function(){
             this._font = ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text||this.subType);
+            this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
             this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
         },
@@ -616,8 +624,8 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
-                applyIndividualBehaviour(scene);
                 scene.__onResourcesReady();
+                applyIndividualBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
                         applyCommonBehaviour(gameObject);
@@ -2337,16 +2345,20 @@ Class.extend(
                 "id": "0906_4709_17"
             },
             {
-                "text": "hello, bird!",
-                "width": 101,
+                "text": "",
+                "width": 252,
                 "height": 30,
                 "type": "userInterface",
                 "subType": "textField",
-                "posX": 99,
-                "posY": 18,
+                "posX": 6,
+                "posY": 15,
                 "protoId": null,
                 "name": "textField1",
-                "id": "7072_6855_8"
+                "id": "7072_6855_8",
+                "$$hashKey": "object:43",
+                "_edit": false,
+                "rigid": false,
+                "groupName": ""
             }
         ],
         "id": "3534_2050_13"
@@ -2369,7 +2381,7 @@ Class.extend(
 ],
         
         gameProps:{
-    "width": 300,
+    "width": 350,
     "height": 300
 },
         
@@ -2405,7 +2417,13 @@ Class.extend(
     var clazz = ve.models.Behaviour.extend({
 
     onCreate: function(){
-
+        console.log('created');
+        var textField = this.findGameObject('textField1');
+        var bird = this.findGameObject('b');
+        textField.setText('Привет, я птичка поздравлялка');
+        bird.on('click',function(){
+            textField.setText('Ура!!!!!');
+        });
     },
 
     onUpdate: function(time) {
