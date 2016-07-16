@@ -61,6 +61,18 @@
                                             </div>
                                             <div class="cell">
                                                 <div
+                                                        ng-if="gObj.subType=='textField'"
+                                                        ng-style="utils.merge(
+                                                            utils.getGameObjectCss(gObj),
+                                                            {
+                                                                zoom:gObj.height>30?30/gObj.height:1,
+                                                                width:'auto',
+                                                                backgroundImage:'none'
+                                                            }
+                                                            )">
+                                                </div>
+                                                <div
+                                                        ng-if="!gObj.subType"
                                                         ng-style="utils.merge(
                                                             utils.getGameObjectCss(gObj),
                                                             {zoom:gObj.height>30?30/gObj.height:1}

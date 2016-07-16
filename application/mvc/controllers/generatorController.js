@@ -84,9 +84,12 @@ var addGameResources = function(sourceMain){
 
 var initFolderStructure = function(sourceMain){
     fs.deleteFolderSync('workspace/project/out');
-    fs.createFolderSync('workspace/project/out/resources/spriteSheet');
-    fs.copyFolderSync('workspace/project/resources/spriteSheet','workspace/project/out/resources/spriteSheet');
-    fs.deleteFileSync('workspace/project/out/resources/spriteSheet/map.json');
+
+    ['spriteSheet','font'].forEach(function(r){
+        fs.createFolderSync('workspace/project/out/resources/'+r);
+        fs.copyFolderSync('workspace/project/resources/'+r,'workspace/project/out/resources/'+r);
+        fs.deleteFileSync('workspace/project/out/resources/'+r+'/map.json');
+    });
 
     fs.writeFileSync('workspace/project/out/main.js',sourceMain.get());
     fs.writeFileSync('workspace/project/out/index.html',fs.readFileSync('resources/generatorResources/static/index.html'));

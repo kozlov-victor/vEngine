@@ -300,7 +300,7 @@
             this._chars = [];
             this.text = text;
             this.width = 0;
-            for (var i= 0,max=text.length;i<max;i++) {
+            for (var i=0,max=text.length;i<max;i++) {
                 this._chars.push(text[i]);
                 var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
                 this.width+=currSymbolInFont.width;
@@ -313,6 +313,27 @@
             this._font = ve_local.bundle.fontList.find({name:'default'});
             this.setText(this.text||this.subType);
             this.height = this._font.fontContext.symbols[' '].height;
+            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+        },
+        render: function(renderer){
+            var posX = this.posX;
+            var posY = this.posY;
+            var self = this;
+            this._chars.forEach(function(ch){
+                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+                renderer.drawImage(
+                    self._spriteSheet._img,
+                    charInCtx.x,
+                    charInCtx.y,
+                    charInCtx.width,
+                    charInCtx.height,
+                    posX,
+                    posY,
+                    charInCtx.width,
+                    charInCtx.height
+                );
+                posX+=charInCtx.width;
+            });
         }
     },
     {

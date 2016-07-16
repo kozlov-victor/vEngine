@@ -34,16 +34,16 @@
                 "id": "0906_4709_17"
             },
             {
-                "text": "textField2",
-                "width": 150,
-                "height": 29,
+                "text": "hello, bird!",
+                "width": 101,
+                "height": 30,
                 "type": "userInterface",
                 "subType": "textField",
-                "posX": 10,
-                "posY": 15,
+                "posX": 99,
+                "posY": 18,
                 "protoId": null,
                 "name": "textField1",
-                "id": "8115_5334_21"
+                "id": "7072_6855_8"
             }
         ],
         "id": "3534_2050_13"
