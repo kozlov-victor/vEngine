@@ -30,22 +30,29 @@
         };
 
         var applyIndividualBehaviour = function(model){
-            var script = ve_local.scripts[model.type][model.name+'.js'];
-            if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
-            var BehaviourClass = script();
-            model._behaviour = new BehaviourClass();
-            model._behaviour.toJSON_Array().forEach(function(itm){
-                model[itm.key]=itm.value;
-            });
-            model._behaviour.onCreate.apply(model);
-            model.__updateIndividualBehaviour__ = function(deltaTime){
-                model._behaviour.onUpdate.apply(model,[deltaTime]);
+            var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
+            if (script) {
+                var BehaviourClass = script();
+                model._behaviour = new BehaviourClass();
+                model._behaviour.toJSON_Array().forEach(function(itm){
+                    model[itm.key]=itm.value;
+                });
+                model._behaviour.onCreate.apply(model);
+                model.__updateIndividualBehaviour__ = function(deltaTime){
+                    model._behaviour.onUpdate.apply(model,[deltaTime]);
+                }
+            } else {
+                model.__updateIndividualBehaviour__ = noop;
             }
+
         };
 
         var applyCommonBehaviour = function(model){
             var cbList = [];
-            if (!model._commonBehaviour) return;
+            if (!model._commonBehaviour) {
+                model.__updateCommonBehaviour__ = noop;
+                return;
+            }
             model._commonBehaviour.forEach(function(cb){
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);

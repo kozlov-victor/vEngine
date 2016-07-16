@@ -2,6 +2,7 @@
 var ve = {};
 var ve_local = {};
 ve.commonBehaviour = {};
+function noop() {};
 ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameObject","layer","scene"];
 (function() {
 
@@ -287,16 +288,31 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
     models.BaseGameObject = models.BaseModel.extend({
         type:'baseGameObject',
         groupName:'',
+        _spriteSheet:null,
         posX:0,
         posY:0,
         width:0,
-        height:0
+        height:0,
+        _layer:null,
+        getRect: function(){
+            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
+        },
+        kill: function(){
+            this._layer._gameObjects.remove({id:this.id});
+            this._layer._scene._allGameObjects.remove({id:this.id});
+        },
+        getScene: function(){
+            return this._layer._scene;
+        },
+        update: function(){},
+        render: function(){
+
+        }
     });
 
     models.GameObject = models.BaseGameObject.extend({
         type:'gameObject',
         spriteSheetId:null,
-        _spriteSheet:null,
         _behaviour:null,
         commonBehaviour:[],
         _commonBehaviour:null,
@@ -308,7 +324,6 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
-        _layer:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -325,16 +340,6 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
             this.commonBehaviour.forEach(function(cb){
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
-        },
-        kill: function(){
-            this._layer._gameObjects.remove({id:this.id});
-            this._layer._scene._allGameObjects.remove({id:this.id});
-        },
-        getScene: function(){
-            return this._layer._scene;
-        },
-        getRect: function(){
-            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.find({name: animationName});
@@ -354,6 +359,19 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
+        },
+        render: function(renderer){
+            renderer.drawImage(
+                this._spriteSheet._img,
+                this._sprPosX,
+                this._sprPosY,
+                this._spriteSheet._frameWidth,
+                this._spriteSheet._frameHeight,
+                this.posX,
+                this.posY,
+                this.width,
+                this.height
+            );
         }
     });
 
@@ -413,7 +431,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         getAllSpriteSheets:function() {
             var dataSet = new ve.collections.Set();
             this._gameObjects.forEach(function(obj){
-                dataSet.add(obj._spriteSheet);
+                obj._spriteSheet && dataSet.add(obj._spriteSheet);
             });
             return dataSet;
         }
@@ -469,6 +487,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         _chars:null,
         text:'',
         _font:null,
+        rigid:false,
         setText: function(text) {
             this._chars = [];
             this.text = text;
@@ -538,22 +557,29 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         };
 
         var applyIndividualBehaviour = function(model){
-            var script = ve_local.scripts[model.type][model.name+'.js'];
-            if (!script) throw 'can not found script for '+ model.name + ' ' + model.type;
-            var BehaviourClass = script();
-            model._behaviour = new BehaviourClass();
-            model._behaviour.toJSON_Array().forEach(function(itm){
-                model[itm.key]=itm.value;
-            });
-            model._behaviour.onCreate.apply(model);
-            model.__updateIndividualBehaviour__ = function(deltaTime){
-                model._behaviour.onUpdate.apply(model,[deltaTime]);
+            var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
+            if (script) {
+                var BehaviourClass = script();
+                model._behaviour = new BehaviourClass();
+                model._behaviour.toJSON_Array().forEach(function(itm){
+                    model[itm.key]=itm.value;
+                });
+                model._behaviour.onCreate.apply(model);
+                model.__updateIndividualBehaviour__ = function(deltaTime){
+                    model._behaviour.onUpdate.apply(model,[deltaTime]);
+                }
+            } else {
+                model.__updateIndividualBehaviour__ = noop;
             }
+
         };
 
         var applyCommonBehaviour = function(model){
             var cbList = [];
-            if (!model._commonBehaviour) return;
+            if (!model._commonBehaviour) {
+                model.__updateCommonBehaviour__ = noop;
+                return;
+            }
             model._commonBehaviour.forEach(function(cb){
                 var instance = new ve.commonBehaviour[cb.name]();
                 instance.initialize(model,cb.parameters);
@@ -643,24 +669,14 @@ ve_local.CanvasRenderer = function(){
         return canvas;
     };
 
+    this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
+        ctx.drawImage(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH);
+    };
+
     this.cancel = function(){
         cancelAnimationFrame(drawScene);
     };
 
-    var drawObject = function(gameObj){
-        ctx.drawImage(
-            gameObj._spriteSheet._img,
-            gameObj._sprPosX,
-            gameObj._sprPosY,
-            gameObj._spriteSheet._frameWidth,
-            gameObj._spriteSheet._frameHeight,
-            gameObj.posX,
-            gameObj.posY,
-            gameObj.width,
-            gameObj.height
-        );
-
-    };
     var drawScene = function(){
         reqAnimFrame(drawScene);
 
@@ -678,7 +694,7 @@ ve_local.CanvasRenderer = function(){
                 obj.__updateCommonBehaviour__();
                 obj.__updateIndividualBehaviour__(deltaTime);
                 obj.update(currTime,deltaTime);
-                drawObject(obj);
+                obj.render(self);
             });
         });
         ve.keyboard._onNextTick();
@@ -2294,10 +2310,22 @@ Class.extend(
                     }
                 ],
                 "frameAnimationIds": [],
-                "posX": 91,
-                "posY": 80,
+                "posX": 94,
+                "posY": 92,
                 "protoId": "5139_0458_16",
                 "id": "0906_4709_17"
+            },
+            {
+                "text": "textField2",
+                "width": 150,
+                "height": 29,
+                "type": "userInterface",
+                "subType": "textField",
+                "posX": 10,
+                "posY": 15,
+                "protoId": null,
+                "name": "textField1",
+                "id": "8115_5334_21"
             }
         ],
         "id": "3534_2050_13"

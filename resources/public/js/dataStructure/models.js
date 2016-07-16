@@ -96,16 +96,31 @@
     models.BaseGameObject = models.BaseModel.extend({
         type:'baseGameObject',
         groupName:'',
+        _spriteSheet:null,
         posX:0,
         posY:0,
         width:0,
-        height:0
+        height:0,
+        _layer:null,
+        getRect: function(){
+            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
+        },
+        kill: function(){
+            this._layer._gameObjects.remove({id:this.id});
+            this._layer._scene._allGameObjects.remove({id:this.id});
+        },
+        getScene: function(){
+            return this._layer._scene;
+        },
+        update: function(){},
+        render: function(){
+
+        }
     });
 
     models.GameObject = models.BaseGameObject.extend({
         type:'gameObject',
         spriteSheetId:null,
-        _spriteSheet:null,
         _behaviour:null,
         commonBehaviour:[],
         _commonBehaviour:null,
@@ -117,7 +132,6 @@
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
-        _layer:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -134,16 +148,6 @@
             this.commonBehaviour.forEach(function(cb){
                 self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
             });
-        },
-        kill: function(){
-            this._layer._gameObjects.remove({id:this.id});
-            this._layer._scene._allGameObjects.remove({id:this.id});
-        },
-        getScene: function(){
-            return this._layer._scene;
-        },
-        getRect: function(){
-            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
         },
         getFrAnimation: function(animationName){
             return this._frameAnimations.find({name: animationName});
@@ -163,6 +167,19 @@
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
+        },
+        render: function(renderer){
+            renderer.drawImage(
+                this._spriteSheet._img,
+                this._sprPosX,
+                this._sprPosY,
+                this._spriteSheet._frameWidth,
+                this._spriteSheet._frameHeight,
+                this.posX,
+                this.posY,
+                this.width,
+                this.height
+            );
         }
     });
 
@@ -222,7 +239,7 @@
         getAllSpriteSheets:function() {
             var dataSet = new ve.collections.Set();
             this._gameObjects.forEach(function(obj){
-                dataSet.add(obj._spriteSheet);
+                obj._spriteSheet && dataSet.add(obj._spriteSheet);
             });
             return dataSet;
         }
@@ -278,6 +295,7 @@
         _chars:null,
         text:'',
         _font:null,
+        rigid:false,
         setText: function(text) {
             this._chars = [];
             this.text = text;

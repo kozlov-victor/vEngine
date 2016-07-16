@@ -24,24 +24,14 @@ ve_local.CanvasRenderer = function(){
         return canvas;
     };
 
+    this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
+        ctx.drawImage(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH);
+    };
+
     this.cancel = function(){
         cancelAnimationFrame(drawScene);
     };
 
-    var drawObject = function(gameObj){
-        ctx.drawImage(
-            gameObj._spriteSheet._img,
-            gameObj._sprPosX,
-            gameObj._sprPosY,
-            gameObj._spriteSheet._frameWidth,
-            gameObj._spriteSheet._frameHeight,
-            gameObj.posX,
-            gameObj.posY,
-            gameObj.width,
-            gameObj.height
-        );
-
-    };
     var drawScene = function(){
         reqAnimFrame(drawScene);
 
@@ -59,7 +49,7 @@ ve_local.CanvasRenderer = function(){
                 obj.__updateCommonBehaviour__();
                 obj.__updateIndividualBehaviour__(deltaTime);
                 obj.update(currTime,deltaTime);
-                drawObject(obj);
+                obj.render(self);
             });
         });
         ve.keyboard._onNextTick();
