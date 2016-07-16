@@ -1,21 +1,21 @@
 [
     {
-        "spriteSheetId": "8899_1840_8",
-        "width": 64,
-        "height": 64,
-        "name": "globus",
+        "spriteSheetId": "1879_7247_15",
+        "width": 110,
+        "height": 101,
+        "name": "b",
         "type": "gameObject",
         "commonBehaviour": [
             {
                 "name": "draggable",
                 "parameters": {},
-                "id": "4156_4459_22",
+                "id": "6616_0188_20",
                 "type": "commonBehaviour"
             }
         ],
         "frameAnimationIds": [
-            "9805_5997_24"
+            "2195_5056_19"
         ],
-        "id": "1423_4987_21"
+        "id": "5139_0458_16"
     }
 ]

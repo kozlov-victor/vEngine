@@ -1162,19 +1162,20 @@ Class.extend(
         
         spriteSheet:[
     {
-        "resourcePath": "resources/spriteSheet/globus.png",
-        "width": 320,
-        "height": 256,
+        "resourcePath": "resources/spriteSheet/bird.png",
+        "width": 551,
+        "height": 304,
+        "name": "bird",
         "numOfFramesH": 5,
-        "numOfFramesV": 4,
-        "name": "globus",
+        "numOfFramesV": 3,
         "type": "spriteSheet",
-        "id": "8899_1840_8"
+        "id": "1879_7247_15"
     }
 ],
         
         frameAnimation:[
     {
+        "name": "fly",
         "frames": [
             0,
             1,
@@ -1189,17 +1190,11 @@ Class.extend(
             10,
             11,
             12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18
+            13
         ],
-        "name": "rotate",
         "type": "frameAnimation",
         "duration": 1000,
-        "id": "9805_5997_24"
+        "id": "2195_5056_19"
     }
 ],
         
@@ -2249,76 +2244,84 @@ Class.extend(
         
         gameObject:[
     {
-        "spriteSheetId": "8899_1840_8",
-        "width": 64,
-        "height": 64,
-        "name": "globus",
+        "spriteSheetId": "1879_7247_15",
+        "width": 110,
+        "height": 101,
+        "name": "b",
         "type": "gameObject",
         "commonBehaviour": [
             {
                 "name": "draggable",
                 "parameters": {},
-                "id": "4156_4459_22",
+                "id": "6616_0188_20",
                 "type": "commonBehaviour"
             }
         ],
         "frameAnimationIds": [
-            "9805_5997_24"
+            "2195_5056_19"
         ],
-        "id": "1423_4987_21"
+        "id": "5139_0458_16"
     }
 ],
         
         layer:[
     {
-        "name": "main",
+        "name": "ll",
         "type": "layer",
         "gameObjectProps": [
             {
-                "spriteSheetId": "8899_1840_8",
-                "width": 64,
-                "height": 64,
-                "name": "globus",
+                "spriteSheetId": "1879_7247_15",
+                "width": 110,
+                "height": 101,
+                "name": "b",
                 "type": "gameObject",
                 "commonBehaviour": [
                     {
-                        "name": "draggable",
-                        "parameters": {},
-                        "id": "4156_4459_22",
+                        "name": "control4dir",
+                        "parameters": {
+                            "velocity": 100,
+                            "walkLeftAnimation": "left",
+                            "walkRightAnimation": "right",
+                            "walkUpAnimation": "up",
+                            "walkDownAnimation": "down",
+                            "idleLeftAnimation": "idleLeft",
+                            "idleRightAnimation": "idleRight",
+                            "idleUpAnimation": "idleUp",
+                            "idleDownAnimation": "idleDown"
+                        },
+                        "id": "5084_8174_18",
                         "type": "commonBehaviour"
                     }
                 ],
-                "frameAnimationIds": [
-                    "9805_5997_24"
-                ],
-                "posX": 122,
-                "posY": 74,
-                "protoId": "1423_4987_21",
-                "id": "0523_5685_23"
+                "frameAnimationIds": [],
+                "posX": 91,
+                "posY": 80,
+                "protoId": "5139_0458_16",
+                "id": "0906_4709_17"
             }
         ],
-        "id": "0518_0522_5"
+        "id": "3534_2050_13"
     }
 ],
         
         scene:[
     {
-        "name": "main",
+        "name": "m",
         "type": "scene",
         "layerProps": [
             {
                 "type": "layer",
-                "protoId": "0518_0522_5",
-                "id": "2776_0567_6"
+                "protoId": "3534_2050_13",
+                "id": "0914_2087_14"
             }
         ],
-        "id": "3383_3824_4"
+        "id": "7174_5436_12"
     }
 ],
         
         gameProps:{
-    "width": 320,
-    "height": 240
+    "width": 300,
+    "height": 300
 },
         
     });
@@ -2328,11 +2331,11 @@ Class.extend(
     ve_local.scripts.scene = {};
 
     
-    ve_local.scripts.gameObject['globus.js'] = function(){
+    ve_local.scripts.gameObject['b.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
     onCreate: function(){
-        this.getFrAnimation('rotate').play();
+        this.getFrAnimation('fly').play();
     },
 
     onUpdate: function(time) {
@@ -2349,7 +2352,7 @@ Class.extend(
     };
     ;
     
-    ve_local.scripts.scene['main.js'] = function(){
+    ve_local.scripts.scene['m.js'] = function(){
     var clazz = ve.models.Behaviour.extend({
 
     onCreate: function(){

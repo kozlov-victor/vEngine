@@ -63,7 +63,7 @@ app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
-        this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId){
+        this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
                 url: '/deleteObjectFromResource',
                 method: "POST",
@@ -71,7 +71,7 @@ app
                 data: {resourceType:resourceType,resourceId:resourceId,objectType:objectType,objectId:objectId}
             }).
             success(function (res) {
-
+                    callback && callback();
             });
         };
         this.deleteResource = function(id,type,callBack){

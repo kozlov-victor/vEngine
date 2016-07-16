@@ -53,6 +53,30 @@ window.app
             return res;
         };
 
+        this.removeFromArray = function(arr,filter) {
+            var indexOf = function(arr,filter){
+                var i = 0;
+                var success = false;
+                arr.some(function(item){
+                    var isCandidate = true;
+                    Object.keys(filter).some(function(conditionKey){
+                        if (filter[conditionKey]!=item[conditionKey]) {
+                            isCandidate = false;
+                            return true;
+                        }
+                    });
+                    if (isCandidate) {
+                        success = true;
+                        return true;
+                    }
+                    i++;
+                });
+                return success?i:-1;
+            };
+            var index = indexOf(arr,filter);
+            if (index>-1) arr.splice(index,1);
+        };
+
 
         this.dataURItoBlob =function (dataURI) {
             // convert base64/URLEncoded data component to raw binary data held in a string

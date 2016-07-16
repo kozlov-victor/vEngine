@@ -895,6 +895,19 @@ window.app.
             });
         };
 
+        s.deleteCommonBehaviour = function(item){
+            resourceDao.deleteObjectFromResource(
+                editData.currGameObjectInEdit.type,
+                editData.currGameObjectInEdit.id,
+                item.type,
+                item.id,
+                function(){
+                    s.editData.currGameObjectInEdit._commonBehaviour.remove({id:item.id});
+                    utils.removeFromArray(s.editData.currGameObjectInEdit.commonBehaviour,{id:item.id});
+                }
+            );
+        };
+
         s.showEditAnimationDialog = function(item) {
             s.editData.currFrAnimationInEdit = item.clone();
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
@@ -1728,7 +1741,7 @@ app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
-        this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId){
+        this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
                 url: '/deleteObjectFromResource',
                 method: "POST",
@@ -1736,7 +1749,7 @@ app
                 data: {resourceType:resourceType,resourceId:resourceId,objectType:objectType,objectId:objectId}
             }).
             success(function (res) {
-
+                    callback && callback();
             });
         };
         this.deleteResource = function(id,type,callBack){
@@ -1966,6 +1979,30 @@ window.app
                 res.push({char:str[i]});
             }
             return res;
+        };
+
+        this.removeFromArray = function(arr,filter) {
+            var indexOf = function(arr,filter){
+                var i = 0;
+                var success = false;
+                arr.some(function(item){
+                    var isCandidate = true;
+                    Object.keys(filter).some(function(conditionKey){
+                        if (filter[conditionKey]!=item[conditionKey]) {
+                            isCandidate = false;
+                            return true;
+                        }
+                    });
+                    if (isCandidate) {
+                        success = true;
+                        return true;
+                    }
+                    i++;
+                });
+                return success?i:-1;
+            };
+            var index = indexOf(arr,filter);
+            if (index>-1) arr.splice(index,1);
         };
 
 

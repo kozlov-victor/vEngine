@@ -55,6 +55,19 @@ window.app.
             });
         };
 
+        s.deleteCommonBehaviour = function(item){
+            resourceDao.deleteObjectFromResource(
+                editData.currGameObjectInEdit.type,
+                editData.currGameObjectInEdit.id,
+                item.type,
+                item.id,
+                function(){
+                    s.editData.currGameObjectInEdit._commonBehaviour.remove({id:item.id});
+                    utils.removeFromArray(s.editData.currGameObjectInEdit.commonBehaviour,{id:item.id});
+                }
+            );
+        };
+
         s.showEditAnimationDialog = function(item) {
             s.editData.currFrAnimationInEdit = item.clone();
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
