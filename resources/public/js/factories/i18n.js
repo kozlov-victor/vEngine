@@ -53,7 +53,8 @@ window.app
                 fontColor:'font color',
                 userInterface:'user interface',
                 textField:'text field',
-                noDataToEdit:'no data to edit provided'
+                noDataToEdit:'no data to edit provided',
+                rigid:'rigid'
             }
         };
 

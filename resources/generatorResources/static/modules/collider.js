@@ -12,6 +12,7 @@
 
         this.check = function(obj,newX,newY){
             var res = gos.some(function(go){
+                if (!go.rigid) return;
                 if (obj==go) return;
                 var objRect = obj.getRect();
                 objRect.x = newX;

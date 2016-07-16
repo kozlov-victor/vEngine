@@ -28,10 +28,11 @@
                     }
                 ],
                 "frameAnimationIds": [],
-                "posX": 94,
-                "posY": 92,
+                "posX": 114,
+                "posY": 101,
                 "protoId": "5139_0458_16",
-                "id": "0906_4709_17"
+                "id": "0906_4709_17",
+                "groupName": ""
             },
             {
                 "text": "",
@@ -48,6 +49,48 @@
                 "_edit": false,
                 "rigid": false,
                 "groupName": ""
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": -5,
+                "posY": 73,
+                "protoId": "3315_7346_266",
+                "id": "7476_9556_267"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 148,
+                "posY": 10,
+                "protoId": "3315_7346_266",
+                "id": "9709_5369_268"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 62,
+                "posY": 80,
+                "protoId": "3315_7346_266",
+                "id": "2589_0321_269"
             }
         ],
         "id": "3534_2050_13"

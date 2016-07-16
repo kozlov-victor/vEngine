@@ -8,5 +8,15 @@
         "numOfFramesV": 3,
         "type": "spriteSheet",
         "id": "1879_7247_15"
+    },
+    {
+        "name": "cloud",
+        "resourcePath": "resources/spriteSheet/cloud.png",
+        "width": 300,
+        "height": 190,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "1501_7424_265"
     }
 ]

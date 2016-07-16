@@ -8,6 +8,7 @@
         if (el[key] && key.indexOf('_')==0) return true;
         if (el[key] && el[key].call) return true;
         if (typeof el[key] == 'string') return false;
+        if (typeof el[key] == 'number') return false;
         if (!el[key]) return true;
     };
 
@@ -136,6 +137,7 @@
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
+        rigid:true,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -318,6 +320,7 @@
             return this._super();
         },
         construct: function(){
+            this.rigid = false;
             this._font = ve_local.bundle.fontList.find({name:'default'});
             this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;

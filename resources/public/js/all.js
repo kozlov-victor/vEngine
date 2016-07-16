@@ -278,6 +278,7 @@
         if (el[key] && key.indexOf('_')==0) return true;
         if (el[key] && el[key].call) return true;
         if (typeof el[key] == 'string') return false;
+        if (typeof el[key] == 'number') return false;
         if (!el[key]) return true;
     };
 
@@ -406,6 +407,7 @@
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
+        rigid:true,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -525,6 +527,7 @@
         _layers:null,
         _allGameObjects:null,
         __onResourcesReady: function(){
+            console.log('resources ready');
             var self = this;
             self._allGameObjects = new ve.collections.List();
             self._layers.forEach(function(l){
@@ -549,8 +552,8 @@
             });
             return dataSet;
         },
-        findGameObject: function(searchObj){
-            return this._allGameObjects.find(searchObj);
+        findGameObject: function(name){
+            return this._allGameObjects.find({name:name});
         },
         getAllGameObjects:function(){
             return this._allGameObjects;
@@ -587,6 +590,7 @@
             return this._super();
         },
         construct: function(){
+            this.rigid = false;
             this._font = ve_local.bundle.fontList.find({name:'default'});
             this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
@@ -1670,7 +1674,8 @@ window.app
                 fontColor:'font color',
                 userInterface:'user interface',
                 textField:'text field',
-                noDataToEdit:'no data to edit provided'
+                noDataToEdit:'no data to edit provided',
+                rigid:'rigid'
             }
         };
 

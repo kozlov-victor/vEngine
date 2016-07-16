@@ -200,6 +200,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         if (el[key] && key.indexOf('_')==0) return true;
         if (el[key] && el[key].call) return true;
         if (typeof el[key] == 'string') return false;
+        if (typeof el[key] == 'number') return false;
         if (!el[key]) return true;
     };
 
@@ -328,6 +329,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
         _frameAnimations: null,
         frameAnimationIds:[],
         _currFrameAnimation:null,
+        rigid:true,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -510,6 +512,7 @@ ve_local.RESOURCE_NAMES = ["audio","spriteSheet","frameAnimation","font","gameOb
             return this._super();
         },
         construct: function(){
+            this.rigid = false;
             this._font = ve_local.bundle.fontList.find({name:'default'});
             this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
@@ -1123,6 +1126,7 @@ ve_local.SceneManager = function(){
 
         this.check = function(obj,newX,newY){
             var res = gos.some(function(go){
+                if (!go.rigid) return;
                 if (obj==go) return;
                 var objRect = obj.getRect();
                 objRect.x = newX;
@@ -1215,6 +1219,16 @@ Class.extend(
         "numOfFramesV": 3,
         "type": "spriteSheet",
         "id": "1879_7247_15"
+    },
+    {
+        "name": "cloud",
+        "resourcePath": "resources/spriteSheet/cloud.png",
+        "width": 300,
+        "height": 190,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "1501_7424_265"
     }
 ],
         
@@ -2305,7 +2319,35 @@ Class.extend(
         "frameAnimationIds": [
             "2195_5056_19"
         ],
-        "id": "5139_0458_16"
+        "id": "5139_0458_16",
+        "rigid": 0,
+        "groupName": "",
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "velX": 0,
+        "velY": 0,
+        "posX": 0,
+        "posY": 0
+    },
+    {
+        "spriteSheetId": "1501_7424_265",
+        "width": 300,
+        "height": 190,
+        "name": "cloud",
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "groupName": "",
+        "id": "3315_7346_266",
+        "rigid": 0,
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "velX": 0,
+        "velY": 0,
+        "posX": 0,
+        "posY": 0
     }
 ],
         
@@ -2339,10 +2381,11 @@ Class.extend(
                     }
                 ],
                 "frameAnimationIds": [],
-                "posX": 94,
-                "posY": 92,
+                "posX": 114,
+                "posY": 101,
                 "protoId": "5139_0458_16",
-                "id": "0906_4709_17"
+                "id": "0906_4709_17",
+                "groupName": ""
             },
             {
                 "text": "",
@@ -2359,6 +2402,48 @@ Class.extend(
                 "_edit": false,
                 "rigid": false,
                 "groupName": ""
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": -5,
+                "posY": 73,
+                "protoId": "3315_7346_266",
+                "id": "7476_9556_267"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 148,
+                "posY": 10,
+                "protoId": "3315_7346_266",
+                "id": "9709_5369_268"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "width": 300,
+                "height": 190,
+                "name": "cloud",
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "groupName": "",
+                "posX": 62,
+                "posY": 80,
+                "protoId": "3315_7346_266",
+                "id": "2589_0321_269"
             }
         ],
         "id": "3534_2050_13"
@@ -2381,7 +2466,7 @@ Class.extend(
 ],
         
         gameProps:{
-    "width": 350,
+    "width": 340,
     "height": 300
 },
         
@@ -2400,7 +2485,29 @@ Class.extend(
     },
 
     onUpdate: function(time) {
+        if (this.posX>400) this.posX = -300;
+    },
 
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['cloud.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+
+    onCreate: function(){
+        this.velX = Math.random()*50+20;
+        console.log(this);
+    },
+
+    onUpdate: function(time) {
+        if (this.posX>400) this.posX = -300;
     },
 
     onDestroy: function(){
@@ -2423,6 +2530,7 @@ Class.extend(
         textField.setText('Привет, я птичка поздравлялка');
         bird.on('click',function(){
             textField.setText('Ура!!!!!');
+            bird.velX = 200;
         });
     },
 
