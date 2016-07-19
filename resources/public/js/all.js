@@ -87,6 +87,7 @@
         this.sceneList = new ve.collections.List();
         this.layerList = new ve.collections.List();
         this.fontList = new ve.collections.List();
+        this.soundList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -339,6 +340,10 @@
 
     var Resource = models.BaseModel.extend({
         resourcePath:''
+    });
+
+    models.Sound = Resource.extend({
+        type:'sound'
     });
 
     models.SpriteSheet = Resource.extend({
@@ -1097,6 +1102,16 @@ window.app.
             uiHelper.showDialog('frmCreateScene');
         };
 
+        s.showCreateSoundDialog = function(){
+            editData.currSoundInEdit = new ve.models.Sound({});
+            uiHelper.showDialog('frmCreateSound');
+        };
+
+        s.showEditSoundDialog = function(snd){
+            editData.currSoundInEdit = snd.clone();
+            uiHelper.showDialog('frmCreateSound');
+        };
+
         s.showEditSceneDialog = function(currObj){
             editData.currSceneInEdit = currObj.clone(ve.models.Scene);
             uiHelper.showDialog('frmCreateScene');
@@ -1291,6 +1306,48 @@ window.app.
             _addOrEditGameObject(obj, x, y,'protoId',obj.id);
             uiHelper.closeContextMenu();
         }
+
+    });
+
+
+window.app.
+    controller('soundCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils
+    ) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+        s.onSoundUpload = function(file,src){
+            s.soundUrl = $sce.trustAsResourceUrl(src);
+            s.editData.currSoundInEdit._file = file;
+        };
+
+        s.createOrEditSound = function(snd){
+            resourceDao.createOrEditResource(
+                s.editData.currSoundInEdit,
+                ve.models.Sound,
+                ve_local.bundle.soundList
+            );
+        };
+
+        // todo project path
+        (function(){
+            if (s.editData.currSoundInEdit) {
+                s.soundUrl =  'project/' + s.editData.currSoundInEdit.resourcePath;
+            }
+        })();
 
     });
 window.app.
@@ -1608,6 +1665,7 @@ window.app
         res.currLayerInEdit = null;
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
+        res.currSoundInEdit = null;
 
         res.userInterfaceList = new ve.collections.List();
 
@@ -1675,7 +1733,10 @@ window.app
                 userInterface:'user interface',
                 textField:'text field',
                 noDataToEdit:'no data to edit provided',
-                rigid:'rigid'
+                rigid:'rigid',
+                sounds:'sounds',
+                play:'play',
+                loadSound:'load sound'
             }
         };
 

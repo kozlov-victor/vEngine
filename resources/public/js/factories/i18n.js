@@ -54,7 +54,10 @@ window.app
                 userInterface:'user interface',
                 textField:'text field',
                 noDataToEdit:'no data to edit provided',
-                rigid:'rigid'
+                rigid:'rigid',
+                sounds:'sounds',
+                play:'play',
+                loadSound:'load sound'
             }
         };
 

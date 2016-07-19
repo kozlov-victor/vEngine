@@ -54,6 +54,16 @@ window.app.
             uiHelper.showDialog('frmCreateScene');
         };
 
+        s.showCreateSoundDialog = function(){
+            editData.currSoundInEdit = new ve.models.Sound({});
+            uiHelper.showDialog('frmCreateSound');
+        };
+
+        s.showEditSoundDialog = function(snd){
+            editData.currSoundInEdit = snd.clone();
+            uiHelper.showDialog('frmCreateSound');
+        };
+
         s.showEditSceneDialog = function(currObj){
             editData.currSceneInEdit = currObj.clone(ve.models.Scene);
             uiHelper.showDialog('frmCreateScene');

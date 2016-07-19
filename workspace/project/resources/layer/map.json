@@ -35,9 +35,9 @@
                 "groupName": ""
             },
             {
-                "text": "",
-                "width": 252,
-                "height": 30,
+                "text": "v",
+                "width": 15,
+                "height": 29,
                 "type": "userInterface",
                 "subType": "textField",
                 "posX": 6,
@@ -59,8 +59,8 @@
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
                 "groupName": "",
-                "posX": 18,
-                "posY": 167,
+                "posX": 36,
+                "posY": 94,
                 "protoId": "3315_7346_266",
                 "id": "7476_9556_267",
                 "rigid": 0,

@@ -10,7 +10,8 @@
                 "name": "draggable",
                 "parameters": {},
                 "id": "6616_0188_20",
-                "type": "commonBehaviour"
+                "type": "commonBehaviour",
+                "description": ""
             }
         ],
         "frameAnimationIds": [

@@ -4,7 +4,7 @@ ve.models.Behaviour.extend({
         console.log('created');
         var textField = this.findGameObject('textField1');
         var bird = this.findGameObject('b');
-        textField.setText('Привет, я птичка поздравлялка(нажми на меня)');
+        textField.setText('Привет (нажми на меня)');
         bird.on('click',function(){
             textField.setText('Ура!!!!!');
             bird.velX = 200;

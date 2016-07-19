@@ -14,6 +14,7 @@ window.app
         res.currLayerInEdit = null;
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
+        res.currSoundInEdit = null;
 
         res.userInterfaceList = new ve.collections.List();
 

@@ -57,6 +57,12 @@
                     ng-include src="'partials/dialogs/dialogCreateCommonBehaviour.html'"
                     novalidate></form>
 
+            <form
+                    name="frmCreateSound"
+                    ng-controller="soundCtrl"
+                    ng-if="uiHelper.dialogName=='frmCreateSound'"
+                    ng-include src="'partials/dialogs/dialogCreateSound.html'"
+                    novalidate></form>
 
         </div>
     </div>
