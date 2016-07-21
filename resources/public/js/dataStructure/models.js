@@ -72,7 +72,8 @@
     });
 
     models.Sound = Resource.extend({
-        type:'sound'
+        type:'sound',
+        _buffer:null
     });
 
     models.SpriteSheet = Resource.extend({

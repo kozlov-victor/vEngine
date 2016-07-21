@@ -8,6 +8,7 @@ ve.models.Behaviour.extend({
         bird.on('click',function(){
             textField.setText('Ура!!!!!');
             bird.velX = 200;
+            ve.sound.play('111');
         });
     },
 

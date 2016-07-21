@@ -60,6 +60,7 @@ var addStaticFiles = function(sourceMain){
         'resources/generatorResources/static/modules/mouse.js',
         'resources/generatorResources/static/modules/math.js',
         'resources/generatorResources/static/modules/physics.js',
+        'resources/generatorResources/static/modules/sound.js',
         'resources/generatorResources/static/modules/collider.js'
     ]);
 };
@@ -85,7 +86,7 @@ var addGameResources = function(sourceMain){
 var initFolderStructure = function(sourceMain){
     fs.deleteFolderSync('workspace/project/out');
 
-    ['spriteSheet','font'].forEach(function(r){
+    ['spriteSheet','font','sound'].forEach(function(r){
         fs.createFolderSync('workspace/project/out/resources/'+r);
         fs.copyFolderSync('workspace/project/resources/'+r,'workspace/project/out/resources/'+r);
         fs.deleteFileSync('workspace/project/out/resources/'+r+'/map.json');

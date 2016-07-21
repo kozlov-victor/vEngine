@@ -17,7 +17,14 @@ ve_local.SceneManager = function(){
             if (!spSheet._img.src.complete) q.addTask();
             spSheet._img.onload = q.resolveTask;
         });
-        if (q.size()==0) q.onResolved();
+        ve_local.bundle.soundList.forEach(function(snd){
+            q.addTask();
+            ve_local.sound.loadSound('./'+snd.resourcePath,function(buffer){
+                snd._buffer = buffer;
+                q.resolveTask();
+            });
+        });
+        q.start();
     };
 
     this.setScene = function(scene){

@@ -34,7 +34,15 @@
         "height": 190,
         "name": "cloud",
         "type": "gameObject",
-        "commonBehaviour": [],
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": {},
+                "id": "9192_5234_34",
+                "type": "commonBehaviour",
+                "description": ""
+            }
+        ],
         "frameAnimationIds": [],
         "groupName": "",
         "id": "3315_7346_266",

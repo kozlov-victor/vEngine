@@ -264,7 +264,8 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
     });
 
     models.Sound = Resource.extend({
-        type:'sound'
+        type:'sound',
+        _buffer:null
     });
 
     models.SpriteSheet = Resource.extend({
@@ -666,6 +667,9 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                 if (self.onResolved) self.onResolved();
             }
         };
+        this.start = function() {
+            if (this.size()==0) this.onResolved();
+        }
     };
     ns.merge = function(obj1,obj2){
         Object.keys(obj2).forEach(function(key){
@@ -763,7 +767,14 @@ ve_local.SceneManager = function(){
             if (!spSheet._img.src.complete) q.addTask();
             spSheet._img.onload = q.resolveTask;
         });
-        if (q.size()==0) q.onResolved();
+        ve_local.bundle.soundList.forEach(function(snd){
+            q.addTask();
+            ve_local.sound.loadSound('./'+snd.resourcePath,function(buffer){
+                snd._buffer = buffer;
+                q.resolveTask();
+            });
+        });
+        q.start();
     };
 
     this.setScene = function(scene){
@@ -1120,6 +1131,98 @@ ve_local.SceneManager = function(){
 
 (function(){
 
+    ve_local.sound = {};
+
+    var ns = ve_local.sound;
+
+    var context = new AudioContext();
+
+    ns.loadSound = function( url, callback) {
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+
+        request.setRequestHeader('Accept-Ranges', 'bytes');
+        request.setRequestHeader('Content-Range', 'bytes');
+
+        request.onload = function() {
+            console.log('accepted',request.response);
+            context.decodeAudioData(request.response).then(function(buffer) {
+                callback(buffer);
+            });
+        };
+        request.send();
+    };
+
+
+    var AudioPlayer = function(){
+
+        var free = true;
+        var currLoop = false;
+        var self = this;
+        var currSource = null;
+
+        this.play = function(buffer,loop){
+            free = false;
+            currSource = context.createBufferSource();
+            currSource.buffer = buffer;
+            currLoop = loop;
+            currSource.loop = loop;
+            currSource.connect(context.destination);
+            currSource.start(0);
+            currSource.onended = function(){
+                self.stop();
+            }
+        };
+
+        this.stop = function() {
+            if (currSource)  {
+                currSource.stop();
+                currSource.disconnect(context.destination);
+            }
+            currSource = null;
+            free = true;
+            currLoop = false;
+        };
+
+        this.isFree = function() {
+            console.log('isfree',free);
+            return free;
+        }
+
+    };
+
+
+    var AudioSet = function(numOfPlayers){
+        var players = [];
+        for (var i = 0;i<numOfPlayers;i++) {
+            players.push(new AudioPlayer());
+        }
+
+        this.getFreePlayer = function(){
+            for (var i = 0;i<numOfPlayers;i++) {
+                if (players[i].isFree()) return players[i];
+            }
+            return null;
+        }
+
+    };
+
+    var audioSet = new AudioSet(5);
+
+    ve.sound = {};
+
+    ve.sound.play = function(sndName,loop){
+        var player = audioSet.getFreePlayer();
+        if (!player) return;
+        player.play(ve_local.bundle.soundList.find({name:sndName})._buffer,loop);
+    }
+
+
+})();
+
+(function(){
+
     ve_local.Collider = function(){
 
         var gos;
@@ -1214,10 +1317,16 @@ Class.extend(
         
         sound:[
     {
-        "name": "bulk",
+        "name": "111",
         "type": "sound",
-        "resourcePath": "resources/sound/bulk.mp3",
-        "id": "2934_4380_30"
+        "resourcePath": "resources/sound/111.mp3",
+        "id": "4092_6856_20"
+    },
+    {
+        "name": "22",
+        "type": "sound",
+        "resourcePath": "resources/sound/22.ogg",
+        "id": "3142_7177_25"
     }
 ],
         
@@ -2325,7 +2434,8 @@ Class.extend(
                 "name": "draggable",
                 "parameters": {},
                 "id": "6616_0188_20",
-                "type": "commonBehaviour"
+                "type": "commonBehaviour",
+                "description": ""
             }
         ],
         "frameAnimationIds": [
@@ -2348,7 +2458,15 @@ Class.extend(
         "height": 190,
         "name": "cloud",
         "type": "gameObject",
-        "commonBehaviour": [],
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": {},
+                "id": "9192_5234_34",
+                "type": "commonBehaviour",
+                "description": ""
+            }
+        ],
         "frameAnimationIds": [],
         "groupName": "",
         "id": "3315_7346_266",
@@ -2561,6 +2679,7 @@ Class.extend(
         bird.on('click',function(){
             textField.setText('Ура!!!!!');
             bird.velX = 200;
+            ve.sound.play('111');
         });
     },
 

@@ -2,26 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSound.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/js/controllers/soundController.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/project/resources/audio/map.json" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/resources/font/default.png" afterPath="$PROJECT_DIR$/workspace/project/out/resources/font/default.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/font/default.png" afterPath="$PROJECT_DIR$/workspace/project/resources/font/default.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/all.js" afterPath="$PROJECT_DIR$/resources/public/js/all.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/dialogs.html" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/editData.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/editData.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/js/lib/jquery.sortable.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/generatorResources/static/modules/sound.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" afterPath="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/script/scene/m.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/scene/m.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/views/main.ejs" afterPath="$PROJECT_DIR$/application/mvc/views/main.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/main.js" afterPath="$PROJECT_DIR$/workspace/project/out/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/font/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/font/map.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" afterPath="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/utils.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/utils.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f8ca8907-a637-4910-a09f-c2a90f136754" name="Failed commit: Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -50,47 +41,7 @@
         <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="74" column="20" selection-start-line="74" selection-start-column="20" selection-end-line="74" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="soundController.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/soundController.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="map.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/workspace/project/resources/sound/map.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.625">
-              <caret line="1" column="1" selection-start-line="1" selection-start-column="1" selection-end-line="1" selection-end-column="1" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="stub.js" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour/stub.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="leftMenu.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.625">
-              <caret line="9" column="46" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
+              <caret line="75" column="20" selection-start-line="75" selection-start-column="20" selection-end-line="75" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -99,18 +50,58 @@
       <file leaf-file-name="sounds.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.0">
-              <caret line="11" column="75" selection-start-line="11" selection-start-column="75" selection-end-line="11" selection-end-column="75" />
+            <state vertical-scroll-proportion="-1.875">
+              <caret line="3" column="42" selection-start-line="3" selection-start-column="42" selection-end-line="3" selection-end-column="42" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="leftMenuController.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js">
+      <file leaf-file-name="sound.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/sound.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.4032258">
+              <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fs.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/base/fs.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="62" column="51" selection-start-line="62" selection-start-column="51" selection-end-line="62" selection-end-column="51" />
+              <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sceneManager.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="21" column="20" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/utils.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="keyboard.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/keyboard.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -120,27 +111,17 @@
         <entry file="file://$PROJECT_DIR$/application/mvc/controllers/resourcesController.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
+              <caret line="50" column="23" selection-start-line="50" selection-start-column="4" selection-end-line="50" selection-end-column="23" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="topPanel.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/topPanel.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spriteSheetController.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/spriteSheetController.js">
+      <file leaf-file-name="generatorController.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/application/mvc/controllers/generatorController.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="58" selection-start-line="19" selection-start-column="12" selection-end-line="19" selection-end-column="58" />
+              <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -151,8 +132,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaScript File" />
         <option value="Html5" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -175,10 +156,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/fontListApp/content.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/factories/chrome.js" />
-        <option value="$PROJECT_DIR$/fontListApp/background.js" />
-        <option value="$PROJECT_DIR$/application/mvc/views/bitMapFont.html" />
         <option value="$PROJECT_DIR$/workspace/project/resources/font/assa.json" />
         <option value="$PROJECT_DIR$/application/mvc/routes/resourcesRoute.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html" />
@@ -206,8 +183,6 @@
         <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectController.js" />
         <option value="$PROJECT_DIR$/resources/generatorResources/templates/envVariables.ejs" />
         <option value="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" />
-        <option value="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" />
-        <option value="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/directives/appContextMenu.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/scenes.html" />
         <option value="$PROJECT_DIR$/resources/public/js/all.js" />
@@ -221,11 +196,17 @@
         <option value="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSound.html" />
         <option value="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
-        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/soundController.js" />
         <option value="$PROJECT_DIR$/workspace/project/resources/sound/map.json" />
+        <option value="$PROJECT_DIR$/application/mvc/views/main.ejs" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/modules/audio.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/utils.js" />
+        <option value="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/static/modules/sound.js" />
       </list>
     </option>
   </component>
@@ -248,8 +229,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="83" />
-    <option name="y" value="34" />
+    <option name="x" value="79" />
+    <option name="y" value="24" />
     <option name="width" value="1257" />
     <option name="height" value="711" />
   </component>
@@ -355,6 +336,58 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="out" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="out" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="out" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -373,62 +406,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="workspace" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="script" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="workspace" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="script" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="commonBehaviour" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -455,7 +432,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="partials" />
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -477,11 +454,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="partials" />
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="leftMenu" />
+              <option name="myItemId" value="dataStructure" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -503,131 +480,81 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="partials" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="dialogs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="generatorResources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="generatorResources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="resources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="generatorResources" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="commonBehaviour" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mvc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="application" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mvc" />
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generatorResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generatorResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generatorResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="static" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -661,11 +588,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources/public/js/lib" />
       <recent name="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour" />
       <recent name="$PROJECT_DIR$/resources/generatorResources/static/fonts" />
       <recent name="$PROJECT_DIR$/fontListApp" />
       <recent name="$PROJECT_DIR$/resources/public" />
-      <recent name="$PROJECT_DIR$/resources/public/misc" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/resources/public/js/dataStructure" />
@@ -1010,13 +937,7 @@
       <workItem from="1468088408222" duration="23424000" />
       <workItem from="1468655776053" duration="17239000" />
       <workItem from="1468952756215" duration="401000" />
-      <workItem from="1468953715908" duration="5114000" />
-    </task>
-    <task id="LOCAL-00014" summary="gameObject dragAndDrop to scene">
-      <created>1463129084521</created>
-      <option name="number" value="00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1463129084521</updated>
+      <workItem from="1468953715908" duration="13291000" />
     </task>
     <task id="LOCAL-00015" summary="gameObject dragAndDrop to scene">
       <created>1463142050208</created>
@@ -1306,11 +1227,17 @@
       <option name="project" value="LOCAL" />
       <updated>1468691100629</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="sound">
+      <created>1468959818149</created>
+      <option name="number" value="00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1468959818149</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="377575000" />
+    <option name="totallyTimeSpent" value="385752000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1322,20 +1249,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="83" y="34" width="1257" height="711" extended-state="0" />
+    <frame x="79" y="24" width="1257" height="711" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32822084" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.57240206" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30153322" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31516185" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27745664" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25598678" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1347,7 +1275,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6126543" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1366,7 +1293,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="refactored controllers" />
     <MESSAGE value="animation resource management" />
     <MESSAGE value="ngStyle refactored" />
     <MESSAGE value="gameObject dragAndDrop to scene" />
@@ -1391,7 +1317,8 @@
     <MESSAGE value="current bug fixes" />
     <MESSAGE value="textField control" />
     <MESSAGE value="Merge branches 'gh-pages' and 'master' of https://github.com/kozlov-victor/vEngine into gh-pages&#10;&#10;Conflicts:&#10;&#9;Gruntfile.js&#10;&#9;application/base/fs.js&#10;&#9;application/mvc/controllers/resourcesController.js&#10;&#9;application/mvc/routes/resourcesRoute.js&#10;&#9;application/mvc/views/editor.ejs&#10;&#9;application/mvc/views/main.ejs&#10;&#9;application/utils/utils.js&#10;&#9;node_modules/ejs/Jakefile&#10;&#9;node_modules/ejs/README.md&#10;&#9;node_modules/ejs/ejs.js&#10;&#9;node_modules/ejs/ejs.min.js&#10;&#9;node_modules/ejs/lib/ejs.js&#10;&#9;node_modules/ejs/package.json&#10;&#9;node_modules/ejs/test/ejs.js&#10;&#9;resources/generatorResources/static/defaultCodeScript.js&#10;&#9;resources/generatorResources/static/index.html&#10;&#9;resources/generatorResources/static/renderer.js&#10;&#9;resources/generatorResources/static/sceneManager.js&#10;&#9;resources/public/css/angular.css&#10;&#9;resources/public/css/contextMenu.css&#10;&#9;resources/public/css/main.css&#10;&#9;resources/public/images/delete.png&#10;&#9;resources/public/js/all.js&#10;&#9;resources/public/js/controllers/animationController.js&#10;&#9;resources/public/js/controllers/gameObjectController.js&#10;&#9;resources/public/js/controllers/layerController.js&#10;&#9;resources/public/js/controllers/leftMenuController.js&#10;&#9;resources/public/js/controllers/sceneController.js&#10;&#9;resources/public/js/controllers/spriteSheetController.js&#10;&#9;resources/public/js/controllers/topPanelController.js&#10;&#9;resources/public/js/dataStructure/collections.js&#10;&#9;resources/public/js/dataStructure/utils.js&#10;&#9;resources/public/js/directives/appContextMenu.js&#10;&#9;resources/public/js/directives/appDragDrop.js&#10;&#9;resources/public/js/directives/appFileUpload.js&#10;&#9;resources/public/js/directives/appKeyPress.js&#10;&#9;resources/public/js/directives/appKeyUp.js&#10;&#9;resources/public/js/directives/appValidator.js&#10;&#9;resources/public/js/factories/editData.js&#10;&#9;resources/public/js/factories/i18n.js&#10;&#9;resources/public/js/factories/messageDigest.js&#10;&#9;resources/public/js/factories/resourceDao.js&#10;&#9;resources/public/js/factories/uiHelper.js&#10;&#9;resources/public/js/lib/ace/src-min/ace.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-language_tools.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-linking.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-modelist.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-old_ie.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-searchbox.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-settings_menu.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-spellcheck.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-split.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-static_highlight.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-statusbar.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-textarea.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-themelist.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-whitespace.js&#10;&#9;resources/public/js/lib/ace/src-min/keybinding-emacs.js&#10;&#9;resources/public/js/lib/ace/src-min/keybinding-vim.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-abap.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-abc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-actionscript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ada.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-apache_conf.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-applescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-asciidoc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-assembly_x86.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-autohotkey.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-batchfile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-c9search.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-c_cpp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-cirru.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-clojure.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-cobol.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-coldfusion.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-csharp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-css.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-curly.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-d.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dart.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-diff.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-django.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dockerfile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dot.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-eiffel.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ejs.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-elm.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-erlang.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-forth.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ftl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gcode.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gherkin.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gitignore.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-glsl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gobstones.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-golang.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-groovy.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-handlebars.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haskell.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haxe.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html_elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html_ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ini.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-io.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jack.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jade.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-java.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-json.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsoniq.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsx.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-julia.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-latex.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lean.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-less.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-liquid.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lisp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-live_script.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-livescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-logiql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lsl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lua.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-luapage.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lucene.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-makefile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-markdown.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mask.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-matlab.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-maze.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mel.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mips_assembler.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mipsassembler.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mushcode.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mysql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-nix.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-nsis.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-objectivec.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ocaml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-pascal.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-perl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-pgsql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-php.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-plain_text.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-powershell.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-praat.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-prolog.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-properties.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-protobuf.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-python.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-r.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-razor.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rdoc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rhtml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rst.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rust.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sass.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scad.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scala.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scheme.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scss.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sh.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sjs.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-smarty.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-snippets.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-soy_template.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-space.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-stylus.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-svg.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-swift.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-swig.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-tcl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-tex.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-textile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-toml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-twig.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-typescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vala.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vbscript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-velocity.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-verilog.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vhdl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-wollok.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-xml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-xquery.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-yaml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/abap.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/abc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/actionscript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ada.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/apache_conf.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/applescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/asciidoc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/assembly_x86.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/autohotkey.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/batchfile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/c9search.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/c_cpp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/cirru.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/clojure.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/cobol.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/coldfusion.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/csharp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/css.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/curly.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/d.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dart.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/diff.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/django.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dockerfile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dot.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/eiffel.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ejs.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/elm.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/erlang.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/forth.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ftl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gcode.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gherkin.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gitignore.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/glsl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gobstones.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/golang.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/groovy.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/handlebars.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haskell.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haxe.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html_elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html_ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ini.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/io.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jack.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jade.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/java.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/json.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsoniq.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsx.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/julia.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/latex.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lean.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/less.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/liquid.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lisp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/live_script.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/livescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/logiql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lsl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lua.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/luapage.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lucene.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/makefile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/markdown.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mask.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/matlab.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/maze.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mel.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mips_assembler.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mipsassembler.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mushcode.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mysql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/nix.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/nsis.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/objectivec.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ocaml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/pascal.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/perl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/pgsql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/php.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/plain_text.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/powershell.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/praat.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/prolog.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/properties.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/protobuf.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/python.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/r.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/razor.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rdoc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rhtml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rst.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rust.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sass.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scad.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scala.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scheme.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scss.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sh.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sjs.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/smarty.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/snippets.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/soy_template.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/space.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/stylus.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/svg.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/swift.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/swig.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/tcl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/tex.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/text.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/textile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/toml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/twig.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/typescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vala.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vbscript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/velocity.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/verilog.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vhdl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/wollok.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/xml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/xquery.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/yaml.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-ambiance.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-chaos.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-chrome.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-clouds.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-clouds_midnight.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-cobalt.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-crimson_editor.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-dawn.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-dreamweaver.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-eclipse.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-github.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-idle_fingers.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-iplastic.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-katzenmilch.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-kr_theme.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-kuroir.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-merbivore.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-merbivore_soft.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-mono_industrial.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-monokai.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-pastel_on_dark.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-solarized_dark.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-solarized_light.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-terminal.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-textmate.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_blue.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_bright.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_eighties.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-twilight.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-vibrant_ink.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-xcode.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-css.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-html.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-json.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-lua.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-php.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-xml.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-xquery.js&#10;&#9;resources/public/js/lib/angular.js&#10;&#9;resources/public/js/lib/jquery.js&#10;&#9;resources/public/js/lib/oop.js&#10;&#9;resources/public/js/main.js&#10;&#9;resources/public/main.html&#10;&#9;resources/public/partials/contextMenus.html&#10;&#9;resources/public/partials/contextMenus/ctxGameObject.html&#10;&#9;resources/public/partials/contextMenus/ctxScene.html&#10;&#9;resources/public/partials/dialogs.html&#10;&#9;resources/public/partials/dialogs/dialogCreateAnimation.html&#10;&#9;resources/public/partials/dialogs/dialogCreateGameObject.html&#10;&#9;resources/public/partials/dialogs/dialogCreateLayer.html&#10;&#9;resources/public/partials/dialogs/dialogCreateScene.html&#10;&#9;resources/public/partials/dialogs/dialogCreateSpriteSheet.html&#10;&#9;resources/public/partials/leftMenu.html&#10;&#9;resources/public/partials/leftMenu/gameObjects.html&#10;&#9;resources/public/partials/leftMenu/gameProps.html&#10;&#9;resources/public/partials/leftMenu/scenes.html&#10;&#9;resources/public/partials/leftMenu/spriteSheets.html&#10;&#9;resources/public/partials/topPanel.html&#10;&#9;server.js&#10;&#9;workspace/project/out/index.html&#10;&#9;workspace/project/resources/audio/map.json&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branches 'gh-pages' and 'master' of https://github.com/kozlov-victor/vEngine into gh-pages&#10;&#10;Conflicts:&#10;&#9;Gruntfile.js&#10;&#9;application/base/fs.js&#10;&#9;application/mvc/controllers/resourcesController.js&#10;&#9;application/mvc/routes/resourcesRoute.js&#10;&#9;application/mvc/views/editor.ejs&#10;&#9;application/mvc/views/main.ejs&#10;&#9;application/utils/utils.js&#10;&#9;node_modules/ejs/Jakefile&#10;&#9;node_modules/ejs/README.md&#10;&#9;node_modules/ejs/ejs.js&#10;&#9;node_modules/ejs/ejs.min.js&#10;&#9;node_modules/ejs/lib/ejs.js&#10;&#9;node_modules/ejs/package.json&#10;&#9;node_modules/ejs/test/ejs.js&#10;&#9;resources/generatorResources/static/defaultCodeScript.js&#10;&#9;resources/generatorResources/static/index.html&#10;&#9;resources/generatorResources/static/renderer.js&#10;&#9;resources/generatorResources/static/sceneManager.js&#10;&#9;resources/public/css/angular.css&#10;&#9;resources/public/css/contextMenu.css&#10;&#9;resources/public/css/main.css&#10;&#9;resources/public/images/delete.png&#10;&#9;resources/public/js/all.js&#10;&#9;resources/public/js/controllers/animationController.js&#10;&#9;resources/public/js/controllers/gameObjectController.js&#10;&#9;resources/public/js/controllers/layerController.js&#10;&#9;resources/public/js/controllers/leftMenuController.js&#10;&#9;resources/public/js/controllers/sceneController.js&#10;&#9;resources/public/js/controllers/spriteSheetController.js&#10;&#9;resources/public/js/controllers/topPanelController.js&#10;&#9;resources/public/js/dataStructure/collections.js&#10;&#9;resources/public/js/dataStructure/utils.js&#10;&#9;resources/public/js/directives/appContextMenu.js&#10;&#9;resources/public/js/directives/appDragDrop.js&#10;&#9;resources/public/js/directives/appFileUpload.js&#10;&#9;resources/public/js/directives/appKeyPress.js&#10;&#9;resources/public/js/directives/appKeyUp.js&#10;&#9;resources/public/js/directives/appValidator.js&#10;&#9;resources/public/js/factories/editData.js&#10;&#9;resources/public/js/factories/i18n.js&#10;&#9;resources/public/js/factories/messageDigest.js&#10;&#9;resources/public/js/factories/resourceDao.js&#10;&#9;resources/public/js/factories/uiHelper.js&#10;&#9;resources/public/js/lib/ace/src-min/ace.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-language_tools.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-linking.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-modelist.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-old_ie.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-searchbox.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-settings_menu.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-spellcheck.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-split.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-static_highlight.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-statusbar.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-textarea.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-themelist.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-whitespace.js&#10;&#9;resources/public/js/lib/ace/src-min/keybinding-emacs.js&#10;&#9;resources/public/js/lib/ace/src-min/keybinding-vim.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-abap.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-abc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-actionscript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ada.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-apache_conf.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-applescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-asciidoc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-assembly_x86.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-autohotkey.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-batchfile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-c9search.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-c_cpp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-cirru.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-clojure.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-cobol.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-coldfusion.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-csharp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-css.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-curly.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-d.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dart.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-diff.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-django.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dockerfile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dot.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-eiffel.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ejs.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-elm.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-erlang.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-forth.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ftl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gcode.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gherkin.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gitignore.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-glsl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gobstones.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-golang.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-groovy.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-handlebars.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haskell.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haxe.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html_elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html_ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ini.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-io.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jack.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jade.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-java.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-json.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsoniq.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsx.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-julia.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-latex.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lean.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-less.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-liquid.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lisp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-live_script.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-livescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-logiql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lsl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lua.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-luapage.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lucene.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-makefile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-markdown.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mask.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-matlab.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-maze.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mel.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mips_assembler.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mipsassembler.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mushcode.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mysql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-nix.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-nsis.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-objectivec.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ocaml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-pascal.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-perl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-pgsql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-php.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-plain_text.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-powershell.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-praat.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-prolog.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-properties.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-protobuf.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-python.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-r.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-razor.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rdoc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rhtml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rst.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rust.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sass.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scad.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scala.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scheme.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scss.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sh.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sjs.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-smarty.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-snippets.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-soy_template.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-space.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-stylus.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-svg.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-swift.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-swig.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-tcl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-tex.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-textile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-toml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-twig.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-typescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vala.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vbscript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-velocity.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-verilog.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vhdl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-wollok.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-xml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-xquery.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-yaml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/abap.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/abc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/actionscript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ada.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/apache_conf.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/applescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/asciidoc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/assembly_x86.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/autohotkey.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/batchfile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/c9search.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/c_cpp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/cirru.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/clojure.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/cobol.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/coldfusion.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/csharp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/css.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/curly.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/d.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dart.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/diff.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/django.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dockerfile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dot.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/eiffel.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ejs.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/elm.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/erlang.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/forth.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ftl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gcode.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gherkin.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gitignore.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/glsl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gobstones.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/golang.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/groovy.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/handlebars.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haskell.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haxe.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html_elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html_ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ini.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/io.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jack.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jade.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/java.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/json.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsoniq.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsx.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/julia.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/latex.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lean.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/less.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/liquid.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lisp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/live_script.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/livescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/logiql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lsl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lua.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/luapage.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lucene.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/makefile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/markdown.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mask.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/matlab.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/maze.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mel.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mips_assembler.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mipsassembler.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mushcode.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mysql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/nix.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/nsis.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/objectivec.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ocaml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/pascal.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/perl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/pgsql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/php.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/plain_text.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/powershell.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/praat.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/prolog.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/properties.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/protobuf.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/python.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/r.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/razor.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rdoc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rhtml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rst.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rust.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sass.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scad.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scala.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scheme.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scss.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sh.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sjs.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/smarty.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/snippets.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/soy_template.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/space.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/stylus.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/svg.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/swift.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/swig.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/tcl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/tex.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/text.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/textile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/toml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/twig.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/typescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vala.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vbscript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/velocity.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/verilog.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vhdl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/wollok.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/xml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/xquery.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/yaml.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-ambiance.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-chaos.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-chrome.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-clouds.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-clouds_midnight.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-cobalt.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-crimson_editor.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-dawn.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-dreamweaver.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-eclipse.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-github.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-idle_fingers.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-iplastic.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-katzenmilch.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-kr_theme.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-kuroir.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-merbivore.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-merbivore_soft.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-mono_industrial.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-monokai.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-pastel_on_dark.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-solarized_dark.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-solarized_light.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-terminal.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-textmate.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_blue.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_bright.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_eighties.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-twilight.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-vibrant_ink.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-xcode.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-css.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-html.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-json.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-lua.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-php.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-xml.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-xquery.js&#10;&#9;resources/public/js/lib/angular.js&#10;&#9;resources/public/js/lib/jquery.js&#10;&#9;resources/public/js/lib/oop.js&#10;&#9;resources/public/js/main.js&#10;&#9;resources/public/main.html&#10;&#9;resources/public/partials/contextMenus.html&#10;&#9;resources/public/partials/contextMenus/ctxGameObject.html&#10;&#9;resources/public/partials/contextMenus/ctxScene.html&#10;&#9;resources/public/partials/dialogs.html&#10;&#9;resources/public/partials/dialogs/dialogCreateAnimation.html&#10;&#9;resources/public/partials/dialogs/dialogCreateGameObject.html&#10;&#9;resources/public/partials/dialogs/dialogCreateLayer.html&#10;&#9;resources/public/partials/dialogs/dialogCreateScene.html&#10;&#9;resources/public/partials/dialogs/dialogCreateSpriteSheet.html&#10;&#9;resources/public/partials/leftMenu.html&#10;&#9;resources/public/partials/leftMenu/gameObjects.html&#10;&#9;resources/public/partials/leftMenu/gameProps.html&#10;&#9;resources/public/partials/leftMenu/scenes.html&#10;&#9;resources/public/partials/leftMenu/spriteSheets.html&#10;&#9;resources/public/partials/topPanel.html&#10;&#9;server.js&#10;&#9;workspace/project/out/index.html&#10;&#9;workspace/project/resources/audio/map.json&#10;" />
+    <MESSAGE value="sound" />
+    <option name="LAST_COMMIT_MESSAGE" value="sound" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1496,14 +1423,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/js/factories/editData.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1544,26 +1463,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/resourcesController.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="5" column="10" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/partials/topPanel.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="74" column="20" selection-start-line="74" selection-start-column="20" selection-end-line="74" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -1580,14 +1483,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-5.625">
           <caret line="9" column="46" selection-start-line="9" selection-start-column="46" selection-end-line="9" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.0">
-          <caret line="11" column="75" selection-start-line="11" selection-start-column="75" selection-end-line="11" selection-end-column="75" />
           <folding />
         </state>
       </provider>
@@ -1610,9 +1505,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/workspace/project/resources/sound/map.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.625">
-          <caret line="1" column="1" selection-start-line="1" selection-start-column="1" selection-end-line="1" selection-end-column="1" />
-          <folding />
+        <state vertical-scroll-proportion="-12.5">
+          <caret line="20" column="1" selection-start-line="20" selection-start-column="1" selection-end-line="20" selection-end-column="1" />
+          <folding>
+            <marker date="1469035527173" expanded="true" signature="-1:-1" placeholder="[...]" />
+            <marker date="1469035527173" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;bulk&quot;...}" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1620,6 +1518,126 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/jquery.sortable.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="78" column="7" selection-start-line="78" selection-start-column="7" selection-end-line="78" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/views/main.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.75">
+          <caret line="14" column="68" selection-start-line="14" selection-start-column="68" selection-end-line="14" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="23" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.875">
+          <caret line="3" column="42" selection-start-line="3" selection-start-column="42" selection-end-line="3" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/keyboard.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/all.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3318078">
+          <caret line="643" column="4" selection-start-line="643" selection-start-column="4" selection-end-line="643" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/resourcesController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="23" selection-start-line="50" selection-start-column="4" selection-end-line="50" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/controllers/generatorController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="93" column="0" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/lib/JavaScriptLanguage.jar!/com/intellij/lang/javascript/index/predefined/AJAX.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="95" column="41" selection-start-line="95" selection-start-column="25" selection-end-line="95" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/base/fs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/dataStructure/models.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="75" column="20" selection-start-line="75" selection-start-column="20" selection-end-line="75" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/out/resources/sound/22.ogg">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1508.3148">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="20" selection-start-line="21" selection-start-column="14" selection-end-line="21" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/sound.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4032258">
+          <caret line="37" column="39" selection-start-line="37" selection-start-column="39" selection-end-line="37" selection-end-column="39" />
           <folding />
         </state>
       </provider>

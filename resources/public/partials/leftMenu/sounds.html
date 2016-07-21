@@ -1,8 +1,8 @@
 <h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'sounds')">{{i18n.sounds}}</h3>
 <div ng-show="leftMenuIndex=='sounds'" class="withPadding">
     <form name="sounds" class="table width100 withPadding">
-        <div class="table width100">
-            <div class="row" ng-repeat="item in editData.soundList.rs">
+        <ul class="table width100 sortable">
+            <li class="row" ng-repeat="item in editData.soundList.rs">
                 <div class="cell vAlign">
                     <span>{{item.name}}</span>
                 </div>
@@ -15,8 +15,8 @@
                 <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,item.type)">
                     X
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
         <button ng-click="showCreateSoundDialog()">
             {{i18n.create}}
         </button>

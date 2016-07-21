@@ -18,6 +18,9 @@
                 if (self.onResolved) self.onResolved();
             }
         };
+        this.start = function() {
+            if (this.size()==0) this.onResolved();
+        }
     };
     ns.merge = function(obj1,obj2){
         Object.keys(obj2).forEach(function(key){
