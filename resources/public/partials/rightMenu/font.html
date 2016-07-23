@@ -1,0 +1,79 @@
+<div
+        ng-controller="sceneCtrl"
+        ng-if="editData.currSceneGameObjectInEdit">
+    <h3 class="centerText">
+        {{
+            editData.currSceneGameObjectInEdit.type
+        }}
+    </h3>
+    <i>{{editData.currSceneGameObjectInEdit.subType}}</i>
+    <div class="table width100">
+        <!--<div class="row"-->
+            <!-->-->
+            <!--<div class="cell">-->
+                <!--{{i18n.name}}-->
+            <!--</div>-->
+            <!--<div class="cell">-->
+                <!--<input-->
+                        <!--ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"-->
+                        <!--class="width100"-->
+                        <!--ng-model="editData.currSceneGameObjectInEdit.name"/>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="row">
+            <div class="cell">
+                x
+            </div>
+            <div class="cell">
+                <input
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        type="number"
+                        class="width100"
+                        ng-model="editData.currSceneGameObjectInEdit.posX"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="cell">
+                y
+            </div>
+            <div class="cell">
+                <input
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        type="number"
+                        class="width100"
+                        ng-model="editData.currSceneGameObjectInEdit.posY"/>
+            </div>
+        </div>
+
+        <div class="row"
+            ng-if="editData.currSceneGameObjectInEdit.subType=='textField'"
+            >
+            <div class="cell">
+                {{i18n.text}}
+            </div>
+            <div class="cell">
+                <input
+                        class="width100"
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        ng-model="editData.currSceneGameObjectInEdit.text"/>
+            </div>
+        </div>
+
+        <div class="row"
+            ng-if="editData.currSceneGameObjectInEdit.subType=='textField'"
+            >
+            <div class="cell">
+                {{i18n.font}}
+            </div>
+            <div class="cell">
+                <select
+                        class="width100"
+                        ng-model="editData.currSceneGameObjectInEdit.fontId"
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        >
+                    <option value="{{item.id}}" ng-repeat="item in editData.fontList.rs">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

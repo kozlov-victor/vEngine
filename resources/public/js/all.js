@@ -343,7 +343,8 @@
     });
 
     models.Sound = Resource.extend({
-        type:'sound'
+        type:'sound',
+        _buffer:null
     });
 
     models.SpriteSheet = Resource.extend({
@@ -532,7 +533,6 @@
         _layers:null,
         _allGameObjects:null,
         __onResourcesReady: function(){
-            console.log('resources ready');
             var self = this;
             self._allGameObjects = new ve.collections.List();
             self._layers.forEach(function(l){
@@ -580,8 +580,10 @@
         _chars:null,
         text:'',
         _font:null,
+        fontId:null,
         rigid:false,
         setText: function(text) {
+            text+='';
             this._chars = [];
             this.text = text;
             this.width = 0;
@@ -596,7 +598,9 @@
         },
         construct: function(){
             this.rigid = false;
-            this._font = ve_local.bundle.fontList.find({name:'default'});
+            this._font =
+                ve_local.bundle.fontList.find({id:this.fontId}) ||
+                ve_local.bundle.fontList.find({name:'default'});
             this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
             this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
@@ -660,6 +664,9 @@
                 if (self.onResolved) self.onResolved();
             }
         };
+        this.start = function() {
+            if (this.size()==0) this.onResolved();
+        }
     };
     ns.merge = function(obj1,obj2){
         Object.keys(obj2).forEach(function(key){
@@ -693,7 +700,6 @@ window.app.
         s.resourceDao = resourceDao;
 
         var isStopped = false;
-
 
         s.toArray = function(expr) {
             try {
@@ -1305,6 +1311,20 @@ window.app.
         s.addGameObjectFromCtxMenu = function(obj,x,y){
             _addOrEditGameObject(obj, x, y,'protoId',obj.id);
             uiHelper.closeContextMenu();
+        };
+
+
+        s.editGameObjectFromRightMenu = function(obj){
+            var fnt = ve_local.bundle.fontList.find({id:obj.fontId});
+            s.editData.currSceneGameObjectInEdit._font = fnt;
+            s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
+            obj.setText(obj.text);
+            resourceDao.createOrEditObjectInResource(
+                editData.currLayerInEdit.type,
+                editData.currLayerInEdit.protoId,
+                'gameObjectProps',
+                obj.toJSON()
+            );
         }
 
     });
@@ -1452,6 +1472,10 @@ window.app.
         s.stop = function(){
             s.uiHelper.window = 'sceneWindow';
             editData.debugFrameUrl = $sce.trustAsUrl('/about:blank');
+        };
+
+        s.showBuildDialog = function() {
+            uiHelper.showDialog('buildDialog');
         }
 
 
@@ -1627,6 +1651,22 @@ app.directive('appValidator', function($parse) {
         }
     };
 });
+
+window.app.
+
+    directive('dynamicCtrl', ['$compile', '$parse',function($compile, $parse) {
+        return {
+            restrict: 'A',
+            terminal: true,
+            priority: 100000,
+            link: function(scope, elem) {
+                var name = $parse(elem.attr('dynamic-ctrl'))(scope);
+                elem.removeAttr('dynamic-ctrl');
+                elem.attr('ng-controller', name);
+                $compile(elem)(scope);
+            }
+        };
+    }]);
 window.app.
 
 service('chrome',function(){
@@ -1725,6 +1765,8 @@ window.app
                 from:'from',
                 to:'to',
                 fonts:'fonts',
+                font:'font',
+                text:'text',
                 commonBehaviour:'common behaviour',
                 groupName:'group name',
                 selectFont:'select font',
@@ -1736,7 +1778,8 @@ window.app
                 rigid:'rigid',
                 sounds:'sounds',
                 play:'play',
-                loadSound:'load sound'
+                loadSound:'load sound',
+                build:'build'
             }
         };
 
@@ -2145,6 +2188,16 @@ window.app
             return new Blob([ia], {type:mimeString});
         };
 
+        this.capitalize = function(s){
+            return s.substr(0,1).toUpperCase() +
+                s.substr(1);
+        };
+
+        this.deCapitalize = function(s){
+            return s.substr(0,1).toLowerCase() +
+                s.substr(1);
+        };
+
         return this;
     })
 
@@ -2175,12 +2228,14 @@ window.app.
         $sce,
         editData,
         uiHelper,
+        utils,
         i18n) {
 
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
+        s.utils = utils;
 
 
     });

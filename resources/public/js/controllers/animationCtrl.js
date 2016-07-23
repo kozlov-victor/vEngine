@@ -18,7 +18,6 @@ window.app.
 
         var isStopped = false;
 
-
         s.toArray = function(expr) {
             try {
               return JSON.parse('['+expr+']');

@@ -138,6 +138,20 @@ window.app.
         s.addGameObjectFromCtxMenu = function(obj,x,y){
             _addOrEditGameObject(obj, x, y,'protoId',obj.id);
             uiHelper.closeContextMenu();
+        };
+
+
+        s.editGameObjectFromRightMenu = function(obj){
+            var fnt = ve_local.bundle.fontList.find({id:obj.fontId});
+            s.editData.currSceneGameObjectInEdit._font = fnt;
+            s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
+            obj.setText(obj.text);
+            resourceDao.createOrEditObjectInResource(
+                editData.currLayerInEdit.type,
+                editData.currLayerInEdit.protoId,
+                'gameObjectProps',
+                obj.toJSON()
+            );
         }
 
     });

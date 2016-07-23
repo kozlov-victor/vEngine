@@ -1,7 +1,7 @@
 
 <div
         app-context-menu="ctxScene"
-        class="gameSceneWrapper withPaddingLeft"
+        class="gameSceneWrapper"
         >
     <div
             ng-show="uiHelper.window=='sceneWindow'"
@@ -42,7 +42,7 @@
                     app-draggable="gameObjectFromSelf"
                     app-context-menu="ctxGameObject"
                     ng-model="item"
-                    ng-click="editData.currSceneGameObjectInEdit=item;item._edit=true"
+                    ng-click="editData.currSceneGameObjectInEdit=item"
                     ng-style="utils.merge(
                             utils.getGameObjectCss(item),
                             {
@@ -75,28 +75,6 @@
                             ng-repeat="ch in item._chars track by $index">
                         </span>
                 </div>
-
-                <form
-                        ng-submit="onTextFieldChanged(item)"
-                        ng-if="item._edit==true"
-                        ng-style="{
-                                zIndex:20,
-                                left:0,
-                                top: 0,
-                                position:'absolute',
-                                width:item.width?item.width+'px':'50px'
-                            }">
-
-                    <textarea ng-style="{
-                                width:item.width?item.width+'px':'50px',
-                                height:item.height?item.height+'px':'50px'
-                            }"
-                              ng-model="item.text"
-                            >
-                    </textarea>
-                    <input type="submit" value="ok"/>
-                </form>
-
 
             </div>
         </div>

@@ -98,6 +98,16 @@ window.app
             return new Blob([ia], {type:mimeString});
         };
 
+        this.capitalize = function(s){
+            return s.substr(0,1).toUpperCase() +
+                s.substr(1);
+        };
+
+        this.deCapitalize = function(s){
+            return s.substr(0,1).toLowerCase() +
+                s.substr(1);
+        };
+
         return this;
     })
 

@@ -35,22 +35,6 @@
                 "groupName": ""
             },
             {
-                "text": "v",
-                "width": 15,
-                "height": 29,
-                "type": "userInterface",
-                "subType": "textField",
-                "posX": 6,
-                "posY": 15,
-                "protoId": null,
-                "name": "textField1",
-                "id": "7072_6855_8",
-                "$$hashKey": "object:43",
-                "_edit": false,
-                "rigid": false,
-                "groupName": ""
-            },
-            {
                 "spriteSheetId": "1501_7424_265",
                 "width": 300,
                 "height": 190,
@@ -59,8 +43,8 @@
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
                 "groupName": "",
-                "posX": 36,
-                "posY": 94,
+                "posX": 187,
+                "posY": 63,
                 "protoId": "3315_7346_266",
                 "id": "7476_9556_267",
                 "rigid": 0,
@@ -99,8 +83,8 @@
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
                 "groupName": "",
-                "posX": 314,
-                "posY": 83,
+                "posX": 26,
+                "posY": 76,
                 "protoId": "3315_7346_266",
                 "id": "2589_0321_269",
                 "rigid": 0,
@@ -109,6 +93,20 @@
                 "_sprPosY": 0,
                 "velX": 0,
                 "velY": 0
+            },
+            {
+                "text": "1q",
+                "width": 40,
+                "height": 40,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "posX": 17,
+                "posY": 13,
+                "name": "textField1",
+                "protoId": null,
+                "id": "4343_5960_457",
+                "fontId": "9463_5809_64"
             }
         ],
         "id": "3534_2050_13"

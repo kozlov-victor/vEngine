@@ -40,6 +40,10 @@ window.app.
         s.stop = function(){
             s.uiHelper.window = 'sceneWindow';
             editData.debugFrameUrl = $sce.trustAsUrl('/about:blank');
+        };
+
+        s.showBuildDialog = function() {
+            uiHelper.showDialog('buildDialog');
         }
 
 

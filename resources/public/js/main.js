@@ -16,12 +16,14 @@ window.app.
         $sce,
         editData,
         uiHelper,
+        utils,
         i18n) {
 
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
+        s.utils = utils;
 
 
     });

@@ -126,11 +126,11 @@ input[type="file"] {
     position: absolute;
 }
 
-.leftMenu {
+.sideMenu {
     background-color: #ccc;
 }
 
-.leftMenu h3 {
+.sideMenu h3 {
     background-color: #aaaaaa;
     padding: 5px;
     margin: 0;
@@ -293,6 +293,11 @@ input[type="file"] {
 
 .menu li:hover {
     background-color: #cdf7ff;
+}
+
+.mainPanelCell {
+    padding: 2px;
+    box-shadow: 0 0 4px #d1d2d4;
 }
 
 

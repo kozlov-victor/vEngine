@@ -46,6 +46,8 @@ window.app
                 from:'from',
                 to:'to',
                 fonts:'fonts',
+                font:'font',
+                text:'text',
                 commonBehaviour:'common behaviour',
                 groupName:'group name',
                 selectFont:'select font',
@@ -57,7 +59,8 @@ window.app
                 rigid:'rigid',
                 sounds:'sounds',
                 play:'play',
-                loadSound:'load sound'
+                loadSound:'load sound',
+                build:'build'
             }
         };
 

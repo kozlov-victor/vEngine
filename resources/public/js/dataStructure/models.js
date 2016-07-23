@@ -262,7 +262,6 @@
         _layers:null,
         _allGameObjects:null,
         __onResourcesReady: function(){
-            console.log('resources ready');
             var self = this;
             self._allGameObjects = new ve.collections.List();
             self._layers.forEach(function(l){
@@ -310,8 +309,10 @@
         _chars:null,
         text:'',
         _font:null,
+        fontId:null,
         rigid:false,
         setText: function(text) {
+            text+='';
             this._chars = [];
             this.text = text;
             this.width = 0;
@@ -326,7 +327,9 @@
         },
         construct: function(){
             this.rigid = false;
-            this._font = ve_local.bundle.fontList.find({name:'default'});
+            this._font =
+                ve_local.bundle.fontList.find({id:this.fontId}) ||
+                ve_local.bundle.fontList.find({name:'default'});
             this.setText(this.text);
             this.height = this._font.fontContext.symbols[' '].height;
             this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});

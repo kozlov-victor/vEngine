@@ -3,7 +3,7 @@
         "spriteSheetId": "1879_7247_15",
         "width": 110,
         "height": 101,
-        "name": "b",
+        "name": "bird",
         "type": "gameObject",
         "commonBehaviour": [
             {
