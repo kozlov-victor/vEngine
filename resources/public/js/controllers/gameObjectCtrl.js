@@ -34,18 +34,13 @@ window.app.
             });
         };
 
-        s.showCreateAnimationDialog = function() {
-            s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
-        };
-
         s.deleteFrameAnimation = function(item) {
             resourceDao.deleteResource(item.id,item.type,function(){
                 s.editData.currGameObjectInEdit.frameAnimationIds.splice(
                     s.editData.currGameObjectInEdit.frameAnimationIds.indexOf(item.id),
                     1
                 );
+                s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
                     ve.models.GameObject,
@@ -68,15 +63,16 @@ window.app.
             );
         };
 
-        s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone();
+        s.showCreateAnimationDialog = function() {
+            s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
             s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             uiHelper.showDialog('frmCreateAnimation');
         };
 
-        s.showEditCommonBehaviourDialog = function(item) {
-            s.editData.currCommonBehaviourInEdit = item.clone();
-            uiHelper.showDialog('frmCreateCommonBehaviour');
+        s.showEditAnimationDialog = function(item) {
+            s.editData.currFrAnimationInEdit = item.clone();
+            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            uiHelper.showDialog('frmCreateAnimation');
         };
 
         s.showCreateCommonBehaviourDialog = function(name){
@@ -90,6 +86,13 @@ window.app.
             s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
             uiHelper.showDialog('frmCreateCommonBehaviour');
         };
+
+
+        s.showEditCommonBehaviourDialog = function(item) {
+            s.editData.currCommonBehaviourInEdit = item.clone();
+            uiHelper.showDialog('frmCreateCommonBehaviour');
+        };
+
 
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;

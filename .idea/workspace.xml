@@ -5,34 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateParticleSystem.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/js/controllers/particleSystemCtrl.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/particleSystems.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/resources/font/default.png" afterPath="$PROJECT_DIR$/workspace/project/out/resources/font/default.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/font/default.png" afterPath="$PROJECT_DIR$/workspace/project/resources/font/default.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/all.js" afterPath="$PROJECT_DIR$/resources/public/js/all.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/dialogs.html" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/editData.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/editData.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/fontCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/fontCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/gameObjects.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/gameObjects.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/layerCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/layerCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/main.js" afterPath="$PROJECT_DIR$/workspace/project/out/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/font/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/font/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/frameAnimation/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/frameAnimation/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/sceneController.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/sceneController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/scenes.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/scenes.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/soundCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/soundCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/spriteSheets.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/spriteSheets.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/stub.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/stub.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/uiHelper.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/uiHelper.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f8ca8907-a637-4910-a09f-c2a90f136754" name="Failed commit: Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -57,61 +33,71 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="gameObjects.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/gameObjects.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.418182">
-              <caret line="17" column="19" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sounds.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/sounds.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.125">
-              <caret line="21" column="17" selection-start-line="21" selection-start-column="17" selection-end-line="21" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="particleSystems.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="particleSystems.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/particleSystems.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6612529">
-              <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
+            <state vertical-scroll-proportion="-14.375">
+              <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="layerCtrl.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/layerCtrl.js">
+      <file leaf-file-name="animationCtrl.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/animationCtrl.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="33" column="102" selection-start-line="33" selection-start-column="102" selection-end-line="33" selection-end-column="102" />
+              <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="scenes.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/scenes.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.583333">
-              <caret line="37" column="112" selection-start-line="37" selection-start-column="112" selection-end-line="37" selection-end-column="112" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="leftMenuCtrl.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js">
+      <file leaf-file-name="gameObjectCtrl.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="41" column="10" selection-start-line="41" selection-start-column="10" selection-end-line="41" selection-end-column="10" />
+              <caret line="37" column="68" selection-start-line="37" selection-start-column="68" selection-end-line="37" selection-end-column="68" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="map.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.9636364">
+              <caret line="45" column="30" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dialogCreateSpriteSheet.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-5.0">
+              <caret line="14" column="65" selection-start-line="14" selection-start-column="65" selection-end-line="14" selection-end-column="65" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="uiHelper.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/uiHelper.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="75" column="44" selection-start-line="75" selection-start-column="44" selection-end-line="75" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -137,21 +123,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fonts.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/fonts.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-11.875">
-              <caret line="19" column="51" selection-start-line="19" selection-start-column="51" selection-end-line="19" selection-end-column="51" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spriteSheetCtrl.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="spriteSheetCtrl.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="46" column="13" selection-start-line="38" selection-start-column="8" selection-end-line="46" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.37362638">
+              <caret line="20" column="64" selection-start-line="20" selection-start-column="64" selection-end-line="20" selection-end-column="64" />
               <folding />
             </state>
           </provider>
@@ -186,9 +162,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateGameObject.html" />
-        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
-        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSound.html" />
         <option value="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/leftMenuController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/soundController.js" />
@@ -202,7 +175,6 @@
         <option value="$PROJECT_DIR$/resources/public/partials/topPanel.html" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/topPanelController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/directives/dinamicController.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/factories/utils.js" />
         <option value="$PROJECT_DIR$/resources/public/js/main.js" />
         <option value="$PROJECT_DIR$/resources/public/js/directives/dynamicController.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/animationController.js" />
@@ -222,7 +194,6 @@
         <option value="$PROJECT_DIR$/resources/public/js/factories/editData.js" />
         <option value="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateParticleSystem.html" />
-        <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/sceneController.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/spriteSheets.html" />
@@ -237,6 +208,11 @@
         <option value="$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/particleSystemCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/particleSystems.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/uiHelper.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/factories/utils.js" />
+        <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js" />
+        <option value="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html" />
       </list>
     </option>
   </component>
@@ -302,6 +278,46 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="project" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -870,13 +886,7 @@
       <workItem from="1468953715908" duration="34676000" />
       <workItem from="1469308475329" duration="623000" />
       <workItem from="1469348388698" duration="3534000" />
-      <workItem from="1469354178957" duration="9096000" />
-    </task>
-    <task id="LOCAL-00017" summary="sceneGameObject saving">
-      <created>1463312334717</created>
-      <option name="number" value="00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1463312334717</updated>
+      <workItem from="1469354178957" duration="10344000" />
     </task>
     <task id="LOCAL-00018" summary="sceneGameObject saving">
       <created>1463314040631</created>
@@ -1166,11 +1176,17 @@
       <option name="project" value="LOCAL" />
       <updated>1469270429173</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="particle systems">
+      <created>1469393291388</created>
+      <option name="number" value="00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1469393291389</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="420390000" />
+    <option name="totallyTimeSpent" value="421638000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1187,6 +1203,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32822084" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1207,7 +1224,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6126543" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1226,7 +1242,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="ngStyle refactored" />
     <MESSAGE value="gameObject dragAndDrop to scene" />
     <MESSAGE value="sceneGameObject saving" />
     <MESSAGE value="script genetator" />
@@ -1251,7 +1266,8 @@
     <MESSAGE value="Merge branches 'gh-pages' and 'master' of https://github.com/kozlov-victor/vEngine into gh-pages&#10;&#10;Conflicts:&#10;&#9;Gruntfile.js&#10;&#9;application/base/fs.js&#10;&#9;application/mvc/controllers/resourcesController.js&#10;&#9;application/mvc/routes/resourcesRoute.js&#10;&#9;application/mvc/views/editor.ejs&#10;&#9;application/mvc/views/main.ejs&#10;&#9;application/utils/utils.js&#10;&#9;node_modules/ejs/Jakefile&#10;&#9;node_modules/ejs/README.md&#10;&#9;node_modules/ejs/ejs.js&#10;&#9;node_modules/ejs/ejs.min.js&#10;&#9;node_modules/ejs/lib/ejs.js&#10;&#9;node_modules/ejs/package.json&#10;&#9;node_modules/ejs/test/ejs.js&#10;&#9;resources/generatorResources/static/defaultCodeScript.js&#10;&#9;resources/generatorResources/static/index.html&#10;&#9;resources/generatorResources/static/renderer.js&#10;&#9;resources/generatorResources/static/sceneManager.js&#10;&#9;resources/public/css/angular.css&#10;&#9;resources/public/css/contextMenu.css&#10;&#9;resources/public/css/main.css&#10;&#9;resources/public/images/delete.png&#10;&#9;resources/public/js/all.js&#10;&#9;resources/public/js/controllers/animationController.js&#10;&#9;resources/public/js/controllers/gameObjectController.js&#10;&#9;resources/public/js/controllers/layerController.js&#10;&#9;resources/public/js/controllers/leftMenuController.js&#10;&#9;resources/public/js/controllers/sceneController.js&#10;&#9;resources/public/js/controllers/spriteSheetController.js&#10;&#9;resources/public/js/controllers/topPanelController.js&#10;&#9;resources/public/js/dataStructure/collections.js&#10;&#9;resources/public/js/dataStructure/utils.js&#10;&#9;resources/public/js/directives/appContextMenu.js&#10;&#9;resources/public/js/directives/appDragDrop.js&#10;&#9;resources/public/js/directives/appFileUpload.js&#10;&#9;resources/public/js/directives/appKeyPress.js&#10;&#9;resources/public/js/directives/appKeyUp.js&#10;&#9;resources/public/js/directives/appValidator.js&#10;&#9;resources/public/js/factories/editData.js&#10;&#9;resources/public/js/factories/i18n.js&#10;&#9;resources/public/js/factories/messageDigest.js&#10;&#9;resources/public/js/factories/resourceDao.js&#10;&#9;resources/public/js/factories/uiHelper.js&#10;&#9;resources/public/js/lib/ace/src-min/ace.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-language_tools.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-linking.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-modelist.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-old_ie.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-searchbox.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-settings_menu.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-spellcheck.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-split.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-static_highlight.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-statusbar.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-textarea.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-themelist.js&#10;&#9;resources/public/js/lib/ace/src-min/ext-whitespace.js&#10;&#9;resources/public/js/lib/ace/src-min/keybinding-emacs.js&#10;&#9;resources/public/js/lib/ace/src-min/keybinding-vim.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-abap.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-abc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-actionscript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ada.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-apache_conf.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-applescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-asciidoc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-assembly_x86.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-autohotkey.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-batchfile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-c9search.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-c_cpp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-cirru.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-clojure.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-cobol.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-coldfusion.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-csharp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-css.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-curly.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-d.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dart.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-diff.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-django.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dockerfile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-dot.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-eiffel.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ejs.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-elm.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-erlang.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-forth.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ftl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gcode.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gherkin.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gitignore.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-glsl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-gobstones.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-golang.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-groovy.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-handlebars.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haskell.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-haxe.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html_elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-html_ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ini.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-io.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jack.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jade.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-java.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-json.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsoniq.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-jsx.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-julia.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-latex.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lean.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-less.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-liquid.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lisp.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-live_script.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-livescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-logiql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lsl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lua.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-luapage.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-lucene.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-makefile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-markdown.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mask.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-matlab.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-maze.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mel.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mips_assembler.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mipsassembler.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mushcode.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-mysql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-nix.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-nsis.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-objectivec.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ocaml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-pascal.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-perl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-pgsql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-php.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-plain_text.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-powershell.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-praat.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-prolog.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-properties.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-protobuf.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-python.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-r.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-razor.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rdoc.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rhtml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rst.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-rust.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sass.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scad.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scala.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scheme.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-scss.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sh.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sjs.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-smarty.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-snippets.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-soy_template.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-space.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sql.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-stylus.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-svg.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-swift.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-swig.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-tcl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-tex.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-textile.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-toml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-twig.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-typescript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vala.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vbscript.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-velocity.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-verilog.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-vhdl.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-wollok.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-xml.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-xquery.js&#10;&#9;resources/public/js/lib/ace/src-min/mode-yaml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/abap.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/abc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/actionscript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ada.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/apache_conf.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/applescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/asciidoc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/assembly_x86.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/autohotkey.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/batchfile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/c9search.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/c_cpp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/cirru.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/clojure.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/cobol.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/coldfusion.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/csharp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/css.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/curly.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/d.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dart.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/diff.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/django.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dockerfile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/dot.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/eiffel.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ejs.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/elm.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/erlang.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/forth.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ftl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gcode.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gherkin.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gitignore.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/glsl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/gobstones.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/golang.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/groovy.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/handlebars.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haskell.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/haxe.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html_elixir.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/html_ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ini.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/io.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jack.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jade.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/java.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/json.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsoniq.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/jsx.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/julia.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/latex.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lean.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/less.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/liquid.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lisp.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/live_script.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/livescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/logiql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lsl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lua.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/luapage.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/lucene.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/makefile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/markdown.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mask.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/matlab.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/maze.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mel.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mips_assembler.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mipsassembler.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mushcode.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/mysql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/nix.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/nsis.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/objectivec.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ocaml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/pascal.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/perl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/pgsql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/php.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/plain_text.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/powershell.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/praat.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/prolog.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/properties.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/protobuf.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/python.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/r.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/razor.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rdoc.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rhtml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rst.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/ruby.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/rust.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sass.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scad.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scala.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scheme.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/scss.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sh.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sjs.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/smarty.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/snippets.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/soy_template.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/space.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sql.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/stylus.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/svg.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/swift.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/swig.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/tcl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/tex.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/text.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/textile.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/toml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/twig.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/typescript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vala.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vbscript.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/velocity.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/verilog.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/vhdl.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/wollok.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/xml.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/xquery.js&#10;&#9;resources/public/js/lib/ace/src-min/snippets/yaml.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-ambiance.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-chaos.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-chrome.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-clouds.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-clouds_midnight.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-cobalt.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-crimson_editor.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-dawn.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-dreamweaver.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-eclipse.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-github.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-idle_fingers.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-iplastic.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-katzenmilch.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-kr_theme.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-kuroir.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-merbivore.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-merbivore_soft.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-mono_industrial.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-monokai.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-pastel_on_dark.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-solarized_dark.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-solarized_light.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-sqlserver.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-terminal.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-textmate.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_blue.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_bright.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-tomorrow_night_eighties.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-twilight.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-vibrant_ink.js&#10;&#9;resources/public/js/lib/ace/src-min/theme-xcode.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-coffee.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-css.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-html.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-javascript.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-json.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-lua.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-php.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-xml.js&#10;&#9;resources/public/js/lib/ace/src-min/worker-xquery.js&#10;&#9;resources/public/js/lib/angular.js&#10;&#9;resources/public/js/lib/jquery.js&#10;&#9;resources/public/js/lib/oop.js&#10;&#9;resources/public/js/main.js&#10;&#9;resources/public/main.html&#10;&#9;resources/public/partials/contextMenus.html&#10;&#9;resources/public/partials/contextMenus/ctxGameObject.html&#10;&#9;resources/public/partials/contextMenus/ctxScene.html&#10;&#9;resources/public/partials/dialogs.html&#10;&#9;resources/public/partials/dialogs/dialogCreateAnimation.html&#10;&#9;resources/public/partials/dialogs/dialogCreateGameObject.html&#10;&#9;resources/public/partials/dialogs/dialogCreateLayer.html&#10;&#9;resources/public/partials/dialogs/dialogCreateScene.html&#10;&#9;resources/public/partials/dialogs/dialogCreateSpriteSheet.html&#10;&#9;resources/public/partials/leftMenu.html&#10;&#9;resources/public/partials/leftMenu/gameObjects.html&#10;&#9;resources/public/partials/leftMenu/gameProps.html&#10;&#9;resources/public/partials/leftMenu/scenes.html&#10;&#9;resources/public/partials/leftMenu/spriteSheets.html&#10;&#9;resources/public/partials/topPanel.html&#10;&#9;server.js&#10;&#9;workspace/project/out/index.html&#10;&#9;workspace/project/resources/audio/map.json&#10;" />
     <MESSAGE value="sound" />
     <MESSAGE value="rightPanel menu with object properties" />
-    <option name="LAST_COMMIT_MESSAGE" value="rightPanel menu with object properties" />
+    <MESSAGE value="particle systems" />
+    <option name="LAST_COMMIT_MESSAGE" value="particle systems" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1264,20 +1280,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/jquery.sortable.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="78" column="7" selection-start-line="78" selection-start-column="7" selection-end-line="78" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/keyboard.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/js/all.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3318078">
@@ -1353,13 +1355,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="15" column="8" selection-start-line="15" selection-start-column="8" selection-end-line="15" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/animationCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1443,13 +1438,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/modules/math.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1522,26 +1510,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="109" column="35" selection-start-line="109" selection-start-column="12" selection-end-line="109" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/sceneController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="163" column="35" selection-start-line="163" selection-start-column="35" selection-end-line="163" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="105" column="25" selection-start-line="105" selection-start-column="13" selection-end-line="105" selection-end-column="25" />
           <folding />
         </state>
       </provider>
@@ -1626,14 +1598,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="46" column="13" selection-start-line="38" selection-start-column="8" selection-end-line="46" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/particleSystemCtrl.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1644,8 +1608,64 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/particleSystems.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6612529">
-          <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
+        <state vertical-scroll-proportion="-14.375">
+          <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/animationCtrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="16" selection-start-line="1" selection-start-column="16" selection-end-line="1" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/uiHelper.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="14" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="75" column="44" selection-start-line="75" selection-start-column="44" selection-end-line="75" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="37" column="68" selection-start-line="37" selection-start-column="68" selection-end-line="37" selection-end-column="68" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/workspace/project/resources/gameObject/map.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.9636364">
+          <caret line="45" column="30" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogCreateSpriteSheet.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.0">
+          <caret line="14" column="65" selection-start-line="14" selection-start-column="65" selection-end-line="14" selection-end-column="65" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.37362638">
+          <caret line="20" column="64" selection-start-line="20" selection-start-column="64" selection-end-line="20" selection-end-column="64" />
           <folding />
         </state>
       </provider>
