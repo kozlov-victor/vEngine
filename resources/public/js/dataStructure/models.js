@@ -12,6 +12,24 @@
         if (!el[key]) return true;
     };
 
+    function deepCopy(obj) {
+        if (Object.prototype.toString.call(obj) === '[object Array]') {
+            var out = [], i = 0, len = obj.length;
+            for ( ; i < len; i++ ) {
+                out[i] = arguments.callee(obj[i]);
+            }
+            return out;
+        }
+        if (typeof obj === 'object') {
+            var out = {}, i;
+            for ( i in obj ) {
+                out[i] = arguments.callee(obj[i]);
+            }
+            return out;
+        }
+        return obj;
+    }
+
     models.BaseModel = Class.extend({
         id:null,
         protoId:null,
@@ -24,7 +42,7 @@
                 }
                 res[key]=this[key];
             }
-            return res;
+            return deepCopy(res);
         },
         toJSON_Array: function(){
             var res = [];
@@ -261,6 +279,7 @@
         layerProps:[],
         _layers:null,
         _allGameObjects:null,
+        _twins:null,
         __onResourcesReady: function(){
             var self = this;
             self._allGameObjects = new ve.collections.List();
@@ -365,6 +384,31 @@
         description:'',
         parameters:[],
         construct: function(){
+
+        }
+    });
+
+    models.ParticleSystem = models.BaseModel.extend({
+        type:'particleSystem',
+        gameObjectId:null,
+        _gameObject:null,
+        _particles:null,
+        numOfParticlesToEmit:null,
+        particleAngle:null,
+        particleVelocity:null,
+        construct: function(){
+            if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
+            if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
+            if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
+            this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
+        },
+        emit: function(){
+
+        },
+        update:function(){
+
+        },
+        render: function(){
 
         }
     });

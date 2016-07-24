@@ -96,8 +96,8 @@
             },
             {
                 "text": "1q",
-                "width": 40,
-                "height": 40,
+                "width": 30,
+                "height": 29,
                 "type": "userInterface",
                 "subType": "textField",
                 "groupName": "",
@@ -106,7 +106,7 @@
                 "name": "textField1",
                 "protoId": null,
                 "id": "4343_5960_457",
-                "fontId": "9463_5809_64"
+                "fontId": "6991_3497_4"
             }
         ],
         "id": "3534_2050_13"

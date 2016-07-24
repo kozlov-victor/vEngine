@@ -34,9 +34,19 @@ window.app.
 
         // todo project path
         (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currSoundInEdit = new ve.models.Sound({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSoundInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+
             if (s.editData.currSoundInEdit) {
                 s.soundUrl =  'project/' + s.editData.currSoundInEdit.resourcePath;
             }
+
         })();
 
     });

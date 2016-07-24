@@ -25,7 +25,21 @@ window.app.
             } else { // create object in resource
                 resourceDao.createOrEditLayer(s.editData.currLayerInEdit);
             }
-
         };
+
+
+        (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currLayerInEdit = new ve.models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit._scene = editData.currSceneInEdit;
+            } else if (uiHelper.opName=='edit'){
+                editData.currLayerInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+
+        })();
+
 
     });

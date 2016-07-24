@@ -283,6 +283,24 @@
         if (!el[key]) return true;
     };
 
+    function deepCopy(obj) {
+        if (Object.prototype.toString.call(obj) === '[object Array]') {
+            var out = [], i = 0, len = obj.length;
+            for ( ; i < len; i++ ) {
+                out[i] = arguments.callee(obj[i]);
+            }
+            return out;
+        }
+        if (typeof obj === 'object') {
+            var out = {}, i;
+            for ( i in obj ) {
+                out[i] = arguments.callee(obj[i]);
+            }
+            return out;
+        }
+        return obj;
+    }
+
     models.BaseModel = Class.extend({
         id:null,
         protoId:null,
@@ -295,7 +313,7 @@
                 }
                 res[key]=this[key];
             }
-            return res;
+            return deepCopy(res);
         },
         toJSON_Array: function(){
             var res = [];
@@ -532,6 +550,7 @@
         layerProps:[],
         _layers:null,
         _allGameObjects:null,
+        _twins:null,
         __onResourcesReady: function(){
             var self = this;
             self._allGameObjects = new ve.collections.List();
@@ -636,6 +655,31 @@
         description:'',
         parameters:[],
         construct: function(){
+
+        }
+    });
+
+    models.ParticleSystem = models.BaseModel.extend({
+        type:'particleSystem',
+        gameObjectId:null,
+        _gameObject:null,
+        _particles:null,
+        numOfParticlesToEmit:null,
+        particleAngle:null,
+        particleVelocity:null,
+        construct: function(){
+            if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
+            if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
+            if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
+            this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
+        },
+        emit: function(){
+
+        },
+        update:function(){
+
+        },
+        render: function(){
 
         }
     });
@@ -898,6 +942,15 @@ window.app.
         };
 
         (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currFontInEdit = new ve.models.Font();
+            } else if (uiHelper.opName=='edit'){
+                editData.currFontInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+
             if (s.editData.systemFontList) return;
             chrome.requestToApi({method:'getFontList'},function(list){
                 s.editData.systemFontList = list;
@@ -1007,6 +1060,16 @@ window.app.
         };
 
         (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
+                utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
+            } else if (uiHelper.opName=='edit'){
+                editData.currGameObjectInEdit = uiHelper.opObject.clone(ve.models.GameObject);
+                editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
+            }
+            uiHelper.opName = null;
+
             s.availableCommonBehaviour = [];
             if (!s.editData.currGameObjectInEdit) return;
             var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
@@ -1015,6 +1078,7 @@ window.app.
                 s.availableCommonBehaviour.push(cb);
             });
             s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;
+
         })();
 
 
@@ -1048,8 +1112,22 @@ window.app.
             } else { // create object in resource
                 resourceDao.createOrEditLayer(s.editData.currLayerInEdit);
             }
-
         };
+
+
+        (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currLayerInEdit = new ve.models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit._scene = editData.currSceneInEdit;
+            } else if (uiHelper.opName=='edit'){
+                editData.currLayerInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+
+        })();
+
 
     });
 
@@ -1063,8 +1141,7 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao,
-        messageDigest
+        resourceDao
     ) {
 
         var s = $scope;
@@ -1074,53 +1151,16 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.showCreateSpriteSheetDialog = function(){
-            editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
-            uiHelper.showDialog('frmCreateSpriteSheet');
-        };
-
-        s.showEditSpriteSheetDialog = function(currObj){
-            editData.currSpriteSheetInEdit = currObj.clone(ve.models.SpriteSheet);
-            editData.currSpriteSheetInEdit.calcFrameSize();
-            uiHelper.showDialog('frmCreateSpriteSheet');
-        };
-
-        s.showCreateGameObjectDialog = function() {
-            editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
-            utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
-            uiHelper.showDialog('frmCreateGameObject');
-        };
-
-        s.showEditGameObjectDialog = function(currObj) {
-            editData.currGameObjectInEdit = currObj.clone(ve.models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
-            uiHelper.showDialog('frmCreateGameObject');
+        s.showDialog = function(objectName,opName,opObject){
+            uiHelper.opName = opName;
+            uiHelper.opObject = opObject;
+            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName));
         };
 
         s.saveGameProps = function(){
             delete editData.gameProps.$objectId;
             delete editData.gameProps.objectId;
             resourceDao.saveGameProps(editData.gameProps);
-        };
-
-        s.showCreateSceneDialog = function(){
-            editData.currSceneInEdit = new ve.models.Scene({});
-            uiHelper.showDialog('frmCreateScene');
-        };
-
-        s.showCreateSoundDialog = function(){
-            editData.currSoundInEdit = new ve.models.Sound({});
-            uiHelper.showDialog('frmCreateSound');
-        };
-
-        s.showEditSoundDialog = function(snd){
-            editData.currSoundInEdit = snd.clone();
-            uiHelper.showDialog('frmCreateSound');
-        };
-
-        s.showEditSceneDialog = function(currObj){
-            editData.currSceneInEdit = currObj.clone(ve.models.Scene);
-            uiHelper.showDialog('frmCreateScene');
         };
 
         s.deleteScene = function(item){
@@ -1131,28 +1171,6 @@ window.app.
         s.deleteGameObjectFromLayer = function(layer,object){
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
             layer._gameObjects.remove({id: object.id});
-        };
-
-        s.showCreateLayerDialog = function(scene){
-            editData.currLayerInEdit = new ve.models.Layer({sceneId:scene.id});
-            editData.currLayerInEdit._scene = editData.currSceneInEdit;
-            uiHelper.showDialog('frmCreateLayer');
-        };
-
-        s.showEditLayerDialog = function(e,layer){
-            e.stopPropagation();
-            editData.currLayerInEdit = layer.clone(ve.models.Layer);
-            uiHelper.showDialog('frmCreateLayer');
-        };
-
-        s.showCreateFontDialog = function(){
-            editData.currFontInEdit = new ve.models.Font();
-            uiHelper.showDialog('frmCreateFont');
-        };
-
-        s.showEditFontDialog = function(font){
-            editData.currFontInEdit = font.clone();
-            uiHelper.showDialog('frmCreateFont');
         };
 
         s.deleteLayer = function(scene,l){
@@ -1169,6 +1187,41 @@ window.app.
                 model.name+
                 '&path='+encodeURIComponent('script/'+model.type);
         };
+
+    });
+
+
+window.app.
+    controller('particleSystemCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+
+        (function(){
+            if (uiHelper.opName=='create') {
+                editData.currParticleSystemInEdit = new ve.models.ParticleSystem();
+            } else if (uiHelper.opName=='edit'){
+
+            }
+            uiHelper.opName = null;
+        })();
+
+
+
+
 
     });
 window.app.
@@ -1325,7 +1378,18 @@ window.app.
                 'gameObjectProps',
                 obj.toJSON()
             );
-        }
+        };
+
+        (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currSceneInEdit = new ve.models.Scene({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSceneInEdit = uiHelper.opObject.clone(ve.models.Scene);
+            }
+            uiHelper.opName = null;
+
+        })();
 
     });
 
@@ -1364,9 +1428,19 @@ window.app.
 
         // todo project path
         (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currSoundInEdit = new ve.models.Sound({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSoundInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+
             if (s.editData.currSoundInEdit) {
                 s.soundUrl =  'project/' + s.editData.currSoundInEdit.resourcePath;
             }
+
         })();
 
     });
@@ -1408,6 +1482,16 @@ window.app.
             resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,ve.models.SpriteSheet,ve_local.bundle.spriteSheetList);
         };
 
+        (function(){
+            if (uiHelper.opName=='create') {
+                editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSpriteSheetInEdit = uiHelper.opObject.clone();
+                editData.currSpriteSheetInEdit.calcFrameSize();
+            }
+            uiHelper.opName = null;
+        })();
+
 
     });
 
@@ -1428,6 +1512,17 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+
+        (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currSoundInEdit = new ve.models.Sound({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSoundInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+        })();
 
     });
 
@@ -1706,6 +1801,7 @@ window.app
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
         res.currSoundInEdit = null;
+        res.currParticleSystemInEdit = null;
 
         res.userInterfaceList = new ve.collections.List();
 
@@ -1779,7 +1875,8 @@ window.app
                 sounds:'sounds',
                 play:'play',
                 loadSound:'load sound',
-                build:'build'
+                build:'build',
+                particleSystems:'particle systems'
             }
         };
 

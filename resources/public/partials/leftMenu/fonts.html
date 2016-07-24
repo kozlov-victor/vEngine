@@ -9,7 +9,7 @@
                 <div class="cell">
 
                 </div>
-                <div class="cell vAlign rightAlign" ng-click="showEditFontDialog(item)">
+                <div class="cell vAlign rightAlign" ng-click="showDialog('font','edit',item)">
                     edit
                 </div>
                 <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'font')">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <button ng-click="showCreateFontDialog()">
+        <button ng-click="showDialog('font','create')">
             {{i18n.create}}
         </button>
     </form>

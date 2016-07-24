@@ -91,6 +91,15 @@ window.app.
         };
 
         (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currFontInEdit = new ve.models.Font();
+            } else if (uiHelper.opName=='edit'){
+                editData.currFontInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+
             if (s.editData.systemFontList) return;
             chrome.requestToApi({method:'getFontList'},function(list){
                 s.editData.systemFontList = list;

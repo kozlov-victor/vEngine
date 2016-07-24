@@ -15,6 +15,7 @@ window.app
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
         res.currSoundInEdit = null;
+        res.currParticleSystemInEdit = null;
 
         res.userInterfaceList = new ve.collections.List();
 

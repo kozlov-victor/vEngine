@@ -99,6 +99,16 @@ window.app.
         };
 
         (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
+                utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
+            } else if (uiHelper.opName=='edit'){
+                editData.currGameObjectInEdit = uiHelper.opObject.clone(ve.models.GameObject);
+                editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
+            }
+            uiHelper.opName = null;
+
             s.availableCommonBehaviour = [];
             if (!s.editData.currGameObjectInEdit) return;
             var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
@@ -107,6 +117,7 @@ window.app.
                 s.availableCommonBehaviour.push(cb);
             });
             s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;
+
         })();
 
 

@@ -1,6 +1,7 @@
 
+
 window.app.
-    controller('stubCtrl', function (
+    controller('particleSystemCtrl', function (
         $scope,
         $http,
         $sce,
@@ -17,15 +18,18 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        (function(){
 
+        (function(){
             if (uiHelper.opName=='create') {
-                editData.currSoundInEdit = new ve.models.Sound({});
+                editData.currParticleSystemInEdit = new ve.models.ParticleSystem();
             } else if (uiHelper.opName=='edit'){
-                editData.currSoundInEdit = uiHelper.opObject.clone();
+
             }
             uiHelper.opName = null;
-
         })();
+
+
+
+
 
     });

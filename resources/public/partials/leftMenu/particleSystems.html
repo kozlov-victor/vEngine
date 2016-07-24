@@ -1,0 +1,24 @@
+<h3 ng-click="leftMenuIndex=uiHelper.toggle(leftMenuIndex,'particleSystems')">{{i18n.particleSystems}}</h3>
+<div ng-show="leftMenuIndex=='particleSystems'" class="withPadding">
+    <form name="particleSystems" class="table width100 withPadding">
+        <div class="table width100">
+            <div class="row" ng-repeat="item in editData.particleSystemList.rs">
+                <div class="cell vAlign">
+                    <span>{{item.name}}</span>
+                </div>
+                <div class="cell">
+
+                </div>
+                <div class="cell vAlign rightAlign" ng-click="showEditParticleSystemDialog(item)">
+                    edit
+                </div>
+                <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,item.type)">
+                    X
+                </div>
+            </div>
+        </div>
+        <button ng-click="showDialog('particleSystem','create')">
+            {{i18n.create}}
+        </button>
+    </form>
+</div>

@@ -152,6 +152,17 @@ window.app.
                 'gameObjectProps',
                 obj.toJSON()
             );
-        }
+        };
+
+        (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currSceneInEdit = new ve.models.Scene({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSceneInEdit = uiHelper.opObject.clone(ve.models.Scene);
+            }
+            uiHelper.opName = null;
+
+        })();
 
     });

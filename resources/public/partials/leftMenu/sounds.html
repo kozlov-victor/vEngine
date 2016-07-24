@@ -9,7 +9,7 @@
                 <div class="cell">
 
                 </div>
-                <div class="cell vAlign rightAlign" ng-click="showEditSoundDialog(item)">
+                <div class="cell vAlign rightAlign" ng-click="showDialog('sound','edit',item)">
                     edit
                 </div>
                 <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,item.type)">
@@ -17,7 +17,7 @@
                 </div>
             </li>
         </ul>
-        <button ng-click="showCreateSoundDialog()">
+        <button ng-click="showDialog('sound','create')">
             {{i18n.create}}
         </button>
     </form>

@@ -20,5 +20,16 @@
         "type": "frameAnimation",
         "duration": 1000,
         "id": "2195_5056_19"
+    },
+    {
+        "_timeForOneFrame": 0,
+        "frames": [
+            1,
+            2
+        ],
+        "name": "w",
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "4411_8126_129"
     }
 ]

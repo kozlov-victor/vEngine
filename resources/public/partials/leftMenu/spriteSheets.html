@@ -10,7 +10,7 @@
                 <div class="cell vAlign">
                     <span>{{item.name}}</span>
                 </div>
-                <div class="cell vAlign rightAlign" ng-click="showEditSpriteSheetDialog(item)">
+                <div class="cell vAlign rightAlign" ng-click="showDialog('spriteSheet','edit',item)">
                     edit
                 </div>
                 <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'spriteSheet')">
@@ -19,7 +19,7 @@
             </div>
         </div>
     </div>
-    <button ng-click="showCreateSpriteSheetDialog()">
+    <button ng-click="showDialog('spriteSheet','create')">
         {{i18n.addSpriteSheet}}
     </button>
 </div>

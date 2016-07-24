@@ -60,7 +60,8 @@ window.app
                 sounds:'sounds',
                 play:'play',
                 loadSound:'load sound',
-                build:'build'
+                build:'build',
+                particleSystems:'particle systems'
             }
         };
 

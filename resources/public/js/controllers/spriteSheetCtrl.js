@@ -36,5 +36,15 @@ window.app.
             resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,ve.models.SpriteSheet,ve_local.bundle.spriteSheetList);
         };
 
+        (function(){
+            if (uiHelper.opName=='create') {
+                editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSpriteSheetInEdit = uiHelper.opObject.clone();
+                editData.currSpriteSheetInEdit.calcFrameSize();
+            }
+            uiHelper.opName = null;
+        })();
+
 
     });
