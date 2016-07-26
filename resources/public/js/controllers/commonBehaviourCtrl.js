@@ -30,6 +30,24 @@ window.app.
                     uiHelper.closeDialog();
                 }
             );
-        }
+        };
+
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit.name = name;
+                var obj =
+                    editData.commonBehaviourList.find({
+                        name: name
+                    });
+                if (obj) s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
+            } else if (dialogState.opName=='edit'){
+                s.editData.currCommonBehaviourInEdit = dialogState.opObject.clone();
+            }
+        })();
+
+
 
     });

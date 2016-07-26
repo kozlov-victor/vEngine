@@ -19,12 +19,6 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.showDialog = function(objectName,opName,opObject){
-            uiHelper.opName = opName;
-            uiHelper.opObject = opObject;
-            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName));
-        };
-
         s.saveGameProps = function(){
             delete editData.gameProps.$objectId;
             delete editData.gameProps.objectId;

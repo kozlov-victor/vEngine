@@ -98,7 +98,7 @@
                     <div class="cell vAlign">
                         <span>{{animItm.name}}</span>
                     </div>
-                    <div class="cell vAlign rightAlign" ng-click="showEditAnimationDialog(animItm)">
+                    <div class="cell vAlign rightAlign" ng-click="showDialog('animation','edit',animItm)">
                         edit
                     </div>
                     <div class="cell pointer vAlign rightAlign" ng-click="deleteFrameAnimation(animItm)">
@@ -108,7 +108,7 @@
             </div>
         </td>
         <td>
-            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateAnimationDialog()">+</button>
+            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showDialog('animation','create')">+</button>
         </td>
     </tr>
     <tr>
@@ -121,7 +121,7 @@
                     <div class="cell vAlign">
                         <span>{{itm.name}}</span>
                     </div>
-                    <div class="cell vAlign rightAlign" ng-click="showEditCommonBehaviourDialog(itm)">
+                    <div class="cell vAlign rightAlign" ng-click="showDialog('commonBehaviour','edit',itm)">
                         edit
                     </div>
                     <div class="cell pointer vAlign rightAlign" ng-click="deleteCommonBehaviour(itm)">
@@ -132,9 +132,17 @@
         </td>
         <td>
             <select class="width20" ng-model="selectedBehaviourName">
-                <option value="{{cb.name}}" ng-repeat="cb in availableCommonBehaviour">{{cb.name}}</option>
+                <option
+                        value="{{cb.name}}"
+                        ng-repeat="cb in availableCommonBehaviour">
+                    {{cb.name}}
+                </option>
             </select>
-            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showCreateCommonBehaviourDialog(selectedBehaviourName)">+</button>
+            <button
+                    ng-disabled="!editData.currGameObjectInEdit.id"
+                    ng-click="showDialog('commonBehaviour','create')">
+                +
+            </button>
         </td>
     </tr>
 </table>

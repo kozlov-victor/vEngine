@@ -811,7 +811,19 @@ window.app.
             for (var i=from;i<=to;i++) {
                 s.editData.currFrAnimationInEdit.frames.push(i);
             }
-        }
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            } else if (dialogState.opName=='edit'){
+                s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            }
+        })();
+
 
     });
 
@@ -846,7 +858,25 @@ window.app.
                     uiHelper.closeDialog();
                 }
             );
-        }
+        };
+
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit.name = name;
+                var obj =
+                    editData.commonBehaviourList.find({
+                        name: name
+                    });
+                if (obj) s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
+            } else if (dialogState.opName=='edit'){
+                s.editData.currCommonBehaviourInEdit = dialogState.opObject.clone();
+            }
+        })();
+
+
 
     });
 
@@ -942,13 +972,12 @@ window.app.
         };
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currFontInEdit = new ve.models.Font();
-            } else if (uiHelper.opName=='edit'){
-                editData.currFontInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currFontInEdit = dialogState.opObject.clone();
             }
-            uiHelper.opName = null;
 
 
             if (s.editData.systemFontList) return;
@@ -1024,37 +1053,6 @@ window.app.
             );
         };
 
-        s.showCreateAnimationDialog = function() {
-            s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
-        };
-
-        s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
-        };
-
-        s.showCreateCommonBehaviourDialog = function(name){
-            s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
-            s.editData.currCommonBehaviourInEdit.name = name;
-            var obj =
-                editData.commonBehaviourList.find({
-                    name: name
-                });
-            if (!obj) return;
-            s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
-            uiHelper.showDialog('frmCreateCommonBehaviour');
-        };
-
-
-        s.showEditCommonBehaviourDialog = function(item) {
-            s.editData.currCommonBehaviourInEdit = item.clone();
-            uiHelper.showDialog('frmCreateCommonBehaviour');
-        };
-
-
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
@@ -1063,15 +1061,14 @@ window.app.
         };
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
-            } else if (uiHelper.opName=='edit'){
-                editData.currGameObjectInEdit = uiHelper.opObject.clone(ve.models.GameObject);
+            } else if (dialogState.opName=='edit'){
+                editData.currGameObjectInEdit = dialogState.opObject.clone(ve.models.GameObject);
                 editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
-            uiHelper.opName = null;
 
             s.availableCommonBehaviour = [];
             if (!s.editData.currGameObjectInEdit) return;
@@ -1119,14 +1116,14 @@ window.app.
 
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currLayerInEdit = new ve.models.Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
-            } else if (uiHelper.opName=='edit'){
-                editData.currLayerInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currLayerInEdit = dialogState.opObject.clone();
+                editData.currLayerInEdit._scene = editData.currSceneInEdit;
             }
-            uiHelper.opName = null;
 
 
         })();
@@ -1153,12 +1150,6 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-
-        s.showDialog = function(objectName,opName,opObject){
-            uiHelper.opName = opName;
-            uiHelper.opObject = opObject;
-            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName));
-        };
 
         s.saveGameProps = function(){
             delete editData.gameProps.$objectId;
@@ -1214,12 +1205,12 @@ window.app.
 
 
         (function(){
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currParticleSystemInEdit = new ve.models.ParticleSystem();
-            } else if (uiHelper.opName=='edit'){
+            } else if (dialogState.opName=='edit'){
 
             }
-            uiHelper.opName = null;
         })();
 
 
@@ -1236,7 +1227,8 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao
+        resourceDao,
+        messageDigest
     ) {
         var s = $scope;
         s.editData = editData;
@@ -1384,11 +1376,11 @@ window.app.
         };
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currSceneInEdit = new ve.models.Scene({});
-            } else if (uiHelper.opName=='edit'){
-                editData.currSceneInEdit = uiHelper.opObject.clone(ve.models.Scene);
+            } else if (dialogState.opName=='edit'){
+                editData.currSceneInEdit = dialogState.opObject.clone(ve.models.Scene);
             }
             uiHelper.opName = null;
 
@@ -1431,13 +1423,12 @@ window.app.
 
         // todo project path
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currSoundInEdit = new ve.models.Sound({});
-            } else if (uiHelper.opName=='edit'){
-                editData.currSoundInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currSoundInEdit = dialogState.opObject.clone();
             }
-            uiHelper.opName = null;
 
 
             if (s.editData.currSoundInEdit) {
@@ -1474,7 +1465,8 @@ window.app.
                 img.onload = function() {
                     s.editData.currSpriteSheetInEdit.width = img.width;
                     s.editData.currSpriteSheetInEdit.height = img.height;
-                    s.$apply(s.editData.currSpriteSheetInEdit);
+                    s.spriteSheetUrl = fr.result;
+                    s.$apply();
                 };
                 img.src = fr.result;
             };
@@ -1486,13 +1478,15 @@ window.app.
         };
 
         (function(){
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
-            } else if (uiHelper.opName=='edit'){
-                editData.currSpriteSheetInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
+                // todo project path
+                s.spriteSheetUrl = 'project/'+editData.currSpriteSheetInEdit.resourcePath;
             }
-            uiHelper.opName = null;
         })();
 
 
@@ -1701,6 +1695,69 @@ app.directive('appOnFileUpload', function ($parse) {
                 scope.$apply(function () {
                     fn(scope, {$file: element[0].files[0],$src:src});
                 });
+            });
+        }
+    };
+});
+
+
+angular.forEach(['x', 'y', 'width', 'height','transform'], function(name) {
+    var ngName = 'app' + name[0].toUpperCase() + name.slice(1);
+    app.directive(ngName, function() {
+        return function(scope, element, attrs) {
+            attrs.$observe(ngName, function(value) {
+                attrs.$set(name, value);
+            })
+        };
+    });
+});
+
+app.directive('appInputAngle', function() {
+    return {
+        restrict: 'E',
+        replace: true,
+        require: 'ngModel',
+        scope: {
+            ngModel : '='
+        },
+        templateUrl:'partials/misc/appInputAngle.html',
+        link: function (scope, element, attrs) {
+            var model = scope.ngModel;
+            var field = attrs.appField;
+            console.log(model,field);
+            var angle = model[field];
+            var calcAngleInDeg = function(){
+                scope.angleInDeg = angle * 180 / Math.PI;
+            };
+            calcAngleInDeg();
+
+            var calcAngleFromEvent = function(e){
+                var rect = element[0].getBoundingClientRect();
+                var x = e.clientX - rect.left, y = e.clientY - rect.top;
+                angle = Math.atan2((y -15),(x - 15));
+            };
+
+            var mouseDown = false;
+
+            element.bind('click', function (e) {
+                calcAngleFromEvent(e);
+                calcAngleInDeg();
+                scope.$apply();
+            });
+            element.bind('mousedown',function(){
+                mouseDown = true;
+            });
+            element.bind('mouseup',function(){
+                mouseDown = false;
+            });
+            element.bind('mouseleave',function(){
+                mouseDown = false;
+            });
+            element.bind('mousemove', function (e) {
+                if (!mouseDown) return;
+                calcAngleFromEvent(e);
+                calcAngleInDeg();
+                scope.$apply();
             });
         }
     };
@@ -2159,8 +2216,7 @@ window.app
             _dialogsStack: [],
 
             window:'sceneWindow',
-            opName:null,
-            opObject:null,
+            _dialogName:null,
             ctxMenu:{
                 name:null,
                 x:null,
@@ -2169,14 +2225,23 @@ window.app
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
             },
-            showDialog: function(name){
+            showDialog: function(name,opName,opObject){
                 _.dialogName = name;
-                _._dialogsStack.push(name);
+                _._dialogsStack.push({
+                    name:name,
+                    opName:opName,
+                    opObject:opObject
+                });
                 _.ctxMenu.name = null;
+            },
+            getDialogState: function(){
+                return _._dialogsStack[_._dialogsStack.length-1]||{};
             },
             closeDialog: function(){
                 _._dialogsStack.pop();
-                _.dialogName = _._dialogsStack[_._dialogsStack.length-1];
+                _.dialogName =
+                    _._dialogsStack[_._dialogsStack.length-1] &&
+                    _._dialogsStack[_._dialogsStack.length-1].name;
             },
             showContextMenu: function(name,x,y,elX,elY,model){
                 _.ctxMenu.name = name;
@@ -2340,5 +2405,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
 
+        s.showDialog = function(objectName,opName,opObject){
+            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject);
+        };
 
     });

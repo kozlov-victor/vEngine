@@ -25,7 +25,8 @@ window.app.
                 img.onload = function() {
                     s.editData.currSpriteSheetInEdit.width = img.width;
                     s.editData.currSpriteSheetInEdit.height = img.height;
-                    s.$apply(s.editData.currSpriteSheetInEdit);
+                    s.spriteSheetUrl = fr.result;
+                    s.$apply();
                 };
                 img.src = fr.result;
             };
@@ -37,13 +38,15 @@ window.app.
         };
 
         (function(){
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
-            } else if (uiHelper.opName=='edit'){
-                editData.currSpriteSheetInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
+                // todo project path
+                s.spriteSheetUrl = 'project/'+editData.currSpriteSheetInEdit.resourcePath;
             }
-            uiHelper.opName = null;
         })();
 
 

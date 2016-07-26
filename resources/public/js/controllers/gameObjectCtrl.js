@@ -63,37 +63,6 @@ window.app.
             );
         };
 
-        s.showCreateAnimationDialog = function() {
-            s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
-        };
-
-        s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
-        };
-
-        s.showCreateCommonBehaviourDialog = function(name){
-            s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
-            s.editData.currCommonBehaviourInEdit.name = name;
-            var obj =
-                editData.commonBehaviourList.find({
-                    name: name
-                });
-            if (!obj) return;
-            s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
-            uiHelper.showDialog('frmCreateCommonBehaviour');
-        };
-
-
-        s.showEditCommonBehaviourDialog = function(item) {
-            s.editData.currCommonBehaviourInEdit = item.clone();
-            uiHelper.showDialog('frmCreateCommonBehaviour');
-        };
-
-
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
@@ -102,15 +71,14 @@ window.app.
         };
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
-            } else if (uiHelper.opName=='edit'){
-                editData.currGameObjectInEdit = uiHelper.opObject.clone(ve.models.GameObject);
+            } else if (dialogState.opName=='edit'){
+                editData.currGameObjectInEdit = dialogState.opObject.clone(ve.models.GameObject);
                 editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
-            uiHelper.opName = null;
 
             s.availableCommonBehaviour = [];
             if (!s.editData.currGameObjectInEdit) return;

@@ -20,12 +20,12 @@ window.app.
 
 
         (function(){
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currParticleSystemInEdit = new ve.models.ParticleSystem();
-            } else if (uiHelper.opName=='edit'){
+            } else if (dialogState.opName=='edit'){
 
             }
-            uiHelper.opName = null;
         })();
 
 

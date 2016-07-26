@@ -7,7 +7,8 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao
+        resourceDao,
+        messageDigest
     ) {
         var s = $scope;
         s.editData = editData;
@@ -155,11 +156,11 @@ window.app.
         };
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currSceneInEdit = new ve.models.Scene({});
-            } else if (uiHelper.opName=='edit'){
-                editData.currSceneInEdit = uiHelper.opObject.clone(ve.models.Scene);
+            } else if (dialogState.opName=='edit'){
+                editData.currSceneInEdit = dialogState.opObject.clone(ve.models.Scene);
             }
             uiHelper.opName = null;
 

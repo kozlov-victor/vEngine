@@ -1034,7 +1034,7 @@
             "height": 261
         },
         "type": "font",
-        "fontColor": "#df4e4e",
+        "fontColor": "black",
         "fontSize": 25,
         "fontFamily": "Monospace",
         "resourcePath": "resources/font/default.png",

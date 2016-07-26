@@ -34,13 +34,12 @@ window.app.
 
         // todo project path
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currSoundInEdit = new ve.models.Sound({});
-            } else if (uiHelper.opName=='edit'){
-                editData.currSoundInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currSoundInEdit = dialogState.opObject.clone();
             }
-            uiHelper.opName = null;
 
 
             if (s.editData.currSoundInEdit) {

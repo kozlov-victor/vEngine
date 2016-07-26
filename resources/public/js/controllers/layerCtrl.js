@@ -29,14 +29,14 @@ window.app.
 
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currLayerInEdit = new ve.models.Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
-            } else if (uiHelper.opName=='edit'){
-                editData.currLayerInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currLayerInEdit = dialogState.opObject.clone();
+                editData.currLayerInEdit._scene = editData.currSceneInEdit;
             }
-            uiHelper.opName = null;
 
 
         })();

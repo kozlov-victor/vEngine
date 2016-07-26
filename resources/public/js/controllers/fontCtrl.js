@@ -91,13 +91,12 @@ window.app.
         };
 
         (function(){
-
-            if (uiHelper.opName=='create') {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
                 editData.currFontInEdit = new ve.models.Font();
-            } else if (uiHelper.opName=='edit'){
-                editData.currFontInEdit = uiHelper.opObject.clone();
+            } else if (dialogState.opName=='edit'){
+                editData.currFontInEdit = dialogState.opObject.clone();
             }
-            uiHelper.opName = null;
 
 
             if (s.editData.systemFontList) return;

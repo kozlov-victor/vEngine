@@ -84,6 +84,18 @@ window.app.
             for (var i=from;i<=to;i++) {
                 s.editData.currFrAnimationInEdit.frames.push(i);
             }
-        }
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            } else if (dialogState.opName=='edit'){
+                s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            }
+        })();
+
 
     });

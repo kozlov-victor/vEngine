@@ -53,18 +53,21 @@
             particleAngle
         </td>
         <td>
-            from
+            from / to
         </td>
         <td>
-            <input ng-model="editData.currParticleSystemInEdit.particleAngle.from"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            to
-        </td>
-        <td>
-            <input ng-model="editData.currParticleSystemInEdit.particleAngle.to"/>
+            <app-input-angle
+                    class="inlineBlock"
+                    ng-model="editData.currParticleSystemInEdit.particleAngle"
+                    app-field="from"
+                    >
+            </app-input-angle>
+            <app-input-angle
+                    class="inlineBlock"
+                    ng-model="editData.currParticleSystemInEdit.particleAngle"
+                    app-field="to"
+                    >
+            </app-input-angle>
         </td>
     </tr>
     <tr>

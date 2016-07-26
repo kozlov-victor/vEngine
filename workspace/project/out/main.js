@@ -2509,7 +2509,7 @@ Class.extend(
         "groupName": "",
         "id": "3315_7346_266",
         "rigid": 0,
-        "currFrameIndex": 0,
+        "currFrameIndex": 1,
         "_sprPosX": 0,
         "_sprPosY": 0,
         "velX": 0,
@@ -2698,6 +2698,26 @@ Class.extend(
 
 });
 ;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['bird.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+
+    onCreate: function(){
+         
+    },
+
+    onUpdate: function(time) {
+        
+    },
+
+    onDestroy: function(){
+
+    }
+
+});;
         return clazz;
     };
     

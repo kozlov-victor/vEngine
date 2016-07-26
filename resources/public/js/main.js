@@ -25,5 +25,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
 
+        s.showDialog = function(objectName,opName,opObject){
+            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject);
+        };
 
     });
