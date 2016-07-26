@@ -341,17 +341,21 @@
                 this.width+=currSymbolInFont.width;
             }
         },
+        setFont: function(font){
+            this._font = font;
+            this.height = this._font.fontContext.symbols[' '].height;
+            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+            this.setText(this.text);
+        },
         clone:function(){
             return this._super();
         },
         construct: function(){
             this.rigid = false;
-            this._font =
+            var font =
                 ve_local.bundle.fontList.find({id:this.fontId}) ||
                 ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text);
-            this.height = this._font.fontContext.symbols[' '].height;
-            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+            this.setFont(font);
         },
         render: function(renderer){
             var posX = this.posX;

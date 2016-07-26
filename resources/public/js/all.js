@@ -612,17 +612,21 @@
                 this.width+=currSymbolInFont.width;
             }
         },
+        setFont: function(font){
+            this._font = font;
+            this.height = this._font.fontContext.symbols[' '].height;
+            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+            this.setText(this.text);
+        },
         clone:function(){
             return this._super();
         },
         construct: function(){
             this.rigid = false;
-            this._font =
+            var font =
                 ve_local.bundle.fontList.find({id:this.fontId}) ||
                 ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text);
-            this.height = this._font.fontContext.symbols[' '].height;
-            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+            this.setFont(font);
         },
         render: function(renderer){
             var posX = this.posX;
@@ -960,7 +964,23 @@ window.app.
             return cnv.toDataURL();
         };
 
-        s.createOrEditFont = function(font){
+        var updateObjectFonts = function(){
+            editData.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(go){
+                        if (go.subType && go.subType=='textField') {
+                            var font =
+                                editData.fontList.find({id:go.fontId}) ||
+                                editData.fontList.find({name:'default'});
+                            font.resourcePath+='?'+Math.random();
+                            go.setFont(font);
+                        }
+                    });
+                });
+            });
+        };
+
+        s.createOrEditFont = function(){
             var font = s.editData.currFontInEdit;
             var strFont = font.fontSize +'px'+' '+font.fontFamily;
             font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
@@ -968,7 +988,13 @@ window.app.
             resourceDao.createOrEditResource(
                 font,
                 ve.models.Font,
-                ve_local.bundle.fontList);
+                ve_local.bundle.fontList,
+                function(res){
+                    if (res.type=='edit') {
+                        updateObjectFonts();
+                    }
+                }
+            );
         };
 
         (function(){
@@ -1724,7 +1750,6 @@ app.directive('appInputAngle', function() {
         link: function (scope, element, attrs) {
             var model = scope.ngModel;
             var field = attrs.appField;
-            console.log(model,field);
             var angle = model[field];
             var calcAngleInDeg = function(){
                 scope.angleInDeg = angle * 180 / Math.PI;

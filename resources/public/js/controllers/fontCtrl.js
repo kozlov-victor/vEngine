@@ -79,7 +79,23 @@ window.app.
             return cnv.toDataURL();
         };
 
-        s.createOrEditFont = function(font){
+        var updateObjectFonts = function(){
+            editData.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(go){
+                        if (go.subType && go.subType=='textField') {
+                            var font =
+                                editData.fontList.find({id:go.fontId}) ||
+                                editData.fontList.find({name:'default'});
+                            font.resourcePath+='?'+Math.random();
+                            go.setFont(font);
+                        }
+                    });
+                });
+            });
+        };
+
+        s.createOrEditFont = function(){
             var font = s.editData.currFontInEdit;
             var strFont = font.fontSize +'px'+' '+font.fontFamily;
             font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
@@ -87,7 +103,13 @@ window.app.
             resourceDao.createOrEditResource(
                 font,
                 ve.models.Font,
-                ve_local.bundle.fontList);
+                ve_local.bundle.fontList,
+                function(res){
+                    if (res.type=='edit') {
+                        updateObjectFonts();
+                    }
+                }
+            );
         };
 
         (function(){
