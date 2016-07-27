@@ -729,6 +729,40 @@
             s.substr(1);
     };
 })();
+
+
+
+(function(){
+
+    var ns = {};
+
+    ve.Math = ns;
+
+    ns.isPointInRect = function(point,rect) {
+        return  point.x>rect.x &&
+            point.x<(rect.x+rect.width) &&
+            point.y>rect.y &&
+            point.y<(rect.y+rect.height);
+    };
+
+    ns.isRectIntersectRect = function(r1,r2) {
+        var res =  ! ( r2.x > (r1.x+r1.width)
+            || (r2.x+r2.width) < r1.x
+            || r2.y > (r1.y+r1.height)
+            || (r2.y+r2.height) < r1.y
+        );
+        return res;
+    };
+
+    ns.radToDeg = function(rad){
+        return rad *  180 / Math.PI;
+    };
+
+    ns.degToRad = function(deg) {
+        return deg *  Math.PI / 180;
+    }
+
+})();
 window.app.
     controller('animationCtrl', function (
         $scope,
@@ -1230,6 +1264,39 @@ window.app.
         s.resourceDao = resourceDao;
 
 
+        var describeArc = function(x, y, radius, startAngle, endAngle){
+
+            var  polarToCartesian = function(centerX, centerY, radius, angleInDegrees) {
+                var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+
+                return {
+                    x: centerX + (radius * Math.cos(angleInRadians)),
+                    y: centerY + (radius * Math.sin(angleInRadians))
+                };
+            };
+
+            var start = polarToCartesian(x, y, radius, endAngle);
+            var end = polarToCartesian(x, y, radius, startAngle);
+
+            var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
+
+            return [
+                "M", start.x, start.y,
+                "A", radius, radius, 0, arcSweep, 0, end.x, end.y
+            ].join(" ");
+
+        };
+
+
+        //s.createAnglePreview = function(){
+        //    var a =  editData.currParticleSystemInEdit.particleAngle.from;
+        //    var b = editData.currParticleSystemInEdit.particleAngle.to;
+        //    a = ve.Math.radToDeg(a);
+        //    b = ve.Math.radToDeg(b);
+        //    console.log(a,b);
+        //    s.d=describeArc(50,50,20, a,b);
+        //};
+
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
@@ -1237,6 +1304,15 @@ window.app.
             } else if (dialogState.opName=='edit'){
 
             }
+            //s.createAnglePreview();
+            //s.$watch('editData.currParticleSystemInEdit.particleAngle.from',function(){
+            //    s.createAnglePreview();
+            //});
+            //
+            //s.$watch('editData.currParticleSystemInEdit.particleAngle.to',function(){
+            //    s.createAnglePreview();
+            //});
+
         })();
 
 
@@ -1727,7 +1803,7 @@ app.directive('appOnFileUpload', function ($parse) {
 });
 
 
-angular.forEach(['x', 'y', 'width', 'height','transform'], function(name) {
+angular.forEach(['x', 'y', 'width', 'height','transform', 'd'], function(name) {
     var ngName = 'app' + name[0].toUpperCase() + name.slice(1);
     app.directive(ngName, function() {
         return function(scope, element, attrs) {
@@ -1738,11 +1814,12 @@ angular.forEach(['x', 'y', 'width', 'height','transform'], function(name) {
     });
 });
 
-app.directive('appInputAngle', function() {
+app.directive('appInputAngle', function($parse) {
     return {
         restrict: 'E',
         replace: true,
         require: 'ngModel',
+        transclude: true,
         scope: {
             ngModel : '='
         },
@@ -1753,6 +1830,7 @@ app.directive('appInputAngle', function() {
             var angle = model[field];
             var calcAngleInDeg = function(){
                 scope.angleInDeg = angle * 180 / Math.PI;
+                model[field] = angle;
             };
             calcAngleInDeg();
 

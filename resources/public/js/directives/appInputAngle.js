@@ -1,5 +1,5 @@
 
-angular.forEach(['x', 'y', 'width', 'height','transform'], function(name) {
+angular.forEach(['x', 'y', 'width', 'height','transform', 'd'], function(name) {
     var ngName = 'app' + name[0].toUpperCase() + name.slice(1);
     app.directive(ngName, function() {
         return function(scope, element, attrs) {
@@ -10,11 +10,12 @@ angular.forEach(['x', 'y', 'width', 'height','transform'], function(name) {
     });
 });
 
-app.directive('appInputAngle', function() {
+app.directive('appInputAngle', function($parse) {
     return {
         restrict: 'E',
         replace: true,
         require: 'ngModel',
+        transclude: true,
         scope: {
             ngModel : '='
         },
@@ -25,6 +26,7 @@ app.directive('appInputAngle', function() {
             var angle = model[field];
             var calcAngleInDeg = function(){
                 scope.angleInDeg = angle * 180 / Math.PI;
+                model[field] = angle;
             };
             calcAngleInDeg();
 
