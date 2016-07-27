@@ -107,19 +107,6 @@
                 "protoId": {},
                 "id": "4343_5960_457",
                 "fontId": "6991_3497_4"
-            },
-            {
-                "text": "",
-                "width": 0,
-                "height": 35,
-                "type": "userInterface",
-                "subType": "textField",
-                "groupName": "",
-                "posX": 39,
-                "posY": 85,
-                "name": "textField1",
-                "protoId": null,
-                "id": "9575_4999_196"
             }
         ],
         "id": "3534_2050_13"

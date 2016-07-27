@@ -420,6 +420,7 @@
     models.GameObject = models.BaseGameObject.extend({
         type:'gameObject',
         spriteSheetId:null,
+        _spriteSheet: null,
         _behaviour:null,
         commonBehaviour:[],
         _commonBehaviour:null,
@@ -456,6 +457,11 @@
             this.currFrameIndex = index;
             this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
+        },
+        setSpriteSheet: function(spriteSheet){
+            this._spriteSheet = spriteSheet;
+            this.width = spriteSheet._frameWidth;
+            this.height = spriteSheet._frameHeight;
         },
         update: function(time,delta) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
@@ -999,18 +1005,14 @@ window.app.
         };
 
         var updateObjectFonts = function(){
-            editData.sceneList.forEach(function(scene){
-                scene._layers.forEach(function(layer){
-                    layer._gameObjects.forEach(function(go){
-                        if (go.subType && go.subType=='textField') {
-                            var font =
-                                editData.fontList.find({id:go.fontId}) ||
-                                editData.fontList.find({name:'default'});
-                            font.resourcePath+='?'+Math.random();
-                            go.setFont(font);
-                        }
-                    });
-                });
+            utils.eachObjectOnScene(function(go){
+                if (go.subType && go.subType=='textField') {
+                    var font =
+                        editData.fontList.find({id:go.fontId}) ||
+                        editData.fontList.find({name:'default'});
+                    font.resourcePath+='?'+Math.random();
+                    go.setFont(font);
+                }
             });
         };
 
@@ -1575,11 +1577,37 @@ window.app.
             fr.readAsDataURL(file);
         };
 
-        s.createOrEditSpriteSheet = function(){
-            resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,ve.models.SpriteSheet,ve_local.bundle.spriteSheetList);
+        var updateObjectSpriteSheets = function(){
+
+            var _setSpriteSheet = function(go){
+                if (go.spriteSheetId) {
+                    var sprSheet = ve_local.bundle.spriteSheetList.find({id: go.spriteSheetId});
+                    go.setSpriteSheet(sprSheet);
+                }
+            };
+
+            utils.eachObjectOnScene(function(go){
+                _setSpriteSheet(go);
+            });
+            ve_local.bundle.gameObjectList.forEach(function(go){
+                _setSpriteSheet(go);
+            });
         };
 
-        (function(){
+        s.createOrEditSpriteSheet = function(){
+            resourceDao.createOrEditResource(
+                s.editData.currSpriteSheetInEdit,
+                ve.models.SpriteSheet,
+                ve_local.bundle.spriteSheetList,
+                function(res){
+                    if (res.type=='edit') {
+                        updateObjectSpriteSheets();
+                    }
+                }
+            );
+        };
+
+        (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
@@ -2467,6 +2495,16 @@ window.app
         this.deCapitalize = function(s){
             return s.substr(0,1).toLowerCase() +
                 s.substr(1);
+        };
+
+        this.eachObjectOnScene = function(callBack){
+            editData.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(go){
+                        callBack(go);
+                    });
+                });
+            });
         };
 
         return this;

@@ -149,6 +149,7 @@
     models.GameObject = models.BaseGameObject.extend({
         type:'gameObject',
         spriteSheetId:null,
+        _spriteSheet: null,
         _behaviour:null,
         commonBehaviour:[],
         _commonBehaviour:null,
@@ -185,6 +186,11 @@
             this.currFrameIndex = index;
             this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
+        },
+        setSpriteSheet: function(spriteSheet){
+            this._spriteSheet = spriteSheet;
+            this.width = spriteSheet._frameWidth;
+            this.height = spriteSheet._frameHeight;
         },
         update: function(time,delta) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);

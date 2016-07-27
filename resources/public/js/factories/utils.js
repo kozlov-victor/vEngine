@@ -108,6 +108,16 @@ window.app
                 s.substr(1);
         };
 
+        this.eachObjectOnScene = function(callBack){
+            editData.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(go){
+                        callBack(go);
+                    });
+                });
+            });
+        };
+
         return this;
     })
 

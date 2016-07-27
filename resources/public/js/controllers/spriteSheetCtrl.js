@@ -33,11 +33,35 @@ window.app.
             fr.readAsDataURL(file);
         };
 
-        s.createOrEditSpriteSheet = function(){
-            resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,ve.models.SpriteSheet,ve_local.bundle.spriteSheetList);
+        var updateObjectSpriteSheets = function(){
+            var _setSpriteSheet = function(go){
+                if (go.spriteSheetId) {
+                    var sprSheet = ve_local.bundle.spriteSheetList.find({id: go.spriteSheetId});
+                    go.setSpriteSheet(sprSheet);
+                }
+            };
+            utils.eachObjectOnScene(function(go){
+                _setSpriteSheet(go);
+            });
+            ve_local.bundle.gameObjectList.forEach(function(go){
+                _setSpriteSheet(go);
+            });
         };
 
-        (function(){
+        s.createOrEditSpriteSheet = function(){
+            resourceDao.createOrEditResource(
+                s.editData.currSpriteSheetInEdit,
+                ve.models.SpriteSheet,
+                ve_local.bundle.spriteSheetList,
+                function(res){
+                    if (res.type=='edit') {
+                        updateObjectSpriteSheets();
+                    }
+                }
+            );
+        };
+
+        (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});

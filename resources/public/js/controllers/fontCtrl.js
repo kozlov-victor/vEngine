@@ -80,18 +80,14 @@ window.app.
         };
 
         var updateObjectFonts = function(){
-            editData.sceneList.forEach(function(scene){
-                scene._layers.forEach(function(layer){
-                    layer._gameObjects.forEach(function(go){
-                        if (go.subType && go.subType=='textField') {
-                            var font =
-                                editData.fontList.find({id:go.fontId}) ||
-                                editData.fontList.find({name:'default'});
-                            font.resourcePath+='?'+Math.random();
-                            go.setFont(font);
-                        }
-                    });
-                });
+            utils.eachObjectOnScene(function(go){
+                if (go.subType && go.subType=='textField') {
+                    var font =
+                        editData.fontList.find({id:go.fontId}) ||
+                        editData.fontList.find({name:'default'});
+                    font.resourcePath+='?'+Math.random();
+                    go.setFont(font);
+                }
             });
         };
 
