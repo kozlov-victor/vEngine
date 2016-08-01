@@ -341,6 +341,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
     models.GameObject = models.BaseGameObject.extend({
         type:'gameObject',
         spriteSheetId:null,
+        _spriteSheet: null,
         _behaviour:null,
         commonBehaviour:[],
         _commonBehaviour:null,
@@ -377,6 +378,11 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
             this.currFrameIndex = index;
             this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
+        },
+        setSpriteSheet: function(spriteSheet){
+            this._spriteSheet = spriteSheet;
+            this.width = spriteSheet._frameWidth;
+            this.height = spriteSheet._frameHeight;
         },
         update: function(time,delta) {
             this._currFrameAnimation && this._currFrameAnimation.update(time);
@@ -533,17 +539,21 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                 this.width+=currSymbolInFont.width;
             }
         },
+        setFont: function(font){
+            this._font = font;
+            this.height = this._font.fontContext.symbols[' '].height;
+            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+            this.setText(this.text);
+        },
         clone:function(){
             return this._super();
         },
         construct: function(){
             this.rigid = false;
-            this._font =
+            var font =
                 ve_local.bundle.fontList.find({id:this.fontId}) ||
                 ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text);
-            this.height = this._font.fontContext.symbols[' '].height;
-            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
+            this.setFont(font);
         },
         render: function(renderer){
             var posX = this.posX;
@@ -732,6 +742,40 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
     };
 })();
 
+
+
+(function(){
+
+    var ns = {};
+
+    ve.Math = ns;
+
+    ns.isPointInRect = function(point,rect) {
+        return  point.x>rect.x &&
+            point.x<(rect.x+rect.width) &&
+            point.y>rect.y &&
+            point.y<(rect.y+rect.height);
+    };
+
+    ns.isRectIntersectRect = function(r1,r2) {
+        var res =  ! ( r2.x > (r1.x+r1.width)
+            || (r2.x+r2.width) < r1.x
+            || r2.y > (r1.y+r1.height)
+            || (r2.y+r2.height) < r1.y
+        );
+        return res;
+    };
+
+    ns.radToDeg = function(rad){
+        return rad *  180 / Math.PI;
+    };
+
+    ns.degToRad = function(deg) {
+        return deg *  Math.PI / 180;
+    }
+
+})();
+
 ve_local.CanvasRenderer = function(){
 
     var canvas;
@@ -741,16 +785,53 @@ ve_local.CanvasRenderer = function(){
     var currTime = 0;
     var lastTime = 0;
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+    var gameProps;
+
+    var setFullScreen = function(){
+        var w = window.outerWidth;
+        var h = window.outerHeight;
+        canvas.width = w;
+        canvas.height = h;
+        gameProps.globalScale = {
+            x: w / gameProps.width,
+            y: h / gameProps.height
+        };
+    };
+
+    var setNormalScreen = function(){
+        var w = gameProps.width;
+        var h = gameProps.height;
+        canvas.width = w;
+        canvas.height = h;
+        gameProps.globalScale = {x:1,y:1};
+    };
+
+    var listenResize = function(){
+        window.addEventListener('resize',function(){
+            setFullScreen();
+            rescale();
+        });
+    };
+
+    var rescale = function(){
+        ctx.scale(gameProps.globalScale.x,gameProps.globalScale.y);
+    };
 
     this.init = function(){
         canvas = document.querySelector('canvas');
+        gameProps = ve_local.bundle.gameProps;
         if (!canvas) {
             canvas = document.createElement('canvas');
-            canvas.width = ve_local.bundle.gameProps.width;
-            canvas.height = ve_local.bundle.gameProps.height;
+            if (gameProps.scaleToFullScreen) {
+                setFullScreen();
+                listenResize()
+            } else {
+                setNormalScreen();
+            }
             document.body.appendChild(canvas);
         }
         ctx = canvas.getContext('2d');
+        rescale();
     };
 
     this.getCanvas = function(){
@@ -758,7 +839,17 @@ ve_local.CanvasRenderer = function(){
     };
 
     this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
-        ctx.drawImage(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH);
+        ctx.drawImage(
+            img,
+            fromX,
+            fromY,
+            fromW,
+            fromH,
+            toX,
+            toY,
+            toW,
+            toH
+        );
     };
 
     this.cancel = function(){
@@ -775,7 +866,11 @@ ve_local.CanvasRenderer = function(){
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.fillStyle="#FFFFFF";
-        ctx.fillRect(0,0,ve_local.bundle.gameProps.width,ve_local.bundle.gameProps.height);
+        ctx.fillRect(
+            0,
+            0,
+            gameProps.width,
+            gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
                 if (!obj) return;
@@ -920,6 +1015,7 @@ ve_local.SceneManager = function(){
 
         var self = this;
         self.isMouseDown = false;
+        var globalScale = ve_local.bundle.gameProps.globalScale;
 
         if ('ontouchstart' in window) {
             canvas.ontouchstart = function(e){
@@ -932,7 +1028,6 @@ ve_local.SceneManager = function(){
                 resolveMouseMove(e.touches[0]);
             }
         } else {
-            console.log('not mobile');
             canvas.onmousedown = function(e){
                 resolveClick(e);
             };
@@ -948,7 +1043,10 @@ ve_local.SceneManager = function(){
             self.isMouseDown = true;
             var scene = ve.sceneManager.getCurrScene();
             if (!scene) return;
-            var point = {x: e.clientX,y: e.clientY};
+            var point = {
+                x: e.clientX / globalScale.x,
+                y: e.clientY / globalScale.y
+            };
             scene._layers.someReversed(function(l){
                 var found = false;
                 l._gameObjects.someReversed(function(g){
@@ -972,8 +1070,8 @@ ve_local.SceneManager = function(){
         var resolveMouseMove = function(e){
             var scene = ve.sceneManager.getCurrScene();
             scene.trigger('mouseMove',{
-                screenX: e.clientX,
-                screenY: e.clientY
+                screenX: e.clientX / globalScale.x,
+                screenY: e.clientY / globalScale.y
             });
         };
 
@@ -981,30 +1079,6 @@ ve_local.SceneManager = function(){
             self.isMouseDown = false;
         };
 
-    };
-
-})();
-
-(function(){
-
-    var ns = {};
-
-    ve.Math = ns;
-
-    ns.isPointInRect = function(point,rect) {
-        return  point.x>rect.x &&
-                point.x<(rect.x+rect.width) &&
-                point.y>rect.y &&
-                point.y<(rect.y+rect.height);
-    };
-
-    ns.isRectIntersectRect = function(r1,r2) {
-        var res =  ! ( r2.x > (r1.x+r1.width)
-            || (r2.x+r2.width) < r1.x
-            || r2.y > (r1.y+r1.height)
-            || (r2.y+r2.height) < r1.y
-        );
-        return res;
     };
 
 })();
@@ -1377,6 +1451,18 @@ Class.extend(
         "numOfFramesH": 1,
         "numOfFramesV": 1,
         "id": "1501_7424_265"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "name": "ss",
+        "resourcePath": "resources/spriteSheet/ss.jpg",
+        "width": 192,
+        "height": 263,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "6873_5321_13"
     }
 ],
         
@@ -2452,7 +2538,7 @@ Class.extend(
             "height": 261
         },
         "type": "font",
-        "fontColor": "#df4e4e",
+        "fontColor": "black",
         "fontSize": 25,
         "fontFamily": "Monospace",
         "resourcePath": "resources/font/default.png",
@@ -2616,16 +2702,16 @@ Class.extend(
                 "velY": 0
             },
             {
-                "text": "1q",
-                "width": 30,
-                "height": 29,
+                "text": "1234234234",
+                "width": 120,
+                "height": 35,
                 "type": "userInterface",
                 "subType": "textField",
                 "groupName": "",
-                "posX": 17,
-                "posY": 13,
+                "posX": 14,
+                "posY": 20,
                 "name": "textField1",
-                "protoId": null,
+                "protoId": {},
                 "id": "4343_5960_457",
                 "fontId": "6991_3497_4"
             }
@@ -2651,7 +2737,8 @@ Class.extend(
         
         gameProps:{
     "width": 540,
-    "height": 300
+    "height": 300,
+    "scaleToFullScreen": false
 },
         
     });
@@ -2690,6 +2777,26 @@ Class.extend(
 
     onUpdate: function(time) {
         if (this.posX>400) this.posX = -300;
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['b2.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
     },
 
     onDestroy: function(){
@@ -2744,6 +2851,26 @@ Class.extend(
     };
     
     ve_local.scripts.gameObject['q.js'] = function(){
+        var clazz = ve.models.Behaviour.extend({
+
+    onCreate: function(){
+
+    },
+
+    onUpdate: function(time) {
+
+    },
+
+    onDestroy: function(){
+
+    }
+
+});
+;
+        return clazz;
+    };
+    
+    ve_local.scripts.gameObject['sprite.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
     onCreate: function(){

@@ -35,7 +35,7 @@ window.app.
                 function(res){
                     if (res.type=='create') {
                         s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
-                        s.editData.currGameObjectInEdit.constructor();
+                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
                             ve.models.GameObject,
@@ -43,7 +43,7 @@ window.app.
                             null,true
                         );
                     } else {
-                        s.editData.currGameObjectInEdit.constructor();
+                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
                     }
                 }
             );

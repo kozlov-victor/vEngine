@@ -58,7 +58,6 @@ var addStaticFiles = function(sourceMain){
         'resources/generatorResources/static/sceneManager.js',
         'resources/generatorResources/static/modules/keyboard.js',
         'resources/generatorResources/static/modules/mouse.js',
-        'resources/generatorResources/static/modules/math.js',
         'resources/generatorResources/static/modules/physics.js',
         'resources/generatorResources/static/modules/sound.js',
         'resources/generatorResources/static/modules/collider.js'

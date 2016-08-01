@@ -88,6 +88,7 @@
         this.layerList = new ve.collections.List();
         this.fontList = new ve.collections.List();
         this.soundList = new ve.collections.List();
+        this.particleSystemList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;
@@ -177,6 +178,12 @@
         };
         this.get = function(index){
             return self.rs[index];
+        };
+        this.getFirst = function(){
+            return this.get(0);
+        };
+        this.getLast = function(){
+            return this.get(this.size()-1);
         };
         this.isEmpty = function(){
             return self.size()==0;
@@ -806,7 +813,7 @@ window.app.
                 function(res){
                     if (res.type=='create') {
                         s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
-                        s.editData.currGameObjectInEdit.constructor();
+                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
                             ve.models.GameObject,
@@ -814,7 +821,7 @@ window.app.
                             null,true
                         );
                     } else {
-                        s.editData.currGameObjectInEdit.constructor();
+                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
                     }
                 }
             );
@@ -1125,7 +1132,15 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
+                var targetSpriteSheet = ve_local.bundle.spriteSheetList.getLast();
+                editData.currGameObjectInEdit = new ve.models.GameObject({
+                    spriteSheetId:
+                    targetSpriteSheet &&
+                    targetSpriteSheet.id
+                });
+                if (targetSpriteSheet) {
+                    editData.currGameObjectInEdit.name = targetSpriteSheet.name;
+                }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
                 editData.currGameObjectInEdit = dialogState.opObject.clone(ve.models.GameObject);
@@ -1266,60 +1281,49 @@ window.app.
         s.resourceDao = resourceDao;
 
 
-        var describeArc = function(x, y, radius, startAngle, endAngle){
-
-            var  polarToCartesian = function(centerX, centerY, radius, angleInDegrees) {
-                var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
-
-                return {
-                    x: centerX + (radius * Math.cos(angleInRadians)),
-                    y: centerY + (radius * Math.sin(angleInRadians))
-                };
-            };
-
-            var start = polarToCartesian(x, y, radius, endAngle);
-            var end = polarToCartesian(x, y, radius, startAngle);
-
-            var arcSweep = endAngle - startAngle <= 180 ? "0" : "1";
-
-            return [
-                "M", start.x, start.y,
-                "A", radius, radius, 0, arcSweep, 0, end.x, end.y
-            ].join(" ");
-
-        };
-
-
-        //s.createAnglePreview = function(){
-        //    var a =  editData.currParticleSystemInEdit.particleAngle.from;
-        //    var b = editData.currParticleSystemInEdit.particleAngle.to;
-        //    a = ve.Math.radToDeg(a);
-        //    b = ve.Math.radToDeg(b);
-        //    console.log(a,b);
-        //    s.d=describeArc(50,50,20, a,b);
-        //};
-
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currParticleSystemInEdit = new ve.models.ParticleSystem();
+                editData.currParticleSystemInEdit = new ve.models.ParticleSystem({
+                    gameObjectId:(editData.gameObjectList.getLast() && editData.gameObjectList.getLast().id)
+                });
             } else if (dialogState.opName=='edit'){
-
+                editData.currParticleSystemInEdit = dialogState.opObject.clone();
             }
-            //s.createAnglePreview();
-            //s.$watch('editData.currParticleSystemInEdit.particleAngle.from',function(){
-            //    s.createAnglePreview();
-            //});
-            //
-            //s.$watch('editData.currParticleSystemInEdit.particleAngle.to',function(){
-            //    s.createAnglePreview();
-            //});
+            s.currGameObject = editData.currParticleSystemInEdit._gameObject;
+            dialogState.opName = '';
 
         })();
 
 
 
 
+
+    });
+
+window.app.
+    controller('particleSystemPreviewCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+        (function(){
+
+
+
+        })();
 
     });
 window.app.
@@ -1578,14 +1582,12 @@ window.app.
         };
 
         var updateObjectSpriteSheets = function(){
-
             var _setSpriteSheet = function(go){
                 if (go.spriteSheetId) {
                     var sprSheet = ve_local.bundle.spriteSheetList.find({id: go.spriteSheetId});
                     go.setSpriteSheet(sprSheet);
                 }
             };
-
             utils.eachObjectOnScene(function(go){
                 _setSpriteSheet(go);
             });
@@ -2019,9 +2021,12 @@ window.app
                 addSpriteSheet:'add sprite sheet',
                 loadImage:'load image',
                 gameObjects:'game objects',
+                gameObject:'gameObject',
                 create:'create',
                 edit:'edit',
+                close:'close',
                 name:'name',
+                scaleToFullScreen:'scale to full screen',
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',
@@ -2067,7 +2072,9 @@ window.app
                 play:'play',
                 loadSound:'load sound',
                 build:'build',
-                particleSystems:'particle systems'
+                particleSystems:'particle systems',
+                particleSystem:'particle system',
+                preview:'preview'
             }
         };
 
@@ -2190,6 +2197,9 @@ app
                 }
                 !preserveDialog && uiHelper.closeDialog();
             });
+        };
+        this.createOrEditResourceSimple = function(objResource){
+            this.createOrEditResource(objResource,objResource.constructor,ve_local.bundle[objResource.type+'List']);
         };
         this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
@@ -2519,6 +2529,12 @@ window.app
 
 ;
 
+
+app.filter('toFixed', function() {
+    return function(val){
+        return (+val).toFixed(3);
+    }
+});
 'use strict';
 
 $(function () {

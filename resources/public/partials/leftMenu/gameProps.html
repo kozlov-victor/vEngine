@@ -17,5 +17,17 @@
                 <input ng-model="editData.gameProps.height" type="number" min="1" max="20000" ng-change="gameProps.$valid && saveGameProps()"/>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="cell">
+                {{i18n.scaleToFullScreen}}
+            </div>
+            <div class="cell">
+                <input ng-model="editData.gameProps.scaleToFullScreen" type="checkbox" ng-change="gameProps.$valid && saveGameProps()"/>
+            </div>
+        </div>
+
+
     </form>
 </div>

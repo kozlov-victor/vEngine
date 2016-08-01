@@ -51,6 +51,14 @@ img {
     user-select: none;
 }
 
+.underLine {
+    text-decoration: underline;
+}
+
+.small {
+    font-size: 10px;
+}
+
 .width100 {
     width: 100%;
 }
@@ -298,6 +306,11 @@ input[type="file"] {
 .mainPanelCell {
     padding: 2px;
     box-shadow: 0 0 4px #d1d2d4;
+}
+
+.subFullScreen {
+    width: 70vw;
+    height: 70vh;
 }
 
 

@@ -73,7 +73,15 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
+                var targetSpriteSheet = ve_local.bundle.spriteSheetList.getLast();
+                editData.currGameObjectInEdit = new ve.models.GameObject({
+                    spriteSheetId:
+                    targetSpriteSheet &&
+                    targetSpriteSheet.id
+                });
+                if (targetSpriteSheet) {
+                    editData.currGameObjectInEdit.name = targetSpriteSheet.name;
+                }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
                 editData.currGameObjectInEdit = dialogState.opObject.clone(ve.models.GameObject);

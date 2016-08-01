@@ -13,14 +13,15 @@
                         'Animation','Scene',
                         'Layer','Font',
                         'CommonBehaviour','Sound',
-                        'ParticleSystem'
+                        'ParticleSystem',
+                        'ParticleSystemPreview'
                     ]"
             >
                 <form
                         name="frmCreate{{ctrlName}}"
                         dynamic-ctrl="utils.deCapitalize(ctrlName)+'Ctrl'"
                         ng-if="uiHelper.dialogName=='frmCreate'+ctrlName"
-                        ng-include src="'partials/dialogs/dialogCreate'+ctrlName+'.html'"
+                        ng-include src="'partials/dialogs/dialog'+ctrlName+'.html'"
                         novalidate>
                 </form>
 

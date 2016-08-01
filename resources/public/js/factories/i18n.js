@@ -13,9 +13,12 @@ window.app
                 addSpriteSheet:'add sprite sheet',
                 loadImage:'load image',
                 gameObjects:'game objects',
+                gameObject:'gameObject',
                 create:'create',
                 edit:'edit',
+                close:'close',
                 name:'name',
+                scaleToFullScreen:'scale to full screen',
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',
@@ -61,7 +64,9 @@ window.app
                 play:'play',
                 loadSound:'load sound',
                 build:'build',
-                particleSystems:'particle systems'
+                particleSystems:'particle systems',
+                particleSystem:'particle system',
+                preview:'preview'
             }
         };
 

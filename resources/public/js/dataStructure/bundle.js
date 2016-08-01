@@ -11,6 +11,7 @@
         this.layerList = new ve.collections.List();
         this.fontList = new ve.collections.List();
         this.soundList = new ve.collections.List();
+        this.particleSystemList = new ve.collections.List();
         this.gameProps = {};
 
         var self = this;

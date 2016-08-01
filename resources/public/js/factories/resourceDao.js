@@ -63,6 +63,9 @@ app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
+        this.createOrEditResourceSimple = function(objResource){
+            this.createOrEditResource(objResource,objResource.constructor,ve_local.bundle[objResource.type+'List']);
+        };
         this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
                 url: '/deleteObjectFromResource',

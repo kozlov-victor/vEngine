@@ -16,6 +16,12 @@
         this.get = function(index){
             return self.rs[index];
         };
+        this.getFirst = function(){
+            return this.get(0);
+        };
+        this.getLast = function(){
+            return this.get(this.size()-1);
+        };
         this.isEmpty = function(){
             return self.size()==0;
         };

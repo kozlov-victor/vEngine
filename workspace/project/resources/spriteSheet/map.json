@@ -18,5 +18,29 @@
         "numOfFramesH": 1,
         "numOfFramesV": 1,
         "id": "1501_7424_265"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "name": "ss",
+        "resourcePath": "resources/spriteSheet/ss.jpg",
+        "width": 192,
+        "height": 263,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "6873_5321_13"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "resourcePath": "resources/spriteSheet/particle.png",
+        "width": 16,
+        "height": 16,
+        "name": "particle",
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "3319_5653_33"
     }
 ]

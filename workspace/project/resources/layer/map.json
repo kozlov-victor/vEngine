@@ -95,13 +95,13 @@
                 "velY": 0
             },
             {
-                "text": "1234234234",
-                "width": 120,
-                "height": 35,
+                "text": "hello",
+                "width": 75,
+                "height": 29,
                 "type": "userInterface",
                 "subType": "textField",
                 "groupName": "",
-                "posX": 14,
+                "posX": 15,
                 "posY": 20,
                 "name": "textField1",
                 "protoId": {},

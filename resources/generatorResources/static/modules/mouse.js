@@ -5,6 +5,7 @@
 
         var self = this;
         self.isMouseDown = false;
+        var globalScale = ve_local.bundle.gameProps.globalScale;
 
         if ('ontouchstart' in window) {
             canvas.ontouchstart = function(e){
@@ -17,7 +18,6 @@
                 resolveMouseMove(e.touches[0]);
             }
         } else {
-            console.log('not mobile');
             canvas.onmousedown = function(e){
                 resolveClick(e);
             };
@@ -33,7 +33,10 @@
             self.isMouseDown = true;
             var scene = ve.sceneManager.getCurrScene();
             if (!scene) return;
-            var point = {x: e.clientX,y: e.clientY};
+            var point = {
+                x: e.clientX / globalScale.x,
+                y: e.clientY / globalScale.y
+            };
             scene._layers.someReversed(function(l){
                 var found = false;
                 l._gameObjects.someReversed(function(g){
@@ -57,8 +60,8 @@
         var resolveMouseMove = function(e){
             var scene = ve.sceneManager.getCurrScene();
             scene.trigger('mouseMove',{
-                screenX: e.clientX,
-                screenY: e.clientY
+                screenX: e.clientX / globalScale.x,
+                screenY: e.clientY / globalScale.y
             });
         };
 

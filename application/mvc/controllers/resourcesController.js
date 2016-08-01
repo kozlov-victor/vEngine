@@ -3,7 +3,7 @@ var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');
 
 module.exports.RESOURCE_NAMES =
-    'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene'
+    'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
     .split(',');
 
 module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/static/defaultCodeScript.js');
