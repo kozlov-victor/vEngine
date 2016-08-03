@@ -1,5 +1,5 @@
 
-ve_local.CanvasRenderer = function(){
+ve_local.Renderer = function(){
 
     var canvas;
     var ctx;
@@ -32,12 +32,20 @@ ve_local.CanvasRenderer = function(){
     var listenResize = function(){
         window.addEventListener('resize',function(){
             setFullScreen();
-            rescale();
+            rescale(gameProps.globalScale.x,gameProps.globalScale.y);
         });
     };
 
-    var rescale = function(){
-        ctx.scale(gameProps.globalScale.x,gameProps.globalScale.y);
+    var rescale = function(scaleX,scaleY){
+        ctx.scale(scaleX,scaleY);
+    };
+
+    this.getContext = function(){
+        return ctx;
+    };
+
+    this.getCanvas = function(){
+        return canvas;
     };
 
     this.init = function(){
@@ -53,8 +61,13 @@ ve_local.CanvasRenderer = function(){
             }
             document.body.appendChild(canvas);
         }
-        ctx = canvas.getContext('2d');
-        rescale();
+        ctx = new ve_local.CanvasContext();
+        //ctx = new ve_local.GlContext();
+        ctx.init(canvas);
+        rescale(gameProps.globalScale.x,gameProps.globalScale.y);
+
+        drawScene();
+
     };
 
     this.getCanvas = function(){
@@ -88,12 +101,7 @@ ve_local.CanvasRenderer = function(){
         currTime = Date.now();
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
-        ctx.fillStyle="#FFFFFF";
-        ctx.fillRect(
-            0,
-            0,
-            gameProps.width,
-            gameProps.height);
+        ctx.clear(gameProps.width,gameProps.height);
         scene._layers.forEach(function(layer){
             layer._gameObjects.forEach(function(obj){
                 if (!obj) return;
@@ -109,7 +117,5 @@ ve_local.CanvasRenderer = function(){
         scene = _scene;
         ve_local.collider.setUp();
     };
-
-    drawScene();
 
 };

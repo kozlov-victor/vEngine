@@ -103,7 +103,7 @@
         _frameWidth:0,
         _frameHeight:0,
         _numOfFrames:0,
-        _img: null,
+        _textureInfo: null,
         getFramePosX: function(frameIndex){
             return (frameIndex%this.numOfFramesH)*this._frameWidth;
         },
@@ -205,7 +205,7 @@
         },
         render: function(renderer){
             renderer.drawImage(
-                this._spriteSheet._img,
+                this._spriteSheet._textureInfo,
                 this._sprPosX,
                 this._sprPosY,
                 this._spriteSheet._frameWidth,
@@ -370,7 +370,7 @@
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
                 renderer.drawImage(
-                    self._spriteSheet._img,
+                    self._spriteSheet._textureInfo,
                     charInCtx.x,
                     charInCtx.y,
                     charInCtx.width,

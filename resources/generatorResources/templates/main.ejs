@@ -28,7 +28,7 @@
     ve_local.bundle.prepare();
     if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';
 
-    ve_local.renderer = new ve_local.CanvasRenderer();
+    ve_local.renderer = new ve_local.Renderer();
     ve.sceneManager = new ve_local.SceneManager();
     ve_local.collider = new ve_local.Collider();
     ve.keyboard = new ve_local.Keyboard();

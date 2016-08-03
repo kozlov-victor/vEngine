@@ -11,11 +11,16 @@ ve_local.SceneManager = function(){
             ve_local.renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
+        console.log('all sprite shhets',allSprSheets);
         allSprSheets.asArray().forEach(function(spSheet){
-            spSheet._img = new Image();
-            spSheet._img.src = './'+spSheet.resourcePath;
-            if (!spSheet._img.src.complete) q.addTask();
-            spSheet._img.onload = q.resolveTask;
+            ve_local.renderer.
+                getContext().
+                loadTextureInfo('./'+spSheet.resourcePath,function(textureInfo){
+                    console.log('loaded texture info',textureInfo);
+                    spSheet._textureInfo = textureInfo;
+                    q.resolveTask();
+                });
+            q.addTask();
         });
         ve_local.bundle.soundList.forEach(function(snd){
             q.addTask();

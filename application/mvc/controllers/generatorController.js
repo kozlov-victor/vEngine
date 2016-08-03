@@ -55,6 +55,8 @@ var addStaticFiles = function(sourceMain){
         'resources/public/js/dataStructure/bundle.js',
         'resources/public/js/dataStructure/utils.js',
         'resources/generatorResources/static/renderer.js',
+        'resources/generatorResources/static/canvasContext.js',
+        'resources/generatorResources/static/glContext.js',
         'resources/generatorResources/static/sceneManager.js',
         'resources/generatorResources/static/modules/keyboard.js',
         'resources/generatorResources/static/modules/mouse.js',
