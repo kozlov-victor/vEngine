@@ -66,6 +66,18 @@
 
     ns.degToRad = function(deg) {
         return deg *  Math.PI / 180;
-    }
+    };
+
+    ns.getRandomInRange = function(min, max){
+        if (min>max) {
+            var tmp = min;
+            min = max;
+            max = tmp;
+        }
+        var res = Math.random() * (max - min + 1) + min;
+        if (res>max) res = max;
+        else if (res<min) res = min;
+        return res;
+    };
 
 })();

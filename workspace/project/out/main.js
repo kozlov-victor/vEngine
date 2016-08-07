@@ -360,6 +360,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         frameAnimationIds:[],
         _currFrameAnimation:null,
         rigid:true,
+        _timeCreated:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -401,8 +402,8 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(renderer){
-            renderer.drawImage(
+        render: function(){
+            ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
                 this._sprPosY,
@@ -561,13 +562,13 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                 ve_local.bundle.fontList.find({name:'default'});
             this.setFont(font);
         },
-        render: function(renderer){
+        render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-                renderer.drawImage(
+                ve_local.rendererContext.drawImage(
                     self._spriteSheet._textureInfo,
                     charInCtx.x,
                     charInCtx.y,
@@ -605,19 +606,43 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         particleAngle:null,
         particleVelocity:null,
         construct: function(){
+            this._particles = [];
             if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
             if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
             if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
             this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
         },
-        emit: function(){
-
+        emit: function(x,y){
+            var r = function(obj){
+                return ve.Math.getRandomInRange(obj.from,obj.to);
+            };
+            for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
+                var particle = this._gameObject.clone();
+                var angle = r(this.particleAngle);
+                var vel = r(this.particleVelocity);
+                particle.fromJSON({
+                    velX:vel*Math.cos(angle),
+                    velY:vel*Math.sin(angle),
+                    posX:x,
+                    posY:y
+                });
+                this._particles.push(particle);
+            }
         },
-        update:function(){
-
+        update:function(time,delta){
+            var self = this;
+            this._particles.forEach(function(p){
+                if (!p._timeCreated) p._timeCreated = time;
+                if (p._timeCreated>1000) {
+                    //self._particles.splice(self._particles.indexOf(p),1);
+                }
+                p.update(time,delta);
+            });
         },
         render: function(){
-
+            this._particles.forEach(function(p){
+                p.render();
+            });
         }
     });
 
@@ -779,7 +804,19 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
 
     ns.degToRad = function(deg) {
         return deg *  Math.PI / 180;
-    }
+    };
+
+    ns.getRandomInRange = function(min, max){
+        if (min>max) {
+            var tmp = min;
+            min = max;
+            max = tmp;
+        }
+        var res = Math.random() * (max - min + 1) + min;
+        if (res>max) res = max;
+        else if (res<min) res = min;
+        return res;
+    };
 
 })();
 
@@ -795,8 +832,8 @@ ve_local.Renderer = function(){
     var gameProps;
 
     var setFullScreen = function(){
-        var w = window.outerWidth;
-        var h = window.outerHeight;
+        var w = window.innerWidth;
+        var h = window.innerHeight;
         canvas.width = w;
         canvas.height = h;
         canvas.style.width = w + 'px';
@@ -850,6 +887,7 @@ ve_local.Renderer = function(){
         //ctx = new ve_local.CanvasContext();
         ctx = new ve_local.GlContext();
         ctx.init(canvas);
+        ve_local.rendererContext = ctx;
         rescale(gameProps.globalScale.x,gameProps.globalScale.y);
 
         drawScene();
@@ -898,6 +936,12 @@ ve_local.Renderer = function(){
                 obj.render(self);
             });
         });
+        scene.__updateIndividualBehaviour__(deltaTime);
+        ve_local.bundle.particleSystemList.forEach(function(p){
+            p.update(currTime,deltaTime);
+            p.render();
+        });
+
         ve.keyboard._onNextTick();
     };
     this.setScene = function(_scene){
@@ -1191,7 +1235,7 @@ ve_local.Renderer = function(){
             uniform sampler2D texture;\
             \
             void main() {\
-                gl_FragColor = texture2D(texture, v_texcoord)*0.4;\
+                gl_FragColor = texture2D(texture, v_texcoord);\
             }\
             ';
 
@@ -1372,12 +1416,14 @@ ve_local.SceneManager = function(){
             ve_local.renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
-        console.log('all sprite shhets',allSprSheets);
+        ve_local.bundle.particleSystemList.forEach(function(ps){
+            allSprSheets.add(ps._gameObject._spriteSheet);
+        });
         allSprSheets.asArray().forEach(function(spSheet){
             ve_local.renderer.
                 getContext().
                 loadTextureInfo('./'+spSheet.resourcePath,function(textureInfo){
-                    console.log('loaded texture info',textureInfo);
+                    console.log('loaded texture info',spSheet.resourcePath,textureInfo);
                     spSheet._textureInfo = textureInfo;
                     q.resolveTask();
                 });
@@ -3205,11 +3251,11 @@ Class.extend(
         "gameObjectId": "1492_9912_46",
         "numOfParticlesToEmit": {
             "from": 1,
-            "to": 10
+            "to": 11
         },
         "particleAngle": {
-            "from": -0.4097963791105831,
-            "to": -2.597008438851185
+            "from": 2.588216131982958,
+            "to": 0.8214970450778185
         },
         "particleVelocity": {
             "from": 1,
@@ -3299,11 +3345,11 @@ Class.extend(
 
 
     onCreate: function(){
-         
+        console.log('created bird');
     },
 
     onUpdate: function(time) {
-        
+        console.log('updated bird');
     },
 
     onDestroy: function(){
@@ -3317,15 +3363,18 @@ Class.extend(
     ve_local.scripts.gameObject['cloud.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
+    ps:null,
 
     onCreate: function(){
-        //this.velX = Math.random()*50+20;
         this.on('click',function(e){
             console.log(e);
         });
+        this.ps = ve_local.bundle.particleSystemList.get(0);
     },
 
     onUpdate: function(time) {
+        console.log('cloud updated');
+        this.ps.emit(this.posX,this.posY);
         if (this.posX>800) this.posX = -300;
     },
 
@@ -3402,20 +3451,24 @@ Class.extend(
     ve_local.scripts.scene['m.js'] = function(){
     var clazz = ve.models.Behaviour.extend({
 
+    ps:null,
+
     onCreate: function(){
-        console.log('created');
+        console.trace('scene created',this);
+        var self = this;
         var textField = this.findGameObject('textField1');
         var bird = this.findGameObject('b');
         textField.setText('Привет (нажми на меня)');
-        bird.on('click',function(){
+        bird.on('click',function(e){
             textField.setText('Ура!!!!!');
             bird.velX = 200;
             ve.sound.play('boom');
+            self.ps.emit(e.screenX,e.screenY);
         });
     },
 
     onUpdate: function(time) {
-
+       
     },
 
     onDestroy: function(){

@@ -11,12 +11,14 @@ ve_local.SceneManager = function(){
             ve_local.renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
-        console.log('all sprite shhets',allSprSheets);
+        ve_local.bundle.particleSystemList.forEach(function(ps){
+            allSprSheets.add(ps._gameObject._spriteSheet);
+        });
         allSprSheets.asArray().forEach(function(spSheet){
             ve_local.renderer.
                 getContext().
                 loadTextureInfo('./'+spSheet.resourcePath,function(textureInfo){
-                    console.log('loaded texture info',textureInfo);
+                    console.log('loaded texture info',spSheet.resourcePath,textureInfo);
                     spSheet._textureInfo = textureInfo;
                     q.resolveTask();
                 });

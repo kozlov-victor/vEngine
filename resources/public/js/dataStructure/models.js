@@ -162,6 +162,7 @@
         frameAnimationIds:[],
         _currFrameAnimation:null,
         rigid:true,
+        _timeCreated:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -203,8 +204,8 @@
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(renderer){
-            renderer.drawImage(
+        render: function(){
+            ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
                 this._sprPosY,
@@ -363,13 +364,13 @@
                 ve_local.bundle.fontList.find({name:'default'});
             this.setFont(font);
         },
-        render: function(renderer){
+        render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-                renderer.drawImage(
+                ve_local.rendererContext.drawImage(
                     self._spriteSheet._textureInfo,
                     charInCtx.x,
                     charInCtx.y,
@@ -407,19 +408,43 @@
         particleAngle:null,
         particleVelocity:null,
         construct: function(){
+            this._particles = [];
             if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
             if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
             if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
             this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
         },
-        emit: function(){
-
+        emit: function(x,y){
+            var r = function(obj){
+                return ve.Math.getRandomInRange(obj.from,obj.to);
+            };
+            for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
+                var particle = this._gameObject.clone();
+                var angle = r(this.particleAngle);
+                var vel = r(this.particleVelocity);
+                particle.fromJSON({
+                    velX:vel*Math.cos(angle),
+                    velY:vel*Math.sin(angle),
+                    posX:x,
+                    posY:y
+                });
+                this._particles.push(particle);
+            }
         },
-        update:function(){
-
+        update:function(time,delta){
+            var self = this;
+            this._particles.forEach(function(p){
+                if (!p._timeCreated) p._timeCreated = time;
+                if (p._timeCreated>1000) {
+                    //self._particles.splice(self._particles.indexOf(p),1);
+                }
+                p.update(time,delta);
+            });
         },
         render: function(){
-
+            this._particles.forEach(function(p){
+                p.render();
+            });
         }
     });
 

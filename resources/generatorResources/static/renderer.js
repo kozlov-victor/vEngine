@@ -11,8 +11,8 @@ ve_local.Renderer = function(){
     var gameProps;
 
     var setFullScreen = function(){
-        var w = window.outerWidth;
-        var h = window.outerHeight;
+        var w = window.innerWidth;
+        var h = window.innerHeight;
         canvas.width = w;
         canvas.height = h;
         canvas.style.width = w + 'px';
@@ -66,6 +66,7 @@ ve_local.Renderer = function(){
         //ctx = new ve_local.CanvasContext();
         ctx = new ve_local.GlContext();
         ctx.init(canvas);
+        ve_local.rendererContext = ctx;
         rescale(gameProps.globalScale.x,gameProps.globalScale.y);
 
         drawScene();
@@ -114,6 +115,12 @@ ve_local.Renderer = function(){
                 obj.render(self);
             });
         });
+        scene.__updateIndividualBehaviour__(deltaTime);
+        ve_local.bundle.particleSystemList.forEach(function(p){
+            p.update(currTime,deltaTime);
+            p.render();
+        });
+
         ve.keyboard._onNextTick();
     };
     this.setScene = function(_scene){
