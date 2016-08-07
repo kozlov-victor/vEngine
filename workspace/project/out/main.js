@@ -799,10 +799,10 @@ ve_local.Renderer = function(){
         var h = window.outerHeight;
         canvas.width = w;
         canvas.height = h;
-        gameProps.globalScale = {
-            x: w / gameProps.width,
-            y: h / gameProps.height
-        };
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        gameProps.globalScale.x = w / gameProps.width;
+        gameProps.globalScale.y = h / gameProps.height;
     };
 
     var setNormalScreen = function(){
@@ -810,7 +810,8 @@ ve_local.Renderer = function(){
         var h = gameProps.height;
         canvas.width = w;
         canvas.height = h;
-        gameProps.globalScale = {x:1,y:1};
+        gameProps.globalScale.x = 1;
+        gameProps.globalScale.y = 1;
     };
 
     var listenResize = function(){
@@ -835,6 +836,7 @@ ve_local.Renderer = function(){
     this.init = function(){
         canvas = document.querySelector('canvas');
         gameProps = ve_local.bundle.gameProps;
+        gameProps.globalScale = {};
         if (!canvas) {
             canvas = document.createElement('canvas');
             if (gameProps.scaleToFullScreen) {
@@ -845,8 +847,8 @@ ve_local.Renderer = function(){
             }
             document.body.appendChild(canvas);
         }
-        ctx = new ve_local.CanvasContext();
-        //ctx = new ve_local.GlContext();
+        //ctx = new ve_local.CanvasContext();
+        ctx = new ve_local.GlContext();
         ctx.init(canvas);
         rescale(gameProps.globalScale.x,gameProps.globalScale.y);
 
@@ -858,6 +860,7 @@ ve_local.Renderer = function(){
         return canvas;
     };
 
+    // todo remove
     this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
         ctx.drawImage(
             img,
@@ -1188,7 +1191,7 @@ ve_local.Renderer = function(){
             uniform sampler2D texture;\
             \
             void main() {\
-                gl_FragColor = texture2D(texture, v_texcoord);\
+                gl_FragColor = texture2D(texture, v_texcoord)*0.4;\
             }\
             ';
 
@@ -1526,9 +1529,9 @@ ve_local.SceneManager = function(){
                     ) {
                         g.trigger('click',{
                             screenX:point.x,
-                            screenY:point.Y,
-                            objectX:point.x- g.posX,
-                            objectY:point.y- g.posY
+                            screenY:point.y,
+                            objectX:point.x - g.posX,
+                            objectY:point.y - g.posY
                         });
                         return found = true;
                     }
@@ -3164,46 +3167,6 @@ Class.extend(
                 "velY": 0
             },
             {
-                "spriteSheetId": "1501_7424_265",
-                "width": 300,
-                "height": 190,
-                "name": "cloud",
-                "type": "gameObject",
-                "commonBehaviour": [],
-                "frameAnimationIds": [],
-                "groupName": "",
-                "posX": 160,
-                "posY": -33,
-                "protoId": "3315_7346_266",
-                "id": "9709_5369_268",
-                "rigid": 0,
-                "currFrameIndex": 0,
-                "_sprPosX": 0,
-                "_sprPosY": 0,
-                "velX": 0,
-                "velY": 0
-            },
-            {
-                "spriteSheetId": "1501_7424_265",
-                "width": 300,
-                "height": 190,
-                "name": "cloud",
-                "type": "gameObject",
-                "commonBehaviour": [],
-                "frameAnimationIds": [],
-                "groupName": "",
-                "posX": 26,
-                "posY": 76,
-                "protoId": "3315_7346_266",
-                "id": "2589_0321_269",
-                "rigid": 0,
-                "currFrameIndex": 0,
-                "_sprPosX": 0,
-                "_sprPosY": 0,
-                "velX": 0,
-                "velY": 0
-            },
-            {
                 "text": "hello",
                 "width": 75,
                 "height": 29,
@@ -3356,8 +3319,10 @@ Class.extend(
 
 
     onCreate: function(){
-        this.velX = Math.random()*50+20;
-        console.log(this);
+        //this.velX = Math.random()*50+20;
+        this.on('click',function(e){
+            console.log(e);
+        });
     },
 
     onUpdate: function(time) {

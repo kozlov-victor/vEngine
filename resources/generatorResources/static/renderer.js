@@ -15,10 +15,10 @@ ve_local.Renderer = function(){
         var h = window.outerHeight;
         canvas.width = w;
         canvas.height = h;
-        gameProps.globalScale = {
-            x: w / gameProps.width,
-            y: h / gameProps.height
-        };
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        gameProps.globalScale.x = w / gameProps.width;
+        gameProps.globalScale.y = h / gameProps.height;
     };
 
     var setNormalScreen = function(){
@@ -26,7 +26,8 @@ ve_local.Renderer = function(){
         var h = gameProps.height;
         canvas.width = w;
         canvas.height = h;
-        gameProps.globalScale = {x:1,y:1};
+        gameProps.globalScale.x = 1;
+        gameProps.globalScale.y = 1;
     };
 
     var listenResize = function(){
@@ -51,6 +52,7 @@ ve_local.Renderer = function(){
     this.init = function(){
         canvas = document.querySelector('canvas');
         gameProps = ve_local.bundle.gameProps;
+        gameProps.globalScale = {};
         if (!canvas) {
             canvas = document.createElement('canvas');
             if (gameProps.scaleToFullScreen) {
@@ -61,8 +63,8 @@ ve_local.Renderer = function(){
             }
             document.body.appendChild(canvas);
         }
-        ctx = new ve_local.CanvasContext();
-        //ctx = new ve_local.GlContext();
+        //ctx = new ve_local.CanvasContext();
+        ctx = new ve_local.GlContext();
         ctx.init(canvas);
         rescale(gameProps.globalScale.x,gameProps.globalScale.y);
 
@@ -74,6 +76,7 @@ ve_local.Renderer = function(){
         return canvas;
     };
 
+    // todo remove
     this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
         ctx.drawImage(
             img,

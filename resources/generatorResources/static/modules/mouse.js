@@ -45,9 +45,9 @@
                     ) {
                         g.trigger('click',{
                             screenX:point.x,
-                            screenY:point.Y,
-                            objectX:point.x- g.posX,
-                            objectY:point.y- g.posY
+                            screenY:point.y,
+                            objectX:point.x - g.posX,
+                            objectY:point.y - g.posY
                         });
                         return found = true;
                     }
