@@ -605,11 +605,13 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         numOfParticlesToEmit:null,
         particleAngle:null,
         particleVelocity:null,
+        particleLiveTime:null,
         construct: function(){
             this._particles = [];
             if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
             if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
             if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
+            if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
             this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
         },
         emit: function(x,y){
@@ -626,6 +628,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                     posX:x,
                     posY:y
                 });
+                particle.liveTime = r(this.particleLiveTime);
                 this._particles.push(particle);
             }
         },
@@ -633,8 +636,8 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
             var self = this;
             this._particles.forEach(function(p){
                 if (!p._timeCreated) p._timeCreated = time;
-                if (p._timeCreated>1000) {
-                    //self._particles.splice(self._particles.indexOf(p),1);
+                if (time - p._timeCreated> p.liveTime) {
+                    self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
             });
@@ -684,6 +687,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         };
 
         var applyIndividualBehaviour = function(model){
+            console.log('upluing bh for',model);
             var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
             if (script) {
                 var BehaviourClass = script();
@@ -3109,33 +3113,6 @@ Class.extend(
         "posY": 0
     },
     {
-        "spriteSheetId": "1501_7424_265",
-        "width": 300,
-        "height": 190,
-        "name": "cloud",
-        "type": "gameObject",
-        "commonBehaviour": [
-            {
-                "name": "draggable",
-                "parameters": {},
-                "id": "9192_5234_34",
-                "type": "commonBehaviour",
-                "description": ""
-            }
-        ],
-        "frameAnimationIds": [],
-        "groupName": "",
-        "id": "3315_7346_266",
-        "rigid": 0,
-        "currFrameIndex": 1,
-        "_sprPosX": 0,
-        "_sprPosY": 0,
-        "velX": 0,
-        "velY": 0,
-        "posX": 0,
-        "posY": 0
-    },
-    {
         "spriteSheetId": "3319_5653_33",
         "currFrameIndex": 0,
         "_sprPosX": 0,
@@ -3162,57 +3139,6 @@ Class.extend(
         "type": "layer",
         "gameObjectProps": [
             {
-                "spriteSheetId": "1879_7247_15",
-                "width": 110,
-                "height": 101,
-                "name": "b",
-                "type": "gameObject",
-                "commonBehaviour": [
-                    {
-                        "name": "control4dir",
-                        "parameters": {
-                            "velocity": 100,
-                            "walkLeftAnimation": "left",
-                            "walkRightAnimation": "right",
-                            "walkUpAnimation": "up",
-                            "walkDownAnimation": "down",
-                            "idleLeftAnimation": "idleLeft",
-                            "idleRightAnimation": "idleRight",
-                            "idleUpAnimation": "idleUp",
-                            "idleDownAnimation": "idleDown"
-                        },
-                        "id": "5084_8174_18",
-                        "type": "commonBehaviour"
-                    }
-                ],
-                "frameAnimationIds": [],
-                "posX": 114,
-                "posY": 101,
-                "protoId": "5139_0458_16",
-                "id": "0906_4709_17",
-                "groupName": ""
-            },
-            {
-                "spriteSheetId": "1501_7424_265",
-                "width": 300,
-                "height": 190,
-                "name": "cloud",
-                "type": "gameObject",
-                "commonBehaviour": [],
-                "frameAnimationIds": [],
-                "groupName": "",
-                "posX": 187,
-                "posY": 63,
-                "protoId": "3315_7346_266",
-                "id": "7476_9556_267",
-                "rigid": 0,
-                "currFrameIndex": 0,
-                "_sprPosX": 0,
-                "_sprPosY": 0,
-                "velX": 0,
-                "velY": 0
-            },
-            {
                 "text": "hello",
                 "width": 75,
                 "height": 29,
@@ -3225,6 +3151,36 @@ Class.extend(
                 "protoId": {},
                 "id": "4343_5960_457",
                 "fontId": "6991_3497_4"
+            },
+            {
+                "spriteSheetId": "1879_7247_15",
+                "width": 110,
+                "height": 101,
+                "name": "bird",
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": {},
+                        "id": "6616_0188_20",
+                        "type": "commonBehaviour",
+                        "description": ""
+                    }
+                ],
+                "frameAnimationIds": [
+                    "2195_5056_19"
+                ],
+                "rigid": 0,
+                "groupName": "",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0,
+                "posX": 109,
+                "posY": 90,
+                "protoId": "5139_0458_16",
+                "id": "4438_6727_4"
             }
         ],
         "id": "3534_2050_13"
@@ -3250,20 +3206,24 @@ Class.extend(
     {
         "gameObjectId": "1492_9912_46",
         "numOfParticlesToEmit": {
-            "from": 1,
-            "to": 11
+            "from": 10,
+            "to": 12
         },
         "particleAngle": {
-            "from": 2.588216131982958,
-            "to": 0.8214970450778185
+            "from": -2.6660626056852346,
+            "to": -2.2593554849310378
         },
         "particleVelocity": {
-            "from": 1,
+            "from": 90,
             "to": 100
         },
         "name": "ps",
         "type": "particleSystem",
-        "id": "0252_1160_4"
+        "id": "0252_1160_4",
+        "particleLiveTime": {
+            "from": 100,
+            "to": 5000
+        }
     }
 ],
         
@@ -3343,13 +3303,15 @@ Class.extend(
     ve_local.scripts.gameObject['bird.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
+    ps:null,
 
     onCreate: function(){
-        console.log('created bird');
+        this.ps = ve_local.bundle.particleSystemList.get(0);
     },
 
     onUpdate: function(time) {
-        console.log('updated bird');
+        this.ps.emit(this.posX+20,this.posY+50);
+         if (this.posX>800) this.posX = -300;
     },
 
     onDestroy: function(){
@@ -3363,18 +3325,16 @@ Class.extend(
     ve_local.scripts.gameObject['cloud.js'] = function(){
         var clazz = ve.models.Behaviour.extend({
 
-    ps:null,
+     
 
     onCreate: function(){
         this.on('click',function(e){
             console.log(e);
         });
-        this.ps = ve_local.bundle.particleSystemList.get(0);
+        
     },
 
     onUpdate: function(time) {
-        console.log('cloud updated');
-        this.ps.emit(this.posX,this.posY);
         if (this.posX>800) this.posX = -300;
     },
 
@@ -3395,7 +3355,7 @@ Class.extend(
     },
 
     onUpdate: function(time) {
-
+        console.log('updated particle');
     },
 
     onDestroy: function(){
@@ -3451,19 +3411,18 @@ Class.extend(
     ve_local.scripts.scene['m.js'] = function(){
     var clazz = ve.models.Behaviour.extend({
 
-    ps:null,
-
+   
     onCreate: function(){
         console.trace('scene created',this);
         var self = this;
         var textField = this.findGameObject('textField1');
-        var bird = this.findGameObject('b');
+        var bird = this.findGameObject('bird');
+        bird.getFrAnimation('fly').play();
         textField.setText('Привет (нажми на меня)');
         bird.on('click',function(e){
             textField.setText('Ура!!!!!');
             bird.velX = 200;
             ve.sound.play('boom');
-            self.ps.emit(e.screenX,e.screenY);
         });
     },
 

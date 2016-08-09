@@ -109,6 +109,7 @@
         };
 
         var applyIndividualBehaviour = function(model){
+            console.log('upluing bh for',model);
             var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
             if (script) {
                 var BehaviourClass = script();
@@ -381,7 +382,7 @@
         _frameWidth:0,
         _frameHeight:0,
         _numOfFrames:0,
-        _img: null,
+        _textureInfo: null,
         getFramePosX: function(frameIndex){
             return (frameIndex%this.numOfFramesH)*this._frameWidth;
         },
@@ -440,6 +441,7 @@
         frameAnimationIds:[],
         _currFrameAnimation:null,
         rigid:true,
+        _timeCreated:null,
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
@@ -481,9 +483,9 @@
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(renderer){
-            renderer.drawImage(
-                this._spriteSheet._img,
+        render: function(){
+            ve_local.rendererContext.drawImage(
+                this._spriteSheet._textureInfo,
                 this._sprPosX,
                 this._sprPosY,
                 this._spriteSheet._frameWidth,
@@ -641,14 +643,14 @@
                 ve_local.bundle.fontList.find({name:'default'});
             this.setFont(font);
         },
-        render: function(renderer){
+        render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-                renderer.drawImage(
-                    self._spriteSheet._img,
+                ve_local.rendererContext.drawImage(
+                    self._spriteSheet._textureInfo,
                     charInCtx.x,
                     charInCtx.y,
                     charInCtx.width,
@@ -684,20 +686,47 @@
         numOfParticlesToEmit:null,
         particleAngle:null,
         particleVelocity:null,
+        particleLiveTime:null,
         construct: function(){
+            this._particles = [];
             if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
             if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
             if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
+            if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
             this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
         },
-        emit: function(){
-
+        emit: function(x,y){
+            var r = function(obj){
+                return ve.Math.getRandomInRange(obj.from,obj.to);
+            };
+            for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
+                var particle = this._gameObject.clone();
+                var angle = r(this.particleAngle);
+                var vel = r(this.particleVelocity);
+                particle.fromJSON({
+                    velX:vel*Math.cos(angle),
+                    velY:vel*Math.sin(angle),
+                    posX:x,
+                    posY:y
+                });
+                particle.liveTime = r(this.particleLiveTime);
+                this._particles.push(particle);
+            }
         },
-        update:function(){
-
+        update:function(time,delta){
+            var self = this;
+            this._particles.forEach(function(p){
+                if (!p._timeCreated) p._timeCreated = time;
+                if (time - p._timeCreated> p.liveTime) {
+                    self._particles.splice(self._particles.indexOf(p),1);
+                }
+                p.update(time,delta);
+            });
         },
         render: function(){
-
+            this._particles.forEach(function(p){
+                p.render();
+            });
         }
     });
 
@@ -773,7 +802,19 @@
 
     ns.degToRad = function(deg) {
         return deg *  Math.PI / 180;
-    }
+    };
+
+    ns.getRandomInRange = function(min, max){
+        if (min>max) {
+            var tmp = min;
+            min = max;
+            max = tmp;
+        }
+        var res = Math.random() * (max - min + 1) + min;
+        if (res>max) res = max;
+        else if (res<min) res = min;
+        return res;
+    };
 
 })();
 window.app.

@@ -4,57 +4,6 @@
         "type": "layer",
         "gameObjectProps": [
             {
-                "spriteSheetId": "1879_7247_15",
-                "width": 110,
-                "height": 101,
-                "name": "b",
-                "type": "gameObject",
-                "commonBehaviour": [
-                    {
-                        "name": "control4dir",
-                        "parameters": {
-                            "velocity": 100,
-                            "walkLeftAnimation": "left",
-                            "walkRightAnimation": "right",
-                            "walkUpAnimation": "up",
-                            "walkDownAnimation": "down",
-                            "idleLeftAnimation": "idleLeft",
-                            "idleRightAnimation": "idleRight",
-                            "idleUpAnimation": "idleUp",
-                            "idleDownAnimation": "idleDown"
-                        },
-                        "id": "5084_8174_18",
-                        "type": "commonBehaviour"
-                    }
-                ],
-                "frameAnimationIds": [],
-                "posX": 114,
-                "posY": 101,
-                "protoId": "5139_0458_16",
-                "id": "0906_4709_17",
-                "groupName": ""
-            },
-            {
-                "spriteSheetId": "1501_7424_265",
-                "width": 300,
-                "height": 190,
-                "name": "cloud",
-                "type": "gameObject",
-                "commonBehaviour": [],
-                "frameAnimationIds": [],
-                "groupName": "",
-                "posX": 187,
-                "posY": 63,
-                "protoId": "3315_7346_266",
-                "id": "7476_9556_267",
-                "rigid": 0,
-                "currFrameIndex": 0,
-                "_sprPosX": 0,
-                "_sprPosY": 0,
-                "velX": 0,
-                "velY": 0
-            },
-            {
                 "text": "hello",
                 "width": 75,
                 "height": 29,
@@ -67,6 +16,36 @@
                 "protoId": {},
                 "id": "4343_5960_457",
                 "fontId": "6991_3497_4"
+            },
+            {
+                "spriteSheetId": "1879_7247_15",
+                "width": 110,
+                "height": 101,
+                "name": "bird",
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": {},
+                        "id": "6616_0188_20",
+                        "type": "commonBehaviour",
+                        "description": ""
+                    }
+                ],
+                "frameAnimationIds": [
+                    "2195_5056_19"
+                ],
+                "rigid": 0,
+                "groupName": "",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0,
+                "posX": 109,
+                "posY": 90,
+                "protoId": "5139_0458_16",
+                "id": "4438_6727_4"
             }
         ],
         "id": "3534_2050_13"

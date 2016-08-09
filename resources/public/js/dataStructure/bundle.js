@@ -32,6 +32,7 @@
         };
 
         var applyIndividualBehaviour = function(model){
+            console.log('upluing bh for',model);
             var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
             if (script) {
                 var BehaviourClass = script();

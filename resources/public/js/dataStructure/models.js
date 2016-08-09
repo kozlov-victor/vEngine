@@ -407,11 +407,13 @@
         numOfParticlesToEmit:null,
         particleAngle:null,
         particleVelocity:null,
+        particleLiveTime:null,
         construct: function(){
             this._particles = [];
             if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
             if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
             if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
+            if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
             this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
         },
         emit: function(x,y){
@@ -428,6 +430,7 @@
                     posX:x,
                     posY:y
                 });
+                particle.liveTime = r(this.particleLiveTime);
                 this._particles.push(particle);
             }
         },
@@ -435,8 +438,8 @@
             var self = this;
             this._particles.forEach(function(p){
                 if (!p._timeCreated) p._timeCreated = time;
-                if (p._timeCreated>1000) {
-                    //self._particles.splice(self._particles.indexOf(p),1);
+                if (time - p._timeCreated> p.liveTime) {
+                    self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
             });
