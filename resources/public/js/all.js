@@ -295,14 +295,14 @@
         if (Object.prototype.toString.call(obj) === '[object Array]') {
             var out = [], i = 0, len = obj.length;
             for ( ; i < len; i++ ) {
-                out[i] = arguments.callee(obj[i]);
+                out[i] = deepCopy(obj[i]);
             }
             return out;
         }
         if (typeof obj === 'object') {
-            var out = {}, i;
+            out = {};
             for ( i in obj ) {
-                out[i] = arguments.callee(obj[i]);
+                out[i] = deepCopy(obj[i]);
             }
             return out;
         }

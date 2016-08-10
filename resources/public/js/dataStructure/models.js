@@ -431,6 +431,7 @@
                     posY:y
                 });
                 particle.liveTime = r(this.particleLiveTime);
+                ve_local.bundle.applyBehaviour(particle);
                 this._particles.push(particle);
             }
         },
@@ -442,6 +443,7 @@
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
+                p.__updateIndividualBehaviour__(delta); // todo move to "update" fn?
             });
         },
         render: function(){

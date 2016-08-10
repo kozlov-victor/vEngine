@@ -629,6 +629,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                     posY:y
                 });
                 particle.liveTime = r(this.particleLiveTime);
+                ve_local.bundle.applyBehaviour(particle);
                 this._particles.push(particle);
             }
         },
@@ -640,6 +641,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
+                p.__updateIndividualBehaviour__(delta); // todo move to "update" fn?
             });
         },
         render: function(){
@@ -687,7 +689,6 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         };
 
         var applyIndividualBehaviour = function(model){
-            console.log('upluing bh for',model);
             var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
             if (script) {
                 var BehaviourClass = script();
@@ -727,15 +728,19 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
                 scene.__onResourcesReady();
-                applyIndividualBehaviour(scene);
+                self.applyBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
-                        applyCommonBehaviour(gameObject);
-                        applyIndividualBehaviour(gameObject);
+                        self.applyBehaviour(gameObject);
                     });
                 });
             });
         };
+
+        this.applyBehaviour = function(model){
+            applyCommonBehaviour(model);
+            applyIndividualBehaviour(model);
+        }
 
     };
 
@@ -3206,8 +3211,8 @@ Class.extend(
     {
         "gameObjectId": "1492_9912_46",
         "numOfParticlesToEmit": {
-            "from": 10,
-            "to": 12
+            "from": 50,
+            "to": 80
         },
         "particleAngle": {
             "from": -2.6660626056852346,
@@ -3221,8 +3226,8 @@ Class.extend(
         "type": "particleSystem",
         "id": "0252_1160_4",
         "particleLiveTime": {
-            "from": 100,
-            "to": 5000
+            "from": 101,
+            "to": 400
         }
     }
 ],

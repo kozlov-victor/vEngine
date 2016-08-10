@@ -32,7 +32,6 @@
         };
 
         var applyIndividualBehaviour = function(model){
-            console.log('upluing bh for',model);
             var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
             if (script) {
                 var BehaviourClass = script();
@@ -72,15 +71,19 @@
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
                 scene.__onResourcesReady();
-                applyIndividualBehaviour(scene);
+                self.applyBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
-                        applyCommonBehaviour(gameObject);
-                        applyIndividualBehaviour(gameObject);
+                        self.applyBehaviour(gameObject);
                     });
                 });
             });
         };
+
+        this.applyBehaviour = function(model){
+            applyCommonBehaviour(model);
+            applyIndividualBehaviour(model);
+        }
 
     };
 
