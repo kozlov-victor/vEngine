@@ -12,12 +12,16 @@
         ve_local.DEFAULT_CODE_SCRIPT = <%-JSON.stringify(defaultCodeScript)%>;
     </script>
     <script type="text/javascript" src="/js/lib/angular.js"></script>
+    <script type="text/javascript" src="/js/lib/angular-route.js"></script>
     <script type="text/javascript" src="/js/lib/jquery.js"></script>
-    <script type="text/javascript" src="/js/lib/jquery.sortable.js"></script>
-    <script type="text/javascript">window.app = angular.module('main', [])</script>
+    <script type="text/javascript">window.app = angular.module('main', ['ngRoute'])</script>
     <script type="text/javascript" src="/js/all.js"></script>
 </head>
     <body ng-app="main" ng-controller="mainCtrl">
-        <div ng-include src="'main.html'" class="withPadding height100"></div>
+
+        <div ng-view=""></div>
+        <div ng-include src="'partials/dialogs.html'"></div>
+        <div ng-include src="'partials/contextMenus.html'"></div>
+
     </body>
 </html>

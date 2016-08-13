@@ -29,4 +29,20 @@ window.app.
             uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject);
         };
 
+        s.globalPage = 'projectExplorer';
+
+    });
+
+
+app.
+
+    config(function($routeProvider){
+        $routeProvider.
+            when('/editor',{
+                templateUrl:'editor.html'
+            }).
+            when('/explorer',{
+                templateUrl:'explorer.html'
+            }).
+            otherwise({redirectTo:'/explorer'});
     });

@@ -5,40 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/js/controllers/buildCtrl.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogBuild.html" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/application/mvc/views/bitMapFont.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/resources/public/js/all.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/resources/public/js/lib/editorOnly.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/bundle.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/cloud.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/gameObject/cloud.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/modules/collider.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/modules/collider.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/debug.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/debug.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/defaultCodeScript.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/defaultCodeScript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/dialogs.html" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/views/editor.ejs" afterPath="$PROJECT_DIR$/application/mvc/views/editor.ejs" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/base/fs.js" afterPath="$PROJECT_DIR$/application/base/fs.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" afterPath="$PROJECT_DIR$/application/mvc/controllers/generatorController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/glContext.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/glContext.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/index.html" afterPath="$PROJECT_DIR$/resources/generatorResources/static/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/index.html" afterPath="$PROJECT_DIR$/workspace/project/out/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/script/scene/m.js" afterPath="$PROJECT_DIR$/workspace/project/resources/script/scene/m.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" afterPath="$PROJECT_DIR$/resources/generatorResources/templates/main.ejs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/js/lib/angular-route.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/editor.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/explorer.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/public/unused.html" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/resources/public/js/lib/jquery.sortable.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/resources/public/main.html" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/all.js" afterPath="$PROJECT_DIR$/resources/public/js/all.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html" afterPath="$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/views/main.ejs" afterPath="$PROJECT_DIR$/application/mvc/views/main.ejs" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/main.js" afterPath="$PROJECT_DIR$/resources/public/js/main.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/out/main.js" afterPath="$PROJECT_DIR$/workspace/project/out/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/gameObject/map.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" afterPath="$PROJECT_DIR$/workspace/project/resources/layer/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/messageDigest.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/messageDigest.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/lib/ace/src-min/mode-javascript.js" afterPath="$PROJECT_DIR$/resources/public/js/lib/ace/src-min/mode-javascript.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/models.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/renderer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/routes/resourcesRoute.js" afterPath="$PROJECT_DIR$/application/mvc/routes/resourcesRoute.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/sceneManager.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/static/modules/sound.js" afterPath="$PROJECT_DIR$/resources/generatorResources/static/modules/sound.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/topPanel.html" afterPath="$PROJECT_DIR$/resources/public/partials/topPanel.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/topPanelCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/topPanelCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/dataStructure/utils.js" afterPath="$PROJECT_DIR$/resources/public/js/dataStructure/utils.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/utils.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/utils.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f8ca8907-a637-4910-a09f-c2a90f136754" name="Failed commit: Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -63,61 +41,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="buildCtrl.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/buildCtrl.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="23" column="30" selection-start-line="21" selection-start-column="12" selection-end-line="23" selection-end-column="30" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="dialogBuild.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogBuild.html">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-13.125">
               <caret line="39" column="63" selection-start-line="39" selection-start-column="63" selection-end-line="39" selection-end-column="63" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="i18n.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/i18n.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="70" column="13" selection-start-line="70" selection-start-column="13" selection-end-line="70" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="messageDigest.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/messageDigest.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="58" selection-start-line="24" selection-start-column="58" selection-end-line="24" selection-end-column="58" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="topPanelCtrl.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/topPanelCtrl.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="20" column="50" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="50" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="utils.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/js/factories/utils.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="136" column="53" selection-start-line="136" selection-start-column="53" selection-end-line="136" selection-end-column="53" />
               <folding />
             </state>
           </provider>
@@ -133,21 +61,81 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.66588783">
+            <state vertical-scroll-proportion="-11.875">
               <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="generatorController.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/mvc/controllers/generatorController.js">
+      <file leaf-file-name="dialogParticleSystemPreview.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.516129">
-              <caret line="117" column="24" selection-start-line="117" selection-start-column="13" selection-end-line="117" selection-end-column="24" />
+            <state vertical-scroll-proportion="-2.5">
+              <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="unused.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/unused.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-7.5">
+              <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="editor.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/editor.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-11.25">
+              <caret line="18" column="6" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="explorer.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/explorer.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.875">
+              <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/main.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="46" column="44" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="angular-route.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/public/js/lib/angular-route.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.ejs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/application/mvc/views/main.ejs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.7196262">
+              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -158,8 +146,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Html5" />
         <option value="JavaScript File" />
+        <option value="Html5" />
       </list>
     </option>
   </component>
@@ -182,12 +170,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/resources/generatorResources/static/modules/math.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/directives/appInputAngle.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/controllers/fontCtrl.js" />
-        <option value="$PROJECT_DIR$/resources/public/js/controllers/spriteSheetCtrl.js" />
-        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html" />
-        <option value="$PROJECT_DIR$/resources/public/js/dataStructure/collections.js" />
         <option value="$PROJECT_DIR$/Gruntfile.js" />
         <option value="$PROJECT_DIR$/resources/public/js/filters/toFixed.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/animationCtrl.js" />
@@ -198,7 +180,6 @@
         <option value="$PROJECT_DIR$/resources/public/js/controllers/gameObjectCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/particleSystemPreviewCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/particleSystemCtrl.js" />
-        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html" />
         <option value="$PROJECT_DIR$/resources/public/css/main.css" />
         <option value="$PROJECT_DIR$/resources/public/partials/rightMenu/font.html" />
         <option value="$PROJECT_DIR$/resources/generatorResources/static/modules/mouse.js" />
@@ -233,6 +214,13 @@
         <option value="$PROJECT_DIR$/resources/public/js/factories/utils.js" />
         <option value="$PROJECT_DIR$/application/mvc/routes/resourcesRoute.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogBuild.html" />
+        <option value="$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html" />
+        <option value="$PROJECT_DIR$/resources/explorer.html" />
+        <option value="$PROJECT_DIR$/resources/public/explorer.html" />
+        <option value="$PROJECT_DIR$/resources/public/js/main.js" />
+        <option value="$PROJECT_DIR$/resources/public/main.html" />
+        <option value="$PROJECT_DIR$/resources/public/editor.html" />
+        <option value="$PROJECT_DIR$/application/mvc/views/main.ejs" />
       </list>
     </option>
   </component>
@@ -314,46 +302,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="workspace" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="workspace" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="project" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="out" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="vEngine" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -376,7 +324,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="generatorResources" />
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -394,11 +346,83 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="generatorResources" />
+              <option name="myItemId" value="public" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="static" />
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mvc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="application" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mvc" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -432,18 +456,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources/public/js/lib" />
       <recent name="$PROJECT_DIR$/resources/public" />
       <recent name="$PROJECT_DIR$/resources/public/partials/misc" />
-      <recent name="$PROJECT_DIR$/resources/public/js/lib" />
       <recent name="$PROJECT_DIR$/workspace/project/resources/script/commonBehaviour" />
       <recent name="$PROJECT_DIR$/resources/generatorResources/static/fonts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/resources/public" />
       <recent name="$PROJECT_DIR$/resources/public/js/dataStructure" />
       <recent name="$PROJECT_DIR$/resources/public/flex/src" />
       <recent name="$PROJECT_DIR$/resources/public/misc" />
       <recent name="$PROJECT_DIR$/application/mvc/views" />
-      <recent name="$PROJECT_DIR$/project/resources/script/files" />
     </key>
   </component>
   <component name="RunManager">
@@ -790,13 +814,7 @@
       <workItem from="1470244157690" duration="12095000" />
       <workItem from="1470416966050" duration="15263000" />
       <workItem from="1470675663519" duration="630000" />
-      <workItem from="1470760062243" duration="41742000" />
-    </task>
-    <task id="LOCAL-00030" summary="script genetator, rendering">
-      <created>1463498609829</created>
-      <option name="number" value="00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1463498609829</updated>
+      <workItem from="1470760062243" duration="44667000" />
     </task>
     <task id="LOCAL-00031" summary="script generator, global rendering">
       <created>1463499341150</created>
@@ -1086,11 +1104,17 @@
       <option name="project" value="LOCAL" />
       <updated>1470858929535</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="particle systems, build options">
+      <created>1471114520398</created>
+      <option name="number" value="00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1471114520398</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="529511000" />
+    <option name="totallyTimeSpent" value="532436000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1116,7 +1140,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18443316" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30255565" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31162408" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="LuaJ" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32988048" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -1146,7 +1170,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="script genetator" />
     <MESSAGE value="script genetator, rendering" />
     <MESSAGE value="script generator, global rendering" />
     <MESSAGE value="delete game object from  scene" />
@@ -1171,7 +1194,8 @@
     <MESSAGE value="webGl renderer" />
     <MESSAGE value="fixed rescale bug" />
     <MESSAGE value="particle systems" />
-    <option name="LAST_COMMIT_MESSAGE" value="particle systems" />
+    <MESSAGE value="particle systems, build options" />
+    <option name="LAST_COMMIT_MESSAGE" value="particle systems, build options" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1184,37 +1208,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/node_modules/.bin/minify">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.304878">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/.bin/grunt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.70068026">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="44" selection-start-line="7" selection-start-column="44" selection-end-line="7" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/css/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="311" column="12" selection-start-line="311" selection-start-column="12" selection-end-line="311" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/partials/rightMenu/font.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0">
@@ -1246,11 +1239,11 @@
         <state vertical-scroll-proportion="25.083334">
           <caret line="1" column="5" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
           <folding>
-            <marker date="1471077895789" expanded="true" signature="-1:-1" placeholder="[...]" />
-            <marker date="1471077895789" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;ll&quot;...}" />
-            <marker date="1471077895789" expanded="true" signature="-1:-1" placeholder="[...]" />
-            <marker date="1471077895789" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;cloud&quot;...}" />
-            <marker date="1471077895789" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;bird&quot;...}" />
+            <marker date="1471114664582" expanded="true" signature="-1:-1" placeholder="[...]" />
+            <marker date="1471114664582" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;ll&quot;...}" />
+            <marker date="1471114664582" expanded="true" signature="-1:-1" placeholder="[...]" />
+            <marker date="1471114664582" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;cloud&quot;...}" />
+            <marker date="1471114664582" expanded="true" signature="-1:-1" placeholder="{&quot;name&quot;: &quot;bird&quot;...}" />
           </folding>
         </state>
       </provider>
@@ -1311,16 +1304,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/jquery.sortable.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1564,14 +1547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/main.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/workspace/project/out/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.0">
@@ -1590,8 +1565,64 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/resources/generatorResources/static/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.66588783">
+        <state vertical-scroll-proportion="-11.875">
           <caret line="19" column="4" selection-start-line="19" selection-start-column="4" selection-end-line="19" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystemPreview.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.5">
+          <caret line="4" column="34" selection-start-line="4" selection-start-column="34" selection-end-line="4" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/lib/angular-route.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="46" column="44" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/explorer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.875">
+          <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/unused.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.5">
+          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/editor.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.25">
+          <caret line="18" column="6" selection-start-line="18" selection-start-column="6" selection-end-line="18" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/mvc/views/main.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.7196262">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
       </provider>
