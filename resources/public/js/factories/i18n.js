@@ -66,7 +66,8 @@ window.app
                 build:'build',
                 particleSystems:'particle systems',
                 particleSystem:'particle system',
-                preview:'preview'
+                preview:'preview',
+                i18n:'build'
             }
         };
 

@@ -273,7 +273,12 @@
 
         };
 
-        this.loadTextureInfo = function(url,callBack) {
+
+
+        this.loadTextureInfo = function(url,opts,callBack) {
+            if (opts.type=='base64') {
+                url = ve.utils.getBase64prefix('image',opts.fileName) + url;
+            }
             var tex = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, tex);
             // Fill the texture with a 1x1 blue pixel.
@@ -291,15 +296,16 @@
                 texture: tex
             };
             var img = new Image();
-            img.addEventListener('load', function() {
+            img.onload = function() {
                 textureInfo.width = img.width;
                 textureInfo.height = img.height;
 
                 gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
                 callBack(textureInfo);
-            });
+            };
             img.src = url;
+            document.body.appendChild(img);
         };
 
         this.drawImage = function(

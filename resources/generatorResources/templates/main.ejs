@@ -13,15 +13,19 @@
     ve_local.scripts.scene = {};
 
     <%for (var i = 0; i<specialResources.gameObjectScripts.length;i++) {%>
-    ve_local.scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function(){
-        var clazz = <%-specialResources.gameObjectScripts[i].content%>;
-        return clazz;
+    ve_local.scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function(exports,self){
+        <%-specialResources.gameObjectScripts[i].content%>
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     <%}%>;
     <%for (var i = 0; i<specialResources.sceneScripts.length;i++) {%>
-    ve_local.scripts.scene['<%-specialResources.sceneScripts[i].name%>'] = function(){
-    var clazz = <%-specialResources.sceneScripts[i].content%>;
-    return clazz;
+    ve_local.scripts.scene['<%-specialResources.sceneScripts[i].name%>'] = function(exports,self){
+        <%-specialResources.sceneScripts[i].content%>
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     <%}%>;
 

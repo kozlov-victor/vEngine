@@ -1,15 +1,12 @@
-ve.models.Behaviour.extend({
 
-    onCreate: function(){
+function onCreate() {
 
-    },
+}
 
-    onUpdate: function(time) {
+function onUpdate(time) {
 
-    },
+}
 
-    onDestroy: function(){
+function onDestroy() {
 
-    }
-
-});
+}

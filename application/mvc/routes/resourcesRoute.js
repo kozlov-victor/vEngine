@@ -103,10 +103,8 @@ module.exports.init = function(app) {
 
 
     app.get('/generate',function(req,res){
-        var opts = {};
         var queryData = url.parse(req.url, true).query;
-        opts.debug = !!queryData.debug;
-        generatorController.generate(opts,function(result){
+        generatorController.generate(queryData,function(result){
             res.send(result)
         });
     });

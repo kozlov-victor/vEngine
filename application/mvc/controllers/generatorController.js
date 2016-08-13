@@ -70,7 +70,7 @@ var addDebug = function(sourceMain){
     sourceMain.addFile('resources/generatorResources/static/debug.js');
 };
 
-var addGameResources = function(sourceMain){
+var addGameResourcesDesc = function(sourceMain,opts){
     var templateObj = {};
     templateObj.commonResources = {};
     templateObj.specialResources = {};
@@ -79,22 +79,50 @@ var addGameResources = function(sourceMain){
     });
     templateObj.commonResources.gameProps = fs.readFileSync('workspace/project/gameProps.json');
 
-    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject');
-    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene');
+    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject','utf8');
+    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene','utf8');
     sourceMain.addTemplate('resources/generatorResources/templates/main.ejs',templateObj);
 };
 
-var initFolderStructure = function(sourceMain){
+var addGameResourcesFiles = function(sourceMain,opts){
     fs.deleteFolderSync('workspace/project/out');
+    fs.createFolderSync('workspace/project/out/');
+
+    var embedResourceCode = '(function(){\n';
+    if (opts.embedResources) embedResourceCode += 've_local.resources = {};\n';
 
     ['spriteSheet','font','sound'].forEach(function(r){
-        fs.createFolderSync('workspace/project/out/resources/'+r);
-        fs.copyFolderSync('workspace/project/resources/'+r,'workspace/project/out/resources/'+r);
-        fs.deleteFileSync('workspace/project/out/resources/'+r+'/map.json');
+        if (opts.embedResources) {
+            var files = fs.readDirSync('workspace/project/resources/'+r,'base64');
+            files.forEach(function(file){
+                if (file.name!='map.json') {
+                    embedResourceCode+=
+                        've_local.resources["resources/'+r+'/'+file.name+'"]=' +
+                        '"'+file.content+'";\n';
+                }
+            });
+        } else {
+            fs.createFolderSync('workspace/project/out/resources/'+r);
+            fs.copyFolderSync('workspace/project/resources/'+r,'workspace/project/out/resources/'+r);
+            fs.deleteFileSync('workspace/project/out/resources/'+r+'/map.json');
+        }
     });
 
-    fs.writeFileSync('workspace/project/out/main.js',sourceMain.get());
-    fs.writeFileSync('workspace/project/out/index.html',fs.readFileSync('resources/generatorResources/static/index.html'));
+    if (opts.embedResources) {
+        embedResourceCode+='})();';
+        sourceMain.add(embedResourceCode);
+    }
+
+    var indexHtml = fs.readFileSync('resources/generatorResources/static/index.html');
+
+    if (opts.embedScript) {
+        indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
+        fs.writeFileSync('workspace/project/out/index.html',indexHtml);
+    } else {
+        fs.writeFileSync('workspace/project/out/main.js',sourceMain.get());
+        indexHtml = indexHtml.replace('{{script}}','<script src="main.js"></script>');
+        fs.writeFileSync('workspace/project/out/index.html',indexHtml);
+    }
 
 };
 
@@ -112,7 +140,7 @@ var addCommonBehaviour = function(sourceMain){
     });
 };
 
-var unUsed = function(){
+var unused = function(){
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()
@@ -126,13 +154,15 @@ var unUsed = function(){
 
 module.exports.generate = function(opts,callback){
 
+    console.log('generate options:',opts);
+
     var sourceMain = new Source();
-    addEnvVariables(sourceMain);
-    addStaticFiles(sourceMain);
-    addCommonBehaviour(sourceMain);
-    if (opts.debug) addDebug(sourceMain);
-    addGameResources(sourceMain);
-    initFolderStructure(sourceMain);
+    addEnvVariables(sourceMain,opts);
+    addStaticFiles(sourceMain,opts);
+    addCommonBehaviour(sourceMain,opts);
+    if (opts.debug) addDebug(sourceMain,opts);
+    addGameResourcesDesc(sourceMain,opts);
+    addGameResourcesFiles(sourceMain,opts);
 
     callback({});
 };

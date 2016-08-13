@@ -9,10 +9,11 @@ window.app.
 
         var w;
 
+
         // todo project name
         s.run = function(){
             $http({
-                url: '/generate?r='+Math.random(),
+                url: utils.generateBuildUrl({debug:1}),
                 method: "GET"
             }).
             success(function (resp) {
@@ -28,7 +29,7 @@ window.app.
 
         s.debug = function(){
             $http({
-                url: '/generate?debug=1&r='+Math.random(),
+                url: utils.generateBuildUrl({debug:1}),
                 method: "GET"
             }).
             success(function (resp) {
@@ -44,7 +45,7 @@ window.app.
 
         s.showBuildDialog = function() {
             uiHelper.showDialog('buildDialog');
-        }
+        };
 
 
     });

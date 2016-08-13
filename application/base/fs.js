@@ -53,11 +53,11 @@ module.exports.copyFolderSync = function cpf(src, dest) {
     }
 };
 
-module.exports.readDirSync = function(path){
+module.exports.readDirSync = function(path,contentType){
     var files = fs.readdirSync(path);
     var res = [];
     for(var i in files) {
-        res.push({name:files[i],content:fs.readFileSync(path+'/'+files[i], "utf8")})
+        res.push({name:files[i],content:fs.readFileSync(path+'/'+files[i], contentType)})
     }
     return res;
 };

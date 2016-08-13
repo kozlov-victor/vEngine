@@ -109,17 +109,13 @@
         };
 
         var applyIndividualBehaviour = function(model){
-            console.log('upluing bh for',model);
-            var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
-            if (script) {
-                var BehaviourClass = script();
-                model._behaviour = new BehaviourClass();
-                model._behaviour.toJSON_Array().forEach(function(itm){
-                    model[itm.key]=itm.value;
-                });
-                model._behaviour.onCreate.apply(model);
+            var behaviourFn = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
+            if (behaviourFn) {
+                var exports = {};
+                behaviourFn(exports,model);
+                exports.onCreate();
                 model.__updateIndividualBehaviour__ = function(deltaTime){
-                    model._behaviour.onUpdate.apply(model,[deltaTime]);
+                    exports.onUpdate(deltaTime);
                 }
             } else {
                 model.__updateIndividualBehaviour__ = noop;
@@ -149,15 +145,19 @@
         this.prepareGameObjectScripts = function(){
             self.sceneList.forEach(function(scene){
                 scene.__onResourcesReady();
-                applyIndividualBehaviour(scene);
+                self.applyBehaviour(scene);
                 scene._layers.forEach(function(layer){
                     layer._gameObjects.forEach(function(gameObject){
-                        applyCommonBehaviour(gameObject);
-                        applyIndividualBehaviour(gameObject);
+                        self.applyBehaviour(gameObject);
                     });
                 });
             });
         };
+
+        this.applyBehaviour = function(model){
+            applyCommonBehaviour(model);
+            applyIndividualBehaviour(model);
+        }
 
     };
 
@@ -300,7 +300,7 @@
             return out;
         }
         if (typeof obj === 'object') {
-            out = {};
+            var out = {}, i;
             for ( i in obj ) {
                 out[i] = deepCopy(obj[i]);
             }
@@ -420,9 +420,7 @@
             return this._layer._scene;
         },
         update: function(){},
-        render: function(){
-
-        }
+        _render: function(){}
     });
 
     models.GameObject = models.BaseGameObject.extend({
@@ -445,7 +443,10 @@
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
+            if (!this.spriteSheetId) {
+                return;
+            }
+            this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId});
             self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
@@ -479,11 +480,14 @@
             var posX = this.posX+deltaX;
             var posY = this.posY+deltaY;
             ve_local.collider.check(this,posX,posY);
+            this.__updateIndividualBehaviour__(delta);
+            this.__updateCommonBehaviour__();
+            this._render();
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(){
+        _render: function(){
             ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
@@ -557,6 +561,12 @@
                 obj._spriteSheet && dataSet.add(obj._spriteSheet);
             });
             return dataSet;
+        },
+        update: function(currTime,deltaTime){
+            this._gameObjects.forEach(function(obj){
+                if (!obj) return;
+                obj.update(currTime,deltaTime);
+            });
         }
     });
 
@@ -596,6 +606,12 @@
         },
         getAllGameObjects:function(){
             return this._allGameObjects;
+        },
+        update: function(currTime,deltaTime){
+            this._layers.forEach(function(layer){
+                layer.update(currTime,deltaTime);
+            });
+            this.__updateIndividualBehaviour__(deltaTime);
         }
     });
 
@@ -643,7 +659,10 @@
                 ve_local.bundle.fontList.find({name:'default'});
             this.setFont(font);
         },
-        render: function(){
+        update: function(){
+            this._render();
+        },
+        _render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
@@ -710,6 +729,7 @@
                     posY:y
                 });
                 particle.liveTime = r(this.particleLiveTime);
+                ve_local.bundle.applyBehaviour(particle);
                 this._particles.push(particle);
             }
         },
@@ -717,15 +737,10 @@
             var self = this;
             this._particles.forEach(function(p){
                 if (!p._timeCreated) p._timeCreated = time;
-                if (time - p._timeCreated> p.liveTime) {
+                if (time - p._timeCreated > p.liveTime) {
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
-            });
-        },
-        render: function(){
-            this._particles.forEach(function(p){
-                p.render();
             });
         }
     });
@@ -769,6 +784,10 @@
     ns.capitalize = function(s){
         return s.substr(0,1).toUpperCase() +
             s.substr(1);
+    };
+    ns.getBase64prefix = function(fileType,fileName) {
+        var ext = fileName.split('.').pop();
+        return 'data:'+fileType+'/'+ext+';base64,'
     };
 })();
 
@@ -916,6 +935,48 @@ window.app.
             }
         })();
 
+
+    });
+
+
+window.app.
+    controller('buildCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+        s.opts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
+
+        // todo project name
+        s.build = function(){
+            $http({
+                url: utils.generateBuildUrl(s.opts),
+                method: "GET"
+            }).
+                success(function (resp) {
+                    s.link = '/project/out'
+                });
+        };
+
+        (function(){
+
+        })();
 
     });
 
@@ -1706,10 +1767,11 @@ window.app.
 
         var w;
 
+
         // todo project name
         s.run = function(){
             $http({
-                url: '/generate?r='+Math.random(),
+                url: utils.generateBuildUrl({debug:1}),
                 method: "GET"
             }).
             success(function (resp) {
@@ -1725,7 +1787,7 @@ window.app.
 
         s.debug = function(){
             $http({
-                url: '/generate?debug=1&r='+Math.random(),
+                url: utils.generateBuildUrl({debug:1}),
                 method: "GET"
             }).
             success(function (resp) {
@@ -1741,7 +1803,7 @@ window.app.
 
         s.showBuildDialog = function() {
             uiHelper.showDialog('buildDialog');
-        }
+        };
 
 
     });
@@ -2115,7 +2177,8 @@ window.app
                 build:'build',
                 particleSystems:'particle systems',
                 particleSystem:'particle system',
-                preview:'preview'
+                preview:'preview',
+                i18n:'build'
             }
         };
 
@@ -2139,7 +2202,7 @@ window.app
 
 window.app
 
-    .factory('messageDigest',function(resourceDao){
+    .factory('messageDigest',function(resourceDao,utils){
 
         //window.addEventListener('message',function(e){
         //    console.log('accepted message',e);
@@ -2154,7 +2217,14 @@ window.app
             switch (m.data.command) {
                 case 'getCode':
                     resourceDao.readFile(m.data.name+'.js', m.data.path,function(resp){
-                        respondToTarget(document.getElementById('scriptEditor').contentWindow,{code:resp});
+                        respondToTarget(
+                            document.getElementById('scriptEditor').contentWindow,
+                            {
+                                command:'setCode',
+                                completer:utils.createAceCompleter(),
+                                code:resp
+                            }
+                        );
                     });
                     break;
                 case 'saveCode':
@@ -2556,6 +2626,28 @@ window.app
                     });
                 });
             });
+        };
+
+        this.createAceCompleter = function(){
+            var res = [];
+            var go = new ve.models.GameObject();
+            go.toJSON_Array().forEach(function(item){
+                res.push({
+                    name:item.key,
+                    value:item.key,
+                    score:1,
+                    meta:'gameObject property'
+                });
+            });
+            return res;
+        };
+
+        this.generateBuildUrl = function(opts) {
+            var url = '/generate?r='+Math.random();
+            ['debug','embedResources','embedScript'].forEach(function(key){
+                if (opts[key]) url+='&'+key+'=1';
+            });
+            return url;
         };
 
         return this;

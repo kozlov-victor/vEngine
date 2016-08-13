@@ -16,14 +16,14 @@
         if (Object.prototype.toString.call(obj) === '[object Array]') {
             var out = [], i = 0, len = obj.length;
             for ( ; i < len; i++ ) {
-                out[i] = arguments.callee(obj[i]);
+                out[i] = deepCopy(obj[i]);
             }
             return out;
         }
         if (typeof obj === 'object') {
             var out = {}, i;
             for ( i in obj ) {
-                out[i] = arguments.callee(obj[i]);
+                out[i] = deepCopy(obj[i]);
             }
             return out;
         }
@@ -141,9 +141,7 @@
             return this._layer._scene;
         },
         update: function(){},
-        render: function(){
-
-        }
+        _render: function(){}
     });
 
     models.GameObject = models.BaseGameObject.extend({
@@ -166,7 +164,10 @@
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
+            if (!this.spriteSheetId) {
+                return;
+            }
+            this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId});
             self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
@@ -200,11 +201,14 @@
             var posX = this.posX+deltaX;
             var posY = this.posY+deltaY;
             ve_local.collider.check(this,posX,posY);
+            this.__updateIndividualBehaviour__(delta);
+            this.__updateCommonBehaviour__();
+            this._render();
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(){
+        _render: function(){
             ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
@@ -278,6 +282,12 @@
                 obj._spriteSheet && dataSet.add(obj._spriteSheet);
             });
             return dataSet;
+        },
+        update: function(currTime,deltaTime){
+            this._gameObjects.forEach(function(obj){
+                if (!obj) return;
+                obj.update(currTime,deltaTime);
+            });
         }
     });
 
@@ -317,6 +327,12 @@
         },
         getAllGameObjects:function(){
             return this._allGameObjects;
+        },
+        update: function(currTime,deltaTime){
+            this._layers.forEach(function(layer){
+                layer.update(currTime,deltaTime);
+            });
+            this.__updateIndividualBehaviour__(deltaTime);
         }
     });
 
@@ -364,7 +380,10 @@
                 ve_local.bundle.fontList.find({name:'default'});
             this.setFont(font);
         },
-        render: function(){
+        update: function(){
+            this._render();
+        },
+        _render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
@@ -439,16 +458,10 @@
             var self = this;
             this._particles.forEach(function(p){
                 if (!p._timeCreated) p._timeCreated = time;
-                if (time - p._timeCreated> p.liveTime) {
+                if (time - p._timeCreated > p.liveTime) {
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
-                p.__updateIndividualBehaviour__(delta); // todo move to "update" fn?
-            });
-        },
-        render: function(){
-            this._particles.forEach(function(p){
-                p.render();
             });
         }
     });

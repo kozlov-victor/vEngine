@@ -9,6 +9,7 @@ ve_local.Renderer = function(){
     var lastTime = 0;
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
     var gameProps;
+    var canceled = false;
 
     var setFullScreen = function(){
         var w = window.innerWidth;
@@ -94,9 +95,13 @@ ve_local.Renderer = function(){
 
     this.cancel = function(){
         cancelAnimationFrame(drawScene);
+        canceled = true;
     };
 
     var drawScene = function(){
+        if (canceled) {
+           return;
+        }
         reqAnimFrame(drawScene);
 
         if (!scene) return;
@@ -106,19 +111,11 @@ ve_local.Renderer = function(){
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.clear(gameProps.width,gameProps.height);
-        scene._layers.forEach(function(layer){
-            layer._gameObjects.forEach(function(obj){
-                if (!obj) return;
-                obj.__updateCommonBehaviour__();
-                obj.__updateIndividualBehaviour__(deltaTime);
-                obj.update(currTime,deltaTime);
-                obj.render(self);
-            });
-        });
-        scene.__updateIndividualBehaviour__(deltaTime);
+
+        scene.update(currTime,deltaTime);
+
         ve_local.bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
-            p.render();
         });
 
         ve.keyboard._onNextTick();

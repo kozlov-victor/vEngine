@@ -15,21 +15,35 @@ ve_local.SceneManager = function(){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
         allSprSheets.asArray().forEach(function(spSheet){
+            var resourcePath = ve_local.resources?
+                ve_local.resources[spSheet.resourcePath]:
+                './'+spSheet.resourcePath;
             ve_local.renderer.
                 getContext().
-                loadTextureInfo('./'+spSheet.resourcePath,function(textureInfo){
+                loadTextureInfo(
+                resourcePath,
+                {type:ve_local.resources?'base64':'',fileName:spSheet.resourcePath},
+                function(textureInfo){
                     console.log('loaded texture info',spSheet.resourcePath,textureInfo);
                     spSheet._textureInfo = textureInfo;
                     q.resolveTask();
                 });
             q.addTask();
         });
+        // todo remove slash??
         ve_local.bundle.soundList.forEach(function(snd){
             q.addTask();
-            ve_local.sound.loadSound('./'+snd.resourcePath,function(buffer){
-                snd._buffer = buffer;
-                q.resolveTask();
-            });
+            var resourcePath = ve_local.resources?
+            ve_local.resources[snd.resourcePath]:
+            './'+snd.resourcePath;
+            ve_local.sound.loadSound(
+                resourcePath,
+                {type:ve_local.resources?'base64':''},
+                function(buffer){
+                    snd._buffer = buffer;
+                    q.resolveTask();
+                }
+            );
         });
         q.start();
     };

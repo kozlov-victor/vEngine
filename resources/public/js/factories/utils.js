@@ -118,6 +118,28 @@ window.app
             });
         };
 
+        this.createAceCompleter = function(){
+            var res = [];
+            var go = new ve.models.GameObject();
+            go.toJSON_Array().forEach(function(item){
+                res.push({
+                    name:item.key,
+                    value:item.key,
+                    score:1,
+                    meta:'gameObject property'
+                });
+            });
+            return res;
+        };
+
+        this.generateBuildUrl = function(opts) {
+            var url = '/generate?r='+Math.random();
+            ['debug','embedResources','embedScript'].forEach(function(key){
+                if (opts[key]) url+='&'+key+'=1';
+            });
+            return url;
+        };
+
         return this;
     })
 

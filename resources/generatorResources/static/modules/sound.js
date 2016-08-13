@@ -5,9 +5,21 @@
 
     var ns = ve_local.sound;
 
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+
     var context = new AudioContext();
 
-    ns.loadSound = function( url, callback) {
+    var base64ToArrayBuffer = function(base64) {
+        var binaryString = window.atob(base64);
+        var len = binaryString.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    };
+
+    var _loadSoundXhr = function(url,callback){
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
@@ -16,12 +28,28 @@
         request.setRequestHeader('Content-Range', 'bytes');
 
         request.onload = function() {
-            console.log('accepted',request.response);
             context.decodeAudioData(request.response).then(function(buffer) {
                 callback(buffer);
             });
         };
         request.send();
+    };
+
+    var _loadSoundBase64 = function(url,callback){
+        console.log('loading sound',url);
+        window.s = url;
+        var byteArray = base64ToArrayBuffer(url);
+        context.decodeAudioData(byteArray).then(function(buffer) {
+            callback(buffer);
+        });
+    };
+
+    ns.loadSound = function( url, opts, callback) {
+        if (opts.type=='base64') {
+            _loadSoundBase64(url, callback);
+        } else {
+            _loadSoundXhr(url, callback);
+        }
     };
 
 

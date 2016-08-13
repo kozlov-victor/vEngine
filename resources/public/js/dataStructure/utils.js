@@ -34,6 +34,10 @@
         return s.substr(0,1).toUpperCase() +
             s.substr(1);
     };
+    ns.getBase64prefix = function(fileType,fileName) {
+        var ext = fileName.split('.').pop();
+        return 'data:'+fileType+'/'+ext+';base64,'
+    };
 })();
 
 

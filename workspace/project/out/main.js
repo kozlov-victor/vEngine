@@ -214,14 +214,14 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         if (Object.prototype.toString.call(obj) === '[object Array]') {
             var out = [], i = 0, len = obj.length;
             for ( ; i < len; i++ ) {
-                out[i] = arguments.callee(obj[i]);
+                out[i] = deepCopy(obj[i]);
             }
             return out;
         }
         if (typeof obj === 'object') {
             var out = {}, i;
             for ( i in obj ) {
-                out[i] = arguments.callee(obj[i]);
+                out[i] = deepCopy(obj[i]);
             }
             return out;
         }
@@ -339,9 +339,7 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
             return this._layer._scene;
         },
         update: function(){},
-        render: function(){
-
-        }
+        _render: function(){}
     });
 
     models.GameObject = models.BaseGameObject.extend({
@@ -364,7 +362,10 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         construct: function(){
             var self = this;
             this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
+            if (!this.spriteSheetId) {
+                return;
+            }
+            this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId});
             self.setFrameIndex(self.currFrameIndex);
             self._frameAnimations.clear();
             this.frameAnimationIds.forEach(function(id){
@@ -398,11 +399,14 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
             var posX = this.posX+deltaX;
             var posY = this.posY+deltaY;
             ve_local.collider.check(this,posX,posY);
+            this.__updateIndividualBehaviour__(delta);
+            this.__updateCommonBehaviour__();
+            this._render();
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(){
+        _render: function(){
             ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
@@ -476,6 +480,12 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                 obj._spriteSheet && dataSet.add(obj._spriteSheet);
             });
             return dataSet;
+        },
+        update: function(currTime,deltaTime){
+            this._gameObjects.forEach(function(obj){
+                if (!obj) return;
+                obj.update(currTime,deltaTime);
+            });
         }
     });
 
@@ -515,6 +525,12 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         },
         getAllGameObjects:function(){
             return this._allGameObjects;
+        },
+        update: function(currTime,deltaTime){
+            this._layers.forEach(function(layer){
+                layer.update(currTime,deltaTime);
+            });
+            this.__updateIndividualBehaviour__(deltaTime);
         }
     });
 
@@ -562,7 +578,10 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
                 ve_local.bundle.fontList.find({name:'default'});
             this.setFont(font);
         },
-        render: function(){
+        update: function(){
+            this._render();
+        },
+        _render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
@@ -637,16 +656,10 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
             var self = this;
             this._particles.forEach(function(p){
                 if (!p._timeCreated) p._timeCreated = time;
-                if (time - p._timeCreated> p.liveTime) {
+                if (time - p._timeCreated > p.liveTime) {
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
-                p.__updateIndividualBehaviour__(delta); // todo move to "update" fn?
-            });
-        },
-        render: function(){
-            this._particles.forEach(function(p){
-                p.render();
             });
         }
     });
@@ -689,16 +702,13 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         };
 
         var applyIndividualBehaviour = function(model){
-            var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
-            if (script) {
-                var BehaviourClass = script();
-                model._behaviour = new BehaviourClass();
-                model._behaviour.toJSON_Array().forEach(function(itm){
-                    model[itm.key]=itm.value;
-                });
-                model._behaviour.onCreate.apply(model);
+            var behaviourFn = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
+            if (behaviourFn) {
+                var exports = {};
+                behaviourFn(exports,model);
+                exports.onCreate();
                 model.__updateIndividualBehaviour__ = function(deltaTime){
-                    model._behaviour.onUpdate.apply(model,[deltaTime]);
+                    exports.onUpdate(deltaTime);
                 }
             } else {
                 model.__updateIndividualBehaviour__ = noop;
@@ -781,6 +791,10 @@ ve_local.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameOb
         return s.substr(0,1).toUpperCase() +
             s.substr(1);
     };
+    ns.getBase64prefix = function(fileType,fileName) {
+        var ext = fileName.split('.').pop();
+        return 'data:'+fileType+'/'+ext+';base64,'
+    };
 })();
 
 
@@ -839,6 +853,7 @@ ve_local.Renderer = function(){
     var lastTime = 0;
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
     var gameProps;
+    var canceled = false;
 
     var setFullScreen = function(){
         var w = window.innerWidth;
@@ -924,9 +939,13 @@ ve_local.Renderer = function(){
 
     this.cancel = function(){
         cancelAnimationFrame(drawScene);
+        canceled = true;
     };
 
     var drawScene = function(){
+        if (canceled) {
+           return;
+        }
         reqAnimFrame(drawScene);
 
         if (!scene) return;
@@ -936,19 +955,11 @@ ve_local.Renderer = function(){
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.clear(gameProps.width,gameProps.height);
-        scene._layers.forEach(function(layer){
-            layer._gameObjects.forEach(function(obj){
-                if (!obj) return;
-                obj.__updateCommonBehaviour__();
-                obj.__updateIndividualBehaviour__(deltaTime);
-                obj.update(currTime,deltaTime);
-                obj.render(self);
-            });
-        });
-        scene.__updateIndividualBehaviour__(deltaTime);
+
+        scene.update(currTime,deltaTime);
+
         ve_local.bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
-            p.render();
         });
 
         ve.keyboard._onNextTick();
@@ -1302,7 +1313,12 @@ ve_local.Renderer = function(){
 
         };
 
-        this.loadTextureInfo = function(url,callBack) {
+
+
+        this.loadTextureInfo = function(url,opts,callBack) {
+            if (opts.type=='base64') {
+                url = ve.utils.getBase64prefix('image',opts.fileName) + url;
+            }
             var tex = gl.createTexture();
             gl.bindTexture(gl.TEXTURE_2D, tex);
             // Fill the texture with a 1x1 blue pixel.
@@ -1320,15 +1336,16 @@ ve_local.Renderer = function(){
                 texture: tex
             };
             var img = new Image();
-            img.addEventListener('load', function() {
+            img.onload = function() {
                 textureInfo.width = img.width;
                 textureInfo.height = img.height;
 
                 gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
                 callBack(textureInfo);
-            });
+            };
             img.src = url;
+            document.body.appendChild(img);
         };
 
         this.drawImage = function(
@@ -1429,21 +1446,35 @@ ve_local.SceneManager = function(){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
         allSprSheets.asArray().forEach(function(spSheet){
+            var resourcePath = ve_local.resources?
+                ve_local.resources[spSheet.resourcePath]:
+                './'+spSheet.resourcePath;
             ve_local.renderer.
                 getContext().
-                loadTextureInfo('./'+spSheet.resourcePath,function(textureInfo){
+                loadTextureInfo(
+                resourcePath,
+                {type:ve_local.resources?'base64':'',fileName:spSheet.resourcePath},
+                function(textureInfo){
                     console.log('loaded texture info',spSheet.resourcePath,textureInfo);
                     spSheet._textureInfo = textureInfo;
                     q.resolveTask();
                 });
             q.addTask();
         });
+        // todo remove slash??
         ve_local.bundle.soundList.forEach(function(snd){
             q.addTask();
-            ve_local.sound.loadSound('./'+snd.resourcePath,function(buffer){
-                snd._buffer = buffer;
-                q.resolveTask();
-            });
+            var resourcePath = ve_local.resources?
+            ve_local.resources[snd.resourcePath]:
+            './'+snd.resourcePath;
+            ve_local.sound.loadSound(
+                resourcePath,
+                {type:ve_local.resources?'base64':''},
+                function(buffer){
+                    snd._buffer = buffer;
+                    q.resolveTask();
+                }
+            );
         });
         q.start();
     };
@@ -1785,9 +1816,21 @@ ve_local.SceneManager = function(){
 
     var ns = ve_local.sound;
 
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+
     var context = new AudioContext();
 
-    ns.loadSound = function( url, callback) {
+    var base64ToArrayBuffer = function(base64) {
+        var binaryString = window.atob(base64);
+        var len = binaryString.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    };
+
+    var _loadSoundXhr = function(url,callback){
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
@@ -1796,12 +1839,28 @@ ve_local.SceneManager = function(){
         request.setRequestHeader('Content-Range', 'bytes');
 
         request.onload = function() {
-            console.log('accepted',request.response);
             context.decodeAudioData(request.response).then(function(buffer) {
                 callback(buffer);
             });
         };
         request.send();
+    };
+
+    var _loadSoundBase64 = function(url,callback){
+        console.log('loading sound',url);
+        window.s = url;
+        var byteArray = base64ToArrayBuffer(url);
+        context.decodeAudioData(byteArray).then(function(buffer) {
+            callback(buffer);
+        });
+    };
+
+    ns.loadSound = function( url, opts, callback) {
+        if (opts.type=='base64') {
+            _loadSoundBase64(url, callback);
+        } else {
+            _loadSoundXhr(url, callback);
+        }
     };
 
 
@@ -1883,6 +1942,11 @@ ve_local.SceneManager = function(){
         };
 
         this.check = function(obj,newX,newY){
+            if (!obj.rigid) {
+                obj.posX = newX;
+                obj.posY = newY;
+                return;
+            }
             var res = gos.some(function(go){
                 if (!go.rigid) return;
                 if (obj==go) return;
@@ -3135,6 +3199,25 @@ Class.extend(
         "posX": 0,
         "posY": 0,
         "id": "1492_9912_46"
+    },
+    {
+        "spriteSheetId": "1501_7424_265",
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "name": "cloud",
+        "width": 300,
+        "height": 190,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "velX": 0,
+        "velY": 0,
+        "frameAnimationIds": [],
+        "rigid": 0,
+        "groupName": "",
+        "posX": 0,
+        "posY": 0,
+        "id": "3811_8241_75"
     }
 ],
         
@@ -3182,10 +3265,30 @@ Class.extend(
                 "_sprPosY": 0,
                 "velX": 0,
                 "velY": 0,
-                "posX": 109,
-                "posY": 90,
+                "posX": 67,
+                "posY": 105,
                 "protoId": "5139_0458_16",
                 "id": "4438_6727_4"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "cloud",
+                "width": 300,
+                "height": 190,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 213,
+                "posY": 23,
+                "protoId": "3811_8241_75",
+                "id": "5334_0273_76"
             }
         ],
         "id": "3534_2050_13"
@@ -3212,11 +3315,11 @@ Class.extend(
         "gameObjectId": "1492_9912_46",
         "numOfParticlesToEmit": {
             "from": 50,
-            "to": 80
+            "to": 60
         },
         "particleAngle": {
             "from": -2.6660626056852346,
-            "to": -2.2593554849310378
+            "to": -2.728463821311392
         },
         "particleVelocity": {
             "from": 90,
@@ -3227,7 +3330,7 @@ Class.extend(
         "id": "0252_1160_4",
         "particleLiveTime": {
             "from": 101,
-            "to": 400
+            "to": 300
         }
     }
 ],
@@ -3245,8 +3348,8 @@ Class.extend(
     ve_local.scripts.scene = {};
 
     
-    ve_local.scripts.gameObject['a.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.gameObject['a.js'] = function(exports,self){
+        ve.models.Behaviour.extend({
 
     onCreate: function(){
 
@@ -3261,12 +3364,14 @@ Class.extend(
     }
 
 });
-;
-        return clazz;
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     
-    ve_local.scripts.gameObject['b.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.gameObject['b.js'] = function(exports,self){
+        ve.models.Behaviour.extend({
 
     onCreate: function(){
         this.getFrAnimation('fly').play();
@@ -3281,12 +3386,14 @@ Class.extend(
     }
 
 });
-;
-        return clazz;
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     
-    ve_local.scripts.gameObject['b2.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.gameObject['b2.js'] = function(exports,self){
+        ve.models.Behaviour.extend({
 
     onCreate: function(){
 
@@ -3301,66 +3408,90 @@ Class.extend(
     }
 
 });
-;
-        return clazz;
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     
-    ve_local.scripts.gameObject['bird.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
-
-    ps:null,
-
-    onCreate: function(){
-        this.ps = ve_local.bundle.particleSystemList.get(0);
-    },
-
-    onUpdate: function(time) {
-        this.ps.emit(this.posX+20,this.posY+50);
-         if (this.posX>800) this.posX = -300;
-    },
-
-    onDestroy: function(){
-
-    }
-
-});;
-        return clazz;
-    };
-    
-    ve_local.scripts.gameObject['cloud.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
-
-     
-
-    onCreate: function(){
-        this.on('click',function(e){
-            console.log(e);
-        });
+    ve_local.scripts.gameObject['bird.js'] = function(exports,self){
         
-    },
+var ps;
 
-    onUpdate: function(time) {
-        if (this.posX>800) this.posX = -300;
-    },
+function onCreate(){
+    ps = ve_local.bundle.particleSystemList.get(0);
+}
 
-    onDestroy: function(){
-
+function onUpdate(time) {
+    if (self.posX>800) {
+        console.log('before',self.posX);
+        self.posX = -300;
+        console.log('after',self.posX);
     }
+    ps.emit(self.posX+20,self.posY+50);
+    if (self.posX>800) self.posX = -300;
+}
 
-});
-;
-        return clazz;
+function onDestroy(){
+
+}
+
+
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     
-    ve_local.scripts.gameObject['particle.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.gameObject['cloud.js'] = function(exports,self){
+        
+
+function onCreate(){
+    self.velX = 100;
+}
+
+function onUpdate(time) {
+    if (self.posX>800) self.posX = -300; 
+}
+
+function onDestroy(){
+
+}
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
+    };
+    
+    ve_local.scripts.gameObject['particle.js'] = function(exports,self){
+         
+
+function onCreate() {
+
+}
+
+function onUpdate(time) {
+
+}
+
+function onDestroy() {
+
+}
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
+    };
+    
+    ve_local.scripts.gameObject['q.js'] = function(exports,self){
+        ve.models.Behaviour.extend({
 
     onCreate: function(){
 
     },
 
     onUpdate: function(time) {
-        console.log('updated particle');
+
     },
 
     onDestroy: function(){
@@ -3368,12 +3499,14 @@ Class.extend(
     }
 
 });
-;
-        return clazz;
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     
-    ve_local.scripts.gameObject['q.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.gameObject['sprite.js'] = function(exports,self){
+        ve.models.Behaviour.extend({
 
     onCreate: function(){
 
@@ -3388,64 +3521,42 @@ Class.extend(
     }
 
 });
-;
-        return clazz;
-    };
-    
-    ve_local.scripts.gameObject['sprite.js'] = function(){
-        var clazz = ve.models.Behaviour.extend({
 
-    onCreate: function(){
-
-    },
-
-    onUpdate: function(time) {
-
-    },
-
-    onDestroy: function(){
-
-    }
-
-});
-;
-        return clazz;
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     ;
     
-    ve_local.scripts.scene['m.js'] = function(){
-    var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.scene['m.js'] = function(exports,self){
+        
+function onCreate(){
+    console.trace('scene created',self);
+    var textField = self.findGameObject('textField1');
+    var bird = self.findGameObject('bird');
+    bird.getFrAnimation('fly').play();
+    textField.setText('Привет (нажми на меня)');
+    bird.on('click',function(e){
+        textField.setText('Ура!!!!!');
+        bird.velX = 200;
+        ve.sound.play('boom');
+    });
+}
 
+function onUpdate(time) {
    
-    onCreate: function(){
-        console.trace('scene created',this);
-        var self = this;
-        var textField = this.findGameObject('textField1');
-        var bird = this.findGameObject('bird');
-        bird.getFrAnimation('fly').play();
-        textField.setText('Привет (нажми на меня)');
-        bird.on('click',function(e){
-            textField.setText('Ура!!!!!');
-            bird.velX = 200;
-            ve.sound.play('boom');
-        });
-    },
+}
 
-    onUpdate: function(time) {
-       
-    },
+function onDestroy(){
 
-    onDestroy: function(){
-
-    }
-
-});
-;
-    return clazz;
+}
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     
-    ve_local.scripts.scene['q.js'] = function(){
-    var clazz = ve.models.Behaviour.extend({
+    ve_local.scripts.scene['q.js'] = function(exports,self){
+        ve.models.Behaviour.extend({
 
     onCreate: function(){
 
@@ -3460,8 +3571,10 @@ Class.extend(
     }
 
 });
-;
-    return clazz;
+
+        exports.onCreate = onCreate;
+        exports.onUpdate = onUpdate;
+        exports.onDestroy = onDestroy;
     };
     ;
 

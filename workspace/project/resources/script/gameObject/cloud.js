@@ -1,20 +1,13 @@
-ve.models.Behaviour.extend({
 
-     
 
-    onCreate: function(){
-        this.on('click',function(e){
-            console.log(e);
-        });
-        
-    },
+function onCreate(){
+    self.velX = 100;
+}
 
-    onUpdate: function(time) {
-        if (this.posX>800) this.posX = -300;
-    },
+function onUpdate(time) {
+    if (self.posX>800) self.posX = -300; 
+}
 
-    onDestroy: function(){
+function onDestroy(){
 
-    }
-
-});
+}

@@ -42,10 +42,30 @@
                 "_sprPosY": 0,
                 "velX": 0,
                 "velY": 0,
-                "posX": 109,
-                "posY": 90,
+                "posX": 67,
+                "posY": 105,
                 "protoId": "5139_0458_16",
                 "id": "4438_6727_4"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "cloud",
+                "width": 300,
+                "height": 190,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 213,
+                "posY": 23,
+                "protoId": "3811_8241_75",
+                "id": "5334_0273_76"
             }
         ],
         "id": "3534_2050_13"

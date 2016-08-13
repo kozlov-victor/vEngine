@@ -3,7 +3,7 @@
 
 window.app
 
-    .factory('messageDigest',function(resourceDao){
+    .factory('messageDigest',function(resourceDao,utils){
 
         //window.addEventListener('message',function(e){
         //    console.log('accepted message',e);
@@ -18,7 +18,14 @@ window.app
             switch (m.data.command) {
                 case 'getCode':
                     resourceDao.readFile(m.data.name+'.js', m.data.path,function(resp){
-                        respondToTarget(document.getElementById('scriptEditor').contentWindow,{code:resp});
+                        respondToTarget(
+                            document.getElementById('scriptEditor').contentWindow,
+                            {
+                                command:'setCode',
+                                completer:utils.createAceCompleter(),
+                                code:resp
+                            }
+                        );
                     });
                     break;
                 case 'saveCode':

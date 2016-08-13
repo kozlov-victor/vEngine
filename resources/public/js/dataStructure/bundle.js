@@ -32,16 +32,13 @@
         };
 
         var applyIndividualBehaviour = function(model){
-            var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
-            if (script) {
-                var BehaviourClass = script();
-                model._behaviour = new BehaviourClass();
-                model._behaviour.toJSON_Array().forEach(function(itm){
-                    model[itm.key]=itm.value;
-                });
-                model._behaviour.onCreate.apply(model);
+            var behaviourFn = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
+            if (behaviourFn) {
+                var exports = {};
+                behaviourFn(exports,model);
+                exports.onCreate();
                 model.__updateIndividualBehaviour__ = function(deltaTime){
-                    model._behaviour.onUpdate.apply(model,[deltaTime]);
+                    exports.onUpdate(deltaTime);
                 }
             } else {
                 model.__updateIndividualBehaviour__ = noop;
