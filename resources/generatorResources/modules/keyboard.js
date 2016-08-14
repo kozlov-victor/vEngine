@@ -15,7 +15,7 @@
         this.KEY_RIGHT = 39;
 
         this.isPressed = function(key){
-            return buffer[key]>0;
+            return buffer[key]>KEY_RELEASED;
         };
 
         this.isJustPressed = function(key){
@@ -23,14 +23,14 @@
         };
 
         this.isReleased = function(key) {
-            return  buffer[key]<=0 || !buffer[key];
+            return  buffer[key]<=KEY_RELEASED || !buffer[key];
         };
 
         this.isJustReleased = function(key) {
             return buffer[key] == KEY_JUST_RELEASED;
         };
 
-        this._onNextTick = function(){
+        this.update = function(){
             [
                 this.KEY_UP,
                 this.KEY_DOWN,

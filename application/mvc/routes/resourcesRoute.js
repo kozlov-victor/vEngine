@@ -11,12 +11,17 @@ var mainController = require.main.require('./application/mvc/controllers/mainCon
 var resourcesController = require.main.require('./application/mvc/controllers/resourcesController');
 var generatorController = require.main.require('./application/mvc/controllers/generatorController');
 
+
+
 module.exports.init = function(app) {
 
     app.get('/',function(req,res){
+        var s = new generatorController.Source();
+        generatorController.addEnvVariables(s);
         res.render('main',{
             resourceNames:resourcesController.RESOURCE_NAMES,
-            defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT
+            defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT,
+            envVariables: s.get()
         });
     });
     app.get('/editor',function(req,res){

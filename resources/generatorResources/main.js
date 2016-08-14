@@ -1,33 +1,33 @@
 
 (function(){
 
-    ve_local.bundle = new ve_local.Bundle({
-        <%var l = Object.keys(commonResources).length;%>
-        <%Object.keys(commonResources).forEach(function(key,i){%>
-        <%-key%>:<%-commonResources[key]%><%if (i<l){%><%=','%><%}%>
-        <%})%>
-    });
+    //<code>ve_local.bundle = new ve_local.Bundle({
+    //<code><%var l = Object.keys(commonResources).length;%>
+    //<code><%Object.keys(commonResources).forEach(function(key,i){%>
+    //<code>    <%-key%>:<%-commonResources[key]%><%if (i<l){%><%=','%><%}%>
+    //<code><%})%>
+    //<code>});
 
     ve_local.scripts = {};
     ve_local.scripts.gameObject = {};
     ve_local.scripts.scene = {};
 
-    <%for (var i = 0; i<specialResources.gameObjectScripts.length;i++) {%>
+    //<code><%for (var i = 0; i<specialResources.gameObjectScripts.length;i++) {%>
     ve_local.scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function(exports,self){
-        <%-specialResources.gameObjectScripts[i].content%>
+        //<code><%-specialResources.gameObjectScripts[i].content%>
         exports.onCreate = onCreate;
         exports.onUpdate = onUpdate;
         exports.onDestroy = onDestroy;
     };
-    <%}%>;
-    <%for (var i = 0; i<specialResources.sceneScripts.length;i++) {%>
+    //<code><%}%>;
+    //<code><%for (var i = 0; i<specialResources.sceneScripts.length;i++) {%>
     ve_local.scripts.scene['<%-specialResources.sceneScripts[i].name%>'] = function(exports,self){
-        <%-specialResources.sceneScripts[i].content%>
+        //<code><%-specialResources.sceneScripts[i].content%>
         exports.onCreate = onCreate;
         exports.onUpdate = onUpdate;
         exports.onDestroy = onDestroy;
     };
-    <%}%>;
+    //<code><%}%>;
 
     ve_local.bundle.prepare();
     if (!ve_local.bundle.sceneList.size()) throw 'at least one scene must be created';

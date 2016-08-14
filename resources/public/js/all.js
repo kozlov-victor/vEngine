@@ -421,7 +421,7 @@
             return this._layer._scene;
         },
         update: function(){},
-        _render: function(){}
+        render: function(){}
     });
 
     models.GameObject = models.BaseGameObject.extend({
@@ -483,12 +483,11 @@
             ve_local.collider.check(this,posX,posY);
             this.__updateIndividualBehaviour__(delta);
             this.__updateCommonBehaviour__();
-            this._render();
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        _render: function(){
+        render: function(){
             ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
@@ -568,6 +567,12 @@
                 if (!obj) return;
                 obj.update(currTime,deltaTime);
             });
+        },
+        render: function(){
+            this._gameObjects.forEach(function(obj){
+                if (!obj) return;
+                obj.render();
+            });
         }
     });
 
@@ -613,6 +618,11 @@
                 layer.update(currTime,deltaTime);
             });
             this.__updateIndividualBehaviour__(deltaTime);
+        },
+        render: function(){
+            this._layers.forEach(function(layer){
+                layer.render();
+            });
         }
     });
 
@@ -661,9 +671,9 @@
             this.setFont(font);
         },
         update: function(){
-            this._render();
+
         },
-        _render: function(){
+        render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
@@ -742,6 +752,11 @@
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
+            });
+        },
+        render: function(){
+            this._particles.forEach(function(p){
+                p.render();
             });
         }
     });
@@ -1452,8 +1467,6 @@ window.app.
         s.openProject = function(projectName){
             resourceDao.loadProject(projectName);
         };
-
-
 
         (function(){
 

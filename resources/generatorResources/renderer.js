@@ -118,7 +118,7 @@ ve_local.Renderer = function(){
             p.update(currTime,deltaTime);
         });
 
-        ve.keyboard._onNextTick();
+        ve.keyboard.update();
     };
     this.setScene = function(_scene){
         scene = _scene;

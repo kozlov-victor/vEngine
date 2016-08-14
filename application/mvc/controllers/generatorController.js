@@ -7,16 +7,6 @@ var ejs = require('ejs');
 var Source = function(){
     var res = [];
     var self = this;
-    var parametrize = function (str,params) {
-        for (var key in params) {
-            if (params.hasOwnProperty(key)) {
-                var val = params[key];
-                key = '\'%'+key+'%\'';
-                str =str.split(key).join(val);
-            }
-        }
-        return str;
-    };
     this.add = function(s){
         res.push(s);
     };
@@ -31,7 +21,8 @@ var Source = function(){
     };
     this.addTemplate = function(path,params) {
         var content = fs.readFileSync(path);
-        self.add(ejs.render(content,params));
+        var rendered = ejs.render(content.split('//<code>').join(''),params);
+        self.add(rendered);
     };
     this.get = function(){
         return res.join('\n');
@@ -40,7 +31,7 @@ var Source = function(){
 
 var addEnvVariables = function(sourceMain) {
     sourceMain.addTemplate(
-        'resources/generatorResources/templates/envVariables.ejs',
+        'resources/generatorResources/envVariables.js',
         {
             resourceNames:resourcesController.RESOURCE_NAMES
         }
@@ -54,20 +45,21 @@ var addStaticFiles = function(sourceMain){
         'resources/public/js/dataStructure/models.js',
         'resources/public/js/dataStructure/bundle.js',
         'resources/public/js/dataStructure/utils.js',
-        'resources/generatorResources/static/renderer.js',
-        'resources/generatorResources/static/canvasContext.js',
-        'resources/generatorResources/static/glContext.js',
-        'resources/generatorResources/static/sceneManager.js',
-        'resources/generatorResources/static/modules/keyboard.js',
-        'resources/generatorResources/static/modules/mouse.js',
-        'resources/generatorResources/static/modules/physics.js',
-        'resources/generatorResources/static/modules/sound.js',
-        'resources/generatorResources/static/modules/collider.js'
+        'resources/generatorResources/renderer.js',
+        'resources/generatorResources/canvasContext.js',
+        'resources/generatorResources/glContext.js',
+        'resources/generatorResources/sceneManager.js',
+        'resources/generatorResources/modules/keyboard.js',
+        'resources/generatorResources/modules/mouse.js',
+        'resources/generatorResources/modules/physics.js',
+        'resources/generatorResources/modules/sound.js',
+        'resources/generatorResources/modules/collider.js'
+        //'resources/generatorResources/modules/gameLoop.js'
     ]);
 };
 
 var addDebug = function(sourceMain){
-    sourceMain.addFile('resources/generatorResources/static/debug.js');
+    sourceMain.addFile('resources/generatorResources/debug.js');
 };
 
 var addGameResourcesDesc = function(sourceMain,opts){
@@ -81,7 +73,7 @@ var addGameResourcesDesc = function(sourceMain,opts){
 
     templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject','utf8');
     templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene','utf8');
-    sourceMain.addTemplate('resources/generatorResources/templates/main.ejs',templateObj);
+    sourceMain.addTemplate('resources/generatorResources/main.js',templateObj);
 };
 
 var addGameResourcesFiles = function(sourceMain,opts){
@@ -113,7 +105,7 @@ var addGameResourcesFiles = function(sourceMain,opts){
         sourceMain.add(embedResourceCode);
     }
 
-    var indexHtml = fs.readFileSync('resources/generatorResources/static/index.html');
+    var indexHtml = fs.readFileSync('resources/generatorResources/index.html');
 
     if (opts.embedScript) {
         indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
@@ -166,3 +158,6 @@ module.exports.generate = function(opts,callback){
 
     callback({});
 };
+
+module.exports.Source = Source;
+module.exports.addEnvVariables = addEnvVariables;

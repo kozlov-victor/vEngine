@@ -6,7 +6,7 @@ module.exports.RESOURCE_NAMES =
     'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
     .split(',');
 
-module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/static/defaultCodeScript.js');
+module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/defaultCodeScript.js');
 
 var readResource = function(path) {
     return JSON.parse(fs.readFileSync(path));
@@ -74,13 +74,13 @@ module.exports.createProject = function(projectName){
     fs.createFolderSync('workspace/project/resources/font');
     fs.createFolderSync('workspace/project/resources/script/scene');
 
-    fs.copyFileSync('resources/generatorResources/static/fonts/default.png',
+    fs.copyFileSync('resources/generatorResources/fonts/default.png',
         'workspace/project/resources/font/default.png');
-    fs.copyFileSync('resources/generatorResources/static/fonts/map.json',
+    fs.copyFileSync('resources/generatorResources/fonts/map.json',
         'workspace/project/resources/font/map.json');
 
     fs.createFolderSync('workspace/project/resources/script/commonBehaviour');
-    fs.readDirSync('resources/generatorResources/static/commonBehaviour').forEach(function(itm){
+    fs.readDirSync('resources/generatorResources/commonBehaviour').forEach(function(itm){
         fs.createFileSync('workspace/project/resources/script/commonBehaviour/'+itm.name,itm.content);
     });
 
