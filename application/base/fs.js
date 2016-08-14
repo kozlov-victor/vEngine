@@ -62,6 +62,12 @@ module.exports.readDirSync = function(path,contentType){
     return res;
 };
 
+module.exports.getDirListSync = function(srcpath){
+    return fs.readdirSync(srcpath).filter(function(file) {
+        return fs.statSync(path.join(srcpath, file)).isDirectory();
+    });
+};
+
 module.exports.deleteFolderSync = function delFldr(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach(function (file, index) {

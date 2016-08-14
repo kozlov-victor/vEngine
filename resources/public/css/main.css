@@ -87,6 +87,10 @@ img {
     margin: 5px;
 }
 
+.hoverable:hover {
+    background-color: #ececec;
+}
+
 .withPadding {
     padding: 5px;
 }
@@ -251,6 +255,18 @@ input[type="file"] {
 
 .centerText {
     text-align: center;
+}
+
+.leftText {
+    text-align: left;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.centerVert {
+    vertical-align: middle;
 }
 
 .layers {

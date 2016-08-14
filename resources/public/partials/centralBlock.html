@@ -35,8 +35,6 @@
                     >
             </div>
 
-            <!-- todo project path-->
-
             <div
                     ng-if="item.subType=='textField'"
                     app-draggable="gameObjectFromSelf"
@@ -67,7 +65,7 @@
                             display:'inline-block',
                             width:item._font.fontContext.symbols[ch].width+'px',
                             height:item._font.fontContext.symbols[ch].height+'px',
-                            backgroundImage:'url(project/'+item._font.resourcePath+')',
+                            backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',
                             backgroundRepeat:     'no-repeat',
                             backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',
                             backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'

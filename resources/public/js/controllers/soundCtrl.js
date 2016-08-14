@@ -32,7 +32,6 @@ window.app.
             );
         };
 
-        // todo project path
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
@@ -43,7 +42,7 @@ window.app.
 
 
             if (s.editData.currSoundInEdit) {
-                s.soundUrl =  'project/' + s.editData.currSoundInEdit.resourcePath;
+                s.soundUrl = editData.projectName+'/' + s.editData.currSoundInEdit.resourcePath;
             }
 
         })();

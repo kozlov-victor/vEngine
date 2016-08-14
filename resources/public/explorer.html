@@ -1,4 +1,31 @@
 
-<div>
-    project explorer here
+<div
+        ng-controller="projectCtrl"
+        class="dialogWrapper">
+    <div
+        ng-show="!uiHelper.dialogName"
+        class="dialog">
+        <div class="dialogContent subFullScreen panel">
+            <b class="centerText block">{{i18n.explorer}}</b>
+
+            <div class="table width100">
+                <div
+                        ng-repeat="item in projectNames"
+                        class="row hoverable">
+                    <div
+                            ng-click="openProject(item)"
+                            class="cell leftText"
+                            >
+                        {{item}}
+                    </div>
+                    <div class="cell">
+                        x
+                    </div>
+                </div>
+            </div>
+            <button ng-click="showDialog('project','create')">{{i18n.create}}</button>
+
+        </div>
+    </div>
 </div>
+

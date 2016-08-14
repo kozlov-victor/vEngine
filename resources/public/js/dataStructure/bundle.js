@@ -17,6 +17,7 @@
         var self = this;
 
         var toDataSource = function(ResourceClass,dataList,resourceList){
+            resourceList.clear();
             dataList.forEach(function(item){
                 resourceList.add(new ResourceClass(item));
             });

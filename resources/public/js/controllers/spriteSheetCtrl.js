@@ -68,8 +68,7 @@ window.app.
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
-                // todo project path
-                s.spriteSheetUrl = 'project/'+editData.currSpriteSheetInEdit.resourcePath;
+                s.spriteSheetUrl = editData.projectName+'/'+editData.currSpriteSheetInEdit.resourcePath;
             }
         })();
 

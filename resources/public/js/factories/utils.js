@@ -17,8 +17,7 @@ window.app
             return {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
-                // todo project name!
-                backgroundImage:      gameObj._spriteSheet && 'url('+'project/'+gameObj._spriteSheet.resourcePath+')',
+                backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
                 backgroundRepeat:     'no-repeat'

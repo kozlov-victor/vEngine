@@ -94,6 +94,7 @@
         var self = this;
 
         var toDataSource = function(ResourceClass,dataList,resourceList){
+            resourceList.clear();
             dataList.forEach(function(item){
                 resourceList.add(new ResourceClass(item));
             });
@@ -963,15 +964,14 @@ window.app.
             embedScript: false
         };
 
-        // todo project name
         s.build = function(){
             $http({
                 url: utils.generateBuildUrl(s.opts),
                 method: "GET"
             }).
-                success(function (resp) {
-                    s.link = '/project/out'
-                });
+            success(function (resp) {
+                s.link = '/'+ editData.projectName+'/out'
+            });
         };
 
         (function(){
@@ -1428,6 +1428,42 @@ window.app.
         })();
 
     });
+
+
+
+window.app.
+    controller('projectCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+        s.openProject = function(projectName){
+            resourceDao.loadProject(projectName);
+        };
+
+
+
+        (function(){
+
+            resourceDao.getProjectNames(function(list){
+                s.projectNames = list;
+            });
+
+        })();
+
+    });
 window.app.
     controller('sceneCtrl', function (
         $scope,
@@ -1631,7 +1667,6 @@ window.app.
             );
         };
 
-        // todo project path
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
@@ -1642,7 +1677,7 @@ window.app.
 
 
             if (s.editData.currSoundInEdit) {
-                s.soundUrl =  'project/' + s.editData.currSoundInEdit.resourcePath;
+                s.soundUrl = editData.projectName+'/' + s.editData.currSoundInEdit.resourcePath;
             }
 
         })();
@@ -1718,8 +1753,7 @@ window.app.
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
-                // todo project path
-                s.spriteSheetUrl = 'project/'+editData.currSpriteSheetInEdit.resourcePath;
+                s.spriteSheetUrl = editData.projectName+'/'+editData.currSpriteSheetInEdit.resourcePath;
             }
         })();
 
@@ -1804,6 +1838,10 @@ window.app.
         s.showBuildDialog = function() {
             uiHelper.showDialog('buildDialog');
         };
+
+        s.toExplorer = function(){
+            location.hash = '#/explorer';
+        }
 
 
     });
@@ -2104,6 +2142,8 @@ window.app
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         res.scriptEditorUrl = '';
 
+        res.projectName = undefined;
+
         return res;
     })
 
@@ -2178,7 +2218,7 @@ window.app
                 particleSystems:'particle systems',
                 particleSystem:'particle system',
                 preview:'preview',
-                i18n:'build'
+                explorer:'Project explorer'
             }
         };
 
@@ -2254,11 +2294,12 @@ app
         uiHelper
     ){
         var self = this;
-        var loadResources = function(){
+        var _loadResources = function(projectName){
             return new Promise(function(resolve){
                 $http({
                     url: '/resource/getAll',
-                    method: "POST"
+                    method: "POST",
+                    data: {projectName:projectName}
                 }).
                 success(function (response) {
                     ve_local.bundle = new ve_local.Bundle(response);
@@ -2277,6 +2318,24 @@ app
                 });
             });
         };
+        this.loadProject = function(projectName){
+            editData.projectName = projectName;
+            sessionStorage.projectName = projectName;
+            Promise.
+                resolve().
+                then(function(){
+                    return _loadResources(projectName);
+                }).
+                then(function(){
+                    if (!ve_local.bundle.sceneList.isEmpty()) editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (editData.currSceneInEdit) {
+                        if (editData.currSceneInEdit._layers.size()) {
+                            editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
+                        }
+                    }
+                    location.href = '#/editor';
+                });
+        };
         this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack, preserveDialog){
             var formData = new FormData();
             formData.append('file',currResourceInEdit._file);
@@ -2285,6 +2344,7 @@ app
                 model[item.key] = item.value;
             });
             formData.append('model',JSON.stringify(model));
+            formData.append('projectName',editData.projectName);
             var op = currResourceInEdit.id?'edit':'create';
             $http({
                 url: '/resource/'+op,
@@ -2317,7 +2377,13 @@ app
                 url: '/deleteObjectFromResource',
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
-                data: {resourceType:resourceType,resourceId:resourceId,objectType:objectType,objectId:objectId}
+                data: {
+                    resourceType:resourceType,
+                    resourceId:resourceId,
+                    objectType:objectType,
+                    objectId:objectId,
+                    projectName:editData.projectName
+                }
             }).
             success(function (res) {
                     callback && callback();
@@ -2327,7 +2393,11 @@ app
             $http({
                 url: '/resource/delete',
                 method: "POST",
-                data: {id:id,type:type}
+                data: {
+                    id:id,
+                    type:type,
+                    projectName:editData.projectName
+                }
             }).
             success(function (res) {
                 editData[type+'List'].remove({id: id});
@@ -2337,6 +2407,7 @@ app
         this.saveGameProps = function(gameProps){
             var formData = new FormData();
             formData.append('model',JSON.stringify(gameProps));
+            formData.append('projectName',editData.projectName);
             $http({
                 url: '/gameProps/save',
                 method: "POST",
@@ -2345,6 +2416,7 @@ app
             })
         };
         this.post = function(url,data,callBack){
+            data.projectName = editData.projectName;
             $http({
                 url: '/gameProps/save',
                 method: "POST",
@@ -2375,7 +2447,8 @@ app
                     model:JSON.stringify(object),
                     resourceId:resourceId,
                     resourceType:resourceType,
-                    objectType:objectType
+                    objectType:objectType,
+                    projectName:editData.projectName
                 },
                 headers: {'Content-Type': 'application/json'}
             }).
@@ -2413,13 +2486,14 @@ app
                 data: {
                     name:name,
                     path:path,
-                    content:content
+                    content:content,
+                    projectName: editData.projectName
                 },
                 headers: {'Content-Type': 'application/json'}
             }).
-                success(function (resp) {
-                    callback && callback(resp);
-                });
+            success(function (resp) {
+                callback && callback(resp);
+            });
         };
         this.readFile = function(name,path,callback){
             $http({
@@ -2427,33 +2501,44 @@ app
                 method: "POST",
                 data: {
                     name:name,
-                    path:path
+                    path:path,
+                    projectName: editData.projectName
                 },
                 headers: {'Content-Type': 'application/json'}
             }).
-                success(function (resp) {
-                    callback && callback(resp);
-                });
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.getProjectNames = function(callback){
+            $http({
+                url: '/getProjectNames',
+                method: "GET",
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.createProject = function(projectName,callback){
+            $http({
+                url: '/createProject',
+                method: "POST",
+                data: {projectName:projectName},
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
         };
 
 
         (function(){
-
-            Promise.
-                resolve().
-                then(function(){
-                    return loadResources();
-                }).
-                then(function(){
-                    if (!ve_local.bundle.sceneList.isEmpty()) editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
-                    if (editData.currSceneInEdit) {
-                        if (editData.currSceneInEdit._layers.size()) {
-                            editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
-                        }
-                    }
-                    angular.element(document.body).scope().$apply();
-                });
-
+            if (sessionStorage.projectName) {
+                self.loadProject(sessionStorage.projectName);
+            } else {
+                location.href = '#/explorer';
+            }
         })();
 
 
@@ -2527,8 +2612,7 @@ window.app
             return {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
-                // todo project name!
-                backgroundImage:      gameObj._spriteSheet && 'url('+'project/'+gameObj._spriteSheet.resourcePath+')',
+                backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
                 backgroundRepeat:     'no-repeat'
@@ -2699,7 +2783,6 @@ window.app.
             uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject);
         };
 
-        s.globalPage = 'projectExplorer';
 
     });
 

@@ -47,5 +47,9 @@ window.app.
             uiHelper.showDialog('buildDialog');
         };
 
+        s.toExplorer = function(){
+            location.hash = '#/explorer';
+        }
+
 
     });

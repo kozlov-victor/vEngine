@@ -29,7 +29,6 @@ window.app.
             uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject);
         };
 
-        s.globalPage = 'projectExplorer';
 
     });
 

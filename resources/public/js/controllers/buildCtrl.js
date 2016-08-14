@@ -24,15 +24,14 @@ window.app.
             embedScript: false
         };
 
-        // todo project name
         s.build = function(){
             $http({
                 url: utils.generateBuildUrl(s.opts),
                 method: "GET"
             }).
-                success(function (resp) {
-                    s.link = '/project/out'
-                });
+            success(function (resp) {
+                s.link = '/'+ editData.projectName+'/out'
+            });
         };
 
         (function(){

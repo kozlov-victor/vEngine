@@ -22,6 +22,8 @@ window.app
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         res.scriptEditorUrl = '';
 
+        res.projectName = undefined;
+
         return res;
     })
 

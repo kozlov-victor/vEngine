@@ -26,11 +26,10 @@
                             ng-disabled="!frmCreateAnimation.$valid" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
                 </div>
 
-<!--todo project name-->
 
                 <div class="relative"
                             ng-style="{
-                                        'background-image':     'url('+'project'+'/'+editData.currGameObjectInEdit._spriteSheet.resourcePath+')',
+                                        'background-image':     'url('+editData.projectName+'/'+editData.currGameObjectInEdit._spriteSheet.resourcePath+')',
                                         'width':                editData.currGameObjectInEdit._spriteSheet.width+'px',
                                         'height':               editData.currGameObjectInEdit._spriteSheet.height+'px'
                                       }">

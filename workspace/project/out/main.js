@@ -3331,6 +3331,12 @@ Class.extend(
             }
         ],
         "id": "3534_2050_13"
+    },
+    {
+        "name": "tiles",
+        "type": "layer",
+        "gameObjectProps": [],
+        "id": "6172_4586_12"
     }
 ],
         
