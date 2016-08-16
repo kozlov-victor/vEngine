@@ -1,5 +1,5 @@
 var fs = require.main.require('./application/base/fs');
-var minifier = require('minifier');
+var UglifyJS = require("uglify-js");
 var resourcesController = require.main.require('./application/mvc/controllers/resourcesController');
 var nodeHint = require('node-hint');
 var ejs = require('ejs');
@@ -113,11 +113,15 @@ var addGameResourcesFiles = function(sourceMain,opts){
 
     var indexHtml = fs.readFileSync('resources/generatorResources/index.html');
 
+    var jsCode = opts.minifyScript?
+        UglifyJS.minify(sourceMain.get(), {fromString: true}).code:
+        sourceMain.get();
+
     if (opts.embedScript) {
-        indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
+        indexHtml = indexHtml.replace('{{script}}','<script>\n'+jsCode+'\n</script>');
         fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
     } else {
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/main.js',sourceMain.get());
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/main.js',jsCode);
         indexHtml = indexHtml.replace('{{script}}','<script src="main.js"></script>');
         fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
     }

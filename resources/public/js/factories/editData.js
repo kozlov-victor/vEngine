@@ -26,6 +26,7 @@ window.app
 
         res.projectName = undefined;
         res.projects = null;
+        res.compileOpts = {};
 
         return res;
     })

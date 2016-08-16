@@ -12,6 +12,7 @@
             'bottom:10px;' +
             'right:10px;' +
             'z-index:10000;' +
+            'word-break: break-all;'+
             'width:300px;';
         document.body.appendChild(container);
         return container;
@@ -27,12 +28,17 @@
         var leftBox = document.createElement('div');
         leftBox.style.cssText = 'width:90%;display:inline-block;';
         var rightBox = document.createElement('div');
-        rightBox.style.cssText = 'width:10%;display:inline-block;cursor:pointer;text-align:right;vertical-align:top;';
+        rightBox.style.cssText =
+            'width:10%;display:inline-block;' +
+            'cursor:pointer;text-align:right;' +
+            'vertical-align:top;';
         rightBox.textContent = 'x';
         rightBox.onclick = function(){
             popup.remove();
         };
-        leftBox.textContent = e;
+        var msg = e;
+        if (msg.length>500) msg = msg.substr(0,500)+'...';
+        leftBox.innerHTML = msg;
         popup.appendChild(leftBox);
         popup.appendChild(rightBox);
         getPopupContainer().appendChild(popup);

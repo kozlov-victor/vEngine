@@ -958,15 +958,9 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.opts = {
-            debug: false,
-            embedResources: false,
-            embedScript: false
-        };
-
         s.build = function(){
             $http({
-                url: utils.generateBuildUrl(s.opts),
+                url: utils.generateBuildUrl(editData.compileOpts),
                 method: "GET"
             }).
             success(function (resp) {
@@ -1843,7 +1837,6 @@ window.app.
         var w;
 
 
-        // todo project name
         s.run = function(){
             $http({
                 url: utils.generateBuildUrl({debug:1}),
@@ -2187,6 +2180,7 @@ window.app
 
         res.projectName = undefined;
         res.projects = null;
+        res.compileOpts = {};
 
         return res;
     })
@@ -2794,7 +2788,7 @@ window.app
 
         this.generateBuildUrl = function(opts) {
             var url = '/generate?r='+Math.random();
-            ['debug','embedResources','embedScript'].forEach(function(key){
+            ['debug','embedResources','embedScript','minifyScript'].forEach(function(key){ // todo optimize
                 if (opts[key]) url+='&'+key+'=1';
             });
             url+='&projectName='+editData.projectName;
