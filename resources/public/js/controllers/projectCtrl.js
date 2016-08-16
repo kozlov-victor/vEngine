@@ -19,15 +19,58 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.openProject = function(projectName){
-            resourceDao.loadProject(projectName);
+
+        s.openProject = function(project){
+            resourceDao.loadProject(project.name);
+        };
+
+        s.createOrEditProject = function(proj){
+            if (proj.name && proj.oldName) {
+                resourceDao.renameFolder(
+                    'workspace/'+proj.oldName,
+                    'workspace/'+proj.name,
+                    function(){
+                        resourceDao.getProjects(function(list){
+                                editData.projects = list;
+                            uiHelper.closeDialog();
+                        }
+                    );
+                });
+            } else if (proj.name) {
+                resourceDao.createProject(proj.name,function(){
+                    resourceDao.getProjects(function(list){
+                        editData.projects = list;
+                        uiHelper.closeDialog();
+                    });
+                });
+            }
+        };
+
+        s.deleteProject = function(proj){
+            resourceDao.deleteFolder('workspace/'+proj.name,function(){
+                resourceDao.getProjects(function(list){
+                    editData.projects = list;
+                    uiHelper.closeDialog();
+                })
+            });
         };
 
         (function(){
 
-            resourceDao.getProjectNames(function(list){
-                s.projectNames = list;
-            });
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currProjectInEdit = {};
+            } else if (dialogState.opName=='edit'){
+                editData.currProjectInEdit = {};
+                editData.currProjectInEdit.oldName =
+                    editData.currProjectInEdit.name =
+                        dialogState.opObject.name;
+            } else {
+                resourceDao.getProjects(function(list){
+                    editData.projects = list;
+                });
+            }
+            uiHelper.opName = null;
 
         })();
 

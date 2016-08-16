@@ -16,6 +16,8 @@ window.app
         res.currCommonBehaviourInEdit = null;
         res.currSoundInEdit = null;
         res.currParticleSystemInEdit = null;
+        res.currProjectInEdit = null;
+
 
         res.userInterfaceList = new ve.collections.List();
 
@@ -23,6 +25,7 @@ window.app
         res.scriptEditorUrl = '';
 
         res.projectName = undefined;
+        res.projects = null;
 
         return res;
     })

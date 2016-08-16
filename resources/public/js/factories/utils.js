@@ -136,6 +136,7 @@ window.app
             ['debug','embedResources','embedScript'].forEach(function(key){
                 if (opts[key]) url+='&'+key+'=1';
             });
+            url+='&projectName='+editData.projectName;
             return url;
         };
 

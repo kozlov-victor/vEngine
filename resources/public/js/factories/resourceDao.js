@@ -224,9 +224,9 @@ app
                 callback && callback(resp);
             });
         };
-        this.getProjectNames = function(callback){
+        this.getProjects = function(callback){
             $http({
-                url: '/getProjectNames',
+                url: '/getProjects',
                 method: "GET",
                 headers: {'Content-Type': 'application/json'}
             }).
@@ -239,6 +239,28 @@ app
                 url: '/createProject',
                 method: "POST",
                 data: {projectName:projectName},
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.renameFolder = function(oldName,newName,callback){
+            $http({
+                url: '/renameFolder',
+                method: "POST",
+                data: {oldName:oldName,newName:newName},
+                headers: {'Content-Type': 'application/json'}
+            }).
+                success(function (resp) {
+                    callback && callback(resp);
+                });
+        };
+        this.deleteFolder = function(name,callback){
+            $http({
+                url: '/deleteFolder',
+                method: "POST",
+                data: {name:name},
                 headers: {'Content-Type': 'application/json'}
             }).
             success(function (resp) {

@@ -421,7 +421,7 @@
             return this._layer._scene;
         },
         update: function(){},
-        render: function(){}
+        _render: function(){}
     });
 
     models.GameObject = models.BaseGameObject.extend({
@@ -483,11 +483,12 @@
             ve_local.collider.check(this,posX,posY);
             this.__updateIndividualBehaviour__(delta);
             this.__updateCommonBehaviour__();
+            this._render();
         },
         stopFrAnimations: function(){
             this._currFrameAnimation && this._currFrameAnimation.stop();
         },
-        render: function(){
+        _render: function(){
             ve_local.rendererContext.drawImage(
                 this._spriteSheet._textureInfo,
                 this._sprPosX,
@@ -567,12 +568,6 @@
                 if (!obj) return;
                 obj.update(currTime,deltaTime);
             });
-        },
-        render: function(){
-            this._gameObjects.forEach(function(obj){
-                if (!obj) return;
-                obj.render();
-            });
         }
     });
 
@@ -618,11 +613,6 @@
                 layer.update(currTime,deltaTime);
             });
             this.__updateIndividualBehaviour__(deltaTime);
-        },
-        render: function(){
-            this._layers.forEach(function(layer){
-                layer.render();
-            });
         }
     });
 
@@ -671,9 +661,9 @@
             this.setFont(font);
         },
         update: function(){
-
+            this._render();
         },
-        render: function(){
+        _render: function(){
             var posX = this.posX;
             var posY = this.posY;
             var self = this;
@@ -752,11 +742,6 @@
                     self._particles.splice(self._particles.indexOf(p),1);
                 }
                 p.update(time,delta);
-            });
-        },
-        render: function(){
-            this._particles.forEach(function(p){
-                p.render();
             });
         }
     });
@@ -1464,15 +1449,58 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.openProject = function(projectName){
-            resourceDao.loadProject(projectName);
+
+        s.openProject = function(project){
+            resourceDao.loadProject(project.name);
+        };
+
+        s.createOrEditProject = function(proj){
+            if (proj.name && proj.oldName) {
+                resourceDao.renameFolder(
+                    'workspace/'+proj.oldName,
+                    'workspace/'+proj.name,
+                    function(){
+                        resourceDao.getProjects(function(list){
+                                editData.projects = list;
+                            uiHelper.closeDialog();
+                        }
+                    );
+                });
+            } else if (proj.name) {
+                resourceDao.createProject(proj.name,function(){
+                    resourceDao.getProjects(function(list){
+                        editData.projects = list;
+                        uiHelper.closeDialog();
+                    });
+                });
+            }
+        };
+
+        s.deleteProject = function(proj){
+            resourceDao.deleteFolder('workspace/'+proj.name,function(){
+                resourceDao.getProjects(function(list){
+                    editData.projects = list;
+                    uiHelper.closeDialog();
+                })
+            });
         };
 
         (function(){
 
-            resourceDao.getProjectNames(function(list){
-                s.projectNames = list;
-            });
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currProjectInEdit = {};
+            } else if (dialogState.opName=='edit'){
+                editData.currProjectInEdit = {};
+                editData.currProjectInEdit.oldName =
+                    editData.currProjectInEdit.name =
+                        dialogState.opObject.name;
+            } else {
+                resourceDao.getProjects(function(list){
+                    editData.projects = list;
+                });
+            }
+            uiHelper.opName = null;
 
         })();
 
@@ -1823,7 +1851,7 @@ window.app.
             }).
             success(function (resp) {
                 if (!w || w.closed) {
-                    w = window.open('/project/out','','');
+                    w = window.open('/'+editData.projectName+'/out','','');
                 }
                 else {
                     w.location.reload();
@@ -1839,7 +1867,7 @@ window.app.
             }).
             success(function (resp) {
                     s.uiHelper.window = 'debugRunWindow';
-                editData.debugFrameUrl = '/project/out';
+                editData.debugFrameUrl = '/'+editData.projectName+'/out';
             });
         };
 
@@ -2149,6 +2177,8 @@ window.app
         res.currCommonBehaviourInEdit = null;
         res.currSoundInEdit = null;
         res.currParticleSystemInEdit = null;
+        res.currProjectInEdit = null;
+
 
         res.userInterfaceList = new ve.collections.List();
 
@@ -2156,6 +2186,7 @@ window.app
         res.scriptEditorUrl = '';
 
         res.projectName = undefined;
+        res.projects = null;
 
         return res;
     })
@@ -2231,7 +2262,7 @@ window.app
                 particleSystems:'particle systems',
                 particleSystem:'particle system',
                 preview:'preview',
-                explorer:'Project explorer'
+                explorer:'explorer'
             }
         };
 
@@ -2523,9 +2554,9 @@ app
                 callback && callback(resp);
             });
         };
-        this.getProjectNames = function(callback){
+        this.getProjects = function(callback){
             $http({
-                url: '/getProjectNames',
+                url: '/getProjects',
                 method: "GET",
                 headers: {'Content-Type': 'application/json'}
             }).
@@ -2538,6 +2569,28 @@ app
                 url: '/createProject',
                 method: "POST",
                 data: {projectName:projectName},
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.renameFolder = function(oldName,newName,callback){
+            $http({
+                url: '/renameFolder',
+                method: "POST",
+                data: {oldName:oldName,newName:newName},
+                headers: {'Content-Type': 'application/json'}
+            }).
+                success(function (resp) {
+                    callback && callback(resp);
+                });
+        };
+        this.deleteFolder = function(name,callback){
+            $http({
+                url: '/deleteFolder',
+                method: "POST",
+                data: {name:name},
                 headers: {'Content-Type': 'application/json'}
             }).
             success(function (resp) {
@@ -2744,6 +2797,7 @@ window.app
             ['debug','embedResources','embedScript'].forEach(function(key){
                 if (opts[key]) url+='&'+key+'=1';
             });
+            url+='&projectName='+editData.projectName;
             return url;
         };
 
@@ -2797,12 +2851,12 @@ window.app.
         };
 
 
-    });
+    }).
 
 
-app.
 
-    config(function($routeProvider){
+
+    config(function($routeProvider,$httpProvider){
         $routeProvider.
             when('/editor',{
                 templateUrl:'editor.html'
@@ -2811,4 +2865,26 @@ app.
                 templateUrl:'explorer.html'
             }).
             otherwise({redirectTo:'/explorer'});
-    });
+
+
+        $httpProvider.interceptors.push('httpRequestInterceptor');
+
+
+    }).
+
+
+    factory('httpRequestInterceptor', function ($q, $location) {
+        return {
+            'responseError': function(rejection) {
+                // do something on error
+                if(rejection.status!==200){
+                    ve.showError(rejection.data);
+                }
+                return $q.reject(rejection);
+            }
+        };
+    })
+
+
+
+;

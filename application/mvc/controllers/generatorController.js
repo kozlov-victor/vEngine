@@ -24,6 +24,12 @@ var Source = function(){
         var rendered = ejs.render(content.split('//<code>').join(''),params);
         self.add(rendered);
     };
+    this.addTemplates = function(pathList,params) {
+        var self = this;
+        pathList.forEach(function(path){
+            self.addTemplate(path,params);
+        });
+    };
     this.get = function(){
         return res.join('\n');
     };
@@ -38,8 +44,8 @@ var addEnvVariables = function(sourceMain) {
     );
 };
 
-var addStaticFiles = function(sourceMain){
-    sourceMain.addFiles([
+var addStaticFiles = function(sourceMain,opts){
+    sourceMain.addTemplates([
         'resources/public/js/lib/oop.js',
         'resources/public/js/dataStructure/collections.js',
         'resources/public/js/dataStructure/models.js',
@@ -55,11 +61,11 @@ var addStaticFiles = function(sourceMain){
         'resources/generatorResources/modules/sound.js',
         'resources/generatorResources/modules/collider.js'
         //'resources/generatorResources/modules/gameLoop.js'
-    ]);
+    ],{opts:opts});
 };
 
 var addDebug = function(sourceMain){
-    sourceMain.addFile('resources/generatorResources/debug.js');
+    sourceMain.addFile('resources/public/js/misc/debug.js');
 };
 
 var addGameResourcesDesc = function(sourceMain,opts){
@@ -67,25 +73,25 @@ var addGameResourcesDesc = function(sourceMain,opts){
     templateObj.commonResources = {};
     templateObj.specialResources = {};
     resourcesController.RESOURCE_NAMES.forEach(function(r){
-        templateObj.commonResources[r] = fs.readFileSync('workspace/project/resources/'+r+'/map.json')
+        templateObj.commonResources[r] = fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json')
     });
-    templateObj.commonResources.gameProps = fs.readFileSync('workspace/project/gameProps.json');
+    templateObj.commonResources.gameProps = fs.readFileSync('workspace/'+opts.projectName+'/gameProps.json');
 
-    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject','utf8');
-    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene','utf8');
+    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/gameObject','utf8');
+    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/scene','utf8');
     sourceMain.addTemplate('resources/generatorResources/main.js',templateObj);
 };
 
 var addGameResourcesFiles = function(sourceMain,opts){
-    fs.deleteFolderSync('workspace/project/out');
-    fs.createFolderSync('workspace/project/out/');
+    fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
+    fs.createFolderSync('workspace/'+opts.projectName+'/out/');
 
     var embedResourceCode = '(function(){\n';
     if (opts.embedResources) embedResourceCode += 've_local.resources = {};\n';
 
     ['spriteSheet','font','sound'].forEach(function(r){
         if (opts.embedResources) {
-            var files = fs.readDirSync('workspace/project/resources/'+r,'base64');
+            var files = fs.readDirSync('workspace/'+opts.projectName+'/resources/'+r,'base64');
             files.forEach(function(file){
                 if (file.name!='map.json') {
                     embedResourceCode+=
@@ -94,9 +100,9 @@ var addGameResourcesFiles = function(sourceMain,opts){
                 }
             });
         } else {
-            fs.createFolderSync('workspace/project/out/resources/'+r);
-            fs.copyFolderSync('workspace/project/resources/'+r,'workspace/project/out/resources/'+r);
-            fs.deleteFileSync('workspace/project/out/resources/'+r+'/map.json');
+            fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
+            fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
+            fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
         }
     });
 
@@ -109,17 +115,17 @@ var addGameResourcesFiles = function(sourceMain,opts){
 
     if (opts.embedScript) {
         indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
-        fs.writeFileSync('workspace/project/out/index.html',indexHtml);
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
     } else {
-        fs.writeFileSync('workspace/project/out/main.js',sourceMain.get());
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/main.js',sourceMain.get());
         indexHtml = indexHtml.replace('{{script}}','<script src="main.js"></script>');
-        fs.writeFileSync('workspace/project/out/index.html',indexHtml);
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
     }
 
 };
 
-var addCommonBehaviour = function(sourceMain){
-    var gameObjects = JSON.parse(fs.readFileSync('workspace/project/resources/gameObject/map.json'));
+var addCommonBehaviour = function(sourceMain,opts){
+    var gameObjects = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/gameObject/map.json'));
     var fileNames = {};
     gameObjects.forEach(function(go){
         go.commonBehaviour.forEach(function(cb){
@@ -127,7 +133,8 @@ var addCommonBehaviour = function(sourceMain){
         });
     });
     Object.keys(fileNames).forEach(function(name){
-        var res = 've.commonBehaviour.'+name+' = '+fs.readFileSync('workspace/project/resources/script/commonBehaviour/'+name+'.js');
+        var res = 've.commonBehaviour.'+name+' = '+
+            fs.readFileSync('workspace/'+opts.projectName+'/resources/script/commonBehaviour/'+name+'.js');
         sourceMain.add(res);
     });
 };

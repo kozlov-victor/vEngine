@@ -128,13 +128,26 @@ module.exports.init = function(app) {
         });
     });
 
-    app.get('/getProjectNames',function(req,res){
-        res.send(resourcesController.getProjectNames());
+    app.get('/getProjects',function(req,res){
+        res.send(resourcesController.getProjects());
     });
 
-    app.post('createProject',function(){
+    app.post('/createProject',function(req,res){
         var projectName = req.body.projectName;
         res.send(resourcesController.createProject(projectName));
+    });
+
+    app.post('/renameFolder',function(req,res){
+        var oldName = req.body.oldName;
+        var newName = req.body.newName;
+        resourcesController.renameFolder(oldName,newName);
+        res.send({});
+    });
+
+    app.post('/deleteFolder',function(req,res){
+        var name = req.body.name;
+        resourcesController.deleteFolder(name);
+        res.send({});
     });
 
 };

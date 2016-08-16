@@ -30,12 +30,12 @@ window.app.
         };
 
 
-    });
+    }).
 
 
-app.
 
-    config(function($routeProvider){
+
+    config(function($routeProvider,$httpProvider){
         $routeProvider.
             when('/editor',{
                 templateUrl:'editor.html'
@@ -44,4 +44,26 @@ app.
                 templateUrl:'explorer.html'
             }).
             otherwise({redirectTo:'/explorer'});
-    });
+
+
+        $httpProvider.interceptors.push('httpRequestInterceptor');
+
+
+    }).
+
+
+    factory('httpRequestInterceptor', function ($q, $location) {
+        return {
+            'responseError': function(rejection) {
+                // do something on error
+                if(rejection.status!==200){
+                    ve.showError(rejection.data);
+                }
+                return $q.reject(rejection);
+            }
+        };
+    })
+
+
+
+;

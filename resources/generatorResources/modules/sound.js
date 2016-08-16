@@ -32,6 +32,7 @@
                 callback(buffer);
             });
         };
+        //<code><%if (opts.debug){%>request.onerror=function(e){throw 'can not load sound with url '+url};<%}%>
         request.send();
     };
 

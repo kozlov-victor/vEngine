@@ -10,7 +10,6 @@ window.app.
         var w;
 
 
-        // todo project name
         s.run = function(){
             $http({
                 url: utils.generateBuildUrl({debug:1}),
@@ -18,7 +17,7 @@ window.app.
             }).
             success(function (resp) {
                 if (!w || w.closed) {
-                    w = window.open('/project/out','','');
+                    w = window.open('/'+editData.projectName+'/out','','');
                 }
                 else {
                     w.location.reload();
@@ -34,7 +33,7 @@ window.app.
             }).
             success(function (resp) {
                     s.uiHelper.window = 'debugRunWindow';
-                editData.debugFrameUrl = '/project/out';
+                editData.debugFrameUrl = '/'+editData.projectName+'/out';
             });
         };
 

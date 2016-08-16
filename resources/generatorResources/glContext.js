@@ -304,6 +304,7 @@
                 gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
                 callBack(textureInfo);
             };
+            //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
             img.src = url;
             document.body.appendChild(img);
         };

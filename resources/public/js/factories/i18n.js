@@ -67,7 +67,7 @@ window.app
                 particleSystems:'particle systems',
                 particleSystem:'particle system',
                 preview:'preview',
-                explorer:'Project explorer'
+                explorer:'explorer'
             }
         };
 

@@ -2,9 +2,10 @@
 var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');
 
-module.exports.RESOURCE_NAMES =
-    'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
+var RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
     .split(',');
+module.exports.RESOURCE_NAMES = RESOURCE_NAMES;
+
 
 module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/defaultCodeScript.js');
 
@@ -59,32 +60,32 @@ var processUploadedFile = function(item,pathToUploadedFile,projectName){
 };
 
 
-var createFolderWithFiles = function(foldersArr) {
+var createFolderWithFiles = function(foldersArr,projectName) {
     foldersArr.forEach(function(folder){
-        fs.createFolderSync('workspace/project/resources/'+folder);
-        fs.createFileSync('workspace/project/resources/'+folder+'/map.json','[]');
+        fs.createFolderSync('workspace/'+projectName+'/resources/'+folder);
+        fs.createFileSync('workspace/'+projectName+'/resources/'+folder+'/map.json','[]');
     });
 };
 
 module.exports.createProject = function(projectName){
 
-    fs.createFolderSync('workspace/project/resources');
-    createFolderWithFiles(resourcesController.RESOURCE_NAMES);
-    fs.createFolderSync('workspace/project/resources/script/gameObject');
-    fs.createFolderSync('workspace/project/resources/font');
-    fs.createFolderSync('workspace/project/resources/script/scene');
+    fs.createFolderSync('workspace/'+projectName+'/resources');
+    createFolderWithFiles(RESOURCE_NAMES,projectName);
+    fs.createFolderSync('workspace/'+projectName+'/resources/script/gameObject');
+    fs.createFolderSync('workspace/'+projectName+'/resources/font');
+    fs.createFolderSync('workspace/'+projectName+'/resources/script/scene');
 
     fs.copyFileSync('resources/generatorResources/fonts/default.png',
-        'workspace/project/resources/font/default.png');
+        'workspace/'+projectName+'/resources/font/default.png');
     fs.copyFileSync('resources/generatorResources/fonts/map.json',
-        'workspace/project/resources/font/map.json');
+        'workspace/'+projectName+'/resources/font/map.json');
 
-    fs.createFolderSync('workspace/project/resources/script/commonBehaviour');
+    fs.createFolderSync('workspace/'+projectName+'/resources/script/commonBehaviour');
     fs.readDirSync('resources/generatorResources/commonBehaviour').forEach(function(itm){
-        fs.createFileSync('workspace/project/resources/script/commonBehaviour/'+itm.name,itm.content);
+        fs.createFileSync('workspace/'+projectName+'/resources/script/commonBehaviour/'+itm.name,itm.content);
     });
 
-    fs.createFileSync('workspace/project/gameProps.json',JSON.stringify({
+    fs.createFileSync('workspace/'+projectName+'/gameProps.json',JSON.stringify({
         width:800,
         height:600
     }));
@@ -114,7 +115,7 @@ module.exports.edit = function(item,pathToUploadedFile,projectName){
     Object.keys(item).forEach(function(key){
         editItem[key]=item[key];
     });
-    writeResource(arr,'workspace/project/resources/'+item.type+'/map.json');
+    writeResource(arr,'workspace/'+projectName+'/resources/'+item.type+'/map.json');
     return editItem;
 };
 
@@ -129,9 +130,9 @@ module.exports.delete = function(id,type,projectName){
     var indexToDel = getIndexById(arr,id);
     if (indexToDel!==null) {
         var resourcePath = arr[indexToDel].resourcePath;
-        fs.deleteFileSync('workspace/project/'+resourcePath);
+        fs.deleteFileSync('workspace/'+projectName+'/'+resourcePath);
         arr.splice(indexToDel,1);
-        writeResource(arr,'workspace/project/resources/'+type+'/map.json');
+        writeResource(arr,'workspace/'+projectName+'/resources/'+type+'/map.json');
     }
 };
 
@@ -149,7 +150,7 @@ module.exports.deleteObjectFromResource = function(resourceType,resourceId,objec
     else {
         throw 'can not find object with id '+ objectId + ' in resource ' + resourceType + ':' + objectType;
     }
-    writeResource(resources,'workspace/project/resources/'+resourceType+'/map.json');
+    writeResource(resources,'workspace/'+projectName+'/resources/'+resourceType+'/map.json');
 };
 
 module.exports.saveGameProps = function(model,projectName){
@@ -164,7 +165,7 @@ module.exports.getGameProps = function(projectName){
 
 module.exports.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,projectName) {
     if (!projectName) throw 'project name not specified';
-    var path = 'workspace/project/resources/'+resourceType+'/map.json';
+    var path = 'workspace/'+projectName+'/resources/'+resourceType+'/map.json';
     var resources = readResource(path);
     console.log('loaded resources',resources);
     console.log('search by id');
@@ -224,7 +225,6 @@ module.exports.readFile = function(name,path,projectName) {
     return fs.readFileSync('workspace/'+projectName+'/resources/'+path+'/'+name);
 };
 
-
 module.exports.editFont = function(model,pathToUploadedFile,projectName) {
     if (!projectName) throw 'project name not specified';
     processUploadedFile(model.font,pathToUploadedFile,projectName);
@@ -234,8 +234,18 @@ module.exports.editFont = function(model,pathToUploadedFile,projectName) {
 
 module.exports.readResource = readResource;
 
-module.exports.getProjectNames = function(){
-    return fs.getDirListSync('workspace/');
+module.exports.getProjects = function(){
+    return fs.getDirListSync('workspace/').map(function(item){
+        return {name:item}
+    });
+};
+
+module.exports.renameFolder = function(oldName,newName){
+    fs.renameSync(oldName,newName);
+};
+
+module.exports.deleteFolder = function(name){
+    fs.deleteFolderSync(name);
 };
 
 
