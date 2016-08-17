@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <script>
+
+        var modules = {};
+        var initModuleObj = function(moduleObj) {
+            var module = {
+                exports:{}
+            };
+            moduleObj.code(module);
+            moduleObj.inited = module;
+        };
+        require = function(name){
+            var moduleObj = modules[name];
+            if (!moduleObj.inited) initModuleObj(moduleObj);
+            return moduleObj.inited.exports;
+        };
+
+        modules.m1 = {
+            code: function(module){
+                var m2 = require('m2');
+                m2.test();
+            }
+        };
+
+        modules.m3 = {
+            code: function(module){
+                module.exports.test2 = function(){
+                    console.log('test2');
+                }
+            }
+        };
+
+        modules.m2 = {
+            code: function(module){
+                var m3 = require('m3');
+                module.exports.test = function(){
+                    m3.test2();
+                }
+            }
+        };
+
+        Object.keys(modules).forEach(function(name){
+            var moduleObj = modules[name];
+            if (moduleObj.inited) return;
+            initModuleObj(moduleObj);
+        });
+
+    </script>
+</body>
+</html>
