@@ -1,8 +1,9 @@
 
 var gos;
+var sceneManager = require('kernel/sceneManager');
 
-module.exports.setUp = function(){ // todo ??????
-    var scene = ve.sceneManager.getCurrScene();
+module.exports.setUp = function(){
+    var scene = sceneManager.getCurrScene();
     gos = scene.getAllGameObjects();
 };
 

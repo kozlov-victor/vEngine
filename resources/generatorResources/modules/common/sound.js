@@ -1,6 +1,7 @@
 
-var AudioContext = window.AudioContext || window.webkitAudioContext;
+var bundle = require('bundle');
 
+var AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
 var base64ToArrayBuffer = function(base64) {
@@ -38,15 +39,6 @@ var _loadSoundBase64 = function(url,callback){
         callback(buffer);
     });
 };
-
-ns.loadSound = function( url, opts, callback) {
-    if (opts.type=='base64') {
-        _loadSoundBase64(url, callback);
-    } else {
-        _loadSoundXhr(url, callback);
-    }
-};
-
 
 var AudioPlayer = function(){
 
@@ -103,8 +95,16 @@ var AudioSet = function(numOfPlayers){
 
 var audioSet = new AudioSet(5);
 
+module.exports.loadSound = function( url, opts, callback) {
+    if (opts.type=='base64') {
+        _loadSoundBase64(url, callback);
+    } else {
+        _loadSoundXhr(url, callback);
+    }
+};
+
 module.exports.play = function(sndName,loop){
     var player = audioSet.getFreePlayer();
     if (!player) return;
-    player.play(ve_local.bundle.soundList.find({name:sndName})._buffer,loop);
+    player.play(bundle.soundList.find({name:sndName})._buffer,loop);
 };

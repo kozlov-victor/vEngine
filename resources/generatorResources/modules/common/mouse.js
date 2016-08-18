@@ -1,8 +1,12 @@
 
-var self = module.exports; // todo canvas
-var canvas;
+var self = module.exports;
+
+var renderer = require('render/renderer');
+var bundle = require('bundle');
+
+var canvas = renderer.getCanvas();
 self.isMouseDown = false;
-var globalScale = ve_local.bundle.gameProps.globalScale; // todo
+var globalScale = bundle.gameProps.globalScale;
 
 if ('ontouchstart' in window) {
     canvas.ontouchstart = function(e){
