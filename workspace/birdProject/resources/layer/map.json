@@ -1,0 +1,99 @@
+[
+    {
+        "name": "ll",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "text": "hello",
+                "width": 75,
+                "height": 29,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "posX": 15,
+                "posY": 20,
+                "name": "textField1",
+                "protoId": {},
+                "id": "4343_5960_457",
+                "fontId": "6991_3497_4"
+            },
+            {
+                "spriteSheetId": "1879_7247_15",
+                "width": 110,
+                "height": 101,
+                "name": "bird",
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": {},
+                        "id": "6616_0188_20",
+                        "type": "commonBehaviour",
+                        "description": ""
+                    }
+                ],
+                "frameAnimationIds": [
+                    "2195_5056_19"
+                ],
+                "rigid": 0,
+                "groupName": "",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "velX": 0,
+                "velY": 0,
+                "posX": 67,
+                "posY": 105,
+                "protoId": "5139_0458_16",
+                "id": "4438_6727_4"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "cloud",
+                "width": 300,
+                "height": 190,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 182,
+                "posY": 94,
+                "protoId": "3811_8241_75",
+                "id": "5334_0273_76"
+            },
+            {
+                "spriteSheetId": "1501_7424_265",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "cloud",
+                "width": 300,
+                "height": 190,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 0,
+                "groupName": "",
+                "posX": 238,
+                "posY": -9,
+                "protoId": "3811_8241_75",
+                "id": "4184_0987_4"
+            }
+        ],
+        "id": "3534_2050_13"
+    },
+    {
+        "name": "tiles",
+        "type": "layer",
+        "gameObjectProps": [],
+        "id": "6172_4586_12"
+    }
+]

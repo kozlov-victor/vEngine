@@ -1,0 +1,24 @@
+[
+    {
+        "gameObjectId": "1492_9912_46",
+        "numOfParticlesToEmit": {
+            "from": 50,
+            "to": 60
+        },
+        "particleAngle": {
+            "from": -2.6660626056852346,
+            "to": -2.728463821311392
+        },
+        "particleVelocity": {
+            "from": 90,
+            "to": 100
+        },
+        "name": "ps",
+        "type": "particleSystem",
+        "id": "0252_1160_4",
+        "particleLiveTime": {
+            "from": 101,
+            "to": 300
+        }
+    }
+]
