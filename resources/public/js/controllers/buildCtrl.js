@@ -18,9 +18,15 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
+        s.opts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
+
         s.build = function(){
             $http({
-                url: utils.generateBuildUrl(editData.compileOpts),
+                url: utils.generateBuildUrl(s.opts),
                 method: "GET"
             }).
             success(function (resp) {

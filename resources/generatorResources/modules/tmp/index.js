@@ -1,3 +1,20 @@
-/**
- * Created by victor on 24.08.16.
- */
+
+var bundle = require('bundle').instance();
+bundle.prepare(); // todo remove
+if (!bundle.sceneList.size()) throw 'at least one scene must be created';
+
+var renderer = require('renderer').instance();
+var sceneManager = require('sceneManager').instance();
+var keyboard = require('keyboard').instance();
+
+window.addEventListener('load',function(){
+    document.body.ontouchstart = function(e){
+        e.preventDefault();
+        return false;
+    };
+
+    renderer.init();
+    require('mouse').instance();
+    bundle.applyBehaviourAll();
+    sceneManager.setScene(bundle.sceneList.get(0));
+});

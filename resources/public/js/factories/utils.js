@@ -133,7 +133,7 @@ window.app
 
         this.generateBuildUrl = function(opts) {
             var url = '/generate?r='+Math.random();
-            ['debug','embedResources','embedScript','minifyScript'].forEach(function(key){ // todo optimize
+            ['debug','embedResources','embedScript'].forEach(function(key){
                 if (opts[key]) url+='&'+key+'=1';
             });
             url+='&projectName='+editData.projectName;

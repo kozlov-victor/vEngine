@@ -1,842 +1,3 @@
-(function() {
-
-    window.Class = function() {};
-
-    Class.extend = function(props, staticProps) {
-
-        var mixins = [];
-
-        if (arguments[0].slice) {
-            mixins = arguments[0];
-            props = arguments[1];
-            staticProps = arguments[2];
-        }
-
-        function Instance() {
-            this._init && this._init.apply(this, arguments);
-            this.construct && this.construct();
-        }
-
-        Instance.prototype = Class.inherit(this.prototype);
-
-        Instance.prototype.constructor = Instance;
-
-        Instance.extend = Class.extend;
-
-        copyWrappedProps(staticProps, Instance, this);
-
-        for (var i = 0; i < mixins.length; i++) {
-            copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
-        }
-        copyWrappedProps(props, Instance.prototype, this.prototype);
-
-        return Instance;
-    };
-
-    var fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
-
-    function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
-        if (!props) return;
-
-        for (var name in props) {
-            if (typeof props[name] == "function"
-                && typeof parentPropsObj[name] == "function"
-                && fnTest.test(props[name])) {
-                // скопировать, завернув в обёртку
-                targetPropsObj[name] = wrap(props[name], parentPropsObj[name]);
-            } else {
-                targetPropsObj[name] = props[name];
-            }
-        }
-
-    }
-
-    function wrap(method, parentMethod) {
-        return function() {
-            var backup = this._super;
-
-            this._super = parentMethod;
-
-            try {
-                return method.apply(this, arguments);
-            } finally {
-                this._super = backup;
-            }
-        }
-    }
-    
-    Class.inherit = Object.create || function(proto) {
-            function F() {}
-            F.prototype = proto;
-            return new F;
-        };
-})();
-
-
-
-
-
-(function(){
-
-    ve_local.Bundle = function(data){
-
-        this.spriteSheetList = new ve.collections.List();
-        this.gameObjectList = new ve.collections.List();
-        this.frameAnimationList = new ve.collections.List();
-        this.layerList = new ve.collections.List();
-        this.sceneList = new ve.collections.List();
-        this.layerList = new ve.collections.List();
-        this.fontList = new ve.collections.List();
-        this.soundList = new ve.collections.List();
-        this.particleSystemList = new ve.collections.List();
-        this.gameProps = {};
-
-        var self = this;
-
-        var toDataSource = function(ResourceClass,dataList,resourceList){
-            resourceList.clear();
-            dataList.forEach(function(item){
-                resourceList.add(new ResourceClass(item));
-            });
-        };
-
-
-        this.prepare = function(){
-            ve_local.RESOURCE_NAMES.forEach(function(itm){
-                toDataSource(ve.models[ve.utils.capitalize(itm)],data[itm],self[itm+'List']);
-            });
-            self.gameProps = data.gameProps;
-            data = null;
-        };
-
-        var applyIndividualBehaviour = function(model){
-            var behaviourFn = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
-            if (behaviourFn) {
-                var exports = {};
-                behaviourFn(exports,model);
-                exports.onCreate();
-                model.__updateIndividualBehaviour__ = function(deltaTime){
-                    exports.onUpdate(deltaTime);
-                }
-            } else {
-                model.__updateIndividualBehaviour__ = noop;
-            }
-
-        };
-
-        var applyCommonBehaviour = function(model){
-            var cbList = [];
-            if (!model._commonBehaviour) {
-                model.__updateCommonBehaviour__ = noop;
-                return;
-            }
-            model._commonBehaviour.forEach(function(cb){
-                var instance = new ve.commonBehaviour[cb.name]();
-                instance.initialize(model,cb.parameters);
-                instance.onCreate();
-                cbList.push(instance);
-            });
-            model.__updateCommonBehaviour__ = function(){
-                cbList.forEach(function(cb){
-                    cb.onUpdate();
-                });
-            }
-        };
-        
-        this.prepareGameObjectScripts = function(){
-            self.sceneList.forEach(function(scene){
-                scene.__onResourcesReady();
-                self.applyBehaviour(scene);
-                scene._layers.forEach(function(layer){
-                    layer._gameObjects.forEach(function(gameObject){
-                        self.applyBehaviour(gameObject);
-                    });
-                });
-            });
-        };
-
-        this.applyBehaviour = function(model){
-            applyCommonBehaviour(model);
-            applyIndividualBehaviour(model);
-        }
-
-    };
-
-})();
-
-(function(){
-
-    var collections = {};
-    collections.List = function () {
-        var self = this;
-        this.rs = [];
-        this.add = function (r) {
-            self.rs.push(r);
-        };
-        this.addAll = function (list) {
-            list.forEach(function(itm){
-                self.rs.push(itm);
-            });
-        };
-        this.get = function(index){
-            return self.rs[index];
-        };
-        this.getFirst = function(){
-            return this.get(0);
-        };
-        this.getLast = function(){
-            return this.get(this.size()-1);
-        };
-        this.isEmpty = function(){
-            return self.size()==0;
-        };
-        this.size = function () {
-            return self.rs.length;
-        };
-        this.getAll = function () {
-            return self.rs;
-        };
-        this.clear = function(){
-            self.rs = [];
-        };
-        this.forEach = function(callback){
-            for (var i = 0,l=this.rs.length;i<l;i++){
-                callback(self.rs[i],i);
-            }
-        };
-        this.forEachReversed = function(callback){
-            for (var i = this.rs.length-1;i>=0;i--){
-                callback(self.rs[i],i);
-            }
-        };
-        this.some = function(callback){
-            for (var i = 0,l=this.rs.length;i<l;i++){
-                var res = callback(self.rs[i],i);
-                if (res) return true;
-            }
-            return false;
-        };
-        this.someReversed = function(callback){
-            for (var i = this.rs.length-1;i>=0;i--){
-                var res = callback(self.rs[i],i);
-                if (res) break;
-            }
-        };
-        this.indexOf = function(obj){
-            var i = 0;
-            var success = false;
-            self.rs.some(function(item){
-                var isCandidate = true;
-                Object.keys(obj).some(function(conditionKey){
-                    if (obj[conditionKey]!=item[conditionKey]) {
-                        isCandidate = false;
-                        return true;
-                    }
-                });
-                if (isCandidate) {
-                    success = true;
-                    return true;
-                }
-                i++;
-            });
-            return success?i:-1;
-        };
-        this.remove = function (obj){
-            if (!obj) return;
-            var index = self.indexOf(obj);
-            if (index>-1) self.rs.splice(index,1);
-        };
-        this.find = function (obj){
-            return self.rs[self.indexOf(obj)];
-        }
-    };
-
-    collections.Set = function(){
-        var self = this;
-        this.rs = {};
-        this.add = function(itm){
-            self.rs[itm.id]=itm;
-        };
-        this.get = function(itm){
-            return self.rs[itm.id];
-        };
-        this.has = function(key){
-            return key in self.rs;
-        };
-        this.combine = function(another){
-            Object.keys(another.rs).forEach(function(key){
-                self.add(another.rs[key]);
-            });
-        };
-        this.asArray = function(){
-            var res = [];
-            Object.keys(self.rs).forEach(function(key){
-                res.push(self.rs[key]);
-            });
-            return res;
-        }
-    };
-    ve.collections = collections;
-})();
-
-(function(){
-
-    var models = {};
-    var isPropNotFit = function(el,key){
-        if (!key) return true;
-        if (key.indexOf('$$')==0) return true;
-        if (el[key] && key.indexOf('_')==0) return true;
-        if (el[key] && el[key].call) return true;
-        if (typeof el[key] == 'string') return false;
-        if (typeof el[key] == 'number') return false;
-        if (!el[key]) return true;
-    };
-
-    function deepCopy(obj) {
-        if (Object.prototype.toString.call(obj) === '[object Array]') {
-            var out = [], i = 0, len = obj.length;
-            for ( ; i < len; i++ ) {
-                out[i] = deepCopy(obj[i]);
-            }
-            return out;
-        }
-        if (typeof obj === 'object') {
-            var out = {}, i;
-            for ( i in obj ) {
-                out[i] = deepCopy(obj[i]);
-            }
-            return out;
-        }
-        return obj;
-    }
-
-    models.BaseModel = Class.extend({
-        id:null,
-        protoId:null,
-        name:'',
-        toJSON: function(){
-            var res = {};
-            for (var key in this) {
-                if (isPropNotFit(this,key)) {
-                    continue;
-                }
-                res[key]=this[key];
-            }
-            return deepCopy(res);
-        },
-        toJSON_Array: function(){
-            var res = [];
-            for (var key in this) {
-                if (isPropNotFit(this,key)) continue;
-                res.push({key:key,value:this[key]});
-            }
-            return res;
-        },
-        fromJSON:function(jsonObj){
-            var self = this;
-            Object.keys(jsonObj).forEach(function(key){
-                if (key in self) {
-                    self[key] = jsonObj[key];
-                    self[key] = +self[key]||self[key];
-                }
-            });
-        },
-        clone: function(){
-            return new this.constructor(this.toJSON());
-        },
-        on: function(eventName,callBack){
-            var self = this;
-            self.__events__[eventName] = self.__events__[eventName] || [];
-            self.__events__[eventName].push(callBack);
-        },
-        trigger: function(eventName,data){
-            var self = this;
-            var es = self.__events__[eventName];
-            if (!es) return;
-            es.forEach(function(e){
-                e(data);
-            });
-        },
-        _init:function(){
-            this.__events__ = {};
-            arguments && arguments[0] && this.fromJSON(arguments[0]);
-        }
-    });
-
-    models.Behaviour = models.BaseModel.extend({});
-
-    var Resource = models.BaseModel.extend({
-        resourcePath:''
-    });
-
-    models.Sound = Resource.extend({
-        type:'sound',
-        _buffer:null
-    });
-
-    models.SpriteSheet = Resource.extend({
-        type:'spriteSheet',
-        width:0,
-        height:0,
-        numOfFramesH:1,
-        numOfFramesV:1,
-        _frameWidth:0,
-        _frameHeight:0,
-        _numOfFrames:0,
-        _textureInfo: null,
-        getFramePosX: function(frameIndex){
-            return (frameIndex%this.numOfFramesH)*this._frameWidth;
-        },
-        getFramePosY: function(frameIndex){
-            return ~~(frameIndex/this.numOfFramesH)*this._frameHeight;
-        },
-        calcFrameSize: function(){
-            if (!(this.numOfFramesH && this.numOfFramesV)) return;
-            this._frameWidth = this.width/this.numOfFramesH;
-            this._frameHeight = this.height/this.numOfFramesV;
-            this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
-        },
-        construct: function(){
-            this.calcFrameSize();
-        }
-    });
-
-    models.BaseGameObject = models.BaseModel.extend({
-        type:'baseGameObject',
-        groupName:'',
-        _spriteSheet:null,
-        posX:0,
-        posY:0,
-        width:0,
-        height:0,
-        _layer:null,
-        getRect: function(){
-            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
-        },
-        kill: function(){
-            this._layer._gameObjects.remove({id:this.id});
-            this._layer._scene._allGameObjects.remove({id:this.id});
-        },
-        getScene: function(){
-            return this._layer._scene;
-        },
-        update: function(){},
-        _render: function(){}
-    });
-
-    models.GameObject = models.BaseGameObject.extend({
-        type:'gameObject',
-        spriteSheetId:null,
-        _spriteSheet: null,
-        _behaviour:null,
-        commonBehaviour:[],
-        _commonBehaviour:null,
-        velX:0,
-        velY:0,
-        currFrameIndex:0,
-        _sprPosX:0,
-        _sprPosY:0,
-        _frameAnimations: null,
-        frameAnimationIds:[],
-        _currFrameAnimation:null,
-        rigid:true,
-        _timeCreated:null,
-        construct: function(){
-            var self = this;
-            this._frameAnimations = new ve.collections.List();
-            if (!this.spriteSheetId) {
-                return;
-            }
-            this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId});
-            self.setFrameIndex(self.currFrameIndex);
-            self._frameAnimations.clear();
-            this.frameAnimationIds.forEach(function(id){
-                var a = ve_local.bundle.frameAnimationList.find({id: id});
-                a = a.clone(ve.models.FrameAnimation);
-                a._gameObject = self;
-                self._frameAnimations.add(a);
-            });
-            self._commonBehaviour = new ve.collections.List();
-            this.commonBehaviour.forEach(function(cb){
-                self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
-            });
-        },
-        getFrAnimation: function(animationName){
-            return this._frameAnimations.find({name: animationName});
-        },
-        setFrameIndex: function(index){
-            this.currFrameIndex = index;
-            this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
-            this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
-        },
-        setSpriteSheet: function(spriteSheet){
-            this._spriteSheet = spriteSheet;
-            this.width = spriteSheet._frameWidth;
-            this.height = spriteSheet._frameHeight;
-        },
-        update: function(time,delta) {
-            this._currFrameAnimation && this._currFrameAnimation.update(time);
-            var deltaX = this.velX * delta / 1000;
-            var deltaY = this.velY * delta / 1000;
-            var posX = this.posX+deltaX;
-            var posY = this.posY+deltaY;
-            ve_local.collider.check(this,posX,posY);
-            this.__updateIndividualBehaviour__(delta);
-            this.__updateCommonBehaviour__();
-            this._render();
-        },
-        stopFrAnimations: function(){
-            this._currFrameAnimation && this._currFrameAnimation.stop();
-        },
-        _render: function(){
-            ve_local.rendererContext.drawImage(
-                this._spriteSheet._textureInfo,
-                this._sprPosX,
-                this._sprPosY,
-                this._spriteSheet._frameWidth,
-                this._spriteSheet._frameHeight,
-                this.posX,
-                this.posY,
-                this.width,
-                this.height
-            );
-        }
-    });
-
-    models.FrameAnimation = models.BaseModel.extend({
-        type:'frameAnimation',
-        name:'',
-        frames:[],
-        duration:1000,
-        _gameObject:null,
-        _startTime:null,
-        _timeForOneFrame:0,
-        construct: function(){
-            this._timeForOneFrame = ~~(this.duration / this.frames.length);
-        },
-        play: function(){
-            this._gameObject._currFrameAnimation = this;
-        },
-        stop:function(){
-            this._gameObject._currFrameAnimation = null;
-            this._startTime = null;
-        },
-        update: function(time){
-            if (!this._startTime) this._startTime = time;
-            var delta = (time - this._startTime)%this.duration;
-            var ind = ~~((this.frames.length)*delta/this.duration);
-            var lastFrIndex = this._gameObject.currFrameIndex;
-            if (lastFrIndex!=this.frames[ind]) {
-                this._gameObject.setFrameIndex(this.frames[ind]);
-            }
-        }
-    });
-
-    models.Layer = models.BaseModel.extend({
-        type:'layer',
-        gameObjectProps:[],
-        _gameObjects:null,
-        _scene:null,
-        construct: function() {
-            var self = this;
-            self._gameObjects = new ve.collections.List();
-            this.gameObjectProps.forEach(function(prop){
-                var objCloned;
-                switch (prop.subType) {
-                    case 'textField':
-                        objCloned = new ve.models.TextField(prop);
-                        break;
-                    default:
-                        var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
-                        objCloned = obj.clone();
-                        objCloned.fromJSON(prop);
-                        break;
-                }
-                objCloned._layer = self;
-                self._gameObjects.add(objCloned);
-            });
-        },
-        getAllSpriteSheets:function() {
-            var dataSet = new ve.collections.Set();
-            this._gameObjects.forEach(function(obj){
-                obj._spriteSheet && dataSet.add(obj._spriteSheet);
-            });
-            return dataSet;
-        },
-        update: function(currTime,deltaTime){
-            this._gameObjects.forEach(function(obj){
-                if (!obj) return;
-                obj.update(currTime,deltaTime);
-            });
-        }
-    });
-
-    models.Scene = models.BaseModel.extend({
-        type:'scene',
-        layerProps:[],
-        _layers:null,
-        _allGameObjects:null,
-        _twins:null,
-        __onResourcesReady: function(){
-            var self = this;
-            self._allGameObjects = new ve.collections.List();
-            self._layers.forEach(function(l){
-                self._allGameObjects.addAll(l._gameObjects);
-            });
-        },
-        construct: function(){
-            var self = this;
-            self._layers = new ve.collections.List();
-            this.layerProps.forEach(function(prop){
-                var l = ve_local.bundle.layerList.find({id: prop.protoId});
-                var lCloned = l.clone(ve.models.Layer);
-                lCloned.fromJSON(prop);
-                lCloned._scene = self;
-                self._layers.add(lCloned);
-            });
-        },
-        getAllSpriteSheets:function() {
-            var dataSet = new ve.collections.Set();
-            this._layers.forEach(function(l){
-                dataSet.combine(l.getAllSpriteSheets());
-            });
-            return dataSet;
-        },
-        findGameObject: function(name){
-            return this._allGameObjects.find({name:name});
-        },
-        getAllGameObjects:function(){
-            return this._allGameObjects;
-        },
-        update: function(currTime,deltaTime){
-            this._layers.forEach(function(layer){
-                layer.update(currTime,deltaTime);
-            });
-            this.__updateIndividualBehaviour__(deltaTime);
-        }
-    });
-
-    models.Font = models.BaseModel.extend({
-        type:'font',
-        fontColor:'black',
-        fontSize:12,
-        fontFamily:'Monospace',
-        resourcePath:'',
-        fontContext:null
-    });
-
-    models.TextField = models.BaseGameObject.extend({
-        type:'userInterface',
-        subType:'textField',
-        _chars:null,
-        text:'',
-        _font:null,
-        fontId:null,
-        rigid:false,
-        setText: function(text) {
-            text+='';
-            this._chars = [];
-            this.text = text;
-            this.width = 0;
-            for (var i=0,max=text.length;i<max;i++) {
-                this._chars.push(text[i]);
-                var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
-                this.width+=currSymbolInFont.width;
-            }
-        },
-        setFont: function(font){
-            this._font = font;
-            this.height = this._font.fontContext.symbols[' '].height;
-            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
-            this.setText(this.text);
-        },
-        clone:function(){
-            return this._super();
-        },
-        construct: function(){
-            this.rigid = false;
-            var font =
-                ve_local.bundle.fontList.find({id:this.fontId}) ||
-                ve_local.bundle.fontList.find({name:'default'});
-            this.setFont(font);
-        },
-        update: function(){
-            this._render();
-        },
-        _render: function(){
-            var posX = this.posX;
-            var posY = this.posY;
-            var self = this;
-            this._chars.forEach(function(ch){
-                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-                ve_local.rendererContext.drawImage(
-                    self._spriteSheet._textureInfo,
-                    charInCtx.x,
-                    charInCtx.y,
-                    charInCtx.width,
-                    charInCtx.height,
-                    posX,
-                    posY,
-                    charInCtx.width,
-                    charInCtx.height
-                );
-                posX+=charInCtx.width;
-            });
-        }
-    },
-    {
-        _cnt:0
-    });
-
-    models.CommonBehaviour = models.BaseModel.extend({
-        type:'commonBehaviour',
-        name:'',
-        description:'',
-        parameters:[],
-        construct: function(){
-
-        }
-    });
-
-    models.ParticleSystem = models.BaseModel.extend({
-        type:'particleSystem',
-        gameObjectId:null,
-        _gameObject:null,
-        _particles:null,
-        numOfParticlesToEmit:null,
-        particleAngle:null,
-        particleVelocity:null,
-        particleLiveTime:null,
-        construct: function(){
-            this._particles = [];
-            if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
-            if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
-            if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
-            if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
-            this._gameObject = ve_local.bundle.gameObjectList.find({id:this.gameObjectId});
-        },
-        emit: function(x,y){
-            var r = function(obj){
-                return ve.Math.getRandomInRange(obj.from,obj.to);
-            };
-            for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
-                var particle = this._gameObject.clone();
-                var angle = r(this.particleAngle);
-                var vel = r(this.particleVelocity);
-                particle.fromJSON({
-                    velX:vel*Math.cos(angle),
-                    velY:vel*Math.sin(angle),
-                    posX:x,
-                    posY:y
-                });
-                particle.liveTime = r(this.particleLiveTime);
-                ve_local.bundle.applyBehaviour(particle);
-                this._particles.push(particle);
-            }
-        },
-        update:function(time,delta){
-            var self = this;
-            this._particles.forEach(function(p){
-                if (!p._timeCreated) p._timeCreated = time;
-                if (time - p._timeCreated > p.liveTime) {
-                    self._particles.splice(self._particles.indexOf(p),1);
-                }
-                p.update(time,delta);
-            });
-        }
-    });
-
-
-    ve.models = models;
-
-})();
-(function(){
-    ve.utils = {};
-    var ns = ve.utils;
-    ns.Queue = function(){
-        var self = this;
-        this.size = function(){
-            return tasksTotal;
-        };
-        this.onResolved = null;
-        var tasksTotal = 0;
-        var tasksResolved = 0;
-        this.addTask = function() {
-            tasksTotal++;
-        };
-        this.resolveTask = function(){
-            tasksResolved++;
-            if (tasksTotal==tasksResolved) {
-                if (self.onResolved) self.onResolved();
-            }
-        };
-        this.start = function() {
-            if (this.size()==0) this.onResolved();
-        }
-    };
-    ns.merge = function(obj1,obj2){
-        Object.keys(obj2).forEach(function(key){
-            obj1[key]=obj2[key];
-        });
-    };
-    ns.clone = function(obj){
-        return Object.create(obj);
-    };
-    ns.capitalize = function(s){
-        return s.substr(0,1).toUpperCase() +
-            s.substr(1);
-    };
-    ns.getBase64prefix = function(fileType,fileName) {
-        var ext = fileName.split('.').pop();
-        return 'data:'+fileType+'/'+ext+';base64,'
-    };
-})();
-
-
-
-(function(){
-
-    var ns = {};
-
-    ve.Math = ns;
-
-    ns.isPointInRect = function(point,rect) {
-        return  point.x>rect.x &&
-            point.x<(rect.x+rect.width) &&
-            point.y>rect.y &&
-            point.y<(rect.y+rect.height);
-    };
-
-    ns.isRectIntersectRect = function(r1,r2) {
-        var res =  ! ( r2.x > (r1.x+r1.width)
-            || (r2.x+r2.width) < r1.x
-            || r2.y > (r1.y+r1.height)
-            || (r2.y+r2.height) < r1.y
-        );
-        return res;
-    };
-
-    ns.radToDeg = function(rad){
-        return rad *  180 / Math.PI;
-    };
-
-    ns.degToRad = function(deg) {
-        return deg *  Math.PI / 180;
-    };
-
-    ns.getRandomInRange = function(min, max){
-        if (min>max) {
-            var tmp = min;
-            min = max;
-            max = tmp;
-        }
-        var res = Math.random() * (max - min + 1) + min;
-        if (res>max) res = max;
-        else if (res<min) res = min;
-        return res;
-    };
-
-})();
 window.app.
     controller('animationCtrl', function (
         $scope,
@@ -958,9 +119,15 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
+        s.opts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
+
         s.build = function(){
             $http({
-                url: utils.generateBuildUrl(editData.compileOpts),
+                url: utils.generateBuildUrl(s.opts),
                 method: "GET"
             }).
             success(function (resp) {
@@ -2158,6 +1325,8 @@ window.app
 
     .factory('editData', function ($sce) {
 
+        var collections = require('collections');
+
         var res = {};
         res.commonBehaviourList = null;
         res.currGameObjectInEdit = null;
@@ -2173,14 +1342,13 @@ window.app
         res.currProjectInEdit = null;
 
 
-        res.userInterfaceList = new ve.collections.List();
+        res.userInterfaceList = new collections.List();
 
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         res.scriptEditorUrl = '';
 
         res.projectName = undefined;
         res.projects = null;
-        res.compileOpts = {};
 
         return res;
     })
@@ -2332,6 +1500,10 @@ app
         uiHelper
     ){
         var self = this;
+        var bundle = require('bundle').instance();
+        var collections = require('collections');
+        var models = require('models');
+
         var _loadResources = function(projectName){
             return new Promise(function(resolve){
                 $http({
@@ -2340,18 +1512,17 @@ app
                     data: {projectName:projectName}
                 }).
                 success(function (response) {
-                    ve_local.bundle = new ve_local.Bundle(response);
-                    ve_local.bundle.prepare();
-                    Object.keys(ve_local.bundle).forEach(function(key){
-                        if (ve_local.bundle[key] && ve_local.bundle[key].call) return;
-                        editData[key] = ve_local.bundle[key];
+                    bundle.prepare(response);
+                    Object.keys(bundle).forEach(function(key){
+                        if (bundle[key] && bundle[key].call) return;
+                        editData[key] = bundle[key];
                     });
-                    editData.gameProps = ve_local.bundle.gameProps;
-                    editData.commonBehaviourList = new ve.collections.List();
+                    editData.gameProps = bundle.gameProps;
+                    editData.commonBehaviourList = new collections.List();
                     response.commonBehaviour.forEach(function(cb){
-                        editData.commonBehaviourList.add(new ve.models.CommonBehaviour(cb));
+                        editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new ve.models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
@@ -2365,7 +1536,7 @@ app
                     return _loadResources(projectName);
                 }).
                 then(function(){
-                    if (!ve_local.bundle.sceneList.isEmpty()) editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
                     if (editData.currSceneInEdit) {
                         if (editData.currSceneInEdit._layers.size()) {
                             editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
@@ -2408,7 +1579,7 @@ app
             });
         };
         this.createOrEditResourceSimple = function(objResource){
-            this.createOrEditResource(objResource,objResource.constructor,ve_local.bundle[objResource.type+'List']);
+            this.createOrEditResource(objResource,objResource.constructor,bundle[objResource.type+'List']);
         };
         this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
@@ -2495,7 +1666,7 @@ app
             });
         };
         this.createOrEditLayer = function(l){
-            self.createOrEditResource(l,ve.models.Layer,ve_local.bundle.layerList,
+            self.createOrEditResource(l,models.Layer,bundle.layerList,
                 function(item){
                     if (item.type=='create') {
                         self.createOrEditObjectInResource(
@@ -2507,7 +1678,7 @@ app
                                 protoId:item.r.id
                             },
                             function(resp){
-                                var l = editData.currLayerInEdit.clone(ve.models.Layer);
+                                var l = editData.currLayerInEdit.clone(models.Layer);
                                 l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
@@ -2788,7 +1959,7 @@ window.app
 
         this.generateBuildUrl = function(opts) {
             var url = '/generate?r='+Math.random();
-            ['debug','embedResources','embedScript','minifyScript'].forEach(function(key){ // todo optimize
+            ['debug','embedResources','embedScript'].forEach(function(key){
                 if (opts[key]) url+='&'+key+'=1';
             });
             url+='&projectName='+editData.projectName;
@@ -2872,7 +2043,7 @@ window.app.
             'responseError': function(rejection) {
                 // do something on error
                 if(rejection.status!==200){
-                    ve.showError(rejection.data);
+                    window.showError(rejection.data);
                 }
                 return $q.reject(rejection);
             }

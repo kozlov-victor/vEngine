@@ -1,5 +1,10 @@
 
-ve_local.Renderer = function(){
+var bundle = require('bundle').instance();
+var collider = require('collider').instance();
+var keyboard = require('keyboard').instance();
+var glContext = require('glContext').instance();
+
+var Renderer = function(){
 
     var canvas;
     var ctx;
@@ -52,7 +57,7 @@ ve_local.Renderer = function(){
 
     this.init = function(){
         canvas = document.querySelector('canvas');
-        gameProps = ve_local.bundle.gameProps;
+        gameProps = bundle.gameProps;
         gameProps.globalScale = {};
         if (!canvas) {
             canvas = document.createElement('canvas');
@@ -65,9 +70,8 @@ ve_local.Renderer = function(){
             document.body.appendChild(canvas);
         }
         //ctx = new ve_local.CanvasContext();
-        ctx = new ve_local.GlContext();
+        ctx = glContext;
         ctx.init(canvas);
-        ve_local.rendererContext = ctx;
         rescale(gameProps.globalScale.x,gameProps.globalScale.y);
 
         drawScene();
@@ -94,7 +98,6 @@ ve_local.Renderer = function(){
     };
 
     this.cancel = function(){
-        cancelAnimationFrame(drawScene);
         canceled = true;
     };
 
@@ -102,6 +105,9 @@ ve_local.Renderer = function(){
         if (canceled) {
            return;
         }
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+
+
         reqAnimFrame(drawScene);
 
         if (!scene) return;
@@ -114,15 +120,22 @@ ve_local.Renderer = function(){
 
         scene.update(currTime,deltaTime);
 
-        ve_local.bundle.particleSystemList.forEach(function(p){
+        bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
         });
 
-        ve.keyboard.update();
+        keyboard.update();
     };
     this.setScene = function(_scene){
         scene = _scene;
-        ve_local.collider.setUp();
+        collider.setUp();
     };
 
+};
+
+var instance = null;
+
+module.exports.instance = function(){
+    if (instance==null) instance = new Renderer();
+    return instance;
 };

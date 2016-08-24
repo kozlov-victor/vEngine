@@ -1,24 +1,31 @@
 
-ve_local.SceneManager = function(){
+
+var SceneManager = function(){
 
     var self = this;
 
     this.currScene = null;
 
     var preloadAndSet = function(scene){
-        var q = new ve.utils.Queue();
+        var renderer = require('renderer').instance();
+        var soundManager = require('soundManager').instance();
+        var utils = require('utils');
+        var bundle = require('bundle').instance();
+
+        var q = new utils.Queue();
         q.onResolved = function(){
-            ve_local.renderer.setScene(scene);
+            renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
-        ve_local.bundle.particleSystemList.forEach(function(ps){
+        bundle.particleSystemList.forEach(function(ps){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
+        window.ve_local = window.ve_local || {};
         allSprSheets.asArray().forEach(function(spSheet){
-            var resourcePath = ve_local.resources?
+            var resourcePath = ve_local.resources? // todo
                 ve_local.resources[spSheet.resourcePath]:
                 './'+spSheet.resourcePath;
-            ve_local.renderer.
+            renderer.
                 getContext().
                 loadTextureInfo(
                 resourcePath,
@@ -31,12 +38,12 @@ ve_local.SceneManager = function(){
             q.addTask();
         });
         // todo remove slash??
-        ve_local.bundle.soundList.forEach(function(snd){
+        bundle.soundList.forEach(function(snd){
             q.addTask();
             var resourcePath = ve_local.resources?
             ve_local.resources[snd.resourcePath]:
             './'+snd.resourcePath;
-            ve_local.sound.loadSound(
+            soundManager.loadSound(
                 resourcePath,
                 {type:ve_local.resources?'base64':''},
                 function(buffer){
@@ -49,14 +56,16 @@ ve_local.SceneManager = function(){
     };
 
     this.setScene = function(scene){
-        if (!(scene instanceof ve.models.Scene)) throw 'object '+scene+' is not a scene';
+        var models = require('models');
+        if (!(scene instanceof models.Scene)) throw 'object '+scene+' is not a scene';
         this.currScene = scene;
         preloadAndSet(scene);
     };
 
     this.setSceneByName = function(sceneName){
         if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-        var scene = ve_local.bundle.sceneList.find({name: sceneName});
+        var bundle = require('bundle').instance();
+        var scene = bundle.sceneList.find({name: sceneName});
         if (!scene) throw 'no scene with name ' + sceneName + ' found';
         self.setScene(scene);
     };
@@ -65,4 +74,12 @@ ve_local.SceneManager = function(){
         return this.currScene;
     }
 
+};
+
+
+var instance = null;
+
+module.exports.instance = function(){
+    if (instance==null) instance = new SceneManager();
+    return instance;
 };

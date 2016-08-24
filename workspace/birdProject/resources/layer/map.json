@@ -62,8 +62,8 @@
                 "frameAnimationIds": [],
                 "rigid": 1,
                 "groupName": "",
-                "posX": 182,
-                "posY": 94,
+                "posX": 126,
+                "posY": 139,
                 "protoId": "3811_8241_75",
                 "id": "5334_0273_76"
             },
@@ -82,8 +82,8 @@
                 "frameAnimationIds": [],
                 "rigid": 0,
                 "groupName": "",
-                "posX": 238,
-                "posY": -9,
+                "posX": 100,
+                "posY": -1,
                 "protoId": "3811_8241_75",
                 "id": "4184_0987_4"
             }

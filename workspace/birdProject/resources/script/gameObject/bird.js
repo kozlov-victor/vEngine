@@ -1,8 +1,9 @@
 
 var ps;
+var bundle = require('bundle').instance(); 
 
 function onCreate(){
-    ps = ve_local.bundle.particleSystemList.get(0);
+    ps = bundle.particleSystemList.get(0);
 }
 
 function onUpdate(time) {

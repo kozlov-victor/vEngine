@@ -1,88 +1,109 @@
 
-(function(){
+var collections = require('collections');
+var consts = require('consts');
+var utils = require('utils');
+var behaviour = require('behaviour',{ignoreFail:true});
 
-    ve_local.Bundle = function(data){
+var Bundle = function(data){
 
-        this.spriteSheetList = new ve.collections.List();
-        this.gameObjectList = new ve.collections.List();
-        this.frameAnimationList = new ve.collections.List();
-        this.layerList = new ve.collections.List();
-        this.sceneList = new ve.collections.List();
-        this.layerList = new ve.collections.List();
-        this.fontList = new ve.collections.List();
-        this.soundList = new ve.collections.List();
-        this.particleSystemList = new ve.collections.List();
-        this.gameProps = {};
+    this.spriteSheetList = new collections.List();
+    this.gameObjectList = new collections.List();
+    this.frameAnimationList = new collections.List();
+    this.layerList = new collections.List();
+    this.sceneList = new collections.List();
+    this.layerList = new collections.List();
+    this.fontList = new collections.List();
+    this.soundList = new collections.List();
+    this.particleSystemList = new collections.List();
+    this.gameProps = {};
 
-        var self = this;
+    var self = this;
 
-        var toDataSource = function(ResourceClass,dataList,resourceList){
-            resourceList.clear();
-            dataList.forEach(function(item){
-                resourceList.add(new ResourceClass(item));
-            });
-        };
+    var toDataSource = function(ResourceClass,dataList,resourceList){
+        resourceList.clear();
+        dataList.forEach(function(item){
+            resourceList.add(new ResourceClass(item));
+        });
+    };
 
 
-        this.prepare = function(){
-            ve_local.RESOURCE_NAMES.forEach(function(itm){
-                toDataSource(ve.models[ve.utils.capitalize(itm)],data[itm],self[itm+'List']);
-            });
-            self.gameProps = data.gameProps;
-            data = null;
-        };
+    this.prepare = function(_data){
+        var models = require('models');
+        data = data || _data;
+        consts.RESOURCE_NAMES.forEach(function(itm){
+            toDataSource(models[utils.capitalize(itm)],data[itm],self[itm+'List']);
+        });
+        self.gameProps = data.gameProps;
+        data = null;
+    };
 
-        var applyIndividualBehaviour = function(model){
-            var behaviourFn = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
-            if (behaviourFn) {
-                var exports = {};
-                behaviourFn(exports,model);
-                exports.onCreate();
-                model.__updateIndividualBehaviour__ = function(deltaTime){
-                    exports.onUpdate(deltaTime);
-                }
-            } else {
-                model.__updateIndividualBehaviour__ = noop;
+    var applyIndividualBehaviour = function(model){
+        var behaviourFn = behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
+        if (behaviourFn) {
+            var exports = {};
+            behaviourFn(exports,model);
+            exports.onCreate();
+            model.__updateIndividualBehaviour__ = function(deltaTime){
+                exports.onUpdate(deltaTime);
             }
-
-        };
-
-        var applyCommonBehaviour = function(model){
-            var cbList = [];
-            if (!model._commonBehaviour) {
-                model.__updateCommonBehaviour__ = noop;
-                return;
-            }
-            model._commonBehaviour.forEach(function(cb){
-                var instance = new ve.commonBehaviour[cb.name]();
-                instance.initialize(model,cb.parameters);
-                instance.onCreate();
-                cbList.push(instance);
-            });
-            model.__updateCommonBehaviour__ = function(){
-                cbList.forEach(function(cb){
-                    cb.onUpdate();
-                });
-            }
-        };
-        
-        this.prepareGameObjectScripts = function(){
-            self.sceneList.forEach(function(scene){
-                scene.__onResourcesReady();
-                self.applyBehaviour(scene);
-                scene._layers.forEach(function(layer){
-                    layer._gameObjects.forEach(function(gameObject){
-                        self.applyBehaviour(gameObject);
-                    });
-                });
-            });
-        };
-
-        this.applyBehaviour = function(model){
-            applyCommonBehaviour(model);
-            applyIndividualBehaviour(model);
+        } else {
+            model.__updateIndividualBehaviour__ = consts.noop;
         }
 
     };
 
-})();
+    var applyCommonBehaviour = function(model){
+        var cbList = [];
+        if (!model._commonBehaviour) {
+            model.__updateCommonBehaviour__ = consts.noop;
+            return;
+        }
+        model._commonBehaviour.forEach(function(cb){
+            var instance = new behaviour.commonBehaviour[cb.name]();
+            instance.initialize(model,cb.parameters);
+            instance.onCreate();
+            cbList.push(instance);
+        });
+        model.__updateCommonBehaviour__ = function(){
+            cbList.forEach(function(cb){
+                cb.onUpdate();
+            });
+        }
+    };
+
+    this.applyBehaviourAll = function(){
+        self.sceneList.forEach(function(scene){
+            scene.__onResourcesReady();
+            self.applyBehaviour(scene);
+            scene._layers.forEach(function(layer){
+                layer._gameObjects.forEach(function(gameObject){
+                    self.applyBehaviour(gameObject);
+                });
+            });
+        });
+    };
+
+    this.applyBehaviour = function(model){
+        applyCommonBehaviour(model);
+        applyIndividualBehaviour(model);
+    };
+
+};
+
+var data;
+//<code>data = {
+//<code><%var l = Object.keys(commonResources).length;%>
+//<code><%Object.keys(commonResources).forEach(function(key,i){%>
+//<code>    <%-key%>:<%-commonResources[key]%><%if (i<l-1){%><%=','%><%}%>
+//<code><%})%>
+//<code>};
+
+var instance = null;
+
+module.exports.instance = function(){
+    if (instance==null) {
+        instance = new Bundle(data);
+        data = null;
+    }
+    return instance;
+};

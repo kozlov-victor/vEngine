@@ -53,12 +53,40 @@ module.exports.copyFolderSync = function cpf(src, dest) {
     }
 };
 
+//var walkSync = function(dir, filelist,contentType) {
+//    var fs = fs || require('fs'),
+//        files = fs.readdirSync(dir);
+//    filelist = filelist || [];
+//    files.forEach(function(file) {
+//        if (fs.statSync(dir+'/'+file).isDirectory()) {
+//            filelist = walkSync(dir + file + '/', filelist);
+//        }
+//        else {
+//            filelist.push({
+//                name:dir+'/'+file,
+//                content: fs.readFileSync(dir+'/'+file, contentType)
+//            });
+//        }
+//    });
+//    return filelist;
+//};
+
+
+
 module.exports.readDirSync = function(path,contentType){
-    var files = fs.readdirSync(path);
-    var res = [];
-    for(var i in files) {
-        res.push({name:files[i],content:fs.readFileSync(path+'/'+files[i], contentType)})
+
+    function _read(path,res){
+        fs.readdirSync(path).forEach(function(file){
+            if (fs.statSync(path+'/'+file).isDirectory()) {
+                _read(path+'/'+file,res);
+            } else {
+                res.push({name:file,fullName: path+'/'+file, content:fs.readFileSync(path+'/'+file, contentType)});
+            }
+        });
     }
+
+    var res = [];
+    _read(path,res);
     return res;
 };
 

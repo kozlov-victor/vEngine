@@ -1,6 +1,8 @@
 
-var bundle = require('bundle');
+var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
+var math = require('math');
+var sceneManager = require('sceneManager').instance();
 
 var Mouse = function(){
 
@@ -33,7 +35,7 @@ var Mouse = function(){
 
     var resolveClick = function(e){
         self.isMouseDown = true;
-        var scene = ve.sceneManager.getCurrScene();
+        var scene = sceneManager.getCurrScene();
         if (!scene) return;
         var point = {
             x: e.clientX / globalScale.x,
@@ -43,7 +45,7 @@ var Mouse = function(){
             var found = false;
             l._gameObjects.someReversed(function(g){
                 if (
-                    ve.Math.isPointInRect(point,g.getRect())
+                    math.isPointInRect(point,g.getRect())
                 ) {
                     g.trigger('click',{
                         screenX:point.x,
@@ -60,7 +62,7 @@ var Mouse = function(){
     };
 
     var resolveMouseMove = function(e){
-        var scene = ve.sceneManager.getCurrScene();
+        var scene = sceneManager.getCurrScene();
         scene.trigger('mouseMove',{
             screenX: e.clientX / globalScale.x,
             screenY: e.clientY / globalScale.y

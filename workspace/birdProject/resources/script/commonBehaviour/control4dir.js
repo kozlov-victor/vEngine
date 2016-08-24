@@ -6,6 +6,7 @@ Class.extend(
         initialize: function(_gameObj,_params){
             this._gameObject = _gameObj;
             this._parameters = _params;
+            this.keyboard = require('keyboard').instance();
         },
         onCreate: function(){
             var dirs = ['Left','Right','Up','Down'];
@@ -33,30 +34,30 @@ Class.extend(
         onUpdate: function(){
             var self = this;
             var go = self._gameObject;
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_UP)) {
+            if (this.keyboard.isPressed(ve.keyboard.KEY_UP)) {
                 go.velY = -self._parameters.velocity;
                 self._go('Up');
             }
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
+            if (this.keyboard.isPressed(ve.keyboard.KEY_DOWN)) {
                 go.velY = self._parameters.velocity;
                 self._go('Down');
             }
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
+            if (this.keyboard.isPressed(ve.keyboard.KEY_LEFT)) {
                 go.velX = -self._parameters.velocity;
                 self._go('Left');
             }
-            if (ve.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
+            if (this.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
                 go.velX = self._parameters.velocity;
                 self._go('Right');
             }
 
-            if (ve.keyboard.isJustReleased(ve.keyboard.KEY_LEFT)) {
+            if (this.keyboard.isJustReleased(ve.keyboard.KEY_LEFT)) {
                 self._stop('Left');
-            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT)) {
+            } else if (this.keyboard.isJustReleased(ve.keyboard.KEY_RIGHT)) {
                 self._stop('Right');
-            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_UP)) {
+            } else if (this.keyboard.isJustReleased(ve.keyboard.KEY_UP)) {
                 self._stop('Up');
-            } else if (ve.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)) {
+            } else if (this.keyboard.isJustReleased(ve.keyboard.KEY_DOWN)) {
                 self._stop('Down');
             }
         }

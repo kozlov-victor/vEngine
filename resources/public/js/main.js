@@ -57,7 +57,7 @@ window.app.
             'responseError': function(rejection) {
                 // do something on error
                 if(rejection.status!==200){
-                    ve.showError(rejection.data);
+                    window.showError(rejection.data);
                 }
                 return $q.reject(rejection);
             }

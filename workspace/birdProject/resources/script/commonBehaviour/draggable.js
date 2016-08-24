@@ -7,6 +7,7 @@ Class.extend(
         initialize: function(_gameObj,_params){
             this._gameObject = _gameObj;
             this._parameters = _params;
+            this.mouse = require('mouse').instance();
         },
         onCreate: function(){
             var self = this;
@@ -28,7 +29,7 @@ Class.extend(
             });
         },
         onUpdate: function(){
-            if (!ve.mouse.isMouseDown) this._mouseDown = false;
+            if (!this.mouse.isMouseDown) this._mouseDown = false;
         }
     },
     {

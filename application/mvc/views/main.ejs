@@ -6,17 +6,41 @@
     <link type="text/css" rel="stylesheet" href="/css/main.css">
     <link type="text/css" rel="stylesheet" href="/css/angular.css">
     <link type="text/css" rel="stylesheet" href="/css/contextMenu.css">
-    <script type="text/javascript" src="/js/lib/oop.js"></script>
+
+    <script type="text/javascript"
+            src="/addResource?name=lib.debug&ignoreEJS=1&ignoreCommonJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=lib.oop&ignoreEJS=1&ignoreCommonJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=lib.commonJS&ignoreEJS=1&ignoreCommonJS=1"></script>
+
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.root.consts"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.model.collections&ignoreEJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.model.models&ignoreEJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.misc.math&ignoreEJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.misc.utils&ignoreEJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.root.bundle&ignoreEJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.misc.math&ignoreEJS=1"></script>
+    <script type="text/javascript"
+            src="/addResource?name=modules.tmp.misc.utils&ignoreEJS=1"></script>
+
     <script>
-        <%-envVariables%>
-        ve_local.DEFAULT_CODE_SCRIPT = <%-JSON.stringify(defaultCodeScript)%>;
+        var DEFAULT_CODE_SCRIPT = <%-JSON.stringify(defaultCodeScript)%>;
     </script>
+
     <script type="text/javascript" src="/js/lib/angular.js"></script>
     <script type="text/javascript" src="/js/lib/angular-route.js"></script>
     <script type="text/javascript" src="/js/lib/jquery.js"></script>
     <script type="text/javascript">window.app = angular.module('main', ['ngRoute'])</script>
     <script type="text/javascript" src="/js/all.js"></script>
-    <script type="text/javascript" src="js/misc/debug.js"></script>
+
 </head>
     <body ng-app="main" ng-controller="mainCtrl">
 

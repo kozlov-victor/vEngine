@@ -8,6 +8,10 @@ app
         uiHelper
     ){
         var self = this;
+        var bundle = require('bundle').instance();
+        var collections = require('collections');
+        var models = require('models');
+
         var _loadResources = function(projectName){
             return new Promise(function(resolve){
                 $http({
@@ -16,18 +20,17 @@ app
                     data: {projectName:projectName}
                 }).
                 success(function (response) {
-                    ve_local.bundle = new ve_local.Bundle(response);
-                    ve_local.bundle.prepare();
-                    Object.keys(ve_local.bundle).forEach(function(key){
-                        if (ve_local.bundle[key] && ve_local.bundle[key].call) return;
-                        editData[key] = ve_local.bundle[key];
+                    bundle.prepare(response);
+                    Object.keys(bundle).forEach(function(key){
+                        if (bundle[key] && bundle[key].call) return;
+                        editData[key] = bundle[key];
                     });
-                    editData.gameProps = ve_local.bundle.gameProps;
-                    editData.commonBehaviourList = new ve.collections.List();
+                    editData.gameProps = bundle.gameProps;
+                    editData.commonBehaviourList = new collections.List();
                     response.commonBehaviour.forEach(function(cb){
-                        editData.commonBehaviourList.add(new ve.models.CommonBehaviour(cb));
+                        editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new ve.models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
@@ -41,7 +44,7 @@ app
                     return _loadResources(projectName);
                 }).
                 then(function(){
-                    if (!ve_local.bundle.sceneList.isEmpty()) editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
                     if (editData.currSceneInEdit) {
                         if (editData.currSceneInEdit._layers.size()) {
                             editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
@@ -84,7 +87,7 @@ app
             });
         };
         this.createOrEditResourceSimple = function(objResource){
-            this.createOrEditResource(objResource,objResource.constructor,ve_local.bundle[objResource.type+'List']);
+            this.createOrEditResource(objResource,objResource.constructor,bundle[objResource.type+'List']);
         };
         this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
@@ -171,7 +174,7 @@ app
             });
         };
         this.createOrEditLayer = function(l){
-            self.createOrEditResource(l,ve.models.Layer,ve_local.bundle.layerList,
+            self.createOrEditResource(l,models.Layer,bundle.layerList,
                 function(item){
                     if (item.type=='create') {
                         self.createOrEditObjectInResource(
@@ -183,7 +186,7 @@ app
                                 protoId:item.r.id
                             },
                             function(resp){
-                                var l = editData.currLayerInEdit.clone(ve.models.Layer);
+                                var l = editData.currLayerInEdit.clone(models.Layer);
                                 l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
