@@ -42,8 +42,8 @@
                 "_sprPosY": 0,
                 "velX": 0,
                 "velY": 0,
-                "posX": 67,
-                "posY": 105,
+                "posX": 21,
+                "posY": 65,
                 "protoId": "5139_0458_16",
                 "id": "4438_6727_4"
             },
@@ -62,8 +62,8 @@
                 "frameAnimationIds": [],
                 "rigid": 1,
                 "groupName": "",
-                "posX": 126,
-                "posY": 139,
+                "posX": 272,
+                "posY": 15,
                 "protoId": "3811_8241_75",
                 "id": "5334_0273_76"
             },
@@ -82,8 +82,8 @@
                 "frameAnimationIds": [],
                 "rigid": 0,
                 "groupName": "",
-                "posX": 100,
-                "posY": -1,
+                "posX": 31,
+                "posY": 82,
                 "protoId": "3811_8241_75",
                 "id": "4184_0987_4"
             }

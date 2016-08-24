@@ -36,10 +36,7 @@ module.exports.init = function(app) {
 
 
     app.get('/',function(req,res){
-        var s = new generatorController.Source();
-        generatorController.addEnvVariables(s);
         res.render('main',{
-            resourceNames:resourcesController.RESOURCE_NAMES,
             defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT
         });
     });

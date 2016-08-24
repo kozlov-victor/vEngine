@@ -85,38 +85,7 @@ var Source = function(){
     };
 };
 
-var addEnvVariables = function(sourceMain) {
-    sourceMain.addTemplate(
-        'resources/generatorResources/envVariables.js',
-        {
-            resourceNames:resourcesController.RESOURCE_NAMES
-        }
-    );
-};
 
-var addStaticFiles = function(sourceMain,opts){
-    sourceMain.addTemplates([
-        'resources/public/js/lib/oop.js',
-        'resources/public/js/dataStructure/collections.js',
-        'resources/public/js/dataStructure/models.js',
-        'resources/public/js/dataStructure/bundle.js',
-        'resources/public/js/dataStructure/utils.js',
-        'resources/generatorResources/renderer.js',
-        'resources/generatorResources/canvasContext.js',
-        'resources/generatorResources/glContext.js',
-        'resources/generatorResources/sceneManager.js',
-        'resources/generatorResources/modules/keyboard.js',
-        'resources/generatorResources/modules/mouse.js',
-        'resources/generatorResources/modules/physics.js',
-        'resources/generatorResources/modules/sound.js',
-        'resources/generatorResources/modules/collider.js'
-        //'resources/generatorResources/modules/gameLoop.js'
-    ],{opts:opts});
-};
-
-var addDebug = function(sourceMain){
-    sourceMain.addFile('resources/public/js/misc/debug.js');
-};
 
 var createResourcesParams = function(opts){
     var templateObj = {};
@@ -150,9 +119,6 @@ var createCommonBehaviourParams = function(opts){
     return res;
 };
 
-var addGameResourcesDesc = function(sourceMain,opts){
-    sourceMain.addTemplate('resources/generatorResources/main.js',createResourcesParams(opts));
-};
 
 var processGameResourcesFiles = function(sourceMain,opts){
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
@@ -196,20 +162,6 @@ var processGameResourcesFiles = function(sourceMain,opts){
 
 };
 
-var addCommonBehaviour = function(sourceMain,opts){
-    var gameObjects = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/gameObject/map.json'));
-    var fileNames = {};
-    gameObjects.forEach(function(go){
-        go.commonBehaviour.forEach(function(cb){
-            fileNames[cb.name] = 1;
-        });
-    });
-    Object.keys(fileNames).forEach(function(name){
-        var res = 've.commonBehaviour.'+name+' = '+
-            fs.readFileSync('workspace/'+opts.projectName+'/resources/script/commonBehaviour/'+name+'.js');
-        sourceMain.add(res);
-    });
-};
 
 var unused = function(){
     //nodeHint.hint(
@@ -242,16 +194,10 @@ module.exports.generate = function(opts,callback){
     var sourceMain = new Source();
     sourceMain.addCommonTemplates('resources/generatorResources/lib');
     sourceMain.addCommonJsModules(
-        'resources/generatorResources/modules/tmp',
+        'resources/generatorResources/modules',
         prepareGeneratorParams(opts)
     );
     sourceMain.add("require('index');"); // add entry point
-
-    //addEnvVariables(sourceMain,opts);
-    //addStaticFiles(sourceMain,opts);
-    //addCommonBehaviour(sourceMain,opts);
-    //if (opts.debug) addDebug(sourceMain,opts);
-    //addGameResourcesDesc(sourceMain,opts);
 
     processGameResourcesFiles(sourceMain,opts);
 
@@ -259,4 +205,3 @@ module.exports.generate = function(opts,callback){
 };
 
 module.exports.Source = Source;
-module.exports.addEnvVariables = addEnvVariables;
