@@ -126,7 +126,6 @@ var GlContext = function(){
         };
         //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
         img.src = url;
-        document.body.appendChild(img);
     };
 
     this.drawImage = function(

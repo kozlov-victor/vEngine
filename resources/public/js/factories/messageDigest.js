@@ -5,10 +5,6 @@ window.app
 
     .factory('messageDigest',function(resourceDao,utils){
 
-        //window.addEventListener('message',function(e){
-        //    console.log('accepted message',e);
-        //});
-
         var respondToTarget = function(target,data){
             target && target.postMessage(data,'*');
         };

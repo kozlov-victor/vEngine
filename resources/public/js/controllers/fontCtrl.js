@@ -18,6 +18,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
+        var models = require('models'), bundle = require('bundle').instance();
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -98,8 +99,8 @@ window.app.
             font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,font.fontColor));
             resourceDao.createOrEditResource(
                 font,
-                ve.models.Font,
-                ve_local.bundle.fontList,
+                models.Font,
+                bundle.fontList,
                 function(res){
                     if (res.type=='edit') {
                         updateObjectFonts();
@@ -111,7 +112,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new ve.models.Font();
+                editData.currFontInEdit = new models.Font();
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();
             }

@@ -1,5 +1,6 @@
+
 window.app.
-    controller('animationCtrl', function (
+    controller('frameAnimationCtrl', function (
         $scope,
         $http,
         $sce,
@@ -15,6 +16,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         var isStopped = false;
 
@@ -30,20 +32,23 @@ window.app.
             s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
             resourceDao.createOrEditResource(
                 s.editData.currFrAnimationInEdit,
-                ve.models.FrameAnimation,
-                ve_local.bundle.frameAnimationList,
+                models.FrameAnimation,
+                bundle.frameAnimationList,
                 function(res){
                     if (res.type=='create') {
+
+                        s.editData.currFrAnimationInEdit.id = res.r.id;
                         s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
-                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
+
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
-                            ve.models.GameObject,
-                            ve_local.bundle.gameObjectList,
-                            null,true
+                            models.GameObject,
+                            bundle.gameObjectList,
+                            function(){
+                                s.editData.currGameObjectInEdit._frameAnimations.add(s.editData.currFrAnimationInEdit);
+                            },
+                            true
                         );
-                    } else {
-                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
                     }
                 }
             );
@@ -89,12 +94,13 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
+                s.editData.currFrAnimationInEdit = new models.FrameAnimation();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             } else if (dialogState.opName=='edit'){
                 s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             }
+            dialogState.opName = null;
         })();
 
 

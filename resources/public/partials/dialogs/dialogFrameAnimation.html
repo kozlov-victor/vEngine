@@ -20,10 +20,10 @@
                 <div>
                     <button
                             ng-click="playAnimation()"
-                            ng-disabled="!frmCreateAnimation.$valid" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
+                            ng-disabled="!frmCreateFrameAnimation.$valid" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
                     <button
                             ng-click="stopAnimation()"
-                            ng-disabled="!frmCreateAnimation.$valid" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
+                            ng-disabled="!frmCreateFrameAnimation.$valid" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
                 </div>
 
 
@@ -109,6 +109,6 @@
 </table>
 <button
         ng-click="createOrEditFrAnimation()"
-        ng-disabled="!(frmCreateAnimation.$valid)">
+        ng-disabled="!(frmCreateFrameAnimation.$valid)">
     {{editData.currFrAnimationInEdit.id?i18n.edit:i18n.create}}
 </button>

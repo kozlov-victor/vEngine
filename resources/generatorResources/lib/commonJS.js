@@ -1,6 +1,6 @@
 var modules = {}, require = function(name,opts){
     opts = opts || {};
-    console.trace('require: ',name);
+    //console.trace('require: ',name);
     var moduleObj = modules[name];
 
     if (!moduleObj) {

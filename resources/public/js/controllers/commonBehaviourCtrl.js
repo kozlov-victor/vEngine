@@ -16,6 +16,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
@@ -36,7 +37,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
                 s.editData.currCommonBehaviourInEdit.name = name;
                 var obj =
                     editData.commonBehaviourList.find({

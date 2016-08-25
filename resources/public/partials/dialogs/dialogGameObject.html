@@ -98,7 +98,7 @@
                     <div class="cell vAlign">
                         <span>{{animItm.name}}</span>
                     </div>
-                    <div class="cell vAlign rightAlign" ng-click="showDialog('animation','edit',animItm)">
+                    <div class="cell vAlign rightAlign" ng-click="showDialog('frameAnimation','edit',animItm)">
                         edit
                     </div>
                     <div class="cell pointer vAlign rightAlign" ng-click="deleteFrameAnimation(animItm)">
@@ -108,7 +108,7 @@
             </div>
         </td>
         <td>
-            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showDialog('animation','create')">+</button>
+            <button ng-disabled="!editData.currGameObjectInEdit.id" ng-click="showDialog('frameAnimation','create')">+</button>
         </td>
     </tr>
     <tr>

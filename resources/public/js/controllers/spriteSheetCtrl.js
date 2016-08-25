@@ -15,6 +15,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -36,14 +37,14 @@ window.app.
         var updateObjectSpriteSheets = function(){
             var _setSpriteSheet = function(go){
                 if (go.spriteSheetId) {
-                    var sprSheet = ve_local.bundle.spriteSheetList.find({id: go.spriteSheetId});
+                    var sprSheet = bundle.spriteSheetList.find({id: go.spriteSheetId});
                     go.setSpriteSheet(sprSheet);
                 }
             };
             utils.eachObjectOnScene(function(go){
                 _setSpriteSheet(go);
             });
-            ve_local.bundle.gameObjectList.forEach(function(go){
+            bundle.gameObjectList.forEach(function(go){
                 _setSpriteSheet(go);
             });
         };
@@ -51,8 +52,8 @@ window.app.
         s.createOrEditSpriteSheet = function(){
             resourceDao.createOrEditResource(
                 s.editData.currSpriteSheetInEdit,
-                ve.models.SpriteSheet,
-                ve_local.bundle.spriteSheetList,
+                models.SpriteSheet,
+                bundle.spriteSheetList,
                 function(res){
                     if (res.type=='edit') {
                         updateObjectSpriteSheets();
@@ -64,7 +65,7 @@ window.app.
         (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
+                editData.currSpriteSheetInEdit = new models.SpriteSheet({});
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();

@@ -4,6 +4,8 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
+        var models = require('models'), bundle = require('bundle').instance();
+
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
             if (!spriteSheet) return;
@@ -119,7 +121,7 @@ window.app
 
         this.createAceCompleter = function(){
             var res = [];
-            var go = new ve.models.GameObject();
+            var go = new models.GameObject();
             go.toJSON_Array().forEach(function(item){
                 res.push({
                     name:item.key,

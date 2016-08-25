@@ -15,11 +15,12 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
+        var models = require('models'), bundle = require('bundle').instance();
 
 
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                var dataToEdit = s.editData.currLayerInEdit.clone(ve.models.Layer);
+                var dataToEdit = s.editData.currLayerInEdit.clone(models.Layer);
                 dataToEdit.id = dataToEdit.protoId;
                 resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
@@ -31,7 +32,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currLayerInEdit = new ve.models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
             } else if (dialogState.opName=='edit'){
                 editData.currLayerInEdit = dialogState.opObject.clone();

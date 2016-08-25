@@ -15,6 +15,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -27,9 +28,11 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,models.GameObject,bundle.gameObjectList,function(op){
                 if (op.type=='create') {
-                    resourceDao.createFile(s.editData.currGameObjectInEdit.name+'.js','script/gameObject',ve_local.DEFAULT_CODE_SCRIPT);
+                    resourceDao.createFile(
+                        s.editData.currGameObjectInEdit.name+'.js',
+                        'script/gameObject',window.DEFAULT_CODE_SCRIPT);
                 }
             });
         };
@@ -43,8 +46,8 @@ window.app.
                 s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    ve.models.GameObject,
-                    ve_local.bundle.gameObjectList,
+                    models.GameObject,
+                    bundle.gameObjectList,
                     null,true
                 );
             });
@@ -73,8 +76,8 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                var targetSpriteSheet = ve_local.bundle.spriteSheetList.getLast();
-                editData.currGameObjectInEdit = new ve.models.GameObject({
+                var targetSpriteSheet = bundle.spriteSheetList.getLast();
+                editData.currGameObjectInEdit = new models.GameObject({
                     spriteSheetId:
                     targetSpriteSheet &&
                     targetSpriteSheet.id
@@ -84,8 +87,8 @@ window.app.
                 }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
-                editData.currGameObjectInEdit = dialogState.opObject.clone(ve.models.GameObject);
-                editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
+                editData.currGameObjectInEdit = dialogState.opObject.clone(models.GameObject);
+                editData.currGameObjectInEdit.spriteSheet = bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
 
             s.availableCommonBehaviour = [];

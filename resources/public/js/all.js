@@ -1,104 +1,3 @@
-window.app.
-    controller('animationCtrl', function (
-        $scope,
-        $http,
-        $sce,
-        editData,
-        uiHelper,
-        i18n,
-        utils,
-        resourceDao
-    ) {
-        var s = $scope;
-        s.editData = editData;
-        s.uiHelper = uiHelper;
-        s.i18n = i18n.getAll();
-        s.utils = utils;
-        s.resourceDao = resourceDao;
-
-        var isStopped = false;
-
-        s.toArray = function(expr) {
-            try {
-              return JSON.parse('['+expr+']');
-            } catch(e){
-                return [];
-            }
-        };
-
-        s.createOrEditFrAnimation = function(){
-            s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
-            resourceDao.createOrEditResource(
-                s.editData.currFrAnimationInEdit,
-                ve.models.FrameAnimation,
-                ve_local.bundle.frameAnimationList,
-                function(res){
-                    if (res.type=='create') {
-                        s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
-                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
-                        resourceDao.createOrEditResource(
-                            s.editData.currGameObjectInEdit,
-                            ve.models.GameObject,
-                            ve_local.bundle.gameObjectList,
-                            null,true
-                        );
-                    } else {
-                        s.editData.currGameObjectInEdit.constructor(); // todo WHAT IS IT?????
-                    }
-                }
-            );
-        };
-
-        s.allIndexes = function(){
-            var res = utils.getArray(s.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
-            return res.join(',')
-        };
-
-        s.playAnimation = function(){
-            try {
-                s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
-            } catch(e){}
-            s.editData.currFrAnimationInEdit.constructor();
-            setTimeout(function(){
-                s.editData.currFrAnimationInEdit.play();
-                s.editData.currFrAnimationInEdit.update(new Date().getTime());
-                var i = s.editData.currGameObjectInEdit.currFrameIndex;
-                s.editData.currGameObjectInEdit.setFrameIndex(i);
-                s.$apply();
-                if (isStopped) {
-                    isStopped = false;
-                    return;
-                }
-                if (uiHelper.dialogName=='frmCreateAnimation') setTimeout(s.playAnimation,50);
-            },0);
-        };
-
-        s.stopAnimation = function(){
-            s.editData.currFrAnimationInEdit.stop();
-            isStopped = true;
-        };
-
-        s.setRange = function(from,to) {
-            if (isNaN(from) || isNaN(to)) return;
-            s.editData.currFrAnimationInEdit.frames = [];
-            for (var i=from;i<=to;i++) {
-                s.editData.currFrAnimationInEdit.frames.push(i);
-            }
-        };
-
-        (function(){
-            var dialogState = uiHelper.getDialogState();
-            if (dialogState.opName=='create') {
-                s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
-                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            } else if (dialogState.opName=='edit'){
-                s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
-                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            }
-        })();
-
-
-    });
 
 
 window.app.
@@ -158,6 +57,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
@@ -178,7 +78,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
                 s.editData.currCommonBehaviourInEdit.name = name;
                 var obj =
                     editData.commonBehaviourList.find({
@@ -213,6 +113,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
+        var models = require('models'), bundle = require('bundle').instance();
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -293,8 +194,8 @@ window.app.
             font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,font.fontColor));
             resourceDao.createOrEditResource(
                 font,
-                ve.models.Font,
-                ve_local.bundle.fontList,
+                models.Font,
+                bundle.fontList,
                 function(res){
                     if (res.type=='edit') {
                         updateObjectFonts();
@@ -306,7 +207,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new ve.models.Font();
+                editData.currFontInEdit = new models.Font();
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();
             }
@@ -318,6 +219,113 @@ window.app.
                 s.$apply();
             })
         })();
+
+    });
+
+window.app.
+    controller('frameAnimationCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+
+        var isStopped = false;
+
+        s.toArray = function(expr) {
+            try {
+              return JSON.parse('['+expr+']');
+            } catch(e){
+                return [];
+            }
+        };
+
+        s.createOrEditFrAnimation = function(){
+            s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
+            resourceDao.createOrEditResource(
+                s.editData.currFrAnimationInEdit,
+                models.FrameAnimation,
+                bundle.frameAnimationList,
+                function(res){
+                    if (res.type=='create') {
+
+                        s.editData.currFrAnimationInEdit.id = res.r.id;
+                        s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
+
+                        resourceDao.createOrEditResource(
+                            s.editData.currGameObjectInEdit,
+                            models.GameObject,
+                            bundle.gameObjectList,
+                            function(){
+                                s.editData.currGameObjectInEdit._frameAnimations.add(s.editData.currFrAnimationInEdit);
+                            },
+                            true
+                        );
+                    }
+                }
+            );
+        };
+
+        s.allIndexes = function(){
+            var res = utils.getArray(s.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
+            return res.join(',')
+        };
+
+        s.playAnimation = function(){
+            try {
+                s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
+            } catch(e){}
+            s.editData.currFrAnimationInEdit.constructor();
+            setTimeout(function(){
+                s.editData.currFrAnimationInEdit.play();
+                s.editData.currFrAnimationInEdit.update(new Date().getTime());
+                var i = s.editData.currGameObjectInEdit.currFrameIndex;
+                s.editData.currGameObjectInEdit.setFrameIndex(i);
+                s.$apply();
+                if (isStopped) {
+                    isStopped = false;
+                    return;
+                }
+                if (uiHelper.dialogName=='frmCreateAnimation') setTimeout(s.playAnimation,50);
+            },0);
+        };
+
+        s.stopAnimation = function(){
+            s.editData.currFrAnimationInEdit.stop();
+            isStopped = true;
+        };
+
+        s.setRange = function(from,to) {
+            if (isNaN(from) || isNaN(to)) return;
+            s.editData.currFrAnimationInEdit.frames = [];
+            for (var i=from;i<=to;i++) {
+                s.editData.currFrAnimationInEdit.frames.push(i);
+            }
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currFrAnimationInEdit = new models.FrameAnimation();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            } else if (dialogState.opName=='edit'){
+                s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            }
+            dialogState.opName = null;
+        })();
+
 
     });
 window.app.
@@ -337,6 +345,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -349,9 +358,11 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,models.GameObject,bundle.gameObjectList,function(op){
                 if (op.type=='create') {
-                    resourceDao.createFile(s.editData.currGameObjectInEdit.name+'.js','script/gameObject',ve_local.DEFAULT_CODE_SCRIPT);
+                    resourceDao.createFile(
+                        s.editData.currGameObjectInEdit.name+'.js',
+                        'script/gameObject',window.DEFAULT_CODE_SCRIPT);
                 }
             });
         };
@@ -365,8 +376,8 @@ window.app.
                 s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    ve.models.GameObject,
-                    ve_local.bundle.gameObjectList,
+                    models.GameObject,
+                    bundle.gameObjectList,
                     null,true
                 );
             });
@@ -395,8 +406,8 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                var targetSpriteSheet = ve_local.bundle.spriteSheetList.getLast();
-                editData.currGameObjectInEdit = new ve.models.GameObject({
+                var targetSpriteSheet = bundle.spriteSheetList.getLast();
+                editData.currGameObjectInEdit = new models.GameObject({
                     spriteSheetId:
                     targetSpriteSheet &&
                     targetSpriteSheet.id
@@ -406,8 +417,8 @@ window.app.
                 }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
-                editData.currGameObjectInEdit = dialogState.opObject.clone(ve.models.GameObject);
-                editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
+                editData.currGameObjectInEdit = dialogState.opObject.clone(models.GameObject);
+                editData.currGameObjectInEdit.spriteSheet = bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
 
             s.availableCommonBehaviour = [];
@@ -442,11 +453,12 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
+        var models = require('models'), bundle = require('bundle').instance();
 
 
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                var dataToEdit = s.editData.currLayerInEdit.clone(ve.models.Layer);
+                var dataToEdit = s.editData.currLayerInEdit.clone(models.Layer);
                 dataToEdit.id = dataToEdit.protoId;
                 resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
@@ -458,7 +470,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currLayerInEdit = new ve.models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
             } else if (dialogState.opName=='edit'){
                 editData.currLayerInEdit = dialogState.opObject.clone();
@@ -542,12 +554,13 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models');
 
 
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currParticleSystemInEdit = new ve.models.ParticleSystem({
+                editData.currParticleSystemInEdit = new models.ParticleSystem({
                     gameObjectId:(editData.gameObjectList.getLast() && editData.gameObjectList.getLast().id)
                 });
             } else if (dialogState.opName=='edit'){
@@ -684,18 +697,19 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.createOrEditScene = function(){
             resourceDao.
-                createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList,
+                createOrEditResource(s.editData.currSceneInEdit,models.Scene,bundle.sceneList,
                 function(resp){
-                    if (ve_local.bundle.sceneList.size()==1) {
-                        s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (bundle.sceneList.size()==1) {
+                        s.editData.currSceneInEdit = bundle.sceneList.get(0);
                     }
                     if (resp.type=='create') {
                         // todo currLayerInEdit can not be null
-                        //resourceDao.createOrEditLayer(new ve.models.Layer({name:'newLayer'}));
-                        resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',ve_local.DEFAULT_CODE_SCRIPT);
+                        //resourceDao.createOrEditLayer(new models.Layer({name:'newLayer'}));
+                        resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',window.DEFAULT_CODE_SCRIPT);
                     }
                 });
         };
@@ -752,7 +766,7 @@ window.app.
             var needNewName = false;
             if (!editDataObj.name) {
                 editDataObj.name = editDataObj.subType +
-                    (++ve.models[ve.utils.capitalize(editDataObj.subType)]._cnt);
+                    (++models[utils.capitalize(editDataObj.subType)]._cnt);
                 needNewName = true;
             }
 
@@ -762,7 +776,7 @@ window.app.
                 'gameObjectProps',editDataObj,
                 function(resp){
                     if (resp.type=='create') {
-                        var newGameObj = obj.clone(ve.models.GameObject);
+                        var newGameObj = obj.clone(models.GameObject);
                         newGameObj.posX = x;
                         newGameObj.posY = y;
                         newGameObj.protoId = newGameObj.id;
@@ -811,7 +825,7 @@ window.app.
 
 
         s.editGameObjectFromRightMenu = function(obj){
-            var fnt = ve_local.bundle.fontList.find({id:obj.fontId});
+            var fnt = bundle.fontList.find({id:obj.fontId});
             s.editData.currSceneGameObjectInEdit._font = fnt;
             s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
             obj.setText(obj.text);
@@ -826,9 +840,9 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSceneInEdit = new ve.models.Scene({});
+                editData.currSceneInEdit = new models.Scene({});
             } else if (dialogState.opName=='edit'){
-                editData.currSceneInEdit = dialogState.opObject.clone(ve.models.Scene);
+                editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
             }
             uiHelper.opName = null;
 
@@ -855,6 +869,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.onSoundUpload = function(file,src){
             s.soundUrl = $sce.trustAsResourceUrl(src);
@@ -864,15 +879,15 @@ window.app.
         s.createOrEditSound = function(snd){
             resourceDao.createOrEditResource(
                 s.editData.currSoundInEdit,
-                ve.models.Sound,
-                ve_local.bundle.soundList
+                models.Sound,
+                bundle.soundList
             );
         };
 
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSoundInEdit = new ve.models.Sound({});
+                editData.currSoundInEdit = new models.Sound({});
             } else if (dialogState.opName=='edit'){
                 editData.currSoundInEdit = dialogState.opObject.clone();
             }
@@ -902,6 +917,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -923,14 +939,14 @@ window.app.
         var updateObjectSpriteSheets = function(){
             var _setSpriteSheet = function(go){
                 if (go.spriteSheetId) {
-                    var sprSheet = ve_local.bundle.spriteSheetList.find({id: go.spriteSheetId});
+                    var sprSheet = bundle.spriteSheetList.find({id: go.spriteSheetId});
                     go.setSpriteSheet(sprSheet);
                 }
             };
             utils.eachObjectOnScene(function(go){
                 _setSpriteSheet(go);
             });
-            ve_local.bundle.gameObjectList.forEach(function(go){
+            bundle.gameObjectList.forEach(function(go){
                 _setSpriteSheet(go);
             });
         };
@@ -938,8 +954,8 @@ window.app.
         s.createOrEditSpriteSheet = function(){
             resourceDao.createOrEditResource(
                 s.editData.currSpriteSheetInEdit,
-                ve.models.SpriteSheet,
-                ve_local.bundle.spriteSheetList,
+                models.SpriteSheet,
+                bundle.spriteSheetList,
                 function(res){
                     if (res.type=='edit') {
                         updateObjectSpriteSheets();
@@ -951,7 +967,7 @@ window.app.
         (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
+                editData.currSpriteSheetInEdit = new models.SpriteSheet({});
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
@@ -979,6 +995,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         (function(){
 
@@ -1450,10 +1467,6 @@ window.app
 
     .factory('messageDigest',function(resourceDao,utils){
 
-        //window.addEventListener('message',function(e){
-        //    console.log('accepted message',e);
-        //});
-
         var respondToTarget = function(target,data){
             target && target.postMessage(data,'*');
         };
@@ -1830,6 +1843,8 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
+        var models = require('models'), bundle = require('bundle').instance();
+
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
             if (!spriteSheet) return;
@@ -1945,7 +1960,7 @@ window.app
 
         this.createAceCompleter = function(){
             var res = [];
-            var go = new ve.models.GameObject();
+            var go = new models.GameObject();
             go.toJSON_Array().forEach(function(item){
                 res.push({
                     name:item.key,

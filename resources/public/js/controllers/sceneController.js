@@ -16,18 +16,19 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.createOrEditScene = function(){
             resourceDao.
-                createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList,
+                createOrEditResource(s.editData.currSceneInEdit,models.Scene,bundle.sceneList,
                 function(resp){
-                    if (ve_local.bundle.sceneList.size()==1) {
-                        s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (bundle.sceneList.size()==1) {
+                        s.editData.currSceneInEdit = bundle.sceneList.get(0);
                     }
                     if (resp.type=='create') {
                         // todo currLayerInEdit can not be null
-                        //resourceDao.createOrEditLayer(new ve.models.Layer({name:'newLayer'}));
-                        resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',ve_local.DEFAULT_CODE_SCRIPT);
+                        //resourceDao.createOrEditLayer(new models.Layer({name:'newLayer'}));
+                        resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',window.DEFAULT_CODE_SCRIPT);
                     }
                 });
         };
@@ -84,7 +85,7 @@ window.app.
             var needNewName = false;
             if (!editDataObj.name) {
                 editDataObj.name = editDataObj.subType +
-                    (++ve.models[ve.utils.capitalize(editDataObj.subType)]._cnt);
+                    (++models[utils.capitalize(editDataObj.subType)]._cnt);
                 needNewName = true;
             }
 
@@ -94,7 +95,7 @@ window.app.
                 'gameObjectProps',editDataObj,
                 function(resp){
                     if (resp.type=='create') {
-                        var newGameObj = obj.clone(ve.models.GameObject);
+                        var newGameObj = obj.clone(models.GameObject);
                         newGameObj.posX = x;
                         newGameObj.posY = y;
                         newGameObj.protoId = newGameObj.id;
@@ -143,7 +144,7 @@ window.app.
 
 
         s.editGameObjectFromRightMenu = function(obj){
-            var fnt = ve_local.bundle.fontList.find({id:obj.fontId});
+            var fnt = bundle.fontList.find({id:obj.fontId});
             s.editData.currSceneGameObjectInEdit._font = fnt;
             s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
             obj.setText(obj.text);
@@ -158,9 +159,9 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSceneInEdit = new ve.models.Scene({});
+                editData.currSceneInEdit = new models.Scene({});
             } else if (dialogState.opName=='edit'){
-                editData.currSceneInEdit = dialogState.opObject.clone(ve.models.Scene);
+                editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
             }
             uiHelper.opName = null;
 
