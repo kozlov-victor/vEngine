@@ -20,7 +20,6 @@ window.app
         res.currParticleSystemInEdit = null;
         res.currProjectInEdit = null;
 
-
         res.userInterfaceList = new collections.List();
 
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
@@ -28,6 +27,11 @@ window.app
 
         res.projectName = undefined;
         res.projects = null;
+        res.buildOpts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
 
         return res;
     })

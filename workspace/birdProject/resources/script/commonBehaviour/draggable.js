@@ -8,6 +8,7 @@ Class.extend(
             this._gameObject = _gameObj;
             this._parameters = _params;
             this.mouse = require('mouse').instance();
+            this.sceneManager = require('sceneManager').instance();
         },
         onCreate: function(){
             var self = this;
@@ -15,7 +16,7 @@ Class.extend(
             self._mouseDown = false;
             var mX = 0;
             var mY = 0;
-            var scene = g.getScene();
+            var scene = this.sceneManager.getCurrScene(); // todo problems on scene change?
             g.on('click',function(e){
                 self._mouseDown = true;
                 mX = e.objectX;

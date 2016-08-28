@@ -9,6 +9,7 @@ var modules = {}, require = function(name,opts){
             throw 'can not found module with name ' + (name || '(name not specified)');
         } else  {
             return {
+                fake:true,
                 instance: function(){
                     return {fake:true}
                 }

@@ -38,7 +38,7 @@ var Bundle = function(data){
     };
 
     var applyIndividualBehaviour = function(model){
-        var behaviourFn = behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
+        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
         if (behaviourFn) {
             var exports = {};
             behaviourFn(exports,model);
@@ -53,6 +53,8 @@ var Bundle = function(data){
     };
 
     var applyCommonBehaviour = function(model){
+
+        if (behaviour.fake) return; // this is editor mode
         var cbList = [];
         if (!model._commonBehaviour) {
             model.__updateCommonBehaviour__ = consts.noop;
@@ -88,15 +90,21 @@ var Bundle = function(data){
         applyIndividualBehaviour(model);
     };
 
+    //<code>this.embeddedResources = {};
+    //<code>this.embeddedResources.data = <%- JSON.stringify(embeddedResources)%>;
+    //<code>this.embeddedResources.isEmbedded = <%- Object.keys(embeddedResources).length>0 %>;
+
 };
 
 var data;
+
 //<code>data = {
 //<code><%var l = Object.keys(commonResources).length;%>
 //<code><%Object.keys(commonResources).forEach(function(key,i){%>
 //<code>    <%-key%>:<%-commonResources[key]%><%if (i<l-1){%><%=','%><%}%>
 //<code><%})%>
 //<code>};
+
 
 var instance = null;
 

@@ -18,15 +18,9 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        s.opts = {
-            debug: false,
-            embedResources: false,
-            embedScript: false
-        };
-
         s.build = function(){
             $http({
-                url: utils.generateBuildUrl(s.opts),
+                url: utils.generateBuildUrl(editData.buildOpts),
                 method: "GET"
             }).
             success(function (resp) {
@@ -68,6 +62,8 @@ window.app.
                         obj.id = resp.r.id;
                         s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
                         s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
+                        var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        dialogStateObj.commonBehaviour.push(obj.toJSON());
                     }
                     uiHelper.closeDialog();
                 }
@@ -79,12 +75,16 @@ window.app.
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
-                s.editData.currCommonBehaviourInEdit.name = name;
+                s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
                 var obj =
                     editData.commonBehaviourList.find({
-                        name: name
+                        name: dialogState.opObject
                     });
-                if (obj) s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
+                if (obj) {
+                    var cloned = obj.clone();
+                    s.editData.currCommonBehaviourInEdit.parameters = cloned.parameters;
+                    s.editData.currCommonBehaviourInEdit.description = cloned.description;
+                }
             } else if (dialogState.opName=='edit'){
                 s.editData.currCommonBehaviourInEdit = dialogState.opObject.clone();
             }
@@ -261,14 +261,16 @@ window.app.
                     if (res.type=='create') {
 
                         s.editData.currFrAnimationInEdit.id = res.r.id;
-                        s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
+                        var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        dialogStateObj.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
+                        dialogStateObj._frameAnimations.add(s.editData.currFrAnimationInEdit);
 
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
                             models.GameObject,
                             bundle.gameObjectList,
                             function(){
-                                s.editData.currGameObjectInEdit._frameAnimations.add(s.editData.currFrAnimationInEdit);
+
                             },
                             true
                         );
@@ -297,7 +299,7 @@ window.app.
                     isStopped = false;
                     return;
                 }
-                if (uiHelper.dialogName=='frmCreateAnimation') setTimeout(s.playAnimation,50);
+                if (uiHelper.dialogName=='frmCreateFrameAnimation') setTimeout(s.playAnimation,50);
             },0);
         };
 
@@ -323,7 +325,6 @@ window.app.
                 s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             }
-            dialogState.opName = null;
         })();
 
 
@@ -595,9 +596,42 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
+        editData.currParticleSystemInEdit.emit(100,100);
+
+        var prevTime = null;
+        var update = function(){
+
+            var currTime = Date.now();
+            if (!prevTime) prevTime = currTime;
+            var delta = currTime - prevTime;
+            prevTime = currTime;
+            editData.currParticleSystemInEdit._particles.forEach(function(p){
+
+                p._currFrameAnimation && p._currFrameAnimation.update(currTime);
+                var deltaX = p.velX * delta / 1000;
+                var deltaY = p.velY * delta / 1000;
+                p.posX = p.posX+deltaX;
+                p.posY = p.posY+deltaY;
+
+                if (!p._timeCreated) p._timeCreated = currTime;
+                if (currTime - p._timeCreated > p.liveTime) {
+                    editData.currParticleSystemInEdit._particles.splice(editData.currParticleSystemInEdit._particles.indexOf(p),1);
+                }
+
+                s.$apply();
+                if (uiHelper.dialogName!='frmCreateParticleSystemPreview') clearInterval(0);
+            });
+        };
+
+        s.emit = function(e){
+            editData.currParticleSystemInEdit.emit(e.clientX,e.clientY);
+        };
+
+        setInterval(function(){
+            update();
+        },10);
+
         (function(){
-
-
 
         })();
 
@@ -1218,8 +1252,9 @@ app.directive('appInputAngle', function($parse) {
             var field = attrs.appField;
             var angle = model[field];
             var calcAngleInDeg = function(){
-                scope.angleInDeg = angle * 180 / Math.PI;
+                var deg = angle * 180 / Math.PI;
                 model[field] = angle;
+                scope.angleInDeg = deg;
             };
             calcAngleInDeg();
 
@@ -1227,6 +1262,7 @@ app.directive('appInputAngle', function($parse) {
                 var rect = element[0].getBoundingClientRect();
                 var x = e.clientX - rect.left, y = e.clientY - rect.top;
                 angle = Math.atan2((y -15),(x - 15));
+                if (angle<0) angle = 2*Math.PI + angle;
             };
 
             var mouseDown = false;
@@ -1358,7 +1394,6 @@ window.app
         res.currParticleSystemInEdit = null;
         res.currProjectInEdit = null;
 
-
         res.userInterfaceList = new collections.List();
 
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
@@ -1366,6 +1401,11 @@ window.app
 
         res.projectName = undefined;
         res.projects = null;
+        res.buildOpts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
 
         return res;
     })
@@ -1441,7 +1481,8 @@ window.app
                 particleSystems:'particle systems',
                 particleSystem:'particle system',
                 preview:'preview',
-                explorer:'explorer'
+                explorer:'explorer',
+                description: 'description'
             }
         };
 
@@ -1793,8 +1834,9 @@ window.app
 
     .factory('uiHelper', function () {
         var _;
+        var collections = require('collections');
         return _ = {
-            _dialogsStack: [],
+            _dialogsStack: new collections.List(),
 
             window:'sceneWindow',
             _dialogName:null,
@@ -1808,21 +1850,28 @@ window.app
             },
             showDialog: function(name,opName,opObject){
                 _.dialogName = name;
-                _._dialogsStack.push({
+                _._dialogsStack.add({
                     name:name,
                     opName:opName,
+                    id: opObject && opObject.id,
                     opObject:opObject
                 });
                 _.ctxMenu.name = null;
             },
             getDialogState: function(){
-                return _._dialogsStack[_._dialogsStack.length-1]||{};
+                return _._dialogsStack.getLast() || {};
+            },
+            findDialogStateObjectById: function(id){
+                return  _._dialogsStack.find({id:id}).opObject;
             },
             closeDialog: function(){
                 _._dialogsStack.pop();
-                _.dialogName =
-                    _._dialogsStack[_._dialogsStack.length-1] &&
-                    _._dialogsStack[_._dialogsStack.length-1].name;
+                var last = _._dialogsStack.getLast();
+                if (last) {
+                    _.dialogName = last.name;
+                } else {
+                    _.dialogName = null;
+                }
             },
             showContextMenu: function(name,x,y,elX,elY,model){
                 _.ctxMenu.name = name;

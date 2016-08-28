@@ -80,6 +80,9 @@ exports.List = function () {
     };
     this.find = function (obj){
         return self.rs[self.indexOf(obj)];
+    };
+    this.pop = function(){
+        return self.rs.pop();
     }
 };
 

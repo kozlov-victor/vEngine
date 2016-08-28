@@ -140,7 +140,12 @@ exports.BaseGameObject = exports.BaseModel.extend({
         this._layer._gameObjects.remove({id:this.id});
         this._layer._scene._allGameObjects.remove({id:this.id});
     },
+    /**
+     * @deprecated
+     */
     getScene: function(){
+        // todo remove
+        console.warn('BaseGameObject:getScene is deprecated. Use sceneManager.getCurrScene instead');
         return this._layer._scene;
     },
     update: function(){},
@@ -433,7 +438,8 @@ exports.ParticleSystem = exports.BaseModel.extend({
     construct: function(){
         this._particles = [];
         if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
-        if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
+        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
+        if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
         if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
         if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
         this._gameObject = bundle.gameObjectList.find({id:this.gameObjectId});

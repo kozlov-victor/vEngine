@@ -98,6 +98,17 @@ var createResourcesParams = function(opts){
 
     templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/gameObject','utf8');
     templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/scene','utf8');
+    templateObj.embeddedResources = {};
+
+    opts.embedResources && ['spriteSheet', 'font', 'sound'].forEach(function (r) {
+        var files = fs.readDirSync('workspace/' + opts.projectName + '/resources/' + r, 'base64');
+        files.forEach(function (file) {
+            if (file.name != 'map.json') {
+                templateObj.embeddedResources['resources/' + r + '/' + file.name] =
+                    file.content
+            }
+        });
+    });
     return templateObj;
 };
 
@@ -124,32 +135,13 @@ var processGameResourcesFiles = function(sourceMain,opts){
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
     fs.createFolderSync('workspace/'+opts.projectName+'/out/');
 
-    var embedResourceCode = '(function(){\n';
-    if (opts.embedResources) embedResourceCode += 've_local.resources = {};\n';
-
-    ['spriteSheet','font','sound'].forEach(function(r){
-        if (opts.embedResources) {
-            var files = fs.readDirSync('workspace/'+opts.projectName+'/resources/'+r,'base64');
-            files.forEach(function(file){
-                if (file.name!='map.json') {
-                    embedResourceCode+=
-                        've_local.resources["resources/'+r+'/'+file.name+'"]=' +
-                        '"'+file.content+'";\n';
-                }
-            });
-        } else {
-            fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
-            fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
-            fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
-        }
+    !opts.embedResources && ['spriteSheet','font','sound'].forEach(function(r){
+        fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
+        fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
+        fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
     });
 
-    if (opts.embedResources) {
-        embedResourceCode+='})();';
-        sourceMain.add(embedResourceCode);
-    }
-
-    var indexHtml = fs.readFileSync('resources/generatorResources/index.html');
+    var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
 
     if (opts.embedScript) {
         indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
@@ -182,6 +174,7 @@ var prepareGeneratorParams = function(opts){
         opts: opts,
         commonResources: resourcesOpts.commonResources,
         specialResources: resourcesOpts.specialResources,
+        embeddedResources: resourcesOpts.embeddedResources,
         commonBehaviour:createCommonBehaviourParams(opts)
     };
 };
@@ -189,7 +182,6 @@ var prepareGeneratorParams = function(opts){
 module.exports.generate = function(opts,callback){
 
     console.log('generate options:',opts);
-
 
     var sourceMain = new Source();
     sourceMain.addCommonTemplates('resources/generatorResources/lib');

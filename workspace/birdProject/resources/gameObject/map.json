@@ -41,7 +41,7 @@
         "velX": 0,
         "velY": 0,
         "frameAnimationIds": [],
-        "rigid": true,
+        "rigid": 0,
         "groupName": "",
         "posX": 0,
         "posY": 0,
@@ -56,7 +56,15 @@
         "width": 300,
         "height": 190,
         "type": "gameObject",
-        "commonBehaviour": [],
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": {},
+                "description": "draggable behaviour",
+                "type": "commonBehaviour",
+                "id": "1929_3913_5"
+            }
+        ],
         "velX": 0,
         "velY": 0,
         "frameAnimationIds": [],
@@ -65,5 +73,24 @@
         "posX": 0,
         "posY": 0,
         "id": "3811_8241_75"
+    },
+    {
+        "spriteSheetId": "6543_2966_189",
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "name": "cloudSmall",
+        "width": 48,
+        "height": 48,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "velX": 0,
+        "velY": 0,
+        "frameAnimationIds": [],
+        "rigid": true,
+        "groupName": "",
+        "posX": 0,
+        "posY": 0,
+        "id": "3572_5101_190"
     }
 ]

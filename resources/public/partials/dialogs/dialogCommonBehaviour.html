@@ -1,5 +1,21 @@
 
 <table class="width100">
+    <tr>
+        <td>
+            {{i18n.name}}
+        </td>
+        <td>
+            {{editData.currCommonBehaviourInEdit.name}}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.description}}
+        </td>
+        <td>
+            {{editData.currCommonBehaviourInEdit.description}}
+        </td>
+    </tr>
     <tr ng-repeat="(key, value) in editData.currCommonBehaviourInEdit.parameters">
         <td>
             {{key}}

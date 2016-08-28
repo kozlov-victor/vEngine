@@ -38,14 +38,16 @@ window.app.
                     if (res.type=='create') {
 
                         s.editData.currFrAnimationInEdit.id = res.r.id;
-                        s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
+                        var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        dialogStateObj.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
+                        dialogStateObj._frameAnimations.add(s.editData.currFrAnimationInEdit);
 
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
                             models.GameObject,
                             bundle.gameObjectList,
                             function(){
-                                s.editData.currGameObjectInEdit._frameAnimations.add(s.editData.currFrAnimationInEdit);
+
                             },
                             true
                         );
@@ -74,7 +76,7 @@ window.app.
                     isStopped = false;
                     return;
                 }
-                if (uiHelper.dialogName=='frmCreateAnimation') setTimeout(s.playAnimation,50);
+                if (uiHelper.dialogName=='frmCreateFrameAnimation') setTimeout(s.playAnimation,50);
             },0);
         };
 
@@ -100,7 +102,6 @@ window.app.
                 s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             }
-            dialogState.opName = null;
         })();
 
 

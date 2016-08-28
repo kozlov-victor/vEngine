@@ -29,7 +29,7 @@ exports.getRandomInRange = function(min, max){
         min = max;
         max = tmp;
     }
-    var res = Math.random() * (max - min + 1) + min;
+    var res = Math.random() * (max - min) + min;
     if (res>max) res = max;
     else if (res<min) res = min;
     return res;

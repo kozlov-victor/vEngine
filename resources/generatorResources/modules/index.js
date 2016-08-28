@@ -15,6 +15,5 @@ window.addEventListener('load',function(){
 
     renderer.init();
     require('mouse').instance();
-    bundle.applyBehaviourAll();
     sceneManager.setScene(bundle.sceneList.get(0));
 });

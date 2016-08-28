@@ -1,5 +1,6 @@
 
 var glUtils = require('glUtils');
+var utils = require('utils');
 
 var GlContext = function(){
 
@@ -97,7 +98,7 @@ var GlContext = function(){
 
     this.loadTextureInfo = function(url,opts,callBack) {
         if (opts.type=='base64') {
-            url = ve.utils.getBase64prefix('image',opts.fileName) + url;
+            url = utils.getBase64prefix('image',opts.fileName) + url;
         }
         var tex = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, tex);

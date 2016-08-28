@@ -25,8 +25,9 @@ app.directive('appInputAngle', function($parse) {
             var field = attrs.appField;
             var angle = model[field];
             var calcAngleInDeg = function(){
-                scope.angleInDeg = angle * 180 / Math.PI;
+                var deg = angle * 180 / Math.PI;
                 model[field] = angle;
+                scope.angleInDeg = deg;
             };
             calcAngleInDeg();
 
@@ -34,6 +35,7 @@ app.directive('appInputAngle', function($parse) {
                 var rect = element[0].getBoundingClientRect();
                 var x = e.clientX - rect.left, y = e.clientY - rect.top;
                 angle = Math.atan2((y -15),(x - 15));
+                if (angle<0) angle = 2*Math.PI + angle;
             };
 
             var mouseDown = false;

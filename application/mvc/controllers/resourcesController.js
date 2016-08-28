@@ -7,7 +7,7 @@ var RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,gameObject,layer,sce
 module.exports.RESOURCE_NAMES = RESOURCE_NAMES;
 
 
-module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/defaultCodeScript.js');
+module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/misc/defaultCodeScript.js');
 
 var readResource = function(path) {
     return JSON.parse(fs.readFileSync(path));

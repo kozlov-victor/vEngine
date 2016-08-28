@@ -1,6 +1,6 @@
 var modules = {}, require = function(name,opts){
     opts = opts || {};
-    console.trace('require: ',name);
+    //console.trace('require: ',name);
     var moduleObj = modules[name];
 
     if (!moduleObj) {
@@ -9,6 +9,7 @@ var modules = {}, require = function(name,opts){
             throw 'can not found module with name ' + (name || '(name not specified)');
         } else  {
             return {
+                fake:true,
                 instance: function(){
                     return {fake:true}
                 }
@@ -185,6 +186,7 @@ modules['behaviour'] = {code: function(module,exports){
 	            this._gameObject = _gameObj;
 	            this._parameters = _params;
 	            this.mouse = require('mouse').instance();
+	            this.sceneManager = require('sceneManager').instance();
 	        },
 	        onCreate: function(){
 	            var self = this;
@@ -192,7 +194,7 @@ modules['behaviour'] = {code: function(module,exports){
 	            self._mouseDown = false;
 	            var mX = 0;
 	            var mY = 0;
-	            var scene = g.getScene();
+	            var scene = this.sceneManager.getCurrScene(); // todo problems on scene change?
 	            g.on('click',function(e){
 	                self._mouseDown = true;
 	                mX = e.objectX;
@@ -326,17 +328,39 @@ modules['behaviour'] = {code: function(module,exports){
 	    
 	
 	function onCreate(){
-	    self.velX = 100;
+	    self.velX = Math.random()*150;
 	}
 	
 	function onUpdate(time) {
-	    if (self.posX>800) self.posX = -300; 
+	    if (self.posX>800) {
+	        self.posX = -300;
+	        self.posY = Math.random()*300;
+	        self.velX = Math.random()*150;
+	    }    
 	}
 	
 	function onDestroy(){
 	
 	}
 	
+	    exports.onCreate = onCreate;
+	    exports.onUpdate = onUpdate;
+	    exports.onDestroy = onDestroy;
+	};
+	
+	scripts.gameObject['cloudSmall.js'] = function(exports,self){
+	    
+	function onCreate() {
+	
+	}
+	
+	function onUpdate(time) {
+	
+	}
+	
+	function onDestroy() {
+	
+	}
 	    exports.onCreate = onCreate;
 	    exports.onUpdate = onUpdate;
 	    exports.onDestroy = onDestroy;
@@ -642,7 +666,6 @@ modules['index'] = {code: function(module,exports){
 	
 	    renderer.init();
 	    require('mouse').instance();
-	    bundle.applyBehaviourAll();
 	    sceneManager.setScene(bundle.sceneList.get(0));
 	});
 }};
@@ -679,7 +702,7 @@ modules['math'] = {code: function(module,exports){
 	        min = max;
 	        max = tmp;
 	    }
-	    var res = Math.random() * (max - min + 1) + min;
+	    var res = Math.random() * (max - min) + min;
 	    if (res>max) res = max;
 	    else if (res<min) res = min;
 	    return res;
@@ -809,6 +832,9 @@ modules['collections'] = {code: function(module,exports){
 	    };
 	    this.find = function (obj){
 	        return self.rs[self.indexOf(obj)];
+	    };
+	    this.pop = function(){
+	        return self.rs.pop();
 	    }
 	};
 	
@@ -982,7 +1008,12 @@ modules['models'] = {code: function(module,exports){
 	        this._layer._gameObjects.remove({id:this.id});
 	        this._layer._scene._allGameObjects.remove({id:this.id});
 	    },
+	    /**
+	     * @deprecated
+	     */
 	    getScene: function(){
+	        // todo remove
+	        console.warn('BaseGameObject:getScene is deprecated. Use sceneManager.getCurrScene instead');
 	        return this._layer._scene;
 	    },
 	    update: function(){},
@@ -1275,7 +1306,8 @@ modules['models'] = {code: function(module,exports){
 	    construct: function(){
 	        this._particles = [];
 	        if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
-	        if (!this.particleAngle) this.particleAngle = {from:0,to:Math.PI};
+	        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
+	        if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
 	        if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
 	        if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
 	        this._gameObject = bundle.gameObjectList.find({id:this.gameObjectId});
@@ -1313,9 +1345,81 @@ modules['models'] = {code: function(module,exports){
 	
 }};
 
+modules['canvasContext'] = {code: function(module,exports){
+	
+	(function(){
+	
+	    ve_local.CanvasContext = function(){
+	
+	        var ctx;
+	
+	        this.init = function(canvas) {
+	            ctx = canvas.getContext('2d');
+	        };
+	
+	        this.scale = function(scaleX,scaleY){
+	            ctx.scale(scaleX,scaleY);
+	        };
+	
+	        this.drawImage = function(
+	            textureInfo,
+	            fromX,
+	            fromY,
+	            fromW,
+	            fromH,
+	            toX,
+	            toY,
+	            toW,
+	            toH
+	        ) {
+	
+	            ctx.drawImage(
+	                textureInfo.image,
+	                fromX,
+	                fromY,
+	                fromW,
+	                fromH,
+	                toX,
+	                toY,
+	                toW,
+	                toH
+	            );
+	
+	        };
+	
+	        this.loadTextureInfo = function(url,callBack){
+	
+	            var img = new Image(url);
+	            img.onload = function(){
+	                var textureInfo = {
+	                    image:img
+	                };
+	                callBack(textureInfo);
+	            };
+	            img.src = url;
+	
+	        };
+	
+	        this.clear = function(w,h){
+	
+	            ctx.fillStyle="#FFFFFF";
+	            ctx.fillRect(
+	                0,
+	                0,
+	                w,
+	                h);
+	
+	        }
+	
+	    }
+	
+	})();
+}};
+
 modules['glContext'] = {code: function(module,exports){
 	
 	var glUtils = require('glUtils');
+	var utils = require('utils');
 	
 	var GlContext = function(){
 	
@@ -1413,7 +1517,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.loadTextureInfo = function(url,opts,callBack) {
 	        if (opts.type=='base64') {
-	            url = ve.utils.getBase64prefix('image',opts.fileName) + url;
+	            url = utils.getBase64prefix('image',opts.fileName) + url;
 	        }
 	        var tex = gl.createTexture();
 	        gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -1442,7 +1546,6 @@ modules['glContext'] = {code: function(module,exports){
 	        };
 	        img.onerror=function(e){throw 'can not load image with url '+ url};
 	        img.src = url;
-	        document.body.appendChild(img);
 	    };
 	
 	    this.drawImage = function(
@@ -1896,7 +1999,7 @@ modules['bundle'] = {code: function(module,exports){
 	    };
 	
 	    var applyIndividualBehaviour = function(model){
-	        var behaviourFn = behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
+	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
 	        if (behaviourFn) {
 	            var exports = {};
 	            behaviourFn(exports,model);
@@ -1911,6 +2014,8 @@ modules['bundle'] = {code: function(module,exports){
 	    };
 	
 	    var applyCommonBehaviour = function(model){
+	
+	        if (behaviour.fake) return; // this is editor mode
 	        var cbList = [];
 	        if (!model._commonBehaviour) {
 	            model.__updateCommonBehaviour__ = consts.noop;
@@ -1946,13 +2051,25 @@ modules['bundle'] = {code: function(module,exports){
 	        applyIndividualBehaviour(model);
 	    };
 	
+	    this.embeddedResources = {};
+	    this.embeddedResources.data = {};
+	    this.embeddedResources.isEmbedded = false;
+	
 	};
 	
 	var data;
+	
 	data = {
 	
 	
-	    sound:[],
+	    sound:[
+	    {
+	        "name": "boom",
+	        "type": "sound",
+	        "resourcePath": "resources/sound/boom.mp3",
+	        "id": "6608_4579_17"
+	    }
+	],
 	
 	    spriteSheet:[
 	    {
@@ -1998,6 +2115,18 @@ modules['bundle'] = {code: function(module,exports){
 	        "numOfFramesH": 1,
 	        "numOfFramesV": 1,
 	        "id": "3319_5653_33"
+	    },
+	    {
+	        "_frameWidth": 0,
+	        "_frameHeight": 0,
+	        "resourcePath": "resources/spriteSheet/cloudSmall.png",
+	        "width": 48,
+	        "height": 48,
+	        "name": "cloudSmall",
+	        "type": "spriteSheet",
+	        "numOfFramesH": 1,
+	        "numOfFramesV": 1,
+	        "id": "6543_2966_189"
 	    }
 	],
 	
@@ -3124,7 +3253,7 @@ modules['bundle'] = {code: function(module,exports){
 	        "velX": 0,
 	        "velY": 0,
 	        "frameAnimationIds": [],
-	        "rigid": true,
+	        "rigid": 0,
 	        "groupName": "",
 	        "posX": 0,
 	        "posY": 0,
@@ -3139,7 +3268,15 @@ modules['bundle'] = {code: function(module,exports){
 	        "width": 300,
 	        "height": 190,
 	        "type": "gameObject",
-	        "commonBehaviour": [],
+	        "commonBehaviour": [
+	            {
+	                "name": "draggable",
+	                "parameters": {},
+	                "description": "draggable behaviour",
+	                "type": "commonBehaviour",
+	                "id": "1929_3913_5"
+	            }
+	        ],
 	        "velX": 0,
 	        "velY": 0,
 	        "frameAnimationIds": [],
@@ -3148,6 +3285,25 @@ modules['bundle'] = {code: function(module,exports){
 	        "posX": 0,
 	        "posY": 0,
 	        "id": "3811_8241_75"
+	    },
+	    {
+	        "spriteSheetId": "6543_2966_189",
+	        "currFrameIndex": 0,
+	        "_sprPosX": 0,
+	        "_sprPosY": 0,
+	        "name": "cloudSmall",
+	        "width": 48,
+	        "height": 48,
+	        "type": "gameObject",
+	        "commonBehaviour": [],
+	        "velX": 0,
+	        "velY": 0,
+	        "frameAnimationIds": [],
+	        "rigid": true,
+	        "groupName": "",
+	        "posX": 0,
+	        "posY": 0,
+	        "id": "3572_5101_190"
 	    }
 	],
 	
@@ -3209,16 +3365,24 @@ modules['bundle'] = {code: function(module,exports){
 	                "width": 300,
 	                "height": 190,
 	                "type": "gameObject",
-	                "commonBehaviour": [],
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": {},
+	                        "description": "draggable behaviour",
+	                        "type": "commonBehaviour",
+	                        "id": "1929_3913_5"
+	                    }
+	                ],
 	                "velX": 0,
 	                "velY": 0,
 	                "frameAnimationIds": [],
-	                "rigid": 1,
+	                "rigid": 0,
 	                "groupName": "",
-	                "posX": 272,
-	                "posY": 15,
+	                "posX": 207,
+	                "posY": 27,
 	                "protoId": "3811_8241_75",
-	                "id": "5334_0273_76"
+	                "id": "6583_1772_49"
 	            },
 	            {
 	                "spriteSheetId": "1501_7424_265",
@@ -3229,25 +3393,124 @@ modules['bundle'] = {code: function(module,exports){
 	                "width": 300,
 	                "height": 190,
 	                "type": "gameObject",
-	                "commonBehaviour": [],
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": {},
+	                        "description": "draggable behaviour",
+	                        "type": "commonBehaviour",
+	                        "id": "1929_3913_5"
+	                    }
+	                ],
 	                "velX": 0,
 	                "velY": 0,
 	                "frameAnimationIds": [],
 	                "rigid": 0,
 	                "groupName": "",
-	                "posX": 31,
-	                "posY": 82,
+	                "posX": 94,
+	                "posY": 248,
 	                "protoId": "3811_8241_75",
-	                "id": "4184_0987_4"
+	                "id": "8075_6687_199"
+	            },
+	            {
+	                "spriteSheetId": "1501_7424_265",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "cloud",
+	                "width": 300,
+	                "height": 190,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": {},
+	                        "description": "draggable behaviour",
+	                        "type": "commonBehaviour",
+	                        "id": "1929_3913_5"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 0,
+	                "groupName": "",
+	                "posX": 99,
+	                "posY": 154,
+	                "protoId": "3811_8241_75",
+	                "id": "7848_7817_200"
+	            },
+	            {
+	                "spriteSheetId": "1501_7424_265",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "cloud",
+	                "width": 300,
+	                "height": 190,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": {},
+	                        "description": "draggable behaviour",
+	                        "type": "commonBehaviour",
+	                        "id": "1929_3913_5"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 0,
+	                "groupName": "",
+	                "posX": 144,
+	                "posY": 89,
+	                "protoId": "3811_8241_75",
+	                "id": "8413_9191_201"
+	            },
+	            {
+	                "spriteSheetId": "1501_7424_265",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "cloud",
+	                "width": 300,
+	                "height": 190,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": {},
+	                        "description": "draggable behaviour",
+	                        "type": "commonBehaviour",
+	                        "id": "1929_3913_5"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 0,
+	                "groupName": "",
+	                "posX": 469,
+	                "posY": 37,
+	                "protoId": "3811_8241_75",
+	                "id": "6392_0874_202"
 	            }
 	        ],
-	        "id": "3534_2050_13"
+	        "id": "3534_2050_13",
+	        "protoId": "3534_2050_13"
 	    },
 	    {
 	        "name": "tiles",
 	        "type": "layer",
 	        "gameObjectProps": [],
 	        "id": "6172_4586_12"
+	    },
+	    {
+	        "name": "aaa",
+	        "type": "layer",
+	        "gameObjectProps": [],
+	        "id": "7115_0739_69"
 	    }
 	],
 	
@@ -3268,26 +3531,26 @@ modules['bundle'] = {code: function(module,exports){
 	
 	    particleSystem:[
 	    {
-	        "gameObjectId": "1492_9912_46",
+	        "gameObjectId": "3572_5101_190",
 	        "numOfParticlesToEmit": {
-	            "from": 50,
-	            "to": 60
+	            "from": 1,
+	            "to": 3
 	        },
 	        "particleAngle": {
-	            "from": -2.6660626056852346,
-	            "to": -2.728463821311392
+	            "from": 5.330994271860976,
+	            "to": 3.911607415206646
 	        },
 	        "particleVelocity": {
-	            "from": 90,
+	            "from": 60,
 	            "to": 100
 	        },
-	        "name": "ps",
-	        "type": "particleSystem",
-	        "id": "0252_1160_4",
 	        "particleLiveTime": {
-	            "from": 101,
-	            "to": 300
-	        }
+	            "from": 3000,
+	            "to": 5000
+	        },
+	        "name": "p",
+	        "type": "particleSystem",
+	        "id": "5762_3455_72"
 	    }
 	],
 	
@@ -3298,6 +3561,7 @@ modules['bundle'] = {code: function(module,exports){
 	}
 	
 	};
+	
 	
 	var instance = null;
 	
@@ -3374,6 +3638,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	
 	    this.currScene = null;
 	
+	    // todo extract to resource loader
 	    var preloadAndSet = function(scene){
 	        var renderer = require('renderer').instance();
 	        var soundManager = require('soundManager').instance();
@@ -3382,22 +3647,22 @@ modules['sceneManager'] = {code: function(module,exports){
 	
 	        var q = new utils.Queue();
 	        q.onResolved = function(){
+	            bundle.applyBehaviourAll();
 	            renderer.setScene(scene);
 	        };
 	        var allSprSheets = scene.getAllSpriteSheets();
 	        bundle.particleSystemList.forEach(function(ps){
 	            allSprSheets.add(ps._gameObject._spriteSheet);
 	        });
-	        window.ve_local = window.ve_local || {};
 	        allSprSheets.asArray().forEach(function(spSheet){
-	            var resourcePath = ve_local.resources? // todo
-	                ve_local.resources[spSheet.resourcePath]:
+	            var resourcePath = bundle.embeddedResources.isEmbedded?
+	                bundle.embeddedResources.data[spSheet.resourcePath]:
 	                './'+spSheet.resourcePath;
 	            renderer.
 	                getContext().
 	                loadTextureInfo(
 	                resourcePath,
-	                {type:ve_local.resources?'base64':'',fileName:spSheet.resourcePath},
+	                {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:spSheet.resourcePath},
 	                function(textureInfo){
 	                    console.log('loaded texture info',spSheet.resourcePath,textureInfo);
 	                    spSheet._textureInfo = textureInfo;
@@ -3408,12 +3673,12 @@ modules['sceneManager'] = {code: function(module,exports){
 	        // todo remove slash??
 	        bundle.soundList.forEach(function(snd){
 	            q.addTask();
-	            var resourcePath = ve_local.resources?
-	            ve_local.resources[snd.resourcePath]:
+	            var resourcePath = bundle.embeddedResources.isEmbedded?
+	            bundle.embeddedResources.data[snd.resourcePath]:
 	            './'+snd.resourcePath;
 	            soundManager.loadSound(
 	                resourcePath,
-	                {type:ve_local.resources?'base64':''},
+	                {type:bundle.embeddedResourcesisEmbedded?'base64':''},
 	                function(buffer){
 	                    snd._buffer = buffer;
 	                    q.resolveTask();

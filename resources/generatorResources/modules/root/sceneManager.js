@@ -6,6 +6,7 @@ var SceneManager = function(){
 
     this.currScene = null;
 
+    // todo extract to resource loader
     var preloadAndSet = function(scene){
         var renderer = require('renderer').instance();
         var soundManager = require('soundManager').instance();
@@ -14,22 +15,22 @@ var SceneManager = function(){
 
         var q = new utils.Queue();
         q.onResolved = function(){
+            bundle.applyBehaviourAll();
             renderer.setScene(scene);
         };
         var allSprSheets = scene.getAllSpriteSheets();
         bundle.particleSystemList.forEach(function(ps){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
-        window.ve_local = window.ve_local || {};
         allSprSheets.asArray().forEach(function(spSheet){
-            var resourcePath = ve_local.resources? // todo
-                ve_local.resources[spSheet.resourcePath]:
+            var resourcePath = bundle.embeddedResources.isEmbedded?
+                bundle.embeddedResources.data[spSheet.resourcePath]:
                 './'+spSheet.resourcePath;
             renderer.
                 getContext().
                 loadTextureInfo(
                 resourcePath,
-                {type:ve_local.resources?'base64':'',fileName:spSheet.resourcePath},
+                {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:spSheet.resourcePath},
                 function(textureInfo){
                     console.log('loaded texture info',spSheet.resourcePath,textureInfo);
                     spSheet._textureInfo = textureInfo;
@@ -40,12 +41,12 @@ var SceneManager = function(){
         // todo remove slash??
         bundle.soundList.forEach(function(snd){
             q.addTask();
-            var resourcePath = ve_local.resources?
-            ve_local.resources[snd.resourcePath]:
+            var resourcePath = bundle.embeddedResources.isEmbedded?
+            bundle.embeddedResources.data[snd.resourcePath]:
             './'+snd.resourcePath;
             soundManager.loadSound(
                 resourcePath,
-                {type:ve_local.resources?'base64':''},
+                {type:bundle.embeddedResourcesisEmbedded?'base64':''},
                 function(buffer){
                     snd._buffer = buffer;
                     q.resolveTask();

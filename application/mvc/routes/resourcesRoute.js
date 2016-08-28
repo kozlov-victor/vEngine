@@ -92,7 +92,11 @@ module.exports.init = function(app) {
         var resourceId = req.body.resourceId;
         var objectType = req.body.objectType;
         var objectId = req.body.objectId;
-        resourcesController.deleteObjectFromResource(resourceType,resourceId,objectType,objectId);
+        var projectName = req.body.projectName;
+        resourcesController.deleteObjectFromResource(
+            resourceType,resourceId,
+            objectType,objectId,projectName
+        );
         res.send({});
     });
 

@@ -27,6 +27,8 @@ window.app.
                         obj.id = resp.r.id;
                         s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
                         s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
+                        var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        dialogStateObj.commonBehaviour.push(obj.toJSON());
                     }
                     uiHelper.closeDialog();
                 }
@@ -38,12 +40,16 @@ window.app.
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
-                s.editData.currCommonBehaviourInEdit.name = name;
+                s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
                 var obj =
                     editData.commonBehaviourList.find({
-                        name: name
+                        name: dialogState.opObject
                     });
-                if (obj) s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
+                if (obj) {
+                    var cloned = obj.clone();
+                    s.editData.currCommonBehaviourInEdit.parameters = cloned.parameters;
+                    s.editData.currCommonBehaviourInEdit.description = cloned.description;
+                }
             } else if (dialogState.opName=='edit'){
                 s.editData.currCommonBehaviourInEdit = dialogState.opObject.clone();
             }

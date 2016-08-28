@@ -43,11 +43,11 @@
                                 <div class="cell">
                                     <!--game objects-->
                                     <div class="table width100">
-                                        <div class="row">
+                                        <div class="row" ng-click="layer._opened=!layer._opened">
                                             <div class="cell valign">
                                                 {{i18n.gameObjects}}
                                             </div>
-                                            <div class="cell" ng-click="layer._opened=!layer._opened">
+                                            <div class="cell">
                                                 <div ng-show="!layer._opened" class="triangleRight"></div>
                                                 <div ng-show="layer._opened" class="triangleBottom"></div>
                                             </div>

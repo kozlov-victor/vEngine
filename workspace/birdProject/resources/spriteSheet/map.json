@@ -42,5 +42,17 @@
         "numOfFramesH": 1,
         "numOfFramesV": 1,
         "id": "3319_5653_33"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "resourcePath": "resources/spriteSheet/cloudSmall.png",
+        "width": 48,
+        "height": 48,
+        "name": "cloudSmall",
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "6543_2966_189"
     }
 ]

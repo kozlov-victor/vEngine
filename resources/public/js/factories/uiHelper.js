@@ -2,8 +2,9 @@ window.app
 
     .factory('uiHelper', function () {
         var _;
+        var collections = require('collections');
         return _ = {
-            _dialogsStack: [],
+            _dialogsStack: new collections.List(),
 
             window:'sceneWindow',
             _dialogName:null,
@@ -17,21 +18,28 @@ window.app
             },
             showDialog: function(name,opName,opObject){
                 _.dialogName = name;
-                _._dialogsStack.push({
+                _._dialogsStack.add({
                     name:name,
                     opName:opName,
+                    id: opObject && opObject.id,
                     opObject:opObject
                 });
                 _.ctxMenu.name = null;
             },
             getDialogState: function(){
-                return _._dialogsStack[_._dialogsStack.length-1]||{};
+                return _._dialogsStack.getLast() || {};
+            },
+            findDialogStateObjectById: function(id){
+                return  _._dialogsStack.find({id:id}).opObject;
             },
             closeDialog: function(){
                 _._dialogsStack.pop();
-                _.dialogName =
-                    _._dialogsStack[_._dialogsStack.length-1] &&
-                    _._dialogsStack[_._dialogsStack.length-1].name;
+                var last = _._dialogsStack.getLast();
+                if (last) {
+                    _.dialogName = last.name;
+                } else {
+                    _.dialogName = null;
+                }
             },
             showContextMenu: function(name,x,y,elX,elY,model){
                 _.ctxMenu.name = name;
