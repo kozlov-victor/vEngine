@@ -1,0 +1,46 @@
+[
+    {
+        "gameObjectId": "3276_5748_70",
+        "numOfParticlesToEmit": {
+            "from": 1,
+            "to": 5
+        },
+        "particleAngle": {
+            "from": 5.166617715651452,
+            "to": 4.057869033816451
+        },
+        "particleVelocity": {
+            "from": 1,
+            "to": 100
+        },
+        "particleLiveTime": {
+            "from": 3000,
+            "to": 5000
+        },
+        "name": "burn",
+        "type": "particleSystem",
+        "id": "4673_1751_71"
+    },
+    {
+        "gameObjectId": "8044_2993_85",
+        "numOfParticlesToEmit": {
+            "from": 1,
+            "to": 10
+        },
+        "particleAngle": {
+            "from": 5.248200218345153,
+            "to": 3.9312703914312075
+        },
+        "particleVelocity": {
+            "from": 1,
+            "to": 100
+        },
+        "particleLiveTime": {
+            "from": 100,
+            "to": 1000
+        },
+        "name": "fire",
+        "type": "particleSystem",
+        "id": "6469_6798_86"
+    }
+]

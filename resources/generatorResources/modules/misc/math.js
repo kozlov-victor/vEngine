@@ -32,5 +32,5 @@ exports.getRandomInRange = function(min, max){
     var res = Math.random() * (max - min) + min;
     if (res>max) res = max;
     else if (res<min) res = min;
-    return res;
+    return ~~res;
 };

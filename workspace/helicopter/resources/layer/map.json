@@ -1,0 +1,52 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "6100_9915_72",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "helicopter",
+                "width": 180,
+                "height": 95,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [
+                    "2977_2535_74"
+                ],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 21,
+                "posY": 41,
+                "protoId": "6612_6223_73",
+                "id": "2294_3548_79"
+            }
+        ],
+        "id": "7822_6900_77"
+    },
+    {
+        "name": "l",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "height": 29,
+                "text": "ПОБЕДА!!!!!!",
+                "width": 180,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "posX": 106,
+                "posY": 123,
+                "name": "textField3",
+                "protoId": null,
+                "id": "4530_8265_90",
+                "fontId": "6991_3497_4"
+            }
+        ],
+        "id": "3617_1449_88"
+    }
+]

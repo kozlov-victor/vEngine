@@ -263,6 +263,7 @@ window.app.
                         s.editData.currFrAnimationInEdit.id = res.r.id;
                         var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
                         dialogStateObj.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
+                        s.editData.currGameObjectInEdit.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
                         dialogStateObj._frameAnimations.add(s.editData.currFrAnimationInEdit);
 
                         resourceDao.createOrEditResource(
@@ -956,6 +957,9 @@ window.app.
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
             s.editData.currSpriteSheetInEdit.resourcePath = src;
+            //if (!s.editData.currSpriteSheetInEdit.name) {
+            //    s.editData.currSpriteSheetInEdit.name =  src.split('.')[0];
+            //}
             var fr = new FileReader();
             fr.onload = function() { // file is loaded
                 var img = new Image;

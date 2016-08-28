@@ -1,0 +1,36 @@
+[
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "resourcePath": "resources/spriteSheet/cloudSmall.png",
+        "width": 48,
+        "height": 48,
+        "name": "cloudSmall",
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "8639_0487_69"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/helicopter.png",
+        "width": 1260,
+        "height": 570,
+        "numOfFramesH": 7,
+        "numOfFramesV": 6,
+        "name": "helicopter",
+        "type": "spriteSheet",
+        "id": "6100_9915_72"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "resourcePath": "resources/spriteSheet/fire.png",
+        "width": 64,
+        "height": 44,
+        "name": "fire",
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "3208_8395_84"
+    }
+]

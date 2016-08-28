@@ -40,6 +40,7 @@ window.app.
                         s.editData.currFrAnimationInEdit.id = res.r.id;
                         var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
                         dialogStateObj.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
+                        s.editData.currGameObjectInEdit.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
                         dialogStateObj._frameAnimations.add(s.editData.currFrAnimationInEdit);
 
                         resourceDao.createOrEditResource(

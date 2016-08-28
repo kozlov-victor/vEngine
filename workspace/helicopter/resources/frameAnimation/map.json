@@ -1,0 +1,29 @@
+[
+    {
+        "name": "fly",
+        "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+        ],
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "2977_2535_74"
+    },
+    {
+        "_timeForOneFrame": 0,
+        "name": "injured",
+        "frames": [
+            16,
+            17,
+            18,
+            19
+        ],
+        "type": "frameAnimation",
+        "duration": 400,
+        "id": "8709_3441_81"
+    }
+]
