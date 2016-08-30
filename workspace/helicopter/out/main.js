@@ -74,7 +74,7 @@ var modules = {}, require = function(name,opts){
             rightBox.onclick = function(){
                 popup.remove();
             };
-            leftBox.textContent = e;
+            leftBox.textContent = (e && e.message)?e.message:e;
             popup.appendChild(leftBox);
             popup.appendChild(rightBox);
             getPopupContainer().appendChild(popup);
@@ -88,10 +88,11 @@ var modules = {}, require = function(name,opts){
 
     window.canceled = false;
 
-    window.onerror = function(e,url,lineNum){
+    window.addEventListener('error',function(e,url,lineNum){
+        console.error(e);
         window.showError(e,lineNum);
         window.canceled = true;
-    };
+    });
 
 })();
 (function() {
@@ -225,29 +226,35 @@ modules['behaviour'] = {code: function(module,exports){
 	var psBurn = require('bundle').instance().particleSystemList.find({name:'burn'});
 	var psFire = require('bundle').instance().particleSystemList.find({name:'fire'});
 	var sceneManager = require('sceneManager').instance();
+	var soundManager = require('soundManager').instance();
 	var injuredAnim = self.getFrAnimation('injured');
 	var math = require('math');
 	var health = 100;
 	
 	function onCreate() {
+	    soundManager.play('engine',true);
 	    self.velX = 200;
 	    self.getFrAnimation('fly').play();
 	    self.on('click',function(e){
-	        psFire.emit(e.objectX,e.objectY);
+	        psFire.emit(e.screenX,e.screenY);
 	        health-=10;
 	        if (health<5) injuredAnim.play();
-	        if (health && health<5) self.velY = 10;
-	        if (self.posY>300) self.posY = 500;
+	        if (health && health<5) self.velY = 50;
 	        if (health<0) health = 0;
 	    });
+	    
 	}
 	
 	function onUpdate(time) {
 	    var n = math.getRandomInRange(0,health);
-	    if (!health && n<=1) psFire.emit(self.posX+20,self.posY+20);
+	    if (!health && n<=1) {
+	        psFire.emit(self.posX+20,self.posY+20);
+	        soundManager.play('cracked',true);
+	    }    
 	    if (n==0) psBurn.emit(self.posX+20,self.posY+20);
 	    if (self.posX>600) self.posX = -300;
 	    if (self.posY>300)  sceneManager.setSceneByName('win');
+	    
 	}
 	
 	function onDestroy() {
@@ -383,6 +390,7 @@ modules['mouse'] = {code: function(module,exports){
 	var renderer = require('renderer').instance();
 	var math = require('math');
 	var sceneManager = require('sceneManager').instance();
+	var deviceScale = require('device').deviceScale;
 	
 	var Mouse = function(){
 	
@@ -418,8 +426,8 @@ modules['mouse'] = {code: function(module,exports){
 	        var scene = sceneManager.getCurrScene();
 	        if (!scene) return;
 	        var point = {
-	            x: e.clientX / globalScale.x,
-	            y: e.clientY / globalScale.y
+	            x: e.clientX / globalScale.x * deviceScale,
+	            y: e.clientY / globalScale.y * deviceScale
 	        };
 	        scene._layers.someReversed(function(l){
 	            var found = false;
@@ -463,6 +471,12 @@ modules['mouse'] = {code: function(module,exports){
 	};
 }};
 
+modules['device'] = {code: function(module,exports){
+	
+	var isCocoonJS = navigator.isCocoonJS;
+	exports.deviceScale = isCocoonJS?(window.devicePixelRatio||1):1;
+}};
+
 modules['index'] = {code: function(module,exports){
 	
 	var bundle = require('bundle').instance();
@@ -483,6 +497,163 @@ modules['index'] = {code: function(module,exports){
 	    require('mouse').instance();
 	    sceneManager.setScene(bundle.sceneList.get(0));
 	});
+}};
+
+modules['audioPlayer'] = {code: function(module,exports){
+	
+	exports.AudioPlayer = function(context){
+	
+	    var free = true;
+	    var currLoop = false;
+	    var self = this;
+	    var currSource = null;
+	    var isUsedHtmlAudio = false;
+	
+	    (function(){
+	
+	        if (!context) {
+	            context = (window.Audio && new window.Audio());
+	            isUsedHtmlAudio = true;
+	        }
+	
+	    })();
+	
+	    this.play = function(buffer,loop){
+	        free = false;
+	        if (!context) return;
+	
+	        currLoop = loop;
+	
+	        if (isUsedHtmlAudio) {
+	            console.log('used html audio',buffer);
+	            context.src = buffer;
+	            context.play();
+	        } else {
+	            currSource = context.createBufferSource();
+	            currSource.buffer = buffer;
+	            currSource.loop = loop;
+	            currSource.connect(context.destination);
+	            currSource.start(0);
+	            currSource.onended = function(){
+	                self.stop();
+	            }
+	        }
+	
+	    };
+	
+	    this.stop = function() {
+	        if (!context) return;
+	        if (currSource)  {
+	            currSource.stop();
+	            currSource.disconnect(context.destination);
+	        }
+	        currSource = null;
+	        free = true;
+	        currLoop = false;
+	    };
+	
+	    this.isFree = function() {
+	        return free;
+	    }
+	
+	};
+}};
+
+modules['audioSet'] = {code: function(module,exports){
+	
+	var AudioPlayer = require('audioPlayer').AudioPlayer;
+	
+	exports.AudioSet = function(context,numOfPlayers){
+	    var players = [];
+	    for (var i = 0;i<numOfPlayers;i++) {
+	        players.push(new AudioPlayer(context));
+	    }
+	
+	    this.getFreePlayer = function(){
+	        for (var i = 0;i<numOfPlayers;i++) {
+	            if (players[i].isFree()) return players[i];
+	        }
+	        return null;
+	    }
+	
+	};
+}};
+
+modules['soundManager'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	var AudioSet = require('audioSet').AudioSet;
+	
+	var AudioContext = window.AudioContext || window.webkitAudioContext;
+	var context = window.AudioContext1 && new window.AudioContext1();
+	
+	var SoundManager = function(){
+	
+	    var audioSet = new AudioSet(context,5);
+	
+	    var base64ToArrayBuffer = function(base64) {
+	        var binaryString = window.atob(base64);
+	        var len = binaryString.length;
+	        var bytes = new Uint8Array(len);
+	        for (var i = 0; i < len; i++) {
+	            bytes[i] = binaryString.charCodeAt(i);
+	        }
+	        return bytes.buffer;
+	    };
+	
+	    var _loadSoundXhr = function(url,callback){
+	        var request = new XMLHttpRequest();
+	        request.open('GET', url, true);
+	        request.responseType = 'arraybuffer';
+	
+	        request.setRequestHeader('Accept-Ranges', 'bytes');
+	        request.setRequestHeader('Content-Range', 'bytes');
+	
+	        request.onload = function() {
+	            if (!context) {
+	                callback(url);
+	                return;
+	            }
+	            context.decodeAudioData(request.response,function(buffer) {
+	                callback(buffer);
+	            });
+	        };
+	        request.onerror=function(e){throw 'can not load sound with url '+url};
+	        request.send();
+	    };
+	
+	    var _loadSoundBase64 = function(url,callback){
+	        if (context) {
+	            var byteArray = base64ToArrayBuffer(url);
+	            context.decodeAudioData(byteArray).then(function(buffer) {
+	                callback(buffer);
+	            });
+	        } else {
+	            callback(url);
+	        }
+	    };
+	
+	    this.loadSound = function( url, opts, callback) {
+	        if (opts.type=='base64') {
+	            _loadSoundBase64(url, callback);
+	        } else {
+	            _loadSoundXhr(url, callback);
+	        }
+	    };
+	
+	    this.play = function(sndName,loop){
+	        var player = audioSet.getFreePlayer();
+	        if (!player) return;
+	        player.play(bundle.soundList.find({name:sndName})._buffer,loop);
+	    }
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new SoundManager();
+	    return instance;
+	};
 }};
 
 modules['math'] = {code: function(module,exports){
@@ -900,7 +1071,7 @@ modules['models'] = {code: function(module,exports){
 	        this._currFrameAnimation && this._currFrameAnimation.stop();
 	    },
 	    _render: function(){
-	        renderer.drawImage(
+	        renderer.getContext().drawImage(
 	            this._spriteSheet._textureInfo,
 	            this._sprPosX,
 	            this._sprPosY,
@@ -1080,7 +1251,7 @@ modules['models'] = {code: function(module,exports){
 	            var self = this;
 	            this._chars.forEach(function(ch){
 	                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-	                renderer.drawImage(
+	                renderer.getContext().drawImage(
 	                    self._spriteSheet._textureInfo,
 	                    charInCtx.x,
 	                    charInCtx.y,
@@ -1162,22 +1333,32 @@ modules['models'] = {code: function(module,exports){
 
 modules['canvasContext'] = {code: function(module,exports){
 	
-	(function(){
+	var CanvasContext = function(){
 	
-	    ve_local.CanvasContext = function(){
+	    var ctx;
 	
-	        var ctx;
+	    this.init = function(canvas) {
+	        ctx = canvas.getContext('2d');
+	    };
 	
-	        this.init = function(canvas) {
-	            ctx = canvas.getContext('2d');
-	        };
+	    this.scale = function(scaleX,scaleY){
+	        ctx.scale(scaleX,scaleY);
+	    };
 	
-	        this.scale = function(scaleX,scaleY){
-	            ctx.scale(scaleX,scaleY);
-	        };
+	    this.drawImage = function(
+	        textureInfo,
+	        fromX,
+	        fromY,
+	        fromW,
+	        fromH,
+	        toX,
+	        toY,
+	        toW,
+	        toH
+	    ) {
 	
-	        this.drawImage = function(
-	            textureInfo,
+	        ctx.drawImage(
+	            textureInfo.image,
 	            fromX,
 	            fromY,
 	            fromW,
@@ -1186,49 +1367,43 @@ modules['canvasContext'] = {code: function(module,exports){
 	            toY,
 	            toW,
 	            toH
-	        ) {
+	        );
 	
-	            ctx.drawImage(
-	                textureInfo.image,
-	                fromX,
-	                fromY,
-	                fromW,
-	                fromH,
-	                toX,
-	                toY,
-	                toW,
-	                toH
-	            );
+	    };
 	
-	        };
+	    this.loadTextureInfo = function(url,opts,callBack){
 	
-	        this.loadTextureInfo = function(url,callBack){
-	
-	            var img = new Image(url);
-	            img.onload = function(){
-	                var textureInfo = {
-	                    image:img
-	                };
-	                callBack(textureInfo);
+	        var img = new Image(url);
+	        img.onload = function(){
+	            var textureInfo = {
+	                image:img
 	            };
-	            img.src = url;
-	
+	            callBack(textureInfo);
 	        };
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        img.src = url;
 	
-	        this.clear = function(w,h){
+	    };
 	
-	            ctx.fillStyle="#FFFFFF";
-	            ctx.fillRect(
-	                0,
-	                0,
-	                w,
-	                h);
+	    this.clear = function(w,h){
 	
-	        }
+	        ctx.fillStyle="#FFFFFF";
+	        ctx.fillRect(
+	            0,
+	            0,
+	            w,
+	            h);
 	
 	    }
 	
-	})();
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new CanvasContext();
+	    return instance;
+	};
 }};
 
 modules['glContext'] = {code: function(module,exports){
@@ -1329,8 +1504,13 @@ modules['glContext'] = {code: function(module,exports){
 	    };
 	
 	
+	    var cache = {};
 	
 	    this.loadTextureInfo = function(url,opts,callBack) {
+	        if (cache.url) {
+	            callBack(cache[url]);
+	            return;
+	        }
 	        if (opts.type=='base64') {
 	            url = utils.getBase64prefix('image',opts.fileName) + url;
 	        }
@@ -1357,11 +1537,14 @@ modules['glContext'] = {code: function(module,exports){
 	
 	            gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
 	            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	            cache[url] = textureInfo;
 	            callBack(textureInfo);
 	        };
 	        img.onerror=function(e){throw 'can not load image with url '+ url};
 	        img.src = url;
 	    };
+	
+	    var currTex = null;
 	
 	    this.drawImage = function(
 	        textureInfo,
@@ -1392,7 +1575,10 @@ modules['glContext'] = {code: function(module,exports){
 	            dstHeight = srcHeight;
 	        }
 	
-	        gl.bindTexture(gl.TEXTURE_2D, tex);
+	        if (currTex!=tex){
+	            gl.bindTexture(gl.TEXTURE_2D, tex);
+	            currTex = tex;
+	        }
 	
 	        // this matirx will convert from pixels to clip space
 	        var projectionMatrix = glUtils.make2DProjection(mCanvas.width, mCanvas.height, 1);
@@ -1418,6 +1604,11 @@ modules['glContext'] = {code: function(module,exports){
 	        var texScaleMatrix = glUtils.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
 	        var texTranslationMatrix = glUtils.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
 	
+	        if (texWidth==64) {
+	            gl.blendFunc(gl.ONE, gl.ONE);
+	        } else {
+	            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        }
 	        // multiply them together
 	        var texMatrix = glUtils.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 	
@@ -1635,6 +1826,9 @@ modules['renderer'] = {code: function(module,exports){
 	var collider = require('collider').instance();
 	var keyboard = require('keyboard').instance();
 	var glContext = require('glContext').instance();
+	var canvasContext = require('canvasContext').instance();
+	
+	console.log(navigator.userAgent);
 	
 	var Renderer = function(){
 	
@@ -1647,10 +1841,12 @@ modules['renderer'] = {code: function(module,exports){
 	    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 	    var gameProps;
 	    var canceled = false;
+	    var deviceScale = require('device').deviceScale;
 	
 	    var setFullScreen = function(){
-	        var w = window.innerWidth;
-	        var h = window.innerHeight;
+	        var w = window.innerWidth*deviceScale;
+	        var h = window.innerHeight*deviceScale;
+	        console.log('w,h',w,h);
 	        canvas.width = w;
 	        canvas.height = h;
 	        canvas.style.width = w + 'px';
@@ -1701,7 +1897,7 @@ modules['renderer'] = {code: function(module,exports){
 	            }
 	            document.body.appendChild(canvas);
 	        }
-	        //ctx = new ve_local.CanvasContext();
+	        //ctx = canvasContext;
 	        ctx = glContext;
 	        ctx.init(canvas);
 	        rescale(gameProps.globalScale.x,gameProps.globalScale.y);
@@ -1714,21 +1910,6 @@ modules['renderer'] = {code: function(module,exports){
 	        return canvas;
 	    };
 	
-	    // todo remove
-	    this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
-	        ctx.drawImage(
-	            img,
-	            fromX,
-	            fromY,
-	            fromW,
-	            fromH,
-	            toX,
-	            toY,
-	            toW,
-	            toH
-	        );
-	    };
-	
 	    this.cancel = function(){
 	        canceled = true;
 	    };
@@ -1737,7 +1918,7 @@ modules['renderer'] = {code: function(module,exports){
 	        if (canceled) {
 	           return;
 	        }
-	        if (window.canceled) return
+	        //if (window.canceled) return
 	
 	
 	        reqAnimFrame(drawScene);
@@ -1877,7 +2058,20 @@ modules['bundle'] = {code: function(module,exports){
 	data = {
 	
 	
-	    sound:[],
+	    sound:[
+	    {
+	        "name": "cracked",
+	        "type": "sound",
+	        "resourcePath": "resources/sound/cracked.mp3",
+	        "id": "4460_4604_103"
+	    },
+	    {
+	        "name": "engine",
+	        "type": "sound",
+	        "resourcePath": "resources/sound/engine.mp3",
+	        "id": "9985_1972_104"
+	    }
+	],
 	
 	    spriteSheet:[
 	    {
@@ -3075,8 +3269,8 @@ modules['bundle'] = {code: function(module,exports){
 	                ],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 21,
-	                "posY": 41,
+	                "posX": 16,
+	                "posY": 1,
 	                "protoId": "6612_6223_73",
 	                "id": "2294_3548_79"
 	            }
@@ -3171,8 +3365,8 @@ modules['bundle'] = {code: function(module,exports){
 	            "to": 100
 	        },
 	        "particleLiveTime": {
-	            "from": 100,
-	            "to": 1000
+	            "from": 1000,
+	            "to": 2000
 	        },
 	        "name": "fire",
 	        "type": "particleSystem",
@@ -3181,7 +3375,7 @@ modules['bundle'] = {code: function(module,exports){
 	],
 	
 	    gameProps:{
-	    "width": 400,
+	    "width": 600,
 	    "height": 300,
 	    "scaleToFullScreen": true
 	}
@@ -3262,14 +3456,22 @@ modules['sceneManager'] = {code: function(module,exports){
 	
 	    var self = this;
 	
+	    var renderer;
+	    var soundManager;
+	    var utils;
+	    var bundle;
+	
 	    this.currScene = null;
 	
 	    // todo extract to resource loader
 	    var preloadAndSet = function(scene){
-	        var renderer = require('renderer').instance();
-	        var soundManager = require('soundManager').instance();
-	        var utils = require('utils');
-	        var bundle = require('bundle').instance();
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!soundManager) soundManager = require('soundManager').instance();
+	        if (!utils) utils = require('utils');
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        console.log('preloading and set scene',scene.name);
 	
 	        var q = new utils.Queue();
 	        q.onResolved = function(){
@@ -3281,6 +3483,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	            allSprSheets.add(ps._gameObject._spriteSheet);
 	        });
 	        allSprSheets.asArray().forEach(function(spSheet){
+	            console.log('processing curr sprite sheet',spSheet.name);
 	            var resourcePath = bundle.embeddedResources.isEmbedded?
 	                bundle.embeddedResources.data[spSheet.resourcePath]:
 	                './'+spSheet.resourcePath;
@@ -3304,7 +3507,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	            './'+snd.resourcePath;
 	            soundManager.loadSound(
 	                resourcePath,
-	                {type:bundle.embeddedResourcesisEmbedded?'base64':''},
+	                {type:bundle.embeddedResources.isEmbedded?'base64':''},
 	                function(buffer){
 	                    snd._buffer = buffer;
 	                    q.resolveTask();
@@ -3317,6 +3520,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	    this.setScene = function(scene){
 	        var models = require('models');
 	        if (!(scene instanceof models.Scene)) throw 'object '+scene+' is not a scene';
+	        if (this.currScene==scene) return;
 	        this.currScene = scene;
 	        preloadAndSet(scene);
 	    };
@@ -3343,126 +3547,6 @@ modules['sceneManager'] = {code: function(module,exports){
 	    return instance;
 	};
 	
-}};
-
-modules['soundManager'] = {code: function(module,exports){
-	
-	var AudioPlayer = function(){
-	
-	    var free = true;
-	    var currLoop = false;
-	    var self = this;
-	    var currSource = null;
-	
-	    this.play = function(buffer,loop){
-	        free = false;
-	        currSource = context.createBufferSource();
-	        currSource.buffer = buffer;
-	        currLoop = loop;
-	        currSource.loop = loop;
-	        currSource.connect(context.destination);
-	        currSource.start(0);
-	        currSource.onended = function(){
-	            self.stop();
-	        }
-	    };
-	
-	    this.stop = function() {
-	        if (currSource)  {
-	            currSource.stop();
-	            currSource.disconnect(context.destination);
-	        }
-	        currSource = null;
-	        free = true;
-	        currLoop = false;
-	    };
-	
-	    this.isFree = function() {
-	        console.log('isfree',free);
-	        return free;
-	    }
-	
-	};
-	
-	
-	var AudioSet = function(numOfPlayers){
-	    var players = [];
-	    for (var i = 0;i<numOfPlayers;i++) {
-	        players.push(new AudioPlayer());
-	    }
-	
-	    this.getFreePlayer = function(){
-	        for (var i = 0;i<numOfPlayers;i++) {
-	            if (players[i].isFree()) return players[i];
-	        }
-	        return null;
-	    }
-	
-	};
-	
-	var SoundManager = function(){
-	    var AudioContext = window.AudioContext || window.webkitAudioContext;
-	
-	    var context = new AudioContext();
-	    var audioSet = new AudioSet(5);
-	
-	    var base64ToArrayBuffer = function(base64) {
-	        var binaryString = window.atob(base64);
-	        var len = binaryString.length;
-	        var bytes = new Uint8Array(len);
-	        for (var i = 0; i < len; i++) {
-	            bytes[i] = binaryString.charCodeAt(i);
-	        }
-	        return bytes.buffer;
-	    };
-	
-	    var _loadSoundXhr = function(url,callback){
-	        var request = new XMLHttpRequest();
-	        request.open('GET', url, true);
-	        request.responseType = 'arraybuffer';
-	
-	        request.setRequestHeader('Accept-Ranges', 'bytes');
-	        request.setRequestHeader('Content-Range', 'bytes');
-	
-	        request.onload = function() {
-	            context.decodeAudioData(request.response).then(function(buffer) {
-	                callback(buffer);
-	            });
-	        };
-	        request.onerror=function(e){throw 'can not load sound with url '+url};
-	        request.send();
-	    };
-	
-	    var _loadSoundBase64 = function(url,callback){
-	        console.log('loading sound',url);
-	        window.s = url;
-	        var byteArray = base64ToArrayBuffer(url);
-	        context.decodeAudioData(byteArray).then(function(buffer) {
-	            callback(buffer);
-	        });
-	    };
-	
-	    this.loadSound = function( url, opts, callback) {
-	        if (opts.type=='base64') {
-	            _loadSoundBase64(url, callback);
-	        } else {
-	            _loadSoundXhr(url, callback);
-	        }
-	    };
-	
-	    this.play = function(sndName,loop){
-	        var player = audioSet.getFreePlayer();
-	        if (!player) return;
-	        player.play(ve_local.bundle.soundList.find({name:sndName})._buffer,loop);
-	    }
-	};
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new SoundManager();
-	    return instance;
-	};
 }};
 
 require('index');

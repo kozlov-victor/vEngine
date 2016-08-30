@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "name": "cracked",
+        "type": "sound",
+        "resourcePath": "resources/sound/cracked.mp3",
+        "id": "4460_4604_103"
+    },
+    {
+        "name": "engine",
+        "type": "sound",
+        "resourcePath": "resources/sound/engine.mp3",
+        "id": "9985_1972_104"
+    }
+]

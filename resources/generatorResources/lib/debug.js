@@ -31,7 +31,7 @@
             rightBox.onclick = function(){
                 popup.remove();
             };
-            leftBox.textContent = e;
+            leftBox.textContent = (e && e.message)?e.message:e;
             popup.appendChild(leftBox);
             popup.appendChild(rightBox);
             getPopupContainer().appendChild(popup);
@@ -45,9 +45,10 @@
 
     window.canceled = false;
 
-    window.onerror = function(e,url,lineNum){
+    window.addEventListener('error',function(e,url,lineNum){
+        console.error(e);
         window.showError(e,lineNum);
         window.canceled = true;
-    };
+    });
 
 })();

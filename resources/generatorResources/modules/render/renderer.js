@@ -3,6 +3,9 @@ var bundle = require('bundle').instance();
 var collider = require('collider').instance();
 var keyboard = require('keyboard').instance();
 var glContext = require('glContext').instance();
+var canvasContext = require('canvasContext').instance();
+
+console.log(navigator.userAgent);
 
 var Renderer = function(){
 
@@ -15,10 +18,12 @@ var Renderer = function(){
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
     var gameProps;
     var canceled = false;
+    var deviceScale = require('device').deviceScale;
 
     var setFullScreen = function(){
-        var w = window.innerWidth;
-        var h = window.innerHeight;
+        var w = window.innerWidth*deviceScale;
+        var h = window.innerHeight*deviceScale;
+        console.log('w,h',w,h);
         canvas.width = w;
         canvas.height = h;
         canvas.style.width = w + 'px';
@@ -69,7 +74,7 @@ var Renderer = function(){
             }
             document.body.appendChild(canvas);
         }
-        //ctx = new ve_local.CanvasContext();
+        //ctx = canvasContext;
         ctx = glContext;
         ctx.init(canvas);
         rescale(gameProps.globalScale.x,gameProps.globalScale.y);
@@ -82,21 +87,6 @@ var Renderer = function(){
         return canvas;
     };
 
-    // todo remove
-    this.drawImage = function(img,fromX,fromY,fromW,fromH,toX,toY,toW,toH){
-        ctx.drawImage(
-            img,
-            fromX,
-            fromY,
-            fromW,
-            fromH,
-            toX,
-            toY,
-            toW,
-            toH
-        );
-    };
-
     this.cancel = function(){
         canceled = true;
     };
@@ -105,7 +95,7 @@ var Renderer = function(){
         if (canceled) {
            return;
         }
-        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        //<code>//<%if (opts.debug){%>if (window.canceled) return<%}%>
 
 
         reqAnimFrame(drawScene);

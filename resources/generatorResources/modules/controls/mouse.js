@@ -3,6 +3,7 @@ var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
 var math = require('math');
 var sceneManager = require('sceneManager').instance();
+var deviceScale = require('device').deviceScale;
 
 var Mouse = function(){
 
@@ -38,8 +39,8 @@ var Mouse = function(){
         var scene = sceneManager.getCurrScene();
         if (!scene) return;
         var point = {
-            x: e.clientX / globalScale.x,
-            y: e.clientY / globalScale.y
+            x: e.clientX / globalScale.x * deviceScale,
+            y: e.clientY / globalScale.y * deviceScale
         };
         scene._layers.someReversed(function(l){
             var found = false;

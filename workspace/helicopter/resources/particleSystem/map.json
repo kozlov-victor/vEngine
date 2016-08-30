@@ -36,8 +36,8 @@
             "to": 100
         },
         "particleLiveTime": {
-            "from": 100,
-            "to": 1000
+            "from": 1000,
+            "to": 2000
         },
         "name": "fire",
         "type": "particleSystem",

@@ -4,14 +4,22 @@ var SceneManager = function(){
 
     var self = this;
 
+    var renderer;
+    var soundManager;
+    var utils;
+    var bundle;
+
     this.currScene = null;
 
     // todo extract to resource loader
     var preloadAndSet = function(scene){
-        var renderer = require('renderer').instance();
-        var soundManager = require('soundManager').instance();
-        var utils = require('utils');
-        var bundle = require('bundle').instance();
+
+        if (!renderer) renderer = require('renderer').instance();
+        if (!soundManager) soundManager = require('soundManager').instance();
+        if (!utils) utils = require('utils');
+        if (!bundle) bundle = require('bundle').instance();
+
+        console.log('preloading and set scene',scene.name);
 
         var q = new utils.Queue();
         q.onResolved = function(){
@@ -23,6 +31,7 @@ var SceneManager = function(){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
         allSprSheets.asArray().forEach(function(spSheet){
+            console.log('processing curr sprite sheet',spSheet.name);
             var resourcePath = bundle.embeddedResources.isEmbedded?
                 bundle.embeddedResources.data[spSheet.resourcePath]:
                 './'+spSheet.resourcePath;
@@ -46,7 +55,7 @@ var SceneManager = function(){
             './'+snd.resourcePath;
             soundManager.loadSound(
                 resourcePath,
-                {type:bundle.embeddedResourcesisEmbedded?'base64':''},
+                {type:bundle.embeddedResources.isEmbedded?'base64':''},
                 function(buffer){
                     snd._buffer = buffer;
                     q.resolveTask();
@@ -59,6 +68,7 @@ var SceneManager = function(){
     this.setScene = function(scene){
         var models = require('models');
         if (!(scene instanceof models.Scene)) throw 'object '+scene+' is not a scene';
+        if (this.currScene==scene) return;
         this.currScene = scene;
         preloadAndSet(scene);
     };

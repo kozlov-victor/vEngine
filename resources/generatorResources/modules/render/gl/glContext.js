@@ -95,8 +95,13 @@ var GlContext = function(){
     };
 
 
+    var cache = {};
 
     this.loadTextureInfo = function(url,opts,callBack) {
+        if (cache.url) {
+            callBack(cache[url]);
+            return;
+        }
         if (opts.type=='base64') {
             url = utils.getBase64prefix('image',opts.fileName) + url;
         }
@@ -123,11 +128,14 @@ var GlContext = function(){
 
             gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            cache[url] = textureInfo;
             callBack(textureInfo);
         };
         //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
         img.src = url;
     };
+
+    var currTex = null;
 
     this.drawImage = function(
         textureInfo,
@@ -158,7 +166,10 @@ var GlContext = function(){
             dstHeight = srcHeight;
         }
 
-        gl.bindTexture(gl.TEXTURE_2D, tex);
+        if (currTex!=tex){
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+            currTex = tex;
+        }
 
         // this matirx will convert from pixels to clip space
         var projectionMatrix = glUtils.make2DProjection(mCanvas.width, mCanvas.height, 1);
@@ -184,6 +195,11 @@ var GlContext = function(){
         var texScaleMatrix = glUtils.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
         var texTranslationMatrix = glUtils.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
 
+        if (texWidth==64) {
+            gl.blendFunc(gl.ONE, gl.ONE);
+        } else {
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        }
         // multiply them together
         var texMatrix = glUtils.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 

@@ -217,7 +217,7 @@ exports.GameObject = exports.BaseGameObject.extend({
         this._currFrameAnimation && this._currFrameAnimation.stop();
     },
     _render: function(){
-        renderer.drawImage(
+        renderer.getContext().drawImage(
             this._spriteSheet._textureInfo,
             this._sprPosX,
             this._sprPosY,
@@ -397,7 +397,7 @@ exports.TextField = exports.BaseGameObject.extend({
             var self = this;
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-                renderer.drawImage(
+                renderer.getContext().drawImage(
                     self._spriteSheet._textureInfo,
                     charInCtx.x,
                     charInCtx.y,
