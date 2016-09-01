@@ -1,103 +1,103 @@
-
 var glUtils = require('glUtils');
+var Shader = require('shader').Shader;
+var shaderSources = require('shaderSources');
+var VertexBuffer = require('vertexBuffer').VertexBuffer;
+var FrameBuffer = require('frameBuffer').FrameBuffer;
+var Texture = require('texture').Texture;
+var mat4 = require('mat4');
 var utils = require('utils');
 
-var GlContext = function(){
+var GlContext = function () {
 
     var gl;
     var mCanvas;
-    var mScaleX = 1, mScaleY = 1;
-    var matrixLocation;
-    var textureMatrixLocation;
-
-    var vShader = [
-            'attribute vec4 a_position; ',
-            'attribute vec2 a_texcoord; ',
-
-            'uniform mat4 u_matrix; ',
-            'uniform mat4 u_textureMatrix; ',
-
-            'varying vec2 v_texcoord; ',
-
-            'void main() { ',
-                'gl_Position = u_matrix * a_position; ',
-                'v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; ',
-            '}'
-        ].join('');
-
-
-    var fShader =
-            [
-            'precision mediump float; ',
-
-            'varying vec2 v_texcoord;',
-
-            'uniform sampler2D texture;',
-
-            'void main() { ',
-            '    gl_FragColor = texture2D(texture, v_texcoord);',
-            '} '
-            ].join('');
+    var matrixStack = new mat4.MatrixStack();
+    var simpleTextureShader;
+    var vertexPositionBuffer;
+    var vertexTextureBuffer;
+    var frameBuffer;
+    var vertexPositionData = [
+        0, 0, 0,
+        0, 1, 0,
+        1, 0, 0,
+        1, 0, 0,
+        0, 1, 0,
+        1, 1, 0
+    ];
+    var vertexTextureData = [
+        0, 0,
+        0, 1,
+        1, 0,
+        1, 0,
+        0, 1,
+        1, 1
+    ];
 
 
-    this.init = function(canvas){
+    this.init = function (canvas) {
 
         mCanvas = canvas;
-        gl = canvas.getContext("webgl",{ alpha: false });
-        var program = glUtils.createProgramFromSources(gl, [vShader, fShader]);
-        gl.useProgram(program);
+        gl = canvas.getContext("webgl", {alpha: false}) ||  canvas.getContext("experimental-webgl", {alpha: false});
 
-        // look up where the vertex data needs to go.
-        var positionLocation = gl.getAttribLocation(program, "a_position");
-        var texcoordLocation = gl.getAttribLocation(program, "a_texcoord");
+        simpleTextureShader = new Shader(gl,shaderSources.SHADERS_SRC.DRAW_WITH_TEXTURE[0],shaderSources.SHADERS_SRC.DRAW_WITH_TEXTURE[1]);
+        simpleTextureShader.bind();
 
-        // lookup uniforms
-        matrixLocation = gl.getUniformLocation(program, "u_matrix");
-        textureMatrixLocation = gl.getUniformLocation(program, "u_textureMatrix");
+        vertexPositionBuffer = new VertexBuffer(gl,simpleTextureShader);
+        vertexPositionBuffer.bindBufferData(vertexPositionData,3,'a_position');
 
-        // Create a buffer.
-        var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        vertexTextureBuffer = new VertexBuffer(gl,simpleTextureShader);
+        vertexTextureBuffer.bindBufferData(vertexTextureData,2,'a_texcoord');
 
+        frameBuffer = new FrameBuffer(gl,mCanvas.width,mCanvas.height);
+
+        gl.disable(gl.CULL_FACE);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
-
-        // Put a unit quad in the buffer
-        var positions = [
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 0,
-            0, 1,
-            1, 1
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-        // Create a buffer for texture coords
-        buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(texcoordLocation);
-        gl.vertexAttribPointer(texcoordLocation, 2, gl.FLOAT, false, 0, 0);
-
-        // Put texcoords in the buffer
-        var texcoords = [
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 0,
-            0, 1,
-            1, 1
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texcoords), gl.STATIC_DRAW);
+        this.resize(mCanvas.width,mCanvas.height)
 
     };
+
+    function createPositionMatrix(dstX, dstY, dstWidth, dstHeight) {
+        // this matrix will convert from pixels to clip space
+        var projectionMatrix = mat4.make2DProjection(mCanvas.width, mCanvas.height, 500);
+        //var aspect = mCanvas.width / mCanvas.height;
+        //var projectionMatrix = Mat4.makePerspective(1.047, aspect, 1, 2000);
+
+
+        // this matrix will scale our 1 unit quad
+        // from 1 unit to dstWidth, dstHeight units
+        var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
+
+        // this matrix will translate our quad to dstX, dstY
+        var translationMatrix = mat4.makeTranslation(dstX, dstY, 0);
+
+        // multiply them all togehter
+        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
+        matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
+        matrix = mat4.matrixMultiply(matrix, projectionMatrix);
+        matrix = mat4.matrixMultiply(matrix, mat4.makeZToWMatrix(0.05));
+
+        return matrix;
+    }
+
+    function createTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight){
+        // Because texture coordinates go from 0 to 1
+        // and because our texture coordinates are already a unit quad
+        // we can select an area of the texture by scaling the unit quad
+        // down
+        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth , srcHeight / texHeight, 1);
+        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+
+        // multiply them together
+        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
+    }
 
 
     var cache = {};
 
-    this.loadTextureInfo = function(url,opts,callBack) {
+
+    this.loadTextureInfo = function (url, opts, callBack) {
+
         if (cache.url) {
             callBack(cache[url]);
             return;
@@ -105,46 +105,30 @@ var GlContext = function(){
         if (opts.type=='base64') {
             url = utils.getBase64prefix('image',opts.fileName) + url;
         }
-        var tex = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, tex);
-        // Fill the texture with a 1x1 blue pixel.
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-            new Uint8Array([0, 0, 255, 255]));
-
-        // let's assume all images are not a power of 2
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-        var textureInfo = {
-            width: 1,   // we don't know the size until it loads
-            height: 1,
-            texture: tex
-        };
         var img = new Image();
-        img.onload = function() {
-            textureInfo.width = img.width;
-            textureInfo.height = img.height;
+        var texture = new Texture(gl,img);
 
-            gl.bindTexture(gl.TEXTURE_2D, textureInfo.texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-            cache[url] = textureInfo;
-            callBack(textureInfo);
-        };
+        img.addEventListener('load', function () {
+            texture.setSize({
+                width:img.width,
+                height:img.height
+            });
+            cache[url] = texture;
+            callBack(texture);
+        });
         //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
         img.src = url;
     };
 
+
     var currTex = null;
 
-    this.drawImage = function(
-        textureInfo,
-        srcX, srcY, srcWidth, srcHeight,
-        dstX, dstY, dstWidth, dstHeight) {
+    this.drawImage = function (texture,
+                               srcX, srcY, srcWidth, srcHeight,
+                               dstX, dstY) {
 
-        var tex = textureInfo.texture;
-        var texWidth = textureInfo.width;
-        var texHeight = textureInfo.height;
+        var texWidth = texture.getSize().width;
+        var texHeight = texture.getSize().height;
 
 
         if (dstX === undefined) {
@@ -159,68 +143,97 @@ var GlContext = function(){
         if (srcHeight === undefined) {
             srcHeight = texHeight;
         }
-        if (dstWidth === undefined) {
-            dstWidth = srcWidth;
-        }
-        if (dstHeight === undefined) {
-            dstHeight = srcHeight;
-        }
 
-        if (currTex!=tex){
-            gl.bindTexture(gl.TEXTURE_2D, tex);
-            currTex = tex;
+        if (currTex!=texture){
+            texture.bind();
+            currTex = texture;
         }
 
-        // this matirx will convert from pixels to clip space
-        var projectionMatrix = glUtils.make2DProjection(mCanvas.width, mCanvas.height, 1);
 
-        // this matrix will scale our 1 unit quad
-        // from 1 unit to dstWidth, dstHeight units
-        var scaleMatrix = glUtils.makeScale(dstWidth*mScaleX, dstHeight*mScaleY, 1);
-
-        // this matrix will translate our quad to dstX, dstY
-        var translationMatrix = glUtils.makeTranslation(dstX*mScaleX, dstY*mScaleY, 0);
-
-        // multiply them all togehter
-        var matrix = glUtils.matrixMultiply(scaleMatrix, translationMatrix);
-        matrix = glUtils.matrixMultiply(matrix, projectionMatrix);
-
-        // Set the matrix.
-        gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-        // Because texture coordinates go from 0 to 1
-        // and because our texture coordinates are already a unit quad
-        // we can select an area of the texture by scaling the unit quad
-        // down
-        var texScaleMatrix = glUtils.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-        var texTranslationMatrix = glUtils.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
-
-        if (texWidth==64) {
-            gl.blendFunc(gl.ONE, gl.ONE);
-        } else {
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        }
-        // multiply them together
-        var texMatrix = glUtils.matrixMultiply(texScaleMatrix, texTranslationMatrix);
-
-        // Set the texture matrix.
-        gl.uniformMatrix4fv(textureMatrixLocation, false, texMatrix);
+        simpleTextureShader.setUniform('u_matrix',createPositionMatrix(dstX, dstY, srcWidth, srcHeight));
+        simpleTextureShader.setUniform('u_textureMatrix',createTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight));
 
         // draw the quad (2 triangles, 6 vertices)
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
 
-    this.clear = function() {
+    this.clear = function () {
         //gl.colorMask(false, false, false, true);
         gl.clearColor(1, 1, 1, 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     };
 
-    this.scale = function(scaleX,scaleY){
-        mScaleX = scaleX;
-        mScaleY = scaleY;
-        gl.viewport(0, 0, mCanvas.width, mCanvas.height);
+
+    this.fillRect = function (x, y, w, h, color) {
+        simpleTextureShader.setUniform('u_matrix',createPositionMatrix(x, y, w, h));
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
+
+    this.strokeRect = function (x, y, w, h, color) {
+        this.fillRect(x, y, w, 1, color);
+        this.fillRect(x, y + h, w, 1, color);
+        this.fillRect(x, y, 1, h, color);
+        this.fillRect(x + w, y, 1, h, color);
+    };
+
+    this.point = function (x, y, color) {
+        this.fillRect(x, y, 1, 1, color);
+    };
+
+    this.line = function (x1, y1, x2, y2, color) {
+        simpleTextureShader.setUniform('u_matrix',createPositionMatrix(x1, y1, x2 - x1, y2 - y1));
+        gl.drawArrays(gl.LINES, 0, 6);
+    };
+
+    this.save = function() {
+        matrixStack.save();
+    };
+
+    this.resize = function (w,h) {
+        gl.viewport(0, 0, w,h);
+    };
+
+    this.scale = function(x,y) {
+        matrixStack.scale(x,y);
+    };
+
+    this.rotateZ = function(angleInRadians) {
+        matrixStack.rotateZ(angleInRadians);
+    };
+
+    this.rotateY = function(angleInRadians) {
+        matrixStack.rotateY(angleInRadians);
+    };
+
+    this.translate = function(x,y){
+        matrixStack.translate(x,y);
+    };
+
+    this.restore = function(){
+        matrixStack.restore();
+    };
+
+    this.beginFrameBuffer = function(){
+        this.save();
+        frameBuffer.bind();
+    };
+
+    this.flipFrameBuffer = function(){
+        this.restore();
+        this.save();
+        this.translate(0,mCanvas.height);
+        this.scale(1,-1);
+        frameBuffer.unbind();
+        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
+        simpleTextureShader.setUniform('u_matrix',createPositionMatrix(0,0,mCanvas.width, mCanvas.height),1);
+        simpleTextureShader.setUniform('u_textureMatrix',createTextureMatrix(0,0,mCanvas.width, mCanvas.height,mCanvas.width, mCanvas.height));
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        this.restore();
+    };
+
+    this.getGL = function(){
+        return gl;
+    }
 
 };
 

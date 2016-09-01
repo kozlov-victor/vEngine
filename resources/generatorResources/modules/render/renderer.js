@@ -12,6 +12,7 @@ var Renderer = function(){
     var canvas;
     var ctx;
     var scene;
+    var clearColor = [];
     var self = this;
     var currTime = 0;
     var lastTime = 0;
@@ -106,7 +107,7 @@ var Renderer = function(){
         currTime = Date.now();
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
-        ctx.clear(gameProps.width,gameProps.height);
+        if (scene.useBG) ctx.clear(scene.colorBG,gameProps.width,gameProps.height);
 
         scene.update(currTime,deltaTime);
 

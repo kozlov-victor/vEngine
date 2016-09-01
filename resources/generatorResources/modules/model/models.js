@@ -305,6 +305,8 @@ exports.Scene = exports.BaseModel.extend({
     _layers:null,
     _allGameObjects:null,
     _twins:null,
+    useBG:false,
+    colorBG:null,
     __onResourcesReady: function(){
         var self = this;
         self._allGameObjects = new collections.List();

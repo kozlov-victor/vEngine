@@ -1,30 +1,14 @@
+var mat4 = require('mat4');
 
-
-var defaultShaderType = [
-    "VERTEX_SHADER",
-    "FRAGMENT_SHADER"
-];
-
-function error(msg) {
-    console.error(msg);
-}
-
-function loadShader(gl, shaderSource, shaderType) {
+function compileShader(gl, shaderSource, shaderType) {
     // Create the shader object
     var shader = gl.createShader(shaderType);
-
-    // Load the shader source
     gl.shaderSource(shader, shaderSource);
-
-    // Compile the shader
     gl.compileShader(shader);
 
     // Check the compile status
-    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (!compiled) {
-        // Something went wrong during compilation; get the error
-        var lastError = gl.getShaderInfoLog(shader);
-        error("*** Error compiling shader '" + shader + "':" + lastError);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
         gl.deleteShader(shader);
         return null;
     }
@@ -33,144 +17,198 @@ function loadShader(gl, shaderSource, shaderType) {
 }
 
 
-function createProgram(gl, shaders) {
+module.exports.createProgram = function (gl, vShaderSource, fShaderSource) {
     var program = gl.createProgram();
-    shaders.forEach(function(shader) {
-        gl.attachShader(program, shader);
-    });
+    var vShader = compileShader(gl, vShaderSource, gl.VERTEX_SHADER);
+    var fShader = compileShader(gl, fShaderSource, gl.FRAGMENT_SHADER);
+    if (!(vShader && fShader)) {
+        console.error('Could not compile shader');
+        return null;
+    }
+    gl.attachShader(program, vShader);
+    gl.attachShader(program, fShader);
     gl.linkProgram(program);
 
-    // Check the link status
-    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (!linked) {
-        // something went wrong with the link
-        var lastError = gl.getProgramInfoLog(program);
-        error("Error in program linking:" + lastError);
+    // Check the linking status
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error('Could not initialize shader');
+        console.error('gl.VALIDATE_STATUS', gl.getProgramParameter(program, gl.VALIDATE_STATUS));
+        console.error('gl.getError()', gl.getError());
+        // if there is a program info log, log it
+        if (gl.getProgramInfoLog(program) !== '') {
+            console.warn('Warning: gl.getProgramInfoLog()', gl.getProgramInfoLog(program));
+        }
+
         gl.deleteProgram(program);
+        program = null;
         return null;
     }
     return program;
-}
+};
 
-exports.createProgramFromSources = function(gl, shaderSources) {
-    var shaders = [];
-    for (var ii = 0; ii < shaderSources.length; ++ii) {
-        shaders.push(loadShader(
-            gl, shaderSources[ii], gl[defaultShaderType[ii]]));
+
+module.exports.extractUniforms = function (gl, program) {
+    var uniforms = {};
+
+    var totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
+    for (var i = 0; i < totalUniforms; i++) {
+        var uniformData = gl.getActiveUniform(program, i);
+        var name = uniformData.name.replace(/\[.*?]/, "");
+        var type = mapType(gl, uniformData.type);
+
+        uniforms[name] = {
+            type: type,
+            size: uniformData.size,
+            name: name,
+            location: gl.getUniformLocation(program, name)
+            //value:defaultValue(type, uniformData.size)
+        };
     }
-    return createProgram(gl, shaders);
+
+    return uniforms;
+
+
+    function mapType(gl, type) {
+
+        var GL_TABLE = null;
+
+        var GL_TO_GLSL_TYPES = {
+            'FLOAT': 'float',
+            'FLOAT_VEC2': 'vec2',
+            'FLOAT_VEC3': 'vec3',
+            'FLOAT_VEC4': 'vec4',
+
+            'INT': 'int',
+            'INT_VEC2': 'ivec2',
+            'INT_VEC3': 'ivec3',
+            'INT_VEC4': 'ivec4',
+
+            'BOOL': 'bool',
+            'BOOL_VEC2': 'bvec2',
+            'BOOL_VEC3': 'bvec3',
+            'BOOL_VEC4': 'bvec4',
+
+            'FLOAT_MAT2': 'mat2',
+            'FLOAT_MAT3': 'mat3',
+            'FLOAT_MAT4': 'mat4',
+
+            'SAMPLER_2D': 'sampler2D'
+        };
+
+        if (!GL_TABLE) {
+            var typeNames = Object.keys(GL_TO_GLSL_TYPES);
+
+            GL_TABLE = {};
+
+            for (var i = 0; i < typeNames.length; ++i) {
+                var tn = typeNames[i];
+                GL_TABLE[gl[tn]] = GL_TO_GLSL_TYPES[tn];
+            }
+        }
+
+        return GL_TABLE[type];
+    }
 };
 
-exports.make2DProjection = function(width, height, depth) {
-    // Note: This matrix flips the Y axis so 0 is at the top.
-    return [
-        2 / width, 0, 0, 0,
-        0, -2 / height, 0, 0,
-        0, 0, 2 / depth, 0,
-        -1, 1, 0, 1
-    ];
+
+module.exports.getUniformSetter = function(uniform){
+    if (uniform.size==1) {
+        switch (uniform.type) {
+            case 'float':       return function(gl,location,value) {gl.uniform1f(location, value)};
+            case 'vec2':        return  function(gl,location,value) {gl.uniform2f(location, value[0], value[1])};
+            case 'vec3':        return  function(gl,location,value) {gl.uniform3f(location, value[0], value[1], value[2])};
+            case 'vec4':        return  function(gl,location,value) {gl.uniform4f(location, value[0], value[1], value[2], value[3])};
+            case 'int':         return  function(gl,location,value) {gl.uniform1i(location, value)};
+            case 'ivec2':       return  function(gl,location,value) {gl.uniform2i(location, value[0], value[1])};
+            case 'ivec3':       return  function(gl,location,value) {gl.uniform3i(location, value[0], value[1], value[2])};
+            case 'ivec4':       return  function(gl,location,value) {gl.uniform4i(location, value[0], value[1], value[2], value[3])};
+            case 'bool':        return  function(gl,location,value) {gl.uniform1i(location, value)};
+            case 'bvec2':       return  function(gl,location,value) {gl.uniform2i(location, value[0], value[1])};
+            case 'bvec3':       return  function(gl,location,value) {gl.uniform3i(location, value[0], value[1], value[2])};
+            case 'bvec4':       return  function(gl,location,value) {gl.uniform4i(location, value[0], value[1], value[2], value[3])};
+            case 'mat2':        return  function(gl,location,value) {gl.uniformMatrix2fv(location, false, value)};
+            case 'mat3':        return  function(gl,location,value) {gl.uniformMatrix3fv(location, false, value)};
+            case 'mat4':        return  function(gl,location,value) {gl.uniformMatrix4fv(location, false, value)};
+            case 'sampler2D':   return  function(gl,location,value) {gl.uniform1i(location, value)};
+        }
+    } else {
+        switch (uniform.type) {
+            case 'float':       return  function(gl,location,value) {gl.uniform1fv(location, value)};
+            case 'vec2':        return  function(gl,location,value) {gl.uniform2fv(location, value)};
+            case 'vec3':        return  function(gl,location,value) {gl.uniform3fv(location, value)};
+            case 'vec4':        return  function(gl,location,value) {gl.uniform4fv(location, value)};
+            case 'int':         return  function(gl,location,value) {gl.uniform1iv(location, value)};
+            case 'ivec2':       return  function(gl,location,value) {gl.uniform2iv(location, value)};
+            case 'ivec3':       return  function(gl,location,value) {gl.uniform3iv(location, value)};
+            case 'ivec4':       return  function(gl,location,value) {gl.uniform4iv(location, value)};
+            case 'bool':        return  function(gl,location,value) {gl.uniform1iv(location, value)};
+            case 'bvec2':       return  function(gl,location,value) {gl.uniform2iv(location, value)};
+            case 'bvec3':       return  function(gl,location,value) {gl.uniform3iv(location, value)};
+            case 'bvec4':       return  function(gl,location,value) {gl.uniform4iv(location, value)};
+            case 'sampler2D':   return  function(gl,location,value) {gl.uniform1iv(location, value)};
+        }
+    }
 };
 
-exports.makeTranslation = function(tx, ty, tz) {
-    return [
-        1,  0,  0,  0,
-        0,  1,  0,  0,
-        0,  0,  1,  0,
-        tx, ty, tz,  1
-    ];
-};
 
-exports.makeXRotation = function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
 
-    return [
-        1, 0, 0, 0,
-        0, c, s, 0,
-        0, -s, c, 0,
-        0, 0, 0, 1
-    ];
-};
+module.exports.MatrixStack = function () {
+    var self = this;
+    this.stack = [];
 
-exports.makeYRotation = function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
+    this.restore = function () {
+        this.stack.pop();
+        // Never let the stack be totally empty
+        if (this.stack.length < 1) {
+            this.stack[0] = mat4.makeIdentity();
+        }
+    };
 
-    return [
-        c, 0, -s, 0,
-        0, 1, 0, 0,
-        s, 0, c, 0,
-        0, 0, 0, 1
-    ];
-};
+    this.save = function () {
+        this.stack.push(this.getCurrentMatrix());
+    };
 
-exports.makeZRotation = function(angleInRadians) {
-    var c = Math.cos(angleInRadians);
-    var s = Math.sin(angleInRadians);
-    return [
-        c, s, 0, 0,
-        -s, c, 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    ];
-};
+    this.getCurrentMatrix = function () {
+        return this.stack[this.stack.length - 1].slice();
+    };
 
-exports.makeScale = function(sx, sy, sz) {
-    return [
-        sx, 0,  0,  0,
-        0, sy,  0,  0,
-        0,  0, sz,  0,
-        0,  0,  0,  1
-    ];
-};
+    this.setCurrentMatrix = function (m) {
+        return this.stack[this.stack.length - 1] = m;
+    };
 
-exports.matrixMultiply = function(a, b) {
-    var a00 = a[0*4+0];
-    var a01 = a[0*4+1];
-    var a02 = a[0*4+2];
-    var a03 = a[0*4+3];
-    var a10 = a[1*4+0];
-    var a11 = a[1*4+1];
-    var a12 = a[1*4+2];
-    var a13 = a[1*4+3];
-    var a20 = a[2*4+0];
-    var a21 = a[2*4+1];
-    var a22 = a[2*4+2];
-    var a23 = a[2*4+3];
-    var a30 = a[3*4+0];
-    var a31 = a[3*4+1];
-    var a32 = a[3*4+2];
-    var a33 = a[3*4+3];
-    var b00 = b[0*4+0];
-    var b01 = b[0*4+1];
-    var b02 = b[0*4+2];
-    var b03 = b[0*4+3];
-    var b10 = b[1*4+0];
-    var b11 = b[1*4+1];
-    var b12 = b[1*4+2];
-    var b13 = b[1*4+3];
-    var b20 = b[2*4+0];
-    var b21 = b[2*4+1];
-    var b22 = b[2*4+2];
-    var b23 = b[2*4+3];
-    var b30 = b[3*4+0];
-    var b31 = b[3*4+1];
-    var b32 = b[3*4+2];
-    var b33 = b[3*4+3];
-    return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
-        a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
-        a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
-        a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
-        a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30,
-        a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31,
-        a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32,
-        a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33,
-        a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30,
-        a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31,
-        a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32,
-        a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33,
-        a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
-        a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
-        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
-        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
+    this.translate = function (x, y, z) {
+        if (z === undefined) {
+            z = 0;
+        }
+        var t = mat4.makeTranslation(x, y, z);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+    };
+
+    this.rotateZ = function (angleInRadians) {
+        var t = mat4.makeZRotation(angleInRadians);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+    };
+
+    this.rotateY = function (angleInRadians) {
+        var t = mat4.makeYRotation(angleInRadians);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+    };
+
+    this.scale = function (x, y, z) {
+        if (z === undefined) {
+            z = 1;
+        }
+        var t = mat4.makeScale(x, y, z);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+    };
+
+    (function () {
+        self.restore();
+    })();
+
 };

@@ -68,7 +68,9 @@ window.app
                 particleSystem:'particle system',
                 preview:'preview',
                 explorer:'explorer',
-                description: 'description'
+                description: 'description',
+                colorBG:'scene background color',
+                useBG:'use background color'
             }
         };
 
