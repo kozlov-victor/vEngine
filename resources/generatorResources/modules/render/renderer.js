@@ -12,7 +12,6 @@ var Renderer = function(){
     var canvas;
     var ctx;
     var scene;
-    var clearColor = [];
     var self = this;
     var currTime = 0;
     var lastTime = 0;
@@ -45,12 +44,12 @@ var Renderer = function(){
     var listenResize = function(){
         window.addEventListener('resize',function(){
             setFullScreen();
-            rescale(gameProps.globalScale.x,gameProps.globalScale.y);
+            rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
         });
     };
 
-    var rescale = function(scaleX,scaleY){
-        ctx.scale(scaleX,scaleY);
+    var rescaleView = function(scaleX,scaleY){
+        ctx.rescaleView(scaleX,scaleY);
     };
 
     this.getContext = function(){
@@ -78,7 +77,7 @@ var Renderer = function(){
         //ctx = canvasContext;
         ctx = glContext;
         ctx.init(canvas);
-        rescale(gameProps.globalScale.x,gameProps.globalScale.y);
+        rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
 
         drawScene();
 
@@ -107,13 +106,16 @@ var Renderer = function(){
         currTime = Date.now();
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
-        if (scene.useBG) ctx.clear(scene.colorBG,gameProps.width,gameProps.height);
+        ctx.beginFrameBuffer();
 
+        ctx.clear(gameProps.width,gameProps.height);
         scene.update(currTime,deltaTime);
-
         bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
         });
+
+        ctx.flipFrameBuffer();
+
 
         keyboard.update();
     };

@@ -1,33 +1,31 @@
-module.exports.SHADERS_SRC = {
-    DRAW_WITH_TEXTURE:[
+
+exports.SRC = {
+    TEXTURE_SHADER: [
         [
-            'attribute vec3 a_position;',
-            'attribute vec2 a_texcoord;',
+            'attribute vec4 a_position; ',
+            'attribute vec2 a_texcoord; ',
 
-            'uniform mat4 u_matrix;',
-            'uniform mat4 u_textureMatrix;',
+            'uniform mat4 u_matrix; ',
+            'uniform mat4 u_textureMatrix; ',
 
-            'varying vec2 v_texcoord;',
+            'varying vec2 v_texcoord; ',
 
-            'void main() {',
-            'gl_Position = u_matrix * vec4(a_position,1);',
-            '   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;',
+            'void main() { ',
+            'gl_Position = u_matrix * a_position; ',
+            '   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; ',
             '}'
-        ].join('\n'),
-
+        ].join(''),
         [
-            'precision mediump float;',
+            'precision mediump float; ',
 
             'varying vec2 v_texcoord;',
 
             'uniform sampler2D texture;',
-            'uniform vec4 u_color; ',
-            'uniform float u_colorImpact;',
 
-            'void main() {',
-            '   gl_FragColor = texture2D(texture, v_texcoord);',
-            '}'
-        ].join('\n')
+            'void main() { ',
+            '    gl_FragColor = texture2D(texture, v_texcoord);',
+            '} '
+        ].join('')
     ]
 
 };

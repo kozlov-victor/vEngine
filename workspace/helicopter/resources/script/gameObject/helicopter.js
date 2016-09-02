@@ -8,7 +8,7 @@ var math = require('math');
 var health = 100;
 
 function onCreate() {
-    soundManager.play('engine',true);
+    //soundManager.play('engine',true);
     self.velX = 200;
     self.getFrAnimation('fly').play();
     self.on('click',function(e){
@@ -25,7 +25,7 @@ function onUpdate(time) {
     var n = math.getRandomInRange(0,health);
     if (!health && n<=1) {
         psFire.emit(self.posX+20,self.posY+20);
-        soundManager.play('cracked',true);
+        //soundManager.play('cracked',true);
     }    
     if (n==0) psBurn.emit(self.posX+20,self.posY+20);
     if (self.posX>600) self.posX = -300;

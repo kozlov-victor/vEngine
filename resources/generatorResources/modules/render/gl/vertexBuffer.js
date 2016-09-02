@@ -1,9 +1,9 @@
 
-exports.VertexBuffer = function(gl,shader){
+module.exports.VertexBuffer = function(gl,program){
     var buffer = gl.createBuffer();
 
-    this.bindBufferData = function(bufferData, itemSize, uniformLocationName){
-        var uniformLocation = gl.getAttribLocation(shader.getProgram(), uniformLocationName); // todo cache locations
+    this.bind = function(bufferData, itemSize, uniformLocationName){
+        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(uniformLocation);
         gl.vertexAttribPointer(

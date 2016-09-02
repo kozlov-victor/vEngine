@@ -41,6 +41,30 @@
         },
         "name": "fire",
         "type": "particleSystem",
-        "id": "6469_6798_86"
+        "id": "6469_6798_86",
+        "emissionRadius": 26
+    },
+    {
+        "gameObjectId": "6518_5912_9",
+        "numOfParticlesToEmit": {
+            "from": 10,
+            "to": 150
+        },
+        "particleAngle": {
+            "from": 1.3620754683616805,
+            "to": 1.265722978806152
+        },
+        "particleVelocity": {
+            "from": 400,
+            "to": 450
+        },
+        "particleLiveTime": {
+            "from": 100,
+            "to": 200
+        },
+        "emissionRadius": 500,
+        "name": "rain",
+        "type": "particleSystem",
+        "id": "0855_5833_10"
     }
 ]

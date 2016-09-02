@@ -32,5 +32,17 @@
         "numOfFramesH": 1,
         "numOfFramesV": 1,
         "id": "3208_8395_84"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "name": "rain",
+        "resourcePath": "resources/spriteSheet/rain.png",
+        "width": 65,
+        "height": 65,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "4058_8964_8"
     }
 ]

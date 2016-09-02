@@ -3,7 +3,7 @@ var bundle = require('bundle').instance();
 var AudioSet = require('audioSet').AudioSet;
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
-var context = window.AudioContext && new window.AudioContext();
+var context = window.AudioContext1 && new window.AudioContext1();
 
 var SoundManager = function(){
 

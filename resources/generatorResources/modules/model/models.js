@@ -305,8 +305,6 @@ exports.Scene = exports.BaseModel.extend({
     _layers:null,
     _allGameObjects:null,
     _twins:null,
-    useBG:false,
-    colorBG:null,
     __onResourcesReady: function(){
         var self = this;
         self._allGameObjects = new collections.List();
@@ -437,6 +435,7 @@ exports.ParticleSystem = exports.BaseModel.extend({
     particleAngle:null,
     particleVelocity:null,
     particleLiveTime:null,
+    emissionRadius:null,
     construct: function(){
         this._particles = [];
         if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
@@ -444,6 +443,7 @@ exports.ParticleSystem = exports.BaseModel.extend({
         if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
         if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
         if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
+        if (!this.emissionRadius) this.emissionRadius = 0;
         this._gameObject = bundle.gameObjectList.find({id:this.gameObjectId});
     },
     emit: function(x,y){
@@ -457,8 +457,8 @@ exports.ParticleSystem = exports.BaseModel.extend({
             particle.fromJSON({
                 velX:vel*Math.cos(angle),
                 velY:vel*Math.sin(angle),
-                posX:x,
-                posY:y
+                posX:r({from:x-this.emissionRadius,to:x+this.emissionRadius}),
+                posY:r({from:y-this.emissionRadius,to:y+this.emissionRadius})
             });
             particle.liveTime = r(this.particleLiveTime);
             bundle.applyBehaviour(particle);

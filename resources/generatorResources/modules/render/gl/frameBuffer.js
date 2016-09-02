@@ -43,6 +43,7 @@ exports.FrameBuffer = function(gl,width,height){
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
+
     })();
 
 };
