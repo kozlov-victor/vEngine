@@ -4,6 +4,7 @@ var collider = require('collider').instance();
 var keyboard = require('keyboard').instance();
 var glContext = require('glContext').instance();
 var canvasContext = require('canvasContext').instance();
+var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 
 console.log(navigator.userAgent);
 
@@ -20,31 +21,49 @@ var Renderer = function(){
     var canceled = false;
     var deviceScale = require('device').deviceScale;
 
-    var setFullScreen = function(){
-        var w = window.innerWidth*deviceScale;
-        var h = window.innerHeight*deviceScale;
-        console.log('w,h',w,h);
-        canvas.width = w;
-        canvas.height = h;
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
-        gameProps.globalScale.x = w / gameProps.width;
-        gameProps.globalScale.y = h / gameProps.height;
+    var processScreenSize = function(){
+        switch (+gameProps.scaleStrategy) {
+            case SCALE_STRATEGY.NO_SCALE:
+                var w = gameProps.width;
+                var h = gameProps.height;
+                canvas.width = w;
+                canvas.height = h;
+                gameProps.globalScale.x = 1;
+                gameProps.globalScale.y = 1;
+                break;
+            case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
+                break;
+            case SCALE_STRATEGY.CSS_STRETCH:
+                w = window.innerWidth*deviceScale;
+                h = window.innerHeight*deviceScale;
+                canvas.width = gameProps.width;
+                canvas.height = gameProps.height;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                gameProps.globalScale.x = w / gameProps.width;
+                gameProps.globalScale.y = h / gameProps.height;
+                break;
+            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
+                // will be processed by renderer
+                break;
+            case SCALE_STRATEGY.HARDWARE_STRETCH:
+                w = window.innerWidth*deviceScale;
+                h = window.innerHeight*deviceScale;
+                canvas.width = w;
+                canvas.height = h;
+                canvas.style.width = w + 'px';
+                canvas.style.height = h + 'px';
+                gameProps.globalScale.x = w / gameProps.width;
+                gameProps.globalScale.y = h / gameProps.height;
+                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+                break;
+        }
     };
 
-    var setNormalScreen = function(){
-        var w = gameProps.width;
-        var h = gameProps.height;
-        canvas.width = w;
-        canvas.height = h;
-        gameProps.globalScale.x = 1;
-        gameProps.globalScale.y = 1;
-    };
 
     var listenResize = function(){
         window.addEventListener('resize',function(){
-            setFullScreen();
-            rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+            processScreenSize();
         });
     };
 
@@ -66,18 +85,13 @@ var Renderer = function(){
         gameProps.globalScale = {};
         if (!canvas) {
             canvas = document.createElement('canvas');
-            if (gameProps.scaleToFullScreen) {
-                setFullScreen();
-                listenResize()
-            } else {
-                setNormalScreen();
-            }
             document.body.appendChild(canvas);
         }
-        //ctx = canvasContext;
         ctx = glContext;
+        processScreenSize();
+        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
+        //ctx = canvasContext;
         ctx.init(canvas);
-        rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
 
         drawScene();
 

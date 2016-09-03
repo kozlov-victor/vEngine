@@ -330,6 +330,20 @@ modules['behaviour'] = {code: function(module,exports){
 	
 }};
 
+modules['consts'] = {code: function(module,exports){
+	
+	module.exports.noop = function(){};
+	module.exports.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameObject","layer","scene","particleSystem"];
+	
+	exports.SCALE_STRATEGY = {
+	    NO_SCALE:                       0,
+	    CSS_PRESERVE_ASPECT_RATIO:      1,
+	    HARDWARE_PRESERVE_ASPECT_RATIO: 2,
+	    CSS_STRETCH:                    3,
+	    HARDWARE_STRETCH:               4
+	};
+}};
+
 modules['keyboard'] = {code: function(module,exports){
 	var Keyboard = function(){
 	
@@ -448,8 +462,8 @@ modules['mouse'] = {code: function(module,exports){
 	        var scene = sceneManager.getCurrScene();
 	        if (!scene) return;
 	        var point = {
-	            x: e.clientX / globalScale.x * deviceScale,
-	            y: e.clientY / globalScale.y * deviceScale
+	            x: (e.clientX - canvas.offsetLeft) / globalScale.x * deviceScale,
+	            y: (e.clientY - canvas.offsetTop) / globalScale.y * deviceScale
 	        };
 	        scene._layers.someReversed(function(l){
 	            var found = false;
@@ -2210,6 +2224,7 @@ modules['renderer'] = {code: function(module,exports){
 	var keyboard = require('keyboard').instance();
 	var glContext = require('glContext').instance();
 	var canvasContext = require('canvasContext').instance();
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	
 	console.log(navigator.userAgent);
 	
@@ -2226,31 +2241,49 @@ modules['renderer'] = {code: function(module,exports){
 	    var canceled = false;
 	    var deviceScale = require('device').deviceScale;
 	
-	    var setFullScreen = function(){
-	        var w = window.innerWidth*deviceScale;
-	        var h = window.innerHeight*deviceScale;
-	        console.log('w,h',w,h);
-	        canvas.width = w;
-	        canvas.height = h;
-	        canvas.style.width = w + 'px';
-	        canvas.style.height = h + 'px';
-	        gameProps.globalScale.x = w / gameProps.width;
-	        gameProps.globalScale.y = h / gameProps.height;
+	    var processScreenSize = function(){
+	        switch (+gameProps.scaleStrategy) {
+	            case SCALE_STRATEGY.NO_SCALE:
+	                var w = gameProps.width;
+	                var h = gameProps.height;
+	                canvas.width = w;
+	                canvas.height = h;
+	                gameProps.globalScale.x = 1;
+	                gameProps.globalScale.y = 1;
+	                break;
+	            case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
+	                break;
+	            case SCALE_STRATEGY.CSS_STRETCH:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                canvas.style.width = w + 'px';
+	                canvas.style.height = h + 'px';
+	                gameProps.globalScale.x = w / gameProps.width;
+	                gameProps.globalScale.y = h / gameProps.height;
+	                break;
+	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
+	                // will be processed by renderer
+	                break;
+	            case SCALE_STRATEGY.HARDWARE_STRETCH:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                canvas.width = w;
+	                canvas.height = h;
+	                canvas.style.width = w + 'px';
+	                canvas.style.height = h + 'px';
+	                gameProps.globalScale.x = w / gameProps.width;
+	                gameProps.globalScale.y = h / gameProps.height;
+	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+	                break;
+	        }
 	    };
 	
-	    var setNormalScreen = function(){
-	        var w = gameProps.width;
-	        var h = gameProps.height;
-	        canvas.width = w;
-	        canvas.height = h;
-	        gameProps.globalScale.x = 1;
-	        gameProps.globalScale.y = 1;
-	    };
 	
 	    var listenResize = function(){
 	        window.addEventListener('resize',function(){
-	            setFullScreen();
-	            rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+	            processScreenSize();
 	        });
 	    };
 	
@@ -2272,18 +2305,13 @@ modules['renderer'] = {code: function(module,exports){
 	        gameProps.globalScale = {};
 	        if (!canvas) {
 	            canvas = document.createElement('canvas');
-	            if (gameProps.scaleToFullScreen) {
-	                setFullScreen();
-	                listenResize()
-	            } else {
-	                setNormalScreen();
-	            }
 	            document.body.appendChild(canvas);
 	        }
-	        //ctx = canvasContext;
 	        ctx = glContext;
+	        processScreenSize();
+	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
+	        //ctx = canvasContext;
 	        ctx.init(canvas);
-	        rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
 	
 	        drawScene();
 	
@@ -3812,7 +3840,8 @@ modules['bundle'] = {code: function(module,exports){
 	    gameProps:{
 	    "width": 600,
 	    "height": 300,
-	    "scaleToFullScreen": true
+	    "scaleToFullScreen": false,
+	    "scaleStrategy": "3"
 	}
 	
 	};
@@ -3876,12 +3905,6 @@ modules['collider'] = {code: function(module,exports){
 	    if (instance==null) instance = new Collider();
 	    return instance;
 	};
-}};
-
-modules['consts'] = {code: function(module,exports){
-	
-	module.exports.noop = function(){};
-	module.exports.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameObject","layer","scene","particleSystem"];
 }};
 
 modules['sceneManager'] = {code: function(module,exports){

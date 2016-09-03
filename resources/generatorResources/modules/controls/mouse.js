@@ -39,8 +39,8 @@ var Mouse = function(){
         var scene = sceneManager.getCurrScene();
         if (!scene) return;
         var point = {
-            x: e.clientX / globalScale.x * deviceScale,
-            y: e.clientY / globalScale.y * deviceScale
+            x: (e.clientX - canvas.offsetLeft) / globalScale.x * deviceScale,
+            y: (e.clientY - canvas.offsetTop) / globalScale.y * deviceScale
         };
         scene._layers.someReversed(function(l){
             var found = false;

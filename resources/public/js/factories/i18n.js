@@ -18,7 +18,7 @@ window.app
                 edit:'edit',
                 close:'close',
                 name:'name',
-                scaleToFullScreen:'scale to full screen',
+                scaleStrategy:'scale strategy',
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',

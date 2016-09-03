@@ -87,7 +87,8 @@ module.exports.createProject = function(projectName){
 
     fs.createFileSync('workspace/'+projectName+'/gameProps.json',JSON.stringify({
         width:800,
-        height:600
+        height:600,
+        scaleStrategy:0
     }));
 
 };

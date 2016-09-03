@@ -504,6 +504,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        s.scales = require('consts').SCALE_STRATEGY;
 
         s.saveGameProps = function(){
             delete editData.gameProps.$objectId;
@@ -1474,7 +1475,7 @@ window.app
                 edit:'edit',
                 close:'close',
                 name:'name',
-                scaleToFullScreen:'scale to full screen',
+                scaleStrategy:'scale strategy',
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',

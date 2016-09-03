@@ -347,6 +347,9 @@ input[type="file"] {
     background-color: rgba(0, 0, 0, 0.06);
 }
 
+.narrow {
+    max-width: 50px;
+}
 
 
 
