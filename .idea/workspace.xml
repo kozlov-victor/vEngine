@@ -5,21 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/consts/consts.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/root/consts.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/all.js" afterPath="$PROJECT_DIR$/resources/public/js/all.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html" afterPath="$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/gameProps.json" afterPath="$PROJECT_DIR$/workspace/helicopter/gameProps.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" afterPath="$PROJECT_DIR$/resources/public/js/factories/i18n.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/misc/index.html" afterPath="$PROJECT_DIR$/resources/generatorResources/misc/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/out/index.html" afterPath="$PROJECT_DIR$/workspace/helicopter/out/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js" afterPath="$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/css/main.css" afterPath="$PROJECT_DIR$/resources/public/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/views/main.ejs" afterPath="$PROJECT_DIR$/application/mvc/views/main.ejs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/out/main.js" afterPath="$PROJECT_DIR$/workspace/helicopter/out/main.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/render/renderer.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/render/renderer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" afterPath="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f8ca8907-a637-4910-a09f-c2a90f136754" name="Failed commit: Default" comment="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -58,7 +46,7 @@
         <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/render/renderer.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.3655914">
-              <caret line="39" column="49" selection-start-line="39" selection-start-column="49" selection-end-line="39" selection-end-column="49" />
+              <caret line="42" column="50" selection-start-line="42" selection-start-column="38" selection-end-line="42" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -97,8 +85,8 @@
       <file leaf-file-name="gameProps.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.5">
-              <caret line="26" column="81" selection-start-line="26" selection-start-column="68" selection-end-line="26" selection-end-column="81" />
+            <state vertical-scroll-proportion="-11.875">
+              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -220,10 +208,10 @@
         <option value="$PROJECT_DIR$/resources/public/js/factories/i18n.js" />
         <option value="$PROJECT_DIR$/resources/public/js/controllers/leftMenuCtrl.js" />
         <option value="$PROJECT_DIR$/resources/public/css/main.css" />
-        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html" />
         <option value="$PROJECT_DIR$/application/mvc/controllers/resourcesController.js" />
         <option value="$PROJECT_DIR$/workspace/testText/gameProps.json" />
         <option value="$PROJECT_DIR$/resources/generatorResources/modules/render/renderer.js" />
+        <option value="$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html" />
       </list>
     </option>
   </component>
@@ -303,6 +291,58 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="partials" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="public" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="partials" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="leftMenu" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -796,13 +836,7 @@
       <workItem from="1471888058355" duration="12159000" />
       <workItem from="1472034600115" duration="61017000" />
       <workItem from="1472408993464" duration="23929000" />
-      <workItem from="1472754556649" duration="25130000" />
-    </task>
-    <task id="LOCAL-00042" summary="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;">
-      <created>1465562534480</created>
-      <option name="number" value="00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1465562534480</updated>
+      <workItem from="1472754556649" duration="27637000" />
     </task>
     <task id="LOCAL-00043" summary="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;">
       <created>1465587806918</created>
@@ -1092,11 +1126,17 @@
       <option name="project" value="LOCAL" />
       <updated>1472846598199</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="scale management strategies">
+      <created>1472939980549</created>
+      <option name="number" value="00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1472939980550</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="694313000" />
+    <option name="totallyTimeSpent" value="696820000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1179,7 +1219,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="added grunt task manager&#10;" />
     <MESSAGE value="added grunt task manager&#10;node modules" />
     <MESSAGE value="script generator with scenes" />
     <MESSAGE value="Merge branches 'contextMenu' and 'master' of https://github.com/kozlov-victor/vEngine&#10;&#10;# Conflicts:&#10;#&#9;editor/public/main.html&#10;" />
@@ -1204,7 +1243,8 @@
     <MESSAGE value="commonJS architecture" />
     <MESSAGE value="commonJS architecture, particle system" />
     <MESSAGE value="cocoon: frameBuffer" />
-    <option name="LAST_COMMIT_MESSAGE" value="cocoon: frameBuffer" />
+    <MESSAGE value="scale management strategies" />
+    <option name="LAST_COMMIT_MESSAGE" value="scale management strategies" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1454,12 +1494,12 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="477" column="4" selection-start-line="477" selection-start-column="4" selection-end-line="477" selection-end-column="4" />
           <folding>
-            <marker date="1472939830999" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1472939830999" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1472939830999" expanded="true" signature="-1:-1" placeholder="{&quot;width&quot;: 600...}" />
-            <marker date="1472939830999" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1472939830999" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1472939830999" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1472944034202" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1472944034202" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1472944034202" expanded="true" signature="-1:-1" placeholder="{&quot;width&quot;: 600...}" />
+            <marker date="1472944034202" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1472944034202" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1472944034202" expanded="true" signature="-1:-1" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -1576,14 +1616,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.5">
-          <caret line="26" column="81" selection-start-line="26" selection-start-column="68" selection-end-line="26" selection-end-column="81" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/mvc/controllers/resourcesController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-6.096774">
@@ -1608,10 +1640,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/public/partials/leftMenu/gameProps.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-11.875">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/render/renderer.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3655914">
-          <caret line="39" column="49" selection-start-line="39" selection-start-column="49" selection-end-line="39" selection-end-column="49" />
+          <caret line="42" column="50" selection-start-line="42" selection-start-column="38" selection-end-line="42" selection-end-column="50" />
           <folding />
         </state>
       </provider>

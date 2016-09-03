@@ -1,6 +1,6 @@
 {
-    "width": 600,
+    "width": 500,
     "height": 300,
     "scaleToFullScreen": false,
-    "scaleStrategy": "3"
+    "scaleStrategy": "2"
 }

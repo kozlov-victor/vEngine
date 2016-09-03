@@ -2252,6 +2252,17 @@ modules['renderer'] = {code: function(module,exports){
 	                gameProps.globalScale.y = 1;
 	                break;
 	            case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                var scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
+	                var scaledWidth = gameProps.width * scaleFactor;
+	                var scaledHeight = gameProps.height * scaleFactor;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                canvas.style.width = scaledWidth + 'px';
+	                canvas.style.height = scaledHeight + 'px';
+	                gameProps.globalScale.x = scaledWidth / gameProps.width;
+	                gameProps.globalScale.y = scaledHeight / gameProps.height;
 	                break;
 	            case SCALE_STRATEGY.CSS_STRETCH:
 	                w = window.innerWidth*deviceScale;
@@ -2264,7 +2275,7 @@ modules['renderer'] = {code: function(module,exports){
 	                gameProps.globalScale.y = h / gameProps.height;
 	                break;
 	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
-	                // will be processed by renderer
+	                throw 'SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO not implemented yet';
 	                break;
 	            case SCALE_STRATEGY.HARDWARE_STRETCH:
 	                w = window.innerWidth*deviceScale;
@@ -3838,10 +3849,10 @@ modules['bundle'] = {code: function(module,exports){
 	],
 	
 	    gameProps:{
-	    "width": 600,
+	    "width": 500,
 	    "height": 300,
 	    "scaleToFullScreen": false,
-	    "scaleStrategy": "3"
+	    "scaleStrategy": "2"
 	}
 	
 	};
