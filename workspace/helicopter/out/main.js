@@ -514,7 +514,6 @@ modules['mouse'] = {code: function(module,exports){
 	            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
 	            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
 	        };
-	        console.log('x',e.clientX,bundle.gameProps.left,e.clientX - bundle.gameProps.left);
 	        scene._layers.someReversed(function(l){
 	            var found = false;
 	            l._gameObjects.someReversed(function(g){
@@ -1244,6 +1243,8 @@ modules['models'] = {code: function(module,exports){
 	    layerProps:[],
 	    _layers:null,
 	    _allGameObjects:null,
+	    useBG:false,
+	    colorBG:null,
 	    _twins:null,
 	    __onResourcesReady: function(){
 	        var self = this;
@@ -1562,17 +1563,16 @@ modules['glContext'] = {code: function(module,exports){
 	var GlContext = function(){
 	
 	    var gl;
-	    var mCanvas;
 	    var mScaleX = 1, mScaleY = 1;
 	    var shader;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
+	    this.colorBG = [0,0,0];
 	
 	    this.init = function(canvas){
 	
-	        mCanvas = canvas;
 	        gl = canvas.getContext("webgl",{ alpha: false });
 	        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
 	        shader.bind();
@@ -1597,7 +1597,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,mCanvas.width,mCanvas.height);
+	        frameBuffer = new FrameBuffer(gl,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -1717,7 +1717,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.clear = function() {
 	        //gl.colorMask(false, false, false, true);
-	        gl.clearColor(1, 1, 1, 1);
+	        gl.clearColor(this.colorBG[0]/255,this.colorBG[1]/255,this.colorBG[2]/255,1);
 	        gl.clear(gl.COLOR_BUFFER_BIT);
 	    };
 	
@@ -1764,11 +1764,11 @@ modules['glContext'] = {code: function(module,exports){
 	        currTex = null;
 	        this.restore();
 	        this.save();
-	        this.translate(0,mCanvas.height);
+	        this.translate(0,bundle.gameProps.canvasHeight);
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
-	        gl.viewport(0, 0, mCanvas.width, mCanvas.height);
+	        gl.viewport(0, 0, bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
 	        var gameProps = bundle.gameProps;
@@ -1777,7 +1777,7 @@ modules['glContext'] = {code: function(module,exports){
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
 	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    mCanvas.width,mCanvas.height,
+	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -1786,7 +1786,7 @@ modules['glContext'] = {code: function(module,exports){
 	                makePositionMatrix(
 	                    0,0,
 	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    mCanvas.width,mCanvas.height,
+	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -1794,8 +1794,8 @@ modules['glContext'] = {code: function(module,exports){
 	
 	        shader.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
-	                0,0,mCanvas.width, mCanvas.height,
-	                mCanvas.width, mCanvas.height
+	                0,0,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight
 	            )
 	        );
 	
@@ -2295,8 +2295,6 @@ modules['renderer'] = {code: function(module,exports){
 	var glContext = require('glContext').instance();
 	var canvasContext = require('canvasContext').instance();
 	
-	console.log(navigator.userAgent);
-	
 	var Renderer = function(){
 	
 	    var canvas;
@@ -2359,7 +2357,7 @@ modules['renderer'] = {code: function(module,exports){
 	
 	        ctx.beginFrameBuffer();
 	
-	        ctx.clear(gameProps.width,gameProps.height);
+	        ctx.clear();
 	        scene.update(currTime,deltaTime);
 	        bundle.particleSystemList.forEach(function(p){
 	            p.update(currTime,deltaTime);
@@ -2372,6 +2370,7 @@ modules['renderer'] = {code: function(module,exports){
 	    };
 	    this.setScene = function(_scene){
 	        scene = _scene;
+	        ctx.colorBG = scene.colorBG;
 	        collider.setUp();
 	    };
 	
@@ -3763,9 +3762,9 @@ modules['bundle'] = {code: function(module,exports){
 	        "id": "4016_7425_76",
 	        "useBG": 1,
 	        "colorBG": [
-	            59,
-	            15,
-	            132
+	            222,
+	            229,
+	            254
 	        ]
 	    },
 	    {
@@ -3779,7 +3778,12 @@ modules['bundle'] = {code: function(module,exports){
 	            }
 	        ],
 	        "id": "8898_5339_87",
-	        "useBG": 1
+	        "useBG": 1,
+	        "colorBG": [
+	            222,
+	            229,
+	            254
+	        ]
 	    }
 	],
 	
@@ -3900,6 +3904,8 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.globalScale.top =  0;
 	                gameProps.left = 0;
 	                gameProps.top =  0;
+	                gameProps.canvasWidth = gameProps.width;
+	                gameProps.canvasHeight = gameProps.height;
 	                canvas.width = gameProps.width;
 	                canvas.height = gameProps.height;
 	                break;
@@ -3917,12 +3923,14 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.globalScale.top =  (h - scaledHeight) / 2;
 	                gameProps.left = (w - scaledWidth)/2;
 	                gameProps.top =  (h - scaledHeight)/2;
+	                gameProps.canvasWidth = gameProps.width;
+	                gameProps.canvasHeight = gameProps.height;
 	                canvas.width = gameProps.width;
 	                canvas.height = gameProps.height;
 	                canvas.style.width = scaledWidth + 'px';
 	                canvas.style.height = scaledHeight + 'px';
-	                canvas.style.top = gameProps.globalScale.top + 'px';
-	                canvas.style.left = gameProps.globalScale.left + 'px';
+	                canvas.style.top = gameProps.top + 'px';
+	                canvas.style.left = gameProps.left + 'px';
 	                break;
 	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
 	                w = window.innerWidth*deviceScale;
@@ -3938,6 +3946,8 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.globalScale.top = (h-scaledHeight) / 2 / scaleFactor;
 	                gameProps.left = (w-scaledWidth) / 2;
 	                gameProps.top = (h-scaledHeight) / 2;
+	                gameProps.canvasWidth = w;
+	                gameProps.canvasHeight = h;
 	                canvas.width = w;
 	                canvas.height = h;
 	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
@@ -3951,6 +3961,8 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.globalScale.top =  0;
 	                gameProps.left = 0;
 	                gameProps.top =  0;
+	                gameProps.canvasWidth = gameProps.width;
+	                gameProps.canvasHeight = gameProps.height;
 	                canvas.width = gameProps.width;
 	                canvas.height = gameProps.height;
 	                canvas.style.width = w + 'px';
@@ -3965,6 +3977,8 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.globalScale.top =  0;
 	                gameProps.left = 0;
 	                gameProps.top =  0;
+	                gameProps.canvasWidth = w;
+	                gameProps.canvasHeight = h;
 	                canvas.width = w;
 	                canvas.height = h;
 	                canvas.style.width = w + 'px';

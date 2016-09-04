@@ -1,0 +1,38 @@
+<table>
+    <tr>
+        <td>
+            <input type="color" ng-model="col.hex" ng-change="hexChanged()"/>
+        </td>
+        <td>
+            <input type="text" ng-model="col.hex" ng-change="hexChanged()"/>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            <input type="range" min="0" max="255" ng-model="col.rgb[0]" ng-change="rgbChanged()"/>
+        </td>
+        <td>
+            <input type="range" min="0" max="255" ng-model="col.rgb[1]" ng-change="rgbChanged()"/>
+        </td>
+        <td>
+            <input type="range" min="0" max="255" ng-model="col.rgb[2]" ng-change="rgbChanged()"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input ng-model="col.rgb[0]" ng-change="rgbChanged()"/>
+        </td>
+        <td>
+            <input ng-model="col.rgb[1]" ng-change="rgbChanged()"/>
+        </td>
+        <td>
+            <input ng-model="col.rgb[2]" ng-change="rgbChanged()"/>
+        </td>
+    </tr>
+</table>
+
+<button
+        ng-click="saveModel()">
+    {{i18n.edit}}
+</button>

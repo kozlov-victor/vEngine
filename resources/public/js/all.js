@@ -34,6 +34,52 @@ window.app.
 
     });
 
+
+window.app.
+    controller('colorPickerCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+        var model;
+
+        s.rgbChanged = function(){
+            s.col.hex = utils.rgbToHex(s.col.rgb);
+        };
+
+        s.hexChanged = function(){
+            s.col.rgb = utils.hexToRgb(s.col.hex);
+        };
+
+
+        s.saveModel = function(){
+            model.colorBG = s.col.rgb;
+            resourceDao.createOrEditResourceSimple(model);
+            uiHelper.closeDialog();
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            model = dialogState.opObject;
+            s.col = {};
+            s.col.hex = utils.rgbToHex(model.colorBG);
+            s.col.rgb = model.colorBG;
+        })();
+
+    });
+
 window.app.
     controller('commonBehaviourCtrl', function (
         $scope,
@@ -1103,44 +1149,6 @@ window.app.
 
     });
 
-app.directive('appColorPicker', function($parse) {
-    return {
-        restrict: 'E',
-        replace: true,
-        templateUrl:'partials/misc/appColorPicker.html',
-        link: function (scope, element, attrs) {
-            var model = scope.$eval(attrs.appModel);
-            var field = attrs.appField;
-            var convert = function(){
-                element[0].value = rgbToHex(model[field]);
-            };
-            convert();
-
-            element.bind('change',function(e){
-                model[field] = hexToRgb(e.target.value);
-                var fn = $parse(attrs.appChange);
-                scope.$apply(function () {
-                    fn(scope, {});
-                });
-            });
-
-            function hexToRgb(hex) {
-                var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                return result ? [
-                    parseInt(result[1], 16),
-                    parseInt(result[2], 16),
-                    parseInt(result[3], 16)
-                ] : [];
-            }
-
-            function rgbToHex(col) {
-                var r = col[0],g=col[1],b=col[2];
-                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-            }
-        }
-    };
-});
-
 app.directive('appContextMenu', function(uiHelper) {
     return {
         restrict: 'A',
@@ -2073,6 +2081,20 @@ window.app
             });
             url+='&projectName='+editData.projectName;
             return url;
+        };
+
+        this.hexToRgb = function(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [
+                parseInt(result[1], 16)||0,
+                parseInt(result[2], 16)||0,
+                parseInt(result[3], 16)||0
+            ] : [0,0,0];
+        };
+
+        this.rgbToHex = function(col) {
+            var r = +col[0],g=+col[1],b=+col[2];
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         };
 
         return this;

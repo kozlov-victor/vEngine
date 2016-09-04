@@ -5,8 +5,6 @@ var keyboard = require('keyboard').instance();
 var glContext = require('glContext').instance();
 var canvasContext = require('canvasContext').instance();
 
-console.log(navigator.userAgent);
-
 var Renderer = function(){
 
     var canvas;
@@ -69,7 +67,7 @@ var Renderer = function(){
 
         ctx.beginFrameBuffer();
 
-        ctx.clear(gameProps.width,gameProps.height);
+        ctx.clear();
         scene.update(currTime,deltaTime);
         bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
@@ -82,6 +80,7 @@ var Renderer = function(){
     };
     this.setScene = function(_scene){
         scene = _scene;
+        ctx.colorBG = scene.colorBG;
         collider.setUp();
     };
 

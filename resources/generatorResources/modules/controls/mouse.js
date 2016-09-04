@@ -42,7 +42,6 @@ var Mouse = function(){
             x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
             y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
         };
-        console.log('x',e.clientX,bundle.gameProps.left,e.clientX - bundle.gameProps.left);
         scene._layers.someReversed(function(l){
             var found = false;
             l._gameObjects.someReversed(function(g){
