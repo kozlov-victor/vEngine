@@ -330,6 +330,55 @@ modules['behaviour'] = {code: function(module,exports){
 	
 }};
 
+modules['collider'] = {code: function(module,exports){
+	
+	var math = require('math');
+	var sceneManager = require('sceneManager').instance();
+	
+	var Collider = function(){
+	
+	    var gos;
+	
+	    this.setUp = function(){
+	        var scene = sceneManager.getCurrScene();
+	        gos = scene.getAllGameObjects();
+	    };
+	
+	    this.check = function(obj,newX,newY){
+	        if (!obj.rigid) {
+	            obj.posX = newX;
+	            obj.posY = newY;
+	            return;
+	        }
+	        var res = gos.some(function(go){
+	            if (!go.rigid) return;
+	            if (obj==go) return;
+	            var objRect = obj.getRect();
+	            objRect.x = newX;
+	            objRect.y = newY;
+	            if (math.isRectIntersectRect(objRect,go.getRect())) {
+	                res = true;
+	                obj.trigger('collide',go);
+	                return true;
+	            }
+	        });
+	        if (!res) {
+	            obj.posX = newX;
+	            obj.posY = newY;
+	        }
+	        return res;
+	    };
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Collider();
+	    return instance;
+	};
+}};
+
 modules['consts'] = {code: function(module,exports){
 	
 	module.exports.noop = function(){};
@@ -462,9 +511,10 @@ modules['mouse'] = {code: function(module,exports){
 	        var scene = sceneManager.getCurrScene();
 	        if (!scene) return;
 	        var point = {
-	            x: (e.clientX - canvas.offsetLeft) / globalScale.x * deviceScale,
-	            y: (e.clientY - canvas.offsetTop) / globalScale.y * deviceScale
+	            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
+	            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
 	        };
+	        console.log('x',e.clientX,bundle.gameProps.left,e.clientX - bundle.gameProps.left);
 	        scene._layers.someReversed(function(l){
 	            var found = false;
 	            l._gameObjects.someReversed(function(g){
@@ -1507,12 +1557,13 @@ modules['glContext'] = {code: function(module,exports){
 	var MatrixStack = require('matrixStack').MatrixStack;
 	var FrameBuffer = require('frameBuffer').FrameBuffer;
 	var bundle = require('bundle').instance();
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	
 	var GlContext = function(){
 	
 	    var gl;
 	    var mCanvas;
-	    var mScaleX = 1, mScaleY = 1,scaleChanged = true;
+	    var mScaleX = 1, mScaleY = 1;
 	    var shader;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
@@ -1604,8 +1655,7 @@ modules['glContext'] = {code: function(module,exports){
 	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
 	
 	        // multiply them together
-	        var texMatrix = mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
-	        return texMatrix;
+	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 	    };
 	    
 	    var currTex = null;
@@ -1702,7 +1752,6 @@ modules['glContext'] = {code: function(module,exports){
 	    this.rescaleView = function(scaleX,scaleY){
 	        mScaleX = scaleX;
 	        mScaleY = scaleY;
-	        scaleChanged = true;
 	    };
 	
 	    this.beginFrameBuffer = function(){
@@ -1718,17 +1767,38 @@ modules['glContext'] = {code: function(module,exports){
 	        this.translate(0,mCanvas.height);
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
+	        this.clear();
 	        gl.viewport(0, 0, mCanvas.width, mCanvas.height);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
-	        shader.setUniform('u_matrix',
-	            makePositionMatrix(
-	                0,0,
-	                bundle.gameProps.width, bundle.gameProps.height,
-	                mCanvas.width,mCanvas.height,
-	                mScaleX,mScaleY
+	
+	        var gameProps = bundle.gameProps;
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            shader.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    gameProps.globalScale.left,gameProps.globalScale.top,
+	                    bundle.gameProps.width, bundle.gameProps.height,
+	                    mCanvas.width,mCanvas.height,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        } else {
+	            shader.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    0,0,
+	                    bundle.gameProps.width, bundle.gameProps.height,
+	                    mCanvas.width,mCanvas.height,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        }
+	
+	        shader.setUniform('u_textureMatrix',
+	            makeTextureMatrix(
+	                0,0,mCanvas.width, mCanvas.height,
+	                mCanvas.width, mCanvas.height
 	            )
 	        );
-	        shader.setUniform('u_textureMatrix',makeTextureMatrix(0,0,mCanvas.width, mCanvas.height,mCanvas.width, mCanvas.height));
+	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	        this.restore();
@@ -2224,7 +2294,6 @@ modules['renderer'] = {code: function(module,exports){
 	var keyboard = require('keyboard').instance();
 	var glContext = require('glContext').instance();
 	var canvasContext = require('canvasContext').instance();
-	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	
 	console.log(navigator.userAgent);
 	
@@ -2238,69 +2307,8 @@ modules['renderer'] = {code: function(module,exports){
 	    var lastTime = 0;
 	    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 	    var gameProps;
-	    var canceled = false;
-	    var deviceScale = require('device').deviceScale;
-	
-	    var processScreenSize = function(){
-	        switch (+gameProps.scaleStrategy) {
-	            case SCALE_STRATEGY.NO_SCALE:
-	                var w = gameProps.width;
-	                var h = gameProps.height;
-	                canvas.width = w;
-	                canvas.height = h;
-	                gameProps.globalScale.x = 1;
-	                gameProps.globalScale.y = 1;
-	                break;
-	            case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
-	                w = window.innerWidth*deviceScale;
-	                h = window.innerHeight*deviceScale;
-	                var scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
-	                var scaledWidth = gameProps.width * scaleFactor;
-	                var scaledHeight = gameProps.height * scaleFactor;
-	                canvas.width = gameProps.width;
-	                canvas.height = gameProps.height;
-	                canvas.style.width = scaledWidth + 'px';
-	                canvas.style.height = scaledHeight + 'px';
-	                gameProps.globalScale.x = scaledWidth / gameProps.width;
-	                gameProps.globalScale.y = scaledHeight / gameProps.height;
-	                break;
-	            case SCALE_STRATEGY.CSS_STRETCH:
-	                w = window.innerWidth*deviceScale;
-	                h = window.innerHeight*deviceScale;
-	                canvas.width = gameProps.width;
-	                canvas.height = gameProps.height;
-	                canvas.style.width = w + 'px';
-	                canvas.style.height = h + 'px';
-	                gameProps.globalScale.x = w / gameProps.width;
-	                gameProps.globalScale.y = h / gameProps.height;
-	                break;
-	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
-	                throw 'SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO not implemented yet';
-	                break;
-	            case SCALE_STRATEGY.HARDWARE_STRETCH:
-	                w = window.innerWidth*deviceScale;
-	                h = window.innerHeight*deviceScale;
-	                canvas.width = w;
-	                canvas.height = h;
-	                canvas.style.width = w + 'px';
-	                canvas.style.height = h + 'px';
-	                gameProps.globalScale.x = w / gameProps.width;
-	                gameProps.globalScale.y = h / gameProps.height;
-	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
-	                break;
-	        }
-	    };
 	
 	
-	    var listenResize = function(){
-	        window.addEventListener('resize',function(){
-	            processScreenSize();
-	        });
-	    };
-	
-	    var rescaleView = function(scaleX,scaleY){
-	        ctx.rescaleView(scaleX,scaleY);
-	    };
 	
 	    this.getContext = function(){
 	        return ctx;
@@ -2313,15 +2321,13 @@ modules['renderer'] = {code: function(module,exports){
 	    this.init = function(){
 	        canvas = document.querySelector('canvas');
 	        gameProps = bundle.gameProps;
-	        gameProps.globalScale = {};
 	        if (!canvas) {
 	            canvas = document.createElement('canvas');
 	            document.body.appendChild(canvas);
 	        }
 	        ctx = glContext;
-	        processScreenSize();
-	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
 	        //ctx = canvasContext;
+	        require('scaleManager').instance(canvas,ctx).manage();
 	        ctx.init(canvas);
 	
 	        drawScene();
@@ -2333,11 +2339,11 @@ modules['renderer'] = {code: function(module,exports){
 	    };
 	
 	    this.cancel = function(){
-	        canceled = true;
+	        window.canceled = true;
 	    };
 	
 	    var drawScene = function(){
-	        if (canceled) {
+	        if (window.canceled) {
 	           return;
 	        }
 	        //if (window.canceled) return
@@ -3869,53 +3875,130 @@ modules['bundle'] = {code: function(module,exports){
 	};
 }};
 
-modules['collider'] = {code: function(module,exports){
+modules['scaleManager'] = {code: function(module,exports){
 	
-	var math = require('math');
-	var sceneManager = require('sceneManager').instance();
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	var deviceScale = require('device').deviceScale;
+	var bundle = require('bundle').instance();
 	
-	var Collider = function(){
+	var ScaleManager = function(canvas,ctx){
 	
-	    var gos;
-	
-	    this.setUp = function(){
-	        var scene = sceneManager.getCurrScene();
-	        gos = scene.getAllGameObjects();
+	    var rescaleView = function(x,y){
+	        ctx.rescaleView(x,y);
 	    };
 	
-	    this.check = function(obj,newX,newY){
-	        if (!obj.rigid) {
-	            obj.posX = newX;
-	            obj.posY = newY;
-	            return;
+	    var processScreenSize = function(){
+	        var gameProps = bundle.gameProps;
+	        gameProps.globalScale = {};
+	        switch (+gameProps.scaleStrategy) {
+	            case SCALE_STRATEGY.NO_SCALE:
+	                var w = window.innerWidth*deviceScale;
+	                var h = window.innerHeight*deviceScale;
+	                gameProps.globalScale.x = 1;
+	                gameProps.globalScale.y = 1;
+	                gameProps.globalScale.left = 0;
+	                gameProps.globalScale.top =  0;
+	                gameProps.left = 0;
+	                gameProps.top =  0;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                break;
+	            case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                var scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
+	                var scaledWidth = gameProps.width * scaleFactor;
+	                var scaledHeight = gameProps.height * scaleFactor;
+	                gameProps.globalScale.x = scaledWidth / gameProps.width;
+	                gameProps.globalScale.y = scaledHeight / gameProps.height;
+	                gameProps.scaledWidth = scaledWidth;
+	                gameProps.scaledHeight = scaledHeight;
+	                gameProps.globalScale.left = (w - scaledWidth) / 2;
+	                gameProps.globalScale.top =  (h - scaledHeight) / 2;
+	                gameProps.left = (w - scaledWidth)/2;
+	                gameProps.top =  (h - scaledHeight)/2;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                canvas.style.width = scaledWidth + 'px';
+	                canvas.style.height = scaledHeight + 'px';
+	                canvas.style.top = gameProps.globalScale.top + 'px';
+	                canvas.style.left = gameProps.globalScale.left + 'px';
+	                break;
+	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
+	                scaledWidth = gameProps.width * scaleFactor;
+	                scaledHeight = gameProps.height * scaleFactor;
+	                gameProps.globalScale.x = scaledWidth / gameProps.width;
+	                gameProps.globalScale.y = scaledHeight / gameProps.height;
+	                gameProps.globalScale.scaledWidth = scaledWidth;
+	                gameProps.globalScale.scaledHeight = scaledHeight;
+	                gameProps.globalScale.left = (w-scaledWidth) / 2 / scaleFactor;
+	                gameProps.globalScale.top = (h-scaledHeight) / 2 / scaleFactor;
+	                gameProps.left = (w-scaledWidth) / 2;
+	                gameProps.top = (h-scaledHeight) / 2;
+	                canvas.width = w;
+	                canvas.height = h;
+	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+	                break;
+	            case SCALE_STRATEGY.CSS_STRETCH:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                gameProps.globalScale.x = w / gameProps.width;
+	                gameProps.globalScale.y = h / gameProps.height;
+	                gameProps.globalScale.left = 0;
+	                gameProps.globalScale.top =  0;
+	                gameProps.left = 0;
+	                gameProps.top =  0;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                canvas.style.width = w + 'px';
+	                canvas.style.height = h + 'px';
+	                break;
+	            case SCALE_STRATEGY.HARDWARE_STRETCH:
+	                w = window.innerWidth*deviceScale;
+	                h = window.innerHeight*deviceScale;
+	                gameProps.globalScale.x = w / gameProps.width;
+	                gameProps.globalScale.y = h / gameProps.height;
+	                gameProps.globalScale.left = 0;
+	                gameProps.globalScale.top =  0;
+	                gameProps.left = 0;
+	                gameProps.top =  0;
+	                canvas.width = w;
+	                canvas.height = h;
+	                canvas.style.width = w + 'px';
+	                canvas.style.height = h + 'px';
+	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+	                break;
 	        }
-	        var res = gos.some(function(go){
-	            if (!go.rigid) return;
-	            if (obj==go) return;
-	            var objRect = obj.getRect();
-	            objRect.x = newX;
-	            objRect.y = newY;
-	            if (math.isRectIntersectRect(objRect,go.getRect())) {
-	                res = true;
-	                obj.trigger('collide',go);
-	                return true;
-	            }
+	    };
+	
+	    var listenResize = function(){
+	        window.addEventListener('resize',function(){
+	            processScreenSize();
 	        });
-	        if (!res) {
-	            obj.posX = newX;
-	            obj.posY = newY;
-	        }
-	        return res;
+	    };
+	
+	    this.manage = function(){
+	        var gameProps = bundle.gameProps;
+	        processScreenSize();
+	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
 	    };
 	
 	};
 	
 	var instance = null;
 	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Collider();
+	module.exports.instance = function(canvas,ctx){
+	    if (instance==null) {
+	        if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';
+	        instance = new ScaleManager(canvas,ctx);
+	    }
 	    return instance;
 	};
+	
+	
 }};
 
 modules['sceneManager'] = {code: function(module,exports){
@@ -3940,8 +4023,6 @@ modules['sceneManager'] = {code: function(module,exports){
 	        if (!utils) utils = require('utils');
 	        if (!bundle) bundle = require('bundle').instance();
 	
-	        console.log('preloading and set scene',scene.name);
-	
 	        var q = new utils.Queue();
 	        q.onResolved = function(){
 	            bundle.applyBehaviourAll();
@@ -3952,7 +4033,6 @@ modules['sceneManager'] = {code: function(module,exports){
 	            allSprSheets.add(ps._gameObject._spriteSheet);
 	        });
 	        allSprSheets.asArray().forEach(function(spSheet){
-	            console.log('processing curr sprite sheet',spSheet.name);
 	            var resourcePath = bundle.embeddedResources.isEmbedded?
 	                bundle.embeddedResources.data[spSheet.resourcePath]:
 	                './'+spSheet.resourcePath;

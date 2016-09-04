@@ -19,8 +19,6 @@ var SceneManager = function(){
         if (!utils) utils = require('utils');
         if (!bundle) bundle = require('bundle').instance();
 
-        console.log('preloading and set scene',scene.name);
-
         var q = new utils.Queue();
         q.onResolved = function(){
             bundle.applyBehaviourAll();
@@ -31,7 +29,6 @@ var SceneManager = function(){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
         allSprSheets.asArray().forEach(function(spSheet){
-            console.log('processing curr sprite sheet',spSheet.name);
             var resourcePath = bundle.embeddedResources.isEmbedded?
                 bundle.embeddedResources.data[spSheet.resourcePath]:
                 './'+spSheet.resourcePath;
