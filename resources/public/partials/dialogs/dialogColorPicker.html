@@ -8,31 +8,31 @@
         </td>
         <td></td>
     </tr>
-    <tr>
-        <td>
-            <input type="range" min="0" max="255" ng-model="col.rgb[0]" ng-change="rgbChanged()"/>
-        </td>
-        <td>
-            <input type="range" min="0" max="255" ng-model="col.rgb[1]" ng-change="rgbChanged()"/>
-        </td>
-        <td>
-            <input type="range" min="0" max="255" ng-model="col.rgb[2]" ng-change="rgbChanged()"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <input ng-model="col.rgb[0]" ng-change="rgbChanged()"/>
-        </td>
-        <td>
-            <input ng-model="col.rgb[1]" ng-change="rgbChanged()"/>
-        </td>
-        <td>
-            <input ng-model="col.rgb[2]" ng-change="rgbChanged()"/>
-        </td>
-    </tr>
+
+    <table class="width100">
+        <tr
+                ng-repeat="item in [
+                    {left:'red',right:'cyan',index:0},
+                    {left:'green',right:'magenta',index:1},
+                    {left:'blue',right:'yellow',index:2}
+                ]">
+            <td>
+                {{item.left}}
+            </td>
+            <td class="centerText">
+                <input class="vAlign" type="range" min="0" max="255" ng-model="col.rgb[item.index]" ng-change="rgbChanged()"/>
+                <br/>
+                <input class="small vAlign" ng-model="col.rgb[item.index]" ng-change="rgbChanged()"/>
+                <hr/>
+            </td>
+            <td>{{item.right}}</td>
+        </tr>
+
+
+    </table>
 </table>
 
 <button
-        ng-click="saveModel()">
+        ng-click="applyColor()">
     {{i18n.edit}}
 </button>

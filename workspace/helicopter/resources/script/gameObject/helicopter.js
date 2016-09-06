@@ -14,6 +14,8 @@ function onCreate() {
     self.on('click',function(e){
         psFire.emit(e.screenX,e.screenY);
         health-=10;
+        self.velX-=10;
+        if (self.velX<5) self.velX = 5;
         if (health<5) injuredAnim.play();
         if (health && health<5) self.velY = 50;
         if (health<0) health = 0;

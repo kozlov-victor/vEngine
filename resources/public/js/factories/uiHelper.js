@@ -16,13 +16,14 @@ window.app
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
             },
-            showDialog: function(name,opName,opObject){
+            showDialog: function(name,opName,opObject,opCallBack){
                 _.dialogName = name;
                 _._dialogsStack.add({
                     name:name,
                     opName:opName,
                     id: opObject && opObject.id,
-                    opObject:opObject
+                    opObject:opObject,
+                    opCallBack:opCallBack
                 });
                 _.ctxMenu.name = null;
             },

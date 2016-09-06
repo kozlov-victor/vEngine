@@ -28,18 +28,33 @@ window.app.
             s.col.rgb = utils.hexToRgb(s.col.hex);
         };
         
-        s.saveModel = function(){
-            model.colorBG = s.col.rgb;
-            resourceDao.createOrEditResourceSimple(model);
+        s.applyColor = function(){
+            var dialogState = uiHelper.getDialogState();
             uiHelper.closeDialog();
+            dialogState.opObject[dialogState.opName] = [
+                +s.col.rgb[0]||0,
+                +s.col.rgb[1]||0,
+                +s.col.rgb[2]||0
+            ];
+            if (dialogState && dialogState.opCallBack) {
+                dialogState.opCallBack({
+                    hex:s.col.hex||'#000000',
+                    rgb:[
+                        +s.col.rgb[0]||0,
+                        +s.col.rgb[1]||0,
+                        +s.col.rgb[2]||0
+                    ]
+                });
+                dialogState.opCallBack = null;
+            }
         };
 
         (function(){
             var dialogState = uiHelper.getDialogState();
-            model = dialogState.opObject;
+            model = dialogState.opObject[dialogState.opName];
             s.col = {};
-            s.col.hex = utils.rgbToHex(model.colorBG);
-            s.col.rgb = model.colorBG;
+            s.col.hex = utils.rgbToHex(model);
+            s.col.rgb = model;
         })();
 
     });

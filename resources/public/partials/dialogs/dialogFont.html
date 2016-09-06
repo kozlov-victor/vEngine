@@ -32,8 +32,16 @@
             {{i18n.fontColor}}
         </td>
         <td>
-            <input required type="color" ng-model="editData.currFontInEdit.fontColor">
-            ({{editData.currFontInEdit.fontColor}})
+            <div
+                    ng-click="openColorPickerForFont()"
+                    ng-style="
+                        {
+                            width: '20px',
+                            height:'20px',
+                            backgroundColor:utils.rgbToHex(editData.currFontInEdit.fontColor)
+                        }
+                        "
+                    ></div>
         </td>
     </tr>
     <tr>
@@ -46,7 +54,7 @@
             <div ng-style='{
                 fontFamily:editData.currFontInEdit.fontFamily,
                 fontSize:editData.currFontInEdit.fontSize+"px",
-                color:editData.currFontInEdit.fontColor
+                color:utils.rgbToHex(editData.currFontInEdit.fontColor)
             }'>{{fontSample}}</div>
         </td>
     </tr>

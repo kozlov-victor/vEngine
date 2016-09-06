@@ -62,20 +62,34 @@ window.app.
         s.hexChanged = function(){
             s.col.rgb = utils.hexToRgb(s.col.hex);
         };
-
-
-        s.saveModel = function(){
-            model.colorBG = s.col.rgb;
-            resourceDao.createOrEditResourceSimple(model);
+        
+        s.applyColor = function(){
+            var dialogState = uiHelper.getDialogState();
             uiHelper.closeDialog();
+            dialogState.opObject[dialogState.opName] = [
+                +s.col.rgb[0]||0,
+                +s.col.rgb[1]||0,
+                +s.col.rgb[2]||0
+            ];
+            if (dialogState && dialogState.opCallBack) {
+                dialogState.opCallBack({
+                    hex:s.col.hex||'#000000',
+                    rgb:[
+                        +s.col.rgb[0]||0,
+                        +s.col.rgb[1]||0,
+                        +s.col.rgb[2]||0
+                    ]
+                });
+                dialogState.opCallBack = null;
+            }
         };
 
         (function(){
             var dialogState = uiHelper.getDialogState();
-            model = dialogState.opObject;
+            model = dialogState.opObject[dialogState.opName];
             s.col = {};
-            s.col.hex = utils.rgbToHex(model.colorBG);
-            s.col.rgb = model.colorBG;
+            s.col.hex = utils.rgbToHex(model);
+            s.col.rgb = model;
         })();
 
     });
@@ -181,9 +195,7 @@ window.app.
                 var arrFromToCurr = arrFromTo[k];
                 for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
                     var currentChar = String.fromCharCode(i);
-                    //if (currentChar == '\\' || currentChar == '\'') {
-                    //    currentChar = '\\' + currentChar
-                    //}
+
                     ctx = cnv.getContext('2d');
                     var textWidth = ctx.measureText(currentChar).width;
                     if (textWidth == 0) continue;
@@ -233,11 +245,18 @@ window.app.
             });
         };
 
+        s.openColorPickerForFont = function(){
+            s.showDialog(
+                'colorPicker','fontColor',
+                editData.currFontInEdit
+            );
+        };
+
         s.createOrEditFont = function(){
             var font = s.editData.currFontInEdit;
             var strFont = font.fontSize +'px'+' '+font.fontFamily;
             font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
-            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,font.fontColor));
+            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,utils.rgbToHex(font.fontColor)));
             resourceDao.createOrEditResource(
                 font,
                 models.Font,
@@ -253,10 +272,13 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new models.Font();
+                editData.currFontInEdit = new models.Font({fontColor:[0,0,0]});
+                s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();
+                s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             }
+            dialogState.opName=null;
 
 
             if (s.editData.systemFontList) return;
@@ -757,6 +779,43 @@ window.app.
                 });
             }
             uiHelper.opName = null;
+
+        })();
+
+    });
+
+window.app.
+    controller('rightMenuCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+
+        s.openColorPickerForScene = function(){
+            s.showDialog(
+                'colorPicker','colorBG',
+                editData.currSceneInEdit,
+                function(col){
+                    editData.currSceneInEdit.colorBG = col.rgb;
+                    resourceDao.createOrEditResourceSimple(editData.currSceneInEdit);
+                }
+            );
+        };
+
+        (function(){
+
 
         })();
 
@@ -1901,13 +1960,14 @@ window.app
             toggle: function (currentVal, defaultVal) {
                 return currentVal == defaultVal ? 0 : defaultVal;
             },
-            showDialog: function(name,opName,opObject){
+            showDialog: function(name,opName,opObject,opCallBack){
                 _.dialogName = name;
                 _._dialogsStack.add({
                     name:name,
                     opName:opName,
                     id: opObject && opObject.id,
-                    opObject:opObject
+                    opObject:opObject,
+                    opCallBack:opCallBack
                 });
                 _.ctxMenu.name = null;
             },
@@ -2142,8 +2202,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
 
-        s.showDialog = function(objectName,opName,opObject){
-            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject);
+        s.showDialog = function(objectName,opName,opObject,opCallBack){
+            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject,opCallBack);
         };
 
 

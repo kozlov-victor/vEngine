@@ -113,7 +113,7 @@ var GlContext = function(){
     this.drawImage = function(
         texture,
         srcX, srcY, srcWidth, srcHeight,
-        dstX, dstY, dstWidth, dstHeight) {
+        dstX, dstY) {
 
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
@@ -131,12 +131,6 @@ var GlContext = function(){
         if (srcHeight === undefined) {
             srcHeight = texHeight;
         }
-        if (dstWidth === undefined) {
-            dstWidth = srcWidth;
-        }
-        if (dstHeight === undefined) {
-            dstHeight = srcHeight;
-        }
 
         if (currTex!=texture){
             texture.bind();
@@ -147,7 +141,7 @@ var GlContext = function(){
         // Set the matrix.
         //console.log(gameProps);
         shader.setUniform("u_matrix",makePositionMatrix(
-                dstX,dstY,dstWidth,dstHeight,
+                dstX,dstY,srcWidth,srcHeight,
                 bundle.gameProps.width,bundle.gameProps.height,1,1
             )
         );
@@ -173,10 +167,6 @@ var GlContext = function(){
 
     this.save = function() {
         matrixStack.save();
-    };
-
-    this.resize = function (w,h) {
-        //gl.viewport(0, 0, w,h);
     };
 
     this.scale = function(x,y) {

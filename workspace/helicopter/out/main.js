@@ -239,6 +239,8 @@ modules['behaviour'] = {code: function(module,exports){
 	    self.on('click',function(e){
 	        psFire.emit(e.screenX,e.screenY);
 	        health-=10;
+	        self.velX-=10;
+	        if (self.velX<5) self.velX = 5;
 	        if (health<5) injuredAnim.play();
 	        if (health && health<5) self.velY = 50;
 	        if (health<0) health = 0;
@@ -295,7 +297,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	function onUpdate(time) {
 	    var rnd = Math.random()*100;
-	    //if (rnd<50) psBurn.emit(200,200);
+	    if (rnd<50) psBurn.emit(200,200);
 	}
 	
 	function onDestroy() {
@@ -642,6 +644,9 @@ modules['audioPlayer'] = {code: function(module,exports){
 	    }
 	
 	};
+	
+	
+	
 }};
 
 modules['audioSet'] = {code: function(module,exports){
@@ -1244,7 +1249,7 @@ modules['models'] = {code: function(module,exports){
 	    _layers:null,
 	    _allGameObjects:null,
 	    useBG:false,
-	    colorBG:null,
+	    colorBG:[255,255,255],
 	    _twins:null,
 	    __onResourcesReady: function(){
 	        var self = this;
@@ -1522,10 +1527,10 @@ modules['frameBuffer'] = {code: function(module,exports){
 	        //1. Init Color Texture
 	        glTexture = gl.createTexture();
 	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 	        //2. Init Render Buffer
 	        glRenderBuffer = gl.createRenderbuffer();
@@ -1663,7 +1668,7 @@ modules['glContext'] = {code: function(module,exports){
 	    this.drawImage = function(
 	        texture,
 	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY, dstWidth, dstHeight) {
+	        dstX, dstY) {
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
@@ -1681,12 +1686,6 @@ modules['glContext'] = {code: function(module,exports){
 	        if (srcHeight === undefined) {
 	            srcHeight = texHeight;
 	        }
-	        if (dstWidth === undefined) {
-	            dstWidth = srcWidth;
-	        }
-	        if (dstHeight === undefined) {
-	            dstHeight = srcHeight;
-	        }
 	
 	        if (currTex!=texture){
 	            texture.bind();
@@ -1697,7 +1696,7 @@ modules['glContext'] = {code: function(module,exports){
 	        // Set the matrix.
 	        //console.log(gameProps);
 	        shader.setUniform("u_matrix",makePositionMatrix(
-	                dstX,dstY,dstWidth,dstHeight,
+	                dstX,dstY,srcWidth,srcHeight,
 	                bundle.gameProps.width,bundle.gameProps.height,1,1
 	            )
 	        );
@@ -1723,10 +1722,6 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.save = function() {
 	        matrixStack.save();
-	    };
-	
-	    this.resize = function (w,h) {
-	        //gl.viewport(0, 0, w,h);
 	    };
 	
 	    this.scale = function(x,y) {
@@ -2224,6 +2219,10 @@ modules['shaderSources'] = {code: function(module,exports){
 
 modules['texture'] = {code: function(module,exports){
 	
+	var isPowerOf2 = function(value) {
+	    return (value & (value - 1)) == 0;
+	};
+	
 	exports.Texture = function(gl,img){
 	
 	    var tex;
@@ -2233,6 +2232,16 @@ modules['texture'] = {code: function(module,exports){
 	        size = {width:img.width,height:img.height};
 	        this.bind();
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	        // Check if the image is a power of 2 in both dimensions.
+	        if (isPowerOf2(img.width) && isPowerOf2(img.height)) {
+	            gl.generateMipmap(gl.TEXTURE_2D);
+	        } else {
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	        }
+	        gl.bindTexture(gl.TEXTURE_2D, null);
 	    };
 	
 	    this.bind = function(){
@@ -2254,12 +2263,6 @@ modules['texture'] = {code: function(module,exports){
 	        // Fill the texture with a 1x1 blue pixel.
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
 	            new Uint8Array([0, 0, 255, 255]));
-	
-	        // let's assume all images are not a power of 2
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	        gl.bindTexture(gl.TEXTURE_2D, null);
 	    })();
 	
 	};
@@ -3605,7 +3608,11 @@ modules['bundle'] = {code: function(module,exports){
 	            "height": 261
 	        },
 	        "type": "font",
-	        "fontColor": "black",
+	        "fontColor": [
+	            0,
+	            237,
+	            122
+	        ],
 	        "fontSize": 25,
 	        "fontFamily": "Monospace",
 	        "resourcePath": "resources/font/default.png",
@@ -3762,9 +3769,9 @@ modules['bundle'] = {code: function(module,exports){
 	        "id": "4016_7425_76",
 	        "useBG": 1,
 	        "colorBG": [
-	            222,
-	            229,
-	            254
+	            160,
+	            98,
+	            231
 	        ]
 	    },
 	    {

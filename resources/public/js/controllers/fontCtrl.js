@@ -40,9 +40,7 @@ window.app.
                 var arrFromToCurr = arrFromTo[k];
                 for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
                     var currentChar = String.fromCharCode(i);
-                    //if (currentChar == '\\' || currentChar == '\'') {
-                    //    currentChar = '\\' + currentChar
-                    //}
+
                     ctx = cnv.getContext('2d');
                     var textWidth = ctx.measureText(currentChar).width;
                     if (textWidth == 0) continue;
@@ -92,11 +90,18 @@ window.app.
             });
         };
 
+        s.openColorPickerForFont = function(){
+            s.showDialog(
+                'colorPicker','fontColor',
+                editData.currFontInEdit
+            );
+        };
+
         s.createOrEditFont = function(){
             var font = s.editData.currFontInEdit;
             var strFont = font.fontSize +'px'+' '+font.fontFamily;
             font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
-            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,font.fontColor));
+            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,utils.rgbToHex(font.fontColor)));
             resourceDao.createOrEditResource(
                 font,
                 models.Font,
@@ -112,10 +117,13 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new models.Font();
+                editData.currFontInEdit = new models.Font({fontColor:[0,0,0]});
+                s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();
+                s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             }
+            dialogState.opName=null;
 
 
             if (s.editData.systemFontList) return;

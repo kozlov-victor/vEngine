@@ -305,7 +305,7 @@ exports.Scene = exports.BaseModel.extend({
     _layers:null,
     _allGameObjects:null,
     useBG:false,
-    colorBG:null,
+    colorBG:[255,255,255],
     _twins:null,
     __onResourcesReady: function(){
         var self = this;
