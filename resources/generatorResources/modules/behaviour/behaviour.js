@@ -2,8 +2,13 @@
 var commonBehaviour = {};
 
 //<code><%for (var i=0;i<commonBehaviour.length;i++){%>
-//<code>commonBehaviour['<%- commonBehaviour[i].name %>'] = <%- commonBehaviour[i].content %>
-//<code><%if (i<commonBehaviour.length-1){%>;<%}%>
+//<code>commonBehaviour['<%- commonBehaviour[i].name %>'] = function(exports,self,parameters){
+//<code><%- commonBehaviour[i].content %>
+    exports.onCreate = onCreate;
+    exports.onUpdate = onUpdate;
+    exports.onDestroy = onDestroy;
+    exports.onDefine = onDefine;
+//<code>}
 //<code><%}%>
 
 exports.commonBehaviour = commonBehaviour;
@@ -20,6 +25,7 @@ scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function
     exports.onDestroy = onDestroy;
 };
 //<code><%}%>;
+
 //<code><%for (var i = 0; i<specialResources.sceneScripts.length;i++) {%>
 scripts.scene['<%-specialResources.sceneScripts[i].name%>'] = function(exports,self){
     //<code><%-specialResources.sceneScripts[i].content%>

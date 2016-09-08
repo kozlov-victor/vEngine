@@ -150,7 +150,7 @@ var GlContext = function(){
         shader.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
 
         if (texWidth==64) {
-            gl.blendFunc(gl.ONE, gl.ONE);
+            //gl.blendFunc(gl.ONE, gl.ONE);
         } else {
             gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         }
