@@ -3,9 +3,10 @@ var mouse = require('mouse').instance();
 var isMouseDown = false;
 var mX = 0;
 var mY = 0;
-var scene = self.getScene();
+var scene;
 
 function onCreate(){
+    scene = self.getScene();
     self.on('click',function(e){
         isMouseDown = true;
         mX = e.objectX;

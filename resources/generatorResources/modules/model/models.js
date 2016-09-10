@@ -4,6 +4,7 @@ var collider = require('collider',{ignoreFail:true}).instance();
 var renderer = require('renderer',{ignoreFail:true}).instance();
 var collections = require('collections');
 var math = require('math');
+var EventEmitter = require('eventEmitter').EventEmitter;
 
 var isPropNotFit = function(el,key){
     if (!key) return true;
@@ -37,6 +38,7 @@ exports.BaseModel = Class.extend({
     id:null,
     protoId:null,
     name:'',
+    _emitter:null,
     toJSON: function(){
         var res = {};
         for (var key in this) {
@@ -65,23 +67,18 @@ exports.BaseModel = Class.extend({
         });
     },
     clone: function(){
-        return new this.constructor(this.toJSON());
+        var newObj = new this.constructor(this.toJSON());
+        newObj._init();
+        return newObj;
     },
     on: function(eventName,callBack){
-        var self = this;
-        self.__events__[eventName] = self.__events__[eventName] || [];
-        self.__events__[eventName].push(callBack);
+        this._emitter.on(eventName,callBack);
     },
     trigger: function(eventName,data){
-        var self = this;
-        var es = self.__events__[eventName];
-        if (!es) return;
-        es.forEach(function(e){
-            e(data);
-        });
+        this._emitter.trigger(eventName,data);
     },
     _init:function(){
-        this.__events__ = {};
+        this._emitter = new EventEmitter();
         arguments && arguments[0] && this.fromJSON(arguments[0]);
     }
 });
@@ -130,6 +127,7 @@ exports.BaseGameObject = exports.BaseModel.extend({
     _spriteSheet:null,
     posX:0,
     posY:0,
+    angle:0,
     width:0,
     height:0,
     _layer:null,
@@ -140,13 +138,8 @@ exports.BaseGameObject = exports.BaseModel.extend({
         this._layer._gameObjects.remove({id:this.id});
         this._layer._scene._allGameObjects.remove({id:this.id});
     },
-    /**
-     * @deprecated
-     */
     getScene: function(){
-        // todo remove
-        console.warn('BaseGameObject:getScene is deprecated. Use sceneManager.getCurrScene instead');
-        return this._layer._scene;
+        return require('sceneManager').instance().getCurrScene();
     },
     update: function(){},
     _render: function(){}
@@ -217,17 +210,20 @@ exports.GameObject = exports.BaseGameObject.extend({
         this._currFrameAnimation && this._currFrameAnimation.stop();
     },
     _render: function(){
-        renderer.getContext().drawImage(
+        var ctx = renderer.getContext();
+        ctx.save();
+        ctx.translate(this.posX,this.posY);
+        ctx.rotateZ(this.angle);
+        ctx.drawImage(
             this._spriteSheet._textureInfo,
             this._sprPosX,
             this._sprPosY,
             this._spriteSheet._frameWidth,
             this._spriteSheet._frameHeight,
-            this.posX,
-            this.posY,
-            this.width,
-            this.height
+            0,
+            0
         );
+        ctx.restore();
     }
 });
 

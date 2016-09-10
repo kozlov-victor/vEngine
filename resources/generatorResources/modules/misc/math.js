@@ -34,3 +34,11 @@ exports.getRandomInRange = function(min, max){
     else if (res<min) res = min;
     return ~~res;
 };
+
+exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
+    var angle = Math.atan2(pointA.y-pointB.y,pointA.x-pointB.x);
+    return {
+        x:Math.cos(angle),
+        y:Math.sin(angle)
+    }
+};

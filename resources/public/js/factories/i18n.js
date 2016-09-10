@@ -70,7 +70,8 @@ window.app
                 explorer:'explorer',
                 description: 'description',
                 colorBG:'scene background color',
-                useBG:'use background color'
+                useBG:'use background color',
+                angle:'angle'
             }
         };
 

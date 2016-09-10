@@ -2,12 +2,10 @@
 var commonBehaviour = {};
 
 //<code><%for (var i=0;i<commonBehaviour.length;i++){%>
-//<code>commonBehaviour['<%- commonBehaviour[i].name %>'] = function(exports,self,parameters){
+//<code>commonBehaviour['<%- commonBehaviour[i].name %>'] = function(module,exports,self,parameters){
 //<code><%- commonBehaviour[i].content %>
     exports.onCreate = onCreate;
     exports.onUpdate = onUpdate;
-    exports.onDestroy = onDestroy;
-    exports.onDefine = onDefine;
 //<code>}
 //<code><%}%>
 

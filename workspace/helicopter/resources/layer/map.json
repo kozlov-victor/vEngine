@@ -20,10 +20,31 @@
                 ],
                 "rigid": 1,
                 "groupName": "",
-                "posX": 16,
-                "posY": 1,
+                "posX": 24,
+                "posY": 10,
                 "protoId": "6612_6223_73",
                 "id": "2294_3548_79"
+            },
+            {
+                "spriteSheetId": "0015_4316_59",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "rocket",
+                "width": 39,
+                "height": 68,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 2,
+                "posY": 230,
+                "protoId": "9702_0577_60",
+                "id": "0968_4022_61",
+                "angle": 4
             }
         ],
         "id": "7822_6900_77"

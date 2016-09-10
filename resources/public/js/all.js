@@ -1063,6 +1063,9 @@ window.app.
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
             s.editData.currSpriteSheetInEdit.resourcePath = src;
+            if (!s.editData.currSpriteSheetInEdit.name) {
+                s.editData.currSpriteSheetInEdit.name = file.name.split('.')[0];
+            }
             //if (!s.editData.currSpriteSheetInEdit.name) {
             //    s.editData.currSpriteSheetInEdit.name =  src.split('.')[0];
             //}
@@ -1594,7 +1597,8 @@ window.app
                 explorer:'explorer',
                 description: 'description',
                 colorBG:'scene background color',
-                useBG:'use background color'
+                useBG:'use background color',
+                angle:'angle'
             }
         };
 

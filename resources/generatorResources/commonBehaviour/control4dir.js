@@ -53,20 +53,15 @@ function onUpdate(){
     }
 }
 
-function onDefine(){
-    return {
-        parameters: {
-            velocity: 100,
-            walkLeftAnimation: 'left',
-            walkRightAnimation: 'right',
-            walkUpAnimation:'up',
-            walkDownAnimation:'down',
-            idleLeftAnimation: 'idleLeft',
-            idleRightAnimation: 'idleRight',
-            idleUpAnimation:'idleUp',
-            idleDownAnimation:'idleDown'
-        },
-        description: "control character with cursor to walk up, down, left and right"
-
-    }
-}
+exports.parameters = {
+    velocity: 100,
+    walkLeftAnimation: 'left',
+    walkRightAnimation: 'right',
+    walkUpAnimation:'up',
+    walkDownAnimation:'down',
+    idleLeftAnimation: 'idleLeft',
+    idleRightAnimation: 'idleRight',
+    idleUpAnimation:'idleUp',
+    idleDownAnimation:'idleDown'
+};
+exports.description = "control character with cursor to walk up, down, left and right";

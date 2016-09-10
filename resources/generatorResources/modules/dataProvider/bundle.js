@@ -55,20 +55,22 @@ var Bundle = function(data){
     var applyCommonBehaviour = function(model){
 
         if (behaviour.fake) return; // this is editor mode
-        var cbList = [];
-        if (!model._commonBehaviour) {
+        var exportsList = [];
+        if (!model._commonBehaviour || !model._commonBehaviour.size()) {
             model.__updateCommonBehaviour__ = consts.noop;
             return;
         }
         model._commonBehaviour.forEach(function(cb){
-            var instance = new behaviour.commonBehaviour[cb.name]();
-            instance.initialize(model,cb.parameters);
-            instance.onCreate();
-            cbList.push(instance);
+            var module = {};
+            module.exports = {};
+            var exports = module.exports;
+            behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
+            exportsList.push(exports);
+            exports.onCreate();
         });
         model.__updateCommonBehaviour__ = function(){
-            cbList.forEach(function(cb){
-                cb.onUpdate();
+            exportsList.forEach(function(item){
+                item.onUpdate();
             });
         }
     };

@@ -191,28 +191,26 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
 
 module.exports.getCommonBehaviourAttrs = function(projectName){
     if (!projectName) throw 'project name not specified';
-    var code = '';
-    var fileNames = [];
-    code+='var require = function(){};';
-    code+='var Class = {};var bundle = [];var fileNames = [];';
-    code+='Class.extend = function(a,b){bundle.push(b)};';
-    code+='var ve={};ve.commonBehaviour={};';
+    var attrs = [];
     fs.readDirSync('workspace/'+projectName+'/resources/script/commonBehaviour').forEach(function(itm){
-        code+=itm.content+';';
-        fileNames.push(itm.name);
+        var attr = {};
+        attr.name = itm.name.replace('.js','');
+        var module = {};
+        module.exports = {};
+        var exports = module.exports;
+        var self = {};
+        var parameters = {};
+        var fn = new Function(
+            'module,exports,self,parameters',
+            'var require = function(){return {instance:function(){}}};'+itm.content
+        );
+        fn(module,exports,self,parameters);
+        attr.description = exports.description;
+        attr.parameters = exports.parameters;
+        attr.id = uuid();
+        attrs.push(attr);
     });
-    code+=';return bundle;';
-    var bundle = [];
-    try {
-        bundle = new Function(code)();
-    } catch(e){
-        console.error(e);
-    }
-    bundle.forEach(function(itm,i){
-        itm.id = uuid();
-        itm.name = fileNames[i].split('.')[0];
-    });
-    return bundle;
+    return attrs;
 };
 
 module.exports.createFile = function(name,path,content,projectName) {
