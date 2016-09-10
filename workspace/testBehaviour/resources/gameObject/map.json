@@ -1,0 +1,48 @@
+[
+    {
+        "spriteSheetId": "8080_0234_11",
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "name": "tc",
+        "width": 156,
+        "height": 156,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "velX": 0,
+        "velY": 0,
+        "frameAnimationIds": [],
+        "rigid": 1,
+        "groupName": "",
+        "posX": 0,
+        "posY": 0,
+        "id": "8052_3824_12"
+    },
+    {
+        "spriteSheetId": "2973_1285_24",
+        "currFrameIndex": 0,
+        "_sprPosX": 0,
+        "_sprPosY": 0,
+        "name": "center",
+        "width": 64,
+        "height": 64,
+        "type": "gameObject",
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": [],
+                "description": "",
+                "id": "5137_9656_27",
+                "type": "commonBehaviour"
+            }
+        ],
+        "velX": 0,
+        "velY": 0,
+        "frameAnimationIds": [],
+        "rigid": 1,
+        "groupName": "",
+        "posX": 0,
+        "posY": 0,
+        "id": "9200_3027_25"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "resourcePath": "resources/spriteSheet/tc.png",
+        "width": 156,
+        "height": 156,
+        "name": "tc",
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "8080_0234_11"
+    },
+    {
+        "_frameWidth": 0,
+        "_frameHeight": 0,
+        "resourcePath": "resources/spriteSheet/center.png",
+        "width": 64,
+        "height": 64,
+        "name": "center",
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "2973_1285_24"
+    }
+]
