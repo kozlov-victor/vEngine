@@ -34,19 +34,23 @@ var Mouse = function(){
         }
     }
 
+    var resolveScreenPoint = function(e){
+        return {
+            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
+            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
+        };
+    };
+
     var resolveClick = function(e){
         self.isMouseDown = true;
         var scene = sceneManager.getCurrScene();
         if (!scene) return;
-        var point = {
-            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
-            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
-        };
+        var point = resolveScreenPoint(e);
         scene._layers.someReversed(function(l){
             var found = false;
             l._gameObjects.someReversed(function(g){
                 if (
-                    math.isPointInRect(point,g.getRect())
+                    math.isPointInRect(point,g.getRect(),g.angle)
                 ) {
                     g.trigger('click',{
                         screenX:point.x,
@@ -64,9 +68,10 @@ var Mouse = function(){
 
     var resolveMouseMove = function(e){
         var scene = sceneManager.getCurrScene();
+        var point = resolveScreenPoint(e);
         scene.trigger('mouseMove',{
-            screenX: e.clientX / globalScale.x,
-            screenY: e.clientY / globalScale.y
+            screenX: point.x,
+            screenY: point.y
         });
     };
 

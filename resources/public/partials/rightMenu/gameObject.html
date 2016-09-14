@@ -33,6 +33,18 @@
                         ng-model="editData.currSceneGameObjectInEdit.posY"/>
             </div>
         </div>
+        <div class="row">
+            <div class="cell">
+                {{i18n.angle}}
+            </div>
+            <div class="cell">
+                <input
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        type="number"
+                        class="width100"
+                        ng-model="editData.currSceneGameObjectInEdit.angle"/>
+            </div>
+        </div>
 
         <div class="row"
             ng-if="editData.currSceneGameObjectInEdit.subType=='textField'"

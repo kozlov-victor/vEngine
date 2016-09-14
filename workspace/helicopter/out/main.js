@@ -178,6 +178,43 @@ modules['behaviour'] = {code: function(module,exports){
 	var commonBehaviour = {};
 	
 	
+	commonBehaviour['draggable'] = function(module,exports,self,parameters){
+	
+	var mouse = require('mouse').instance();
+	var isMouseDown = false;
+	var mX = 0;
+	var mY = 0;
+	var scene;
+	
+	function onCreate(){
+	    scene = self.getScene();
+	    self.on('click',function(e){
+	        isMouseDown = true;
+	        mX = e.objectX;
+	        mY = e.objectY;
+	    });
+	    scene.on('mouseMove',function(e){
+	        if (isMouseDown) {
+	            self.posX = e.screenX - mX;
+	            self.posY = e.screenY - mY;
+	        }
+	    });
+	}
+	
+	function onUpdate(){
+	    if (!mouse.isMouseDown) isMouseDown = false;
+	}
+	
+	function onDefine(){
+	    return {
+	        parameters: {},
+	        description:'draggable behaviour'
+	    }
+	}
+	    exports.onCreate = onCreate;
+	    exports.onUpdate = onUpdate;
+	}
+	
 	
 	exports.commonBehaviour = commonBehaviour;
 	
@@ -298,9 +335,12 @@ modules['behaviour'] = {code: function(module,exports){
 	function onCreate() {
 	    var hel = self.getScene().findGameObject('helicopter');
 	    self.on('click',function(e){
-	        var vel = math.getNormalizedVectorFromPoints({x:self.posX,y:self.posY},{x:hel.posX,y:hel.posY});
-	        self.posX = initialX;
-	        self.posY = initialY;
+	        console.log('clicked',e);
+	        var vel = math.getNormalizedVectorFromPoints(
+	            {x:self.posX+self.width/2,y:self.posY+self.height/2},
+	            {x:hel.posX+hel.width/2,y:hel.posY+hel.height/2});
+	        //self.posX = initialX;
+	        //self.posY = initialY;
 	        self.velX = vel.x*10;
 	        self.velY = vel.y*10;
 	    });
@@ -565,19 +605,23 @@ modules['mouse'] = {code: function(module,exports){
 	        }
 	    }
 	
+	    var resolveScreenPoint = function(e){
+	        return {
+	            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
+	            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
+	        };
+	    };
+	
 	    var resolveClick = function(e){
 	        self.isMouseDown = true;
 	        var scene = sceneManager.getCurrScene();
 	        if (!scene) return;
-	        var point = {
-	            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
-	            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
-	        };
+	        var point = resolveScreenPoint(e);
 	        scene._layers.someReversed(function(l){
 	            var found = false;
 	            l._gameObjects.someReversed(function(g){
 	                if (
-	                    math.isPointInRect(point,g.getRect())
+	                    math.isPointInRect(point,g.getRect(),g.angle)
 	                ) {
 	                    g.trigger('click',{
 	                        screenX:point.x,
@@ -595,9 +639,10 @@ modules['mouse'] = {code: function(module,exports){
 	
 	    var resolveMouseMove = function(e){
 	        var scene = sceneManager.getCurrScene();
+	        var point = resolveScreenPoint(e);
 	        scene.trigger('mouseMove',{
-	            screenX: e.clientX / globalScale.x,
-	            screenY: e.clientY / globalScale.y
+	            screenX: point.x,
+	            screenY: point.y
 	        });
 	    };
 	
@@ -1892,7 +1937,15 @@ modules['bundle'] = {code: function(module,exports){
 	        "width": 180,
 	        "height": 95,
 	        "type": "gameObject",
-	        "commonBehaviour": [],
+	        "commonBehaviour": [
+	            {
+	                "name": "draggable",
+	                "parameters": [],
+	                "description": "",
+	                "id": "4480_7483_42",
+	                "type": "commonBehaviour"
+	            }
+	        ],
 	        "velX": 0,
 	        "velY": 0,
 	        "frameAnimationIds": [
@@ -1955,7 +2008,15 @@ modules['bundle'] = {code: function(module,exports){
 	        "width": 39,
 	        "height": 68,
 	        "type": "gameObject",
-	        "commonBehaviour": [],
+	        "commonBehaviour": [
+	            {
+	                "name": "draggable",
+	                "parameters": [],
+	                "description": "",
+	                "id": "8291_8868_82",
+	                "type": "commonBehaviour"
+	            }
+	        ],
 	        "velX": 0,
 	        "velY": 0,
 	        "frameAnimationIds": [],
@@ -1964,7 +2025,7 @@ modules['bundle'] = {code: function(module,exports){
 	        "posX": 0,
 	        "posY": 0,
 	        "id": "9702_0577_60",
-	        "angle": 4
+	        "angle": 0
 	    }
 	],
 	
@@ -1990,10 +2051,11 @@ modules['bundle'] = {code: function(module,exports){
 	                ],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 24,
-	                "posY": 10,
+	                "posX": -2,
+	                "posY": -7,
 	                "protoId": "6612_6223_73",
-	                "id": "2294_3548_79"
+	                "id": "2294_3548_79",
+	                "angle": 0
 	            },
 	            {
 	                "spriteSheetId": "0015_4316_59",
@@ -2004,17 +2066,25 @@ modules['bundle'] = {code: function(module,exports){
 	                "width": 39,
 	                "height": 68,
 	                "type": "gameObject",
-	                "commonBehaviour": [],
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": [],
+	                        "description": "",
+	                        "id": "8291_8868_82",
+	                        "type": "commonBehaviour"
+	                    }
+	                ],
 	                "velX": 0,
 	                "velY": 0,
 	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 2,
-	                "posY": 230,
+	                "posX": 72,
+	                "posY": 187,
+	                "angle": 0,
 	                "protoId": "9702_0577_60",
-	                "id": "0968_4022_61",
-	                "angle": 4
+	                "id": "6903_4411_43"
 	            }
 	        ],
 	        "id": "7822_6900_77"
@@ -2057,7 +2127,7 @@ modules['bundle'] = {code: function(module,exports){
 	        "useBG": 1,
 	        "colorBG": [
 	            160,
-	            98,
+	            0,
 	            231
 	        ]
 	    },
@@ -2156,7 +2226,7 @@ modules['bundle'] = {code: function(module,exports){
 	    "width": 500,
 	    "height": 300,
 	    "scaleToFullScreen": false,
-	    "scaleStrategy": "4"
+	    "scaleStrategy": "2"
 	}
 	
 	};
@@ -2594,12 +2664,148 @@ modules['soundManager'] = {code: function(module,exports){
 	};
 }};
 
+modules['mat4'] = {code: function(module,exports){
+	
+	exports.makeIdentity = function () {
+	    return [
+	        1, 0, 0, 0,
+	        0, 1, 0, 0,
+	        0, 0, 1, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.make2DProjection = function(width, height, depth) {
+	    // Note: This matrix flips the Y axis so 0 is at the top.
+	    return [
+	        2 / width, 0, 0, 0,
+	        0, -2 / height, 0, 0,
+	        0, 0, 2 / depth, 0,
+	        -1, 1, 0, 1
+	    ];
+	};
+	
+	exports.makeTranslation = function(tx, ty, tz) {
+	    return [
+	        1,  0,  0,  0,
+	        0,  1,  0,  0,
+	        0,  0,  1,  0,
+	        tx, ty, tz,  1
+	    ];
+	};
+	
+	exports.makeXRotation = function(angleInRadians) {
+	    var c = Math.cos(angleInRadians);
+	    var s = Math.sin(angleInRadians);
+	
+	    return [
+	        1, 0, 0, 0,
+	        0, c, s, 0,
+	        0, -s, c, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.makeYRotation = function(angleInRadians) {
+	    var c = Math.cos(angleInRadians);
+	    var s = Math.sin(angleInRadians);
+	
+	    return [
+	        c, 0, -s, 0,
+	        0, 1, 0, 0,
+	        s, 0, c, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.makeZRotation = function(angleInRadians) {
+	    var c = Math.cos(angleInRadians);
+	    var s = Math.sin(angleInRadians);
+	    return [
+	        c, s, 0, 0,
+	        -s, c, 0, 0,
+	        0, 0, 1, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.makeScale = function(sx, sy, sz) {
+	    return [
+	        sx, 0,  0,  0,
+	        0, sy,  0,  0,
+	        0,  0, sz,  0,
+	        0,  0,  0,  1
+	    ];
+	};
+	
+	exports.matrixMultiply = function(a, b) {
+	    var a00 = a[0*4+0];
+	    var a01 = a[0*4+1];
+	    var a02 = a[0*4+2];
+	    var a03 = a[0*4+3];
+	    var a10 = a[1*4+0];
+	    var a11 = a[1*4+1];
+	    var a12 = a[1*4+2];
+	    var a13 = a[1*4+3];
+	    var a20 = a[2*4+0];
+	    var a21 = a[2*4+1];
+	    var a22 = a[2*4+2];
+	    var a23 = a[2*4+3];
+	    var a30 = a[3*4+0];
+	    var a31 = a[3*4+1];
+	    var a32 = a[3*4+2];
+	    var a33 = a[3*4+3];
+	    var b00 = b[0*4+0];
+	    var b01 = b[0*4+1];
+	    var b02 = b[0*4+2];
+	    var b03 = b[0*4+3];
+	    var b10 = b[1*4+0];
+	    var b11 = b[1*4+1];
+	    var b12 = b[1*4+2];
+	    var b13 = b[1*4+3];
+	    var b20 = b[2*4+0];
+	    var b21 = b[2*4+1];
+	    var b22 = b[2*4+2];
+	    var b23 = b[2*4+3];
+	    var b30 = b[3*4+0];
+	    var b31 = b[3*4+1];
+	    var b32 = b[3*4+2];
+	    var b33 = b[3*4+3];
+	    return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
+	        a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
+	        a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
+	        a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
+	        a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30,
+	        a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31,
+	        a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32,
+	        a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33,
+	        a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30,
+	        a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31,
+	        a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32,
+	        a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33,
+	        a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
+	        a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
+	        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
+	        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
+	};
+}};
+
 modules['math'] = {code: function(module,exports){
-	exports.isPointInRect = function(point,rect) {
-	    return  point.x>rect.x &&
+	var Vec2 = require('vec2').Vec2;
+	
+	exports.isPointInRect = function(point,rect,angle) {
+	    if (angle) {
+	        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+	        vec2.setAngle(vec2.getAngle() - angle);
+	        point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+	
+	    }
+	    var res =  point.x>rect.x &&
 	        point.x<(rect.x+rect.width) &&
 	        point.y>rect.y &&
 	        point.y<(rect.y+rect.height);
+	    console.log(res);
+	    return res;
 	};
 	
 	exports.isRectIntersectRect = function(r1,r2) {
@@ -2633,7 +2839,7 @@ modules['math'] = {code: function(module,exports){
 	};
 	
 	exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
-	    var angle = Math.atan2(pointA.y-pointB.y,pointA.x-pointB.x);
+	    var angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
 	    return {
 	        x:Math.cos(angle),
 	        y:Math.sin(angle)
@@ -2678,6 +2884,95 @@ modules['utils'] = {code: function(module,exports){
 	exports.getBase64prefix = function(fileType,fileName) {
 	    var ext = fileName.split('.').pop();
 	    return 'data:'+fileType+'/'+ext+';base64,'
+	};
+}};
+
+modules['vec2'] = {code: function(module,exports){
+	
+	exports.Vec2 = function(_x,_y){
+	
+	    var x = _x||0;
+	    var y = _y||0;
+	    var angle = 0;
+	    var norm = 0;
+	
+	    var onXY_Changed = function(){
+	        angle = x==0?0:Math.atan(y/x);
+	        norm = Math.sqrt(x*x+y*y);
+	    };
+	
+	    var onAngleChanged = function(){
+	        y = Math.sin(angle)*norm;
+	        x = Math.cos(angle)*norm;
+	    };
+	
+	    var onNormChanged = function(){
+	        y = Math.sin(angle)*norm;
+	        x = Math.cos(angle)*norm;
+	    };
+	
+	    this.setXY = function(_x,_y){
+	        x = _x;
+	        y = _y;
+	        onXY_Changed();
+	    };
+	
+	    this.setX = function(_x){
+	        x = _x;
+	        onXY_Changed();
+	    };
+	
+	    this.setY = function(_y){
+	        y = _y;
+	        onXY_Changed();
+	    };
+	
+	    this.setAngle = function(a){
+	        angle = a;
+	        onAngleChanged();
+	    };
+	
+	    this.setNorm = function(l){ // length
+	        norm = l;
+	        onNormChanged();
+	    };
+	
+	    this.getXY = function(){
+	        return {x:x,y:y};
+	    };
+	
+	    this.getX = function(){
+	        return x;
+	    };
+	
+	    this.getY = function(){
+	        return y;
+	    };
+	
+	    this.getAngle = function(){
+	        return angle;
+	    };
+	
+	    this.addVec2 = function(v){
+	        return new Vec2(x + v.getX(),y + v.getY);
+	    };
+	
+	    this.multiplyByScalar = function(sc){
+	        return new Vec2(x * sc,y * sc);
+	    };
+	
+	    this.dotProduct = function(v){ // inner product, скалярное произведение
+	        return x* v.getX()+y* v.getY();
+	    };
+	
+	    this.getNorm = function(){
+	        return norm;
+	    };
+	
+	    (function(){
+	        onXY_Changed();
+	    })();
+	
 	};
 }};
 
@@ -3012,8 +3307,11 @@ modules['models'] = {code: function(module,exports){
 	    _render: function(){
 	        var ctx = renderer.getContext();
 	        ctx.save();
-	        ctx.translate(this.posX,this.posY);
-	        ctx.rotateZ(this.angle);
+	        ctx.translate(this.posX + this._spriteSheet._frameWidth /2,this.posY + this._spriteSheet._frameHeight/2);
+	        if (this.angle) {
+	            ctx.rotateZ(this.angle);
+	        }
+	        ctx.translate(-this._spriteSheet._frameWidth /2, -this._spriteSheet._frameHeight/2);
 	        ctx.drawImage(
 	            this._spriteSheet._textureInfo,
 	            this._sprPosX,
@@ -3707,132 +4005,6 @@ modules['glContext'] = {code: function(module,exports){
 	module.exports.instance = function(){
 	    if (instance==null) instance = new GlContext();
 	    return instance;
-	};
-}};
-
-modules['mat4'] = {code: function(module,exports){
-	
-	exports.makeIdentity = function () {
-	    return [
-	        1, 0, 0, 0,
-	        0, 1, 0, 0,
-	        0, 0, 1, 0,
-	        0, 0, 0, 1
-	    ];
-	};
-	
-	exports.make2DProjection = function(width, height, depth) {
-	    // Note: This matrix flips the Y axis so 0 is at the top.
-	    return [
-	        2 / width, 0, 0, 0,
-	        0, -2 / height, 0, 0,
-	        0, 0, 2 / depth, 0,
-	        -1, 1, 0, 1
-	    ];
-	};
-	
-	exports.makeTranslation = function(tx, ty, tz) {
-	    return [
-	        1,  0,  0,  0,
-	        0,  1,  0,  0,
-	        0,  0,  1,  0,
-	        tx, ty, tz,  1
-	    ];
-	};
-	
-	exports.makeXRotation = function(angleInRadians) {
-	    var c = Math.cos(angleInRadians);
-	    var s = Math.sin(angleInRadians);
-	
-	    return [
-	        1, 0, 0, 0,
-	        0, c, s, 0,
-	        0, -s, c, 0,
-	        0, 0, 0, 1
-	    ];
-	};
-	
-	exports.makeYRotation = function(angleInRadians) {
-	    var c = Math.cos(angleInRadians);
-	    var s = Math.sin(angleInRadians);
-	
-	    return [
-	        c, 0, -s, 0,
-	        0, 1, 0, 0,
-	        s, 0, c, 0,
-	        0, 0, 0, 1
-	    ];
-	};
-	
-	exports.makeZRotation = function(angleInRadians) {
-	    var c = Math.cos(angleInRadians);
-	    var s = Math.sin(angleInRadians);
-	    return [
-	        c, s, 0, 0,
-	        -s, c, 0, 0,
-	        0, 0, 1, 0,
-	        0, 0, 0, 1
-	    ];
-	};
-	
-	exports.makeScale = function(sx, sy, sz) {
-	    return [
-	        sx, 0,  0,  0,
-	        0, sy,  0,  0,
-	        0,  0, sz,  0,
-	        0,  0,  0,  1
-	    ];
-	};
-	
-	exports.matrixMultiply = function(a, b) {
-	    var a00 = a[0*4+0];
-	    var a01 = a[0*4+1];
-	    var a02 = a[0*4+2];
-	    var a03 = a[0*4+3];
-	    var a10 = a[1*4+0];
-	    var a11 = a[1*4+1];
-	    var a12 = a[1*4+2];
-	    var a13 = a[1*4+3];
-	    var a20 = a[2*4+0];
-	    var a21 = a[2*4+1];
-	    var a22 = a[2*4+2];
-	    var a23 = a[2*4+3];
-	    var a30 = a[3*4+0];
-	    var a31 = a[3*4+1];
-	    var a32 = a[3*4+2];
-	    var a33 = a[3*4+3];
-	    var b00 = b[0*4+0];
-	    var b01 = b[0*4+1];
-	    var b02 = b[0*4+2];
-	    var b03 = b[0*4+3];
-	    var b10 = b[1*4+0];
-	    var b11 = b[1*4+1];
-	    var b12 = b[1*4+2];
-	    var b13 = b[1*4+3];
-	    var b20 = b[2*4+0];
-	    var b21 = b[2*4+1];
-	    var b22 = b[2*4+2];
-	    var b23 = b[2*4+3];
-	    var b30 = b[3*4+0];
-	    var b31 = b[3*4+1];
-	    var b32 = b[3*4+2];
-	    var b33 = b[3*4+3];
-	    return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
-	        a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
-	        a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
-	        a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
-	        a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30,
-	        a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31,
-	        a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32,
-	        a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33,
-	        a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30,
-	        a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31,
-	        a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32,
-	        a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33,
-	        a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
-	        a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
-	        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
-	        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
 	};
 }};
 

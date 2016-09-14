@@ -9,9 +9,12 @@ var initialY = self.posY;
 function onCreate() {
     var hel = self.getScene().findGameObject('helicopter');
     self.on('click',function(e){
-        var vel = math.getNormalizedVectorFromPoints({x:self.posX,y:self.posY},{x:hel.posX,y:hel.posY});
-        self.posX = initialX;
-        self.posY = initialY;
+        console.log('clicked',e);
+        var vel = math.getNormalizedVectorFromPoints(
+            {x:self.posX+self.width/2,y:self.posY+self.height/2},
+            {x:hel.posX+hel.width/2,y:hel.posY+hel.height/2});
+        //self.posX = initialX;
+        //self.posY = initialY;
         self.velX = vel.x*10;
         self.velY = vel.y*10;
     });

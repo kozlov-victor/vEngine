@@ -28,7 +28,15 @@
         "width": 180,
         "height": 95,
         "type": "gameObject",
-        "commonBehaviour": [],
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": [],
+                "description": "",
+                "id": "4480_7483_42",
+                "type": "commonBehaviour"
+            }
+        ],
         "velX": 0,
         "velY": 0,
         "frameAnimationIds": [
@@ -91,7 +99,15 @@
         "width": 39,
         "height": 68,
         "type": "gameObject",
-        "commonBehaviour": [],
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": [],
+                "description": "",
+                "id": "8291_8868_82",
+                "type": "commonBehaviour"
+            }
+        ],
         "velX": 0,
         "velY": 0,
         "frameAnimationIds": [],
@@ -100,6 +116,6 @@
         "posX": 0,
         "posY": 0,
         "id": "9702_0577_60",
-        "angle": 4
+        "angle": 0
     }
 ]

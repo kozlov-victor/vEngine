@@ -1,8 +1,18 @@
-exports.isPointInRect = function(point,rect) {
-    return  point.x>rect.x &&
+var Vec2 = require('vec2').Vec2;
+
+exports.isPointInRect = function(point,rect,angle) {
+    if (angle) {
+        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+        vec2.setAngle(vec2.getAngle() - angle);
+        point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+
+    }
+    var res =  point.x>rect.x &&
         point.x<(rect.x+rect.width) &&
         point.y>rect.y &&
         point.y<(rect.y+rect.height);
+    console.log(res);
+    return res;
 };
 
 exports.isRectIntersectRect = function(r1,r2) {
@@ -36,7 +46,7 @@ exports.getRandomInRange = function(min, max){
 };
 
 exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
-    var angle = Math.atan2(pointA.y-pointB.y,pointA.x-pointB.x);
+    var angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
     return {
         x:Math.cos(angle),
         y:Math.sin(angle)

@@ -212,8 +212,11 @@ exports.GameObject = exports.BaseGameObject.extend({
     _render: function(){
         var ctx = renderer.getContext();
         ctx.save();
-        ctx.translate(this.posX,this.posY);
-        ctx.rotateZ(this.angle);
+        ctx.translate(this.posX + this._spriteSheet._frameWidth /2,this.posY + this._spriteSheet._frameHeight/2);
+        if (this.angle) {
+            ctx.rotateZ(this.angle);
+        }
+        ctx.translate(-this._spriteSheet._frameWidth /2, -this._spriteSheet._frameHeight/2);
         ctx.drawImage(
             this._spriteSheet._textureInfo,
             this._sprPosX,
