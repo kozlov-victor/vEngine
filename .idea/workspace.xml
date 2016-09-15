@@ -4,43 +4,33 @@
     <bookmark url="file://$PROJECT_DIR$/resources/public/partials/dialogs/dialogParticleSystem.html" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/misc/vec2.js" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/gameProps.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/out/index.html" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/out/main.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/out/resources/font/default.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/out/resources/spriteSheet/center.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/out/resources/spriteSheet/tc.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/font/default.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/font/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/frameAnimation/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/gameObject/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/layer/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/particleSystem/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/scene/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/commonBehaviour/control4dir.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/commonBehaviour/draggable.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/commonBehaviour/move4dir.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/commonBehaviour/stub.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/gameObject/center.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/gameObject/tc.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/script/scene/s.js" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/sound/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/spriteSheet/center.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/spriteSheet/map.json" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/workspace/testBehaviour/resources/spriteSheet/tc.png" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/render/gl/mat4.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/misc/mat4.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/public/partials/rightMenu/gameObject.html" afterPath="$PROJECT_DIR$/resources/public/partials/rightMenu/gameObject.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/gameProps.json" afterPath="$PROJECT_DIR$/workspace/helicopter/gameProps.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application/mvc/views/main.ejs" afterPath="$PROJECT_DIR$/application/mvc/views/main.ejs" />
+    <list default="true" id="3a1cbfa6-43cc-405e-87e2-9622780db767" name="Default" comment="mouseMove scale bug">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/out/resources/font/default.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/font/default.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/out/resources/spriteSheet/rocket.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/spriteSheet/rocket.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/script/commonBehaviour/control4dir.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/script/commonBehaviour/draggable.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/gameProps.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/out/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/out/main.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/font/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/frameAnimation/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/gameObject/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/layer/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/particleSystem/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/scene/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/sound/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/spriteSheet/map.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/script/commonBehaviour/move4dir.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/script/gameObject/rocket.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/script/scene/s.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/workspace/testRotation/resources/script/commonBehaviour/stub.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/behaviour/collider.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/behaviour/collider.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/resources/script/gameObject/helicopter.js" afterPath="$PROJECT_DIR$/workspace/helicopter/resources/script/gameObject/helicopter.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/out/main.js" afterPath="$PROJECT_DIR$/workspace/helicopter/out/main.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/resources/gameObject/map.json" afterPath="$PROJECT_DIR$/workspace/helicopter/resources/gameObject/map.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/resources/layer/map.json" afterPath="$PROJECT_DIR$/workspace/helicopter/resources/layer/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/resources/scene/map.json" afterPath="$PROJECT_DIR$/workspace/helicopter/resources/scene/map.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/misc/math.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/misc/math.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/model/models.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/model/models.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js" afterPath="$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/workspace/helicopter/resources/script/gameObject/rocket.js" afterPath="$PROJECT_DIR$/workspace/helicopter/resources/script/gameObject/rocket.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -96,11 +86,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mouse.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mouse.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7817048">
+            <state vertical-scroll-proportion="0.0">
               <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="collider.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/behaviour/collider.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="1.1226611">
+              <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -146,16 +146,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gameObject.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/public/partials/rightMenu/gameObject.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="44" column="74" selection-start-line="44" selection-start-column="74" selection-end-line="44" selection-end-column="74" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="utils.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/misc/utils.js">
           <provider selected="true" editor-type-id="text-editor">
@@ -195,7 +185,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/resources/generatorResources/modules/root/scaleManager.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/misc/appColorPicker.html" />
         <option value="$PROJECT_DIR$/resources/public/js/directives/appColorPicker.js" />
         <option value="$PROJECT_DIR$/resources/public/partials/dialogs.html" />
@@ -246,6 +235,7 @@
         <option value="$PROJECT_DIR$/resources/generatorResources/modules/misc/math.js" />
         <option value="$PROJECT_DIR$/resources/generatorResources/modules/model/models.js" />
         <option value="$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js" />
+        <option value="$PROJECT_DIR$/resources/generatorResources/modules/behaviour/collider.js" />
       </list>
     </option>
   </component>
@@ -324,6 +314,116 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="helicopter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="helicopter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="helicopter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="script" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="workspace" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="helicopter" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="script" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="gameObject" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="resources" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -372,7 +472,33 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="controls" />
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="vEngine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="generatorResources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="modules" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="behaviour" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -869,13 +995,7 @@
       <workItem from="1473092123802" duration="13124000" />
       <workItem from="1473271150669" duration="35000" />
       <workItem from="1473356583374" duration="21837000" />
-      <workItem from="1473713917543" duration="4210000" />
-    </task>
-    <task id="LOCAL-00050" summary="commonBehaviour&#10;">
-      <created>1466952583007</created>
-      <option name="number" value="00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1466952583047</updated>
+      <workItem from="1473713917543" duration="6410000" />
     </task>
     <task id="LOCAL-00051" summary="commonBehaviour&#10;">
       <created>1466958521409</created>
@@ -1165,11 +1285,17 @@
       <option name="project" value="LOCAL" />
       <updated>1473544896411</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="mouseMove scale bug">
+      <created>1473885153620</created>
+      <option name="number" value="00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1473885153621</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="758394000" />
+    <option name="totallyTimeSpent" value="760594000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1186,6 +1312,7 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33333334" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1206,7 +1333,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3218543" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24534687" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1252,7 +1378,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="mouse events" />
     <MESSAGE value="script file manipulations" />
     <MESSAGE value="commonBehaviour&#10;" />
     <MESSAGE value="commonBehaviour (drugBehaviour for mobile)&#10;" />
@@ -1277,7 +1402,8 @@
     <MESSAGE value="scene background color, colorPicker" />
     <MESSAGE value="common behavior refactoring" />
     <MESSAGE value="gameObject rotation" />
-    <option name="LAST_COMMIT_MESSAGE" value="gameObject rotation" />
+    <MESSAGE value="mouseMove scale bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="mouseMove scale bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1290,14 +1416,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/dataProvider/bundle.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/public/js/controllers/stub.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1652,6 +1770,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/model/models.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1660,10 +1786,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/controls/mouse.js">
+    <entry file="file://$PROJECT_DIR$/resources/generatorResources/modules/behaviour/collider.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7817048">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+        <state vertical-scroll-proportion="1.1226611">
+          <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
           <folding />
         </state>
       </provider>

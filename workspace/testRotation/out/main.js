@@ -223,137 +223,16 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.scene = {};
 	
 	
-	scripts.gameObject['cloudSmall.js'] = function(exports,self){
-	    
-	function onCreate() {
-	
-	}
-	
-	function onUpdate(time) {
-	
-	}
-	
-	function onDestroy() {
-	
-	}
-	    exports.onCreate = onCreate;
-	    exports.onUpdate = onUpdate;
-	    exports.onDestroy = onDestroy;
-	};
-	
-	scripts.gameObject['fire.js'] = function(exports,self){
-	    
-	function onCreate() {
-	
-	}
-	
-	function onUpdate(time) {
-	
-	}
-	
-	function onDestroy() {
-	
-	}
-	    exports.onCreate = onCreate;
-	    exports.onUpdate = onUpdate;
-	    exports.onDestroy = onDestroy;
-	};
-	
-	scripts.gameObject['helicopter.js'] = function(exports,self){
-	    
-	var psBurn = require('bundle').instance().particleSystemList.find({name:'burn'});
-	var psFire = require('bundle').instance().particleSystemList.find({name:'fire'});
-	var sceneManager = require('sceneManager').instance();
-	var soundManager = require('soundManager').instance();
-	var injuredAnim = self.getFrAnimation('injured');
-	var math = require('math');
-	var health = 100;
-	
-	self.hurt = function(n){
-	    health-=n;
-	    self.velX-=10;
-	    if (self.velX<5) self.velX = 5;
-	    if (health<5) injuredAnim.play();
-	    if (health && health<5) self.velY = 50;
-	    if (health<0) health = 0;
-	    psBurn.emit(self.posX+20,self.posY+20);
-	    psFire.emit(self.posX+20,self.posY+20);
-	}
-	
-	function onCreate() {
-	    //soundManager.play('engine',true);
-	    self.velX = 200;
-	    self.getFrAnimation('fly').play();
-	    self.on('click',function(e){
-	        psFire.emit(e.screenX,e.screenY);
-	        self.hurt(10);
-	    });
-	
-	}
-	
-	function onUpdate(time) {
-	    var n = math.getRandomInRange(0,health);
-	    if (!health && n<=1) {
-	        psFire.emit(self.posX+20,self.posY+20);
-	        //soundManager.play('cracked',true);
-	    }
-	    if (n==0) psBurn.emit(self.posX+20,self.posY+20);
-	    if (self.posX>600) self.posX = -300;
-	    if (self.posY>300)  sceneManager.setSceneByName('win');
-	
-	}
-	
-	function onDestroy() {
-	
-	}
-	    exports.onCreate = onCreate;
-	    exports.onUpdate = onUpdate;
-	    exports.onDestroy = onDestroy;
-	};
-	
-	scripts.gameObject['rain.js'] = function(exports,self){
-	    
-	function onCreate() {
-	
-	}
-	
-	function onUpdate(time) {
-	
-	}
-	
-	function onDestroy() {
-	
-	}
-	    exports.onCreate = onCreate;
-	    exports.onUpdate = onUpdate;
-	    exports.onDestroy = onDestroy;
-	};
-	
 	scripts.gameObject['rocket.js'] = function(exports,self){
-	    var math = require('math');
-	
-	self.velX = 0;
-	self.velY = 0;
-	var isTouched = false;
-	
-	
+	    
 	function onCreate() {
-	    var hel = self.getScene().findGameObject('helicopter');
 	    self.on('click',function(e){
-	        if (isTouched) return;
-	        isTouched = true;
-	        self.velX = 150;
-	        self.velY = -150;
-	    });
-	    self.on('collide',function(el){
-	        if (el!=hel) return;
-	        self.kill();
-	        hel.hurt(40);
-	    });
+	        console.log(e);
+	    })
 	}
 	
 	function onUpdate(time) {
-	    self.angle = Math.atan2(self.velY,self.velX) + 3.14/2;
+	    self.angle+=0.01;
 	}
 	
 	function onDestroy() {
@@ -366,28 +245,7 @@ modules['behaviour'] = {code: function(module,exports){
 	;
 	
 	
-	scripts.scene['main.js'] = function(exports,self){
-	    
-	var psBurn = require('bundle').instance().particleSystemList.find({name:'rain'});
-	
-	function onCreate() {
-	
-	}
-	
-	function onUpdate(time) {
-	    var rnd = Math.random()*100;
-	    //if (rnd<50) psBurn.emit(200,200);
-	}
-	
-	function onDestroy() {
-	
-	}
-	    exports.onCreate = onCreate;
-	    exports.onUpdate = onUpdate;
-	    exports.onDestroy = onDestroy;
-	};
-	
-	scripts.scene['win.js'] = function(exports,self){
+	scripts.scene['s.js'] = function(exports,self){
 	    
 	function onCreate() {
 	
@@ -429,25 +287,18 @@ modules['collider'] = {code: function(module,exports){
 	        if (!obj.rigid) {
 	            obj.posX = newX;
 	            obj.posY = newY;
+	            return;
 	        }
-	        var res = false;
-	        gos.some(function(go){
-	            if (!go.rigid) {
-	                res = true;
-	                return true;
-	            }
-	            if (obj==go) return true;
+	        var res = gos.some(function(go){
+	            if (!go.rigid) return;
+	            if (obj==go) return;
 	            var objRect = obj.getRect();
 	            objRect.x = newX;
 	            objRect.y = newY;
 	            if (math.isRectIntersectRect(objRect,go.getRect())) {
-	                if (go.rigid) {
-	                    res = true;
-	                    obj.trigger('collide',go);
-	                    return true;
-	                } else {
-	                    obj.trigger('overlap',go);
-	                }
+	                res = true;
+	                obj.trigger('collide',go);
+	                return true;
 	            }
 	        });
 	        if (!res) {
@@ -785,52 +636,6 @@ modules['bundle'] = {code: function(module,exports){
 	    {
 	        "_frameWidth": 0,
 	        "_frameHeight": 0,
-	        "resourcePath": "resources/spriteSheet/cloudSmall.png",
-	        "width": 48,
-	        "height": 48,
-	        "name": "cloudSmall",
-	        "type": "spriteSheet",
-	        "numOfFramesH": 1,
-	        "numOfFramesV": 1,
-	        "id": "8639_0487_69"
-	    },
-	    {
-	        "resourcePath": "resources/spriteSheet/helicopter.png",
-	        "width": 1260,
-	        "height": 570,
-	        "numOfFramesH": 7,
-	        "numOfFramesV": 6,
-	        "name": "helicopter",
-	        "type": "spriteSheet",
-	        "id": "6100_9915_72"
-	    },
-	    {
-	        "_frameWidth": 0,
-	        "_frameHeight": 0,
-	        "resourcePath": "resources/spriteSheet/fire.png",
-	        "width": 64,
-	        "height": 44,
-	        "name": "fire",
-	        "type": "spriteSheet",
-	        "numOfFramesH": 1,
-	        "numOfFramesV": 1,
-	        "id": "3208_8395_84"
-	    },
-	    {
-	        "_frameWidth": 0,
-	        "_frameHeight": 0,
-	        "name": "rain",
-	        "resourcePath": "resources/spriteSheet/rain.png",
-	        "width": 65,
-	        "height": 65,
-	        "type": "spriteSheet",
-	        "numOfFramesH": 1,
-	        "numOfFramesV": 1,
-	        "id": "4058_8964_8"
-	    },
-	    {
-	        "_frameWidth": 0,
-	        "_frameHeight": 0,
 	        "resourcePath": "resources/spriteSheet/rocket.png",
 	        "name": "rocket",
 	        "width": 39,
@@ -838,39 +643,11 @@ modules['bundle'] = {code: function(module,exports){
 	        "type": "spriteSheet",
 	        "numOfFramesH": 1,
 	        "numOfFramesV": 1,
-	        "id": "0015_4316_59"
+	        "id": "3115_2954_94"
 	    }
 	],
 	
-	    frameAnimation:[
-	    {
-	        "name": "fly",
-	        "frames": [
-	            0,
-	            1,
-	            2,
-	            3,
-	            4,
-	            5
-	        ],
-	        "type": "frameAnimation",
-	        "duration": 1000,
-	        "id": "2977_2535_74"
-	    },
-	    {
-	        "_timeForOneFrame": 0,
-	        "name": "injured",
-	        "frames": [
-	            16,
-	            17,
-	            18,
-	            19
-	        ],
-	        "type": "frameAnimation",
-	        "duration": 400,
-	        "id": "8709_3441_81"
-	    }
-	],
+	    frameAnimation:[],
 	
 	    font:[
 	    {
@@ -1908,11 +1685,7 @@ modules['bundle'] = {code: function(module,exports){
 	            "height": 261
 	        },
 	        "type": "font",
-	        "fontColor": [
-	            0,
-	            237,
-	            122
-	        ],
+	        "fontColor": "black",
 	        "fontSize": 25,
 	        "fontFamily": "Monospace",
 	        "resourcePath": "resources/font/default.png",
@@ -1922,98 +1695,7 @@ modules['bundle'] = {code: function(module,exports){
 	
 	    gameObject:[
 	    {
-	        "spriteSheetId": "8639_0487_69",
-	        "currFrameIndex": 0,
-	        "_sprPosX": 0,
-	        "_sprPosY": 0,
-	        "name": "cloudSmall",
-	        "width": 48,
-	        "height": 48,
-	        "type": "gameObject",
-	        "commonBehaviour": [],
-	        "velX": 0,
-	        "velY": 0,
-	        "frameAnimationIds": [],
-	        "rigid": 0,
-	        "groupName": "",
-	        "posX": 0,
-	        "posY": 0,
-	        "id": "3276_5748_70",
-	        "angle": 0
-	    },
-	    {
-	        "spriteSheetId": "6100_9915_72",
-	        "currFrameIndex": 0,
-	        "_sprPosX": 0,
-	        "_sprPosY": 0,
-	        "name": "helicopter",
-	        "width": 180,
-	        "height": 95,
-	        "type": "gameObject",
-	        "commonBehaviour": [
-	            {
-	                "name": "draggable",
-	                "parameters": [],
-	                "description": "",
-	                "id": "4480_7483_42",
-	                "type": "commonBehaviour"
-	            }
-	        ],
-	        "velX": 0,
-	        "velY": 0,
-	        "frameAnimationIds": [
-	            "2977_2535_74",
-	            "8709_3441_81"
-	        ],
-	        "rigid": 0,
-	        "groupName": "",
-	        "posX": 0,
-	        "posY": 0,
-	        "id": "6612_6223_73",
-	        "angle": 0
-	    },
-	    {
-	        "spriteSheetId": "3208_8395_84",
-	        "currFrameIndex": 0,
-	        "_sprPosX": 0,
-	        "_sprPosY": 0,
-	        "name": "fire",
-	        "width": 64,
-	        "height": 44,
-	        "type": "gameObject",
-	        "commonBehaviour": [],
-	        "velX": 0,
-	        "velY": 0,
-	        "frameAnimationIds": [],
-	        "rigid": 0,
-	        "groupName": "",
-	        "posX": 0,
-	        "posY": 0,
-	        "id": "8044_2993_85",
-	        "angle": 0
-	    },
-	    {
-	        "spriteSheetId": "4058_8964_8",
-	        "currFrameIndex": 0,
-	        "_sprPosX": 0,
-	        "_sprPosY": 0,
-	        "name": "rain",
-	        "width": 65,
-	        "height": 65,
-	        "type": "gameObject",
-	        "commonBehaviour": [],
-	        "velX": 0,
-	        "velY": 0,
-	        "frameAnimationIds": [],
-	        "rigid": 1,
-	        "groupName": "",
-	        "posX": 0,
-	        "posY": 0,
-	        "id": "6518_5912_9",
-	        "angle": 0
-	    },
-	    {
-	        "spriteSheetId": "0015_4316_59",
+	        "spriteSheetId": "3115_2954_94",
 	        "currFrameIndex": 0,
 	        "_sprPosX": 0,
 	        "_sprPosY": 0,
@@ -2021,325 +1703,84 @@ modules['bundle'] = {code: function(module,exports){
 	        "width": 39,
 	        "height": 68,
 	        "type": "gameObject",
-	        "commonBehaviour": [],
+	        "commonBehaviour": [
+	            {
+	                "name": "draggable",
+	                "parameters": [],
+	                "description": "",
+	                "id": "1364_4760_28",
+	                "type": "commonBehaviour"
+	            }
+	        ],
 	        "velX": 0,
 	        "velY": 0,
 	        "frameAnimationIds": [],
-	        "rigid": 0,
+	        "rigid": 1,
 	        "groupName": "",
 	        "posX": 0,
 	        "posY": 0,
-	        "id": "9702_0577_60",
-	        "angle": 0
+	        "angle": 0,
+	        "id": "8689_6539_95"
 	    }
 	],
 	
 	    layer:[
 	    {
-	        "name": "mainLayer",
-	        "type": "layer",
-	        "gameObjectProps": [
-	            {
-	                "spriteSheetId": "6100_9915_72",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "helicopter",
-	                "width": 180,
-	                "height": 95,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [
-	                    "2977_2535_74"
-	                ],
-	                "rigid": 1,
-	                "groupName": "",
-	                "posX": 7,
-	                "posY": 9,
-	                "protoId": "6612_6223_73",
-	                "id": "2294_3548_79",
-	                "angle": 0
-	            },
-	            {
-	                "spriteSheetId": "0015_4316_59",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "rocket",
-	                "width": 39,
-	                "height": 68,
-	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "draggable",
-	                        "parameters": [],
-	                        "description": "",
-	                        "id": "8291_8868_82",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "posX": 40,
-	                "posY": 217,
-	                "angle": 0,
-	                "protoId": "9702_0577_60",
-	                "id": "6903_4411_43"
-	            },
-	            {
-	                "spriteSheetId": "0015_4316_59",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "rocket",
-	                "width": 39,
-	                "height": 68,
-	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "draggable",
-	                        "parameters": [],
-	                        "description": "",
-	                        "id": "8291_8868_82",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "posX": 100,
-	                "posY": 217,
-	                "angle": 0,
-	                "protoId": "9702_0577_60",
-	                "id": "6695_0703_52"
-	            },
-	            {
-	                "spriteSheetId": "0015_4316_59",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "rocket",
-	                "width": 39,
-	                "height": 68,
-	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "draggable",
-	                        "parameters": [],
-	                        "description": "",
-	                        "id": "8291_8868_82",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "posX": 160,
-	                "posY": 217,
-	                "angle": 0,
-	                "protoId": "9702_0577_60",
-	                "id": "0433_2968_53"
-	            },
-	            {
-	                "spriteSheetId": "0015_4316_59",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "rocket",
-	                "width": 39,
-	                "height": 68,
-	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "draggable",
-	                        "parameters": [],
-	                        "description": "",
-	                        "id": "8291_8868_82",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "posX": 220,
-	                "posY": 217,
-	                "angle": 0,
-	                "protoId": "9702_0577_60",
-	                "id": "9625_5734_54"
-	            },
-	            {
-	                "spriteSheetId": "0015_4316_59",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "rocket",
-	                "width": 39,
-	                "height": 68,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [],
-	                "rigid": 0,
-	                "groupName": "",
-	                "posX": 280,
-	                "posY": 217,
-	                "angle": 0,
-	                "protoId": "9702_0577_60",
-	                "id": "3682_8055_65"
-	            }
-	        ],
-	        "id": "7822_6900_77"
-	    },
-	    {
 	        "name": "l",
 	        "type": "layer",
 	        "gameObjectProps": [
 	            {
-	                "height": 29,
-	                "text": "ПОБЕДА!!!!!!",
-	                "width": 180,
-	                "type": "userInterface",
-	                "subType": "textField",
+	                "spriteSheetId": "3115_2954_94",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "rocket",
+	                "width": 39,
+	                "height": 68,
+	                "type": "gameObject",
+	                "commonBehaviour": [],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 106,
-	                "posY": 123,
-	                "name": "textField3",
-	                "protoId": null,
-	                "id": "4530_8265_90",
-	                "fontId": "6991_3497_4"
+	                "posX": 70,
+	                "posY": 121,
+	                "angle": 0,
+	                "protoId": "8689_6539_95",
+	                "id": "8067_9107_96"
 	            }
 	        ],
-	        "id": "3617_1449_88"
+	        "id": "0544_3465_92"
 	    }
 	],
 	
 	    scene:[
 	    {
-	        "name": "main",
+	        "name": "s",
 	        "type": "scene",
 	        "layerProps": [
 	            {
 	                "type": "layer",
-	                "protoId": "7822_6900_77",
-	                "id": "2707_6918_78"
+	                "protoId": "0544_3465_92",
+	                "id": "2356_3479_93"
 	            }
 	        ],
-	        "id": "4016_7425_76",
-	        "useBG": 1,
 	        "colorBG": [
-	            160,
-	            0,
-	            231
-	        ]
-	    },
-	    {
-	        "name": "win",
-	        "type": "scene",
-	        "layerProps": [
-	            {
-	                "type": "layer",
-	                "protoId": "3617_1449_88",
-	                "id": "3964_1485_89"
-	            }
+	            255,
+	            255,
+	            255
 	        ],
-	        "id": "8898_5339_87",
-	        "useBG": 1,
-	        "colorBG": [
-	            222,
-	            229,
-	            254
-	        ]
+	        "id": "8195_8237_91"
 	    }
 	],
 	
-	    particleSystem:[
-	    {
-	        "gameObjectId": "3276_5748_70",
-	        "numOfParticlesToEmit": {
-	            "from": 1,
-	            "to": 5
-	        },
-	        "particleAngle": {
-	            "from": 5.166617715651452,
-	            "to": 4.057869033816451
-	        },
-	        "particleVelocity": {
-	            "from": 1,
-	            "to": 100
-	        },
-	        "particleLiveTime": {
-	            "from": 3000,
-	            "to": 5000
-	        },
-	        "name": "burn",
-	        "type": "particleSystem",
-	        "id": "4673_1751_71"
-	    },
-	    {
-	        "gameObjectId": "8044_2993_85",
-	        "numOfParticlesToEmit": {
-	            "from": 1,
-	            "to": 10
-	        },
-	        "particleAngle": {
-	            "from": 5.248200218345153,
-	            "to": 3.9312703914312075
-	        },
-	        "particleVelocity": {
-	            "from": 1,
-	            "to": 100
-	        },
-	        "particleLiveTime": {
-	            "from": 1000,
-	            "to": 2000
-	        },
-	        "name": "fire",
-	        "type": "particleSystem",
-	        "id": "6469_6798_86",
-	        "emissionRadius": 26
-	    },
-	    {
-	        "gameObjectId": "6518_5912_9",
-	        "numOfParticlesToEmit": {
-	            "from": 10,
-	            "to": 150
-	        },
-	        "particleAngle": {
-	            "from": 1.3620754683616805,
-	            "to": 1.265722978806152
-	        },
-	        "particleVelocity": {
-	            "from": 400,
-	            "to": 450
-	        },
-	        "particleLiveTime": {
-	            "from": 100,
-	            "to": 200
-	        },
-	        "emissionRadius": 500,
-	        "name": "rain",
-	        "type": "particleSystem",
-	        "id": "0855_5833_10"
-	    }
-	],
+	    particleSystem:[],
 	
 	    gameProps:{
-	    "width": 500,
-	    "height": 300,
-	    "scaleToFullScreen": false,
-	    "scaleStrategy": "2"
+	    "width": 800,
+	    "height": 600,
+	    "scaleStrategy": "4"
 	}
 	
 	};

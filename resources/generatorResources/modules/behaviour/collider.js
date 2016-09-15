@@ -15,18 +15,25 @@ var Collider = function(){
         if (!obj.rigid) {
             obj.posX = newX;
             obj.posY = newY;
-            return;
         }
-        var res = gos.some(function(go){
-            if (!go.rigid) return;
-            if (obj==go) return;
+        var res = false;
+        gos.some(function(go){
+            if (!go.rigid) {
+                res = true;
+                return true;
+            }
+            if (obj==go) return true;
             var objRect = obj.getRect();
             objRect.x = newX;
             objRect.y = newY;
             if (math.isRectIntersectRect(objRect,go.getRect())) {
-                res = true;
-                obj.trigger('collide',go);
-                return true;
+                if (go.rigid) {
+                    res = true;
+                    obj.trigger('collide',go);
+                    return true;
+                } else {
+                    obj.trigger('overlap',go);
+                }
             }
         });
         if (!res) {
