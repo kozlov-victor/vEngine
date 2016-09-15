@@ -1,0 +1,38 @@
+[
+    {
+        "name": "main",
+        "type": "scene",
+        "layerProps": [
+            {
+                "type": "layer",
+                "protoId": "7822_6900_77",
+                "id": "2707_6918_78"
+            }
+        ],
+        "id": "4016_7425_76",
+        "useBG": 1,
+        "colorBG": [
+            160,
+            0,
+            231
+        ]
+    },
+    {
+        "name": "win",
+        "type": "scene",
+        "layerProps": [
+            {
+                "type": "layer",
+                "protoId": "3617_1449_88",
+                "id": "3964_1485_89"
+            }
+        ],
+        "id": "8898_5339_87",
+        "useBG": 1,
+        "colorBG": [
+            222,
+            229,
+            254
+        ]
+    }
+]

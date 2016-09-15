@@ -51,6 +51,14 @@ img {
     user-select: none;
 }
 
+.underLine {
+    text-decoration: underline;
+}
+
+.small {
+    font-size: 10px;
+}
+
 .width100 {
     width: 100%;
 }
@@ -71,12 +79,25 @@ img {
     height: 1px;
 }
 
+input[type=range][orient=vertical]
+{
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 175px;
+    padding: 0 5px;
+}
+
 .noOverFlow {
     overflow: hidden !important;
 }
 
 .withMargin {
     margin: 5px;
+}
+
+.hoverable:hover {
+    background-color: #ececec;
 }
 
 .withPadding {
@@ -126,11 +147,11 @@ input[type="file"] {
     position: absolute;
 }
 
-.leftMenu {
+.sideMenu {
     background-color: #ccc;
 }
 
-.leftMenu h3 {
+.sideMenu h3 {
     background-color: #aaaaaa;
     padding: 5px;
     margin: 0;
@@ -245,6 +266,18 @@ input[type="file"] {
     text-align: center;
 }
 
+.leftText {
+    text-align: left;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.centerVert {
+    vertical-align: middle;
+}
+
 .layers {
     background-color: #8c8c8c;
 }
@@ -278,7 +311,7 @@ input[type="file"] {
     border-top: 5px solid #636363;
 }
 
-[ng-click] {
+[ng-click],label,[type=checkbox],[type=radio] {
     cursor: pointer;
 }
 
@@ -295,6 +328,37 @@ input[type="file"] {
     background-color: #cdf7ff;
 }
 
+.mainPanelCell {
+    padding: 2px;
+    box-shadow: 0 0 4px #d1d2d4;
+}
+
+.subFullScreen {
+    width: 70vw;
+    height: 70vh;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-corner       {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.narrow {
+    max-width: 50px;
+}
 
 
 

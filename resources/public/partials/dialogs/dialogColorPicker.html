@@ -1,0 +1,38 @@
+<table>
+    <tr>
+        <td>
+            <input type="color" ng-model="col.hex" ng-change="hexChanged()"/>
+        </td>
+        <td>
+            <input type="text" ng-model="col.hex" ng-change="hexChanged()"/>
+        </td>
+        <td></td>
+    </tr>
+
+    <table class="width100">
+        <tr
+                ng-repeat="item in [
+                    {left:'red',right:'cyan',index:0},
+                    {left:'green',right:'magenta',index:1},
+                    {left:'blue',right:'yellow',index:2}
+                ]">
+            <td>
+                {{item.left}}
+            </td>
+            <td class="centerText">
+                <input class="vAlign" type="range" min="0" max="255" ng-model="col.rgb[item.index]" ng-change="rgbChanged()"/>
+                <br/>
+                <input class="small vAlign" ng-model="col.rgb[item.index]" ng-change="rgbChanged()"/>
+                <hr/>
+            </td>
+            <td>{{item.right}}</td>
+        </tr>
+
+
+    </table>
+</table>
+
+<button
+        ng-click="applyColor()">
+    {{i18n.edit}}
+</button>

@@ -2,11 +2,12 @@
 var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');
 
-module.exports.RESOURCE_NAMES =
-    'audio,spriteSheet,frameAnimation,font,gameObject,layer,scene'
+var RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
     .split(',');
+module.exports.RESOURCE_NAMES = RESOURCE_NAMES;
 
-module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/static/defaultCodeScript.js');
+
+module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/misc/defaultCodeScript.js');
 
 var readResource = function(path) {
     return JSON.parse(fs.readFileSync(path));
@@ -48,33 +49,66 @@ var getFileExtension = function(path) {
     return arr.pop()||'';
 };
 
-var processUploadedFile = function(item,pathToUploadedFile){
+var processUploadedFile = function(item,pathToUploadedFile,projectName){
     if (!pathToUploadedFile) return;
-    console.log('processing file',pathToUploadedFile);
     var fileExtension = getFileExtension(pathToUploadedFile);
-    console.log('fileExtension',fileExtension);
     var resourcePath = 'resources/'+item.type+'/'+item.name+(fileExtension?'.'+fileExtension:'');
     if (!fileExtension) resourcePath+='.'+'png';
-    console.log('resourcePath',resourcePath);
-    fs.copyFileSync(pathToUploadedFile,'workspace/project/'+resourcePath);
+    fs.copyFileSync(pathToUploadedFile,'workspace/'+projectName+'/'+resourcePath);
     fs.deleteFileSync(pathToUploadedFile);
     item.resourcePath = resourcePath;
 };
 
 
-module.exports.create = function(item,pathToUploadedFile){
-    processUploadedFile(item,pathToUploadedFile);
-    var arr = readResource('workspace/project/resources/'+item.type+'/map.json');
+var createFolderWithFiles = function(foldersArr,projectName) {
+    foldersArr.forEach(function(folder){
+        fs.createFolderSync('workspace/'+projectName+'/resources/'+folder);
+        fs.createFileSync('workspace/'+projectName+'/resources/'+folder+'/map.json','[]');
+    });
+};
+
+module.exports.createProject = function(projectName){
+
+    fs.createFolderSync('workspace/'+projectName+'/resources');
+    createFolderWithFiles(RESOURCE_NAMES,projectName);
+    fs.createFolderSync('workspace/'+projectName+'/resources/script/gameObject');
+    fs.createFolderSync('workspace/'+projectName+'/resources/font');
+    fs.createFolderSync('workspace/'+projectName+'/resources/script/scene');
+
+    fs.copyFileSync('resources/generatorResources/fonts/default.png',
+        'workspace/'+projectName+'/resources/font/default.png');
+    fs.copyFileSync('resources/generatorResources/fonts/map.json',
+        'workspace/'+projectName+'/resources/font/map.json');
+
+    fs.createFolderSync('workspace/'+projectName+'/resources/script/commonBehaviour');
+    fs.readDirSync('resources/generatorResources/commonBehaviour').forEach(function(itm){
+        fs.createFileSync('workspace/'+projectName+'/resources/script/commonBehaviour/'+itm.name,itm.content);
+    });
+
+    fs.createFileSync('workspace/'+projectName+'/gameProps.json',JSON.stringify({
+        width:800,
+        height:600,
+        scaleStrategy:0
+    }));
+
+};
+
+
+module.exports.create = function(item,pathToUploadedFile,projectName){
+    if (!projectName) throw 'project name not specified';
+    processUploadedFile(item,pathToUploadedFile,projectName);
+    var arr = readResource('workspace/'+projectName+'/resources/'+item.type+'/map.json');
     item.id = uuid();
     arr.push(item);
-    writeResource(arr,'workspace/project/resources/'+item.type+'/map.json');
+    writeResource(arr,'workspace/'+projectName+'/resources/'+item.type+'/map.json');
     return item;
 };
 
 
-module.exports.edit = function(item,pathToUploadedFile){
-    processUploadedFile(item,pathToUploadedFile);
-    var arr = readResource('workspace/project/resources/'+item.type+'/map.json');
+module.exports.edit = function(item,pathToUploadedFile,projectName){
+    if (!projectName) throw 'project name not specified';
+    processUploadedFile(item,pathToUploadedFile,projectName);
+    var arr = readResource('workspace/'+projectName+'/resources/'+item.type+'/map.json');
     var editItem = arr.filter(function(_itm){
         return _itm.id==item.id;
     })[0];
@@ -82,53 +116,57 @@ module.exports.edit = function(item,pathToUploadedFile){
     Object.keys(item).forEach(function(key){
         editItem[key]=item[key];
     });
-    writeResource(arr,'workspace/project/resources/'+item.type+'/map.json');
+    writeResource(arr,'workspace/'+projectName+'/resources/'+item.type+'/map.json');
     return editItem;
 };
 
-module.exports.getAll = function(type){
-    return JSON.parse(fs.readFileSync('workspace/project/resources/'+type+'/map.json'));
+module.exports.getAll = function(type,projectName){
+    if (!projectName) throw 'project name not specified';
+    return JSON.parse(fs.readFileSync('workspace/'+projectName+'/resources/'+type+'/map.json'));
 };
 
-module.exports.delete = function(id,type){
-    var arr = readResource('workspace/project/resources/'+type+'/map.json');
+module.exports.delete = function(id,type,projectName){
+    if (!projectName) throw 'project name not specified';
+    var arr = readResource('workspace/'+projectName+'/resources/'+type+'/map.json');
     var indexToDel = getIndexById(arr,id);
     if (indexToDel!==null) {
         var resourcePath = arr[indexToDel].resourcePath;
-        fs.deleteFileSync('workspace/project/'+resourcePath);
+        fs.deleteFileSync('workspace/'+projectName+'/'+resourcePath);
         arr.splice(indexToDel,1);
-        writeResource(arr,'workspace/project/resources/'+type+'/map.json');
+        writeResource(arr,'workspace/'+projectName+'/resources/'+type+'/map.json');
     }
 };
 
 // todo remove dependencies
-module.exports.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId){
-    console.log('deleteObjectFromResource invoked');
-    var resources = readResource('workspace/project/resources/'+resourceType+'/map.json');
+module.exports.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,projectName){
+    if (!projectName) throw 'project name not specified';
+    var resources = readResource('workspace/'+projectName+'/resources/'+resourceType+'/map.json');
     var resource = resources.filter(function(r){return r.id==resourceId})[0];
     if (!resource) throw 'can not find resource with id ' + resourceId + ' in ' + resourceType + ' resource';
     var objectsInResource = resource[objectType];
     var index = getIndexById(objectsInResource,objectId);
-    console.log('curr index',index);
     if (index!=null) {
         objectsInResource.splice(index,1);
     }
     else {
         throw 'can not find object with id '+ objectId + ' in resource ' + resourceType + ':' + objectType;
     }
-    writeResource(resources,'workspace/project/resources/'+resourceType+'/map.json');
+    writeResource(resources,'workspace/'+projectName+'/resources/'+resourceType+'/map.json');
 };
 
-module.exports.saveGameProps = function(model){
-    writeResource(model,'workspace/project/gameProps.json');
+module.exports.saveGameProps = function(model,projectName){
+    if (!projectName) throw 'project name not specified';
+    writeResource(model,'workspace/'+projectName+'/gameProps.json');
 };
 
-module.exports.getGameProps = function(){
-    return readResource('workspace/project/gameProps.json');
+module.exports.getGameProps = function(projectName){
+    if (!projectName) throw 'project name not specified';
+    return readResource('workspace/'+projectName+'/gameProps.json');
 };
 
-module.exports.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object) {
-    var path = 'workspace/project/resources/'+resourceType+'/map.json';
+module.exports.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,projectName) {
+    if (!projectName) throw 'project name not specified';
+    var path = 'workspace/'+projectName+'/resources/'+resourceType+'/map.json';
     var resources = readResource(path);
     console.log('loaded resources',resources);
     console.log('search by id');
@@ -151,46 +189,63 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
     return object;
 };
 
-module.exports.getCommonBehaviourAttrs = function(){
-    // todo project name
-    var code = '';
-    var fileNames = [];
-    code+='var require = function(){};';
-    code+='var Class = {};var bundle = [];var fileNames = [];';
-    code+='Class.extend = function(a,b){bundle.push(b)};';
-    code+='var ve={};ve.commonBehaviour={};';
-    fs.readDirSync('workspace/project/resources/script/commonBehaviour').forEach(function(itm){
-        code+=itm.content+';';
-        fileNames.push(itm.name);
+module.exports.getCommonBehaviourAttrs = function(projectName){
+    if (!projectName) throw 'project name not specified';
+    var attrs = [];
+    fs.readDirSync('workspace/'+projectName+'/resources/script/commonBehaviour').forEach(function(itm){
+        var attr = {};
+        attr.name = itm.name.replace('.js','');
+        var module = {};
+        module.exports = {};
+        var exports = module.exports;
+        var self = {};
+        var parameters = {};
+        var fn = new Function(
+            'module,exports,self,parameters',
+            'var require = function(){return {instance:function(){}}};'+itm.content
+        );
+        fn(module,exports,self,parameters);
+        attr.description = exports.description;
+        attr.parameters = exports.parameters;
+        attr.id = uuid();
+        attrs.push(attr);
     });
-    code+=';return bundle;';
-    var bundle = [];
-    try {
-        bundle = new Function(code)();
-    } catch(e){
-        console.error(e);
-    }
-    bundle.forEach(function(itm,i){
-        itm.id = uuid();
-        itm.name = fileNames[i].split('.')[0];
-    });
-    return bundle;
+    return attrs;
 };
 
-module.exports.createFile = function(name,path,content) {
-    fs.writeFileSync('workspace/project/resources/'+path+'/'+name,content);
+module.exports.createFile = function(name,path,content,projectName) {
+    if (!projectName) throw 'project name not specified';
+    fs.writeFileSync('workspace/'+projectName+'/resources/'+path+'/'+name,content);
     return {};
 };
 
-module.exports.readFile = function(name,path) {
-    return fs.readFileSync('workspace/project/resources/'+path+'/'+name);
+module.exports.readFile = function(name,path,projectName) {
+    if (!projectName) throw 'project name not specified';
+    return fs.readFileSync('workspace/'+projectName+'/resources/'+path+'/'+name);
 };
 
-
-module.exports.editFont = function(model,pathToUploadedFile) {
-    processUploadedFile(model.font,pathToUploadedFile,'png');
-    writeResource(model.font,"workspace/project/resources/font/"+ model.font.name+'.json');
+module.exports.editFont = function(model,pathToUploadedFile,projectName) {
+    if (!projectName) throw 'project name not specified';
+    processUploadedFile(model.font,pathToUploadedFile,projectName);
+    writeResource(model.font,'workspace/'+projectName+'/resources/font/'+ model.font.name+'.json');
     return {};
 };
 
 module.exports.readResource = readResource;
+
+module.exports.getProjects = function(){
+    return fs.getDirListSync('workspace/').map(function(item){
+        return {name:item}
+    });
+};
+
+module.exports.renameFolder = function(oldName,newName){
+    fs.renameSync(oldName,newName);
+};
+
+module.exports.deleteFolder = function(name){
+    fs.deleteFolderSync(name);
+};
+
+
+

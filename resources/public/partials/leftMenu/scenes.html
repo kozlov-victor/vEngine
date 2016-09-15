@@ -13,14 +13,14 @@
                         <div ng-show="!scene._opened" class="triangleRight"></div>
                         <div ng-show="scene._opened" class="triangleBottom"></div>
                     </div>
-                    <div class="cell" ng-click="showEditSceneDialog(scene)">{{i18n.edit}}</div>
+                    <div class="cell" ng-click="showDialog('scene','edit',scene)">{{i18n.edit}}</div>
                     <div class="cell rightAlign" ng-click="deleteScene(scene)">X</div>
                 </div>
                 <!--layers-->
                 <div ng-show="scene._opened" class="table width100">
                     <div class="cell width1">
                         {{i18n.layers}}
-                        <button class="block" ng-click="showCreateLayerDialog(scene)">+</button>
+                        <button class="block" ng-click="showDialog('layer','create')">+</button>
                         <div ng-click="showScript(scene,$event)">
                             script
                         </div>
@@ -33,17 +33,21 @@
                                     ng-repeat="layer in scene._layers.rs">
                                 <div class="cell vAlign">
                                     <div class="bold">{{layer.name}}</div>
-                                    <div class="inlineBlock" ng-click="showEditLayerDialog($event,layer)">{{i18n.edit}}</div>
+                                    <div
+                                            class="inlineBlock"
+                                            ng-click="$event.stopPropagation();showDialog('layer','edit',layer);">
+                                        {{i18n.edit}}
+                                    </div>
                                     <div class="inlineBlock" ng-click="deleteLayer(scene,layer)">X</div>
                                 </div>
                                 <div class="cell">
                                     <!--game objects-->
                                     <div class="table width100">
-                                        <div class="row">
+                                        <div class="row" ng-click="layer._opened=!layer._opened">
                                             <div class="cell valign">
                                                 {{i18n.gameObjects}}
                                             </div>
-                                            <div class="cell" ng-click="layer._opened=!layer._opened">
+                                            <div class="cell">
                                                 <div ng-show="!layer._opened" class="triangleRight"></div>
                                                 <div ng-show="layer._opened" class="triangleBottom"></div>
                                             </div>
@@ -95,7 +99,7 @@
             </div>
         </div>
     </div>
-    <button ng-click="showCreateSceneDialog()">{{i18n.create}}</button>
+    <button ng-click="showDialog('scene','create')">{{i18n.create}}</button>
 </div>
 
 

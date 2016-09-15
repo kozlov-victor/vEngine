@@ -2,25 +2,45 @@ window.app
 
     .factory('uiHelper', function () {
         var _;
+        var collections = require('collections');
         return _ = {
+            _dialogsStack: new collections.List(),
+
             window:'sceneWindow',
-            toggle: function (currentVal, defaultVal) {
-                return currentVal == defaultVal ? 0 : defaultVal;
-            },
-            _dialogsStack: [],
+            _dialogName:null,
             ctxMenu:{
                 name:null,
                 x:null,
                 y:null
             },
-            showDialog: function(name){
+            toggle: function (currentVal, defaultVal) {
+                return currentVal == defaultVal ? 0 : defaultVal;
+            },
+            showDialog: function(name,opName,opObject,opCallBack){
                 _.dialogName = name;
-                _._dialogsStack.push(name);
+                _._dialogsStack.add({
+                    name:name,
+                    opName:opName,
+                    id: opObject && opObject.id,
+                    opObject:opObject,
+                    opCallBack:opCallBack
+                });
                 _.ctxMenu.name = null;
+            },
+            getDialogState: function(){
+                return _._dialogsStack.getLast() || {};
+            },
+            findDialogStateObjectById: function(id){
+                return  _._dialogsStack.find({id:id}).opObject;
             },
             closeDialog: function(){
                 _._dialogsStack.pop();
-                _.dialogName = _._dialogsStack[_._dialogsStack.length-1];
+                var last = _._dialogsStack.getLast();
+                if (last) {
+                    _.dialogName = last.name;
+                } else {
+                    _.dialogName = null;
+                }
             },
             showContextMenu: function(name,x,y,elX,elY,model){
                 _.ctxMenu.name = name;

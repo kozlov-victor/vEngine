@@ -18,7 +18,7 @@
             <div class="cell vAlign rightAlign" ng-click="showScript(item)">
                 script
             </div>
-            <div class="cell vAlign rightAlign" ng-click="showEditGameObjectDialog(item)">
+            <div class="cell vAlign rightAlign" ng-click="showDialog('gameObject','edit',item)">
                 edit
             </div>
             <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'gameObject')">
@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <button ng-click="showCreateGameObjectDialog()">
+    <button ng-click="showDialog('gameObject','create')">
         {{i18n.create}}
     </button>
 </div>

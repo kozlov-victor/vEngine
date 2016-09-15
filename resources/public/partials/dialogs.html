@@ -7,56 +7,27 @@
                 X
             </div>
 
-            <form
-                    name="frmCreateSpriteSheet"
-                    ng-controller="spriteSheetCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateSpriteSheet'"
-                    ng-include src="'partials/dialogs/dialogCreateSpriteSheet.html'"
-                    novalidate></form>
-
-            <form
-                    name="frmCreateGameObject"
-                    ng-controller="gameObjectCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateGameObject'"
-                    ng-include src="'partials/dialogs/dialogCreateGameObject.html'"
-                    novalidate></form>
-
-            <form
-                    name="frmCreateAnimation"
-                    ng-controller="animationCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateAnimation'"
-                    ng-include src="'partials/dialogs/dialogCreateAnimation.html'"
-                    novalidate></form>
-
-            <form
-                    name="frmCreateScene"
-                    ng-controller="sceneCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateScene'"
-                    ng-include src="'partials/dialogs/dialogCreateScene.html'"
-                    novalidate></form>
+            <div
+                    ng-repeat="ctrlName in [
+                        'SpriteSheet','GameObject',
+                        'FrameAnimation','Scene',
+                        'Layer','Font',
+                        'CommonBehaviour','Sound',
+                        'ParticleSystem',
+                        'ParticleSystemPreview',
+                        'Build','Project', 'ColorPicker'
+                    ]"
+            >
+                <form
+                        name="frmCreate{{ctrlName}}"
+                        dynamic-ctrl="utils.deCapitalize(ctrlName)+'Ctrl'"
+                        ng-if="uiHelper.dialogName=='frmCreate'+ctrlName"
+                        ng-include src="'partials/dialogs/dialog'+ctrlName+'.html'"
+                        novalidate>
+                </form>
 
 
-            <form
-                    name="frmCreateLayer"
-                    ng-controller="layerCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateLayer'"
-                    ng-include src="'partials/dialogs/dialogCreateLayer.html'"
-                    novalidate></form>
-
-            <form
-                    name="frmCreateFont"
-                    ng-controller="fontCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateFont'"
-                    ng-include src="'partials/dialogs/dialogCreateFont.html'"
-                    novalidate></form>
-
-            <form
-                    name="frmCreateCommonBehaviour"
-                    ng-controller="commonBehaviourCtrl"
-                    ng-if="uiHelper.dialogName=='frmCreateCommonBehaviour'"
-                    ng-include src="'partials/dialogs/dialogCreateCommonBehaviour.html'"
-                    novalidate></form>
-
+            </div>
 
         </div>
     </div>

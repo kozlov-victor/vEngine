@@ -7,18 +7,24 @@ var ejs = require('ejs');
 var Source = function(){
     var res = [];
     var self = this;
-    var parametrize = function (str,params) {
-        for (var key in params) {
-            if (params.hasOwnProperty(key)) {
-                var val = params[key];
-                key = '\'%'+key+'%\'';
-                str =str.split(key).join(val);
-            }
-        }
-        return str;
-    };
     this.add = function(s){
         res.push(s);
+    };
+    var processTemplate = function(path,params){
+       return ejs.render(fs.readFileSync(path).split('//<code>').join(''),params);
+    };
+    var extractModuleName = function(path){
+        return path.replace('.js','').split('/').pop();
+    };
+    var wrapAsCommonJS = function(path,code){
+        return 'modules[\''+extractModuleName(path)+'\'] = {code: function(module,exports){\n' + addLeadTab(code) + '\n}};\n';
+    };
+    var addLeadTab = function(code){
+        return (
+            code.split('\n').map(function(item){
+                return '\t'+item;
+            }).join('\n')
+        );
     };
     this.addFile = function(path){
         var content = fs.readFileSync(path);
@@ -30,87 +36,126 @@ var Source = function(){
         })
     };
     this.addTemplate = function(path,params) {
-        var content = fs.readFileSync(path);
-        self.add(ejs.render(content,params));
+        self.add(processTemplate(path,params));
+    };
+    this.addTemplates = function(pathList,params) {
+        var self = this;
+        pathList.forEach(function(path){
+            self.addTemplate(path,params);
+        });
+    };
+    this.addCommonJsModule = function(path,params){
+        var code = processTemplate(path,params);
+        code = wrapAsCommonJS(path,code);
+        self.add(code);
+    };
+    this.addCommonJsModules = function(path,params){
+        var self = this;
+        fs.readDirSync(path).forEach(function(file){
+            self.addCommonJsModule(file.fullName,params);
+        });
+    };
+    this.addCommonTemplate = function(path,params){
+        self.addFile(path,params);
+    };
+    this.addCommonTemplates = function(path){
+        var self = this;
+        fs.readDirSync(path).forEach(function(file){
+            self.addCommonTemplate(file.fullName,{});
+        });
+    };
+    this.addResource = function(path,opts){
+        var src;
+        var params = {};
+        if (!opts.ignoreEJS) {
+            src = processTemplate(path,{
+                resourceNames:resourcesController.RESOURCE_NAMES,
+                opts: {}
+            });
+        } else {
+            src = fs.readFileSync(path)
+        }
+        if (!opts.ignoreCommonJS) {
+             src = wrapAsCommonJS(path,src);
+        }
+        this.add(src);
     };
     this.get = function(){
         return res.join('\n');
     };
 };
 
-var addEnvVariables = function(sourceMain) {
-    sourceMain.addTemplate(
-        'resources/generatorResources/templates/envVariables.ejs',
-        {
-            resourceNames:resourcesController.RESOURCE_NAMES
-        }
-    );
-};
 
-var addStaticFiles = function(sourceMain){
-    sourceMain.addFiles([
-        'resources/public/js/lib/oop.js',
-        'resources/public/js/dataStructure/collections.js',
-        'resources/public/js/dataStructure/models.js',
-        'resources/public/js/dataStructure/bundle.js',
-        'resources/public/js/dataStructure/utils.js',
-        'resources/generatorResources/static/renderer.js',
-        'resources/generatorResources/static/sceneManager.js',
-        'resources/generatorResources/static/modules/keyboard.js',
-        'resources/generatorResources/static/modules/mouse.js',
-        'resources/generatorResources/static/modules/math.js',
-        'resources/generatorResources/static/modules/physics.js',
-        'resources/generatorResources/static/modules/collider.js'
-    ]);
-};
 
-var addDebug = function(sourceMain){
-    sourceMain.addFile('resources/generatorResources/static/debug.js');
-};
-
-var addGameResources = function(sourceMain){
+var createResourcesParams = function(opts){
     var templateObj = {};
     templateObj.commonResources = {};
     templateObj.specialResources = {};
     resourcesController.RESOURCE_NAMES.forEach(function(r){
-        templateObj.commonResources[r] = fs.readFileSync('workspace/project/resources/'+r+'/map.json')
+        templateObj.commonResources[r] = fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json')
     });
-    templateObj.commonResources.gameProps = fs.readFileSync('workspace/project/gameProps.json');
+    templateObj.commonResources.gameProps = fs.readFileSync('workspace/'+opts.projectName+'/gameProps.json');
 
-    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/project/resources/script/gameObject');
-    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/project/resources/script/scene');
-    sourceMain.addTemplate('resources/generatorResources/templates/main.ejs',templateObj);
+    templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/gameObject','utf8');
+    templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/scene','utf8');
+    templateObj.embeddedResources = {};
+
+    opts.embedResources && ['spriteSheet', 'font', 'sound'].forEach(function (r) {
+        var files = fs.readDirSync('workspace/' + opts.projectName + '/resources/' + r, 'base64');
+        files.forEach(function (file) {
+            if (file.name != 'map.json') {
+                templateObj.embeddedResources['resources/' + r + '/' + file.name] =
+                    file.content
+            }
+        });
+    });
+    return templateObj;
 };
 
-var initFolderStructure = function(sourceMain){
-    fs.deleteFolderSync('workspace/project/out');
-
-    ['spriteSheet','font'].forEach(function(r){
-        fs.createFolderSync('workspace/project/out/resources/'+r);
-        fs.copyFolderSync('workspace/project/resources/'+r,'workspace/project/out/resources/'+r);
-        fs.deleteFileSync('workspace/project/out/resources/'+r+'/map.json');
-    });
-
-    fs.writeFileSync('workspace/project/out/main.js',sourceMain.get());
-    fs.writeFileSync('workspace/project/out/index.html',fs.readFileSync('resources/generatorResources/static/index.html'));
-
-};
-
-var addCommonBehaviour = function(sourceMain){
-    var gameObjects = JSON.parse(fs.readFileSync('workspace/project/resources/gameObject/map.json'));
+var createCommonBehaviourParams = function(opts){
+    var gameObjects = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/gameObject/map.json'));
     var fileNames = {};
     gameObjects.forEach(function(go){
         go.commonBehaviour.forEach(function(cb){
             fileNames[cb.name] = 1;
         });
     });
+    var res = [];
     Object.keys(fileNames).forEach(function(name){
-        var res = 've.commonBehaviour.'+name+' = '+fs.readFileSync('workspace/project/resources/script/commonBehaviour/'+name+'.js');
-        sourceMain.add(res);
+        res.push({
+            name:name,
+            content: fs.readFileSync('workspace/'+opts.projectName+'/resources/script/commonBehaviour/'+name+'.js')
+        });
     });
+    return res;
 };
 
-var unUsed = function(){
+
+var processGameResourcesFiles = function(sourceMain,opts){
+    fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
+    fs.createFolderSync('workspace/'+opts.projectName+'/out/');
+
+    !opts.embedResources && ['spriteSheet','font','sound'].forEach(function(r){
+        fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
+        fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
+        fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
+    });
+
+    var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
+
+    if (opts.embedScript) {
+        indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
+    } else {
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/main.js',sourceMain.get());
+        indexHtml = indexHtml.replace('{{script}}','<script src="main.js"></script>');
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
+    }
+
+};
+
+
+var unused = function(){
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()
@@ -122,15 +167,33 @@ var unUsed = function(){
     //minifier.minify('project/out/main.js');
 };
 
+var prepareGeneratorParams = function(opts){
+    var resourcesOpts = createResourcesParams(opts);
+    return  {
+        resourceNames:resourcesController.RESOURCE_NAMES,
+        opts: opts,
+        commonResources: resourcesOpts.commonResources,
+        specialResources: resourcesOpts.specialResources,
+        embeddedResources: resourcesOpts.embeddedResources,
+        commonBehaviour:createCommonBehaviourParams(opts)
+    };
+};
+
 module.exports.generate = function(opts,callback){
 
+    console.log('generate options:',opts);
+
     var sourceMain = new Source();
-    addEnvVariables(sourceMain);
-    addStaticFiles(sourceMain);
-    addCommonBehaviour(sourceMain);
-    if (opts.debug) addDebug(sourceMain);
-    addGameResources(sourceMain);
-    initFolderStructure(sourceMain);
+    sourceMain.addCommonTemplates('resources/generatorResources/lib');
+    sourceMain.addCommonJsModules(
+        'resources/generatorResources/modules',
+        prepareGeneratorParams(opts)
+    );
+    sourceMain.add("require('index');"); // add entry point
+
+    processGameResourcesFiles(sourceMain,opts);
 
     callback({});
 };
+
+module.exports.Source = Source;

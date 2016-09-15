@@ -6,7 +6,7 @@
                 {{i18n.width}}
             </div>
             <div class="cell">
-                <input ng-model="editData.gameProps.width" type="number" min="1" max="20000" ng-change="gameProps.$valid && saveGameProps()"/>
+                <input class="narrow" ng-model="editData.gameProps.width" type="number" min="1" max="20000" ng-change="gameProps.$valid && saveGameProps()"/>
             </div>
         </div>
         <div class="row">
@@ -14,8 +14,22 @@
                 {{i18n.height}}
             </div>
             <div class="cell">
-                <input ng-model="editData.gameProps.height" type="number" min="1" max="20000" ng-change="gameProps.$valid && saveGameProps()"/>
+                <input class="narrow" ng-model="editData.gameProps.height" type="number" min="1" max="20000" ng-change="gameProps.$valid && saveGameProps()"/>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="cell">
+                {{i18n.scaleStrategy}}
+            </div>
+            <div class="cell">
+                <select class="narrow" ng-model="editData.gameProps.scaleStrategy" ng-change="saveGameProps()">
+                    <option value="{{value}}" ng-repeat="(key,value) in scales">{{key}}</option>
+                </select>
+            </div>
+        </div>
+
+
     </form>
 </div>

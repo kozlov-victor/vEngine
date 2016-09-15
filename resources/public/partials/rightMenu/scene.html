@@ -1,0 +1,44 @@
+<div
+        ng-controller="sceneCtrl"
+        ng-if="editData.currSceneInEdit">
+    <h3 class="centerText">
+        {{i18n.scene}} : {{
+        editData.currSceneInEdit.name
+        }}
+    </h3>
+    <div class="table width100">
+
+        <div class="row">
+            <div class="cell">
+                <label for="editData.currSceneInEdit.useBG">{{i18n.useBG}}</label>
+            </div>
+            <div class="cell">
+                <input type="checkbox"
+                       id="editData.currSceneInEdit.useBG"
+                       ng-true-value="1" ng-false-value="0"
+                       ng-model="editData.currSceneInEdit.useBG"
+                       ng-change="createOrEditScene()"/>
+            </div>
+        </div>
+
+        <div class="row" ng-show="editData.currSceneInEdit.useBG">
+            <div class="cell">
+                {{i18n.colorBG}}
+            </div>
+            <div class="cell">
+                <div
+                        ng-click="openColorPickerForScene()"
+                        ng-style="
+                        {
+                            width: '20px',
+                            height:'20px',
+                            backgroundColor:utils.rgbToHex(editData.currSceneInEdit.colorBG)
+                        }
+                        "
+                        ></div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

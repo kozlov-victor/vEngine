@@ -1,0 +1,190 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "6100_9915_72",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "helicopter",
+                "width": 180,
+                "height": 95,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [
+                    "2977_2535_74"
+                ],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 7,
+                "posY": 9,
+                "protoId": "6612_6223_73",
+                "id": "2294_3548_79",
+                "angle": 0
+            },
+            {
+                "spriteSheetId": "0015_4316_59",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "rocket",
+                "width": 39,
+                "height": 68,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": [],
+                        "description": "",
+                        "id": "8291_8868_82",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 40,
+                "posY": 217,
+                "angle": 0,
+                "protoId": "9702_0577_60",
+                "id": "6903_4411_43"
+            },
+            {
+                "spriteSheetId": "0015_4316_59",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "rocket",
+                "width": 39,
+                "height": 68,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": [],
+                        "description": "",
+                        "id": "8291_8868_82",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 100,
+                "posY": 217,
+                "angle": 0,
+                "protoId": "9702_0577_60",
+                "id": "6695_0703_52"
+            },
+            {
+                "spriteSheetId": "0015_4316_59",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "rocket",
+                "width": 39,
+                "height": 68,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": [],
+                        "description": "",
+                        "id": "8291_8868_82",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 160,
+                "posY": 217,
+                "angle": 0,
+                "protoId": "9702_0577_60",
+                "id": "0433_2968_53"
+            },
+            {
+                "spriteSheetId": "0015_4316_59",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "rocket",
+                "width": 39,
+                "height": 68,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": [],
+                        "description": "",
+                        "id": "8291_8868_82",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "posX": 220,
+                "posY": 217,
+                "angle": 0,
+                "protoId": "9702_0577_60",
+                "id": "9625_5734_54"
+            },
+            {
+                "spriteSheetId": "0015_4316_59",
+                "currFrameIndex": 0,
+                "_sprPosX": 0,
+                "_sprPosY": 0,
+                "name": "rocket",
+                "width": 39,
+                "height": 68,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "velX": 0,
+                "velY": 0,
+                "frameAnimationIds": [],
+                "rigid": 0,
+                "groupName": "",
+                "posX": 280,
+                "posY": 217,
+                "angle": 0,
+                "protoId": "9702_0577_60",
+                "id": "3682_8055_65"
+            }
+        ],
+        "id": "7822_6900_77"
+    },
+    {
+        "name": "l",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "height": 29,
+                "text": "ПОБЕДА!!!!!!",
+                "width": 180,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "posX": 106,
+                "posY": 123,
+                "name": "textField3",
+                "protoId": null,
+                "id": "4530_8265_90",
+                "fontId": "6991_3497_4"
+            }
+        ],
+        "id": "3617_1449_88"
+    }
+]

@@ -4,6 +4,8 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
+        var models = require('models'), bundle = require('bundle').instance();
+
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
             if (!spriteSheet) return;
@@ -17,8 +19,7 @@ window.app
             return {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
-                // todo project name!
-                backgroundImage:      gameObj._spriteSheet && 'url('+'project/'+gameObj._spriteSheet.resourcePath+')',
+                backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
                 backgroundRepeat:     'no-repeat'
@@ -96,6 +97,63 @@ window.app
             }
 
             return new Blob([ia], {type:mimeString});
+        };
+
+        this.capitalize = function(s){
+            return s.substr(0,1).toUpperCase() +
+                s.substr(1);
+        };
+
+        this.deCapitalize = function(s){
+            return s.substr(0,1).toLowerCase() +
+                s.substr(1);
+        };
+
+        this.eachObjectOnScene = function(callBack){
+            editData.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(go){
+                        callBack(go);
+                    });
+                });
+            });
+        };
+
+        this.createAceCompleter = function(){
+            var res = [];
+            var go = new models.GameObject();
+            go.toJSON_Array().forEach(function(item){
+                res.push({
+                    name:item.key,
+                    value:item.key,
+                    score:1,
+                    meta:'gameObject property'
+                });
+            });
+            return res;
+        };
+
+        this.generateBuildUrl = function(opts) {
+            var url = '/generate?r='+Math.random();
+            ['debug','embedResources','embedScript'].forEach(function(key){
+                if (opts[key]) url+='&'+key+'=1';
+            });
+            url+='&projectName='+editData.projectName;
+            return url;
+        };
+
+        this.hexToRgb = function(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [
+                parseInt(result[1], 16)||0,
+                parseInt(result[2], 16)||0,
+                parseInt(result[3], 16)||0
+            ] : [0,0,0];
+        };
+
+        this.rgbToHex = function(col) {
+            var r = +col[0],g=+col[1],b=+col[2];
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
         };
 
         return this;

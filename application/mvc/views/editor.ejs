@@ -7,6 +7,8 @@
 <script src="/js/lib/ace/src-min/ext-language_tools.js" type="text/javascript"></script>
 <script src="/js/lib/jquery.js" type="text/javascript"></script>
 <script>
+
+
     !function(){
 
         var tid = null;
@@ -25,39 +27,45 @@
         }();
 
         var setUpEditor = function(){
-            var langTools = ace.require("ace/ext/language_tools");
             editor = ace.edit("editor");
-            window.editor = editor;
+            window.e = editor;
             editor.session.setMode("ace/mode/javascript");
             editor.setOptions({
                 enableBasicAutocompletion: true,
                 enableSnippets: true,
                 enableLiveAutocompletion: true
             });
-            var appCompleter = {
-                getCompletions: function(editor, session, pos, prefix, callback) {
-                    callback(null,{name: 'name11', value: 'value11', score: 1, meta: "meta11"});
-                }
-            };
-            langTools.addCompleter(appCompleter);
             editor.$blockScrolling = Infinity;
         };
 
+        var setAutocomplete = function(data) {
+            var langTools = ace.require("ace/ext/language_tools");
+            var appCompleter = {
+                getCompletions: function(editor, session, pos, prefix, callback) {
+                    callback(null, data);
+                }
+            };
+            langTools.addCompleter(appCompleter);
+        };
+
         var setUpMessageDigest = function(){
-            var editorDiv = document.getElementById("editor");
             window.top.postMessage({command:'getCode',name:locationParams.name,path:locationParams.path},'*');
             name = locationParams.name;
-            window.addEventListener('message',function(m){
-                if (!(m.data && m.data.code)) return;
-                editor.setValue(m.data.code,1);
-                editor.session.getUndoManager().reset();
-                editor.resize();
-            });
+            var $editor = $('#editor');
+
             window.addEventListener('message',function(m){
                 if (!(m.data && m.data.command)) return;
                 switch (m.data.command) {
                     case 'resizeWindow':
-                        $('#editor').css({height: m.data.height+'px'})
+                        $editor.css({height: m.data.height+'px'});
+                        editor.resize();
+                        break;
+                    case 'setCode':
+                        editor.setValue(m.data.code,1);
+                        editor.session.getUndoManager().reset();
+                        editor.resize();
+                        setAutocomplete(m.data.completer);
+
                 }
             });
             editor.on('change', function() {

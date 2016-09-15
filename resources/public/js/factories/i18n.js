@@ -13,9 +13,12 @@ window.app
                 addSpriteSheet:'add sprite sheet',
                 loadImage:'load image',
                 gameObjects:'game objects',
+                gameObject:'gameObject',
                 create:'create',
                 edit:'edit',
+                close:'close',
                 name:'name',
+                scaleStrategy:'scale strategy',
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',
@@ -46,6 +49,8 @@ window.app
                 from:'from',
                 to:'to',
                 fonts:'fonts',
+                font:'font',
+                text:'text',
                 commonBehaviour:'common behaviour',
                 groupName:'group name',
                 selectFont:'select font',
@@ -54,7 +59,19 @@ window.app
                 userInterface:'user interface',
                 textField:'text field',
                 noDataToEdit:'no data to edit provided',
-                rigid:'rigid'
+                rigid:'rigid',
+                sounds:'sounds',
+                play:'play',
+                loadSound:'load sound',
+                build:'build',
+                particleSystems:'particle systems',
+                particleSystem:'particle system',
+                preview:'preview',
+                explorer:'explorer',
+                description: 'description',
+                colorBG:'scene background color',
+                useBG:'use background color',
+                angle:'angle'
             }
         };
 

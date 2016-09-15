@@ -1,685 +1,16 @@
-(function() {
-
-    window.Class = function() {};
-
-    Class.extend = function(props, staticProps) {
-
-        var mixins = [];
-
-        if (arguments[0].slice) {
-            mixins = arguments[0];
-            props = arguments[1];
-            staticProps = arguments[2];
-        }
-
-        function Instance() {
-            this._init && this._init.apply(this, arguments);
-            this.construct && this.construct();
-        }
-
-        Instance.prototype = Class.inherit(this.prototype);
-
-        Instance.prototype.constructor = Instance;
-
-        Instance.extend = Class.extend;
-
-        copyWrappedProps(staticProps, Instance, this);
-
-        for (var i = 0; i < mixins.length; i++) {
-            copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
-        }
-        copyWrappedProps(props, Instance.prototype, this.prototype);
-
-        return Instance;
-    };
-
-    var fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
-
-    function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
-        if (!props) return;
-
-        for (var name in props) {
-            if (typeof props[name] == "function"
-                && typeof parentPropsObj[name] == "function"
-                && fnTest.test(props[name])) {
-                // скопировать, завернув в обёртку
-                targetPropsObj[name] = wrap(props[name], parentPropsObj[name]);
-            } else {
-                targetPropsObj[name] = props[name];
-            }
-        }
-
-    }
-
-    function wrap(method, parentMethod) {
-        return function() {
-            var backup = this._super;
-
-            this._super = parentMethod;
-
-            try {
-                return method.apply(this, arguments);
-            } finally {
-                this._super = backup;
-            }
-        }
-    }
-    
-    Class.inherit = Object.create || function(proto) {
-            function F() {}
-            F.prototype = proto;
-            return new F;
-        };
-})();
 
 
-
-
-
-(function(){
-
-    ve_local.Bundle = function(data){
-
-        this.spriteSheetList = new ve.collections.List();
-        this.gameObjectList = new ve.collections.List();
-        this.frameAnimationList = new ve.collections.List();
-        this.layerList = new ve.collections.List();
-        this.sceneList = new ve.collections.List();
-        this.layerList = new ve.collections.List();
-        this.fontList = new ve.collections.List();
-        this.gameProps = {};
-
-        var self = this;
-
-        var toDataSource = function(ResourceClass,dataList,resourceList){
-            dataList.forEach(function(item){
-                resourceList.add(new ResourceClass(item));
-            });
-        };
-
-
-        this.prepare = function(){
-            ve_local.RESOURCE_NAMES.forEach(function(itm){
-                toDataSource(ve.models[ve.utils.capitalize(itm)],data[itm],self[itm+'List']);
-            });
-            self.gameProps = data.gameProps;
-            data = null;
-        };
-
-        var applyIndividualBehaviour = function(model){
-            var script = ve_local.scripts[model.type] && ve_local.scripts[model.type][model.name+'.js'];
-            if (script) {
-                var BehaviourClass = script();
-                model._behaviour = new BehaviourClass();
-                model._behaviour.toJSON_Array().forEach(function(itm){
-                    model[itm.key]=itm.value;
-                });
-                model._behaviour.onCreate.apply(model);
-                model.__updateIndividualBehaviour__ = function(deltaTime){
-                    model._behaviour.onUpdate.apply(model,[deltaTime]);
-                }
-            } else {
-                model.__updateIndividualBehaviour__ = noop;
-            }
-
-        };
-
-        var applyCommonBehaviour = function(model){
-            var cbList = [];
-            if (!model._commonBehaviour) {
-                model.__updateCommonBehaviour__ = noop;
-                return;
-            }
-            model._commonBehaviour.forEach(function(cb){
-                var instance = new ve.commonBehaviour[cb.name]();
-                instance.initialize(model,cb.parameters);
-                instance.onCreate();
-                cbList.push(instance);
-            });
-            model.__updateCommonBehaviour__ = function(){
-                cbList.forEach(function(cb){
-                    cb.onUpdate();
-                });
-            }
-        };
-        
-        this.prepareGameObjectScripts = function(){
-            self.sceneList.forEach(function(scene){
-                scene.__onResourcesReady();
-                applyIndividualBehaviour(scene);
-                scene._layers.forEach(function(layer){
-                    layer._gameObjects.forEach(function(gameObject){
-                        applyCommonBehaviour(gameObject);
-                        applyIndividualBehaviour(gameObject);
-                    });
-                });
-            });
-        };
-
-    };
-
-})();
-
-(function(){
-
-    var collections = {};
-    collections.List = function () {
-        var self = this;
-        this.rs = [];
-        this.add = function (r) {
-            self.rs.push(r);
-        };
-        this.addAll = function (list) {
-            list.forEach(function(itm){
-                self.rs.push(itm);
-            });
-        };
-        this.get = function(index){
-            return self.rs[index];
-        };
-        this.isEmpty = function(){
-            return self.size()==0;
-        };
-        this.size = function () {
-            return self.rs.length;
-        };
-        this.getAll = function () {
-            return self.rs;
-        };
-        this.clear = function(){
-            self.rs = [];
-        };
-        this.forEach = function(callback){
-            for (var i = 0,l=this.rs.length;i<l;i++){
-                callback(self.rs[i],i);
-            }
-        };
-        this.forEachReversed = function(callback){
-            for (var i = this.rs.length-1;i>=0;i--){
-                callback(self.rs[i],i);
-            }
-        };
-        this.some = function(callback){
-            for (var i = 0,l=this.rs.length;i<l;i++){
-                var res = callback(self.rs[i],i);
-                if (res) return true;
-            }
-            return false;
-        };
-        this.someReversed = function(callback){
-            for (var i = this.rs.length-1;i>=0;i--){
-                var res = callback(self.rs[i],i);
-                if (res) break;
-            }
-        };
-        this.indexOf = function(obj){
-            var i = 0;
-            var success = false;
-            self.rs.some(function(item){
-                var isCandidate = true;
-                Object.keys(obj).some(function(conditionKey){
-                    if (obj[conditionKey]!=item[conditionKey]) {
-                        isCandidate = false;
-                        return true;
-                    }
-                });
-                if (isCandidate) {
-                    success = true;
-                    return true;
-                }
-                i++;
-            });
-            return success?i:-1;
-        };
-        this.remove = function (obj){
-            if (!obj) return;
-            var index = self.indexOf(obj);
-            if (index>-1) self.rs.splice(index,1);
-        };
-        this.find = function (obj){
-            return self.rs[self.indexOf(obj)];
-        }
-    };
-
-    collections.Set = function(){
-        var self = this;
-        this.rs = {};
-        this.add = function(itm){
-            self.rs[itm.id]=itm;
-        };
-        this.get = function(itm){
-            return self.rs[itm.id];
-        };
-        this.has = function(key){
-            return key in self.rs;
-        };
-        this.combine = function(another){
-            Object.keys(another.rs).forEach(function(key){
-                self.add(another.rs[key]);
-            });
-        };
-        this.asArray = function(){
-            var res = [];
-            Object.keys(self.rs).forEach(function(key){
-                res.push(self.rs[key]);
-            });
-            return res;
-        }
-    };
-    ve.collections = collections;
-})();
-
-(function(){
-
-    var models = {};
-    var isPropNotFit = function(el,key){
-        if (!key) return true;
-        if (key.indexOf('$$')==0) return true;
-        if (el[key] && key.indexOf('_')==0) return true;
-        if (el[key] && el[key].call) return true;
-        if (typeof el[key] == 'string') return false;
-        if (typeof el[key] == 'number') return false;
-        if (!el[key]) return true;
-    };
-
-    models.BaseModel = Class.extend({
-        id:null,
-        protoId:null,
-        name:'',
-        toJSON: function(){
-            var res = {};
-            for (var key in this) {
-                if (isPropNotFit(this,key)) {
-                    continue;
-                }
-                res[key]=this[key];
-            }
-            return res;
-        },
-        toJSON_Array: function(){
-            var res = [];
-            for (var key in this) {
-                if (isPropNotFit(this,key)) continue;
-                res.push({key:key,value:this[key]});
-            }
-            return res;
-        },
-        fromJSON:function(jsonObj){
-            var self = this;
-            Object.keys(jsonObj).forEach(function(key){
-                if (key in self) {
-                    self[key] = jsonObj[key];
-                    self[key] = +self[key]||self[key];
-                }
-            });
-        },
-        clone: function(){
-            return new this.constructor(this.toJSON());
-        },
-        on: function(eventName,callBack){
-            var self = this;
-            self.__events__[eventName] = self.__events__[eventName] || [];
-            self.__events__[eventName].push(callBack);
-        },
-        trigger: function(eventName,data){
-            var self = this;
-            var es = self.__events__[eventName];
-            if (!es) return;
-            es.forEach(function(e){
-                e(data);
-            });
-        },
-        _init:function(){
-            this.__events__ = {};
-            arguments && arguments[0] && this.fromJSON(arguments[0]);
-        }
-    });
-
-    models.Behaviour = models.BaseModel.extend({});
-
-    var Resource = models.BaseModel.extend({
-        resourcePath:''
-    });
-
-    models.SpriteSheet = Resource.extend({
-        type:'spriteSheet',
-        width:0,
-        height:0,
-        numOfFramesH:1,
-        numOfFramesV:1,
-        _frameWidth:0,
-        _frameHeight:0,
-        _numOfFrames:0,
-        _img: null,
-        getFramePosX: function(frameIndex){
-            return (frameIndex%this.numOfFramesH)*this._frameWidth;
-        },
-        getFramePosY: function(frameIndex){
-            return ~~(frameIndex/this.numOfFramesH)*this._frameHeight;
-        },
-        calcFrameSize: function(){
-            if (!(this.numOfFramesH && this.numOfFramesV)) return;
-            this._frameWidth = this.width/this.numOfFramesH;
-            this._frameHeight = this.height/this.numOfFramesV;
-            this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
-        },
-        construct: function(){
-            this.calcFrameSize();
-        }
-    });
-
-    models.BaseGameObject = models.BaseModel.extend({
-        type:'baseGameObject',
-        groupName:'',
-        _spriteSheet:null,
-        posX:0,
-        posY:0,
-        width:0,
-        height:0,
-        _layer:null,
-        getRect: function(){
-            return {x:this.posX,y:this.posY,width:this.width,height:this.height};
-        },
-        kill: function(){
-            this._layer._gameObjects.remove({id:this.id});
-            this._layer._scene._allGameObjects.remove({id:this.id});
-        },
-        getScene: function(){
-            return this._layer._scene;
-        },
-        update: function(){},
-        render: function(){
-
-        }
-    });
-
-    models.GameObject = models.BaseGameObject.extend({
-        type:'gameObject',
-        spriteSheetId:null,
-        _behaviour:null,
-        commonBehaviour:[],
-        _commonBehaviour:null,
-        velX:0,
-        velY:0,
-        currFrameIndex:0,
-        _sprPosX:0,
-        _sprPosY:0,
-        _frameAnimations: null,
-        frameAnimationIds:[],
-        _currFrameAnimation:null,
-        rigid:true,
-        construct: function(){
-            var self = this;
-            this._frameAnimations = new ve.collections.List();
-            this.spriteSheetId && (this._spriteSheet = ve_local.bundle.spriteSheetList.find({id: this.spriteSheetId}));
-            self.setFrameIndex(self.currFrameIndex);
-            self._frameAnimations.clear();
-            this.frameAnimationIds.forEach(function(id){
-                var a = ve_local.bundle.frameAnimationList.find({id: id});
-                a = a.clone(ve.models.FrameAnimation);
-                a._gameObject = self;
-                self._frameAnimations.add(a);
-            });
-            self._commonBehaviour = new ve.collections.List();
-            this.commonBehaviour.forEach(function(cb){
-                self._commonBehaviour.add(new ve.models.CommonBehaviour(cb));
-            });
-        },
-        getFrAnimation: function(animationName){
-            return this._frameAnimations.find({name: animationName});
-        },
-        setFrameIndex: function(index){
-            this.currFrameIndex = index;
-            this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
-            this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
-        },
-        update: function(time,delta) {
-            this._currFrameAnimation && this._currFrameAnimation.update(time);
-            var deltaX = this.velX * delta / 1000;
-            var deltaY = this.velY * delta / 1000;
-            var posX = this.posX+deltaX;
-            var posY = this.posY+deltaY;
-            ve_local.collider.check(this,posX,posY);
-        },
-        stopFrAnimations: function(){
-            this._currFrameAnimation && this._currFrameAnimation.stop();
-        },
-        render: function(renderer){
-            renderer.drawImage(
-                this._spriteSheet._img,
-                this._sprPosX,
-                this._sprPosY,
-                this._spriteSheet._frameWidth,
-                this._spriteSheet._frameHeight,
-                this.posX,
-                this.posY,
-                this.width,
-                this.height
-            );
-        }
-    });
-
-    models.FrameAnimation = models.BaseModel.extend({
-        type:'frameAnimation',
-        name:'',
-        frames:[],
-        duration:1000,
-        _gameObject:null,
-        _startTime:null,
-        _timeForOneFrame:0,
-        construct: function(){
-            this._timeForOneFrame = ~~(this.duration / this.frames.length);
-        },
-        play: function(){
-            this._gameObject._currFrameAnimation = this;
-        },
-        stop:function(){
-            this._gameObject._currFrameAnimation = null;
-            this._startTime = null;
-        },
-        update: function(time){
-            if (!this._startTime) this._startTime = time;
-            var delta = (time - this._startTime)%this.duration;
-            var ind = ~~((this.frames.length)*delta/this.duration);
-            var lastFrIndex = this._gameObject.currFrameIndex;
-            if (lastFrIndex!=this.frames[ind]) {
-                this._gameObject.setFrameIndex(this.frames[ind]);
-            }
-        }
-    });
-
-    models.Layer = models.BaseModel.extend({
-        type:'layer',
-        gameObjectProps:[],
-        _gameObjects:null,
-        _scene:null,
-        construct: function() {
-            var self = this;
-            self._gameObjects = new ve.collections.List();
-            this.gameObjectProps.forEach(function(prop){
-                var objCloned;
-                switch (prop.subType) {
-                    case 'textField':
-                        objCloned = new ve.models.TextField(prop);
-                        break;
-                    default:
-                        var obj = ve_local.bundle.gameObjectList.find({id: prop.protoId});
-                        objCloned = obj.clone();
-                        objCloned.fromJSON(prop);
-                        break;
-                }
-                objCloned._layer = self;
-                self._gameObjects.add(objCloned);
-            });
-        },
-        getAllSpriteSheets:function() {
-            var dataSet = new ve.collections.Set();
-            this._gameObjects.forEach(function(obj){
-                obj._spriteSheet && dataSet.add(obj._spriteSheet);
-            });
-            return dataSet;
-        }
-    });
-
-    models.Scene = models.BaseModel.extend({
-        type:'scene',
-        layerProps:[],
-        _layers:null,
-        _allGameObjects:null,
-        __onResourcesReady: function(){
-            console.log('resources ready');
-            var self = this;
-            self._allGameObjects = new ve.collections.List();
-            self._layers.forEach(function(l){
-                self._allGameObjects.addAll(l._gameObjects);
-            });
-        },
-        construct: function(){
-            var self = this;
-            self._layers = new ve.collections.List();
-            this.layerProps.forEach(function(prop){
-                var l = ve_local.bundle.layerList.find({id: prop.protoId});
-                var lCloned = l.clone(ve.models.Layer);
-                lCloned.fromJSON(prop);
-                lCloned._scene = self;
-                self._layers.add(lCloned);
-            });
-        },
-        getAllSpriteSheets:function() {
-            var dataSet = new ve.collections.Set();
-            this._layers.forEach(function(l){
-                dataSet.combine(l.getAllSpriteSheets());
-            });
-            return dataSet;
-        },
-        findGameObject: function(name){
-            return this._allGameObjects.find({name:name});
-        },
-        getAllGameObjects:function(){
-            return this._allGameObjects;
-        }
-    });
-
-    models.Font = models.BaseModel.extend({
-        type:'font',
-        fontColor:'black',
-        fontSize:12,
-        fontFamily:'Monospace',
-        resourcePath:'',
-        fontContext:null
-    });
-
-    models.TextField = models.BaseGameObject.extend({
-        type:'userInterface',
-        subType:'textField',
-        _chars:null,
-        text:'',
-        _font:null,
-        rigid:false,
-        setText: function(text) {
-            this._chars = [];
-            this.text = text;
-            this.width = 0;
-            for (var i=0,max=text.length;i<max;i++) {
-                this._chars.push(text[i]);
-                var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
-                this.width+=currSymbolInFont.width;
-            }
-        },
-        clone:function(){
-            return this._super();
-        },
-        construct: function(){
-            this.rigid = false;
-            this._font = ve_local.bundle.fontList.find({name:'default'});
-            this.setText(this.text);
-            this.height = this._font.fontContext.symbols[' '].height;
-            this._spriteSheet = new ve.models.SpriteSheet({resourcePath:this._font.resourcePath});
-        },
-        render: function(renderer){
-            var posX = this.posX;
-            var posY = this.posY;
-            var self = this;
-            this._chars.forEach(function(ch){
-                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
-                renderer.drawImage(
-                    self._spriteSheet._img,
-                    charInCtx.x,
-                    charInCtx.y,
-                    charInCtx.width,
-                    charInCtx.height,
-                    posX,
-                    posY,
-                    charInCtx.width,
-                    charInCtx.height
-                );
-                posX+=charInCtx.width;
-            });
-        }
-    },
-    {
-        _cnt:0
-    });
-
-    models.CommonBehaviour = models.BaseModel.extend({
-        type:'commonBehaviour',
-        name:'',
-        description:'',
-        parameters:[],
-        construct: function(){
-
-        }
-    });
-
-
-    ve.models = models;
-
-})();
-(function(){
-    ve.utils = {};
-    var ns = ve.utils;
-    ns.Queue = function(){
-        var self = this;
-        this.size = function(){
-            return tasksTotal;
-        };
-        this.onResolved = null;
-        var tasksTotal = 0;
-        var tasksResolved = 0;
-        this.addTask = function() {
-            tasksTotal++;
-        };
-        this.resolveTask = function(){
-            tasksResolved++;
-            if (tasksTotal==tasksResolved) {
-                if (self.onResolved) self.onResolved();
-            }
-        };
-    };
-    ns.merge = function(obj1,obj2){
-        Object.keys(obj2).forEach(function(key){
-            obj1[key]=obj2[key];
-        });
-    };
-    ns.clone = function(obj){
-        return Object.create(obj);
-    };
-    ns.capitalize = function(s){
-        return s.substr(0,1).toUpperCase() +
-            s.substr(1);
-    };
-})();
 window.app.
-    controller('animationCtrl', function (
+    controller('buildCtrl', function (
         $scope,
         $http,
         $sce,
         editData,
+        resourceDao,
         uiHelper,
         i18n,
-        utils,
-        resourceDao
-    ) {
+        utils) {
+
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
@@ -687,76 +18,79 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
 
-        var isStopped = false;
+        s.build = function(){
+            $http({
+                url: utils.generateBuildUrl(editData.buildOpts),
+                method: "GET"
+            }).
+            success(function (resp) {
+                s.link = '/'+ editData.projectName+'/out'
+            });
+        };
+
+        (function(){
+
+        })();
+
+    });
 
 
-        s.toArray = function(expr) {
-            try {
-              return JSON.parse('['+expr+']');
-            } catch(e){
-                return [];
+window.app.
+    controller('colorPickerCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+        var model;
+
+        s.rgbChanged = function(){
+            s.col.hex = utils.rgbToHex(s.col.rgb);
+        };
+
+        s.hexChanged = function(){
+            s.col.rgb = utils.hexToRgb(s.col.hex);
+        };
+        
+        s.applyColor = function(){
+            var dialogState = uiHelper.getDialogState();
+            uiHelper.closeDialog();
+            dialogState.opObject[dialogState.opName] = [
+                +s.col.rgb[0]||0,
+                +s.col.rgb[1]||0,
+                +s.col.rgb[2]||0
+            ];
+            if (dialogState && dialogState.opCallBack) {
+                dialogState.opCallBack({
+                    hex:s.col.hex||'#000000',
+                    rgb:[
+                        +s.col.rgb[0]||0,
+                        +s.col.rgb[1]||0,
+                        +s.col.rgb[2]||0
+                    ]
+                });
+                dialogState.opCallBack = null;
             }
         };
 
-        s.createOrEditFrAnimation = function(){
-            s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
-            resourceDao.createOrEditResource(
-                s.editData.currFrAnimationInEdit,
-                ve.models.FrameAnimation,
-                ve_local.bundle.frameAnimationList,
-                function(res){
-                    if (res.type=='create') {
-                        s.editData.currGameObjectInEdit.frameAnimationIds.push(res.r.id);
-                        s.editData.currGameObjectInEdit.constructor();
-                        resourceDao.createOrEditResource(
-                            s.editData.currGameObjectInEdit,
-                            ve.models.GameObject,
-                            ve_local.bundle.gameObjectList,
-                            null,true
-                        );
-                    } else {
-                        s.editData.currGameObjectInEdit.constructor();
-                    }
-                }
-            );
-        };
-
-        s.allIndexes = function(){
-            var res = utils.getArray(s.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
-            return res.join(',')
-        };
-
-        s.playAnimation = function(){
-            try {
-                s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
-            } catch(e){}
-            s.editData.currFrAnimationInEdit.constructor();
-            setTimeout(function(){
-                s.editData.currFrAnimationInEdit.play();
-                s.editData.currFrAnimationInEdit.update(new Date().getTime());
-                var i = s.editData.currGameObjectInEdit.currFrameIndex;
-                s.editData.currGameObjectInEdit.setFrameIndex(i);
-                s.$apply();
-                if (isStopped) {
-                    isStopped = false;
-                    return;
-                }
-                if (uiHelper.dialogName=='frmCreateAnimation') setTimeout(s.playAnimation,50);
-            },0);
-        };
-
-        s.stopAnimation = function(){
-            s.editData.currFrAnimationInEdit.stop();
-            isStopped = true;
-        };
-
-        s.setRange = function(from,to) {
-            if (isNaN(from) || isNaN(to)) return;
-            s.editData.currFrAnimationInEdit.frames = [];
-            for (var i=from;i<=to;i++) {
-                s.editData.currFrAnimationInEdit.frames.push(i);
-            }
-        }
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            model = dialogState.opObject[dialogState.opName];
+            s.col = {};
+            s.col.hex = utils.rgbToHex(model);
+            s.col.rgb = model;
+        })();
 
     });
 
@@ -777,6 +111,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
@@ -787,11 +122,35 @@ window.app.
                         obj.id = resp.r.id;
                         s.editData.currGameObjectInEdit._commonBehaviour.add(obj);
                         s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
+                        var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        dialogStateObj.commonBehaviour.push(obj.toJSON());
                     }
                     uiHelper.closeDialog();
                 }
             );
-        }
+        };
+
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
+                var obj =
+                    editData.commonBehaviourList.find({
+                        name: dialogState.opObject
+                    });
+                if (obj) {
+                    var cloned = obj.clone();
+                    s.editData.currCommonBehaviourInEdit.parameters = cloned.parameters;
+                    s.editData.currCommonBehaviourInEdit.description = cloned.description;
+                }
+            } else if (dialogState.opName=='edit'){
+                s.editData.currCommonBehaviourInEdit = dialogState.opObject.clone();
+            }
+        })();
+
+
 
     });
 
@@ -814,6 +173,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
+        var models = require('models'), bundle = require('bundle').instance();
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -835,9 +195,7 @@ window.app.
                 var arrFromToCurr = arrFromTo[k];
                 for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
                     var currentChar = String.fromCharCode(i);
-                    //if (currentChar == '\\' || currentChar == '\'') {
-                    //    currentChar = '\\' + currentChar
-                    //}
+
                     ctx = cnv.getContext('2d');
                     var textWidth = ctx.measureText(currentChar).width;
                     if (textWidth == 0) continue;
@@ -875,24 +233,169 @@ window.app.
             return cnv.toDataURL();
         };
 
-        s.createOrEditFont = function(font){
+        var updateObjectFonts = function(){
+            utils.eachObjectOnScene(function(go){
+                if (go.subType && go.subType=='textField') {
+                    var font =
+                        editData.fontList.find({id:go.fontId}) ||
+                        editData.fontList.find({name:'default'});
+                    font.resourcePath+='?'+Math.random();
+                    go.setFont(font);
+                }
+            });
+        };
+
+        s.openColorPickerForFont = function(){
+            s.showDialog(
+                'colorPicker','fontColor',
+                editData.currFontInEdit
+            );
+        };
+
+        s.createOrEditFont = function(){
             var font = s.editData.currFontInEdit;
             var strFont = font.fontSize +'px'+' '+font.fontFamily;
             font.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
-            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,font.fontColor));
+            font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,utils.rgbToHex(font.fontColor)));
             resourceDao.createOrEditResource(
                 font,
-                ve.models.Font,
-                ve_local.bundle.fontList);
+                models.Font,
+                bundle.fontList,
+                function(res){
+                    if (res.type=='edit') {
+                        updateObjectFonts();
+                    }
+                }
+            );
         };
 
         (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currFontInEdit = new models.Font({fontColor:[0,0,0]});
+                s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
+            } else if (dialogState.opName=='edit'){
+                editData.currFontInEdit = dialogState.opObject.clone();
+                s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
+            }
+            dialogState.opName=null;
+
+
             if (s.editData.systemFontList) return;
             chrome.requestToApi({method:'getFontList'},function(list){
                 s.editData.systemFontList = list;
                 s.$apply();
             })
         })();
+
+    });
+
+window.app.
+    controller('frameAnimationCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        uiHelper,
+        i18n,
+        utils,
+        resourceDao
+    ) {
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+
+        var isStopped = false;
+
+        s.toArray = function(expr) {
+            try {
+              return JSON.parse('['+expr+']');
+            } catch(e){
+                return [];
+            }
+        };
+
+        s.createOrEditFrAnimation = function(){
+            s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
+            resourceDao.createOrEditResource(
+                s.editData.currFrAnimationInEdit,
+                models.FrameAnimation,
+                bundle.frameAnimationList,
+                function(res){
+                    if (res.type=='create') {
+
+                        s.editData.currFrAnimationInEdit.id = res.r.id;
+                        var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        dialogStateObj.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
+                        s.editData.currGameObjectInEdit.frameAnimationIds.push(s.editData.currFrAnimationInEdit.id);
+                        dialogStateObj._frameAnimations.add(s.editData.currFrAnimationInEdit);
+
+                        resourceDao.createOrEditResource(
+                            s.editData.currGameObjectInEdit,
+                            models.GameObject,
+                            bundle.gameObjectList,
+                            function(){
+
+                            },
+                            true
+                        );
+                    }
+                }
+            );
+        };
+
+        s.allIndexes = function(){
+            var res = utils.getArray(s.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
+            return res.join(',')
+        };
+
+        s.playAnimation = function(){
+            try {
+                s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
+            } catch(e){}
+            s.editData.currFrAnimationInEdit.constructor();
+            setTimeout(function(){
+                s.editData.currFrAnimationInEdit.play();
+                s.editData.currFrAnimationInEdit.update(new Date().getTime());
+                var i = s.editData.currGameObjectInEdit.currFrameIndex;
+                s.editData.currGameObjectInEdit.setFrameIndex(i);
+                s.$apply();
+                if (isStopped) {
+                    isStopped = false;
+                    return;
+                }
+                if (uiHelper.dialogName=='frmCreateFrameAnimation') setTimeout(s.playAnimation,50);
+            },0);
+        };
+
+        s.stopAnimation = function(){
+            s.editData.currFrAnimationInEdit.stop();
+            isStopped = true;
+        };
+
+        s.setRange = function(from,to) {
+            if (isNaN(from) || isNaN(to)) return;
+            s.editData.currFrAnimationInEdit.frames = [];
+            for (var i=from;i<=to;i++) {
+                s.editData.currFrAnimationInEdit.frames.push(i);
+            }
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                s.editData.currFrAnimationInEdit = new models.FrameAnimation();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            } else if (dialogState.opName=='edit'){
+                s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
+                s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
+            }
+        })();
+
 
     });
 window.app.
@@ -912,6 +415,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -924,17 +428,13 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,ve.models.GameObject,ve_local.bundle.gameObjectList,function(op){
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,models.GameObject,bundle.gameObjectList,function(op){
                 if (op.type=='create') {
-                    resourceDao.createFile(s.editData.currGameObjectInEdit.name+'.js','script/gameObject',ve_local.DEFAULT_CODE_SCRIPT);
+                    resourceDao.createFile(
+                        s.editData.currGameObjectInEdit.name+'.js',
+                        'script/gameObject',window.DEFAULT_CODE_SCRIPT);
                 }
             });
-        };
-
-        s.showCreateAnimationDialog = function() {
-            s.editData.currFrAnimationInEdit = new ve.models.FrameAnimation();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
         };
 
         s.deleteFrameAnimation = function(item) {
@@ -943,10 +443,11 @@ window.app.
                     s.editData.currGameObjectInEdit.frameAnimationIds.indexOf(item.id),
                     1
                 );
+                s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    ve.models.GameObject,
-                    ve_local.bundle.gameObjectList,
+                    models.GameObject,
+                    bundle.gameObjectList,
                     null,true
                 );
             });
@@ -965,29 +466,6 @@ window.app.
             );
         };
 
-        s.showEditAnimationDialog = function(item) {
-            s.editData.currFrAnimationInEdit = item.clone();
-            s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
-            uiHelper.showDialog('frmCreateAnimation');
-        };
-
-        s.showEditCommonBehaviourDialog = function(item) {
-            s.editData.currCommonBehaviourInEdit = item.clone();
-            uiHelper.showDialog('frmCreateCommonBehaviour');
-        };
-
-        s.showCreateCommonBehaviourDialog = function(name){
-            s.editData.currCommonBehaviourInEdit = new ve.models.CommonBehaviour();
-            s.editData.currCommonBehaviourInEdit.name = name;
-            var obj =
-                editData.commonBehaviourList.find({
-                    name: name
-                });
-            if (!obj) return;
-            s.editData.currCommonBehaviourInEdit.parameters = obj.clone().parameters;
-            uiHelper.showDialog('frmCreateCommonBehaviour');
-        };
-
         s.deleteGameObjectFromCtxMenu = function(object){
             var layer = editData.currLayerInEdit;
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
@@ -996,6 +474,23 @@ window.app.
         };
 
         (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                var targetSpriteSheet = bundle.spriteSheetList.getLast();
+                editData.currGameObjectInEdit = new models.GameObject({
+                    spriteSheetId:
+                    targetSpriteSheet &&
+                    targetSpriteSheet.id
+                });
+                if (targetSpriteSheet) {
+                    editData.currGameObjectInEdit.name = targetSpriteSheet.name;
+                }
+                utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
+            } else if (dialogState.opName=='edit'){
+                editData.currGameObjectInEdit = dialogState.opObject.clone(models.GameObject);
+                editData.currGameObjectInEdit.spriteSheet = bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
+            }
+
             s.availableCommonBehaviour = [];
             if (!s.editData.currGameObjectInEdit) return;
             var appliedBehaviours = s.editData.currGameObjectInEdit._commonBehaviour;
@@ -1004,6 +499,7 @@ window.app.
                 s.availableCommonBehaviour.push(cb);
             });
             s.selectedBehaviourName = s.availableCommonBehaviour[0] && s.availableCommonBehaviour[0].name;
+
         })();
 
 
@@ -1027,18 +523,33 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
+        var models = require('models'), bundle = require('bundle').instance();
 
 
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                var dataToEdit = s.editData.currLayerInEdit.clone(ve.models.Layer);
+                var dataToEdit = s.editData.currLayerInEdit.clone(models.Layer);
                 dataToEdit.id = dataToEdit.protoId;
                 resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
                 resourceDao.createOrEditLayer(s.editData.currLayerInEdit);
             }
-
         };
+
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit._scene = editData.currSceneInEdit;
+            } else if (dialogState.opName=='edit'){
+                editData.currLayerInEdit = dialogState.opObject.clone();
+                editData.currLayerInEdit._scene = editData.currSceneInEdit;
+            }
+
+
+        })();
+
 
     });
 
@@ -1052,8 +563,7 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao,
-        messageDigest
+        resourceDao
     ) {
 
         var s = $scope;
@@ -1062,44 +572,12 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-
-        s.showCreateSpriteSheetDialog = function(){
-            editData.currSpriteSheetInEdit = new ve.models.SpriteSheet({});
-            uiHelper.showDialog('frmCreateSpriteSheet');
-        };
-
-        s.showEditSpriteSheetDialog = function(currObj){
-            editData.currSpriteSheetInEdit = currObj.clone(ve.models.SpriteSheet);
-            editData.currSpriteSheetInEdit.calcFrameSize();
-            uiHelper.showDialog('frmCreateSpriteSheet');
-        };
-
-        s.showCreateGameObjectDialog = function() {
-            editData.currGameObjectInEdit = new ve.models.GameObject({spriteSheetId:ve_local.bundle.spriteSheetList.get(0) && ve_local.bundle.spriteSheetList.get(0).id});
-            utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
-            uiHelper.showDialog('frmCreateGameObject');
-        };
-
-        s.showEditGameObjectDialog = function(currObj) {
-            editData.currGameObjectInEdit = currObj.clone(ve.models.GameObject);
-            editData.currGameObjectInEdit.spriteSheet = ve_local.bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
-            uiHelper.showDialog('frmCreateGameObject');
-        };
+        s.scales = require('consts').SCALE_STRATEGY;
 
         s.saveGameProps = function(){
             delete editData.gameProps.$objectId;
             delete editData.gameProps.objectId;
             resourceDao.saveGameProps(editData.gameProps);
-        };
-
-        s.showCreateSceneDialog = function(){
-            editData.currSceneInEdit = new ve.models.Scene({});
-            uiHelper.showDialog('frmCreateScene');
-        };
-
-        s.showEditSceneDialog = function(currObj){
-            editData.currSceneInEdit = currObj.clone(ve.models.Scene);
-            uiHelper.showDialog('frmCreateScene');
         };
 
         s.deleteScene = function(item){
@@ -1110,28 +588,6 @@ window.app.
         s.deleteGameObjectFromLayer = function(layer,object){
             resourceDao.deleteObjectFromResource(layer.type,layer.protoId,'gameObjectProps',object.id);
             layer._gameObjects.remove({id: object.id});
-        };
-
-        s.showCreateLayerDialog = function(scene){
-            editData.currLayerInEdit = new ve.models.Layer({sceneId:scene.id});
-            editData.currLayerInEdit._scene = editData.currSceneInEdit;
-            uiHelper.showDialog('frmCreateLayer');
-        };
-
-        s.showEditLayerDialog = function(e,layer){
-            e.stopPropagation();
-            editData.currLayerInEdit = layer.clone(ve.models.Layer);
-            uiHelper.showDialog('frmCreateLayer');
-        };
-
-        s.showCreateFontDialog = function(){
-            editData.currFontInEdit = new ve.models.Font();
-            uiHelper.showDialog('frmCreateFont');
-        };
-
-        s.showEditFontDialog = function(font){
-            editData.currFontInEdit = font.clone();
-            uiHelper.showDialog('frmCreateFont');
         };
 
         s.deleteLayer = function(scene,l){
@@ -1150,6 +606,220 @@ window.app.
         };
 
     });
+
+
+window.app.
+    controller('particleSystemCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models');
+
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currParticleSystemInEdit = new models.ParticleSystem({
+                    gameObjectId:(editData.gameObjectList.getLast() && editData.gameObjectList.getLast().id)
+                });
+            } else if (dialogState.opName=='edit'){
+                editData.currParticleSystemInEdit = dialogState.opObject.clone();
+            }
+            s.currGameObject = editData.currParticleSystemInEdit._gameObject;
+            dialogState.opName = '';
+
+        })();
+
+
+
+
+
+    });
+
+window.app.
+    controller('particleSystemPreviewCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+        editData.currParticleSystemInEdit.emit(100,100);
+
+        var prevTime = null;
+        var update = function(){
+
+            var currTime = Date.now();
+            if (!prevTime) prevTime = currTime;
+            var delta = currTime - prevTime;
+            prevTime = currTime;
+            editData.currParticleSystemInEdit._particles.forEach(function(p){
+
+                p._currFrameAnimation && p._currFrameAnimation.update(currTime);
+                var deltaX = p.velX * delta / 1000;
+                var deltaY = p.velY * delta / 1000;
+                p.posX = p.posX+deltaX;
+                p.posY = p.posY+deltaY;
+
+                if (!p._timeCreated) p._timeCreated = currTime;
+                if (currTime - p._timeCreated > p.liveTime) {
+                    editData.currParticleSystemInEdit._particles.splice(editData.currParticleSystemInEdit._particles.indexOf(p),1);
+                }
+
+                s.$apply();
+                if (uiHelper.dialogName!='frmCreateParticleSystemPreview') clearInterval(0);
+            });
+        };
+
+        s.emit = function(e){
+            editData.currParticleSystemInEdit.emit(e.clientX,e.clientY);
+        };
+
+        setInterval(function(){
+            update();
+        },10);
+
+        (function(){
+
+        })();
+
+    });
+
+
+
+window.app.
+    controller('projectCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+
+
+        s.openProject = function(project){
+            resourceDao.loadProject(project.name);
+        };
+
+        s.createOrEditProject = function(proj){
+            if (proj.name && proj.oldName) {
+                resourceDao.renameFolder(
+                    'workspace/'+proj.oldName,
+                    'workspace/'+proj.name,
+                    function(){
+                        resourceDao.getProjects(function(list){
+                                editData.projects = list;
+                            uiHelper.closeDialog();
+                        }
+                    );
+                });
+            } else if (proj.name) {
+                resourceDao.createProject(proj.name,function(){
+                    resourceDao.getProjects(function(list){
+                        editData.projects = list;
+                        uiHelper.closeDialog();
+                    });
+                });
+            }
+        };
+
+        s.deleteProject = function(proj){
+            resourceDao.deleteFolder('workspace/'+proj.name,function(){
+                resourceDao.getProjects(function(list){
+                    editData.projects = list;
+                    uiHelper.closeDialog();
+                })
+            });
+        };
+
+        (function(){
+
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currProjectInEdit = {};
+            } else if (dialogState.opName=='edit'){
+                editData.currProjectInEdit = {};
+                editData.currProjectInEdit.oldName =
+                    editData.currProjectInEdit.name =
+                        dialogState.opObject.name;
+            } else {
+                resourceDao.getProjects(function(list){
+                    editData.projects = list;
+                });
+            }
+            uiHelper.opName = null;
+
+        })();
+
+    });
+
+window.app.
+    controller('rightMenuCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+
+        s.openColorPickerForScene = function(){
+            s.showDialog(
+                'colorPicker','colorBG',
+                editData.currSceneInEdit,
+                function(col){
+                    editData.currSceneInEdit.colorBG = col.rgb;
+                    resourceDao.createOrEditResourceSimple(editData.currSceneInEdit);
+                }
+            );
+        };
+
+        (function(){
+
+
+        })();
+
+    });
 window.app.
     controller('sceneCtrl', function (
         $scope,
@@ -1159,7 +829,8 @@ window.app.
         uiHelper,
         i18n,
         utils,
-        resourceDao
+        resourceDao,
+        messageDigest
     ) {
         var s = $scope;
         s.editData = editData;
@@ -1167,18 +838,19 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.createOrEditScene = function(){
             resourceDao.
-                createOrEditResource(s.editData.currSceneInEdit,ve.models.Scene,ve_local.bundle.sceneList,
+                createOrEditResource(s.editData.currSceneInEdit,models.Scene,bundle.sceneList,
                 function(resp){
-                    if (ve_local.bundle.sceneList.size()==1) {
-                        s.editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
+                    if (bundle.sceneList.size()==1) {
+                        s.editData.currSceneInEdit = bundle.sceneList.get(0);
                     }
                     if (resp.type=='create') {
                         // todo currLayerInEdit can not be null
-                        //resourceDao.createOrEditLayer(new ve.models.Layer({name:'newLayer'}));
-                        resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',ve_local.DEFAULT_CODE_SCRIPT);
+                        //resourceDao.createOrEditLayer(new models.Layer({name:'newLayer'}));
+                        resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',window.DEFAULT_CODE_SCRIPT);
                     }
                 });
         };
@@ -1235,7 +907,7 @@ window.app.
             var needNewName = false;
             if (!editDataObj.name) {
                 editDataObj.name = editDataObj.subType +
-                    (++ve.models[ve.utils.capitalize(editDataObj.subType)]._cnt);
+                    (++models[utils.capitalize(editDataObj.subType)]._cnt);
                 needNewName = true;
             }
 
@@ -1245,7 +917,7 @@ window.app.
                 'gameObjectProps',editDataObj,
                 function(resp){
                     if (resp.type=='create') {
-                        var newGameObj = obj.clone(ve.models.GameObject);
+                        var newGameObj = obj.clone(models.GameObject);
                         newGameObj.posX = x;
                         newGameObj.posY = y;
                         newGameObj.protoId = newGameObj.id;
@@ -1290,7 +962,83 @@ window.app.
         s.addGameObjectFromCtxMenu = function(obj,x,y){
             _addOrEditGameObject(obj, x, y,'protoId',obj.id);
             uiHelper.closeContextMenu();
-        }
+        };
+
+
+        s.editGameObjectFromRightMenu = function(obj){
+            var fnt = bundle.fontList.find({id:obj.fontId});
+            s.editData.currSceneGameObjectInEdit._font = fnt;
+            s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
+            obj.setText(obj.text);
+            resourceDao.createOrEditObjectInResource(
+                editData.currLayerInEdit.type,
+                editData.currLayerInEdit.protoId,
+                'gameObjectProps',
+                obj.toJSON()
+            );
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currSceneInEdit = new models.Scene({});
+            } else if (dialogState.opName=='edit'){
+                editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
+            }
+            uiHelper.opName = null;
+
+        })();
+
+    });
+
+
+window.app.
+    controller('soundCtrl', function (
+        $scope,
+        $http,
+        $sce,
+        editData,
+        resourceDao,
+        uiHelper,
+        i18n,
+        utils
+    ) {
+
+        var s = $scope;
+        s.editData = editData;
+        s.uiHelper = uiHelper;
+        s.i18n = i18n.getAll();
+        s.utils = utils;
+        s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+
+        s.onSoundUpload = function(file,src){
+            s.soundUrl = $sce.trustAsResourceUrl(src);
+            s.editData.currSoundInEdit._file = file;
+        };
+
+        s.createOrEditSound = function(snd){
+            resourceDao.createOrEditResource(
+                s.editData.currSoundInEdit,
+                models.Sound,
+                bundle.soundList
+            );
+        };
+
+        (function(){
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currSoundInEdit = new models.Sound({});
+            } else if (dialogState.opName=='edit'){
+                editData.currSoundInEdit = dialogState.opObject.clone();
+            }
+
+
+            if (s.editData.currSoundInEdit) {
+                s.soundUrl = editData.projectName+'/' + s.editData.currSoundInEdit.resourcePath;
+            }
+
+        })();
 
     });
 window.app.
@@ -1310,26 +1058,69 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
             s.editData.currSpriteSheetInEdit.resourcePath = src;
+            if (!s.editData.currSpriteSheetInEdit.name) {
+                s.editData.currSpriteSheetInEdit.name = file.name.split('.')[0];
+            }
+            //if (!s.editData.currSpriteSheetInEdit.name) {
+            //    s.editData.currSpriteSheetInEdit.name =  src.split('.')[0];
+            //}
             var fr = new FileReader();
             fr.onload = function() { // file is loaded
                 var img = new Image;
                 img.onload = function() {
                     s.editData.currSpriteSheetInEdit.width = img.width;
                     s.editData.currSpriteSheetInEdit.height = img.height;
-                    s.$apply(s.editData.currSpriteSheetInEdit);
+                    s.spriteSheetUrl = fr.result;
+                    s.$apply();
                 };
                 img.src = fr.result;
             };
             fr.readAsDataURL(file);
         };
 
-        s.createOrEditSpriteSheet = function(){
-            resourceDao.createOrEditResource(s.editData.currSpriteSheetInEdit,ve.models.SpriteSheet,ve_local.bundle.spriteSheetList);
+        var updateObjectSpriteSheets = function(){
+            var _setSpriteSheet = function(go){
+                if (go.spriteSheetId) {
+                    var sprSheet = bundle.spriteSheetList.find({id: go.spriteSheetId});
+                    go.setSpriteSheet(sprSheet);
+                }
+            };
+            utils.eachObjectOnScene(function(go){
+                _setSpriteSheet(go);
+            });
+            bundle.gameObjectList.forEach(function(go){
+                _setSpriteSheet(go);
+            });
         };
+
+        s.createOrEditSpriteSheet = function(){
+            resourceDao.createOrEditResource(
+                s.editData.currSpriteSheetInEdit,
+                models.SpriteSheet,
+                bundle.spriteSheetList,
+                function(res){
+                    if (res.type=='edit') {
+                        updateObjectSpriteSheets();
+                    }
+                }
+            );
+        };
+
+        (function() {
+            var dialogState = uiHelper.getDialogState();
+            if (dialogState.opName=='create') {
+                editData.currSpriteSheetInEdit = new models.SpriteSheet({});
+            } else if (dialogState.opName=='edit'){
+                editData.currSpriteSheetInEdit = dialogState.opObject.clone();
+                editData.currSpriteSheetInEdit.calcFrameSize();
+                s.spriteSheetUrl = editData.projectName+'/'+editData.currSpriteSheetInEdit.resourcePath;
+            }
+        })();
 
 
     });
@@ -1351,6 +1142,18 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
+        var models = require('models'), bundle = require('bundle').instance();
+
+        (function(){
+
+            if (uiHelper.opName=='create') {
+                editData.currSoundInEdit = new ve.models.Sound({});
+            } else if (uiHelper.opName=='edit'){
+                editData.currSoundInEdit = uiHelper.opObject.clone();
+            }
+            uiHelper.opName = null;
+
+        })();
 
     });
 
@@ -1364,15 +1167,15 @@ window.app.
 
         var w;
 
-        // todo project name
+
         s.run = function(){
             $http({
-                url: '/generate?r='+Math.random(),
+                url: utils.generateBuildUrl({debug:1}),
                 method: "GET"
             }).
             success(function (resp) {
                 if (!w || w.closed) {
-                    w = window.open('/project/out','','');
+                    w = window.open('/'+editData.projectName+'/out','','');
                 }
                 else {
                     w.location.reload();
@@ -1383,18 +1186,26 @@ window.app.
 
         s.debug = function(){
             $http({
-                url: '/generate?debug=1&r='+Math.random(),
+                url: utils.generateBuildUrl({debug:1}),
                 method: "GET"
             }).
             success(function (resp) {
                     s.uiHelper.window = 'debugRunWindow';
-                editData.debugFrameUrl = '/project/out';
+                editData.debugFrameUrl = '/'+editData.projectName+'/out';
             });
         };
 
         s.stop = function(){
             s.uiHelper.window = 'sceneWindow';
             editData.debugFrameUrl = $sce.trustAsUrl('/about:blank');
+        };
+
+        s.showBuildDialog = function() {
+            uiHelper.showDialog('buildDialog');
+        };
+
+        s.toExplorer = function(){
+            location.hash = '#/explorer';
         }
 
 
@@ -1528,6 +1339,72 @@ app.directive('appOnFileUpload', function ($parse) {
 });
 
 
+angular.forEach(['x', 'y', 'width', 'height','transform', 'd'], function(name) {
+    var ngName = 'app' + name[0].toUpperCase() + name.slice(1);
+    app.directive(ngName, function() {
+        return function(scope, element, attrs) {
+            attrs.$observe(ngName, function(value) {
+                attrs.$set(name, value);
+            })
+        };
+    });
+});
+
+app.directive('appInputAngle', function($parse) {
+    return {
+        restrict: 'E',
+        replace: true,
+        require: 'ngModel',
+        transclude: true,
+        scope: {
+            ngModel : '='
+        },
+        templateUrl:'partials/misc/appInputAngle.html',
+        link: function (scope, element, attrs) {
+            var model = scope.ngModel;
+            var field = attrs.appField;
+            var angle = model[field];
+            var calcAngleInDeg = function(){
+                var deg = angle * 180 / Math.PI;
+                model[field] = angle;
+                scope.angleInDeg = deg;
+            };
+            calcAngleInDeg();
+
+            var calcAngleFromEvent = function(e){
+                var rect = element[0].getBoundingClientRect();
+                var x = e.clientX - rect.left, y = e.clientY - rect.top;
+                angle = Math.atan2((y -15),(x - 15));
+                if (angle<0) angle = 2*Math.PI + angle;
+            };
+
+            var mouseDown = false;
+
+            element.bind('click', function (e) {
+                calcAngleFromEvent(e);
+                calcAngleInDeg();
+                scope.$apply();
+            });
+            element.bind('mousedown',function(){
+                mouseDown = true;
+            });
+            element.bind('mouseup',function(){
+                mouseDown = false;
+            });
+            element.bind('mouseleave',function(){
+                mouseDown = false;
+            });
+            element.bind('mousemove', function (e) {
+                if (!mouseDown) return;
+                calcAngleFromEvent(e);
+                calcAngleInDeg();
+                scope.$apply();
+            });
+        }
+    };
+});
+
+
 app.directive('appKeyPress', function($parse) {
     return {
         restrict: 'A',
@@ -1570,6 +1447,22 @@ app.directive('appValidator', function($parse) {
         }
     };
 });
+
+window.app.
+
+    directive('dynamicCtrl', ['$compile', '$parse',function($compile, $parse) {
+        return {
+            restrict: 'A',
+            terminal: true,
+            priority: 100000,
+            link: function(scope, elem) {
+                var name = $parse(elem.attr('dynamic-ctrl'))(scope);
+                elem.removeAttr('dynamic-ctrl');
+                elem.attr('ng-controller', name);
+                $compile(elem)(scope);
+            }
+        };
+    }]);
 window.app.
 
 service('chrome',function(){
@@ -1598,6 +1491,8 @@ window.app
 
     .factory('editData', function ($sce) {
 
+        var collections = require('collections');
+
         var res = {};
         res.commonBehaviourList = null;
         res.currGameObjectInEdit = null;
@@ -1608,11 +1503,22 @@ window.app
         res.currLayerInEdit = null;
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
+        res.currSoundInEdit = null;
+        res.currParticleSystemInEdit = null;
+        res.currProjectInEdit = null;
 
-        res.userInterfaceList = new ve.collections.List();
+        res.userInterfaceList = new collections.List();
 
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         res.scriptEditorUrl = '';
+
+        res.projectName = undefined;
+        res.projects = null;
+        res.buildOpts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
 
         return res;
     })
@@ -1634,9 +1540,12 @@ window.app
                 addSpriteSheet:'add sprite sheet',
                 loadImage:'load image',
                 gameObjects:'game objects',
+                gameObject:'gameObject',
                 create:'create',
                 edit:'edit',
+                close:'close',
                 name:'name',
+                scaleStrategy:'scale strategy',
                 spriteSheers:'sprite sheets',
                 width:'width',
                 height:'height',
@@ -1667,6 +1576,8 @@ window.app
                 from:'from',
                 to:'to',
                 fonts:'fonts',
+                font:'font',
+                text:'text',
                 commonBehaviour:'common behaviour',
                 groupName:'group name',
                 selectFont:'select font',
@@ -1675,7 +1586,19 @@ window.app
                 userInterface:'user interface',
                 textField:'text field',
                 noDataToEdit:'no data to edit provided',
-                rigid:'rigid'
+                rigid:'rigid',
+                sounds:'sounds',
+                play:'play',
+                loadSound:'load sound',
+                build:'build',
+                particleSystems:'particle systems',
+                particleSystem:'particle system',
+                preview:'preview',
+                explorer:'explorer',
+                description: 'description',
+                colorBG:'scene background color',
+                useBG:'use background color',
+                angle:'angle'
             }
         };
 
@@ -1699,11 +1622,7 @@ window.app
 
 window.app
 
-    .factory('messageDigest',function(resourceDao){
-
-        //window.addEventListener('message',function(e){
-        //    console.log('accepted message',e);
-        //});
+    .factory('messageDigest',function(resourceDao,utils){
 
         var respondToTarget = function(target,data){
             target && target.postMessage(data,'*');
@@ -1714,7 +1633,14 @@ window.app
             switch (m.data.command) {
                 case 'getCode':
                     resourceDao.readFile(m.data.name+'.js', m.data.path,function(resp){
-                        respondToTarget(document.getElementById('scriptEditor').contentWindow,{code:resp});
+                        respondToTarget(
+                            document.getElementById('scriptEditor').contentWindow,
+                            {
+                                command:'setCode',
+                                completer:utils.createAceCompleter(),
+                                code:resp
+                            }
+                        );
                     });
                     break;
                 case 'saveCode':
@@ -1744,28 +1670,50 @@ app
         uiHelper
     ){
         var self = this;
-        var loadResources = function(){
+        var bundle = require('bundle').instance();
+        var collections = require('collections');
+        var models = require('models');
+
+        var _loadResources = function(projectName){
             return new Promise(function(resolve){
                 $http({
                     url: '/resource/getAll',
-                    method: "POST"
+                    method: "POST",
+                    data: {projectName:projectName}
                 }).
                 success(function (response) {
-                    ve_local.bundle = new ve_local.Bundle(response);
-                    ve_local.bundle.prepare();
-                    Object.keys(ve_local.bundle).forEach(function(key){
-                        if (ve_local.bundle[key] && ve_local.bundle[key].call) return;
-                        editData[key] = ve_local.bundle[key];
+                    bundle.prepare(response);
+                    Object.keys(bundle).forEach(function(key){
+                        if (bundle[key] && bundle[key].call) return;
+                        editData[key] = bundle[key];
                     });
-                    editData.gameProps = ve_local.bundle.gameProps;
-                    editData.commonBehaviourList = new ve.collections.List();
+                    editData.gameProps = bundle.gameProps;
+                    editData.commonBehaviourList = new collections.List();
                     response.commonBehaviour.forEach(function(cb){
-                        editData.commonBehaviourList.add(new ve.models.CommonBehaviour(cb));
+                        editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new ve.models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
+        };
+        this.loadProject = function(projectName){
+            editData.projectName = projectName;
+            sessionStorage.projectName = projectName;
+            Promise.
+                resolve().
+                then(function(){
+                    return _loadResources(projectName);
+                }).
+                then(function(){
+                    if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
+                    if (editData.currSceneInEdit) {
+                        if (editData.currSceneInEdit._layers.size()) {
+                            editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
+                        }
+                    }
+                    location.href = '#/editor';
+                });
         };
         this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack, preserveDialog){
             var formData = new FormData();
@@ -1775,6 +1723,7 @@ app
                 model[item.key] = item.value;
             });
             formData.append('model',JSON.stringify(model));
+            formData.append('projectName',editData.projectName);
             var op = currResourceInEdit.id?'edit':'create';
             $http({
                 url: '/resource/'+op,
@@ -1799,12 +1748,21 @@ app
                 !preserveDialog && uiHelper.closeDialog();
             });
         };
+        this.createOrEditResourceSimple = function(objResource){
+            this.createOrEditResource(objResource,objResource.constructor,bundle[objResource.type+'List']);
+        };
         this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
             $http({
                 url: '/deleteObjectFromResource',
                 method: "POST",
                 headers: {'Content-Type': 'application/json'},
-                data: {resourceType:resourceType,resourceId:resourceId,objectType:objectType,objectId:objectId}
+                data: {
+                    resourceType:resourceType,
+                    resourceId:resourceId,
+                    objectType:objectType,
+                    objectId:objectId,
+                    projectName:editData.projectName
+                }
             }).
             success(function (res) {
                     callback && callback();
@@ -1814,7 +1772,11 @@ app
             $http({
                 url: '/resource/delete',
                 method: "POST",
-                data: {id:id,type:type}
+                data: {
+                    id:id,
+                    type:type,
+                    projectName:editData.projectName
+                }
             }).
             success(function (res) {
                 editData[type+'List'].remove({id: id});
@@ -1824,6 +1786,7 @@ app
         this.saveGameProps = function(gameProps){
             var formData = new FormData();
             formData.append('model',JSON.stringify(gameProps));
+            formData.append('projectName',editData.projectName);
             $http({
                 url: '/gameProps/save',
                 method: "POST",
@@ -1832,6 +1795,7 @@ app
             })
         };
         this.post = function(url,data,callBack){
+            data.projectName = editData.projectName;
             $http({
                 url: '/gameProps/save',
                 method: "POST",
@@ -1862,7 +1826,8 @@ app
                     model:JSON.stringify(object),
                     resourceId:resourceId,
                     resourceType:resourceType,
-                    objectType:objectType
+                    objectType:objectType,
+                    projectName:editData.projectName
                 },
                 headers: {'Content-Type': 'application/json'}
             }).
@@ -1871,7 +1836,7 @@ app
             });
         };
         this.createOrEditLayer = function(l){
-            self.createOrEditResource(l,ve.models.Layer,ve_local.bundle.layerList,
+            self.createOrEditResource(l,models.Layer,bundle.layerList,
                 function(item){
                     if (item.type=='create') {
                         self.createOrEditObjectInResource(
@@ -1883,7 +1848,7 @@ app
                                 protoId:item.r.id
                             },
                             function(resp){
-                                var l = editData.currLayerInEdit.clone(ve.models.Layer);
+                                var l = editData.currLayerInEdit.clone(models.Layer);
                                 l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
@@ -1900,13 +1865,14 @@ app
                 data: {
                     name:name,
                     path:path,
-                    content:content
+                    content:content,
+                    projectName: editData.projectName
                 },
                 headers: {'Content-Type': 'application/json'}
             }).
-                success(function (resp) {
-                    callback && callback(resp);
-                });
+            success(function (resp) {
+                callback && callback(resp);
+            });
         };
         this.readFile = function(name,path,callback){
             $http({
@@ -1914,33 +1880,66 @@ app
                 method: "POST",
                 data: {
                     name:name,
-                    path:path
+                    path:path,
+                    projectName: editData.projectName
                 },
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.getProjects = function(callback){
+            $http({
+                url: '/getProjects',
+                method: "GET",
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.createProject = function(projectName,callback){
+            $http({
+                url: '/createProject',
+                method: "POST",
+                data: {projectName:projectName},
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
+        this.renameFolder = function(oldName,newName,callback){
+            $http({
+                url: '/renameFolder',
+                method: "POST",
+                data: {oldName:oldName,newName:newName},
                 headers: {'Content-Type': 'application/json'}
             }).
                 success(function (resp) {
                     callback && callback(resp);
                 });
         };
+        this.deleteFolder = function(name,callback){
+            $http({
+                url: '/deleteFolder',
+                method: "POST",
+                data: {name:name},
+                headers: {'Content-Type': 'application/json'}
+            }).
+            success(function (resp) {
+                callback && callback(resp);
+            });
+        };
 
 
         (function(){
-
-            Promise.
-                resolve().
-                then(function(){
-                    return loadResources();
-                }).
-                then(function(){
-                    if (!ve_local.bundle.sceneList.isEmpty()) editData.currSceneInEdit = ve_local.bundle.sceneList.get(0);
-                    if (editData.currSceneInEdit) {
-                        if (editData.currSceneInEdit._layers.size()) {
-                            editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
-                        }
-                    }
-                    angular.element(document.body).scope().$apply();
-                });
-
+            if (sessionStorage.projectName) {
+                self.loadProject(sessionStorage.projectName);
+            } else {
+                location.href = '#/explorer';
+            }
         })();
 
 
@@ -1951,25 +1950,45 @@ window.app
 
     .factory('uiHelper', function () {
         var _;
+        var collections = require('collections');
         return _ = {
+            _dialogsStack: new collections.List(),
+
             window:'sceneWindow',
-            toggle: function (currentVal, defaultVal) {
-                return currentVal == defaultVal ? 0 : defaultVal;
-            },
-            _dialogsStack: [],
+            _dialogName:null,
             ctxMenu:{
                 name:null,
                 x:null,
                 y:null
             },
-            showDialog: function(name){
+            toggle: function (currentVal, defaultVal) {
+                return currentVal == defaultVal ? 0 : defaultVal;
+            },
+            showDialog: function(name,opName,opObject,opCallBack){
                 _.dialogName = name;
-                _._dialogsStack.push(name);
+                _._dialogsStack.add({
+                    name:name,
+                    opName:opName,
+                    id: opObject && opObject.id,
+                    opObject:opObject,
+                    opCallBack:opCallBack
+                });
                 _.ctxMenu.name = null;
+            },
+            getDialogState: function(){
+                return _._dialogsStack.getLast() || {};
+            },
+            findDialogStateObjectById: function(id){
+                return  _._dialogsStack.find({id:id}).opObject;
             },
             closeDialog: function(){
                 _._dialogsStack.pop();
-                _.dialogName = _._dialogsStack[_._dialogsStack.length-1];
+                var last = _._dialogsStack.getLast();
+                if (last) {
+                    _.dialogName = last.name;
+                } else {
+                    _.dialogName = null;
+                }
             },
             showContextMenu: function(name,x,y,elX,elY,model){
                 _.ctxMenu.name = name;
@@ -1990,6 +2009,8 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
+        var models = require('models'), bundle = require('bundle').instance();
+
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
             if (!spriteSheet) return;
@@ -2003,8 +2024,7 @@ window.app
             return {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
-                // todo project name!
-                backgroundImage:      gameObj._spriteSheet && 'url('+'project/'+gameObj._spriteSheet.resourcePath+')',
+                backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
                 backgroundRepeat:     'no-repeat'
@@ -2084,6 +2104,63 @@ window.app
             return new Blob([ia], {type:mimeString});
         };
 
+        this.capitalize = function(s){
+            return s.substr(0,1).toUpperCase() +
+                s.substr(1);
+        };
+
+        this.deCapitalize = function(s){
+            return s.substr(0,1).toLowerCase() +
+                s.substr(1);
+        };
+
+        this.eachObjectOnScene = function(callBack){
+            editData.sceneList.forEach(function(scene){
+                scene._layers.forEach(function(layer){
+                    layer._gameObjects.forEach(function(go){
+                        callBack(go);
+                    });
+                });
+            });
+        };
+
+        this.createAceCompleter = function(){
+            var res = [];
+            var go = new models.GameObject();
+            go.toJSON_Array().forEach(function(item){
+                res.push({
+                    name:item.key,
+                    value:item.key,
+                    score:1,
+                    meta:'gameObject property'
+                });
+            });
+            return res;
+        };
+
+        this.generateBuildUrl = function(opts) {
+            var url = '/generate?r='+Math.random();
+            ['debug','embedResources','embedScript'].forEach(function(key){
+                if (opts[key]) url+='&'+key+'=1';
+            });
+            url+='&projectName='+editData.projectName;
+            return url;
+        };
+
+        this.hexToRgb = function(hex) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? [
+                parseInt(result[1], 16)||0,
+                parseInt(result[2], 16)||0,
+                parseInt(result[3], 16)||0
+            ] : [0,0,0];
+        };
+
+        this.rgbToHex = function(col) {
+            var r = +col[0],g=+col[1],b=+col[2];
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        };
+
         return this;
     })
 
@@ -2096,6 +2173,12 @@ window.app
 
 ;
 
+
+app.filter('toFixed', function() {
+    return function(val){
+        return (+val).toFixed(3);
+    }
+});
 'use strict';
 
 $(function () {
@@ -2114,12 +2197,54 @@ window.app.
         $sce,
         editData,
         uiHelper,
+        utils,
         i18n) {
 
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
+        s.utils = utils;
+
+        s.showDialog = function(objectName,opName,opObject,opCallBack){
+            uiHelper.showDialog('frmCreate'+utils.capitalize(objectName),opName,opObject,opCallBack);
+        };
 
 
-    });
+    }).
+
+
+
+
+    config(function($routeProvider,$httpProvider){
+        $routeProvider.
+            when('/editor',{
+                templateUrl:'editor.html'
+            }).
+            when('/explorer',{
+                templateUrl:'explorer.html'
+            }).
+            otherwise({redirectTo:'/explorer'});
+
+
+        $httpProvider.interceptors.push('httpRequestInterceptor');
+
+
+    }).
+
+
+    factory('httpRequestInterceptor', function ($q, $location) {
+        return {
+            'responseError': function(rejection) {
+                // do something on error
+                if(rejection.status!==200){
+                    window.showError(rejection.data);
+                }
+                return $q.reject(rejection);
+            }
+        };
+    })
+
+
+
+;

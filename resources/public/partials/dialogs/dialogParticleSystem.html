@@ -1,0 +1,159 @@
+<table class="width100">
+    <tr>
+        <td>
+            {{i18n.name}}
+        </td>
+        <td>
+
+        </td>
+        <td>
+            <input required ng-model="editData.currParticleSystemInEdit.name"/>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2">
+            numOfParticlesToEmit
+        </td>
+        <td>
+            from
+        </td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.from"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            to
+        </td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.to"/>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2">
+            particleVelocity
+        </td>
+        <td>
+            from
+        </td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.particleVelocity.from"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            to
+        </td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.particleVelocity.to"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td rowspan="2">
+            particleLiveTime
+        </td>
+        <td>
+            from
+        </td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.particleLiveTime.from"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            to
+        </td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.particleLiveTime.to"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            emissionRadius
+        </td>
+        <td></td>
+        <td>
+            <input required type="number" ng-model="editData.currParticleSystemInEdit.emissionRadius"/>
+        </td>
+    </tr>
+
+    <tr>
+        <td rowspan="2">
+            particleAngle
+        </td>
+        <td>
+            from / to
+        </td>
+        <td>
+            <app-input-angle
+                    class="inlineBlock"
+                    ng-model="editData.currParticleSystemInEdit.particleAngle"
+                    app-field="from"
+                    >
+            </app-input-angle>
+            <app-input-angle
+                    class="inlineBlock"
+                    ng-model="editData.currParticleSystemInEdit.particleAngle"
+                    app-field="to"
+                    >
+            </app-input-angle>
+
+            <div class="small">
+                <div>
+                    {{editData.currParticleSystemInEdit.particleAngle.from | toFixed}}
+                </div>
+                <div>
+                    {{editData.currParticleSystemInEdit.particleAngle.to | toFixed}}
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            {{i18n.gameObject}}
+        </td>
+        <td>
+
+            <table>
+                <tr>
+                    <td>
+                        <select
+                                required
+                                ng-model="editData.currParticleSystemInEdit.gameObjectId"
+                                ng-change = "currGameObject = editData.gameObjectList.find({
+                                    id: editData.currParticleSystemInEdit.gameObjectId
+                                })"
+                                >
+                            <option value="{{item.id}}" ng-repeat="item in editData.gameObjectList.rs">{{item.name}}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div ng-style="
+                                utils.merge(
+                                    utils.getGameObjectCss(currGameObject),
+                                    {zoom:currGameObject.height>30?30/currGameObject.height:1}
+                               )">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+
+        </td>
+    </tr>
+
+</table>
+
+<button
+        ng-disabled="!frmCreateParticleSystem.$valid"
+        ng-click="resourceDao.createOrEditResourceSimple(editData.currParticleSystemInEdit)">
+    {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}
+</button>
+
+<button
+    ng-disabled="!frmCreateParticleSystem.$valid"
+    ng-click="showDialog('particleSystemPreview','')">
+    {{i18n.preview}}
+</button>

@@ -4,6 +4,8 @@ window.app
 
     .factory('editData', function ($sce) {
 
+        var collections = require('collections');
+
         var res = {};
         res.commonBehaviourList = null;
         res.currGameObjectInEdit = null;
@@ -14,11 +16,22 @@ window.app
         res.currLayerInEdit = null;
         res.currFontInEdit = null;
         res.currCommonBehaviourInEdit = null;
+        res.currSoundInEdit = null;
+        res.currParticleSystemInEdit = null;
+        res.currProjectInEdit = null;
 
-        res.userInterfaceList = new ve.collections.List();
+        res.userInterfaceList = new collections.List();
 
         res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
         res.scriptEditorUrl = '';
+
+        res.projectName = undefined;
+        res.projects = null;
+        res.buildOpts = {
+            debug: false,
+            embedResources: false,
+            embedScript: false
+        };
 
         return res;
     })
