@@ -287,18 +287,25 @@ modules['collider'] = {code: function(module,exports){
 	        if (!obj.rigid) {
 	            obj.posX = newX;
 	            obj.posY = newY;
-	            return;
 	        }
-	        var res = gos.some(function(go){
-	            if (!go.rigid) return;
-	            if (obj==go) return;
+	        var res = false;
+	        gos.some(function(go){
+	            if (!go.rigid) {
+	                res = true;
+	                return true;
+	            }
+	            if (obj==go) return true;
 	            var objRect = obj.getRect();
 	            objRect.x = newX;
 	            objRect.y = newY;
 	            if (math.isRectIntersectRect(objRect,go.getRect())) {
-	                res = true;
-	                obj.trigger('collide',go);
-	                return true;
+	                if (go.rigid) {
+	                    res = true;
+	                    obj.trigger('collide',go);
+	                    return true;
+	                } else {
+	                    obj.trigger('overlap',go);
+	                }
 	            }
 	        });
 	        if (!res) {
@@ -1749,6 +1756,64 @@ modules['bundle'] = {code: function(module,exports){
 	                "angle": 0,
 	                "protoId": "8689_6539_95",
 	                "id": "8067_9107_96"
+	            },
+	            {
+	                "spriteSheetId": "3115_2954_94",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "rocket",
+	                "width": 39,
+	                "height": 68,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": [],
+	                        "description": "",
+	                        "id": "1364_4760_28",
+	                        "type": "commonBehaviour"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 1,
+	                "groupName": "",
+	                "posX": 248,
+	                "posY": 201,
+	                "angle": 0,
+	                "protoId": "8689_6539_95",
+	                "id": "9986_2543_84"
+	            },
+	            {
+	                "spriteSheetId": "3115_2954_94",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "rocket",
+	                "width": 39,
+	                "height": 68,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": [],
+	                        "description": "",
+	                        "id": "1364_4760_28",
+	                        "type": "commonBehaviour"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 1,
+	                "groupName": "",
+	                "posX": 275,
+	                "posY": 82,
+	                "angle": 0,
+	                "protoId": "8689_6539_95",
+	                "id": "9519_5092_85"
 	            }
 	        ],
 	        "id": "0544_3465_92"
@@ -1780,7 +1845,7 @@ modules['bundle'] = {code: function(module,exports){
 	    gameProps:{
 	    "width": 800,
 	    "height": 600,
-	    "scaleStrategy": "4"
+	    "scaleStrategy": "2"
 	}
 	
 	};
@@ -1839,7 +1904,6 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    var processScreenSize = function(){
 	        var gameProps = bundle.gameProps;
-	        gameProps.globalScale = {};
 	        switch (+gameProps.scaleStrategy) {
 	            case SCALE_STRATEGY.NO_SCALE:
 	                var w = window.innerWidth*deviceScale;
@@ -1942,6 +2006,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    this.manage = function(){
 	        var gameProps = bundle.gameProps;
+	        gameProps.globalScale = {};
 	        processScreenSize();
 	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
 	    };
