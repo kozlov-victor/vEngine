@@ -11,7 +11,6 @@ var ScaleManager = function(canvas,ctx){
 
     var processScreenSize = function(){
         var gameProps = bundle.gameProps;
-        gameProps.globalScale = {};
         switch (+gameProps.scaleStrategy) {
             case SCALE_STRATEGY.NO_SCALE:
                 var w = window.innerWidth*deviceScale;
@@ -114,6 +113,7 @@ var ScaleManager = function(canvas,ctx){
 
     this.manage = function(){
         var gameProps = bundle.gameProps;
+        gameProps.globalScale = {};
         processScreenSize();
         gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
     };

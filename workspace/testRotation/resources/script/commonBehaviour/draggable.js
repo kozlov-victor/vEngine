@@ -1,27 +1,31 @@
 
 var mouse = require('mouse').instance();
-var isMouseDown = false;
-var mX = 0;
-var mY = 0;
+var points = {};
 var scene;
 
 function onCreate(){
     scene = self.getScene();
     self.on('click',function(e){
-        isMouseDown = true;
-        mX = e.objectX;
-        mY = e.objectY;
+        points[e.id] = {
+            isMouseDown:true,
+            mX: e.objectX,
+            mY: e.objectY
+        };
     });
     scene.on('mouseMove',function(e){
-        if (isMouseDown) {
-            self.posX = e.screenX - mX;
-            self.posY = e.screenY - mY;
+        var point = points[e.id];
+        if (point && point.isMouseDown) {
+            self.posX = e.screenX - point.mX;
+            self.posY = e.screenY - point.mY;
         }
+    });
+    scene.on('mouseUp',function(e){
+        delete points[e.id];
     });
 }
 
 function onUpdate(){
-    if (!mouse.isMouseDown) isMouseDown = false;
+    //if (!mouse.isMouseDown) isMouseDown = false;
 }
 
 function onDefine(){

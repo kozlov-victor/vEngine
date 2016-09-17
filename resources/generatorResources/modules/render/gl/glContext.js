@@ -19,10 +19,12 @@ var GlContext = function(){
     var texVertexBuffer;
     var matrixStack = new MatrixStack();
     var frameBuffer;
+    var gameProps;
     this.colorBG = [0,0,0];
 
     this.init = function(canvas){
 
+        gameProps = bundle.gameProps;
         gl = canvas.getContext("webgl",{ alpha: false });
         shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
         shader.bind();
@@ -47,7 +49,7 @@ var GlContext = function(){
             1, 1
         ],2,'a_texcoord');
 
-        frameBuffer = new FrameBuffer(gl,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
@@ -142,7 +144,7 @@ var GlContext = function(){
         //console.log(gameProps);
         shader.setUniform("u_matrix",makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
-                bundle.gameProps.width,bundle.gameProps.height,1,1
+                gameProps.width,gameProps.height,1,1
             )
         );
 
@@ -196,7 +198,7 @@ var GlContext = function(){
 
     this.beginFrameBuffer = function(){
         this.save();
-        gl.viewport(0, 0, bundle.gameProps.width, bundle.gameProps.height);
+        gl.viewport(0, 0, gameProps.width, gameProps.height);
         frameBuffer.bind();
     };
 
@@ -204,20 +206,19 @@ var GlContext = function(){
         currTex = null;
         this.restore();
         this.save();
-        this.translate(0,bundle.gameProps.canvasHeight);
+        this.translate(0,gameProps.canvasHeight);
         this.scale(1,-1);
         frameBuffer.unbind();
         this.clear();
-        gl.viewport(0, 0, bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
         gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 
-        var gameProps = bundle.gameProps;
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
             shader.setUniform('u_matrix',
                 makePositionMatrix(
                     gameProps.globalScale.left,gameProps.globalScale.top,
-                    bundle.gameProps.width, bundle.gameProps.height,
-                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+                    gameProps.width, gameProps.height,
+                    gameProps.canvasWidth,gameProps.canvasHeight,
                     mScaleX,mScaleY
                 )
             );
@@ -225,8 +226,8 @@ var GlContext = function(){
             shader.setUniform('u_matrix',
                 makePositionMatrix(
                     0,0,
-                    bundle.gameProps.width, bundle.gameProps.height,
-                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+                    gameProps.width, gameProps.height,
+                    gameProps.canvasWidth,gameProps.canvasHeight,
                     mScaleX,mScaleY
                 )
             );
@@ -234,8 +235,8 @@ var GlContext = function(){
 
         shader.setUniform('u_textureMatrix',
             makeTextureMatrix(
-                0,0,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
-                bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight
+                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+                gameProps.canvasWidth,gameProps.canvasHeight
             )
         );
 

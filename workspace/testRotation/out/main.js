@@ -181,28 +181,32 @@ modules['behaviour'] = {code: function(module,exports){
 	commonBehaviour['draggable'] = function(module,exports,self,parameters){
 	
 	var mouse = require('mouse').instance();
-	var isMouseDown = false;
-	var mX = 0;
-	var mY = 0;
+	var points = {};
 	var scene;
 	
 	function onCreate(){
 	    scene = self.getScene();
 	    self.on('click',function(e){
-	        isMouseDown = true;
-	        mX = e.objectX;
-	        mY = e.objectY;
+	        points[e.id] = {
+	            isMouseDown:true,
+	            mX: e.objectX,
+	            mY: e.objectY
+	        };
 	    });
 	    scene.on('mouseMove',function(e){
-	        if (isMouseDown) {
-	            self.posX = e.screenX - mX;
-	            self.posY = e.screenY - mY;
+	        var point = points[e.id];
+	        if (point && point.isMouseDown) {
+	            self.posX = e.screenX - point.mX;
+	            self.posY = e.screenY - point.mY;
 	        }
+	    });
+	    scene.on('mouseUp',function(e){
+	        delete points[e.id];
 	    });
 	}
 	
 	function onUpdate(){
-	    if (!mouse.isMouseDown) isMouseDown = false;
+	    //if (!mouse.isMouseDown) isMouseDown = false;
 	}
 	
 	function onDefine(){
@@ -287,18 +291,25 @@ modules['collider'] = {code: function(module,exports){
 	        if (!obj.rigid) {
 	            obj.posX = newX;
 	            obj.posY = newY;
-	            return;
 	        }
-	        var res = gos.some(function(go){
-	            if (!go.rigid) return;
-	            if (obj==go) return;
+	        var res = false;
+	        gos.some(function(go){
+	            if (!go.rigid) {
+	                res = true;
+	                return true;
+	            }
+	            if (obj==go) return true;
 	            var objRect = obj.getRect();
 	            objRect.x = newX;
 	            objRect.y = newY;
 	            if (math.isRectIntersectRect(objRect,go.getRect())) {
-	                res = true;
-	                obj.trigger('collide',go);
-	                return true;
+	                if (go.rigid) {
+	                    res = true;
+	                    obj.trigger('collide',go);
+	                    return true;
+	                } else {
+	                    obj.trigger('overlap',go);
+	                }
 	            }
 	        });
 	        if (!res) {
@@ -443,29 +454,34 @@ modules['mouse'] = {code: function(module,exports){
 	var Mouse = function(){
 	
 	    var self = this;
-	    self.isMouseDown = false;
 	    var globalScale = bundle.gameProps.globalScale;
 	    var canvas = renderer.getCanvas();
 	
 	    if ('ontouchstart' in window) {
 	        canvas.ontouchstart = function(e){
-	            resolveClick(e.touches[0]);
+	            for (var i= 0,l= e.touches.length;i<l;i++) {
+	                resolveClick(e.touches[i],e.touches[i].identifier);
+	            }
 	        };
-	        canvas.ontouchend = canvas.ontouchcancel = function(){
-	            resolveMouseUp();
+	        canvas.ontouchend = canvas.ontouchcancel = function(e){
+	            for (var i= 0,l= e.touches.length;i<l;i++) {
+	                resolveMouseUp(e.touches[i],e.touches[i].identifier);
+	            }
 	        };
 	        canvas.ontouchmove = function(e){
-	            resolveMouseMove(e.touches[0]);
+	            for (var i= 0,l= e.touches.length;i<l;i++) {
+	                resolveMouseMove(e.touches[i],e.touches[i].identifier);
+	            }
 	        }
 	    } else {
 	        canvas.onmousedown = function(e){
-	            resolveClick(e);
+	            resolveClick(e,0);
 	        };
-	        canvas.onmouseup = function(){
-	            resolveMouseUp();
+	        canvas.onmouseup = function(e){
+	            resolveMouseUp(e,0);
 	        };
 	        canvas.onmousemove = function(e){
-	            resolveMouseMove(e);
+	            resolveMouseMove(e,0);
 	        }
 	    }
 	
@@ -476,8 +492,8 @@ modules['mouse'] = {code: function(module,exports){
 	        };
 	    };
 	
-	    var resolveClick = function(e){
-	        self.isMouseDown = true;
+	    var resolveClick = function(e,id){
+	
 	        var scene = sceneManager.getCurrScene();
 	        if (!scene) return;
 	        var point = resolveScreenPoint(e);
@@ -491,9 +507,10 @@ modules['mouse'] = {code: function(module,exports){
 	                        screenX:point.x,
 	                        screenY:point.y,
 	                        objectX:point.x - g.posX,
-	                        objectY:point.y - g.posY
+	                        objectY:point.y - g.posY,
+	                        id:id
 	                    });
-	                    return found = true;
+	                    found = true;
 	                }
 	            });
 	            return found;
@@ -501,17 +518,24 @@ modules['mouse'] = {code: function(module,exports){
 	
 	    };
 	
-	    var resolveMouseMove = function(e){
+	    var resolveMouseMove = function(e,id){
 	        var scene = sceneManager.getCurrScene();
 	        var point = resolveScreenPoint(e);
 	        scene.trigger('mouseMove',{
 	            screenX: point.x,
-	            screenY: point.y
+	            screenY: point.y,
+	            id:id
 	        });
 	    };
 	
-	    var resolveMouseUp = function(){
-	        self.isMouseDown = false;
+	    var resolveMouseUp = function(e,id){
+	        var scene = sceneManager.getCurrScene();
+	        var point = resolveScreenPoint(e);
+	        scene.trigger('mouseUp',{
+	            screenX: point.x,
+	            screenY: point.y,
+	            id:id
+	        });
 	    };
 	
 	};
@@ -1749,6 +1773,64 @@ modules['bundle'] = {code: function(module,exports){
 	                "angle": 0,
 	                "protoId": "8689_6539_95",
 	                "id": "8067_9107_96"
+	            },
+	            {
+	                "spriteSheetId": "3115_2954_94",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "rocket",
+	                "width": 39,
+	                "height": 68,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": [],
+	                        "description": "",
+	                        "id": "1364_4760_28",
+	                        "type": "commonBehaviour"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 1,
+	                "groupName": "",
+	                "posX": 194,
+	                "posY": 93,
+	                "angle": 0,
+	                "protoId": "8689_6539_95",
+	                "id": "2882_6373_78"
+	            },
+	            {
+	                "spriteSheetId": "3115_2954_94",
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "rocket",
+	                "width": 39,
+	                "height": 68,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "draggable",
+	                        "parameters": [],
+	                        "description": "",
+	                        "id": "1364_4760_28",
+	                        "type": "commonBehaviour"
+	                    }
+	                ],
+	                "velX": 0,
+	                "velY": 0,
+	                "frameAnimationIds": [],
+	                "rigid": 1,
+	                "groupName": "",
+	                "posX": 262,
+	                "posY": 297,
+	                "angle": 0,
+	                "protoId": "8689_6539_95",
+	                "id": "6708_1735_79"
 	            }
 	        ],
 	        "id": "0544_3465_92"
@@ -1839,7 +1921,6 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    var processScreenSize = function(){
 	        var gameProps = bundle.gameProps;
-	        gameProps.globalScale = {};
 	        switch (+gameProps.scaleStrategy) {
 	            case SCALE_STRATEGY.NO_SCALE:
 	                var w = window.innerWidth*deviceScale;
@@ -1942,6 +2023,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    this.manage = function(){
 	        var gameProps = bundle.gameProps;
+	        gameProps.globalScale = {};
 	        processScreenSize();
 	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
 	    };
@@ -2348,12 +2430,12 @@ modules['math'] = {code: function(module,exports){
 	var Vec2 = require('vec2').Vec2;
 	
 	exports.isPointInRect = function(point,rect,angle) {
-	    if (angle) {
-	        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
-	        vec2.setAngle(vec2.getAngle() - angle);
-	        point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
-	
-	    }
+	    //if (angle) {
+	    //    var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+	    //    vec2.setAngle(vec2.getAngle() - angle);
+	    //    point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+	    //
+	    //}
 	    var res =  point.x>rect.x &&
 	        point.x<(rect.x+rect.width) &&
 	        point.y>rect.y &&
@@ -3324,10 +3406,12 @@ modules['glContext'] = {code: function(module,exports){
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
+	    var gameProps;
 	    this.colorBG = [0,0,0];
 	
 	    this.init = function(canvas){
 	
+	        gameProps = bundle.gameProps;
 	        gl = canvas.getContext("webgl",{ alpha: false });
 	        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
 	        shader.bind();
@@ -3352,7 +3436,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -3447,7 +3531,7 @@ modules['glContext'] = {code: function(module,exports){
 	        //console.log(gameProps);
 	        shader.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
-	                bundle.gameProps.width,bundle.gameProps.height,1,1
+	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
 	
@@ -3501,7 +3585,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.beginFrameBuffer = function(){
 	        this.save();
-	        gl.viewport(0, 0, bundle.gameProps.width, bundle.gameProps.height);
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
 	        frameBuffer.bind();
 	    };
 	
@@ -3509,20 +3593,19 @@ modules['glContext'] = {code: function(module,exports){
 	        currTex = null;
 	        this.restore();
 	        this.save();
-	        this.translate(0,bundle.gameProps.canvasHeight);
+	        this.translate(0,gameProps.canvasHeight);
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
-	        gl.viewport(0, 0, bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
-	        var gameProps = bundle.gameProps;
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -3530,8 +3613,8 @@ modules['glContext'] = {code: function(module,exports){
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -3539,8 +3622,8 @@ modules['glContext'] = {code: function(module,exports){
 	
 	        shader.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
-	                0,0,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
-	                bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
 	            )
 	        );
 	

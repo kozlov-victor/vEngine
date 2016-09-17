@@ -2398,7 +2398,6 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    var processScreenSize = function(){
 	        var gameProps = bundle.gameProps;
-	        gameProps.globalScale = {};
 	        switch (+gameProps.scaleStrategy) {
 	            case SCALE_STRATEGY.NO_SCALE:
 	                var w = window.innerWidth*deviceScale;
@@ -2501,6 +2500,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    this.manage = function(){
 	        var gameProps = bundle.gameProps;
+	        gameProps.globalScale = {};
 	        processScreenSize();
 	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
 	    };
@@ -2907,12 +2907,12 @@ modules['math'] = {code: function(module,exports){
 	var Vec2 = require('vec2').Vec2;
 	
 	exports.isPointInRect = function(point,rect,angle) {
-	    if (angle) {
-	        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
-	        vec2.setAngle(vec2.getAngle() - angle);
-	        point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
-	
-	    }
+	    //if (angle) {
+	    //    var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+	    //    vec2.setAngle(vec2.getAngle() - angle);
+	    //    point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+	    //
+	    //}
 	    var res =  point.x>rect.x &&
 	        point.x<(rect.x+rect.width) &&
 	        point.y>rect.y &&
@@ -3883,10 +3883,12 @@ modules['glContext'] = {code: function(module,exports){
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
+	    var gameProps;
 	    this.colorBG = [0,0,0];
 	
 	    this.init = function(canvas){
 	
+	        gameProps = bundle.gameProps;
 	        gl = canvas.getContext("webgl",{ alpha: false });
 	        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
 	        shader.bind();
@@ -3911,7 +3913,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -4006,7 +4008,7 @@ modules['glContext'] = {code: function(module,exports){
 	        //console.log(gameProps);
 	        shader.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
-	                bundle.gameProps.width,bundle.gameProps.height,1,1
+	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
 	
@@ -4060,7 +4062,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.beginFrameBuffer = function(){
 	        this.save();
-	        gl.viewport(0, 0, bundle.gameProps.width, bundle.gameProps.height);
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
 	        frameBuffer.bind();
 	    };
 	
@@ -4068,20 +4070,19 @@ modules['glContext'] = {code: function(module,exports){
 	        currTex = null;
 	        this.restore();
 	        this.save();
-	        this.translate(0,bundle.gameProps.canvasHeight);
+	        this.translate(0,gameProps.canvasHeight);
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
-	        gl.viewport(0, 0, bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
-	        var gameProps = bundle.gameProps;
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -4089,8 +4090,8 @@ modules['glContext'] = {code: function(module,exports){
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -4098,8 +4099,8 @@ modules['glContext'] = {code: function(module,exports){
 	
 	        shader.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
-	                0,0,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
-	                bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
 	            )
 	        );
 	

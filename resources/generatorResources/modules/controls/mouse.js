@@ -8,29 +8,34 @@ var deviceScale = require('device').deviceScale;
 var Mouse = function(){
 
     var self = this;
-    self.isMouseDown = false;
     var globalScale = bundle.gameProps.globalScale;
     var canvas = renderer.getCanvas();
 
     if ('ontouchstart' in window) {
         canvas.ontouchstart = function(e){
-            resolveClick(e.touches[0]);
+            for (var i= 0,l= e.touches.length;i<l;i++) {
+                resolveClick(e.touches[i],e.touches[i].identifier);
+            }
         };
-        canvas.ontouchend = canvas.ontouchcancel = function(){
-            resolveMouseUp();
+        canvas.ontouchend = canvas.ontouchcancel = function(e){
+            for (var i= 0,l= e.touches.length;i<l;i++) {
+                resolveMouseUp(e.touches[i],e.touches[i].identifier);
+            }
         };
         canvas.ontouchmove = function(e){
-            resolveMouseMove(e.touches[0]);
+            for (var i= 0,l= e.touches.length;i<l;i++) {
+                resolveMouseMove(e.touches[i],e.touches[i].identifier);
+            }
         }
     } else {
         canvas.onmousedown = function(e){
-            resolveClick(e);
+            resolveClick(e,0);
         };
-        canvas.onmouseup = function(){
-            resolveMouseUp();
+        canvas.onmouseup = function(e){
+            resolveMouseUp(e,0);
         };
         canvas.onmousemove = function(e){
-            resolveMouseMove(e);
+            resolveMouseMove(e,0);
         }
     }
 
@@ -41,8 +46,8 @@ var Mouse = function(){
         };
     };
 
-    var resolveClick = function(e){
-        self.isMouseDown = true;
+    var resolveClick = function(e,id){
+
         var scene = sceneManager.getCurrScene();
         if (!scene) return;
         var point = resolveScreenPoint(e);
@@ -56,9 +61,10 @@ var Mouse = function(){
                         screenX:point.x,
                         screenY:point.y,
                         objectX:point.x - g.posX,
-                        objectY:point.y - g.posY
+                        objectY:point.y - g.posY,
+                        id:id
                     });
-                    return found = true;
+                    found = true;
                 }
             });
             return found;
@@ -66,17 +72,24 @@ var Mouse = function(){
 
     };
 
-    var resolveMouseMove = function(e){
+    var resolveMouseMove = function(e,id){
         var scene = sceneManager.getCurrScene();
         var point = resolveScreenPoint(e);
         scene.trigger('mouseMove',{
             screenX: point.x,
-            screenY: point.y
+            screenY: point.y,
+            id:id
         });
     };
 
-    var resolveMouseUp = function(){
-        self.isMouseDown = false;
+    var resolveMouseUp = function(e,id){
+        var scene = sceneManager.getCurrScene();
+        var point = resolveScreenPoint(e);
+        scene.trigger('mouseUp',{
+            screenX: point.x,
+            screenY: point.y,
+            id:id
+        });
     };
 
 };

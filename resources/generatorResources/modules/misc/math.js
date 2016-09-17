@@ -1,12 +1,12 @@
 var Vec2 = require('vec2').Vec2;
 
 exports.isPointInRect = function(point,rect,angle) {
-    if (angle) {
-        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
-        vec2.setAngle(vec2.getAngle() - angle);
-        point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
-
-    }
+    //if (angle) {
+    //    var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+    //    vec2.setAngle(vec2.getAngle() - angle);
+    //    point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+    //
+    //}
     var res =  point.x>rect.x &&
         point.x<(rect.x+rect.width) &&
         point.y>rect.y &&
