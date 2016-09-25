@@ -966,10 +966,12 @@ window.app.
 
 
         s.editGameObjectFromRightMenu = function(obj){
-            var fnt = bundle.fontList.find({id:obj.fontId});
-            s.editData.currSceneGameObjectInEdit._font = fnt;
-            s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
-            obj.setText(obj.text);
+            if (obj.fontId) {
+                var fnt = bundle.fontList.find({id:obj.fontId});
+                s.editData.currSceneGameObjectInEdit._font = fnt;
+                s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
+                obj.setText(obj.text);
+            }
             resourceDao.createOrEditObjectInResource(
                 editData.currLayerInEdit.type,
                 editData.currLayerInEdit.protoId,
@@ -1598,7 +1600,8 @@ window.app
                 description: 'description',
                 colorBG:'scene background color',
                 useBG:'use background color',
-                angle:'angle'
+                angle:'angle',
+                tileMap: 'tile map'
             }
         };
 
@@ -1692,7 +1695,7 @@ app
                     response.commonBehaviour.forEach(function(cb){
                         editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.clear().add(new models.TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
@@ -2173,6 +2176,16 @@ window.app
 
 ;
 
+
+app.filter('cutStr', function() {
+    return function(val){
+        if (!val) return '';
+        var n = 3;
+        val=val.toString();
+        if (val.length>n) val = val.substr(0,n)+'...';
+        return val;
+    }
+});
 
 app.filter('toFixed', function() {
     return function(val){

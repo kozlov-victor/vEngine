@@ -338,7 +338,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	function onCreate() {
-	    var hel = self.getScene().findGameObject('helicopter');
+	    var hel = self.getScene().find('helicopter');
 	    self.on('click',function(e){
 	        if (isTouched) return;
 	        isTouched = true;
@@ -368,15 +368,21 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scripts.scene['main.js'] = function(exports,self){
 	    
-	var psBurn = require('bundle').instance().particleSystemList.find({name:'rain'});
+	var tf;
+	var fps;
 	
 	function onCreate() {
-	
+	    tf = self.find('textField1');
+	    console.log(tf);
+	    setInterval(function(){
+	        tf.setText('fps:'+fps);
+	        fps = 0;
+	    },1000);
+	    
 	}
 	
 	function onUpdate(time) {
-	    var rnd = Math.random()*100;
-	    //if (rnd<50) psBurn.emit(200,200);
+	    fps++;
 	}
 	
 	function onDestroy() {
@@ -878,1034 +884,1034 @@ modules['bundle'] = {code: function(module,exports){
 	        "fontContext": {
 	            "symbols": {
 	                "0": {
-	                    "x": 240,
+	                    "x": 144,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "1": {
-	                    "x": 255,
+	                    "x": 153,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "2": {
-	                    "x": 270,
+	                    "x": 162,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "3": {
-	                    "x": 285,
+	                    "x": 171,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "4": {
-	                    "x": 301,
+	                    "x": 180,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "5": {
-	                    "x": 0,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 189,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "6": {
-	                    "x": 15,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 198,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "7": {
-	                    "x": 30,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 207,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "8": {
-	                    "x": 45,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 216,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "9": {
-	                    "x": 60,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 225,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                " ": {
 	                    "x": 0,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "!": {
-	                    "x": 15,
+	                    "x": 9,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "\"": {
-	                    "x": 30,
+	                    "x": 18,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "#": {
-	                    "x": 45,
+	                    "x": 27,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "$": {
-	                    "x": 60,
+	                    "x": 36,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "%": {
-	                    "x": 75,
+	                    "x": 45,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "&": {
-	                    "x": 90,
+	                    "x": 54,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "'": {
-	                    "x": 105,
+	                    "x": 63,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "(": {
-	                    "x": 120,
+	                    "x": 72,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                ")": {
-	                    "x": 135,
+	                    "x": 81,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "*": {
-	                    "x": 150,
+	                    "x": 90,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "+": {
-	                    "x": 165,
+	                    "x": 99,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                ",": {
-	                    "x": 180,
+	                    "x": 108,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "-": {
-	                    "x": 195,
+	                    "x": 117,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                ".": {
-	                    "x": 210,
+	                    "x": 126,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "/": {
-	                    "x": 225,
+	                    "x": 135,
 	                    "y": 0,
-	                    "width": 15,
-	                    "height": 29
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                ":": {
-	                    "x": 75,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 234,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                ";": {
-	                    "x": 90,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 243,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "<": {
-	                    "x": 105,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 252,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "=": {
-	                    "x": 120,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 261,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                ">": {
-	                    "x": 135,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 270,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "?": {
-	                    "x": 150,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 279,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "@": {
-	                    "x": 165,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 288,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "A": {
-	                    "x": 180,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 298,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "B": {
-	                    "x": 195,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 307,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "C": {
-	                    "x": 210,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 0,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "D": {
-	                    "x": 225,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 9,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "E": {
-	                    "x": 240,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 18,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "F": {
-	                    "x": 255,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 27,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "G": {
-	                    "x": 270,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 36,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "H": {
-	                    "x": 285,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 45,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "I": {
-	                    "x": 301,
-	                    "y": 29,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 54,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "J": {
-	                    "x": 0,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 63,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "K": {
-	                    "x": 15,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 72,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "L": {
-	                    "x": 30,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 81,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "M": {
-	                    "x": 45,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 90,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "N": {
-	                    "x": 60,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 99,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "O": {
-	                    "x": 75,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 108,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "P": {
-	                    "x": 90,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 117,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Q": {
-	                    "x": 105,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 126,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "R": {
-	                    "x": 120,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 135,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "S": {
-	                    "x": 135,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 144,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "T": {
-	                    "x": 150,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 153,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "U": {
-	                    "x": 165,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 162,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "V": {
-	                    "x": 180,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 171,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "W": {
-	                    "x": 195,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 180,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "X": {
-	                    "x": 210,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 189,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Y": {
-	                    "x": 225,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 198,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Z": {
-	                    "x": 240,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 207,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "[": {
-	                    "x": 255,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 216,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "\\": {
-	                    "x": 270,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 225,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "]": {
-	                    "x": 285,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 234,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "^": {
-	                    "x": 301,
-	                    "y": 58,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 243,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "_": {
-	                    "x": 0,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 252,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "`": {
-	                    "x": 15,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 261,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "a": {
-	                    "x": 30,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 270,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "b": {
-	                    "x": 45,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 279,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "c": {
-	                    "x": 60,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 288,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "d": {
-	                    "x": 75,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 298,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "e": {
-	                    "x": 90,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 307,
+	                    "y": 18,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "f": {
-	                    "x": 105,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 0,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "g": {
-	                    "x": 120,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 9,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "h": {
-	                    "x": 135,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 18,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "i": {
-	                    "x": 150,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 27,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "j": {
-	                    "x": 165,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 36,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "k": {
-	                    "x": 180,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 45,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "l": {
-	                    "x": 195,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 54,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "m": {
-	                    "x": 210,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 63,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "n": {
-	                    "x": 225,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 72,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "o": {
-	                    "x": 240,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 81,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "p": {
-	                    "x": 255,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 90,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "q": {
-	                    "x": 270,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 99,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "r": {
-	                    "x": 285,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 108,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "s": {
-	                    "x": 301,
-	                    "y": 87,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 117,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "t": {
-	                    "x": 0,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 126,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "u": {
-	                    "x": 15,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 135,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "v": {
-	                    "x": 30,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 144,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "w": {
-	                    "x": 45,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 153,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "x": {
-	                    "x": 60,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 162,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "y": {
-	                    "x": 75,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 171,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "z": {
-	                    "x": 90,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 180,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "{": {
-	                    "x": 105,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 189,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "|": {
-	                    "x": 120,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 198,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "}": {
-	                    "x": 135,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 207,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "~": {
-	                    "x": 150,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 216,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "А": {
-	                    "x": 165,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 225,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Б": {
-	                    "x": 180,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 234,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "В": {
-	                    "x": 195,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 243,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Г": {
-	                    "x": 210,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 252,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Д": {
-	                    "x": 225,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 261,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Е": {
-	                    "x": 240,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 270,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ж": {
-	                    "x": 255,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 279,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "З": {
-	                    "x": 270,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 288,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "И": {
-	                    "x": 285,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 298,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Й": {
-	                    "x": 301,
-	                    "y": 116,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 307,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "К": {
 	                    "x": 0,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Л": {
-	                    "x": 15,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 9,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "М": {
-	                    "x": 30,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 18,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Н": {
-	                    "x": 45,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 27,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "О": {
-	                    "x": 60,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 36,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "П": {
-	                    "x": 75,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 45,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Р": {
-	                    "x": 90,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 54,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "С": {
-	                    "x": 105,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 63,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Т": {
-	                    "x": 120,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 72,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "У": {
-	                    "x": 135,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 81,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ф": {
-	                    "x": 150,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 90,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Х": {
-	                    "x": 165,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 99,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ц": {
-	                    "x": 180,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 108,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ч": {
-	                    "x": 195,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 117,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ш": {
-	                    "x": 210,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 126,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Щ": {
-	                    "x": 225,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 135,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ъ": {
-	                    "x": 240,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 144,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ы": {
-	                    "x": 255,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 153,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ь": {
-	                    "x": 270,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 162,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Э": {
-	                    "x": 285,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 171,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Ю": {
-	                    "x": 301,
-	                    "y": 145,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 180,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "Я": {
-	                    "x": 0,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 189,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "а": {
-	                    "x": 15,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 198,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "б": {
-	                    "x": 30,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 207,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "в": {
-	                    "x": 45,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 216,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "г": {
-	                    "x": 60,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 225,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "д": {
-	                    "x": 75,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 234,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "е": {
-	                    "x": 90,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 243,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ж": {
-	                    "x": 105,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 252,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "з": {
-	                    "x": 120,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 261,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "и": {
-	                    "x": 135,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 270,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "й": {
-	                    "x": 150,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 279,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "к": {
-	                    "x": 165,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 288,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "л": {
-	                    "x": 180,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 298,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "м": {
-	                    "x": 195,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 307,
+	                    "y": 54,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "н": {
-	                    "x": 210,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 0,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "о": {
-	                    "x": 225,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 9,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "п": {
-	                    "x": 240,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 18,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "р": {
-	                    "x": 255,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 27,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "с": {
-	                    "x": 270,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 36,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "т": {
-	                    "x": 285,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 45,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "у": {
-	                    "x": 301,
-	                    "y": 174,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 54,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ф": {
-	                    "x": 0,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 63,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "х": {
-	                    "x": 15,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 72,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ц": {
-	                    "x": 30,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 81,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ч": {
-	                    "x": 45,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 90,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ш": {
-	                    "x": 60,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 99,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "щ": {
-	                    "x": 75,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 108,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ъ": {
-	                    "x": 90,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 117,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ы": {
-	                    "x": 105,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 126,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ь": {
-	                    "x": 120,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 135,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "э": {
-	                    "x": 135,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 144,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ю": {
-	                    "x": 150,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 153,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "я": {
-	                    "x": 165,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 162,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ѐ": {
-	                    "x": 180,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 171,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ё": {
-	                    "x": 195,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 180,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ђ": {
-	                    "x": 210,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 189,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ѓ": {
-	                    "x": 225,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 198,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "є": {
-	                    "x": 240,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 207,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ѕ": {
-	                    "x": 255,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 216,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "і": {
-	                    "x": 270,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 225,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ї": {
-	                    "x": 285,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 234,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ј": {
-	                    "x": 301,
-	                    "y": 203,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 243,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "љ": {
-	                    "x": 0,
-	                    "y": 232,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 252,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "њ": {
-	                    "x": 15,
-	                    "y": 232,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 261,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                },
 	                "ћ": {
-	                    "x": 30,
-	                    "y": 232,
-	                    "width": 15,
-	                    "height": 29
+	                    "x": 270,
+	                    "y": 72,
+	                    "width": 9,
+	                    "height": 18
 	                }
 	            },
 	            "width": 320,
-	            "height": 261
+	            "height": 90
 	        },
 	        "type": "font",
 	        "fontColor": [
@@ -1913,7 +1919,7 @@ modules['bundle'] = {code: function(module,exports){
 	            237,
 	            122
 	        ],
-	        "fontSize": 25,
+	        "fontSize": 15,
 	        "fontFamily": "Monospace",
 	        "resourcePath": "resources/font/default.png",
 	        "id": "6991_3497_4"
@@ -2057,7 +2063,7 @@ modules['bundle'] = {code: function(module,exports){
 	                "rigid": 1,
 	                "groupName": "",
 	                "posX": 7,
-	                "posY": 9,
+	                "posY": 8,
 	                "protoId": "6612_6223_73",
 	                "id": "2294_3548_79",
 	                "angle": 0
@@ -2085,40 +2091,11 @@ modules['bundle'] = {code: function(module,exports){
 	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 40,
-	                "posY": 217,
+	                "posX": 103,
+	                "posY": 218,
 	                "angle": 0,
 	                "protoId": "9702_0577_60",
 	                "id": "6903_4411_43"
-	            },
-	            {
-	                "spriteSheetId": "0015_4316_59",
-	                "currFrameIndex": 0,
-	                "_sprPosX": 0,
-	                "_sprPosY": 0,
-	                "name": "rocket",
-	                "width": 39,
-	                "height": 68,
-	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "draggable",
-	                        "parameters": [],
-	                        "description": "",
-	                        "id": "8291_8868_82",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "velX": 0,
-	                "velY": 0,
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "posX": 100,
-	                "posY": 217,
-	                "angle": 0,
-	                "protoId": "9702_0577_60",
-	                "id": "6695_0703_52"
 	            },
 	            {
 	                "spriteSheetId": "0015_4316_59",
@@ -2198,6 +2175,20 @@ modules['bundle'] = {code: function(module,exports){
 	                "angle": 0,
 	                "protoId": "9702_0577_60",
 	                "id": "3682_8055_65"
+	            },
+	            {
+	                "height": 18,
+	                "text": "",
+	                "width": 0,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "posX": 411,
+	                "posY": 15,
+	                "angle": 0,
+	                "name": "textField1",
+	                "protoId": null,
+	                "id": "4014_8847_127"
 	            }
 	        ],
 	        "id": "7822_6900_77"
@@ -2339,7 +2330,7 @@ modules['bundle'] = {code: function(module,exports){
 	    "width": 500,
 	    "height": 300,
 	    "scaleToFullScreen": false,
-	    "scaleStrategy": "2"
+	    "scaleStrategy": "1"
 	}
 	
 	};
@@ -2398,7 +2389,6 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    var processScreenSize = function(){
 	        var gameProps = bundle.gameProps;
-	        gameProps.globalScale = {};
 	        switch (+gameProps.scaleStrategy) {
 	            case SCALE_STRATEGY.NO_SCALE:
 	                var w = window.innerWidth*deviceScale;
@@ -2501,6 +2491,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	
 	    this.manage = function(){
 	        var gameProps = bundle.gameProps;
+	        gameProps.globalScale = {};
 	        processScreenSize();
 	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
 	    };
@@ -3096,6 +3087,7 @@ modules['collections'] = {code: function(module,exports){
 	    this.rs = [];
 	    this.add = function (r) {
 	        self.rs.push(r);
+	        return self;
 	    };
 	    this.addAll = function (list) {
 	        list.forEach(function(itm){
@@ -3122,6 +3114,7 @@ modules['collections'] = {code: function(module,exports){
 	    };
 	    this.clear = function(){
 	        self.rs = [];
+	        return self;
 	    };
 	    this.forEach = function(callback){
 	        for (var i = 0,l=this.rs.length;i<l;i++){
@@ -3290,8 +3283,6 @@ modules['models'] = {code: function(module,exports){
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
 	    }
 	});
-	
-	exports.Behaviour = exports.BaseModel.extend({});
 	
 	var Resource = exports.BaseModel.extend({
 	    resourcePath:''
@@ -3539,7 +3530,7 @@ modules['models'] = {code: function(module,exports){
 	        });
 	        return dataSet;
 	    },
-	    findGameObject: function(name){
+	    find: function(name){
 	        return this._allGameObjects.find({name:name});
 	    },
 	    getAllGameObjects:function(){
@@ -3574,12 +3565,20 @@ modules['models'] = {code: function(module,exports){
 	            text+='';
 	            this._chars = [];
 	            this.text = text;
-	            this.width = 0;
+	            var rows = [{width:0}];
+	            var currRowIndex = 0;
 	            for (var i=0,max=text.length;i<max;i++) {
 	                this._chars.push(text[i]);
 	                var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
-	                this.width+=currSymbolInFont.width;
+	                if (text[i]=='\n') {
+	                    currRowIndex++;
+	                    this.height+=currSymbolInFont.height;
+	                    rows[currRowIndex] = {width:0};
+	                } else {
+	                    rows[currRowIndex].width+=currSymbolInFont.width;
+	                }
 	            }
+	            this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
 	        },
 	        setFont: function(font){
 	            this._font = font;
@@ -3602,10 +3601,16 @@ modules['models'] = {code: function(module,exports){
 	        },
 	        _render: function(){
 	            var posX = this.posX;
+	            var oldPosX = posX;
 	            var posY = this.posY;
 	            var self = this;
 	            this._chars.forEach(function(ch){
 	                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+	                if (ch=='\n') {
+	                    posX = oldPosX;
+	                    posY+= charInCtx.height;
+	                    return;
+	                }
 	                renderer.getContext().drawImage(
 	                    self._spriteSheet._textureInfo,
 	                    charInCtx.x,
@@ -3883,10 +3888,12 @@ modules['glContext'] = {code: function(module,exports){
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
+	    var gameProps;
 	    this.colorBG = [0,0,0];
 	
 	    this.init = function(canvas){
 	
+	        gameProps = bundle.gameProps;
 	        gl = canvas.getContext("webgl",{ alpha: false });
 	        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
 	        shader.bind();
@@ -3911,7 +3918,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -4006,7 +4013,7 @@ modules['glContext'] = {code: function(module,exports){
 	        //console.log(gameProps);
 	        shader.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
-	                bundle.gameProps.width,bundle.gameProps.height,1,1
+	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
 	
@@ -4060,7 +4067,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.beginFrameBuffer = function(){
 	        this.save();
-	        gl.viewport(0, 0, bundle.gameProps.width, bundle.gameProps.height);
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
 	        frameBuffer.bind();
 	    };
 	
@@ -4068,20 +4075,19 @@ modules['glContext'] = {code: function(module,exports){
 	        currTex = null;
 	        this.restore();
 	        this.save();
-	        this.translate(0,bundle.gameProps.canvasHeight);
+	        this.translate(0,gameProps.canvasHeight);
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
-	        gl.viewport(0, 0, bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
-	        var gameProps = bundle.gameProps;
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -4089,8 +4095,8 @@ modules['glContext'] = {code: function(module,exports){
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -4098,8 +4104,8 @@ modules['glContext'] = {code: function(module,exports){
 	
 	        shader.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
-	                0,0,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
-	                bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
 	            )
 	        );
 	

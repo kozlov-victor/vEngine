@@ -247,12 +247,21 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scripts.scene['s.js'] = function(exports,self){
 	    
-	function onCreate() {
+	var tf;
+	var fps = 0;
 	
+	function onCreate() {
+	    tf = self.find('textField1');
+	    console.log(tf);
+	    setInterval(function(){
+	        tf.setText('fps:'+fps);
+	        fps = 0;
+	    },1000);
+	    
 	}
 	
 	function onUpdate(time) {
-	
+	    fps++;
 	}
 	
 	function onDestroy() {
@@ -1751,8 +1760,8 @@ modules['bundle'] = {code: function(module,exports){
 	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 70,
-	                "posY": 121,
+	                "posX": 206,
+	                "posY": 208,
 	                "angle": 0,
 	                "protoId": "8689_6539_95",
 	                "id": "8067_9107_96"
@@ -1780,8 +1789,8 @@ modules['bundle'] = {code: function(module,exports){
 	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 248,
-	                "posY": 201,
+	                "posX": 118,
+	                "posY": 235,
 	                "angle": 0,
 	                "protoId": "8689_6539_95",
 	                "id": "9986_2543_84"
@@ -1809,11 +1818,26 @@ modules['bundle'] = {code: function(module,exports){
 	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
-	                "posX": 275,
-	                "posY": 82,
+	                "posX": 307,
+	                "posY": 181,
 	                "angle": 0,
 	                "protoId": "8689_6539_95",
 	                "id": "9519_5092_85"
+	            },
+	            {
+	                "height": 29,
+	                "text": "123\n23",
+	                "width": 90,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "posX": 38,
+	                "posY": 25,
+	                "angle": 0,
+	                "name": "textField1",
+	                "protoId": {},
+	                "id": "4288_6989_114",
+	                "fontId": "6991_3497_4"
 	            }
 	        ],
 	        "id": "0544_3465_92"
@@ -1832,11 +1856,12 @@ modules['bundle'] = {code: function(module,exports){
 	            }
 	        ],
 	        "colorBG": [
-	            255,
-	            255,
-	            255
+	            220,
+	            217,
+	            230
 	        ],
-	        "id": "8195_8237_91"
+	        "id": "8195_8237_91",
+	        "useBG": 1
 	    }
 	],
 	
@@ -2602,6 +2627,7 @@ modules['collections'] = {code: function(module,exports){
 	    this.rs = [];
 	    this.add = function (r) {
 	        self.rs.push(r);
+	        return self;
 	    };
 	    this.addAll = function (list) {
 	        list.forEach(function(itm){
@@ -2628,6 +2654,7 @@ modules['collections'] = {code: function(module,exports){
 	    };
 	    this.clear = function(){
 	        self.rs = [];
+	        return self;
 	    };
 	    this.forEach = function(callback){
 	        for (var i = 0,l=this.rs.length;i<l;i++){
@@ -2796,8 +2823,6 @@ modules['models'] = {code: function(module,exports){
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
 	    }
 	});
-	
-	exports.Behaviour = exports.BaseModel.extend({});
 	
 	var Resource = exports.BaseModel.extend({
 	    resourcePath:''
@@ -3045,7 +3070,7 @@ modules['models'] = {code: function(module,exports){
 	        });
 	        return dataSet;
 	    },
-	    findGameObject: function(name){
+	    find: function(name){
 	        return this._allGameObjects.find({name:name});
 	    },
 	    getAllGameObjects:function(){
@@ -3080,12 +3105,20 @@ modules['models'] = {code: function(module,exports){
 	            text+='';
 	            this._chars = [];
 	            this.text = text;
-	            this.width = 0;
+	            var rows = [{width:0}];
+	            var currRowIndex = 0;
 	            for (var i=0,max=text.length;i<max;i++) {
 	                this._chars.push(text[i]);
 	                var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
-	                this.width+=currSymbolInFont.width;
+	                if (text[i]=='\n') {
+	                    currRowIndex++;
+	                    this.height+=currSymbolInFont.height;
+	                    rows[currRowIndex] = {width:0};
+	                } else {
+	                    rows[currRowIndex].width+=currSymbolInFont.width;
+	                }
 	            }
+	            this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
 	        },
 	        setFont: function(font){
 	            this._font = font;
@@ -3108,10 +3141,16 @@ modules['models'] = {code: function(module,exports){
 	        },
 	        _render: function(){
 	            var posX = this.posX;
+	            var oldPosX = posX;
 	            var posY = this.posY;
 	            var self = this;
 	            this._chars.forEach(function(ch){
 	                var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+	                if (ch=='\n') {
+	                    posX = oldPosX;
+	                    posY+= charInCtx.height;
+	                    return;
+	                }
 	                renderer.getContext().drawImage(
 	                    self._spriteSheet._textureInfo,
 	                    charInCtx.x,
@@ -3389,10 +3428,12 @@ modules['glContext'] = {code: function(module,exports){
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
+	    var gameProps;
 	    this.colorBG = [0,0,0];
 	
 	    this.init = function(canvas){
 	
+	        gameProps = bundle.gameProps;
 	        gl = canvas.getContext("webgl",{ alpha: false });
 	        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
 	        shader.bind();
@@ -3417,7 +3458,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -3512,7 +3553,7 @@ modules['glContext'] = {code: function(module,exports){
 	        //console.log(gameProps);
 	        shader.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
-	                bundle.gameProps.width,bundle.gameProps.height,1,1
+	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
 	
@@ -3566,7 +3607,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    this.beginFrameBuffer = function(){
 	        this.save();
-	        gl.viewport(0, 0, bundle.gameProps.width, bundle.gameProps.height);
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
 	        frameBuffer.bind();
 	    };
 	
@@ -3574,20 +3615,19 @@ modules['glContext'] = {code: function(module,exports){
 	        currTex = null;
 	        this.restore();
 	        this.save();
-	        this.translate(0,bundle.gameProps.canvasHeight);
+	        this.translate(0,gameProps.canvasHeight);
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
-	        gl.viewport(0, 0, bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight);
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
-	        var gameProps = bundle.gameProps;
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -3595,8 +3635,8 @@ modules['glContext'] = {code: function(module,exports){
 	            shader.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
-	                    bundle.gameProps.width, bundle.gameProps.height,
-	                    bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
 	                    mScaleX,mScaleY
 	                )
 	            );
@@ -3604,8 +3644,8 @@ modules['glContext'] = {code: function(module,exports){
 	
 	        shader.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
-	                0,0,bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight,
-	                bundle.gameProps.canvasWidth,bundle.gameProps.canvasHeight
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
 	            )
 	        );
 	

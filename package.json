@@ -3,6 +3,34 @@
   "version": "0.1.0",
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-contrib-concat": "^1.0.1"
-  }
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-less": "^1.4.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "connect-multiparty": "^2.0.0",
+    "ejs": "^2.5.2",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "fs": "0.0.1-security",
+    "node-hint": "0.0.6",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "main": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kozlov-victor/vEngine.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kozlov-victor/vEngine/issues"
+  },
+  "homepage": "https://github.com/kozlov-victor/vEngine#readme",
+  "description": ""
 }

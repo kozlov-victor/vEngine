@@ -15,18 +15,11 @@
                     >
                 </div>
             </div>
-            <div class="cell vAlign rightAlign" ng-click="showScript(item)">
-                script
-            </div>
-            <div class="cell vAlign rightAlign" ng-click="showDialog('gameObject','edit',item)">
-                edit
-            </div>
-            <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'gameObject')">
-                X
-            </div>
+            <div class="cell vAlign rightAlign script" ng-click="showScript(item)"></div>
+            <div class="cell vAlign rightAlign edit" ng-click="showDialog('gameObject','edit',item)"></div>
+            <div class="cell pointer vAlign rightAlign delete" ng-click="resourceDao.deleteResource(item.id,'gameObject')"></div>
         </div>
     </div>
-    <button ng-click="showDialog('gameObject','create')">
-        {{i18n.create}}
-    </button>
+    <div class="add" ng-click="showDialog('gameObject','create')">
+    </div>
 </div>

@@ -30,7 +30,7 @@ app
                     response.commonBehaviour.forEach(function(cb){
                         editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.clear().add(new models.TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });

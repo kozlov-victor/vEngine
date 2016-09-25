@@ -21,7 +21,7 @@
                 "rigid": 1,
                 "groupName": "",
                 "posX": 7,
-                "posY": 9,
+                "posY": 8,
                 "protoId": "6612_6223_73",
                 "id": "2294_3548_79",
                 "angle": 0
@@ -49,40 +49,11 @@
                 "frameAnimationIds": [],
                 "rigid": 1,
                 "groupName": "",
-                "posX": 40,
-                "posY": 217,
+                "posX": 103,
+                "posY": 218,
                 "angle": 0,
                 "protoId": "9702_0577_60",
                 "id": "6903_4411_43"
-            },
-            {
-                "spriteSheetId": "0015_4316_59",
-                "currFrameIndex": 0,
-                "_sprPosX": 0,
-                "_sprPosY": 0,
-                "name": "rocket",
-                "width": 39,
-                "height": 68,
-                "type": "gameObject",
-                "commonBehaviour": [
-                    {
-                        "name": "draggable",
-                        "parameters": [],
-                        "description": "",
-                        "id": "8291_8868_82",
-                        "type": "commonBehaviour"
-                    }
-                ],
-                "velX": 0,
-                "velY": 0,
-                "frameAnimationIds": [],
-                "rigid": 1,
-                "groupName": "",
-                "posX": 100,
-                "posY": 217,
-                "angle": 0,
-                "protoId": "9702_0577_60",
-                "id": "6695_0703_52"
             },
             {
                 "spriteSheetId": "0015_4316_59",
@@ -162,6 +133,35 @@
                 "angle": 0,
                 "protoId": "9702_0577_60",
                 "id": "3682_8055_65"
+            },
+            {
+                "height": 18,
+                "text": "",
+                "width": 0,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "posX": 411,
+                "posY": 15,
+                "angle": 0,
+                "name": "textField1",
+                "protoId": null,
+                "id": "4014_8847_127"
+            },
+            {
+                "height": 18,
+                "text": "",
+                "width": 0,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "posX": 37,
+                "posY": 167,
+                "angle": 0,
+                "name": "textField1",
+                "protoId": null,
+                "id": "7503_0942_45",
+                "fontId": "6991_3497_4"
             }
         ],
         "id": "7822_6900_77"

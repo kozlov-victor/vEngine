@@ -1,0 +1,195 @@
+.sideMenu h3 {
+  background-color: #aaaaaa;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px solid #8c8c8c;
+}
+
+.panel {
+  background-color: #aaaaaa;
+}
+
+.opened {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 5px solid #58585e;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: none;
+}
+
+.active {
+  outline:1px solid green;
+}
+
+.closed {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-left: 5px solid #58585e;
+  border-right: none;
+  border-bottom: 5px solid transparent;
+}
+
+.fullscreen {
+  position: fixed;
+  left:0;top:0;right:0;bottom:0;
+  z-index: 100;
+}
+
+.shadow {
+  background-color: rgba(0,0,0,0.3);
+}
+
+.dialogWrapper {
+  display: table;
+  width: 100%;
+  position: fixed;
+  left:0;top:0;right:0;bottom:0;
+  height: 100%;
+  text-align: center;
+  z-index:200;
+}
+
+.dialog {
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  width: 100%;
+}
+
+.dialogContent {
+  display: inline-block;
+  position: relative;
+  background-color: #f8f8f8;
+}
+
+.dialogClose {
+  position: absolute;
+  right: 20px;
+  top:-20px;
+  cursor:pointer;
+  z-index:2000;
+}
+
+.gameSceneWrapper {
+  max-width: calc(80vw - 20px);
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.gameScene {
+  background-color: #aaa;
+}
+
+.selected {
+  background-color: rgba(3, 158, 180, 0.31);
+  outline: 2px solid rgba(3, 158, 180, 0.31);
+}
+
+.selected2 {
+  background-color: #dbdbdb;
+}
+
+.unselected {
+  background-color: rgba(3, 158, 180, 0.08);
+}
+
+.layers {
+  background-color: #8c8c8c;
+}
+
+.table.borderedRows>.row,.table.borderedCells>.row>.cell {
+  border: 1px solid #504c4e;
+}
+
+.borderBottom {
+  border-bottom: 1px solid grey;
+}
+
+
+.triangleRight {
+  display: inline-block;
+  width:0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: none;
+  border-left: 5px solid #636363;
+}
+
+.triangleBottom {
+  display: inline-block;
+  width:0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: none;
+  border-top: 5px solid #636363;
+}
+
+.contextMenu {
+  z-index: 120;
+}
+
+.menu li:hover {
+  background-color: #cdf7ff;
+}
+
+.mainPanelCell {
+  padding: 2px;
+  box-shadow: 0 0 4px #d1d2d4;
+}
+
+.subFullScreen {
+  width: 70vw;
+  height: 70vh;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-corner       {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.narrow {
+  max-width: 50px;
+}
+
+@icons: delete, edit, script, eye, add;
+
+.for(@list, @code) {
+  & {
+    .loop(@i:1) when (@i =< length(@list)) {
+      @value: extract(@list, @i);
+
+      @code();
+
+      .loop(@i + 1);
+    }
+
+    .loop();
+  }
+}
+
+.for(@icons, {
+.@{value} {
+  background: url("../images/@{value}.png") no-repeat;
+  width: 24px;
+  height: 24px;
+}
+});

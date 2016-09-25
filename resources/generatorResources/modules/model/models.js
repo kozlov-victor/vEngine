@@ -83,8 +83,6 @@ exports.BaseModel = Class.extend({
     }
 });
 
-exports.Behaviour = exports.BaseModel.extend({});
-
 var Resource = exports.BaseModel.extend({
     resourcePath:''
 });
@@ -331,7 +329,7 @@ exports.Scene = exports.BaseModel.extend({
         });
         return dataSet;
     },
-    findGameObject: function(name){
+    find: function(name){
         return this._allGameObjects.find({name:name});
     },
     getAllGameObjects:function(){
@@ -366,12 +364,20 @@ exports.TextField = exports.BaseGameObject.extend({
             text+='';
             this._chars = [];
             this.text = text;
-            this.width = 0;
+            var rows = [{width:0}];
+            var currRowIndex = 0;
             for (var i=0,max=text.length;i<max;i++) {
                 this._chars.push(text[i]);
                 var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
-                this.width+=currSymbolInFont.width;
+                if (text[i]=='\n') {
+                    currRowIndex++;
+                    this.height+=currSymbolInFont.height;
+                    rows[currRowIndex] = {width:0};
+                } else {
+                    rows[currRowIndex].width+=currSymbolInFont.width;
+                }
             }
+            this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
         },
         setFont: function(font){
             this._font = font;
@@ -394,10 +400,16 @@ exports.TextField = exports.BaseGameObject.extend({
         },
         _render: function(){
             var posX = this.posX;
+            var oldPosX = posX;
             var posY = this.posY;
             var self = this;
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+                if (ch=='\n') {
+                    posX = oldPosX;
+                    posY+= charInCtx.height;
+                    return;
+                }
                 renderer.getContext().drawImage(
                     self._spriteSheet._textureInfo,
                     charInCtx.x,

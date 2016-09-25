@@ -144,10 +144,12 @@ window.app.
 
 
         s.editGameObjectFromRightMenu = function(obj){
-            var fnt = bundle.fontList.find({id:obj.fontId});
-            s.editData.currSceneGameObjectInEdit._font = fnt;
-            s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
-            obj.setText(obj.text);
+            if (obj.fontId) {
+                var fnt = bundle.fontList.find({id:obj.fontId});
+                s.editData.currSceneGameObjectInEdit._font = fnt;
+                s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
+                obj.setText(obj.text);
+            }
             resourceDao.createOrEditObjectInResource(
                 editData.currLayerInEdit.type,
                 editData.currLayerInEdit.protoId,

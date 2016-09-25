@@ -62,7 +62,7 @@
                             ng-style="{
                             left:item.posX+'px',
                             top: item.posY+'px',
-                            display:'inline-block',
+                            display:ch=='\n'?'block':'inline-block',
                             width:item._font.fontContext.symbols[ch].width+'px',
                             height:item._font.fontContext.symbols[ch].height+'px',
                             backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',

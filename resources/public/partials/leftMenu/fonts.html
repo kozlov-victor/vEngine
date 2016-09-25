@@ -9,16 +9,10 @@
                 <div class="cell">
 
                 </div>
-                <div class="cell vAlign rightAlign" ng-click="showDialog('font','edit',item)">
-                    edit
-                </div>
-                <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'font')">
-                    X
-                </div>
+                <div class="cell vAlign rightAlign edit" ng-click="showDialog('font','edit',item)"></div>
+                <div class="cell pointer vAlign rightAlign delete" ng-click="resourceDao.deleteResource(item.id,'font')"></div>
             </div>
         </div>
-        <button ng-click="showDialog('font','create')">
-            {{i18n.create}}
-        </button>
+        <div class="add" ng-click="showDialog('font','create')"></div>
     </form>
 </div>

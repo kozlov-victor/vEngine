@@ -14,19 +14,16 @@
                         class="row hoverable">
                     <div
                             ng-click="openProject(item)"
-                            class="cell leftText width100"
+                            class="cell leftText "
                             >
                         {{item.name}}
                     </div>
-                    <div class="cell" ng-click="showDialog('project','edit',item)">
-                        {{i18n.edit}}
+                    <div class="cell edit" ng-click="showDialog('project','edit',item)">
                     </div>
-                    <div class="cell" ng-click="deleteProject(item)">
-                        x
-                    </div>
+                    <div class="cell delete" ng-click="deleteProject(item)"></div>
                 </div>
             </div>
-            <button ng-click="showDialog('project','create')">{{i18n.create}}</button>
+            <div class="add" ng-click="showDialog('project','create')"></div>
 
         </div>
     </div>

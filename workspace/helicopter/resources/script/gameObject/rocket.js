@@ -6,7 +6,7 @@ var isTouched = false;
 
 
 function onCreate() {
-    var hel = self.getScene().findGameObject('helicopter');
+    var hel = self.getScene().find('helicopter');
     self.on('click',function(e){
         if (isTouched) return;
         isTouched = true;

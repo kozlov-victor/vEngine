@@ -4,6 +4,7 @@ exports.List = function () {
     this.rs = [];
     this.add = function (r) {
         self.rs.push(r);
+        return self;
     };
     this.addAll = function (list) {
         list.forEach(function(itm){
@@ -30,6 +31,7 @@ exports.List = function () {
     };
     this.clear = function(){
         self.rs = [];
+        return self;
     };
     this.forEach = function(callback){
         for (var i = 0,l=this.rs.length;i<l;i++){

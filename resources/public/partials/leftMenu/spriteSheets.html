@@ -9,16 +9,11 @@
                 <div class="cell vAlign">
                     <span>{{item.name}}</span>
                 </div>
-                <div class="cell vAlign rightAlign" ng-click="showDialog('spriteSheet','edit',item)">
-                    edit
-                </div>
-                <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,'spriteSheet')">
-                    X
-                </div>
+                <div class="cell vAlign rightAlign edit" ng-click="showDialog('spriteSheet','edit',item)"></div>
+                <div class="cell pointer vAlign rightAlign delete" ng-click="resourceDao.deleteResource(item.id,'spriteSheet')"></div>
             </div>
         </div>
     </div>
-    <button ng-click="showDialog('spriteSheet','create')">
-        {{i18n.addSpriteSheet}}
-    </button>
+    <div class="add" ng-click="showDialog('spriteSheet','create')">
+    </div>
 </div>

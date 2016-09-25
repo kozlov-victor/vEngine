@@ -9,16 +9,11 @@
                 <div class="cell">
 
                 </div>
-                <div class="cell vAlign rightAlign" ng-click="showDialog('particleSystem','edit',item)">
-                    edit
-                </div>
-                <div class="cell pointer vAlign rightAlign" ng-click="resourceDao.deleteResource(item.id,item.type)">
-                    X
-                </div>
+                <div class="cell vAlign rightAlign edit" ng-click="showDialog('particleSystem','edit',item)"></div>
+                <div class="cell pointer vAlign rightAlign delete" ng-click="resourceDao.deleteResource(item.id,item.type)"></div>
             </div>
         </div>
-        <button ng-click="showDialog('particleSystem','create')">
-            {{i18n.create}}
-        </button>
+        <div class="add" ng-click="showDialog('particleSystem','create')">
+        </div>
     </form>
 </div>

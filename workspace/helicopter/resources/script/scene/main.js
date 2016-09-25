@@ -1,13 +1,19 @@
 
-var psBurn = require('bundle').instance().particleSystemList.find({name:'rain'});
+var tf;
+var fps;
 
 function onCreate() {
-
+    tf = self.find('textField1');
+    console.log(tf);
+    setInterval(function(){
+        tf.setText('fps:'+fps);
+        fps = 0;
+    },1000);
+    
 }
 
 function onUpdate(time) {
-    var rnd = Math.random()*100;
-    //if (rnd<50) psBurn.emit(200,200);
+    fps++;
 }
 
 function onDestroy() {

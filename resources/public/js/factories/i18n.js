@@ -71,7 +71,8 @@ window.app
                 description: 'description',
                 colorBG:'scene background color',
                 useBG:'use background color',
-                angle:'angle'
+                angle:'angle',
+                tileMap: 'tile map'
             }
         };
 
