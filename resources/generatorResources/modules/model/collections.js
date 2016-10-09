@@ -85,7 +85,37 @@ exports.List = function () {
     };
     this.pop = function(){
         return self.rs.pop();
-    }
+    };
+    this.fromJSON = function(json,ObjTypeClass){
+        var self = this;
+        try{
+            json.forEach(function(itm){
+                self.add(new ObjTypeClass(itm));
+            });
+        } catch(e){
+            console.error(e);
+        }
+    };
+    this.toJSON = function(){
+        var newArr = [];
+        var sanitize = function(obj){
+            if (obj && obj.$$hashKey) {
+                delete obj.$$hashKey;
+            }
+            //if (!(Object.keys(obj).length && obj.length)) return;
+            if (obj.split) return;
+            for (var i in obj) {
+                if (!obj[i]) continue;
+                if (!(obj.hasOwnProperty(i))) continue;
+                sanitize(obj[i]);
+            }
+            return obj;
+        };
+        this.rs.forEach(function(itm){
+            newArr.push(sanitize(itm.toJSON()));
+        });
+        return newArr;
+    };
 };
 
 exports.Set = function(){

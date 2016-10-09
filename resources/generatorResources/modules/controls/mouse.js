@@ -41,42 +41,50 @@ var Mouse = function(){
         };
     };
 
-    var resolveClick = function(e){
-        self.isMouseDown = true;
+    var resolveEvent = function(e,name){
         var scene = sceneManager.getCurrScene();
         if (!scene) return;
         var point = resolveScreenPoint(e);
+        var isObjectCaptured = false;
         scene._layers.someReversed(function(l){
             var found = false;
             l._gameObjects.someReversed(function(g){
                 if (
                     math.isPointInRect(point,g.getRect(),g.angle)
                 ) {
-                    g.trigger('click',{
+                    g.trigger(name,{
                         screenX:point.x,
                         screenY:point.y,
                         objectX:point.x - g.posX,
                         objectY:point.y - g.posY
                     });
+                    isObjectCaptured = true;
                     return found = true;
                 }
             });
             return found;
-        })
+        });
+        if (!isObjectCaptured) {
+            scene.trigger(name,{
+                screenX:point.x,
+                screenY:point.y
+            });
+        }
+    };
 
+    var resolveClick = function(e){
+        self.isMouseDown = true;
+        resolveEvent(e,'click');
     };
 
     var resolveMouseMove = function(e){
         var scene = sceneManager.getCurrScene();
-        var point = resolveScreenPoint(e);
-        scene.trigger('mouseMove',{
-            screenX: point.x,
-            screenY: point.y
-        });
+        resolveEvent(e,'mouseMove');
     };
 
     var resolveMouseUp = function(){
         self.isMouseDown = false;
+        //resolveEvent(e,'mouseUp');
     };
 
 };

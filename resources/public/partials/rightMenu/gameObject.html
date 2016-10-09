@@ -6,8 +6,29 @@
             editData.currSceneGameObjectInEdit.type
         }}
     </h3>
-    <i>{{editData.currSceneGameObjectInEdit.subType}}</i>
+
     <div class="table width100">
+
+        <div class="row" ng-if="editData.currSceneGameObjectInEdit.subType">
+            <div class="cell">
+                subType
+            </div>
+            <div class="cell">
+                <i>{{editData.currSceneGameObjectInEdit.subType}}</i>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell">
+                name
+            </div>
+            <div class="cell">
+                <input
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        class="width100"
+                        ng-model="editData.currSceneGameObjectInEdit.name"/>
+            </div>
+        </div>
 
         <div class="row">
             <div class="cell">

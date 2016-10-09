@@ -5,6 +5,8 @@ var renderer = require('renderer',{ignoreFail:true}).instance();
 var collections = require('collections');
 var math = require('math');
 var EventEmitter = require('eventEmitter').EventEmitter;
+var tweenModule = require('tween',{ignoreFail:true});
+var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
 
 var isPropNotFit = function(el,key){
     if (!key) return true;
@@ -138,6 +140,15 @@ exports.BaseGameObject = exports.BaseModel.extend({
     },
     getScene: function(){
         return require('sceneManager').instance().getCurrScene();
+    },
+    moveTo:function(x,y,time,easeFnName){
+        var scene = this.getScene();
+        easeFnName = easeFnName || 'linear';
+        var movie = new tweenMovieModule.TweenMovie();
+        var tweenX = new tweenModule.Tween(this,'posX',this.posX,x,time,easeFnName);
+        var tweenY = new tweenModule.Tween(this,'posY',this.posY,y,time,easeFnName);
+        movie.add(0,tweenX).add(0,tweenY);
+        scene._tweenMovies.push(movie);
     },
     update: function(){},
     _render: function(){}
@@ -303,7 +314,7 @@ exports.Scene = exports.BaseModel.extend({
     _allGameObjects:null,
     useBG:false,
     colorBG:[255,255,255],
-    _twins:null,
+    _tweenMovies:null,
     __onResourcesReady: function(){
         var self = this;
         self._allGameObjects = new collections.List();
@@ -321,6 +332,7 @@ exports.Scene = exports.BaseModel.extend({
             lCloned._scene = self;
             self._layers.add(lCloned);
         });
+        self._tweenMovies = [];
     },
     getAllSpriteSheets:function() {
         var dataSet = new collections.Set();
@@ -336,10 +348,17 @@ exports.Scene = exports.BaseModel.extend({
         return this._allGameObjects;
     },
     update: function(currTime,deltaTime){
-        this._layers.forEach(function(layer){
+        var self = this;
+        self._layers.forEach(function(layer){
             layer.update(currTime,deltaTime);
         });
-        this.__updateIndividualBehaviour__(deltaTime);
+        self._tweenMovies.forEach(function(tweenMovie){
+            if (tweenMovie.completed) {
+                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
+            }
+            tweenMovie.update(currTime);
+        });
+        self.__updateIndividualBehaviour__(deltaTime);
     }
 });
 
@@ -366,6 +385,7 @@ exports.TextField = exports.BaseGameObject.extend({
             this.text = text;
             var rows = [{width:0}];
             var currRowIndex = 0;
+            this.height = this._font.fontContext.symbols[' '].height;
             for (var i=0,max=text.length;i<max;i++) {
                 this._chars.push(text[i]);
                 var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
@@ -424,9 +444,6 @@ exports.TextField = exports.BaseGameObject.extend({
                 posX+=charInCtx.width;
             });
         }
-    },
-    {
-        _cnt:0
     });
 
 exports.CommonBehaviour = exports.BaseModel.extend({

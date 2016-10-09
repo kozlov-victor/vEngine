@@ -37,6 +37,7 @@ app
         };
         this.loadProject = function(projectName){
             editData.projectName = projectName;
+            document.title = projectName;
             sessionStorage.projectName = projectName;
             Promise.
                 resolve().

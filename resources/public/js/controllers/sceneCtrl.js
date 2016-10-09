@@ -84,8 +84,16 @@ window.app.
 
             var needNewName = false;
             if (!editDataObj.name) {
-                editDataObj.name = editDataObj.subType +
-                    (++models[utils.capitalize(editDataObj.subType)]._cnt);
+                var num = 0;
+                console.log(editData.currLayerInEdit._gameObjects);
+                editData.currLayerInEdit._gameObjects.forEach(function(item){
+                    console.log('editDataObj.subType',editDataObj.subType);
+                    console.log('item.subType',item.subType);
+                    if (editDataObj.subType && item.subType==editDataObj.subType) {
+                        num++;
+                    }
+                });
+                editDataObj.name = editDataObj.subType + (num+1);
                 needNewName = true;
             }
 
