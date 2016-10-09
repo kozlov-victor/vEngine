@@ -8,19 +8,22 @@ var deviceScale = require('device').deviceScale;
 var Mouse = function(){
 
     var self = this;
-    self.isMouseDown = false;
     var globalScale = bundle.gameProps.globalScale;
     var canvas = renderer.getCanvas();
 
     if ('ontouchstart' in window) {
         canvas.ontouchstart = function(e){
-            resolveClick(e.touches[0]);
+            e.touches.forEach(function(evt){
+                resolveClick(evt);
+            });
         };
         canvas.ontouchend = canvas.ontouchcancel = function(){
             resolveMouseUp();
         };
         canvas.ontouchmove = function(e){
-            resolveMouseMove(e.touches[0]);
+            e.touches.forEach(function(evt){
+                resolveMouseMove(evt);
+            });
         }
     } else {
         canvas.onmousedown = function(e){
@@ -73,17 +76,14 @@ var Mouse = function(){
     };
 
     var resolveClick = function(e){
-        self.isMouseDown = true;
         resolveEvent(e,'click');
     };
 
     var resolveMouseMove = function(e){
-        var scene = sceneManager.getCurrScene();
         resolveEvent(e,'mouseMove');
     };
 
     var resolveMouseUp = function(){
-        self.isMouseDown = false;
         //resolveEvent(e,'mouseUp');
     };
 
