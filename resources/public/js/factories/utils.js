@@ -4,8 +4,9 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
         var mathEx = require('mathEx');
+        var GameObject = require('gameObject').GameObject;
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
@@ -123,7 +124,7 @@ window.app
 
         this.createAceCompleter = function(){
             var res = [];
-            var go = new models.GameObject();
+            var go = new GameObject();
             for (var key in go) {
                 var item = key;
                 if (item.indexOf('_')==0) continue;

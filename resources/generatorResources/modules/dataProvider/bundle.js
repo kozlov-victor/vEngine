@@ -28,10 +28,12 @@ var Bundle = function(data){
 
 
     this.prepare = function(_data){
-        var models = require('models');
         data = data || _data;
         consts.RESOURCE_NAMES.forEach(function(itm){
-            toDataSource(models[utils.capitalize(itm)],data[itm],self[itm+'List']);
+            toDataSource(
+                require(itm)[utils.capitalize(itm)],
+                data[itm],
+                self[itm+'List']);
         });
         self.gameProps = data.gameProps;
         data = null;

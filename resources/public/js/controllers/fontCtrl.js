@@ -18,7 +18,8 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Font = require('font').Font;
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -104,7 +105,7 @@ window.app.
             font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,utils.rgbToHex(font.fontColor)));
             resourceDao.createOrEditResource(
                 font,
-                models.Font,
+                Font,
                 bundle.fontList,
                 function(res){
                     if (res.type=='edit') {
@@ -117,7 +118,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new models.Font({fontColor:[0,0,0]});
+                editData.currFontInEdit = new Font({fontColor:[0,0,0]});
                 s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();

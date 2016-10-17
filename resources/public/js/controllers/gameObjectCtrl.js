@@ -15,7 +15,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var GameObject = require('gameObject').GameObject;
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -28,7 +29,7 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,models.GameObject,bundle.gameObjectList,function(op){
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,GameObject,bundle.gameObjectList,function(op){
                 if (op.type=='create') {
                     resourceDao.createFile(
                         s.editData.currGameObjectInEdit.name+'.js',
@@ -46,7 +47,7 @@ window.app.
                 s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    models.GameObject,
+                    GameObject,
                     bundle.gameObjectList,
                     null,true
                 );
@@ -77,7 +78,7 @@ window.app.
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 var targetSpriteSheet = bundle.spriteSheetList.getLast();
-                editData.currGameObjectInEdit = new models.GameObject({
+                editData.currGameObjectInEdit = new GameObject({
                     spriteSheetId:
                     targetSpriteSheet &&
                     targetSpriteSheet.id
@@ -87,7 +88,7 @@ window.app.
                 }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
-                editData.currGameObjectInEdit = dialogState.opObject.clone(models.GameObject);
+                editData.currGameObjectInEdit = dialogState.opObject.clone();
                 editData.currGameObjectInEdit.spriteSheet = bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
 

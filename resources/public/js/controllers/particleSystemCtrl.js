@@ -17,13 +17,13 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models');
+        var ParticleSystem = require('particleSystem').ParticleSystem;
 
 
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currParticleSystemInEdit = new models.ParticleSystem({
+                editData.currParticleSystemInEdit = new ParticleSystem({
                     gameObjectId:(editData.gameObjectList.getLast() && editData.gameObjectList.getLast().id)
                 });
             } else if (dialogState.opName=='edit'){

@@ -52,7 +52,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
         var model;
 
         s.rgbChanged = function(){
@@ -111,7 +111,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
@@ -134,7 +135,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit = new CommonBehaviour();
                 s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
                 var obj =
                     editData.commonBehaviourList.find({
@@ -173,7 +174,8 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Font = require('font').Font;
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -259,7 +261,7 @@ window.app.
             font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,utils.rgbToHex(font.fontColor)));
             resourceDao.createOrEditResource(
                 font,
-                models.Font,
+                Font,
                 bundle.fontList,
                 function(res){
                     if (res.type=='edit') {
@@ -272,7 +274,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new models.Font({fontColor:[0,0,0]});
+                editData.currFontInEdit = new Font({fontColor:[0,0,0]});
                 s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();
@@ -307,7 +309,9 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var FrameAnimation = require('frameAnimation').FrameAnimation;
+        var GameObject = require('gameObject').GameObject;
 
         var isStopped = false;
 
@@ -323,7 +327,7 @@ window.app.
             s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
             resourceDao.createOrEditResource(
                 s.editData.currFrAnimationInEdit,
-                models.FrameAnimation,
+                FrameAnimation,
                 bundle.frameAnimationList,
                 function(res){
                     if (res.type=='create') {
@@ -336,7 +340,7 @@ window.app.
 
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
-                            models.GameObject,
+                            GameObject,
                             bundle.gameObjectList,
                             function(){
 
@@ -388,7 +392,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currFrAnimationInEdit = new models.FrameAnimation();
+                s.editData.currFrAnimationInEdit = new FrameAnimation();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             } else if (dialogState.opName=='edit'){
                 s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
@@ -415,7 +419,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var GameObject = require('gameObject').GameObject;
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -428,7 +433,7 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,models.GameObject,bundle.gameObjectList,function(op){
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,GameObject,bundle.gameObjectList,function(op){
                 if (op.type=='create') {
                     resourceDao.createFile(
                         s.editData.currGameObjectInEdit.name+'.js',
@@ -446,7 +451,7 @@ window.app.
                 s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    models.GameObject,
+                    GameObject,
                     bundle.gameObjectList,
                     null,true
                 );
@@ -477,7 +482,7 @@ window.app.
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 var targetSpriteSheet = bundle.spriteSheetList.getLast();
-                editData.currGameObjectInEdit = new models.GameObject({
+                editData.currGameObjectInEdit = new GameObject({
                     spriteSheetId:
                     targetSpriteSheet &&
                     targetSpriteSheet.id
@@ -487,7 +492,7 @@ window.app.
                 }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
-                editData.currGameObjectInEdit = dialogState.opObject.clone(models.GameObject);
+                editData.currGameObjectInEdit = dialogState.opObject.clone();
                 editData.currGameObjectInEdit.spriteSheet = bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
 
@@ -523,12 +528,13 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Layer = require('layer').Layer;
 
 
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                var dataToEdit = s.editData.currLayerInEdit.clone(models.Layer);
+                var dataToEdit = s.editData.currLayerInEdit.clone();
                 dataToEdit.id = dataToEdit.protoId;
                 resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
@@ -540,7 +546,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit = new Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
                 if (editData.currSceneInEdit._layers.size()==0) {
                     editData.currLayerInEdit.name = 'mainLayer';
@@ -629,13 +635,13 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models');
+        var ParticleSystem = require('particleSystem').ParticleSystem;
 
 
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currParticleSystemInEdit = new models.ParticleSystem({
+                editData.currParticleSystemInEdit = new ParticleSystem({
                     gameObjectId:(editData.gameObjectList.getLast() && editData.gameObjectList.getLast().id)
                 });
             } else if (dialogState.opName=='edit'){
@@ -805,7 +811,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
 
         s.openColorPickerForScene = function(){
             s.showDialog(
@@ -842,18 +848,17 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Scene = require('scene').Scene;
 
         s.createOrEditScene = function(){
             resourceDao.
-                createOrEditResource(s.editData.currSceneInEdit,models.Scene,bundle.sceneList,
+                createOrEditResource(s.editData.currSceneInEdit,Scene,bundle.sceneList,
                 function(resp){
                     if (bundle.sceneList.size()==1) {
                         s.editData.currSceneInEdit = bundle.sceneList.get(0);
                     }
                     if (resp.type=='create') {
-                        // todo currLayerInEdit can not be null
-                        //resourceDao.createOrEditLayer(new models.Layer({name:'newLayer'}));
                         resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',window.DEFAULT_CODE_SCRIPT);
                     }
                 });
@@ -924,7 +929,7 @@ window.app.
                 'gameObjectProps',editDataObj,
                 function(resp){
                     if (resp.type=='create') {
-                        var newGameObj = obj.clone(models.GameObject);
+                        var newGameObj = obj.clone();
                         newGameObj.pos.x = x;
                         newGameObj.pos.y = y;
                         newGameObj.protoId = newGameObj.id;
@@ -991,12 +996,12 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSceneInEdit = new models.Scene({});
+                editData.currSceneInEdit = new Scene();
                 if (editData.sceneList.size()==0) {
                     editData.currSceneInEdit.name = 'mainScene';
                 }
             } else if (dialogState.opName=='edit'){
-                editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
+                editData.currSceneInEdit = dialogState.opObject.clone();
             }
             uiHelper.opName = null;
 
@@ -1023,7 +1028,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Sound = require('sound').Sound;
 
         s.onSoundUpload = function(file,src){
             s.soundUrl = $sce.trustAsResourceUrl(src);
@@ -1033,7 +1039,7 @@ window.app.
         s.createOrEditSound = function(snd){
             resourceDao.createOrEditResource(
                 s.editData.currSoundInEdit,
-                models.Sound,
+                Sound,
                 bundle.soundList
             );
         };
@@ -1041,7 +1047,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSoundInEdit = new models.Sound({});
+                editData.currSoundInEdit = new Sound();
             } else if (dialogState.opName=='edit'){
                 editData.currSoundInEdit = dialogState.opObject.clone();
             }
@@ -1071,7 +1077,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var SpriteSheet = require('spriteSheet').SpriteSheet;
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -1114,7 +1121,7 @@ window.app.
         s.createOrEditSpriteSheet = function(){
             resourceDao.createOrEditResource(
                 s.editData.currSpriteSheetInEdit,
-                models.SpriteSheet,
+                SpriteSheet,
                 bundle.spriteSheetList,
                 function(res){
                     if (res.type=='edit') {
@@ -1127,7 +1134,7 @@ window.app.
         (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSpriteSheetInEdit = new models.SpriteSheet({});
+                editData.currSpriteSheetInEdit = new SpriteSheet({});
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
@@ -1155,7 +1162,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
 
         (function(){
 
@@ -1686,7 +1693,9 @@ app
         var self = this;
         var bundle = require('bundle').instance();
         var collections = require('collections');
-        var models = require('models');
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+        var TextField = require('textField').TextField;
+        var Layer = require('layer').Layer;
 
         var _loadResources = function(projectName){
             return new Promise(function(resolve){
@@ -1704,9 +1713,9 @@ app
                     editData.gameProps = bundle.gameProps;
                     editData.commonBehaviourList = new collections.List();
                     response.commonBehaviour.forEach(function(cb){
-                        editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
+                        editData.commonBehaviourList.add(new CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.clear().add(new models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
@@ -1851,7 +1860,7 @@ app
             });
         };
         this.createOrEditLayer = function(l){
-            self.createOrEditResource(l,models.Layer,bundle.layerList,
+            self.createOrEditResource(l,Layer,bundle.layerList,
                 function(item){
                     if (item.type=='create') {
                         self.createOrEditObjectInResource(
@@ -1863,7 +1872,7 @@ app
                                 protoId:item.r.id
                             },
                             function(resp){
-                                var l = editData.currLayerInEdit.clone(models.Layer);
+                                var l = editData.currLayerInEdit.clone(Layer);
                                 l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
@@ -2024,8 +2033,9 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
         var mathEx = require('mathEx');
+        var GameObject = require('gameObject').GameObject;
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
@@ -2143,7 +2153,7 @@ window.app
 
         this.createAceCompleter = function(){
             var res = [];
-            var go = new models.GameObject();
+            var go = new GameObject();
             for (var key in go) {
                 var item = key;
                 if (item.indexOf('_')==0) continue;

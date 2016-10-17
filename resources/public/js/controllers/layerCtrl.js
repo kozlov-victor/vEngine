@@ -15,12 +15,13 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Layer = require('layer').Layer;
 
 
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                var dataToEdit = s.editData.currLayerInEdit.clone(models.Layer);
+                var dataToEdit = s.editData.currLayerInEdit.clone();
                 dataToEdit.id = dataToEdit.protoId;
                 resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
@@ -32,7 +33,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit = new Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
                 if (editData.currSceneInEdit._layers.size()==0) {
                     editData.currLayerInEdit.name = 'mainLayer';

@@ -16,7 +16,9 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var FrameAnimation = require('frameAnimation').FrameAnimation;
+        var GameObject = require('gameObject').GameObject;
 
         var isStopped = false;
 
@@ -32,7 +34,7 @@ window.app.
             s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
             resourceDao.createOrEditResource(
                 s.editData.currFrAnimationInEdit,
-                models.FrameAnimation,
+                FrameAnimation,
                 bundle.frameAnimationList,
                 function(res){
                     if (res.type=='create') {
@@ -45,7 +47,7 @@ window.app.
 
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
-                            models.GameObject,
+                            GameObject,
                             bundle.gameObjectList,
                             function(){
 
@@ -97,7 +99,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currFrAnimationInEdit = new models.FrameAnimation();
+                s.editData.currFrAnimationInEdit = new FrameAnimation();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             } else if (dialogState.opName=='edit'){
                 s.editData.currFrAnimationInEdit = dialogState.opObject.clone();

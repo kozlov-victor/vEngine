@@ -16,7 +16,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 
         s.createOrEditCommonBehaviour = function(obj){
             resourceDao.createOrEditObjectInResource(
@@ -39,7 +40,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit = new CommonBehaviour();
                 s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
                 var obj =
                     editData.commonBehaviourList.find({

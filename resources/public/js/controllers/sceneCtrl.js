@@ -16,18 +16,17 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Scene = require('scene').Scene;
 
         s.createOrEditScene = function(){
             resourceDao.
-                createOrEditResource(s.editData.currSceneInEdit,models.Scene,bundle.sceneList,
+                createOrEditResource(s.editData.currSceneInEdit,Scene,bundle.sceneList,
                 function(resp){
                     if (bundle.sceneList.size()==1) {
                         s.editData.currSceneInEdit = bundle.sceneList.get(0);
                     }
                     if (resp.type=='create') {
-                        // todo currLayerInEdit can not be null
-                        //resourceDao.createOrEditLayer(new models.Layer({name:'newLayer'}));
                         resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',window.DEFAULT_CODE_SCRIPT);
                     }
                 });
@@ -98,7 +97,7 @@ window.app.
                 'gameObjectProps',editDataObj,
                 function(resp){
                     if (resp.type=='create') {
-                        var newGameObj = obj.clone(models.GameObject);
+                        var newGameObj = obj.clone();
                         newGameObj.pos.x = x;
                         newGameObj.pos.y = y;
                         newGameObj.protoId = newGameObj.id;
@@ -165,12 +164,12 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSceneInEdit = new models.Scene({});
+                editData.currSceneInEdit = new Scene();
                 if (editData.sceneList.size()==0) {
                     editData.currSceneInEdit.name = 'mainScene';
                 }
             } else if (dialogState.opName=='edit'){
-                editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
+                editData.currSceneInEdit = dialogState.opObject.clone();
             }
             uiHelper.opName = null;
 

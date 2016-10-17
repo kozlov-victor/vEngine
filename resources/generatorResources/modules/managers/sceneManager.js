@@ -63,8 +63,8 @@ var SceneManager = function(){
     };
 
     this.setScene = function(scene){
-        var models = require('models');
-        if (!(scene instanceof models.Scene)) throw 'object '+scene+' is not a scene';
+        var Scene = require('scene').Scene;
+        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
         if (this.currScene==scene) return;
         this.currScene = scene;
         preloadAndSet(scene);
