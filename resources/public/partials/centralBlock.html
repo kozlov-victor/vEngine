@@ -27,8 +27,8 @@
                             utils.getGameObjectCss(item),
                             {
                                 position:'absolute',
-                                left:item.posX+'px',
-                                top: item.posY+'px'
+                                left:item.pos.x+'px',
+                                top: item.pos.y+'px'
                             }
                     )"
                     ng-class="{active:item==editData.currSceneGameObjectInEdit}"
@@ -45,8 +45,8 @@
                             utils.getGameObjectCss(item),
                             {
                                 position:'absolute',
-                                left:item.posX+'px',
-                                top: item.posY+'px',
+                                left:item.pos.x+'px',
+                                top: item.pos.y+'px',
                                 backgroundColor:'rgb(0,222,0.1)',
                                 height:item.height+'px',
                                 width:item.width?item.width+'px':'10px',
@@ -60,8 +60,8 @@
                 <div style="position: absolute;left:0;top:0;z-index:10">
                     <span
                             ng-style="{
-                            left:item.posX+'px',
-                            top: item.posY+'px',
+                            left:item.pos.x+'px',
+                            top: item.pos.y+'px',
                             display:ch=='\n'?'block':'inline-block',
                             width:item._font.fontContext.symbols[ch].width+'px',
                             height:item._font.fontContext.symbols[ch].height+'px',

@@ -4,8 +4,8 @@ var animations = {};
 
 var _stop = function(lastDirection){
     self.stopFrAnimations();
-    self.velX = 0;
-    self.velY = 0;
+    self.vel.x = 0;
+    self.vel.y = 0;
     var idleKey = 'idle'+lastDirection+'Animation';
     self[idleKey] && (self[idleKey].play());
 };
@@ -34,7 +34,7 @@ function onUpdate(){
         _go('Down');
     }
     if (keyboard.isPressed(keyboard.KEY_LEFT)) {
-        self.velX = -parameters.velocity;
+        self.vel.x = -parameters.velocity;
         _go('Left');
     }
     if (this.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {

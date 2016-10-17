@@ -34,6 +34,9 @@ window.app.
             if (dialogState.opName=='create') {
                 editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
+                if (editData.currSceneInEdit._layers.size()==0) {
+                    editData.currLayerInEdit.name = 'mainLayer';
+                }
             } else if (dialogState.opName=='edit'){
                 editData.currLayerInEdit = dialogState.opObject.clone();
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;

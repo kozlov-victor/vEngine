@@ -542,6 +542,9 @@ window.app.
             if (dialogState.opName=='create') {
                 editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
+                if (editData.currSceneInEdit._layers.size()==0) {
+                    editData.currLayerInEdit.name = 'mainLayer';
+                }
             } else if (dialogState.opName=='edit'){
                 editData.currLayerInEdit = dialogState.opObject.clone();
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
@@ -604,6 +607,7 @@ window.app.
                 model.name+
                 '&path='+encodeURIComponent('script/'+model.type);
         };
+
 
     });
 
@@ -678,10 +682,10 @@ window.app.
             editData.currParticleSystemInEdit._particles.forEach(function(p){
 
                 p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                var deltaX = p.velX * delta / 1000;
-                var deltaY = p.velY * delta / 1000;
-                p.posX = p.posX+deltaX;
-                p.posY = p.posY+deltaY;
+                var deltaX = p.vel.x * delta / 1000;
+                var deltaY = p.vel.y * delta / 1000;
+                p.pos.x = p.pos.x+deltaX;
+                p.pos.y = p.pos.y+deltaY;
 
                 if (!p._timeCreated) p._timeCreated = currTime;
                 if (currTime - p._timeCreated > p.liveTime) {
@@ -830,7 +834,7 @@ window.app.
         i18n,
         utils,
         resourceDao,
-        messageDigest
+        messageDigest // don't remove this dependency, needed to init messageDigest
     ) {
         var s = $scope;
         s.editData = editData;
@@ -857,25 +861,25 @@ window.app.
 
         var tid = 0;
         s.onKeyPress = function(e){
-           //console.log(e.which);
+
            if (!editData.currSceneGameObjectInEdit) return;
             var edited = false;
             switch (e.which) {
                case 38: // up
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posY-=1;
+                   editData.currSceneGameObjectInEdit.pos.y-=1;
                    break;
                case 40: // down
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posY+=1;
+                   editData.currSceneGameObjectInEdit.pos.y+=1;
                    break;
                case 37: // left
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posX-=1;
+                   editData.currSceneGameObjectInEdit.pos.x-=1;
                    break;
                case 39: // right
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posX+=1;
+                   editData.currSceneGameObjectInEdit.pos.x+=1;
                    break;
            }
            if (edited) {
@@ -886,8 +890,7 @@ window.app.
                        editData.currLayerInEdit.protoId,
                        'gameObjectProps',
                        {
-                            posX:editData.currSceneGameObjectInEdit.posX,
-                            posY:editData.currSceneGameObjectInEdit.posY,
+                            pos:editData.currSceneGameObjectInEdit.pos,
                             id:editData.currSceneGameObjectInEdit.id
                        }
                    );
@@ -896,21 +899,17 @@ window.app.
         };
 
         var _addOrEditGameObject = function(obj,x,y,idKey,idVal){
-
             var editDataObj = obj.toJSON();
             delete editDataObj.id;
             delete editDataObj.protoId;
-            editDataObj.posX = x;
-            editDataObj.posY = y;
+            editDataObj.pos.x = x;
+            editDataObj.pos.y = y;
             editDataObj[idKey]=idVal;
 
             var needNewName = false;
             if (!editDataObj.name) {
                 var num = 0;
-                console.log(editData.currLayerInEdit._gameObjects);
                 editData.currLayerInEdit._gameObjects.forEach(function(item){
-                    console.log('editDataObj.subType',editDataObj.subType);
-                    console.log('item.subType',item.subType);
                     if (editDataObj.subType && item.subType==editDataObj.subType) {
                         num++;
                     }
@@ -926,8 +925,8 @@ window.app.
                 function(resp){
                     if (resp.type=='create') {
                         var newGameObj = obj.clone(models.GameObject);
-                        newGameObj.posX = x;
-                        newGameObj.posY = y;
+                        newGameObj.pos.x = x;
+                        newGameObj.pos.y = y;
                         newGameObj.protoId = newGameObj.id;
                         newGameObj.id = resp.r.id;
                         editData.currLayerInEdit._gameObjects.add(newGameObj);
@@ -936,7 +935,8 @@ window.app.
                             newGameObj.name = editDataObj.name;
                         }
                     } else {
-                        obj.fromJSON({posX:x,posY:y});
+                        obj.pos.x = x;
+                        obj.pos.y = y;
                         editData.currSceneGameObjectInEdit = obj;
                     }
                 });
@@ -992,6 +992,9 @@ window.app.
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 editData.currSceneInEdit = new models.Scene({});
+                if (editData.sceneList.size()==0) {
+                    editData.currSceneInEdit.name = 'mainScene';
+                }
             } else if (dialogState.opName=='edit'){
                 editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
             }
@@ -2022,6 +2025,7 @@ window.app
     .factory('utils',function(editData, $http, uiHelper){
 
         var models = require('models'), bundle = require('bundle').instance();
+        var mathEx = require('mathEx');
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
@@ -2033,14 +2037,15 @@ window.app
         };
         this.getGameObjectCss = function(gameObj){
             if (!gameObj) return {};
-            return {
+            return  {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
                 backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
-                backgroundRepeat:     'no-repeat'
-            }
+                backgroundRepeat:     'no-repeat',
+                transform:            'scale('+gameObj.scale.x+','+gameObj.scale.y+') rotateZ('+mathEx.radToDeg(gameObj.angle)+'deg)'
+            };
         };
         this.merge = function(a,b){
             var res = Object.create(a);
@@ -2139,14 +2144,16 @@ window.app
         this.createAceCompleter = function(){
             var res = [];
             var go = new models.GameObject();
-            go.toJSON_Array().forEach(function(item){
+            for (var key in go) {
+                var item = key;
+                if (item.indexOf('_')==0) continue;
                 res.push({
-                    name:item.key,
-                    value:item.key,
+                    name:key,
+                    value:key,
                     score:1,
                     meta:'gameObject property'
                 });
-            });
+            };
             return res;
         };
 

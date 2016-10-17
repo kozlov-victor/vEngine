@@ -51,4 +51,5 @@ window.app.
                 '&path='+encodeURIComponent('script/'+model.type);
         };
 
+
     });

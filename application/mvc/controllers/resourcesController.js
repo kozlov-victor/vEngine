@@ -1,6 +1,7 @@
 
 var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');
+var generatorController = require.main.require('./application/mvc/controllers/generatorController');
 
 var RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
     .split(',');
@@ -245,6 +246,34 @@ module.exports.renameFolder = function(oldName,newName){
 
 module.exports.deleteFolder = function(name){
     fs.deleteFolderSync(name);
+};
+
+var resolveResourceName = function(name,isFile){
+    var res =  'resources/generatorResources/'+name.split('.').join('/');
+    if (isFile) res+='.js';
+    return res;
+};
+
+module.exports.getResourcesToAdd = function(query) {
+    var name = query.name;
+    var ignoreCommonJS = query.ignoreCommonJS;
+    var ignoreEJS = query.ignoreEJS;
+    var source = new generatorController.Source();
+    if (name.slice(-1)=='*') {
+        name = name.replace('.*','');
+        fs.readDirSync(resolveResourceName(name)).forEach(function(itm){
+            source.addResource(itm.fullName,{
+                ignoreEJS:ignoreEJS,
+                ignoreCommonJS: ignoreCommonJS
+            });
+        });
+    } else {
+        source.addResource(resolveResourceName(name,true),{
+            ignoreEJS:ignoreEJS,
+            ignoreCommonJS: ignoreCommonJS
+        });
+    }
+    return source.get();
 };
 
 

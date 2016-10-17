@@ -3,7 +3,7 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
     var startedTime = null;
     easeFnName = easeFnName || 'linear';
     this.completed = false;
-    var math = require('math');
+    var mathEx = require('mathEx');
     this.tweenTime = tweenTime;
 
     this.update = function(time){
@@ -14,7 +14,7 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
             this.complete();
             return;
         }
-        obj[prop] = math.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+        obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
     };
 
     this.reset = function() {

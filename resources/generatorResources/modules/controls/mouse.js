@@ -1,7 +1,7 @@
 
 var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
-var math = require('math');
+var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
 var deviceScale = require('device').deviceScale;
 
@@ -17,8 +17,10 @@ var Mouse = function(){
                 resolveClick(evt);
             });
         };
-        canvas.ontouchend = canvas.ontouchcancel = function(){
-            resolveMouseUp();
+        canvas.ontouchend = canvas.ontouchcancel = function(e){
+            e.touches.forEach(function(evt){
+                resolveMouseUp(evt);
+            });
         };
         canvas.ontouchmove = function(e){
             e.touches.forEach(function(evt){
@@ -29,8 +31,8 @@ var Mouse = function(){
         canvas.onmousedown = function(e){
             resolveClick(e);
         };
-        canvas.onmouseup = function(){
-            resolveMouseUp();
+        canvas.onmouseup = function(e){
+            resolveMouseUp(e);
         };
         canvas.onmousemove = function(e){
             resolveMouseMove(e);
@@ -53,13 +55,13 @@ var Mouse = function(){
             var found = false;
             l._gameObjects.someReversed(function(g){
                 if (
-                    math.isPointInRect(point,g.getRect(),g.angle)
+                    mathEx.isPointInRect(point,g.getRect(),g.angle)
                 ) {
                     g.trigger(name,{
                         screenX:point.x,
                         screenY:point.y,
-                        objectX:point.x - g.posX,
-                        objectY:point.y - g.posY
+                        objectX:point.x - g.pos.x,
+                        objectY:point.y - g.pos.y
                     });
                     isObjectCaptured = true;
                     return found = true;
@@ -67,12 +69,13 @@ var Mouse = function(){
             });
             return found;
         });
-        if (!isObjectCaptured) {
+        //if (!isObjectCaptured) {
+            console.log('scene:'+name);
             scene.trigger(name,{
                 screenX:point.x,
                 screenY:point.y
             });
-        }
+        //}
     };
 
     var resolveClick = function(e){
@@ -83,8 +86,8 @@ var Mouse = function(){
         resolveEvent(e,'mouseMove');
     };
 
-    var resolveMouseUp = function(){
-        //resolveEvent(e,'mouseUp');
+    var resolveMouseUp = function(e){
+        resolveEvent(e,'mouseUp');
     };
 
 };

@@ -1,5 +1,5 @@
 
-var math = require('math');
+var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
 
 var Collider = function(){
@@ -11,10 +11,10 @@ var Collider = function(){
         gos = scene.getAllGameObjects();
     };
 
-    this.check = function(obj,newX,newY){
+    this.manage = function(obj,newX,newY){
         if (!obj.rigid) {
-            obj.posX = newX;
-            obj.posY = newY;
+            obj.pos.x = newX;
+            obj.pos.y = newY;
         }
         var res = false;
         gos.some(function(go){
@@ -26,7 +26,7 @@ var Collider = function(){
             var objRect = obj.getRect();
             objRect.x = newX;
             objRect.y = newY;
-            if (math.isRectIntersectRect(objRect,go.getRect())) {
+            if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
                 if (go.rigid) {
                     res = true;
                     obj.trigger('collide',go);
@@ -37,8 +37,8 @@ var Collider = function(){
             }
         });
         if (!res) {
-            obj.posX = newX;
-            obj.posY = newY;
+            obj.pos.x = newX;
+            obj.pos.y = newY;
         }
         return res;
     };

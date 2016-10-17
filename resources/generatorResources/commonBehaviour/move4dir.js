@@ -20,8 +20,8 @@ function onCreate(){
 }
 var _stop = function(lastDirection){
     self.stopFrAnimations();
-    self.velX = 0;
-    self.velY = 0;
+    self.vel.x = 0;
+    self.vel.y = 0;
     var idleKey = 'idle'+lastDirection+'Animation';
     animations[idleKey] && (animations[idleKey].play());
 };
@@ -29,20 +29,20 @@ var _go = function(direction){
     animations['walk'+direction+'Animation'].play();
     switch (direction) {
         case 'Up':
-            self.velX = 0;
-            self.velY = - parameters.velocity;
+            self.vel.x = 0;
+            self.vel.y = - parameters.velocity;
             break;
         case 'Down':
-            self.velX = 0;
-            self.velY = parameters.velocity;
+            self.vel.x = 0;
+            self.vel.y = parameters.velocity;
             break;
         case 'Left':
-            self.velY = 0;
-            self.velX = -parameters.velocity;
+            self.vel.x = -parameters.velocity;
+            self.vel.y = 0;
             break;
         case 'Right':
-            self.velY = 0;
-            self.velX = parameters.velocity;
+            self.vel.x = parameters.velocity;
+            self.vel.y = 0;
             break;
     }
 };

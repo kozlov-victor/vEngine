@@ -3,7 +3,7 @@ var bundle = require('bundle').instance();
 var collider = require('collider',{ignoreFail:true}).instance();
 var renderer = require('renderer',{ignoreFail:true}).instance();
 var collections = require('collections');
-var math = require('math');
+var mathEx = require('mathEx');
 var EventEmitter = require('eventEmitter').EventEmitter;
 var tweenModule = require('tween',{ignoreFail:true});
 var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
@@ -125,14 +125,14 @@ exports.BaseGameObject = exports.BaseModel.extend({
     type:'baseGameObject',
     groupName:'',
     _spriteSheet:null,
-    posX:0,
-    posY:0,
+    pos:null,
+    scale:null,
     angle:0,
     width:0,
     height:0,
     _layer:null,
     getRect: function(){
-        return {x:this.posX,y:this.posY,width:this.width,height:this.height};
+        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
     },
     kill: function(){
         this._layer._gameObjects.remove({id:this.id});
@@ -145,13 +145,23 @@ exports.BaseGameObject = exports.BaseModel.extend({
         var scene = this.getScene();
         easeFnName = easeFnName || 'linear';
         var movie = new tweenMovieModule.TweenMovie();
-        var tweenX = new tweenModule.Tween(this,'posX',this.posX,x,time,easeFnName);
-        var tweenY = new tweenModule.Tween(this,'posY',this.posY,y,time,easeFnName);
+        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
+        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
         movie.add(0,tweenX).add(0,tweenY);
         scene._tweenMovies.push(movie);
     },
     update: function(){},
-    _render: function(){}
+    _render: function(){
+        var ctx = renderer.getContext();
+        ctx.translate(this.pos.x + this.width /2,this.pos.y + this.height/2);
+        ctx.rotateZ(this.angle);
+        ctx.scale(this.scale.x,this.scale.y);
+        ctx.translate(-this.width /2, -this.height/2);
+    },
+    construct:function(){
+        if (!this.pos) this.pos = {x:0,y:0};
+        if (!this.scale) this.scale = {x:1,y:1};
+    }
 });
 
 exports.GameObject = exports.BaseGameObject.extend({
@@ -161,8 +171,7 @@ exports.GameObject = exports.BaseGameObject.extend({
     _behaviour:null,
     commonBehaviour:[],
     _commonBehaviour:null,
-    velX:0,
-    velY:0,
+    vel:null,
     currFrameIndex:0,
     _sprPosX:0,
     _sprPosY:0,
@@ -173,21 +182,23 @@ exports.GameObject = exports.BaseGameObject.extend({
     _timeCreated:null,
     construct: function(){
         var self = this;
-        this._frameAnimations = new collections.List();
-        if (!this.spriteSheetId) {
+        self._super();
+        self.vel = {x:0,y:0};
+        self._frameAnimations = new collections.List();
+        if (!self.spriteSheetId) {
             return;
         }
-        this._spriteSheet = bundle.spriteSheetList.find({id: this.spriteSheetId});
+        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
         self.setFrameIndex(self.currFrameIndex);
         self._frameAnimations.clear();
-        this.frameAnimationIds.forEach(function(id){
+        self.frameAnimationIds.forEach(function(id){
             var a = bundle.frameAnimationList.find({id: id});
             a = a.clone(exports.FrameAnimation);
             a._gameObject = self;
             self._frameAnimations.add(a);
         });
         self._commonBehaviour = new collections.List();
-        this.commonBehaviour.forEach(function(cb){
+        self.commonBehaviour.forEach(function(cb){
             self._commonBehaviour.add(new exports.CommonBehaviour(cb));
         });
     },
@@ -206,11 +217,11 @@ exports.GameObject = exports.BaseGameObject.extend({
     },
     update: function(time,delta) {
         this._currFrameAnimation && this._currFrameAnimation.update(time);
-        var deltaX = this.velX * delta / 1000;
-        var deltaY = this.velY * delta / 1000;
-        var posX = this.posX+deltaX;
-        var posY = this.posY+deltaY;
-        collider.check(this,posX,posY);
+        var deltaX = this.vel.x * delta / 1000;
+        var deltaY = this.vel.y * delta / 1000;
+        var posX = this.pos.x+deltaX;
+        var posY = this.pos.y+deltaY;
+        collider.manage(this,posX,posY);
         this.__updateIndividualBehaviour__(delta);
         this.__updateCommonBehaviour__();
         this._render();
@@ -221,11 +232,7 @@ exports.GameObject = exports.BaseGameObject.extend({
     _render: function(){
         var ctx = renderer.getContext();
         ctx.save();
-        ctx.translate(this.posX + this._spriteSheet._frameWidth /2,this.posY + this._spriteSheet._frameHeight/2);
-        if (this.angle) {
-            ctx.rotateZ(this.angle);
-        }
-        ctx.translate(-this._spriteSheet._frameWidth /2, -this._spriteSheet._frameHeight/2);
+        this._super();
         ctx.drawImage(
             this._spriteSheet._textureInfo,
             this._sprPosX,
@@ -409,6 +416,7 @@ exports.TextField = exports.BaseGameObject.extend({
             return this._super();
         },
         construct: function(){
+            this._super();
             this.rigid = false;
             var font =
                 bundle.fontList.find({id:this.fontId}) ||
@@ -419,10 +427,13 @@ exports.TextField = exports.BaseGameObject.extend({
             this._render();
         },
         _render: function(){
-            var posX = this.posX;
-            var oldPosX = posX;
-            var posY = this.posY;
+            var posX = this.pos.x;
+            var oldPosX = this.pos.x;
+            var posY = this.pos.y;
             var self = this;
+            var ctx = renderer.getContext();
+            this._super();
+            ctx.translate(-this.pos.x, -this.pos.y);
             this._chars.forEach(function(ch){
                 var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
                 if (ch=='\n') {
@@ -443,6 +454,7 @@ exports.TextField = exports.BaseGameObject.extend({
                 );
                 posX+=charInCtx.width;
             });
+            ctx.restore();
         }
     });
 
@@ -478,18 +490,16 @@ exports.ParticleSystem = exports.BaseModel.extend({
     },
     emit: function(x,y){
         var r = function(obj){
-            return math.getRandomInRange(obj.from,obj.to);
+            return mathEx.getRandomInRange(obj.from,obj.to);
         };
         for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
             var particle = this._gameObject.clone();
             var angle = r(this.particleAngle);
             var vel = r(this.particleVelocity);
-            particle.fromJSON({
-                velX:vel*Math.cos(angle),
-                velY:vel*Math.sin(angle),
-                posX:r({from:x-this.emissionRadius,to:x+this.emissionRadius}),
-                posY:r({from:y-this.emissionRadius,to:y+this.emissionRadius})
-            });
+            particle.vel.x = vel*Math.cos(angle);
+            particle.vel.y = vel*Math.sin(angle);
+            particle.pos.x = r({from:x-this.emissionRadius,to:x+this.emissionRadius});
+            particle.pos.y = r({from:y-this.emissionRadius,to:y+this.emissionRadius});
             particle.liveTime = r(this.particleLiveTime);
             bundle.applyBehaviour(particle);
             this._particles.push(particle);

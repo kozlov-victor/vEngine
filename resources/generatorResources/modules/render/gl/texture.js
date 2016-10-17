@@ -22,6 +22,7 @@ exports.Texture = function(gl,img){
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
         }
         gl.bindTexture(gl.TEXTURE_2D, null);
+        window.gl = gl;
     };
 
     this.bind = function(){

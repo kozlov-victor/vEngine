@@ -53,24 +53,6 @@ module.exports.copyFolderSync = function cpf(src, dest) {
     }
 };
 
-//var walkSync = function(dir, filelist,contentType) {
-//    var fs = fs || require('fs'),
-//        files = fs.readdirSync(dir);
-//    filelist = filelist || [];
-//    files.forEach(function(file) {
-//        if (fs.statSync(dir+'/'+file).isDirectory()) {
-//            filelist = walkSync(dir + file + '/', filelist);
-//        }
-//        else {
-//            filelist.push({
-//                name:dir+'/'+file,
-//                content: fs.readFileSync(dir+'/'+file, contentType)
-//            });
-//        }
-//    });
-//    return filelist;
-//};
-
 
 
 module.exports.readDirSync = function(path,contentType){

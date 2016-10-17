@@ -5,6 +5,7 @@ window.app
     .factory('utils',function(editData, $http, uiHelper){
 
         var models = require('models'), bundle = require('bundle').instance();
+        var mathEx = require('mathEx');
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
@@ -16,14 +17,15 @@ window.app
         };
         this.getGameObjectCss = function(gameObj){
             if (!gameObj) return {};
-            return {
+            return  {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
                 backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
-                backgroundRepeat:     'no-repeat'
-            }
+                backgroundRepeat:     'no-repeat',
+                transform:            'scale('+gameObj.scale.x+','+gameObj.scale.y+') rotateZ('+mathEx.radToDeg(gameObj.angle)+'deg)'
+            };
         };
         this.merge = function(a,b){
             var res = Object.create(a);
@@ -122,14 +124,16 @@ window.app
         this.createAceCompleter = function(){
             var res = [];
             var go = new models.GameObject();
-            go.toJSON_Array().forEach(function(item){
+            for (var key in go) {
+                var item = key;
+                if (item.indexOf('_')==0) continue;
                 res.push({
-                    name:item.key,
-                    value:item.key,
+                    name:key,
+                    value:key,
                     score:1,
                     meta:'gameObject property'
                 });
-            });
+            };
             return res;
         };
 
