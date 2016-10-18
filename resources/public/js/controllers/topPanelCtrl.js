@@ -32,7 +32,7 @@ window.app.
                 method: "GET"
             }).
             success(function (resp) {
-                    s.uiHelper.window = 'debugRunWindow';
+                s.uiHelper.window = 'debugRunWindow';
                 editData.debugFrameUrl = '/'+editData.projectName+'/out';
             });
         };

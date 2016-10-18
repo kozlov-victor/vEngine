@@ -33,6 +33,14 @@ exports.BaseGameObject = BaseModel.extend({
         movie.add(0,tweenX).add(0,tweenY);
         scene._tweenMovies.push(movie);
     },
+    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
+        var scene = this.getScene();
+        easeFnName = easeFnName || 'linear';
+        var movie = new tweenMovieModule.TweenMovie();
+        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
+        movie.add(0,tween);
+        scene._tweenMovies.push(movie);
+    },
     update: function(){},
     _render: function(){
         var ctx = renderer.getContext();

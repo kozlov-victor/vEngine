@@ -1210,7 +1210,7 @@ window.app.
                 method: "GET"
             }).
             success(function (resp) {
-                    s.uiHelper.window = 'debugRunWindow';
+                s.uiHelper.window = 'debugRunWindow';
                 editData.debugFrameUrl = '/'+editData.projectName+'/out';
             });
         };
@@ -1537,7 +1537,8 @@ window.app
         res.buildOpts = {
             debug: false,
             embedResources: false,
-            embedScript: false
+            embedScript: false,
+            minify:false
         };
 
         return res;
@@ -2163,15 +2164,17 @@ window.app
                     score:1,
                     meta:'gameObject property'
                 });
-            };
+            }
             return res;
         };
 
         this.generateBuildUrl = function(opts) {
             var url = '/generate?r='+Math.random();
-            ['debug','embedResources','embedScript'].forEach(function(key){
-                if (opts[key]) url+='&'+key+'=1';
-            });
+            Object.
+                keys(editData.buildOpts).
+                forEach(function(key){
+                    if (opts[key]) url+='&'+key+'=1';
+                });
             url+='&projectName='+editData.projectName;
             return url;
         };

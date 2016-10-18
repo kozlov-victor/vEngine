@@ -10,6 +10,10 @@
             mixins = arguments[0];
             props = arguments[1];
             staticProps = arguments[2];
+        } else if (arguments[0].call) {
+            var obj = {};
+            props(obj);
+            props = obj;
         }
 
         function Instance() {
@@ -64,7 +68,7 @@
             }
         }
     }
-    
+
     Class.inherit = Object.create || function(proto) {
             function F() {}
             F.prototype = proto;

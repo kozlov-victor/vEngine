@@ -134,15 +134,17 @@ window.app
                     score:1,
                     meta:'gameObject property'
                 });
-            };
+            }
             return res;
         };
 
         this.generateBuildUrl = function(opts) {
             var url = '/generate?r='+Math.random();
-            ['debug','embedResources','embedScript'].forEach(function(key){
-                if (opts[key]) url+='&'+key+'=1';
-            });
+            Object.
+                keys(editData.buildOpts).
+                forEach(function(key){
+                    if (opts[key]) url+='&'+key+'=1';
+                });
             url+='&projectName='+editData.projectName;
             return url;
         };

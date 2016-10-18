@@ -30,7 +30,8 @@ window.app
         res.buildOpts = {
             debug: false,
             embedResources: false,
-            embedScript: false
+            embedScript: false,
+            minify:false
         };
 
         return res;

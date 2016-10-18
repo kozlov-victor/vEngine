@@ -1,7 +1,7 @@
 var fs = require.main.require('./application/base/fs');
-var minifier = require('minifier');
 var resourcesController = require.main.require('./application/mvc/controllers/resourcesController');
 var nodeHint = require('node-hint');
+var UglifyJS = require("uglify-js");
 var ejs = require('ejs');
 
 var Source = function(){
@@ -130,6 +130,26 @@ var createCommonBehaviourParams = function(opts){
     return res;
 };
 
+var minify = function(code) {
+    return UglifyJS.minify(code, {
+        fromString: true,
+        mangle:{toplevel:true},
+        compress:true
+    }).code;
+};
+
+var processScriptPlace = function(indexHtml,scriptPlaceName,code,outCodeFileName,opts) {
+    if (opts.minify) {
+        code = minify(code);
+    }
+    if (opts.embedScript) {
+        indexHtml = indexHtml.replace('{{'+scriptPlaceName+'}}','<script>\n'+code+'\n</script>');
+    } else {
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/'+outCodeFileName,code);
+        indexHtml = indexHtml.replace('{{'+scriptPlaceName+'}}','<script src="'+outCodeFileName+'"></script>');
+    }
+    return indexHtml;
+};
 
 var processGameResourcesFiles = function(sourceMain,opts){
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
@@ -142,15 +162,13 @@ var processGameResourcesFiles = function(sourceMain,opts){
     });
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
+    var generatedCode = sourceMain.get();
+    var debugCode = fs.readFileSync('resources/generatorResources/debug/debug.js');
 
-    if (opts.embedScript) {
-        indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
-    } else {
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/main.js',sourceMain.get());
-        indexHtml = indexHtml.replace('{{script}}','<script src="main.js"></script>');
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
-    }
+    indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
+    indexHtml = processScriptPlace(indexHtml,'script_debug',debugCode,'debug.js',opts);
+
+    fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
 
 };
 
@@ -164,7 +182,6 @@ var unused = function(){
     //        callback(lintData);
     //    }
     //);
-    //minifier.minify('project/out/main.js');
 };
 
 var prepareGeneratorParams = function(opts){

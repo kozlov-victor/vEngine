@@ -1,6 +1,7 @@
 
 var BaseModel = require('baseModel').BaseModel;
 
+
 exports.FrameAnimation = BaseModel.extend({
     type:'frameAnimation',
     name:'',
