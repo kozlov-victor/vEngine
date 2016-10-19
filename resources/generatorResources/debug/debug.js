@@ -31,7 +31,7 @@
             rightBox.onclick = function(){
                 popup.remove();
             };
-            leftBox.textContent = (e && e.message)?e.message:e;
+            leftBox.innerHTML = (e && e.message)?e.message:e;
             popup.appendChild(leftBox);
             popup.appendChild(rightBox);
             getPopupContainer().appendChild(popup);

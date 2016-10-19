@@ -131,11 +131,31 @@ var createCommonBehaviourParams = function(opts){
 };
 
 var minify = function(code) {
-    return UglifyJS.minify(code, {
+    var code =  UglifyJS.minify(code, {
         fromString: true,
-        mangle:{toplevel:true},
-        compress:true
+        mangle:{toplevel:true,eval:true},
+        //mangleProperties: { regex: /GameObject/ },
+        compress: {
+            screw_ie8: true,
+            sequences: true,
+            properties: true,
+            dead_code: true,
+            drop_debugger: true,
+            comparisons: true,
+            conditionals: true,
+            evaluate: true,
+            booleans: true,
+            loops: true,
+            unused: true,
+            hoist_funs: true,
+            if_return: true,
+            join_vars: true,
+            cascade: true,
+            //negate_iife: true,
+            drop_console: true
+    }
     }).code;
+    return code;
 };
 
 var processScriptPlace = function(indexHtml,scriptPlaceName,code,outCodeFileName,opts) {
@@ -167,6 +187,7 @@ var processGameResourcesFiles = function(sourceMain,opts){
 
     indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
     indexHtml = processScriptPlace(indexHtml,'script_debug',debugCode,'debug.js',opts);
+
 
     fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
 
