@@ -13,6 +13,7 @@
     "express": "^4.14.0",
     "express-session": "^1.14.1",
     "fs": "0.0.1-security",
+    "merge-descriptors": "^1.0.1",
     "node-hint": "0.0.6",
     "path": "^0.12.7",
     "uglify-js": "^2.7.3",

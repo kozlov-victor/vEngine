@@ -188,13 +188,12 @@ var processGameResourcesFiles = function(sourceMain,opts){
     indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
     indexHtml = processScriptPlace(indexHtml,'script_debug',debugCode,'debug.js',opts);
 
-
     fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
 
 };
 
 
-var unused = function(){
+var hint = function(sourceMain){
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()

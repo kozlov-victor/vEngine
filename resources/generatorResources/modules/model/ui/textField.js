@@ -42,21 +42,22 @@ exports.TextField = BaseGameObject.extend({
         return this._super();
     },
     construct: function(){
-        this._super();
-        this.rigid = false;
+        var self = this;
+        self._super();
+        self.rigid = false;
         var font =
             bundle.fontList.find({id:this.fontId}) ||
             bundle.fontList.find({name:'default'});
-        this.setFont(font);
+        self.setFont(font);
     },
     update: function(){
         this._render();
     },
     _render: function(){
-        var posX = this.pos.x;
-        var oldPosX = this.pos.x;
-        var posY = this.pos.y;
         var self = this;
+        var posX = self.pos.x;
+        var oldPosX = self.pos.x;
+        var posY = this.pos.y;
         var ctx = renderer.getContext();
         this._super();
         ctx.translate(-this.pos.x, -this.pos.y);

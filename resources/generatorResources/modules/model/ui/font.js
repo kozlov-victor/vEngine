@@ -1,11 +1,10 @@
 
-var BaseModel = require('baseModel').BaseModel;
+var Resource = require('resource').Resource;
 
-exports.Font = BaseModel.extend({
+exports.Font = Resource.extend({
     type:'font',
     fontColor:'black',
     fontSize:12,
     fontFamily:'Monospace',
-    resourcePath:'',
     fontContext:null
 });
