@@ -84,6 +84,42 @@ var Renderer = function(){
         collider.setUp();
     };
 
+    /**
+     * not works!!!
+     * @param x
+     * @param y
+     * @param text
+     * @param font
+     */
+    this.printText = function(x,y,text,font){
+        if (!text) return;
+        font = font || bundle.fontList.get(0);
+        if (!font) throw 'at least one font must be specified. Create new one please';
+        var posX = x;
+        var oldPosX = x;
+        var posY = y;
+        text.split().forEach(function(ch){
+            var charInCtx = font.fontContext.symbols[ch]||font.fontContext.symbols['?'];
+            if (ch=='\n') {
+                posX = oldPosX;
+                posY+= charInCtx.height;
+                return;
+            }
+            ctx.drawImage(
+                self._spriteSheet._textureInfo, // problem!!! resource not loaded
+                charInCtx.x,
+                charInCtx.y,
+                charInCtx.width,
+                charInCtx.height,
+                posX,
+                posY,
+                charInCtx.width,
+                charInCtx.height
+            );
+            posX+=charInCtx.width;
+        });
+    }
+
 };
 
 var instance = null;

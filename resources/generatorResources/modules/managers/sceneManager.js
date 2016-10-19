@@ -38,7 +38,6 @@ var SceneManager = function(){
                 resourcePath,
                 {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:spSheet.resourcePath},
                 function(textureInfo){
-                    console.log('loaded texture info',spSheet.resourcePath,textureInfo);
                     spSheet._textureInfo = textureInfo;
                     q.resolveTask();
                 });

@@ -55,12 +55,12 @@ exports.TextField = BaseGameObject.extend({
     },
     _render: function(){
         var self = this;
-        var posX = self.pos.x;
-        var oldPosX = self.pos.x;
-        var posY = this.pos.y;
         var ctx = renderer.getContext();
         this._super();
         ctx.translate(-this.pos.x, -this.pos.y);
+        var posX = self.pos.x;
+        var oldPosX = self.pos.x;
+        var posY = this.pos.y;
         this._chars.forEach(function(ch){
             var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
             if (ch=='\n') {

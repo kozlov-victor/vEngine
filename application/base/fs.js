@@ -4,17 +4,11 @@ var fs = require('fs');
 var path = require('path');
 
 module.exports.copyFileSync = function (source, target) {
-
-    var targetFile = target;
-
-    //if target is a directory a new file with the same name will be created
-    if (fs.existsSync(target)) {
-        if (fs.lstatSync(target).isDirectory()) {
-            targetFile = path.join(target, path.basename(source));
-        }
-    }
-
-    fs.createReadStream(source).pipe(fs.createWriteStream(targetFile));
+    var pathArr = target.split('/');
+    pathArr.pop();
+    var targetPath = pathArr.join('/');
+    if (!module.exports.existsSync(targetPath)) createFolderSync(targetPath);
+    fs.createReadStream(source).pipe(fs.createWriteStream(target));
 };
 
 module.exports.existsSync = function(target){
@@ -92,7 +86,7 @@ module.exports.deleteFolderSync = function delFldr(path) {
     }
 };
 
-module.exports.createFolderSync = function (path) {
+var createFolderSync = function (path) {
     try {
         var pathSeq = '';
         path.split('/').forEach(function(fldr){
@@ -105,6 +99,8 @@ module.exports.createFolderSync = function (path) {
         if (e.code != 'EEXIST') throw e;
     }
 };
+
+module.exports.createFolderSync = createFolderSync;
 
 module.exports.renameSync = function(oldName,newName){
     fs.renameSync(oldName,newName);

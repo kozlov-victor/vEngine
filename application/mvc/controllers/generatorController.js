@@ -175,11 +175,30 @@ var processGameResourcesFiles = function(sourceMain,opts){
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
     fs.createFolderSync('workspace/'+opts.projectName+'/out/');
 
-    !opts.embedResources && ['spriteSheet','font','sound'].forEach(function(r){
-        fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
-        fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
-        fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
-    });
+    if (!opts.embedResources) {
+        var resMap = {};
+        ['spriteSheet','font','sound'].forEach(function(r){
+            JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json')).
+                forEach(function(mapJsonItem){
+                    var resourcePath = mapJsonItem.resourcePath;
+                    if (!resourcePath) return;
+                    resMap[resourcePath] = 1;
+                });
+        });
+        Object.keys(resMap).forEach(function(key){
+            fs.copyFileSync(
+                'workspace/'+opts.projectName+'/'+key,
+                'workspace/'+opts.projectName+'/out/'+key
+            );
+        });
+
+    }
+
+    //!opts.embedResources && ['spriteSheet','font','sound'].forEach(function(r){
+    //    fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
+    //    fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
+    //    fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
+    //});
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
     var generatedCode = sourceMain.get();
