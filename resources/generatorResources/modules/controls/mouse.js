@@ -70,7 +70,6 @@ var Mouse = function(){
             return found;
         });
         //if (!isObjectCaptured) {
-            console.log('scene:'+name);
             scene.trigger(name,{
                 screenX:point.x,
                 screenY:point.y

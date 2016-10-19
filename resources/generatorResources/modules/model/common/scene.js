@@ -2,6 +2,7 @@
 var BaseModel = require('baseModel').BaseModel;
 var collections = require('collections');
 var bundle = require('bundle').instance();
+var renderer = require('renderer',{ignoreFail:true}).instance();
 
 exports.Scene = BaseModel.extend({
     type:'scene',
@@ -55,5 +56,10 @@ exports.Scene = BaseModel.extend({
             tweenMovie.update(currTime);
         });
         self.__updateIndividualBehaviour__(deltaTime);
+    },
+    printText: function(x,y,text,font){
+        if (!text) return;
+        if (!text.substring) text = JSON.stringify(text,null,4);
+        renderer.printText(x,y,text,font);
     }
 });

@@ -4,6 +4,7 @@ var collider = require('collider').instance();
 var keyboard = require('keyboard').instance();
 var glContext = require('glContext').instance();
 var canvasContext = require('canvasContext').instance();
+var resourceCache = require('resourceCache');
 
 var Renderer = function(){
 
@@ -84,13 +85,7 @@ var Renderer = function(){
         collider.setUp();
     };
 
-    /**
-     * not works!!!
-     * @param x
-     * @param y
-     * @param text
-     * @param font
-     */
+
     this.printText = function(x,y,text,font){
         if (!text) return;
         font = font || bundle.fontList.get(0);
@@ -98,7 +93,7 @@ var Renderer = function(){
         var posX = x;
         var oldPosX = x;
         var posY = y;
-        text.split().forEach(function(ch){
+        text.split('').forEach(function(ch){
             var charInCtx = font.fontContext.symbols[ch]||font.fontContext.symbols['?'];
             if (ch=='\n') {
                 posX = oldPosX;
@@ -106,7 +101,7 @@ var Renderer = function(){
                 return;
             }
             ctx.drawImage(
-                self._spriteSheet._textureInfo, // problem!!! resource not loaded
+                resourceCache.get(font.resourcePath),
                 charInCtx.x,
                 charInCtx.y,
                 charInCtx.width,

@@ -6,59 +6,37 @@ var SceneManager = function(){
 
     var renderer;
     var soundManager;
-    var utils;
     var bundle;
 
     this.currScene = null;
 
-    // todo extract to resource loader
     var preloadAndSet = function(scene){
 
         if (!renderer) renderer = require('renderer').instance();
-        if (!soundManager) soundManager = require('soundManager').instance();
-        if (!utils) utils = require('utils');
         if (!bundle) bundle = require('bundle').instance();
+        var ResourceLoader = require('resourceLoader').ResourceLoader;
 
-        var q = new utils.Queue();
-        q.onResolved = function(){
+        var loader = new ResourceLoader();
+        loader.onComplete = function(){
             bundle.applyBehaviourAll();
             renderer.setScene(scene);
         };
+
         var allSprSheets = scene.getAllSpriteSheets();
+
         bundle.particleSystemList.forEach(function(ps){
             allSprSheets.add(ps._gameObject._spriteSheet);
         });
+        bundle.fontList.forEach(function(font){
+            loader.loadImage(font.resourcePath);
+        });
         allSprSheets.asArray().forEach(function(spSheet){
-            var resourcePath = bundle.embeddedResources.isEmbedded?
-                bundle.embeddedResources.data[spSheet.resourcePath]:
-                './'+spSheet.resourcePath;
-            renderer.
-                getContext().
-                loadTextureInfo(
-                resourcePath,
-                {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:spSheet.resourcePath},
-                function(textureInfo){
-                    spSheet._textureInfo = textureInfo;
-                    q.resolveTask();
-                });
-            q.addTask();
+            loader.loadImage(spSheet.resourcePath);
         });
-        // todo remove slash??
         bundle.soundList.forEach(function(snd){
-            q.addTask();
-            var resourcePath = bundle.embeddedResources.isEmbedded?
-            bundle.embeddedResources.data[snd.resourcePath]:
-            './'+snd.resourcePath;
-            soundManager.loadSound(
-                resourcePath,
-                {type:bundle.embeddedResources.isEmbedded?'base64':''},
-                function(buffer){
-                    snd._buffer = buffer;
-                    q.resolveTask();
-                }
-            );
+            loader.loadSound(snd.resourcePath);
         });
-        q.start();
+        loader.start();
     };
 
     this.setScene = function(scene){

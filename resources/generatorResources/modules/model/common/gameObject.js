@@ -4,6 +4,7 @@ var BaseGameObject = require('baseGameObject').BaseGameObject;
 var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 var bundle = require('bundle').instance();
 var collections = require('collections');
+var resourceCache = require('resourceCache');
 
 exports.GameObject = BaseGameObject.extend({
     type:'gameObject',
@@ -57,29 +58,31 @@ exports.GameObject = BaseGameObject.extend({
         this.height = spriteSheet._frameHeight;
     },
     update: function(time,delta) {
-        this._currFrameAnimation && this._currFrameAnimation.update(time);
+        var self = this;
+        self._currFrameAnimation && this._currFrameAnimation.update(time);
         var deltaX = this.vel.x * delta / 1000;
         var deltaY = this.vel.y * delta / 1000;
         var posX = this.pos.x+deltaX;
         var posY = this.pos.y+deltaY;
         collider.manage(this,posX,posY);
-        this.__updateIndividualBehaviour__(delta);
-        this.__updateCommonBehaviour__();
-        this._render();
+        self.__updateIndividualBehaviour__(delta);
+        self.__updateCommonBehaviour__();
+        self._render();
     },
     stopFrAnimations: function(){
         this._currFrameAnimation && this._currFrameAnimation.stop();
     },
     _render: function(){
+        var self = this;
         var ctx = renderer.getContext();
         ctx.save();
-        this._super();
+        self._super();
         ctx.drawImage(
-            this._spriteSheet._textureInfo,
-            this._sprPosX,
-            this._sprPosY,
-            this._spriteSheet._frameWidth,
-            this._spriteSheet._frameHeight,
+            resourceCache.get(self._spriteSheet.resourcePath),
+            self._sprPosX,
+            self._sprPosY,
+            self._spriteSheet._frameWidth,
+            self._spriteSheet._frameHeight,
             0,
             0
         );
