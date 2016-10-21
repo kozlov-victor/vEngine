@@ -32,7 +32,7 @@ dirs.forEach(function(dir){
     var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
     animations[keyWalk] = self.getFrAnimation(parameters[keyWalk]);
     if (!animations[keyWalk]) throw 'can not find animation ' + parameters[keyWalk] +' an gameObject ' + self.name;
-    parameters[keyIdle] && (animations[keyIdle] = _gameObject.getFrAnimation(parameters[keyIdle]));
+    parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
 });
 
 function onUpdate(){
