@@ -81,11 +81,6 @@ module.exports.createProject = function(projectName){
     fs.copyFileSync('resources/generatorResources/fonts/map.json',
         'workspace/'+projectName+'/resources/font/map.json');
 
-    fs.createFolderSync('workspace/'+projectName+'/resources/script/commonBehaviour');
-    fs.readDirSync('resources/generatorResources/commonBehaviour').forEach(function(itm){
-        fs.createFileSync('workspace/'+projectName+'/resources/script/commonBehaviour/'+itm.name,itm.content);
-    });
-
     fs.createFileSync('workspace/'+projectName+'/gameProps.json',JSON.stringify({
         width:800,
         height:600,
@@ -193,19 +188,18 @@ module.exports.createOrEditObjectInResource = function(resourceType,resourceId,o
 module.exports.getCommonBehaviourAttrs = function(projectName){
     if (!projectName) throw 'project name not specified';
     var attrs = [];
-    fs.readDirSync('workspace/'+projectName+'/resources/script/commonBehaviour').forEach(function(itm){
+    fs.readDirSync('resources/generatorResources/commonBehaviour','utf-8').forEach(function(itm){
         var attr = {};
         attr.name = itm.name.replace('.js','');
         var module = {};
         module.exports = {};
         var exports = module.exports;
-        var self = {};
-        var parameters = {};
+        var jsdoc = itm.content.split('\n').join('').match(/\/\*\*(.*)\*\//gi)[0].split('*').join('').split('/').join('');
         var fn = new Function(
-            'module,exports,self,parameters',
-            'var require = function(){return {instance:function(){}}};'+itm.content
+            'module,exports',
+            'var parameters = {};var require = function(){return {instance:function(){}}};'+jsdoc
         );
-        fn(module,exports,self,parameters);
+        fn(module,exports);
         attr.description = exports.description;
         attr.parameters = exports.parameters;
         attr.id = uuid();

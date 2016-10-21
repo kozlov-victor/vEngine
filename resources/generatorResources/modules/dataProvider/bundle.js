@@ -44,9 +44,8 @@ var Bundle = function(data){
         if (behaviourFn) {
             var exports = {};
             behaviourFn(exports,model);
-            exports.onCreate();
-            model.__updateIndividualBehaviour__ = function(deltaTime){
-                exports.onUpdate(deltaTime);
+            model.__updateIndividualBehaviour__ = function(time){
+                exports.onUpdate(time);
             }
         } else {
             model.__updateIndividualBehaviour__ = consts.noop;
@@ -68,7 +67,6 @@ var Bundle = function(data){
             var exports = module.exports;
             behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
             exportsList.push(exports);
-            exports.onCreate();
         });
         model.__updateCommonBehaviour__ = function(){
             exportsList.forEach(function(item){

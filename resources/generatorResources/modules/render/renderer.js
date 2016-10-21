@@ -81,7 +81,7 @@ var Renderer = function(){
     };
     this.setScene = function(_scene){
         scene = _scene;
-        ctx.colorBG = scene.colorBG;
+        if (scene.useBG) ctx.colorBG = scene.colorBG;
         collider.setUp();
     };
 

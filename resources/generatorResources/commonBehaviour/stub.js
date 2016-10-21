@@ -1,12 +1,9 @@
-
-function onCreate(){
-
-}
+/**
+ exports.parameters = {};
+ exports.description = 'Stub for commonBehaviour';
+ */
 
 function onUpdate(){
 
 }
 
-exports.parameters = {};
-
-exports.description = 'Stub for commonBehaviour';

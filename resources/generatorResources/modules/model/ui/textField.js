@@ -3,6 +3,7 @@ var renderer = require('renderer',{ignoreFail:true}).instance();
 var BaseGameObject = require('baseGameObject').BaseGameObject;
 var SpriteSheet = require('spriteSheet').SpriteSheet;
 var bundle = require('bundle').instance();
+var resourceCache = require('resourceCache');
 
 exports.TextField = BaseGameObject.extend({
     type:'userInterface',
@@ -47,8 +48,9 @@ exports.TextField = BaseGameObject.extend({
         self.rigid = false;
         var font =
             bundle.fontList.find({id:this.fontId}) ||
-            bundle.fontList.find({name:'default'});
-        self.setFont(font);
+            bundle.fontList.find({name:'default'}) ||
+            bundle.fontList.get(0);
+        font && self.setFont(font);
     },
     update: function(){
         this._render();
@@ -61,6 +63,7 @@ exports.TextField = BaseGameObject.extend({
         var posX = self.pos.x;
         var oldPosX = self.pos.x;
         var posY = this.pos.y;
+        var img = resourceCache.get(self._spriteSheet.resourcePath);
         this._chars.forEach(function(ch){
             var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
             if (ch=='\n') {
@@ -69,7 +72,7 @@ exports.TextField = BaseGameObject.extend({
                 return;
             }
             renderer.getContext().drawImage(
-                self._spriteSheet._textureInfo,
+                img,
                 charInCtx.x,
                 charInCtx.y,
                 charInCtx.width,

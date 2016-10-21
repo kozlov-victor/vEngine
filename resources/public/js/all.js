@@ -904,6 +904,20 @@ window.app.
         };
 
         var _addOrEditGameObject = function(obj,x,y,idKey,idVal){
+
+            if (!bundle.sceneList.size()) {
+                window.showError(s.i18n['noScene']);
+                return;
+            }
+            if (!editData.currSceneInEdit) {
+                window.showError(s.i18n['sceneNotSelected']);
+                return;
+            }
+            if (!editData.currSceneInEdit._layers.size()) {
+                window.showError(s.i18n['noLayer']);
+                return;
+            }
+
             var editDataObj = obj.toJSON();
             delete editDataObj.id;
             delete editDataObj.protoId;
@@ -1620,7 +1634,10 @@ window.app
                 colorBG:'scene background color',
                 useBG:'use background color',
                 angle:'angle',
-                tileMap: 'tile map'
+                tileMap: 'tile map',
+                noScene: 'create at least one scene',
+                sceneNotSelected: 'select scene to drop object',
+                noLayer: 'create at least one layer of current scene'
             }
         };
 

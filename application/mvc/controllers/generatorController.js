@@ -124,7 +124,7 @@ var createCommonBehaviourParams = function(opts){
     Object.keys(fileNames).forEach(function(name){
         res.push({
             name:name,
-            content: fs.readFileSync('workspace/'+opts.projectName+'/resources/script/commonBehaviour/'+name+'.js')
+            content: fs.readFileSync('resources/generatorResources/commonBehaviour/'+name+'.js')
         });
     });
     return res;
@@ -153,7 +153,7 @@ var minify = function(code) {
             cascade: true,
             //negate_iife: true,
             drop_console: true
-    }
+        }
     }).code;
     return code;
 };
@@ -193,12 +193,6 @@ var processGameResourcesFiles = function(sourceMain,opts){
         });
 
     }
-
-    //!opts.embedResources && ['spriteSheet','font','sound'].forEach(function(r){
-    //    fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
-    //    fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
-    //    fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
-    //});
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
     var generatedCode = sourceMain.get();

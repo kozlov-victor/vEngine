@@ -55,7 +55,7 @@ exports.Scene = BaseModel.extend({
             }
             tweenMovie.update(currTime);
         });
-        self.__updateIndividualBehaviour__(deltaTime);
+        self.__updateIndividualBehaviour__(currTime);
     },
     printText: function(x,y,text,font){
         if (!text) return;
