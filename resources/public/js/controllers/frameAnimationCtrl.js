@@ -91,9 +91,16 @@ window.app.
         s.setRange = function(from,to) {
             if (isNaN(from) || isNaN(to)) return;
             s.editData.currFrAnimationInEdit.frames = [];
-            for (var i=from;i<=to;i++) {
-                s.editData.currFrAnimationInEdit.frames.push(i);
+            if (from<=to) {
+                for (var i=from;i<=to;i++) {
+                    s.editData.currFrAnimationInEdit.frames.push(i);
+                }
+            } else {
+                for (i=from;i>=to;i--) {
+                    s.editData.currFrAnimationInEdit.frames.push(i);
+                }
             }
+
         };
 
         (function(){

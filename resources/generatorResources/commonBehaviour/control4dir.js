@@ -20,8 +20,10 @@ var _stop = function(lastDirection){
     self.stopFrAnimations();
     self.vel.x = 0;
     self.vel.y = 0;
-    var idleKey = 'idle'+lastDirection+'Animation';
-    self[idleKey] && (self[idleKey].play());
+    var keyIdle = 'idle'+lastDirection+'Animation';
+    if (animations[keyIdle]) {
+        animations[keyIdle].play();
+    }
 };
 var _go = function(direction){
     animations['walk'+direction+'Animation'].play();

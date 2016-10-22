@@ -1,13 +1,13 @@
 var EventEmitter = require('eventEmitter').EventEmitter;
 
-var isPropNotFit = function(el,key){
+var isPropNotFit = function(key,val){
     if (!key) return true;
     if (key.indexOf('$$')==0) return true;
-    if (el[key] && key.indexOf('_')==0) return true;
-    if (el[key] && el[key].call) return true;
-    if (typeof el[key] == 'string') return false;
-    if (typeof el[key] == 'number') return false;
-    if (!el[key]) return true;
+    if (key.indexOf('_')==0) return true;
+    if (val && val.call) return true;
+    if (typeof val == 'string') return false;
+    if (typeof val == 'number') return false;
+    if (!val) return true;
 };
 
 function deepCopy(obj) {
@@ -36,7 +36,7 @@ exports.BaseModel = Class.extend({
     toJSON: function(){
         var res = {};
         for (var key in this) {
-            if (isPropNotFit(this,key)) {
+            if (isPropNotFit(key,this[key])) {
                 continue;
             }
             res[key]=this[key];
@@ -46,7 +46,9 @@ exports.BaseModel = Class.extend({
     toJSON_Array: function(){
         var res = [];
         for (var key in this) {
-            if (isPropNotFit(this,key)) continue;
+            if (isPropNotFit(key,this[key])) {
+                continue;
+            }
             res.push({key:key,value:this[key]});
         }
         return res;
@@ -56,7 +58,9 @@ exports.BaseModel = Class.extend({
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
                 self[key] = jsonObj[key];
-                self[key] = +self[key]||self[key];
+                if (!self[key].splice) {
+                    self[key] = +self[key]||self[key];
+                }
             }
         });
     },

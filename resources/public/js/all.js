@@ -115,6 +115,7 @@ window.app.
         var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 
         s.createOrEditCommonBehaviour = function(obj){
+            console.log('createOrEditCommonBehaviour>>>>>',obj);
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
                 obj.type,obj,
@@ -125,6 +126,11 @@ window.app.
                         s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
                         var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
                         dialogStateObj.commonBehaviour.push(obj.toJSON());
+                    } else {
+                        dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        var currItem = dialogStateObj._commonBehaviour.find({id:resp.r.id});
+                        currItem.fromJSON(resp.r);
+                        console.log('currItem',currItem);
                     }
                     uiHelper.closeDialog();
                 }
@@ -384,9 +390,16 @@ window.app.
         s.setRange = function(from,to) {
             if (isNaN(from) || isNaN(to)) return;
             s.editData.currFrAnimationInEdit.frames = [];
-            for (var i=from;i<=to;i++) {
-                s.editData.currFrAnimationInEdit.frames.push(i);
+            if (from<=to) {
+                for (var i=from;i<=to;i++) {
+                    s.editData.currFrAnimationInEdit.frames.push(i);
+                }
+            } else {
+                for (i=from;i>=to;i--) {
+                    s.editData.currFrAnimationInEdit.frames.push(i);
+                }
             }
+
         };
 
         (function(){
