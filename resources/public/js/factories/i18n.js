@@ -19,7 +19,7 @@ window.app
                 close:'close',
                 name:'name',
                 scaleStrategy:'scale strategy',
-                spriteSheers:'sprite sheets',
+                spriteSheets:'sprite sheets',
                 width:'width',
                 height:'height',
                 currFrameIndex:'current frame index',
@@ -75,7 +75,8 @@ window.app
                 tileMap: 'tile map',
                 noScene: 'create at least one scene',
                 sceneNotSelected: 'select scene to drop object',
-                noLayer: 'create at least one layer of current scene'
+                noLayer: 'create at least one layer of current scene',
+                selected: 'selected'
             }
         };
 

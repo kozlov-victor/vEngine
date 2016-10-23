@@ -1,6 +1,6 @@
 
 var bundle = require('bundle').instance();
-bundle.prepare(); // todo remove
+bundle.prepare();
 if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 
 var renderer = require('renderer').instance();

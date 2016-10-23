@@ -170,6 +170,27 @@
   max-width: 50px;
 }
 
+.hoverable:hover {
+  background-color: #ececec;
+  position: relative;
+  z-index: 100;
+}
+
+
+.hoverOutline:hover,.hoverOutline.selected {
+  outline: 1px solid #e0e9ff;
+  position: relative;
+  z-index: 100;
+}
+
+.hoverOutline.selected {
+  outline: 2px solid #00ff1a;
+}
+
+.tileCell {
+  background-color: rgba(174, 158, 255, 0.15);
+}
+
 @icons: delete, edit, script, eye, add;
 
 .for(@list, @code) {

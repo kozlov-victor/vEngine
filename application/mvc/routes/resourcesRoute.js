@@ -160,4 +160,16 @@ module.exports.init = function(app) {
         res.send({});
     });
 
+    app.post('/setTile',function(req,res){
+        var
+            sceneId = req.body.sceneId,
+            x = req.body.x,
+            y = req.body.y,
+            tileIndex = req.body.tileIndex,
+            projectName = req.body.projectName;
+        res.send(
+            resourcesController.setTile(sceneId,x,y,tileIndex,projectName)
+        );
+    })
+
 };

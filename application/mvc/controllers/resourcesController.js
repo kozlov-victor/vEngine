@@ -270,5 +270,19 @@ module.exports.getResourcesToAdd = function(query) {
     return source.get();
 };
 
+module.exports.setTile = function(sceneId,x,y,tileIndex,projectName) {
+    if (!projectName) throw 'project name not specified';
+    var path = 'workspace/'+projectName+'/resources/'+'scene'+'/map.json';
+    var scenes = readResource(path);
+    var scene = scenes.filter(function(s){
+        return s.id==sceneId;
+    })[0];
+    var tileData = scene.tileMap.data;
+    if (!tileData[y]) tileData[y]=[];
+    tileData[y][x]=tileIndex;
+    writeResource(scenes,path);
+    return [tileData[y][x]]
+};
+
 
 

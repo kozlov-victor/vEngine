@@ -175,6 +175,16 @@ window.app.
             );
         };
 
+        s.setTile = function(scene,x,y,tileIndex,e){
+            if (!e || e.buttons==1) {
+                var tileMapData = scene.tileMap.data;
+                if (!tileMapData[y]) tileMapData[y] = [];
+                if (tileMapData[y][x]==tileIndex) return;
+                tileMapData[y][x] = tileIndex;
+                resourceDao.setTile(scene,x,y,tileIndex);
+            }
+        };
+
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {

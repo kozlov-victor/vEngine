@@ -122,7 +122,7 @@ exports.Set = function(){
     var self = this;
     this.rs = {};
     this.add = function(itm){
-        self.rs[itm.id]=itm;
+        if (!this.has(itm.id)) self.rs[itm.id]=itm;
     };
     this.get = function(itm){
         return self.rs[itm.id];

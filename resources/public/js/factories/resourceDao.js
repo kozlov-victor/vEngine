@@ -275,6 +275,22 @@ app
         };
 
 
+        this.setTile = function(scene,x,y,tileIndex){
+            $http({
+                url: '/setTile/',
+                method: "POST",
+                data: {
+                    sceneId:scene.id,
+                    x:x,
+                    y:y,
+                    tileIndex:tileIndex,
+                    projectName:editData.projectName
+                },
+                headers: {'Content-Type': 'application/json'}
+            });
+        };
+
+
         (function(){
             if (sessionStorage.projectName) {
                 self.loadProject(sessionStorage.projectName);

@@ -1020,6 +1020,16 @@ window.app.
             );
         };
 
+        s.setTile = function(scene,x,y,tileIndex,e){
+            if (!e || e.buttons==1) {
+                var tileMapData = scene.tileMap.data;
+                if (!tileMapData[y]) tileMapData[y] = [];
+                if (tileMapData[y][x]==tileIndex) return;
+                tileMapData[y][x] = tileIndex;
+                resourceDao.setTile(scene,x,y,tileIndex);
+            }
+        };
+
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
@@ -1603,7 +1613,7 @@ window.app
                 close:'close',
                 name:'name',
                 scaleStrategy:'scale strategy',
-                spriteSheers:'sprite sheets',
+                spriteSheets:'sprite sheets',
                 width:'width',
                 height:'height',
                 currFrameIndex:'current frame index',
@@ -1659,7 +1669,8 @@ window.app
                 tileMap: 'tile map',
                 noScene: 'create at least one scene',
                 sceneNotSelected: 'select scene to drop object',
-                noLayer: 'create at least one layer of current scene'
+                noLayer: 'create at least one layer of current scene',
+                selected: 'selected'
             }
         };
 
@@ -1994,6 +2005,22 @@ app
             }).
             success(function (resp) {
                 callback && callback(resp);
+            });
+        };
+
+
+        this.setTile = function(scene,x,y,tileIndex){
+            $http({
+                url: '/setTile/',
+                method: "POST",
+                data: {
+                    sceneId:scene.id,
+                    x:x,
+                    y:y,
+                    tileIndex:tileIndex,
+                    projectName:editData.projectName
+                },
+                headers: {'Content-Type': 'application/json'}
             });
         };
 

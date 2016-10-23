@@ -29,6 +29,7 @@ var Keyboard = function(){
     };
 
     this.update = function(){
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         [
             this.KEY_UP,
             this.KEY_DOWN,
@@ -37,7 +38,7 @@ var Keyboard = function(){
         ].forEach(function(key){
                 if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
                 else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
-            });
+        });
     };
 
     window.addEventListener('keydown',function(e){

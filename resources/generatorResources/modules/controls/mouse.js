@@ -47,6 +47,7 @@ var Mouse = function(){
     };
 
     var resolveEvent = function(e,name){
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         var scene = sceneManager.getCurrScene();
         if (!scene) return;
         var point = resolveScreenPoint(e);

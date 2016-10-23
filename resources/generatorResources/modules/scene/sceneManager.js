@@ -5,7 +5,6 @@ var SceneManager = function(){
     var self = this;
 
     var renderer;
-    var soundManager;
     var bundle;
 
     this.currScene = null;

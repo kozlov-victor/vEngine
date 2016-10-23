@@ -3,11 +3,13 @@ var BaseModel = require('baseModel').BaseModel;
 var collections = require('collections');
 var bundle = require('bundle').instance();
 var renderer = require('renderer',{ignoreFail:true}).instance();
+var resourceCache = require('resourceCache');
 
 exports.Scene = BaseModel.extend({
     type:'scene',
     layerProps:[],
     _layers:null,
+    tileMap:null,
     _allGameObjects:null,
     useBG:false,
     colorBG:[255,255,255],
@@ -30,12 +32,25 @@ exports.Scene = BaseModel.extend({
             self._layers.add(lCloned);
         });
         self._tweenMovies = [];
+        if (!self.tileMap) self.tileMap = {
+            _spriteSheet:null,
+            spriteSheetId:null,
+            width:0,
+            height:0,
+            data:[]
+        };
+        if (self.tileMap.spriteSheetId) {
+            self.tileMap._spriteSheet = bundle.spriteSheetList.find({id:self.tileMap.spriteSheetId});
+        }
     },
     getAllSpriteSheets:function() {
         var dataSet = new collections.Set();
         this._layers.forEach(function(l){
             dataSet.combine(l.getAllSpriteSheets());
         });
+        if (this.tileMap.spriteSheetId) {
+            dataSet.add(this.tileMap._spriteSheet);
+        }
         return dataSet;
     },
     find: function(name){
@@ -46,6 +61,7 @@ exports.Scene = BaseModel.extend({
     },
     update: function(currTime,deltaTime){
         var self = this;
+        self._render();
         self._layers.forEach(function(layer){
             layer.update(currTime,deltaTime);
         });
@@ -56,6 +72,28 @@ exports.Scene = BaseModel.extend({
             tweenMovie.update(currTime);
         });
         self.__updateIndividualBehaviour__(currTime);
+    },
+    _render: function(){
+        var self = this;
+        var ctx = renderer.getContext();
+        var spriteSheet = self.tileMap._spriteSheet;
+        var w = self.tileMap.width;
+        var h = self.tileMap.height;
+        for (var y=0;y<h;y++) {
+            for (var x=0;x<w;x++) {
+                var index = self.tileMap.data[y] && self.tileMap.data[y][x];
+                if (index==undefined) continue;
+                ctx.drawImage(
+                    resourceCache.get(spriteSheet.resourcePath),
+                    spriteSheet.getFramePosX(index),
+                    spriteSheet.getFramePosY(index),
+                    spriteSheet._frameWidth,
+                    spriteSheet._frameHeight,
+                    x*spriteSheet._frameWidth,
+                    y*spriteSheet._frameHeight
+                );
+            }
+        }
     },
     printText: function(x,y,text,font){
         if (!text) return;

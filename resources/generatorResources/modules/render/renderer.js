@@ -5,6 +5,7 @@ var keyboard = require('keyboard').instance();
 var glContext = require('glContext').instance();
 var canvasContext = require('canvasContext').instance();
 var resourceCache = require('resourceCache');
+var camera = require('camera').instance();
 
 var Renderer = function(){
 
@@ -55,8 +56,7 @@ var Renderer = function(){
         if (window.canceled) {
            return;
         }
-        //<code>//<%if (opts.debug){%>if (window.canceled) return<%}%>
-
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
 
         reqAnimFrame(drawScene);
 
@@ -69,6 +69,7 @@ var Renderer = function(){
         ctx.beginFrameBuffer();
 
         ctx.clear();
+        camera.update(ctx);
         scene.update(currTime,deltaTime);
         bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
