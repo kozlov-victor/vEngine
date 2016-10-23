@@ -107,8 +107,8 @@ var Renderer = function(){
                 charInCtx.y,
                 charInCtx.width,
                 charInCtx.height,
-                posX,
-                posY,
+                posX + camera.pos.x,
+                posY + camera.pos.y,
                 charInCtx.width,
                 charInCtx.height
             );

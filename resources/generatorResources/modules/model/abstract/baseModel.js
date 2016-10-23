@@ -58,7 +58,7 @@ exports.BaseModel = Class.extend({
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
                 self[key] = jsonObj[key];
-                if (!self[key].splice) {
+                if (self[key] && !self[key].splice) {
                     self[key] = +self[key]||self[key];
                 }
             }

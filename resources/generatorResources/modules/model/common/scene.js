@@ -4,6 +4,7 @@ var collections = require('collections');
 var bundle = require('bundle').instance();
 var renderer = require('renderer',{ignoreFail:true}).instance();
 var resourceCache = require('resourceCache');
+var camera = require('camera').instance();
 
 exports.Scene = BaseModel.extend({
     type:'scene',
@@ -41,6 +42,8 @@ exports.Scene = BaseModel.extend({
         };
         if (self.tileMap.spriteSheetId) {
             self.tileMap._spriteSheet = bundle.spriteSheetList.find({id:self.tileMap.spriteSheetId});
+            self.tileMap._tilesInScreenX = ~~(bundle.gameProps.width/self.tileMap._spriteSheet._frameWidth);
+            self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
         }
     },
     getAllSpriteSheets:function() {
@@ -77,10 +80,12 @@ exports.Scene = BaseModel.extend({
         var self = this;
         var ctx = renderer.getContext();
         var spriteSheet = self.tileMap._spriteSheet;
-        var w = self.tileMap.width;
-        var h = self.tileMap.height;
-        for (var y=0;y<h;y++) {
-            for (var x=0;x<w;x++) {
+        var tilePosX = ~~(camera.pos.x / self.tileMap._spriteSheet._frameWidth);
+        var tilePosY = ~~(camera.pos.y / self.tileMap._spriteSheet._frameHeight);
+        var w = tilePosX + self.tileMap._tilesInScreenX + 2;
+        var h = tilePosY + self.tileMap._tilesInScreenY + 2;
+        for (var y=tilePosY;y<h;y++) {
+            for (var x=tilePosX;x<w;x++) {
                 var index = self.tileMap.data[y] && self.tileMap.data[y][x];
                 if (index==undefined) continue;
                 ctx.drawImage(

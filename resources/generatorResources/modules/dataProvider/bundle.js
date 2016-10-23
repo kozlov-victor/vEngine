@@ -29,13 +29,13 @@ var Bundle = function(data){
 
     this.prepare = function(_data){
         data = data || _data;
+        self.gameProps = data.gameProps;
         consts.RESOURCE_NAMES.forEach(function(itm){
             toDataSource(
                 require(itm)[utils.capitalize(itm)],
                 data[itm],
                 self[itm+'List']);
         });
-        self.gameProps = data.gameProps;
         data = null;
     };
 

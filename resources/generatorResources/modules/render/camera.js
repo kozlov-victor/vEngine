@@ -28,13 +28,13 @@ var Camera = function(){
         var h = bundle.gameProps.height;
         var wDiv2 = w/2;
         var hDiv2 = h/2;
-        pos.x = objFollowTo.pos.x;
-        pos.y = objFollowTo.pos.y;
-        if (pos.x<wDiv2) pos.x = wDiv2;
-        if (pos.y<hDiv2) pos.y = hDiv2;
-        if (pos.x>sceneWidth - wDiv2) pos.x = sceneWidth - wDiv2;
-        if (pos.y>sceneHeight - hDiv2) pos.y = sceneHeight - hDiv2;
-        ctx.translate(-pos.x + wDiv2,-pos.y + hDiv2);
+        pos.x = objFollowTo.pos.x - wDiv2;
+        pos.y = objFollowTo.pos.y - hDiv2;
+        if (pos.x<0) pos.x = 0;
+        if (pos.y<0) pos.y = 0;
+        if (pos.x>sceneWidth - w) pos.x = sceneWidth -w;
+        if (pos.y>sceneHeight -h) pos.y = sceneHeight -h;
+        ctx.translate(-pos.x,-pos.y);
     };
 
 };

@@ -19,6 +19,7 @@ window.app
         res.currSoundInEdit = null;
         res.currParticleSystemInEdit = null;
         res.currProjectInEdit = null;
+        res.editData.currTileIndexInEdit = null;
 
         res.userInterfaceList = new collections.List();
 
