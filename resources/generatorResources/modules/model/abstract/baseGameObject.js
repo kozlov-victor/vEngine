@@ -13,6 +13,7 @@ exports.BaseGameObject = BaseModel.extend({
     angle:0,
     width:0,
     height:0,
+    fixedToCamera:false,
     _layer:null,
     getRect: function(){
         return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};

@@ -1,7 +1,7 @@
 
 <div
         app-context-menu="ctxScene"
-        class="gameSceneWrapper"
+        class="gameSceneWrapper relative"
         >
     <div
             ng-show="uiHelper.window=='sceneWindow'"
@@ -14,6 +14,27 @@
                 width:  editData.gameProps.width+'px',
                 height: editData.gameProps.height+'px',
             }">
+
+
+        <!--<div ng-style="{-->
+                <!--width:  editData.gameProps.width+'px',-->
+                <!--height: editData.gameProps.height+'px',-->
+                <!--position:'absolute'-->
+            <!--}">-->
+            <!--<div class=""-->
+                 <!--style="-->
+         <!--position: fixed;-->
+         <!--left: 29px;-->
+         <!--top: 298px;-->
+         <!--width: 64px;-->
+         <!--height: 64px;-->
+         <!--transform: scale(1, 1) rotateZ(0deg);-->
+         <!--background-image: url('tileMap/resources/spriteSheet/btn.png');-->
+         <!--background-position: 0px 0px;-->
+         <!--background-repeat: no-repeat;">-->
+                <!--1-->
+            <!--</div>-->
+        <!--</div>-->
 
         <div ng-include src="'partials/centralBlock/tileMap.html'"></div>
 
@@ -79,7 +100,23 @@
 
             </div>
         </div>
+
     </div>
+
+    <div
+            ng-style="{
+                width:  editData.gameProps.width+'px',
+                height: editData.gameProps.height+'px',
+                position:'absolute',
+                border:'1px solid red',
+                top:0,
+                left:0,
+                pointerEvents:'none'
+            }"
+    >
+
+    </div>
+
 </div>
 
 <div ng-if="uiHelper.window=='debugRunWindow'" class="gameSceneWrapper withPaddingLeft">
