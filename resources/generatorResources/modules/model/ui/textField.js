@@ -59,15 +59,13 @@ exports.TextField = BaseGameObject.extend({
         var self = this;
         var ctx = renderer.getContext();
         this._super();
-        ctx.translate(-this.pos.x, -this.pos.y);
-        var posX = self.pos.x;
-        var oldPosX = self.pos.x;
-        var posY = this.pos.y;
+        var posX = 0;
+        var posY = 0;
         var img = resourceCache.get(self._spriteSheet.resourcePath);
         this._chars.forEach(function(ch){
             var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
             if (ch=='\n') {
-                posX = oldPosX;
+                posX = 0;
                 posY+= charInCtx.height;
                 return;
             }
@@ -78,9 +76,7 @@ exports.TextField = BaseGameObject.extend({
                 charInCtx.width,
                 charInCtx.height,
                 posX,
-                posY,
-                charInCtx.width,
-                charInCtx.height
+                posY
             );
             posX+=charInCtx.width;
         });

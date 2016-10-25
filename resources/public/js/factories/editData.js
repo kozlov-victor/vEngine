@@ -28,6 +28,8 @@ window.app
             res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
             res.scriptEditorUrl = '';
 
+            res.tileMapPosY = res.tileMapPosX = 0;
+
             res.projectName = undefined;
             res.projects = null;
             res.buildOpts = {

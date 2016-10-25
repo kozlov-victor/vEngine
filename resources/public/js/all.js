@@ -976,12 +976,23 @@ window.app.
 
 
         s.onGameObjectDropped = function(obj,draggable,e) {
+            var _spriteSheet =
+                (editData.currSceneInEdit.tileMap && editData.currSceneInEdit.tileMap._spriteSheet)||{};
+            var x =
+                e.x +
+                (_spriteSheet._frameWidth||0) *
+                editData.tileMapPosX,
+                y =
+                e.y +
+                (_spriteSheet._frameHeight||0) *
+                editData.tileMapPosY;
+
             switch (draggable) {
                 case 'gameObjectFromLeftPanel':
-                    _addOrEditGameObject(obj, e.x, e.y,'protoId',obj.id);
+                    _addOrEditGameObject(obj, x, y,'protoId',obj.id);
                     break;
                 case 'gameObjectFromSelf':
-                    _addOrEditGameObject(obj, e.x, e.y,'id',obj.id);
+                    _addOrEditGameObject(obj, x, y,'id',obj.id);
                     break;
                 default:
                     console.log('not supported',obj,draggable);
@@ -1581,6 +1592,8 @@ window.app
             res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
             res.scriptEditorUrl = '';
 
+            res.tileMapPosY = res.tileMapPosX = 0;
+
             res.projectName = undefined;
             res.projects = null;
             res.buildOpts = {
@@ -2150,6 +2163,21 @@ window.app
                 res.push(i);
             }
             return res;
+        };
+
+        this.range = function(rFr,rTo) {
+            var arr = [], i;
+            if (rFr<rTo) {
+                for (i=rFr;i<=rTo;i++) {
+                    arr.push(i);
+                }
+            } else {
+                for (i=rFr;i>=rTo;i--) {
+                    arr.push(i);
+                }
+            }
+
+            return arr;
         };
 
         this.toArray = function(str){

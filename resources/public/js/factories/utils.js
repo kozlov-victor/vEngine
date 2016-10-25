@@ -49,6 +49,21 @@ window.app
             return res;
         };
 
+        this.range = function(rFr,rTo) {
+            var arr = [], i;
+            if (rFr<rTo) {
+                for (i=rFr;i<=rTo;i++) {
+                    arr.push(i);
+                }
+            } else {
+                for (i=rFr;i>=rTo;i--) {
+                    arr.push(i);
+                }
+            }
+
+            return arr;
+        };
+
         this.toArray = function(str){
             var res = [];
             for (var i= 0,max=str.length;i<max;i++) {

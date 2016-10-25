@@ -1,10 +1,19 @@
 <div
     ng-style="{
-        width:(editData.currSceneInEdit.tileMap.width*editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+10)+'px'
+        width:(
+            editData.currSceneInEdit.tileMap.width*
+            (editData.gameProps.width/editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+10)
+        )+'px'
     }"    
-    ng-repeat="y in utils.getArray(editData.currSceneInEdit.tileMap.height)">
+    ng-repeat="y in utils.range(
+            editData.tileMapPosY,
+            editData.tileMapPosY + editData.gameProps.height/editData.currSceneInEdit.tileMap._spriteSheet._frameHeight
+        )">
     <div
-            ng-repeat="x in utils.getArray(editData.currSceneInEdit.tileMap.width)"
+            ng-repeat="x in utils.range(
+                editData.tileMapPosX,
+                editData.tileMapPosX + editData.gameProps.width/editData.currSceneInEdit.tileMap._spriteSheet._frameWidth
+            )"
             ng-class="{
                 inlineBlock:1,
                 tileCell:1

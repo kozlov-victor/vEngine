@@ -97,6 +97,21 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="cell">
+                {{i18n.fixedToCamera}}
+            </div>
+            <div class="cell">
+                <input
+                        ng-change="editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)"
+                        type="checkbox"
+                        ng-true-value="1"
+                        ng-false-value="0"
+                        ng-model="editData.currSceneGameObjectInEdit.fixedToCamera"
+                />
+            </div>
+        </div>
+
         <div class="row"
             ng-if="editData.currSceneGameObjectInEdit.subType=='textField'"
             >
