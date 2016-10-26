@@ -65,7 +65,7 @@ exports.GameObject = BaseGameObject.extend({
         var deltaY = this.vel.y * delta / 1000;
         var posX = this.pos.x+deltaX;
         var posY = this.pos.y+deltaY;
-        collider.manage(this,posX,posY);
+        collider.manage(self,posX,posY);
         self.__updateIndividualBehaviour__(delta);
         self.__updateCommonBehaviour__();
         self._render();

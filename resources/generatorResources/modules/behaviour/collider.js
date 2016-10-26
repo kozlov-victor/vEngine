@@ -18,14 +18,13 @@ var Collider = function(){
         }
         var res = false;
         gos.some(function(go){
-            if (!go.rigid) {
-                res = true;
-                return true;
-            }
-            if (obj==go) return true;
+
+            if (obj==go) return;
+
             var objRect = obj.getRect();
             objRect.x = newX;
             objRect.y = newY;
+
             if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
                 if (go.rigid) {
                     res = true;

@@ -7,6 +7,8 @@
 var mouse = require('mouse').instance();
 var points = {};
 var scene = self.getScene();
+var collider = require('collider').instance();
+var camera = require('camera').instance();
 
 self.on('click',function(e){
     points[e.id] = {
@@ -20,8 +22,9 @@ self.on('click',function(e){
 scene.on('mouseMove',function(e){
     var point = points[e.id];
     if (point && point.isMouseDown) {
-        self.pos.x = e.screenX - point.mX;
-        self.pos.y = e.screenY - point.mY;
+        collider.manage(self,e.screenX - point.mX ,e.screenY - point.mY);
+        //self.pos.x = e.screenX - point.mX;
+        //self.pos.y = e.screenY - point.mY;
     }
 });
 

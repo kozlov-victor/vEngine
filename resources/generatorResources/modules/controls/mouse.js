@@ -22,7 +22,6 @@ var Mouse = function(){
             }
         };
         canvas.ontouchend = canvas.ontouchcancel = function(e){
-            console.log('canvas.ontouchend',e);
             var l = e.changedTouches.length;
             while (l--){
                 resolveMouseUp(e.changedTouches[l]);
