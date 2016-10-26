@@ -12,6 +12,14 @@ var Keyboard = function(){
     this.KEY_LEFT = 37;
     this.KEY_RIGHT = 39;
 
+    this.emulatePress = function(code){
+        buffer[code] = KEY_PRESSED;
+    };
+
+    this.emulateRelease = function(code){
+        buffer[code] = KEY_JUST_RELEASED;
+    };
+
     this.isPressed = function(key){
         return buffer[key]>KEY_RELEASED;
     };

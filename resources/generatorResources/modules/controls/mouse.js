@@ -5,6 +5,8 @@ var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
 var deviceScale = require('device').deviceScale;
 
+var objectsMouseDown = {};
+
 var Mouse = function(){
 
     var self = this;
@@ -13,19 +15,24 @@ var Mouse = function(){
 
     if ('ontouchstart' in window) {
         canvas.ontouchstart = function(e){
-            e.touches.forEach(function(evt){
-                resolveClick(evt);
-            });
+            console.log('canvas.ontouchstart',e.touches.length);
+            var l = e.touches.length;
+            while (l--){
+                resolveClick(e.touches[l]);
+            }
         };
         canvas.ontouchend = canvas.ontouchcancel = function(e){
-            e.touches.forEach(function(evt){
-                resolveMouseUp(evt);
-            });
+            console.log('canvas.ontouchend',e);
+            var l = e.changedTouches.length;
+            while (l--){
+                resolveMouseUp(e.changedTouches[l]);
+            }
         };
         canvas.ontouchmove = function(e){
-            e.touches.forEach(function(evt){
-                resolveMouseMove(evt);
-            });
+            var l = e.touches.length;
+            while (l--){
+                resolveMouseMove(e.touches[l]);
+            }
         }
     } else {
         canvas.onmousedown = function(e){
@@ -42,7 +49,8 @@ var Mouse = function(){
     var resolveScreenPoint = function(e){
         return {
             x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
-            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
+            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale,
+            id: e.id
         };
     };
 
@@ -56,7 +64,7 @@ var Mouse = function(){
             var found = false;
             l._gameObjects.someReversed(function(g){
                 if (
-                    mathEx.isPointInRect(point,g.getRect(),g.angle)
+                    mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
                 ) {
                     g.trigger(name,{
                         screenX:point.x,
@@ -65,6 +73,7 @@ var Mouse = function(){
                         objectY:point.y - g.pos.y
                     });
                     isObjectCaptured = true;
+                    point.object = g;
                     return found = true;
                 }
             });
@@ -76,10 +85,14 @@ var Mouse = function(){
                 screenY:point.y
             });
         //}
+        return point;
     };
 
     var resolveClick = function(e){
-        resolveEvent(e,'click');
+        console.log('resolveclick invoked',e);
+        var point = resolveEvent(e,'click');
+        resolveEvent(e,'mouseDown');
+        if (point.object) objectsMouseDown[point.id] = point.object;
     };
 
     var resolveMouseMove = function(e){
@@ -87,7 +100,12 @@ var Mouse = function(){
     };
 
     var resolveMouseUp = function(e){
-        resolveEvent(e,'mouseUp');
+        var point = resolveEvent(e,'mouseUp');
+        var lastMouseDownObject = objectsMouseDown[point.id];
+        if (!lastMouseDownObject) return;
+        if (lastMouseDownObject!==point.object) {
+            lastMouseDownObject.trigger('mouseUp');
+        }
     };
 
 };

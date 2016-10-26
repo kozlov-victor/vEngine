@@ -3,6 +3,7 @@ var BaseModel = require('baseModel').BaseModel;
 var tweenModule = require('tween',{ignoreFail:true});
 var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
 var renderer = require('renderer',{ignoreFail:true}).instance();
+var camera = require('camera').instance();
 
 exports.BaseGameObject = BaseModel.extend({
     type:'baseGameObject',
@@ -17,6 +18,13 @@ exports.BaseGameObject = BaseModel.extend({
     _layer:null,
     getRect: function(){
         return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
+    },
+    getScreenRect: function(){
+        var rect = {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
+        if (this.fixedToCamera) return rect;
+        rect.x -= camera.pos.x;
+        rect.y -= camera.pos.y;
+        return rect;
     },
     kill: function(){
         this._layer._gameObjects.remove({id:this.id});
@@ -45,7 +53,12 @@ exports.BaseGameObject = BaseModel.extend({
     update: function(){},
     _render: function(){
         var ctx = renderer.getContext();
-        ctx.translate(this.pos.x + this.width /2,this.pos.y + this.height/2);
+        var dx = 0, dy = 0;
+        if (this.fixedToCamera) {
+            dx = camera.pos.x;
+            dy = camera.pos.y;
+        }
+        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
         ctx.scale(this.scale.x,this.scale.y);
         ctx.rotateZ(this.angle);
         ctx.translate(-this.width /2, -this.height/2);

@@ -6,6 +6,7 @@ var bundle = require('bundle').instance();
 var collections = require('collections');
 var resourceCache = require('resourceCache');
 
+
 exports.GameObject = BaseGameObject.extend({
     type:'gameObject',
     spriteSheetId:null,
@@ -75,6 +76,8 @@ exports.GameObject = BaseGameObject.extend({
     _render: function(){
         var self = this;
         var ctx = renderer.getContext();
+        var posX = 0;
+        var posY = 0;
         ctx.save();
         self._super();
         ctx.drawImage(

@@ -104,5 +104,8 @@ exports.Scene = BaseModel.extend({
         if (!text) return;
         if (!text.substring) text = JSON.stringify(text,null,4);
         renderer.printText(x,y,text,font);
+    },
+    log: function(text) {
+        this.printText(0,0,text);
     }
 });

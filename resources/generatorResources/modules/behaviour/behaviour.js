@@ -4,6 +4,9 @@ var commonBehaviour = {};
 //<code><%for (var i=0;i<commonBehaviour.length;i++){%>
 //<code>commonBehaviour['<%- commonBehaviour[i].name %>'] = function(module,exports,self,parameters){
 //<code><%- commonBehaviour[i].content %>
+//<code><%if (specialResources.gameObjectScripts[i].content.indexOf('onUpdate')==-1){%>
+//<code>function onUpdate(){};
+//<code><%}%>
     exports.onUpdate = onUpdate;
 //<code>}
 //<code><%}%>

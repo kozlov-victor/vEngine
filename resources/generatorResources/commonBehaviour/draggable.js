@@ -14,6 +14,7 @@ self.on('click',function(e){
         mX: e.objectX,
         mY: e.objectY
     };
+    console.log('clicked',points,e.id);
 });
 
 scene.on('mouseMove',function(e){
@@ -27,5 +28,3 @@ scene.on('mouseMove',function(e){
 scene.on('mouseUp',function(e){
     delete points[e.id];
 });
-
-function onUpdate(){} // todo how to remove?
