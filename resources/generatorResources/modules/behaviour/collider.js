@@ -12,6 +12,7 @@ var Collider = function(){
     };
 
     this.manage = function(obj,newX,newY){
+        if (obj.pos.x==newX && obj.pos.y==newY) return;
         if (!obj.rigid) {
             obj.pos.x = newX;
             obj.pos.y = newY;
@@ -26,10 +27,10 @@ var Collider = function(){
             objRect.y = newY;
 
             if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
-                if (go.rigid) {
+                if (obj.rigid && go.rigid) {
                     res = true;
                     obj.trigger('collide',go);
-                    return true;
+                    //console.log('collided',obj.name,go.name,go.rigid);
                 } else {
                     obj.trigger('overlap',go);
                 }
