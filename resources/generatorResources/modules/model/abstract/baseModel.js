@@ -28,7 +28,7 @@ function deepCopy(obj) {
     return obj;
 }
 
-exports.BaseModel = Class.extend({
+exports.BaseModel = require('class').Class.extend({
     id:null,
     protoId:null,
     name:'',

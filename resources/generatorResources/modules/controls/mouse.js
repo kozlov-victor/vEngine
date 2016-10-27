@@ -10,6 +10,7 @@ var objectsMouseDown = {};
 var Mouse = function(){
 
     var self = this;
+    var gameProps = bundle.gameProps;
     var globalScale = bundle.gameProps.globalScale;
     var canvas = renderer.getCanvas();
 
@@ -47,8 +48,8 @@ var Mouse = function(){
 
     var resolveScreenPoint = function(e){
         return {
-            x: (e.clientX - globalScale.left) / globalScale.x * deviceScale,
-            y: (e.clientY - globalScale.top) / globalScale.y * deviceScale,
+            x: (e.clientX * deviceScale- gameProps.left) / globalScale.x ,
+            y: (e.clientY * deviceScale- gameProps.top) / globalScale.y ,
             id: e.id
         };
     };
@@ -89,6 +90,7 @@ var Mouse = function(){
 
     var resolveClick = function(e){
         var point = resolveEvent(e,'click');
+        console.log(point.x,point.y);
         resolveEvent(e,'mouseDown');
         if (point.object) objectsMouseDown[point.id] = point.object;
     };

@@ -234,7 +234,8 @@ module.exports.generate = function(opts,callback){
     console.log('generate options:',opts);
 
     var sourceMain = new Source();
-    sourceMain.addCommonTemplates('resources/generatorResources/lib');
+    sourceMain.addCommonTemplates('resources/generatorResources/lib/common');
+    sourceMain.addCommonJsModules('resources/generatorResources/lib/class');
     sourceMain.addCommonJsModules(
         'resources/generatorResources/modules',
         prepareGeneratorParams(opts)

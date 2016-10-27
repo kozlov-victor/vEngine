@@ -11,10 +11,11 @@ var ScaleManager = function(canvas,ctx){
 
     var processScreenSize = function(){
         var gameProps = bundle.gameProps;
+        var w,h,scaleFactor,scaledWidth,scaledHeight;
         switch (+gameProps.scaleStrategy) {
             case SCALE_STRATEGY.NO_SCALE:
-                var w = window.innerWidth*deviceScale;
-                var h = window.innerHeight*deviceScale;
+                w = window.innerWidth*deviceScale;
+                h = window.innerHeight*deviceScale;
                 gameProps.globalScale.x = 1;
                 gameProps.globalScale.y = 1;
                 gameProps.globalScale.left = 0;
@@ -29,9 +30,9 @@ var ScaleManager = function(canvas,ctx){
             case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
                 w = window.innerWidth*deviceScale;
                 h = window.innerHeight*deviceScale;
-                var scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
-                var scaledWidth = gameProps.width * scaleFactor;
-                var scaledHeight = gameProps.height * scaleFactor;
+                scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
+                scaledWidth = gameProps.width * scaleFactor;
+                scaledHeight = gameProps.height * scaleFactor;
                 gameProps.globalScale.x = scaledWidth / gameProps.width;
                 gameProps.globalScale.y = scaledHeight / gameProps.height;
                 gameProps.scaledWidth = scaledWidth;
