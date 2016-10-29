@@ -42,12 +42,17 @@ exports.ParticleSystem = BaseModel.extend({
     },
     update:function(time,delta){
         var self = this;
-        this._particles.forEach(function(p){
+        var all = this._particles;
+        var i = all.length;
+        var l = i - 1;
+        while(i--){
+            var p = all[l-i];
+            if (!p) continue;
             if (!p._timeCreated) p._timeCreated = time;
             if (time - p._timeCreated > p.liveTime) {
                 self._particles.splice(self._particles.indexOf(p),1);
             }
             p.update(time,delta);
-        });
+        }
     }
 });

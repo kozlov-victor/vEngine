@@ -65,9 +65,12 @@ exports.Scene = BaseModel.extend({
     update: function(currTime,deltaTime){
         var self = this;
         self._render();
-        self._layers.forEach(function(layer){
-            layer.update(currTime,deltaTime);
-        });
+        var layers = self._layers.rs;
+        var i = self._layers.size();
+        var l = i -1;
+        while(i--){
+            layers[i-l].update(currTime,deltaTime);
+        }
         self._tweenMovies.forEach(function(tweenMovie){
             if (tweenMovie.completed) {
                 self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
