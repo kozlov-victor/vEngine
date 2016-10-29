@@ -71,6 +71,7 @@ exports.BaseModel = require('class').Class.extend({
     },
     on: function(eventName,callBack){
         this._emitter.on(eventName,callBack);
+        return this;
     },
     trigger: function(eventName,data){
         this._emitter.trigger(eventName,data);

@@ -36,9 +36,12 @@ exports.Layer = BaseModel.extend({
         return dataSet;
     },
     update: function(currTime,deltaTime){
-        this._gameObjects.forEach(function(obj){
-            if (!obj) return;
-            obj.update(currTime,deltaTime);
-        });
+        var all = this._gameObjects.rs;
+        var i = all.length;
+        var l = i-1;
+        while(i--){
+            var obj = all[l-i];
+            obj && obj.update(currTime,deltaTime);
+        }
     }
 });

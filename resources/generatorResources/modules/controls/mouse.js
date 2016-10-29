@@ -5,7 +5,7 @@ var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
 var deviceScale = require('device').deviceScale;
 
-var objectsMouseDown = {};
+var objectsCaptured = {};
 
 var Mouse = function(){
 
@@ -50,14 +50,12 @@ var Mouse = function(){
         return {
             x: (e.clientX * deviceScale- gameProps.left) / globalScale.x ,
             y: (e.clientY * deviceScale- gameProps.top) / globalScale.y ,
-            id: e.id
+            id: e.id || 1
         };
     };
 
-    var resolveEvent = function(e,name){
-        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+    var triggerEvent = function(e,name){
         var scene = sceneManager.getCurrScene();
-        if (!scene) return;
         var point = resolveScreenPoint(e);
         var isObjectCaptured = false;
         scene._layers.someReversed(function(l){
@@ -79,33 +77,52 @@ var Mouse = function(){
             });
             return found;
         });
-        //if (!isObjectCaptured) {
-            scene.trigger(name,{
-                screenX:point.x,
-                screenY:point.y
-            });
-        //}
         return point;
     };
 
     var resolveClick = function(e){
-        var point = resolveEvent(e,'click');
-        console.log(point.x,point.y);
-        resolveEvent(e,'mouseDown');
-        if (point.object) objectsMouseDown[point.id] = point.object;
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        var scene = sceneManager.getCurrScene();
+        var point = triggerEvent(e,'click');
+        scene.trigger('click',{
+            screenX:point.x,
+            screenY:point.y
+        });
+        triggerEvent(e,'mouseDown');
     };
 
     var resolveMouseMove = function(e){
-        resolveEvent(e,'mouseMove');
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        var scene = sceneManager.getCurrScene();
+        var point = triggerEvent(e,'mouseMove');
+        scene.trigger('mouseMove',{
+            screenX:point.x,
+            screenY:point.y
+        });
+        var lastMouseDownObject = objectsCaptured[point.id];
+        if (lastMouseDownObject && lastMouseDownObject!=point.object) {
+            lastMouseDownObject.trigger('mouseLeave');
+            delete objectsCaptured[point.id];
+        }
+        if (point.object && lastMouseDownObject!=point.object) {
+            point.object.trigger('mouseEnter');
+            objectsCaptured[point.id] = point.object;
+        }
+
     };
 
     var resolveMouseUp = function(e){
-        var point = resolveEvent(e,'mouseUp');
-        var lastMouseDownObject = objectsMouseDown[point.id];
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        var scene = sceneManager.getCurrScene();
+        var point = triggerEvent(e,'mouseUp');
+        scene.trigger('mouseUp',{
+            screenX:point.x,
+            screenY:point.y
+        });
+        var lastMouseDownObject = objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
-        if (lastMouseDownObject!==point.object) {
-            lastMouseDownObject.trigger('mouseUp');
-        }
+        lastMouseDownObject.trigger('mouseUp');
+        delete objectsCaptured[point.id];
     };
 
 };
