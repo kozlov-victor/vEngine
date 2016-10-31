@@ -103,6 +103,12 @@ exports.Scene = BaseModel.extend({
             }
         }
     },
+    getTileAt: function(x,y){
+        var self = this;
+        var tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
+        var tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
+        return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];
+    },
     printText: function(x,y,text,font){
         if (!text) return;
         if (!text.substring) text = JSON.stringify(text,null,4);

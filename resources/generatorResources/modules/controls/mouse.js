@@ -3,7 +3,7 @@ var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
 var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
-var deviceScale = require('device').deviceScale;
+var device = require('device').scale;
 
 var objectsCaptured = {};
 
@@ -14,9 +14,8 @@ var Mouse = function(){
     var globalScale = bundle.gameProps.globalScale;
     var canvas = renderer.getCanvas();
 
-    if ('ontouchstart' in window) {
+    if (device.isTouch) {
         canvas.ontouchstart = function(e){
-            console.log('canvas.ontouchstart',e.touches.length);
             var l = e.touches.length;
             while (l--){
                 resolveClick(e.touches[l]);
@@ -48,9 +47,9 @@ var Mouse = function(){
 
     var resolveScreenPoint = function(e){
         return {
-            x: (e.clientX * deviceScale- gameProps.left) / globalScale.x ,
-            y: (e.clientY * deviceScale- gameProps.top) / globalScale.y ,
-            id: e.id || 1
+            x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
+            y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
+            id: e.identifier
         };
     };
 

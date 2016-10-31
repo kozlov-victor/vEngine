@@ -1,6 +1,6 @@
 
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
-var deviceScale = require('device').deviceScale;
+var scale = require('device').scale;
 var bundle = require('bundle').instance();
 
 var ScaleManager = function(canvas,ctx){
@@ -14,8 +14,8 @@ var ScaleManager = function(canvas,ctx){
         var w,h,scaleFactor,scaledWidth,scaledHeight;
         switch (+gameProps.scaleStrategy) {
             case SCALE_STRATEGY.NO_SCALE:
-                w = window.innerWidth*deviceScale;
-                h = window.innerHeight*deviceScale;
+                w = window.innerWidth*scale;
+                h = window.innerHeight*scale;
                 gameProps.globalScale.x = 1;
                 gameProps.globalScale.y = 1;
                 gameProps.globalScale.left = 0;
@@ -28,8 +28,8 @@ var ScaleManager = function(canvas,ctx){
                 canvas.height = gameProps.height;
                 break;
             case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
-                w = window.innerWidth*deviceScale;
-                h = window.innerHeight*deviceScale;
+                w = window.innerWidth*scale;
+                h = window.innerHeight*scale;
                 scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
                 scaledWidth = gameProps.width * scaleFactor;
                 scaledHeight = gameProps.height * scaleFactor;
@@ -51,8 +51,8 @@ var ScaleManager = function(canvas,ctx){
                 canvas.style.left = gameProps.left + 'px';
                 break;
             case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
-                w = window.innerWidth*deviceScale;
-                h = window.innerHeight*deviceScale;
+                w = window.innerWidth*scale;
+                h = window.innerHeight*scale;
                 scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
                 scaledWidth = gameProps.width * scaleFactor;
                 scaledHeight = gameProps.height * scaleFactor;
@@ -71,8 +71,8 @@ var ScaleManager = function(canvas,ctx){
                 rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
                 break;
             case SCALE_STRATEGY.CSS_STRETCH:
-                w = window.innerWidth*deviceScale;
-                h = window.innerHeight*deviceScale;
+                w = window.innerWidth*scale;
+                h = window.innerHeight*scale;
                 gameProps.globalScale.x = w / gameProps.width;
                 gameProps.globalScale.y = h / gameProps.height;
                 gameProps.globalScale.left = 0;
@@ -87,8 +87,8 @@ var ScaleManager = function(canvas,ctx){
                 canvas.style.height = h + 'px';
                 break;
             case SCALE_STRATEGY.HARDWARE_STRETCH:
-                w = window.innerWidth*deviceScale;
-                h = window.innerHeight*deviceScale;
+                w = window.innerWidth*scale;
+                h = window.innerHeight*scale;
                 gameProps.globalScale.x = w / gameProps.width;
                 gameProps.globalScale.y = h / gameProps.height;
                 gameProps.globalScale.left = 0;

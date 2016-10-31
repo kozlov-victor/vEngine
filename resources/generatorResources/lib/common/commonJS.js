@@ -28,6 +28,10 @@ var modules = {}, require = function(name,opts){
     }
 };
 
+//<code><%if (opts.debug){%>
+//<code>window.require = require;
+//<code><%}%>
+
 //modules['1'] = {code:function(){
 //    var m2 = require('2');
 //    console.log(1);

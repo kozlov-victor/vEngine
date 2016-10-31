@@ -34,8 +34,8 @@ window.app.
 
         var tid = 0;
         s.onKeyPress = function(e){
-
-           if (!editData.currSceneGameObjectInEdit) return;
+            e.preventDefault();
+            if (!editData.currSceneGameObjectInEdit) return;
             var edited = false;
             switch (e.which) {
                case 38: // up

@@ -129,6 +129,7 @@
                 backgroundPositionY:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(i)+'px',
                 backgroundRepeat:     'no-repeat',
              }"
+             title="{{i}}"
              ng-click="editData.currTileIndexInEdit = i;"
              ng-repeat="i in utils.getArray(editData.currSceneInEdit.tileMap._spriteSheet._numOfFrames)"
                 ></div>

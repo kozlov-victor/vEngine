@@ -10,24 +10,30 @@ var scene = self.getScene();
 var collider = require('collider').instance();
 var camera = require('camera').instance();
 
+var getEventId = function(e){
+    return e.id || 1;
+};
+
 self.on('click',function(e){
-    points[e.id] = {
+    points[getEventId(e)] = {
         isMouseDown:true,
         mX: e.objectX,
         mY: e.objectY
     };
-    console.log('clicked',points,e.id);
 });
 
 scene.on('mouseMove',function(e){
-    var point = points[e.id];
+    var point = points[getEventId(e)];
     if (point && point.isMouseDown) {
-        collider.manage(self,e.screenX - point.mX ,e.screenY - point.mY);
+        collider.manage(
+            self,e.screenX - point.mX,
+            e.screenY - point.mY
+        );
         //self.pos.x = e.screenX - point.mX;
         //self.pos.y = e.screenY - point.mY;
     }
 });
 
 scene.on('mouseUp',function(e){
-    delete points[e.id];
+    delete points[getEventId(e)];
 });
