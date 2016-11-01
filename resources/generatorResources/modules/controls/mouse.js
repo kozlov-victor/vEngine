@@ -3,7 +3,7 @@ var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
 var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
-var device = require('device').scale;
+var device = require('device');
 
 var objectsCaptured = {};
 
@@ -49,7 +49,7 @@ var Mouse = function(){
         return {
             x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
             y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
-            id: e.identifier
+            id: e.identifier || 0
         };
     };
 

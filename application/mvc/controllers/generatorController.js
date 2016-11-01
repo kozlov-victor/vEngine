@@ -151,7 +151,6 @@ var minify = function(code) {
             if_return: true,
             join_vars: true,
             cascade: true,
-            //negate_iife: true,
             drop_console: true
         }
     }).code;
@@ -191,7 +190,6 @@ var processGameResourcesFiles = function(sourceMain,opts){
                 'workspace/'+opts.projectName+'/out/'+key
             );
         });
-
     }
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
