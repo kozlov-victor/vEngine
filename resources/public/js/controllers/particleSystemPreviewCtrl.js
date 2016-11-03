@@ -29,10 +29,10 @@ window.app.
             editData.currParticleSystemInEdit._particles.forEach(function(p){
 
                 p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                var deltaX = p.velX * delta / 1000;
-                var deltaY = p.velY * delta / 1000;
-                p.posX = p.posX+deltaX;
-                p.posY = p.posY+deltaY;
+                var deltaX = p.vel.x * delta / 1000;
+                var deltaY = p.vel.y * delta / 1000;
+                p.pos.x = p.pos.x+deltaX;
+                p.pos.y = p.pos.y+deltaY;
 
                 if (!p._timeCreated) p._timeCreated = currTime;
                 if (currTime - p._timeCreated > p.liveTime) {

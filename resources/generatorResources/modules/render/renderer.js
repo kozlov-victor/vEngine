@@ -4,6 +4,8 @@ var collider = require('collider').instance();
 var keyboard = require('keyboard').instance();
 var glContext = require('glContext').instance();
 var canvasContext = require('canvasContext').instance();
+var resourceCache = require('resourceCache');
+var camera = require('camera').instance();
 
 var Renderer = function(){
 
@@ -54,8 +56,7 @@ var Renderer = function(){
         if (window.canceled) {
            return;
         }
-        //<code>//<%if (opts.debug){%>if (window.canceled) return<%}%>
-
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
 
         reqAnimFrame(drawScene);
 
@@ -66,8 +67,9 @@ var Renderer = function(){
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.beginFrameBuffer();
-
         ctx.clear();
+
+        camera.update(ctx);
         scene.update(currTime,deltaTime);
         bundle.particleSystemList.forEach(function(p){
             p.update(currTime,deltaTime);
@@ -80,9 +82,39 @@ var Renderer = function(){
     };
     this.setScene = function(_scene){
         scene = _scene;
-        ctx.colorBG = scene.colorBG;
+        if (scene.useBG) ctx.colorBG = scene.colorBG;
         collider.setUp();
     };
+
+
+    this.printText = function(x,y,text,font){
+        if (!text) return;
+        font = font || bundle.fontList.get(0);
+        if (!font) throw 'at least one font must be specified. Create new one please';
+        var posX = x;
+        var oldPosX = x;
+        var posY = y;
+        text.split('').forEach(function(ch){
+            var charInCtx = font.fontContext.symbols[ch]||font.fontContext.symbols['?'];
+            if (ch=='\n') {
+                posX = oldPosX;
+                posY+= charInCtx.height;
+                return;
+            }
+            ctx.drawImage(
+                resourceCache.get(font.resourcePath),
+                charInCtx.x,
+                charInCtx.y,
+                charInCtx.width,
+                charInCtx.height,
+                posX + camera.pos.x,
+                posY + camera.pos.y,
+                charInCtx.width,
+                charInCtx.height
+            );
+            posX+=charInCtx.width;
+        });
+    }
 
 };
 

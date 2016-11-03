@@ -4,17 +4,29 @@ var EventEmitter = function(){
 
     var events = {};
 
-    this.on = function(eventName,callBack){
-        events[eventName] = events[eventName] || [];
-        events[eventName].push(callBack);
+    var _on = function(name,callBack){
+        events[name] = events[name] || [];
+        events[name].push(callBack);
+    };
+
+    this.on = function(eventNameOrList,callBack){
+        if (typeof  eventNameOrList == 'string') {
+            _on(eventNameOrList,callBack);
+        } else if (eventNameOrList.splice) {
+            eventNameOrList.forEach(function(eventName){
+                _on(eventName,callBack);
+            });
+        }
+
     };
 
     this.trigger = function(eventName,data){
         var es = events[eventName];
         if (!es) return;
-        es.forEach(function(e){
-            e(data);
-        });
+        var l = es.length;
+        while(l--){
+           es[l](data);
+        }
     };
 };
 

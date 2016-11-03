@@ -32,8 +32,17 @@ window.app.
                 method: "GET"
             }).
             success(function (resp) {
-                    s.uiHelper.window = 'debugRunWindow';
+                s.uiHelper.window = 'debugRunWindow';
                 editData.debugFrameUrl = '/'+editData.projectName+'/out';
+                var focus = function f(){
+                    var el = document.getElementsByTagName('iframe')[0];
+                    if (el) {
+                        el.focus();
+                    } else {
+                        setTimeout(f,1000);
+                    }
+                };
+                focus();
             });
         };
 

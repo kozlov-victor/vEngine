@@ -1,59 +1,5 @@
-
-var keyboard = require('keyboard').instance();
-var animations = {};
-
-var _stop = function(lastDirection){
-    self.stopFrAnimations();
-    self.velX = 0;
-    self.velY = 0;
-    var idleKey = 'idle'+lastDirection+'Animation';
-    self[idleKey] && (self[idleKey].play());
-};
-var _go = function(direction){
-    animations['walk'+direction+'Animation'].play();
-};
-
-function onCreate(){
-    var dirs = ['Left','Right','Up','Down'];
-    var self = this;
-    dirs.forEach(function(dir){
-        var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
-        animations[keyWalk] = self.getFrAnimation(parameters[keyWalk]);
-        if (!animations[keyWalk]) throw 'can not find animation ' + parameters[keyWalk] +' an gameObject ' + self.name;
-        parameters[keyIdle] && (animations[keyIdle] = _gameObject.getFrAnimation(parameters[keyIdle]));
-    });
-}
-
-function onUpdate(){
-    if (keyboard.isPressed(keyboard.KEY_UP)) {
-        self.velY = -parameters.velocity;
-        _go('Up');
-    }
-    if (keyboard.isPressed(keyboard.KEY_DOWN)) {
-        self.velY = parameters.velocity;
-        _go('Down');
-    }
-    if (keyboard.isPressed(keyboard.KEY_LEFT)) {
-        self.velX = -parameters.velocity;
-        _go('Left');
-    }
-    if (this.keyboard.isPressed(ve.keyboard.KEY_RIGHT)) {
-        self.velX = parameters.velocity;
-        _go('Right');
-    }
-
-    if (this.keyboard.isJustReleased(keyboard.KEY_LEFT)) {
-        _stop('Left');
-    } else if (keyboard.isJustReleased(keyboard.KEY_RIGHT)) {
-        _stop('Right');
-    } else if (keyboard.isJustReleased(keyboard.KEY_UP)) {
-        _stop('Up');
-    } else if (keyboard.isJustReleased(keyboard.KEY_DOWN)) {
-        _stop('Down');
-    }
-}
-
-exports.parameters = {
+/**
+ exports.parameters = {
     velocity: 100,
     walkLeftAnimation: 'left',
     walkRightAnimation: 'right',
@@ -63,5 +9,59 @@ exports.parameters = {
     idleRightAnimation: 'idleRight',
     idleUpAnimation:'idleUp',
     idleDownAnimation:'idleDown'
+ };
+ exports.description = "control character with cursor to walk up, down, left and right";
+ */
+
+var keyboard = require('keyboard').instance();
+var animations = {};
+
+var _stop = function(lastDirection){
+    self.stopFrAnimations();
+    self.vel.x = 0;
+    self.vel.y = 0;
+    var keyIdle = 'idle'+lastDirection+'Animation';
+    if (animations[keyIdle]) {
+        animations[keyIdle].play();
+    }
 };
-exports.description = "control character with cursor to walk up, down, left and right";
+var _go = function(direction){
+    animations['walk'+direction+'Animation'].play();
+};
+
+var dirs = ['Left','Right','Up','Down'];
+dirs.forEach(function(dir){
+    var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
+    animations[keyWalk] = self.getFrAnimation(parameters[keyWalk]);
+    if (!animations[keyWalk]) throw 'can not find animation ' + parameters[keyWalk] +' an gameObject ' + self.name;
+    parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
+});
+
+function onUpdate(){
+    if (keyboard.isPressed(keyboard.KEY_UP)) {
+        self.vel.y = -parameters.velocity;
+        _go('Up');
+    }
+    if (keyboard.isPressed(keyboard.KEY_DOWN)) {
+        self.vel.y = parameters.velocity;
+        _go('Down');
+    }
+    if (keyboard.isPressed(keyboard.KEY_LEFT)) {
+        self.vel.x = -parameters.velocity;
+        _go('Left');
+    }
+    if (keyboard.isPressed(keyboard.KEY_RIGHT)) {
+        self.vel.x = parameters.velocity;
+        _go('Right');
+    }
+
+    if (keyboard.isJustReleased(keyboard.KEY_LEFT)) {
+        _stop('Left');
+    } else if (keyboard.isJustReleased(keyboard.KEY_RIGHT)) {
+        _stop('Right');
+    } else if (keyboard.isJustReleased(keyboard.KEY_UP)) {
+        _stop('Up');
+    } else if (keyboard.isJustReleased(keyboard.KEY_DOWN)) {
+        _stop('Down');
+    }
+}

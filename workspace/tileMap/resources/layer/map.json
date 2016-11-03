@@ -1,0 +1,299 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [],
+        "id": "1083_7308_67"
+    },
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [],
+        "id": "5752_9657_71"
+    },
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "7855_3344_73",
+                "pos": {
+                    "x": 158,
+                    "y": 61
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 3,
+                "name": "hero",
+                "width": 33,
+                "height": 35,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "control4dir",
+                        "parameters": {
+                            "velocity": 100,
+                            "walkLeftAnimation": "left",
+                            "walkRightAnimation": "right",
+                            "walkUpAnimation": "up",
+                            "walkDownAnimation": "down",
+                            "idleLeftAnimation": "",
+                            "idleRightAnimation": "",
+                            "idleUpAnimation": "",
+                            "idleDownAnimation": ""
+                        },
+                        "description": "control character with cursor to walk up, down, left and right",
+                        "id": "9649_8595_79",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "frameAnimationIds": [
+                    "6211_4878_75",
+                    "9849_2404_76",
+                    "2726_6259_77",
+                    "8992_3054_78"
+                ],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "1790_3583_74",
+                "id": "9250_5062_87"
+            },
+            {
+                "spriteSheetId": "8588_3274_122",
+                "pos": {
+                    "x": 63,
+                    "y": 199
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "btnUp",
+                "width": 64,
+                "height": 64,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 0,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "1707_9136_123",
+                "id": "7469_1515_124",
+                "fixedToCamera": 1
+            },
+            {
+                "spriteSheetId": "8588_3274_122",
+                "pos": {
+                    "x": 63,
+                    "y": 271
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "btnDown",
+                "width": 64,
+                "height": 64,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 0,
+                "groupName": "",
+                "angle": 0,
+                "fixedToCamera": 1,
+                "protoId": "1707_9136_123",
+                "id": "8553_5489_265"
+            },
+            {
+                "spriteSheetId": "8588_3274_122",
+                "pos": {
+                    "x": 10,
+                    "y": 237
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "btnLeft",
+                "width": 64,
+                "height": 64,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 0,
+                "groupName": "",
+                "angle": 0,
+                "fixedToCamera": 1,
+                "protoId": "1707_9136_123",
+                "id": "2896_0832_266"
+            },
+            {
+                "spriteSheetId": "8588_3274_122",
+                "pos": {
+                    "x": 116,
+                    "y": 238
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "btnRight",
+                "width": 64,
+                "height": 64,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 0,
+                "groupName": "",
+                "angle": 0,
+                "fixedToCamera": 1,
+                "protoId": "1707_9136_123",
+                "id": "9901_8558_267"
+            },
+            {
+                "spriteSheetId": "0967_6478_69",
+                "pos": {
+                    "x": 352,
+                    "y": 64
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "wall",
+                "width": 32,
+                "height": 32,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "1957_7947_93",
+                "id": "0310_6343_269"
+            },
+            {
+                "spriteSheetId": "0967_6478_69",
+                "pos": {
+                    "x": 383,
+                    "y": 64
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "wall",
+                "width": 32,
+                "height": 32,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": {},
+                        "description": "draggable behaviour with multitouch supporting",
+                        "id": "7358_6227_270",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "1957_7947_93",
+                "id": "8319_3167_4"
+            },
+            {
+                "spriteSheetId": "8588_3274_122",
+                "pos": {
+                    "x": 247,
+                    "y": 231
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "btn2",
+                "width": 120,
+                "height": 64,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "6070_2283_25",
+                "id": "8596_4369_26"
+            },
+            {
+                "spriteSheetId": "8588_3274_122",
+                "pos": {
+                    "x": 220,
+                    "y": 28
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "btn2",
+                "width": 120,
+                "height": 120,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "6070_2283_25",
+                "id": "6333_5227_27"
+            }
+        ],
+        "id": "0645_0474_80"
+    }
+]

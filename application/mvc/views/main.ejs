@@ -3,38 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <link type="text/css" rel="stylesheet" href="/css/main.css">
-    <link type="text/css" rel="stylesheet" href="/css/angular.css">
-    <link type="text/css" rel="stylesheet" href="/css/contextMenu.css">
+    <link type="text/css" rel="stylesheet" href="/css/all.css">
+    <link rel="icon"  href="images/script.png">
+
 
     <script type="text/javascript"
-            src="/addResource?name=lib.debug&ignoreEJS=1&ignoreCommonJS=1"></script>
+            src="/addResource?name=lib.common.*&ignoreCommonJS=1"></script>
+
     <script type="text/javascript"
-            src="/addResource?name=lib.oop&ignoreEJS=1&ignoreCommonJS=1"></script>
+            src="/addResource?name=lib.class.*&ignoreEJS=1"></script>
+
     <script type="text/javascript"
-            src="/addResource?name=lib.commonJS&ignoreEJS=1&ignoreCommonJS=1"></script>
+            src="/addResource?name=debug.debug&ignoreCommonJS=1"></script>
+
 
     <script type="text/javascript"
             src="/addResource?name=modules.consts.consts"></script>
     <script type="text/javascript"
-            src="/addResource?name=modules.model.collections&ignoreEJS=1"></script>
+            src="/addResource?name=modules.model.*&ignoreEJS=1"></script>
     <script type="text/javascript"
-            src="/addResource?name=modules.model.models&ignoreEJS=1"></script>
+            src="/addResource?name=modules.misc.*&ignoreEJS=1"></script>
     <script type="text/javascript"
-            src="/addResource?name=modules.misc.math&ignoreEJS=1"></script>
+            src="/addResource?name=modules.render.camera&ignoreEJS=1"></script>
     <script type="text/javascript"
-            src="/addResource?name=modules.misc.utils&ignoreEJS=1"></script>
-    <script type="text/javascript"
-            src="/addResource?name=modules.dataProvider.bundle&ignoreEJS=1"></script>
-    <script type="text/javascript"
-            src="/addResource?name=modules.misc.math&ignoreEJS=1"></script>
-    <script type="text/javascript"
-            src="/addResource?name=modules.misc.utils&ignoreEJS=1"></script>
+            src="/addResource?name=modules.dataProvider.*&ignoreEJS=1"></script>
     <script type="text/javascript"
             src="/addResource?name=modules.behaviour.eventEmitter&ignoreEJS=1"></script>
 
-    <script type="text/javascript"
-            src="/addResource?name=modules.misc.vec2&ignoreEJS=1"></script>
+
 
     <script>
         var DEFAULT_CODE_SCRIPT = <%-JSON.stringify(defaultCodeScript)%>;

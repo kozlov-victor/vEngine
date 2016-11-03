@@ -1,0 +1,131 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "4021_7193_32",
+                "pos": {
+                    "x": 37,
+                    "y": 66
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "slotsColumn",
+                "width": 64,
+                "height": 52,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "2146_8639_33",
+                "id": "3605_4962_40"
+            },
+            {
+                "spriteSheetId": "4021_7193_32",
+                "pos": {
+                    "x": 116,
+                    "y": 66
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "slotsColumn",
+                "width": 64,
+                "height": 52,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "2146_8639_33",
+                "id": "2522_8532_41"
+            },
+            {
+                "spriteSheetId": "4021_7193_32",
+                "pos": {
+                    "x": 197,
+                    "y": 66
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "slotsColumn",
+                "width": 64,
+                "height": 52,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "protoId": "2146_8639_33",
+                "id": "1745_2194_42"
+            },
+            {
+                "pos": {
+                    "x": 18,
+                    "y": 14
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 36,
+                "text": "",
+                "width": 0,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "name": "scoreLabel",
+                "protoId": null,
+                "id": "0790_6321_63",
+                "fontId": "0265_1797_64"
+            },
+            {
+                "pos": {
+                    "x": 140,
+                    "y": 100
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 29,
+                "text": "",
+                "width": 0,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "name": "winLabel",
+                "protoId": null,
+                "id": "6368_9704_65"
+            }
+        ],
+        "id": "0679_1823_35"
+    }
+]

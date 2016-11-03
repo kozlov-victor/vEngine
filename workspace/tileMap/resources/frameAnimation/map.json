@@ -1,0 +1,46 @@
+[
+    {
+        "name": "up",
+        "frames": [
+            39,
+            40,
+            41
+        ],
+        "type": "frameAnimation",
+        "duration": 800,
+        "id": "6211_4878_75"
+    },
+    {
+        "name": "down",
+        "frames": [
+            3,
+            4,
+            5
+        ],
+        "type": "frameAnimation",
+        "duration": 800,
+        "id": "9849_2404_76"
+    },
+    {
+        "name": "left",
+        "frames": [
+            15,
+            16,
+            17
+        ],
+        "type": "frameAnimation",
+        "duration": 800,
+        "id": "2726_6259_77"
+    },
+    {
+        "name": "right",
+        "frames": [
+            27,
+            28,
+            29
+        ],
+        "type": "frameAnimation",
+        "duration": 800,
+        "id": "8992_3054_78"
+    }
+]

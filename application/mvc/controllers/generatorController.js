@@ -1,7 +1,7 @@
 var fs = require.main.require('./application/base/fs');
-var minifier = require('minifier');
 var resourcesController = require.main.require('./application/mvc/controllers/resourcesController');
 var nodeHint = require('node-hint');
+var UglifyJS = require("uglify-js");
 var ejs = require('ejs');
 
 var Source = function(){
@@ -124,38 +124,87 @@ var createCommonBehaviourParams = function(opts){
     Object.keys(fileNames).forEach(function(name){
         res.push({
             name:name,
-            content: fs.readFileSync('workspace/'+opts.projectName+'/resources/script/commonBehaviour/'+name+'.js')
+            content: fs.readFileSync('resources/generatorResources/commonBehaviour/'+name+'.js')
         });
     });
     return res;
 };
 
+var minify = function(code) {
+    var code =  UglifyJS.minify(code, {
+        fromString: true,
+        mangle:{toplevel:true,eval:true},
+        //mangleProperties: { regex: /GameObject/ },
+        compress: {
+            screw_ie8: true,
+            sequences: true,
+            properties: true,
+            dead_code: true,
+            drop_debugger: true,
+            comparisons: true,
+            conditionals: true,
+            evaluate: true,
+            booleans: true,
+            loops: true,
+            unused: true,
+            hoist_funs: true,
+            if_return: true,
+            join_vars: true,
+            cascade: true,
+            drop_console: true
+        }
+    }).code;
+    return code;
+};
+
+var processScriptPlace = function(indexHtml,scriptPlaceName,code,outCodeFileName,opts) {
+    if (opts.minify) {
+        code = minify(code);
+    }
+    if (opts.embedScript) {
+        indexHtml = indexHtml.replace('{{'+scriptPlaceName+'}}','<script>\n'+code+'\n</script>');
+    } else {
+        fs.writeFileSync('workspace/'+opts.projectName+'/out/'+outCodeFileName,code);
+        indexHtml = indexHtml.replace('{{'+scriptPlaceName+'}}','<script src="'+outCodeFileName+'"></script>');
+    }
+    return indexHtml;
+};
 
 var processGameResourcesFiles = function(sourceMain,opts){
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
     fs.createFolderSync('workspace/'+opts.projectName+'/out/');
 
-    !opts.embedResources && ['spriteSheet','font','sound'].forEach(function(r){
-        fs.createFolderSync('workspace/'+opts.projectName+'/out/resources/'+r);
-        fs.copyFolderSync('workspace/'+opts.projectName+'/resources/'+r,'workspace/'+opts.projectName+'/out/resources/'+r);
-        fs.deleteFileSync('workspace/'+opts.projectName+'/out/resources/'+r+'/map.json');
-    });
+    if (!opts.embedResources) {
+        var resMap = {};
+        ['spriteSheet','font','sound'].forEach(function(r){
+            JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json')).
+                forEach(function(mapJsonItem){
+                    var resourcePath = mapJsonItem.resourcePath;
+                    if (!resourcePath) return;
+                    resMap[resourcePath] = 1;
+                });
+        });
+        Object.keys(resMap).forEach(function(key){
+            fs.copyFileSync(
+                'workspace/'+opts.projectName+'/'+key,
+                'workspace/'+opts.projectName+'/out/'+key
+            );
+        });
+    }
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
+    var generatedCode = sourceMain.get();
+    var debugCode = fs.readFileSync('resources/generatorResources/debug/debug.js');
 
-    if (opts.embedScript) {
-        indexHtml = indexHtml.replace('{{script}}','<script>\n'+sourceMain.get()+'\n</script>');
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
-    } else {
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/main.js',sourceMain.get());
-        indexHtml = indexHtml.replace('{{script}}','<script src="main.js"></script>');
-        fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
-    }
+    indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
+    indexHtml = processScriptPlace(indexHtml,'script_debug',debugCode,'debug.js',opts);
+
+    fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
 
 };
 
 
-var unused = function(){
+var hint = function(sourceMain){
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()
@@ -164,7 +213,6 @@ var unused = function(){
     //        callback(lintData);
     //    }
     //);
-    //minifier.minify('project/out/main.js');
 };
 
 var prepareGeneratorParams = function(opts){
@@ -184,7 +232,8 @@ module.exports.generate = function(opts,callback){
     console.log('generate options:',opts);
 
     var sourceMain = new Source();
-    sourceMain.addCommonTemplates('resources/generatorResources/lib');
+    sourceMain.addCommonTemplates('resources/generatorResources/lib/common');
+    sourceMain.addCommonJsModules('resources/generatorResources/lib/class');
     sourceMain.addCommonJsModules(
         'resources/generatorResources/modules',
         prepareGeneratorParams(opts)

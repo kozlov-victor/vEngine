@@ -15,22 +15,11 @@ var generatorController = require.main.require('./application/mvc/controllers/ge
 
 module.exports.init = function(app) {
 
-    var resolveResourceName = function(name){
-        return 'resources/generatorResources/'+name.split('.').join('/')+'.js';
-    };
-
 
     app.get('/addResource',function(req,res){
         var query = url.parse(req.url, true).query;
-        var name = query.name;
-        var ignoreCommonJS = query.ignoreCommonJS;
-        var ignoreEJS = query.ignoreEJS;
-        var source = new generatorController.Source();
-        source.addResource(resolveResourceName(name),{
-            ignoreEJS:ignoreEJS,
-            ignoreCommonJS: ignoreCommonJS
-        });
-        res.send(source.get());
+        var r = resourcesController.getResourcesToAdd(query);
+        res.send(r);
     });
 
 
@@ -170,5 +159,17 @@ module.exports.init = function(app) {
         resourcesController.deleteFolder(name);
         res.send({});
     });
+
+    app.post('/setTile',function(req,res){
+        var
+            sceneId = req.body.sceneId,
+            x = req.body.x,
+            y = req.body.y,
+            tileIndex = req.body.tileIndex,
+            projectName = req.body.projectName;
+        res.send(
+            resourcesController.setTile(sceneId,x,y,tileIndex,projectName)
+        );
+    })
 
 };

@@ -1,95 +1,117 @@
 
 var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
-var math = require('math');
+var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
-var deviceScale = require('device').deviceScale;
+var device = require('device');
+
+var objectsCaptured = {};
 
 var Mouse = function(){
 
     var self = this;
+    var gameProps = bundle.gameProps;
     var globalScale = bundle.gameProps.globalScale;
     var canvas = renderer.getCanvas();
 
-    if ('ontouchstart' in window) {
+    if (device.isTouch) {
         canvas.ontouchstart = function(e){
-            for (var i= 0,l= e.touches.length;i<l;i++) {
-                resolveClick(e.touches[i],e.touches[i].identifier);
+            var l = e.touches.length;
+            while (l--){
+                resolveClick(e.touches[l]);
             }
         };
         canvas.ontouchend = canvas.ontouchcancel = function(e){
-            for (var i= 0,l= e.touches.length;i<l;i++) {
-                resolveMouseUp(e.touches[i],e.touches[i].identifier);
+            var l = e.changedTouches.length;
+            while (l--){
+                resolveMouseUp(e.changedTouches[l]);
             }
         };
         canvas.ontouchmove = function(e){
-            for (var i= 0,l= e.touches.length;i<l;i++) {
-                resolveMouseMove(e.touches[i],e.touches[i].identifier);
+            var l = e.touches.length;
+            while (l--){
+                resolveMouseMove(e.touches[l]);
             }
         }
     } else {
         canvas.onmousedown = function(e){
-            resolveClick(e,0);
+            resolveClick(e);
         };
         canvas.onmouseup = function(e){
-            resolveMouseUp(e,0);
+            resolveMouseUp(e);
         };
         canvas.onmousemove = function(e){
-            resolveMouseMove(e,0);
+            resolveMouseMove(e);
         }
     }
 
     var resolveScreenPoint = function(e){
         return {
-            x: (e.clientX - bundle.gameProps.left) / globalScale.x * deviceScale,
-            y: (e.clientY - bundle.gameProps.top) / globalScale.y * deviceScale
+            x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
+            y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
+            id: e.identifier || 0
         };
     };
 
-    var resolveClick = function(e,id){
-
+    var triggerEvent = function(e,name){
         var scene = sceneManager.getCurrScene();
-        if (!scene) return;
         var point = resolveScreenPoint(e);
         scene._layers.someReversed(function(l){
             var found = false;
             l._gameObjects.someReversed(function(g){
                 if (
-                    math.isPointInRect(point,g.getRect(),g.angle)
+                    mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
                 ) {
-                    g.trigger('click',{
+                    g.trigger(name,{
                         screenX:point.x,
                         screenY:point.y,
-                        objectX:point.x - g.posX,
-                        objectY:point.y - g.posY,
-                        id:id
+                        objectX:point.x - g.pos.x,
+                        objectY:point.y - g.pos.y,
+                        id:point.id
                     });
-                    found = true;
+                    point.object = g;
+                    return found = true;
                 }
             });
             return found;
-        })
+        });
+        scene.trigger(name,{
+            screenX:point.x,
+            screenY:point.y,
+            id:point.id
+        });
+        return point;
+    };
+
+    var resolveClick = function(e){
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        var point = triggerEvent(e,'click');
+        triggerEvent(e,'mouseDown');
+    };
+
+    var resolveMouseMove = function(e){
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        var point = triggerEvent(e,'mouseMove');
+        var lastMouseDownObject = objectsCaptured[point.id];
+        if (lastMouseDownObject && lastMouseDownObject!=point.object) {
+            lastMouseDownObject.trigger('mouseLeave');
+            delete objectsCaptured[point.id];
+        }
+        if (point.object && lastMouseDownObject!=point.object) {
+            point.object.trigger('mouseEnter');
+            objectsCaptured[point.id] = point.object;
+        }
 
     };
 
-    var resolveMouseMove = function(e,id){
+    var resolveMouseUp = function(e){
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         var scene = sceneManager.getCurrScene();
-        var point = resolveScreenPoint(e);
-        scene.trigger('mouseMove',{
-            screenX: point.x,
-            screenY: point.y,
-            id:id
-        });
-    };
-
-    var resolveMouseUp = function(e,id){
-        var scene = sceneManager.getCurrScene();
-        var point = resolveScreenPoint(e);
-        scene.trigger('mouseUp',{
-            screenX: point.x,
-            screenY: point.y,
-            id:id
-        });
+        var point = triggerEvent(e,'mouseUp');
+        var lastMouseDownObject = objectsCaptured[point.id];
+        if (!lastMouseDownObject) return;
+        lastMouseDownObject.trigger('mouseUp');
+        delete objectsCaptured[point.id];
     };
 
 };

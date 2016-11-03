@@ -18,7 +18,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Sound = require('sound').Sound;
 
         s.onSoundUpload = function(file,src){
             s.soundUrl = $sce.trustAsResourceUrl(src);
@@ -28,7 +29,7 @@ window.app.
         s.createOrEditSound = function(snd){
             resourceDao.createOrEditResource(
                 s.editData.currSoundInEdit,
-                models.Sound,
+                Sound,
                 bundle.soundList
             );
         };
@@ -36,7 +37,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSoundInEdit = new models.Sound({});
+                editData.currSoundInEdit = new Sound();
             } else if (dialogState.opName=='edit'){
                 editData.currSoundInEdit = dialogState.opObject.clone();
             }

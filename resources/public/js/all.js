@@ -52,7 +52,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
         var model;
 
         s.rgbChanged = function(){
@@ -111,9 +111,11 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 
         s.createOrEditCommonBehaviour = function(obj){
+            console.log('createOrEditCommonBehaviour>>>>>',obj);
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
                 obj.type,obj,
@@ -124,6 +126,11 @@ window.app.
                         s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
                         var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
                         dialogStateObj.commonBehaviour.push(obj.toJSON());
+                    } else {
+                        dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        var currItem = dialogStateObj._commonBehaviour.find({id:resp.r.id});
+                        currItem.fromJSON(resp.r);
+                        console.log('currItem',currItem);
                     }
                     uiHelper.closeDialog();
                 }
@@ -134,7 +141,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit = new CommonBehaviour();
                 s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
                 var obj =
                     editData.commonBehaviourList.find({
@@ -173,7 +180,8 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Font = require('font').Font;
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -259,7 +267,7 @@ window.app.
             font._file = utils.dataURItoBlob(getFontImage(font.fontContext,strFont,utils.rgbToHex(font.fontColor)));
             resourceDao.createOrEditResource(
                 font,
-                models.Font,
+                Font,
                 bundle.fontList,
                 function(res){
                     if (res.type=='edit') {
@@ -272,7 +280,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currFontInEdit = new models.Font({fontColor:[0,0,0]});
+                editData.currFontInEdit = new Font({fontColor:[0,0,0]});
                 s.convertedCol = utils.rgbToHex(editData.currFontInEdit.fontColor);
             } else if (dialogState.opName=='edit'){
                 editData.currFontInEdit = dialogState.opObject.clone();
@@ -307,7 +315,9 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var FrameAnimation = require('frameAnimation').FrameAnimation;
+        var GameObject = require('gameObject').GameObject;
 
         var isStopped = false;
 
@@ -323,7 +333,7 @@ window.app.
             s.editData.currFrAnimationInEdit.frames = JSON.parse('['+s.editData.currFrAnimationInEdit.frames+']');
             resourceDao.createOrEditResource(
                 s.editData.currFrAnimationInEdit,
-                models.FrameAnimation,
+                FrameAnimation,
                 bundle.frameAnimationList,
                 function(res){
                     if (res.type=='create') {
@@ -336,7 +346,7 @@ window.app.
 
                         resourceDao.createOrEditResource(
                             s.editData.currGameObjectInEdit,
-                            models.GameObject,
+                            GameObject,
                             bundle.gameObjectList,
                             function(){
 
@@ -380,15 +390,22 @@ window.app.
         s.setRange = function(from,to) {
             if (isNaN(from) || isNaN(to)) return;
             s.editData.currFrAnimationInEdit.frames = [];
-            for (var i=from;i<=to;i++) {
-                s.editData.currFrAnimationInEdit.frames.push(i);
+            if (from<=to) {
+                for (var i=from;i<=to;i++) {
+                    s.editData.currFrAnimationInEdit.frames.push(i);
+                }
+            } else {
+                for (i=from;i>=to;i--) {
+                    s.editData.currFrAnimationInEdit.frames.push(i);
+                }
             }
+
         };
 
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currFrAnimationInEdit = new models.FrameAnimation();
+                s.editData.currFrAnimationInEdit = new FrameAnimation();
                 s.editData.currFrAnimationInEdit._gameObject = s.editData.currGameObjectInEdit;
             } else if (dialogState.opName=='edit'){
                 s.editData.currFrAnimationInEdit = dialogState.opObject.clone();
@@ -415,7 +432,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var GameObject = require('gameObject').GameObject;
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -428,7 +446,7 @@ window.app.
         };
 
         s.createOrEditGameObject = function(){
-            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,models.GameObject,bundle.gameObjectList,function(op){
+            resourceDao.createOrEditResource(s.editData.currGameObjectInEdit,GameObject,bundle.gameObjectList,function(op){
                 if (op.type=='create') {
                     resourceDao.createFile(
                         s.editData.currGameObjectInEdit.name+'.js',
@@ -446,7 +464,7 @@ window.app.
                 s.editData.currGameObjectInEdit._frameAnimations.remove({id:item.id});
                 resourceDao.createOrEditResource(
                     s.editData.currGameObjectInEdit,
-                    models.GameObject,
+                    GameObject,
                     bundle.gameObjectList,
                     null,true
                 );
@@ -477,7 +495,7 @@ window.app.
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
                 var targetSpriteSheet = bundle.spriteSheetList.getLast();
-                editData.currGameObjectInEdit = new models.GameObject({
+                editData.currGameObjectInEdit = new GameObject({
                     spriteSheetId:
                     targetSpriteSheet &&
                     targetSpriteSheet.id
@@ -487,7 +505,7 @@ window.app.
                 }
                 utils.recalcGameObjectSize(s.editData.currGameObjectInEdit);
             } else if (dialogState.opName=='edit'){
-                editData.currGameObjectInEdit = dialogState.opObject.clone(models.GameObject);
+                editData.currGameObjectInEdit = dialogState.opObject.clone();
                 editData.currGameObjectInEdit.spriteSheet = bundle.spriteSheetList.find({id: s.editData.currGameObjectInEdit.id});
             }
 
@@ -523,12 +541,13 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Layer = require('layer').Layer;
 
 
         s.createOrEditLayer = function(){
             if (s.editData.currLayerInEdit.id) { // edit resource
-                var dataToEdit = s.editData.currLayerInEdit.clone(models.Layer);
+                var dataToEdit = s.editData.currLayerInEdit.clone();
                 dataToEdit.id = dataToEdit.protoId;
                 resourceDao.createOrEditResource(dataToEdit);
             } else { // create object in resource
@@ -540,8 +559,11 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currLayerInEdit = new models.Layer({sceneId:editData.currSceneInEdit.id});
+                editData.currLayerInEdit = new Layer({sceneId:editData.currSceneInEdit.id});
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
+                if (editData.currSceneInEdit._layers.size()==0) {
+                    editData.currLayerInEdit.name = 'mainLayer';
+                }
             } else if (dialogState.opName=='edit'){
                 editData.currLayerInEdit = dialogState.opObject.clone();
                 editData.currLayerInEdit._scene = editData.currSceneInEdit;
@@ -605,6 +627,7 @@ window.app.
                 '&path='+encodeURIComponent('script/'+model.type);
         };
 
+
     });
 
 
@@ -625,13 +648,13 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models');
+        var ParticleSystem = require('particleSystem').ParticleSystem;
 
 
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currParticleSystemInEdit = new models.ParticleSystem({
+                editData.currParticleSystemInEdit = new ParticleSystem({
                     gameObjectId:(editData.gameObjectList.getLast() && editData.gameObjectList.getLast().id)
                 });
             } else if (dialogState.opName=='edit'){
@@ -678,10 +701,10 @@ window.app.
             editData.currParticleSystemInEdit._particles.forEach(function(p){
 
                 p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                var deltaX = p.velX * delta / 1000;
-                var deltaY = p.velY * delta / 1000;
-                p.posX = p.posX+deltaX;
-                p.posY = p.posY+deltaY;
+                var deltaX = p.vel.x * delta / 1000;
+                var deltaY = p.vel.y * delta / 1000;
+                p.pos.x = p.pos.x+deltaX;
+                p.pos.y = p.pos.y+deltaY;
 
                 if (!p._timeCreated) p._timeCreated = currTime;
                 if (currTime - p._timeCreated > p.liveTime) {
@@ -801,7 +824,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
 
         s.openColorPickerForScene = function(){
             s.showDialog(
@@ -830,7 +853,7 @@ window.app.
         i18n,
         utils,
         resourceDao,
-        messageDigest
+        messageDigest // don't remove this dependency, needed to init messageDigest
     ) {
         var s = $scope;
         s.editData = editData;
@@ -838,18 +861,17 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Scene = require('scene').Scene;
 
         s.createOrEditScene = function(){
             resourceDao.
-                createOrEditResource(s.editData.currSceneInEdit,models.Scene,bundle.sceneList,
+                createOrEditResource(s.editData.currSceneInEdit,Scene,bundle.sceneList,
                 function(resp){
                     if (bundle.sceneList.size()==1) {
                         s.editData.currSceneInEdit = bundle.sceneList.get(0);
                     }
                     if (resp.type=='create') {
-                        // todo currLayerInEdit can not be null
-                        //resourceDao.createOrEditLayer(new models.Layer({name:'newLayer'}));
                         resourceDao.createFile(s.editData.currSceneInEdit.name+'.js','script/scene',window.DEFAULT_CODE_SCRIPT);
                     }
                 });
@@ -857,25 +879,25 @@ window.app.
 
         var tid = 0;
         s.onKeyPress = function(e){
-           //console.log(e.which);
-           if (!editData.currSceneGameObjectInEdit) return;
+            //e.preventDefault();
+            if (!editData.currSceneGameObjectInEdit) return;
             var edited = false;
             switch (e.which) {
                case 38: // up
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posY-=1;
+                   editData.currSceneGameObjectInEdit.pos.y-=1;
                    break;
                case 40: // down
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posY+=1;
+                   editData.currSceneGameObjectInEdit.pos.y+=1;
                    break;
                case 37: // left
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posX-=1;
+                   editData.currSceneGameObjectInEdit.pos.x-=1;
                    break;
                case 39: // right
                    edited = true;
-                   editData.currSceneGameObjectInEdit.posX+=1;
+                   editData.currSceneGameObjectInEdit.pos.x+=1;
                    break;
            }
            if (edited) {
@@ -886,8 +908,7 @@ window.app.
                        editData.currLayerInEdit.protoId,
                        'gameObjectProps',
                        {
-                            posX:editData.currSceneGameObjectInEdit.posX,
-                            posY:editData.currSceneGameObjectInEdit.posY,
+                            pos:editData.currSceneGameObjectInEdit.pos,
                             id:editData.currSceneGameObjectInEdit.id
                        }
                    );
@@ -897,17 +918,35 @@ window.app.
 
         var _addOrEditGameObject = function(obj,x,y,idKey,idVal){
 
+            if (!bundle.sceneList.size()) {
+                window.showError(s.i18n['noScene']);
+                return;
+            }
+            if (!editData.currSceneInEdit) {
+                window.showError(s.i18n['sceneNotSelected']);
+                return;
+            }
+            if (!editData.currSceneInEdit._layers.size()) {
+                window.showError(s.i18n['noLayer']);
+                return;
+            }
+
             var editDataObj = obj.toJSON();
             delete editDataObj.id;
             delete editDataObj.protoId;
-            editDataObj.posX = x;
-            editDataObj.posY = y;
+            editDataObj.pos.x = x;
+            editDataObj.pos.y = y;
             editDataObj[idKey]=idVal;
 
             var needNewName = false;
             if (!editDataObj.name) {
-                editDataObj.name = editDataObj.subType +
-                    (++models[utils.capitalize(editDataObj.subType)]._cnt);
+                var num = 0;
+                editData.currLayerInEdit._gameObjects.forEach(function(item){
+                    if (editDataObj.subType && item.subType==editDataObj.subType) {
+                        num++;
+                    }
+                });
+                editDataObj.name = editDataObj.subType + (num+1);
                 needNewName = true;
             }
 
@@ -917,9 +956,9 @@ window.app.
                 'gameObjectProps',editDataObj,
                 function(resp){
                     if (resp.type=='create') {
-                        var newGameObj = obj.clone(models.GameObject);
-                        newGameObj.posX = x;
-                        newGameObj.posY = y;
+                        var newGameObj = obj.clone();
+                        newGameObj.pos.x = x;
+                        newGameObj.pos.y = y;
                         newGameObj.protoId = newGameObj.id;
                         newGameObj.id = resp.r.id;
                         editData.currLayerInEdit._gameObjects.add(newGameObj);
@@ -928,7 +967,8 @@ window.app.
                             newGameObj.name = editDataObj.name;
                         }
                     } else {
-                        obj.fromJSON({posX:x,posY:y});
+                        obj.pos.x = x;
+                        obj.pos.y = y;
                         editData.currSceneGameObjectInEdit = obj;
                     }
                 });
@@ -936,12 +976,23 @@ window.app.
 
 
         s.onGameObjectDropped = function(obj,draggable,e) {
+            var _spriteSheet =
+                (editData.currSceneInEdit.tileMap && editData.currSceneInEdit.tileMap._spriteSheet)||{};
+            var x =
+                e.x +
+                (_spriteSheet._frameWidth||0) *
+                editData.tileMapPosX,
+                y =
+                e.y +
+                (_spriteSheet._frameHeight||0) *
+                editData.tileMapPosY;
+
             switch (draggable) {
                 case 'gameObjectFromLeftPanel':
-                    _addOrEditGameObject(obj, e.x, e.y,'protoId',obj.id);
+                    _addOrEditGameObject(obj, x, y,'protoId',obj.id);
                     break;
                 case 'gameObjectFromSelf':
-                    _addOrEditGameObject(obj, e.x, e.y,'id',obj.id);
+                    _addOrEditGameObject(obj, x, y,'id',obj.id);
                     break;
                 default:
                     console.log('not supported',obj,draggable);
@@ -966,10 +1017,12 @@ window.app.
 
 
         s.editGameObjectFromRightMenu = function(obj){
-            var fnt = bundle.fontList.find({id:obj.fontId});
-            s.editData.currSceneGameObjectInEdit._font = fnt;
-            s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
-            obj.setText(obj.text);
+            if (obj.fontId) {
+                var fnt = bundle.fontList.find({id:obj.fontId});
+                s.editData.currSceneGameObjectInEdit._font = fnt;
+                s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
+                obj.setText(obj.text);
+            }
             resourceDao.createOrEditObjectInResource(
                 editData.currLayerInEdit.type,
                 editData.currLayerInEdit.protoId,
@@ -978,12 +1031,25 @@ window.app.
             );
         };
 
+        s.setTile = function(scene,x,y,tileIndex,e){
+            if (!e || e.buttons==1) {
+                var tileMapData = scene.tileMap.data;
+                if (!tileMapData[y]) tileMapData[y] = [];
+                if (tileMapData[y][x]==tileIndex) return;
+                tileMapData[y][x] = tileIndex;
+                resourceDao.setTile(scene,x,y,tileIndex);
+            }
+        };
+
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSceneInEdit = new models.Scene({});
+                editData.currSceneInEdit = new Scene();
+                if (editData.sceneList.size()==0) {
+                    editData.currSceneInEdit.name = 'mainScene';
+                }
             } else if (dialogState.opName=='edit'){
-                editData.currSceneInEdit = dialogState.opObject.clone(models.Scene);
+                editData.currSceneInEdit = dialogState.opObject.clone();
             }
             uiHelper.opName = null;
 
@@ -1010,7 +1076,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var Sound = require('sound').Sound;
 
         s.onSoundUpload = function(file,src){
             s.soundUrl = $sce.trustAsResourceUrl(src);
@@ -1020,7 +1087,7 @@ window.app.
         s.createOrEditSound = function(snd){
             resourceDao.createOrEditResource(
                 s.editData.currSoundInEdit,
-                models.Sound,
+                Sound,
                 bundle.soundList
             );
         };
@@ -1028,7 +1095,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSoundInEdit = new models.Sound({});
+                editData.currSoundInEdit = new Sound();
             } else if (dialogState.opName=='edit'){
                 editData.currSoundInEdit = dialogState.opObject.clone();
             }
@@ -1058,7 +1125,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var SpriteSheet = require('spriteSheet').SpriteSheet;
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -1101,7 +1169,7 @@ window.app.
         s.createOrEditSpriteSheet = function(){
             resourceDao.createOrEditResource(
                 s.editData.currSpriteSheetInEdit,
-                models.SpriteSheet,
+                SpriteSheet,
                 bundle.spriteSheetList,
                 function(res){
                     if (res.type=='edit') {
@@ -1114,7 +1182,7 @@ window.app.
         (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSpriteSheetInEdit = new models.SpriteSheet({});
+                editData.currSpriteSheetInEdit = new SpriteSheet({});
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
@@ -1142,7 +1210,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
 
         (function(){
 
@@ -1190,8 +1258,17 @@ window.app.
                 method: "GET"
             }).
             success(function (resp) {
-                    s.uiHelper.window = 'debugRunWindow';
+                s.uiHelper.window = 'debugRunWindow';
                 editData.debugFrameUrl = '/'+editData.projectName+'/out';
+                var focus = function f(){
+                    var el = document.getElementsByTagName('iframe')[0];
+                    if (el) {
+                        el.focus();
+                    } else {
+                        setTimeout(f,1000);
+                    }
+                };
+                focus();
             });
         };
 
@@ -1494,31 +1571,40 @@ window.app
         var collections = require('collections');
 
         var res = {};
-        res.commonBehaviourList = null;
-        res.currGameObjectInEdit = null;
-        res.currSpriteSheetInEdit = null;
-        res.currFrAnimationInEdit = null;
-        res.currSceneInEdit = null;
-        res.currSceneGameObjectInEdit = null;
-        res.currLayerInEdit = null;
-        res.currFontInEdit = null;
-        res.currCommonBehaviourInEdit = null;
-        res.currSoundInEdit = null;
-        res.currParticleSystemInEdit = null;
-        res.currProjectInEdit = null;
 
-        res.userInterfaceList = new collections.List();
+        res.reset = function(){
+            res.commonBehaviourList = null;
+            res.currGameObjectInEdit = null;
+            res.currSpriteSheetInEdit = null;
+            res.currFrAnimationInEdit = null;
+            res.currSceneInEdit = null;
+            res.currSceneGameObjectInEdit = null;
+            res.currLayerInEdit = null;
+            res.currFontInEdit = null;
+            res.currCommonBehaviourInEdit = null;
+            res.currSoundInEdit = null;
+            res.currParticleSystemInEdit = null;
+            res.currProjectInEdit = null;
+            res.currTileIndexInEdit = null;
 
-        res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
-        res.scriptEditorUrl = '';
+            res.userInterfaceList = new collections.List();
 
-        res.projectName = undefined;
-        res.projects = null;
-        res.buildOpts = {
-            debug: false,
-            embedResources: false,
-            embedScript: false
+            res.debugFrameUrl = $sce.trustAsUrl('/about:blank');
+            res.scriptEditorUrl = '';
+
+            res.tileMapPosY = res.tileMapPosX = 0;
+
+            res.projectName = undefined;
+            res.projects = null;
+            res.buildOpts = {
+                debug: false,
+                embedResources: false,
+                embedScript: false,
+                minify:false
+            };
         };
+
+        res.reset();
 
         return res;
     })
@@ -1546,7 +1632,7 @@ window.app
                 close:'close',
                 name:'name',
                 scaleStrategy:'scale strategy',
-                spriteSheers:'sprite sheets',
+                spriteSheets:'sprite sheets',
                 width:'width',
                 height:'height',
                 currFrameIndex:'current frame index',
@@ -1598,7 +1684,13 @@ window.app
                 description: 'description',
                 colorBG:'scene background color',
                 useBG:'use background color',
-                angle:'angle'
+                angle:'angle',
+                tileMap: 'tile map',
+                noScene: 'create at least one scene',
+                sceneNotSelected: 'select scene to drop object',
+                noLayer: 'create at least one layer of current scene',
+                selected: 'selected',
+                fixedToCamera:'fixed to camera'
             }
         };
 
@@ -1672,7 +1764,9 @@ app
         var self = this;
         var bundle = require('bundle').instance();
         var collections = require('collections');
-        var models = require('models');
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+        var TextField = require('textField').TextField;
+        var Layer = require('layer').Layer;
 
         var _loadResources = function(projectName){
             return new Promise(function(resolve){
@@ -1690,15 +1784,16 @@ app
                     editData.gameProps = bundle.gameProps;
                     editData.commonBehaviourList = new collections.List();
                     response.commonBehaviour.forEach(function(cb){
-                        editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
+                        editData.commonBehaviourList.add(new CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
         };
         this.loadProject = function(projectName){
             editData.projectName = projectName;
+            document.title = projectName;
             sessionStorage.projectName = projectName;
             Promise.
                 resolve().
@@ -1836,7 +1931,7 @@ app
             });
         };
         this.createOrEditLayer = function(l){
-            self.createOrEditResource(l,models.Layer,bundle.layerList,
+            self.createOrEditResource(l,Layer,bundle.layerList,
                 function(item){
                     if (item.type=='create') {
                         self.createOrEditObjectInResource(
@@ -1848,7 +1943,7 @@ app
                                 protoId:item.r.id
                             },
                             function(resp){
-                                var l = editData.currLayerInEdit.clone(models.Layer);
+                                var l = editData.currLayerInEdit.clone(Layer);
                                 l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
@@ -1934,6 +2029,22 @@ app
         };
 
 
+        this.setTile = function(scene,x,y,tileIndex){
+            $http({
+                url: '/setTile/',
+                method: "POST",
+                data: {
+                    sceneId:scene.id,
+                    x:x,
+                    y:y,
+                    tileIndex:tileIndex,
+                    projectName:editData.projectName
+                },
+                headers: {'Content-Type': 'application/json'}
+            });
+        };
+
+
         (function(){
             if (sessionStorage.projectName) {
                 self.loadProject(sessionStorage.projectName);
@@ -2009,7 +2120,9 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var mathEx = require('mathEx');
+        var GameObject = require('gameObject').GameObject;
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
@@ -2021,14 +2134,15 @@ window.app
         };
         this.getGameObjectCss = function(gameObj){
             if (!gameObj) return {};
-            return {
+            return  {
                 width:                 gameObj.width+'px',
                 height:                gameObj.height+'px',
                 backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
-                backgroundRepeat:     'no-repeat'
-            }
+                backgroundRepeat:     'no-repeat',
+                transform:            'scale('+gameObj.scale.x+','+gameObj.scale.y+') rotateZ('+mathEx.radToDeg(gameObj.angle)+'deg)'
+            };
         };
         this.merge = function(a,b){
             var res = Object.create(a);
@@ -2049,6 +2163,21 @@ window.app
                 res.push(i);
             }
             return res;
+        };
+
+        this.range = function(rFr,rTo) {
+            var arr = [], i;
+            if (rFr<rTo) {
+                for (i=rFr;i<=rTo;i++) {
+                    arr.push(i);
+                }
+            } else {
+                for (i=rFr;i>=rTo;i--) {
+                    arr.push(i);
+                }
+            }
+
+            return arr;
         };
 
         this.toArray = function(str){
@@ -2126,23 +2255,27 @@ window.app
 
         this.createAceCompleter = function(){
             var res = [];
-            var go = new models.GameObject();
-            go.toJSON_Array().forEach(function(item){
+            var go = new GameObject();
+            for (var key in go) {
+                var item = key;
+                if (item.indexOf('_')==0) continue;
                 res.push({
-                    name:item.key,
-                    value:item.key,
+                    name:key,
+                    value:key,
                     score:1,
                     meta:'gameObject property'
                 });
-            });
+            }
             return res;
         };
 
         this.generateBuildUrl = function(opts) {
             var url = '/generate?r='+Math.random();
-            ['debug','embedResources','embedScript'].forEach(function(key){
-                if (opts[key]) url+='&'+key+'=1';
-            });
+            Object.
+                keys(editData.buildOpts).
+                forEach(function(key){
+                    if (opts[key]) url+='&'+key+'=1';
+                });
             url+='&projectName='+editData.projectName;
             return url;
         };
@@ -2173,6 +2306,16 @@ window.app
 
 ;
 
+
+app.filter('cutStr', function() {
+    return function(val){
+        if (!val) return '';
+        var n = 3;
+        val=val.toString();
+        if (val.length>n) val = val.substr(0,n)+'...';
+        return val;
+    }
+});
 
 app.filter('toFixed', function() {
     return function(val){

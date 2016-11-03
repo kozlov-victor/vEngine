@@ -1,0 +1,27 @@
+[
+    {
+        "tileMap": {
+            "_spriteSheet": null,
+            "spriteSheetId": null,
+            "width": 0,
+            "height": 0,
+            "data": []
+        },
+        "name": "mainScene",
+        "type": "scene",
+        "layerProps": [
+            {
+                "type": "layer",
+                "protoId": "0679_1823_35",
+                "id": "0583_1855_36"
+            }
+        ],
+        "colorBG": [
+            245,
+            249,
+            230
+        ],
+        "id": "2590_5247_34",
+        "useBG": 0
+    }
+]

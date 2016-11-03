@@ -8,22 +8,20 @@
                 ng-repeat="scene in editData.sceneList.rs" class="row">
             <div class="cell width100 vAlign">
                 <div ng-class="{table:1,width100:1,selected:editData.currSceneInEdit==scene,unselected:editData.currSceneInEdit!=scene}">
-                    <div class="cell width20" ng-click="scene._opened=!scene._opened">
+                    <div class="cell" ng-click="scene._opened=!scene._opened">
                         {{scene.name}}
                         <div ng-show="!scene._opened" class="triangleRight"></div>
                         <div ng-show="scene._opened" class="triangleBottom"></div>
                     </div>
-                    <div class="cell" ng-click="showDialog('scene','edit',scene)">{{i18n.edit}}</div>
-                    <div class="cell rightAlign" ng-click="deleteScene(scene)">X</div>
+                    <div class="cell edit" ng-click="showDialog('scene','edit',scene)"></div>
+                    <div class="cell rightAlign delete" ng-click="deleteScene(scene)"></div>
                 </div>
                 <!--layers-->
                 <div ng-show="scene._opened" class="table width100">
                     <div class="cell width1">
                         {{i18n.layers}}
-                        <button class="block" ng-click="showDialog('layer','create')">+</button>
-                        <div ng-click="showScript(scene,$event)">
-                            script
-                        </div>
+                        <div class="add" ng-click="showDialog('layer','create')">+</div>
+                        <div class="script" ng-click="showScript(scene,$event)"></div>
                     </div>
                     <div class="cell layers">
                         <div class="table width100">
@@ -32,17 +30,16 @@
                                     ng-click="editData.currLayerInEdit=layer"
                                     ng-repeat="layer in scene._layers.rs">
                                 <div class="cell vAlign">
-                                    <div class="bold">{{layer.name}}</div>
+                                    <div class="bold" title="{{layer.name}}">{{layer.name | cutStr}}</div>
                                     <div
-                                            class="inlineBlock"
-                                            ng-click="$event.stopPropagation();showDialog('layer','edit',layer);">
-                                        {{i18n.edit}}
-                                    </div>
-                                    <div class="inlineBlock" ng-click="deleteLayer(scene,layer)">X</div>
+                                            class="inlineBlock edit"
+                                            ng-click="$event.stopPropagation();showDialog('layer','edit',layer);"></div>
+                                    <div class="inlineBlock delete" ng-click="deleteLayer(scene,layer)"></div>
                                 </div>
                                 <div class="cell">
                                     <!--game objects-->
                                     <div class="table width100">
+
                                         <div class="row" ng-click="layer._opened=!layer._opened">
                                             <div class="cell valign">
                                                 {{i18n.gameObjects}}
@@ -60,21 +57,9 @@
                                                     active:gObj==editData.currSceneGameObjectInEdit
                                                     }"
                                                 >
-                                            <div class="cell vAlign">
-                                                <span>{{gObj.name}}</span>
-                                            </div>
-                                            <div class="cell">
-                                                <div
-                                                        ng-if="gObj.subType=='textField'"
-                                                        ng-style="utils.merge(
-                                                            utils.getGameObjectCss(gObj),
-                                                            {
-                                                                zoom:gObj.height>30?30/gObj.height:1,
-                                                                width:'auto',
-                                                                backgroundImage:'none'
-                                                            }
-                                                            )">
-                                                </div>
+                                            <div
+                                                    title="{{gObj.name}}"
+                                                    class="cell">
                                                 <div
                                                         ng-if="!gObj.subType"
                                                         ng-style="utils.merge(
@@ -82,10 +67,15 @@
                                                             {zoom:gObj.height>30?30/gObj.height:1}
                                                             )">
                                                 </div>
+                                                <div
+                                                        ng-if="gObj.subType"
+                                                        title="{{gObj.name}}"
+                                                        >
+                                                    {{gObj.name | cutStr}}
+                                                </div>
                                             </div>
-                                            <div class="cell vAlign rightAlign"
+                                            <div class="cell vAlign rightAlign delete"
                                                  ng-click="deleteGameObjectFromLayer(layer,gObj)">
-                                                X
                                             </div>
                                         </div>
                                     </div>
@@ -95,11 +85,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
-    <button ng-click="showDialog('scene','create')">{{i18n.create}}</button>
+    <div class="add" ng-click="showDialog('scene','create')"></div>
 </div>
 
 

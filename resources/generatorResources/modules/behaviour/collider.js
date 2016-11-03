@@ -1,46 +1,54 @@
 
-var math = require('math');
+var mathEx = require('mathEx');
 var sceneManager = require('sceneManager').instance();
 
 var Collider = function(){
 
     var gos;
+    var scene;
 
     this.setUp = function(){
-        var scene = sceneManager.getCurrScene();
+        scene = sceneManager.getCurrScene();
         gos = scene.getAllGameObjects();
     };
 
-    this.check = function(obj,newX,newY){
+    this.manage = function(obj,newX,newY){
+        if (obj.pos.x==newX && obj.pos.y==newY) return;
         if (!obj.rigid) {
-            obj.posX = newX;
-            obj.posY = newY;
+            obj.pos.x = newX;
+            obj.pos.y = newY;
+        } else {
+            var tileOn = scene.getTileAt(
+                newX + obj.getRect().width / 2,
+                newY + obj.getRect().height / 2
+            );
+            if (tileOn==16 || tileOn==17) return;
         }
-        var res = false;
-        gos.some(function(go){
-            if (!go.rigid) {
-                res = true;
-                return true;
-            }
-            if (obj==go) return true;
+        var hasCollision = false;
+        var all = gos.rs;
+        for (var i = 0,l = all.length;i<l;i++) {
+            var go = all[i];
+            if (obj==go) continue;
+
             var objRect = obj.getRect();
             objRect.x = newX;
             objRect.y = newY;
-            if (math.isRectIntersectRect(objRect,go.getRect())) {
-                if (go.rigid) {
-                    res = true;
+
+            if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
+                if (obj.rigid && go.rigid) {
+                    hasCollision = true;
                     obj.trigger('collide',go);
-                    return true;
+                    //console.log('collided',obj.name,go.name,go.rigid);
                 } else {
                     obj.trigger('overlap',go);
                 }
             }
-        });
-        if (!res) {
-            obj.posX = newX;
-            obj.posY = newY;
         }
-        return res;
+        if (!hasCollision) {
+            obj.pos.x = newX;
+            obj.pos.y = newY;
+        }
+        return hasCollision;
     };
 
 };

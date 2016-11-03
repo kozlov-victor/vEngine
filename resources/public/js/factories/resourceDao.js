@@ -10,7 +10,9 @@ app
         var self = this;
         var bundle = require('bundle').instance();
         var collections = require('collections');
-        var models = require('models');
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+        var TextField = require('textField').TextField;
+        var Layer = require('layer').Layer;
 
         var _loadResources = function(projectName){
             return new Promise(function(resolve){
@@ -28,15 +30,16 @@ app
                     editData.gameProps = bundle.gameProps;
                     editData.commonBehaviourList = new collections.List();
                     response.commonBehaviour.forEach(function(cb){
-                        editData.commonBehaviourList.add(new models.CommonBehaviour(cb));
+                        editData.commonBehaviourList.add(new CommonBehaviour(cb));
                     });
-                    editData.userInterfaceList.add(new models.TextField({protoId:'0_0_1'}));
+                    editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
                     resolve();
                 });
             });
         };
         this.loadProject = function(projectName){
             editData.projectName = projectName;
+            document.title = projectName;
             sessionStorage.projectName = projectName;
             Promise.
                 resolve().
@@ -174,7 +177,7 @@ app
             });
         };
         this.createOrEditLayer = function(l){
-            self.createOrEditResource(l,models.Layer,bundle.layerList,
+            self.createOrEditResource(l,Layer,bundle.layerList,
                 function(item){
                     if (item.type=='create') {
                         self.createOrEditObjectInResource(
@@ -186,7 +189,7 @@ app
                                 protoId:item.r.id
                             },
                             function(resp){
-                                var l = editData.currLayerInEdit.clone(models.Layer);
+                                var l = editData.currLayerInEdit.clone(Layer);
                                 l.id = resp.r.id;
                                 l.protoId = item.r.id;
                                 l._scene = editData.currSceneInEdit;
@@ -268,6 +271,22 @@ app
             }).
             success(function (resp) {
                 callback && callback(resp);
+            });
+        };
+
+
+        this.setTile = function(scene,x,y,tileIndex){
+            $http({
+                url: '/setTile/',
+                method: "POST",
+                data: {
+                    sceneId:scene.id,
+                    x:x,
+                    y:y,
+                    tileIndex:tileIndex,
+                    projectName:editData.projectName
+                },
+                headers: {'Content-Type': 'application/json'}
             });
         };
 

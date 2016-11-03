@@ -12,6 +12,14 @@ var Keyboard = function(){
     this.KEY_LEFT = 37;
     this.KEY_RIGHT = 39;
 
+    this.emulatePress = function(code){
+        buffer[code] = KEY_PRESSED;
+    };
+
+    this.emulateRelease = function(code){
+        buffer[code] = KEY_JUST_RELEASED;
+    };
+
     this.isPressed = function(key){
         return buffer[key]>KEY_RELEASED;
     };
@@ -29,6 +37,7 @@ var Keyboard = function(){
     };
 
     this.update = function(){
+        //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         [
             this.KEY_UP,
             this.KEY_DOWN,
@@ -37,7 +46,7 @@ var Keyboard = function(){
         ].forEach(function(key){
                 if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
                 else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
-            });
+        });
     };
 
     window.addEventListener('keydown',function(e){

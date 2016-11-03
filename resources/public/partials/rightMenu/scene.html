@@ -39,6 +39,99 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="cell">
+                <hr/>
+            </div>
+            <div class="cell">
+                <hr/>
+            </div>
+        </div>
 
+        <div class="row">
+            <div class="cell valign bold">
+                {{i18n.tileMap}}
+            </div>
+            <div class="cell eye"></div>
+        </div>
+
+        <div class="row">
+            <div class="cell valign">
+                tileMap.width
+            </div>
+            <div class="cell">
+                <input type="number"
+                       ng-change="createOrEditScene()"
+                       ng-model="editData.currSceneInEdit.tileMap.width"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell valign">
+                tileMap.height
+            </div>
+            <div class="cell">
+                <input type="number"
+                       ng-change="createOrEditScene()"
+                       ng-model="editData.currSceneInEdit.tileMap.height"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell">
+                {{i18n.selected}}
+            </div>
+            <div class="cell">
+                <div ng-class="{
+                    inlineBlock:1,
+                    hoverOutline:1
+                }"
+                 ng-style="{
+                    width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',
+                    verticalAlign:'middle',
+                    height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',
+                    backgroundImage:      'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',
+                    backgroundPositionX:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit)+'px',
+                    backgroundPositionY:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit)+'px',
+                    backgroundRepeat:     'no-repeat',
+                 }">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell">
+                {{i18n.spriteSheets}}
+            </div>
+            <div class="cell">
+                <select
+                        ng-model="editData.currSceneInEdit.tileMap.spriteSheetId"
+                        ng-change="createOrEditScene()"
+                        ng-options="item.id as item.name for item in editData.spriteSheetList.rs"
+                        >
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div ng-class="{
+                            inlineBlock:true,
+                            selected:i==editData.currTileIndexInEdit,
+                            hoverOutline:1
+                        }"
+             ng-style="{
+                width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',
+                verticalAlign:'middle',
+                height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',
+                backgroundImage:      'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',
+                backgroundPositionX:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(i)+'px',
+                backgroundPositionY:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(i)+'px',
+                backgroundRepeat:     'no-repeat',
+             }"
+             title="{{i}}"
+             ng-click="editData.currTileIndexInEdit = i;"
+             ng-repeat="i in utils.getArray(editData.currSceneInEdit.tileMap._spriteSheet._numOfFrames)"
+                ></div>
     </div>
 </div>

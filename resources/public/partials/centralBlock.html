@@ -1,7 +1,6 @@
-
 <div
         app-context-menu="ctxScene"
-        class="gameSceneWrapper"
+        class="gameSceneWrapper relative"
         >
     <div
             ng-show="uiHelper.window=='sceneWindow'"
@@ -13,70 +12,19 @@
             ng-style="{
                 width:  editData.gameProps.width+'px',
                 height: editData.gameProps.height+'px',
+                overflow:'hidden'
             }">
-        <div ng-repeat="item in editData.currLayerInEdit._gameObjects.rs">
 
-            <div
-                    ng-if="!item.subType"
-                    app-draggable="gameObjectFromSelf"
-                    app-context-menu="ctxGameObject"
-                    ng-model="item"
+        <div ng-include src="'partials/centralBlock/tileMap.html'"></div>
 
-                    ng-click="editData.currSceneGameObjectInEdit=item"
-                    ng-style="utils.merge(
-                            utils.getGameObjectCss(item),
-                            {
-                                position:'absolute',
-                                left:item.posX+'px',
-                                top: item.posY+'px'
-                            }
-                    )"
-                    ng-class="{active:item==editData.currSceneGameObjectInEdit}"
-                    >
-            </div>
+        <div ng-include src="'partials/centralBlock/gameObjects.html'"></div>
 
-            <div
-                    ng-if="item.subType=='textField'"
-                    app-draggable="gameObjectFromSelf"
-                    app-context-menu="ctxGameObject"
-                    ng-model="item"
-                    ng-click="editData.currSceneGameObjectInEdit=item"
-                    ng-style="utils.merge(
-                            utils.getGameObjectCss(item),
-                            {
-                                position:'absolute',
-                                left:item.posX+'px',
-                                top: item.posY+'px',
-                                backgroundColor:'rgb(0,222,0.1)',
-                                height:item.height+'px',
-                                width:item.width?item.width+'px':'10px',
-                                backgroundColor:item.width?'':'#ddd',
-                                backgroundImage:'none'
-                            }
-                    )"
-                    ng-class="{active:item==editData.currSceneGameObjectInEdit}"
-                    >
-
-                <div style="position: absolute;left:0;top:0;z-index:10">
-                    <span
-                            ng-style="{
-                            left:item.posX+'px',
-                            top: item.posY+'px',
-                            display:'inline-block',
-                            width:item._font.fontContext.symbols[ch].width+'px',
-                            height:item._font.fontContext.symbols[ch].height+'px',
-                            backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',
-                            backgroundRepeat:     'no-repeat',
-                            backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',
-                            backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'
-                        }"
-                            ng-repeat="ch in item._chars track by $index">
-                        </span>
-                </div>
-
-            </div>
-        </div>
     </div>
+
+    <ng-include src="'partials/centralBlock/cursor.html'"></ng-include>
+
+
+
 </div>
 
 <div ng-if="uiHelper.window=='debugRunWindow'" class="gameSceneWrapper withPaddingLeft">

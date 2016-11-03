@@ -28,12 +28,14 @@ var Bundle = function(data){
 
 
     this.prepare = function(_data){
-        var models = require('models');
         data = data || _data;
-        consts.RESOURCE_NAMES.forEach(function(itm){
-            toDataSource(models[utils.capitalize(itm)],data[itm],self[itm+'List']);
-        });
         self.gameProps = data.gameProps;
+        consts.RESOURCE_NAMES.forEach(function(itm){
+            toDataSource(
+                require(itm)[utils.capitalize(itm)],
+                data[itm],
+                self[itm+'List']);
+        });
         data = null;
     };
 
@@ -42,9 +44,8 @@ var Bundle = function(data){
         if (behaviourFn) {
             var exports = {};
             behaviourFn(exports,model);
-            exports.onCreate();
-            model.__updateIndividualBehaviour__ = function(deltaTime){
-                exports.onUpdate(deltaTime);
+            model.__updateIndividualBehaviour__ = function(time){
+                exports.onUpdate(time);
             }
         } else {
             model.__updateIndividualBehaviour__ = consts.noop;
@@ -66,7 +67,6 @@ var Bundle = function(data){
             var exports = module.exports;
             behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
             exportsList.push(exports);
-            exports.onCreate();
         });
         model.__updateCommonBehaviour__ = function(){
             exportsList.forEach(function(item){

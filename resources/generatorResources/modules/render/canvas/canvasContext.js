@@ -1,12 +1,20 @@
 
+var mat4 = require('mat4');
+var MatrixStack = require('matrixStack').MatrixStack;
 var bundle = require('bundle').instance();
+var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+var device = require('device');
 
 var CanvasContext = function(){
 
     var ctx;
+    var mScaleX = 1, mScaleY = 1;
+    var gameProps;
+    var matrixStack = new MatrixStack();
 
     this.init = function(canvas) {
         ctx = canvas.getContext('2d');
+        gameProps = bundle.gameProps;
     };
 
     this.drawImage = function(
@@ -18,6 +26,8 @@ var CanvasContext = function(){
         toX,
         toY
     ) {
+
+        var m;
 
         ctx.drawImage(
             textureInfo.image,
@@ -34,6 +44,7 @@ var CanvasContext = function(){
     };
 
     var cache = {};
+
 
     this.loadTextureInfo = function(url,opts,callBack) {
         if (cache.url) {
@@ -63,12 +74,12 @@ var CanvasContext = function(){
 
     this.clear = function(){
 
-        ctx.fillStyle="#FFFFFF";
+        ctx.fillStyle="#000000";
         ctx.fillRect(
             0,
             0,
-            bundle.gameProps.width,
-            bundle.gameProps.height);
+            screen.width*device.scale,
+            screen.height*device.scale);
 
     };
 
@@ -97,15 +108,25 @@ var CanvasContext = function(){
     };
 
     this.rescaleView = function(scaleX,scaleY){
-        //
+        mScaleX = scaleX;
+        mScaleY = scaleY;
     };
 
     this.beginFrameBuffer = function(){
-        //
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
+        ctx.clip();
+        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
+            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+
+
+        }
     };
 
     this.flipFrameBuffer = function(){
-        //
+        ctx.restore();
     };
 
 };

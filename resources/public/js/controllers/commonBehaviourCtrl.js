@@ -16,9 +16,11 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 
         s.createOrEditCommonBehaviour = function(obj){
+            console.log('createOrEditCommonBehaviour>>>>>',obj);
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
                 obj.type,obj,
@@ -29,6 +31,11 @@ window.app.
                         s.editData.currGameObjectInEdit.commonBehaviour.push(obj.toJSON());
                         var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
                         dialogStateObj.commonBehaviour.push(obj.toJSON());
+                    } else {
+                        dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
+                        var currItem = dialogStateObj._commonBehaviour.find({id:resp.r.id});
+                        currItem.fromJSON(resp.r);
+                        console.log('currItem',currItem);
                     }
                     uiHelper.closeDialog();
                 }
@@ -39,7 +46,7 @@ window.app.
         (function(){
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                s.editData.currCommonBehaviourInEdit = new models.CommonBehaviour();
+                s.editData.currCommonBehaviourInEdit = new CommonBehaviour();
                 s.editData.currCommonBehaviourInEdit.name = dialogState.opObject;
                 var obj =
                     editData.commonBehaviourList.find({

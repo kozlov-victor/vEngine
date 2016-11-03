@@ -20,7 +20,7 @@ var GlContext = function(){
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
-    this.colorBG = [0,0,0];
+    this.colorBG = [255,255,255];
 
     this.init = function(canvas){
 

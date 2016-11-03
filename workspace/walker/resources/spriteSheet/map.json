@@ -1,0 +1,22 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/walker.png",
+        "name": "walker",
+        "width": 288,
+        "height": 256,
+        "numOfFramesH": 9,
+        "numOfFramesV": 4,
+        "type": "spriteSheet",
+        "id": "9996_3491_187"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/tiles.jpg",
+        "name": "tiles",
+        "width": 230,
+        "height": 204,
+        "numOfFramesH": 9,
+        "numOfFramesV": 8,
+        "type": "spriteSheet",
+        "id": "4596_9248_37"
+    }
+]

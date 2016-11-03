@@ -17,13 +17,22 @@ module.exports = function(grunt) {
                 ],
                 dest: 'resources//public/js/all.js'
             }
+        },
+        less: {
+            production: {
+                options: {},
+                files: {
+                    'resources/public/css/all.css':'resources/public/less/styles.less'
+                }
+            }
         }
 
     });
 
 
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.registerTask('default', ['concat']);
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.registerTask('default', ['concat','less']);
 
 
 };

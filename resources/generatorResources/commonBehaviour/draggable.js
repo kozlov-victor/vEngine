@@ -1,34 +1,37 @@
+/**
+ *
+ exports.parameters =  {};
+ exports.description = 'draggable behaviour with multitouch supporting';
+ */
 
 var mouse = require('mouse').instance();
 var points = {};
-var scene;
+var scene = self.getScene();
+var collider = require('collider').instance();
+var camera = require('camera').instance();
 
-function onCreate(){
-    scene = self.getScene();
-    self.on('click',function(e){
-        points[e.id] = {
-            isMouseDown:true,
-            mX: e.objectX,
-            mY: e.objectY
-        };
-    });
-    scene.on('mouseMove',function(e){
-        var point = points[e.id];
-        if (point && point.isMouseDown) {
-            self.posX = e.screenX - point.mX;
-            self.posY = e.screenY - point.mY;
-        }
-    });
-    scene.on('mouseUp',function(e){
-        delete points[e.id];
-    });
-}
+var getEventId = function(e){
+    return e.id || 1;
+};
 
-function onUpdate(){}
+self.on('click',function(e){
+    points[getEventId(e)] = {
+        isMouseDown:true,
+        mX: e.objectX,
+        mY: e.objectY
+    };
+});
 
-function onDefine(){
-    return {
-        parameters: {},
-        description:'draggable behaviour'
+scene.on('mouseMove',function(e){
+    var point = points[getEventId(e)];
+    if (point && point.isMouseDown) {
+        collider.manage(
+            self,e.screenX - point.mX,
+            e.screenY - point.mY
+        );
     }
-}
+});
+
+scene.on('mouseUp',function(e){
+    delete points[getEventId(e)];
+});

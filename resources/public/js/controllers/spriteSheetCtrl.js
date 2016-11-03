@@ -15,7 +15,8 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var models = require('models'), bundle = require('bundle').instance();
+        var bundle = require('bundle').instance();
+        var SpriteSheet = require('spriteSheet').SpriteSheet;
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -58,7 +59,7 @@ window.app.
         s.createOrEditSpriteSheet = function(){
             resourceDao.createOrEditResource(
                 s.editData.currSpriteSheetInEdit,
-                models.SpriteSheet,
+                SpriteSheet,
                 bundle.spriteSheetList,
                 function(res){
                     if (res.type=='edit') {
@@ -71,7 +72,7 @@ window.app.
         (function() {
             var dialogState = uiHelper.getDialogState();
             if (dialogState.opName=='create') {
-                editData.currSpriteSheetInEdit = new models.SpriteSheet({});
+                editData.currSpriteSheetInEdit = new SpriteSheet({});
             } else if (dialogState.opName=='edit'){
                 editData.currSpriteSheetInEdit = dialogState.opObject.clone();
                 editData.currSpriteSheetInEdit.calcFrameSize();
