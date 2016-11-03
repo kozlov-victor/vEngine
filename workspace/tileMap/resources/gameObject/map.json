@@ -115,5 +115,31 @@
         "angle": 0,
         "id": "1707_9136_123",
         "fixedToCamera": 0
+    },
+    {
+        "spriteSheetId": "8588_3274_122",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "btn2",
+        "width": 120,
+        "height": 120,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "rigid": 1,
+        "groupName": "",
+        "angle": 0,
+        "id": "6070_2283_25"
     }
 ]

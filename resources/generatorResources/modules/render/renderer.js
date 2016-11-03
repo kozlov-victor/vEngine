@@ -67,8 +67,8 @@ var Renderer = function(){
         var deltaTime = lastTime ? currTime - lastTime : 0;
 
         ctx.beginFrameBuffer();
-
         ctx.clear();
+
         camera.update(ctx);
         scene.update(currTime,deltaTime);
         bundle.particleSystemList.forEach(function(p){

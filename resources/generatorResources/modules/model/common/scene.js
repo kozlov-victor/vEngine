@@ -59,6 +59,9 @@ exports.Scene = BaseModel.extend({
     find: function(name){
         return this._allGameObjects.find({name:name});
     },
+    findAll: function(name){
+        return this._allGameObjects.findAll({name:name});
+    },
     getAllGameObjects:function(){
         return this._allGameObjects;
     },
@@ -81,8 +84,9 @@ exports.Scene = BaseModel.extend({
     },
     _render: function(){
         var self = this;
-        var ctx = renderer.getContext();
         var spriteSheet = self.tileMap._spriteSheet;
+        if (!spriteSheet) return;
+        var ctx = renderer.getContext();
         var tilePosX = ~~(camera.pos.x / self.tileMap._spriteSheet._frameWidth);
         var tilePosY = ~~(camera.pos.y / self.tileMap._spriteSheet._frameHeight);
         var w = tilePosX + self.tileMap._tilesInScreenX + 2;

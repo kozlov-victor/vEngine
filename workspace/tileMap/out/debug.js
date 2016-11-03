@@ -10,7 +10,9 @@
             'bottom:10px;' +
             'right:10px;' +
             'z-index:10000;' +
-            'width:300px;';
+            'width:300px;'+
+            'max-height:'+window.innerHeight+'px;'+
+            'overflow-y:scroll';
         document.body.appendChild(container);
         return container;
     };
@@ -42,6 +44,7 @@
         }
 
     };
+
 
     window.canceled = false;
 

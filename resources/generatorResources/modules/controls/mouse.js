@@ -56,7 +56,6 @@ var Mouse = function(){
     var triggerEvent = function(e,name){
         var scene = sceneManager.getCurrScene();
         var point = resolveScreenPoint(e);
-        var isObjectCaptured = false;
         scene._layers.someReversed(function(l){
             var found = false;
             l._gameObjects.someReversed(function(g){
@@ -67,37 +66,32 @@ var Mouse = function(){
                         screenX:point.x,
                         screenY:point.y,
                         objectX:point.x - g.pos.x,
-                        objectY:point.y - g.pos.y
+                        objectY:point.y - g.pos.y,
+                        id:point.id
                     });
-                    isObjectCaptured = true;
                     point.object = g;
                     return found = true;
                 }
             });
             return found;
         });
+        scene.trigger(name,{
+            screenX:point.x,
+            screenY:point.y,
+            id:point.id
+        });
         return point;
     };
 
     var resolveClick = function(e){
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
-        var scene = sceneManager.getCurrScene();
         var point = triggerEvent(e,'click');
-        scene.trigger('click',{
-            screenX:point.x,
-            screenY:point.y
-        });
         triggerEvent(e,'mouseDown');
     };
 
     var resolveMouseMove = function(e){
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
-        var scene = sceneManager.getCurrScene();
         var point = triggerEvent(e,'mouseMove');
-        scene.trigger('mouseMove',{
-            screenX:point.x,
-            screenY:point.y
-        });
         var lastMouseDownObject = objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject!=point.object) {
             lastMouseDownObject.trigger('mouseLeave');
@@ -114,10 +108,6 @@ var Mouse = function(){
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         var scene = sceneManager.getCurrScene();
         var point = triggerEvent(e,'mouseUp');
-        scene.trigger('mouseUp',{
-            screenX:point.x,
-            screenY:point.y
-        });
         var lastMouseDownObject = objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
         lastMouseDownObject.trigger('mouseUp');

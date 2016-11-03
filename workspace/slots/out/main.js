@@ -134,122 +134,6 @@ modules['behaviour'] = {code: function(module,exports){
 	var commonBehaviour = {};
 	
 	
-	commonBehaviour['control4dir'] = function(module,exports,self,parameters){
-	/**
-	 exports.parameters = {
-	    velocity: 100,
-	    walkLeftAnimation: 'left',
-	    walkRightAnimation: 'right',
-	    walkUpAnimation:'up',
-	    walkDownAnimation:'down',
-	    idleLeftAnimation: 'idleLeft',
-	    idleRightAnimation: 'idleRight',
-	    idleUpAnimation:'idleUp',
-	    idleDownAnimation:'idleDown'
-	 };
-	 exports.description = "control character with cursor to walk up, down, left and right";
-	 */
-	
-	var keyboard = require('keyboard').instance();
-	var animations = {};
-	
-	var _stop = function(lastDirection){
-	    self.stopFrAnimations();
-	    self.vel.x = 0;
-	    self.vel.y = 0;
-	    var keyIdle = 'idle'+lastDirection+'Animation';
-	    if (animations[keyIdle]) {
-	        animations[keyIdle].play();
-	    }
-	};
-	var _go = function(direction){
-	    animations['walk'+direction+'Animation'].play();
-	};
-	
-	var dirs = ['Left','Right','Up','Down'];
-	dirs.forEach(function(dir){
-	    var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
-	    animations[keyWalk] = self.getFrAnimation(parameters[keyWalk]);
-	    if (!animations[keyWalk]) throw 'can not find animation ' + parameters[keyWalk] +' an gameObject ' + self.name;
-	    parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
-	});
-	
-	function onUpdate(){
-	    if (keyboard.isPressed(keyboard.KEY_UP)) {
-	        self.vel.y = -parameters.velocity;
-	        _go('Up');
-	    }
-	    if (keyboard.isPressed(keyboard.KEY_DOWN)) {
-	        self.vel.y = parameters.velocity;
-	        _go('Down');
-	    }
-	    if (keyboard.isPressed(keyboard.KEY_LEFT)) {
-	        self.vel.x = -parameters.velocity;
-	        _go('Left');
-	    }
-	    if (keyboard.isPressed(keyboard.KEY_RIGHT)) {
-	        self.vel.x = parameters.velocity;
-	        _go('Right');
-	    }
-	
-	    if (keyboard.isJustReleased(keyboard.KEY_LEFT)) {
-	        _stop('Left');
-	    } else if (keyboard.isJustReleased(keyboard.KEY_RIGHT)) {
-	        _stop('Right');
-	    } else if (keyboard.isJustReleased(keyboard.KEY_UP)) {
-	        _stop('Up');
-	    } else if (keyboard.isJustReleased(keyboard.KEY_DOWN)) {
-	        _stop('Down');
-	    }
-	}
-	
-	    exports.onUpdate = onUpdate;
-	}
-	
-	commonBehaviour['draggable'] = function(module,exports,self,parameters){
-	/**
-	 *
-	 exports.parameters =  {};
-	 exports.description = 'draggable behaviour with multitouch supporting';
-	 */
-	
-	var mouse = require('mouse').instance();
-	var points = {};
-	var scene = self.getScene();
-	var collider = require('collider').instance();
-	var camera = require('camera').instance();
-	
-	var getEventId = function(e){
-	    return e.id || 1;
-	};
-	
-	self.on('click',function(e){
-	    points[getEventId(e)] = {
-	        isMouseDown:true,
-	        mX: e.objectX,
-	        mY: e.objectY
-	    };
-	});
-	
-	scene.on('mouseMove',function(e){
-	    var point = points[getEventId(e)];
-	    if (point && point.isMouseDown) {
-	        collider.manage(
-	            self,e.screenX - point.mX,
-	            e.screenY - point.mY
-	        );
-	    }
-	});
-	
-	scene.on('mouseUp',function(e){
-	    delete points[getEventId(e)];
-	});
-	
-	function onUpdate(){};
-	
-	    exports.onUpdate = onUpdate;
-	}
-	
 	
 	exports.commonBehaviour = commonBehaviour;
 	
@@ -258,62 +142,37 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.scene = {};
 	
 	
-	scripts.gameObject['btn.js'] = function(exports,self){
+	scripts.gameObject['slotsColumn.js'] = function(exports,self){
 	    
+	var lastN = 0;
 	
+	self.spin = function(callBack){
+	    var n = ~~((Math.random())*10)+5;
+	    n+=lastN;
+	    var time = 1000+~~(Math.random()*5000);
+	    console.log('tween',lastN,n);
+	    self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce',function(){
+	        lastN = n;
+	        lastN%=10;
+	        callBack();
+	    });
+	};
 	
-	function onUpdate(time) {
-	
+	self.blink = function(){
+	    self.tween(self.scale,'x',1,2,500,'easeOutBounce',function(){
+	        self.tween(self.scale,'x',2,1,500,'easeOutBounce');
+	    });
+	    self.tween(self.scale,'y',1,2,500,'easeOutBounce',function(){
+	        self.tween(self.scale,'y',2,1,500,'easeOutBounce');
+	    });
 	}
-	    
-	    exports.onUpdate = onUpdate;
+	
+	self.val = function(){
+	    return lastN;
 	};
 	
-	scripts.gameObject['btn2.js'] = function(exports,self){
 	    
-	function onUpdate(time) {
-	
-	}
-	    
-	    exports.onUpdate = onUpdate;
-	};
-	
-	scripts.gameObject['hero.js'] = function(exports,self){
-	    
-	require('camera').instance().follow(self);
-	var ps = require('bundle').instance().particleSystemList.find({name:'test'});
-	var scene = self.getScene();
-	
-	var onUpdate = function(){
-	   
-	};
-	    
-	    exports.onUpdate = onUpdate;
-	};
-	
-	scripts.gameObject['imgWall.js'] = function(exports,self){
-	    
-	function onUpdate(time) {
-	
-	}
-	    
-	    exports.onUpdate = onUpdate;
-	};
-	
-	scripts.gameObject['sprHeroes.js'] = function(exports,self){
-	    
-	function onUpdate(time) {
-	
-	}
-	    
-	    exports.onUpdate = onUpdate;
-	};
-	
-	scripts.gameObject['wall.js'] = function(exports,self){
-	    
-	function onUpdate(time) {
-	
-	}
+	    function onUpdate(){};
 	    
 	    exports.onUpdate = onUpdate;
 	};
@@ -322,44 +181,90 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scripts.scene['mainScene.js'] = function(exports,self){
 	    
-	var btnUp = self.find('btnUp');
-	var btnDown =  self.find('btnDown');
-	var btnLeft = self.find('btnLeft');
-	var btnRight =  self.find('btnRight');
-	 
-	var keyboard = require('keyboard').instance(); 
+	var scoreLabel = self.find('scoreLabel');
+	var winLabel = self.find('winLabel');
+	var slots = self.findAll('slotsColumn');
 	
-	btnUp.
-	on(['mouseDown','mouseEnter'],function(){
-	    keyboard.emulatePress(keyboard.KEY_UP);
-	}).
-	on(['mouseUp','mouseLeave'],function(){
-	    keyboard.emulateRelease(keyboard.KEY_UP);  
+	var Queue = require('utils').Queue;
+	
+	var canSpeen = true;
+	var totalMoney = 500;
+	
+	
+	var spin = function(){
+	    if (!canSpeen) return;
+	    if (!totalMoney) return;
+	    canSpeen = false;
+	    var q = new Queue();
+	    q.onResolved = function(){
+	        canSpeen = true;
+	        var val = [
+	            slots[0].val(),slots[1].val(),slots[2].val()  
+	        ];
+	        resolveSpinResult(val);
+	    };
+	    slots.forEach(function(s){
+	        s.spin(function(){
+	            q.resolveTask();
+	        });
+	        q.addTask();
+	    });
+	};
+	
+	
+	var blinkWin = function(val){
+	    winLabel.pos = {x:140,y:100};
+	    winLabel.setText('+'+val);
+	    winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce',function(){
+	        winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce',function(){
+	            winLabel.moveTo(0,0,100,null,function(){
+	                winLabel.setText('');
+	                scoreLabel.setText(totalMoney);
+	            })
+	        });
+	    });
+	    winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce',function(){
+	        winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
+	    });
+	}
+	
+	
+	var resolveSpinResult = function(val){
+	    if (val[0]==val[1] && val[1]==val[2]) {
+	        totalMoney+=300;
+	        blinkWin(300);
+	        slots[0].blink();
+	        slots[1].blink();
+	        slots[2].blink();
+	    }    
+	    else if (val[0]==val[1]) {
+	        totalMoney+=50;
+	        blinkWin(50);
+	        slots[0].blink();
+	        slots[1].blink();
+	    }
+	    else if (val[1]==val[2]) {
+	        totalMoney+=50;
+	        blinkWin(50);
+	        slots[1].blink();
+	        slots[2].blink();
+	    }
+	    else {
+	        totalMoney-=50;
+	        if (totalMoney<0) totalMoney = 0;
+	        scoreLabel.setText(totalMoney);
+	    }    
+	}
+	
+	self.on('click',function(){
+	    spin();
 	});
 	
-	btnDown.
-	on(['mouseDown','mouseEnter'],function(){
-	    keyboard.emulatePress(keyboard.KEY_DOWN); 
-	})
-	.on(['mouseUp','mouseLeave'],function(){
-	    keyboard.emulateRelease(keyboard.KEY_DOWN);  
-	});
 	
-	btnLeft.
-	on(['mouseDown','mouseEnter'],function(){
-	    keyboard.emulatePress(keyboard.KEY_LEFT); 
-	}).
-	on(['mouseUp','mouseLeave'],function(){
-	    keyboard.emulateRelease(keyboard.KEY_LEFT);  
-	});
+	scoreLabel.setText(0);
+	blinkWin(totalMoney);
 	
-	btnRight.
-	on(['mouseDown','mouseEnter'],function(){
-	    keyboard.emulatePress(keyboard.KEY_RIGHT); 
-	}).
-	on(['mouseUp','mouseLeave'],function(){
-	    keyboard.emulateRelease(keyboard.KEY_RIGHT);  
-	});
+	
 	
 	    
 	    function onUpdate(){};
@@ -809,83 +714,18 @@ modules['bundle'] = {code: function(module,exports){
 	
 	    spriteSheet:[
 	    {
-	        "resourcePath": "resources/spriteSheet/imgWall.png",
-	        "name": "imgWall",
-	        "width": 512,
-	        "height": 64,
-	        "numOfFramesV": 2,
-	        "numOfFramesH": 16,
-	        "type": "spriteSheet",
-	        "id": "0967_6478_69"
-	    },
-	    {
-	        "resourcePath": "resources/spriteSheet/sprHeroes.png",
-	        "name": "sprHeroes",
-	        "width": 396,
-	        "height": 280,
-	        "type": "spriteSheet",
-	        "numOfFramesH": 12,
-	        "numOfFramesV": 8,
-	        "id": "7855_3344_73"
-	    },
-	    {
-	        "resourcePath": "resources/spriteSheet/btn.png",
-	        "name": "btn",
+	        "resourcePath": "resources/spriteSheet/slotsColumn.png",
+	        "name": "slotsColumn",
 	        "width": 64,
-	        "height": 64,
+	        "height": 512,
 	        "type": "spriteSheet",
 	        "numOfFramesH": 1,
 	        "numOfFramesV": 1,
-	        "id": "8588_3274_122"
+	        "id": "4021_7193_32"
 	    }
 	],
 	
-	    frameAnimation:[
-	    {
-	        "name": "up",
-	        "frames": [
-	            39,
-	            40,
-	            41
-	        ],
-	        "type": "frameAnimation",
-	        "duration": 800,
-	        "id": "6211_4878_75"
-	    },
-	    {
-	        "name": "down",
-	        "frames": [
-	            3,
-	            4,
-	            5
-	        ],
-	        "type": "frameAnimation",
-	        "duration": 800,
-	        "id": "9849_2404_76"
-	    },
-	    {
-	        "name": "left",
-	        "frames": [
-	            15,
-	            16,
-	            17
-	        ],
-	        "type": "frameAnimation",
-	        "duration": 800,
-	        "id": "2726_6259_77"
-	    },
-	    {
-	        "name": "right",
-	        "frames": [
-	            27,
-	            28,
-	            29
-	        ],
-	        "type": "frameAnimation",
-	        "duration": 800,
-	        "id": "8992_3054_78"
-	    }
-	],
+	    frameAnimation:[],
 	
 	    font:[
 	    {
@@ -1928,102 +1768,1057 @@ modules['bundle'] = {code: function(module,exports){
 	        "fontFamily": "Monospace",
 	        "resourcePath": "resources/font/default.png",
 	        "id": "6991_3497_4"
+	    },
+	    {
+	        "fontColor": [
+	            0,
+	            0,
+	            0
+	        ],
+	        "fontFamily": "Impact",
+	        "fontSize": 30,
+	        "name": "impact",
+	        "fontContext": {
+	            "symbols": {
+	                "0": {
+	                    "x": 177,
+	                    "y": 0,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "1": {
+	                    "x": 193,
+	                    "y": 0,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "2": {
+	                    "x": 205,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "3": {
+	                    "x": 220,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "4": {
+	                    "x": 236,
+	                    "y": 0,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "5": {
+	                    "x": 251,
+	                    "y": 0,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "6": {
+	                    "x": 267,
+	                    "y": 0,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "7": {
+	                    "x": 283,
+	                    "y": 0,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "8": {
+	                    "x": 295,
+	                    "y": 0,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "9": {
+	                    "x": 0,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                " ": {
+	                    "x": 0,
+	                    "y": 0,
+	                    "width": 5,
+	                    "height": 36
+	                },
+	                "!": {
+	                    "x": 5,
+	                    "y": 0,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "\"": {
+	                    "x": 13,
+	                    "y": 0,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "#": {
+	                    "x": 24,
+	                    "y": 0,
+	                    "width": 18,
+	                    "height": 36
+	                },
+	                "$": {
+	                    "x": 43,
+	                    "y": 0,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "%": {
+	                    "x": 59,
+	                    "y": 0,
+	                    "width": 20,
+	                    "height": 36
+	                },
+	                "&": {
+	                    "x": 80,
+	                    "y": 0,
+	                    "width": 17,
+	                    "height": 36
+	                },
+	                "'": {
+	                    "x": 97,
+	                    "y": 0,
+	                    "width": 5,
+	                    "height": 36
+	                },
+	                "(": {
+	                    "x": 103,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 36
+	                },
+	                ")": {
+	                    "x": 112,
+	                    "y": 0,
+	                    "width": 9,
+	                    "height": 36
+	                },
+	                "*": {
+	                    "x": 122,
+	                    "y": 0,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "+": {
+	                    "x": 130,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                ",": {
+	                    "x": 146,
+	                    "y": 0,
+	                    "width": 5,
+	                    "height": 36
+	                },
+	                "-": {
+	                    "x": 151,
+	                    "y": 0,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                ".": {
+	                    "x": 160,
+	                    "y": 0,
+	                    "width": 5,
+	                    "height": 36
+	                },
+	                "/": {
+	                    "x": 165,
+	                    "y": 0,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                ":": {
+	                    "x": 16,
+	                    "y": 36,
+	                    "width": 6,
+	                    "height": 36
+	                },
+	                ";": {
+	                    "x": 22,
+	                    "y": 36,
+	                    "width": 6,
+	                    "height": 36
+	                },
+	                "<": {
+	                    "x": 28,
+	                    "y": 36,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "=": {
+	                    "x": 44,
+	                    "y": 36,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                ">": {
+	                    "x": 60,
+	                    "y": 36,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "?": {
+	                    "x": 76,
+	                    "y": 36,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "@": {
+	                    "x": 92,
+	                    "y": 36,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "A": {
+	                    "x": 115,
+	                    "y": 36,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "B": {
+	                    "x": 130,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "C": {
+	                    "x": 147,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "D": {
+	                    "x": 163,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "E": {
+	                    "x": 180,
+	                    "y": 36,
+	                    "width": 12,
+	                    "height": 36
+	                },
+	                "F": {
+	                    "x": 192,
+	                    "y": 36,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "G": {
+	                    "x": 204,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "H": {
+	                    "x": 221,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "I": {
+	                    "x": 237,
+	                    "y": 36,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "J": {
+	                    "x": 246,
+	                    "y": 36,
+	                    "width": 9,
+	                    "height": 36
+	                },
+	                "K": {
+	                    "x": 256,
+	                    "y": 36,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "L": {
+	                    "x": 272,
+	                    "y": 36,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "M": {
+	                    "x": 284,
+	                    "y": 36,
+	                    "width": 21,
+	                    "height": 36
+	                },
+	                "N": {
+	                    "x": 0,
+	                    "y": 72,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "O": {
+	                    "x": 16,
+	                    "y": 72,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "P": {
+	                    "x": 32,
+	                    "y": 72,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "Q": {
+	                    "x": 47,
+	                    "y": 72,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "R": {
+	                    "x": 64,
+	                    "y": 72,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "S": {
+	                    "x": 80,
+	                    "y": 72,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "T": {
+	                    "x": 95,
+	                    "y": 72,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "U": {
+	                    "x": 109,
+	                    "y": 72,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "V": {
+	                    "x": 125,
+	                    "y": 72,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "W": {
+	                    "x": 141,
+	                    "y": 72,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "X": {
+	                    "x": 166,
+	                    "y": 72,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "Y": {
+	                    "x": 180,
+	                    "y": 72,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "Z": {
+	                    "x": 194,
+	                    "y": 72,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "[": {
+	                    "x": 206,
+	                    "y": 72,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "\\": {
+	                    "x": 215,
+	                    "y": 72,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "]": {
+	                    "x": 227,
+	                    "y": 72,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "^": {
+	                    "x": 235,
+	                    "y": 72,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "_": {
+	                    "x": 250,
+	                    "y": 72,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "`": {
+	                    "x": 266,
+	                    "y": 72,
+	                    "width": 10,
+	                    "height": 36
+	                },
+	                "a": {
+	                    "x": 276,
+	                    "y": 72,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "b": {
+	                    "x": 291,
+	                    "y": 72,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "c": {
+	                    "x": 0,
+	                    "y": 108,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "d": {
+	                    "x": 14,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "e": {
+	                    "x": 30,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "f": {
+	                    "x": 45,
+	                    "y": 108,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "g": {
+	                    "x": 54,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "h": {
+	                    "x": 69,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "i": {
+	                    "x": 85,
+	                    "y": 108,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "j": {
+	                    "x": 93,
+	                    "y": 108,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "k": {
+	                    "x": 102,
+	                    "y": 108,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "l": {
+	                    "x": 116,
+	                    "y": 108,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "m": {
+	                    "x": 124,
+	                    "y": 108,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "n": {
+	                    "x": 148,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "o": {
+	                    "x": 163,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "p": {
+	                    "x": 179,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "q": {
+	                    "x": 194,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "r": {
+	                    "x": 210,
+	                    "y": 108,
+	                    "width": 10,
+	                    "height": 36
+	                },
+	                "s": {
+	                    "x": 220,
+	                    "y": 108,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "t": {
+	                    "x": 235,
+	                    "y": 108,
+	                    "width": 9,
+	                    "height": 36
+	                },
+	                "u": {
+	                    "x": 244,
+	                    "y": 108,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "v": {
+	                    "x": 259,
+	                    "y": 108,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "w": {
+	                    "x": 272,
+	                    "y": 108,
+	                    "width": 20,
+	                    "height": 36
+	                },
+	                "x": {
+	                    "x": 293,
+	                    "y": 108,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "y": {
+	                    "x": 306,
+	                    "y": 108,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "z": {
+	                    "x": 0,
+	                    "y": 144,
+	                    "width": 10,
+	                    "height": 36
+	                },
+	                "{": {
+	                    "x": 10,
+	                    "y": 144,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "|": {
+	                    "x": 21,
+	                    "y": 144,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "}": {
+	                    "x": 29,
+	                    "y": 144,
+	                    "width": 11,
+	                    "height": 36
+	                },
+	                "~": {
+	                    "x": 40,
+	                    "y": 144,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "А": {
+	                    "x": 56,
+	                    "y": 144,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "Б": {
+	                    "x": 71,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "В": {
+	                    "x": 88,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "Г": {
+	                    "x": 104,
+	                    "y": 144,
+	                    "width": 12,
+	                    "height": 36
+	                },
+	                "Д": {
+	                    "x": 117,
+	                    "y": 144,
+	                    "width": 19,
+	                    "height": 36
+	                },
+	                "Е": {
+	                    "x": 136,
+	                    "y": 144,
+	                    "width": 12,
+	                    "height": 36
+	                },
+	                "Ж": {
+	                    "x": 149,
+	                    "y": 144,
+	                    "width": 22,
+	                    "height": 36
+	                },
+	                "З": {
+	                    "x": 171,
+	                    "y": 144,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "И": {
+	                    "x": 187,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "Й": {
+	                    "x": 203,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "К": {
+	                    "x": 219,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "Л": {
+	                    "x": 235,
+	                    "y": 144,
+	                    "width": 17,
+	                    "height": 36
+	                },
+	                "М": {
+	                    "x": 253,
+	                    "y": 144,
+	                    "width": 21,
+	                    "height": 36
+	                },
+	                "Н": {
+	                    "x": 275,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "О": {
+	                    "x": 291,
+	                    "y": 144,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "П": {
+	                    "x": 0,
+	                    "y": 180,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "Р": {
+	                    "x": 16,
+	                    "y": 180,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "С": {
+	                    "x": 31,
+	                    "y": 180,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "Т": {
+	                    "x": 48,
+	                    "y": 180,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "У": {
+	                    "x": 62,
+	                    "y": 180,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "Ф": {
+	                    "x": 75,
+	                    "y": 180,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "Х": {
+	                    "x": 99,
+	                    "y": 180,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "Ц": {
+	                    "x": 113,
+	                    "y": 180,
+	                    "width": 17,
+	                    "height": 36
+	                },
+	                "Ч": {
+	                    "x": 131,
+	                    "y": 180,
+	                    "width": 17,
+	                    "height": 36
+	                },
+	                "Ш": {
+	                    "x": 148,
+	                    "y": 180,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "Щ": {
+	                    "x": 172,
+	                    "y": 180,
+	                    "width": 25,
+	                    "height": 36
+	                },
+	                "Ъ": {
+	                    "x": 198,
+	                    "y": 180,
+	                    "width": 18,
+	                    "height": 36
+	                },
+	                "Ы": {
+	                    "x": 216,
+	                    "y": 180,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "Ь": {
+	                    "x": 241,
+	                    "y": 180,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "Э": {
+	                    "x": 258,
+	                    "y": 180,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "Ю": {
+	                    "x": 274,
+	                    "y": 180,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "Я": {
+	                    "x": 298,
+	                    "y": 180,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "а": {
+	                    "x": 0,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "б": {
+	                    "x": 15,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "в": {
+	                    "x": 30,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "г": {
+	                    "x": 46,
+	                    "y": 216,
+	                    "width": 10,
+	                    "height": 36
+	                },
+	                "д": {
+	                    "x": 56,
+	                    "y": 216,
+	                    "width": 18,
+	                    "height": 36
+	                },
+	                "е": {
+	                    "x": 75,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "ж": {
+	                    "x": 90,
+	                    "y": 216,
+	                    "width": 22,
+	                    "height": 36
+	                },
+	                "з": {
+	                    "x": 112,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "и": {
+	                    "x": 128,
+	                    "y": 216,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "й": {
+	                    "x": 144,
+	                    "y": 216,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "к": {
+	                    "x": 161,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "л": {
+	                    "x": 177,
+	                    "y": 216,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "м": {
+	                    "x": 193,
+	                    "y": 216,
+	                    "width": 20,
+	                    "height": 36
+	                },
+	                "н": {
+	                    "x": 214,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "о": {
+	                    "x": 230,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "п": {
+	                    "x": 245,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "р": {
+	                    "x": 261,
+	                    "y": 216,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "с": {
+	                    "x": 277,
+	                    "y": 216,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "т": {
+	                    "x": 292,
+	                    "y": 216,
+	                    "width": 12,
+	                    "height": 36
+	                },
+	                "у": {
+	                    "x": 304,
+	                    "y": 216,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "ф": {
+	                    "x": 0,
+	                    "y": 252,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "х": {
+	                    "x": 23,
+	                    "y": 252,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "ц": {
+	                    "x": 36,
+	                    "y": 252,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "ч": {
+	                    "x": 52,
+	                    "y": 252,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "ш": {
+	                    "x": 68,
+	                    "y": 252,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "щ": {
+	                    "x": 92,
+	                    "y": 252,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "ъ": {
+	                    "x": 116,
+	                    "y": 252,
+	                    "width": 17,
+	                    "height": 36
+	                },
+	                "ы": {
+	                    "x": 134,
+	                    "y": 252,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "ь": {
+	                    "x": 158,
+	                    "y": 252,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "э": {
+	                    "x": 173,
+	                    "y": 252,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "ю": {
+	                    "x": 188,
+	                    "y": 252,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "я": {
+	                    "x": 211,
+	                    "y": 252,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "ѐ": {
+	                    "x": 227,
+	                    "y": 252,
+	                    "width": 13,
+	                    "height": 36
+	                },
+	                "ё": {
+	                    "x": 240,
+	                    "y": 252,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "ђ": {
+	                    "x": 255,
+	                    "y": 252,
+	                    "width": 16,
+	                    "height": 36
+	                },
+	                "ѓ": {
+	                    "x": 272,
+	                    "y": 252,
+	                    "width": 10,
+	                    "height": 36
+	                },
+	                "є": {
+	                    "x": 282,
+	                    "y": 252,
+	                    "width": 15,
+	                    "height": 36
+	                },
+	                "ѕ": {
+	                    "x": 297,
+	                    "y": 252,
+	                    "width": 14,
+	                    "height": 36
+	                },
+	                "і": {
+	                    "x": 311,
+	                    "y": 252,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "ї": {
+	                    "x": 0,
+	                    "y": 288,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "ј": {
+	                    "x": 8,
+	                    "y": 288,
+	                    "width": 8,
+	                    "height": 36
+	                },
+	                "љ": {
+	                    "x": 16,
+	                    "y": 288,
+	                    "width": 24,
+	                    "height": 36
+	                },
+	                "њ": {
+	                    "x": 41,
+	                    "y": 288,
+	                    "width": 23,
+	                    "height": 36
+	                },
+	                "ћ": {
+	                    "x": 64,
+	                    "y": 288,
+	                    "width": 16,
+	                    "height": 36
+	                }
+	            },
+	            "width": 320,
+	            "height": 324
+	        },
+	        "type": "font",
+	        "resourcePath": "resources/font/impact.png",
+	        "id": "0265_1797_64"
 	    }
 	],
 	
 	    gameObject:[
 	    {
-	        "spriteSheetId": "7855_3344_73",
-	        "pos": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "scale": {
-	            "x": 1,
-	            "y": 1
-	        },
-	        "vel": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "currFrameIndex": 3,
-	        "name": "hero",
-	        "width": 33,
-	        "height": 35,
-	        "type": "gameObject",
-	        "commonBehaviour": [
-	            {
-	                "name": "control4dir",
-	                "parameters": {
-	                    "velocity": 100,
-	                    "walkLeftAnimation": "left",
-	                    "walkRightAnimation": "right",
-	                    "walkUpAnimation": "up",
-	                    "walkDownAnimation": "down",
-	                    "idleLeftAnimation": "",
-	                    "idleRightAnimation": "",
-	                    "idleUpAnimation": "",
-	                    "idleDownAnimation": ""
-	                },
-	                "description": "control character with cursor to walk up, down, left and right",
-	                "id": "9649_8595_79",
-	                "type": "commonBehaviour"
-	            },
-	            {
-	                "name": "draggable",
-	                "parameters": {},
-	                "description": "draggable behaviour with multitouch supporting",
-	                "id": "2875_2182_268",
-	                "type": "commonBehaviour"
-	            }
-	        ],
-	        "frameAnimationIds": [
-	            "6211_4878_75",
-	            "9849_2404_76",
-	            "2726_6259_77",
-	            "8992_3054_78"
-	        ],
-	        "rigid": 1,
-	        "groupName": "",
-	        "angle": 0,
-	        "id": "1790_3583_74"
-	    },
-	    {
-	        "spriteSheetId": "0967_6478_69",
-	        "pos": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "scale": {
-	            "x": 1,
-	            "y": 1
-	        },
-	        "vel": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "currFrameIndex": 2,
-	        "name": "wall",
-	        "width": 32,
-	        "height": 32,
-	        "type": "gameObject",
-	        "commonBehaviour": [
-	            {
-	                "name": "draggable",
-	                "parameters": {},
-	                "description": "draggable behaviour with multitouch supporting",
-	                "id": "7358_6227_270",
-	                "type": "commonBehaviour"
-	            }
-	        ],
-	        "frameAnimationIds": [],
-	        "rigid": 1,
-	        "groupName": "",
-	        "angle": 0,
-	        "id": "1957_7947_93"
-	    },
-	    {
-	        "spriteSheetId": "8588_3274_122",
+	        "spriteSheetId": "4021_7193_32",
 	        "pos": {
 	            "x": 0,
 	            "y": 0
@@ -2037,43 +2832,16 @@ modules['bundle'] = {code: function(module,exports){
 	            "y": 0
 	        },
 	        "currFrameIndex": 0,
-	        "name": "btn",
-	        "width": 64,
-	        "height": 64,
-	        "type": "gameObject",
-	        "commonBehaviour": [],
-	        "frameAnimationIds": [],
-	        "rigid": 0,
-	        "groupName": "",
-	        "angle": 0,
-	        "id": "1707_9136_123",
-	        "fixedToCamera": 0
-	    },
-	    {
-	        "spriteSheetId": "8588_3274_122",
-	        "pos": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "scale": {
-	            "x": 1,
-	            "y": 1
-	        },
-	        "vel": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "currFrameIndex": 0,
-	        "name": "btn2",
-	        "width": 120,
-	        "height": 120,
+	        "name": "slotsColumn",
+	        "width": 60,
+	        "height": 50,
 	        "type": "gameObject",
 	        "commonBehaviour": [],
 	        "frameAnimationIds": [],
 	        "rigid": 1,
 	        "groupName": "",
 	        "angle": 0,
-	        "id": "6070_2283_25"
+	        "id": "2146_8639_33"
 	    }
 	],
 	
@@ -2081,24 +2849,12 @@ modules['bundle'] = {code: function(module,exports){
 	    {
 	        "name": "mainLayer",
 	        "type": "layer",
-	        "gameObjectProps": [],
-	        "id": "1083_7308_67"
-	    },
-	    {
-	        "name": "mainLayer",
-	        "type": "layer",
-	        "gameObjectProps": [],
-	        "id": "5752_9657_71"
-	    },
-	    {
-	        "name": "mainLayer",
-	        "type": "layer",
 	        "gameObjectProps": [
 	            {
-	                "spriteSheetId": "7855_3344_73",
+	                "spriteSheetId": "4021_7193_32",
 	                "pos": {
-	                    "x": 158,
-	                    "y": 61
+	                    "x": 37,
+	                    "y": 66
 	                },
 	                "scale": {
 	                    "x": 1,
@@ -2108,131 +2864,24 @@ modules['bundle'] = {code: function(module,exports){
 	                    "x": 0,
 	                    "y": 0
 	                },
-	                "currFrameIndex": 3,
-	                "name": "hero",
-	                "width": 33,
-	                "height": 35,
+	                "currFrameIndex": 0,
+	                "name": "slotsColumn",
+	                "width": 64,
+	                "height": 52,
 	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "control4dir",
-	                        "parameters": {
-	                            "velocity": 100,
-	                            "walkLeftAnimation": "left",
-	                            "walkRightAnimation": "right",
-	                            "walkUpAnimation": "up",
-	                            "walkDownAnimation": "down",
-	                            "idleLeftAnimation": "",
-	                            "idleRightAnimation": "",
-	                            "idleUpAnimation": "",
-	                            "idleDownAnimation": ""
-	                        },
-	                        "description": "control character with cursor to walk up, down, left and right",
-	                        "id": "9649_8595_79",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "frameAnimationIds": [
-	                    "6211_4878_75",
-	                    "9849_2404_76",
-	                    "2726_6259_77",
-	                    "8992_3054_78"
-	                ],
+	                "commonBehaviour": [],
+	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
 	                "angle": 0,
-	                "protoId": "1790_3583_74",
-	                "id": "9250_5062_87"
+	                "protoId": "2146_8639_33",
+	                "id": "3605_4962_40"
 	            },
 	            {
-	                "spriteSheetId": "8588_3274_122",
-	                "pos": {
-	                    "x": 63,
-	                    "y": 199
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btnUp",
-	                "width": 64,
-	                "height": 64,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 0,
-	                "groupName": "",
-	                "angle": 0,
-	                "protoId": "1707_9136_123",
-	                "id": "7469_1515_124",
-	                "fixedToCamera": 1
-	            },
-	            {
-	                "spriteSheetId": "8588_3274_122",
-	                "pos": {
-	                    "x": 63,
-	                    "y": 271
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btnDown",
-	                "width": 64,
-	                "height": 64,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 0,
-	                "groupName": "",
-	                "angle": 0,
-	                "fixedToCamera": 1,
-	                "protoId": "1707_9136_123",
-	                "id": "8553_5489_265"
-	            },
-	            {
-	                "spriteSheetId": "8588_3274_122",
-	                "pos": {
-	                    "x": 10,
-	                    "y": 237
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btnLeft",
-	                "width": 64,
-	                "height": 64,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 0,
-	                "groupName": "",
-	                "angle": 0,
-	                "fixedToCamera": 1,
-	                "protoId": "1707_9136_123",
-	                "id": "2896_0832_266"
-	            },
-	            {
-	                "spriteSheetId": "8588_3274_122",
+	                "spriteSheetId": "4021_7193_32",
 	                "pos": {
 	                    "x": 116,
-	                    "y": 238
+	                    "y": 66
 	                },
 	                "scale": {
 	                    "x": 1,
@@ -2243,24 +2892,23 @@ modules['bundle'] = {code: function(module,exports){
 	                    "y": 0
 	                },
 	                "currFrameIndex": 0,
-	                "name": "btnRight",
+	                "name": "slotsColumn",
 	                "width": 64,
-	                "height": 64,
+	                "height": 52,
 	                "type": "gameObject",
 	                "commonBehaviour": [],
 	                "frameAnimationIds": [],
-	                "rigid": 0,
+	                "rigid": 1,
 	                "groupName": "",
 	                "angle": 0,
-	                "fixedToCamera": 1,
-	                "protoId": "1707_9136_123",
-	                "id": "9901_8558_267"
+	                "protoId": "2146_8639_33",
+	                "id": "2522_8532_41"
 	            },
 	            {
-	                "spriteSheetId": "0967_6478_69",
+	                "spriteSheetId": "4021_7193_32",
 	                "pos": {
-	                    "x": 352,
-	                    "y": 64
+	                    "x": 197,
+	                    "y": 66
 	                },
 	                "scale": {
 	                    "x": 1,
@@ -2271,831 +2919,97 @@ modules['bundle'] = {code: function(module,exports){
 	                    "y": 0
 	                },
 	                "currFrameIndex": 0,
-	                "name": "wall",
-	                "width": 32,
-	                "height": 32,
+	                "name": "slotsColumn",
+	                "width": 64,
+	                "height": 52,
 	                "type": "gameObject",
 	                "commonBehaviour": [],
 	                "frameAnimationIds": [],
 	                "rigid": 1,
 	                "groupName": "",
 	                "angle": 0,
-	                "protoId": "1957_7947_93",
-	                "id": "0310_6343_269"
+	                "protoId": "2146_8639_33",
+	                "id": "1745_2194_42"
 	            },
 	            {
-	                "spriteSheetId": "0967_6478_69",
 	                "pos": {
-	                    "x": 383,
-	                    "y": 64
+	                    "x": 18,
+	                    "y": 14
 	                },
 	                "scale": {
 	                    "x": 1,
 	                    "y": 1
 	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "wall",
-	                "width": 32,
-	                "height": 32,
-	                "type": "gameObject",
-	                "commonBehaviour": [
-	                    {
-	                        "name": "draggable",
-	                        "parameters": {},
-	                        "description": "draggable behaviour with multitouch supporting",
-	                        "id": "7358_6227_270",
-	                        "type": "commonBehaviour"
-	                    }
-	                ],
-	                "frameAnimationIds": [],
-	                "rigid": 1,
+	                "height": 36,
+	                "text": "",
+	                "width": 0,
+	                "type": "userInterface",
+	                "subType": "textField",
 	                "groupName": "",
 	                "angle": 0,
-	                "protoId": "1957_7947_93",
-	                "id": "8319_3167_4"
+	                "name": "scoreLabel",
+	                "protoId": null,
+	                "id": "0790_6321_63",
+	                "fontId": "0265_1797_64"
 	            },
 	            {
-	                "spriteSheetId": "8588_3274_122",
 	                "pos": {
-	                    "x": 247,
-	                    "y": 231
+	                    "x": 140,
+	                    "y": 100
 	                },
 	                "scale": {
 	                    "x": 1,
 	                    "y": 1
 	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btn2",
-	                "width": 120,
-	                "height": 64,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 1,
+	                "height": 29,
+	                "text": "",
+	                "width": 0,
+	                "type": "userInterface",
+	                "subType": "textField",
 	                "groupName": "",
 	                "angle": 0,
-	                "protoId": "6070_2283_25",
-	                "id": "8596_4369_26"
-	            },
-	            {
-	                "spriteSheetId": "8588_3274_122",
-	                "pos": {
-	                    "x": 220,
-	                    "y": 28
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btn2",
-	                "width": 120,
-	                "height": 120,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "angle": 0,
-	                "protoId": "6070_2283_25",
-	                "id": "6333_5227_27"
+	                "name": "winLabel",
+	                "protoId": null,
+	                "id": "6368_9704_65"
 	            }
 	        ],
-	        "id": "0645_0474_80"
+	        "id": "0679_1823_35"
 	    }
 	],
 	
 	    scene:[
 	    {
 	        "tileMap": {
-	            "_spriteSheet": {
-	                "resourcePath": "resources/spriteSheet/imgWall.png",
-	                "name": "imgWall",
-	                "width": 512,
-	                "height": 64,
-	                "numOfFramesV": 2,
-	                "numOfFramesH": 16,
-	                "type": "spriteSheet",
-	                "id": "0967_6478_69"
-	            },
-	            "spriteSheetId": "0967_6478_69",
-	            "width": 23,
-	            "height": 24,
-	            "data": [
-	                [
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    3,
-	                    7,
-	                    7,
-	                    7,
-	                    3,
-	                    7,
-	                    7,
-	                    3,
-	                    3,
-	                    3,
-	                    6,
-	                    3,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    17,
-	                    17,
-	                    16,
-	                    3,
-	                    19,
-	                    20,
-	                    7,
-	                    20,
-	                    20,
-	                    20,
-	                    6,
-	                    6,
-	                    7,
-	                    7,
-	                    5,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    22,
-	                    3,
-	                    16,
-	                    3,
-	                    7,
-	                    4,
-	                    20,
-	                    20,
-	                    16,
-	                    16,
-	                    20,
-	                    20,
-	                    16,
-	                    23,
-	                    5,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    7,
-	                    6,
-	                    4,
-	                    3,
-	                    7,
-	                    3,
-	                    7,
-	                    3,
-	                    17,
-	                    16,
-	                    19,
-	                    5,
-	                    16,
-	                    20,
-	                    20,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    7,
-	                    7,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    3,
-	                    19,
-	                    16,
-	                    16,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    6,
-	                    7,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    3,
-	                    5,
-	                    17,
-	                    17,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    3,
-	                    19,
-	                    19,
-	                    5,
-	                    1,
-	                    1,
-	                    3,
-	                    3,
-	                    5,
-	                    7,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    null,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    1,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    1,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    5,
-	                    5,
-	                    3,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    5,
-	                    5,
-	                    5,
-	                    5,
-	                    5,
-	                    5,
-	                    5,
-	                    5,
-	                    5,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    5,
-	                    3,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    5,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    16,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    17,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ],
-	                [
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1,
-	                    1
-	                ]
-	            ],
-	            "_tilesInScreenX": 14,
-	            "_tilesInScreenY": 10
+	            "_spriteSheet": null,
+	            "spriteSheetId": null,
+	            "width": 0,
+	            "height": 0,
+	            "data": []
 	        },
 	        "name": "mainScene",
 	        "type": "scene",
 	        "layerProps": [
 	            {
 	                "type": "layer",
-	                "protoId": "0645_0474_80",
-	                "id": "5280_0503_81"
+	                "protoId": "0679_1823_35",
+	                "id": "0583_1855_36"
 	            }
 	        ],
 	        "colorBG": [
-	            0,
-	            0,
-	            0
+	            245,
+	            249,
+	            230
 	        ],
-	        "id": "3217_3071_66",
-	        "useBG": 1
+	        "id": "2590_5247_34",
+	        "useBG": 0
 	    }
 	],
 	
-	    particleSystem:[
-	    {
-	        "gameObjectId": "1707_9136_123",
-	        "numOfParticlesToEmit": {
-	            "from": 1,
-	            "to": 10
-	        },
-	        "particleAngle": {
-	            "from": 5.348347806051011,
-	            "to": 1.0416123087822753
-	        },
-	        "particleVelocity": {
-	            "from": 1,
-	            "to": 100
-	        },
-	        "particleLiveTime": {
-	            "from": 100,
-	            "to": 1000
-	        },
-	        "emissionRadius": 18,
-	        "name": "test",
-	        "type": "particleSystem",
-	        "id": "1636_1556_6"
-	    }
-	],
+	    particleSystem:[],
 	
 	    gameProps:{
-	    "width": 474,
-	    "height": 344,
+	    "width": 320,
+	    "height": 200,
 	    "scaleStrategy": "2"
 	}
 	
@@ -4127,20 +4041,20 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    getScene: function(){
 	        return require('sceneManager').instance().getCurrScene();
 	    },
-	    moveTo:function(x,y,time,easeFnName){
+	    moveTo:function(x,y,time,easeFnName,callBack){
 	        var scene = this.getScene();
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
-	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
+	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName,callBack);
+	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName,callBack);
 	        movie.add(0,tweenX).add(0,tweenY);
 	        scene._tweenMovies.push(movie);
 	    },
-	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
+	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName,callBack){
 	        var scene = this.getScene();
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
+	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName,callBack);
 	        movie.add(0,tween);
 	        scene._tweenMovies.push(movie);
 	    },
@@ -5715,8 +5629,8 @@ modules['renderer'] = {code: function(module,exports){
 	        currTime = Date.now();
 	        var deltaTime = lastTime ? currTime - lastTime : 0;
 	
-	        ctx.clear();
 	        ctx.beginFrameBuffer();
+	        ctx.clear();
 	
 	        camera.update(ctx);
 	        scene.update(currTime,deltaTime);
@@ -5987,7 +5901,7 @@ modules['sceneManager'] = {code: function(module,exports){
 
 modules['tween'] = {code: function(module,exports){
 	
-	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
+	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName,completeCallBack){
 	    var startedTime = null;
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
@@ -6014,6 +5928,7 @@ modules['tween'] = {code: function(module,exports){
 	        if (this.completed) return;
 	        obj[prop] = toVal;
 	        this.completed = true;
+	        completeCallBack && completeCallBack();
 	    }
 	
 	

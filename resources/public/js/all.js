@@ -879,7 +879,7 @@ window.app.
 
         var tid = 0;
         s.onKeyPress = function(e){
-            e.preventDefault();
+            //e.preventDefault();
             if (!editData.currSceneGameObjectInEdit) return;
             var edited = false;
             switch (e.which) {

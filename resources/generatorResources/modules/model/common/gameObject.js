@@ -32,6 +32,7 @@ exports.GameObject = BaseGameObject.extend({
             return;
         }
         self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
+        //<code><%if (opts.debug){%>if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name<%}%>
         self.setFrameIndex(self.currFrameIndex);
         self._frameAnimations.clear();
         self.frameAnimationIds.forEach(function(id){
@@ -82,8 +83,8 @@ exports.GameObject = BaseGameObject.extend({
             resourceCache.get(self._spriteSheet.resourcePath),
             self._sprPosX,
             self._sprPosY,
-            self._spriteSheet._frameWidth,
-            self._spriteSheet._frameHeight,
+            self.width,
+            self.height,
             0,
             0
         );

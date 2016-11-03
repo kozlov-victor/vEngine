@@ -29,8 +29,6 @@ scene.on('mouseMove',function(e){
             self,e.screenX - point.mX,
             e.screenY - point.mY
         );
-        //self.pos.x = e.screenX - point.mX;
-        //self.pos.y = e.screenY - point.mY;
     }
 });
 

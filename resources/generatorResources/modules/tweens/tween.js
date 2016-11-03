@@ -1,5 +1,5 @@
 
-exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
+exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName,completeCallBack){
     var startedTime = null;
     easeFnName = easeFnName || 'linear';
     this.completed = false;
@@ -26,6 +26,7 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
         if (this.completed) return;
         obj[prop] = toVal;
         this.completed = true;
+        completeCallBack && completeCallBack();
     }
 
 

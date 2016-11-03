@@ -1,0 +1,12 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/slotsColumn.png",
+        "name": "slotsColumn",
+        "width": 64,
+        "height": 512,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "4021_7193_32"
+    }
+]

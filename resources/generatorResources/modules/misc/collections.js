@@ -1,4 +1,15 @@
 
+var isObjectMatchTo = function(obj,matcher){
+    var isCandidate = true;
+    Object.keys(matcher).some(function(conditionKey){
+        if (obj[conditionKey]!=matcher[conditionKey]) {
+            isCandidate = false;
+            return true;
+        }
+    });
+    return isCandidate;
+};
+
 exports.List = function () {
     var self = this;
     this.rs = [];
@@ -60,14 +71,8 @@ exports.List = function () {
         var i = 0;
         var success = false;
         self.rs.some(function(item){
-            var isCandidate = true;
-            Object.keys(obj).some(function(conditionKey){
-                if (obj[conditionKey]!=item[conditionKey]) {
-                    isCandidate = false;
-                    return true;
-                }
-            });
-            if (isCandidate) {
+            var isMatch = isObjectMatchTo(item,obj);
+            if (isMatch) {
                 success = true;
                 return true;
             }
@@ -82,6 +87,14 @@ exports.List = function () {
     };
     this.find = function (obj){
         return self.rs[self.indexOf(obj)];
+    };
+    this.findAll = function (obj){
+        var res = [];
+        self.rs.forEach(function(item){
+            var isMatch = isObjectMatchTo(item,obj);
+            if (isMatch) res.push(item);
+        });
+        return res;
     };
     this.pop = function(){
         return self.rs.pop();
