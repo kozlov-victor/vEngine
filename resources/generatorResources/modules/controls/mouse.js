@@ -78,7 +78,8 @@ var Mouse = function(){
         scene.trigger(name,{
             screenX:point.x,
             screenY:point.y,
-            id:point.id
+            id:point.id,
+            target:point.object
         });
         return point;
     };

@@ -38,7 +38,7 @@ exports.BaseGameObject = BaseModel.extend({
         easeFnName = easeFnName || 'linear';
         var movie = new tweenMovieModule.TweenMovie();
         var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName,callBack);
-        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName,callBack);
+        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
         movie.add(0,tweenX).add(0,tweenY);
         scene._tweenMovies.push(movie);
     },

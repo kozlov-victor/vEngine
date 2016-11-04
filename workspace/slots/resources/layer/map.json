@@ -124,6 +124,90 @@
                 "name": "winLabel",
                 "protoId": null,
                 "id": "6368_9704_65"
+            },
+            {
+                "pos": {
+                    "x": 14,
+                    "y": 152
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 36,
+                "text": "bet",
+                "width": 39,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "name": "textField3",
+                "protoId": null,
+                "id": "8688_5721_0",
+                "fontId": "0265_1797_64"
+            },
+            {
+                "pos": {
+                    "x": 72,
+                    "y": 154
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 29,
+                "text": "+",
+                "width": 15,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "name": "betPlusLabel",
+                "protoId": null,
+                "id": "0068_5684_1",
+                "fontId": "6991_3497_4"
+            },
+            {
+                "pos": {
+                    "x": 103,
+                    "y": 153
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 29,
+                "text": "-",
+                "width": 15,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "name": "betMinusLabel",
+                "protoId": null,
+                "id": "6621_2286_2",
+                "fontId": "6991_3497_4"
+            },
+            {
+                "pos": {
+                    "x": 142,
+                    "y": 152
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 36,
+                "text": "0",
+                "width": 16,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "name": "betLabel",
+                "protoId": null,
+                "id": "7190_5206_3",
+                "fontId": "0265_1797_64"
             }
         ],
         "id": "0679_1823_35"
