@@ -150,7 +150,6 @@ modules['behaviour'] = {code: function(module,exports){
 	    var n = ~~((Math.random())*10)+5;
 	    n+=lastN;
 	    var time = 1000+~~(Math.random()*5000);
-	    console.log('tween',lastN,n);
 	    self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce',function(){
 	        lastN = n;
 	        lastN%=10;
@@ -184,11 +183,16 @@ modules['behaviour'] = {code: function(module,exports){
 	var scoreLabel = self.find('scoreLabel');
 	var winLabel = self.find('winLabel');
 	var slots = self.findAll('slotsColumn');
+	var betPlusLabel = self.find('betPlusLabel');
+	var betMinusLabel = self.find('betMinusLabel');
+	var betLabel = self.find('betLabel');
 	
 	var Queue = require('utils').Queue;
 	
 	var canSpeen = true;
-	var totalMoney = 500;
+	var totalMoney = localStorage.totalMoney;
+	if (totalMoney==undefined) totalMoney = 100;
+	var bet = 10;
 	
 	
 	var spin = function(){
@@ -212,13 +216,15 @@ modules['behaviour'] = {code: function(module,exports){
 	};
 	
 	
-	var blinkWin = function(val){
+	var blinkWin = function(win){
 	    winLabel.pos = {x:140,y:100};
-	    winLabel.setText('+'+val);
+	    winLabel.setText(win.txt);
 	    winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce',function(){
 	        winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce',function(){
 	            winLabel.moveTo(0,0,100,null,function(){
 	                winLabel.setText('');
+	                totalMoney+=win.val;
+	                localStorage.totalMoney = totalMoney;
 	                scoreLabel.setText(totalMoney);
 	            })
 	        });
@@ -228,41 +234,73 @@ modules['behaviour'] = {code: function(module,exports){
 	    });
 	}
 	
+	var calcResult = function(numOfWinSlot,val) {
+	    var coef;
+	    if (val==5) coef = 3;
+	    else if (val===0) coef = 2;
+	    else coef = 1;
+	    return {
+	        txt:bet+'*'+coef*numOfWinSlot,
+	        val:coef * numOfWinSlot * bet
+	    }    
+	}
 	
 	var resolveSpinResult = function(val){
 	    if (val[0]==val[1] && val[1]==val[2]) {
-	        totalMoney+=300;
-	        blinkWin(300);
+	        var win = calcResult(3,val[0]);
+	        blinkWin(win);
 	        slots[0].blink();
 	        slots[1].blink();
 	        slots[2].blink();
 	    }    
 	    else if (val[0]==val[1]) {
-	        totalMoney+=50;
-	        blinkWin(50);
+	        win = calcResult(2,val[0]);
+	        blinkWin(win);
 	        slots[0].blink();
 	        slots[1].blink();
 	    }
 	    else if (val[1]==val[2]) {
-	        totalMoney+=50;
-	        blinkWin(50);
+	        win = calcResult(2,val[1]);
+	        blinkWin(win);
 	        slots[1].blink();
 	        slots[2].blink();
 	    }
 	    else {
-	        totalMoney-=50;
+	        totalMoney-=bet;
 	        if (totalMoney<0) totalMoney = 0;
 	        scoreLabel.setText(totalMoney);
+	        localStorage.totalMoney = totalMoney;
 	    }    
 	}
 	
-	self.on('click',function(){
+	self.on('click',function(e){
+	    if (e.target) return;
+	    if (bet>totalMoney) return;
 	    spin();
 	});
 	
+	betPlusLabel.on('click',function(e){
+	    bet+=1;
+	    if (bet>totalMoney) bet = totalMoney;
+	    betLabel.setText(bet);
+	});
 	
-	scoreLabel.setText(0);
-	blinkWin(totalMoney);
+	betMinusLabel.on('click',function(e){
+	    bet-=1;
+	    if (bet<1) bet = 1; 
+	    betLabel.setText(bet);
+	});
+	
+	betLabel.on('click',function(){
+	    bet+=50;
+	    if (bet>totalMoney) bet = totalMoney;
+	    betLabel.setText(bet);
+	});
+	
+	
+	scoreLabel.setText(totalMoney);
+	betLabel.setText(bet);
+	 
 	
 	
 	
@@ -558,7 +596,8 @@ modules['mouse'] = {code: function(module,exports){
 	        scene.trigger(name,{
 	            screenX:point.x,
 	            screenY:point.y,
-	            id:point.id
+	            id:point.id,
+	            target:point.object
 	        });
 	        return point;
 	    };
@@ -2971,6 +3010,90 @@ modules['bundle'] = {code: function(module,exports){
 	                "name": "winLabel",
 	                "protoId": null,
 	                "id": "6368_9704_65"
+	            },
+	            {
+	                "pos": {
+	                    "x": 14,
+	                    "y": 152
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 36,
+	                "text": "bet",
+	                "width": 39,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "textField3",
+	                "protoId": null,
+	                "id": "8688_5721_0",
+	                "fontId": "0265_1797_64"
+	            },
+	            {
+	                "pos": {
+	                    "x": 72,
+	                    "y": 154
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "+",
+	                "width": 15,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "betPlusLabel",
+	                "protoId": null,
+	                "id": "0068_5684_1",
+	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "pos": {
+	                    "x": 103,
+	                    "y": 153
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "-",
+	                "width": 15,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "betMinusLabel",
+	                "protoId": null,
+	                "id": "6621_2286_2",
+	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "pos": {
+	                    "x": 142,
+	                    "y": 152
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 36,
+	                "text": "0",
+	                "width": 16,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "betLabel",
+	                "protoId": null,
+	                "id": "7190_5206_3",
+	                "fontId": "0265_1797_64"
 	            }
 	        ],
 	        "id": "0679_1823_35"
@@ -4046,7 +4169,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
 	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName,callBack);
-	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName,callBack);
+	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
 	        movie.add(0,tweenX).add(0,tweenY);
 	        scene._tweenMovies.push(movie);
 	    },

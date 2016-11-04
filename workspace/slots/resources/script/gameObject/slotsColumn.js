@@ -5,7 +5,6 @@ self.spin = function(callBack){
     var n = ~~((Math.random())*10)+5;
     n+=lastN;
     var time = 1000+~~(Math.random()*5000);
-    console.log('tween',lastN,n);
     self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce',function(){
         lastN = n;
         lastN%=10;
