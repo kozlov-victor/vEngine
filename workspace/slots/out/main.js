@@ -150,20 +150,36 @@ modules['behaviour'] = {code: function(module,exports){
 	    var n = ~~((Math.random())*10)+5;
 	    n+=lastN;
 	    var time = 1000+~~(Math.random()*5000);
-	    self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce',function(){
-	        lastN = n;
-	        lastN%=10;
-	        callBack();
-	    });
+	    self.
+	        chain().
+	        then(function(){
+	           return self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce'); 
+	        }).
+	        then(function(){
+	            lastN = n;
+	            lastN%=10;
+	            callBack();
+	        });
 	};
 	
 	self.blink = function(){
-	    self.tween(self.scale,'x',1,2,500,'easeOutBounce',function(){
-	        self.tween(self.scale,'x',2,1,500,'easeOutBounce');
-	    });
-	    self.tween(self.scale,'y',1,2,500,'easeOutBounce',function(){
-	        self.tween(self.scale,'y',2,1,500,'easeOutBounce');
-	    });
+	    self.
+	        chain().
+	        then(function(){
+	            return self.tween(self.scale,'x',1,2,500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            return self.tween(self.scale,'x',2,1,500,'easeOutBounce');
+	        });
+	        
+	    self.
+	        chain().
+	        then(function(){
+	           return self.tween(self.scale,'y',1,2,500,'easeOutBounce'); 
+	        }).
+	        then(function(){
+	            self.tween(self.scale,'y',2,1,500,'easeOutBounce');
+	        });
 	}
 	
 	self.val = function(){
@@ -187,11 +203,11 @@ modules['behaviour'] = {code: function(module,exports){
 	var betMinusLabel = self.find('betMinusLabel');
 	var betLabel = self.find('betLabel');
 	
-	var Queue = require('utils').Queue;
+	var Queue = require('queue').Queue;
 	
 	var canSpeen = true;
-	var totalMoney = localStorage.totalMoney;
-	if (totalMoney==undefined) totalMoney = 100;
+	var totalMoney;//localStorage.totalMoney;
+	if (totalMoney===undefined) totalMoney = 100;
 	var bet = 10;
 	
 	
@@ -203,7 +219,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    q.onResolved = function(){
 	        canSpeen = true;
 	        var val = [
-	            slots[0].val(),slots[1].val(),slots[2].val()  
+	            slots[0].val(),slots[1].val(),slots[2].val()
 	        ];
 	        resolveSpinResult(val);
 	    };
@@ -219,20 +235,33 @@ modules['behaviour'] = {code: function(module,exports){
 	var blinkWin = function(win){
 	    winLabel.pos = {x:140,y:100};
 	    winLabel.setText(win.txt);
-	    winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce',function(){
-	        winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce',function(){
-	            winLabel.moveTo(0,0,100,null,function(){
-	                winLabel.setText('');
-	                totalMoney+=win.val;
-	                localStorage.totalMoney = totalMoney;
-	                scoreLabel.setText(totalMoney);
-	            })
+	    winLabel.
+	        chain().
+	        then(function(){
+	            return winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            return winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            return winLabel.moveTo(0,0,100,null);
+	        }).
+	        then(function(){
+	            winLabel.setText('');
+	            totalMoney+=win.val;
+	            localStorage.totalMoney = totalMoney;
+	            scoreLabel.setText(totalMoney);
 	        });
-	    });
-	    winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce',function(){
-	        winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
-	    });
-	}
+	
+	    winLabel.
+	        chain().
+	        then(function(){
+	           return winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
+	        });
+	};
 	
 	var calcResult = function(numOfWinSlot,val) {
 	    var coef;
@@ -242,17 +271,17 @@ modules['behaviour'] = {code: function(module,exports){
 	    return {
 	        txt:bet+'*'+coef*numOfWinSlot,
 	        val:coef * numOfWinSlot * bet
-	    }    
-	}
+	    };
+	};
 	
 	var resolveSpinResult = function(val){
-	    if (val[0]==val[1] && val[1]==val[2]) {
+	    if (slots[1]==slots[2] && slots[2]==slots[3]) {
 	        var win = calcResult(3,val[0]);
 	        blinkWin(win);
 	        slots[0].blink();
 	        slots[1].blink();
 	        slots[2].blink();
-	    }    
+	    }
 	    else if (val[0]==val[1]) {
 	        win = calcResult(2,val[0]);
 	        blinkWin(win);
@@ -270,12 +299,17 @@ modules['behaviour'] = {code: function(module,exports){
 	        if (totalMoney<0) totalMoney = 0;
 	        scoreLabel.setText(totalMoney);
 	        localStorage.totalMoney = totalMoney;
-	    }    
-	}
+	    }
+	};
 	
 	self.on('click',function(e){
 	    if (e.target) return;
-	    if (bet>totalMoney) return;
+	    if (bet===0 || totalMoney===0) return;
+	    if (bet>totalMoney) {
+	        bet = totalMoney;
+	        betLabel.setText(bet);
+	        return;
+	    }
 	    spin();
 	});
 	
@@ -287,7 +321,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	betMinusLabel.on('click',function(e){
 	    bet-=1;
-	    if (bet<1) bet = 1; 
+	    if (bet<1) bet = 1;
 	    betLabel.setText(bet);
 	});
 	
@@ -300,7 +334,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scoreLabel.setText(totalMoney);
 	betLabel.setText(bet);
-	 
+	
 	
 	
 	
@@ -553,7 +587,7 @@ modules['mouse'] = {code: function(module,exports){
 	        }
 	    } else {
 	        canvas.onmousedown = function(e){
-	            resolveClick(e);
+	            (e.button === 0) && resolveClick(e);
 	        };
 	        canvas.onmouseup = function(e){
 	            resolveMouseUp(e);
@@ -3013,7 +3047,7 @@ modules['bundle'] = {code: function(module,exports){
 	            },
 	            {
 	                "pos": {
-	                    "x": 14,
+	                    "x": 18,
 	                    "y": 152
 	                },
 	                "scale": {
@@ -3103,11 +3137,22 @@ modules['bundle'] = {code: function(module,exports){
 	    scene:[
 	    {
 	        "tileMap": {
-	            "_spriteSheet": null,
-	            "spriteSheetId": null,
+	            "_spriteSheet": {
+	                "resourcePath": "resources/spriteSheet/slotsColumn.png",
+	                "name": "slotsColumn",
+	                "width": 64,
+	                "height": 512,
+	                "type": "spriteSheet",
+	                "numOfFramesH": 1,
+	                "numOfFramesV": 1,
+	                "id": "4021_7193_32"
+	            },
+	            "spriteSheetId": "",
 	            "width": 0,
 	            "height": 0,
-	            "data": []
+	            "data": [],
+	            "_tilesInScreenX": 5,
+	            "_tilesInScreenY": 0
 	        },
 	        "name": "mainScene",
 	        "type": "scene",
@@ -3119,9 +3164,9 @@ modules['bundle'] = {code: function(module,exports){
 	            }
 	        ],
 	        "colorBG": [
-	            245,
-	            249,
-	            230
+	            0,
+	            136,
+	            0
 	        ],
 	        "id": "2590_5247_34",
 	        "useBG": 0
@@ -3133,7 +3178,7 @@ modules['bundle'] = {code: function(module,exports){
 	    gameProps:{
 	    "width": 320,
 	    "height": 200,
-	    "scaleStrategy": "2"
+	    "scaleStrategy": "1"
 	}
 	
 	};
@@ -3186,13 +3231,13 @@ modules['resourceLoader'] = {code: function(module,exports){
 	
 	    var self = this;
 	
-	    var utils = require('utils');
+	    var Queue = require('queue').Queue;
 	    var renderer = require('renderer').instance();
 	    var bundle = require('bundle').instance();
 	    var cache = require('resourceCache');
 	    var soundManager = require('soundManager').instance();
 	
-	    var q = new utils.Queue();
+	    var q = new Queue();
 	    q.onResolved = function(){
 	        self.onComplete && self.onComplete();
 	    };
@@ -3999,7 +4044,11 @@ modules['mathEx'] = {code: function(module,exports){
 	exports.ease = ease;
 }};
 
-modules['utils'] = {code: function(module,exports){
+modules['promise'] = {code: function(module,exports){
+	
+}};
+
+modules['queue'] = {code: function(module,exports){
 	exports.Queue = function(){
 	    var self = this;
 	    this.size = function(){
@@ -4021,6 +4070,10 @@ modules['utils'] = {code: function(module,exports){
 	        if (this.size()==0) this.onResolved();
 	    }
 	};
+}};
+
+modules['utils'] = {code: function(module,exports){
+	
 	exports.merge = function(obj1,obj2){
 	    Object.keys(obj2).forEach(function(key){
 	        obj1[key]=obj2[key];
@@ -4164,22 +4217,27 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    getScene: function(){
 	        return require('sceneManager').instance().getCurrScene();
 	    },
-	    moveTo:function(x,y,time,easeFnName,callBack){
+	    moveTo:function(x,y,time,easeFnName){
 	        var scene = this.getScene();
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName,callBack);
+	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
 	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
 	        movie.add(0,tweenX).add(0,tweenY);
 	        scene._tweenMovies.push(movie);
+	        return tweenX.getPromise();
 	    },
-	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName,callBack){
+	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
 	        var scene = this.getScene();
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName,callBack);
+	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
 	        movie.add(0,tween);
 	        scene._tweenMovies.push(movie);
+	        return tween.getPromise();
+	    },
+	    chain: function(){
+	       return Promise.resolve();
 	    },
 	    update: function(){},
 	    _render: function(){
@@ -5883,6 +5941,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.canvasHeight = h;
 	                canvas.width = w;
 	                canvas.height = h;
+	                console.log(gameProps,w,h)
 	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
 	                break;
 	            case SCALE_STRATEGY.CSS_STRETCH:
@@ -6024,12 +6083,20 @@ modules['sceneManager'] = {code: function(module,exports){
 
 modules['tween'] = {code: function(module,exports){
 	
-	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName,completeCallBack){
+	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
 	    var startedTime = null;
+	    var resolver;
+	    var promise = new Promise(function(resolve){
+	        resolver = resolve;
+	    });
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
 	    var mathEx = require('mathEx');
 	    this.tweenTime = tweenTime;
+	
+	    this.getPromise = function(){
+	       return promise;
+	    };
 	
 	    this.update = function(time){
 	        if (!startedTime) startedTime = time;
@@ -6051,7 +6118,7 @@ modules['tween'] = {code: function(module,exports){
 	        if (this.completed) return;
 	        obj[prop] = toVal;
 	        this.completed = true;
-	        completeCallBack && completeCallBack();
+	        resolver();
 	    }
 	
 	

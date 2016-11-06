@@ -68,6 +68,7 @@ var ScaleManager = function(canvas,ctx){
                 gameProps.canvasHeight = h;
                 canvas.width = w;
                 canvas.height = h;
+                console.log(gameProps,w,h)
                 rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
                 break;
             case SCALE_STRATEGY.CSS_STRETCH:

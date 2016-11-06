@@ -1,11 +1,22 @@
 [
     {
         "tileMap": {
-            "_spriteSheet": null,
-            "spriteSheetId": null,
+            "_spriteSheet": {
+                "resourcePath": "resources/spriteSheet/slotsColumn.png",
+                "name": "slotsColumn",
+                "width": 64,
+                "height": 512,
+                "type": "spriteSheet",
+                "numOfFramesH": 1,
+                "numOfFramesV": 1,
+                "id": "4021_7193_32"
+            },
+            "spriteSheetId": "",
             "width": 0,
             "height": 0,
-            "data": []
+            "data": [],
+            "_tilesInScreenX": 5,
+            "_tilesInScreenY": 0
         },
         "name": "mainScene",
         "type": "scene",
@@ -17,9 +28,9 @@
             }
         ],
         "colorBG": [
-            245,
-            249,
-            230
+            0,
+            136,
+            0
         ],
         "id": "2590_5247_34",
         "useBG": 0
