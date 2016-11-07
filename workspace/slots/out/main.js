@@ -150,20 +150,36 @@ modules['behaviour'] = {code: function(module,exports){
 	    var n = ~~((Math.random())*10)+5;
 	    n+=lastN;
 	    var time = 1000+~~(Math.random()*5000);
-	    self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce',function(){
-	        lastN = n;
-	        lastN%=10;
-	        callBack();
-	    });
+	    self.
+	        chain().
+	        then(function(){
+	           return self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce'); 
+	        }).
+	        then(function(){
+	            lastN = n;
+	            lastN%=10;
+	            callBack();
+	        });
 	};
 	
 	self.blink = function(){
-	    self.tween(self.scale,'x',1,2,500,'easeOutBounce',function(){
-	        self.tween(self.scale,'x',2,1,500,'easeOutBounce');
-	    });
-	    self.tween(self.scale,'y',1,2,500,'easeOutBounce',function(){
-	        self.tween(self.scale,'y',2,1,500,'easeOutBounce');
-	    });
+	    self.
+	        chain().
+	        then(function(){
+	            return self.tween(self.scale,'x',1,2,500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            return self.tween(self.scale,'x',2,1,500,'easeOutBounce');
+	        });
+	        
+	    self.
+	        chain().
+	        then(function(){
+	           return self.tween(self.scale,'y',1,2,500,'easeOutBounce'); 
+	        }).
+	        then(function(){
+	            self.tween(self.scale,'y',2,1,500,'easeOutBounce');
+	        });
 	}
 	
 	self.val = function(){
@@ -186,13 +202,14 @@ modules['behaviour'] = {code: function(module,exports){
 	var betPlusLabel = self.find('betPlusLabel');
 	var betMinusLabel = self.find('betMinusLabel');
 	var betLabel = self.find('betLabel');
+	var jackPotLabel = self.find('jackPotLabel');
 	
-	var Queue = require('utils').Queue;
+	var Queue = require('queue').Queue;
 	
 	var canSpeen = true;
-	var totalMoney = localStorage.totalMoney;
-	if (totalMoney==undefined) totalMoney = 100;
+	var totalMoney = 100;
 	var bet = 10;
+	var jackPot = +(localStorage.jackPot) || 1500;
 	
 	
 	var spin = function(){
@@ -203,7 +220,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    q.onResolved = function(){
 	        canSpeen = true;
 	        var val = [
-	            slots[0].val(),slots[1].val(),slots[2].val()  
+	            slots[0].val(),slots[1].val(),slots[2].val()
 	        ];
 	        resolveSpinResult(val);
 	    };
@@ -219,20 +236,33 @@ modules['behaviour'] = {code: function(module,exports){
 	var blinkWin = function(win){
 	    winLabel.pos = {x:140,y:100};
 	    winLabel.setText(win.txt);
-	    winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce',function(){
-	        winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce',function(){
-	            winLabel.moveTo(0,0,100,null,function(){
-	                winLabel.setText('');
-	                totalMoney+=win.val;
-	                localStorage.totalMoney = totalMoney;
-	                scoreLabel.setText(totalMoney);
-	            })
+	    winLabel.
+	        chain().
+	        then(function(){
+	            return winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            return winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            return winLabel.moveTo(0,0,100,null);
+	        }).
+	        then(function(){
+	            winLabel.setText('');
+	            totalMoney+=win.val;
+	            localStorage.totalMoney = totalMoney;
+	            scoreLabel.setText(totalMoney);
 	        });
-	    });
-	    winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce',function(){
-	        winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
-	    });
-	}
+	
+	    winLabel.
+	        chain().
+	        then(function(){
+	           return winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce');
+	        }).
+	        then(function(){
+	            winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
+	        });
+	};
 	
 	var calcResult = function(numOfWinSlot,val) {
 	    var coef;
@@ -242,17 +272,25 @@ modules['behaviour'] = {code: function(module,exports){
 	    return {
 	        txt:bet+'*'+coef*numOfWinSlot,
 	        val:coef * numOfWinSlot * bet
-	    }    
-	}
+	    };
+	};
 	
 	var resolveSpinResult = function(val){
-	    if (val[0]==val[1] && val[1]==val[2]) {
+	    if (1 ||(slots[0]==slots[1] && slots[1]==slots[2] && slots[0]==0)) {
+	        var win = {txt:'JackPot!!!!111',val:jackPot};
+	        jackPot = 1500;
+	        blinkWin(win);
+	        slots[0].blink();
+	        slots[1].blink();
+	        slots[2].blink();
+	    }
+	    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
 	        var win = calcResult(3,val[0]);
 	        blinkWin(win);
 	        slots[0].blink();
 	        slots[1].blink();
 	        slots[2].blink();
-	    }    
+	    }
 	    else if (val[0]==val[1]) {
 	        win = calcResult(2,val[0]);
 	        blinkWin(win);
@@ -270,12 +308,20 @@ modules['behaviour'] = {code: function(module,exports){
 	        if (totalMoney<0) totalMoney = 0;
 	        scoreLabel.setText(totalMoney);
 	        localStorage.totalMoney = totalMoney;
-	    }    
-	}
+	        jackPot+=bet;
+	        jackPotLabel.setText(jackPot);
+	        
+	    }
+	};
 	
 	self.on('click',function(e){
 	    if (e.target) return;
-	    if (bet>totalMoney) return;
+	    if (bet===0 || totalMoney===0) return;
+	    if (bet>totalMoney) {
+	        bet = totalMoney;
+	        betLabel.setText(bet);
+	        return;
+	    }
 	    spin();
 	});
 	
@@ -287,7 +333,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	betMinusLabel.on('click',function(e){
 	    bet-=1;
-	    if (bet<1) bet = 1; 
+	    if (bet<1) bet = 1;
 	    betLabel.setText(bet);
 	});
 	
@@ -300,7 +346,12 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scoreLabel.setText(totalMoney);
 	betLabel.setText(bet);
-	 
+	jackPotLabel.setText(jackPot);
+	
+	
+	
+	
+	
 	
 	
 	
@@ -553,7 +604,7 @@ modules['mouse'] = {code: function(module,exports){
 	        }
 	    } else {
 	        canvas.onmousedown = function(e){
-	            resolveClick(e);
+	            (e.button === 0) && resolveClick(e);
 	        };
 	        canvas.onmouseup = function(e){
 	            resolveMouseUp(e);
@@ -2973,13 +3024,13 @@ modules['bundle'] = {code: function(module,exports){
 	            {
 	                "pos": {
 	                    "x": 18,
-	                    "y": 14
+	                    "y": 18
 	                },
 	                "scale": {
 	                    "x": 1,
 	                    "y": 1
 	                },
-	                "height": 36,
+	                "height": 29,
 	                "text": "",
 	                "width": 0,
 	                "type": "userInterface",
@@ -2987,9 +3038,9 @@ modules['bundle'] = {code: function(module,exports){
 	                "groupName": "",
 	                "angle": 0,
 	                "name": "scoreLabel",
-	                "protoId": null,
+	                "protoId": {},
 	                "id": "0790_6321_63",
-	                "fontId": "0265_1797_64"
+	                "fontId": "6991_3497_4"
 	            },
 	            {
 	                "pos": {
@@ -3013,7 +3064,7 @@ modules['bundle'] = {code: function(module,exports){
 	            },
 	            {
 	                "pos": {
-	                    "x": 14,
+	                    "x": 18,
 	                    "y": 152
 	                },
 	                "scale": {
@@ -3077,23 +3128,65 @@ modules['bundle'] = {code: function(module,exports){
 	            {
 	                "pos": {
 	                    "x": 142,
-	                    "y": 152
+	                    "y": 157
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "0",
+	                "width": 15,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "betLabel",
+	                "protoId": {},
+	                "id": "7190_5206_3",
+	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "pos": {
+	                    "x": 139,
+	                    "y": 13
 	                },
 	                "scale": {
 	                    "x": 1,
 	                    "y": 1
 	                },
 	                "height": 36,
-	                "text": "0",
-	                "width": 16,
+	                "text": "JackPot",
+	                "width": 91,
 	                "type": "userInterface",
 	                "subType": "textField",
 	                "groupName": "",
 	                "angle": 0,
-	                "name": "betLabel",
+	                "name": "textField7",
 	                "protoId": null,
-	                "id": "7190_5206_3",
+	                "id": "2570_1987_4",
 	                "fontId": "0265_1797_64"
+	            },
+	            {
+	                "pos": {
+	                    "x": 240,
+	                    "y": 18
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "0",
+	                "width": 15,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "jackPotLabel",
+	                "protoId": null,
+	                "id": "5858_5431_5",
+	                "fontId": "6991_3497_4"
 	            }
 	        ],
 	        "id": "0679_1823_35"
@@ -3103,11 +3196,22 @@ modules['bundle'] = {code: function(module,exports){
 	    scene:[
 	    {
 	        "tileMap": {
-	            "_spriteSheet": null,
-	            "spriteSheetId": null,
+	            "_spriteSheet": {
+	                "resourcePath": "resources/spriteSheet/slotsColumn.png",
+	                "name": "slotsColumn",
+	                "width": 64,
+	                "height": 512,
+	                "type": "spriteSheet",
+	                "numOfFramesH": 1,
+	                "numOfFramesV": 1,
+	                "id": "4021_7193_32"
+	            },
+	            "spriteSheetId": "",
 	            "width": 0,
 	            "height": 0,
-	            "data": []
+	            "data": [],
+	            "_tilesInScreenX": 5,
+	            "_tilesInScreenY": 0
 	        },
 	        "name": "mainScene",
 	        "type": "scene",
@@ -3119,9 +3223,9 @@ modules['bundle'] = {code: function(module,exports){
 	            }
 	        ],
 	        "colorBG": [
-	            245,
-	            249,
-	            230
+	            0,
+	            136,
+	            0
 	        ],
 	        "id": "2590_5247_34",
 	        "useBG": 0
@@ -3133,7 +3237,7 @@ modules['bundle'] = {code: function(module,exports){
 	    gameProps:{
 	    "width": 320,
 	    "height": 200,
-	    "scaleStrategy": "2"
+	    "scaleStrategy": "1"
 	}
 	
 	};
@@ -3186,13 +3290,13 @@ modules['resourceLoader'] = {code: function(module,exports){
 	
 	    var self = this;
 	
-	    var utils = require('utils');
+	    var Queue = require('queue').Queue;
 	    var renderer = require('renderer').instance();
 	    var bundle = require('bundle').instance();
 	    var cache = require('resourceCache');
 	    var soundManager = require('soundManager').instance();
 	
-	    var q = new utils.Queue();
+	    var q = new Queue();
 	    q.onResolved = function(){
 	        self.onComplete && self.onComplete();
 	    };
@@ -3999,7 +4103,236 @@ modules['mathEx'] = {code: function(module,exports){
 	exports.ease = ease;
 }};
 
-modules['utils'] = {code: function(module,exports){
+modules['promise'] = {code: function(module,exports){
+	
+	// Store setTimeout reference so promise-polyfill will be unaffected by
+	// other code modifying setTimeout (like sinon.useFakeTimers())
+	var setTimeoutFunc = setTimeout;
+	
+	function noop() {}
+	
+	// Polyfill for Function.prototype.bind
+	function bind(fn, thisArg) {
+	    return function () {
+	        fn.apply(thisArg, arguments);
+	    };
+	}
+	
+	function Promise(fn) {
+	    if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new');
+	    if (typeof fn !== 'function') throw new TypeError('not a function');
+	    this._state = 0;
+	    this._handled = false;
+	    this._value = undefined;
+	    this._deferreds = [];
+	
+	    doResolve(fn, this);
+	}
+	
+	function handle(self, deferred) {
+	    while (self._state === 3) {
+	        self = self._value;
+	    }
+	    if (self._state === 0) {
+	        self._deferreds.push(deferred);
+	        return;
+	    }
+	    self._handled = true;
+	    Promise._immediateFn(function () {
+	        var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+	        if (cb === null) {
+	            (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
+	            return;
+	        }
+	        var ret;
+	        try {
+	            ret = cb(self._value);
+	        } catch (e) {
+	            reject(deferred.promise, e);
+	            return;
+	        }
+	        resolve(deferred.promise, ret);
+	    });
+	}
+	
+	function resolve(self, newValue) {
+	    try {
+	        // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+	        if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.');
+	        if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+	            var then = newValue.then;
+	            if (newValue instanceof Promise) {
+	                self._state = 3;
+	                self._value = newValue;
+	                finale(self);
+	                return;
+	            } else if (typeof then === 'function') {
+	                doResolve(bind(then, newValue), self);
+	                return;
+	            }
+	        }
+	        self._state = 1;
+	        self._value = newValue;
+	        finale(self);
+	    } catch (e) {
+	        reject(self, e);
+	    }
+	}
+	
+	function reject(self, newValue) {
+	    self._state = 2;
+	    self._value = newValue;
+	    finale(self);
+	}
+	
+	function finale(self) {
+	    if (self._state === 2 && self._deferreds.length === 0) {
+	        Promise._immediateFn(function() {
+	            if (!self._handled) {
+	                Promise._unhandledRejectionFn(self._value);
+	            }
+	        });
+	    }
+	
+	    for (var i = 0, len = self._deferreds.length; i < len; i++) {
+	        handle(self, self._deferreds[i]);
+	    }
+	    self._deferreds = null;
+	}
+	
+	function Handler(onFulfilled, onRejected, promise) {
+	    this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+	    this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+	    this.promise = promise;
+	}
+	
+	/**
+	 * Take a potentially misbehaving resolver function and make sure
+	 * onFulfilled and onRejected are only called once.
+	 *
+	 * Makes no guarantees about asynchrony.
+	 */
+	function doResolve(fn, self) {
+	    var done = false;
+	    try {
+	        fn(function (value) {
+	            if (done) return;
+	            done = true;
+	            resolve(self, value);
+	        }, function (reason) {
+	            if (done) return;
+	            done = true;
+	            reject(self, reason);
+	        });
+	    } catch (ex) {
+	        if (done) return;
+	        done = true;
+	        reject(self, ex);
+	    }
+	}
+	
+	Promise.prototype['catch'] = function (onRejected) {
+	    return this.then(null, onRejected);
+	};
+	
+	Promise.prototype.then = function (onFulfilled, onRejected) {
+	    var prom = new (this.constructor)(noop);
+	
+	    handle(this, new Handler(onFulfilled, onRejected, prom));
+	    return prom;
+	};
+	
+	Promise.all = function (arr) {
+	    var args = Array.prototype.slice.call(arr);
+	
+	    return new Promise(function (resolve, reject) {
+	        if (args.length === 0) return resolve([]);
+	        var remaining = args.length;
+	
+	        function res(i, val) {
+	            try {
+	                if (val && (typeof val === 'object' || typeof val === 'function')) {
+	                    var then = val.then;
+	                    if (typeof then === 'function') {
+	                        then.call(val, function (val) {
+	                            res(i, val);
+	                        }, reject);
+	                        return;
+	                    }
+	                }
+	                args[i] = val;
+	                if (--remaining === 0) {
+	                    resolve(args);
+	                }
+	            } catch (ex) {
+	                reject(ex);
+	            }
+	        }
+	
+	        for (var i = 0; i < args.length; i++) {
+	            res(i, args[i]);
+	        }
+	    });
+	};
+	
+	Promise.resolve = function (value) {
+	    if (value && typeof value === 'object' && value.constructor === Promise) {
+	        return value;
+	    }
+	
+	    return new Promise(function (resolve) {
+	        resolve(value);
+	    });
+	};
+	
+	Promise.reject = function (value) {
+	    return new Promise(function (resolve, reject) {
+	        reject(value);
+	    });
+	};
+	
+	Promise.race = function (values) {
+	    return new Promise(function (resolve, reject) {
+	        for (var i = 0, len = values.length; i < len; i++) {
+	            values[i].then(resolve, reject);
+	        }
+	    });
+	};
+	
+	// Use polyfill for setImmediate for performance gains
+	Promise._immediateFn = (typeof setImmediate === 'function' && function (fn) { setImmediate(fn); }) ||
+	    function (fn) {
+	        setTimeoutFunc(fn, 0);
+	    };
+	
+	Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
+	    if (typeof console !== 'undefined' && console) {
+	        console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
+	    }
+	};
+	
+	/**
+	 * Set the immediate function to execute callbacks
+	 * @param fn {function} Function to execute
+	 * @deprecated
+	 */
+	Promise._setImmediateFn = function _setImmediateFn(fn) {
+	    Promise._immediateFn = fn;
+	};
+	
+	/**
+	 * Change the function to execute on unhandled rejection
+	 * @param {function} fn Function to execute on unhandled rejection
+	 * @deprecated
+	 */
+	Promise._setUnhandledRejectionFn = function _setUnhandledRejectionFn(fn) {
+	    Promise._unhandledRejectionFn = fn;
+	};
+	
+	exports.Promise = Promise;
+}};
+
+modules['queue'] = {code: function(module,exports){
 	exports.Queue = function(){
 	    var self = this;
 	    this.size = function(){
@@ -4021,6 +4354,10 @@ modules['utils'] = {code: function(module,exports){
 	        if (this.size()==0) this.onResolved();
 	    }
 	};
+}};
+
+modules['utils'] = {code: function(module,exports){
+	
 	exports.merge = function(obj1,obj2){
 	    Object.keys(obj2).forEach(function(key){
 	        obj1[key]=obj2[key];
@@ -4135,6 +4472,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
 	var renderer = require('renderer',{ignoreFail:true}).instance();
 	var camera = require('camera').instance();
+	var Promise = require('promise').Promise;
 	
 	exports.BaseGameObject = BaseModel.extend({
 	    type:'baseGameObject',
@@ -4164,22 +4502,27 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    getScene: function(){
 	        return require('sceneManager').instance().getCurrScene();
 	    },
-	    moveTo:function(x,y,time,easeFnName,callBack){
+	    moveTo:function(x,y,time,easeFnName){
 	        var scene = this.getScene();
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName,callBack);
+	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
 	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
 	        movie.add(0,tweenX).add(0,tweenY);
 	        scene._tweenMovies.push(movie);
+	        return tweenX.getPromise();
 	    },
-	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName,callBack){
+	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
 	        var scene = this.getScene();
 	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName,callBack);
+	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
 	        movie.add(0,tween);
 	        scene._tweenMovies.push(movie);
+	        return tween.getPromise();
+	    },
+	    chain: function(){
+	       return Promise.resolve();
 	    },
 	    update: function(){},
 	    _render: function(){
@@ -5883,6 +6226,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.canvasHeight = h;
 	                canvas.width = w;
 	                canvas.height = h;
+	                console.log(gameProps,w,h)
 	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
 	                break;
 	            case SCALE_STRATEGY.CSS_STRETCH:
@@ -6023,13 +6367,23 @@ modules['sceneManager'] = {code: function(module,exports){
 }};
 
 modules['tween'] = {code: function(module,exports){
+	// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
+	var Promise = require('promise').Promise;
 	
-	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName,completeCallBack){
+	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
 	    var startedTime = null;
+	    var resolver;
+	    var promise = new Promise(function(resolve){
+	        resolver = resolve;
+	    });
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
 	    var mathEx = require('mathEx');
 	    this.tweenTime = tweenTime;
+	
+	    this.getPromise = function(){
+	       return promise;
+	    };
 	
 	    this.update = function(time){
 	        if (!startedTime) startedTime = time;
@@ -6051,7 +6405,7 @@ modules['tween'] = {code: function(module,exports){
 	        if (this.completed) return;
 	        obj[prop] = toVal;
 	        this.completed = true;
-	        completeCallBack && completeCallBack();
+	        resolver();
 	    }
 	
 	

@@ -5,13 +5,14 @@ var slots = self.findAll('slotsColumn');
 var betPlusLabel = self.find('betPlusLabel');
 var betMinusLabel = self.find('betMinusLabel');
 var betLabel = self.find('betLabel');
+var jackPotLabel = self.find('jackPotLabel');
 
-var Queue = require('utils').Queue;
+var Queue = require('queue').Queue;
 
 var canSpeen = true;
-var totalMoney = localStorage.totalMoney;
-if (totalMoney==undefined) totalMoney = 100;
+var totalMoney = 100;
 var bet = 10;
+var jackPot = +(localStorage.jackPot) || 1500;
 
 
 var spin = function(){
@@ -22,7 +23,7 @@ var spin = function(){
     q.onResolved = function(){
         canSpeen = true;
         var val = [
-            slots[0].val(),slots[1].val(),slots[2].val()  
+            slots[0].val(),slots[1].val(),slots[2].val()
         ];
         resolveSpinResult(val);
     };
@@ -38,20 +39,33 @@ var spin = function(){
 var blinkWin = function(win){
     winLabel.pos = {x:140,y:100};
     winLabel.setText(win.txt);
-    winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce',function(){
-        winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce',function(){
-            winLabel.moveTo(0,0,100,null,function(){
-                winLabel.setText('');
-                totalMoney+=win.val;
-                localStorage.totalMoney = totalMoney;
-                scoreLabel.setText(totalMoney);
-            })
+    winLabel.
+        chain().
+        then(function(){
+            return winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce');
+        }).
+        then(function(){
+            return winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce');
+        }).
+        then(function(){
+            return winLabel.moveTo(0,0,100,null);
+        }).
+        then(function(){
+            winLabel.setText('');
+            totalMoney+=win.val;
+            localStorage.totalMoney = totalMoney;
+            scoreLabel.setText(totalMoney);
         });
-    });
-    winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce',function(){
-        winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
-    });
-}
+
+    winLabel.
+        chain().
+        then(function(){
+           return winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce');
+        }).
+        then(function(){
+            winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
+        });
+};
 
 var calcResult = function(numOfWinSlot,val) {
     var coef;
@@ -61,17 +75,25 @@ var calcResult = function(numOfWinSlot,val) {
     return {
         txt:bet+'*'+coef*numOfWinSlot,
         val:coef * numOfWinSlot * bet
-    }    
-}
+    };
+};
 
 var resolveSpinResult = function(val){
-    if (val[0]==val[1] && val[1]==val[2]) {
+    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]==0) {
+        var win = {txt:'JackPot!!!!111',val:jackPot};
+        jackPot = 1500;
+        blinkWin(win);
+        slots[0].blink();
+        slots[1].blink();
+        slots[2].blink();
+    }
+    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
         var win = calcResult(3,val[0]);
         blinkWin(win);
         slots[0].blink();
         slots[1].blink();
         slots[2].blink();
-    }    
+    }
     else if (val[0]==val[1]) {
         win = calcResult(2,val[0]);
         blinkWin(win);
@@ -89,12 +111,20 @@ var resolveSpinResult = function(val){
         if (totalMoney<0) totalMoney = 0;
         scoreLabel.setText(totalMoney);
         localStorage.totalMoney = totalMoney;
-    }    
-}
+        jackPot+=bet;
+        jackPotLabel.setText(jackPot);
+        
+    }
+};
 
 self.on('click',function(e){
     if (e.target) return;
-    if (bet>totalMoney) return;
+    if (bet===0 || totalMoney===0) return;
+    if (bet>totalMoney) {
+        bet = totalMoney;
+        betLabel.setText(bet);
+        return;
+    }
     spin();
 });
 
@@ -106,7 +136,7 @@ betPlusLabel.on('click',function(e){
 
 betMinusLabel.on('click',function(e){
     bet-=1;
-    if (bet<1) bet = 1; 
+    if (bet<1) bet = 1;
     betLabel.setText(bet);
 });
 
@@ -119,6 +149,11 @@ betLabel.on('click',function(){
 
 scoreLabel.setText(totalMoney);
 betLabel.setText(bet);
- 
+jackPotLabel.setText(jackPot);
+
+
+
+
+
 
 

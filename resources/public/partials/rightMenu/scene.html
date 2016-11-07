@@ -107,9 +107,12 @@
                 <select
                         ng-model="editData.currSceneInEdit.tileMap.spriteSheetId"
                         ng-change="createOrEditScene()"
-                        ng-options="item.id as item.name for item in editData.spriteSheetList.rs"
                         >
-
+                    <option value="">--</option>
+                    <option
+                            ng-repeat="item in editData.spriteSheetList.rs"
+                            value="{{item.id}}"
+                            >{{item.name}}</option>
                 </select>
             </div>
         </div>

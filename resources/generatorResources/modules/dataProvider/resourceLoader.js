@@ -3,13 +3,13 @@ exports.ResourceLoader = function(){
 
     var self = this;
 
-    var utils = require('utils');
+    var Queue = require('queue').Queue;
     var renderer = require('renderer').instance();
     var bundle = require('bundle').instance();
     var cache = require('resourceCache');
     var soundManager = require('soundManager').instance();
 
-    var q = new utils.Queue();
+    var q = new Queue();
     q.onResolved = function(){
         self.onComplete && self.onComplete();
     };

@@ -1,10 +1,20 @@
+// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
+var Promise = require('promise').Promise;
 
-exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName,completeCallBack){
+exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
     var startedTime = null;
+    var resolver;
+    var promise = new Promise(function(resolve){
+        resolver = resolve;
+    });
     easeFnName = easeFnName || 'linear';
     this.completed = false;
     var mathEx = require('mathEx');
     this.tweenTime = tweenTime;
+
+    this.getPromise = function(){
+       return promise;
+    };
 
     this.update = function(time){
         if (!startedTime) startedTime = time;
@@ -26,7 +36,7 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName,completeCal
         if (this.completed) return;
         obj[prop] = toVal;
         this.completed = true;
-        completeCallBack && completeCallBack();
+        resolver();
     }
 
 

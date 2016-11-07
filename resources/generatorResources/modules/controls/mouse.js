@@ -35,7 +35,7 @@ var Mouse = function(){
         }
     } else {
         canvas.onmousedown = function(e){
-            resolveClick(e);
+            (e.button === 0) && resolveClick(e);
         };
         canvas.onmouseup = function(e){
             resolveMouseUp(e);

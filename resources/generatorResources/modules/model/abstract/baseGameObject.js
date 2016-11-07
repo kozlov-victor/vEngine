@@ -4,6 +4,7 @@ var tweenModule = require('tween',{ignoreFail:true});
 var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
 var renderer = require('renderer',{ignoreFail:true}).instance();
 var camera = require('camera').instance();
+var Promise = require('promise').Promise;
 
 exports.BaseGameObject = BaseModel.extend({
     type:'baseGameObject',
@@ -33,22 +34,27 @@ exports.BaseGameObject = BaseModel.extend({
     getScene: function(){
         return require('sceneManager').instance().getCurrScene();
     },
-    moveTo:function(x,y,time,easeFnName,callBack){
+    moveTo:function(x,y,time,easeFnName){
         var scene = this.getScene();
         easeFnName = easeFnName || 'linear';
         var movie = new tweenMovieModule.TweenMovie();
-        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName,callBack);
+        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
         var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
         movie.add(0,tweenX).add(0,tweenY);
         scene._tweenMovies.push(movie);
+        return tweenX.getPromise();
     },
-    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName,callBack){
+    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
         var scene = this.getScene();
         easeFnName = easeFnName || 'linear';
         var movie = new tweenMovieModule.TweenMovie();
-        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName,callBack);
+        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
         movie.add(0,tween);
         scene._tweenMovies.push(movie);
+        return tween.getPromise();
+    },
+    chain: function(){
+       return Promise.resolve();
     },
     update: function(){},
     _render: function(){
