@@ -5,13 +5,14 @@ var slots = self.findAll('slotsColumn');
 var betPlusLabel = self.find('betPlusLabel');
 var betMinusLabel = self.find('betMinusLabel');
 var betLabel = self.find('betLabel');
+var jackPotLabel = self.find('jackPotLabel');
 
 var Queue = require('queue').Queue;
 
 var canSpeen = true;
-var totalMoney;//localStorage.totalMoney;
-if (totalMoney===undefined) totalMoney = 100;
+var totalMoney = 100;
 var bet = 10;
+var jackPot = +(localStorage.jackPot) || 1500;
 
 
 var spin = function(){
@@ -78,7 +79,15 @@ var calcResult = function(numOfWinSlot,val) {
 };
 
 var resolveSpinResult = function(val){
-    if (slots[1]==slots[2] && slots[2]==slots[3]) {
+    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]==0) {
+        var win = {txt:'JackPot!!!!111',val:jackPot};
+        jackPot = 1500;
+        blinkWin(win);
+        slots[0].blink();
+        slots[1].blink();
+        slots[2].blink();
+    }
+    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
         var win = calcResult(3,val[0]);
         blinkWin(win);
         slots[0].blink();
@@ -102,6 +111,9 @@ var resolveSpinResult = function(val){
         if (totalMoney<0) totalMoney = 0;
         scoreLabel.setText(totalMoney);
         localStorage.totalMoney = totalMoney;
+        jackPot+=bet;
+        jackPotLabel.setText(jackPot);
+        
     }
 };
 
@@ -137,6 +149,11 @@ betLabel.on('click',function(){
 
 scoreLabel.setText(totalMoney);
 betLabel.setText(bet);
+jackPotLabel.setText(jackPot);
+
+
+
+
 
 
 

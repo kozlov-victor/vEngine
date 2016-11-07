@@ -202,13 +202,14 @@ modules['behaviour'] = {code: function(module,exports){
 	var betPlusLabel = self.find('betPlusLabel');
 	var betMinusLabel = self.find('betMinusLabel');
 	var betLabel = self.find('betLabel');
+	var jackPotLabel = self.find('jackPotLabel');
 	
 	var Queue = require('queue').Queue;
 	
 	var canSpeen = true;
-	var totalMoney;//localStorage.totalMoney;
-	if (totalMoney===undefined) totalMoney = 100;
+	var totalMoney = 100;
 	var bet = 10;
+	var jackPot = +(localStorage.jackPot) || 1500;
 	
 	
 	var spin = function(){
@@ -275,7 +276,15 @@ modules['behaviour'] = {code: function(module,exports){
 	};
 	
 	var resolveSpinResult = function(val){
-	    if (slots[1]==slots[2] && slots[2]==slots[3]) {
+	    if (1 ||(slots[0]==slots[1] && slots[1]==slots[2] && slots[0]==0)) {
+	        var win = {txt:'JackPot!!!!111',val:jackPot};
+	        jackPot = 1500;
+	        blinkWin(win);
+	        slots[0].blink();
+	        slots[1].blink();
+	        slots[2].blink();
+	    }
+	    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
 	        var win = calcResult(3,val[0]);
 	        blinkWin(win);
 	        slots[0].blink();
@@ -299,6 +308,9 @@ modules['behaviour'] = {code: function(module,exports){
 	        if (totalMoney<0) totalMoney = 0;
 	        scoreLabel.setText(totalMoney);
 	        localStorage.totalMoney = totalMoney;
+	        jackPot+=bet;
+	        jackPotLabel.setText(jackPot);
+	        
 	    }
 	};
 	
@@ -334,6 +346,11 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scoreLabel.setText(totalMoney);
 	betLabel.setText(bet);
+	jackPotLabel.setText(jackPot);
+	
+	
+	
+	
 	
 	
 	
@@ -3007,13 +3024,13 @@ modules['bundle'] = {code: function(module,exports){
 	            {
 	                "pos": {
 	                    "x": 18,
-	                    "y": 14
+	                    "y": 18
 	                },
 	                "scale": {
 	                    "x": 1,
 	                    "y": 1
 	                },
-	                "height": 36,
+	                "height": 29,
 	                "text": "",
 	                "width": 0,
 	                "type": "userInterface",
@@ -3021,9 +3038,9 @@ modules['bundle'] = {code: function(module,exports){
 	                "groupName": "",
 	                "angle": 0,
 	                "name": "scoreLabel",
-	                "protoId": null,
+	                "protoId": {},
 	                "id": "0790_6321_63",
-	                "fontId": "0265_1797_64"
+	                "fontId": "6991_3497_4"
 	            },
 	            {
 	                "pos": {
@@ -3111,23 +3128,65 @@ modules['bundle'] = {code: function(module,exports){
 	            {
 	                "pos": {
 	                    "x": 142,
-	                    "y": 152
+	                    "y": 157
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "0",
+	                "width": 15,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "betLabel",
+	                "protoId": {},
+	                "id": "7190_5206_3",
+	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "pos": {
+	                    "x": 139,
+	                    "y": 13
 	                },
 	                "scale": {
 	                    "x": 1,
 	                    "y": 1
 	                },
 	                "height": 36,
-	                "text": "0",
-	                "width": 16,
+	                "text": "JackPot",
+	                "width": 91,
 	                "type": "userInterface",
 	                "subType": "textField",
 	                "groupName": "",
 	                "angle": 0,
-	                "name": "betLabel",
+	                "name": "textField7",
 	                "protoId": null,
-	                "id": "7190_5206_3",
+	                "id": "2570_1987_4",
 	                "fontId": "0265_1797_64"
+	            },
+	            {
+	                "pos": {
+	                    "x": 240,
+	                    "y": 18
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "0",
+	                "width": 15,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "name": "jackPotLabel",
+	                "protoId": null,
+	                "id": "5858_5431_5",
+	                "fontId": "6991_3497_4"
 	            }
 	        ],
 	        "id": "0679_1823_35"
@@ -6308,7 +6367,7 @@ modules['sceneManager'] = {code: function(module,exports){
 }};
 
 modules['tween'] = {code: function(module,exports){
-	// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js 
+	// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
 	var Promise = require('promise').Promise;
 	
 	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
