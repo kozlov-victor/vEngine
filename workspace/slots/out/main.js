@@ -310,6 +310,7 @@ modules['behaviour'] = {code: function(module,exports){
 	        localStorage.totalMoney = totalMoney;
 	        jackPot+=bet;
 	        jackPotLabel.setText(jackPot);
+	        localStorage.jackPot = jackPot;
 	        
 	    }
 	};

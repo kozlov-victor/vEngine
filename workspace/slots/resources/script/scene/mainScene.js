@@ -113,6 +113,7 @@ var resolveSpinResult = function(val){
         localStorage.totalMoney = totalMoney;
         jackPot+=bet;
         jackPotLabel.setText(jackPot);
+        localStorage.jackPot = jackPot;
         
     }
 };
