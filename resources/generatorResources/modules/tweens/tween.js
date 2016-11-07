@@ -1,3 +1,5 @@
+// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
+var Promise = require('promise').Promise;
 
 exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
     var startedTime = null;
