@@ -207,7 +207,7 @@ modules['behaviour'] = {code: function(module,exports){
 	var Queue = require('queue').Queue;
 	
 	var canSpeen = true;
-	var totalMoney = 100;
+	var totalMoney = +(localStorage.totalMoney) || 100;
 	var bet = 10;
 	var jackPot = +(localStorage.jackPot) || 1500;
 	
@@ -216,6 +216,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    if (!canSpeen) return;
 	    if (!totalMoney) return;
 	    canSpeen = false;
+	    localStorage.totalMoney = (totalMoney - bet);
 	    var q = new Queue();
 	    q.onResolved = function(){
 	        canSpeen = true;
@@ -276,7 +277,7 @@ modules['behaviour'] = {code: function(module,exports){
 	};
 	
 	var resolveSpinResult = function(val){
-	    if (slots[0]==slots[1] && slots[2]==slots[3] && slots[0]==0) {
+	    if (slots[0]==slots[1] && slots[2]==slots[3] && slots[0]===0) {
 	        var win = {txt:'JackPot!!!!111',val:jackPot};
 	        jackPot = 1500;
 	        blinkWin(win);
@@ -285,7 +286,7 @@ modules['behaviour'] = {code: function(module,exports){
 	        slots[2].blink();
 	    }
 	    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
-	        var win = calcResult(3,val[0]);
+	        win = calcResult(3,val[0]);
 	        blinkWin(win);
 	        slots[0].blink();
 	        slots[1].blink();
