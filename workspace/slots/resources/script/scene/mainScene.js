@@ -79,7 +79,7 @@ var calcResult = function(numOfWinSlot,val) {
 };
 
 var resolveSpinResult = function(val){
-    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]==0) {
+    if (slots[0]==slots[1] && slots[2]==slots[3] && slots[0]==0) {
         var win = {txt:'JackPot!!!!111',val:jackPot};
         jackPot = 1500;
         blinkWin(win);
