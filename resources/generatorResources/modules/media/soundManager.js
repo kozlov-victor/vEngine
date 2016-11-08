@@ -1,9 +1,10 @@
 
 var bundle = require('bundle').instance();
 var AudioSet = require('audioSet').AudioSet;
+var cache = require('resourceCache');
 
 var AudioContext = window.AudioContext || window.webkitAudioContext;
-var context = window.AudioContext1 && new window.AudioContext1();
+var context = window.AudioContext && new window.AudioContext();
 
 var SoundManager = function(){
 
@@ -62,10 +63,9 @@ var SoundManager = function(){
     this.play = function(sndName,loop){
         var player = audioSet.getFreePlayer();
         if (!player) return;
-        player.play(bundle.soundList.find({name:sndName})._buffer,loop);
+        player.play(cache.get(sndName),loop);
     }
 };
-
 var instance = null;
 
 module.exports.instance = function(){

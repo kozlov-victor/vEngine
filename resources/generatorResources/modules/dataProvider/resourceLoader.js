@@ -31,7 +31,7 @@ exports.ResourceLoader = function(){
         q.addTask();
     };
 
-    this.loadSound = function(resourcePath){
+    this.loadSound = function(resourcePath,name){
         if (cache.has(resourcePath)) return;
         var path = bundle.embeddedResources.isEmbedded?
             bundle.embeddedResources.data[resourcePath]:
@@ -40,7 +40,8 @@ exports.ResourceLoader = function(){
             path,
             {type:bundle.embeddedResources.isEmbedded?'base64':''},
             function(buffer){
-                cache.set(resourcePath,buffer);
+                console.log('loaded snd',name,buffer);
+                cache.set(name,buffer);
                 q.resolveTask();
             }
         );

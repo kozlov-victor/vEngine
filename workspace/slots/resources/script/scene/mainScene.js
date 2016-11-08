@@ -7,7 +7,9 @@ var betMinusLabel = self.find('betMinusLabel');
 var betLabel = self.find('betLabel');
 var jackPotLabel = self.find('jackPotLabel');
 
+
 var Queue = require('queue').Queue;
+var Sound = require('sound').Sound;
 
 var canSpeen = true;
 var totalMoney = +(localStorage.totalMoney) || 100;
@@ -20,6 +22,7 @@ var spin = function(){
     if (!totalMoney) return;
     canSpeen = false;
     localStorage.totalMoney = (totalMoney - bet);
+    Sound.play('spinPull');
     var q = new Queue();
     q.onResolved = function(){
         canSpeen = true;
@@ -38,6 +41,7 @@ var spin = function(){
 
 
 var blinkWin = function(win){
+    Sound.play('powerUp');
     winLabel.pos = {x:140,y:100};
     winLabel.setText(win.txt);
     winLabel.
@@ -80,7 +84,7 @@ var calcResult = function(numOfWinSlot,val) {
 };
 
 var resolveSpinResult = function(val){
-    if (slots[0]==slots[1] && slots[2]==slots[3] && slots[0]===0) {
+    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]===0) {
         var win = {txt:'JackPot!!!!111',val:jackPot};
         jackPot = 1500;
         blinkWin(win);
@@ -88,7 +92,7 @@ var resolveSpinResult = function(val){
         slots[1].blink();
         slots[2].blink();
     }
-    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
+    else if (slots[0]==slots[1] && slots[1]==slots[2]) {
         win = calcResult(3,val[0]);
         blinkWin(win);
         slots[0].blink();

@@ -47,7 +47,7 @@ var ScaleManager = function(canvas,ctx){
                 canvas.height = gameProps.height;
                 canvas.style.width = scaledWidth + 'px';
                 canvas.style.height = scaledHeight + 'px';
-                canvas.style.top = gameProps.top + 'px';
+                canvas.style.marginTop = gameProps.top + 'px';
                 canvas.style.left = gameProps.left + 'px';
                 break;
             case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
@@ -68,7 +68,6 @@ var ScaleManager = function(canvas,ctx){
                 gameProps.canvasHeight = h;
                 canvas.width = w;
                 canvas.height = h;
-                console.log(gameProps,w,h)
                 rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
                 break;
             case SCALE_STRATEGY.CSS_STRETCH:

@@ -144,6 +144,8 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scripts.gameObject['slotsColumn.js'] = function(exports,self){
 	    
+	var Sound = require('sound').Sound;
+	
 	var lastN = 0;
 	
 	self.spin = function(callBack){
@@ -159,6 +161,7 @@ modules['behaviour'] = {code: function(module,exports){
 	            lastN = n;
 	            lastN%=10;
 	            callBack();
+	            Sound.play('spinSnd');
 	        });
 	};
 	
@@ -204,7 +207,9 @@ modules['behaviour'] = {code: function(module,exports){
 	var betLabel = self.find('betLabel');
 	var jackPotLabel = self.find('jackPotLabel');
 	
+	
 	var Queue = require('queue').Queue;
+	var Sound = require('sound').Sound;
 	
 	var canSpeen = true;
 	var totalMoney = +(localStorage.totalMoney) || 100;
@@ -217,6 +222,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    if (!totalMoney) return;
 	    canSpeen = false;
 	    localStorage.totalMoney = (totalMoney - bet);
+	    Sound.play('spinPull');
 	    var q = new Queue();
 	    q.onResolved = function(){
 	        canSpeen = true;
@@ -235,6 +241,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	var blinkWin = function(win){
+	    Sound.play('powerUp');
 	    winLabel.pos = {x:140,y:100};
 	    winLabel.setText(win.txt);
 	    winLabel.
@@ -277,7 +284,7 @@ modules['behaviour'] = {code: function(module,exports){
 	};
 	
 	var resolveSpinResult = function(val){
-	    if (slots[0]==slots[1] && slots[2]==slots[3] && slots[0]===0) {
+	    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]===0) {
 	        var win = {txt:'JackPot!!!!111',val:jackPot};
 	        jackPot = 1500;
 	        blinkWin(win);
@@ -285,7 +292,7 @@ modules['behaviour'] = {code: function(module,exports){
 	        slots[1].blink();
 	        slots[2].blink();
 	    }
-	    else if (slots[1]==slots[2] && slots[2]==slots[3]) {
+	    else if (slots[0]==slots[1] && slots[1]==slots[2]) {
 	        win = calcResult(3,val[0]);
 	        blinkWin(win);
 	        slots[0].blink();
@@ -802,7 +809,26 @@ modules['bundle'] = {code: function(module,exports){
 	data = {
 	
 	
-	    sound:[],
+	    sound:[
+	    {
+	        "name": "powerUp",
+	        "type": "sound",
+	        "resourcePath": "resources/sound/powerUp.mp3",
+	        "id": "5708_0669_12"
+	    },
+	    {
+	        "name": "spinSnd",
+	        "type": "sound",
+	        "resourcePath": "resources/sound/spinSnd.mp3",
+	        "id": "0701_9462_13"
+	    },
+	    {
+	        "name": "spinPull",
+	        "type": "sound",
+	        "resourcePath": "resources/sound/spinPull.mp3",
+	        "id": "9529_9176_14"
+	    }
+	],
 	
 	    spriteSheet:[
 	    {
@@ -3239,7 +3265,7 @@ modules['bundle'] = {code: function(module,exports){
 	    gameProps:{
 	    "width": 320,
 	    "height": 200,
-	    "scaleStrategy": "1"
+	    "scaleStrategy": "2"
 	}
 	
 	};
@@ -3320,7 +3346,7 @@ modules['resourceLoader'] = {code: function(module,exports){
 	        q.addTask();
 	    };
 	
-	    this.loadSound = function(resourcePath){
+	    this.loadSound = function(resourcePath,name){
 	        if (cache.has(resourcePath)) return;
 	        var path = bundle.embeddedResources.isEmbedded?
 	            bundle.embeddedResources.data[resourcePath]:
@@ -3329,7 +3355,8 @@ modules['resourceLoader'] = {code: function(module,exports){
 	            path,
 	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
 	            function(buffer){
-	                cache.set(resourcePath,buffer);
+	                console.log('loaded snd',name,buffer);
+	                cache.set(name,buffer);
 	                q.resolveTask();
 	            }
 	        );
@@ -3474,9 +3501,10 @@ modules['soundManager'] = {code: function(module,exports){
 	
 	var bundle = require('bundle').instance();
 	var AudioSet = require('audioSet').AudioSet;
+	var cache = require('resourceCache');
 	
 	var AudioContext = window.AudioContext || window.webkitAudioContext;
-	var context = window.AudioContext1 && new window.AudioContext1();
+	var context = window.AudioContext && new window.AudioContext();
 	
 	var SoundManager = function(){
 	
@@ -3535,10 +3563,9 @@ modules['soundManager'] = {code: function(module,exports){
 	    this.play = function(sndName,loop){
 	        var player = audioSet.getFreePlayer();
 	        if (!player) return;
-	        player.play(bundle.soundList.find({name:sndName})._buffer,loop);
+	        player.play(cache.get(sndName),loop);
 	    }
 	};
-	
 	var instance = null;
 	
 	module.exports.instance = function(){
@@ -5027,10 +5054,15 @@ modules['scene'] = {code: function(module,exports){
 
 modules['sound'] = {code: function(module,exports){
 	var Resource = require('resource').Resource;
+	var soundManager = require('soundManager').instance();
 	
 	exports.Sound = Resource.extend({
 	    type:'sound',
 	    _buffer:null
+	}, {
+	    play: function (sndName, loop) {
+	        soundManager.play(sndName, loop);
+	    }
 	});
 }};
 
@@ -6207,7 +6239,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	                canvas.height = gameProps.height;
 	                canvas.style.width = scaledWidth + 'px';
 	                canvas.style.height = scaledHeight + 'px';
-	                canvas.style.top = gameProps.top + 'px';
+	                canvas.style.marginTop = gameProps.top + 'px';
 	                canvas.style.left = gameProps.left + 'px';
 	                break;
 	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
@@ -6228,7 +6260,6 @@ modules['scaleManager'] = {code: function(module,exports){
 	                gameProps.canvasHeight = h;
 	                canvas.width = w;
 	                canvas.height = h;
-	                console.log(gameProps,w,h)
 	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
 	                break;
 	            case SCALE_STRATEGY.CSS_STRETCH:
@@ -6331,7 +6362,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	            loader.loadImage(spSheet.resourcePath);
 	        });
 	        bundle.soundList.forEach(function(snd){
-	            loader.loadSound(snd.resourcePath);
+	            loader.loadSound(snd.resourcePath,snd.name);
 	        });
 	        loader.start();
 	    };

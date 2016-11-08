@@ -33,7 +33,7 @@ var SceneManager = function(){
             loader.loadImage(spSheet.resourcePath);
         });
         bundle.soundList.forEach(function(snd){
-            loader.loadSound(snd.resourcePath);
+            loader.loadSound(snd.resourcePath,snd.name);
         });
         loader.start();
     };

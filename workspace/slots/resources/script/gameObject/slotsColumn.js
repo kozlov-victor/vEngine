@@ -1,4 +1,6 @@
 
+var Sound = require('sound').Sound;
+
 var lastN = 0;
 
 self.spin = function(callBack){
@@ -14,6 +16,7 @@ self.spin = function(callBack){
             lastN = n;
             lastN%=10;
             callBack();
+            Sound.play('spinSnd');
         });
 };
 
