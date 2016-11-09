@@ -7,6 +7,7 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
     var promise = new Promise(function(resolve){
         resolver = resolve;
     });
+    var propIsArray = !!prop.splice;
     easeFnName = easeFnName || 'linear';
     this.completed = false;
     var mathEx = require('mathEx');
@@ -24,7 +25,17 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
             this.complete();
             return;
         }
-        obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+        if (propIsArray) {
+            var l = prop.length;
+            while(l--){
+                var prp = prop[l];
+                obj[prp] = mathEx.ease[easeFnName](delta,fromVal[prp],toVal[prp] - fromVal[prp],tweenTime);
+                console.log(prp,fromVal);
+            }
+        } else {
+            obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+        }
+
     };
 
     this.reset = function() {
@@ -34,7 +45,15 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
 
     this.complete = function(){
         if (this.completed) return;
-        obj[prop] = toVal;
+        if (propIsArray) {
+            var l = prop.length;
+            while(l--){
+                var prp = prop[l];
+                obj[prp] = toVal[prp];
+            }
+        } else {
+            obj[prop] = toVal;
+        }
         this.completed = true;
         resolver();
     }

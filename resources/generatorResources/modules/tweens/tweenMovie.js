@@ -3,6 +3,7 @@ exports.TweenMovie = function(){
     var tweens = [];
     var startedTime = null;
     this.completed = false;
+    this.onComplete = null;
     var loop = false;
 
     this.add = function(startTime,tween){
@@ -38,6 +39,7 @@ exports.TweenMovie = function(){
                 this.reset();
             } else {
                 this.completed = true;
+                this.onComplete && this.onComplete();
             }
         }
     };

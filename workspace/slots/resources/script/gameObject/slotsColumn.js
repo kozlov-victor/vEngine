@@ -1,11 +1,19 @@
 
 var Sound = require('sound').Sound;
+var TweenChain = require('tweenChain').TweenChain;
 
 var lastN = 0;
 
-self.spin = function(callBack){
+var tChain = TweenChain.
+    create().
+    tween(self.scale,['x','y'],{x:1,y:1},{x:3,y:3},500,'easeOutBounce').
+    wait(300).
+    tween(self.scale,['x','y'],{x:3,y:3},{x:1,y:1},500,'easeOutBounce');
+
+self.spin = function(callBack,hackedVal){
     var n = ~~((Math.random())*10)+5;
     n+=lastN;
+    if (hackedVal!=undefined) n = hackedVal;
     var time = 1000+~~(Math.random()*5000);
     self.
         chain().
@@ -21,24 +29,8 @@ self.spin = function(callBack){
 };
 
 self.blink = function(){
-    self.
-        chain().
-        then(function(){
-            return self.tween(self.scale,'x',1,2,500,'easeOutBounce');
-        }).
-        then(function(){
-            return self.tween(self.scale,'x',2,1,500,'easeOutBounce');
-        });
-        
-    self.
-        chain().
-        then(function(){
-           return self.tween(self.scale,'y',1,2,500,'easeOutBounce'); 
-        }).
-        then(function(){
-            self.tween(self.scale,'y',2,1,500,'easeOutBounce');
-        });
-}
+    tChain.reset().play();
+};
 
 self.val = function(){
     return lastN;

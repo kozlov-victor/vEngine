@@ -21,6 +21,10 @@ var spin = function(){
     if (!canSpeen) return;
     if (!totalMoney) return;
     canSpeen = false;
+
+    var hackedVal;
+    if (~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
+
     localStorage.totalMoney = (totalMoney - bet);
     Sound.play('spinPull');
     var q = new Queue();
@@ -34,7 +38,7 @@ var spin = function(){
     slots.forEach(function(s){
         s.spin(function(){
             q.resolveTask();
-        });
+        },hackedVal);
         q.addTask();
     });
 };
@@ -84,15 +88,16 @@ var calcResult = function(numOfWinSlot,val) {
 };
 
 var resolveSpinResult = function(val){
-    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]===0) {
+    if (val[0]==val[1] && val[1]==val[2] && val[0]===0) {
         var win = {txt:'JackPot!!!!111',val:jackPot};
         jackPot = 1500;
+        jackPotLabel.setText(jackPot);
         blinkWin(win);
         slots[0].blink();
         slots[1].blink();
         slots[2].blink();
     }
-    else if (slots[0]==slots[1] && slots[1]==slots[2]) {
+    else if (val[0]==val[1] && val[1]==val[2]) {
         win = calcResult(3,val[0]);
         blinkWin(win);
         slots[0].blink();

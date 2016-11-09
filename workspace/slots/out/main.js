@@ -145,12 +145,20 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.gameObject['slotsColumn.js'] = function(exports,self){
 	    
 	var Sound = require('sound').Sound;
+	var TweenChain = require('tweenChain').TweenChain;
 	
 	var lastN = 0;
 	
-	self.spin = function(callBack){
+	var tChain = TweenChain.
+	    create().
+	    tween(self.scale,['x','y'],{x:1,y:1},{x:3,y:3},500,'easeOutBounce').
+	    wait(300).
+	    tween(self.scale,['x','y'],{x:3,y:3},{x:1,y:1},500,'easeOutBounce');
+	
+	self.spin = function(callBack,hackedVal){
 	    var n = ~~((Math.random())*10)+5;
 	    n+=lastN;
+	    if (hackedVal!=undefined) n = hackedVal;
 	    var time = 1000+~~(Math.random()*5000);
 	    self.
 	        chain().
@@ -166,24 +174,8 @@ modules['behaviour'] = {code: function(module,exports){
 	};
 	
 	self.blink = function(){
-	    self.
-	        chain().
-	        then(function(){
-	            return self.tween(self.scale,'x',1,2,500,'easeOutBounce');
-	        }).
-	        then(function(){
-	            return self.tween(self.scale,'x',2,1,500,'easeOutBounce');
-	        });
-	        
-	    self.
-	        chain().
-	        then(function(){
-	           return self.tween(self.scale,'y',1,2,500,'easeOutBounce'); 
-	        }).
-	        then(function(){
-	            self.tween(self.scale,'y',2,1,500,'easeOutBounce');
-	        });
-	}
+	    tChain.reset().play();
+	};
 	
 	self.val = function(){
 	    return lastN;
@@ -221,6 +213,10 @@ modules['behaviour'] = {code: function(module,exports){
 	    if (!canSpeen) return;
 	    if (!totalMoney) return;
 	    canSpeen = false;
+	
+	    var hackedVal;
+	    if (~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
+	
 	    localStorage.totalMoney = (totalMoney - bet);
 	    Sound.play('spinPull');
 	    var q = new Queue();
@@ -234,7 +230,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    slots.forEach(function(s){
 	        s.spin(function(){
 	            q.resolveTask();
-	        });
+	        },hackedVal);
 	        q.addTask();
 	    });
 	};
@@ -284,15 +280,16 @@ modules['behaviour'] = {code: function(module,exports){
 	};
 	
 	var resolveSpinResult = function(val){
-	    if (slots[0]==slots[1] && slots[1]==slots[2] && slots[0]===0) {
+	    if (val[0]==val[1] && val[1]==val[2] && val[0]===0) {
 	        var win = {txt:'JackPot!!!!111',val:jackPot};
 	        jackPot = 1500;
+	        jackPotLabel.setText(jackPot);
 	        blinkWin(win);
 	        slots[0].blink();
 	        slots[1].blink();
 	        slots[2].blink();
 	    }
-	    else if (slots[0]==slots[1] && slots[1]==slots[2]) {
+	    else if (val[0]==val[1] && val[1]==val[2]) {
 	        win = calcResult(3,val[0]);
 	        blinkWin(win);
 	        slots[0].blink();
@@ -5054,7 +5051,7 @@ modules['scene'] = {code: function(module,exports){
 
 modules['sound'] = {code: function(module,exports){
 	var Resource = require('resource').Resource;
-	var soundManager = require('soundManager').instance();
+	var soundManager = require('soundManager',{ignoreFail:1}).instance();
 	
 	exports.Sound = Resource.extend({
 	    type:'sound',
@@ -6409,6 +6406,7 @@ modules['tween'] = {code: function(module,exports){
 	    var promise = new Promise(function(resolve){
 	        resolver = resolve;
 	    });
+	    var propIsArray = !!prop.splice;
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
 	    var mathEx = require('mathEx');
@@ -6426,7 +6424,17 @@ modules['tween'] = {code: function(module,exports){
 	            this.complete();
 	            return;
 	        }
-	        obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+	        if (propIsArray) {
+	            var l = prop.length;
+	            while(l--){
+	                var prp = prop[l];
+	                obj[prp] = mathEx.ease[easeFnName](delta,fromVal[prp],toVal[prp] - fromVal[prp],tweenTime);
+	                console.log(prp,fromVal);
+	            }
+	        } else {
+	            obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+	        }
+	
 	    };
 	
 	    this.reset = function() {
@@ -6436,7 +6444,15 @@ modules['tween'] = {code: function(module,exports){
 	
 	    this.complete = function(){
 	        if (this.completed) return;
-	        obj[prop] = toVal;
+	        if (propIsArray) {
+	            var l = prop.length;
+	            while(l--){
+	                var prp = prop[l];
+	                obj[prp] = toVal[prp];
+	            }
+	        } else {
+	            obj[prop] = toVal;
+	        }
 	        this.completed = true;
 	        resolver();
 	    }
@@ -6445,12 +6461,68 @@ modules['tween'] = {code: function(module,exports){
 	};
 }};
 
+modules['tweenChain'] = {code: function(module,exports){
+	
+	var TweenMovie = require('tweenMovie').TweenMovie;
+	var Tween = require('tween').Tween;
+	var sceneManager = require('sceneManager').instance();
+	
+	var _TweenChain = function(){
+	    var timeOffset = 0;
+	    var tweenMovie = new TweenMovie();
+	
+	
+	    this.tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
+	        var tween = new Tween(obj,prop,fromVal,toVal,tweenTime,easeFnName);
+	        tweenMovie.add(timeOffset,tween);
+	        timeOffset+= tweenTime;
+	        return this;
+	    };
+	
+	    this.wait = function(time){
+	        timeOffset+=time;
+	        return this;
+	    };
+	
+	    this.loop = function(val){
+	        tweenMovie.loop(val);
+	        return this;
+	    };
+	
+	    this.finish = function(fn){
+	        tweenMovie.onComplete = fn;
+	        return this;
+	    };
+	
+	    this.reset = function(){
+	        tweenMovie.reset();
+	        timeOffset = 0;
+	        return this;
+	    };
+	
+	    this.play = function(){
+	        var scene = sceneManager.getCurrScene();
+	        scene._tweenMovies.push(tweenMovie);
+	    };
+	};
+	
+	var TweenChain = {
+	    create: function(){
+	        return new _TweenChain();
+	    }
+	};
+	
+	
+	exports.TweenChain = TweenChain;
+}};
+
 modules['tweenMovie'] = {code: function(module,exports){
 	
 	exports.TweenMovie = function(){
 	    var tweens = [];
 	    var startedTime = null;
 	    this.completed = false;
+	    this.onComplete = null;
 	    var loop = false;
 	
 	    this.add = function(startTime,tween){
@@ -6486,6 +6558,7 @@ modules['tweenMovie'] = {code: function(module,exports){
 	                this.reset();
 	            } else {
 	                this.completed = true;
+	                this.onComplete && this.onComplete();
 	            }
 	        }
 	    };
