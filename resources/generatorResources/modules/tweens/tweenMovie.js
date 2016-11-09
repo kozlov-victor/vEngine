@@ -1,4 +1,6 @@
 
+var sceneManager = require('sceneManager').instance();
+
 exports.TweenMovie = function(){
     var tweens = [];
     var startedTime = null;
@@ -16,6 +18,11 @@ exports.TweenMovie = function(){
 
     this.loop = function(val) {
         loop = val;
+    };
+
+    this.play = function(){
+        var scene = sceneManager.getCurrScene();
+        scene._tweenMovies.push(this);
     };
 
     this.update = function(time){

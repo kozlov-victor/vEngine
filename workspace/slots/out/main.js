@@ -142,6 +142,15 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.scene = {};
 	
 	
+	scripts.gameObject['coin.js'] = function(exports,self){
+	    
+	function onUpdate(time) {
+	
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	
 	scripts.gameObject['slotsColumn.js'] = function(exports,self){
 	    
 	var Sound = require('sound').Sound;
@@ -149,11 +158,10 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	var lastN = 0;
 	
-	var tChain = TweenChain.
-	    create().
-	    tween(self.scale,['x','y'],{x:1,y:1},{x:3,y:3},500,'easeOutBounce').
+	var tChain = new TweenChain().
+	    tween(self.scale,{to:{x:3,y:3}},500,'easeOutBounce').
 	    wait(300).
-	    tween(self.scale,['x','y'],{x:3,y:3},{x:1,y:1},500,'easeOutBounce');
+	    tween(self.scale,{to:{x:1,y:1}},500,'easeOutBounce');
 	
 	self.spin = function(callBack,hackedVal){
 	    var n = ~~((Math.random())*10)+5;
@@ -163,7 +171,15 @@ modules['behaviour'] = {code: function(module,exports){
 	    self.
 	        chain().
 	        then(function(){
-	           return self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce'); 
+	           return self.tween(
+	               self,
+	               {
+	                   from:    {_sprPosY:lastN*51.2},
+	                   to:      {_sprPosY:n*51.2}
+	               },
+	               time,
+	               'easeOutBounce'
+	           ); 
 	        }).
 	        then(function(){
 	            lastN = n;
@@ -198,21 +214,22 @@ modules['behaviour'] = {code: function(module,exports){
 	var betMinusLabel = self.find('betMinusLabel');
 	var betLabel = self.find('betLabel');
 	var jackPotLabel = self.find('jackPotLabel');
+	var particles = require('bundle').instance().particleSystemList.find({name:'coins'});
 	
 	
 	var Queue = require('queue').Queue;
 	var Sound = require('sound').Sound;
 	
-	var canSpeen = true;
+	var canSpin = true;
 	var totalMoney = +(localStorage.totalMoney) || 100;
 	var bet = 10;
 	var jackPot = +(localStorage.jackPot) || 1500;
 	
 	
 	var spin = function(){
-	    if (!canSpeen) return;
+	    if (!canSpin) return;
 	    if (!totalMoney) return;
-	    canSpeen = false;
+	    canSpin = false;
 	
 	    var hackedVal;
 	    if (~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
@@ -221,7 +238,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    Sound.play('spinPull');
 	    var q = new Queue();
 	    q.onResolved = function(){
-	        canSpeen = true;
+	        canSpin = true;
 	        var val = [
 	            slots[0].val(),slots[1].val(),slots[2].val()
 	        ];
@@ -237,19 +254,20 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	var blinkWin = function(win){
+	    particles.emit(100,100);
 	    Sound.play('powerUp');
 	    winLabel.pos = {x:140,y:100};
 	    winLabel.setText(win.txt);
 	    winLabel.
 	        chain().
 	        then(function(){
-	            return winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce');
+	            return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
 	        }).
 	        then(function(){
-	            return winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce');
+	            return winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
 	        }).
 	        then(function(){
-	            return winLabel.moveTo(0,0,100,null);
+	            return winLabel.moveTo(0,0,100);
 	        }).
 	        then(function(){
 	            winLabel.setText('');
@@ -261,10 +279,10 @@ modules['behaviour'] = {code: function(module,exports){
 	    winLabel.
 	        chain().
 	        then(function(){
-	           return winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce');
+	           return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
 	        }).
 	        then(function(){
-	            winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
+	            winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
 	        });
 	};
 	
@@ -837,10 +855,45 @@ modules['bundle'] = {code: function(module,exports){
 	        "numOfFramesH": 1,
 	        "numOfFramesV": 1,
 	        "id": "4021_7193_32"
+	    },
+	    {
+	        "resourcePath": "resources/spriteSheet/coin.png",
+	        "name": "coin",
+	        "width": 120,
+	        "height": 120,
+	        "numOfFramesH": 4,
+	        "numOfFramesV": 4,
+	        "type": "spriteSheet",
+	        "id": "9537_4496_35"
 	    }
 	],
 	
-	    frameAnimation:[],
+	    frameAnimation:[
+	    {
+	        "name": "rotate",
+	        "frames": [
+	            0,
+	            1,
+	            2,
+	            3,
+	            4,
+	            5,
+	            6,
+	            7,
+	            8,
+	            9,
+	            10,
+	            11,
+	            12,
+	            13,
+	            14,
+	            15
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "7563_6764_37"
+	    }
+	],
 	
 	    font:[
 	    {
@@ -2957,6 +3010,34 @@ modules['bundle'] = {code: function(module,exports){
 	        "groupName": "",
 	        "angle": 0,
 	        "id": "2146_8639_33"
+	    },
+	    {
+	        "spriteSheetId": "9537_4496_35",
+	        "pos": {
+	            "x": 0,
+	            "y": 0
+	        },
+	        "scale": {
+	            "x": 1,
+	            "y": 1
+	        },
+	        "vel": {
+	            "x": 0,
+	            "y": 0
+	        },
+	        "currFrameIndex": 0,
+	        "name": "coin",
+	        "width": 30,
+	        "height": 30,
+	        "type": "gameObject",
+	        "commonBehaviour": [],
+	        "frameAnimationIds": [
+	            "7563_6764_37"
+	        ],
+	        "rigid": 0,
+	        "groupName": "",
+	        "angle": 0,
+	        "id": "6542_0984_36"
 	    }
 	],
 	
@@ -3257,7 +3338,31 @@ modules['bundle'] = {code: function(module,exports){
 	    }
 	],
 	
-	    particleSystem:[],
+	    particleSystem:[
+	    {
+	        "gameObjectId": "6542_0984_36",
+	        "numOfParticlesToEmit": {
+	            "from": 10,
+	            "to": 20
+	        },
+	        "particleAngle": {
+	            "from": 6.808159427320758,
+	            "to": 2.5365589761437217
+	        },
+	        "particleVelocity": {
+	            "from": 200,
+	            "to": 500
+	        },
+	        "particleLiveTime": {
+	            "from": 1000,
+	            "to": 3000
+	        },
+	        "emissionRadius": 50,
+	        "name": "coins",
+	        "type": "particleSystem",
+	        "id": "1467_5345_38"
+	    }
+	],
 	
 	    gameProps:{
 	    "width": 320,
@@ -4529,22 +4634,14 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        return require('sceneManager').instance().getCurrScene();
 	    },
 	    moveTo:function(x,y,time,easeFnName){
-	        var scene = this.getScene();
-	        easeFnName = easeFnName || 'linear';
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
-	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
-	        movie.add(0,tweenX).add(0,tweenY);
-	        scene._tweenMovies.push(movie);
-	        return tweenX.getPromise();
+	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
 	    },
-	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
 	        var scene = this.getScene();
-	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
 	        movie.add(0,tween);
-	        scene._tweenMovies.push(movie);
+	        movie.play();
 	        return tween.getPromise();
 	    },
 	    chain: function(){
@@ -6400,17 +6497,28 @@ modules['tween'] = {code: function(module,exports){
 	// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
 	var Promise = require('promise').Promise;
 	
-	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
+	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 	    var startedTime = null;
 	    var resolver;
 	    var promise = new Promise(function(resolve){
 	        resolver = resolve;
 	    });
-	    var propIsArray = !!prop.splice;
+	    var propsToChange = [];
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
 	    var mathEx = require('mathEx');
 	    this.tweenTime = tweenTime;
+	
+	    var normalizeFromTo = function(){
+	        fromToVal.from = fromToVal.from || {};
+	        Object.keys(fromToVal.to).forEach(function(keyTo){
+	            propsToChange.push(keyTo);
+	        });
+	    };
+	
+	    (function(){
+	        normalizeFromTo();
+	    })();
 	
 	    this.getPromise = function(){
 	       return promise;
@@ -6424,15 +6532,11 @@ modules['tween'] = {code: function(module,exports){
 	            this.complete();
 	            return;
 	        }
-	        if (propIsArray) {
-	            var l = prop.length;
-	            while(l--){
-	                var prp = prop[l];
-	                obj[prp] = mathEx.ease[easeFnName](delta,fromVal[prp],toVal[prp] - fromVal[prp],tweenTime);
-	                console.log(prp,fromVal);
-	            }
-	        } else {
-	            obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+	        var l = propsToChange.length;
+	        while(l--){
+	            var prp = propsToChange[l];
+	            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
+	            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
 	        }
 	
 	    };
@@ -6444,14 +6548,10 @@ modules['tween'] = {code: function(module,exports){
 	
 	    this.complete = function(){
 	        if (this.completed) return;
-	        if (propIsArray) {
-	            var l = prop.length;
-	            while(l--){
-	                var prp = prop[l];
-	                obj[prp] = toVal[prp];
-	            }
-	        } else {
-	            obj[prop] = toVal;
+	        var l = propsToChange.length;
+	        while(l--){
+	            var prp = propsToChange[l];
+	            obj[prp] = fromToVal.to[prp];
 	        }
 	        this.completed = true;
 	        resolver();
@@ -6467,13 +6567,13 @@ modules['tweenChain'] = {code: function(module,exports){
 	var Tween = require('tween').Tween;
 	var sceneManager = require('sceneManager').instance();
 	
-	var _TweenChain = function(){
+	exports.TweenChain = function(){
 	    var timeOffset = 0;
 	    var tweenMovie = new TweenMovie();
 	
 	
-	    this.tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
-	        var tween = new Tween(obj,prop,fromVal,toVal,tweenTime,easeFnName);
+	    this.tween = function(obj,fromToVal,tweenTime,easeFnName){
+	        var tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
 	        tweenMovie.add(timeOffset,tween);
 	        timeOffset+= tweenTime;
 	        return this;
@@ -6501,22 +6601,15 @@ modules['tweenChain'] = {code: function(module,exports){
 	    };
 	
 	    this.play = function(){
-	        var scene = sceneManager.getCurrScene();
-	        scene._tweenMovies.push(tweenMovie);
+	        tweenMovie.play();
 	    };
 	};
 	
-	var TweenChain = {
-	    create: function(){
-	        return new _TweenChain();
-	    }
-	};
-	
-	
-	exports.TweenChain = TweenChain;
 }};
 
 modules['tweenMovie'] = {code: function(module,exports){
+	
+	var sceneManager = require('sceneManager').instance();
 	
 	exports.TweenMovie = function(){
 	    var tweens = [];
@@ -6535,6 +6628,11 @@ modules['tweenMovie'] = {code: function(module,exports){
 	
 	    this.loop = function(val) {
 	        loop = val;
+	    };
+	
+	    this.play = function(){
+	        var scene = sceneManager.getCurrScene();
+	        scene._tweenMovies.push(this);
 	    };
 	
 	    this.update = function(time){

@@ -35,22 +35,14 @@ exports.BaseGameObject = BaseModel.extend({
         return require('sceneManager').instance().getCurrScene();
     },
     moveTo:function(x,y,time,easeFnName){
-        var scene = this.getScene();
-        easeFnName = easeFnName || 'linear';
-        var movie = new tweenMovieModule.TweenMovie();
-        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
-        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
-        movie.add(0,tweenX).add(0,tweenY);
-        scene._tweenMovies.push(movie);
-        return tweenX.getPromise();
+        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
     },
-    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
+    tween: function(obj,fromToVal,tweenTime,easeFnName){
         var scene = this.getScene();
-        easeFnName = easeFnName || 'linear';
         var movie = new tweenMovieModule.TweenMovie();
-        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
+        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
         movie.add(0,tween);
-        scene._tweenMovies.push(movie);
+        movie.play();
         return tween.getPromise();
     },
     chain: function(){

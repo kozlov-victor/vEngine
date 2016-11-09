@@ -6,21 +6,22 @@ var betPlusLabel = self.find('betPlusLabel');
 var betMinusLabel = self.find('betMinusLabel');
 var betLabel = self.find('betLabel');
 var jackPotLabel = self.find('jackPotLabel');
+var particles = require('bundle').instance().particleSystemList.find({name:'coins'});
 
 
 var Queue = require('queue').Queue;
 var Sound = require('sound').Sound;
 
-var canSpeen = true;
+var canSpin = true;
 var totalMoney = +(localStorage.totalMoney) || 100;
 var bet = 10;
 var jackPot = +(localStorage.jackPot) || 1500;
 
 
 var spin = function(){
-    if (!canSpeen) return;
+    if (!canSpin) return;
     if (!totalMoney) return;
-    canSpeen = false;
+    canSpin = false;
 
     var hackedVal;
     if (~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
@@ -29,7 +30,7 @@ var spin = function(){
     Sound.play('spinPull');
     var q = new Queue();
     q.onResolved = function(){
-        canSpeen = true;
+        canSpin = true;
         var val = [
             slots[0].val(),slots[1].val(),slots[2].val()
         ];
@@ -45,19 +46,20 @@ var spin = function(){
 
 
 var blinkWin = function(win){
+    particles.emit(100,100);
     Sound.play('powerUp');
     winLabel.pos = {x:140,y:100};
     winLabel.setText(win.txt);
     winLabel.
         chain().
         then(function(){
-            return winLabel.tween(winLabel.scale,'x',1,2,1500,'easeOutBounce');
+            return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
         }).
         then(function(){
-            return winLabel.tween(winLabel.scale,'x',2,1,500,'easeOutBounce');
+            return winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
         }).
         then(function(){
-            return winLabel.moveTo(0,0,100,null);
+            return winLabel.moveTo(0,0,100);
         }).
         then(function(){
             winLabel.setText('');
@@ -69,10 +71,10 @@ var blinkWin = function(win){
     winLabel.
         chain().
         then(function(){
-           return winLabel.tween(winLabel.scale,'y',1,2,1500,'easeOutBounce');
+           return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
         }).
         then(function(){
-            winLabel.tween(winLabel.scale,'y',2,1,500,'easeOutBounce');
+            winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
         });
 };
 

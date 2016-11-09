@@ -1,17 +1,28 @@
 // https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
 var Promise = require('promise').Promise;
 
-exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
+exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
     var startedTime = null;
     var resolver;
     var promise = new Promise(function(resolve){
         resolver = resolve;
     });
-    var propIsArray = !!prop.splice;
+    var propsToChange = [];
     easeFnName = easeFnName || 'linear';
     this.completed = false;
     var mathEx = require('mathEx');
     this.tweenTime = tweenTime;
+
+    var normalizeFromTo = function(){
+        fromToVal.from = fromToVal.from || {};
+        Object.keys(fromToVal.to).forEach(function(keyTo){
+            propsToChange.push(keyTo);
+        });
+    };
+
+    (function(){
+        normalizeFromTo();
+    })();
 
     this.getPromise = function(){
        return promise;
@@ -25,15 +36,11 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
             this.complete();
             return;
         }
-        if (propIsArray) {
-            var l = prop.length;
-            while(l--){
-                var prp = prop[l];
-                obj[prp] = mathEx.ease[easeFnName](delta,fromVal[prp],toVal[prp] - fromVal[prp],tweenTime);
-                console.log(prp,fromVal);
-            }
-        } else {
-            obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+        var l = propsToChange.length;
+        while(l--){
+            var prp = propsToChange[l];
+            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
+            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
         }
 
     };
@@ -45,14 +52,10 @@ exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
 
     this.complete = function(){
         if (this.completed) return;
-        if (propIsArray) {
-            var l = prop.length;
-            while(l--){
-                var prp = prop[l];
-                obj[prp] = toVal[prp];
-            }
-        } else {
-            obj[prop] = toVal;
+        var l = propsToChange.length;
+        while(l--){
+            var prp = propsToChange[l];
+            obj[prp] = fromToVal.to[prp];
         }
         this.completed = true;
         resolver();

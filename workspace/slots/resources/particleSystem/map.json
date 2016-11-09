@@ -1,1 +1,25 @@
-[]
+[
+    {
+        "gameObjectId": "6542_0984_36",
+        "numOfParticlesToEmit": {
+            "from": 10,
+            "to": 20
+        },
+        "particleAngle": {
+            "from": 6.808159427320758,
+            "to": 2.5365589761437217
+        },
+        "particleVelocity": {
+            "from": 200,
+            "to": 500
+        },
+        "particleLiveTime": {
+            "from": 1000,
+            "to": 3000
+        },
+        "emissionRadius": 50,
+        "name": "coins",
+        "type": "particleSystem",
+        "id": "1467_5345_38"
+    }
+]

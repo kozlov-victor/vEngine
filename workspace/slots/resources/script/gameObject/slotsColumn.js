@@ -4,11 +4,10 @@ var TweenChain = require('tweenChain').TweenChain;
 
 var lastN = 0;
 
-var tChain = TweenChain.
-    create().
-    tween(self.scale,['x','y'],{x:1,y:1},{x:3,y:3},500,'easeOutBounce').
+var tChain = new TweenChain().
+    tween(self.scale,{to:{x:3,y:3}},500,'easeOutBounce').
     wait(300).
-    tween(self.scale,['x','y'],{x:3,y:3},{x:1,y:1},500,'easeOutBounce');
+    tween(self.scale,{to:{x:1,y:1}},500,'easeOutBounce');
 
 self.spin = function(callBack,hackedVal){
     var n = ~~((Math.random())*10)+5;
@@ -18,7 +17,15 @@ self.spin = function(callBack,hackedVal){
     self.
         chain().
         then(function(){
-           return self.tween(self,'_sprPosY',lastN*51.2,n*51.2,time,'easeOutBounce'); 
+           return self.tween(
+               self,
+               {
+                   from:    {_sprPosY:lastN*51.2},
+                   to:      {_sprPosY:n*51.2}
+               },
+               time,
+               'easeOutBounce'
+           ); 
         }).
         then(function(){
             lastN = n;

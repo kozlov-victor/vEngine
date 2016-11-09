@@ -3,13 +3,13 @@ var TweenMovie = require('tweenMovie').TweenMovie;
 var Tween = require('tween').Tween;
 var sceneManager = require('sceneManager').instance();
 
-var _TweenChain = function(){
+exports.TweenChain = function(){
     var timeOffset = 0;
     var tweenMovie = new TweenMovie();
 
 
-    this.tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
-        var tween = new Tween(obj,prop,fromVal,toVal,tweenTime,easeFnName);
+    this.tween = function(obj,fromToVal,tweenTime,easeFnName){
+        var tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
         tweenMovie.add(timeOffset,tween);
         timeOffset+= tweenTime;
         return this;
@@ -37,16 +37,6 @@ var _TweenChain = function(){
     };
 
     this.play = function(){
-        var scene = sceneManager.getCurrScene();
-        scene._tweenMovies.push(tweenMovie);
+        tweenMovie.play();
     };
 };
-
-var TweenChain = {
-    create: function(){
-        return new _TweenChain();
-    }
-};
-
-
-exports.TweenChain = TweenChain;
