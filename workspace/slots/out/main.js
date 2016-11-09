@@ -3350,8 +3350,8 @@ modules['bundle'] = {code: function(module,exports){
 	            "to": 2.5365589761437217
 	        },
 	        "particleVelocity": {
-	            "from": 200,
-	            "to": 500
+	            "from": 100,
+	            "to": 200
 	        },
 	        "particleLiveTime": {
 	            "from": 1000,
@@ -4997,6 +4997,7 @@ modules['particleSystem'] = {code: function(module,exports){
 	            particle.pos.x = r({from:x-this.emissionRadius,to:x+this.emissionRadius});
 	            particle.pos.y = r({from:y-this.emissionRadius,to:y+this.emissionRadius});
 	            particle.liveTime = r(this.particleLiveTime);
+	            particle._frameAnimations.get(0) && particle._frameAnimations.get(0).play();
 	            bundle.applyBehaviour(particle);
 	            this._particles.push(particle);
 	        }

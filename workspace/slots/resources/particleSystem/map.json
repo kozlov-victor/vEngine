@@ -10,8 +10,8 @@
             "to": 2.5365589761437217
         },
         "particleVelocity": {
-            "from": 200,
-            "to": 500
+            "from": 100,
+            "to": 200
         },
         "particleLiveTime": {
             "from": 1000,
