@@ -1,34 +1,30 @@
-// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
-var Promise = require('promise').Promise;
+
 
 exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
     var startedTime = null;
-    var resolver;
-    var promise = new Promise(function(resolve){
-        resolver = resolve;
-    });
+    var progressFn;
+
     var propsToChange = [];
     easeFnName = easeFnName || 'linear';
     this.completed = false;
     var mathEx = require('mathEx');
     this.tweenTime = tweenTime;
 
-    var normalizeFromTo = function(){
+    var normalizeFromTo = function(fromToVal){
         fromToVal.from = fromToVal.from || {};
         Object.keys(fromToVal.to).forEach(function(keyTo){
             propsToChange.push(keyTo);
         });
+        return fromToVal;
     };
 
     (function(){
-        normalizeFromTo();
+        fromToVal = normalizeFromTo(fromToVal);
     })();
 
-    this.getPromise = function(){
-       return promise;
-    };
 
-    this.update = function(time){
+
+    this._update = function(time){
         if (!startedTime) startedTime = time;
         if (this.completed) return;
         var delta = time - startedTime;
@@ -42,7 +38,12 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
             if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
             obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
         }
+        progressFn && progressFn(obj);
 
+    };
+
+    this.progress = function(_progressFn){
+        progressFn = _progressFn;
     };
 
     this.reset = function() {
@@ -50,7 +51,7 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
         this.completed = false;
     };
 
-    this.complete = function(){
+    this._complete = function(){
         if (this.completed) return;
         var l = propsToChange.length;
         while(l--){
@@ -58,8 +59,7 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
             obj[prp] = fromToVal.to[prp];
         }
         this.completed = true;
-        resolver();
-    }
+    };
 
 
 };

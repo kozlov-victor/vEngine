@@ -4,7 +4,6 @@ var tweenModule = require('tween',{ignoreFail:true});
 var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
 var renderer = require('renderer',{ignoreFail:true}).instance();
 var camera = require('camera').instance();
-var Promise = require('promise').Promise;
 
 exports.BaseGameObject = BaseModel.extend({
     type:'baseGameObject',
@@ -44,9 +43,6 @@ exports.BaseGameObject = BaseModel.extend({
         movie.add(0,tween);
         movie.play();
         return tween.getPromise();
-    },
-    chain: function(){
-       return Promise.resolve();
     },
     update: function(){},
     _render: function(){

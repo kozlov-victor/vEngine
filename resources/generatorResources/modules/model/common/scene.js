@@ -78,7 +78,7 @@ exports.Scene = BaseModel.extend({
             if (tweenMovie.completed) {
                 self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
             }
-            tweenMovie.update(currTime);
+            tweenMovie._update(currTime);
         });
         self.__updateIndividualBehaviour__(currTime);
     },

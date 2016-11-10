@@ -9,8 +9,7 @@ exports.TweenChain = function(){
 
 
     this.tween = function(obj,fromToVal,tweenTime,easeFnName){
-        var tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
-        tweenMovie.add(timeOffset,tween);
+        tweenMovie.tween(timeOffset,obj,fromToVal,tweenTime,easeFnName);
         timeOffset+= tweenTime;
         return this;
     };

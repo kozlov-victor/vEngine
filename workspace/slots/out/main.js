@@ -144,6 +144,8 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scripts.gameObject['coin.js'] = function(exports,self){
 	    
+	self._frameAnimations.get(0).play();
+	
 	function onUpdate(time) {
 	
 	}
@@ -168,25 +170,22 @@ modules['behaviour'] = {code: function(module,exports){
 	    n+=lastN;
 	    if (hackedVal!=undefined) n = hackedVal;
 	    var time = 1000+~~(Math.random()*5000);
-	    self.
-	        chain().
-	        then(function(){
-	           return self.tween(
-	               self,
-	               {
-	                   from:    {_sprPosY:lastN*51.2},
-	                   to:      {_sprPosY:n*51.2}
-	               },
-	               time,
-	               'easeOutBounce'
-	           ); 
-	        }).
-	        then(function(){
-	            lastN = n;
-	            lastN%=10;
-	            callBack();
-	            Sound.play('spinSnd');
-	        });
+	    new TweenChain().
+	            tween(
+	                self,
+	                {
+	                    from:    {_sprPosY:lastN*51.2},
+	                    to:      {_sprPosY:n*51.2}
+	                },
+	                time, 'easeOutBounce'
+	            ).
+	            finish(function(){
+	                    lastN = n;
+	                    lastN%=10;
+	                    callBack();
+	                    Sound.play('spinSnd');
+	            }).
+	            play();
 	};
 	
 	self.blink = function(){
@@ -219,6 +218,8 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	var Queue = require('queue').Queue;
 	var Sound = require('sound').Sound;
+	var TweenMovie = require('tweenMovie').TweenMovie;
+	var Tween = require('tween').Tween;
 	
 	var canSpin = true;
 	var totalMoney = +(localStorage.totalMoney) || 100;
@@ -258,32 +259,29 @@ modules['behaviour'] = {code: function(module,exports){
 	    Sound.play('powerUp');
 	    winLabel.pos = {x:140,y:100};
 	    winLabel.setText(win.txt);
-	    winLabel.
-	        chain().
-	        then(function(){
-	            return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
-	        }).
-	        then(function(){
-	            return winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
-	        }).
-	        then(function(){
-	            return winLabel.moveTo(0,0,100);
-	        }).
-	        then(function(){
+	    new TweenMovie().
+	        tween(0,winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce').
+	        tween(1500,winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce').
+	        tween(1700,winLabel.pos,{to:{x:20,y:20}},100).
+	        finish(function(){
 	            winLabel.setText('');
+	            var totalMoneyOld = totalMoney;
 	            totalMoney+=win.val;
 	            localStorage.totalMoney = totalMoney;
-	            scoreLabel.setText(totalMoney);
-	        });
-	
-	    winLabel.
-	        chain().
-	        then(function(){
-	           return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
+	            progressLabelVal(scoreLabel,totalMoneyOld,totalMoney);
 	        }).
-	        then(function(){
-	            winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
-	        });
+	        play();
+	};
+	
+	var progressLabelVal = function(label,vfrom,vto){
+	    var obj = {i:vfrom};
+	    var t = new Tween(obj,{to:{i:vto}},2000);
+	    t.progress(function(obj){
+	        label.setText(~~obj.i);
+	    });
+	    new TweenMovie().
+	        tween(0,t).
+	        play();
 	};
 	
 	var calcResult = function(numOfWinSlot,val) {
@@ -327,12 +325,15 @@ modules['behaviour'] = {code: function(module,exports){
 	        slots[2].blink();
 	    }
 	    else {
+	        var oldTotal = totalMoney;
+	        var oldJackPot = jackPot;
 	        totalMoney-=bet;
 	        if (totalMoney<0) totalMoney = 0;
 	        scoreLabel.setText(totalMoney);
+	        progressLabelVal(scoreLabel,oldTotal,totalMoney);
 	        localStorage.totalMoney = totalMoney;
 	        jackPot+=bet;
-	        jackPotLabel.setText(jackPot);
+	        progressLabelVal(jackPotLabel,oldJackPot,jackPot);
 	        localStorage.jackPot = jackPot;
 	        
 	    }
@@ -4234,235 +4235,6 @@ modules['mathEx'] = {code: function(module,exports){
 	exports.ease = ease;
 }};
 
-modules['promise'] = {code: function(module,exports){
-	
-	// Store setTimeout reference so promise-polyfill will be unaffected by
-	// other code modifying setTimeout (like sinon.useFakeTimers())
-	var setTimeoutFunc = setTimeout;
-	
-	function noop() {}
-	
-	// Polyfill for Function.prototype.bind
-	function bind(fn, thisArg) {
-	    return function () {
-	        fn.apply(thisArg, arguments);
-	    };
-	}
-	
-	function Promise(fn) {
-	    if (typeof this !== 'object') throw new TypeError('Promises must be constructed via new');
-	    if (typeof fn !== 'function') throw new TypeError('not a function');
-	    this._state = 0;
-	    this._handled = false;
-	    this._value = undefined;
-	    this._deferreds = [];
-	
-	    doResolve(fn, this);
-	}
-	
-	function handle(self, deferred) {
-	    while (self._state === 3) {
-	        self = self._value;
-	    }
-	    if (self._state === 0) {
-	        self._deferreds.push(deferred);
-	        return;
-	    }
-	    self._handled = true;
-	    Promise._immediateFn(function () {
-	        var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
-	        if (cb === null) {
-	            (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
-	            return;
-	        }
-	        var ret;
-	        try {
-	            ret = cb(self._value);
-	        } catch (e) {
-	            reject(deferred.promise, e);
-	            return;
-	        }
-	        resolve(deferred.promise, ret);
-	    });
-	}
-	
-	function resolve(self, newValue) {
-	    try {
-	        // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-	        if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.');
-	        if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
-	            var then = newValue.then;
-	            if (newValue instanceof Promise) {
-	                self._state = 3;
-	                self._value = newValue;
-	                finale(self);
-	                return;
-	            } else if (typeof then === 'function') {
-	                doResolve(bind(then, newValue), self);
-	                return;
-	            }
-	        }
-	        self._state = 1;
-	        self._value = newValue;
-	        finale(self);
-	    } catch (e) {
-	        reject(self, e);
-	    }
-	}
-	
-	function reject(self, newValue) {
-	    self._state = 2;
-	    self._value = newValue;
-	    finale(self);
-	}
-	
-	function finale(self) {
-	    if (self._state === 2 && self._deferreds.length === 0) {
-	        Promise._immediateFn(function() {
-	            if (!self._handled) {
-	                Promise._unhandledRejectionFn(self._value);
-	            }
-	        });
-	    }
-	
-	    for (var i = 0, len = self._deferreds.length; i < len; i++) {
-	        handle(self, self._deferreds[i]);
-	    }
-	    self._deferreds = null;
-	}
-	
-	function Handler(onFulfilled, onRejected, promise) {
-	    this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
-	    this.onRejected = typeof onRejected === 'function' ? onRejected : null;
-	    this.promise = promise;
-	}
-	
-	/**
-	 * Take a potentially misbehaving resolver function and make sure
-	 * onFulfilled and onRejected are only called once.
-	 *
-	 * Makes no guarantees about asynchrony.
-	 */
-	function doResolve(fn, self) {
-	    var done = false;
-	    try {
-	        fn(function (value) {
-	            if (done) return;
-	            done = true;
-	            resolve(self, value);
-	        }, function (reason) {
-	            if (done) return;
-	            done = true;
-	            reject(self, reason);
-	        });
-	    } catch (ex) {
-	        if (done) return;
-	        done = true;
-	        reject(self, ex);
-	    }
-	}
-	
-	Promise.prototype['catch'] = function (onRejected) {
-	    return this.then(null, onRejected);
-	};
-	
-	Promise.prototype.then = function (onFulfilled, onRejected) {
-	    var prom = new (this.constructor)(noop);
-	
-	    handle(this, new Handler(onFulfilled, onRejected, prom));
-	    return prom;
-	};
-	
-	Promise.all = function (arr) {
-	    var args = Array.prototype.slice.call(arr);
-	
-	    return new Promise(function (resolve, reject) {
-	        if (args.length === 0) return resolve([]);
-	        var remaining = args.length;
-	
-	        function res(i, val) {
-	            try {
-	                if (val && (typeof val === 'object' || typeof val === 'function')) {
-	                    var then = val.then;
-	                    if (typeof then === 'function') {
-	                        then.call(val, function (val) {
-	                            res(i, val);
-	                        }, reject);
-	                        return;
-	                    }
-	                }
-	                args[i] = val;
-	                if (--remaining === 0) {
-	                    resolve(args);
-	                }
-	            } catch (ex) {
-	                reject(ex);
-	            }
-	        }
-	
-	        for (var i = 0; i < args.length; i++) {
-	            res(i, args[i]);
-	        }
-	    });
-	};
-	
-	Promise.resolve = function (value) {
-	    if (value && typeof value === 'object' && value.constructor === Promise) {
-	        return value;
-	    }
-	
-	    return new Promise(function (resolve) {
-	        resolve(value);
-	    });
-	};
-	
-	Promise.reject = function (value) {
-	    return new Promise(function (resolve, reject) {
-	        reject(value);
-	    });
-	};
-	
-	Promise.race = function (values) {
-	    return new Promise(function (resolve, reject) {
-	        for (var i = 0, len = values.length; i < len; i++) {
-	            values[i].then(resolve, reject);
-	        }
-	    });
-	};
-	
-	// Use polyfill for setImmediate for performance gains
-	Promise._immediateFn = (typeof setImmediate === 'function' && function (fn) { setImmediate(fn); }) ||
-	    function (fn) {
-	        setTimeoutFunc(fn, 0);
-	    };
-	
-	Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
-	    if (typeof console !== 'undefined' && console) {
-	        console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
-	    }
-	};
-	
-	/**
-	 * Set the immediate function to execute callbacks
-	 * @param fn {function} Function to execute
-	 * @deprecated
-	 */
-	Promise._setImmediateFn = function _setImmediateFn(fn) {
-	    Promise._immediateFn = fn;
-	};
-	
-	/**
-	 * Change the function to execute on unhandled rejection
-	 * @param {function} fn Function to execute on unhandled rejection
-	 * @deprecated
-	 */
-	Promise._setUnhandledRejectionFn = function _setUnhandledRejectionFn(fn) {
-	    Promise._unhandledRejectionFn = fn;
-	};
-	
-	exports.Promise = Promise;
-}};
-
 modules['queue'] = {code: function(module,exports){
 	exports.Queue = function(){
 	    var self = this;
@@ -4603,7 +4375,6 @@ modules['baseGameObject'] = {code: function(module,exports){
 	var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
 	var renderer = require('renderer',{ignoreFail:true}).instance();
 	var camera = require('camera').instance();
-	var Promise = require('promise').Promise;
 	
 	exports.BaseGameObject = BaseModel.extend({
 	    type:'baseGameObject',
@@ -4643,9 +4414,6 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        movie.add(0,tween);
 	        movie.play();
 	        return tween.getPromise();
-	    },
-	    chain: function(){
-	       return Promise.resolve();
 	    },
 	    update: function(){},
 	    _render: function(){
@@ -4997,7 +4765,6 @@ modules['particleSystem'] = {code: function(module,exports){
 	            particle.pos.x = r({from:x-this.emissionRadius,to:x+this.emissionRadius});
 	            particle.pos.y = r({from:y-this.emissionRadius,to:y+this.emissionRadius});
 	            particle.liveTime = r(this.particleLiveTime);
-	            particle._frameAnimations.get(0) && particle._frameAnimations.get(0).play();
 	            bundle.applyBehaviour(particle);
 	            this._particles.push(particle);
 	        }
@@ -5101,7 +4868,7 @@ modules['scene'] = {code: function(module,exports){
 	            if (tweenMovie.completed) {
 	                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
 	            }
-	            tweenMovie.update(currTime);
+	            tweenMovie._update(currTime);
 	        });
 	        self.__updateIndividualBehaviour__(currTime);
 	    },
@@ -6495,37 +6262,33 @@ modules['sceneManager'] = {code: function(module,exports){
 }};
 
 modules['tween'] = {code: function(module,exports){
-	// https://github.com/taylorhakes/promise-polyfill/blob/master/promise.js
-	var Promise = require('promise').Promise;
+	
 	
 	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 	    var startedTime = null;
-	    var resolver;
-	    var promise = new Promise(function(resolve){
-	        resolver = resolve;
-	    });
+	    var progressFn;
+	
 	    var propsToChange = [];
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
 	    var mathEx = require('mathEx');
 	    this.tweenTime = tweenTime;
 	
-	    var normalizeFromTo = function(){
+	    var normalizeFromTo = function(fromToVal){
 	        fromToVal.from = fromToVal.from || {};
 	        Object.keys(fromToVal.to).forEach(function(keyTo){
 	            propsToChange.push(keyTo);
 	        });
+	        return fromToVal;
 	    };
 	
 	    (function(){
-	        normalizeFromTo();
+	        fromToVal = normalizeFromTo(fromToVal);
 	    })();
 	
-	    this.getPromise = function(){
-	       return promise;
-	    };
 	
-	    this.update = function(time){
+	
+	    this._update = function(time){
 	        if (!startedTime) startedTime = time;
 	        if (this.completed) return;
 	        var delta = time - startedTime;
@@ -6539,7 +6302,12 @@ modules['tween'] = {code: function(module,exports){
 	            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
 	            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
 	        }
+	        progressFn && progressFn(obj);
 	
+	    };
+	
+	    this.progress = function(_progressFn){
+	        progressFn = _progressFn;
 	    };
 	
 	    this.reset = function() {
@@ -6547,7 +6315,7 @@ modules['tween'] = {code: function(module,exports){
 	        this.completed = false;
 	    };
 	
-	    this.complete = function(){
+	    this._complete = function(){
 	        if (this.completed) return;
 	        var l = propsToChange.length;
 	        while(l--){
@@ -6555,8 +6323,7 @@ modules['tween'] = {code: function(module,exports){
 	            obj[prp] = fromToVal.to[prp];
 	        }
 	        this.completed = true;
-	        resolver();
-	    }
+	    };
 	
 	
 	};
@@ -6574,8 +6341,7 @@ modules['tweenChain'] = {code: function(module,exports){
 	
 	
 	    this.tween = function(obj,fromToVal,tweenTime,easeFnName){
-	        var tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
-	        tweenMovie.add(timeOffset,tween);
+	        tweenMovie.tween(timeOffset,obj,fromToVal,tweenTime,easeFnName);
 	        timeOffset+= tweenTime;
 	        return this;
 	    };
@@ -6611,6 +6377,7 @@ modules['tweenChain'] = {code: function(module,exports){
 modules['tweenMovie'] = {code: function(module,exports){
 	
 	var sceneManager = require('sceneManager').instance();
+	var Tween = require('tween').Tween;
 	
 	exports.TweenMovie = function(){
 	    var tweens = [];
@@ -6619,7 +6386,10 @@ modules['tweenMovie'] = {code: function(module,exports){
 	    this.onComplete = null;
 	    var loop = false;
 	
-	    this.add = function(startTime,tween){
+	    this.tween = function(startTime,obj,fromToVal,tweenTime,easeFnName){
+	        var tween;
+	        if (obj instanceof Tween) tween = obj;
+	        else tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
 	        tweens.push({
 	            startTime: startTime,
 	            tween: tween
@@ -6629,6 +6399,12 @@ modules['tweenMovie'] = {code: function(module,exports){
 	
 	    this.loop = function(val) {
 	        loop = val;
+	        return this;
+	    };
+	
+	    this.finish = function(fn){
+	        this.onComplete = fn;
+	        return this;
 	    };
 	
 	    this.play = function(){
@@ -6636,7 +6412,7 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        scene._tweenMovies.push(this);
 	    };
 	
-	    this.update = function(time){
+	    this._update = function(time){
 	        if (this.completed) return;
 	        if (!startedTime) startedTime = time;
 	        var deltaTime = time - startedTime;
@@ -6644,9 +6420,9 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        tweens.forEach(function(item){
 	            if (deltaTime>item.startTime) {
 	                if (deltaTime<item.startTime+item.tween.tweenTime) {
-	                    item.tween.update(time);
+	                    item.tween._update(time);
 	                } else {
-	                    item.tween.complete();
+	                    item.tween._complete();
 	                }
 	            }
 	            if (!item.tween.completed) allCompleted = false;
@@ -6668,6 +6444,7 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        tweens.forEach(function(item){
 	            item.tween.reset();
 	        });
+	        return this;
 	    }
 	};
 }};

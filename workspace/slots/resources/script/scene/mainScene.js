@@ -11,6 +11,8 @@ var particles = require('bundle').instance().particleSystemList.find({name:'coin
 
 var Queue = require('queue').Queue;
 var Sound = require('sound').Sound;
+var TweenMovie = require('tweenMovie').TweenMovie;
+var Tween = require('tween').Tween;
 
 var canSpin = true;
 var totalMoney = +(localStorage.totalMoney) || 100;
@@ -50,32 +52,29 @@ var blinkWin = function(win){
     Sound.play('powerUp');
     winLabel.pos = {x:140,y:100};
     winLabel.setText(win.txt);
-    winLabel.
-        chain().
-        then(function(){
-            return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
-        }).
-        then(function(){
-            return winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
-        }).
-        then(function(){
-            return winLabel.moveTo(0,0,100);
-        }).
-        then(function(){
+    new TweenMovie().
+        tween(0,winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce').
+        tween(1500,winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce').
+        tween(1700,winLabel.pos,{to:{x:20,y:20}},100).
+        finish(function(){
             winLabel.setText('');
+            var totalMoneyOld = totalMoney;
             totalMoney+=win.val;
             localStorage.totalMoney = totalMoney;
-            scoreLabel.setText(totalMoney);
-        });
-
-    winLabel.
-        chain().
-        then(function(){
-           return winLabel.tween(winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce');
+            progressLabelVal(scoreLabel,totalMoneyOld,totalMoney);
         }).
-        then(function(){
-            winLabel.tween(winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce');
-        });
+        play();
+};
+
+var progressLabelVal = function(label,vfrom,vto){
+    var obj = {i:vfrom};
+    var t = new Tween(obj,{to:{i:vto}},2000);
+    t.progress(function(obj){
+        label.setText(~~obj.i);
+    });
+    new TweenMovie().
+        tween(0,t).
+        play();
 };
 
 var calcResult = function(numOfWinSlot,val) {
@@ -119,12 +118,15 @@ var resolveSpinResult = function(val){
         slots[2].blink();
     }
     else {
+        var oldTotal = totalMoney;
+        var oldJackPot = jackPot;
         totalMoney-=bet;
         if (totalMoney<0) totalMoney = 0;
         scoreLabel.setText(totalMoney);
+        progressLabelVal(scoreLabel,oldTotal,totalMoney);
         localStorage.totalMoney = totalMoney;
         jackPot+=bet;
-        jackPotLabel.setText(jackPot);
+        progressLabelVal(jackPotLabel,oldJackPot,jackPot);
         localStorage.jackPot = jackPot;
         
     }

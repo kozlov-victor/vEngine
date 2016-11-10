@@ -36,7 +36,6 @@ exports.ParticleSystem = BaseModel.extend({
             particle.pos.x = r({from:x-this.emissionRadius,to:x+this.emissionRadius});
             particle.pos.y = r({from:y-this.emissionRadius,to:y+this.emissionRadius});
             particle.liveTime = r(this.particleLiveTime);
-            particle._frameAnimations.get(0) && particle._frameAnimations.get(0).play();
             bundle.applyBehaviour(particle);
             this._particles.push(particle);
         }

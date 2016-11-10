@@ -1,5 +1,6 @@
 
 var sceneManager = require('sceneManager').instance();
+var Tween = require('tween').Tween;
 
 exports.TweenMovie = function(){
     var tweens = [];
@@ -8,7 +9,10 @@ exports.TweenMovie = function(){
     this.onComplete = null;
     var loop = false;
 
-    this.add = function(startTime,tween){
+    this.tween = function(startTime,obj,fromToVal,tweenTime,easeFnName){
+        var tween;
+        if (obj instanceof Tween) tween = obj;
+        else tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
         tweens.push({
             startTime: startTime,
             tween: tween
@@ -18,6 +22,12 @@ exports.TweenMovie = function(){
 
     this.loop = function(val) {
         loop = val;
+        return this;
+    };
+
+    this.finish = function(fn){
+        this.onComplete = fn;
+        return this;
     };
 
     this.play = function(){
@@ -25,7 +35,7 @@ exports.TweenMovie = function(){
         scene._tweenMovies.push(this);
     };
 
-    this.update = function(time){
+    this._update = function(time){
         if (this.completed) return;
         if (!startedTime) startedTime = time;
         var deltaTime = time - startedTime;
@@ -33,9 +43,9 @@ exports.TweenMovie = function(){
         tweens.forEach(function(item){
             if (deltaTime>item.startTime) {
                 if (deltaTime<item.startTime+item.tween.tweenTime) {
-                    item.tween.update(time);
+                    item.tween._update(time);
                 } else {
-                    item.tween.complete();
+                    item.tween._complete();
                 }
             }
             if (!item.tween.completed) allCompleted = false;
@@ -57,5 +67,6 @@ exports.TweenMovie = function(){
         tweens.forEach(function(item){
             item.tween.reset();
         });
+        return this;
     }
 };

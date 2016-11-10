@@ -14,25 +14,22 @@ self.spin = function(callBack,hackedVal){
     n+=lastN;
     if (hackedVal!=undefined) n = hackedVal;
     var time = 1000+~~(Math.random()*5000);
-    self.
-        chain().
-        then(function(){
-           return self.tween(
-               self,
-               {
-                   from:    {_sprPosY:lastN*51.2},
-                   to:      {_sprPosY:n*51.2}
-               },
-               time,
-               'easeOutBounce'
-           ); 
-        }).
-        then(function(){
-            lastN = n;
-            lastN%=10;
-            callBack();
-            Sound.play('spinSnd');
-        });
+    new TweenChain().
+            tween(
+                self,
+                {
+                    from:    {_sprPosY:lastN*51.2},
+                    to:      {_sprPosY:n*51.2}
+                },
+                time, 'easeOutBounce'
+            ).
+            finish(function(){
+                    lastN = n;
+                    lastN%=10;
+                    callBack();
+                    Sound.play('spinSnd');
+            }).
+            play();
 };
 
 self.blink = function(){
