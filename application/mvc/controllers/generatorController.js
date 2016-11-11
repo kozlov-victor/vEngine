@@ -217,13 +217,24 @@ var hint = function(sourceMain){
 
 var prepareGeneratorParams = function(opts){
     var resourcesOpts = createResourcesParams(opts);
+    var shaders = {};
+    fs.
+        getDirListSync('resources/generatorResources/shaders')
+        .forEach(function (dir) {
+            shaders[dir] = {};
+            fs.readDirSync('resources/generatorResources/shaders/'+dir,'utf-8').
+            forEach(function(file){
+                shaders[dir][file.name] = file.content;
+            });
+        });
     return  {
         resourceNames:resourcesController.RESOURCE_NAMES,
         opts: opts,
         commonResources: resourcesOpts.commonResources,
         specialResources: resourcesOpts.specialResources,
         embeddedResources: resourcesOpts.embeddedResources,
-        commonBehaviour:createCommonBehaviourParams(opts)
+        commonBehaviour:createCommonBehaviourParams(opts),
+        shaders:shaders
     };
 };
 

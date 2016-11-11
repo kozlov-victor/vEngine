@@ -96,6 +96,11 @@ var Bundle = function(data){
     //<code>this.embeddedResources.data = <%- JSON.stringify(embeddedResources)%>;
     //<code>this.embeddedResources.isEmbedded = <%- Object.keys(embeddedResources).length>0 %>;
 
+
+    //<code>this.shaders = <%- JSON.stringify(shaders)%>;
+
+    //<code>this.embeddedResources.isEmbedded = <%- Object.keys(embeddedResources).length>0 %>;
+
 };
 
 var data;

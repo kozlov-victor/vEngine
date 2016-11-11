@@ -1,7 +1,6 @@
 
 var mat4 = require('mat4');
 var utils = require('utils');
-var shaderSources = require('shaderSources');
 var Shader = require('shader').Shader;
 var VertexBuffer = require('vertexBuffer').VertexBuffer;
 var Texture = require('texture').Texture;
@@ -26,7 +25,10 @@ var GlContext = function(){
 
         gameProps = bundle.gameProps;
         gl = canvas.getContext("webgl",{ alpha: false });
-        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
+        shader = new Shader(gl, [
+            bundle.shaders.basic['vertex.vert'],
+            bundle.shaders.basic['fragment.frag']
+        ]);
         shader.bind();
 
         posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
