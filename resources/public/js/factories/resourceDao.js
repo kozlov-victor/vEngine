@@ -38,6 +38,7 @@ app
             });
         };
         this.loadProject = function(projectName){
+            editData.reset();
             editData.projectName = projectName;
             document.title = projectName;
             sessionStorage.projectName = projectName;

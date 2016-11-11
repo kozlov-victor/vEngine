@@ -5,7 +5,8 @@ var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 var bundle = require('bundle').instance();
 var collections = require('collections');
 var resourceCache = require('resourceCache');
-
+var utils = require('utils');
+var sceneManager = require('sceneManager',{ignoreFail:true}).instance();
 
 exports.GameObject = BaseGameObject.extend({
     type:'gameObject',
@@ -89,5 +90,12 @@ exports.GameObject = BaseGameObject.extend({
             0
         );
         ctx.restore();
+    }
+}, {
+    find: function(name){
+        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+    },
+    findAll: function(name) {
+        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
     }
 });

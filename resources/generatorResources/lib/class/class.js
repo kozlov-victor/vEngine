@@ -14,6 +14,8 @@ Class.extend = function(props, staticProps) {
         props = obj;
     }
 
+    if (staticProps && staticProps.call) staticProps = staticProps();
+
     function Instance() {
         this._init && this._init.apply(this, arguments);
         this.construct && this.construct();

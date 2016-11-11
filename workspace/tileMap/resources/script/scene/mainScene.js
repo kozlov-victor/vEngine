@@ -1,8 +1,10 @@
 
-var btnUp = self.find('btnUp');
-var btnDown =  self.find('btnDown');
-var btnLeft = self.find('btnLeft');
-var btnRight =  self.find('btnRight');
+var GameObject = require('gameObject').GameObject;
+
+var btnUp = GameObject.find('btnUp');
+var btnDown =  GameObject.find('btnDown');
+var btnLeft = GameObject.find('btnLeft');
+var btnRight =  GameObject.find('btnRight');
  
 var keyboard = require('keyboard').instance(); 
 

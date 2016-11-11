@@ -1,2875 +1,6340 @@
-var k = {};
-function p(h, g) {
-    function e(a) {
-        var b = {ga: {}};
-        a.code(b, b.ga);
-        a.nc = b
-    }
+var modules = {}, require = function(name,opts){
+    opts = opts || {};
+    //console.trace('require: ',name);
+    var moduleObj = modules[name];
 
-    g = g || {};
-    var c = k[h];
-    if (!c) {
-        if (g.wa)return {
-            bc: !0, aa: function () {
-                return {bc: !0}
-            }
-        };
-        console.trace("can not found module with name " + (h || "(name not specified)"));
-        throw"can not found module with name " + (h || "(name not specified)");
-    }
-    c.nc || e(c);
-    return c.nc.ga
-}
-(function () {
-    function h(c, a, b) {
-        if (c)for (var d in c)"function" == typeof c[d] && "function" == typeof b[d] && e.test(c[d]) ? a[d] = g(c[d], b[d]) : a[d] = c[d]
-    }
-
-    function g(c, a) {
-        return function () {
-            var b = this.za;
-            this.za = a;
-            try {
-                return c.apply(this, arguments)
-            } finally {
-                this.za = b
-            }
-        }
-    }
-
-    window.Xd = function () {
-    };
-    Class.extend = function (c, a, b) {
-        function d() {
-            this.vb && this.vb.apply(this, arguments);
-            this.construct && this.construct()
-        }
-
-        var f = [];
-        c.slice ? (f = c, c = a, a = b) : c.call && (b = {}, c(b), c = b);
-        d.prototype = Class.Ad(this.prototype);
-        d.prototype.constructor =
-            d;
-        d.extend = Class.extend;
-        h(a, d, this);
-        for (a = 0; a < f.length; a++)h(f[a], d.prototype, this.prototype);
-        h(c, d.prototype, this.prototype);
-        return d
-    };
-    var e = /xyz/.test(function () {
-        xyz
-    }) ? /\b_super\b/ : /./;
-    Class.Ad = Object.create || function (c) {
-            function a() {
-            }
-
-            a.prototype = c;
-            return new a
-        }
-})();
-k.behaviour = {
-    code: function (h, g) {
-        g.zb = {
-            control4dir: function (c, a, b, d) {
-                function f(a) {
-                    n["walk" + a + "Animation"].play()
-                }
-
-                function e(a) {
-                    b.Sd();
-                    b.ka.x = 0;
-                    b.ka.y = 0;
-                    a = "idle" + a + "Animation";
-                    n[a] && n[a].play()
-                }
-
-                var m = p("keyboard").aa(), n = {};
-                ["Left", "Right", "Up", "Down"].forEach(function (a) {
-                    var f = "walk" + a + "Animation";
-                    a = "idle" + a + "Animation";
-                    n[f] = b.hc(d[f]);
-                    if (!n[f])throw"can not find animation " + d[f] + " an gameObject " + b.name;
-                    d[a] && (n[a] = b.hc(d[a]))
-                });
-                a.Aa = function () {
-                    m.hb(m.Ra) && (b.ka.y = -d.Ob, f("Up"));
-                    m.hb(m.Oa) && (b.ka.y =
-                        d.Ob, f("Down"));
-                    m.hb(m.Pa) && (b.ka.x = -d.Ob, f("Left"));
-                    m.hb(m.Qa) && (b.ka.x = d.Ob, f("Right"));
-                    m.gb(m.Pa) ? e("Left") : m.gb(m.Qa) ? e("Right") : m.gb(m.Ra) ? e("Up") : m.gb(m.Oa) && e("Down")
-                }
-            }
-        };
-        var e = {Ab: {}, ob: {}};
-        e.Ab["tiles.js"] = function (c) {
-            c.Aa = function () {
-            }
-        };
-        e.Ab["walker.js"] = function (c, a) {
-            p("camera").aa().nd(a);
-            c.Aa = function () {
-                a.cb().lb(10, 10, window.bf)
-            }
-        };
-        e.ob["22.js"] = function (c) {
-            c.Aa = function () {
-            }
-        };
-        e.ob["mainScene.js"] = function (c) {
-            c.Aa = function () {
-            }
-        };
-        e.ob["scene2.js"] = function (c) {
-            c.Aa = function () {
-            }
-        };
-        g.scripts =
-            e
-    }
-};
-k.collider = {
-    code: function (h) {
-        function g() {
-            var a;
-            this.Qd = function () {
-                a = c.Va.Fa
-            };
-            this.Eb = function (b, f, c) {
-                if (b.ba.x != f || b.ba.y != c) {
-                    b.mb || (b.ba.x = f, b.ba.y = c);
-                    var d = !1;
-                    a.some(function (a) {
-                        if (b != a) {
-                            var m = b.mc();
-                            m.x = f;
-                            m.y = c;
-                            if (e.Dd(m, a.mc())) {
-                                if (a.mb)return d = !0, b.Ea("collide", a), !0;
-                                b.Ea("overlap", a)
-                            }
-                        }
-                    });
-                    d || (b.ba.x = f, b.ba.y = c);
-                    return d
+    if (!moduleObj) {
+        if (!opts.ignoreFail) {
+            console.trace('can not found module with name ' + (name || '(name not specified)'));
+            throw 'can not found module with name ' + (name || '(name not specified)');
+        } else  {
+            return {
+                fake:true,
+                instance: function(){
+                    return {fake:true}
                 }
             }
         }
+    }
 
-        var e = p("mathEx"), c = p("sceneManager").aa(), a = null;
-        h.ga.aa = function () {
-            null == a && (a = new g);
-            return a
-        }
-    }
-};
-k.eventEmitter = {
-    code: function (h, g) {
-        g.Ic = function () {
-            var e = {};
-            this.sc = function (c, a) {
-                e[c] = e[c] || [];
-                e[c].push(a)
-            };
-            this.Ea = function (c, a) {
-                var b = e[c];
-                b && b.forEach(function (b) {
-                    b(a)
-                })
-            }
-        }
-    }
-};
-k.consts = {
-    code: function (h, g) {
-        h.ga.rc = function () {
+    if (!moduleObj.inited) initModuleObj(moduleObj);
+    return moduleObj.inited.exports;
+    function initModuleObj(moduleObj) {
+        var module = {
+            exports:{}
         };
-        h.ga.Pc = "sound spriteSheet frameAnimation font gameObject layer scene particleSystem".split(" ");
-        g.Sb = {Rb: 0, Fc: 1, Qb: 2, Gc: 3, Lc: 4}
+        moduleObj.code(module,module.exports);
+        moduleObj.inited = module;
     }
 };
-k.keyboard = {
-    code: function (h) {
-        function g() {
-            var c = {}, a = this;
-            this.Ra = 38;
-            this.Oa = 40;
-            this.Pa = 37;
-            this.Qa = 39;
-            this.hb = function (a) {
-                return 0 < c[a]
-            };
-            this.gb = function (a) {
-                return -1 == c[a]
-            };
-            this.update = function () {
-                window.ab || [this.Ra, this.Oa, this.Pa, this.Qa].forEach(function (a) {
-                    2 == c[a] ? c[a] = 1 : -1 == c[a] && (c[a] = 0)
-                })
-            };
-            window.addEventListener("keydown", function (b) {
-                b = b.keyCode;
-                switch (b) {
-                    case a.Ra:
-                    case a.Oa:
-                    case a.Pa:
-                    case a.Qa:
-                        c[b] = 1
-                }
-            });
-            window.addEventListener("keyup", function (b) {
-                b = b.keyCode;
-                switch (b) {
-                    case a.Ra:
-                    case a.Oa:
-                    case a.Pa:
-                    case a.Qa:
-                        c[b] = -1
-                }
-            })
-        }
 
-        var e = null;
-        h.ga.aa = function () {
-            null == e && (e = new g);
-            return e
-        }
-    }
-};
-k.mouse = {
-    code: function (h) {
-        function g() {
-            function m(a) {
-                a = g(a, "mouseUp");
-                var b = f[a.id];
-                b && b !== a.object && b.Ea("mouseUp")
-            }
+//<code><%if (opts.debug){%>
+//<code>window.require = require;
+//<code><%}%>
 
-            function l(a) {
-                var b = g(a, "click");
-                g(a, "mouseDown");
-                b.object && (f[b.id] = b.object)
-            }
+//modules['1'] = {code:function(){
+//    var m2 = require('2');
+//    console.log(1);
+//}};
+//
+//
+//modules['2'] = {code:function(){
+//    var m1 = require('1');
+//    console.log(2);
+//}};
+//
+//require('1');
 
-            function g(f, c) {
-                if (!window.ab) {
-                    var m = b.Va;
-                    if (m) {
-                        var l = {x: (f.clientX - e.ha.left) / t.x * d, y: (f.clientY - e.ha.top) / t.y * d, id: f.id};
-                        m.ya.yc(function (b) {
-                            var f = !1;
-                            b.ta.yc(function (b) {
-                                if (a.Cd(l, b.wd(), b.angle))return b.Ea(c, {
-                                    screenX: l.x,
-                                    screenY: l.y,
-                                    Ue: l.x - b.ba.x,
-                                    Ve: l.y - b.ba.y
-                                }), l.object = b, f = !0
-                            });
-                            return f
-                        });
-                        m.Ea(c, {
-                            screenX: l.x,
-                            screenY: l.y
-                        });
-                        return l
-                    }
-                }
-            }
 
-            var t = e.ha.ca, u = c.gc();
-            "ontouchstart"in window ? (u.ontouchstart = function (a) {
-                console.log("canvas.ontouchstart", a.touches.length);
-                for (var b = a.touches.length; b--;)l(a.touches[b])
-            }, u.ontouchend = u.ontouchcancel = function (a) {
-                for (var b = a.changedTouches.length; b--;)m(a.changedTouches[b])
-            }, u.ontouchmove = function (a) {
-                for (var b = a.touches.length; b--;)g(a.touches[b], "mouseMove")
-            }) : (u.onmousedown = function (a) {
-                l(a)
-            }, u.onmouseup = function (a) {
-                m(a)
-            }, u.onmousemove = function (a) {
-                g(a, "mouseMove")
-            })
-        }
+modules['class'] = {code: function(module,exports){
+	var Class = function() {};
+	
+	Class.extend = function(props, staticProps) {
+	
+	    var mixins = [];
+	
+	    if (arguments[0].slice) {
+	        mixins = arguments[0];
+	        props = arguments[1];
+	        staticProps = arguments[2];
+	    } else if (arguments[0].call) {
+	        var obj = {};
+	        props(obj);
+	        props = obj;
+	    }
+	
+	    if (staticProps && staticProps.call) staticProps = staticProps();
+	
+	    function Instance() {
+	        this._init && this._init.apply(this, arguments);
+	        this.construct && this.construct();
+	    }
+	
+	    Instance.prototype = Class.inherit(this.prototype);
+	
+	    Instance.prototype.constructor = Instance;
+	
+	    Instance.extend = Class.extend;
+	
+	    copyWrappedProps(staticProps, Instance, this);
+	
+	    for (var i = 0; i < mixins.length; i++) {
+	        copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
+	    }
+	    copyWrappedProps(props, Instance.prototype, this.prototype);
+	
+	    return Instance;
+	};
+	
+	var fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
+	
+	function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
+	    if (!props) return;
+	
+	    for (var name in props) {
+	        if (typeof props[name] == "function"
+	            && typeof parentPropsObj[name] == "function"
+	            && fnTest.test(props[name])) {
+	            // скопировать, завернув в обёртку
+	            targetPropsObj[name] = wrap(props[name], parentPropsObj[name]);
+	        } else {
+	            targetPropsObj[name] = props[name];
+	        }
+	    }
+	
+	}
+	
+	function wrap(method, parentMethod) {
+	    return function() {
+	        var backup = this._super;
+	
+	        this._super = parentMethod;
+	
+	        try {
+	            return method.apply(this, arguments);
+	        } finally {
+	            this._super = backup;
+	        }
+	    }
+	}
+	
+	Class.inherit = Object.create || function(proto) {
+	    function F() {}
+	    F.prototype = proto;
+	    return new F;
+	};
+	
+	exports.Class = Class;
+	
+	
+	
+	
+}};
 
-        var e = p("bundle").aa(), c = p("renderer").aa(), a = p("mathEx"), b = p("sceneManager").aa(), d = p("device").$b, f = {}, l = null;
-        h.ga.aa = function () {
-            null == l && (l = new g);
-            return l
-        }
-    }
-};
-k.bundle = {
-    code: function (h) {
-        function g(f) {
-            function d(a) {
-                if (!b.bc) {
-                    var f = [];
-                    a.Sa && a.Sa.size() ? (a.Sa.forEach(function (d) {
-                        var c = {ga: {}}, e = c.ga;
-                        b.zb[d.name](c, e, a, d.Jd);
-                        f.push(e)
-                    }), a.Ub = function () {
-                        f.forEach(function (a) {
-                            a.Aa()
-                        })
-                    }) : a.Ub = c.rc
-                }
-            }
+modules['behaviour'] = {code: function(module,exports){
+	
+	var commonBehaviour = {};
+	
+	
+	commonBehaviour['control4dir'] = function(module,exports,self,parameters){
+	/**
+	 exports.parameters = {
+	    velocity: 100,
+	    walkLeftAnimation: 'left',
+	    walkRightAnimation: 'right',
+	    walkUpAnimation:'up',
+	    walkDownAnimation:'down',
+	    idleLeftAnimation: 'idleLeft',
+	    idleRightAnimation: 'idleRight',
+	    idleUpAnimation:'idleUp',
+	    idleDownAnimation:'idleDown'
+	 };
+	 exports.description = "control character with cursor to walk up, down, left and right";
+	 */
+	
+	var keyboard = require('keyboard').instance();
+	var animations = {};
+	
+	var _stop = function(lastDirection){
+	    self.stopFrAnimations();
+	    self.vel.x = 0;
+	    self.vel.y = 0;
+	    var keyIdle = 'idle'+lastDirection+'Animation';
+	    if (animations[keyIdle]) {
+	        animations[keyIdle].play();
+	    }
+	};
+	var _go = function(direction){
+	    animations['walk'+direction+'Animation'].play();
+	};
+	
+	var dirs = ['Left','Right','Up','Down'];
+	dirs.forEach(function(dir){
+	    var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
+	    animations[keyWalk] = self.getFrAnimation(parameters[keyWalk]);
+	    if (!animations[keyWalk]) throw 'can not find animation ' + parameters[keyWalk] +' an gameObject ' + self.name;
+	    parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
+	});
+	
+	function onUpdate(){
+	    if (keyboard.isPressed(keyboard.KEY_UP)) {
+	        self.vel.y = -parameters.velocity;
+	        _go('Up');
+	    }
+	    if (keyboard.isPressed(keyboard.KEY_DOWN)) {
+	        self.vel.y = parameters.velocity;
+	        _go('Down');
+	    }
+	    if (keyboard.isPressed(keyboard.KEY_LEFT)) {
+	        self.vel.x = -parameters.velocity;
+	        _go('Left');
+	    }
+	    if (keyboard.isPressed(keyboard.KEY_RIGHT)) {
+	        self.vel.x = parameters.velocity;
+	        _go('Right');
+	    }
+	
+	    if (keyboard.isJustReleased(keyboard.KEY_LEFT)) {
+	        _stop('Left');
+	    } else if (keyboard.isJustReleased(keyboard.KEY_RIGHT)) {
+	        _stop('Right');
+	    } else if (keyboard.isJustReleased(keyboard.KEY_UP)) {
+	        _stop('Up');
+	    } else if (keyboard.isJustReleased(keyboard.KEY_DOWN)) {
+	        _stop('Down');
+	    }
+	}
+	
+	    exports.onUpdate = onUpdate;
+	}
+	
+	
+	exports.commonBehaviour = commonBehaviour;
+	
+	var scripts = {};
+	scripts.gameObject = {};
+	scripts.scene = {};
+	
+	
+	scripts.gameObject['tiles.js'] = function(exports,self){
+	    
+	function onUpdate(time) {
+	
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	
+	scripts.gameObject['walker.js'] = function(exports,self){
+	    
+	var camera = require('camera').instance();
+	camera.follow(self);
+	
+	function onUpdate(time) {
+	    self.getScene().printText(10,10,window.tot);
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	;
+	
+	
+	scripts.scene['22.js'] = function(exports,self){
+	    
+	function onUpdate(time) {
+	
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	
+	scripts.scene['mainScene.js'] = function(exports,self){
+	    
+	function onUpdate(time) {
+	
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	
+	scripts.scene['scene2.js'] = function(exports,self){
+	    
+	function onUpdate(time) {
+	
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	;
+	
+	exports.scripts = scripts;
+	
+	
+}};
 
-            function l(a) {
-                var f = b && b.scripts && b.scripts[a.type] && b.scripts[a.type][a.name + ".js"];
-                if (f) {
-                    var d = {};
-                    f(d, a);
-                    a.sb = function (a) {
-                        d.Aa(a)
-                    }
-                } else a.sb = c.rc
-            }
+modules['collider'] = {code: function(module,exports){
+	
+	var mathEx = require('mathEx');
+	var sceneManager = require('sceneManager').instance();
+	
+	var Collider = function(){
+	
+	    var gos;
+	    var scene;
+	
+	    this.setUp = function(){
+	        scene = sceneManager.getCurrScene();
+	        gos = scene.getAllGameObjects();
+	    };
+	
+	    this.manage = function(obj,newX,newY){
+	        if (obj.pos.x==newX && obj.pos.y==newY) return;
+	        if (!obj.rigid) {
+	            obj.pos.x = newX;
+	            obj.pos.y = newY;
+	        } else {
+	            var tileOn = scene.getTileAt(
+	                newX + obj.getRect().width / 2,
+	                newY + obj.getRect().height / 2
+	            );
+	            if (tileOn==16 || tileOn==17) return;
+	        }
+	        var hasCollision = false;
+	        var all = gos.rs;
+	        for (var i = 0,l = all.length;i<l;i++) {
+	            var go = all[i];
+	            if (obj==go) continue;
+	
+	            var objRect = obj.getRect();
+	            objRect.x = newX;
+	            objRect.y = newY;
+	
+	            if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
+	                if (obj.rigid && go.rigid) {
+	                    hasCollision = true;
+	                    obj.trigger('collide',go);
+	                    //console.log('collided',obj.name,go.name,go.rigid);
+	                } else {
+	                    obj.trigger('overlap',go);
+	                }
+	            }
+	        }
+	        if (!hasCollision) {
+	            obj.pos.x = newX;
+	            obj.pos.y = newY;
+	        }
+	        return hasCollision;
+	    };
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Collider();
+	    return instance;
+	};
+}};
 
-            function g(a, b, f) {
-                f.clear();
-                b.forEach(function (b) {
-                    f.add(new a(b))
-                })
-            }
+modules['eventEmitter'] = {code: function(module,exports){
+	
+	
+	var EventEmitter = function(){
+	
+	    var events = {};
+	
+	    var _on = function(name,callBack){
+	        events[name] = events[name] || [];
+	        events[name].push(callBack);
+	    };
+	
+	    this.on = function(eventNameOrList,callBack){
+	        if (typeof  eventNameOrList == 'string') {
+	            _on(eventNameOrList,callBack);
+	        } else if (eventNameOrList.splice) {
+	            eventNameOrList.forEach(function(eventName){
+	                _on(eventName,callBack);
+	            });
+	        }
+	
+	    };
+	
+	    this.trigger = function(eventName,data){
+	        var es = events[eventName];
+	        if (!es) return;
+	        var l = es.length;
+	        while(l--){
+	           es[l](data);
+	        }
+	    };
+	};
+	
+	exports.EventEmitter = EventEmitter;
+}};
 
-            this.Ac = new e.ia;
-            this.ec = new e.ia;
-            this.qd = new e.ia;
-            this.oc = new e.ia;
-            this.Mb = new e.ia;
-            this.oc = new e.ia;
-            this.Wa = new e.ia;
-            this.zc = new e.ia;
-            this.tc = new e.ia;
-            this.ha = {};
-            var t = this;
-            this.Kd = function () {
-                f = f || void 0;
-                t.ha = f.ha;
-                c.Pc.forEach(function (b) {
-                    g(p(b)[a.jd(b)], f[b], t[b + "List"])
-                });
-                f = null
-            };
-            this.fd = function () {
-                t.Mb.forEach(function (a) {
-                    a.$c();
-                    t.yb(a);
-                    a.ya.forEach(function (a) {
-                        a.ta.forEach(function (a) {
-                            t.yb(a)
-                        })
-                    })
-                })
-            };
-            this.yb = function (a) {
-                d(a);
-                l(a)
-            };
-            this.ua = {};
-            this.ua.data = {};
-            this.ua.fb = !1
-        }
+modules['consts'] = {code: function(module,exports){
+	
+	module.exports.noop = function(){};
+	module.exports.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameObject","layer","scene","particleSystem"];
+	
+	exports.SCALE_STRATEGY = {
+	    NO_SCALE:                       0,
+	    CSS_PRESERVE_ASPECT_RATIO:      1,
+	    HARDWARE_PRESERVE_ASPECT_RATIO: 2,
+	    CSS_STRETCH:                    3,
+	    HARDWARE_STRETCH:               4
+	};
+}};
 
-        var e = p("collections"), c = p("consts"), a = p("utils"), b = p("behaviour", {wa: !0}),
-            d;
-        d = {
-            Ze: [],
-            $e: [{
-                resourcePath: "resources/spriteSheet/walker.png",
-                name: "walker",
-                width: 288,
-                height: 256,
-                numOfFramesH: 9,
-                numOfFramesV: 4,
-                type: "spriteSheet",
-                id: "9996_3491_187"
-            }, {
-                resourcePath: "resources/spriteSheet/tiles.jpg",
-                name: "tiles",
-                width: 230,
-                height: 204,
-                numOfFramesH: 9,
-                numOfFramesV: 8,
-                type: "spriteSheet",
-                id: "4596_9248_37"
-            }],
-            Ie: [{
-                _timeForOneFrame: 0,
-                name: "left",
-                frames: [17, 16, 15, 14, 13, 12, 11, 10],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "6738_3211_190"
-            }, {
-                name: "right", frames: [19, 20, 21, 22, 23, 24, 25, 26], type: "frameAnimation",
-                duration: 1E3, id: "2354_0498_191"
-            }, {
-                _timeForOneFrame: 0,
-                name: "up",
-                frames: [28, 29, 30, 31, 32, 33, 34, 35],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "0234_8195_192"
-            }, {
-                _timeForOneFrame: 0,
-                name: "down",
-                frames: [28, 29, 30, 31, 32, 33, 34, 35],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "7956_1514_193"
-            }, {
-                _timeForOneFrame: 0,
-                name: "idleLeft",
-                frames: [9],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "2209_6472_198"
-            }, {
-                _timeForOneFrame: 0,
-                name: "idleRight",
-                frames: [18],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "0429_4224_199"
-            }, {
-                _timeForOneFrame: 0, name: "idleUp",
-                frames: [0], type: "frameAnimation", duration: 1E3, id: "1332_6863_304"
-            }, {
-                _timeForOneFrame: 0,
-                name: "idleDown",
-                frames: [27],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "5583_9263_305"
-            }, {
-                _timeForOneFrame: 0,
-                name: "qq",
-                frames: [1, 2],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "1849_7930_327"
-            }, {
-                _timeForOneFrame: 0,
-                name: "ww",
-                frames: [1, 2],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "6145_9698_332"
-            }, {
-                _timeForOneFrame: 0,
-                name: "ee",
-                frames: [1, 2],
-                type: "frameAnimation",
-                duration: 1E3,
-                id: "7690_6966_337"
-            }, {
-                name: "rr", frames: [1, 2], type: "frameAnimation",
-                duration: 1E3, id: "8039_0518_342"
-            }, {name: "idleDown", frames: [27], type: "frameAnimation", duration: 1E3, id: "0869_2844_367"}],
-            font: [{
-                name: "default",
-                fontContext: {
-                    symbols: {
-                        0: {x: 240, y: 0, width: 15, height: 29},
-                        1: {x: 255, y: 0, width: 15, height: 29},
-                        2: {x: 270, y: 0, width: 15, height: 29},
-                        3: {x: 285, y: 0, width: 15, height: 29},
-                        4: {x: 301, y: 0, width: 15, height: 29},
-                        5: {x: 0, y: 29, width: 15, height: 29},
-                        6: {x: 15, y: 29, width: 15, height: 29},
-                        7: {x: 30, y: 29, width: 15, height: 29},
-                        8: {x: 45, y: 29, width: 15, height: 29},
-                        9: {x: 60, y: 29, width: 15, height: 29},
-                        " ": {
-                            x: 0, y: 0,
-                            width: 15, height: 29
-                        },
-                        "!": {x: 15, y: 0, width: 15, height: 29},
-                        '"': {x: 30, y: 0, width: 15, height: 29},
-                        "#": {x: 45, y: 0, width: 15, height: 29},
-                        $: {x: 60, y: 0, width: 15, height: 29},
-                        "%": {x: 75, y: 0, width: 15, height: 29},
-                        "&": {x: 90, y: 0, width: 15, height: 29},
-                        "'": {x: 105, y: 0, width: 15, height: 29},
-                        "(": {x: 120, y: 0, width: 15, height: 29},
-                        ")": {x: 135, y: 0, width: 15, height: 29},
-                        "*": {x: 150, y: 0, width: 15, height: 29},
-                        "+": {x: 165, y: 0, width: 15, height: 29},
-                        ",": {x: 180, y: 0, width: 15, height: 29},
-                        "-": {x: 195, y: 0, width: 15, height: 29},
-                        ".": {x: 210, y: 0, width: 15, height: 29},
-                        "/": {x: 225, y: 0, width: 15, height: 29},
-                        ":": {x: 75, y: 29, width: 15, height: 29},
-                        ";": {x: 90, y: 29, width: 15, height: 29},
-                        "<": {x: 105, y: 29, width: 15, height: 29},
-                        "=": {x: 120, y: 29, width: 15, height: 29},
-                        ">": {x: 135, y: 29, width: 15, height: 29},
-                        "?": {x: 150, y: 29, width: 15, height: 29},
-                        "@": {x: 165, y: 29, width: 15, height: 29},
-                        A: {x: 180, y: 29, width: 15, height: 29},
-                        B: {x: 195, y: 29, width: 15, height: 29},
-                        C: {x: 210, y: 29, width: 15, height: 29},
-                        D: {x: 225, y: 29, width: 15, height: 29},
-                        E: {x: 240, y: 29, width: 15, height: 29},
-                        F: {x: 255, y: 29, width: 15, height: 29},
-                        G: {
-                            x: 270, y: 29,
-                            width: 15, height: 29
-                        },
-                        H: {x: 285, y: 29, width: 15, height: 29},
-                        I: {x: 301, y: 29, width: 15, height: 29},
-                        J: {x: 0, y: 58, width: 15, height: 29},
-                        K: {x: 15, y: 58, width: 15, height: 29},
-                        L: {x: 30, y: 58, width: 15, height: 29},
-                        M: {x: 45, y: 58, width: 15, height: 29},
-                        N: {x: 60, y: 58, width: 15, height: 29},
-                        O: {x: 75, y: 58, width: 15, height: 29},
-                        P: {x: 90, y: 58, width: 15, height: 29},
-                        Q: {x: 105, y: 58, width: 15, height: 29},
-                        R: {x: 120, y: 58, width: 15, height: 29},
-                        S: {x: 135, y: 58, width: 15, height: 29},
-                        T: {x: 150, y: 58, width: 15, height: 29},
-                        U: {x: 165, y: 58, width: 15, height: 29},
-                        V: {
-                            x: 180, y: 58,
-                            width: 15, height: 29
-                        },
-                        W: {x: 195, y: 58, width: 15, height: 29},
-                        X: {x: 210, y: 58, width: 15, height: 29},
-                        Y: {x: 225, y: 58, width: 15, height: 29},
-                        Z: {x: 240, y: 58, width: 15, height: 29},
-                        "[": {x: 255, y: 58, width: 15, height: 29},
-                        "\\": {x: 270, y: 58, width: 15, height: 29},
-                        "]": {x: 285, y: 58, width: 15, height: 29},
-                        "^": {x: 301, y: 58, width: 15, height: 29},
-                        _: {x: 0, y: 87, width: 15, height: 29},
-                        "`": {x: 15, y: 87, width: 15, height: 29},
-                        a: {x: 30, y: 87, width: 15, height: 29},
-                        b: {x: 45, y: 87, width: 15, height: 29},
-                        c: {x: 60, y: 87, width: 15, height: 29},
-                        d: {x: 75, y: 87, width: 15, height: 29},
-                        e: {
-                            x: 90,
-                            y: 87, width: 15, height: 29
-                        },
-                        f: {x: 105, y: 87, width: 15, height: 29},
-                        g: {x: 120, y: 87, width: 15, height: 29},
-                        h: {x: 135, y: 87, width: 15, height: 29},
-                        i: {x: 150, y: 87, width: 15, height: 29},
-                        j: {x: 165, y: 87, width: 15, height: 29},
-                        k: {x: 180, y: 87, width: 15, height: 29},
-                        l: {x: 195, y: 87, width: 15, height: 29},
-                        m: {x: 210, y: 87, width: 15, height: 29},
-                        n: {x: 225, y: 87, width: 15, height: 29},
-                        o: {x: 240, y: 87, width: 15, height: 29},
-                        p: {x: 255, y: 87, width: 15, height: 29},
-                        q: {x: 270, y: 87, width: 15, height: 29},
-                        r: {x: 285, y: 87, width: 15, height: 29},
-                        s: {x: 301, y: 87, width: 15, height: 29},
-                        t: {x: 0, y: 116, width: 15, height: 29},
-                        u: {x: 15, y: 116, width: 15, height: 29},
-                        v: {x: 30, y: 116, width: 15, height: 29},
-                        w: {x: 45, y: 116, width: 15, height: 29},
-                        x: {x: 60, y: 116, width: 15, height: 29},
-                        y: {x: 75, y: 116, width: 15, height: 29},
-                        z: {x: 90, y: 116, width: 15, height: 29},
-                        "{": {x: 105, y: 116, width: 15, height: 29},
-                        "|": {x: 120, y: 116, width: 15, height: 29},
-                        "}": {x: 135, y: 116, width: 15, height: 29},
-                        "~": {x: 150, y: 116, width: 15, height: 29},
-                        "\u0410": {x: 165, y: 116, width: 15, height: 29},
-                        "\u0411": {x: 180, y: 116, width: 15, height: 29},
-                        "\u0412": {x: 195, y: 116, width: 15, height: 29},
-                        "\u0413": {x: 210, y: 116, width: 15, height: 29},
-                        "\u0414": {x: 225, y: 116, width: 15, height: 29},
-                        "\u0415": {x: 240, y: 116, width: 15, height: 29},
-                        "\u0416": {x: 255, y: 116, width: 15, height: 29},
-                        "\u0417": {x: 270, y: 116, width: 15, height: 29},
-                        "\u0418": {x: 285, y: 116, width: 15, height: 29},
-                        "\u0419": {x: 301, y: 116, width: 15, height: 29},
-                        "\u041a": {x: 0, y: 145, width: 15, height: 29},
-                        "\u041b": {x: 15, y: 145, width: 15, height: 29},
-                        "\u041c": {x: 30, y: 145, width: 15, height: 29},
-                        "\u041d": {x: 45, y: 145, width: 15, height: 29},
-                        "\u041e": {x: 60, y: 145, width: 15, height: 29},
-                        "\u041f": {
-                            x: 75,
-                            y: 145, width: 15, height: 29
-                        },
-                        "\u0420": {x: 90, y: 145, width: 15, height: 29},
-                        "\u0421": {x: 105, y: 145, width: 15, height: 29},
-                        "\u0422": {x: 120, y: 145, width: 15, height: 29},
-                        "\u0423": {x: 135, y: 145, width: 15, height: 29},
-                        "\u0424": {x: 150, y: 145, width: 15, height: 29},
-                        "\u0425": {x: 165, y: 145, width: 15, height: 29},
-                        "\u0426": {x: 180, y: 145, width: 15, height: 29},
-                        "\u0427": {x: 195, y: 145, width: 15, height: 29},
-                        "\u0428": {x: 210, y: 145, width: 15, height: 29},
-                        "\u0429": {x: 225, y: 145, width: 15, height: 29},
-                        "\u042a": {x: 240, y: 145, width: 15, height: 29},
-                        "\u042b": {
-                            x: 255,
-                            y: 145, width: 15, height: 29
-                        },
-                        "\u042c": {x: 270, y: 145, width: 15, height: 29},
-                        "\u042d": {x: 285, y: 145, width: 15, height: 29},
-                        "\u042e": {x: 301, y: 145, width: 15, height: 29},
-                        "\u042f": {x: 0, y: 174, width: 15, height: 29},
-                        "\u0430": {x: 15, y: 174, width: 15, height: 29},
-                        "\u0431": {x: 30, y: 174, width: 15, height: 29},
-                        "\u0432": {x: 45, y: 174, width: 15, height: 29},
-                        "\u0433": {x: 60, y: 174, width: 15, height: 29},
-                        "\u0434": {x: 75, y: 174, width: 15, height: 29},
-                        "\u0435": {x: 90, y: 174, width: 15, height: 29},
-                        "\u0436": {x: 105, y: 174, width: 15, height: 29},
-                        "\u0437": {
-                            x: 120, y: 174,
-                            width: 15, height: 29
-                        },
-                        "\u0438": {x: 135, y: 174, width: 15, height: 29},
-                        "\u0439": {x: 150, y: 174, width: 15, height: 29},
-                        "\u043a": {x: 165, y: 174, width: 15, height: 29},
-                        "\u043b": {x: 180, y: 174, width: 15, height: 29},
-                        "\u043c": {x: 195, y: 174, width: 15, height: 29},
-                        "\u043d": {x: 210, y: 174, width: 15, height: 29},
-                        "\u043e": {x: 225, y: 174, width: 15, height: 29},
-                        "\u043f": {x: 240, y: 174, width: 15, height: 29},
-                        "\u0440": {x: 255, y: 174, width: 15, height: 29},
-                        "\u0441": {x: 270, y: 174, width: 15, height: 29},
-                        "\u0442": {x: 285, y: 174, width: 15, height: 29},
-                        "\u0443": {
-                            x: 301, y: 174,
-                            width: 15, height: 29
-                        },
-                        "\u0444": {x: 0, y: 203, width: 15, height: 29},
-                        "\u0445": {x: 15, y: 203, width: 15, height: 29},
-                        "\u0446": {x: 30, y: 203, width: 15, height: 29},
-                        "\u0447": {x: 45, y: 203, width: 15, height: 29},
-                        "\u0448": {x: 60, y: 203, width: 15, height: 29},
-                        "\u0449": {x: 75, y: 203, width: 15, height: 29},
-                        "\u044a": {x: 90, y: 203, width: 15, height: 29},
-                        "\u044b": {x: 105, y: 203, width: 15, height: 29},
-                        "\u044c": {x: 120, y: 203, width: 15, height: 29},
-                        "\u044d": {x: 135, y: 203, width: 15, height: 29},
-                        "\u044e": {x: 150, y: 203, width: 15, height: 29},
-                        "\u044f": {
-                            x: 165, y: 203, width: 15,
-                            height: 29
-                        },
-                        "\u0450": {x: 180, y: 203, width: 15, height: 29},
-                        "\u0451": {x: 195, y: 203, width: 15, height: 29},
-                        "\u0452": {x: 210, y: 203, width: 15, height: 29},
-                        "\u0453": {x: 225, y: 203, width: 15, height: 29},
-                        "\u0454": {x: 240, y: 203, width: 15, height: 29},
-                        "\u0455": {x: 255, y: 203, width: 15, height: 29},
-                        "\u0456": {x: 270, y: 203, width: 15, height: 29},
-                        "\u0457": {x: 285, y: 203, width: 15, height: 29},
-                        "\u0458": {x: 301, y: 203, width: 15, height: 29},
-                        "\u0459": {x: 0, y: 232, width: 15, height: 29},
-                        "\u045a": {x: 15, y: 232, width: 15, height: 29},
-                        "\u045b": {x: 30, y: 232, width: 15, height: 29}
-                    },
-                    width: 320, height: 261
-                },
-                type: "font",
-                fontColor: [52, 183, 11],
-                fontSize: 25,
-                fontFamily: "Monospace",
-                resourcePath: "resources/font/default.png",
-                id: "6991_3497_4"
-            }],
-            Ab: [{
-                spriteSheetId: "9996_3491_187",
-                pos: {x: 0, y: 0},
-                scale: {x: 1, y: 1},
-                vel: {x: 0, y: 0},
-                currFrameIndex: 0,
-                _sprPosX: 0,
-                _sprPosY: 0,
-                name: "walker",
-                width: 32,
-                height: 64,
-                type: "gameObject",
-                commonBehaviour: [{
-                    name: "control4dir",
-                    parameters: {
-                        velocity: "202",
-                        walkLeftAnimation: "left",
-                        walkRightAnimation: "right",
-                        walkUpAnimation: "up",
-                        walkDownAnimation: "down",
-                        idleLeftAnimation: "idleLeft",
-                        idleRightAnimation: "idleRight",
-                        idleUpAnimation: "idleUp",
-                        idleDownAnimation: "idleDown"
-                    },
-                    description: "control character with cursor to walk up, down, left and right",
-                    id: "1399_0090_189",
-                    type: "commonBehaviour"
-                }],
-                frameAnimationIds: "6738_3211_190 2354_0498_191 0234_8195_192 7956_1514_193 2209_6472_198 0429_4224_199 1332_6863_304 0869_2844_367".split(" "),
-                rigid: 1,
-                groupName: "",
-                angle: 0,
-                id: "8971_6636_188"
-            }],
-            Pe: [{
-                name: "mainLayer", type: "layer", gameObjectProps: [{
-                    spriteSheetId: "9996_3491_187",
-                    pos: {x: 103, y: 152},
-                    scale: {x: 1, y: 1},
-                    vel: {x: 0, y: 0},
-                    currFrameIndex: 0,
-                    _sprPosX: 0,
-                    _sprPosY: 0,
-                    name: "walker",
-                    width: 32,
-                    height: 64,
-                    type: "gameObject",
-                    commonBehaviour: [{
-                        name: "control4dir",
-                        parameters: {
-                            velocity: 100,
-                            walkLeftAnimation: "left",
-                            walkRightAnimation: "right",
-                            walkUpAnimation: "up",
-                            walkDownAnimation: "down",
-                            idleLeftAnimation: "",
-                            idleRightAnimation: "",
-                            idleUpAnimation: "",
-                            idleDownAnimation: ""
-                        },
-                        description: "control character with cursor to walk up, down, left and right",
-                        id: "1399_0090_189",
-                        type: "commonBehaviour"
-                    }],
-                    frameAnimationIds: ["6738_3211_190",
-                        "2354_0498_191", "0234_8195_192", "7956_1514_193"],
-                    rigid: 1,
-                    groupName: "",
-                    angle: 0,
-                    protoId: "8971_6636_188",
-                    id: "4428_2087_197"
-                }], id: "1186_9522_195"
-            }],
-            ob: [{
-                name: "mainScene",
-                type: "scene",
-                layerProps: [{type: "layer", protoId: "1186_9522_195", id: "4353_9549_196"}],
-                colorBG: [236, 243, 247],
-                id: "2345_5808_194",
-                useBG: 0,
-                tileMap: {
-                    _spriteSheet: {
-                        resourcePath: "resources/spriteSheet/walker.png",
-                        name: "walker",
-                        width: 288,
-                        height: 256,
-                        numOfFramesH: 9,
-                        numOfFramesV: 4,
-                        type: "spriteSheet",
-                        id: "9996_3491_187"
-                    },
-                    spriteSheetId: "4596_9248_37",
-                    width: 36,
-                    height: 37,
-                    data: [{
-                        0: 13,
-                        1: 22,
-                        2: 22,
-                        3: 22,
-                        4: 22,
-                        5: 22,
-                        6: 22,
-                        7: 22,
-                        8: 22,
-                        9: 22,
-                        10: 22,
-                        11: 22,
-                        12: 20,
-                        13: 22,
-                        14: 22,
-                        15: 22,
-                        16: 20,
-                        17: 6,
-                        18: 6,
-                        19: 41,
-                        20: 41,
-                        21: 41,
-                        22: 41,
-                        23: 41,
-                        24: 41,
-                        25: 41,
-                        26: 41,
-                        27: 41,
-                        28: 41,
-                        29: 41,
-                        30: 41,
-                        31: 41,
-                        32: 41,
-                        33: 41,
-                        34: 41,
-                        35: 41
-                    }, {
-                        0: 13,
-                        1: 13,
-                        16: 22,
-                        17: 6,
-                        18: 6,
-                        19: 41,
-                        24: 41,
-                        25: 41,
-                        26: 41,
-                        27: 41,
-                        28: 41,
-                        29: 41,
-                        30: 41,
-                        31: 41,
-                        33: 41,
-                        34: 41,
-                        35: 41
-                    }, {0: 22, 6: 4, 7: 4, 8: 4, 9: 4, 10: 4, 16: 22, 17: 6, 18: 6, 19: 41, 20: 41, 35: 41}, {
-                        0: 20,
-                        6: 4,
-                        7: 4,
-                        8: 4,
-                        9: 4,
-                        10: 4,
-                        16: 22,
-                        17: 6,
-                        18: 6,
-                        19: 6,
-                        20: 41,
-                        34: 41,
-                        35: 41
-                    }, {
-                        0: 22, 6: 4, 7: 4, 8: 4, 9: 4, 10: 4, 15: 20, 16: 20, 17: 6,
-                        18: 6, 19: 6, 20: 41, 21: 41, 34: 41, 35: 41
-                    }, {
-                        0: 22,
-                        6: 11,
-                        7: 4,
-                        8: 4,
-                        9: 4,
-                        10: 4,
-                        15: 22,
-                        16: 22,
-                        17: 6,
-                        18: 6,
-                        19: 6,
-                        20: 41,
-                        21: 41,
-                        34: 41,
-                        35: 41
-                    }, {
-                        0: 22,
-                        6: 11,
-                        7: 4,
-                        8: 4,
-                        9: 11,
-                        10: 4,
-                        15: 10,
-                        16: 22,
-                        17: 6,
-                        18: 6,
-                        19: 41,
-                        20: 41,
-                        21: 41,
-                        22: 41,
-                        23: 41,
-                        28: 32,
-                        34: 41,
-                        35: 27
-                    }, {
-                        0: 22,
-                        6: 11,
-                        7: 11,
-                        8: 11,
-                        9: 11,
-                        10: 5,
-                        11: 18,
-                        12: 18,
-                        13: 18,
-                        15: 18,
-                        16: 22,
-                        17: 6,
-                        18: 6,
-                        19: 41,
-                        20: 41,
-                        21: 41,
-                        22: 41,
-                        23: 41,
-                        24: 41,
-                        25: 41,
-                        26: 41,
-                        27: 41,
-                        28: 41,
-                        30: 32,
-                        31: 32,
-                        32: 11,
-                        34: 41,
-                        35: 41
-                    }, {
-                        0: 22,
-                        10: 18,
-                        15: 10,
-                        16: 20,
-                        17: 6,
-                        18: 6,
-                        19: 6,
-                        20: 41,
-                        21: 41,
-                        22: 41,
-                        23: 41,
-                        24: 41,
-                        25: 41,
-                        26: 41,
-                        27: 41,
-                        28: 41,
-                        29: 32,
-                        31: 32,
-                        32: 11,
-                        33: 11,
-                        34: 11,
-                        35: 41
-                    },
-                        {
-                            0: 22,
-                            1: 41,
-                            2: 0,
-                            3: 0,
-                            9: 13,
-                            10: 18,
-                            14: 19,
-                            15: 20,
-                            16: 20,
-                            17: 6,
-                            18: 6,
-                            19: 6,
-                            20: 32,
-                            21: 32,
-                            22: 32,
-                            23: 41,
-                            24: 41,
-                            25: 41,
-                            26: 32,
-                            27: 41,
-                            28: 41,
-                            29: 11,
-                            30: 32,
-                            31: 11,
-                            32: 11,
-                            33: 11,
-                            34: 11,
-                            35: 41,
-                            37: 11
-                        }, {
-                            0: 41,
-                            1: 41,
-                            2: 41,
-                            3: 13,
-                            4: 13,
-                            5: 13,
-                            6: 13,
-                            7: 13,
-                            8: 13,
-                            9: 13,
-                            10: 18,
-                            11: 14,
-                            12: 14,
-                            15: 20,
-                            16: 20,
-                            17: 6,
-                            18: 6,
-                            19: 6,
-                            20: 41,
-                            21: 41,
-                            22: 32,
-                            23: 32,
-                            24: 32,
-                            25: 41,
-                            26: 32,
-                            27: 36,
-                            28: 41,
-                            29: 11,
-                            30: 11,
-                            31: 11,
-                            32: 11,
-                            33: 11,
-                            34: 11,
-                            35: 41,
-                            36: 11,
-                            37: 11
-                        }, {
-                            0: 22,
-                            1: 41,
-                            2: 22,
-                            3: 22,
-                            4: 22,
-                            5: 22,
-                            6: 22,
-                            7: 22,
-                            8: 22,
-                            9: 22,
-                            10: 22,
-                            11: 14,
-                            12: 14,
-                            13: 22,
-                            14: 15,
-                            15: 15,
-                            16: 20,
-                            17: 6,
-                            18: 6,
-                            19: 13,
-                            20: 41,
-                            21: 41,
-                            22: 41,
-                            23: 32,
-                            24: 32,
-                            25: 32,
-                            26: 32,
-                            27: 36,
-                            28: 32,
-                            29: 11,
-                            30: 11,
-                            31: 32,
-                            32: 11,
-                            34: 11,
-                            35: 11,
-                            37: 11,
-                            38: 11
-                        }, [15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 14, 14, 15, 15, 15, 15, 15, 15, 13, 41, 41, 41, 41, 41, 41, 41, 36, 13, null, 41, 41, 41, 41, 41, 41, 11, 11, 11], [13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 32, 32, 41, 41, 41, 41, 41, 36, 41, 32, 41, 41, 41, 41, 41, 11, 11, 11], [11, 32, 11, 11, 11, 11, 32, null, null, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 41, 41, 41, 41, 41, 41, 41, 36, 41, 41, 41, 41, 41, 41, 41, 41, 11, 11], [11, 32, 11, 11, 11, 11, 32, null, null, 32, 32, 32, null, null, null, 32, 32, 32,
-                            32, 32, 32, 32, 41, 41, 41, 32, null, 36, 36, 32, null, 11, null, 32], [11, 32, 11, 11, 11, 11, 32, null, null, null, null, null, 32, 32, 32, 32, null, null, null, null, null, null, null, 41, 41, 41, 41, 36, 36], {
-                            0: 11,
-                            1: 32,
-                            2: 11,
-                            3: 11,
-                            4: 11,
-                            5: 11,
-                            7: 11,
-                            20: 41,
-                            21: 41,
-                            22: 41,
-                            23: 41,
-                            24: 41,
-                            27: 36,
-                            28: 36
-                        }, [11, 11, 11, 11, 11, 11, 32, 32, 32, 32, 32, 32, 32, 32, null, null, null, null, 41, null, 41, 41, 41, 41, 41, 41, null, 36, 36], [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 32, 32, 41, 32, 41, null, null, null, 41, 12, 12, 12, 3, 3, 3, 3, null, 36, 36, 41], [11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 41, 41, 41, 41, 41, 41, null, 41,
-                            12, 12, 12, 12, 12, 3, 41, 3, null, 36, 36, 41], [11, 11, 11, 11, 11, 11, 11, 11, 41, 41, null, null, 41, 41, 41, 41, null, 41, 41, 41, 12, 41, 41, 41, 41, 41, null, 36, 36, 41, null, null, 41], [11, 11, 11, 11, 11, 11, 11, 11, null, 41, null, 41, 41, null, 41, null, null, 41, 41, 41, 41, null, null, null, null, 41, null, 36, 36, null, null, null, 41], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 41, 41, 41, 41, 41, 41, 41, 41, 41, 36, 36, 36, 36, null, null, 41], [null, null, null, null, null, null, null, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 36, 36,
-                            37, 37, 36, 37], [null, null, null, null, null, null, null, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 13, 13, 13, 13, 13, 13], [null, null, null, null, null, null, null, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 41, 41, 41, 13, 13, 13, 13, 13], [null, null, null, null, null, null, null, 42, 42, 42, 42, 42, null, null, 42, 42, 42, 42, null, null, 41, null, null, 41, 13, 41, 13, 13, 13, null, null, 42, 42, null, 42], [null, null, null, null, null, null, null, null, null, null, null, 42, 42, 42, 42, null, null, null, 41, null, 41, 41, null, 41, 41, 41, 41, 13, 13, null, null, 42, 42, 42, 42],
-                        [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 41, null, null, null, null, null, null, 41, 41, 41, 41, 13, 13, 42, 42, 42, 42, 42, 42, 42], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, 41, null, 41, 41, null, null, null, null, 41, null, 41, null, null, 41, 13, 42, 42, 42, 42, 42, 42], [null, null, null, null, null, null, null, null, null, null, null, null, 41, 41, null, 41, 41, 41, 41, null, null, null, 41, 41, 41, null, null, 41, 42, 42, 42, 42, 42, 42, 42], [null, null, null, null, null, null, null, null, null, null, null,
-                            null, null, null, 41, null, 41, null, null, 41, 41, 41, null, 41, 41, null, 41, 42, 42, 42, 42, 42, 42, 42, 42], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 41, null, 41, 41, 41, 41, 41, 41, null, null, 41, 41], [null, null, null, null, null, null, null, null, null, null, null, null, null, 13, 13, 13, null, 13, 13, 13, 41, null, 13, null, null, 41, null, 41], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 13, null, 13, 41, null, 13, 13, null, null, 13, 41], [null, null, null, null, null, null,
-                            null, null, null, null, null, null, null, null, null, null, null, null, 13, null, null, null, 13, 41, 13, null, null, 41, 41]]
-                }
-            }],
-            We: [],
-            ha: {width: 509, height: 358, scaleStrategy: "2"}
-        };
-        var f = null;
-        h.ga.aa = function () {
-            null == f && (f = new g(d), d = null);
-            return f
-        }
-    }
-};
-k.resourceCache = {
-    code: function (h, g) {
-        var e = {};
-        g.get = function (c) {
-            return e[c]
-        };
-        g.clear = function (c) {
-            c ? delete e[c] : e = {}
-        };
-        g.set = function (c, a) {
-            e[c] || (e[c] = a)
-        };
-        g.has = function (c) {
-            return !!e[c]
-        };
-        g.getAll = function () {
-            return e
-        }
-    }
-};
-k.resourceLoader = {
-    code: function (h, g) {
-        g.Qc = function () {
-            var e = this, c = p("utils"), a = p("renderer").aa(), b = p("bundle").aa(), d = p("resourceCache"), f = p("soundManager").aa(), l = new c.Oc;
-            l.kb = function () {
-                e.Hb && e.Hb()
-            };
-            this.pc = function (f) {
-                if (!d.has(f)) {
-                    var c = b.ua.fb ? b.ua.data[f] : "./" + f;
-                    a.getContext().qc(c, {type: b.ua.fb ? "base64" : "", fileName: f}, function (a) {
-                        d.set(f, a);
-                        l.vc()
-                    });
-                    l.Yb()
-                }
-            };
-            this.Db = function (a) {
-                d.has(a) || (f.Db(b.ua.fb ? b.ua.data[a] : "./" + a, {type: b.ua.fb ? "base64" : ""}, function (b) {
-                    d.set(a, b);
-                    l.vc()
-                }), l.Yb())
-            };
-            this.Hb = null;
-            this.start = function () {
-                l.start()
-            }
-        }
-    }
-};
-k.device = {
-    code: function (h, g) {
-        g.$b = navigator.Ne ? window.devicePixelRatio || 1 : 1
-    }
-};
-k.index = {
-    code: function () {
-        var h = p("bundle").aa();
-        h.Kd();
-        if (!h.Mb.size())throw"at least one scene must be created";
-        var g = p("renderer").aa(), e = p("sceneManager").aa();
-        p("keyboard").aa();
-        window.addEventListener("load", function () {
-            document.body.ontouchstart = function (c) {
-                c.preventDefault();
-                return !1
-            };
-            g.eb();
-            p("mouse").aa();
-            e.Nb(h.Mb.get(0))
-        })
-    }
-};
-k.audioPlayer = {
-    code: function (h, g) {
-        g.Dc = function (e) {
-            var c = !0, a = this, b = null, d = !1;
-            e || (e = window.Audio && new window.Audio, d = !0);
-            this.play = function (f, l) {
-                c = !1;
-                e && (d ? (console.log("used html audio", f), e.src = f, e.play()) : (b = e.createBufferSource(), b.buffer = f, b.loop = l, b.connect(e.destination), b.start(0), b.onended = function () {
-                    a.stop()
-                }))
-            };
-            this.stop = function () {
-                e && (b && (b.stop(), b.disconnect(e.destination)), b = null, c = !0)
-            };
-            this.Bd = function () {
-                return c
-            }
-        }
-    }
-};
-k.audioSet = {
-    code: function (h, g) {
-        var e = p("audioPlayer").Dc;
-        g.Ec = function (c, a) {
-            for (var b = [], d = 0; d < a; d++)b.push(new e(c));
-            this.ud = function () {
-                for (var f = 0; f < a; f++)if (b[f].Bd())return b[f];
-                return null
-            }
-        }
-    }
-};
-k.soundManager = {
-    code: function (h) {
-        function g() {
-            function b(b, f) {
-                if (a) {
-                    var d = l(b);
-                    a.decodeAudioData(d).then(function (a) {
-                        f(a)
-                    })
-                } else f(b)
-            }
+modules['keyboard'] = {code: function(module,exports){
+	var Keyboard = function(){
+	
+	    var buffer = {};
+	    var KEY_PRESSED = 1;
+	    var KEY_JUST_PRESSED = 2;
+	    var KEY_RELEASED = 0;
+	    var KEY_JUST_RELEASED = -1;
+	    var self = this;
+	
+	    this.KEY_UP = 38;
+	    this.KEY_DOWN = 40;
+	    this.KEY_LEFT = 37;
+	    this.KEY_RIGHT = 39;
+	
+	    this.emulatePress = function(code){
+	        buffer[code] = KEY_PRESSED;
+	    };
+	
+	    this.emulateRelease = function(code){
+	        buffer[code] = KEY_JUST_RELEASED;
+	    };
+	
+	    this.isPressed = function(key){
+	        return buffer[key]>KEY_RELEASED;
+	    };
+	
+	    this.isJustPressed = function(key){
+	        return buffer[key]==KEY_JUST_PRESSED;
+	    };
+	
+	    this.isReleased = function(key) {
+	        return  buffer[key]<=KEY_RELEASED || !buffer[key];
+	    };
+	
+	    this.isJustReleased = function(key) {
+	        return buffer[key] == KEY_JUST_RELEASED;
+	    };
+	
+	    this.update = function(){
+	        if (window.canceled) return
+	        [
+	            this.KEY_UP,
+	            this.KEY_DOWN,
+	            this.KEY_LEFT,
+	            this.KEY_RIGHT
+	        ].forEach(function(key){
+	                if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
+	                else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
+	        });
+	    };
+	
+	    window.addEventListener('keydown',function(e){
+	        var code = e.keyCode;
+	        switch (code) {
+	            case self.KEY_UP:
+	            case self.KEY_DOWN:
+	            case self.KEY_LEFT:
+	            case self.KEY_RIGHT:
+	                buffer[code] = KEY_PRESSED;
+	                break;
+	        }
+	    });
+	
+	    window.addEventListener('keyup',function(e){
+	        var code = e.keyCode;
+	        switch (code) {
+	            case self.KEY_UP:
+	            case self.KEY_DOWN:
+	            case self.KEY_LEFT:
+	            case self.KEY_RIGHT:
+	                buffer[code] = KEY_JUST_RELEASED;
+	                break;
+	        }
+	    });
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Keyboard();
+	    return instance;
+	};
+}};
 
-            function f(b, f) {
-                var d = new XMLHttpRequest;
-                d.open("GET", b, !0);
-                d.responseType = "arraybuffer";
-                d.setRequestHeader("Accept-Ranges", "bytes");
-                d.setRequestHeader("Content-Range", "bytes");
-                d.onload = function () {
-                    a ? a.decodeAudioData(d.response, function (a) {
-                        f(a)
-                    }) : f(b)
-                };
-                d.onerror = function () {
-                    throw"can not load sound with url " + b;
-                };
-                d.send()
-            }
+modules['mouse'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	var renderer = require('renderer').instance();
+	var mathEx = require('mathEx');
+	var sceneManager = require('sceneManager').instance();
+	var device = require('device');
+	
+	var objectsCaptured = {};
+	
+	var Mouse = function(){
+	
+	    var self = this;
+	    var gameProps = bundle.gameProps;
+	    var globalScale = bundle.gameProps.globalScale;
+	    var canvas = renderer.getCanvas();
+	
+	    if (device.isTouch) {
+	        canvas.ontouchstart = function(e){
+	            var l = e.touches.length;
+	            while (l--){
+	                resolveClick(e.touches[l]);
+	            }
+	        };
+	        canvas.ontouchend = canvas.ontouchcancel = function(e){
+	            var l = e.changedTouches.length;
+	            while (l--){
+	                resolveMouseUp(e.changedTouches[l]);
+	            }
+	        };
+	        canvas.ontouchmove = function(e){
+	            var l = e.touches.length;
+	            while (l--){
+	                resolveMouseMove(e.touches[l]);
+	            }
+	        }
+	    } else {
+	        canvas.onmousedown = function(e){
+	            (e.button === 0) && resolveClick(e);
+	        };
+	        canvas.onmouseup = function(e){
+	            resolveMouseUp(e);
+	        };
+	        canvas.onmousemove = function(e){
+	            resolveMouseMove(e);
+	        }
+	    }
+	
+	    var resolveScreenPoint = function(e){
+	        return {
+	            x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
+	            y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
+	            id: e.identifier || 0
+	        };
+	    };
+	
+	    var triggerEvent = function(e,name){
+	        var scene = sceneManager.getCurrScene();
+	        var point = resolveScreenPoint(e);
+	        scene._layers.someReversed(function(l){
+	            var found = false;
+	            l._gameObjects.someReversed(function(g){
+	                if (
+	                    mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
+	                ) {
+	                    g.trigger(name,{
+	                        screenX:point.x,
+	                        screenY:point.y,
+	                        objectX:point.x - g.pos.x,
+	                        objectY:point.y - g.pos.y,
+	                        id:point.id
+	                    });
+	                    point.object = g;
+	                    return found = true;
+	                }
+	            });
+	            return found;
+	        });
+	        scene.trigger(name,{
+	            screenX:point.x,
+	            screenY:point.y,
+	            id:point.id,
+	            target:point.object
+	        });
+	        return point;
+	    };
+	
+	    var resolveClick = function(e){
+	        if (window.canceled) return
+	        var point = triggerEvent(e,'click');
+	        triggerEvent(e,'mouseDown');
+	    };
+	
+	    var resolveMouseMove = function(e){
+	        if (window.canceled) return
+	        var point = triggerEvent(e,'mouseMove');
+	        var lastMouseDownObject = objectsCaptured[point.id];
+	        if (lastMouseDownObject && lastMouseDownObject!=point.object) {
+	            lastMouseDownObject.trigger('mouseLeave');
+	            delete objectsCaptured[point.id];
+	        }
+	        if (point.object && lastMouseDownObject!=point.object) {
+	            point.object.trigger('mouseEnter');
+	            objectsCaptured[point.id] = point.object;
+	        }
+	
+	    };
+	
+	    var resolveMouseUp = function(e){
+	        if (window.canceled) return
+	        var scene = sceneManager.getCurrScene();
+	        var point = triggerEvent(e,'mouseUp');
+	        var lastMouseDownObject = objectsCaptured[point.id];
+	        if (!lastMouseDownObject) return;
+	        lastMouseDownObject.trigger('mouseUp');
+	        delete objectsCaptured[point.id];
+	    };
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Mouse();
+	    return instance;
+	};
+}};
 
-            function l(a) {
-                a = window.atob(a);
-                for (var b = a.length,
-                         f = new Uint8Array(b), d = 0; d < b; d++)f[d] = a.charCodeAt(d);
-                return f.buffer
-            }
+modules['bundle'] = {code: function(module,exports){
+	
+	var collections = require('collections');
+	var consts = require('consts');
+	var utils = require('utils');
+	var behaviour = require('behaviour',{ignoreFail:true});
+	
+	var Bundle = function(data){
+	
+	    this.spriteSheetList = new collections.List();
+	    this.gameObjectList = new collections.List();
+	    this.frameAnimationList = new collections.List();
+	    this.layerList = new collections.List();
+	    this.sceneList = new collections.List();
+	    this.layerList = new collections.List();
+	    this.fontList = new collections.List();
+	    this.soundList = new collections.List();
+	    this.particleSystemList = new collections.List();
+	    this.gameProps = {};
+	
+	    var self = this;
+	
+	    var toDataSource = function(ResourceClass,dataList,resourceList){
+	        resourceList.clear();
+	        dataList.forEach(function(item){
+	            resourceList.add(new ResourceClass(item));
+	        });
+	    };
+	
+	
+	    this.prepare = function(_data){
+	        data = data || _data;
+	        self.gameProps = data.gameProps;
+	        consts.RESOURCE_NAMES.forEach(function(itm){
+	            toDataSource(
+	                require(itm)[utils.capitalize(itm)],
+	                data[itm],
+	                self[itm+'List']);
+	        });
+	        data = null;
+	    };
+	
+	    var applyIndividualBehaviour = function(model){
+	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
+	        if (behaviourFn) {
+	            var exports = {};
+	            behaviourFn(exports,model);
+	            model.__updateIndividualBehaviour__ = function(time){
+	                exports.onUpdate(time);
+	            }
+	        } else {
+	            model.__updateIndividualBehaviour__ = consts.noop;
+	        }
+	
+	    };
+	
+	    var applyCommonBehaviour = function(model){
+	
+	        if (behaviour.fake) return; // this is editor mode
+	        var exportsList = [];
+	        if (!model._commonBehaviour || !model._commonBehaviour.size()) {
+	            model.__updateCommonBehaviour__ = consts.noop;
+	            return;
+	        }
+	        model._commonBehaviour.forEach(function(cb){
+	            var module = {};
+	            module.exports = {};
+	            var exports = module.exports;
+	            behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
+	            exportsList.push(exports);
+	        });
+	        model.__updateCommonBehaviour__ = function(){
+	            exportsList.forEach(function(item){
+	                item.onUpdate();
+	            });
+	        }
+	    };
+	
+	    this.applyBehaviourAll = function(){
+	        self.sceneList.forEach(function(scene){
+	            scene.__onResourcesReady();
+	            self.applyBehaviour(scene);
+	            scene._layers.forEach(function(layer){
+	                layer._gameObjects.forEach(function(gameObject){
+	                    self.applyBehaviour(gameObject);
+	                });
+	            });
+	        });
+	    };
+	
+	    this.applyBehaviour = function(model){
+	        applyCommonBehaviour(model);
+	        applyIndividualBehaviour(model);
+	    };
+	
+	    this.embeddedResources = {};
+	    this.embeddedResources.data = {};
+	    this.embeddedResources.isEmbedded = false;
+	
+	};
+	
+	var data;
+	
+	data = {
+	
+	
+	    sound:[],
+	
+	    spriteSheet:[
+	    {
+	        "resourcePath": "resources/spriteSheet/walker.png",
+	        "name": "walker",
+	        "width": 288,
+	        "height": 256,
+	        "numOfFramesH": 9,
+	        "numOfFramesV": 4,
+	        "type": "spriteSheet",
+	        "id": "9996_3491_187"
+	    },
+	    {
+	        "resourcePath": "resources/spriteSheet/tiles.jpg",
+	        "name": "tiles",
+	        "width": 230,
+	        "height": 204,
+	        "numOfFramesH": 9,
+	        "numOfFramesV": 8,
+	        "type": "spriteSheet",
+	        "id": "4596_9248_37"
+	    }
+	],
+	
+	    frameAnimation:[
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "left",
+	        "frames": [
+	            17,
+	            16,
+	            15,
+	            14,
+	            13,
+	            12,
+	            11,
+	            10
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "6738_3211_190"
+	    },
+	    {
+	        "name": "right",
+	        "frames": [
+	            19,
+	            20,
+	            21,
+	            22,
+	            23,
+	            24,
+	            25,
+	            26
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "2354_0498_191"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "up",
+	        "frames": [
+	            28,
+	            29,
+	            30,
+	            31,
+	            32,
+	            33,
+	            34,
+	            35
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "0234_8195_192"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "down",
+	        "frames": [
+	            28,
+	            29,
+	            30,
+	            31,
+	            32,
+	            33,
+	            34,
+	            35
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "7956_1514_193"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "idleLeft",
+	        "frames": [
+	            9
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "2209_6472_198"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "idleRight",
+	        "frames": [
+	            18
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "0429_4224_199"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "idleUp",
+	        "frames": [
+	            0
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "1332_6863_304"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "idleDown",
+	        "frames": [
+	            27
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "5583_9263_305"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "qq",
+	        "frames": [
+	            1,
+	            2
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "1849_7930_327"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "ww",
+	        "frames": [
+	            1,
+	            2
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "6145_9698_332"
+	    },
+	    {
+	        "_timeForOneFrame": 0,
+	        "name": "ee",
+	        "frames": [
+	            1,
+	            2
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "7690_6966_337"
+	    },
+	    {
+	        "name": "rr",
+	        "frames": [
+	            1,
+	            2
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "8039_0518_342"
+	    },
+	    {
+	        "name": "idleDown",
+	        "frames": [
+	            27
+	        ],
+	        "type": "frameAnimation",
+	        "duration": 1000,
+	        "id": "0869_2844_367"
+	    }
+	],
+	
+	    font:[
+	    {
+	        "name": "default",
+	        "fontContext": {
+	            "symbols": {
+	                "0": {
+	                    "x": 240,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "1": {
+	                    "x": 255,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "2": {
+	                    "x": 270,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "3": {
+	                    "x": 285,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "4": {
+	                    "x": 301,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "5": {
+	                    "x": 0,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "6": {
+	                    "x": 15,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "7": {
+	                    "x": 30,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "8": {
+	                    "x": 45,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "9": {
+	                    "x": 60,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                " ": {
+	                    "x": 0,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "!": {
+	                    "x": 15,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "\"": {
+	                    "x": 30,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "#": {
+	                    "x": 45,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "$": {
+	                    "x": 60,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "%": {
+	                    "x": 75,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "&": {
+	                    "x": 90,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "'": {
+	                    "x": 105,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "(": {
+	                    "x": 120,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                ")": {
+	                    "x": 135,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "*": {
+	                    "x": 150,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "+": {
+	                    "x": 165,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                ",": {
+	                    "x": 180,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "-": {
+	                    "x": 195,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                ".": {
+	                    "x": 210,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "/": {
+	                    "x": 225,
+	                    "y": 0,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                ":": {
+	                    "x": 75,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                ";": {
+	                    "x": 90,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "<": {
+	                    "x": 105,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "=": {
+	                    "x": 120,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                ">": {
+	                    "x": 135,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "?": {
+	                    "x": 150,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "@": {
+	                    "x": 165,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "A": {
+	                    "x": 180,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "B": {
+	                    "x": 195,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "C": {
+	                    "x": 210,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "D": {
+	                    "x": 225,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "E": {
+	                    "x": 240,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "F": {
+	                    "x": 255,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "G": {
+	                    "x": 270,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "H": {
+	                    "x": 285,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "I": {
+	                    "x": 301,
+	                    "y": 29,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "J": {
+	                    "x": 0,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "K": {
+	                    "x": 15,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "L": {
+	                    "x": 30,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "M": {
+	                    "x": 45,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "N": {
+	                    "x": 60,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "O": {
+	                    "x": 75,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "P": {
+	                    "x": 90,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Q": {
+	                    "x": 105,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "R": {
+	                    "x": 120,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "S": {
+	                    "x": 135,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "T": {
+	                    "x": 150,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "U": {
+	                    "x": 165,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "V": {
+	                    "x": 180,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "W": {
+	                    "x": 195,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "X": {
+	                    "x": 210,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Y": {
+	                    "x": 225,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Z": {
+	                    "x": 240,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "[": {
+	                    "x": 255,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "\\": {
+	                    "x": 270,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "]": {
+	                    "x": 285,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "^": {
+	                    "x": 301,
+	                    "y": 58,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "_": {
+	                    "x": 0,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "`": {
+	                    "x": 15,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "a": {
+	                    "x": 30,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "b": {
+	                    "x": 45,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "c": {
+	                    "x": 60,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "d": {
+	                    "x": 75,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "e": {
+	                    "x": 90,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "f": {
+	                    "x": 105,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "g": {
+	                    "x": 120,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "h": {
+	                    "x": 135,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "i": {
+	                    "x": 150,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "j": {
+	                    "x": 165,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "k": {
+	                    "x": 180,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "l": {
+	                    "x": 195,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "m": {
+	                    "x": 210,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "n": {
+	                    "x": 225,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "o": {
+	                    "x": 240,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "p": {
+	                    "x": 255,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "q": {
+	                    "x": 270,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "r": {
+	                    "x": 285,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "s": {
+	                    "x": 301,
+	                    "y": 87,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "t": {
+	                    "x": 0,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "u": {
+	                    "x": 15,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "v": {
+	                    "x": 30,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "w": {
+	                    "x": 45,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "x": {
+	                    "x": 60,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "y": {
+	                    "x": 75,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "z": {
+	                    "x": 90,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "{": {
+	                    "x": 105,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "|": {
+	                    "x": 120,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "}": {
+	                    "x": 135,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "~": {
+	                    "x": 150,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "А": {
+	                    "x": 165,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Б": {
+	                    "x": 180,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "В": {
+	                    "x": 195,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Г": {
+	                    "x": 210,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Д": {
+	                    "x": 225,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Е": {
+	                    "x": 240,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ж": {
+	                    "x": 255,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "З": {
+	                    "x": 270,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "И": {
+	                    "x": 285,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Й": {
+	                    "x": 301,
+	                    "y": 116,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "К": {
+	                    "x": 0,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Л": {
+	                    "x": 15,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "М": {
+	                    "x": 30,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Н": {
+	                    "x": 45,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "О": {
+	                    "x": 60,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "П": {
+	                    "x": 75,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Р": {
+	                    "x": 90,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "С": {
+	                    "x": 105,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Т": {
+	                    "x": 120,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "У": {
+	                    "x": 135,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ф": {
+	                    "x": 150,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Х": {
+	                    "x": 165,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ц": {
+	                    "x": 180,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ч": {
+	                    "x": 195,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ш": {
+	                    "x": 210,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Щ": {
+	                    "x": 225,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ъ": {
+	                    "x": 240,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ы": {
+	                    "x": 255,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ь": {
+	                    "x": 270,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Э": {
+	                    "x": 285,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Ю": {
+	                    "x": 301,
+	                    "y": 145,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "Я": {
+	                    "x": 0,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "а": {
+	                    "x": 15,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "б": {
+	                    "x": 30,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "в": {
+	                    "x": 45,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "г": {
+	                    "x": 60,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "д": {
+	                    "x": 75,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "е": {
+	                    "x": 90,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ж": {
+	                    "x": 105,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "з": {
+	                    "x": 120,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "и": {
+	                    "x": 135,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "й": {
+	                    "x": 150,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "к": {
+	                    "x": 165,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "л": {
+	                    "x": 180,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "м": {
+	                    "x": 195,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "н": {
+	                    "x": 210,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "о": {
+	                    "x": 225,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "п": {
+	                    "x": 240,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "р": {
+	                    "x": 255,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "с": {
+	                    "x": 270,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "т": {
+	                    "x": 285,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "у": {
+	                    "x": 301,
+	                    "y": 174,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ф": {
+	                    "x": 0,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "х": {
+	                    "x": 15,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ц": {
+	                    "x": 30,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ч": {
+	                    "x": 45,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ш": {
+	                    "x": 60,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "щ": {
+	                    "x": 75,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ъ": {
+	                    "x": 90,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ы": {
+	                    "x": 105,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ь": {
+	                    "x": 120,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "э": {
+	                    "x": 135,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ю": {
+	                    "x": 150,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "я": {
+	                    "x": 165,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ѐ": {
+	                    "x": 180,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ё": {
+	                    "x": 195,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ђ": {
+	                    "x": 210,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ѓ": {
+	                    "x": 225,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "є": {
+	                    "x": 240,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ѕ": {
+	                    "x": 255,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "і": {
+	                    "x": 270,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ї": {
+	                    "x": 285,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ј": {
+	                    "x": 301,
+	                    "y": 203,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "љ": {
+	                    "x": 0,
+	                    "y": 232,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "њ": {
+	                    "x": 15,
+	                    "y": 232,
+	                    "width": 15,
+	                    "height": 29
+	                },
+	                "ћ": {
+	                    "x": 30,
+	                    "y": 232,
+	                    "width": 15,
+	                    "height": 29
+	                }
+	            },
+	            "width": 320,
+	            "height": 261
+	        },
+	        "type": "font",
+	        "fontColor": [
+	            52,
+	            183,
+	            11
+	        ],
+	        "fontSize": 25,
+	        "fontFamily": "Monospace",
+	        "resourcePath": "resources/font/default.png",
+	        "id": "6991_3497_4"
+	    }
+	],
+	
+	    gameObject:[
+	    {
+	        "spriteSheetId": "9996_3491_187",
+	        "pos": {
+	            "x": 0,
+	            "y": 0
+	        },
+	        "scale": {
+	            "x": 1,
+	            "y": 1
+	        },
+	        "vel": {
+	            "x": 0,
+	            "y": 0
+	        },
+	        "currFrameIndex": 0,
+	        "_sprPosX": 0,
+	        "_sprPosY": 0,
+	        "name": "walker",
+	        "width": 32,
+	        "height": 64,
+	        "type": "gameObject",
+	        "commonBehaviour": [
+	            {
+	                "name": "control4dir",
+	                "parameters": {
+	                    "velocity": "202",
+	                    "walkLeftAnimation": "left",
+	                    "walkRightAnimation": "right",
+	                    "walkUpAnimation": "up",
+	                    "walkDownAnimation": "down",
+	                    "idleLeftAnimation": "idleLeft",
+	                    "idleRightAnimation": "idleRight",
+	                    "idleUpAnimation": "idleUp",
+	                    "idleDownAnimation": "idleDown"
+	                },
+	                "description": "control character with cursor to walk up, down, left and right",
+	                "id": "1399_0090_189",
+	                "type": "commonBehaviour"
+	            }
+	        ],
+	        "frameAnimationIds": [
+	            "6738_3211_190",
+	            "2354_0498_191",
+	            "0234_8195_192",
+	            "7956_1514_193",
+	            "2209_6472_198",
+	            "0429_4224_199",
+	            "1332_6863_304",
+	            "0869_2844_367"
+	        ],
+	        "rigid": 1,
+	        "groupName": "",
+	        "angle": 0,
+	        "id": "8971_6636_188"
+	    }
+	],
+	
+	    layer:[
+	    {
+	        "name": "mainLayer",
+	        "type": "layer",
+	        "gameObjectProps": [
+	            {
+	                "spriteSheetId": "9996_3491_187",
+	                "pos": {
+	                    "x": 103,
+	                    "y": 152
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "vel": {
+	                    "x": 0,
+	                    "y": 0
+	                },
+	                "currFrameIndex": 0,
+	                "_sprPosX": 0,
+	                "_sprPosY": 0,
+	                "name": "walker",
+	                "width": 32,
+	                "height": 64,
+	                "type": "gameObject",
+	                "commonBehaviour": [
+	                    {
+	                        "name": "control4dir",
+	                        "parameters": {
+	                            "velocity": 100,
+	                            "walkLeftAnimation": "left",
+	                            "walkRightAnimation": "right",
+	                            "walkUpAnimation": "up",
+	                            "walkDownAnimation": "down",
+	                            "idleLeftAnimation": "",
+	                            "idleRightAnimation": "",
+	                            "idleUpAnimation": "",
+	                            "idleDownAnimation": ""
+	                        },
+	                        "description": "control character with cursor to walk up, down, left and right",
+	                        "id": "1399_0090_189",
+	                        "type": "commonBehaviour"
+	                    }
+	                ],
+	                "frameAnimationIds": [
+	                    "6738_3211_190",
+	                    "2354_0498_191",
+	                    "0234_8195_192",
+	                    "7956_1514_193"
+	                ],
+	                "rigid": 1,
+	                "groupName": "",
+	                "angle": 0,
+	                "protoId": "8971_6636_188",
+	                "id": "4428_2087_197"
+	            }
+	        ],
+	        "id": "1186_9522_195"
+	    }
+	],
+	
+	    scene:[
+	    {
+	        "name": "mainScene",
+	        "type": "scene",
+	        "layerProps": [
+	            {
+	                "type": "layer",
+	                "protoId": "1186_9522_195",
+	                "id": "4353_9549_196"
+	            }
+	        ],
+	        "colorBG": [
+	            236,
+	            243,
+	            247
+	        ],
+	        "id": "2345_5808_194",
+	        "useBG": 0,
+	        "tileMap": {
+	            "_spriteSheet": {
+	                "resourcePath": "resources/spriteSheet/walker.png",
+	                "name": "walker",
+	                "width": 288,
+	                "height": 256,
+	                "numOfFramesH": 9,
+	                "numOfFramesV": 4,
+	                "type": "spriteSheet",
+	                "id": "9996_3491_187"
+	            },
+	            "spriteSheetId": "4596_9248_37",
+	            "width": 36,
+	            "height": 37,
+	            "data": [
+	                {
+	                    "0": 13,
+	                    "1": 22,
+	                    "2": 22,
+	                    "3": 22,
+	                    "4": 22,
+	                    "5": 22,
+	                    "6": 22,
+	                    "7": 22,
+	                    "8": 22,
+	                    "9": 22,
+	                    "10": 22,
+	                    "11": 22,
+	                    "12": 20,
+	                    "13": 22,
+	                    "14": 22,
+	                    "15": 22,
+	                    "16": 20,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 41,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 41,
+	                    "23": 41,
+	                    "24": 41,
+	                    "25": 41,
+	                    "26": 41,
+	                    "27": 41,
+	                    "28": 41,
+	                    "29": 41,
+	                    "30": 41,
+	                    "31": 41,
+	                    "32": 41,
+	                    "33": 41,
+	                    "34": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 13,
+	                    "1": 13,
+	                    "16": 22,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 41,
+	                    "24": 41,
+	                    "25": 41,
+	                    "26": 41,
+	                    "27": 41,
+	                    "28": 41,
+	                    "29": 41,
+	                    "30": 41,
+	                    "31": 41,
+	                    "33": 41,
+	                    "34": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 22,
+	                    "6": 4,
+	                    "7": 4,
+	                    "8": 4,
+	                    "9": 4,
+	                    "10": 4,
+	                    "16": 22,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 41,
+	                    "20": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 20,
+	                    "6": 4,
+	                    "7": 4,
+	                    "8": 4,
+	                    "9": 4,
+	                    "10": 4,
+	                    "16": 22,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 6,
+	                    "20": 41,
+	                    "34": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 22,
+	                    "6": 4,
+	                    "7": 4,
+	                    "8": 4,
+	                    "9": 4,
+	                    "10": 4,
+	                    "15": 20,
+	                    "16": 20,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 6,
+	                    "20": 41,
+	                    "21": 41,
+	                    "34": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 22,
+	                    "6": 11,
+	                    "7": 4,
+	                    "8": 4,
+	                    "9": 4,
+	                    "10": 4,
+	                    "15": 22,
+	                    "16": 22,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 6,
+	                    "20": 41,
+	                    "21": 41,
+	                    "34": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 22,
+	                    "6": 11,
+	                    "7": 4,
+	                    "8": 4,
+	                    "9": 11,
+	                    "10": 4,
+	                    "15": 10,
+	                    "16": 22,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 41,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 41,
+	                    "23": 41,
+	                    "28": 32,
+	                    "34": 41,
+	                    "35": 27
+	                },
+	                {
+	                    "0": 22,
+	                    "6": 11,
+	                    "7": 11,
+	                    "8": 11,
+	                    "9": 11,
+	                    "10": 5,
+	                    "11": 18,
+	                    "12": 18,
+	                    "13": 18,
+	                    "15": 18,
+	                    "16": 22,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 41,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 41,
+	                    "23": 41,
+	                    "24": 41,
+	                    "25": 41,
+	                    "26": 41,
+	                    "27": 41,
+	                    "28": 41,
+	                    "30": 32,
+	                    "31": 32,
+	                    "32": 11,
+	                    "34": 41,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 22,
+	                    "10": 18,
+	                    "15": 10,
+	                    "16": 20,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 6,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 41,
+	                    "23": 41,
+	                    "24": 41,
+	                    "25": 41,
+	                    "26": 41,
+	                    "27": 41,
+	                    "28": 41,
+	                    "29": 32,
+	                    "31": 32,
+	                    "32": 11,
+	                    "33": 11,
+	                    "34": 11,
+	                    "35": 41
+	                },
+	                {
+	                    "0": 22,
+	                    "1": 41,
+	                    "2": 0,
+	                    "3": 0,
+	                    "9": 13,
+	                    "10": 18,
+	                    "14": 19,
+	                    "15": 20,
+	                    "16": 20,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 6,
+	                    "20": 32,
+	                    "21": 32,
+	                    "22": 32,
+	                    "23": 41,
+	                    "24": 41,
+	                    "25": 41,
+	                    "26": 32,
+	                    "27": 41,
+	                    "28": 41,
+	                    "29": 11,
+	                    "30": 32,
+	                    "31": 11,
+	                    "32": 11,
+	                    "33": 11,
+	                    "34": 11,
+	                    "35": 41,
+	                    "37": 11
+	                },
+	                {
+	                    "0": 41,
+	                    "1": 41,
+	                    "2": 41,
+	                    "3": 13,
+	                    "4": 13,
+	                    "5": 13,
+	                    "6": 13,
+	                    "7": 13,
+	                    "8": 13,
+	                    "9": 13,
+	                    "10": 18,
+	                    "11": 14,
+	                    "12": 14,
+	                    "15": 20,
+	                    "16": 20,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 6,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 32,
+	                    "23": 32,
+	                    "24": 32,
+	                    "25": 41,
+	                    "26": 32,
+	                    "27": 36,
+	                    "28": 41,
+	                    "29": 11,
+	                    "30": 11,
+	                    "31": 11,
+	                    "32": 11,
+	                    "33": 11,
+	                    "34": 11,
+	                    "35": 41,
+	                    "36": 11,
+	                    "37": 11
+	                },
+	                {
+	                    "0": 22,
+	                    "1": 41,
+	                    "2": 22,
+	                    "3": 22,
+	                    "4": 22,
+	                    "5": 22,
+	                    "6": 22,
+	                    "7": 22,
+	                    "8": 22,
+	                    "9": 22,
+	                    "10": 22,
+	                    "11": 14,
+	                    "12": 14,
+	                    "13": 22,
+	                    "14": 15,
+	                    "15": 15,
+	                    "16": 20,
+	                    "17": 6,
+	                    "18": 6,
+	                    "19": 13,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 41,
+	                    "23": 32,
+	                    "24": 32,
+	                    "25": 32,
+	                    "26": 32,
+	                    "27": 36,
+	                    "28": 32,
+	                    "29": 11,
+	                    "30": 11,
+	                    "31": 32,
+	                    "32": 11,
+	                    "34": 11,
+	                    "35": 11,
+	                    "37": 11,
+	                    "38": 11
+	                },
+	                [
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    14,
+	                    14,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    15,
+	                    13,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    36,
+	                    13,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    11,
+	                    11,
+	                    11
+	                ],
+	                [
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    32,
+	                    32,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    36,
+	                    41,
+	                    32,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    11,
+	                    11,
+	                    11
+	                ],
+	                [
+	                    11,
+	                    32,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    32,
+	                    null,
+	                    null,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    36,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    11,
+	                    11
+	                ],
+	                [
+	                    11,
+	                    32,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    32,
+	                    null,
+	                    null,
+	                    32,
+	                    32,
+	                    32,
+	                    null,
+	                    null,
+	                    null,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    41,
+	                    41,
+	                    41,
+	                    32,
+	                    null,
+	                    36,
+	                    36,
+	                    32,
+	                    null,
+	                    11,
+	                    null,
+	                    32
+	                ],
+	                [
+	                    11,
+	                    32,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    32,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    36,
+	                    36
+	                ],
+	                {
+	                    "0": 11,
+	                    "1": 32,
+	                    "2": 11,
+	                    "3": 11,
+	                    "4": 11,
+	                    "5": 11,
+	                    "7": 11,
+	                    "20": 41,
+	                    "21": 41,
+	                    "22": 41,
+	                    "23": 41,
+	                    "24": 41,
+	                    "27": 36,
+	                    "28": 36
+	                },
+	                [
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    32,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    36,
+	                    36
+	                ],
+	                [
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    32,
+	                    32,
+	                    41,
+	                    32,
+	                    41,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    12,
+	                    12,
+	                    12,
+	                    3,
+	                    3,
+	                    3,
+	                    3,
+	                    null,
+	                    36,
+	                    36,
+	                    41
+	                ],
+	                [
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    12,
+	                    12,
+	                    12,
+	                    12,
+	                    12,
+	                    3,
+	                    41,
+	                    3,
+	                    null,
+	                    36,
+	                    36,
+	                    41
+	                ],
+	                [
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    41,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    12,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    36,
+	                    36,
+	                    41,
+	                    null,
+	                    null,
+	                    41
+	                ],
+	                [
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    11,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    36,
+	                    36,
+	                    null,
+	                    null,
+	                    null,
+	                    41
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    36,
+	                    36,
+	                    36,
+	                    36,
+	                    null,
+	                    null,
+	                    41
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    36,
+	                    36,
+	                    37,
+	                    37,
+	                    36,
+	                    37
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    41,
+	                    41,
+	                    41,
+	                    13,
+	                    13,
+	                    13,
+	                    13,
+	                    13
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    13,
+	                    41,
+	                    13,
+	                    13,
+	                    13,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    null,
+	                    42
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    13,
+	                    13,
+	                    null,
+	                    null,
+	                    42,
+	                    42,
+	                    42,
+	                    42
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    13,
+	                    13,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    13,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    null,
+	                    41,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42,
+	                    42
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    41,
+	                    null,
+	                    null,
+	                    41,
+	                    41
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    13,
+	                    13,
+	                    13,
+	                    null,
+	                    13,
+	                    13,
+	                    13,
+	                    41,
+	                    null,
+	                    13,
+	                    null,
+	                    null,
+	                    41,
+	                    null,
+	                    41
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    13,
+	                    null,
+	                    13,
+	                    41,
+	                    null,
+	                    13,
+	                    13,
+	                    null,
+	                    null,
+	                    13,
+	                    41
+	                ],
+	                [
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    null,
+	                    13,
+	                    null,
+	                    null,
+	                    null,
+	                    13,
+	                    41,
+	                    13,
+	                    null,
+	                    null,
+	                    41,
+	                    41
+	                ]
+	            ]
+	        }
+	    }
+	],
+	
+	    particleSystem:[],
+	
+	    gameProps:{
+	    "width": 509,
+	    "height": 358,
+	    "scaleStrategy": "2"
+	}
+	
+	};
+	
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) {
+	        instance = new Bundle(data);
+	        data = null;
+	    }
+	    return instance;
+	};
+}};
 
-            var m = new c(a, 5);
-            this.Db = function (a, d, c) {
-                "base64" == d.type ? b(a, c) : f(a, c)
-            };
-            this.play = function (a, b) {
-                var f = m.ud();
-                f && f.play(e.zc.find({name: a}).ad, b)
-            }
-        }
+modules['resourceCache'] = {code: function(module,exports){
+	
+	var cache = {};
+	
+	exports.get = function(name){
+	    return cache[name];
+	};
+	
+	exports.clear = function(name){
+	    if (name) delete cache[name];
+	    else cache = {};
+	};
+	
+	exports.set = function(name,value){
+	    if (!cache[name]) cache[name] = value;
+	};
+	
+	exports.has = function(name){
+	    return !!cache[name];
+	};
+	
+	exports.getAll = function(){
+	   return cache;
+	};
+	
+	
+	
+	
+}};
 
-        var e = p("bundle").aa(), c = p("audioSet").Ec, a = window.Cc && new window.Cc, b = null;
-        h.ga.aa = function () {
-            null == b && (b = new g);
-            return b
-        }
-    }
-};
-k.collections = {
-    code: function (h, g) {
-        g.ia = function () {
-            var e = this;
-            this.da = [];
-            this.add = function (c) {
-                e.da.push(c);
-                return e
-            };
-            this.addAll = function (c) {
-                c.forEach(function (a) {
-                    e.da.push(a)
-                })
-            };
-            this.get = function (c) {
-                return e.da[c]
-            };
-            this.size = function () {
-                return e.da.length
-            };
-            this.getAll = function () {
-                return e.da
-            };
-            this.clear = function () {
-                e.da = [];
-                return e
-            };
-            this.forEach = function (c) {
-                for (var a = 0, b = this.da.length; a < b; a++)c(e.da[a], a)
-            };
-            this.some = function (c) {
-                for (var a = 0, b = this.da.length; a < b; a++)if (c(e.da[a], a))return !0;
-                return !1
-            };
-            this.yc = function (c) {
-                for (var a = this.da.length - 1; 0 <= a && !c(e.da[a], a); a--);
-            };
-            this.indexOf = function (c) {
-                var a = 0, b = !1;
-                e.da.some(function (d) {
-                    var f = !0;
-                    Object.keys(c).some(function (a) {
-                        if (c[a] != d[a])return f = !1, !0
-                    });
-                    if (f)return b = !0;
-                    a++
-                });
-                return b ? a : -1
-            };
-            this.remove = function (c) {
-                c && (c = e.indexOf(c), -1 < c && e.da.splice(c, 1))
-            };
-            this.find = function (c) {
-                return e.da[e.indexOf(c)]
-            };
-            this.pop = function () {
-                return e.da.pop()
-            };
-            this.bb = function (c, a) {
-                var b = this;
-                try {
-                    c.forEach(function (d) {
-                        b.add(new a(d))
-                    })
-                } catch (d) {
-                    console.error(d)
-                }
-            };
-            this.toJSON = function () {
-                function c(a) {
-                    a && a.Bc && delete a.Bc;
-                    if (!a.split) {
-                        for (var b in a)a[b] && a.hasOwnProperty(b) && c(a[b]);
-                        return a
-                    }
-                }
+modules['resourceLoader'] = {code: function(module,exports){
+	
+	exports.ResourceLoader = function(){
+	
+	    var self = this;
+	
+	    var Queue = require('queue').Queue;
+	    var renderer = require('renderer').instance();
+	    var bundle = require('bundle').instance();
+	    var cache = require('resourceCache');
+	    var soundManager = require('soundManager').instance();
+	
+	    var q = new Queue();
+	    q.onResolved = function(){
+	        self.onComplete && self.onComplete();
+	    };
+	
+	    this.loadImage = function(resourcePath) {
+	        if (cache.has(resourcePath)) return;
+	        var path = bundle.embeddedResources.isEmbedded?
+	            bundle.embeddedResources.data[resourcePath]:
+	            './'+resourcePath;
+	        renderer.
+	            getContext().
+	            loadTextureInfo(
+	            path,
+	            {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
+	            function(textureInfo){
+	                cache.set(resourcePath,textureInfo);
+	                q.resolveTask();
+	            });
+	        q.addTask();
+	    };
+	
+	    this.loadSound = function(resourcePath,name){
+	        if (cache.has(resourcePath)) return;
+	        var path = bundle.embeddedResources.isEmbedded?
+	            bundle.embeddedResources.data[resourcePath]:
+	            './'+resourcePath;
+	        soundManager.loadSound(
+	            path,
+	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
+	            function(buffer){
+	                console.log('loaded snd',name,buffer);
+	                cache.set(name,buffer);
+	                q.resolveTask();
+	            }
+	        );
+	        q.addTask();
+	    };
+	
+	    this.onComplete = null;
+	
+	    this.start = function(){
+	        q.start();
+	    };
+	
+	};
+}};
 
-                var a = [];
-                this.da.forEach(function (b) {
-                    a.push(c(b.toJSON()))
-                });
-                return a
-            }
-        };
-        g.Set = function () {
-            var e = this;
-            this.da = {};
-            this.add = function (c) {
-                this.has(c.id) || (e.da[c.id] = c)
-            };
-            this.get = function (c) {
-                return e.da[c.id]
-            };
-            this.has = function (c) {
-                return c in e.da
-            };
-            this.kd = function (c) {
-                Object.keys(c.da).forEach(function (a) {
-                    e.add(c.da[a])
-                })
-            };
-            this.gd = function () {
-                var c = [];
-                Object.keys(e.da).forEach(function (a) {
-                    c.push(e.da[a])
-                });
-                return c
-            }
-        }
-    }
-};
-k.mat4 = {
-    code: function (h, g) {
-        g.Re = function () {
-            return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-        };
-        g.Gd = function (e, c) {
-            return [2 / e, 0, 0, 0, 0, -2 / c, 0, 0, 0, 0, 2, 0, -1, 1, 0, 1]
-        };
-        g.jb = function (e, c, a) {
-            return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, e, c, a, 1]
-        };
-        g.Se = function (e) {
-            var c = Math.cos(e);
-            e = Math.sin(e);
-            return [1, 0, 0, 0, 0, c, e, 0, 0, -e, c, 0, 0, 0, 0, 1]
-        };
-        g.Hd = function (e) {
-            var c = Math.cos(e);
-            e = Math.sin(e);
-            return [c, 0, -e, 0, 0, 1, 0, 0, e, 0, c, 0, 0, 0, 0, 1]
-        };
-        g.Id = function (e) {
-            var c = Math.cos(e);
-            e = Math.sin(e);
-            return [c, e, 0, 0, -e, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-        };
-        g.ib = function (e,
-                         c, a) {
-            return [e, 0, 0, 0, 0, c, 0, 0, 0, 0, a, 0, 0, 0, 0, 1]
-        };
-        g.qa = function (e, c) {
-            var a = e[0], b = e[1], d = e[2], f = e[3], l = e[4], m = e[5], n = e[6], g = e[7], h = e[8], u = e[9], w = e[10], r = e[11], A = e[12], v = e[13], z = e[14], x = e[15], y = c[0], q = c[1], C = c[2], B = c[3], D = c[4], E = c[5], F = c[6], G = c[7], H = c[8], I = c[9], J = c[10], K = c[11], L = c[12], M = c[13], N = c[14], O = c[15];
-            return [a * y + b * D + d * H + f * L, a * q + b * E + d * I + f * M, a * C + b * F + d * J + f * N, a * B + b * G + d * K + f * O, l * y + m * D + n * H + g * L, l * q + m * E + n * I + g * M, l * C + m * F + n * J + g * N, l * B + m * G + n * K + g * O, h * y + u * D + w * H + r * L, h * q + u * E + w * I + r * M, h * C + u * F + w * J + r * N, h * B + u * G + w * K + r *
-            O, A * y + v * D + z * H + x * L, A * q + v * E + z * I + x * M, A * C + v * F + z * J + x * N, A * B + v * G + z * K + x * O]
-        }
-    }
-};
-k.mathEx = {
-    code: function (h, g) {
-        var e = p("vec2").Yc;
-        g.Cd = function (a, b, d) {
-            if (d) {
-                var f = new e(a.x - b.x - b.width / 2, a.y - b.y - b.height / 2);
-                f.Nd(f.td() - d);
-                a = {x: f.xd() + a.x, y: f.yd() + a.y}
-            }
-            return a.x > b.x && a.x < b.x + b.width && a.y > b.y && a.y < b.y + b.height
-        };
-        g.Dd = function (a, b) {
-            return !(b.x > a.x + a.width || b.x + b.width < a.x || b.y > a.y + a.height || b.y + b.height < a.y)
-        };
-        g.Xe = function (a) {
-            return 180 * a / Math.PI
-        };
-        g.de = function (a) {
-            return a * Math.PI / 180
-        };
-        g.vd = function (a, b) {
-            if (a > b) {
-                var d = a;
-                a = b;
-                b = d
-            }
-            d = Math.random() * (b - a) + a;
-            d > b ? d = b : d < a && (d = a);
-            return ~~d
-        };
-        g.Ke = function (a, b) {
-            var d = Math.atan2(b.y - a.y, b.x - a.x);
-            return {x: Math.cos(d), y: Math.sin(d)}
-        };
-        var c = {
-            Qe: function (a, b, d, f) {
-                return d * a / f + b
-            }, te: function (a, b, d, f) {
-                a /= f;
-                return d * a * a + b
-            }, Ce: function (a, b, d, f) {
-                a /= f;
-                return -d * a * (a - 2) + b
-            }, pe: function (a, b, d, f) {
-                a /= f / 2;
-                if (1 > a)return d / 2 * a * a + b;
-                a--;
-                return -d / 2 * (a * (a - 2) - 1) + b
-            }, ge: function (a, b, d, f) {
-                a /= f;
-                return d * a * a * a + b
-            }, ze: function (a, b, d, f) {
-                a /= f;
-                a--;
-                return d * (a * a * a + 1) + b
-            }, me: function (a, b, d, f) {
-                a /= f / 2;
-                if (1 > a)return d / 2 * a * a * a + b;
-                a -= 2;
-                return d / 2 * (a * a * a + 2) + b
-            }, ue: function (a, b, d,
-                             f) {
-                a /= f;
-                return d * a * a * a * a + b
-            }, De: function (a, b, d, f) {
-                a /= f;
-                a--;
-                return -d * (a * a * a * a - 1) + b
-            }, qe: function (a, b, d, f) {
-                a /= f / 2;
-                if (1 > a)return d / 2 * a * a * a * a + b;
-                a -= 2;
-                return -d / 2 * (a * a * a * a - 2) + b
-            }, ve: function (a, b, d, f) {
-                a /= f;
-                return d * a * a * a * a * a + b
-            }, Ee: function (a, b, d, f) {
-                a /= f;
-                a--;
-                return d * (a * a * a * a * a + 1) + b
-            }, re: function (a, b, d, f) {
-                a /= f / 2;
-                if (1 > a)return d / 2 * a * a * a * a * a + b;
-                a -= 2;
-                return d / 2 * (a * a * a * a * a + 2) + b
-            }, we: function (a, b, d, f) {
-                return -d * Math.cos(a / f * (Math.PI / 2)) + d + b
-            }, Fe: function (a, b, d, f) {
-                return d * Math.sin(a / f * (Math.PI / 2)) + b
-            }, se: function (a, b, d,
-                             f) {
-                return -d / 2 * (Math.cos(Math.PI * a / f) - 1) + b
-            }, ie: function (a, b, d, f) {
-                return d * Math.pow(2, 10 * (a / f - 1)) + b
-            }, Be: function (a, b, d, f) {
-                return d * (-Math.pow(2, -10 * a / f) + 1) + b
-            }, oe: function (a, b, d, f) {
-                a /= f / 2;
-                if (1 > a)return d / 2 * Math.pow(2, 10 * (a - 1)) + b;
-                a--;
-                return d / 2 * (-Math.pow(2, -10 * a) + 2) + b
-            }, fe: function (a, b, d, f) {
-                a /= f;
-                return -d * (Math.sqrt(1 - a * a) - 1) + b
-            }, ye: function (a, b, d, f) {
-                a /= f;
-                a--;
-                return d * Math.sqrt(1 - a * a) + b
-            }, le: function (a, b, d, f) {
-                a /= f / 2;
-                if (1 > a)return -d / 2 * (Math.sqrt(1 - a * a) - 1) + b;
-                a -= 2;
-                return d / 2 * (Math.sqrt(1 - a * a) + 1) + b
-            }, he: function (a,
-                             b, d, f) {
-                var c = 0, e = d;
-                if (0 == a)return b;
-                if (1 == (a /= f))return b + d;
-                c || (c = .3 * f);
-                e < Math.abs(d) ? (e = d, d = c / 4) : d = c / (2 * Math.PI) * Math.asin(d / e);
-                return -(e * Math.pow(2, 10 * --a) * Math.sin(2 * (a * f - d) * Math.PI / c)) + b
-            }, Ae: function (a, b, d, f) {
-                var c, e = 0, n = d;
-                if (0 == a)return b;
-                if (1 == (a /= f))return b + d;
-                e || (e = .3 * f);
-                n < Math.abs(d) ? (n = d, c = e / 4) : c = e / (2 * Math.PI) * Math.asin(d / n);
-                return n * Math.pow(2, -10 * a) * Math.sin(2 * (a * f - c) * Math.PI / e) + d + b
-            }, ne: function (a, b, d, f) {
-                var c, e = 0, n = d;
-                if (0 == a)return b;
-                if (2 == (a /= f / 2))return b + d;
-                e || (e = .3 * f * 1.5);
-                n < Math.abs(d) ?
-                    (n = d, c = e / 4) : c = e / (2 * Math.PI) * Math.asin(d / n);
-                return 1 > a ? -.5 * n * Math.pow(2, 10 * --a) * Math.sin(2 * (a * f - c) * Math.PI / e) + b : n * Math.pow(2, -10 * --a) * Math.sin(2 * (a * f - c) * Math.PI / e) * .5 + d + b
-            }, ee: function (a, b, d, f) {
-                return d * (a /= f) * a * (2.70158 * a - 1.70158) + b
-            }, xe: function (a, b, d, f) {
-                return d * ((a = a / f - 1) * a * (2.70158 * a + 1.70158) + 1) + b
-            }, je: function (a, b, d, f) {
-                var c = 1.70158;
-                return 1 > (a /= f / 2) ? d / 2 * a * a * (((c *= 1.525) + 1) * a - c) + b : d / 2 * ((a -= 2) * a * (((c *= 1.525) + 1) * a + c) + 2) + b
-            }, md: function (a, b, d, f) {
-                return d - c.ac(f - a, 0, d, f) + b
-            }, ac: function (a, b, d, f) {
-                return (a /=
-                    f) < 1 / 2.75 ? 7.5625 * d * a * a + b : a < 2 / 2.75 ? d * (7.5625 * (a -= 1.5 / 2.75) * a + .75) + b : a < 2.5 / 2.75 ? d * (7.5625 * (a -= 2.25 / 2.75) * a + .9375) + b : d * (7.5625 * (a -= 2.625 / 2.75) * a + .984375) + b
-            }, ke: function (a, b, d, f) {
-                return a < f / 2 ? .5 * c.md(2 * a, 0, d, f) + b : .5 * c.ac(2 * a - f, 0, d, f) + .5 * d + b
-            }
-        };
-        g.ld = c
-    }
-};
-k.utils = {
-    code: function (h, g) {
-        g.Oc = function () {
-            var e = this;
-            this.size = function () {
-                return c
-            };
-            this.kb = null;
-            var c = 0, a = 0;
-            this.Yb = function () {
-                c++
-            };
-            this.vc = function () {
-                a++;
-                c == a && e.kb && e.kb()
-            };
-            this.start = function () {
-                0 == this.size() && this.kb()
-            }
-        };
-        g.Te = function (e, c) {
-            Object.keys(c).forEach(function (a) {
-                e[a] = c[a]
-            })
-        };
-        g.clone = function (e) {
-            return Object.create(e)
-        };
-        g.jd = function (e) {
-            return e.substr(0, 1).toUpperCase() + e.substr(1)
-        };
-        g.fc = function (e) {
-            return "data:image/" + e.split(".").pop() + ";base64,"
-        }
-    }
-};
-k.vec2 = {
-    code: function (h, g) {
-        g.Yc = function (e, c) {
-            var a = e || 0, b = c || 0, d = 0, f = 0;
-            this.Nd = function (c) {
-                d = c;
-                b = Math.sin(d) * f;
-                a = Math.cos(d) * f
-            };
-            this.xd = function () {
-                return a
-            };
-            this.yd = function () {
-                return b
-            };
-            this.td = function () {
-                return d
-            };
-            d = 0 == a ? 0 : Math.atan(b / a);
-            f = Math.sqrt(a * a + b * b)
-        }
-    }
-};
-k.baseGameObject = {
-    code: function (h, g) {
-        var e = p("baseModel").xa, c = p("tween", {wa: !0}), a = p("tweenMovie", {wa: !0}), b = p("renderer", {wa: !0}).aa(), d = p("camera").aa();
-        g.Pb = e.extend({
-            type: "baseGameObject",
-            Me: "",
-            ea: null,
-            ba: null,
-            scale: null,
-            angle: 0,
-            width: 0,
-            height: 0,
-            cc: !1,
-            wb: null,
-            mc: function () {
-                return {x: this.ba.x, y: this.ba.y, width: this.width, height: this.height}
-            },
-            wd: function () {
-                var a = {x: this.ba.x, y: this.ba.y, width: this.width, height: this.height};
-                if (this.cc)return a;
-                a.x -= d.ba.x;
-                a.y -= d.ba.y;
-                return a
-            },
-            Oe: function () {
-                this.wb.ta.remove({id: this.id});
-                this.wb.Vb.Fa.remove({id: this.id})
-            },
-            cb: function () {
-                return p("sceneManager").aa().Va
-            },
-            moveTo: function (b, d, e, n) {
-                var f = this.cb();
-                n = n || "linear";
-                var m = new a.Tb;
-                b = new c.rb(this.ba, "x", this.ba.x, b, e, n);
-                d = new c.rb(this.ba, "y", this.ba.y, d, e, n);
-                m.add(0, b).add(0, d);
-                f.Ia.push(m)
-            },
-            Na: function (b, d, e, n, g, h) {
-                var f = this.cb(), m = new a.Tb;
-                b = new c.rb(b, d, e, n, g, h || "linear");
-                m.add(0, b);
-                f.Ia.push(m)
-            },
-            update: function () {
-            },
-            Ha: function () {
-                var a = b.getContext(), c = 0, e = 0;
-                this.cc && (c = d.ba.x, e = d.ba.y);
-                a.translate(this.ba.x + this.width /
-                    2 + c, this.ba.y + this.height / 2 + e);
-                a.scale(this.scale.x, this.scale.y);
-                a.nb(this.angle);
-                a.translate(-this.width / 2, -this.height / 2)
-            },
-            construct: function () {
-                this.ba || (this.ba = {x: 0, y: 0});
-                this.scale || (this.scale = {x: 1, y: 1})
-            }
-        })
-    }
-};
-k.baseModel = {
-    code: function (h, g) {
-        function e(a, d) {
-            if (!a || 0 == a.indexOf("$$") || 0 == a.indexOf("_") || d && d.call)return !0;
-            if ("string" == typeof d || "number" == typeof d)return !1;
-            if (!d)return !0
-        }
+modules['device'] = {code: function(module,exports){
+	
+	var isCocoonJS = !!navigator.isCocoonJS;
+	exports.isCocoonJS = isCocoonJS;
+	exports.scale = isCocoonJS?(window.devicePixelRatio||1):1;
+	exports.isTouch = typeof window !== 'undefined' && 'ontouchstart' in window;
+	
+	exports.printDeviceInfo = function(){
+	    for (var key in exports) {
+	        if (!exports.hasOwnProperty(key)) continue;
+	        if (exports[key].call) continue;
+	        console.log(key + ':' + exports[key]);
+	    }
+	};
+	
+	
+	exports.printDeviceInfo();
+	
+}};
 
-        function c(a) {
-            if ("[object Array]" === Object.prototype.toString.call(a)) {
-                for (var b = [], f = 0, e = a.length; f < e; f++)b[f] = c(a[f]);
-                return b
-            }
-            if ("object" === typeof a) {
-                b = {};
-                for (f in a)b[f] = c(a[f]);
-                return b
-            }
-            return a
-        }
+modules['index'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	bundle.prepare();
+	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
+	
+	var renderer = require('renderer').instance();
+	var sceneManager = require('sceneManager').instance();
+	var keyboard = require('keyboard').instance();
+	
+	window.addEventListener('load',function(){
+	    document.body.ontouchstart = function(e){
+	        e.preventDefault();
+	        return false;
+	    };
+	
+	    renderer.init();
+	    require('mouse').instance();
+	    sceneManager.setScene(bundle.sceneList.get(0));
+	});
+}};
 
-        var a = p("eventEmitter").Ic;
-        g.xa = Class.extend({
-            id: null, uc: null, name: "", ub: null, toJSON: function () {
-                var a = {}, d;
-                for (d in this)e(d,
-                    this[d]) || (a[d] = this[d]);
-                return c(a)
-            }, af: function () {
-                var a = [], d;
-                for (d in this)e(d, this[d]) || a.push({key: d, value: this[d]});
-                return a
-            }, bb: function (a) {
-                var b = this;
-                Object.keys(a).forEach(function (f) {
-                    f in b && (b[f] = a[f], b[f] && !b[f].splice && (b[f] = +b[f] || b[f]))
-                })
-            }, clone: function () {
-                var a = new this.constructor(this.toJSON());
-                a.vb();
-                return a
-            }, sc: function (a, d) {
-                this.ub.sc(a, d)
-            }, Ea: function (a, d) {
-                this.ub.Ea(a, d)
-            }, vb: function () {
-                this.ub = new a;
-                arguments && arguments[0] && this.bb(arguments[0])
-            }
-        })
-    }
-};
-k.resource = {
-    code: function (h, g) {
-        var e = p("baseModel").xa;
-        g.qb = e.extend({ra: ""})
-    }
-};
-k.commonBehaviour = {
-    code: function (h, g) {
-        var e = p("baseModel").xa;
-        g.Hc = e.extend({
-            type: "commonBehaviour", name: "", description: "", Jd: [], construct: function () {
-            }
-        })
-    }
-};
-k.frameAnimation = {
-    code: function (h, g) {
-        var e = p("baseModel").xa;
-        g.Jc = e.extend({
-            type: "frameAnimation",
-            name: "",
-            frames: [],
-            duration: 1E3,
-            pa: null,
-            $a: null,
-            ed: 0,
-            construct: function () {
-                this.ed = ~~(this.duration / this.frames.length)
-            },
-            play: function () {
-                this.pa.Ga = this
-            },
-            stop: function () {
-                this.$a = this.pa.Ga = null
-            },
-            update: function (c) {
-                this.$a || (this.$a = c);
-                c = ~~((c - this.$a) % this.duration * this.frames.length / this.duration);
-                this.pa.Ua != this.frames[c] && this.pa.xc(this.frames[c])
-            }
-        })
-    }
-};
-k.gameObject = {
-    code: function (h, g) {
-        var e = p("collider", {wa: !0}).aa(), c = p("renderer", {wa: !0}).aa(), a = p("baseGameObject").Pb, b = p("commonBehaviour").Hc, d = p("bundle").aa(), f = p("collections"), l = p("resourceCache");
-        g.Zd = a.extend({
-            type: "gameObject",
-            Ma: null,
-            ea: null,
-            be: null,
-            zb: [],
-            Sa: null,
-            ka: null,
-            Ua: 0,
-            Wb: 0,
-            Xb: 0,
-            Za: null,
-            pd: [],
-            Ga: null,
-            mb: !0,
-            xb: null,
-            construct: function () {
-                var a = this;
-                a.za();
-                a.ka = {x: 0, y: 0};
-                a.Za = new f.ia;
-                a.Ma && (a.ea = d.Ac.find({id: a.Ma}), a.xc(a.Ua), a.Za.clear(), a.pd.forEach(function (b) {
-                    b = d.qd.find({id: b});
-                    b = b.clone(g.Jc);
-                    b.pa = a;
-                    a.Za.add(b)
-                }), a.Sa = new f.ia, a.zb.forEach(function (f) {
-                    a.Sa.add(new b(f))
-                }))
-            },
-            hc: function (a) {
-                return this.Za.find({name: a})
-            },
-            xc: function (a) {
-                this.Ua = a;
-                this.Wb = this.ea.ic(this.Ua);
-                this.Xb = this.ea.jc(this.Ua)
-            },
-            Ye: function (a) {
-                this.ea = a;
-                this.width = a.oa;
-                this.height = a.na
-            },
-            update: function (a, b) {
-                this.Ga && this.Ga.update(a);
-                e.Eb(this, this.ba.x + this.ka.x * b / 1E3, this.ba.y + this.ka.y * b / 1E3);
-                this.sb(b);
-                this.Ub();
-                this.Ha()
-            },
-            Sd: function () {
-                this.Ga && this.Ga.stop()
-            },
-            Ha: function () {
-                var a = c.getContext();
-                a.save();
-                this.za();
-                a.drawImage(l.get(this.ea.ra), this.Wb, this.Xb, this.ea.oa, this.ea.na, 0, 0);
-                a.restore()
-            }
-        })
-    }
-};
-k.layer = {
-    code: function (h, g) {
-        var e = p("baseModel").xa, c = p("collections"), a = p("textField").Wc, b = p("bundle").aa();
-        g.Mc = e.extend({
-            type: "layer", sd: [], ta: null, Vb: null, construct: function () {
-                var d = this;
-                d.ta = new c.ia;
-                this.sd.forEach(function (f) {
-                    var c;
-                    switch (f.Td) {
-                        case "textField":
-                            c = new a(f);
-                            break;
-                        default:
-                            c = b.ec.find({id: f.uc}).clone(), c.bb(f)
-                    }
-                    c.wb = d;
-                    d.ta.add(c)
-                })
-            }, Bb: function () {
-                var a = new c.Set;
-                this.ta.forEach(function (b) {
-                    b.ea && a.add(b.ea)
-                });
-                return a
-            }, update: function (a, b) {
-                this.ta.forEach(function (f) {
-                    f && f.update(a,
-                        b)
-                })
-            }
-        })
-    }
-};
-k.particleSystem = {
-    code: function (h, g) {
-        var e = p("mathEx"), c = p("bundle").aa(), a = p("baseModel").xa;
-        g.$d = a.extend({
-            type: "particleSystem",
-            rd: null,
-            pa: null,
-            Ta: null,
-            Gb: null,
-            Ba: null,
-            Jb: null,
-            Ib: null,
-            Ka: null,
-            construct: function () {
-                this.Ta = [];
-                this.Gb || (this.Gb = {from: 1, Da: 10});
-                this.Ba || (this.Ba = {from: 0, Da: 0});
-                this.Ba.Da > this.Ba.from && (this.Ba.from += 2 * Math.PI);
-                this.Jb || (this.Jb = {from: 1, Da: 100});
-                this.Ib || (this.Ib = {from: 100, Da: 1E3});
-                this.Ka || (this.Ka = 0);
-                this.pa = c.ec.find({id: this.rd})
-            },
-            Ge: function (a, d) {
-                function b(a) {
-                    return e.vd(a.from, a.Da)
-                }
+modules['audioPlayer'] = {code: function(module,exports){
+	
+	exports.AudioPlayer = function(context){
+	
+	    var free = true;
+	    var currLoop = false;
+	    var self = this;
+	    var currSource = null;
+	    var isUsedHtmlAudio = false;
+	
+	    (function(){
+	
+	        if (!context) {
+	            context = (window.Audio && new window.Audio());
+	            isUsedHtmlAudio = true;
+	        }
+	
+	    })();
+	
+	    this.play = function(buffer,loop){
+	        free = false;
+	        if (!context) return;
+	
+	        currLoop = loop;
+	
+	        if (isUsedHtmlAudio) {
+	            console.log('used html audio',buffer);
+	            context.src = buffer;
+	            context.play();
+	        } else {
+	            currSource = context.createBufferSource();
+	            currSource.buffer = buffer;
+	            currSource.loop = loop;
+	            currSource.connect(context.destination);
+	            currSource.start(0);
+	            currSource.onended = function(){
+	                self.stop();
+	            }
+	        }
+	
+	    };
+	
+	    this.stop = function() {
+	        if (!context) return;
+	        if (currSource)  {
+	            currSource.stop();
+	            currSource.disconnect(context.destination);
+	        }
+	        currSource = null;
+	        free = true;
+	        currLoop = false;
+	    };
+	
+	    this.isFree = function() {
+	        return free;
+	    }
+	
+	};
+	
+	
+	
+}};
 
-                for (var l = 0; l < b(this.Gb); l++) {
-                    var m = this.pa.clone(), n = b(this.Ba), g = b(this.Jb);
-                    m.ka.x = g * Math.cos(n);
-                    m.ka.y = g * Math.sin(n);
-                    m.ba.x = b({from: a - this.Ka, Da: a + this.Ka});
-                    m.ba.y = b({from: d - this.Ka, Da: d + this.Ka});
-                    m.Fd = b(this.Ib);
-                    c.yb(m);
-                    this.Ta.push(m)
-                }
-            },
-            update: function (a, d) {
-                var b = this;
-                this.Ta.forEach(function (f) {
-                    f.xb || (f.xb = a);
-                    a - f.xb > f.Fd && b.Ta.splice(b.Ta.indexOf(f), 1);
-                    f.update(a, d)
-                })
-            }
-        })
-    }
-};
-k.scene = {
-    code: function (h, g) {
-        var e = p("baseModel").xa, c = p("collections"), a = p("bundle").aa(), b = p("renderer", {wa: !0}).aa(), d = p("resourceCache"), f = p("camera").aa();
-        g.Sc = e.extend({
-            type: "scene",
-            Ed: [],
-            ya: null,
-            fa: null,
-            Fa: null,
-            Wd: !1,
-            Ja: [255, 255, 255],
-            Ia: null,
-            $c: function () {
-                var a = this;
-                a.Fa = new c.ia;
-                a.ya.forEach(function (b) {
-                    a.Fa.addAll(b.ta)
-                })
-            },
-            construct: function () {
-                var b = this;
-                b.ya = new c.ia;
-                this.Ed.forEach(function (f) {
-                    var d = a.oc.find({id: f.uc}).clone(g.Mc);
-                    d.bb(f);
-                    d.Vb = b;
-                    b.ya.add(d)
-                });
-                b.Ia = [];
-                b.fa || (b.fa = {
-                    ea: null,
-                    Ma: null, width: 0, height: 0, data: []
-                });
-                b.fa.Ma && (b.fa.ea = a.Ac.find({id: b.fa.Ma}), b.fa.cd = ~~(a.ha.width / b.fa.ea.oa), b.fa.dd = ~~(a.ha.height / b.fa.ea.na))
-            },
-            Bb: function () {
-                var a = new c.Set;
-                this.ya.forEach(function (b) {
-                    a.kd(b.Bb())
-                });
-                this.fa.Ma && a.add(this.fa.ea);
-                return a
-            },
-            find: function (a) {
-                return this.Fa.find({name: a})
-            },
-            Je: function () {
-                return this.Fa
-            },
-            update: function (a, b) {
-                var f = this;
-                f.Ha();
-                f.ya.forEach(function (f) {
-                    f.update(a, b)
-                });
-                f.Ia.forEach(function (b) {
-                    b.ma && f.Ia.splice(f.Ia.indexOf(b), 1);
-                    b.update(a)
-                });
-                f.sb(a)
-            },
-            Ha: function () {
-                for (var a = b.getContext(), c = this.fa.ea, e = ~~(f.ba.x / this.fa.ea.oa), g = ~~(f.ba.y / this.fa.ea.na), h = e + this.fa.cd + 2, u = g + this.fa.dd + 2; g < u; g++)for (var w = e; w < h; w++) {
-                    var r = this.fa.data[g] && this.fa.data[g][w];
-                    void 0 != r && a.drawImage(d.get(c.ra), c.ic(r), c.jc(r), c.oa, c.na, w * c.oa, g * c.na)
-                }
-            },
-            lb: function (a, f, c, d) {
-                c && (c.substring || (c = JSON.stringify(c, null, 4)), b.lb(a, f, c, d))
-            },
-            log: function (a) {
-                this.lb(0, 0, a)
-            }
-        })
-    }
-};
-k.sound = {
-    code: function (h, g) {
-        var e = p("resource").qb;
-        g.ae = e.extend({type: "sound", ad: null})
-    }
-};
-k.spriteSheet = {
-    code: function (h, g) {
-        var e = p("resource").qb;
-        g.Uc = e.extend({
-            type: "spriteSheet",
-            width: 0,
-            height: 0,
-            Xa: 1,
-            Fb: 1,
-            oa: 0,
-            na: 0,
-            bd: 0,
-            ce: null,
-            ic: function (c) {
-                return c % this.Xa * this.oa
-            },
-            jc: function (c) {
-                return ~~(c / this.Xa) * this.na
-            },
-            hd: function () {
-                this.Xa && this.Fb && (this.oa = this.width / this.Xa, this.na = this.height / this.Fb, this.bd = this.Xa * this.Fb)
-            },
-            construct: function () {
-                this.hd()
-            }
-        })
-    }
-};
-k.font = {
-    code: function (h, g) {
-        var e = p("resource").qb;
-        g.Yd = e.extend({type: "font", He: "black", fontSize: 12, fontFamily: "Monospace", va: null})
-    }
-};
-k.textField = {
-    code: function (h, g) {
-        var e = p("renderer", {wa: !0}).aa(), c = p("baseGameObject").Pb, a = p("spriteSheet").Uc, b = p("bundle").aa(), d = p("resourceCache");
-        g.Wc = c.extend({
-            type: "userInterface", Td: "textField", tb: null, text: "", sa: null, od: null, mb: !1, Pd: function (a) {
-                a += "";
-                this.tb = [];
-                this.text = a;
-                var b = [{width: 0}], f = 0;
-                this.height = this.sa.va.Ca[" "].height;
-                for (var c = 0, d = a.length; c < d; c++) {
-                    this.tb.push(a[c]);
-                    var e = this.sa.va.Ca[a[c]] || this.sa.va.Ca[" "];
-                    "\n" == a[c] ? (f++, this.height += e.height, b[f] = {width: 0}) : b[f].width +=
-                        e.width
-                }
-                this.width = Math.max.apply(Math, b.map(function (a) {
-                    return a.width
-                }))
-            }, Od: function (b) {
-                this.sa = b;
-                this.height = this.sa.va.Ca[" "].height;
-                this.ea = new a({ra: this.sa.ra});
-                this.Pd(this.text)
-            }, clone: function () {
-                return this.za()
-            }, construct: function () {
-                this.za();
-                this.mb = !1;
-                var a = b.Wa.find({id: this.od}) || b.Wa.find({name: "default"}) || b.Wa.get(0);
-                a && this.Od(a)
-            }, update: function () {
-                this.Ha()
-            }, Ha: function () {
-                var a = this, b = e.getContext();
-                this.za();
-                var c = 0, g = 0, h = d.get(a.ea.ra);
-                this.tb.forEach(function (b) {
-                    var f = a.sa.va.Ca[b] ||
-                        a.sa.va.Ca["?"];
-                    "\n" == b ? (c = 0, g += f.height) : (e.getContext().drawImage(h, f.x, f.y, f.width, f.height, c, g), c += f.width)
-                });
-                b.restore()
-            }
-        })
-    }
-};
-k.camera = {
-    code: function (h) {
-        function g() {
-            var a = null, b = null, c, f;
-            this.ba = {x: 0, y: 0};
-            this.nd = function (d) {
-                a = d;
-                b = d.cb();
-                c = b.fa.ea.oa * b.fa.width;
-                f = b.fa.ea.na * b.fa.height
-            };
-            this.update = function (b) {
-                if (a) {
-                    var d = this.ba, g = e.ha.width, l = e.ha.height;
-                    d.x = a.ba.x - g / 2;
-                    d.y = a.ba.y - l / 2;
-                    0 > d.x && (d.x = 0);
-                    0 > d.y && (d.y = 0);
-                    d.x > c - g && (d.x = c - g);
-                    d.y > f - l && (d.y = f - l);
-                    b.translate(-d.x, -d.y)
-                }
-            }
-        }
+modules['audioSet'] = {code: function(module,exports){
+	
+	var AudioPlayer = require('audioPlayer').AudioPlayer;
+	
+	exports.AudioSet = function(context,numOfPlayers){
+	    var players = [];
+	    for (var i = 0;i<numOfPlayers;i++) {
+	        players.push(new AudioPlayer(context));
+	    }
+	
+	    this.getFreePlayer = function(){
+	        for (var i = 0;i<numOfPlayers;i++) {
+	            if (players[i].isFree()) return players[i];
+	        }
+	        return null;
+	    }
+	
+	};
+}};
 
-        var e = p("bundle").aa(), c = null;
-        h.ga.aa = function () {
-            null == c && (c = new g);
-            return c
-        }
-    }
-};
-k.canvasContext = {
-    code: function (h) {
-        function g() {
-            var a;
-            this.eb = function (b) {
-                a = b.getContext("2d")
-            };
-            this.drawImage = function (b, c, e, g, n, h, t) {
-                a.drawImage(b.zd, c, e, g, n, h, t, g, n)
-            };
-            var b = {};
-            this.qc = function (a, c, e) {
-                if (b.url)e(b[a]); else {
-                    "base64" == c.type && (a = utils.fc(c.fileName) + a);
-                    var f = new Image(a);
-                    f.onload = function () {
-                        e({
-                            zd: f, Cb: function () {
-                                return {width: f.width, height: f.height}
-                            }
-                        })
-                    };
-                    f.onerror = function () {
-                        throw"can not load image with url " + a;
-                    };
-                    f.src = a
-                }
-            };
-            this.clear = function () {
-                a.fillStyle = "#FFFFFF";
-                a.fillRect(0, 0,
-                    e.ha.width, e.ha.height)
-            };
-            this.save = function () {
-                a.save()
-            };
-            this.scale = function (b, c) {
-                a.scale(b, c)
-            };
-            this.nb = function (b) {
-                a.rotate(b)
-            };
-            this.Lb = function () {
-            };
-            this.translate = function (b, c) {
-                a.translate(b, c)
-            };
-            this.restore = function () {
-                a.restore()
-            };
-            this.Kb = function () {
-            };
-            this.Zb = function () {
-            };
-            this.dc = function () {
-            }
-        }
+modules['soundManager'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	var AudioSet = require('audioSet').AudioSet;
+	var cache = require('resourceCache');
+	
+	var AudioContext = window.AudioContext || window.webkitAudioContext;
+	var context = window.AudioContext && new window.AudioContext();
+	
+	var SoundManager = function(){
+	
+	    var audioSet = new AudioSet(context,5);
+	
+	    var base64ToArrayBuffer = function(base64) {
+	        var binaryString = window.atob(base64);
+	        var len = binaryString.length;
+	        var bytes = new Uint8Array(len);
+	        for (var i = 0; i < len; i++) {
+	            bytes[i] = binaryString.charCodeAt(i);
+	        }
+	        return bytes.buffer;
+	    };
+	
+	    var _loadSoundXhr = function(url,callback){
+	        var request = new XMLHttpRequest();
+	        request.open('GET', url, true);
+	        request.responseType = 'arraybuffer';
+	
+	        request.setRequestHeader('Accept-Ranges', 'bytes');
+	        request.setRequestHeader('Content-Range', 'bytes');
+	
+	        request.onload = function() {
+	            if (!context) {
+	                callback(url);
+	                return;
+	            }
+	            context.decodeAudioData(request.response,function(buffer) {
+	                callback(buffer);
+	            });
+	        };
+	        request.onerror=function(e){throw 'can not load sound with url '+url};
+	        request.send();
+	    };
+	
+	    var _loadSoundBase64 = function(url,callback){
+	        if (context) {
+	            var byteArray = base64ToArrayBuffer(url);
+	            context.decodeAudioData(byteArray).then(function(buffer) {
+	                callback(buffer);
+	            });
+	        } else {
+	            callback(url);
+	        }
+	    };
+	
+	    this.loadSound = function( url, opts, callback) {
+	        if (opts.type=='base64') {
+	            _loadSoundBase64(url, callback);
+	        } else {
+	            _loadSoundXhr(url, callback);
+	        }
+	    };
+	
+	    this.play = function(sndName,loop){
+	        var player = audioSet.getFreePlayer();
+	        if (!player) return;
+	        player.play(cache.get(sndName),loop);
+	    }
+	};
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new SoundManager();
+	    return instance;
+	};
+}};
 
-        var e = p("bundle").aa(), c = null;
-        h.ga.aa = function () {
-            null == c && (c = new g);
-            return c
-        }
-    }
-};
-k.frameBuffer = {
-    code: function (h, g) {
-        g.Kc = function (e, c, a) {
-            var b, d, f;
-            this.bind = function () {
-                e.bindFramebuffer(e.FRAMEBUFFER, f);
-                e.viewport(0, 0, c, a)
-            };
-            this.Vd = function () {
-                e.bindFramebuffer(e.FRAMEBUFFER, null)
-            };
-            this.kc = function () {
-                return b
-            };
-            b = e.createTexture();
-            e.bindTexture(e.TEXTURE_2D, b);
-            e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_S, e.CLAMP_TO_EDGE);
-            e.texParameteri(e.TEXTURE_2D, e.TEXTURE_WRAP_T, e.CLAMP_TO_EDGE);
-            e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e.LINEAR);
-            e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER,
-                e.LINEAR);
-            e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, c, a, 0, e.RGBA, e.UNSIGNED_BYTE, null);
-            d = e.createRenderbuffer();
-            e.bindRenderbuffer(e.RENDERBUFFER, d);
-            e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, c, a);
-            f = e.createFramebuffer();
-            e.bindFramebuffer(e.FRAMEBUFFER, f);
-            e.framebufferTexture2D(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.TEXTURE_2D, b, 0);
-            e.framebufferRenderbuffer(e.FRAMEBUFFER, e.DEPTH_ATTACHMENT, e.RENDERBUFFER, d);
-            e.bindTexture(e.TEXTURE_2D, null);
-            e.bindRenderbuffer(e.RENDERBUFFER, null);
-            e.bindFramebuffer(e.FRAMEBUFFER,
-                null)
-        }
-    }
-};
-k.glContext = {
-    code: function (h) {
-        function g() {
-            function g(a, b, c, f, d, g, m, n) {
-                d = e.Gd(d, g);
-                a = e.qa(e.ib(c * m, f * n, 1), e.jb(a * m, b * n, 0));
-                a = e.qa(a, x.La());
-                return a = e.qa(a, d)
-            }
+modules['collections'] = {code: function(module,exports){
+	
+	var isObjectMatchTo = function(obj,matcher){
+	    var isCandidate = true;
+	    Object.keys(matcher).some(function(conditionKey){
+	        if (obj[conditionKey]!=matcher[conditionKey]) {
+	            isCandidate = false;
+	            return true;
+	        }
+	    });
+	    return isCandidate;
+	};
+	
+	exports.List = function () {
+	    var self = this;
+	    this.rs = [];
+	    this.add = function (r) {
+	        self.rs.push(r);
+	        return self;
+	    };
+	    this.addAll = function (list) {
+	        list.forEach(function(itm){
+	            self.rs.push(itm);
+	        });
+	    };
+	    this.get = function(index){
+	        return self.rs[index];
+	    };
+	    this.getFirst = function(){
+	        return this.get(0);
+	    };
+	    this.getLast = function(){
+	        return this.get(this.size()-1);
+	    };
+	    this.isEmpty = function(){
+	        return self.size()==0;
+	    };
+	    this.size = function () {
+	        return self.rs.length;
+	    };
+	    this.getAll = function () {
+	        return self.rs;
+	    };
+	    this.clear = function(){
+	        self.rs = [];
+	        return self;
+	    };
+	    this.forEach = function(callback){
+	        for (var i = 0,l=this.rs.length;i<l;i++){
+	            callback(self.rs[i],i);
+	        }
+	    };
+	    this.forEachReversed = function(callback){
+	        for (var i = this.rs.length-1;i>=0;i--){
+	            callback(self.rs[i],i);
+	        }
+	    };
+	    this.some = function(callback){
+	        for (var i = 0,l=this.rs.length;i<l;i++){
+	            var res = callback(self.rs[i],i);
+	            if (res) return true;
+	        }
+	        return false;
+	    };
+	    this.someReversed = function(callback){
+	        for (var i = this.rs.length-1;i>=0;i--){
+	            var res = callback(self.rs[i],i);
+	            if (res) break;
+	        }
+	    };
+	    this.indexOf = function(obj){
+	        var i = 0;
+	        var success = false;
+	        self.rs.some(function(item){
+	            var isMatch = isObjectMatchTo(item,obj);
+	            if (isMatch) {
+	                success = true;
+	                return true;
+	            }
+	            i++;
+	        });
+	        return success?i:-1;
+	    };
+	    this.remove = function (obj){
+	        if (!obj) return;
+	        var index = self.indexOf(obj);
+	        if (index>-1) self.rs.splice(index,1);
+	    };
+	    this.find = function (obj){
+	        return self.rs[self.indexOf(obj)];
+	    };
+	    this.findAll = function (obj){
+	        var res = [];
+	        self.rs.forEach(function(item){
+	            var isMatch = isObjectMatchTo(item,obj);
+	            if (isMatch) res.push(item);
+	        });
+	        return res;
+	    };
+	    this.pop = function(){
+	        return self.rs.pop();
+	    };
+	    this.fromJSON = function(json,ObjTypeClass){
+	        var self = this;
+	        try{
+	            json.forEach(function(itm){
+	                self.add(new ObjTypeClass(itm));
+	            });
+	        } catch(e){
+	            console.error(e);
+	        }
+	    };
+	    this.toJSON = function(){
+	        var newArr = [];
+	        var sanitize = function(obj){
+	            if (obj && obj.$$hashKey) {
+	                delete obj.$$hashKey;
+	            }
+	            //if (!(Object.keys(obj).length && obj.length)) return;
+	            if (obj.split) return;
+	            for (var i in obj) {
+	                if (!obj[i]) continue;
+	                if (!(obj.hasOwnProperty(i))) continue;
+	                sanitize(obj[i]);
+	            }
+	            return obj;
+	        };
+	        this.rs.forEach(function(itm){
+	            newArr.push(sanitize(itm.toJSON()));
+	        });
+	        return newArr;
+	    };
+	};
+	
+	exports.Set = function(){
+	    var self = this;
+	    this.rs = {};
+	    this.add = function(itm){
+	        if (!this.has(itm.id)) self.rs[itm.id]=itm;
+	    };
+	    this.get = function(itm){
+	        return self.rs[itm.id];
+	    };
+	    this.has = function(key){
+	        return key in self.rs;
+	    };
+	    this.combine = function(another){
+	        Object.keys(another.rs).forEach(function(key){
+	            self.add(another.rs[key]);
+	        });
+	    };
+	    this.asArray = function(){
+	        var res = [];
+	        Object.keys(self.rs).forEach(function(key){
+	            res.push(self.rs[key]);
+	        });
+	        return res;
+	    }
+	};
+}};
 
-            var h, t = 1, A = 1, v, z, x = new l, y, q;
-            this.Ja = [255, 255, 255];
-            this.eb = function (c) {
-                q = n.ha;
-                h = c.getContext("webgl", {alpha: !1});
-                v = new b(h, a.Rc.Vc);
-                v.bind();
-                z = new d(h, v.lc());
-                z.bind([0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1], 2, "a_position");
-                new d(h, v.lc());
-                z.bind([0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1], 2, "a_texcoord");
-                y = new m(h, q.la, q.ja);
-                h.blendFunc(h.SRC_ALPHA, h.ONE_MINUS_SRC_ALPHA);
-                h.enable(h.BLEND)
-            };
-            var C = {};
-            this.qc = function (a, b, d) {
-                if (C.url)d(C[a]); else {
-                    "base64" == b.type && (a = c.fc(b.fileName) + a);
-                    var e = new Image, g = new f(h, e);
-                    e.onload = function () {
-                        g.apply(e);
-                        d(g)
-                    };
-                    e.onerror = function () {
-                        throw"can not load image with url " + a;
-                    };
-                    e.src = a
-                }
-            };
-            var B = null;
-            this.drawImage = function (a, b, c, f, d, m, n) {
-                var l = a.Cb().width, t = a.Cb().height;
-                void 0 === m && (m = b);
-                void 0 === n && (n = c);
-                void 0 === f && (f = l);
-                void 0 === d && (d = t);
-                B != a && (a.bind(), B = a);
-                v.Ya("u_matrix", g(m, n, f, d, q.width, q.height, 1, 1));
-                v.Ya("u_textureMatrix", e.qa(e.ib(f / l, d / t,
-                    1), e.jb(b / l, c / t, 0)));
-                64 != l && h.blendFunc(h.SRC_ALPHA, h.ONE_MINUS_SRC_ALPHA);
-                h.drawArrays(h.TRIANGLES, 0, 6)
-            };
-            this.clear = function () {
-                h.clearColor(this.Ja[0] / 255, this.Ja[1] / 255, this.Ja[2] / 255, 1);
-                h.clear(h.COLOR_BUFFER_BIT)
-            };
-            this.save = function () {
-                x.save()
-            };
-            this.scale = function (a, b) {
-                x.scale(a, b)
-            };
-            this.nb = function (a) {
-                x.nb(a)
-            };
-            this.Lb = function (a) {
-                x.Lb(a)
-            };
-            this.translate = function (a, b) {
-                x.translate(a, b)
-            };
-            this.restore = function () {
-                x.restore()
-            };
-            this.Kb = function (a, b) {
-                t = a;
-                A = b
-            };
-            this.Zb = function () {
-                this.save();
-                h.viewport(0,
-                    0, q.width, q.height);
-                y.bind()
-            };
-            this.dc = function () {
-                B = null;
-                this.restore();
-                this.save();
-                this.translate(0, q.ja);
-                this.scale(1, -1);
-                y.Vd();
-                this.clear();
-                h.viewport(0, 0, q.la, q.ja);
-                h.bindTexture(h.TEXTURE_2D, y.kc());
-                q.wc == P.Qb ? v.Ya("u_matrix", g(q.ca.left, q.ca.top, q.width, q.height, q.la, q.ja, t, A)) : v.Ya("u_matrix", g(0, 0, q.width, q.height, q.la, q.ja, t, A));
-                var a = q.la, b = q.ja;
-                v.Ya("u_textureMatrix", e.qa(e.ib(q.la / a, q.ja / b, 1), e.jb(0 / a, 0 / b, 0)));
-                h.blendFunc(h.SRC_ALPHA, h.ONE_MINUS_SRC_ALPHA);
-                h.drawArrays(h.TRIANGLES, 0, 6);
-                this.restore()
-            }
-        }
+modules['mat4'] = {code: function(module,exports){
+	
+	exports.makeIdentity = function () {
+	    return [
+	        1, 0, 0, 0,
+	        0, 1, 0, 0,
+	        0, 0, 1, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.make2DProjection = function(width, height, depth) {
+	    // Note: This matrix flips the Y axis so 0 is at the top.
+	    return [
+	        2 / width, 0, 0, 0,
+	        0, -2 / height, 0, 0,
+	        0, 0, 2 / depth, 0,
+	        -1, 1, 0, 1
+	    ];
+	};
+	
+	exports.makeTranslation = function(tx, ty, tz) {
+	    return [
+	        1,  0,  0,  0,
+	        0,  1,  0,  0,
+	        0,  0,  1,  0,
+	        tx, ty, tz,  1
+	    ];
+	};
+	
+	exports.makeXRotation = function(angleInRadians) {
+	    var c = Math.cos(angleInRadians);
+	    var s = Math.sin(angleInRadians);
+	
+	    return [
+	        1, 0, 0, 0,
+	        0, c, s, 0,
+	        0, -s, c, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.makeYRotation = function(angleInRadians) {
+	    var c = Math.cos(angleInRadians);
+	    var s = Math.sin(angleInRadians);
+	
+	    return [
+	        c, 0, -s, 0,
+	        0, 1, 0, 0,
+	        s, 0, c, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.makeZRotation = function(angleInRadians) {
+	    var c = Math.cos(angleInRadians);
+	    var s = Math.sin(angleInRadians);
+	    return [
+	        c, s, 0, 0,
+	        -s, c, 0, 0,
+	        0, 0, 1, 0,
+	        0, 0, 0, 1
+	    ];
+	};
+	
+	exports.makeScale = function(sx, sy, sz) {
+	    return [
+	        sx, 0,  0,  0,
+	        0, sy,  0,  0,
+	        0,  0, sz,  0,
+	        0,  0,  0,  1
+	    ];
+	};
+	
+	exports.matrixMultiply = function(a, b) {
+	    var a00 = a[0*4+0];
+	    var a01 = a[0*4+1];
+	    var a02 = a[0*4+2];
+	    var a03 = a[0*4+3];
+	    var a10 = a[1*4+0];
+	    var a11 = a[1*4+1];
+	    var a12 = a[1*4+2];
+	    var a13 = a[1*4+3];
+	    var a20 = a[2*4+0];
+	    var a21 = a[2*4+1];
+	    var a22 = a[2*4+2];
+	    var a23 = a[2*4+3];
+	    var a30 = a[3*4+0];
+	    var a31 = a[3*4+1];
+	    var a32 = a[3*4+2];
+	    var a33 = a[3*4+3];
+	    var b00 = b[0*4+0];
+	    var b01 = b[0*4+1];
+	    var b02 = b[0*4+2];
+	    var b03 = b[0*4+3];
+	    var b10 = b[1*4+0];
+	    var b11 = b[1*4+1];
+	    var b12 = b[1*4+2];
+	    var b13 = b[1*4+3];
+	    var b20 = b[2*4+0];
+	    var b21 = b[2*4+1];
+	    var b22 = b[2*4+2];
+	    var b23 = b[2*4+3];
+	    var b30 = b[3*4+0];
+	    var b31 = b[3*4+1];
+	    var b32 = b[3*4+2];
+	    var b33 = b[3*4+3];
+	    return [a00 * b00 + a01 * b10 + a02 * b20 + a03 * b30,
+	        a00 * b01 + a01 * b11 + a02 * b21 + a03 * b31,
+	        a00 * b02 + a01 * b12 + a02 * b22 + a03 * b32,
+	        a00 * b03 + a01 * b13 + a02 * b23 + a03 * b33,
+	        a10 * b00 + a11 * b10 + a12 * b20 + a13 * b30,
+	        a10 * b01 + a11 * b11 + a12 * b21 + a13 * b31,
+	        a10 * b02 + a11 * b12 + a12 * b22 + a13 * b32,
+	        a10 * b03 + a11 * b13 + a12 * b23 + a13 * b33,
+	        a20 * b00 + a21 * b10 + a22 * b20 + a23 * b30,
+	        a20 * b01 + a21 * b11 + a22 * b21 + a23 * b31,
+	        a20 * b02 + a21 * b12 + a22 * b22 + a23 * b32,
+	        a20 * b03 + a21 * b13 + a22 * b23 + a23 * b33,
+	        a30 * b00 + a31 * b10 + a32 * b20 + a33 * b30,
+	        a30 * b01 + a31 * b11 + a32 * b21 + a33 * b31,
+	        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
+	        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
+	};
+}};
 
-        var e = p("mat4"), c = p("utils"), a = p("shaderSources"), b = p("shader").Tc, d = p("vertexBuffer").Zc, f = p("texture").Xc, l = p("matrixStack").Nc, m = p("frameBuffer").Kc, n = p("bundle").aa(), P = p("consts").Sb, t = null;
-        h.ga.aa = function () {
-            null == t && (t = new g);
-            return t
-        }
-    }
-};
-k.matrixStack = {
-    code: function (h, g) {
-        var e = p("mat4");
-        g.Nc = function () {
-            this.stack = [];
-            this.restore = function () {
-                this.stack.pop();
-                1 > this.stack.length && (this.stack[0] = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])
-            };
-            this.save = function () {
-                this.stack.push(this.La())
-            };
-            this.La = function () {
-                return this.stack[this.stack.length - 1].slice()
-            };
-            this.pb = function (c) {
-                this.stack[this.stack.length - 1] = c
-            };
-            this.translate = function (c, a, b) {
-                void 0 === b && (b = 0);
-                this.pb(e.qa(e.jb(c, a, b), this.La()))
-            };
-            this.nb = function (c) {
-                this.pb(e.qa(e.Id(c), this.La()))
-            };
-            this.Lb = function (c) {
-                this.pb(e.qa(e.Hd(c), this.La()))
-            };
-            this.scale = function (c, a, b) {
-                void 0 === b && (b = 1);
-                this.pb(e.qa(e.ib(c, a, b), this.La()))
-            };
-            this.restore()
-        }
-    }
-};
-k.shader = {
-    code: function (h, g) {
-        function e(a, c) {
-            if (1 == a)switch (c) {
-                case "float":
-                    return function (a, b, c) {
-                        a.uniform1f(b, c)
-                    };
-                case "vec2":
-                    return function (a, b, c) {
-                        a.uniform2f(b, c[0], c[1])
-                    };
-                case "vec3":
-                    return function (a, b, c) {
-                        a.uniform3f(b, c[0], c[1], c[2])
-                    };
-                case "vec4":
-                    return function (a, b, c) {
-                        a.uniform4f(b, c[0], c[1], c[2], c[3])
-                    };
-                case "int":
-                    return function (a, b, c) {
-                        a.uniform1i(b, c)
-                    };
-                case "ivec2":
-                    return function (a, b, c) {
-                        a.uniform2i(b, c[0], c[1])
-                    };
-                case "ivec3":
-                    return function (a, b, c) {
-                        a.uniform3i(b, c[0], c[1], c[2])
-                    };
-                case "ivec4":
-                    return function (a,
-                                     b, c) {
-                        a.uniform4i(b, c[0], c[1], c[2], c[3])
-                    };
-                case "bool":
-                    return function (a, b, c) {
-                        a.uniform1i(b, c)
-                    };
-                case "bvec2":
-                    return function (a, b, c) {
-                        a.uniform2i(b, c[0], c[1])
-                    };
-                case "bvec3":
-                    return function (a, b, c) {
-                        a.uniform3i(b, c[0], c[1], c[2])
-                    };
-                case "bvec4":
-                    return function (a, b, c) {
-                        a.uniform4i(b, c[0], c[1], c[2], c[3])
-                    };
-                case "mat2":
-                    return function (a, b, c) {
-                        a.uniformMatrix2fv(b, !1, c)
-                    };
-                case "mat3":
-                    return function (a, b, c) {
-                        a.uniformMatrix3fv(b, !1, c)
-                    };
-                case "mat4":
-                    return function (a, b, c) {
-                        a.uniformMatrix4fv(b, !1, c)
-                    };
-                case "sampler2D":
-                    return function (a,
-                                     b, c) {
-                        a.uniform1i(b, c)
-                    }
-            } else switch (c) {
-                case "float":
-                    return function (a, b, c) {
-                        a.uniform1fv(b, c)
-                    };
-                case "vec2":
-                    return function (a, b, c) {
-                        a.uniform2fv(b, c)
-                    };
-                case "vec3":
-                    return function (a, b, c) {
-                        a.uniform3fv(b, c)
-                    };
-                case "vec4":
-                    return function (a, b, c) {
-                        a.uniform4fv(b, c)
-                    };
-                case "int":
-                    return function (a, b, c) {
-                        a.uniform1iv(b, c)
-                    };
-                case "ivec2":
-                    return function (a, b, c) {
-                        a.uniform2iv(b, c)
-                    };
-                case "ivec3":
-                    return function (a, b, c) {
-                        a.uniform3iv(b, c)
-                    };
-                case "ivec4":
-                    return function (a, b, c) {
-                        a.uniform4iv(b, c)
-                    };
-                case "bool":
-                    return function (a,
-                                     b, c) {
-                        a.uniform1iv(b, c)
-                    };
-                case "bvec2":
-                    return function (a, b, c) {
-                        a.uniform2iv(b, c)
-                    };
-                case "bvec3":
-                    return function (a, b, c) {
-                        a.uniform3iv(b, c)
-                    };
-                case "bvec4":
-                    return function (a, b, c) {
-                        a.uniform4iv(b, c)
-                    };
-                case "sampler2D":
-                    return function (a, b, c) {
-                        a.uniform1iv(b, c)
-                    }
-            }
-        }
+modules['mathEx'] = {code: function(module,exports){
+	var Vec2 = require('vec2').Vec2;
+	
+	exports.isPointInRect = function(point,rect,angle) {
+	    if (angle) {
+	        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+	        vec2.setAngle(vec2.getAngle() - angle);
+	        point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+	
+	    }
+	    var res =  point.x>rect.x &&
+	        point.x<(rect.x+rect.width) &&
+	        point.y>rect.y &&
+	        point.y<(rect.y+rect.height);
+	    return res;
+	};
+	
+	exports.isRectIntersectRect = function(r1,r2) {
+	    return (
+	        !( r2.x > (r1.x+r1.width)
+	        || (r2.x+r2.width) < r1.x
+	        || r2.y > (r1.y+r1.height)
+	        || (r2.y+r2.height) < r1.y
+	        )
+	    );
+	};
+	
+	exports.radToDeg = function(rad){
+	    return rad *  180 / Math.PI;
+	};
+	
+	exports.degToRad = function(deg) {
+	    return deg *  Math.PI / 180;
+	};
+	
+	exports.getRandomInRange = function(min, max){
+	    if (min>max) {
+	        var tmp = min;
+	        min = max;
+	        max = tmp;
+	    }
+	    var res = Math.random() * (max - min) + min;
+	    if (res>max) res = max;
+	    else if (res<min) res = min;
+	    return ~~res;
+	};
+	
+	exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
+	    var angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
+	    return {
+	        x:Math.cos(angle),
+	        y:Math.sin(angle)
+	    }
+	};
+	
+	var ease = {};
+	
+	// simple linear tweening - no easing, no acceleration
+	ease.linear = function (t, b, c, d) {
+	    return c*t/d + b;
+	};
+	
+	// quadratic easing in - accelerating from zero velocity
+	ease.easeInQuad = function (t, b, c, d) {
+	    t /= d;
+	    return c*t*t + b;
+	};
+	
+	// quadratic easing out - decelerating to zero velocity
+	ease.easeOutQuad = function (t, b, c, d) {
+	    t /= d;
+	    return -c * t*(t-2) + b;
+	};
+	
+	// quadratic easing in/out - acceleration until halfway, then deceleration
+	ease.easeInOutQuad = function (t, b, c, d) {
+	    t /= d/2;
+	    if (t < 1) return c/2*t*t + b;
+	    t--;
+	    return -c/2 * (t*(t-2) - 1) + b;
+	};
+	
+	// cubic easing in - accelerating from zero velocity
+	ease.easeInCubic = function (t, b, c, d) {
+	    t /= d;
+	    return c*t*t*t + b;
+	};
+	
+	// cubic easing out - decelerating to zero velocity
+	ease.easeOutCubic = function (t, b, c, d) {
+	    t /= d;
+	    t--;
+	    return c*(t*t*t + 1) + b;
+	};
+	
+	// cubic easing in/out - acceleration until halfway, then deceleration
+	ease.easeInOutCubic = function (t, b, c, d) {
+	    t /= d/2;
+	    if (t < 1) return c/2*t*t*t + b;
+	    t -= 2;
+	    return c/2*(t*t*t + 2) + b;
+	};
+	
+	// quartic easing in - accelerating from zero velocity
+	ease.easeInQuart = function (t, b, c, d) {
+	    t /= d;
+	    return c*t*t*t*t + b;
+	};
+	
+	// quartic easing out - decelerating to zero velocity
+	ease.easeOutQuart = function (t, b, c, d) {
+	    t /= d;
+	    t--;
+	    return -c * (t*t*t*t - 1) + b;
+	};
+	
+	// quartic easing in/out - acceleration until halfway, then deceleration
+	ease.easeInOutQuart = function (t, b, c, d) {
+	    t /= d/2;
+	    if (t < 1) return c/2*t*t*t*t + b;
+	    t -= 2;
+	    return -c/2 * (t*t*t*t - 2) + b;
+	};
+	
+	// quintic easing in - accelerating from zero velocity
+	ease.easeInQuint = function (t, b, c, d) {
+	    t /= d;
+	    return c*t*t*t*t*t + b;
+	};
+	
+	// quintic easing out - decelerating to zero velocity
+	ease.easeOutQuint = function (t, b, c, d) {
+	    t /= d;
+	    t--;
+	    return c*(t*t*t*t*t + 1) + b;
+	};
+	
+	// quintic easing in/out - acceleration until halfway, then deceleration
+	ease.easeInOutQuint = function (t, b, c, d) {
+	    t /= d/2;
+	    if (t < 1) return c/2*t*t*t*t*t + b;
+	    t -= 2;
+	    return c/2*(t*t*t*t*t + 2) + b;
+	};
+	
+	
+	// sinusoidal easing in - accelerating from zero velocity
+	ease.easeInSine = function (t, b, c, d) {
+	    return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+	};
+	
+	
+	
+	// sinusoidal easing out - decelerating to zero velocity
+	ease.easeOutSine = function (t, b, c, d) {
+	    return c * Math.sin(t/d * (Math.PI/2)) + b;
+	};
+	
+	
+	
+	// sinusoidal easing in/out - accelerating until halfway, then decelerating
+	ease.easeInOutSine = function (t, b, c, d) {
+	    return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+	};
+	
+	// exponential easing in - accelerating from zero velocity
+	ease.easeInExpo = function (t, b, c, d) {
+	    return c * Math.pow( 2, 10 * (t/d - 1) ) + b;
+	};
+	
+	// exponential easing out - decelerating to zero velocity
+	ease.easeOutExpo = function (t, b, c, d) {
+	    return c * ( -Math.pow( 2, -10 * t/d ) + 1 ) + b;
+	};
+	
+	// exponential easing in/out - accelerating until halfway, then decelerating
+	ease.easeInOutExpo = function (t, b, c, d) {
+	    t /= d/2;
+	    if (t < 1) return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
+	    t--;
+	    return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
+	};
+	
+	// circular easing in - accelerating from zero velocity
+	ease.easeInCirc = function (t, b, c, d) {
+	    t /= d;
+	    return -c * (Math.sqrt(1 - t*t) - 1) + b;
+	};
+	
+	
+	
+	// circular easing out - decelerating to zero velocity
+	ease.easeOutCirc = function (t, b, c, d) {
+	    t /= d;
+	    t--;
+	    return c * Math.sqrt(1 - t*t) + b;
+	};
+	
+	// circular easing in/out - acceleration until halfway, then deceleration
+	ease.easeInOutCirc = function (t, b, c, d) {
+	    t /= d/2;
+	    if (t < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+	    t -= 2;
+	    return c/2 * (Math.sqrt(1 - t*t) + 1) + b;
+	};
+	
+	ease.easeInElastic = function (t, b, c, d) {
+	    var s=1.70158;var p=0;var a=c;
+	    if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
+	    if (a < Math.abs(c)) { a=c; s=p/4; }
+	    else s = p/(2*Math.PI) * Math.asin (c/a);
+	    return -(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+	};
+	
+	ease.easeOutElastic = function (t, b, c, d) {
+	    var s=1.70158;var p=0;var a=c;
+	    if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
+	    if (a < Math.abs(c)) { a=c; s=p/4; }
+	    else s = p/(2*Math.PI) * Math.asin (c/a);
+	    return a*Math.pow(2,-10*t) * Math.sin( (t*d-s)*(2*Math.PI)/p ) + c + b;
+	};
+	
+	ease.easeInOutElastic = function (t, b, c, d) {
+	    var s=1.70158;var p=0;var a=c;
+	    if (t==0) return b;  if ((t/=d/2)==2) return b+c;  if (!p) p=d*(.3*1.5);
+	    if (a < Math.abs(c)) { a=c; s=p/4; }
+	    else s = p/(2*Math.PI) * Math.asin (c/a);
+	    if (t < 1) return -.5*(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
+	    return a*Math.pow(2,-10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )*.5 + c + b;
+	};
+	
+	ease.easeInBack = function (t, b, c, d) {
+	    var s = 1.70158;
+	    return c*(t/=d)*t*((s+1)*t - s) + b;
+	};
+	
+	ease.easeOutBack = function (t, b, c, d) {
+	    var s = 1.70158;
+	    return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
+	};
+	
+	ease.easeInOutBack = function (t, b, c, d) {
+	    var s = 1.70158;
+	    if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
+	    return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
+	};
+	
+	ease.easeInBounce = function(t, b, c, d) {
+	    return c - ease.easeOutBounce (d-t, 0, c, d) + b;
+	};
+	
+	ease.easeOutBounce  = function(t, b, c, d){
+	    if ((t/=d) < (1/2.75)) {
+	        return c*(7.5625*t*t) + b;
+	    } else if (t < (2/2.75)) {
+	        return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
+	    } else if (t < (2.5/2.75)) {
+	        return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
+	    } else {
+	        return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
+	    }
+	};
+	
+	ease.easeInOutBounce = function(t, b, c, d) {
+	    if (t < d/2) return ease.easeInBounce(t*2, 0, c, d) * .5 + b;
+	    else return ease.easeOutBounce(t*2-d, 0, c, d) * .5 + c*.5 + b;
+	};
+	
+	exports.ease = ease;
+}};
 
-        function c(a, c, e) {
-            e = a.createShader(e);
-            a.shaderSource(e, c);
-            a.compileShader(e);
-            if (!a.getShaderParameter(e, a.COMPILE_STATUS))throw c = a.getShaderInfoLog(e), a.deleteShader(e), console.error("*** Error compiling shader " + e + ":" + c), "Error compiling shader";
-            return e
-        }
+modules['queue'] = {code: function(module,exports){
+	exports.Queue = function(){
+	    var self = this;
+	    this.size = function(){
+	        return tasksTotal;
+	    };
+	    this.onResolved = null;
+	    var tasksTotal = 0;
+	    var tasksResolved = 0;
+	    this.addTask = function() {
+	        tasksTotal++;
+	    };
+	    this.resolveTask = function(){
+	        tasksResolved++;
+	        if (tasksTotal==tasksResolved) {
+	            if (self.onResolved) self.onResolved();
+	        }
+	    };
+	    this.start = function() {
+	        if (this.size()==0) this.onResolved();
+	    }
+	};
+}};
 
-        function a(a, c) {
-            var b = a.createProgram();
-            c.forEach(function (c) {
-                a.attachShader(b, c)
-            });
-            a.linkProgram(b);
-            if (!a.getProgramParameter(b, a.LINK_STATUS))throw console.error("Error in program linking:" + a.getProgramInfoLog(b)), a.deleteProgram(b), "Error in program linking";
-            return b
-        }
+modules['utils'] = {code: function(module,exports){
+	
+	exports.merge = function(obj1,obj2){
+	    Object.keys(obj2).forEach(function(key){
+	        obj1[key]=obj2[key];
+	    });
+	};
+	exports.clone = function(obj){
+	    return Object.create(obj);
+	};
+	exports.capitalize = function(s){
+	    return s.substr(0,1).toUpperCase() +
+	        s.substr(1);
+	};
+	exports.getBase64prefix = function(fileType,fileName) {
+	    var ext = fileName.split('.').pop();
+	    return 'data:'+fileType+'/'+ext+';base64,'
+	};
+}};
 
-        g.Tc = function (b, d) {
-            var f, g;
-            (function () {
-                for (var h = c(b, d[0], b.VERTEX_SHADER), n = c(b, d[1], b.FRAGMENT_SHADER), h = f = a(b, [h, n]), n = {}, l = b.getProgramParameter(h, b.ACTIVE_UNIFORMS), t = 0; t < l; t++) {
-                    var u = b.getActiveUniform(h, t), w = u.name.replace(/\[.*?]/,
-                        ""), r;
-                    r = b;
-                    var A = u.type, v = null, z = {
-                        FLOAT: "float",
-                        FLOAT_VEC2: "vec2",
-                        FLOAT_VEC3: "vec3",
-                        FLOAT_VEC4: "vec4",
-                        INT: "int",
-                        INT_VEC2: "ivec2",
-                        INT_VEC3: "ivec3",
-                        INT_VEC4: "ivec4",
-                        BOOL: "bool",
-                        BOOL_VEC2: "bvec2",
-                        BOOL_VEC3: "bvec3",
-                        BOOL_VEC4: "bvec4",
-                        FLOAT_MAT2: "mat2",
-                        FLOAT_MAT3: "mat3",
-                        FLOAT_MAT4: "mat4",
-                        SAMPLER_2D: "sampler2D"
-                    };
-                    if (!v)for (var x = Object.keys(z), v = {}, y = 0; y < x.length; ++y) {
-                        var q = x[y];
-                        v[r[q]] = z[q]
-                    }
-                    r = v[A];
-                    n[w] = {type: r, size: u.size, name: w, location: b.getUniformLocation(h, w), Rd: e(u.size, r)}
-                }
-                g = n
-            })();
-            this.lc = function () {
-                return f
-            };
-            this.bind = function () {
-                b.useProgram(f)
-            };
-            this.Ya = function (a, c) {
-                var e = g[a];
-                if (!e)throw"no uniform with name " + a + " found!";
-                e.Rd(b, e.location, c)
-            }
-        }
-    }
-};
-k.shaderSources = {
-    code: function (h, g) {
-        g.Rc = {Vc: ["attribute vec4 a_position; attribute vec2 a_texcoord; uniform mat4 u_matrix; uniform mat4 u_textureMatrix; varying vec2 v_texcoord; void main() { gl_Position = u_matrix * a_position;    v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; }", "precision mediump float; varying vec2 v_texcoord;uniform sampler2D texture;void main() {     gl_FragColor = texture2D(texture, v_texcoord);} "]}
-    }
-};
-k.texture = {
-    code: function (h, g) {
-        function e(c) {
-            return 0 == (c & c - 1)
-        }
+modules['vec2'] = {code: function(module,exports){
+	
+	exports.Vec2 = function(_x,_y){
+	
+	    var x = _x||0;
+	    var y = _y||0;
+	    var angle = 0;
+	    var norm = 0;
+	
+	    var onXY_Changed = function(){
+	        angle = x==0?0:Math.atan(y/x);
+	        norm = Math.sqrt(x*x+y*y);
+	    };
+	
+	    var onAngleChanged = function(){
+	        y = Math.sin(angle)*norm;
+	        x = Math.cos(angle)*norm;
+	    };
+	
+	    var onNormChanged = function(){
+	        y = Math.sin(angle)*norm;
+	        x = Math.cos(angle)*norm;
+	    };
+	
+	    this.setXY = function(_x,_y){
+	        x = _x;
+	        y = _y;
+	        onXY_Changed();
+	    };
+	
+	    this.setX = function(_x){
+	        x = _x;
+	        onXY_Changed();
+	    };
+	
+	    this.setY = function(_y){
+	        y = _y;
+	        onXY_Changed();
+	    };
+	
+	    this.setAngle = function(a){
+	        angle = a;
+	        onAngleChanged();
+	    };
+	
+	    this.setNorm = function(l){ // length
+	        norm = l;
+	        onNormChanged();
+	    };
+	
+	    this.getXY = function(){
+	        return {x:x,y:y};
+	    };
+	
+	    this.getX = function(){
+	        return x;
+	    };
+	
+	    this.getY = function(){
+	        return y;
+	    };
+	
+	    this.getAngle = function(){
+	        return angle;
+	    };
+	
+	    this.addVec2 = function(v){
+	        return new Vec2(x + v.getX(),y + v.getY);
+	    };
+	
+	    this.multiplyByScalar = function(sc){
+	        return new Vec2(x * sc,y * sc);
+	    };
+	
+	    this.dotProduct = function(v){ // inner product, скалярное произведение
+	        return x* v.getX()+y* v.getY();
+	    };
+	
+	    this.getNorm = function(){
+	        return norm;
+	    };
+	
+	    (function(){
+	        onXY_Changed();
+	    })();
+	
+	};
+}};
 
-        g.Xc = function (c, a) {
-            var b, d;
-            this.apply = function () {
-                d = {width: a.width, height: a.height};
-                this.bind();
-                c.texImage2D(c.TEXTURE_2D, 0, c.RGBA, c.RGBA, c.UNSIGNED_BYTE, a);
-                e(a.width) && e(a.height) ? c.generateMipmap(c.TEXTURE_2D) : (c.texParameteri(c.TEXTURE_2D, c.TEXTURE_WRAP_S, c.CLAMP_TO_EDGE), c.texParameteri(c.TEXTURE_2D, c.TEXTURE_WRAP_T, c.CLAMP_TO_EDGE), c.texParameteri(c.TEXTURE_2D, c.TEXTURE_MIN_FILTER, c.LINEAR), c.texParameteri(c.TEXTURE_2D, c.TEXTURE_MAG_FILTER,
-                    c.LINEAR));
-                c.bindTexture(c.TEXTURE_2D, null);
-                window.Le = c
-            };
-            this.bind = function () {
-                c.bindTexture(c.TEXTURE_2D, b)
-            };
-            this.Cb = function () {
-                return d
-            };
-            this.kc = function () {
-                return b
-            };
-            b = c.createTexture();
-            c.bindTexture(c.TEXTURE_2D, b);
-            c.texImage2D(c.TEXTURE_2D, 0, c.RGBA, 1, 1, 0, c.RGBA, c.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]))
-        }
-    }
-};
-k.vertexBuffer = {
-    code: function (h) {
-        h.ga.Zc = function (g, e) {
-            var c = g.createBuffer();
-            this.bind = function (a, b, d) {
-                d = g.getAttribLocation(e, d);
-                g.bindBuffer(g.ARRAY_BUFFER, c);
-                g.enableVertexAttribArray(d);
-                g.vertexAttribPointer(d, b, g.FLOAT, !1, 0, 0);
-                g.bufferData(g.ARRAY_BUFFER, new Float32Array(a), g.STATIC_DRAW)
-            }
-        }
-    }
-};
-k.renderer = {
-    code: function (h) {
-        function g() {
-            function g() {
-                if (!window.ab && !window.ab && (r(g), l)) {
-                    w = u;
-                    u = Date.now();
-                    var b = w ? u - w : 0;
-                    h.Zb();
-                    h.clear();
-                    f.update(h);
-                    l.update(u, b);
-                    e.tc.forEach(function (a) {
-                        a.update(u, b)
-                    });
-                    h.dc();
-                    a.update()
-                }
-            }
+modules['baseGameObject'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	var tweenModule = require('tween',{ignoreFail:true});
+	var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
+	var renderer = require('renderer',{ignoreFail:true}).instance();
+	var camera = require('camera').instance();
+	
+	exports.BaseGameObject = BaseModel.extend({
+	    type:'baseGameObject',
+	    groupName:'',
+	    _spriteSheet:null,
+	    pos:null,
+	    scale:null,
+	    angle:0,
+	    width:0,
+	    height:0,
+	    fixedToCamera:false,
+	    _layer:null,
+	    getRect: function(){
+	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
+	    },
+	    getScreenRect: function(){
+	        var rect = {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
+	        if (this.fixedToCamera) return rect;
+	        rect.x -= camera.pos.x;
+	        rect.y -= camera.pos.y;
+	        return rect;
+	    },
+	    kill: function(){
+	        this._layer._gameObjects.remove({id:this.id});
+	        this._layer._scene._allGameObjects.remove({id:this.id});
+	    },
+	    getScene: function(){
+	        return require('sceneManager').instance().getCurrScene();
+	    },
+	    moveTo:function(x,y,time,easeFnName){
+	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var scene = this.getScene();
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.add(0,tween);
+	        movie.play();
+	        return tween.getPromise();
+	    },
+	    update: function(){},
+	    _render: function(){
+	        var ctx = renderer.getContext();
+	        var dx = 0, dy = 0;
+	        if (this.fixedToCamera) {
+	            dx = camera.pos.x;
+	            dy = camera.pos.y;
+	        }
+	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
+	        ctx.scale(this.scale.x,this.scale.y);
+	        ctx.rotateZ(this.angle);
+	        ctx.translate(-this.width /2, -this.height/2);
+	    },
+	    construct:function(){
+	        if (!this.pos) this.pos = {x:0,y:0};
+	        if (!this.scale) this.scale = {x:1,y:1};
+	    }
+	});
+}};
 
-            var n, h, l, u = 0, w = 0, r = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (a) {
-                    setTimeout(a, 17)
-                };
-            this.getContext = function () {
-                return h
-            };
-            this.gc = function () {
-                return n
-            };
-            this.eb = function () {
-                n = document.querySelector("canvas");
-                n || (n = document.createElement("canvas"),
-                    document.body.appendChild(n));
-                h = b;
-                p("scaleManager").aa(n, h).Eb();
-                h.eb(n);
-                g()
-            };
-            this.gc = function () {
-                return n
-            };
-            this.cancel = function () {
-                window.ab = !0
-            };
-            this.Nb = function (a) {
-                l = a;
-                l.Wd && (h.Ja = l.Ja);
-                c.Qd()
-            };
-            this.lb = function (a, b, c, g) {
-                if (c) {
-                    g = g || e.Wa.get(0);
-                    if (!g)throw"at least one font must be specified. Create new one please";
-                    var n = a, l = b;
-                    c.split("").forEach(function (b) {
-                        var c = g.va.Ca[b] || g.va.Ca["?"];
-                        "\n" == b ? (n = a, l += c.height) : (h.drawImage(d.get(g.ra), c.x, c.y, c.width, c.height, n + f.ba.x, l + f.ba.y, c.width, c.height),
-                            n += c.width)
-                    })
-                }
-            }
-        }
+modules['baseModel'] = {code: function(module,exports){
+	var EventEmitter = require('eventEmitter').EventEmitter;
+	
+	var isPropNotFit = function(key,val){
+	    if (!key) return true;
+	    if (key.indexOf('$$')==0) return true;
+	    if (key.indexOf('_')==0) return true;
+	    if (val && val.call) return true;
+	    if (typeof val == 'string') return false;
+	    if (typeof val == 'number') return false;
+	    if (!val) return true;
+	};
+	
+	function deepCopy(obj) {
+	    if (Object.prototype.toString.call(obj) === '[object Array]') {
+	        var out = [], i = 0, len = obj.length;
+	        for ( ; i < len; i++ ) {
+	            out[i] = deepCopy(obj[i]);
+	        }
+	        return out;
+	    }
+	    if (typeof obj === 'object') {
+	        var out = {}, i;
+	        for ( i in obj ) {
+	            out[i] = deepCopy(obj[i]);
+	        }
+	        return out;
+	    }
+	    return obj;
+	}
+	
+	exports.BaseModel = require('class').Class.extend({
+	    id:null,
+	    protoId:null,
+	    name:'',
+	    _emitter:null,
+	    toJSON: function(){
+	        var res = {};
+	        for (var key in this) {
+	            if (isPropNotFit(key,this[key])) {
+	                continue;
+	            }
+	            res[key]=this[key];
+	        }
+	        return deepCopy(res);
+	    },
+	    toJSON_Array: function(){
+	        var res = [];
+	        for (var key in this) {
+	            if (isPropNotFit(key,this[key])) {
+	                continue;
+	            }
+	            res.push({key:key,value:this[key]});
+	        }
+	        return res;
+	    },
+	    fromJSON:function(jsonObj){
+	        var self = this;
+	        Object.keys(jsonObj).forEach(function(key){
+	            if (key in self) {
+	                self[key] = jsonObj[key];
+	                if (self[key] && !self[key].splice) {
+	                    self[key] = +self[key]||self[key];
+	                }
+	            }
+	        });
+	    },
+	    clone: function(){
+	        var newObj = new this.constructor(this.toJSON());
+	        newObj._init();
+	        return newObj;
+	    },
+	    on: function(eventName,callBack){
+	        this._emitter.on(eventName,callBack);
+	        return this;
+	    },
+	    trigger: function(eventName,data){
+	        this._emitter.trigger(eventName,data);
+	    },
+	    _init:function(){
+	        this._emitter = new EventEmitter();
+	        arguments && arguments[0] && this.fromJSON(arguments[0]);
+	    }
+	});
+}};
 
-        var e = p("bundle").aa(), c = p("collider").aa(), a = p("keyboard").aa(), b = p("glContext").aa();
-        p("canvasContext").aa();
-        var d = p("resourceCache"), f = p("camera").aa(), l = null;
-        h.ga.aa = function () {
-            null == l && (l = new g);
-            return l
-        }
-    }
-};
-k.scaleManager = {
-    code: function (h) {
-        function g(b, f) {
-            function d() {
-                window.addEventListener("resize", function () {
-                    g()
-                })
-            }
+modules['resource'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Resource = BaseModel.extend({
+	    resourcePath:''
+	});
+}};
 
-            function g() {
-                var d = a.ha;
-                switch (+d.wc) {
-                    case e.Rb:
-                        var g, h;
-                        d.ca.x = 1;
-                        d.ca.y = 1;
-                        d.ca.left = 0;
-                        d.ca.top = 0;
-                        d.left = 0;
-                        d.top = 0;
-                        d.la = d.width;
-                        d.ja = d.height;
-                        b.width = d.width;
-                        b.height = d.height;
-                        break;
-                    case e.Fc:
-                        g = window.innerWidth * c;
-                        h = window.innerHeight * c;
-                        var l = Math.min(g / d.width, h / d.height), m = d.width * l, r = d.height * l;
-                        d.ca.x = m / d.width;
-                        d.ca.y = r / d.height;
-                        d.Md = m;
-                        d.Ld = r;
-                        d.ca.left = (g - m) / 2;
-                        d.ca.top = (h - r) / 2;
-                        d.left =
-                            (g - m) / 2;
-                        d.top = (h - r) / 2;
-                        d.la = d.width;
-                        d.ja = d.height;
-                        b.width = d.width;
-                        b.height = d.height;
-                        b.style.width = m + "px";
-                        b.style.height = r + "px";
-                        b.style.top = d.top + "px";
-                        b.style.left = d.left + "px";
-                        break;
-                    case e.Qb:
-                        g = window.innerWidth * c;
-                        h = window.innerHeight * c;
-                        l = Math.min(g / d.width, h / d.height);
-                        m = d.width * l;
-                        r = d.height * l;
-                        d.ca.x = m / d.width;
-                        d.ca.y = r / d.height;
-                        d.ca.Md = m;
-                        d.ca.Ld = r;
-                        d.ca.left = (g - m) / 2 / l;
-                        d.ca.top = (h - r) / 2 / l;
-                        d.left = (g - m) / 2;
-                        d.top = (h - r) / 2;
-                        d.la = g;
-                        d.ja = h;
-                        b.width = g;
-                        b.height = h;
-                        f.Kb(d.ca.x, d.ca.y);
-                        break;
-                    case e.Gc:
-                        g = window.innerWidth *
-                            c;
-                        h = window.innerHeight * c;
-                        d.ca.x = g / d.width;
-                        d.ca.y = h / d.height;
-                        d.ca.left = 0;
-                        d.ca.top = 0;
-                        d.left = 0;
-                        d.top = 0;
-                        d.la = d.width;
-                        d.ja = d.height;
-                        b.width = d.width;
-                        b.height = d.height;
-                        b.style.width = g + "px";
-                        b.style.height = h + "px";
-                        break;
-                    case e.Lc:
-                        g = window.innerWidth * c, h = window.innerHeight * c, d.ca.x = g / d.width, d.ca.y = h / d.height, d.ca.left = 0, d.ca.top = 0, d.left = 0, d.top = 0, d.la = g, d.ja = h, b.width = g, b.height = h, b.style.width = g + "px", b.style.height = h + "px", f.Kb(d.ca.x, d.ca.y)
-                }
-            }
+modules['commonBehaviour'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.CommonBehaviour = BaseModel.extend({
+	    type:'commonBehaviour',
+	    name:'',
+	    description:'',
+	    parameters:[],
+	    construct: function(){
+	
+	    }
+	});
+}};
 
-            this.Eb = function () {
-                var b = a.ha;
-                b.ca = {};
-                g();
-                b.wc != e.Rb && d()
-            }
-        }
+modules['frameAnimation'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	
+	
+	exports.FrameAnimation = BaseModel.extend({
+	    type:'frameAnimation',
+	    name:'',
+	    frames:[],
+	    duration:1000,
+	    _gameObject:null,
+	    _startTime:null,
+	    _timeForOneFrame:0,
+	    construct: function(){
+	        this._timeForOneFrame = ~~(this.duration / this.frames.length);
+	    },
+	    play: function(){
+	        this._gameObject._currFrameAnimation = this;
+	    },
+	    stop:function(){
+	        this._gameObject._currFrameAnimation = null;
+	        this._startTime = null;
+	    },
+	    update: function(time){
+	        if (!this._startTime) this._startTime = time;
+	        var delta = (time - this._startTime)%this.duration;
+	        var ind = ~~((this.frames.length)*delta/this.duration);
+	        var lastFrIndex = this._gameObject.currFrameIndex;
+	        if (lastFrIndex!=this.frames[ind]) {
+	            this._gameObject.setFrameIndex(this.frames[ind]);
+	        }
+	    }
+	});
+}};
 
-        var e =
-            p("consts").Sb, c = p("device").$b, a = p("bundle").aa(), b = null;
-        h.ga.aa = function (a, c) {
-            if (null == b) {
-                if (!a)throw"can not instantiate ScaleManager: canvas not specified";
-                b = new g(a, c)
-            }
-            return b
-        }
-    }
-};
-k.sceneManager = {
-    code: function (h) {
-        function g() {
-            function c(c) {
-                a || (a = p("renderer").aa());
-                b || (b = p("bundle").aa());
-                var d = new (p("resourceLoader").Qc);
-                d.Hb = function () {
-                    b.fd();
-                    a.Nb(c)
-                };
-                var e = c.Bb();
-                b.tc.forEach(function (a) {
-                    e.add(a.pa.ea)
-                });
-                b.Wa.forEach(function (a) {
-                    d.pc(a.ra)
-                });
-                e.gd().forEach(function (a) {
-                    d.pc(a.ra)
-                });
-                b.zc.forEach(function (a) {
-                    d.Db(a.ra)
-                });
-                d.start()
-            }
+modules['gameObject'] = {code: function(module,exports){
+	var collider = require('collider',{ignoreFail:true}).instance();
+	var renderer = require('renderer',{ignoreFail:true}).instance();
+	var BaseGameObject = require('baseGameObject').BaseGameObject;
+	var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+	var bundle = require('bundle').instance();
+	var collections = require('collections');
+	var resourceCache = require('resourceCache');
+	var utils = require('utils');
+	var sceneManager = require('sceneManager',{ignoreFail:true}).instance();
+	
+	exports.GameObject = BaseGameObject.extend({
+	    type:'gameObject',
+	    spriteSheetId:null,
+	    _spriteSheet: null,
+	    _behaviour:null,
+	    commonBehaviour:[],
+	    _commonBehaviour:null,
+	    vel:null,
+	    currFrameIndex:0,
+	    _sprPosX:0,
+	    _sprPosY:0,
+	    _frameAnimations: null,
+	    frameAnimationIds:[],
+	    _currFrameAnimation:null,
+	    rigid:true,
+	    _timeCreated:null,
+	    construct: function(){
+	        var self = this;
+	        self._super();
+	        self.vel = {x:0,y:0};
+	        self._frameAnimations = new collections.List();
+	        if (!self.spriteSheetId) {
+	            return;
+	        }
+	        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
+	        if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name
+	        self.setFrameIndex(self.currFrameIndex);
+	        self._frameAnimations.clear();
+	        self.frameAnimationIds.forEach(function(id){
+	            var a = bundle.frameAnimationList.find({id: id});
+	            a = a.clone(exports.FrameAnimation);
+	            a._gameObject = self;
+	            self._frameAnimations.add(a);
+	        });
+	        self._commonBehaviour = new collections.List();
+	        self.commonBehaviour.forEach(function(cb){
+	            self._commonBehaviour.add(new CommonBehaviour(cb));
+	        });
+	    },
+	    getFrAnimation: function(animationName){
+	        return this._frameAnimations.find({name: animationName});
+	    },
+	    setFrameIndex: function(index){
+	        this.currFrameIndex = index;
+	        this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
+	        this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
+	    },
+	    setSpriteSheet: function(spriteSheet){
+	        this._spriteSheet = spriteSheet;
+	        this.width = spriteSheet._frameWidth;
+	        this.height = spriteSheet._frameHeight;
+	    },
+	    update: function(time,delta) {
+	        var self = this;
+	        self._currFrameAnimation && this._currFrameAnimation.update(time);
+	        var deltaX = this.vel.x * delta / 1000;
+	        var deltaY = this.vel.y * delta / 1000;
+	        var posX = this.pos.x+deltaX;
+	        var posY = this.pos.y+deltaY;
+	        collider.manage(self,posX,posY);
+	        self.__updateIndividualBehaviour__(delta);
+	        self.__updateCommonBehaviour__();
+	        self._render();
+	    },
+	    stopFrAnimations: function(){
+	        this._currFrameAnimation && this._currFrameAnimation.stop();
+	    },
+	    _render: function(){
+	        var self = this;
+	        var ctx = renderer.getContext();
+	        ctx.save();
+	        self._super();
+	        ctx.drawImage(
+	            resourceCache.get(self._spriteSheet.resourcePath),
+	            self._sprPosX,
+	            self._sprPosY,
+	            self.width,
+	            self.height,
+	            0,
+	            0
+	        );
+	        ctx.restore();
+	    }
+	}, {
+	    find: function(name){
+	        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+	    },
+	    findAll: function(name) {
+	        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
+	    }
+	});
+}};
 
-            var a, b;
-            this.Va = null;
-            this.Nb = function (a) {
-                var b = p("scene").Sc;
-                if (!(a instanceof b))throw"object " + a + " is not a scene";
-                this.Va != a && (this.Va = a, c(a))
-            }
-        }
+modules['layer'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	var collections = require('collections');
+	var TextField = require('textField').TextField;
+	var bundle = require('bundle').instance();
+	
+	exports.Layer = BaseModel.extend({
+	    type:'layer',
+	    gameObjectProps:[],
+	    _gameObjects:null,
+	    _scene:null,
+	    construct: function() {
+	        var self = this;
+	        self._gameObjects = new collections.List();
+	        this.gameObjectProps.forEach(function(prop){
+	            var objCloned;
+	            switch (prop.subType) {
+	                case 'textField':
+	                    objCloned = new TextField(prop);
+	                    break;
+	                default:
+	                    var obj = bundle.gameObjectList.find({id: prop.protoId});
+	                    objCloned = obj.clone();
+	                    objCloned.fromJSON(prop);
+	                    break;
+	            }
+	            objCloned._layer = self;
+	            self._gameObjects.add(objCloned);
+	        });
+	    },
+	    getAllSpriteSheets:function() {
+	        var dataSet = new collections.Set();
+	        this._gameObjects.forEach(function(obj){
+	            obj._spriteSheet && dataSet.add(obj._spriteSheet);
+	        });
+	        return dataSet;
+	    },
+	    update: function(currTime,deltaTime){
+	        var all = this._gameObjects.rs;
+	        var i = all.length;
+	        var l = i-1;
+	        while(i--){
+	            var obj = all[l-i];
+	            obj && obj.update(currTime,deltaTime);
+	        }
+	    }
+	});
+}};
 
-        var e = null;
-        h.ga.aa = function () {
-            null == e && (e = new g);
-            return e
-        }
-    }
-};
-k.tween = {
-    code: function (h, g) {
-        g.rb = function (e, c, a, b, d, f) {
-            var g = null;
-            f = f || "linear";
-            this.ma = !1;
-            var h = p("mathEx");
-            this.Ud = d;
-            this.update = function (l) {
-                g || (g = l);
-                this.ma || (l -= g, l > d ? this.complete() : e[c] = h.ld[f](l, a, b - a, d))
-            };
-            this.reset = function () {
-                g = null;
-                this.ma = !1
-            };
-            this.complete = function () {
-                this.ma || (e[c] = b, this.ma = !0)
-            }
-        }
-    }
-};
-k.tweenMovie = {
-    code: function (h, g) {
-        g.Tb = function () {
-            var e = [], c = null, a = this.ma = !1;
-            this.add = function (a, c) {
-                e.push({startTime: a, Na: c});
-                return this
-            };
-            this.loop = function (b) {
-                a = b
-            };
-            this.update = function (b) {
-                if (!this.ma) {
-                    c || (c = b);
-                    var d = b - c, f = !0;
-                    e.forEach(function (a) {
-                        d > a.startTime && (d < a.startTime + a.Na.Ud ? a.Na.update(b) : a.Na.complete());
-                        a.Na.ma || (f = !1)
-                    });
-                    f && (a ? this.reset() : this.ma = !0)
-                }
-            };
-            this.reset = function () {
-                c = null;
-                this.ma = !1;
-                e.forEach(function (a) {
-                    a.Na.reset()
-                })
-            }
-        }
-    }
-};
-p("index");
+modules['particleSystem'] = {code: function(module,exports){
+	
+	var mathEx = require('mathEx');
+	var bundle = require('bundle').instance();
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.ParticleSystem = BaseModel.extend({
+	    type:'particleSystem',
+	    gameObjectId:null,
+	    _gameObject:null,
+	    _particles:null,
+	    numOfParticlesToEmit:null,
+	    particleAngle:null,
+	    particleVelocity:null,
+	    particleLiveTime:null,
+	    emissionRadius:null,
+	    construct: function(){
+	        this._particles = [];
+	        if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
+	        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
+	        if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
+	        if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
+	        if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
+	        if (!this.emissionRadius) this.emissionRadius = 0;
+	        this._gameObject = bundle.gameObjectList.find({id:this.gameObjectId});
+	    },
+	    emit: function(x,y){
+	        var r = function(obj){
+	            return mathEx.getRandomInRange(obj.from,obj.to);
+	        };
+	        for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
+	            var particle = this._gameObject.clone();
+	            var angle = r(this.particleAngle);
+	            var vel = r(this.particleVelocity);
+	            particle.vel.x = vel*Math.cos(angle);
+	            particle.vel.y = vel*Math.sin(angle);
+	            particle.pos.x = r({from:x-this.emissionRadius,to:x+this.emissionRadius});
+	            particle.pos.y = r({from:y-this.emissionRadius,to:y+this.emissionRadius});
+	            particle.liveTime = r(this.particleLiveTime);
+	            bundle.applyBehaviour(particle);
+	            this._particles.push(particle);
+	        }
+	    },
+	    update:function(time,delta){
+	        var self = this;
+	        var all = this._particles;
+	        var i = all.length;
+	        var l = i - 1;
+	        while(i--){
+	            var p = all[l-i];
+	            if (!p) continue;
+	            if (!p._timeCreated) p._timeCreated = time;
+	            if (time - p._timeCreated > p.liveTime) {
+	                self._particles.splice(self._particles.indexOf(p),1);
+	            }
+	            p.update(time,delta);
+	        }
+	    }
+	},{
+	    find: function(name){
+	        return bundle.particleSystemList.find({name:name});
+	    },
+	    findAll: function(name){
+	        return bundle.particleSystemList.findAll({name:name});
+	    }
+	});
+}};
+
+modules['scene'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	var collections = require('collections');
+	var bundle = require('bundle').instance();
+	var renderer = require('renderer',{ignoreFail:true}).instance();
+	var resourceCache = require('resourceCache');
+	var camera = require('camera').instance();
+	
+	exports.Scene = BaseModel.extend({
+	    type:'scene',
+	    layerProps:[],
+	    _layers:null,
+	    tileMap:null,
+	    _allGameObjects:null,
+	    useBG:false,
+	    colorBG:[255,255,255],
+	    _tweenMovies:null,
+	    __onResourcesReady: function(){
+	        var self = this;
+	        self._allGameObjects = new collections.List();
+	        self._layers.forEach(function(l){
+	            self._allGameObjects.addAll(l._gameObjects);
+	        });
+	    },
+	    construct: function(){
+	        var self = this;
+	        self._layers = new collections.List();
+	        this.layerProps.forEach(function(prop){
+	            var l = bundle.layerList.find({id: prop.protoId});
+	            var lCloned = l.clone(exports.Layer);
+	            lCloned.fromJSON(prop);
+	            lCloned._scene = self;
+	            self._layers.add(lCloned);
+	        });
+	        self._tweenMovies = [];
+	        if (!self.tileMap) self.tileMap = {
+	            _spriteSheet:null,
+	            spriteSheetId:null,
+	            width:0,
+	            height:0,
+	            data:[]
+	        };
+	        if (self.tileMap.spriteSheetId) {
+	            self.tileMap._spriteSheet = bundle.spriteSheetList.find({id:self.tileMap.spriteSheetId});
+	            self.tileMap._tilesInScreenX = ~~(bundle.gameProps.width/self.tileMap._spriteSheet._frameWidth);
+	            self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
+	        }
+	    },
+	    getAllSpriteSheets:function() {
+	        var dataSet = new collections.Set();
+	        this._layers.forEach(function(l){
+	            dataSet.combine(l.getAllSpriteSheets());
+	        });
+	        if (this.tileMap.spriteSheetId) {
+	            dataSet.add(this.tileMap._spriteSheet);
+	        }
+	        return dataSet;
+	    },
+	    getAllGameObjects:function(){
+	        return this._allGameObjects;
+	    },
+	    update: function(currTime,deltaTime){
+	        var self = this;
+	        self._render();
+	        var layers = self._layers.rs;
+	        var i = self._layers.size();
+	        var l = i -1;
+	        while(i--){
+	            layers[i-l].update(currTime,deltaTime);
+	        }
+	        self._tweenMovies.forEach(function(tweenMovie){
+	            if (tweenMovie.completed) {
+	                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
+	            }
+	            tweenMovie._update(currTime);
+	        });
+	        self.__updateIndividualBehaviour__(currTime);
+	    },
+	    _render: function(){
+	        var self = this;
+	        var spriteSheet = self.tileMap._spriteSheet;
+	        if (!spriteSheet) return;
+	        var ctx = renderer.getContext();
+	        var tilePosX = ~~(camera.pos.x / self.tileMap._spriteSheet._frameWidth);
+	        var tilePosY = ~~(camera.pos.y / self.tileMap._spriteSheet._frameHeight);
+	        var w = tilePosX + self.tileMap._tilesInScreenX + 2;
+	        var h = tilePosY + self.tileMap._tilesInScreenY + 2;
+	        for (var y=tilePosY;y<h;y++) {
+	            for (var x=tilePosX;x<w;x++) {
+	                var index = self.tileMap.data[y] && self.tileMap.data[y][x];
+	                if (index==undefined) continue;
+	                ctx.drawImage(
+	                    resourceCache.get(spriteSheet.resourcePath),
+	                    spriteSheet.getFramePosX(index),
+	                    spriteSheet.getFramePosY(index),
+	                    spriteSheet._frameWidth,
+	                    spriteSheet._frameHeight,
+	                    x*spriteSheet._frameWidth,
+	                    y*spriteSheet._frameHeight
+	                );
+	            }
+	        }
+	    },
+	    getTileAt: function(x,y){
+	        var self = this;
+	        var tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
+	        var tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
+	        return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];
+	    },
+	    printText: function(x,y,text,font){
+	        if (!text) return;
+	        if (!text.substring) text = JSON.stringify(text,null,4);
+	        renderer.printText(x,y,text,font);
+	    },
+	    log: function(text) {
+	        this.printText(0,0,text);
+	    }
+	});
+}};
+
+modules['sound'] = {code: function(module,exports){
+	var Resource = require('resource').Resource;
+	var soundManager = require('soundManager',{ignoreFail:1}).instance();
+	
+	exports.Sound = Resource.extend({
+	    type:'sound',
+	    _buffer:null
+	}, {
+	    play: function (sndName, loop) {
+	        soundManager.play(sndName, loop);
+	    }
+	});
+}};
+
+modules['spriteSheet'] = {code: function(module,exports){
+	
+	var Resource = require('resource').Resource;
+	
+	exports.SpriteSheet = Resource.extend({
+	    type:'spriteSheet',
+	    width:0,
+	    height:0,
+	    numOfFramesH:1,
+	    numOfFramesV:1,
+	    _frameWidth:0,
+	    _frameHeight:0,
+	    _numOfFrames:0,
+	    _textureInfo: null,
+	    getFramePosX: function(frameIndex){
+	        return (frameIndex%this.numOfFramesH)*this._frameWidth;
+	    },
+	    getFramePosY: function(frameIndex){
+	        return ~~(frameIndex/this.numOfFramesH)*this._frameHeight;
+	    },
+	    calcFrameSize: function(){
+	        if (!(this.numOfFramesH && this.numOfFramesV)) return;
+	        this._frameWidth = this.width/this.numOfFramesH;
+	        this._frameHeight = this.height/this.numOfFramesV;
+	        this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
+	    },
+	    construct: function(){
+	        this.calcFrameSize();
+	    }
+	});
+}};
+
+modules['font'] = {code: function(module,exports){
+	
+	var Resource = require('resource').Resource;
+	
+	exports.Font = Resource.extend({
+	    type:'font',
+	    fontColor:'black',
+	    fontSize:12,
+	    fontFamily:'Monospace',
+	    fontContext:null
+	});
+}};
+
+modules['textField'] = {code: function(module,exports){
+	
+	var renderer = require('renderer',{ignoreFail:true}).instance();
+	var BaseGameObject = require('baseGameObject').BaseGameObject;
+	var SpriteSheet = require('spriteSheet').SpriteSheet;
+	var bundle = require('bundle').instance();
+	var resourceCache = require('resourceCache');
+	
+	exports.TextField = BaseGameObject.extend({
+	    type:'userInterface',
+	    subType:'textField',
+	    _chars:null,
+	    text:'',
+	    _font:null,
+	    fontId:null,
+	    rigid:false,
+	    setText: function(text) {
+	        text+='';
+	        this._chars = [];
+	        this.text = text;
+	        var rows = [{width:0}];
+	        var currRowIndex = 0;
+	        this.height = this._font.fontContext.symbols[' '].height;
+	        for (var i=0,max=text.length;i<max;i++) {
+	            this._chars.push(text[i]);
+	            var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
+	            if (text[i]=='\n') {
+	                currRowIndex++;
+	                this.height+=currSymbolInFont.height;
+	                rows[currRowIndex] = {width:0};
+	            } else {
+	                rows[currRowIndex].width+=currSymbolInFont.width;
+	            }
+	        }
+	        this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
+	    },
+	    setFont: function(font){
+	        this._font = font;
+	        this.height = this._font.fontContext.symbols[' '].height;
+	        this._spriteSheet = new SpriteSheet({resourcePath:this._font.resourcePath});
+	        this.setText(this.text);
+	    },
+	    clone:function(){
+	        return this._super();
+	    },
+	    construct: function(){
+	        var self = this;
+	        self._super();
+	        self.rigid = false;
+	        var font =
+	            bundle.fontList.find({id:this.fontId}) ||
+	            bundle.fontList.find({name:'default'}) ||
+	            bundle.fontList.get(0);
+	        font && self.setFont(font);
+	    },
+	    update: function(){
+	        this._render();
+	    },
+	    _render: function(){
+	        var self = this;
+	        var ctx = renderer.getContext();
+	        this._super();
+	        var posX = 0;
+	        var posY = 0;
+	        var img = resourceCache.get(self._spriteSheet.resourcePath);
+	        this._chars.forEach(function(ch){
+	            var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+	            if (ch=='\n') {
+	                posX = 0;
+	                posY+= charInCtx.height;
+	                return;
+	            }
+	            renderer.getContext().drawImage(
+	                img,
+	                charInCtx.x,
+	                charInCtx.y,
+	                charInCtx.width,
+	                charInCtx.height,
+	                posX,
+	                posY
+	            );
+	            posX+=charInCtx.width;
+	        });
+	        ctx.restore();
+	    }
+	});
+}};
+
+modules['camera'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	
+	var Camera = function(){
+	
+	    var objFollowTo = null;
+	    var scene = null;
+	    var sceneWidth;
+	    var sceneHeight;
+	
+	    this.pos = {
+	        x:0,
+	        y:0
+	    };
+	
+	    this.follow = function(gameObject) {
+	        objFollowTo = gameObject;
+	        scene = gameObject.getScene();
+	        sceneWidth = scene.tileMap._spriteSheet._frameWidth*scene.tileMap.width;
+	        sceneHeight = scene.tileMap._spriteSheet._frameHeight*scene.tileMap.height;
+	    };
+	
+	
+	    this.update = function(ctx) {
+	        if (!objFollowTo) return;
+	        var pos = this.pos;
+	        var w = bundle.gameProps.width;
+	        var h = bundle.gameProps.height;
+	        var wDiv2 = w/2;
+	        var hDiv2 = h/2;
+	        pos.x = objFollowTo.pos.x - wDiv2;
+	        pos.y = objFollowTo.pos.y - hDiv2;
+	        if (pos.x<0) pos.x = 0;
+	        if (pos.y<0) pos.y = 0;
+	        if (pos.x>sceneWidth - w) pos.x = sceneWidth -w;
+	        if (pos.y>sceneHeight -h) pos.y = sceneHeight -h;
+	        ctx.translate(-pos.x,-pos.y);
+	    };
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Camera();
+	    return instance;
+	};
+	
+	
+}};
+
+modules['canvasContext'] = {code: function(module,exports){
+	
+	var mat4 = require('mat4');
+	var MatrixStack = require('matrixStack').MatrixStack;
+	var bundle = require('bundle').instance();
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	var device = require('device');
+	
+	var CanvasContext = function(){
+	
+	    var ctx;
+	    var mScaleX = 1, mScaleY = 1;
+	    var gameProps;
+	    var matrixStack = new MatrixStack();
+	
+	    this.init = function(canvas) {
+	        ctx = canvas.getContext('2d');
+	        gameProps = bundle.gameProps;
+	    };
+	
+	    this.drawImage = function(
+	        textureInfo,
+	        fromX,
+	        fromY,
+	        fromW,
+	        fromH,
+	        toX,
+	        toY
+	    ) {
+	
+	        var m;
+	
+	        ctx.drawImage(
+	            textureInfo.image,
+	            fromX,
+	            fromY,
+	            fromW,
+	            fromH,
+	            toX,
+	            toY,
+	            fromW,
+	            fromH
+	        );
+	
+	    };
+	
+	    var cache = {};
+	
+	
+	    this.loadTextureInfo = function(url,opts,callBack) {
+	        if (cache.url) {
+	            callBack(cache[url]);
+	            return;
+	        }
+	        if (opts.type=='base64') {
+	            url = utils.getBase64prefix('image',opts.fileName) + url;
+	        }
+	
+	        var img = new Image(url);
+	        img.onload = function(){
+	            var texture = {
+	                image:img,
+	                getSize: function(){
+	                    return {
+	                        width:img.width,
+	                        height:img.height
+	                    }
+	                }
+	            };
+	            callBack(texture);
+	        };
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        img.src = url;
+	    };
+	
+	    this.clear = function(){
+	
+	        ctx.fillStyle="#000000";
+	        ctx.fillRect(
+	            0,
+	            0,
+	            screen.width*device.scale,
+	            screen.height*device.scale);
+	
+	    };
+	
+	    this.save = function() {
+	        ctx.save();
+	    };
+	
+	    this.scale = function(scaleX,scaleY){
+	        ctx.scale(scaleX,scaleY);
+	    };
+	
+	    this.rotateZ = function(angleInRadians) {
+	        ctx.rotate(angleInRadians);
+	    };
+	
+	    this.rotateY = function(angleInRadians) {
+	        //
+	    };
+	
+	    this.translate = function(x,y){
+	        ctx.translate(x,y);
+	    };
+	
+	    this.restore = function(){
+	        ctx.restore();
+	    };
+	
+	    this.rescaleView = function(scaleX,scaleY){
+	        mScaleX = scaleX;
+	        mScaleY = scaleY;
+	    };
+	
+	    this.beginFrameBuffer = function(){
+	        ctx.save();
+	        ctx.beginPath();
+	        ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
+	        ctx.clip();
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
+	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+	
+	
+	        }
+	    };
+	
+	    this.flipFrameBuffer = function(){
+	        ctx.restore();
+	    };
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new CanvasContext();
+	    return instance;
+	};
+}};
+
+modules['frameBuffer'] = {code: function(module,exports){
+	
+	exports.FrameBuffer = function(gl,width,height){
+	
+	    var glTexture;
+	    var glRenderBuffer;
+	    var glFrameBuffer;
+	
+	    this.bind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.viewport(0, 0, width,height);
+	    };
+	
+	    this.unbind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	    };
+	
+	    this.getGlTexture = function(){
+	        return glTexture;
+	    };
+	
+	
+	    (function(){
+	
+	        //1. Init Color Texture
+	        glTexture = gl.createTexture();
+	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        //2. Init Render Buffer
+	        glRenderBuffer = gl.createRenderbuffer();
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
+	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+	        //3. Init Frame Buffer
+	        glFrameBuffer = gl.createFramebuffer();
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
+	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
+	        //4. Clean up
+	        gl.bindTexture(gl.TEXTURE_2D, null);
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	
+	    })();
+	
+	};
+}};
+
+modules['glContext'] = {code: function(module,exports){
+	
+	var mat4 = require('mat4');
+	var utils = require('utils');
+	var shaderSources = require('shaderSources');
+	var Shader = require('shader').Shader;
+	var VertexBuffer = require('vertexBuffer').VertexBuffer;
+	var Texture = require('texture').Texture;
+	var MatrixStack = require('matrixStack').MatrixStack;
+	var FrameBuffer = require('frameBuffer').FrameBuffer;
+	var bundle = require('bundle').instance();
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	
+	var GlContext = function(){
+	
+	    var gl;
+	    var mScaleX = 1, mScaleY = 1;
+	    var shader;
+	    var posVertexBuffer;
+	    var texVertexBuffer;
+	    var matrixStack = new MatrixStack();
+	    var frameBuffer;
+	    var gameProps;
+	    this.colorBG = [255,255,255];
+	
+	    this.init = function(canvas){
+	
+	        gameProps = bundle.gameProps;
+	        gl = canvas.getContext("webgl",{ alpha: false });
+	        shader = new Shader(gl, shaderSources.SRC.TEXTURE_SHADER);
+	        shader.bind();
+	
+	        posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+	        posVertexBuffer.bind([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 0,
+	            0, 1,
+	            1, 1
+	        ],2,'a_position');
+	
+	        texVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+	        posVertexBuffer.bind([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 0,
+	            0, 1,
+	            1, 1
+	        ],2,'a_texcoord');
+	
+	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        gl.enable(gl.BLEND);
+	
+	    };
+	
+	
+	    var cache = {};
+	
+	    this.loadTextureInfo = function(url,opts,callBack) {
+	        if (cache.url) {
+	            callBack(cache[url]);
+	            return;
+	        }
+	        if (opts.type=='base64') {
+	            url = utils.getBase64prefix('image',opts.fileName) + url;
+	        }
+	
+	        var img = new Image();
+	        var texture = new Texture(gl,img);
+	
+	        img.onload = function() {
+	            texture.apply(img);
+	            callBack(texture);
+	        };
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        img.src = url;
+	    };
+	
+	
+	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
+	        // this matirx will convert from pixels to clip space
+	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, 1);
+	
+	        // this matrix will scale our 1 unit quad
+	        // from 1 unit to dstWidth, dstHeight units
+	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
+	
+	        // this matrix will translate our quad to dstX, dstY
+	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
+	
+	        // multiply them all togehter
+	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
+	        matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
+	        matrix = mat4.matrixMultiply(matrix, projectionMatrix);
+	        return matrix;
+	    };
+	
+	    var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
+	        // Because texture coordinates go from 0 to 1
+	        // and because our texture coordinates are already a unit quad
+	        // we can select an area of the texture by scaling the unit quad
+	        // down
+	        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
+	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+	
+	        // multiply them together
+	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
+	    };
+	    
+	    var currTex = null;
+	
+	    this.drawImage = function(
+	        texture,
+	        srcX, srcY, srcWidth, srcHeight,
+	        dstX, dstY) {
+	
+	        var texWidth = texture.getSize().width;
+	        var texHeight = texture.getSize().height;
+	
+	
+	        if (dstX === undefined) {
+	            dstX = srcX;
+	        }
+	        if (dstY === undefined) {
+	            dstY = srcY;
+	        }
+	        if (srcWidth === undefined) {
+	            srcWidth = texWidth;
+	        }
+	        if (srcHeight === undefined) {
+	            srcHeight = texHeight;
+	        }
+	
+	        if (currTex!=texture){
+	            texture.bind();
+	            currTex = texture;
+	        }
+	
+	
+	        // Set the matrix.
+	        //console.log(gameProps);
+	        shader.setUniform("u_matrix",makePositionMatrix(
+	                dstX,dstY,srcWidth,srcHeight,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	
+	        // Set the texture matrix.
+	        shader.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
+	
+	        if (texWidth==64) {
+	            //gl.blendFunc(gl.ONE, gl.ONE);
+	        } else {
+	            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        }
+	
+	        // draw the quad (2 triangles, 6 vertices)
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	    };
+	
+	    this.clear = function() {
+	        //gl.colorMask(false, false, false, true);
+	        gl.clearColor(this.colorBG[0]/255,this.colorBG[1]/255,this.colorBG[2]/255,1);
+	        gl.clear(gl.COLOR_BUFFER_BIT);
+	    };
+	
+	    this.save = function() {
+	        matrixStack.save();
+	    };
+	
+	    this.scale = function(x,y) {
+	        matrixStack.scale(x,y);
+	    };
+	
+	    this.rotateZ = function(angleInRadians) {
+	        matrixStack.rotateZ(angleInRadians);
+	    };
+	
+	    this.rotateY = function(angleInRadians) {
+	        matrixStack.rotateY(angleInRadians);
+	    };
+	
+	    this.translate = function(x,y){
+	        matrixStack.translate(x,y);
+	    };
+	
+	    this.restore = function(){
+	        matrixStack.restore();
+	    };
+	
+	    this.rescaleView = function(scaleX,scaleY){
+	        mScaleX = scaleX;
+	        mScaleY = scaleY;
+	    };
+	
+	    this.beginFrameBuffer = function(){
+	        this.save();
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
+	        frameBuffer.bind();
+	    };
+	
+	    this.flipFrameBuffer = function(){
+	        currTex = null;
+	        this.restore();
+	        this.save();
+	        this.translate(0,gameProps.canvasHeight);
+	        this.scale(1,-1);
+	        frameBuffer.unbind();
+	        this.clear();
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
+	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
+	
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            shader.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    gameProps.globalScale.left,gameProps.globalScale.top,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        } else {
+	            shader.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    0,0,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        }
+	
+	        shader.setUniform('u_textureMatrix',
+	            makeTextureMatrix(
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
+	            )
+	        );
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        this.restore();
+	    };
+	
+	
+	
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new GlContext();
+	    return instance;
+	};
+}};
+
+modules['matrixStack'] = {code: function(module,exports){
+	
+	var mat4 = require('mat4');
+	
+	exports.MatrixStack = function () {
+	    var self = this;
+	    this.stack = [];
+	
+	    this.restore = function () {
+	        this.stack.pop();
+	        // Never let the stack be totally empty
+	        if (this.stack.length < 1) {
+	            this.stack[0] = mat4.makeIdentity();
+	        }
+	    };
+	
+	    this.save = function () {
+	        this.stack.push(this.getCurrentMatrix());
+	    };
+	
+	    this.getCurrentMatrix = function () {
+	        return this.stack[this.stack.length - 1].slice();
+	    };
+	
+	    this.setCurrentMatrix = function (m) {
+	        return this.stack[this.stack.length - 1] = m;
+	    };
+	
+	    this.translate = function (x, y, z) {
+	        if (z === undefined) {
+	            z = 0;
+	        }
+	        var t = mat4.makeTranslation(x, y, z);
+	        var m = this.getCurrentMatrix();
+	        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+	    };
+	
+	    this.rotateZ = function (angleInRadians) {
+	        var t = mat4.makeZRotation(angleInRadians);
+	        var m = this.getCurrentMatrix();
+	        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+	    };
+	
+	    this.rotateY = function (angleInRadians) {
+	        var t = mat4.makeYRotation(angleInRadians);
+	        var m = this.getCurrentMatrix();
+	        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+	    };
+	
+	    this.scale = function (x, y, z) {
+	        if (z === undefined) {
+	            z = 1;
+	        }
+	        var t = mat4.makeScale(x, y, z);
+	        var m = this.getCurrentMatrix();
+	        this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+	    };
+	
+	    (function () {
+	        self.restore();
+	    })();
+	
+	};
+}};
+
+modules['shader'] = {code: function(module,exports){
+	function compileShader(gl, shaderSource, shaderType) {
+	    // Create the shader object
+	    var shader = gl.createShader(shaderType);
+	
+	    // Load the shader source
+	    gl.shaderSource(shader, shaderSource);
+	
+	    // Compile the shader
+	    gl.compileShader(shader);
+	
+	    // Check the compile status
+	    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+	    if (!compiled) {
+	        // Something went wrong during compilation; get the error
+	        var lastError = gl.getShaderInfoLog(shader);
+	        gl.deleteShader(shader);
+	        console.error('*** Error compiling shader ' + shader + ':' + lastError);
+	        throw 'Error compiling shader';
+	    }
+	
+	    return shader;
+	}
+	
+	
+	function createProgram(gl, shaders) {
+	    var program = gl.createProgram();
+	    shaders.forEach(function(shader) {
+	        gl.attachShader(program, shader);
+	    });
+	    gl.linkProgram(program);
+	
+	    // Check the link status
+	    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+	    if (!linked) {
+	        // something went wrong with the link
+	        var lastError = gl.getProgramInfoLog(program);
+	        console.error("Error in program linking:" + lastError);
+	        gl.deleteProgram(program);
+	        throw 'Error in program linking';
+	    }
+	    return program;
+	}
+	
+	var extractUniforms = function (gl, program) {
+	    var uniforms = {};
+	
+	    var totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+	
+	    for (var i = 0; i < totalUniforms; i++) {
+	        var uniformData = gl.getActiveUniform(program, i);
+	        var name = uniformData.name.replace(/\[.*?]/, "");
+	        var type = mapType(gl, uniformData.type);
+	
+	        uniforms[name] = {
+	            type: type,
+	            size: uniformData.size,
+	            name: name,
+	            location: gl.getUniformLocation(program, name),
+	            setter: getUniformSetter(uniformData.size,type)
+	        };
+	    }
+	
+	    return uniforms;
+	
+	
+	    function mapType(gl, type) {
+	
+	        var GL_TABLE = null;
+	
+	        var GL_TO_GLSL_TYPES = {
+	            'FLOAT': 'float',
+	            'FLOAT_VEC2': 'vec2',
+	            'FLOAT_VEC3': 'vec3',
+	            'FLOAT_VEC4': 'vec4',
+	
+	            'INT': 'int',
+	            'INT_VEC2': 'ivec2',
+	            'INT_VEC3': 'ivec3',
+	            'INT_VEC4': 'ivec4',
+	
+	            'BOOL': 'bool',
+	            'BOOL_VEC2': 'bvec2',
+	            'BOOL_VEC3': 'bvec3',
+	            'BOOL_VEC4': 'bvec4',
+	
+	            'FLOAT_MAT2': 'mat2',
+	            'FLOAT_MAT3': 'mat3',
+	            'FLOAT_MAT4': 'mat4',
+	
+	            'SAMPLER_2D': 'sampler2D'
+	        };
+	
+	        if (!GL_TABLE) {
+	            var typeNames = Object.keys(GL_TO_GLSL_TYPES);
+	
+	            GL_TABLE = {};
+	
+	            for (var i = 0; i < typeNames.length; ++i) {
+	                var tn = typeNames[i];
+	                GL_TABLE[gl[tn]] = GL_TO_GLSL_TYPES[tn];
+	            }
+	        }
+	
+	        return GL_TABLE[type];
+	    }
+	};
+	
+	
+	var getUniformSetter = function(size,type){
+	    if (size==1) {
+	        switch (type) {
+	            case 'float':       return function(gl,location,value) {gl.uniform1f(location, value)};
+	            case 'vec2':        return  function(gl,location,value) {gl.uniform2f(location, value[0], value[1])};
+	            case 'vec3':        return  function(gl,location,value) {gl.uniform3f(location, value[0], value[1], value[2])};
+	            case 'vec4':        return  function(gl,location,value) {gl.uniform4f(location, value[0], value[1], value[2], value[3])};
+	            case 'int':         return  function(gl,location,value) {gl.uniform1i(location, value)};
+	            case 'ivec2':       return  function(gl,location,value) {gl.uniform2i(location, value[0], value[1])};
+	            case 'ivec3':       return  function(gl,location,value) {gl.uniform3i(location, value[0], value[1], value[2])};
+	            case 'ivec4':       return  function(gl,location,value) {gl.uniform4i(location, value[0], value[1], value[2], value[3])};
+	            case 'bool':        return  function(gl,location,value) {gl.uniform1i(location, value)};
+	            case 'bvec2':       return  function(gl,location,value) {gl.uniform2i(location, value[0], value[1])};
+	            case 'bvec3':       return  function(gl,location,value) {gl.uniform3i(location, value[0], value[1], value[2])};
+	            case 'bvec4':       return  function(gl,location,value) {gl.uniform4i(location, value[0], value[1], value[2], value[3])};
+	            case 'mat2':        return  function(gl,location,value) {gl.uniformMatrix2fv(location, false, value)};
+	            case 'mat3':        return  function(gl,location,value) {gl.uniformMatrix3fv(location, false, value)};
+	            case 'mat4':        return  function(gl,location,value) {gl.uniformMatrix4fv(location, false, value)};
+	            case 'sampler2D':   return  function(gl,location,value) {gl.uniform1i(location, value)};
+	        }
+	    } else {
+	        switch (type) {
+	            case 'float':       return  function(gl,location,value) {gl.uniform1fv(location, value)};
+	            case 'vec2':        return  function(gl,location,value) {gl.uniform2fv(location, value)};
+	            case 'vec3':        return  function(gl,location,value) {gl.uniform3fv(location, value)};
+	            case 'vec4':        return  function(gl,location,value) {gl.uniform4fv(location, value)};
+	            case 'int':         return  function(gl,location,value) {gl.uniform1iv(location, value)};
+	            case 'ivec2':       return  function(gl,location,value) {gl.uniform2iv(location, value)};
+	            case 'ivec3':       return  function(gl,location,value) {gl.uniform3iv(location, value)};
+	            case 'ivec4':       return  function(gl,location,value) {gl.uniform4iv(location, value)};
+	            case 'bool':        return  function(gl,location,value) {gl.uniform1iv(location, value)};
+	            case 'bvec2':       return  function(gl,location,value) {gl.uniform2iv(location, value)};
+	            case 'bvec3':       return  function(gl,location,value) {gl.uniform3iv(location, value)};
+	            case 'bvec4':       return  function(gl,location,value) {gl.uniform4iv(location, value)};
+	            case 'sampler2D':   return  function(gl,location,value) {gl.uniform1iv(location, value)};
+	        }
+	    }
+	};
+	
+	
+	exports.Shader = function(gl,sources){
+	
+	    var program;
+	    var uniforms;
+	
+	    (function(){
+	
+	        var vShader = compileShader(gl,sources[0],gl.VERTEX_SHADER);
+	        var fShader = compileShader(gl,sources[1],gl.FRAGMENT_SHADER);
+	        program = createProgram(gl,[vShader,fShader]);
+	        uniforms = extractUniforms(gl,program);
+	
+	    })();
+	
+	    this.getProgram = function(){
+	        return program;
+	    };
+	
+	    this.bind = function(){
+	        gl.useProgram(program);
+	    };
+	
+	    this.setUniform = function(name,value){
+	        var uniform = uniforms[name];
+	        if (!uniform) throw 'no uniform with name '+ name + ' found!';
+	        uniform.setter(gl,uniform.location,value);
+	    };
+	
+	};
+}};
+
+modules['shaderSources'] = {code: function(module,exports){
+	
+	exports.SRC = {
+	    TEXTURE_SHADER: [
+	        [
+	            'attribute vec4 a_position; ',
+	            'attribute vec2 a_texcoord; ',
+	
+	            'uniform mat4 u_matrix; ',
+	            'uniform mat4 u_textureMatrix; ',
+	
+	            'varying vec2 v_texcoord; ',
+	
+	            'void main() { ',
+	            '   gl_Position = u_matrix * a_position; ',
+	            '   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; ',
+	            '}'
+	        ].join(''),
+	        [
+	            'precision mediump float; ',
+	
+	            'varying vec2 v_texcoord;',
+	
+	            'uniform sampler2D texture;',
+	
+	            'void main() { ',
+	            '    gl_FragColor = texture2D(texture, v_texcoord);',
+	            '} '
+	        ].join('')
+	    ]
+	
+	};
+}};
+
+modules['texture'] = {code: function(module,exports){
+	
+	var isPowerOf2 = function(value) {
+	    return (value & (value - 1)) == 0;
+	};
+	
+	exports.Texture = function(gl,img){
+	
+	    var tex;
+	    var size;
+	
+	    this.apply = function(){
+	        size = {width:img.width,height:img.height};
+	        this.bind();
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	        // Check if the image is a power of 2 in both dimensions.
+	        if (isPowerOf2(img.width) && isPowerOf2(img.height)) {
+	            gl.generateMipmap(gl.TEXTURE_2D);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+	        } else {
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	        }
+	        gl.bindTexture(gl.TEXTURE_2D, null);
+	    };
+	
+	    this.bind = function(){
+	        gl.bindTexture(gl.TEXTURE_2D, tex);
+	    };
+	
+	
+	    this.getSize = function(){
+	        return size;
+	    };
+	
+	    this.getGlTexture = function(){
+	        return tex;
+	    };
+	
+	    (function(){
+	        tex = gl.createTexture();
+	        gl.bindTexture(gl.TEXTURE_2D, tex);
+	        // Fill the texture with a 1x1 blue pixel.
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+	            new Uint8Array([0, 0, 255, 255]));
+	    })();
+	
+	};
+}};
+
+modules['vertexBuffer'] = {code: function(module,exports){
+	
+	module.exports.VertexBuffer = function(gl,program){
+	    var buffer = gl.createBuffer();
+	
+	    this.bind = function(bufferData, itemSize, uniformLocationName){
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        gl.enableVertexAttribArray(uniformLocation);
+	        gl.vertexAttribPointer(
+	            uniformLocation,
+	            itemSize,
+	            gl.FLOAT,
+	            false,  // if the content is normalized vectors
+	            0,  // number of bytes to skip in between elements
+	            0
+	        ); // offsets to the first element
+	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	    };
+	};
+}};
+
+modules['renderer'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	var collider = require('collider').instance();
+	var keyboard = require('keyboard').instance();
+	var glContext = require('glContext').instance();
+	var canvasContext = require('canvasContext').instance();
+	var resourceCache = require('resourceCache');
+	var camera = require('camera').instance();
+	
+	var Renderer = function(){
+	
+	    var canvas;
+	    var ctx;
+	    var scene;
+	    var self = this;
+	    var currTime = 0;
+	    var lastTime = 0;
+	    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+	    var gameProps;
+	
+	
+	
+	    this.getContext = function(){
+	        return ctx;
+	    };
+	
+	    this.getCanvas = function(){
+	        return canvas;
+	    };
+	
+	    this.init = function(){
+	        canvas = document.querySelector('canvas');
+	        gameProps = bundle.gameProps;
+	        if (!canvas) {
+	            canvas = document.createElement('canvas');
+	            document.body.appendChild(canvas);
+	        }
+	        ctx = glContext;
+	        //ctx = canvasContext;
+	        require('scaleManager').instance(canvas,ctx).manage();
+	        ctx.init(canvas);
+	
+	        drawScene();
+	
+	    };
+	
+	    this.getCanvas = function(){
+	        return canvas;
+	    };
+	
+	    this.cancel = function(){
+	        window.canceled = true;
+	    };
+	
+	    var drawScene = function(){
+	        if (window.canceled) {
+	           return;
+	        }
+	        if (window.canceled) return
+	
+	        reqAnimFrame(drawScene);
+	
+	        if (!scene) return;
+	
+	        lastTime = currTime;
+	        currTime = Date.now();
+	        var deltaTime = lastTime ? currTime - lastTime : 0;
+	
+	        ctx.beginFrameBuffer();
+	        ctx.clear();
+	
+	        camera.update(ctx);
+	        scene.update(currTime,deltaTime);
+	        bundle.particleSystemList.forEach(function(p){
+	            p.update(currTime,deltaTime);
+	        });
+	
+	        ctx.flipFrameBuffer();
+	
+	
+	        keyboard.update();
+	    };
+	    this.setScene = function(_scene){
+	        scene = _scene;
+	        if (scene.useBG) ctx.colorBG = scene.colorBG;
+	        collider.setUp();
+	    };
+	
+	
+	    this.printText = function(x,y,text,font){
+	        if (!text) return;
+	        font = font || bundle.fontList.get(0);
+	        if (!font) throw 'at least one font must be specified. Create new one please';
+	        var posX = x;
+	        var oldPosX = x;
+	        var posY = y;
+	        text.split('').forEach(function(ch){
+	            var charInCtx = font.fontContext.symbols[ch]||font.fontContext.symbols['?'];
+	            if (ch=='\n') {
+	                posX = oldPosX;
+	                posY+= charInCtx.height;
+	                return;
+	            }
+	            ctx.drawImage(
+	                resourceCache.get(font.resourcePath),
+	                charInCtx.x,
+	                charInCtx.y,
+	                charInCtx.width,
+	                charInCtx.height,
+	                posX + camera.pos.x,
+	                posY + camera.pos.y,
+	                charInCtx.width,
+	                charInCtx.height
+	            );
+	            posX+=charInCtx.width;
+	        });
+	    }
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Renderer();
+	    return instance;
+	};
+}};
+
+modules['scaleManager'] = {code: function(module,exports){
+	
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	var scale = require('device').scale;
+	var bundle = require('bundle').instance();
+	
+	var ScaleManager = function(canvas,ctx){
+	
+	    var rescaleView = function(x,y){
+	        ctx.rescaleView(x,y);
+	    };
+	
+	    var processScreenSize = function(){
+	        var gameProps = bundle.gameProps;
+	        var w,h,scaleFactor,scaledWidth,scaledHeight;
+	        switch (+gameProps.scaleStrategy) {
+	            case SCALE_STRATEGY.NO_SCALE:
+	                w = window.innerWidth*scale;
+	                h = window.innerHeight*scale;
+	                gameProps.globalScale.x = 1;
+	                gameProps.globalScale.y = 1;
+	                gameProps.globalScale.left = 0;
+	                gameProps.globalScale.top =  0;
+	                gameProps.left = 0;
+	                gameProps.top =  0;
+	                gameProps.canvasWidth = gameProps.width;
+	                gameProps.canvasHeight = gameProps.height;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                break;
+	            case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
+	                w = window.innerWidth*scale;
+	                h = window.innerHeight*scale;
+	                scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
+	                scaledWidth = gameProps.width * scaleFactor;
+	                scaledHeight = gameProps.height * scaleFactor;
+	                gameProps.globalScale.x = scaledWidth / gameProps.width;
+	                gameProps.globalScale.y = scaledHeight / gameProps.height;
+	                gameProps.scaledWidth = scaledWidth;
+	                gameProps.scaledHeight = scaledHeight;
+	                gameProps.globalScale.left = (w - scaledWidth) / 2;
+	                gameProps.globalScale.top =  (h - scaledHeight) / 2;
+	                gameProps.left = (w - scaledWidth)/2;
+	                gameProps.top =  (h - scaledHeight)/2;
+	                gameProps.canvasWidth = gameProps.width;
+	                gameProps.canvasHeight = gameProps.height;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                canvas.style.width = scaledWidth + 'px';
+	                canvas.style.height = scaledHeight + 'px';
+	                canvas.style.marginTop = gameProps.top + 'px';
+	                canvas.style.left = gameProps.left + 'px';
+	                break;
+	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
+	                w = window.innerWidth*scale;
+	                h = window.innerHeight*scale;
+	                scaleFactor = Math.min(w / gameProps.width, h / gameProps.height);
+	                scaledWidth = gameProps.width * scaleFactor;
+	                scaledHeight = gameProps.height * scaleFactor;
+	                gameProps.globalScale.x = scaledWidth / gameProps.width;
+	                gameProps.globalScale.y = scaledHeight / gameProps.height;
+	                gameProps.scaledWidth = scaledWidth; // one in global scale - other in gameProps
+	                gameProps.scaledHeight = scaledHeight;
+	                gameProps.globalScale.left = (w-scaledWidth) / 2 / scaleFactor;
+	                gameProps.globalScale.top = (h-scaledHeight) / 2 / scaleFactor;
+	                gameProps.left = (w-scaledWidth) / 2;
+	                gameProps.top = (h-scaledHeight) / 2;
+	                gameProps.canvasWidth = w;
+	                gameProps.canvasHeight = h;
+	                canvas.width = w;
+	                canvas.height = h;
+	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+	                break;
+	            case SCALE_STRATEGY.CSS_STRETCH:
+	                w = window.innerWidth*scale;
+	                h = window.innerHeight*scale;
+	                gameProps.globalScale.x = w / gameProps.width;
+	                gameProps.globalScale.y = h / gameProps.height;
+	                gameProps.globalScale.left = 0;
+	                gameProps.globalScale.top =  0;
+	                gameProps.left = 0;
+	                gameProps.top =  0;
+	                gameProps.canvasWidth = gameProps.width;
+	                gameProps.canvasHeight = gameProps.height;
+	                canvas.width = gameProps.width;
+	                canvas.height = gameProps.height;
+	                canvas.style.width = w + 'px';
+	                canvas.style.height = h + 'px';
+	                break;
+	            case SCALE_STRATEGY.HARDWARE_STRETCH:
+	                w = window.innerWidth*scale;
+	                h = window.innerHeight*scale;
+	                gameProps.globalScale.x = w / gameProps.width;
+	                gameProps.globalScale.y = h / gameProps.height;
+	                gameProps.globalScale.left = 0;
+	                gameProps.globalScale.top =  0;
+	                gameProps.left = 0;
+	                gameProps.top =  0;
+	                gameProps.canvasWidth = w;
+	                gameProps.canvasHeight = h;
+	                canvas.width = w;
+	                canvas.height = h;
+	                canvas.style.width = w + 'px';
+	                canvas.style.height = h + 'px';
+	                rescaleView(gameProps.globalScale.x,gameProps.globalScale.y);
+	                break;
+	        }
+	    };
+	
+	    var listenResize = function(){
+	        window.addEventListener('resize',function(){
+	            processScreenSize();
+	        });
+	    };
+	
+	    this.manage = function(){
+	        var gameProps = bundle.gameProps;
+	        gameProps.globalScale = {};
+	        processScreenSize();
+	        gameProps.scaleStrategy!=SCALE_STRATEGY.NO_SCALE && listenResize();
+	    };
+	
+	};
+	
+	var instance = null;
+	
+	module.exports.instance = function(canvas,ctx){
+	    if (instance==null) {
+	        if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';
+	        instance = new ScaleManager(canvas,ctx);
+	    }
+	    return instance;
+	};
+	
+	
+}};
+
+modules['sceneManager'] = {code: function(module,exports){
+	
+	
+	var SceneManager = function(){
+	
+	    var self = this;
+	
+	    var renderer;
+	    var bundle;
+	
+	    this.currScene = null;
+	
+	    var preloadAndSet = function(scene){
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!bundle) bundle = require('bundle').instance();
+	        var ResourceLoader = require('resourceLoader').ResourceLoader;
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            bundle.applyBehaviourAll();
+	            renderer.setScene(scene);
+	        };
+	
+	        var allSprSheets = scene.getAllSpriteSheets();
+	
+	        bundle.particleSystemList.forEach(function(ps){
+	            allSprSheets.add(ps._gameObject._spriteSheet);
+	        });
+	        bundle.fontList.forEach(function(font){
+	            loader.loadImage(font.resourcePath);
+	        });
+	        allSprSheets.asArray().forEach(function(spSheet){
+	            loader.loadImage(spSheet.resourcePath);
+	        });
+	        bundle.soundList.forEach(function(snd){
+	            loader.loadSound(snd.resourcePath,snd.name);
+	        });
+	        loader.start();
+	    };
+	
+	    this.setScene = function(scene){
+	        var Scene = require('scene').Scene;
+	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
+	        if (this.currScene==scene) return;
+	        this.currScene = scene;
+	        preloadAndSet(scene);
+	    };
+	
+	    this.setSceneByName = function(sceneName){
+	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+	        var bundle = require('bundle').instance();
+	        var scene = bundle.sceneList.find({name: sceneName});
+	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
+	        self.setScene(scene);
+	    };
+	
+	    this.getCurrScene = function(){
+	        return this.currScene;
+	    }
+	
+	};
+	
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new SceneManager();
+	    return instance;
+	};
+	
+}};
+
+modules['tween'] = {code: function(module,exports){
+	
+	
+	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
+	    var startedTime = null;
+	    var progressFn;
+	
+	    var propsToChange = [];
+	    easeFnName = easeFnName || 'linear';
+	    this.completed = false;
+	    var mathEx = require('mathEx');
+	    this.tweenTime = tweenTime;
+	
+	    var normalizeFromTo = function(fromToVal){
+	        fromToVal.from = fromToVal.from || {};
+	        Object.keys(fromToVal.to).forEach(function(keyTo){
+	            propsToChange.push(keyTo);
+	        });
+	        return fromToVal;
+	    };
+	
+	    (function(){
+	        fromToVal = normalizeFromTo(fromToVal);
+	    })();
+	
+	
+	
+	    this._update = function(time){
+	        if (!startedTime) startedTime = time;
+	        if (this.completed) return;
+	        var delta = time - startedTime;
+	        if (delta>tweenTime) {
+	            this.complete();
+	            return;
+	        }
+	        var l = propsToChange.length;
+	        while(l--){
+	            var prp = propsToChange[l];
+	            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
+	            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
+	        }
+	        progressFn && progressFn(obj);
+	
+	    };
+	
+	    this.progress = function(_progressFn){
+	        progressFn = _progressFn;
+	    };
+	
+	    this.reset = function() {
+	        startedTime = null;
+	        this.completed = false;
+	    };
+	
+	    this._complete = function(){
+	        if (this.completed) return;
+	        var l = propsToChange.length;
+	        while(l--){
+	            var prp = propsToChange[l];
+	            obj[prp] = fromToVal.to[prp];
+	        }
+	        this.completed = true;
+	    };
+	
+	
+	};
+}};
+
+modules['tweenChain'] = {code: function(module,exports){
+	
+	var TweenMovie = require('tweenMovie').TweenMovie;
+	var Tween = require('tween').Tween;
+	var sceneManager = require('sceneManager').instance();
+	
+	exports.TweenChain = function(){
+	    var timeOffset = 0;
+	    var tweenMovie = new TweenMovie();
+	
+	
+	    this.tween = function(obj,fromToVal,tweenTime,easeFnName){
+	        tweenMovie.tween(timeOffset,obj,fromToVal,tweenTime,easeFnName);
+	        timeOffset+= tweenTime;
+	        return this;
+	    };
+	
+	    this.wait = function(time){
+	        timeOffset+=time;
+	        return this;
+	    };
+	
+	    this.loop = function(val){
+	        tweenMovie.loop(val);
+	        return this;
+	    };
+	
+	    this.finish = function(fn){
+	        tweenMovie.onComplete = fn;
+	        return this;
+	    };
+	
+	    this.reset = function(){
+	        tweenMovie.reset();
+	        timeOffset = 0;
+	        return this;
+	    };
+	
+	    this.play = function(){
+	        tweenMovie.play();
+	    };
+	};
+	
+}};
+
+modules['tweenMovie'] = {code: function(module,exports){
+	
+	var sceneManager = require('sceneManager').instance();
+	var Tween = require('tween').Tween;
+	
+	exports.TweenMovie = function(){
+	    var tweens = [];
+	    var startedTime = null;
+	    this.completed = false;
+	    this.onComplete = null;
+	    var loop = false;
+	
+	    this.tween = function(startTime,obj,fromToVal,tweenTime,easeFnName){
+	        var tween;
+	        if (obj instanceof Tween) tween = obj;
+	        else tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
+	        tweens.push({
+	            startTime: startTime,
+	            tween: tween
+	        });
+	        return this;
+	    };
+	
+	    this.loop = function(val) {
+	        loop = val;
+	        return this;
+	    };
+	
+	    this.finish = function(fn){
+	        this.onComplete = fn;
+	        return this;
+	    };
+	
+	    this.play = function(){
+	        var scene = sceneManager.getCurrScene();
+	        scene._tweenMovies.push(this);
+	    };
+	
+	    this._update = function(time){
+	        if (this.completed) return;
+	        if (!startedTime) startedTime = time;
+	        var deltaTime = time - startedTime;
+	        var allCompleted = true;
+	        tweens.forEach(function(item){
+	            if (deltaTime>item.startTime) {
+	                if (deltaTime<item.startTime+item.tween.tweenTime) {
+	                    item.tween._update(time);
+	                } else {
+	                    item.tween._complete();
+	                }
+	            }
+	            if (!item.tween.completed) allCompleted = false;
+	        });
+	
+	        if (allCompleted) {
+	            if (loop) {
+	                this.reset();
+	            } else {
+	                this.completed = true;
+	                this.onComplete && this.onComplete();
+	            }
+	        }
+	    };
+	
+	    this.reset = function() {
+	        startedTime = null;
+	        this.completed = false;
+	        tweens.forEach(function(item){
+	            item.tween.reset();
+	        });
+	        return this;
+	    }
+	};
+}};
+
+require('index');

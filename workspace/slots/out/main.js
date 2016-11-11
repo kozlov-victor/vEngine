@@ -63,6 +63,8 @@ modules['class'] = {code: function(module,exports){
 	        props = obj;
 	    }
 	
+	    if (staticProps && staticProps.call) staticProps = staticProps();
+	
 	    function Instance() {
 	        this._init && this._init.apply(this, arguments);
 	        this.construct && this.construct();
@@ -205,15 +207,16 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	scripts.scene['mainScene.js'] = function(exports,self){
-	    
-	var scoreLabel = self.find('scoreLabel');
-	var winLabel = self.find('winLabel');
-	var slots = self.findAll('slotsColumn');
-	var betPlusLabel = self.find('betPlusLabel');
-	var betMinusLabel = self.find('betMinusLabel');
-	var betLabel = self.find('betLabel');
-	var jackPotLabel = self.find('jackPotLabel');
-	var particles = require('bundle').instance().particleSystemList.find({name:'coins'});
+	    var GameObject = require('gameObject').GameObject;
+	
+	var scoreLabel = GameObject.find('scoreLabel');
+	var winLabel = GameObject.find('winLabel');
+	var slots = GameObject.findAll('slotsColumn');
+	var betPlusLabel = GameObject.find('betPlusLabel');
+	var betMinusLabel = GameObject.find('betMinusLabel');
+	var betLabel = GameObject.find('betLabel');
+	var jackPotLabel = GameObject.find('jackPotLabel');
+	var particles = require('particleSystem').ParticleSystem.find('coins');
 	
 	
 	var Queue = require('queue').Queue;
@@ -4588,7 +4591,8 @@ modules['gameObject'] = {code: function(module,exports){
 	var bundle = require('bundle').instance();
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
-	
+	var utils = require('utils');
+	var sceneManager = require('sceneManager').instance();
 	
 	exports.GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -4672,6 +4676,13 @@ modules['gameObject'] = {code: function(module,exports){
 	            0
 	        );
 	        ctx.restore();
+	    }
+	}, {
+	    find: function(name){
+	        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+	    },
+	    findAll: function(name) {
+	        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
 }};
@@ -4784,6 +4795,13 @@ modules['particleSystem'] = {code: function(module,exports){
 	            p.update(time,delta);
 	        }
 	    }
+	},{
+	    find: function(name){
+	        return bundle.particleSystemList.find({name:name});
+	    },
+	    findAll: function(name){
+	        return bundle.particleSystemList.findAll({name:name});
+	    }
 	});
 }};
 
@@ -4845,12 +4863,6 @@ modules['scene'] = {code: function(module,exports){
 	            dataSet.add(this.tileMap._spriteSheet);
 	        }
 	        return dataSet;
-	    },
-	    find: function(name){
-	        return this._allGameObjects.find({name:name});
-	    },
-	    findAll: function(name){
-	        return this._allGameObjects.findAll({name:name});
 	    },
 	    getAllGameObjects:function(){
 	        return this._allGameObjects;

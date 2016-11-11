@@ -56,12 +56,6 @@ exports.Scene = BaseModel.extend({
         }
         return dataSet;
     },
-    find: function(name){
-        return this._allGameObjects.find({name:name});
-    },
-    findAll: function(name){
-        return this._allGameObjects.findAll({name:name});
-    },
     getAllGameObjects:function(){
         return this._allGameObjects;
     },

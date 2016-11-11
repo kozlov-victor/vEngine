@@ -55,4 +55,11 @@ exports.ParticleSystem = BaseModel.extend({
             p.update(time,delta);
         }
     }
+},{
+    find: function(name){
+        return bundle.particleSystemList.find({name:name});
+    },
+    findAll: function(name){
+        return bundle.particleSystemList.findAll({name:name});
+    }
 });

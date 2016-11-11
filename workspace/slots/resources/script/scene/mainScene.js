@@ -1,12 +1,13 @@
+var GameObject = require('gameObject').GameObject;
 
-var scoreLabel = self.find('scoreLabel');
-var winLabel = self.find('winLabel');
-var slots = self.findAll('slotsColumn');
-var betPlusLabel = self.find('betPlusLabel');
-var betMinusLabel = self.find('betMinusLabel');
-var betLabel = self.find('betLabel');
-var jackPotLabel = self.find('jackPotLabel');
-var particles = require('bundle').instance().particleSystemList.find({name:'coins'});
+var scoreLabel = GameObject.find('scoreLabel');
+var winLabel = GameObject.find('winLabel');
+var slots = GameObject.findAll('slotsColumn');
+var betPlusLabel = GameObject.find('betPlusLabel');
+var betMinusLabel = GameObject.find('betMinusLabel');
+var betLabel = GameObject.find('betLabel');
+var jackPotLabel = GameObject.find('jackPotLabel');
+var particles = require('particleSystem').ParticleSystem.find('coins');
 
 
 var Queue = require('queue').Queue;

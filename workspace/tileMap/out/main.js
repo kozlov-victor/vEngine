@@ -63,6 +63,8 @@ modules['class'] = {code: function(module,exports){
 	        props = obj;
 	    }
 	
+	    if (staticProps && staticProps.call) staticProps = staticProps();
+	
 	    function Instance() {
 	        this._init && this._init.apply(this, arguments);
 	        this.construct && this.construct();
@@ -322,10 +324,12 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	scripts.scene['mainScene.js'] = function(exports,self){
 	    
-	var btnUp = self.find('btnUp');
-	var btnDown =  self.find('btnDown');
-	var btnLeft = self.find('btnLeft');
-	var btnRight =  self.find('btnRight');
+	var GameObject = require('gameObject').GameObject;
+	
+	var btnUp = GameObject.find('btnUp');
+	var btnDown =  GameObject.find('btnDown');
+	var btnLeft = GameObject.find('btnLeft');
+	var btnRight =  GameObject.find('btnRight');
 	 
 	var keyboard = require('keyboard').instance(); 
 	
@@ -610,7 +614,7 @@ modules['mouse'] = {code: function(module,exports){
 	        }
 	    } else {
 	        canvas.onmousedown = function(e){
-	            resolveClick(e);
+	            (e.button === 0) && resolveClick(e);
 	        };
 	        canvas.onmouseup = function(e){
 	            resolveMouseUp(e);
@@ -653,7 +657,8 @@ modules['mouse'] = {code: function(module,exports){
 	        scene.trigger(name,{
 	            screenX:point.x,
 	            screenY:point.y,
-	            id:point.id
+	            id:point.id,
+	            target:point.object
 	        });
 	        return point;
 	    };
@@ -3149,13 +3154,13 @@ modules['resourceLoader'] = {code: function(module,exports){
 	
 	    var self = this;
 	
-	    var utils = require('utils');
+	    var Queue = require('queue').Queue;
 	    var renderer = require('renderer').instance();
 	    var bundle = require('bundle').instance();
 	    var cache = require('resourceCache');
 	    var soundManager = require('soundManager').instance();
 	
-	    var q = new utils.Queue();
+	    var q = new Queue();
 	    q.onResolved = function(){
 	        self.onComplete && self.onComplete();
 	    };
@@ -3177,7 +3182,7 @@ modules['resourceLoader'] = {code: function(module,exports){
 	        q.addTask();
 	    };
 	
-	    this.loadSound = function(resourcePath){
+	    this.loadSound = function(resourcePath,name){
 	        if (cache.has(resourcePath)) return;
 	        var path = bundle.embeddedResources.isEmbedded?
 	            bundle.embeddedResources.data[resourcePath]:
@@ -3186,7 +3191,8 @@ modules['resourceLoader'] = {code: function(module,exports){
 	            path,
 	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
 	            function(buffer){
-	                cache.set(resourcePath,buffer);
+	                console.log('loaded snd',name,buffer);
+	                cache.set(name,buffer);
 	                q.resolveTask();
 	            }
 	        );
@@ -3331,9 +3337,10 @@ modules['soundManager'] = {code: function(module,exports){
 	
 	var bundle = require('bundle').instance();
 	var AudioSet = require('audioSet').AudioSet;
+	var cache = require('resourceCache');
 	
 	var AudioContext = window.AudioContext || window.webkitAudioContext;
-	var context = window.AudioContext1 && new window.AudioContext1();
+	var context = window.AudioContext && new window.AudioContext();
 	
 	var SoundManager = function(){
 	
@@ -3392,10 +3399,9 @@ modules['soundManager'] = {code: function(module,exports){
 	    this.play = function(sndName,loop){
 	        var player = audioSet.getFreePlayer();
 	        if (!player) return;
-	        player.play(bundle.soundList.find({name:sndName})._buffer,loop);
+	        player.play(cache.get(sndName),loop);
 	    }
 	};
-	
 	var instance = null;
 	
 	module.exports.instance = function(){
@@ -3962,7 +3968,7 @@ modules['mathEx'] = {code: function(module,exports){
 	exports.ease = ease;
 }};
 
-modules['utils'] = {code: function(module,exports){
+modules['queue'] = {code: function(module,exports){
 	exports.Queue = function(){
 	    var self = this;
 	    this.size = function(){
@@ -3984,6 +3990,10 @@ modules['utils'] = {code: function(module,exports){
 	        if (this.size()==0) this.onResolved();
 	    }
 	};
+}};
+
+modules['utils'] = {code: function(module,exports){
+	
 	exports.merge = function(obj1,obj2){
 	    Object.keys(obj2).forEach(function(key){
 	        obj1[key]=obj2[key];
@@ -4128,21 +4138,15 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        return require('sceneManager').instance().getCurrScene();
 	    },
 	    moveTo:function(x,y,time,easeFnName){
-	        var scene = this.getScene();
-	        easeFnName = easeFnName || 'linear';
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tweenX = new tweenModule.Tween(this.pos,'x',this.pos.x,x,time,easeFnName);
-	        var tweenY = new tweenModule.Tween(this.pos,'y',this.pos.y,y,time,easeFnName);
-	        movie.add(0,tweenX).add(0,tweenY);
-	        scene._tweenMovies.push(movie);
+	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
 	    },
-	    tween: function(obj,prop,valueFrom,valueTo,time,easeFnName){
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
 	        var scene = this.getScene();
-	        easeFnName = easeFnName || 'linear';
 	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,prop,valueFrom,valueTo,time,easeFnName);
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
 	        movie.add(0,tween);
-	        scene._tweenMovies.push(movie);
+	        movie.play();
+	        return tween.getPromise();
 	    },
 	    update: function(){},
 	    _render: function(){
@@ -4317,7 +4321,8 @@ modules['gameObject'] = {code: function(module,exports){
 	var bundle = require('bundle').instance();
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
-	
+	var utils = require('utils');
+	var sceneManager = require('sceneManager').instance();
 	
 	exports.GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -4401,6 +4406,13 @@ modules['gameObject'] = {code: function(module,exports){
 	            0
 	        );
 	        ctx.restore();
+	    }
+	}, {
+	    find: function(name){
+	        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+	    },
+	    findAll: function(name) {
+	        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
 }};
@@ -4513,6 +4525,13 @@ modules['particleSystem'] = {code: function(module,exports){
 	            p.update(time,delta);
 	        }
 	    }
+	},{
+	    find: function(name){
+	        return bundle.particleSystemList.find({name:name});
+	    },
+	    findAll: function(name){
+	        return bundle.particleSystemList.findAll({name:name});
+	    }
 	});
 }};
 
@@ -4575,12 +4594,6 @@ modules['scene'] = {code: function(module,exports){
 	        }
 	        return dataSet;
 	    },
-	    find: function(name){
-	        return this._allGameObjects.find({name:name});
-	    },
-	    findAll: function(name){
-	        return this._allGameObjects.findAll({name:name});
-	    },
 	    getAllGameObjects:function(){
 	        return this._allGameObjects;
 	    },
@@ -4597,7 +4610,7 @@ modules['scene'] = {code: function(module,exports){
 	            if (tweenMovie.completed) {
 	                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
 	            }
-	            tweenMovie.update(currTime);
+	            tweenMovie._update(currTime);
 	        });
 	        self.__updateIndividualBehaviour__(currTime);
 	    },
@@ -4645,10 +4658,15 @@ modules['scene'] = {code: function(module,exports){
 
 modules['sound'] = {code: function(module,exports){
 	var Resource = require('resource').Resource;
+	var soundManager = require('soundManager',{ignoreFail:1}).instance();
 	
 	exports.Sound = Resource.extend({
 	    type:'sound',
 	    _buffer:null
+	}, {
+	    play: function (sndName, loop) {
+	        soundManager.play(sndName, loop);
+	    }
 	});
 }};
 
@@ -5715,8 +5733,8 @@ modules['renderer'] = {code: function(module,exports){
 	        currTime = Date.now();
 	        var deltaTime = lastTime ? currTime - lastTime : 0;
 	
-	        ctx.clear();
 	        ctx.beginFrameBuffer();
+	        ctx.clear();
 	
 	        camera.update(ctx);
 	        scene.update(currTime,deltaTime);
@@ -5825,7 +5843,7 @@ modules['scaleManager'] = {code: function(module,exports){
 	                canvas.height = gameProps.height;
 	                canvas.style.width = scaledWidth + 'px';
 	                canvas.style.height = scaledHeight + 'px';
-	                canvas.style.top = gameProps.top + 'px';
+	                canvas.style.marginTop = gameProps.top + 'px';
 	                canvas.style.left = gameProps.left + 'px';
 	                break;
 	            case SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO:
@@ -5948,7 +5966,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	            loader.loadImage(spSheet.resourcePath);
 	        });
 	        bundle.soundList.forEach(function(snd){
-	            loader.loadSound(snd.resourcePath);
+	            loader.loadSound(snd.resourcePath,snd.name);
 	        });
 	        loader.start();
 	    };
@@ -5987,14 +6005,32 @@ modules['sceneManager'] = {code: function(module,exports){
 
 modules['tween'] = {code: function(module,exports){
 	
-	exports.Tween = function(obj,prop,fromVal,toVal,tweenTime,easeFnName){
+	
+	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 	    var startedTime = null;
+	    var progressFn;
+	
+	    var propsToChange = [];
 	    easeFnName = easeFnName || 'linear';
 	    this.completed = false;
 	    var mathEx = require('mathEx');
 	    this.tweenTime = tweenTime;
 	
-	    this.update = function(time){
+	    var normalizeFromTo = function(fromToVal){
+	        fromToVal.from = fromToVal.from || {};
+	        Object.keys(fromToVal.to).forEach(function(keyTo){
+	            propsToChange.push(keyTo);
+	        });
+	        return fromToVal;
+	    };
+	
+	    (function(){
+	        fromToVal = normalizeFromTo(fromToVal);
+	    })();
+	
+	
+	
+	    this._update = function(time){
 	        if (!startedTime) startedTime = time;
 	        if (this.completed) return;
 	        var delta = time - startedTime;
@@ -6002,7 +6038,18 @@ modules['tween'] = {code: function(module,exports){
 	            this.complete();
 	            return;
 	        }
-	        obj[prop] = mathEx.ease[easeFnName](delta,fromVal,toVal - fromVal,tweenTime);
+	        var l = propsToChange.length;
+	        while(l--){
+	            var prp = propsToChange[l];
+	            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
+	            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
+	        }
+	        progressFn && progressFn(obj);
+	
+	    };
+	
+	    this.progress = function(_progressFn){
+	        progressFn = _progressFn;
 	    };
 	
 	    this.reset = function() {
@@ -6010,25 +6057,81 @@ modules['tween'] = {code: function(module,exports){
 	        this.completed = false;
 	    };
 	
-	    this.complete = function(){
+	    this._complete = function(){
 	        if (this.completed) return;
-	        obj[prop] = toVal;
+	        var l = propsToChange.length;
+	        while(l--){
+	            var prp = propsToChange[l];
+	            obj[prp] = fromToVal.to[prp];
+	        }
 	        this.completed = true;
-	    }
+	    };
 	
 	
 	};
 }};
 
+modules['tweenChain'] = {code: function(module,exports){
+	
+	var TweenMovie = require('tweenMovie').TweenMovie;
+	var Tween = require('tween').Tween;
+	var sceneManager = require('sceneManager').instance();
+	
+	exports.TweenChain = function(){
+	    var timeOffset = 0;
+	    var tweenMovie = new TweenMovie();
+	
+	
+	    this.tween = function(obj,fromToVal,tweenTime,easeFnName){
+	        tweenMovie.tween(timeOffset,obj,fromToVal,tweenTime,easeFnName);
+	        timeOffset+= tweenTime;
+	        return this;
+	    };
+	
+	    this.wait = function(time){
+	        timeOffset+=time;
+	        return this;
+	    };
+	
+	    this.loop = function(val){
+	        tweenMovie.loop(val);
+	        return this;
+	    };
+	
+	    this.finish = function(fn){
+	        tweenMovie.onComplete = fn;
+	        return this;
+	    };
+	
+	    this.reset = function(){
+	        tweenMovie.reset();
+	        timeOffset = 0;
+	        return this;
+	    };
+	
+	    this.play = function(){
+	        tweenMovie.play();
+	    };
+	};
+	
+}};
+
 modules['tweenMovie'] = {code: function(module,exports){
+	
+	var sceneManager = require('sceneManager').instance();
+	var Tween = require('tween').Tween;
 	
 	exports.TweenMovie = function(){
 	    var tweens = [];
 	    var startedTime = null;
 	    this.completed = false;
+	    this.onComplete = null;
 	    var loop = false;
 	
-	    this.add = function(startTime,tween){
+	    this.tween = function(startTime,obj,fromToVal,tweenTime,easeFnName){
+	        var tween;
+	        if (obj instanceof Tween) tween = obj;
+	        else tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
 	        tweens.push({
 	            startTime: startTime,
 	            tween: tween
@@ -6038,9 +6141,20 @@ modules['tweenMovie'] = {code: function(module,exports){
 	
 	    this.loop = function(val) {
 	        loop = val;
+	        return this;
 	    };
 	
-	    this.update = function(time){
+	    this.finish = function(fn){
+	        this.onComplete = fn;
+	        return this;
+	    };
+	
+	    this.play = function(){
+	        var scene = sceneManager.getCurrScene();
+	        scene._tweenMovies.push(this);
+	    };
+	
+	    this._update = function(time){
 	        if (this.completed) return;
 	        if (!startedTime) startedTime = time;
 	        var deltaTime = time - startedTime;
@@ -6048,9 +6162,9 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        tweens.forEach(function(item){
 	            if (deltaTime>item.startTime) {
 	                if (deltaTime<item.startTime+item.tween.tweenTime) {
-	                    item.tween.update(time);
+	                    item.tween._update(time);
 	                } else {
-	                    item.tween.complete();
+	                    item.tween._complete();
 	                }
 	            }
 	            if (!item.tween.completed) allCompleted = false;
@@ -6061,6 +6175,7 @@ modules['tweenMovie'] = {code: function(module,exports){
 	                this.reset();
 	            } else {
 	                this.completed = true;
+	                this.onComplete && this.onComplete();
 	            }
 	        }
 	    };
@@ -6071,6 +6186,7 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        tweens.forEach(function(item){
 	            item.tween.reset();
 	        });
+	        return this;
 	    }
 	};
 }};
