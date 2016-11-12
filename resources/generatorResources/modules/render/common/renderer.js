@@ -56,7 +56,9 @@ var Renderer = function(){
         if (window.canceled) {
            return;
         }
+
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+        //<code><%if (opts.debug){%>var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;<%}%>
 
         reqAnimFrame(drawScene);
 

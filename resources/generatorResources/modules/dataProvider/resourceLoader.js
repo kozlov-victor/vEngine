@@ -40,7 +40,6 @@ exports.ResourceLoader = function(){
             path,
             {type:bundle.embeddedResources.isEmbedded?'base64':''},
             function(buffer){
-                console.log('loaded snd',name,buffer);
                 cache.set(name,buffer);
                 q.resolveTask();
             }

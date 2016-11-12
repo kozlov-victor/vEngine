@@ -109,7 +109,7 @@ var extractUniforms = function (gl, program) {
 var getUniformSetter = function(size,type){
     if (size==1) {
         switch (type) {
-            case 'float':       return function(gl,location,value) {gl.uniform1f(location, value)};
+            case 'float':       return  function(gl,location,value) {gl.uniform1f(location, value)};
             case 'vec2':        return  function(gl,location,value) {gl.uniform2f(location, value[0], value[1])};
             case 'vec3':        return  function(gl,location,value) {gl.uniform3f(location, value[0], value[1], value[2])};
             case 'vec4':        return  function(gl,location,value) {gl.uniform4f(location, value[0], value[1], value[2], value[3])};

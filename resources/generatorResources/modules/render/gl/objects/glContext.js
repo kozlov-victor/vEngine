@@ -30,6 +30,7 @@ var GlContext = function(){
             bundle.shaders.basic['fragment.frag']
         ]);
         shader.bind();
+        shader.setUniform('u_alpha',0.5);
 
         posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
         posVertexBuffer.bind([
@@ -79,6 +80,11 @@ var GlContext = function(){
         };
         //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
         img.src = url;
+    };
+
+    this.getError = function(){
+        var err = gl.getError();
+        return err==gl.NO_ERROR?0:err;
     };
 
 

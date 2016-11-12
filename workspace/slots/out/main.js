@@ -147,9 +147,10 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.gameObject['coin.js'] = function(exports,self){
 	    
 	self._frameAnimations.get(0).play();
+	self.angle = Math.random()*3;
 	
 	function onUpdate(time) {
-	
+	    self.angle+=0.5;
 	}
 	    
 	    exports.onUpdate = onUpdate;
@@ -822,7 +823,7 @@ modules['bundle'] = {code: function(module,exports){
 	    this.embeddedResources.isEmbedded = false;
 	
 	
-	    this.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	    this.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
 	
 	    this.embeddedResources.isEmbedded = false;
 	
@@ -3466,7 +3467,6 @@ modules['resourceLoader'] = {code: function(module,exports){
 	            path,
 	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
 	            function(buffer){
-	                console.log('loaded snd',name,buffer);
 	                cache.set(name,buffer);
 	                q.resolveTask();
 	            }
@@ -5331,7 +5331,9 @@ modules['renderer'] = {code: function(module,exports){
 	        if (window.canceled) {
 	           return;
 	        }
+	
 	        if (window.canceled) return
+	        var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
 	
 	        reqAnimFrame(drawScene);
 	
@@ -5623,6 +5625,7 @@ modules['glContext'] = {code: function(module,exports){
 	            bundle.shaders.basic['fragment.frag']
 	        ]);
 	        shader.bind();
+	        shader.setUniform('u_alpha',0.5);
 	
 	        posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
 	        posVertexBuffer.bind([
@@ -5672,6 +5675,11 @@ modules['glContext'] = {code: function(module,exports){
 	        };
 	        img.onerror=function(e){throw 'can not load image with url '+ url};
 	        img.src = url;
+	    };
+	
+	    this.getError = function(){
+	        var err = gl.getError();
+	        return err==gl.NO_ERROR?0:err;
 	    };
 	
 	
@@ -6030,7 +6038,7 @@ modules['shader'] = {code: function(module,exports){
 	var getUniformSetter = function(size,type){
 	    if (size==1) {
 	        switch (type) {
-	            case 'float':       return function(gl,location,value) {gl.uniform1f(location, value)};
+	            case 'float':       return  function(gl,location,value) {gl.uniform1f(location, value)};
 	            case 'vec2':        return  function(gl,location,value) {gl.uniform2f(location, value[0], value[1])};
 	            case 'vec3':        return  function(gl,location,value) {gl.uniform3f(location, value[0], value[1], value[2])};
 	            case 'vec4':        return  function(gl,location,value) {gl.uniform4f(location, value[0], value[1], value[2], value[3])};
