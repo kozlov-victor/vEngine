@@ -53,10 +53,13 @@ var blinkWin = function(win){
     Sound.play('powerUp');
     winLabel.pos = {x:140,y:100};
     winLabel.setText(win.txt);
+    winLabel.alpha = 0;
     new TweenMovie().
+        tween(0,winLabel,{to:{alpha:1}},800).
         tween(0,winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce').
         tween(1500,winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce').
         tween(1700,winLabel.pos,{to:{x:20,y:20}},100).
+        tween(1700,winLabel,{to:{alpha:0}},100).
         finish(function(){
             winLabel.setText('');
             var totalMoneyOld = totalMoney;

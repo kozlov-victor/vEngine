@@ -60,6 +60,10 @@ var GlContext = function(){
     };
 
 
+    this.setAlpha = function(alpha) {
+        shader.setUniform('u_alpha',alpha);
+    };
+
     var cache = {};
 
     this.loadTextureInfo = function(url,opts,callBack) {

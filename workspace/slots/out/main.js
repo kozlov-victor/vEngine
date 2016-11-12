@@ -263,10 +263,13 @@ modules['behaviour'] = {code: function(module,exports){
 	    Sound.play('powerUp');
 	    winLabel.pos = {x:140,y:100};
 	    winLabel.setText(win.txt);
+	    winLabel.alpha = 0;
 	    new TweenMovie().
+	        tween(0,winLabel,{to:{alpha:1}},800).
 	        tween(0,winLabel.scale,{to:{x:2,y:2}},1500,'easeOutBounce').
 	        tween(1500,winLabel.scale,{to:{x:1,y:1}},500,'easeOutBounce').
 	        tween(1700,winLabel.pos,{to:{x:20,y:20}},100).
+	        tween(1700,winLabel,{to:{alpha:0}},100).
 	        finish(function(){
 	            winLabel.setText('');
 	            var totalMoneyOld = totalMoney;
@@ -3081,7 +3084,8 @@ modules['bundle'] = {code: function(module,exports){
 	                "groupName": "",
 	                "angle": 0,
 	                "protoId": "2146_8639_33",
-	                "id": "3605_4962_40"
+	                "id": "3605_4962_40",
+	                "alpha": 1
 	            },
 	            {
 	                "spriteSheetId": "4021_7193_32",
@@ -4391,6 +4395,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    pos:null,
 	    scale:null,
 	    angle:0,
+	    alpha:1,
 	    width:0,
 	    height:0,
 	    fixedToCamera:false,
@@ -4435,6 +4440,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        ctx.scale(this.scale.x,this.scale.y);
 	        ctx.rotateZ(this.angle);
 	        ctx.translate(-this.width /2, -this.height/2);
+	        ctx.setAlpha(this.alpha);
 	    },
 	    construct:function(){
 	        if (!this.pos) this.pos = {x:0,y:0};
@@ -5655,6 +5661,10 @@ modules['glContext'] = {code: function(module,exports){
 	    };
 	
 	
+	    this.setAlpha = function(alpha) {
+	        shader.setUniform('u_alpha',alpha);
+	    };
+	
 	    var cache = {};
 	
 	    this.loadTextureInfo = function(url,opts,callBack) {
@@ -6080,6 +6090,8 @@ modules['shader'] = {code: function(module,exports){
 	    var program;
 	    var uniforms;
 	
+	    var uniformValuesCache = {};
+	
 	    (function(){
 	
 	        var vShader = compileShader(gl,sources[0],gl.VERTEX_SHADER);
@@ -6100,7 +6112,9 @@ modules['shader'] = {code: function(module,exports){
 	    this.setUniform = function(name,value){
 	        var uniform = uniforms[name];
 	        if (!uniform) throw 'no uniform with name '+ name + ' found!';
+	        if (uniformValuesCache[name]===value) return;
 	        uniform.setter(gl,uniform.location,value);
+	        uniformValuesCache[name] = value;
 	    };
 	
 	};

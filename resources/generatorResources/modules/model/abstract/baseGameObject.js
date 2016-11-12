@@ -12,6 +12,7 @@ exports.BaseGameObject = BaseModel.extend({
     pos:null,
     scale:null,
     angle:0,
+    alpha:1,
     width:0,
     height:0,
     fixedToCamera:false,
@@ -56,6 +57,7 @@ exports.BaseGameObject = BaseModel.extend({
         ctx.scale(this.scale.x,this.scale.y);
         ctx.rotateZ(this.angle);
         ctx.translate(-this.width /2, -this.height/2);
+        ctx.setAlpha(this.alpha);
     },
     construct:function(){
         if (!this.pos) this.pos = {x:0,y:0};

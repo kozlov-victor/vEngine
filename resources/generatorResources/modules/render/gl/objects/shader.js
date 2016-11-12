@@ -151,6 +151,8 @@ exports.Shader = function(gl,sources){
     var program;
     var uniforms;
 
+    var uniformValuesCache = {};
+
     (function(){
 
         var vShader = compileShader(gl,sources[0],gl.VERTEX_SHADER);
@@ -171,7 +173,9 @@ exports.Shader = function(gl,sources){
     this.setUniform = function(name,value){
         var uniform = uniforms[name];
         if (!uniform) throw 'no uniform with name '+ name + ' found!';
+        if (uniformValuesCache[name]===value) return;
         uniform.setter(gl,uniform.location,value);
+        uniformValuesCache[name] = value;
     };
 
 };
