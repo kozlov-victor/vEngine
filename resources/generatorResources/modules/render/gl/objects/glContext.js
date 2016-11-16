@@ -25,12 +25,13 @@ var GlContext = function(){
 
         gameProps = bundle.gameProps;
         gl = canvas.getContext("webgl",{ alpha: false });
+        window.gl = gl;
         shader = new Shader(gl, [
             bundle.shaders.basic['vertex.vert'],
             bundle.shaders.basic['fragment.frag']
         ]);
         shader.bind();
-        shader.setUniform('u_alpha',0.5);
+        shader.setUniform('u_alpha',1);
 
         posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
         posVertexBuffer.bind([
@@ -66,31 +67,62 @@ var GlContext = function(){
 
     var cache = {};
 
-    this.loadTextureInfo = function(url,opts,callBack) {
+    var arrayBufferToBase64 = function(buffer) {
+        var bytes = new Uint8Array(buffer);
+        var rawArr = [];
+        for (var i=0;i<bytes.length;i++){
+            var b = bytes[i];
+            rawArr.push(b);
+        }
+        return require('base64').fromByteArray(rawArr);
+    };
+
+    this.loadTextureInfo = function(url,opts,progress,callBack) {
         if (cache.url) {
             callBack(cache[url]);
             return;
-        }
-        if (opts.type=='base64') {
-            url = utils.getBase64prefix('image',opts.fileName) + url;
         }
 
         var img = new Image();
         var texture = new Texture(gl,img);
 
-        img.onload = function() {
+        if (opts.type=='base64') {
+            url = utils.getBase64prefix('image',opts.fileName) + url;
+            img.src = url;
             texture.apply(img);
-            callBack(texture);
+            return;
+        }
+
+        var request = new XMLHttpRequest();
+        request.open('GET', url, true);
+        request.responseType = 'arraybuffer';
+
+        request.setRequestHeader('Accept-Ranges', 'bytes');
+        request.setRequestHeader('Content-Range', 'bytes');
+        request.onload = function() {
+            var base64String = arrayBufferToBase64(request.response);
+            console.log('base64String',base64String.substr(0,10));
+            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
+            img.onload = function(){
+                console.log('loaded image!');
+                texture.apply(img);
+                callBack(texture);
+            };
+            img.src = base64String;
+
         };
-        //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
-        img.src = url;
+        request.onprogress = function(e){
+            progress(url,e.loaded/ e.total);
+        };
+        //<code><%if (opts.debug){%>request.onerror=function(e){throw 'can not load image with url '+url};<%}%>
+        request.send();
     };
 
     this.getError = function(){
+        //return 0;
         var err = gl.getError();
         return err==gl.NO_ERROR?0:err;
     };
-
 
     var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
         // this matirx will convert from pixels to clip space

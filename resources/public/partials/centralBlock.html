@@ -1,9 +1,9 @@
 <div
+        ng-if="uiHelper.window=='sceneWindow'"
         app-context-menu="ctxScene"
         class="gameSceneWrapper relative"
-        >
+    >
     <div
-            ng-show="uiHelper.window=='sceneWindow'"
             class="gameScene relative"
             ng-controller="sceneCtrl"
             app-key-press="onKeyPress($event)"

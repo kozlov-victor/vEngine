@@ -18,7 +18,11 @@ var SceneManager = function(){
         var loader = new ResourceLoader();
         loader.onComplete = function(){
             bundle.applyBehaviourAll();
+            console.log('scene loader complete');
             renderer.setScene(scene);
+        };
+        loader.onProgress = function(e){
+            console.log('scene loader progress',e);
         };
 
         var allSprSheets = scene.getAllSpriteSheets();

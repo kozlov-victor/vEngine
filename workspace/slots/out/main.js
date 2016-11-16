@@ -147,7 +147,7 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.gameObject['coin.js'] = function(exports,self){
 	    
 	self._frameAnimations.get(0).play();
-	self.angle = Math.random()*3;
+	self.setFrameIndex(~~(Math.random()*10));
 	
 	function onUpdate(time) {
 	    self.angle+=0.5;
@@ -3444,38 +3444,47 @@ modules['resourceLoader'] = {code: function(module,exports){
 	    q.onResolved = function(){
 	        self.onComplete && self.onComplete();
 	    };
+	    q.onProgress = function(progress){
+	        console.log('q progress',progress);
+	    };
 	
 	    this.loadImage = function(resourcePath) {
 	        if (cache.has(resourcePath)) return;
 	        var path = bundle.embeddedResources.isEmbedded?
 	            bundle.embeddedResources.data[resourcePath]:
-	            './'+resourcePath;
+	            resourcePath;
 	        renderer.
 	            getContext().
 	            loadTextureInfo(
 	            path,
 	            {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
+	            function(resourcePath,progress){
+	                q.progressTask(resourcePath,progress);
+	            },
 	            function(textureInfo){
 	                cache.set(resourcePath,textureInfo);
-	                q.resolveTask();
+	                q.resolveTask(resourcePath);
 	            });
-	        q.addTask();
+	        q.addTask(resourcePath);
 	    };
 	
 	    this.loadSound = function(resourcePath,name){
 	        if (cache.has(resourcePath)) return;
 	        var path = bundle.embeddedResources.isEmbedded?
 	            bundle.embeddedResources.data[resourcePath]:
-	            './'+resourcePath;
+	            resourcePath;
 	        soundManager.loadSound(
 	            path,
 	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
+	            function(resourcePath,progress){
+	                q.progressTask(resourcePath,progress);
+	            },
 	            function(buffer){
 	                cache.set(name,buffer);
-	                q.resolveTask();
+	                q.resolveTask(resourcePath);
 	            }
 	        );
-	        q.addTask();
+	        q.addTask(resourcePath);
 	    };
 	
 	    this.onComplete = null;
@@ -3635,7 +3644,7 @@ modules['soundManager'] = {code: function(module,exports){
 	        return bytes.buffer;
 	    };
 	
-	    var _loadSoundXhr = function(url,callback){
+	    var _loadSoundXhr = function(url,progress,callback){
 	        var request = new XMLHttpRequest();
 	        request.open('GET', url, true);
 	        request.responseType = 'arraybuffer';
@@ -3652,6 +3661,9 @@ modules['soundManager'] = {code: function(module,exports){
 	                callback(buffer);
 	            });
 	        };
+	        request.onprogress = function(e){
+	            progress(url,e.loaded/ e.total);
+	        };
 	        request.onerror=function(e){throw 'can not load sound with url '+url};
 	        request.send();
 	    };
@@ -3667,11 +3679,11 @@ modules['soundManager'] = {code: function(module,exports){
 	        }
 	    };
 	
-	    this.loadSound = function( url, opts, callback) {
+	    this.loadSound = function( url, opts, progress, callback) {
 	        if (opts.type=='base64') {
 	            _loadSoundBase64(url, callback);
 	        } else {
-	            _loadSoundXhr(url, callback);
+	            _loadSoundXhr(url, progress, callback);
 	        }
 	    };
 	
@@ -3687,6 +3699,123 @@ modules['soundManager'] = {code: function(module,exports){
 	    if (instance==null) instance = new SoundManager();
 	    return instance;
 	};
+}};
+
+modules['base64'] = {code: function(module,exports){
+	'use strict'
+	
+	exports.byteLength = byteLength
+	exports.toByteArray = toByteArray
+	exports.fromByteArray = fromByteArray
+	
+	var lookup = []
+	var revLookup = []
+	var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
+	
+	var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+	for (var i = 0, len = code.length; i < len; ++i) {
+	    lookup[i] = code[i]
+	    revLookup[code.charCodeAt(i)] = i
+	}
+	
+	revLookup['-'.charCodeAt(0)] = 62
+	revLookup['_'.charCodeAt(0)] = 63
+	
+	function placeHoldersCount (b64) {
+	    var len = b64.length
+	    if (len % 4 > 0) {
+	        throw new Error('Invalid string. Length must be a multiple of 4')
+	    }
+	
+	    // the number of equal signs (place holders)
+	    // if there are two placeholders, than the two characters before it
+	    // represent one byte
+	    // if there is only one, then the three characters before it represent 2 bytes
+	    // this is just a cheap hack to not do indexOf twice
+	    return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+	}
+	
+	function byteLength (b64) {
+	    // base64 is 4/3 + up to two characters of the original data
+	    return b64.length * 3 / 4 - placeHoldersCount(b64)
+	}
+	
+	function toByteArray (b64) {
+	    var i, j, l, tmp, placeHolders, arr
+	    var len = b64.length
+	    placeHolders = placeHoldersCount(b64)
+	
+	    arr = new Arr(len * 3 / 4 - placeHolders)
+	
+	    // if there are placeholders, only get up to the last complete 4 chars
+	    l = placeHolders > 0 ? len - 4 : len
+	
+	    var L = 0
+	
+	    for (i = 0, j = 0; i < l; i += 4, j += 3) {
+	        tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+	        arr[L++] = (tmp >> 16) & 0xFF
+	        arr[L++] = (tmp >> 8) & 0xFF
+	        arr[L++] = tmp & 0xFF
+	    }
+	
+	    if (placeHolders === 2) {
+	        tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+	        arr[L++] = tmp & 0xFF
+	    } else if (placeHolders === 1) {
+	        tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+	        arr[L++] = (tmp >> 8) & 0xFF
+	        arr[L++] = tmp & 0xFF
+	    }
+	
+	    return arr
+	}
+	
+	function tripletToBase64 (num) {
+	    return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+	}
+	
+	function encodeChunk (uint8, start, end) {
+	    var tmp
+	    var output = []
+	    for (var i = start; i < end; i += 3) {
+	        tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+	        output.push(tripletToBase64(tmp))
+	    }
+	    return output.join('')
+	}
+	
+	function fromByteArray (uint8) {
+	    var tmp
+	    var len = uint8.length
+	    var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+	    var output = ''
+	    var parts = []
+	    var maxChunkLength = 16383 // must be multiple of 3
+	
+	    // go through the array every three bytes, we'll deal with trailing stuff later
+	    for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+	        parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+	    }
+	
+	    // pad the end with zeros, but make sure to not forget the extra bytes
+	    if (extraBytes === 1) {
+	        tmp = uint8[len - 1]
+	        output += lookup[tmp >> 2]
+	        output += lookup[(tmp << 4) & 0x3F]
+	        output += '=='
+	    } else if (extraBytes === 2) {
+	        tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+	        output += lookup[tmp >> 10]
+	        output += lookup[(tmp >> 4) & 0x3F]
+	        output += lookup[(tmp << 2) & 0x3F]
+	        output += '='
+	    }
+	
+	    parts.push(output)
+	
+	    return parts.join('')
+	}
 }};
 
 modules['collections'] = {code: function(module,exports){
@@ -4254,15 +4383,35 @@ modules['queue'] = {code: function(module,exports){
 	        return tasksTotal;
 	    };
 	    this.onResolved = null;
+	    this.onProgress = null;
 	    var tasksTotal = 0;
 	    var tasksResolved = 0;
-	    this.addTask = function() {
-	        tasksTotal++;
+	    var tasksProgressById = {};
+	
+	    var calcProgress = function(){
+	        var sum = 0;
+	        Object.keys(tasksProgressById).forEach(function(taskId){
+	            sum+=tasksProgressById[taskId]||0;
+	        });
+	        return sum/tasksTotal;
 	    };
-	    this.resolveTask = function(){
+	
+	    this.addTask = function(taskId) {
+	        tasksTotal++;
+	        tasksProgressById[taskId] = 0;
+	    };
+	    this.progressTask = function(taskId,progress){
+	        tasksProgressById[taskId] = progress;
+	        this.onProgress && this.onProgress(calcProgress());
+	    };
+	    this.resolveTask = function(taskId){
 	        tasksResolved++;
+	        tasksProgressById[taskId] = 1;
 	        if (tasksTotal==tasksResolved) {
+	            this.onProgress && this.onProgress(1);
 	            if (self.onResolved) self.onResolved();
+	        } else {
+	            this.onProgress && this.onProgress(calcProgress());
 	        }
 	    };
 	    this.start = function() {
@@ -5626,6 +5775,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	        gameProps = bundle.gameProps;
 	        gl = canvas.getContext("webgl",{ alpha: false });
+	        window.gl = gl;
 	        shader = new Shader(gl, [
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
@@ -5667,31 +5817,62 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    var cache = {};
 	
-	    this.loadTextureInfo = function(url,opts,callBack) {
+	    var arrayBufferToBase64 = function(buffer) {
+	        var bytes = new Uint8Array(buffer);
+	        var rawArr = [];
+	        for (var i=0;i<bytes.length;i++){
+	            var b = bytes[i];
+	            rawArr.push(b);
+	        }
+	        return require('base64').fromByteArray(rawArr);
+	    };
+	
+	    this.loadTextureInfo = function(url,opts,progress,callBack) {
 	        if (cache.url) {
 	            callBack(cache[url]);
 	            return;
-	        }
-	        if (opts.type=='base64') {
-	            url = utils.getBase64prefix('image',opts.fileName) + url;
 	        }
 	
 	        var img = new Image();
 	        var texture = new Texture(gl,img);
 	
-	        img.onload = function() {
+	        if (opts.type=='base64') {
+	            url = utils.getBase64prefix('image',opts.fileName) + url;
+	            img.src = url;
 	            texture.apply(img);
-	            callBack(texture);
+	            return;
+	        }
+	
+	        var request = new XMLHttpRequest();
+	        request.open('GET', url, true);
+	        request.responseType = 'arraybuffer';
+	
+	        request.setRequestHeader('Accept-Ranges', 'bytes');
+	        request.setRequestHeader('Content-Range', 'bytes');
+	        request.onload = function() {
+	            var base64String = arrayBufferToBase64(request.response);
+	            console.log('base64String',base64String.substr(0,10));
+	            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
+	            img.onload = function(){
+	                console.log('loaded image!');
+	                texture.apply(img);
+	                callBack(texture);
+	            };
+	            img.src = base64String;
+	
 	        };
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
-	        img.src = url;
+	        request.onprogress = function(e){
+	            progress(url,e.loaded/ e.total);
+	        };
+	        request.onerror=function(e){throw 'can not load image with url '+url};
+	        request.send();
 	    };
 	
 	    this.getError = function(){
+	        return 0;
 	        var err = gl.getError();
 	        return err==gl.NO_ERROR?0:err;
 	    };
-	
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
 	        // this matirx will convert from pixels to clip space
@@ -6217,6 +6398,9 @@ modules['sceneManager'] = {code: function(module,exports){
 	        loader.onComplete = function(){
 	            bundle.applyBehaviourAll();
 	            renderer.setScene(scene);
+	        };
+	        loader.onProgress = function(e){
+	            console.log('loader progress',e);
 	        };
 	
 	        var allSprSheets = scene.getAllSpriteSheets();

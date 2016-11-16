@@ -20,7 +20,7 @@ var SoundManager = function(){
         return bytes.buffer;
     };
 
-    var _loadSoundXhr = function(url,callback){
+    var _loadSoundXhr = function(url,progress,callback){
         var request = new XMLHttpRequest();
         request.open('GET', url, true);
         request.responseType = 'arraybuffer';
@@ -37,6 +37,9 @@ var SoundManager = function(){
                 callback(buffer);
             });
         };
+        request.onprogress = function(e){
+            progress(url,e.loaded/ e.total);
+        };
         //<code><%if (opts.debug){%>request.onerror=function(e){throw 'can not load sound with url '+url};<%}%>
         request.send();
     };
@@ -52,11 +55,11 @@ var SoundManager = function(){
         }
     };
 
-    this.loadSound = function( url, opts, callback) {
+    this.loadSound = function( url, opts, progress, callback) {
         if (opts.type=='base64') {
             _loadSoundBase64(url, callback);
         } else {
-            _loadSoundXhr(url, callback);
+            _loadSoundXhr(url, progress, callback);
         }
     };
 

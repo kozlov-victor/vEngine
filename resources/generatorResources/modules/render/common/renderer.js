@@ -82,6 +82,7 @@ var Renderer = function(){
 
         keyboard.update();
     };
+
     this.setScene = function(_scene){
         scene = _scene;
         if (scene.useBG) ctx.colorBG = scene.colorBG;

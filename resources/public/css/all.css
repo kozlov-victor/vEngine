@@ -331,7 +331,7 @@ label,
 }
 .gameSceneWrapper {
   max-width: calc(60vw);
-  max-height: 90vh;
+  height: 90vh;
   overflow: auto;
 }
 .gameScene {

@@ -13,41 +13,51 @@ exports.ResourceLoader = function(){
     q.onResolved = function(){
         self.onComplete && self.onComplete();
     };
+    q.onProgress = function(progress){
+        self.onProgress && self.onProgress(progress);
+    };
 
     this.loadImage = function(resourcePath) {
         if (cache.has(resourcePath)) return;
         var path = bundle.embeddedResources.isEmbedded?
             bundle.embeddedResources.data[resourcePath]:
-            './'+resourcePath;
+            resourcePath;
         renderer.
             getContext().
             loadTextureInfo(
             path,
             {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
+            function(resourcePath,progress){
+                q.progressTask(resourcePath,progress);
+            },
             function(textureInfo){
                 cache.set(resourcePath,textureInfo);
-                q.resolveTask();
+                q.resolveTask(resourcePath);
             });
-        q.addTask();
+        q.addTask(resourcePath);
     };
 
     this.loadSound = function(resourcePath,name){
         if (cache.has(resourcePath)) return;
         var path = bundle.embeddedResources.isEmbedded?
             bundle.embeddedResources.data[resourcePath]:
-            './'+resourcePath;
+            resourcePath;
         soundManager.loadSound(
             path,
             {type:bundle.embeddedResources.isEmbedded?'base64':''},
+            function(resourcePath,progress){
+                q.progressTask(resourcePath,progress);
+            },
             function(buffer){
                 cache.set(name,buffer);
-                q.resolveTask();
+                q.resolveTask(resourcePath);
             }
         );
-        q.addTask();
+        q.addTask(resourcePath);
     };
 
     this.onComplete = null;
+    this.onProgress = null;
 
     this.start = function(){
         q.start();
