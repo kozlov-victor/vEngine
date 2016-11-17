@@ -11,7 +11,3 @@ exports.printDeviceInfo = function(){
         console.log(key + ':' + exports[key]);
     }
 };
-
-//<code><%if (opts.debug){%>
-//<code>exports.printDeviceInfo();
-//<code><%}%>

@@ -10,15 +10,6 @@ var SoundManager = function(){
 
     var audioSet = new AudioSet(context,5);
 
-    var base64ToArrayBuffer = function(base64) {
-        var binaryString = window.atob(base64);
-        var len = binaryString.length;
-        var bytes = new Uint8Array(len);
-        for (var i = 0; i < len; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        return bytes.buffer;
-    };
 
     var _loadSoundXhr = function(url,progress,callback){
         var request = new XMLHttpRequest();
@@ -46,7 +37,7 @@ var SoundManager = function(){
 
     var _loadSoundBase64 = function(url,callback){
         if (context) {
-            var byteArray = base64ToArrayBuffer(url);
+            var byteArray = require('base64').toByteArray(url);
             context.decodeAudioData(byteArray).then(function(buffer) {
                 callback(buffer);
             });

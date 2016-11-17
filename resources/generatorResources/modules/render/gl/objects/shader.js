@@ -173,7 +173,7 @@ exports.Shader = function(gl,sources){
     this.setUniform = function(name,value){
         var uniform = uniforms[name];
         if (!uniform) throw 'no uniform with name '+ name + ' found!';
-        if (uniformValuesCache[name]===value) return;
+        //if (uniformValuesCache[name]===value) return;
         uniform.setter(gl,uniform.location,value);
         uniformValuesCache[name] = value;
     };

@@ -119,7 +119,7 @@ var GlContext = function(){
     };
 
     this.getError = function(){
-        //return 0;
+        return 0;
         var err = gl.getError();
         return err==gl.NO_ERROR?0:err;
     };
