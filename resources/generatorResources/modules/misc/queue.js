@@ -7,6 +7,7 @@ exports.Queue = function(){
     this.onProgress = null;
     var tasksTotal = 0;
     var tasksResolved = 0;
+    var tasks = [];
     var tasksProgressById = {};
 
     var calcProgress = function(){
@@ -17,7 +18,8 @@ exports.Queue = function(){
         return sum/tasksTotal;
     };
 
-    this.addTask = function(taskId) {
+    this.addTask = function(taskFn,taskId) {
+        tasks.push(taskFn);
         tasksTotal++;
         tasksProgressById[taskId] = 0;
     };
@@ -37,5 +39,8 @@ exports.Queue = function(){
     };
     this.start = function() {
         if (this.size()==0) this.onResolved();
+        tasks.forEach(function(t){
+            t();
+        });
     }
 };

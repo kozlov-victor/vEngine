@@ -38,8 +38,12 @@ var SoundManager = function(){
     var _loadSoundBase64 = function(url,callback){
         if (context) {
             var byteArray = require('base64').toByteArray(url);
-            context.decodeAudioData(byteArray).then(function(buffer) {
+            context.decodeAudioData(byteArray.buffer).
+            then(function(buffer) {
                 callback(buffer);
+            }).
+            catch(function(e){
+                    //<code><%if (opts.debug){%>window.showError(e)<%}%>
             });
         } else {
             callback(url);

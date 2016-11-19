@@ -1,3 +1,5 @@
+// https://github.com/beatgammit/base64-js/blob/master/index.js
+
 'use strict';
 
 exports.byteLength = byteLength;
@@ -64,7 +66,7 @@ function toByteArray (b64) {
         arr[L++] = tmp & 0xFF;
     }
 
-    return arr
+    return arr;
 }
 
 function tripletToBase64 (num) {

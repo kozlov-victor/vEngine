@@ -25,7 +25,6 @@
     };
 
     window.showError = function _err(e,lineNum){
-        console.log('navigator.isCocoonJS',navigator.isCocoonJS);
         if (navigator.isCocoonJS) {
             _showErr(e,lineNum);
             return;

@@ -90,6 +90,7 @@ var GlContext = function(){
             url = utils.getBase64prefix('image',opts.fileName) + url;
             img.src = url;
             texture.apply(img);
+            callBack(texture);
             return;
         }
 
@@ -101,10 +102,8 @@ var GlContext = function(){
         request.setRequestHeader('Content-Range', 'bytes');
         request.onload = function() {
             var base64String = arrayBufferToBase64(request.response);
-            console.log('base64String',base64String.substr(0,10));
             base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
             img.onload = function(){
-                console.log('loaded image!');
                 texture.apply(img);
                 callBack(texture);
             };
