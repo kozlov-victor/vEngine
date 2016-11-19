@@ -1,5 +1,5 @@
 var Resource = require('resource').Resource;
-var soundManager = require('soundManager',{ignoreFail:1}).instance();
+var soundManager = require('soundManager').instance();
 
 exports.Sound = Resource.extend({
     type:'sound',

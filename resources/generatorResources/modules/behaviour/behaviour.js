@@ -17,6 +17,7 @@ var scripts = {};
 scripts.gameObject = {};
 scripts.scene = {};
 
+//<code><%specialResources.gameObjectScripts = specialResources.gameObjectScripts||[];%>
 //<code><%for (var i = 0; i<specialResources.gameObjectScripts.length;i++) {%>
 scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function(exports,self){
     //<code><%-specialResources.gameObjectScripts[i].content%>
@@ -27,6 +28,7 @@ scripts.gameObject['<%-specialResources.gameObjectScripts[i].name%>'] = function
 };
 //<code><%}%>;
 
+//<code><%specialResources.sceneScripts = specialResources.sceneScripts||[];%>
 //<code><%for (var i = 0; i<specialResources.sceneScripts.length;i++) {%>
 scripts.scene['<%-specialResources.sceneScripts[i].name%>'] = function(exports,self){
     //<code><%-specialResources.sceneScripts[i].content%>

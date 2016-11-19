@@ -4,17 +4,8 @@ var modules = {}, require = function(name,opts){
     var moduleObj = modules[name];
 
     if (!moduleObj) {
-        if (!opts.ignoreFail) {
-            console.trace('can not found module with name ' + (name || '(name not specified)'));
-            throw 'can not found module with name ' + (name || '(name not specified)');
-        } else  {
-            return {
-                fake:true,
-                instance: function(){
-                    return {fake:true}
-                }
-            }
-        }
+        console.trace('can not found module with name ' + (name || '(name not specified)'));
+        throw 'can not found module with name ' + (name || '(name not specified)');
     }
 
     if (!moduleObj.inited) initModuleObj(moduleObj);

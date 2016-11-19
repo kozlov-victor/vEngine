@@ -1,12 +1,12 @@
-var collider = require('collider',{ignoreFail:true}).instance();
-var renderer = require('renderer',{ignoreFail:true}).instance();
+var collider = require('collider').instance();
+var renderer = require('renderer').instance();
 var BaseGameObject = require('baseGameObject').BaseGameObject;
 var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 var bundle = require('bundle').instance();
 var collections = require('collections');
 var resourceCache = require('resourceCache');
 var utils = require('utils');
-var sceneManager = require('sceneManager',{ignoreFail:true}).instance();
+var sceneManager = require('sceneManager').instance();
 
 exports.GameObject = BaseGameObject.extend({
     type:'gameObject',

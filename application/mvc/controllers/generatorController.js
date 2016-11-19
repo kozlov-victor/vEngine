@@ -170,7 +170,7 @@ var processScriptPlace = function(indexHtml,scriptPlaceName,code,outCodeFileName
     return indexHtml;
 };
 
-var processGameResourcesFiles = function(sourceMain,opts){
+var processGameResourcesFiles = function(generatedCode,opts){
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
     fs.createFolderSync('workspace/'+opts.projectName+'/out/');
 
@@ -193,7 +193,6 @@ var processGameResourcesFiles = function(sourceMain,opts){
     }
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
-    var generatedCode = sourceMain.get();
     var debugCode = fs.readFileSync('resources/generatorResources/debug/debug.js');
 
     indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
@@ -216,7 +215,8 @@ var hint = function(sourceMain){
 };
 
 var prepareGeneratorParams = function(opts){
-    var resourcesOpts = createResourcesParams(opts);
+    var resourcesOpts = opts.projectName?createResourcesParams(opts):{};
+    var commonBehaviourParams = opts.projectName?createCommonBehaviourParams(opts):{};
     var shaders = {};
     fs.
         getDirListSync('resources/generatorResources/shaders')
@@ -230,28 +230,38 @@ var prepareGeneratorParams = function(opts){
     return  {
         resourceNames:resourcesController.RESOURCE_NAMES,
         opts: opts,
-        commonResources: resourcesOpts.commonResources,
-        specialResources: resourcesOpts.specialResources,
-        embeddedResources: resourcesOpts.embeddedResources,
-        commonBehaviour:createCommonBehaviourParams(opts),
+        commonResources: resourcesOpts.commonResources||{},
+        specialResources: resourcesOpts.specialResources||{},
+        embeddedResources: resourcesOpts.embeddedResources||{},
+        commonBehaviour:commonBehaviourParams,
         shaders:shaders
     };
 };
 
-module.exports.generate = function(opts,callback){
-
-    console.log('generate options:',opts);
+module.exports.generateEngine = function(opts){
+    var generatorParams = prepareGeneratorParams(opts);
 
     var sourceMain = new Source();
     sourceMain.addCommonTemplates('resources/generatorResources/lib/common');
     sourceMain.addCommonJsModules('resources/generatorResources/lib/class');
     sourceMain.addCommonJsModules(
         'resources/generatorResources/modules',
-        prepareGeneratorParams(opts)
+        generatorParams
     );
-    sourceMain.add("require('index');"); // add entry point
+    if (!opts.engineOnly) {
+        sourceMain.addCommonJsModule(
+            'resources/generatorResources/index.js',
+            generatorParams
+        );
+        sourceMain.add("require('index');");
+    }
+    return sourceMain.get();
+};
 
-    processGameResourcesFiles(sourceMain,opts);
+module.exports.generate = function(opts,callback){
+
+    var generatedCode = module.exports.generateEngine(opts);
+    processGameResourcesFiles(generatedCode,opts);
 
     callback({});
 };

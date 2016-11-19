@@ -227,9 +227,10 @@
                 "groupName": "",
                 "angle": 0,
                 "name": "textField7",
-                "protoId": null,
+                "protoId": {},
                 "id": "2570_1987_4",
-                "fontId": "0265_1797_64"
+                "fontId": "0265_1797_64",
+                "alpha": 1
             },
             {
                 "pos": {

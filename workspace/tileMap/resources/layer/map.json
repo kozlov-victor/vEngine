@@ -238,60 +238,6 @@
                 "angle": 0,
                 "protoId": "1957_7947_93",
                 "id": "8319_3167_4"
-            },
-            {
-                "spriteSheetId": "8588_3274_122",
-                "pos": {
-                    "x": 247,
-                    "y": 231
-                },
-                "scale": {
-                    "x": 1,
-                    "y": 1
-                },
-                "vel": {
-                    "x": 0,
-                    "y": 0
-                },
-                "currFrameIndex": 0,
-                "name": "btn2",
-                "width": 120,
-                "height": 64,
-                "type": "gameObject",
-                "commonBehaviour": [],
-                "frameAnimationIds": [],
-                "rigid": 1,
-                "groupName": "",
-                "angle": 0,
-                "protoId": "6070_2283_25",
-                "id": "8596_4369_26"
-            },
-            {
-                "spriteSheetId": "8588_3274_122",
-                "pos": {
-                    "x": 220,
-                    "y": 28
-                },
-                "scale": {
-                    "x": 1,
-                    "y": 1
-                },
-                "vel": {
-                    "x": 0,
-                    "y": 0
-                },
-                "currFrameIndex": 0,
-                "name": "btn2",
-                "width": 120,
-                "height": 120,
-                "type": "gameObject",
-                "commonBehaviour": [],
-                "frameAnimationIds": [],
-                "rigid": 1,
-                "groupName": "",
-                "angle": 0,
-                "protoId": "6070_2283_25",
-                "id": "6333_5227_27"
             }
         ],
         "id": "0645_0474_80"

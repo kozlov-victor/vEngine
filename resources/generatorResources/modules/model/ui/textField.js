@@ -1,5 +1,5 @@
 
-var renderer = require('renderer',{ignoreFail:true}).instance();
+var renderer = require('renderer').instance();
 var BaseGameObject = require('baseGameObject').BaseGameObject;
 var SpriteSheet = require('spriteSheet').SpriteSheet;
 var bundle = require('bundle').instance();

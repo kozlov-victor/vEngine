@@ -1,9 +1,9 @@
 
 var BaseModel = require('baseModel').BaseModel;
-var tweenModule = require('tween',{ignoreFail:true});
-var tweenMovieModule = require('tweenMovie',{ignoreFail:true});
-var renderer = require('renderer',{ignoreFail:true}).instance();
-var camera = require('camera',{ignoreFail:true}).instance();
+var tweenModule = require('tween');
+var tweenMovieModule = require('tweenMovie');
+var renderer = require('renderer').instance();
+var camera = require('camera').instance();
 
 exports.BaseGameObject = BaseModel.extend({
     type:'baseGameObject',

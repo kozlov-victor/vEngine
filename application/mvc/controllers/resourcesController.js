@@ -248,27 +248,6 @@ var resolveResourceName = function(name,isFile){
     return res;
 };
 
-module.exports.getResourcesToAdd = function(query) {
-    var name = query.name;
-    var ignoreCommonJS = query.ignoreCommonJS;
-    var ignoreEJS = query.ignoreEJS;
-    var source = new generatorController.Source();
-    if (name.slice(-1)=='*') {
-        name = name.replace('.*','');
-        fs.readDirSync(resolveResourceName(name)).forEach(function(itm){
-            source.addResource(itm.fullName,{
-                ignoreEJS:ignoreEJS,
-                ignoreCommonJS: ignoreCommonJS
-            });
-        });
-    } else {
-        source.addResource(resolveResourceName(name,true),{
-            ignoreEJS:ignoreEJS,
-            ignoreCommonJS: ignoreCommonJS
-        });
-    }
-    return source.get();
-};
 
 module.exports.setTile = function(sceneId,x,y,tileIndex,projectName) {
     if (!projectName) throw 'project name not specified';

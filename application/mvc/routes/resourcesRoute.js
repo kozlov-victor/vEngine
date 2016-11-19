@@ -7,7 +7,6 @@ var url = require('url');
 var multipart = require('connect-multiparty')();
 
 var utils = require.main.require('./application/utils/utils');
-var mainController = require.main.require('./application/mvc/controllers/mainController');
 var resourcesController = require.main.require('./application/mvc/controllers/resourcesController');
 var generatorController = require.main.require('./application/mvc/controllers/generatorController');
 
@@ -15,14 +14,15 @@ var generatorController = require.main.require('./application/mvc/controllers/ge
 
 module.exports.init = function(app) {
 
-
-    app.get('/addResource',function(req,res){
-        var query = url.parse(req.url, true).query;
-        var r = resourcesController.getResourcesToAdd(query);
-        res.send(r);
+    app.get('/generateEngine',function(req,res){
+        res.send(
+            generatorController.generateEngine(
+                {
+                    engineOnly:1
+                }
+            )
+        )
     });
-
-
 
     app.get('/',function(req,res){
         res.render('main',{

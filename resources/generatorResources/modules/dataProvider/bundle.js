@@ -2,7 +2,7 @@
 var collections = require('collections');
 var consts = require('consts');
 var utils = require('utils');
-var behaviour = require('behaviour',{ignoreFail:true});
+var behaviour = require('behaviour');
 
 var Bundle = function(data){
 
@@ -27,8 +27,8 @@ var Bundle = function(data){
     };
 
 
-    this.prepare = function(_data){
-        data = data || _data;
+    this.prepare = function(data){
+        if (!data) throw 'can not prepare bundle, no data provided';
         self.gameProps = data.gameProps;
         consts.RESOURCE_NAMES.forEach(function(itm){
             toDataSource(
@@ -36,7 +36,6 @@ var Bundle = function(data){
                 data[itm],
                 self[itm+'List']);
         });
-        data = null;
     };
 
     var applyIndividualBehaviour = function(model){
@@ -103,22 +102,12 @@ var Bundle = function(data){
 
 };
 
-var data;
-
-//<code>data = {
-//<code><%var l = Object.keys(commonResources).length;%>
-//<code><%Object.keys(commonResources).forEach(function(key,i){%>
-//<code>    <%-key%>:<%-commonResources[key]%><%if (i<l-1){%><%=','%><%}%>
-//<code><%})%>
-//<code>};
-
 
 var instance = null;
 
 module.exports.instance = function(){
     if (instance==null) {
-        instance = new Bundle(data);
-        data = null;
+        instance = new Bundle();
     }
     return instance;
 };

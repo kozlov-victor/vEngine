@@ -2,9 +2,9 @@
 var BaseModel = require('baseModel').BaseModel;
 var collections = require('collections');
 var bundle = require('bundle').instance();
-var renderer = require('renderer',{ignoreFail:true}).instance();
+var renderer = require('renderer').instance();
 var resourceCache = require('resourceCache');
-var camera = require('camera',{ignoreFail:true}).instance();
+var camera = require('camera').instance();
 
 exports.Scene = BaseModel.extend({
     type:'scene',

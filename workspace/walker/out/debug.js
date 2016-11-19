@@ -1,6 +1,7 @@
 (function(){
 
     var getPopupContainer = function(){
+        if (!(document && document.getElementById)) return null;
         var container = document.getElementById('popupContainer');
         if (container) return container;
         container = document.createElement('div');
@@ -17,7 +18,18 @@
         return container;
     };
 
+    var _showErr = function(e,lineNum){
+        var msg = 'error: ' + (e.message || e);
+        if (lineNum) msg+=' in line ' + lineNum;
+        console.log(msg);
+    };
+
     window.showError = function _err(e,lineNum){
+        console.log('navigator.isCocoonJS',navigator.isCocoonJS);
+        if (navigator.isCocoonJS) {
+            _showErr(e,lineNum);
+            return;
+        }
         if (document.body) {
             var popup = document.createElement('div');
             popup.style.cssText =
@@ -36,7 +48,12 @@
             leftBox.innerHTML = (e && e.message)?e.message:e;
             popup.appendChild(leftBox);
             popup.appendChild(rightBox);
-            getPopupContainer().appendChild(popup);
+            var popupContainer = getPopupContainer();
+            if (popupContainer) {
+                popupContainer.appendChild(popup);
+            } else {
+                _showErr(e,lineNum);
+            }
         } else {
             setTimeout(function(){
                 _err(e,lineNum);
