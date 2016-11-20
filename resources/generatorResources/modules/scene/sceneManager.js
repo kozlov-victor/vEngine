@@ -1,4 +1,5 @@
 
+var ResourceLoader = require('resourceLoader').ResourceLoader;
 
 var SceneManager = function(){
 
@@ -9,29 +10,51 @@ var SceneManager = function(){
 
     this.currScene = null;
 
-    var preloadAndSet = function(scene){
+    var bootEssentialResources = function(callBack){
 
-        if (!renderer) renderer = require('renderer').instance();
         if (!bundle) bundle = require('bundle').instance();
-        var ResourceLoader = require('resourceLoader').ResourceLoader;
 
         var loader = new ResourceLoader();
         loader.onComplete = function(){
+            callBack();
+        };
+        var progressScene = bundle.sceneList.find({name:'progressScene'});
+        self.currScene = progressScene;
+        progressScene.__onResourcesReady();
+        var allSprSheets = progressScene.getAllSpriteSheets();
+        allSprSheets.asArray().forEach(function(spSheet){
+            loader.loadImage(spSheet.resourcePath);
+        });
+        bundle.fontList.forEach(function(font){
+            loader.loadImage(font.resourcePath);
+        });
+        loader.start();
+    };
+
+    var preloadSceneAndSetIt = function(scene){
+
+        if (!renderer) renderer = require('renderer').instance();
+        if (!bundle) bundle = require('bundle').instance();
+
+        var progressScene = bundle.sceneList.find({name:'progressScene'});
+        self.currScene = progressScene;
+        renderer.setScene(progressScene);
+        bundle.applyBehaviour(progressScene);
+
+        var loader = new ResourceLoader();
+        loader.onComplete = function(){
+            self.currScene = scene;
             bundle.applyBehaviourAll();
-            console.log('scene loader complete');
             renderer.setScene(scene);
         };
         loader.onProgress = function(e){
-            console.log('scene loader progress',e);
+           progressScene.onProgress(e);
         };
 
         var allSprSheets = scene.getAllSpriteSheets();
 
         bundle.particleSystemList.forEach(function(ps){
             allSprSheets.add(ps._gameObject._spriteSheet);
-        });
-        bundle.fontList.forEach(function(font){
-            loader.loadImage(font.resourcePath);
         });
         allSprSheets.asArray().forEach(function(spSheet){
             loader.loadImage(spSheet.resourcePath);
@@ -46,8 +69,9 @@ var SceneManager = function(){
         var Scene = require('scene').Scene;
         if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
         if (this.currScene==scene) return;
-        this.currScene = scene;
-        preloadAndSet(scene);
+        bootEssentialResources(function(){
+            preloadSceneAndSetIt(scene);
+        });
     };
 
     this.setSceneByName = function(sceneName){

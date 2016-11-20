@@ -10,8 +10,9 @@ var data;
 
 var bundle = require('bundle').instance();
 bundle.prepare(data);
+//<code><%if (opts.debug){%>
 if (!bundle.sceneList.size()) throw 'at least one scene must be created';
-
+//<code><%}%>
 var renderer = require('renderer').instance();
 var sceneManager = require('sceneManager').instance();
 var keyboard = require('keyboard').instance();

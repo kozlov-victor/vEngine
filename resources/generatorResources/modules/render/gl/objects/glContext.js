@@ -19,7 +19,8 @@ var GlContext = function(){
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
-    this.colorBG = [255,255,255];
+    this.DEFAULT_COLOR_BG = [255,255,255];
+    this.colorBG = this.DEFAULT_COLOR_BG;
 
     this.init = function(canvas){
 

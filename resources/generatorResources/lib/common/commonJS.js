@@ -1,5 +1,4 @@
-var modules = {}, require = function(name,opts){
-    opts = opts || {};
+var modules = {}, require = function(name){
     //console.trace('require: ',name);
     var moduleObj = modules[name];
 

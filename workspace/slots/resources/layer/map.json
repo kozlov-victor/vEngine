@@ -255,5 +255,40 @@
             }
         ],
         "id": "0679_1823_35"
+    },
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [],
+        "id": "7338_5966_29"
+    },
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "pos": {
+                    "x": 108,
+                    "y": 79
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 36,
+                "text": "...",
+                "width": 15,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "name": "progress",
+                "protoId": null,
+                "id": "7466_0967_45",
+                "fontId": "0265_1797_64"
+            }
+        ],
+        "id": "4889_0216_35"
     }
 ]

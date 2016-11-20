@@ -19,7 +19,7 @@ var canSpin = true;
 var totalMoney = +(localStorage.totalMoney) || 100;
 var bet = 10;
 var jackPot = +(localStorage.jackPot) || 1500;
-
+var god = location && location.search.indexOf('god')>-1;
 
 var spin = function(){
     if (!canSpin) return;
@@ -27,7 +27,7 @@ var spin = function(){
     canSpin = false;
 
     var hackedVal;
-    if (~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
+    if (god && ~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
 
     localStorage.totalMoney = (totalMoney - bet);
     Sound.play('spinPull');

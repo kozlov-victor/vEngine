@@ -40,7 +40,7 @@ exports.Queue = function(){
     this.start = function() {
         if (this.size()==0) this.onResolved();
         tasks.forEach(function(t){
-            t();
+            t && t();
         });
     }
 };

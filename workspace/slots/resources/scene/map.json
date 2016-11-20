@@ -34,5 +34,30 @@
         ],
         "id": "2590_5247_34",
         "useBG": 0
+    },
+    {
+        "tileMap": {
+            "_spriteSheet": null,
+            "spriteSheetId": null,
+            "width": 0,
+            "height": 0,
+            "data": []
+        },
+        "name": "progressScene",
+        "type": "scene",
+        "layerProps": [
+            {
+                "type": "layer",
+                "protoId": "4889_0216_35",
+                "id": "2188_0242_36"
+            }
+        ],
+        "colorBG": [
+            225,
+            182,
+            255
+        ],
+        "id": "6337_8986_28",
+        "useBG": 1
     }
 ]
