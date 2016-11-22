@@ -6682,7 +6682,7 @@ modules['index'] = {code: function(module,exports){
 	            255
 	        ],
 	        "id": "6337_8986_28",
-	        "useBG": 1
+	        "useBG": 0
 	    }
 	],
 	

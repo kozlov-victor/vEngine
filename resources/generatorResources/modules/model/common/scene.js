@@ -1,14 +1,18 @@
 
-var BaseModel = require('baseModel').BaseModel;
+var Renderable = require('renderable').Renderable;
 var collections = require('collections');
 var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
 var resourceCache = require('resourceCache');
 var camera = require('camera').instance();
 
-exports.Scene = BaseModel.extend({
+var tweenModule = require('tween');
+var tweenMovieModule = require('tweenMovie');
+
+exports.Scene = Renderable.extend({
     type:'scene',
     layerProps:[],
+    alpha:1,
     _layers:null,
     tileMap:null,
     _allGameObjects:null,
@@ -75,6 +79,18 @@ exports.Scene = BaseModel.extend({
             tweenMovie._update(currTime);
         });
         self.__updateIndividualBehaviour__(currTime);
+    },
+    fadeIn:function(time,easeFnName){
+        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+    },
+    fadeOut:function(time,easeFnName){
+        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+    },
+    tween: function(obj,fromToVal,tweenTime,easeFnName){
+        var movie = new tweenMovieModule.TweenMovie();
+        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+        movie.tween(0,tween);
+        movie.play();
     },
     _render: function(){
         var self = this;

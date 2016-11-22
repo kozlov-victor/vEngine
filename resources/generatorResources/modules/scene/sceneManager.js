@@ -19,12 +19,16 @@ var SceneManager = function(){
             callBack();
         };
         var progressScene = bundle.sceneList.find({name:'progressScene'});
-        self.currScene = progressScene;
-        progressScene.__onResourcesReady();
-        var allSprSheets = progressScene.getAllSpriteSheets();
-        allSprSheets.asArray().forEach(function(spSheet){
-            loader.loadImage(spSheet.resourcePath);
-        });
+        if (progressScene) {
+            self.currScene = progressScene;
+            progressScene.__onResourcesReady();
+            progressScene.
+                getAllSpriteSheets().
+                asArray().
+                forEach(function(spSheet){
+                    loader.loadImage(spSheet.resourcePath);
+                });
+        }
         bundle.fontList.forEach(function(font){
             loader.loadImage(font.resourcePath);
         });
@@ -37,9 +41,11 @@ var SceneManager = function(){
         if (!bundle) bundle = require('bundle').instance();
 
         var progressScene = bundle.sceneList.find({name:'progressScene'});
-        self.currScene = progressScene;
-        renderer.setScene(progressScene);
-        bundle.applyBehaviour(progressScene);
+        if (progressScene) {
+            self.currScene = progressScene;
+            renderer.setScene(progressScene);
+            bundle.applyBehaviour(progressScene);
+        }
 
         var loader = new ResourceLoader();
         loader.onComplete = function(){
@@ -48,7 +54,7 @@ var SceneManager = function(){
             renderer.setScene(scene);
         };
         loader.onProgress = function(e){
-           progressScene.onProgress(e);
+            progressScene && progressScene.onProgress(e);
         };
 
         var allSprSheets = scene.getAllSpriteSheets();

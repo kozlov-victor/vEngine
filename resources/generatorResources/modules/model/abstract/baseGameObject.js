@@ -1,20 +1,18 @@
 
-var BaseModel = require('baseModel').BaseModel;
-var tweenModule = require('tween');
-var tweenMovieModule = require('tweenMovie');
+var Renderable = require('baseModel').Renderable;
+
 var renderer = require('renderer').instance();
 var camera = require('camera').instance();
 
-exports.BaseGameObject = BaseModel.extend({
+var Renderable = require('renderable').Renderable;
+
+exports.BaseGameObject = Renderable.extend({
     type:'baseGameObject',
     groupName:'',
     _spriteSheet:null,
     pos:null,
     scale:null,
     angle:0,
-    alpha:1,
-    width:0,
-    height:0,
     fixedToCamera:false,
     _layer:null,
     getRect: function(){
@@ -36,14 +34,6 @@ exports.BaseGameObject = BaseModel.extend({
     },
     moveTo:function(x,y,time,easeFnName){
         return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
-    },
-    tween: function(obj,fromToVal,tweenTime,easeFnName){
-        var scene = this.getScene();
-        var movie = new tweenMovieModule.TweenMovie();
-        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-        movie.add(0,tween);
-        movie.play();
-        return tween.getPromise();
     },
     update: function(){},
     _render: function(){
