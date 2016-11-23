@@ -1,5 +1,4 @@
-var modules = {}, require = function(name,opts){
-    opts = opts || {};
+var modules = {}, require = function(name){
     //console.trace('require: ',name);
     var moduleObj = modules[name];
 
@@ -865,41 +864,43 @@ modules['resourceLoader'] = {code: function(module,exports){
 	
 	    this.loadImage = function(resourcePath) {
 	        if (cache.has(resourcePath)) return;
-	        var path = bundle.embeddedResources.isEmbedded?
-	            bundle.embeddedResources.data[resourcePath]:
-	            resourcePath;
-	        renderer.
-	            getContext().
-	            loadTextureInfo(
-	            path,
-	            {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
-	            function(resourcePath,progress){
-	                q.progressTask(resourcePath,progress);
-	            },
-	            function(textureInfo){
-	                cache.set(resourcePath,textureInfo);
-	                q.resolveTask(resourcePath);
-	            });
-	        q.addTask(resourcePath);
+	        q.addTask(function(){
+	            var path = bundle.embeddedResources.isEmbedded?
+	                bundle.embeddedResources.data[resourcePath]:
+	                resourcePath;
+	            renderer.
+	                getContext().
+	                loadTextureInfo(
+	                path,
+	                {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
+	                function(resourcePath,progress){
+	                    q.progressTask(resourcePath,progress);
+	                },
+	                function(textureInfo){
+	                    cache.set(resourcePath,textureInfo);
+	                    q.resolveTask(resourcePath);
+	                });
+	        },resourcePath);
 	    };
 	
 	    this.loadSound = function(resourcePath,name){
 	        if (cache.has(resourcePath)) return;
-	        var path = bundle.embeddedResources.isEmbedded?
-	            bundle.embeddedResources.data[resourcePath]:
-	            resourcePath;
-	        soundManager.loadSound(
-	            path,
-	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
-	            function(resourcePath,progress){
-	                q.progressTask(resourcePath,progress);
-	            },
-	            function(buffer){
-	                cache.set(name,buffer);
-	                q.resolveTask(resourcePath);
-	            }
-	        );
-	        q.addTask(resourcePath);
+	        q.addTask(function(){
+	            var path = bundle.embeddedResources.isEmbedded?
+	                bundle.embeddedResources.data[resourcePath]:
+	                resourcePath;
+	            soundManager.loadSound(
+	                path,
+	                {type:bundle.embeddedResources.isEmbedded?'base64':''},
+	                function(resourcePath,progress){
+	                    q.progressTask(resourcePath,progress);
+	                },
+	                function(buffer){
+	                    cache.set(name,buffer);
+	                    q.resolveTask(resourcePath);
+	                }
+	            );
+	        },resourcePath);
 	    };
 	
 	    this.onComplete = null;
@@ -1052,8 +1053,12 @@ modules['soundManager'] = {code: function(module,exports){
 	    var _loadSoundBase64 = function(url,callback){
 	        if (context) {
 	            var byteArray = require('base64').toByteArray(url);
-	            context.decodeAudioData(byteArray).then(function(buffer) {
+	            context.decodeAudioData(byteArray.buffer).
+	            then(function(buffer) {
 	                callback(buffer);
+	            }).
+	            catch(function(e){
+	                    window.showError(e)
 	            });
 	        } else {
 	            callback(url);
@@ -1083,6 +1088,8 @@ modules['soundManager'] = {code: function(module,exports){
 }};
 
 modules['base64'] = {code: function(module,exports){
+	// https://github.com/beatgammit/base64-js/blob/master/index.js
+	
 	'use strict';
 	
 	exports.byteLength = byteLength;
@@ -1149,7 +1156,7 @@ modules['base64'] = {code: function(module,exports){
 	        arr[L++] = tmp & 0xFF;
 	    }
 	
-	    return arr
+	    return arr;
 	}
 	
 	function tripletToBase64 (num) {
@@ -1767,6 +1774,7 @@ modules['queue'] = {code: function(module,exports){
 	    this.onProgress = null;
 	    var tasksTotal = 0;
 	    var tasksResolved = 0;
+	    var tasks = [];
 	    var tasksProgressById = {};
 	
 	    var calcProgress = function(){
@@ -1777,7 +1785,8 @@ modules['queue'] = {code: function(module,exports){
 	        return sum/tasksTotal;
 	    };
 	
-	    this.addTask = function(taskId) {
+	    this.addTask = function(taskFn,taskId) {
+	        tasks.push(taskFn);
 	        tasksTotal++;
 	        tasksProgressById[taskId] = 0;
 	    };
@@ -1797,6 +1806,9 @@ modules['queue'] = {code: function(module,exports){
 	    };
 	    this.start = function() {
 	        if (this.size()==0) this.onResolved();
+	        tasks.forEach(function(t){
+	            t && t();
+	        });
 	    }
 	};
 }};
@@ -1912,22 +1924,20 @@ modules['vec2'] = {code: function(module,exports){
 
 modules['baseGameObject'] = {code: function(module,exports){
 	
-	var BaseModel = require('baseModel').BaseModel;
-	var tweenModule = require('tween');
-	var tweenMovieModule = require('tweenMovie');
+	var Renderable = require('baseModel').Renderable;
+	
 	var renderer = require('renderer').instance();
 	var camera = require('camera').instance();
 	
-	exports.BaseGameObject = BaseModel.extend({
+	var Renderable = require('renderable').Renderable;
+	
+	exports.BaseGameObject = Renderable.extend({
 	    type:'baseGameObject',
 	    groupName:'',
 	    _spriteSheet:null,
 	    pos:null,
 	    scale:null,
 	    angle:0,
-	    alpha:1,
-	    width:0,
-	    height:0,
 	    fixedToCamera:false,
 	    _layer:null,
 	    getRect: function(){
@@ -1949,14 +1959,6 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    },
 	    moveTo:function(x,y,time,easeFnName){
 	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
-	    },
-	    tween: function(obj,fromToVal,tweenTime,easeFnName){
-	        var scene = this.getScene();
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-	        movie.add(0,tween);
-	        movie.play();
-	        return tween.getPromise();
 	    },
 	    update: function(){},
 	    _render: function(){
@@ -2061,6 +2063,33 @@ modules['baseModel'] = {code: function(module,exports){
 	    _init:function(){
 	        this._emitter = new EventEmitter();
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
+	    }
+	});
+}};
+
+modules['renderable'] = {code: function(module,exports){
+	
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Renderable = BaseModel.extend({
+	    type:'renderable',
+	    alpha:1,
+	    width:0,
+	    height:0,
+	    fadeIn:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+	    },
+	    fadeOut:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
 	    }
 	});
 }};
@@ -2348,16 +2377,20 @@ modules['particleSystem'] = {code: function(module,exports){
 
 modules['scene'] = {code: function(module,exports){
 	
-	var BaseModel = require('baseModel').BaseModel;
+	var Renderable = require('renderable').Renderable;
 	var collections = require('collections');
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var resourceCache = require('resourceCache');
 	var camera = require('camera').instance();
 	
-	exports.Scene = BaseModel.extend({
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	
+	exports.Scene = Renderable.extend({
 	    type:'scene',
 	    layerProps:[],
+	    alpha:1,
 	    _layers:null,
 	    tileMap:null,
 	    _allGameObjects:null,
@@ -2424,6 +2457,18 @@ modules['scene'] = {code: function(module,exports){
 	            tweenMovie._update(currTime);
 	        });
 	        self.__updateIndividualBehaviour__(currTime);
+	    },
+	    fadeIn:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+	    },
+	    fadeOut:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
 	    },
 	    _render: function(){
 	        var self = this;
@@ -2509,6 +2554,25 @@ modules['spriteSheet'] = {code: function(module,exports){
 	    },
 	    construct: function(){
 	        this.calcFrameSize();
+	    }
+	});
+}};
+
+modules['moveable'] = {code: function(module,exports){
+	
+	var collider = require('collider').instance();
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Moveable = BaseModel.extend({
+	    vel:null,
+	    _gameObject: null,
+	    update: function(time,delta){
+	        var _gameObject = this._gameObject;
+	        var deltaX = _gameObject.vel.x * delta / 1000;
+	        var deltaY = _gameObject.vel.y * delta / 1000;
+	        var posX = _gameObject.pos.x+deltaX;
+	        var posY = _gameObject.pos.y+deltaY;
+	        collider.manage(_gameObject,posX,posY);
 	    }
 	});
 }};
@@ -2897,6 +2961,9 @@ modules['renderer'] = {code: function(module,exports){
 	    this.setScene = function(_scene){
 	        scene = _scene;
 	        if (scene.useBG) ctx.colorBG = scene.colorBG;
+	        else {
+	            ctx.colorBG = ctx.DEFAULT_COLOR_BG;
+	        }
 	        collider.setUp();
 	    };
 	
@@ -3151,7 +3218,8 @@ modules['glContext'] = {code: function(module,exports){
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
-	    this.colorBG = [255,255,255];
+	    this.DEFAULT_COLOR_BG = [255,255,255];
+	    this.colorBG = this.DEFAULT_COLOR_BG;
 	
 	    this.init = function(canvas){
 	
@@ -3222,6 +3290,7 @@ modules['glContext'] = {code: function(module,exports){
 	            url = utils.getBase64prefix('image',opts.fileName) + url;
 	            img.src = url;
 	            texture.apply(img);
+	            callBack(texture);
 	            return;
 	        }
 	
@@ -3233,10 +3302,8 @@ modules['glContext'] = {code: function(module,exports){
 	        request.setRequestHeader('Content-Range', 'bytes');
 	        request.onload = function() {
 	            var base64String = arrayBufferToBase64(request.response);
-	            console.log('base64String',base64String.substr(0,10));
 	            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
 	            img.onload = function(){
-	                console.log('loaded image!');
 	                texture.apply(img);
 	                callBack(texture);
 	            };
@@ -3760,6 +3827,7 @@ modules['vertexBuffer'] = {code: function(module,exports){
 
 modules['sceneManager'] = {code: function(module,exports){
 	
+	var ResourceLoader = require('resourceLoader').ResourceLoader;
 	
 	var SceneManager = function(){
 	
@@ -3770,29 +3838,57 @@ modules['sceneManager'] = {code: function(module,exports){
 	
 	    this.currScene = null;
 	
-	    var preloadAndSet = function(scene){
+	    var bootEssentialResources = function(callBack){
 	
-	        if (!renderer) renderer = require('renderer').instance();
 	        if (!bundle) bundle = require('bundle').instance();
-	        var ResourceLoader = require('resourceLoader').ResourceLoader;
 	
 	        var loader = new ResourceLoader();
 	        loader.onComplete = function(){
+	            callBack();
+	        };
+	        var progressScene = bundle.sceneList.find({name:'progressScene'});
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            progressScene.__onResourcesReady();
+	            progressScene.
+	                getAllSpriteSheets().
+	                asArray().
+	                forEach(function(spSheet){
+	                    loader.loadImage(spSheet.resourcePath);
+	                });
+	        }
+	        bundle.fontList.forEach(function(font){
+	            loader.loadImage(font.resourcePath);
+	        });
+	        loader.start();
+	    };
+	
+	    var preloadSceneAndSetIt = function(scene){
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        var progressScene = bundle.sceneList.find({name:'progressScene'});
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            renderer.setScene(progressScene);
+	            bundle.applyBehaviour(progressScene);
+	        }
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            self.currScene = scene;
 	            bundle.applyBehaviourAll();
-	            console.log('scene loader complete');
 	            renderer.setScene(scene);
 	        };
 	        loader.onProgress = function(e){
-	            console.log('scene loader progress',e);
+	            progressScene && progressScene.onProgress(e);
 	        };
 	
 	        var allSprSheets = scene.getAllSpriteSheets();
 	
 	        bundle.particleSystemList.forEach(function(ps){
 	            allSprSheets.add(ps._gameObject._spriteSheet);
-	        });
-	        bundle.fontList.forEach(function(font){
-	            loader.loadImage(font.resourcePath);
 	        });
 	        allSprSheets.asArray().forEach(function(spSheet){
 	            loader.loadImage(spSheet.resourcePath);
@@ -3807,8 +3903,9 @@ modules['sceneManager'] = {code: function(module,exports){
 	        var Scene = require('scene').Scene;
 	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
 	        if (this.currScene==scene) return;
-	        this.currScene = scene;
-	        preloadAndSet(scene);
+	        bootEssentialResources(function(){
+	            preloadSceneAndSetIt(scene);
+	        });
 	    };
 	
 	    this.setSceneByName = function(sceneName){
@@ -5542,60 +5639,6 @@ modules['index'] = {code: function(module,exports){
 	                "angle": 0,
 	                "protoId": "1957_7947_93",
 	                "id": "8319_3167_4"
-	            },
-	            {
-	                "spriteSheetId": "8588_3274_122",
-	                "pos": {
-	                    "x": 247,
-	                    "y": 231
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btn2",
-	                "width": 120,
-	                "height": 64,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "angle": 0,
-	                "protoId": "6070_2283_25",
-	                "id": "8596_4369_26"
-	            },
-	            {
-	                "spriteSheetId": "8588_3274_122",
-	                "pos": {
-	                    "x": 220,
-	                    "y": 28
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "btn2",
-	                "width": 120,
-	                "height": 120,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "angle": 0,
-	                "protoId": "6070_2283_25",
-	                "id": "6333_5227_27"
 	            }
 	        ],
 	        "id": "0645_0474_80"
@@ -6328,6 +6371,7 @@ modules['index'] = {code: function(module,exports){
 	
 	var bundle = require('bundle').instance();
 	bundle.prepare(data);
+	
 	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 	
 	var renderer = require('renderer').instance();

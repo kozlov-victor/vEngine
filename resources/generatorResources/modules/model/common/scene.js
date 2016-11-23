@@ -119,6 +119,7 @@ exports.Scene = Renderable.extend({
     },
     getTileAt: function(x,y){
         var self = this;
+        if (!self.tileMap._spriteSheet) return null;
         var tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
         var tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
         return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];

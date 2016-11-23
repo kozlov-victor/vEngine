@@ -1965,24 +1965,23 @@ modules['vec2'] = {code: function(module,exports){
 
 modules['baseGameObject'] = {code: function(module,exports){
 	
-	var BaseModel = require('baseModel').BaseModel;
-	var tweenModule = require('tween');
-	var tweenMovieModule = require('tweenMovie');
+	
 	var renderer = require('renderer').instance();
 	var camera = require('camera').instance();
 	
-	exports.BaseGameObject = BaseModel.extend({
+	var Renderable = require('renderable').Renderable;
+	var Moveable = require('moveable').Moveable;
+	
+	exports.BaseGameObject = Renderable.extend({
 	    type:'baseGameObject',
 	    groupName:'',
 	    _spriteSheet:null,
 	    pos:null,
 	    scale:null,
 	    angle:0,
-	    alpha:1,
-	    width:0,
-	    height:0,
 	    fixedToCamera:false,
 	    _layer:null,
+	    _moveable:null,
 	    getRect: function(){
 	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
 	    },
@@ -2003,31 +2002,17 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    moveTo:function(x,y,time,easeFnName){
 	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
 	    },
-	    tween: function(obj,fromToVal,tweenTime,easeFnName){
-	        var scene = this.getScene();
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-	        movie.add(0,tween);
-	        movie.play();
-	        return tween.getPromise();
+	    update: function(time,delta){
+	        this._moveable.update(time,delta);
 	    },
-	    update: function(){},
 	    _render: function(){
-	        var ctx = renderer.getContext();
-	        var dx = 0, dy = 0;
-	        if (this.fixedToCamera) {
-	            dx = camera.pos.x;
-	            dy = camera.pos.y;
-	        }
-	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
-	        ctx.scale(this.scale.x,this.scale.y);
-	        ctx.rotateZ(this.angle);
-	        ctx.translate(-this.width /2, -this.height/2);
-	        ctx.setAlpha(this.alpha);
+	        this._super();
 	    },
 	    construct:function(){
 	        if (!this.pos) this.pos = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
+	        this._moveable = new Moveable();
+	        this._moveable._gameObject = this;
 	    }
 	});
 }};
@@ -2118,6 +2103,76 @@ modules['baseModel'] = {code: function(module,exports){
 	});
 }};
 
+modules['moveable'] = {code: function(module,exports){
+	
+	var collider = require('collider').instance();
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Moveable = BaseModel.extend({
+	    vel:null,
+	    _gameObject: null,
+	    update: function(time,delta){
+	        var _gameObject = this._gameObject;
+	        var deltaX = _gameObject.vel.x * delta / 1000;
+	        var deltaY = _gameObject.vel.y * delta / 1000;
+	        var posX = _gameObject.pos.x+deltaX;
+	        var posY = _gameObject.pos.y+deltaY;
+	        collider.manage(_gameObject,posX,posY);
+	    }
+	});
+}};
+
+modules['renderable'] = {code: function(module,exports){
+	
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	var camera = require('camera').instance();
+	var renderer = require('renderer').instance();
+	var collider = require('collider').instance();
+	
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Renderable = BaseModel.extend({
+	    type:'renderable',
+	    alpha:1,
+	    width:0,
+	    height:0,
+	    fadeIn:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+	    },
+	    fadeOut:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
+	    },
+	    _render: function(){
+	        var ctx = renderer.getContext();
+	        var dx = 0, dy = 0;
+	        if (this.fixedToCamera) {
+	            dx = camera.pos.x;
+	            dy = camera.pos.y;
+	        }
+	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
+	        ctx.scale(this.scale.x,this.scale.y);
+	        ctx.rotateZ(this.angle);
+	        ctx.translate(-this.width /2, -this.height/2);
+	        ctx.setAlpha(this.alpha);
+	    },
+	    update: function(time,delta){
+	        var self = this;
+	        var deltaX = self.vel.x * delta / 1000;
+	        var deltaY = self.vel.y * delta / 1000;
+	        var posX = self.pos.x+deltaX;
+	        var posY = self.pos.y+deltaY;
+	        collider.manage(self,posX,posY);
+	    }
+	});
+}};
+
 modules['resource'] = {code: function(module,exports){
 	
 	var BaseModel = require('baseModel').BaseModel;
@@ -2178,7 +2233,7 @@ modules['frameAnimation'] = {code: function(module,exports){
 }};
 
 modules['gameObject'] = {code: function(module,exports){
-	var collider = require('collider').instance();
+	
 	var renderer = require('renderer').instance();
 	var BaseGameObject = require('baseGameObject').BaseGameObject;
 	var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
@@ -2195,7 +2250,6 @@ modules['gameObject'] = {code: function(module,exports){
 	    _behaviour:null,
 	    commonBehaviour:[],
 	    _commonBehaviour:null,
-	    vel:null,
 	    currFrameIndex:0,
 	    _sprPosX:0,
 	    _sprPosY:0,
@@ -2242,12 +2296,8 @@ modules['gameObject'] = {code: function(module,exports){
 	    },
 	    update: function(time,delta) {
 	        var self = this;
+	        self._super(time,delta);
 	        self._currFrameAnimation && this._currFrameAnimation.update(time);
-	        var deltaX = this.vel.x * delta / 1000;
-	        var deltaY = this.vel.y * delta / 1000;
-	        var posX = this.pos.x+deltaX;
-	        var posY = this.pos.y+deltaY;
-	        collider.manage(self,posX,posY);
 	        self.__updateIndividualBehaviour__(delta);
 	        self.__updateCommonBehaviour__();
 	        self._render();
@@ -2401,16 +2451,20 @@ modules['particleSystem'] = {code: function(module,exports){
 
 modules['scene'] = {code: function(module,exports){
 	
-	var BaseModel = require('baseModel').BaseModel;
+	var Renderable = require('renderable').Renderable;
 	var collections = require('collections');
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var resourceCache = require('resourceCache');
 	var camera = require('camera').instance();
 	
-	exports.Scene = BaseModel.extend({
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	
+	exports.Scene = Renderable.extend({
 	    type:'scene',
 	    layerProps:[],
+	    alpha:1,
 	    _layers:null,
 	    tileMap:null,
 	    _allGameObjects:null,
@@ -2477,6 +2531,18 @@ modules['scene'] = {code: function(module,exports){
 	            tweenMovie._update(currTime);
 	        });
 	        self.__updateIndividualBehaviour__(currTime);
+	    },
+	    fadeIn:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+	    },
+	    fadeOut:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
 	    },
 	    _render: function(){
 	        var self = this;
@@ -3836,12 +3902,16 @@ modules['sceneManager'] = {code: function(module,exports){
 	            callBack();
 	        };
 	        var progressScene = bundle.sceneList.find({name:'progressScene'});
-	        self.currScene = progressScene;
-	        progressScene.__onResourcesReady();
-	        var allSprSheets = progressScene.getAllSpriteSheets();
-	        allSprSheets.asArray().forEach(function(spSheet){
-	            loader.loadImage(spSheet.resourcePath);
-	        });
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            progressScene.__onResourcesReady();
+	            progressScene.
+	                getAllSpriteSheets().
+	                asArray().
+	                forEach(function(spSheet){
+	                    loader.loadImage(spSheet.resourcePath);
+	                });
+	        }
 	        bundle.fontList.forEach(function(font){
 	            loader.loadImage(font.resourcePath);
 	        });
@@ -3854,9 +3924,11 @@ modules['sceneManager'] = {code: function(module,exports){
 	        if (!bundle) bundle = require('bundle').instance();
 	
 	        var progressScene = bundle.sceneList.find({name:'progressScene'});
-	        self.currScene = progressScene;
-	        renderer.setScene(progressScene);
-	        bundle.applyBehaviour(progressScene);
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            renderer.setScene(progressScene);
+	            bundle.applyBehaviour(progressScene);
+	        }
 	
 	        var loader = new ResourceLoader();
 	        loader.onComplete = function(){
@@ -3865,7 +3937,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	            renderer.setScene(scene);
 	        };
 	        loader.onProgress = function(e){
-	           progressScene.onProgress(e);
+	            progressScene && progressScene.onProgress(e);
 	        };
 	
 	        var allSprSheets = scene.getAllSpriteSheets();

@@ -1,4 +1,4 @@
-var collider = require('collider').instance();
+
 var renderer = require('renderer').instance();
 var BaseGameObject = require('baseGameObject').BaseGameObject;
 var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
@@ -15,7 +15,6 @@ exports.GameObject = BaseGameObject.extend({
     _behaviour:null,
     commonBehaviour:[],
     _commonBehaviour:null,
-    vel:null,
     currFrameIndex:0,
     _sprPosX:0,
     _sprPosY:0,
@@ -62,12 +61,8 @@ exports.GameObject = BaseGameObject.extend({
     },
     update: function(time,delta) {
         var self = this;
+        self._super(time,delta);
         self._currFrameAnimation && this._currFrameAnimation.update(time);
-        var deltaX = this.vel.x * delta / 1000;
-        var deltaY = this.vel.y * delta / 1000;
-        var posX = this.pos.x+deltaX;
-        var posY = this.pos.y+deltaY;
-        collider.manage(self,posX,posY);
         self.__updateIndividualBehaviour__(delta);
         self.__updateCommonBehaviour__();
         self._render();
