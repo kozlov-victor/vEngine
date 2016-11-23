@@ -1,5 +1,4 @@
-var modules = {}, require = function(name,opts){
-    opts = opts || {};
+var modules = {}, require = function(name){
     //console.trace('require: ',name);
     var moduleObj = modules[name];
 
@@ -760,41 +759,43 @@ modules['resourceLoader'] = {code: function(module,exports){
 	
 	    this.loadImage = function(resourcePath) {
 	        if (cache.has(resourcePath)) return;
-	        var path = bundle.embeddedResources.isEmbedded?
-	            bundle.embeddedResources.data[resourcePath]:
-	            resourcePath;
-	        renderer.
-	            getContext().
-	            loadTextureInfo(
-	            path,
-	            {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
-	            function(resourcePath,progress){
-	                q.progressTask(resourcePath,progress);
-	            },
-	            function(textureInfo){
-	                cache.set(resourcePath,textureInfo);
-	                q.resolveTask(resourcePath);
-	            });
-	        q.addTask(resourcePath);
+	        q.addTask(function(){
+	            var path = bundle.embeddedResources.isEmbedded?
+	                bundle.embeddedResources.data[resourcePath]:
+	                resourcePath;
+	            renderer.
+	                getContext().
+	                loadTextureInfo(
+	                path,
+	                {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
+	                function(resourcePath,progress){
+	                    q.progressTask(resourcePath,progress);
+	                },
+	                function(textureInfo){
+	                    cache.set(resourcePath,textureInfo);
+	                    q.resolveTask(resourcePath);
+	                });
+	        },resourcePath);
 	    };
 	
 	    this.loadSound = function(resourcePath,name){
 	        if (cache.has(resourcePath)) return;
-	        var path = bundle.embeddedResources.isEmbedded?
-	            bundle.embeddedResources.data[resourcePath]:
-	            resourcePath;
-	        soundManager.loadSound(
-	            path,
-	            {type:bundle.embeddedResources.isEmbedded?'base64':''},
-	            function(resourcePath,progress){
-	                q.progressTask(resourcePath,progress);
-	            },
-	            function(buffer){
-	                cache.set(name,buffer);
-	                q.resolveTask(resourcePath);
-	            }
-	        );
-	        q.addTask(resourcePath);
+	        q.addTask(function(){
+	            var path = bundle.embeddedResources.isEmbedded?
+	                bundle.embeddedResources.data[resourcePath]:
+	                resourcePath;
+	            soundManager.loadSound(
+	                path,
+	                {type:bundle.embeddedResources.isEmbedded?'base64':''},
+	                function(resourcePath,progress){
+	                    q.progressTask(resourcePath,progress);
+	                },
+	                function(buffer){
+	                    cache.set(name,buffer);
+	                    q.resolveTask(resourcePath);
+	                }
+	            );
+	        },resourcePath);
 	    };
 	
 	    this.onComplete = null;
@@ -947,8 +948,12 @@ modules['soundManager'] = {code: function(module,exports){
 	    var _loadSoundBase64 = function(url,callback){
 	        if (context) {
 	            var byteArray = require('base64').toByteArray(url);
-	            context.decodeAudioData(byteArray).then(function(buffer) {
+	            context.decodeAudioData(byteArray.buffer).
+	            then(function(buffer) {
 	                callback(buffer);
+	            }).
+	            catch(function(e){
+	                    window.showError(e)
 	            });
 	        } else {
 	            callback(url);
@@ -978,6 +983,8 @@ modules['soundManager'] = {code: function(module,exports){
 }};
 
 modules['base64'] = {code: function(module,exports){
+	// https://github.com/beatgammit/base64-js/blob/master/index.js
+	
 	'use strict';
 	
 	exports.byteLength = byteLength;
@@ -1044,7 +1051,7 @@ modules['base64'] = {code: function(module,exports){
 	        arr[L++] = tmp & 0xFF;
 	    }
 	
-	    return arr
+	    return arr;
 	}
 	
 	function tripletToBase64 (num) {
@@ -1662,6 +1669,7 @@ modules['queue'] = {code: function(module,exports){
 	    this.onProgress = null;
 	    var tasksTotal = 0;
 	    var tasksResolved = 0;
+	    var tasks = [];
 	    var tasksProgressById = {};
 	
 	    var calcProgress = function(){
@@ -1672,7 +1680,8 @@ modules['queue'] = {code: function(module,exports){
 	        return sum/tasksTotal;
 	    };
 	
-	    this.addTask = function(taskId) {
+	    this.addTask = function(taskFn,taskId) {
+	        tasks.push(taskFn);
 	        tasksTotal++;
 	        tasksProgressById[taskId] = 0;
 	    };
@@ -1692,6 +1701,9 @@ modules['queue'] = {code: function(module,exports){
 	    };
 	    this.start = function() {
 	        if (this.size()==0) this.onResolved();
+	        tasks.forEach(function(t){
+	            t && t();
+	        });
 	    }
 	};
 }};
@@ -1807,24 +1819,23 @@ modules['vec2'] = {code: function(module,exports){
 
 modules['baseGameObject'] = {code: function(module,exports){
 	
-	var BaseModel = require('baseModel').BaseModel;
-	var tweenModule = require('tween');
-	var tweenMovieModule = require('tweenMovie');
+	
 	var renderer = require('renderer').instance();
 	var camera = require('camera').instance();
 	
-	exports.BaseGameObject = BaseModel.extend({
+	var Renderable = require('renderable').Renderable;
+	var Moveable = require('moveable').Moveable;
+	
+	exports.BaseGameObject = Renderable.extend({
 	    type:'baseGameObject',
 	    groupName:'',
 	    _spriteSheet:null,
 	    pos:null,
 	    scale:null,
 	    angle:0,
-	    alpha:1,
-	    width:0,
-	    height:0,
 	    fixedToCamera:false,
 	    _layer:null,
+	    _moveable:null,
 	    getRect: function(){
 	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
 	    },
@@ -1845,31 +1856,17 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    moveTo:function(x,y,time,easeFnName){
 	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
 	    },
-	    tween: function(obj,fromToVal,tweenTime,easeFnName){
-	        var scene = this.getScene();
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-	        movie.add(0,tween);
-	        movie.play();
-	        return tween.getPromise();
+	    update: function(time,delta){
+	        this._moveable.update(time,delta);
 	    },
-	    update: function(){},
 	    _render: function(){
-	        var ctx = renderer.getContext();
-	        var dx = 0, dy = 0;
-	        if (this.fixedToCamera) {
-	            dx = camera.pos.x;
-	            dy = camera.pos.y;
-	        }
-	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
-	        ctx.scale(this.scale.x,this.scale.y);
-	        ctx.rotateZ(this.angle);
-	        ctx.translate(-this.width /2, -this.height/2);
-	        ctx.setAlpha(this.alpha);
+	        this._super();
 	    },
 	    construct:function(){
 	        if (!this.pos) this.pos = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
+	        this._moveable = new Moveable();
+	        this._moveable._gameObject = this;
 	    }
 	});
 }};
@@ -1960,6 +1957,76 @@ modules['baseModel'] = {code: function(module,exports){
 	});
 }};
 
+modules['moveable'] = {code: function(module,exports){
+	
+	var collider = require('collider').instance();
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Moveable = BaseModel.extend({
+	    vel:null,
+	    _gameObject: null,
+	    update: function(time,delta){
+	        var _gameObject = this._gameObject;
+	        var deltaX = _gameObject.vel.x * delta / 1000;
+	        var deltaY = _gameObject.vel.y * delta / 1000;
+	        var posX = _gameObject.pos.x+deltaX;
+	        var posY = _gameObject.pos.y+deltaY;
+	        collider.manage(_gameObject,posX,posY);
+	    }
+	});
+}};
+
+modules['renderable'] = {code: function(module,exports){
+	
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	var camera = require('camera').instance();
+	var renderer = require('renderer').instance();
+	var collider = require('collider').instance();
+	
+	var BaseModel = require('baseModel').BaseModel;
+	
+	exports.Renderable = BaseModel.extend({
+	    type:'renderable',
+	    alpha:1,
+	    width:0,
+	    height:0,
+	    fadeIn:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+	    },
+	    fadeOut:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
+	    },
+	    _render: function(){
+	        var ctx = renderer.getContext();
+	        var dx = 0, dy = 0;
+	        if (this.fixedToCamera) {
+	            dx = camera.pos.x;
+	            dy = camera.pos.y;
+	        }
+	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
+	        ctx.scale(this.scale.x,this.scale.y);
+	        ctx.rotateZ(this.angle);
+	        ctx.translate(-this.width /2, -this.height/2);
+	        ctx.setAlpha(this.alpha);
+	    },
+	    update: function(time,delta){
+	        var self = this;
+	        var deltaX = self.vel.x * delta / 1000;
+	        var deltaY = self.vel.y * delta / 1000;
+	        var posX = self.pos.x+deltaX;
+	        var posY = self.pos.y+deltaY;
+	        collider.manage(self,posX,posY);
+	    }
+	});
+}};
+
 modules['resource'] = {code: function(module,exports){
 	
 	var BaseModel = require('baseModel').BaseModel;
@@ -2020,7 +2087,7 @@ modules['frameAnimation'] = {code: function(module,exports){
 }};
 
 modules['gameObject'] = {code: function(module,exports){
-	var collider = require('collider').instance();
+	
 	var renderer = require('renderer').instance();
 	var BaseGameObject = require('baseGameObject').BaseGameObject;
 	var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
@@ -2037,7 +2104,6 @@ modules['gameObject'] = {code: function(module,exports){
 	    _behaviour:null,
 	    commonBehaviour:[],
 	    _commonBehaviour:null,
-	    vel:null,
 	    currFrameIndex:0,
 	    _sprPosX:0,
 	    _sprPosY:0,
@@ -2084,12 +2150,8 @@ modules['gameObject'] = {code: function(module,exports){
 	    },
 	    update: function(time,delta) {
 	        var self = this;
+	        self._super(time,delta);
 	        self._currFrameAnimation && this._currFrameAnimation.update(time);
-	        var deltaX = this.vel.x * delta / 1000;
-	        var deltaY = this.vel.y * delta / 1000;
-	        var posX = this.pos.x+deltaX;
-	        var posY = this.pos.y+deltaY;
-	        collider.manage(self,posX,posY);
 	        self.__updateIndividualBehaviour__(delta);
 	        self.__updateCommonBehaviour__();
 	        self._render();
@@ -2243,16 +2305,20 @@ modules['particleSystem'] = {code: function(module,exports){
 
 modules['scene'] = {code: function(module,exports){
 	
-	var BaseModel = require('baseModel').BaseModel;
+	var Renderable = require('renderable').Renderable;
 	var collections = require('collections');
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var resourceCache = require('resourceCache');
 	var camera = require('camera').instance();
 	
-	exports.Scene = BaseModel.extend({
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	
+	exports.Scene = Renderable.extend({
 	    type:'scene',
 	    layerProps:[],
+	    alpha:1,
 	    _layers:null,
 	    tileMap:null,
 	    _allGameObjects:null,
@@ -2320,6 +2386,18 @@ modules['scene'] = {code: function(module,exports){
 	        });
 	        self.__updateIndividualBehaviour__(currTime);
 	    },
+	    fadeIn:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
+	    },
+	    fadeOut:function(time,easeFnName){
+	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
+	    },
 	    _render: function(){
 	        var self = this;
 	        var spriteSheet = self.tileMap._spriteSheet;
@@ -2347,6 +2425,7 @@ modules['scene'] = {code: function(module,exports){
 	    },
 	    getTileAt: function(x,y){
 	        var self = this;
+	        if (!self.tileMap._spriteSheet) return null;
 	        var tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
 	        var tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
 	        return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];
@@ -2792,6 +2871,9 @@ modules['renderer'] = {code: function(module,exports){
 	    this.setScene = function(_scene){
 	        scene = _scene;
 	        if (scene.useBG) ctx.colorBG = scene.colorBG;
+	        else {
+	            ctx.colorBG = ctx.DEFAULT_COLOR_BG;
+	        }
 	        collider.setUp();
 	    };
 	
@@ -3046,7 +3128,8 @@ modules['glContext'] = {code: function(module,exports){
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
-	    this.colorBG = [255,255,255];
+	    this.DEFAULT_COLOR_BG = [255,255,255];
+	    this.colorBG = this.DEFAULT_COLOR_BG;
 	
 	    this.init = function(canvas){
 	
@@ -3117,6 +3200,7 @@ modules['glContext'] = {code: function(module,exports){
 	            url = utils.getBase64prefix('image',opts.fileName) + url;
 	            img.src = url;
 	            texture.apply(img);
+	            callBack(texture);
 	            return;
 	        }
 	
@@ -3128,10 +3212,8 @@ modules['glContext'] = {code: function(module,exports){
 	        request.setRequestHeader('Content-Range', 'bytes');
 	        request.onload = function() {
 	            var base64String = arrayBufferToBase64(request.response);
-	            console.log('base64String',base64String.substr(0,10));
 	            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
 	            img.onload = function(){
-	                console.log('loaded image!');
 	                texture.apply(img);
 	                callBack(texture);
 	            };
@@ -3655,6 +3737,7 @@ modules['vertexBuffer'] = {code: function(module,exports){
 
 modules['sceneManager'] = {code: function(module,exports){
 	
+	var ResourceLoader = require('resourceLoader').ResourceLoader;
 	
 	var SceneManager = function(){
 	
@@ -3665,29 +3748,57 @@ modules['sceneManager'] = {code: function(module,exports){
 	
 	    this.currScene = null;
 	
-	    var preloadAndSet = function(scene){
+	    var bootEssentialResources = function(callBack){
 	
-	        if (!renderer) renderer = require('renderer').instance();
 	        if (!bundle) bundle = require('bundle').instance();
-	        var ResourceLoader = require('resourceLoader').ResourceLoader;
 	
 	        var loader = new ResourceLoader();
 	        loader.onComplete = function(){
+	            callBack();
+	        };
+	        var progressScene = bundle.sceneList.find({name:'progressScene'});
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            progressScene.__onResourcesReady();
+	            progressScene.
+	                getAllSpriteSheets().
+	                asArray().
+	                forEach(function(spSheet){
+	                    loader.loadImage(spSheet.resourcePath);
+	                });
+	        }
+	        bundle.fontList.forEach(function(font){
+	            loader.loadImage(font.resourcePath);
+	        });
+	        loader.start();
+	    };
+	
+	    var preloadSceneAndSetIt = function(scene){
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        var progressScene = bundle.sceneList.find({name:'progressScene'});
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            renderer.setScene(progressScene);
+	            bundle.applyBehaviour(progressScene);
+	        }
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            self.currScene = scene;
 	            bundle.applyBehaviourAll();
-	            console.log('scene loader complete');
 	            renderer.setScene(scene);
 	        };
 	        loader.onProgress = function(e){
-	            console.log('scene loader progress',e);
+	            progressScene && progressScene.onProgress(e);
 	        };
 	
 	        var allSprSheets = scene.getAllSpriteSheets();
 	
 	        bundle.particleSystemList.forEach(function(ps){
 	            allSprSheets.add(ps._gameObject._spriteSheet);
-	        });
-	        bundle.fontList.forEach(function(font){
-	            loader.loadImage(font.resourcePath);
 	        });
 	        allSprSheets.asArray().forEach(function(spSheet){
 	            loader.loadImage(spSheet.resourcePath);
@@ -3702,8 +3813,9 @@ modules['sceneManager'] = {code: function(module,exports){
 	        var Scene = require('scene').Scene;
 	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
 	        if (this.currScene==scene) return;
-	        this.currScene = scene;
-	        preloadAndSet(scene);
+	        bootEssentialResources(function(){
+	            preloadSceneAndSetIt(scene);
+	        });
 	    };
 	
 	    this.setSceneByName = function(sceneName){
@@ -6474,6 +6586,7 @@ modules['index'] = {code: function(module,exports){
 	
 	var bundle = require('bundle').instance();
 	bundle.prepare(data);
+	
 	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 	
 	var renderer = require('renderer').instance();

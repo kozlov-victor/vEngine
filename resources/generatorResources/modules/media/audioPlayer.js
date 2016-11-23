@@ -6,6 +6,7 @@ exports.AudioPlayer = function(context){
     var self = this;
     var currSource = null;
     var isUsedHtmlAudio = false;
+    var gain = 1;
 
     (function(){
 
@@ -15,6 +16,10 @@ exports.AudioPlayer = function(context){
         }
 
     })();
+
+    this.setGain = function(){
+
+    };
 
     this.play = function(buffer,loop){
         free = false;

@@ -55,6 +55,7 @@ var Mouse = function(){
 
     var triggerEvent = function(e,name){
         var scene = sceneManager.getCurrScene();
+        if (!scene) return;
         var point = resolveScreenPoint(e);
         scene._layers.someReversed(function(l){
             var found = false;
@@ -93,6 +94,7 @@ var Mouse = function(){
     var resolveMouseMove = function(e){
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         var point = triggerEvent(e,'mouseMove');
+        if (!point) return;
         var lastMouseDownObject = objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject!=point.object) {
             lastMouseDownObject.trigger('mouseLeave');
@@ -107,8 +109,8 @@ var Mouse = function(){
 
     var resolveMouseUp = function(e){
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
-        var scene = sceneManager.getCurrScene();
         var point = triggerEvent(e,'mouseUp');
+        if (!point) return;
         var lastMouseDownObject = objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
         lastMouseDownObject.trigger('mouseUp');

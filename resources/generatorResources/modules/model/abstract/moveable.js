@@ -3,7 +3,6 @@ var collider = require('collider').instance();
 var BaseModel = require('baseModel').BaseModel;
 
 exports.Moveable = BaseModel.extend({
-    vel:null,
     _gameObject: null,
     update: function(time,delta){
         var _gameObject = this._gameObject;

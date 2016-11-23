@@ -1982,6 +1982,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	    fixedToCamera:false,
 	    _layer:null,
 	    _moveable:null,
+	    vel:null,
 	    getRect: function(){
 	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
 	    },
@@ -2109,7 +2110,6 @@ modules['moveable'] = {code: function(module,exports){
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.Moveable = BaseModel.extend({
-	    vel:null,
 	    _gameObject: null,
 	    update: function(time,delta){
 	        var _gameObject = this._gameObject;
@@ -2124,19 +2124,19 @@ modules['moveable'] = {code: function(module,exports){
 
 modules['renderable'] = {code: function(module,exports){
 	
-	var tweenModule = require('tween');
-	var tweenMovieModule = require('tweenMovie');
 	var camera = require('camera').instance();
 	var renderer = require('renderer').instance();
 	var collider = require('collider').instance();
 	
 	var BaseModel = require('baseModel').BaseModel;
+	var Tweenable = require('tweenable').Tweenable;
 	
 	exports.Renderable = BaseModel.extend({
 	    type:'renderable',
 	    alpha:1,
 	    width:0,
 	    height:0,
+	    _tweenable:null,
 	    fadeIn:function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
 	    },
@@ -2144,10 +2144,7 @@ modules['renderable'] = {code: function(module,exports){
 	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
 	    },
 	    tween: function(obj,fromToVal,tweenTime,easeFnName){
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-	        movie.tween(0,tween);
-	        movie.play();
+	        this._tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
 	    },
 	    _render: function(){
 	        var ctx = renderer.getContext();
@@ -2169,6 +2166,10 @@ modules['renderable'] = {code: function(module,exports){
 	        var posX = self.pos.x+deltaX;
 	        var posY = self.pos.y+deltaY;
 	        collider.manage(self,posX,posY);
+	    },
+	    construct:function(){
+	        this._super();
+	        this._tweenable = new Tweenable();
 	    }
 	});
 }};
@@ -2179,6 +2180,22 @@ modules['resource'] = {code: function(module,exports){
 	
 	exports.Resource = BaseModel.extend({
 	    resourcePath:''
+	});
+}};
+
+modules['tweenable'] = {code: function(module,exports){
+	
+	var BaseModel = require('baseModel').BaseModel;
+	var tweenModule = require('tween');
+	var tweenMovieModule = require('tweenMovie');
+	
+	exports.Tweenable = BaseModel.extend({
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        var movie = new tweenMovieModule.TweenMovie();
+	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	        movie.tween(0,tween);
+	        movie.play();
+	    }
 	});
 }};
 
@@ -2571,6 +2588,7 @@ modules['scene'] = {code: function(module,exports){
 	    },
 	    getTileAt: function(x,y){
 	        var self = this;
+	        if (!self.tileMap._spriteSheet) return null;
 	        var tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
 	        var tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
 	        return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];

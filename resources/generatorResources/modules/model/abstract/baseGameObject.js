@@ -16,6 +16,7 @@ exports.BaseGameObject = Renderable.extend({
     fixedToCamera:false,
     _layer:null,
     _moveable:null,
+    vel:null,
     getRect: function(){
         return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
     },
