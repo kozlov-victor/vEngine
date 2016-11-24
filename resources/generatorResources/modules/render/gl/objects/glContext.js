@@ -7,6 +7,7 @@ var Texture = require('texture').Texture;
 var MatrixStack = require('matrixStack').MatrixStack;
 var FrameBuffer = require('frameBuffer').FrameBuffer;
 var bundle = require('bundle').instance();
+var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 
 var GlContext = function(){
@@ -66,8 +67,6 @@ var GlContext = function(){
         shader.setUniform('u_alpha',alpha);
     };
 
-    var cache = {};
-
     var arrayBufferToBase64 = function(buffer) {
         var bytes = new Uint8Array(buffer);
         var rawArr = [];
@@ -79,8 +78,8 @@ var GlContext = function(){
     };
 
     this.loadTextureInfo = function(url,opts,progress,callBack) {
-        if (cache.url) {
-            callBack(cache[url]);
+        if (cache.has(url)) {
+            callBack(cache.get(url));
             return;
         }
 
