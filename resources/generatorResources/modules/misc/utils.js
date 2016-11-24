@@ -29,4 +29,6 @@ exports.loadBinary = function(url,progress,callBack) {
     request.onprogress = function(e){
         progress(url,e.loaded/ e.total);
     };
+    //<code><%if (opts.debug){%>request.onerror=function(e){throw 'can not load sound with url '+url};<%}%>
+    request.send();
 };

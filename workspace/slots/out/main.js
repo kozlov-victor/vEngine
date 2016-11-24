@@ -667,6 +667,7 @@ modules['mouse'] = {code: function(module,exports){
 	
 	    var triggerEvent = function(e,name){
 	        var scene = sceneManager.getCurrScene();
+	        if (!scene) return;
 	        var point = resolveScreenPoint(e);
 	        scene._layers.someReversed(function(l){
 	            var found = false;
@@ -705,6 +706,7 @@ modules['mouse'] = {code: function(module,exports){
 	    var resolveMouseMove = function(e){
 	        if (window.canceled) return
 	        var point = triggerEvent(e,'mouseMove');
+	        if (!point) return;
 	        var lastMouseDownObject = objectsCaptured[point.id];
 	        if (lastMouseDownObject && lastMouseDownObject!=point.object) {
 	            lastMouseDownObject.trigger('mouseLeave');
@@ -719,8 +721,8 @@ modules['mouse'] = {code: function(module,exports){
 	
 	    var resolveMouseUp = function(e){
 	        if (window.canceled) return
-	        var scene = sceneManager.getCurrScene();
 	        var point = triggerEvent(e,'mouseUp');
+	        if (!point) return;
 	        var lastMouseDownObject = objectsCaptured[point.id];
 	        if (!lastMouseDownObject) return;
 	        lastMouseDownObject.trigger('mouseUp');
@@ -974,57 +976,24 @@ modules['audioPlayer'] = {code: function(module,exports){
 	
 	exports.AudioPlayer = function(context){
 	
-	    var free = true;
 	    var currLoop = false;
-	    var self = this;
-	    var currSource = null;
-	    var isUsedHtmlAudio = false;
 	
-	    (function(){
-	
-	        if (!context) {
-	            context = (window.Audio && new window.Audio());
-	            isUsedHtmlAudio = true;
-	        }
-	
-	    })();
-	
-	    this.play = function(buffer,loop){
-	        free = false;
-	        if (!context) return;
-	
-	        currLoop = loop;
-	
-	        if (isUsedHtmlAudio) {
-	            console.log('used html audio',buffer);
-	            context.src = buffer;
-	            context.play();
-	        } else {
-	            currSource = context.createBufferSource();
-	            currSource.buffer = buffer;
-	            currSource.loop = loop;
-	            currSource.connect(context.destination);
-	            currSource.start(0);
-	            currSource.onended = function(){
-	                self.stop();
-	            }
-	        }
+	    this.setGain = function(){
 	
 	    };
 	
+	    this.play = function(buffer,loop){
+	        currLoop = loop;
+	        context.play(buffer,loop);
+	    };
+	
 	    this.stop = function() {
-	        if (!context) return;
-	        if (currSource)  {
-	            currSource.stop();
-	            currSource.disconnect(context.destination);
-	        }
-	        currSource = null;
-	        free = true;
+	        context.stop();
 	        currLoop = false;
 	    };
 	
 	    this.isFree = function() {
-	        return free;
+	        return context.free;
 	    }
 	
 	};
@@ -1037,10 +1006,10 @@ modules['audioSet'] = {code: function(module,exports){
 	
 	var AudioPlayer = require('audioPlayer').AudioPlayer;
 	
-	exports.AudioSet = function(context,numOfPlayers){
+	exports.AudioSet = function(Context,numOfPlayers){
 	    var players = [];
 	    for (var i = 0;i<numOfPlayers;i++) {
-	        players.push(new AudioPlayer(context));
+	        players.push(new AudioPlayer(new Context()));
 	    }
 	
 	    this.getFreePlayer = function(){
@@ -1053,65 +1022,188 @@ modules['audioSet'] = {code: function(module,exports){
 	};
 }};
 
+modules['fakeAudioContext'] = {code: function(module,exports){
+	
+	exports.FakeAudioContext = require('class').Class.extend(
+	    {
+	        type:'fakeAudioContext',
+	        free:true,
+	        play: function(buffer,loop){
+	
+	        },
+	        stop: function(){
+	
+	        },
+	        construct: function(){
+	            console.log('audio not supported');
+	        }
+	    },
+	    {
+	        isAcceptable: function(){
+	            return true;
+	        },
+	        loadXhr: function(url,progress,callBack){
+	            callBack(url);
+	        },
+	        loadBase64: function(url,callBack){
+	            callBack(url);
+	        }
+	    }
+	);
+}};
+
+modules['htmlAudioContext'] = {code: function(module,exports){
+	
+	var utils = require('utils');
+	
+	var getCtx = function(){
+	    var Ctx = window && window.Audio;
+	    return new Ctx();
+	} ;
+	
+	exports.HtmlAudioContext = require('class').Class.extend(
+	    {
+	        type:'htmlAudioContext',
+	        free:true,
+	        play: function(buffer,loop){
+	            var self = this;
+	            self.free = false;
+	            self._ctx.src = buffer;
+	            self._ctx.play();
+	            self._ctx.onended = function(){
+	                self.stop();
+	            }
+	
+	        },
+	        stop: function(){
+	            this.free = true;
+	        },
+	        construct: function(){
+	            this._ctx = getCtx();
+	            console.log('htmlAudio');
+	        }
+	    },
+	    {
+	        isAcceptable: function(){
+	            return !!(window && window.Audio);
+	        },
+	        load: function(url,opts,progress,callBack){
+	            if (opts.type=='base64') {
+	                callBack(url);
+	            } else {
+	                utils.loadBinary(url,progress,function(){
+	                    callBack(url);
+	                });
+	            }
+	
+	        }
+	    }
+	);
+	
+}};
+
+modules['webAudioContext'] = {code: function(module,exports){
+	
+	var utils = require('utils');
+	
+	var getCtx = (function(){
+	    var ctx = window.AudioContext || window.webkitAudioContext;
+	    var res = null;
+	    return function(){
+	        if (ctx && !res) res = new ctx();
+	        return res;
+	    }
+	})();
+	
+	var decode = function(buffer,callback){
+	    getCtx().decodeAudioData(
+	        buffer,
+	        function(decoded) {
+	            callback(decoded);
+	        },
+	        function(err){
+	            window.showError(err)
+	        }
+	    );
+	};
+	
+	exports.WebAudioContext = require('class').Class.extend(
+	    {
+	        type:'webAudioContext',
+	        _ctx:null,
+	        _currSource: null,
+	        free:true,
+	        play: function(buffer,loop){
+	            var self = this;
+	            self.free = false;
+	            var currSource = self._ctx.createBufferSource();
+	            currSource.buffer = buffer;
+	            currSource.loop = loop;
+	            currSource.connect(self._ctx.destination);
+	            currSource.start(0);
+	            currSource.onended = function(){
+	                self.stop();
+	            };
+	            self._currSource = currSource;
+	        },
+	        stop: function(){
+	            var currSource = this._currSource;
+	            if (currSource)  {
+	                currSource.stop();
+	                currSource.disconnect(this._ctx.destination);
+	            }
+	            this._currSource = null;
+	            this.free = true;
+	        },
+	        construct: function(){
+	            this._ctx = getCtx();
+	            console.log('webAudio');
+	        }
+	    },
+	    {
+	        isAcceptable: function(){
+	            return !!(window && getCtx());
+	        },
+	        load: function(url,opts,progress,callBack){
+	            if (opts.type=='base64') {
+	                var buffer = require('base64').toByteArray(url).buffer;
+	                decode(buffer,callBack);
+	            } else {
+	                utils.loadBinary(url,progress,function(buffer){
+	                    decode(buffer,callBack);
+	                });
+	            }
+	
+	        }
+	    }
+	);
+}};
+
 modules['soundManager'] = {code: function(module,exports){
 	
 	var bundle = require('bundle').instance();
 	var AudioSet = require('audioSet').AudioSet;
 	var cache = require('resourceCache');
+	var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
+	var WebAudioContext = require('webAudioContext').WebAudioContext;
+	var FakeAudioContext = require('fakeAudioContext').FakeAudioContext;
 	
-	var AudioContext = window.AudioContext || window.webkitAudioContext;
-	var context = window.AudioContext && new window.AudioContext();
+	var Context  = null;
 	
 	var SoundManager = function(){
 	
-	    var audioSet = new AudioSet(context,5);
+	    if (WebAudioContext.isAcceptable()) {
+	        Context = WebAudioContext;
+	    } else if (HtmlAudioContext.isAcceptable()) {
+	        Context = HtmlAudioContext;
+	    } else {
+	        Context = FakeAudioContext;
+	    }
 	
-	
-	    var _loadSoundXhr = function(url,progress,callback){
-	        var request = new XMLHttpRequest();
-	        request.open('GET', url, true);
-	        request.responseType = 'arraybuffer';
-	
-	        request.setRequestHeader('Accept-Ranges', 'bytes');
-	        request.setRequestHeader('Content-Range', 'bytes');
-	
-	        request.onload = function() {
-	            if (!context) {
-	                callback(url);
-	                return;
-	            }
-	            context.decodeAudioData(request.response,function(buffer) {
-	                callback(buffer);
-	            });
-	        };
-	        request.onprogress = function(e){
-	            progress(url,e.loaded/ e.total);
-	        };
-	        request.onerror=function(e){throw 'can not load sound with url '+url};
-	        request.send();
-	    };
-	
-	    var _loadSoundBase64 = function(url,callback){
-	        if (context) {
-	            var byteArray = require('base64').toByteArray(url);
-	            context.decodeAudioData(byteArray.buffer).
-	            then(function(buffer) {
-	                callback(buffer);
-	            }).
-	            catch(function(e){
-	                    window.showError(e)
-	            });
-	        } else {
-	            callback(url);
-	        }
-	    };
+	    var audioSet = new AudioSet(Context,5);
 	
 	    this.loadSound = function( url, opts, progress, callback) {
-	        if (opts.type=='base64') {
-	            _loadSoundBase64(url, callback);
-	        } else {
-	            _loadSoundXhr(url, progress, callback);
-	        }
+	        Context.load(url,opts,progress,callback);
 	    };
 	
 	    this.play = function(sndName,loop){
@@ -1872,6 +1964,23 @@ modules['utils'] = {code: function(module,exports){
 	    var ext = fileName.split('.').pop();
 	    return 'data:'+fileType+'/'+ext+';base64,'
 	};
+	exports.loadBinary = function(url,progress,callBack) {
+	    var request = new XMLHttpRequest();
+	    request.open('GET', url, true);
+	    request.responseType = 'arraybuffer';
+	
+	    request.setRequestHeader('Accept-Ranges', 'bytes');
+	    request.setRequestHeader('Content-Range', 'bytes');
+	
+	    request.onload = function() {
+	        callBack(request.response);
+	    };
+	    request.onprogress = function(e){
+	        progress(url,e.loaded/ e.total);
+	    };
+	    request.onerror=function(e){throw 'can not load sound with url '+url};
+	    request.send();
+	};
 }};
 
 modules['vec2'] = {code: function(module,exports){
@@ -2131,22 +2240,24 @@ modules['renderable'] = {code: function(module,exports){
 	var BaseModel = require('baseModel').BaseModel;
 	var Tweenable = require('tweenable').Tweenable;
 	
-	exports.Renderable = BaseModel.extend({
-	    type:'renderable',
-	    alpha:1,
-	    width:0,
-	    height:0,
-	    _tweenable:null,
-	    fadeIn:function(time,easeFnName){
+	
+	exports.Renderable = BaseModel.extend(function(self){
+	
+	    self.type = 'renderable';
+	    self.alpha = 1;
+	    self.width = 0;
+	    self.height = 0;
+	    var _tweenable = new Tweenable();
+	    self.fadeIn = function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
-	    },
-	    fadeOut:function(time,easeFnName){
+	    };
+	    self.fadeOut = function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
-	    },
-	    tween: function(obj,fromToVal,tweenTime,easeFnName){
-	        this._tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
-	    },
-	    _render: function(){
+	    };
+	    self.tween =  function(obj,fromToVal,tweenTime,easeFnName){
+	        _tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
+	    };
+	    self._render = function(){
 	        var ctx = renderer.getContext();
 	        var dx = 0, dy = 0;
 	        if (this.fixedToCamera) {
@@ -2158,19 +2269,16 @@ modules['renderable'] = {code: function(module,exports){
 	        ctx.rotateZ(this.angle);
 	        ctx.translate(-this.width /2, -this.height/2);
 	        ctx.setAlpha(this.alpha);
-	    },
-	    update: function(time,delta){
+	    };
+	    self.update = function(time,delta){
 	        var self = this;
 	        var deltaX = self.vel.x * delta / 1000;
 	        var deltaY = self.vel.y * delta / 1000;
 	        var posX = self.pos.x+deltaX;
 	        var posY = self.pos.y+deltaY;
 	        collider.manage(self,posX,posY);
-	    },
-	    construct:function(){
-	        this._super();
-	        this._tweenable = new Tweenable();
-	    }
+	    };
+	
 	});
 }};
 
