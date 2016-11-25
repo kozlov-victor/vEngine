@@ -54,7 +54,6 @@ var Bundle = function(data){
 
     var applyCommonBehaviour = function(model){
 
-        if (behaviour.fake) return; // this is editor mode
         var exportsList = [];
         if (!model._commonBehaviour || !model._commonBehaviour.size()) {
             model.__updateCommonBehaviour__ = consts.noop;
@@ -74,16 +73,16 @@ var Bundle = function(data){
         }
     };
 
-    this.applyBehaviourAll = function(){
-        self.sceneList.forEach(function(scene){
-            scene.__onResourcesReady();
-            self.applyBehaviour(scene);
-            scene._layers.forEach(function(layer){
-                layer._gameObjects.forEach(function(gameObject){
-                    self.applyBehaviour(gameObject);
-                });
+    this.applyBehaviourForScene = function(scene){
+        if (scene.__applied) return;
+        scene.__onResourcesReady();
+        self.applyBehaviour(scene);
+        scene._layers.forEach(function(layer){
+            layer._gameObjects.forEach(function(gameObject){
+                self.applyBehaviour(gameObject);
             });
         });
+        scene.__applied = true;
     };
 
     this.applyBehaviour = function(model){

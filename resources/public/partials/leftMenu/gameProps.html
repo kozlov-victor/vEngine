@@ -30,6 +30,17 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="cell">
+                {{i18n.preloadingScene}}
+            </div>
+            <div class="cell">
+                <select class="narrow" ng-model="editData.gameProps.preloadingSceneId" ng-change="saveGameProps()">
+                    <option value="{{item.id}}" ng-repeat="item in editData.sceneList.rs">{{item.name}}</option>
+                </select>
+            </div>
+        </div>
+
 
     </form>
 </div>

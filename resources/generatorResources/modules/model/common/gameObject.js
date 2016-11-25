@@ -63,6 +63,7 @@ exports.GameObject = BaseGameObject.extend({
         var self = this;
         self._super(time,delta);
         self._currFrameAnimation && this._currFrameAnimation.update(time);
+        if (!self.__updateIndividualBehaviour__) console.log('fail',self);
         self.__updateIndividualBehaviour__(delta);
         self.__updateCommonBehaviour__();
         self._render();

@@ -77,7 +77,8 @@ window.app
                 sceneNotSelected: 'select scene to drop object',
                 noLayer: 'create at least one layer of current scene',
                 selected: 'selected',
-                fixedToCamera:'fixed to camera'
+                fixedToCamera:'fixed to camera',
+                preloadingScene: 'preloading scene'
             }
         };
 

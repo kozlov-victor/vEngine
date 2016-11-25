@@ -7,6 +7,7 @@ var SceneManager = function(){
 
     var renderer;
     var bundle;
+    var progressScene;
 
     this.currScene = null;
 
@@ -18,7 +19,9 @@ var SceneManager = function(){
         loader.onComplete = function(){
             callBack();
         };
-        var progressScene = bundle.sceneList.find({name:'progressScene'});
+        if (bundle.gameProps.preloadingSceneId){
+            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
+        }
         if (progressScene) {
             self.currScene = progressScene;
             progressScene.__onResourcesReady();
@@ -40,21 +43,23 @@ var SceneManager = function(){
         if (!renderer) renderer = require('renderer').instance();
         if (!bundle) bundle = require('bundle').instance();
 
-        var progressScene = bundle.sceneList.find({name:'progressScene'});
         if (progressScene) {
             self.currScene = progressScene;
             renderer.setScene(progressScene);
-            bundle.applyBehaviour(progressScene);
+            bundle.applyBehaviourForScene(progressScene);
+            console.log('applied behaviour',progressScene.__updateIndividualBehaviour__);
         }
 
         var loader = new ResourceLoader();
         loader.onComplete = function(){
             self.currScene = scene;
-            bundle.applyBehaviourAll();
+            bundle.applyBehaviourForScene(scene);
             renderer.setScene(scene);
         };
         loader.onProgress = function(e){
-            progressScene && progressScene.onProgress(e);
+            progressScene &&
+            progressScene.onProgress &&
+            progressScene.onProgress(e);
         };
 
         var allSprSheets = scene.getAllSpriteSheets();

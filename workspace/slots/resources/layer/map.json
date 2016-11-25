@@ -287,6 +287,36 @@
                 "protoId": null,
                 "id": "7466_0967_45",
                 "fontId": "0265_1797_64"
+            },
+            {
+                "spriteSheetId": "9537_4496_35",
+                "pos": {
+                    "x": 141,
+                    "y": 128
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "coin",
+                "width": 30,
+                "height": 30,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [
+                    "7563_6764_37"
+                ],
+                "rigid": 0,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "protoId": "6542_0984_36",
+                "id": "1546_4644_150"
             }
         ],
         "id": "4889_0216_35"

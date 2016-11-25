@@ -796,7 +796,6 @@ modules['bundle'] = {code: function(module,exports){
 	
 	    var applyCommonBehaviour = function(model){
 	
-	        if (behaviour.fake) return; // this is editor mode
 	        var exportsList = [];
 	        if (!model._commonBehaviour || !model._commonBehaviour.size()) {
 	            model.__updateCommonBehaviour__ = consts.noop;
@@ -816,16 +815,16 @@ modules['bundle'] = {code: function(module,exports){
 	        }
 	    };
 	
-	    this.applyBehaviourAll = function(){
-	        self.sceneList.forEach(function(scene){
-	            scene.__onResourcesReady();
-	            self.applyBehaviour(scene);
-	            scene._layers.forEach(function(layer){
-	                layer._gameObjects.forEach(function(gameObject){
-	                    self.applyBehaviour(gameObject);
-	                });
+	    this.applyBehaviourForScene = function(scene){
+	        if (scene.__applied) return;
+	        scene.__onResourcesReady();
+	        self.applyBehaviour(scene);
+	        scene._layers.forEach(function(layer){
+	            layer._gameObjects.forEach(function(gameObject){
+	                self.applyBehaviour(gameObject);
 	            });
 	        });
+	        scene.__applied = true;
 	    };
 	
 	    this.applyBehaviour = function(model){
@@ -2423,6 +2422,7 @@ modules['gameObject'] = {code: function(module,exports){
 	        var self = this;
 	        self._super(time,delta);
 	        self._currFrameAnimation && this._currFrameAnimation.update(time);
+	        if (!self.__updateIndividualBehaviour__) console.log('fail',self);
 	        self.__updateIndividualBehaviour__(delta);
 	        self.__updateCommonBehaviour__();
 	        self._render();
@@ -4015,6 +4015,7 @@ modules['sceneManager'] = {code: function(module,exports){
 	
 	    var renderer;
 	    var bundle;
+	    var progressScene;
 	
 	    this.currScene = null;
 	
@@ -4026,7 +4027,9 @@ modules['sceneManager'] = {code: function(module,exports){
 	        loader.onComplete = function(){
 	            callBack();
 	        };
-	        var progressScene = bundle.sceneList.find({name:'progressScene'});
+	        if (bundle.gameProps.preloadingSceneId){
+	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
+	        }
 	        if (progressScene) {
 	            self.currScene = progressScene;
 	            progressScene.__onResourcesReady();
@@ -4048,21 +4051,23 @@ modules['sceneManager'] = {code: function(module,exports){
 	        if (!renderer) renderer = require('renderer').instance();
 	        if (!bundle) bundle = require('bundle').instance();
 	
-	        var progressScene = bundle.sceneList.find({name:'progressScene'});
 	        if (progressScene) {
 	            self.currScene = progressScene;
 	            renderer.setScene(progressScene);
-	            bundle.applyBehaviour(progressScene);
+	            bundle.applyBehaviourForScene(progressScene);
+	            console.log('applied behaviour',progressScene.__updateIndividualBehaviour__);
 	        }
 	
 	        var loader = new ResourceLoader();
 	        loader.onComplete = function(){
 	            self.currScene = scene;
-	            bundle.applyBehaviourAll();
+	            bundle.applyBehaviourForScene(scene);
 	            renderer.setScene(scene);
 	        };
 	        loader.onProgress = function(e){
-	            progressScene && progressScene.onProgress(e);
+	            progressScene &&
+	            progressScene.onProgress &&
+	            progressScene.onProgress(e);
 	        };
 	
 	        var allSprSheets = scene.getAllSpriteSheets();
@@ -6813,6 +6818,36 @@ modules['index'] = {code: function(module,exports){
 	                "protoId": null,
 	                "id": "7466_0967_45",
 	                "fontId": "0265_1797_64"
+	            },
+	            {
+	                "spriteSheetId": "9537_4496_35",
+	                "pos": {
+	                    "x": 141,
+	                    "y": 128
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "vel": {
+	                    "x": 0,
+	                    "y": 0
+	                },
+	                "currFrameIndex": 0,
+	                "name": "coin",
+	                "width": 30,
+	                "height": 30,
+	                "type": "gameObject",
+	                "commonBehaviour": [],
+	                "frameAnimationIds": [
+	                    "7563_6764_37"
+	                ],
+	                "rigid": 0,
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "protoId": "6542_0984_36",
+	                "id": "1546_4644_150"
 	            }
 	        ],
 	        "id": "4889_0216_35"
@@ -6912,7 +6947,8 @@ modules['index'] = {code: function(module,exports){
 	    gameProps:{
 	    "width": 320,
 	    "height": 200,
-	    "scaleStrategy": "2"
+	    "scaleStrategy": "2",
+	    "preloadingSceneId": "6337_8986_28"
 	}
 	
 	};
