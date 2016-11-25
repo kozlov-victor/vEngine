@@ -1,0 +1,29 @@
+[
+    {
+        "spriteSheetId": "6889_5338_7",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "eye",
+        "width": 24,
+        "height": 24,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "rigid": true,
+        "groupName": "",
+        "angle": 0,
+        "alpha": 1,
+        "id": "3952_8743_8"
+    }
+]

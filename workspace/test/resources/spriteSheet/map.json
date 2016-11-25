@@ -1,0 +1,12 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/eye.png",
+        "name": "eye",
+        "width": 24,
+        "height": 24,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "6889_5338_7"
+    }
+]

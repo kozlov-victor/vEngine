@@ -1,0 +1,37 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "6889_5338_7",
+                "pos": {
+                    "x": 141,
+                    "y": 107
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "eye",
+                "width": 24,
+                "height": 24,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "protoId": "3952_8743_8",
+                "id": "7247_0652_9"
+            }
+        ],
+        "id": "8555_2032_5"
+    }
+]
