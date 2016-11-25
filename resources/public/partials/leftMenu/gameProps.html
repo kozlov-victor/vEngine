@@ -36,7 +36,26 @@
             </div>
             <div class="cell">
                 <select class="narrow" ng-model="editData.gameProps.preloadingSceneId" ng-change="saveGameProps()">
-                    <option value="{{item.id}}" ng-repeat="item in editData.sceneList.rs">{{item.name}}</option>
+                    <option
+                            ng-disabled="item.id==editData.gameProps.startSceneId"
+                            value="{{item.id}}"
+                            ng-repeat="item in editData.sceneList.rs">{{item.name}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="cell">
+                {{i18n.startScene}}
+            </div>
+            <div class="cell">
+                <select class="narrow" ng-model="editData.gameProps.startSceneId" ng-change="saveGameProps()">
+                    <option
+                            ng-disabled="item.id==editData.gameProps.preloadingSceneId"
+                            value="{{item.id}}"
+                            ng-repeat="item in editData.sceneList.rs">{{item.name}}
+                    </option>
                 </select>
             </div>
         </div>

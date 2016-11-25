@@ -1691,7 +1691,8 @@ window.app
                 noLayer: 'create at least one layer of current scene',
                 selected: 'selected',
                 fixedToCamera:'fixed to camera',
-                preloadingScene: 'preloading scene'
+                preloadingScene: 'preloading scene',
+                startScene: 'start scene'
             }
         };
 

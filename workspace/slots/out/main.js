@@ -199,6 +199,22 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	
+	scripts.scene['introScene.js'] = function(exports,self){
+	    
+	var sceneManager = require('sceneManager').instance();
+	
+	self.on('click',function(){
+	    sceneManager.setSceneByName('mainScene');
+	});
+	
+	
+	function onUpdate(time) {
+	
+	}
+	    
+	    exports.onUpdate = onUpdate;
+	};
+	
 	scripts.scene['mainScene.js'] = function(exports,self){
 	    var GameObject = require('gameObject').GameObject;
 	
@@ -1963,6 +1979,8 @@ modules['utils'] = {code: function(module,exports){
 	    var ext = fileName.split('.').pop();
 	    return 'data:'+fileType+'/'+ext+';base64,'
 	};
+	
+	
 	exports.loadBinary = function(url,progress,callBack) {
 	    var request = new XMLHttpRequest();
 	    request.open('GET', url, true);
@@ -3474,27 +3492,15 @@ modules['glContext'] = {code: function(module,exports){
 	            return;
 	        }
 	
-	        var request = new XMLHttpRequest();
-	        request.open('GET', url, true);
-	        request.responseType = 'arraybuffer';
-	
-	        request.setRequestHeader('Accept-Ranges', 'bytes');
-	        request.setRequestHeader('Content-Range', 'bytes');
-	        request.onload = function() {
-	            var base64String = arrayBufferToBase64(request.response);
+	        utils.loadBinary(url,progress,function(buffer){
+	            var base64String = arrayBufferToBase64(buffer);
 	            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
 	            img.onload = function(){
 	                texture.apply(img);
 	                callBack(texture);
 	            };
 	            img.src = base64String;
-	
-	        };
-	        request.onprogress = function(e){
-	            progress(url,e.loaded/ e.total);
-	        };
-	        request.onerror=function(e){throw 'can not load image with url '+url};
-	        request.send();
+	        });
 	    };
 	
 	    this.getError = function(){
@@ -6851,6 +6857,93 @@ modules['index'] = {code: function(module,exports){
 	            }
 	        ],
 	        "id": "4889_0216_35"
+	    },
+	    {
+	        "name": "mainLayer",
+	        "type": "layer",
+	        "gameObjectProps": [
+	            {
+	                "pos": {
+	                    "x": 53,
+	                    "y": 58
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "Start!!!!!",
+	                "width": 150,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "name": "textField1",
+	                "protoId": {},
+	                "id": "2764_5156_154",
+	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "spriteSheetId": "4021_7193_32",
+	                "pos": {
+	                    "x": 116,
+	                    "y": 96
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "vel": {
+	                    "x": 0,
+	                    "y": 0
+	                },
+	                "currFrameIndex": 0,
+	                "name": "slotsColumn",
+	                "width": 64,
+	                "height": 52,
+	                "type": "gameObject",
+	                "commonBehaviour": [],
+	                "frameAnimationIds": [],
+	                "rigid": 1,
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "protoId": "2146_8639_33",
+	                "id": "6961_5750_155"
+	            },
+	            {
+	                "spriteSheetId": "9537_4496_35",
+	                "pos": {
+	                    "x": 134,
+	                    "y": 22
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "vel": {
+	                    "x": 0,
+	                    "y": 0
+	                },
+	                "currFrameIndex": 0,
+	                "name": "coin",
+	                "width": 30,
+	                "height": 30,
+	                "type": "gameObject",
+	                "commonBehaviour": [],
+	                "frameAnimationIds": [
+	                    "7563_6764_37"
+	                ],
+	                "rigid": 0,
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "protoId": "6542_0984_36",
+	                "id": "5056_3944_156"
+	            }
+	        ],
+	        "id": "0843_0759_152"
 	    }
 	],
 	
@@ -6915,6 +7008,33 @@ modules['index'] = {code: function(module,exports){
 	        ],
 	        "id": "6337_8986_28",
 	        "useBG": 0
+	    },
+	    {
+	        "tileMap": {
+	            "_spriteSheet": null,
+	            "spriteSheetId": null,
+	            "width": 0,
+	            "height": 0,
+	            "data": []
+	        },
+	        "name": "introScene",
+	        "type": "scene",
+	        "layerProps": [
+	            {
+	                "type": "layer",
+	                "protoId": "0843_0759_152",
+	                "id": "0309_0792_153"
+	            }
+	        ],
+	        "alpha": 1,
+	        "colorBG": [
+	            255,
+	            255,
+	            255
+	        ],
+	        "width": 0,
+	        "height": 0,
+	        "id": "5220_1729_151"
 	    }
 	],
 	
@@ -6948,7 +7068,8 @@ modules['index'] = {code: function(module,exports){
 	    "width": 320,
 	    "height": 200,
 	    "scaleStrategy": "2",
-	    "preloadingSceneId": "6337_8986_28"
+	    "preloadingSceneId": "6337_8986_28",
+	    "startSceneId": "5220_1729_151"
 	}
 	
 	};
@@ -6971,7 +7092,8 @@ modules['index'] = {code: function(module,exports){
 	
 	    renderer.init();
 	    require('mouse').instance();
-	    sceneManager.setScene(bundle.sceneList.get(0));
+	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
+	    sceneManager.setScene(startScene);
 	});
 }};
 

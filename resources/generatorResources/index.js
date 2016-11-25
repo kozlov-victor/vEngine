@@ -26,5 +26,6 @@ window.addEventListener('load',function(){
 
     renderer.init();
     require('mouse').instance();
-    sceneManager.setScene(bundle.sceneList.get(0));
+    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
+    sceneManager.setScene(startScene);
 });

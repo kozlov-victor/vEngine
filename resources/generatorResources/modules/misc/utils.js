@@ -15,6 +15,8 @@ exports.getBase64prefix = function(fileType,fileName) {
     var ext = fileName.split('.').pop();
     return 'data:'+fileType+'/'+ext+';base64,'
 };
+
+
 exports.loadBinary = function(url,progress,callBack) {
     var request = new XMLHttpRequest();
     request.open('GET', url, true);

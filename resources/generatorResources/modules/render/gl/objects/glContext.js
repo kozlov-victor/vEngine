@@ -94,27 +94,15 @@ var GlContext = function(){
             return;
         }
 
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.responseType = 'arraybuffer';
-
-        request.setRequestHeader('Accept-Ranges', 'bytes');
-        request.setRequestHeader('Content-Range', 'bytes');
-        request.onload = function() {
-            var base64String = arrayBufferToBase64(request.response);
+        utils.loadBinary(url,progress,function(buffer){
+            var base64String = arrayBufferToBase64(buffer);
             base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
             img.onload = function(){
                 texture.apply(img);
                 callBack(texture);
             };
             img.src = base64String;
-
-        };
-        request.onprogress = function(e){
-            progress(url,e.loaded/ e.total);
-        };
-        //<code><%if (opts.debug){%>request.onerror=function(e){throw 'can not load image with url '+url};<%}%>
-        request.send();
+        });
     };
 
     this.getError = function(){
