@@ -27,14 +27,18 @@ exports.WebAudioContext = require('class').Class.extend(
         type:'webAudioContext',
         _ctx:null,
         _currSource: null,
-        free:true,
+        _gainNode:null,
+        _free:true,
+        isFree: function(){
+            return this._free;
+        },
         play: function(buffer,loop){
             var self = this;
-            self.free = false;
+            self._free = false;
             var currSource = self._ctx.createBufferSource();
             currSource.buffer = buffer;
             currSource.loop = loop;
-            currSource.connect(self._ctx.destination);
+            currSource.connect(self._gainNode);
             currSource.start(0);
             currSource.onended = function(){
                 self.stop();
@@ -45,14 +49,19 @@ exports.WebAudioContext = require('class').Class.extend(
             var currSource = this._currSource;
             if (currSource)  {
                 currSource.stop();
-                currSource.disconnect(this._ctx.destination);
+                currSource.disconnect(this._gainNode);
             }
             this._currSource = null;
-            this.free = true;
+            this._free = true;
+        },
+        setGain: function(val){
+            this._gainNode.gain.value = val;
+
         },
         construct: function(){
             this._ctx = getCtx();
-            console.log('webAudio');
+            this._gainNode = this._ctx.createGain();
+            this._gainNode.connect(this._ctx.destination);
         }
     },
     {

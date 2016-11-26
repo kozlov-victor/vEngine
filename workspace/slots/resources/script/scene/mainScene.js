@@ -15,6 +15,9 @@ var Sound = require('sound').Sound;
 var TweenMovie = require('tweenMovie').TweenMovie;
 var Tween = require('tween').Tween;
 
+var spinPullSnd = Sound.find('spinPull');
+var powerUpSnd = Sound.find('powerUp');
+
 var canSpin = true;
 var totalMoney = +(localStorage.totalMoney) || 100;
 var bet = 10;
@@ -30,7 +33,7 @@ var spin = function(){
     if (god && ~~(Math.random()*10)>3) hackedVal =  hackedVal = ~~(Math.random()*10) + 12;
 
     localStorage.totalMoney = (totalMoney - bet);
-    Sound.play('spinPull');
+    spinPullSnd.play();
     var q = new Queue();
     q.onResolved = function(){
         canSpin = true;
@@ -50,7 +53,7 @@ var spin = function(){
 
 var blinkWin = function(win){
     particles.emit(100,100);
-    Sound.play('powerUp');
+    powerUpSnd.play();
     winLabel.pos = {x:140,y:100};
     winLabel.setText(win.txt);
     winLabel.alpha = 0;

@@ -3,6 +3,7 @@ var Class = function() {};
 Class.extend = function(props, staticProps) {
 
     var mixins = [];
+    var firstArg = {};
 
     if (arguments[0].slice) {
         mixins = arguments[0];
@@ -10,13 +11,14 @@ Class.extend = function(props, staticProps) {
         staticProps = arguments[2];
     } else if (arguments[0].call) {
         var obj = {};
+        firstArg.obj = obj;
+        firstArg.fn = props;
         props(obj);
         props = obj;
     }
 
-    if (staticProps && staticProps.call) staticProps = staticProps();
-
     function Instance() {
+        firstArg.fn && firstArg.fn(firstArg.obj);
         this._init && this._init.apply(this, arguments);
         this.construct && this.construct();
     }

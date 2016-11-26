@@ -16,5 +16,11 @@
         "type": "sound",
         "resourcePath": "resources/sound/spinPull.mp3",
         "id": "9529_9176_14"
+    },
+    {
+        "name": "intro",
+        "type": "sound",
+        "resourcePath": "resources/sound/intro.mp3",
+        "id": "7639_8475_4"
     }
 ]

@@ -2,5 +2,6 @@
     "width": 320,
     "height": 240,
     "scaleStrategy": "2",
-    "preloadingSceneId": "9666_8108_4"
+    "preloadingSceneId": "",
+    "startSceneId": "9666_8108_4"
 }

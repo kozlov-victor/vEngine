@@ -2,11 +2,16 @@
 exports.FakeAudioContext = require('class').Class.extend(
     {
         type:'fakeAudioContext',
-        free:true,
         play: function(buffer,loop){
 
         },
         stop: function(){
+
+        },
+        isFree: function(){
+            return false;
+        },
+        setGain: function(val){
 
         },
         construct: function(){

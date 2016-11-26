@@ -10,6 +10,9 @@ exports.HtmlAudioContext = require('class').Class.extend(
     {
         type:'htmlAudioContext',
         free:true,
+        isFree: function(){
+           return this.free;
+        },
         play: function(buffer,loop){
             var self = this;
             self.free = false;
@@ -23,9 +26,11 @@ exports.HtmlAudioContext = require('class').Class.extend(
         stop: function(){
             this.free = true;
         },
+        setGain: function(val){
+            this._ctx.volume = val;
+        },
         construct: function(){
             this._ctx = getCtx();
-            console.log('htmlAudio');
         }
     },
     {

@@ -1,11 +1,25 @@
 var Resource = require('resource').Resource;
-var soundManager = require('soundManager').instance();
+var audioPlayer = require('audioPlayer').instance();
+var bundle = require('bundle').instance();
 
 exports.Sound = Resource.extend({
     type:'sound',
-    _buffer:null
+    _gain:1,
+    _loop:false,
+    play: function(){
+        audioPlayer.play(this);
+    },
+    stop: function(){
+        audioPlayer.stop(this);
+    },
+    pause:function(){
+        throw 'not implemented'
+    },
+    setGain:function(val,time,easeFnName){
+        audioPlayer.setGain(this,val,time,easeFnName);
+    }
 }, {
-    play: function (sndName, loop) {
-        soundManager.play(sndName, loop);
+    find: function(name){
+        return bundle.soundList.find({name:name});
     }
 });

@@ -42,7 +42,7 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 
     };
 
-    this.progress = function(_progressFn){
+    this.progress = function(_progressFn){ // todo remane to onProgress?
         progressFn = _progressFn;
     };
 

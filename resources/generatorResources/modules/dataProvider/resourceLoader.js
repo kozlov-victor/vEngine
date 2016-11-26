@@ -7,7 +7,7 @@ exports.ResourceLoader = function(){
     var renderer = require('renderer').instance();
     var bundle = require('bundle').instance();
     var cache = require('resourceCache');
-    var soundManager = require('soundManager').instance();
+    var audioPlayer = require('audioPlayer').instance();
 
     var q = new Queue();
     q.onResolved = function(){
@@ -44,7 +44,7 @@ exports.ResourceLoader = function(){
             var path = bundle.embeddedResources.isEmbedded?
                 bundle.embeddedResources.data[resourcePath]:
                 resourcePath;
-            soundManager.loadSound(
+            audioPlayer.loadSound(
                 path,
                 {type:bundle.embeddedResources.isEmbedded?'base64':''},
                 function(resourcePath,progress){

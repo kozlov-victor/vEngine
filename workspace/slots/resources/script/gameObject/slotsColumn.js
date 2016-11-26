@@ -2,6 +2,8 @@
 var Sound = require('sound').Sound;
 var TweenChain = require('tweenChain').TweenChain;
 
+var spinSnd = Sound.find('spinSnd');
+
 var lastN = 0;
 
 var tChain = new TweenChain().
@@ -12,7 +14,7 @@ var tChain = new TweenChain().
 self.spin = function(callBack,hackedVal){
     var n = ~~((Math.random())*10)+5;
     n+=lastN;
-    if (hackedVal!=undefined) n = hackedVal;
+    if (hackedVal!==undefined) n = hackedVal;
     var time = 1000+~~(Math.random()*5000);
     new TweenChain().
             tween(
@@ -27,7 +29,7 @@ self.spin = function(callBack,hackedVal){
                     lastN = n;
                     lastN%=10;
                     callBack();
-                    Sound.play('spinSnd');
+                    spinSnd.play();
             }).
             play();
 };

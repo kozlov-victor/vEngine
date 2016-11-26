@@ -47,7 +47,6 @@ var SceneManager = function(){
             self.currScene = progressScene;
             renderer.setScene(progressScene);
             bundle.applyBehaviourForScene(progressScene);
-            console.log('applied behaviour',progressScene.__updateIndividualBehaviour__);
         }
 
         var loader = new ResourceLoader();

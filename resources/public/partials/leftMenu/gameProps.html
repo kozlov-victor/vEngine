@@ -36,6 +36,7 @@
             </div>
             <div class="cell">
                 <select class="narrow" ng-model="editData.gameProps.preloadingSceneId" ng-change="saveGameProps()">
+                    <option value="">--</option>
                     <option
                             ng-disabled="item.id==editData.gameProps.startSceneId"
                             value="{{item.id}}"
