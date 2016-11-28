@@ -702,7 +702,7 @@ modules['resourceLoader'] = {code: function(module,exports){
 	                    q.progressTask(resourcePath,progress);
 	                },
 	                function(buffer){
-	                    cache.set(name,buffer);
+	                    cache.set(resourcePath,buffer);
 	                    q.resolveTask(resourcePath);
 	                }
 	            );
@@ -749,7 +749,7 @@ modules['audioNode'] = {code: function(module,exports){
 	
 	    this.play = function(sound){
 	        currSound = sound;
-	        context.play(cache.get(sound.name),sound._loop);
+	        context.play(cache.get(sound.resourcePath),sound._loop);
 	    };
 	
 	    this.stop = function() {
@@ -960,6 +960,7 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 modules['webAudioContext'] = {code: function(module,exports){
 	
 	var utils = require('utils');
+	var cache = require('resourceCache');
 	
 	var getCtx = (function(){
 	    var ctx = window.AudioContext || window.webkitAudioContext;
@@ -3970,13 +3971,11 @@ modules['tween'] = {code: function(module,exports){
 	
 	    (function(){
 	        fromToVal = normalizeFromTo(fromToVal);
-	        console.log(fromToVal);
 	    })();
 	
 	
 	
 	    this._update = function(time){
-	        console.log('tween update');
 	        if (!startedTime) startedTime = time;
 	        if (this.completed) return;
 	        var delta = time - startedTime;

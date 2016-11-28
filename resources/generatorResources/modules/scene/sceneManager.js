@@ -10,9 +10,14 @@ var SceneManager = function(){
     var progressScene;
 
     this.currScene = null;
+    var booted = false;
 
     var bootEssentialResources = function(callBack){
 
+        if (booted) {
+            callBack();
+            return;
+        }
         if (!bundle) bundle = require('bundle').instance();
 
         var loader = new ResourceLoader();

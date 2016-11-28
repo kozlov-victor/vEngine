@@ -966,7 +966,7 @@ modules['resourceLoader'] = {code: function(module,exports){
 	                    q.progressTask(resourcePath,progress);
 	                },
 	                function(buffer){
-	                    cache.set(name,buffer);
+	                    cache.set(resourcePath,buffer);
 	                    q.resolveTask(resourcePath);
 	                }
 	            );
@@ -1013,7 +1013,7 @@ modules['audioNode'] = {code: function(module,exports){
 	
 	    this.play = function(sound){
 	        currSound = sound;
-	        context.play(cache.get(sound.name),sound._loop);
+	        context.play(cache.get(sound.resourcePath),sound._loop);
 	    };
 	
 	    this.stop = function() {
@@ -1224,6 +1224,7 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 modules['webAudioContext'] = {code: function(module,exports){
 	
 	var utils = require('utils');
+	var cache = require('resourceCache');
 	
 	var getCtx = (function(){
 	    var ctx = window.AudioContext || window.webkitAudioContext;
@@ -4113,9 +4114,14 @@ modules['sceneManager'] = {code: function(module,exports){
 	    var progressScene;
 	
 	    this.currScene = null;
+	    var booted = false;
 	
 	    var bootEssentialResources = function(callBack){
 	
+	        if (booted) {
+	            callBack();
+	            return;
+	        }
 	        if (!bundle) bundle = require('bundle').instance();
 	
 	        var loader = new ResourceLoader();

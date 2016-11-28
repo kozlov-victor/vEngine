@@ -1,5 +1,6 @@
 
 var utils = require('utils');
+var cache = require('resourceCache');
 
 var getCtx = (function(){
     var ctx = window.AudioContext || window.webkitAudioContext;

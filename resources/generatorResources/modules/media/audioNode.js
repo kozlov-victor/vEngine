@@ -11,7 +11,7 @@ exports.AudioNode = function(context){
 
     this.play = function(sound){
         currSound = sound;
-        context.play(cache.get(sound.name),sound._loop);
+        context.play(cache.get(sound.resourcePath),sound._loop);
     };
 
     this.stop = function() {

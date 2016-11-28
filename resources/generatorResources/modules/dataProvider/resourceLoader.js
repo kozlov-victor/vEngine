@@ -51,7 +51,7 @@ exports.ResourceLoader = function(){
                     q.progressTask(resourcePath,progress);
                 },
                 function(buffer){
-                    cache.set(name,buffer);
+                    cache.set(resourcePath,buffer);
                     q.resolveTask(resourcePath);
                 }
             );
