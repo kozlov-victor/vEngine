@@ -6,7 +6,7 @@ var bundle = require('bundle').instance();
 var collections = require('collections');
 var resourceCache = require('resourceCache');
 var utils = require('utils');
-var sceneManager = require('sceneManager').instance();
+var game = require('game').instance();
 
 exports.GameObject = BaseGameObject.extend({
     type:'gameObject',
@@ -89,9 +89,9 @@ exports.GameObject = BaseGameObject.extend({
     }
 }, {
     find: function(name){
-        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+        return game.getCurrScene()._allGameObjects.find({name:name});
     },
     findAll: function(name) {
-        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
+        return game.getCurrScene()._allGameObjects.findAll({name: name});
     }
 });

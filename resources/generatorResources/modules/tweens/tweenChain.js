@@ -1,7 +1,6 @@
 
 var TweenMovie = require('tweenMovie').TweenMovie;
 var Tween = require('tween').Tween;
-var sceneManager = require('sceneManager').instance();
 
 exports.TweenChain = function(){
     var timeOffset = 0;

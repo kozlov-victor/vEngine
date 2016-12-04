@@ -42,7 +42,7 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 
     };
 
-    this.progress = function(_progressFn){ // todo remane to onProgress?
+    this.progress = function(_progressFn){
         progressFn = _progressFn;
     };
 
@@ -58,6 +58,7 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
             var prp = propsToChange[l];
             obj[prp] = fromToVal.to[prp];
         }
+        progressFn && progressFn(obj);
         this.completed = true;
     };
 

@@ -41,8 +41,8 @@ var Bundle = function(data){
     var applyIndividualBehaviour = function(model){
         var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
         if (behaviourFn) {
-            var exports = {};
-            behaviourFn(exports,model);
+            var exports = model;
+            behaviourFn(exports);
             model.__updateIndividualBehaviour__ = function(time){
                 exports.onUpdate(time);
             }
@@ -60,10 +60,8 @@ var Bundle = function(data){
             return;
         }
         model._commonBehaviour.forEach(function(cb){
-            var module = {};
-            module.exports = {};
-            var exports = module.exports;
-            behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
+            var exports = model;
+            behaviour.commonBehaviour[cb.name](exports,cb.parameters);
             exportsList.push(exports);
         });
         model.__updateCommonBehaviour__ = function(){

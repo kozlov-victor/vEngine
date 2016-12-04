@@ -1,13 +1,14 @@
 
 var ResourceLoader = require('resourceLoader').ResourceLoader;
 
-var SceneManager = function(){
+var Game = function(){
 
     var self = this;
 
     var renderer;
     var bundle;
     var progressScene;
+    var tweenMovies = [];
 
     this.currScene = null;
     var booted = false;
@@ -59,6 +60,7 @@ var SceneManager = function(){
             self.currScene = scene;
             bundle.applyBehaviourForScene(scene);
             renderer.setScene(scene);
+            scene.onShow();
         };
         loader.onProgress = function(e){
             progressScene &&
@@ -99,7 +101,20 @@ var SceneManager = function(){
 
     this.getCurrScene = function(){
         return this.currScene;
-    }
+    };
+
+    this.addTweenMovie = function(tm) {
+        tweenMovies.push(tm);
+    };
+
+    this.update = function(currTime,deltaTime){
+        tweenMovies.forEach(function(tweenMovie){
+            if (tweenMovie.completed) {
+                tweenMovies.remove(tweenMovie);
+            }
+            tweenMovie._update(currTime);
+        });
+    };
 
 };
 
@@ -107,6 +122,6 @@ var SceneManager = function(){
 var instance = null;
 
 module.exports.instance = function(){
-    if (instance==null) instance = new SceneManager();
+    if (instance==null) instance = new Game();
     return instance;
 };

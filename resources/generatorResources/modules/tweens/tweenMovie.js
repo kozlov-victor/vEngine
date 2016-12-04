@@ -1,5 +1,5 @@
 
-var sceneManager = require('sceneManager').instance();
+var game = require('game').instance();
 var Tween = require('tween').Tween;
 
 exports.TweenMovie = function(){
@@ -30,9 +30,13 @@ exports.TweenMovie = function(){
         return this;
     };
 
-    this.play = function(){
-        var scene = sceneManager.getCurrScene();
-        scene._tweenMovies.push(this);
+    this.play = function(isGlobal){
+        if (isGlobal) {
+            game.addTweenMovie(this);
+        } else {
+            var scene = game.getCurrScene();
+            scene.addTweenMovie(this);
+        }
     };
 
     this._update = function(time){

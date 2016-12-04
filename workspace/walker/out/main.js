@@ -3735,7 +3735,7 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	};
 }};
 
-modules['sceneManager'] = {code: function(module,exports){
+modules['game'] = {code: function(module,exports){
 	
 	var ResourceLoader = require('resourceLoader').ResourceLoader;
 	

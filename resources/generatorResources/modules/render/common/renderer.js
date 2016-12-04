@@ -6,6 +6,7 @@ var glContext = require('glContext').instance();
 var canvasContext = require('canvasContext').instance();
 var resourceCache = require('resourceCache');
 var camera = require('camera').instance();
+var game = require('game').instance();
 
 var Renderer = function(){
 
@@ -71,6 +72,7 @@ var Renderer = function(){
         ctx.beginFrameBuffer();
         ctx.clear();
 
+        game.update(currTime);
         camera.update(ctx);
         scene.update(currTime,deltaTime);
         bundle.particleSystemList.forEach(function(p){

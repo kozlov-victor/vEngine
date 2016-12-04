@@ -14,6 +14,7 @@ exports.Renderable = BaseModel.extend(function(self){
     self.width = 0;
     self.height = 0;
     var _tweenable = new Tweenable();
+    self.onUpdate = function(){};
     self.fadeIn = function(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);
     };

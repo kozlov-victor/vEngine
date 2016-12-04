@@ -128,6 +128,50 @@ modules['behaviour'] = {code: function(module,exports){
 	var commonBehaviour = {};
 	
 	
+	commonBehaviour['draggable'] = function(module,exports,self,parameters){
+	/**
+	 *
+	 exports.parameters =  {};
+	 exports.description = 'draggable behaviour with multitouch supporting';
+	 */
+	
+	var mouse = require('mouse').instance();
+	var points = {};
+	var scene = self.getScene();
+	var collider = require('collider').instance();
+	var camera = require('camera').instance();
+	
+	var getEventId = function(e){
+	    return e.id || 1;
+	};
+	
+	self.on('click',function(e){
+	    points[getEventId(e)] = {
+	        isMouseDown:true,
+	        mX: e.objectX,
+	        mY: e.objectY
+	    };
+	});
+	
+	scene.on('mouseMove',function(e){
+	    var point = points[getEventId(e)];
+	    if (point && point.isMouseDown) {
+	        collider.manage(
+	            self,e.screenX - point.mX,
+	            e.screenY - point.mY
+	        );
+	    }
+	});
+	
+	scene.on('mouseUp',function(e){
+	    delete points[getEventId(e)];
+	});
+	
+	function onUpdate(){};
+	
+	    exports.onUpdate = onUpdate;
+	}
+	
 	
 	exports.commonBehaviour = commonBehaviour;
 	
@@ -146,8 +190,6 @@ modules['behaviour'] = {code: function(module,exports){
 	function onUpdate(time) {
 	    self.angle+=0.1;
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	;
 	
@@ -164,8 +206,6 @@ modules['behaviour'] = {code: function(module,exports){
 	function onUpdate(time) {
 	
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	;
 	
@@ -547,8 +587,8 @@ modules['bundle'] = {code: function(module,exports){
 	    var applyIndividualBehaviour = function(model){
 	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
 	        if (behaviourFn) {
-	            var exports = {};
-	            behaviourFn(exports,model);
+	            var exports = model;
+	            behaviourFn(exports,exports);
 	            model.__updateIndividualBehaviour__ = function(time){
 	                exports.onUpdate(time);
 	            }
@@ -566,10 +606,8 @@ modules['bundle'] = {code: function(module,exports){
 	            return;
 	        }
 	        model._commonBehaviour.forEach(function(cb){
-	            var module = {};
-	            module.exports = {};
-	            var exports = module.exports;
-	            behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
+	            var exports = model;
+	            behaviour.commonBehaviour[cb.name](exports,exports,exports,cb.parameters);
 	            exportsList.push(exports);
 	        });
 	        model.__updateCommonBehaviour__ = function(){
@@ -2074,6 +2112,7 @@ modules['renderable'] = {code: function(module,exports){
 	    self.width = 0;
 	    self.height = 0;
 	    var _tweenable = new Tweenable();
+	    self.onUpdate = function(){};
 	    self.fadeIn = function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
 	    };
@@ -3837,7 +3876,7 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	};
 }};
 
-modules['sceneManager'] = {code: function(module,exports){
+modules['game'] = {code: function(module,exports){
 	
 	var ResourceLoader = require('resourceLoader').ResourceLoader;
 	
@@ -3850,9 +3889,14 @@ modules['sceneManager'] = {code: function(module,exports){
 	    var progressScene;
 	
 	    this.currScene = null;
+	    var booted = false;
 	
 	    var bootEssentialResources = function(callBack){
 	
+	        if (booted) {
+	            callBack();
+	            return;
+	        }
 	        if (!bundle) bundle = require('bundle').instance();
 	
 	        var loader = new ResourceLoader();
@@ -4009,6 +4053,7 @@ modules['tween'] = {code: function(module,exports){
 	            var prp = propsToChange[l];
 	            obj[prp] = fromToVal.to[prp];
 	        }
+	        progressFn && progressFn(obj);
 	        this.completed = true;
 	    };
 	
@@ -5231,9 +5276,17 @@ modules['index'] = {code: function(module,exports){
 	        "width": 24,
 	        "height": 24,
 	        "type": "gameObject",
-	        "commonBehaviour": [],
+	        "commonBehaviour": [
+	            {
+	                "name": "draggable",
+	                "parameters": {},
+	                "description": "draggable behaviour with multitouch supporting",
+	                "id": "6711_2335_8",
+	                "type": "commonBehaviour"
+	            }
+	        ],
 	        "frameAnimationIds": [],
-	        "rigid": true,
+	        "rigid": 1,
 	        "groupName": "",
 	        "angle": 0,
 	        "alpha": 1,

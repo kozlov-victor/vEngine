@@ -35,7 +35,9 @@ var modules = {}, require = function(name){
 //
 //require('1');
 
-
+Array.prototype.remove = function(el){
+    this.splice(this.indexOf(el),1);
+};
 modules['class'] = {code: function(module,exports){
 	var Class = function() {};
 	
@@ -137,19 +139,19 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	
-	scripts.gameObject['coin.js'] = function(exports,self){
+	scripts.gameObject['coin.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	self._frameAnimations.get(0).play();
 	self.setFrameIndex(~~(Math.random()*10));
 	
-	function onUpdate(time) {
+	exports.onUpdate = function(time) {
 	    self.angle+=0.5;
-	}
-	    
-	    exports.onUpdate = onUpdate;
+	};
 	};
 	
-	scripts.gameObject['slotsColumn.js'] = function(exports,self){
+	scripts.gameObject['slotsColumn.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	var Sound = require('sound').Sound;
 	var TweenChain = require('tweenChain').TweenChain;
@@ -194,19 +196,20 @@ modules['behaviour'] = {code: function(module,exports){
 	    return lastN;
 	};
 	
-	    
-	    function onUpdate(){};
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	;
 	
 	
 	
-	scripts.scene['introScene.js'] = function(exports,self){
+	scripts.scene['introScene.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var Sound = require('sound').Sound;
+	var GameObject = require('gameObject').GameObject;
+	
+	var txtMoney = GameObject.find('txtMoney');
+	txtMoney.setText(localStorage.totalMoney||0);
 	
 	var introSnd = Sound.find('intro');
 	
@@ -214,18 +217,20 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	self.on('click',function(){
 	    introSnd.setGain(0.05,3000);
-	    sceneManager.setSceneByName('mainScene');
+	    game.setSceneByName('mainScene');
 	});
 	
-	
-	function onUpdate(time) {
-	
-	}
-	    
-	    exports.onUpdate = onUpdate;
+	exports.onShow = function(){
+	    introSnd.setGain(1,1000);    
 	};
 	
-	scripts.scene['mainScene.js'] = function(exports,self){
+	exports.onUpdate = function(time) {
+	
+	};
+	};
+	
+	scripts.scene['mainScene.js'] = function(exports){
+	    var module = exports, self = exports;
 	    var GameObject = require('gameObject').GameObject;
 	
 	var scoreLabel = GameObject.find('scoreLabel');
@@ -251,6 +256,8 @@ modules['behaviour'] = {code: function(module,exports){
 	var bet = 10;
 	var jackPot = +(localStorage.jackPot) || 1500;
 	var god = location && location.search.indexOf('god')>-1;
+	
+	var introSnd = Sound.find('intro');
 	
 	var spin = function(){
 	    if (!canSpin) return;
@@ -396,40 +403,47 @@ modules['behaviour'] = {code: function(module,exports){
 	    betLabel.setText(bet);
 	});
 	
+	GameObject.find('textBack').on('click',function(){
+	    require('game').instance().setSceneByName('introScene');
+	});
+	
 	
 	scoreLabel.setText(totalMoney);
 	betLabel.setText(bet);
 	jackPotLabel.setText(jackPot);
 	
 	
-	
-	
-	
-	
-	
-	
-	    
-	    function onUpdate(){};
-	    
-	    exports.onUpdate = onUpdate;
+	exports.onShow = function(){
+	    introSnd.setGain(0,1000);
 	};
 	
-	scripts.scene['progressScene.js'] = function(exports,self){
+	
+	
+	
+	
+	
+	
+	};
+	
+	scripts.scene['progressScene.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	var GameObject = require('gameObject').GameObject;
 	
 	var progressLabel = GameObject.find('progress');
 	
-	self.onProgress = function(pr){
+	exports.onProgress = function(pr){
 	    var txt = ~~(pr*100)+' %';
 	    progressLabel.setText(txt);
-	}
+	};
 	
-	function onUpdate(time) {
+	exports.onShow = function(){
 	
-	}
-	    
-	    exports.onUpdate = onUpdate;
+	};
+	
+	exports.onUpdate = function(time) {
+	
+	};
 	};
 	;
 	
@@ -441,7 +455,7 @@ modules['behaviour'] = {code: function(module,exports){
 modules['collider'] = {code: function(module,exports){
 	
 	var mathEx = require('mathEx');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	
 	var Collider = function(){
 	
@@ -449,7 +463,7 @@ modules['collider'] = {code: function(module,exports){
 	    var scene;
 	
 	    this.setUp = function(){
-	        scene = sceneManager.getCurrScene();
+	        scene = game.getCurrScene();
 	        gos = scene.getAllGameObjects();
 	    };
 	
@@ -642,7 +656,7 @@ modules['mouse'] = {code: function(module,exports){
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var mathEx = require('mathEx');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var device = require('device');
 	
 	var objectsCaptured = {};
@@ -694,7 +708,7 @@ modules['mouse'] = {code: function(module,exports){
 	    };
 	
 	    var triggerEvent = function(e,name){
-	        var scene = sceneManager.getCurrScene();
+	        var scene = game.getCurrScene();
 	        if (!scene) return;
 	        var point = resolveScreenPoint(e);
 	        scene._layers.someReversed(function(l){
@@ -811,8 +825,8 @@ modules['bundle'] = {code: function(module,exports){
 	    var applyIndividualBehaviour = function(model){
 	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
 	        if (behaviourFn) {
-	            var exports = {};
-	            behaviourFn(exports,model);
+	            var exports = model;
+	            behaviourFn(exports);
 	            model.__updateIndividualBehaviour__ = function(time){
 	                exports.onUpdate(time);
 	            }
@@ -830,10 +844,8 @@ modules['bundle'] = {code: function(module,exports){
 	            return;
 	        }
 	        model._commonBehaviour.forEach(function(cb){
-	            var module = {};
-	            module.exports = {};
-	            var exports = module.exports;
-	            behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
+	            var exports = model;
+	            behaviour.commonBehaviour[cb.name](exports,cb.parameters);
 	            exportsList.push(exports);
 	        });
 	        model.__updateCommonBehaviour__ = function(){
@@ -999,6 +1011,137 @@ modules['device'] = {code: function(module,exports){
 	};
 }};
 
+modules['game'] = {code: function(module,exports){
+	
+	var ResourceLoader = require('resourceLoader').ResourceLoader;
+	
+	var Game = function(){
+	
+	    var self = this;
+	
+	    var renderer;
+	    var bundle;
+	    var progressScene;
+	    var tweenMovies = [];
+	
+	    this.currScene = null;
+	    var booted = false;
+	
+	    var bootEssentialResources = function(callBack){
+	
+	        if (booted) {
+	            callBack();
+	            return;
+	        }
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            callBack();
+	        };
+	        if (bundle.gameProps.preloadingSceneId){
+	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
+	        }
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            progressScene.__onResourcesReady();
+	            progressScene.
+	                getAllSpriteSheets().
+	                asArray().
+	                forEach(function(spSheet){
+	                    loader.loadImage(spSheet.resourcePath);
+	                });
+	        }
+	        bundle.fontList.forEach(function(font){
+	            loader.loadImage(font.resourcePath);
+	        });
+	        loader.start();
+	    };
+	
+	    var preloadSceneAndSetIt = function(scene){
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            renderer.setScene(progressScene);
+	            bundle.applyBehaviourForScene(progressScene);
+	        }
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            self.currScene = scene;
+	            bundle.applyBehaviourForScene(scene);
+	            renderer.setScene(scene);
+	            scene.onShow();
+	        };
+	        loader.onProgress = function(e){
+	            progressScene &&
+	            progressScene.onProgress &&
+	            progressScene.onProgress(e);
+	        };
+	
+	        var allSprSheets = scene.getAllSpriteSheets();
+	
+	        bundle.particleSystemList.forEach(function(ps){
+	            allSprSheets.add(ps._gameObject._spriteSheet);
+	        });
+	        allSprSheets.asArray().forEach(function(spSheet){
+	            loader.loadImage(spSheet.resourcePath);
+	        });
+	        bundle.soundList.forEach(function(snd){
+	            loader.loadSound(snd.resourcePath,snd.name);
+	        });
+	        loader.start();
+	    };
+	
+	    this.setScene = function(scene){
+	        var Scene = require('scene').Scene;
+	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
+	        if (this.currScene==scene) return;
+	        bootEssentialResources(function(){
+	            preloadSceneAndSetIt(scene);
+	        });
+	    };
+	
+	    this.setSceneByName = function(sceneName){
+	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+	        var bundle = require('bundle').instance();
+	        var scene = bundle.sceneList.find({name: sceneName});
+	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
+	        self.setScene(scene);
+	    };
+	
+	    this.getCurrScene = function(){
+	        return this.currScene;
+	    };
+	
+	    this.addTweenMovie = function(tm) {
+	        tweenMovies.push(tm);
+	    };
+	
+	    this.update = function(currTime,deltaTime){
+	        tweenMovies.forEach(function(tweenMovie){
+	            if (tweenMovie.completed) {
+	                tweenMovies.remove(tweenMovie);
+	            }
+	            tweenMovie._update(currTime);
+	        });
+	    };
+	
+	};
+	
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Game();
+	    return instance;
+	};
+	
+}};
+
 modules['audioNode'] = {code: function(module,exports){
 	
 	var cache = require('resourceCache');
@@ -1090,7 +1233,7 @@ modules['audioPlayer'] = {code: function(module,exports){
 	    }
 	
 	    var audioNodeSet = new AudioNodeSet(Context,5);
-	    var tweenable = new Tweenable();
+	    var tweenable = new Tweenable({global:true});
 	
 	    this.loadSound = function( url, opts, progress, callback) {
 	        Context.load(url,opts,progress,callback);
@@ -2338,6 +2481,7 @@ modules['renderable'] = {code: function(module,exports){
 	    self.width = 0;
 	    self.height = 0;
 	    var _tweenable = new Tweenable();
+	    self.onUpdate = function(){};
 	    self.fadeIn = function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
 	    };
@@ -2388,14 +2532,14 @@ modules['tweenable'] = {code: function(module,exports){
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	
 	exports.Tweenable = BaseModel.extend({
+	    global: false,
 	    tween: function(objOrTween,fromToVal,tweenTime,easeFnName){
 	        var movie = new TweenMovie();
 	        var tween;
-	        console.log();
 	        if (objOrTween instanceof Tween) tween = objOrTween;
 	        else tween = new Tween(objOrTween,fromToVal,tweenTime,easeFnName);
 	        movie.tween(0,tween);
-	        movie.play();
+	        movie.play(this.global);
 	    }
 	});
 }};
@@ -2459,7 +2603,7 @@ modules['gameObject'] = {code: function(module,exports){
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
 	var utils = require('utils');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	
 	exports.GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -2542,10 +2686,10 @@ modules['gameObject'] = {code: function(module,exports){
 	    }
 	}, {
 	    find: function(name){
-	        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+	        return game.getCurrScene()._allGameObjects.find({name:name});
 	    },
 	    findAll: function(name) {
-	        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
+	        return game.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
 }};
@@ -2689,6 +2833,7 @@ modules['scene'] = {code: function(module,exports){
 	    _allGameObjects:null,
 	    useBG:false,
 	    colorBG:[255,255,255],
+	    onShow: function(){},
 	    _tweenMovies:null,
 	    __onResourcesReady: function(){
 	        var self = this;
@@ -2721,6 +2866,9 @@ modules['scene'] = {code: function(module,exports){
 	            self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
 	        }
 	    },
+	    addTweenMovie: function(tm){
+	        this._tweenMovies.push(tm);
+	    },
 	    getAllSpriteSheets:function() {
 	        var dataSet = new collections.Set();
 	        this._layers.forEach(function(l){
@@ -2745,7 +2893,7 @@ modules['scene'] = {code: function(module,exports){
 	        }
 	        self._tweenMovies.forEach(function(tweenMovie){
 	            if (tweenMovie.completed) {
-	                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
+	                self._tweenMovies.remove(tweenMovie);
 	            }
 	            tweenMovie._update(currTime);
 	        });
@@ -3170,6 +3318,7 @@ modules['renderer'] = {code: function(module,exports){
 	var canvasContext = require('canvasContext').instance();
 	var resourceCache = require('resourceCache');
 	var camera = require('camera').instance();
+	var game = require('game').instance();
 	
 	var Renderer = function(){
 	
@@ -3235,6 +3384,7 @@ modules['renderer'] = {code: function(module,exports){
 	        ctx.beginFrameBuffer();
 	        ctx.clear();
 	
+	        game.update(currTime);
 	        camera.update(ctx);
 	        scene.update(currTime,deltaTime);
 	        bundle.particleSystemList.forEach(function(p){
@@ -4101,122 +4251,6 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	};
 }};
 
-modules['sceneManager'] = {code: function(module,exports){
-	
-	var ResourceLoader = require('resourceLoader').ResourceLoader;
-	
-	var SceneManager = function(){
-	
-	    var self = this;
-	
-	    var renderer;
-	    var bundle;
-	    var progressScene;
-	
-	    this.currScene = null;
-	    var booted = false;
-	
-	    var bootEssentialResources = function(callBack){
-	
-	        if (booted) {
-	            callBack();
-	            return;
-	        }
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            callBack();
-	        };
-	        if (bundle.gameProps.preloadingSceneId){
-	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
-	        }
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            progressScene.__onResourcesReady();
-	            progressScene.
-	                getAllSpriteSheets().
-	                asArray().
-	                forEach(function(spSheet){
-	                    loader.loadImage(spSheet.resourcePath);
-	                });
-	        }
-	        bundle.fontList.forEach(function(font){
-	            loader.loadImage(font.resourcePath);
-	        });
-	        loader.start();
-	    };
-	
-	    var preloadSceneAndSetIt = function(scene){
-	
-	        if (!renderer) renderer = require('renderer').instance();
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            renderer.setScene(progressScene);
-	            bundle.applyBehaviourForScene(progressScene);
-	        }
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            self.currScene = scene;
-	            bundle.applyBehaviourForScene(scene);
-	            renderer.setScene(scene);
-	        };
-	        loader.onProgress = function(e){
-	            progressScene &&
-	            progressScene.onProgress &&
-	            progressScene.onProgress(e);
-	        };
-	
-	        var allSprSheets = scene.getAllSpriteSheets();
-	
-	        bundle.particleSystemList.forEach(function(ps){
-	            allSprSheets.add(ps._gameObject._spriteSheet);
-	        });
-	        allSprSheets.asArray().forEach(function(spSheet){
-	            loader.loadImage(spSheet.resourcePath);
-	        });
-	        bundle.soundList.forEach(function(snd){
-	            loader.loadSound(snd.resourcePath,snd.name);
-	        });
-	        loader.start();
-	    };
-	
-	    this.setScene = function(scene){
-	        var Scene = require('scene').Scene;
-	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
-	        if (this.currScene==scene) return;
-	        bootEssentialResources(function(){
-	            preloadSceneAndSetIt(scene);
-	        });
-	    };
-	
-	    this.setSceneByName = function(sceneName){
-	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-	        var bundle = require('bundle').instance();
-	        var scene = bundle.sceneList.find({name: sceneName});
-	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
-	        self.setScene(scene);
-	    };
-	
-	    this.getCurrScene = function(){
-	        return this.currScene;
-	    }
-	
-	};
-	
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new SceneManager();
-	    return instance;
-	};
-	
-}};
-
 modules['tween'] = {code: function(module,exports){
 	
 	
@@ -4262,7 +4296,7 @@ modules['tween'] = {code: function(module,exports){
 	
 	    };
 	
-	    this.progress = function(_progressFn){ // todo remane to onProgress?
+	    this.progress = function(_progressFn){
 	        progressFn = _progressFn;
 	    };
 	
@@ -4278,6 +4312,7 @@ modules['tween'] = {code: function(module,exports){
 	            var prp = propsToChange[l];
 	            obj[prp] = fromToVal.to[prp];
 	        }
+	        progressFn && progressFn(obj);
 	        this.completed = true;
 	    };
 	
@@ -4289,7 +4324,6 @@ modules['tweenChain'] = {code: function(module,exports){
 	
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	var Tween = require('tween').Tween;
-	var sceneManager = require('sceneManager').instance();
 	
 	exports.TweenChain = function(){
 	    var timeOffset = 0;
@@ -4332,7 +4366,7 @@ modules['tweenChain'] = {code: function(module,exports){
 
 modules['tweenMovie'] = {code: function(module,exports){
 	
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var Tween = require('tween').Tween;
 	
 	exports.TweenMovie = function(){
@@ -4363,9 +4397,13 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        return this;
 	    };
 	
-	    this.play = function(){
-	        var scene = sceneManager.getCurrScene();
-	        scene._tweenMovies.push(this);
+	    this.play = function(isGlobal){
+	        if (isGlobal) {
+	            game.addTweenMovie(this);
+	        } else {
+	            var scene = game.getCurrScene();
+	            scene.addTweenMovie(this);
+	        }
 	    };
 	
 	    this._update = function(time){
@@ -6889,6 +6927,28 @@ modules['index'] = {code: function(module,exports){
 	                "protoId": null,
 	                "id": "5858_5431_5",
 	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "pos": {
+	                    "x": 259,
+	                    "y": 136
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 36,
+	                "text": "<<<",
+	                "width": 45,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "name": "textBack",
+	                "protoId": null,
+	                "id": "3678_7561_6",
+	                "fontId": "0265_1797_64"
 	            }
 	        ],
 	        "id": "0679_1823_35"
@@ -7041,6 +7101,50 @@ modules['index'] = {code: function(module,exports){
 	                "alpha": 1,
 	                "protoId": "6542_0984_36",
 	                "id": "5056_3944_156"
+	            },
+	            {
+	                "pos": {
+	                    "x": 15,
+	                    "y": 162
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 29,
+	                "text": "money:",
+	                "width": 90,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "name": "textField2",
+	                "protoId": null,
+	                "id": "3127_9759_4",
+	                "fontId": "6991_3497_4"
+	            },
+	            {
+	                "pos": {
+	                    "x": 124,
+	                    "y": 157
+	                },
+	                "scale": {
+	                    "x": 1,
+	                    "y": 1
+	                },
+	                "height": 36,
+	                "text": "",
+	                "width": 0,
+	                "type": "userInterface",
+	                "subType": "textField",
+	                "groupName": "",
+	                "angle": 0,
+	                "alpha": 1,
+	                "name": "txtMoney",
+	                "protoId": null,
+	                "id": "5198_2468_5",
+	                "fontId": "0265_1797_64"
 	            }
 	        ],
 	        "id": "0843_0759_152"
@@ -7180,7 +7284,7 @@ modules['index'] = {code: function(module,exports){
 	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 	
 	var renderer = require('renderer').instance();
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var keyboard = require('keyboard').instance();
 	
 	
@@ -7193,7 +7297,7 @@ modules['index'] = {code: function(module,exports){
 	    renderer.init();
 	    require('mouse').instance();
 	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
-	    sceneManager.setScene(startScene);
+	    game.setScene(startScene);
 	});
 }};
 

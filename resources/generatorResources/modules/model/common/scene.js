@@ -18,6 +18,7 @@ exports.Scene = Renderable.extend({
     _allGameObjects:null,
     useBG:false,
     colorBG:[255,255,255],
+    onShow: function(){},
     _tweenMovies:null,
     __onResourcesReady: function(){
         var self = this;
@@ -50,6 +51,9 @@ exports.Scene = Renderable.extend({
             self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
         }
     },
+    addTweenMovie: function(tm){
+        this._tweenMovies.push(tm);
+    },
     getAllSpriteSheets:function() {
         var dataSet = new collections.Set();
         this._layers.forEach(function(l){
@@ -74,7 +78,7 @@ exports.Scene = Renderable.extend({
         }
         self._tweenMovies.forEach(function(tweenMovie){
             if (tweenMovie.completed) {
-                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
+                self._tweenMovies.remove(tweenMovie);
             }
             tweenMovie._update(currTime);
         });

@@ -21,7 +21,7 @@ var AudioPlayer = function(){
     }
 
     var audioNodeSet = new AudioNodeSet(Context,5);
-    var tweenable = new Tweenable();
+    var tweenable = new Tweenable({global:true});
 
     this.loadSound = function( url, opts, progress, callback) {
         Context.load(url,opts,progress,callback);

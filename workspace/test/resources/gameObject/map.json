@@ -18,9 +18,17 @@
         "width": 24,
         "height": 24,
         "type": "gameObject",
-        "commonBehaviour": [],
+        "commonBehaviour": [
+            {
+                "name": "draggable",
+                "parameters": {},
+                "description": "draggable behaviour with multitouch supporting",
+                "id": "6711_2335_8",
+                "type": "commonBehaviour"
+            }
+        ],
         "frameAnimationIds": [],
-        "rigid": true,
+        "rigid": 1,
         "groupName": "",
         "angle": 0,
         "alpha": 1,

@@ -14,7 +14,7 @@ bundle.prepare(data);
 if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 //<code><%}%>
 var renderer = require('renderer').instance();
-var sceneManager = require('sceneManager').instance();
+var game = require('game').instance();
 var keyboard = require('keyboard').instance();
 
 
@@ -27,5 +27,5 @@ window.addEventListener('load',function(){
     renderer.init();
     require('mouse').instance();
     var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
-    sceneManager.setScene(startScene);
+    game.setScene(startScene);
 });

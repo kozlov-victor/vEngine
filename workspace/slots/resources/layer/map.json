@@ -252,6 +252,28 @@
                 "protoId": null,
                 "id": "5858_5431_5",
                 "fontId": "6991_3497_4"
+            },
+            {
+                "pos": {
+                    "x": 259,
+                    "y": 136
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 36,
+                "text": "<<<",
+                "width": 45,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "name": "textBack",
+                "protoId": null,
+                "id": "3678_7561_6",
+                "fontId": "0265_1797_64"
             }
         ],
         "id": "0679_1823_35"
@@ -404,6 +426,50 @@
                 "alpha": 1,
                 "protoId": "6542_0984_36",
                 "id": "5056_3944_156"
+            },
+            {
+                "pos": {
+                    "x": 15,
+                    "y": 162
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 29,
+                "text": "money:",
+                "width": 90,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "name": "textField2",
+                "protoId": null,
+                "id": "3127_9759_4",
+                "fontId": "6991_3497_4"
+            },
+            {
+                "pos": {
+                    "x": 124,
+                    "y": 157
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 36,
+                "text": "",
+                "width": 0,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "name": "txtMoney",
+                "protoId": null,
+                "id": "5198_2468_5",
+                "fontId": "0265_1797_64"
             }
         ],
         "id": "0843_0759_152"

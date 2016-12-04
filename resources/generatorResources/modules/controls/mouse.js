@@ -2,7 +2,7 @@
 var bundle = require('bundle').instance();
 var renderer = require('renderer').instance();
 var mathEx = require('mathEx');
-var sceneManager = require('sceneManager').instance();
+var game = require('game').instance();
 var device = require('device');
 
 var objectsCaptured = {};
@@ -54,7 +54,7 @@ var Mouse = function(){
     };
 
     var triggerEvent = function(e,name){
-        var scene = sceneManager.getCurrScene();
+        var scene = game.getCurrScene();
         if (!scene) return;
         var point = resolveScreenPoint(e);
         scene._layers.someReversed(function(l){

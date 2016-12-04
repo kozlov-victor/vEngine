@@ -24,6 +24,8 @@ var bet = 10;
 var jackPot = +(localStorage.jackPot) || 1500;
 var god = location && location.search.indexOf('god')>-1;
 
+var introSnd = Sound.find('intro');
+
 var spin = function(){
     if (!canSpin) return;
     if (!totalMoney) return;
@@ -168,11 +170,19 @@ betLabel.on('click',function(){
     betLabel.setText(bet);
 });
 
+GameObject.find('textBack').on('click',function(){
+    require('game').instance().setSceneByName('introScene');
+});
+
 
 scoreLabel.setText(totalMoney);
 betLabel.setText(bet);
 jackPotLabel.setText(jackPot);
 
+
+exports.onShow = function(){
+    introSnd.setGain(0,1000);
+};
 
 
 
