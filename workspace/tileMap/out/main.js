@@ -35,13 +35,16 @@ var modules = {}, require = function(name){
 //
 //require('1');
 
-
+Array.prototype.remove = function(el){
+    this.splice(this.indexOf(el),1);
+};
 modules['class'] = {code: function(module,exports){
 	var Class = function() {};
 	
 	Class.extend = function(props, staticProps) {
 	
 	    var mixins = [];
+	    var firstArg = {};
 	
 	    if (arguments[0].slice) {
 	        mixins = arguments[0];
@@ -49,13 +52,14 @@ modules['class'] = {code: function(module,exports){
 	        staticProps = arguments[2];
 	    } else if (arguments[0].call) {
 	        var obj = {};
+	        firstArg.obj = obj;
+	        firstArg.fn = props;
 	        props(obj);
 	        props = obj;
 	    }
 	
-	    if (staticProps && staticProps.call) staticProps = staticProps();
-	
 	    function Instance() {
+	        firstArg.fn && firstArg.fn(firstArg.obj);
 	        this._init && this._init.apply(this, arguments);
 	        this.construct && this.construct();
 	    }
@@ -126,7 +130,8 @@ modules['behaviour'] = {code: function(module,exports){
 	var commonBehaviour = {};
 	
 	
-	commonBehaviour['control4dir'] = function(module,exports,self,parameters){
+	commonBehaviour['control4dir'] = function(exports,parameters){
+	var module = exports,self = exports;
 	/**
 	 exports.parameters = {
 	    velocity: 100,
@@ -194,11 +199,10 @@ modules['behaviour'] = {code: function(module,exports){
 	        _stop('Down');
 	    }
 	}
-	
-	    exports.onUpdate = onUpdate;
 	}
 	
-	commonBehaviour['draggable'] = function(module,exports,self,parameters){
+	commonBehaviour['draggable'] = function(exports,parameters){
+	var module = exports,self = exports;
 	/**
 	 *
 	 exports.parameters =  {};
@@ -236,10 +240,6 @@ modules['behaviour'] = {code: function(module,exports){
 	scene.on('mouseUp',function(e){
 	    delete points[getEventId(e)];
 	});
-	
-	function onUpdate(){};
-	
-	    exports.onUpdate = onUpdate;
 	}
 	
 	
@@ -251,27 +251,26 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	
-	scripts.gameObject['btn.js'] = function(exports,self){
+	scripts.gameObject['btn.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	
 	
 	function onUpdate(time) {
 	
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	
-	scripts.gameObject['btn2.js'] = function(exports,self){
+	scripts.gameObject['btn2.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	function onUpdate(time) {
 	
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	
-	scripts.gameObject['hero.js'] = function(exports,self){
+	scripts.gameObject['hero.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	require('camera').instance().follow(self);
 	var ps = require('bundle').instance().particleSystemList.find({name:'test'});
@@ -280,41 +279,37 @@ modules['behaviour'] = {code: function(module,exports){
 	var onUpdate = function(){
 	   
 	};
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	
-	scripts.gameObject['imgWall.js'] = function(exports,self){
+	scripts.gameObject['imgWall.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	function onUpdate(time) {
 	
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	
-	scripts.gameObject['sprHeroes.js'] = function(exports,self){
+	scripts.gameObject['sprHeroes.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	function onUpdate(time) {
 	
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	
-	scripts.gameObject['wall.js'] = function(exports,self){
+	scripts.gameObject['wall.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	function onUpdate(time) {
 	
 	}
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	;
 	
 	
 	
-	scripts.scene['mainScene.js'] = function(exports,self){
+	scripts.scene['mainScene.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	var GameObject = require('gameObject').GameObject;
 	
@@ -327,6 +322,7 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	btnUp.
 	on(['mouseDown','mouseEnter'],function(){
+	    console.log('btn up!')
 	    keyboard.emulatePress(keyboard.KEY_UP);
 	}).
 	on(['mouseUp','mouseLeave'],function(){
@@ -357,10 +353,6 @@ modules['behaviour'] = {code: function(module,exports){
 	    keyboard.emulateRelease(keyboard.KEY_RIGHT);  
 	});
 	
-	    
-	    function onUpdate(){};
-	    
-	    exports.onUpdate = onUpdate;
 	};
 	;
 	
@@ -372,7 +364,7 @@ modules['behaviour'] = {code: function(module,exports){
 modules['collider'] = {code: function(module,exports){
 	
 	var mathEx = require('mathEx');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	
 	var Collider = function(){
 	
@@ -380,7 +372,7 @@ modules['collider'] = {code: function(module,exports){
 	    var scene;
 	
 	    this.setUp = function(){
-	        scene = sceneManager.getCurrScene();
+	        scene = game.getCurrScene();
 	        gos = scene.getAllGameObjects();
 	    };
 	
@@ -573,7 +565,7 @@ modules['mouse'] = {code: function(module,exports){
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var mathEx = require('mathEx');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var device = require('device');
 	
 	var objectsCaptured = {};
@@ -625,7 +617,7 @@ modules['mouse'] = {code: function(module,exports){
 	    };
 	
 	    var triggerEvent = function(e,name){
-	        var scene = sceneManager.getCurrScene();
+	        var scene = game.getCurrScene();
 	        if (!scene) return;
 	        var point = resolveScreenPoint(e);
 	        scene._layers.someReversed(function(l){
@@ -742,8 +734,8 @@ modules['bundle'] = {code: function(module,exports){
 	    var applyIndividualBehaviour = function(model){
 	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
 	        if (behaviourFn) {
-	            var exports = {};
-	            behaviourFn(exports,model);
+	            var exports = model;
+	            behaviourFn(exports);
 	            model.__updateIndividualBehaviour__ = function(time){
 	                exports.onUpdate(time);
 	            }
@@ -755,17 +747,14 @@ modules['bundle'] = {code: function(module,exports){
 	
 	    var applyCommonBehaviour = function(model){
 	
-	        if (behaviour.fake) return; // this is editor mode
 	        var exportsList = [];
 	        if (!model._commonBehaviour || !model._commonBehaviour.size()) {
 	            model.__updateCommonBehaviour__ = consts.noop;
 	            return;
 	        }
 	        model._commonBehaviour.forEach(function(cb){
-	            var module = {};
-	            module.exports = {};
-	            var exports = module.exports;
-	            behaviour.commonBehaviour[cb.name](module,exports,model,cb.parameters);
+	            var exports = model;
+	            behaviour.commonBehaviour[cb.name](exports,cb.parameters);
 	            exportsList.push(exports);
 	        });
 	        model.__updateCommonBehaviour__ = function(){
@@ -775,16 +764,16 @@ modules['bundle'] = {code: function(module,exports){
 	        }
 	    };
 	
-	    this.applyBehaviourAll = function(){
-	        self.sceneList.forEach(function(scene){
-	            scene.__onResourcesReady();
-	            self.applyBehaviour(scene);
-	            scene._layers.forEach(function(layer){
-	                layer._gameObjects.forEach(function(gameObject){
-	                    self.applyBehaviour(gameObject);
-	                });
+	    this.applyBehaviourForScene = function(scene){
+	        if (scene.__applied) return;
+	        scene.__onResourcesReady();
+	        self.applyBehaviour(scene);
+	        scene._layers.forEach(function(layer){
+	            layer._gameObjects.forEach(function(gameObject){
+	                self.applyBehaviour(gameObject);
 	            });
 	        });
+	        scene.__applied = true;
 	    };
 	
 	    this.applyBehaviour = function(model){
@@ -854,7 +843,7 @@ modules['resourceLoader'] = {code: function(module,exports){
 	    var renderer = require('renderer').instance();
 	    var bundle = require('bundle').instance();
 	    var cache = require('resourceCache');
-	    var soundManager = require('soundManager').instance();
+	    var audioPlayer = require('audioPlayer').instance();
 	
 	    var q = new Queue();
 	    q.onResolved = function(){
@@ -891,14 +880,14 @@ modules['resourceLoader'] = {code: function(module,exports){
 	            var path = bundle.embeddedResources.isEmbedded?
 	                bundle.embeddedResources.data[resourcePath]:
 	                resourcePath;
-	            soundManager.loadSound(
+	            audioPlayer.loadSound(
 	                path,
 	                {type:bundle.embeddedResources.isEmbedded?'base64':''},
 	                function(resourcePath,progress){
 	                    q.progressTask(resourcePath,progress);
 	                },
 	                function(buffer){
-	                    cache.set(name,buffer);
+	                    cache.set(resourcePath,buffer);
 	                    q.resolveTask(resourcePath);
 	                }
 	            );
@@ -931,28 +920,169 @@ modules['device'] = {code: function(module,exports){
 	};
 }};
 
-modules['audioPlayer'] = {code: function(module,exports){
+modules['game'] = {code: function(module,exports){
 	
-	exports.AudioPlayer = function(context){
+	var ResourceLoader = require('resourceLoader').ResourceLoader;
 	
-	    var currLoop = false;
+	var Game = function(){
+	
+	    var self = this;
+	
+	    var renderer;
+	    var bundle;
+	    var progressScene;
+	    var tweenMovies = [];
+	
+	    this.currScene = null;
+	    var booted = false;
+	
+	    var bootEssentialResources = function(callBack){
+	
+	        if (booted) {
+	            callBack();
+	            return;
+	        }
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            callBack();
+	        };
+	        if (bundle.gameProps.preloadingSceneId){
+	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
+	        }
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            progressScene.__onResourcesReady();
+	            progressScene.
+	                getAllSpriteSheets().
+	                asArray().
+	                forEach(function(spSheet){
+	                    loader.loadImage(spSheet.resourcePath);
+	                });
+	        }
+	        bundle.fontList.forEach(function(font){
+	            loader.loadImage(font.resourcePath);
+	        });
+	        loader.start();
+	    };
+	
+	    var preloadSceneAndSetIt = function(scene){
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            renderer.setScene(progressScene);
+	            bundle.applyBehaviourForScene(progressScene);
+	        }
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            self.currScene = scene;
+	            bundle.applyBehaviourForScene(scene);
+	            renderer.setScene(scene);
+	            scene.onShow();
+	        };
+	        loader.onProgress = function(e){
+	            progressScene &&
+	            progressScene.onProgress &&
+	            progressScene.onProgress(e);
+	        };
+	
+	        var allSprSheets = scene.getAllSpriteSheets();
+	
+	        bundle.particleSystemList.forEach(function(ps){
+	            allSprSheets.add(ps._gameObject._spriteSheet);
+	        });
+	        allSprSheets.asArray().forEach(function(spSheet){
+	            loader.loadImage(spSheet.resourcePath);
+	        });
+	        bundle.soundList.forEach(function(snd){
+	            loader.loadSound(snd.resourcePath,snd.name);
+	        });
+	        loader.start();
+	    };
+	
+	    this.setScene = function(scene){
+	        var Scene = require('scene').Scene;
+	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
+	        if (this.currScene==scene) return;
+	        bootEssentialResources(function(){
+	            preloadSceneAndSetIt(scene);
+	        });
+	    };
+	
+	    this.setSceneByName = function(sceneName){
+	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+	        var bundle = require('bundle').instance();
+	        var scene = bundle.sceneList.find({name: sceneName});
+	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
+	        self.setScene(scene);
+	    };
+	
+	    this.getCurrScene = function(){
+	        return this.currScene;
+	    };
+	
+	    this.addTweenMovie = function(tm) {
+	        tweenMovies.push(tm);
+	    };
+	
+	    this.update = function(currTime,deltaTime){
+	        tweenMovies.forEach(function(tweenMovie){
+	            if (tweenMovie.completed) {
+	                tweenMovies.remove(tweenMovie);
+	            }
+	            tweenMovie._update(currTime);
+	        });
+	    };
+	
+	};
+	
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Game();
+	    return instance;
+	};
+	
+}};
+
+modules['audioNode'] = {code: function(module,exports){
+	
+	var cache = require('resourceCache');
+	
+	exports.AudioNode = function(context){
+	
+	    var currSound = null;
 	
 	    this.setGain = function(){
 	
 	    };
 	
-	    this.play = function(buffer,loop){
-	        currLoop = loop;
-	        context.play(buffer,loop);
+	    this.play = function(sound){
+	        currSound = sound;
+	        context.play(cache.get(sound.resourcePath),sound._loop);
 	    };
 	
 	    this.stop = function() {
 	        context.stop();
-	        currLoop = false;
+	        currSound = null;
+	    };
+	
+	    this.setGain = function(val){
+	        context.setGain(val);
 	    };
 	
 	    this.isFree = function() {
-	        return context.free;
+	        return context.isFree();
+	    };
+	
+	    this.getCurrSound = function(){
+	        return currSound;
 	    }
 	
 	};
@@ -961,23 +1091,105 @@ modules['audioPlayer'] = {code: function(module,exports){
 	
 }};
 
-modules['audioSet'] = {code: function(module,exports){
+modules['audioNodeSet'] = {code: function(module,exports){
 	
-	var AudioPlayer = require('audioPlayer').AudioPlayer;
+	var AudioNode = require('audioNode').AudioNode;
 	
-	exports.AudioSet = function(Context,numOfPlayers){
-	    var players = [];
-	    for (var i = 0;i<numOfPlayers;i++) {
-	        players.push(new AudioPlayer(new Context()));
+	exports.AudioNodeSet = function(Context,numOfNodes){
+	    var nodes = [];
+	    for (var i = 0;i<numOfNodes;i++) {
+	        nodes.push(new AudioNode(new Context()));
 	    }
 	
-	    this.getFreePlayer = function(){
-	        for (var i = 0;i<numOfPlayers;i++) {
-	            if (players[i].isFree()) return players[i];
+	    this.getFreeNode = function(){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            if (nodes[i].isFree()) return nodes[i];
+	        }
+	        return null;
+	    };
+	
+	    this.stopAll = function(){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            nodes[i].stop();
+	        }
+	    };
+	
+	    this.getNodeBySound = function(sound){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            if (nodes[i].getCurrSound()==sound) return nodes[i];
 	        }
 	        return null;
 	    }
 	
+	};
+}};
+
+modules['audioPlayer'] = {code: function(module,exports){
+	
+	var bundle = require('bundle').instance();
+	var AudioNodeSet = require('audioNodeSet').AudioNodeSet;
+	var cache = require('resourceCache');
+	var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
+	var WebAudioContext = require('webAudioContext').WebAudioContext;
+	var FakeAudioContext = require('fakeAudioContext').FakeAudioContext;
+	var Tweenable = require('tweenable').Tweenable;
+	var Tween = require('tween').Tween;
+	
+	var Context  = null;
+	
+	var AudioPlayer = function(){
+	
+	    if (WebAudioContext.isAcceptable()) {
+	        Context = WebAudioContext;
+	    } else if (HtmlAudioContext.isAcceptable()) {
+	        Context = HtmlAudioContext;
+	    } else {
+	        Context = FakeAudioContext;
+	    }
+	
+	    var audioNodeSet = new AudioNodeSet(Context,5);
+	    var tweenable = new Tweenable({global:true});
+	
+	    this.loadSound = function( url, opts, progress, callback) {
+	        Context.load(url,opts,progress,callback);
+	    };
+	
+	    this.play = function(sound){
+	        var node = audioNodeSet.getFreeNode();
+	        if (!node) return;
+	        node.play(sound);
+	    };
+	
+	    this.stop = function(sound){
+	        var node = audioNodeSet.getNodeBySound(sound);
+	        if (!node) return;
+	        node.stop();
+	    };
+	
+	    this.stopAll = function(){
+	        audioNodeSet.stopAll();
+	    };
+	
+	    this.setGain = function(sound,toVal,time,easeFnName){
+	        var node = audioNodeSet.getNodeBySound(sound);
+	        if (!node) return;
+	        if (time) {
+	            var tween = new Tween(sound,{to:{_gain:toVal}},time,easeFnName);
+	            tween.progress(function(s){
+	                node.setGain(s._gain);
+	            });
+	            tweenable.tween(tween);
+	        } else {
+	            sound._gain = val;
+	            node.setGain(sound._gain);
+	        }
+	    };
+	};
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new AudioPlayer();
+	    return instance;
 	};
 }};
 
@@ -986,11 +1198,16 @@ modules['fakeAudioContext'] = {code: function(module,exports){
 	exports.FakeAudioContext = require('class').Class.extend(
 	    {
 	        type:'fakeAudioContext',
-	        free:true,
 	        play: function(buffer,loop){
 	
 	        },
 	        stop: function(){
+	
+	        },
+	        isFree: function(){
+	            return false;
+	        },
+	        setGain: function(val){
 	
 	        },
 	        construct: function(){
@@ -1024,6 +1241,9 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 	    {
 	        type:'htmlAudioContext',
 	        free:true,
+	        isFree: function(){
+	           return this.free;
+	        },
 	        play: function(buffer,loop){
 	            var self = this;
 	            self.free = false;
@@ -1037,9 +1257,11 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 	        stop: function(){
 	            this.free = true;
 	        },
+	        setGain: function(val){
+	            this._ctx.volume = val;
+	        },
 	        construct: function(){
 	            this._ctx = getCtx();
-	            console.log('htmlAudio');
 	        }
 	    },
 	    {
@@ -1064,6 +1286,7 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 modules['webAudioContext'] = {code: function(module,exports){
 	
 	var utils = require('utils');
+	var cache = require('resourceCache');
 	
 	var getCtx = (function(){
 	    var ctx = window.AudioContext || window.webkitAudioContext;
@@ -1091,14 +1314,18 @@ modules['webAudioContext'] = {code: function(module,exports){
 	        type:'webAudioContext',
 	        _ctx:null,
 	        _currSource: null,
-	        free:true,
+	        _gainNode:null,
+	        _free:true,
+	        isFree: function(){
+	            return this._free;
+	        },
 	        play: function(buffer,loop){
 	            var self = this;
-	            self.free = false;
+	            self._free = false;
 	            var currSource = self._ctx.createBufferSource();
 	            currSource.buffer = buffer;
 	            currSource.loop = loop;
-	            currSource.connect(self._ctx.destination);
+	            currSource.connect(self._gainNode);
 	            currSource.start(0);
 	            currSource.onended = function(){
 	                self.stop();
@@ -1109,14 +1336,19 @@ modules['webAudioContext'] = {code: function(module,exports){
 	            var currSource = this._currSource;
 	            if (currSource)  {
 	                currSource.stop();
-	                currSource.disconnect(this._ctx.destination);
+	                currSource.disconnect(this._gainNode);
 	            }
 	            this._currSource = null;
-	            this.free = true;
+	            this._free = true;
+	        },
+	        setGain: function(val){
+	            this._gainNode.gain.value = val;
+	
 	        },
 	        construct: function(){
 	            this._ctx = getCtx();
-	            console.log('webAudio');
+	            this._gainNode = this._ctx.createGain();
+	            this._gainNode.connect(this._ctx.destination);
 	        }
 	    },
 	    {
@@ -1136,47 +1368,6 @@ modules['webAudioContext'] = {code: function(module,exports){
 	        }
 	    }
 	);
-}};
-
-modules['soundManager'] = {code: function(module,exports){
-	
-	var bundle = require('bundle').instance();
-	var AudioSet = require('audioSet').AudioSet;
-	var cache = require('resourceCache');
-	var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
-	var WebAudioContext = require('webAudioContext').WebAudioContext;
-	var FakeAudioContext = require('fakeAudioContext').FakeAudioContext;
-	
-	var Context  = null;
-	
-	var SoundManager = function(){
-	
-	    if (WebAudioContext.isAcceptable()) {
-	        Context = WebAudioContext;
-	    } else if (HtmlAudioContext.isAcceptable()) {
-	        Context = HtmlAudioContext;
-	    } else {
-	        Context = FakeAudioContext;
-	    }
-	
-	    var audioSet = new AudioSet(Context,5);
-	
-	    this.loadSound = function( url, opts, progress, callback) {
-	        Context.load(url,opts,progress,callback);
-	    };
-	
-	    this.play = function(sndName,loop){
-	        var player = audioSet.getFreePlayer();
-	        if (!player) return;
-	        player.play(cache.get(sndName),loop);
-	    }
-	};
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new SoundManager();
-	    return instance;
-	};
 }};
 
 modules['base64'] = {code: function(module,exports){
@@ -1923,6 +2114,8 @@ modules['utils'] = {code: function(module,exports){
 	    var ext = fileName.split('.').pop();
 	    return 'data:'+fileType+'/'+ext+';base64,'
 	};
+	
+	
 	exports.loadBinary = function(url,progress,callBack) {
 	    var request = new XMLHttpRequest();
 	    request.open('GET', url, true);
@@ -2066,7 +2259,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        this._layer._scene._allGameObjects.remove({id:this.id});
 	    },
 	    getScene: function(){
-	        return require('sceneManager').instance().getCurrScene();
+	        return require('game').instance().getCurrScene();
 	    },
 	    moveTo:function(x,y,time,easeFnName){
 	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
@@ -2207,6 +2400,7 @@ modules['renderable'] = {code: function(module,exports){
 	    self.width = 0;
 	    self.height = 0;
 	    var _tweenable = new Tweenable();
+	    self.onUpdate = function(){};
 	    self.fadeIn = function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
 	    };
@@ -2253,15 +2447,18 @@ modules['resource'] = {code: function(module,exports){
 modules['tweenable'] = {code: function(module,exports){
 	
 	var BaseModel = require('baseModel').BaseModel;
-	var tweenModule = require('tween');
-	var tweenMovieModule = require('tweenMovie');
+	var Tween = require('tween').Tween;
+	var TweenMovie = require('tweenMovie').TweenMovie;
 	
 	exports.Tweenable = BaseModel.extend({
-	    tween: function(obj,fromToVal,tweenTime,easeFnName){
-	        var movie = new tweenMovieModule.TweenMovie();
-	        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+	    global: false,
+	    tween: function(objOrTween,fromToVal,tweenTime,easeFnName){
+	        var movie = new TweenMovie();
+	        var tween;
+	        if (objOrTween instanceof Tween) tween = objOrTween;
+	        else tween = new Tween(objOrTween,fromToVal,tweenTime,easeFnName);
 	        movie.tween(0,tween);
-	        movie.play();
+	        movie.play(this.global);
 	    }
 	});
 }};
@@ -2325,7 +2522,7 @@ modules['gameObject'] = {code: function(module,exports){
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
 	var utils = require('utils');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	
 	exports.GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -2382,6 +2579,7 @@ modules['gameObject'] = {code: function(module,exports){
 	        var self = this;
 	        self._super(time,delta);
 	        self._currFrameAnimation && this._currFrameAnimation.update(time);
+	        if (!self.__updateIndividualBehaviour__) console.log('fail',self);
 	        self.__updateIndividualBehaviour__(delta);
 	        self.__updateCommonBehaviour__();
 	        self._render();
@@ -2407,10 +2605,10 @@ modules['gameObject'] = {code: function(module,exports){
 	    }
 	}, {
 	    find: function(name){
-	        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+	        return game.getCurrScene()._allGameObjects.find({name:name});
 	    },
 	    findAll: function(name) {
-	        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
+	        return game.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
 }};
@@ -2554,6 +2752,7 @@ modules['scene'] = {code: function(module,exports){
 	    _allGameObjects:null,
 	    useBG:false,
 	    colorBG:[255,255,255],
+	    onShow: function(){},
 	    _tweenMovies:null,
 	    __onResourcesReady: function(){
 	        var self = this;
@@ -2586,6 +2785,9 @@ modules['scene'] = {code: function(module,exports){
 	            self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
 	        }
 	    },
+	    addTweenMovie: function(tm){
+	        this._tweenMovies.push(tm);
+	    },
 	    getAllSpriteSheets:function() {
 	        var dataSet = new collections.Set();
 	        this._layers.forEach(function(l){
@@ -2610,7 +2812,7 @@ modules['scene'] = {code: function(module,exports){
 	        }
 	        self._tweenMovies.forEach(function(tweenMovie){
 	            if (tweenMovie.completed) {
-	                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
+	                self._tweenMovies.remove(tweenMovie);
 	            }
 	            tweenMovie._update(currTime);
 	        });
@@ -2673,14 +2875,28 @@ modules['scene'] = {code: function(module,exports){
 
 modules['sound'] = {code: function(module,exports){
 	var Resource = require('resource').Resource;
-	var soundManager = require('soundManager').instance();
+	var audioPlayer = require('audioPlayer').instance();
+	var bundle = require('bundle').instance();
 	
 	exports.Sound = Resource.extend({
 	    type:'sound',
-	    _buffer:null
+	    _gain:1,
+	    _loop:false,
+	    play: function(){
+	        audioPlayer.play(this);
+	    },
+	    stop: function(){
+	        audioPlayer.stop(this);
+	    },
+	    pause:function(){
+	        throw 'not implemented'
+	    },
+	    setGain:function(val,time,easeFnName){
+	        audioPlayer.setGain(this,val,time,easeFnName);
+	    }
 	}, {
-	    play: function (sndName, loop) {
-	        soundManager.play(sndName, loop);
+	    find: function(name){
+	        return bundle.soundList.find({name:name});
 	    }
 	});
 }};
@@ -3021,6 +3237,7 @@ modules['renderer'] = {code: function(module,exports){
 	var canvasContext = require('canvasContext').instance();
 	var resourceCache = require('resourceCache');
 	var camera = require('camera').instance();
+	var game = require('game').instance();
 	
 	var Renderer = function(){
 	
@@ -3086,6 +3303,7 @@ modules['renderer'] = {code: function(module,exports){
 	        ctx.beginFrameBuffer();
 	        ctx.clear();
 	
+	        game.update(currTime);
 	        camera.update(ctx);
 	        scene.update(currTime,deltaTime);
 	        bundle.particleSystemList.forEach(function(p){
@@ -3346,6 +3564,7 @@ modules['glContext'] = {code: function(module,exports){
 	var MatrixStack = require('matrixStack').MatrixStack;
 	var FrameBuffer = require('frameBuffer').FrameBuffer;
 	var bundle = require('bundle').instance();
+	var cache = require('resourceCache');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	
 	var GlContext = function(){
@@ -3405,8 +3624,6 @@ modules['glContext'] = {code: function(module,exports){
 	        shader.setUniform('u_alpha',alpha);
 	    };
 	
-	    var cache = {};
-	
 	    var arrayBufferToBase64 = function(buffer) {
 	        var bytes = new Uint8Array(buffer);
 	        var rawArr = [];
@@ -3418,8 +3635,8 @@ modules['glContext'] = {code: function(module,exports){
 	    };
 	
 	    this.loadTextureInfo = function(url,opts,progress,callBack) {
-	        if (cache.url) {
-	            callBack(cache[url]);
+	        if (cache.has(url)) {
+	            callBack(cache.get(url));
 	            return;
 	        }
 	
@@ -3434,27 +3651,15 @@ modules['glContext'] = {code: function(module,exports){
 	            return;
 	        }
 	
-	        var request = new XMLHttpRequest();
-	        request.open('GET', url, true);
-	        request.responseType = 'arraybuffer';
-	
-	        request.setRequestHeader('Accept-Ranges', 'bytes');
-	        request.setRequestHeader('Content-Range', 'bytes');
-	        request.onload = function() {
-	            var base64String = arrayBufferToBase64(request.response);
+	        utils.loadBinary(url,progress,function(buffer){
+	            var base64String = arrayBufferToBase64(buffer);
 	            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
 	            img.onload = function(){
 	                texture.apply(img);
 	                callBack(texture);
 	            };
 	            img.src = base64String;
-	
-	        };
-	        request.onprogress = function(e){
-	            progress(url,e.loaded/ e.total);
-	        };
-	        request.onerror=function(e){throw 'can not load image with url '+url};
-	        request.send();
+	        });
 	    };
 	
 	    this.getError = function(){
@@ -3965,113 +4170,6 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	};
 }};
 
-modules['game'] = {code: function(module,exports){
-	
-	var ResourceLoader = require('resourceLoader').ResourceLoader;
-	
-	var SceneManager = function(){
-	
-	    var self = this;
-	
-	    var renderer;
-	    var bundle;
-	
-	    this.currScene = null;
-	
-	    var bootEssentialResources = function(callBack){
-	
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            callBack();
-	        };
-	        var progressScene = bundle.sceneList.find({name:'progressScene'});
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            progressScene.__onResourcesReady();
-	            progressScene.
-	                getAllSpriteSheets().
-	                asArray().
-	                forEach(function(spSheet){
-	                    loader.loadImage(spSheet.resourcePath);
-	                });
-	        }
-	        bundle.fontList.forEach(function(font){
-	            loader.loadImage(font.resourcePath);
-	        });
-	        loader.start();
-	    };
-	
-	    var preloadSceneAndSetIt = function(scene){
-	
-	        if (!renderer) renderer = require('renderer').instance();
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        var progressScene = bundle.sceneList.find({name:'progressScene'});
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            renderer.setScene(progressScene);
-	            bundle.applyBehaviour(progressScene);
-	        }
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            self.currScene = scene;
-	            bundle.applyBehaviourAll();
-	            renderer.setScene(scene);
-	        };
-	        loader.onProgress = function(e){
-	            progressScene && progressScene.onProgress(e);
-	        };
-	
-	        var allSprSheets = scene.getAllSpriteSheets();
-	
-	        bundle.particleSystemList.forEach(function(ps){
-	            allSprSheets.add(ps._gameObject._spriteSheet);
-	        });
-	        allSprSheets.asArray().forEach(function(spSheet){
-	            loader.loadImage(spSheet.resourcePath);
-	        });
-	        bundle.soundList.forEach(function(snd){
-	            loader.loadSound(snd.resourcePath,snd.name);
-	        });
-	        loader.start();
-	    };
-	
-	    this.setScene = function(scene){
-	        var Scene = require('scene').Scene;
-	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
-	        if (this.currScene==scene) return;
-	        bootEssentialResources(function(){
-	            preloadSceneAndSetIt(scene);
-	        });
-	    };
-	
-	    this.setSceneByName = function(sceneName){
-	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-	        var bundle = require('bundle').instance();
-	        var scene = bundle.sceneList.find({name: sceneName});
-	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
-	        self.setScene(scene);
-	    };
-	
-	    this.getCurrScene = function(){
-	        return this.currScene;
-	    }
-	
-	};
-	
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new SceneManager();
-	    return instance;
-	};
-	
-}};
-
 modules['tween'] = {code: function(module,exports){
 	
 	
@@ -4133,6 +4231,7 @@ modules['tween'] = {code: function(module,exports){
 	            var prp = propsToChange[l];
 	            obj[prp] = fromToVal.to[prp];
 	        }
+	        progressFn && progressFn(obj);
 	        this.completed = true;
 	    };
 	
@@ -4144,7 +4243,6 @@ modules['tweenChain'] = {code: function(module,exports){
 	
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	var Tween = require('tween').Tween;
-	var sceneManager = require('sceneManager').instance();
 	
 	exports.TweenChain = function(){
 	    var timeOffset = 0;
@@ -4187,7 +4285,7 @@ modules['tweenChain'] = {code: function(module,exports){
 
 modules['tweenMovie'] = {code: function(module,exports){
 	
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var Tween = require('tween').Tween;
 	
 	exports.TweenMovie = function(){
@@ -4218,9 +4316,13 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        return this;
 	    };
 	
-	    this.play = function(){
-	        var scene = sceneManager.getCurrScene();
-	        scene._tweenMovies.push(this);
+	    this.play = function(isGlobal){
+	        if (isGlobal) {
+	            game.addTweenMovie(this);
+	        } else {
+	            var scene = game.getCurrScene();
+	            scene.addTweenMovie(this);
+	        }
 	    };
 	
 	    this._update = function(time){
@@ -6515,7 +6617,7 @@ modules['index'] = {code: function(module,exports){
 	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 	
 	var renderer = require('renderer').instance();
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var keyboard = require('keyboard').instance();
 	
 	
@@ -6527,7 +6629,8 @@ modules['index'] = {code: function(module,exports){
 	
 	    renderer.init();
 	    require('mouse').instance();
-	    sceneManager.setScene(bundle.sceneList.get(0));
+	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
+	    game.setScene(startScene);
 	});
 }};
 

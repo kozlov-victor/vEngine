@@ -35,7 +35,9 @@ var modules = {}, require = function(name){
 //
 //require('1');
 
-
+Array.prototype.remove = function(el){
+    this.splice(this.indexOf(el),1);
+};
 modules['class'] = {code: function(module,exports){
 	var Class = function() {};
 	
@@ -128,7 +130,8 @@ modules['behaviour'] = {code: function(module,exports){
 	var commonBehaviour = {};
 	
 	
-	commonBehaviour['draggable'] = function(module,exports,self,parameters){
+	commonBehaviour['draggable'] = function(exports,parameters){
+	var module = exports,self = exports;
 	/**
 	 *
 	 exports.parameters =  {};
@@ -166,10 +169,6 @@ modules['behaviour'] = {code: function(module,exports){
 	scene.on('mouseUp',function(e){
 	    delete points[getEventId(e)];
 	});
-	
-	function onUpdate(){};
-	
-	    exports.onUpdate = onUpdate;
 	}
 	
 	
@@ -181,7 +180,8 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	
-	scripts.gameObject['eye.js'] = function(exports,self){
+	scripts.gameObject['eye.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	
 	//self.fadeOut(10000);
@@ -195,7 +195,8 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	
 	
-	scripts.scene['mainScene.js'] = function(exports,self){
+	scripts.scene['mainScene.js'] = function(exports){
+	    var module = exports, self = exports;
 	    
 	var Sound = require('sound').Sound;
 	
@@ -217,7 +218,7 @@ modules['behaviour'] = {code: function(module,exports){
 modules['collider'] = {code: function(module,exports){
 	
 	var mathEx = require('mathEx');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	
 	var Collider = function(){
 	
@@ -225,7 +226,7 @@ modules['collider'] = {code: function(module,exports){
 	    var scene;
 	
 	    this.setUp = function(){
-	        scene = sceneManager.getCurrScene();
+	        scene = game.getCurrScene();
 	        gos = scene.getAllGameObjects();
 	    };
 	
@@ -418,7 +419,7 @@ modules['mouse'] = {code: function(module,exports){
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var mathEx = require('mathEx');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var device = require('device');
 	
 	var objectsCaptured = {};
@@ -470,7 +471,7 @@ modules['mouse'] = {code: function(module,exports){
 	    };
 	
 	    var triggerEvent = function(e,name){
-	        var scene = sceneManager.getCurrScene();
+	        var scene = game.getCurrScene();
 	        if (!scene) return;
 	        var point = resolveScreenPoint(e);
 	        scene._layers.someReversed(function(l){
@@ -588,7 +589,7 @@ modules['bundle'] = {code: function(module,exports){
 	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
 	        if (behaviourFn) {
 	            var exports = model;
-	            behaviourFn(exports,exports);
+	            behaviourFn(exports);
 	            model.__updateIndividualBehaviour__ = function(time){
 	                exports.onUpdate(time);
 	            }
@@ -607,7 +608,7 @@ modules['bundle'] = {code: function(module,exports){
 	        }
 	        model._commonBehaviour.forEach(function(cb){
 	            var exports = model;
-	            behaviour.commonBehaviour[cb.name](exports,exports,exports,cb.parameters);
+	            behaviour.commonBehaviour[cb.name](exports,cb.parameters);
 	            exportsList.push(exports);
 	        });
 	        model.__updateCommonBehaviour__ = function(){
@@ -773,6 +774,137 @@ modules['device'] = {code: function(module,exports){
 	};
 }};
 
+modules['game'] = {code: function(module,exports){
+	
+	var ResourceLoader = require('resourceLoader').ResourceLoader;
+	
+	var Game = function(){
+	
+	    var self = this;
+	
+	    var renderer;
+	    var bundle;
+	    var progressScene;
+	    var tweenMovies = [];
+	
+	    this.currScene = null;
+	    var booted = false;
+	
+	    var bootEssentialResources = function(callBack){
+	
+	        if (booted) {
+	            callBack();
+	            return;
+	        }
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            callBack();
+	        };
+	        if (bundle.gameProps.preloadingSceneId){
+	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
+	        }
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            progressScene.__onResourcesReady();
+	            progressScene.
+	                getAllSpriteSheets().
+	                asArray().
+	                forEach(function(spSheet){
+	                    loader.loadImage(spSheet.resourcePath);
+	                });
+	        }
+	        bundle.fontList.forEach(function(font){
+	            loader.loadImage(font.resourcePath);
+	        });
+	        loader.start();
+	    };
+	
+	    var preloadSceneAndSetIt = function(scene){
+	
+	        if (!renderer) renderer = require('renderer').instance();
+	        if (!bundle) bundle = require('bundle').instance();
+	
+	        if (progressScene) {
+	            self.currScene = progressScene;
+	            renderer.setScene(progressScene);
+	            bundle.applyBehaviourForScene(progressScene);
+	        }
+	
+	        var loader = new ResourceLoader();
+	        loader.onComplete = function(){
+	            self.currScene = scene;
+	            bundle.applyBehaviourForScene(scene);
+	            renderer.setScene(scene);
+	            scene.onShow();
+	        };
+	        loader.onProgress = function(e){
+	            progressScene &&
+	            progressScene.onProgress &&
+	            progressScene.onProgress(e);
+	        };
+	
+	        var allSprSheets = scene.getAllSpriteSheets();
+	
+	        bundle.particleSystemList.forEach(function(ps){
+	            allSprSheets.add(ps._gameObject._spriteSheet);
+	        });
+	        allSprSheets.asArray().forEach(function(spSheet){
+	            loader.loadImage(spSheet.resourcePath);
+	        });
+	        bundle.soundList.forEach(function(snd){
+	            loader.loadSound(snd.resourcePath,snd.name);
+	        });
+	        loader.start();
+	    };
+	
+	    this.setScene = function(scene){
+	        var Scene = require('scene').Scene;
+	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
+	        if (this.currScene==scene) return;
+	        bootEssentialResources(function(){
+	            preloadSceneAndSetIt(scene);
+	        });
+	    };
+	
+	    this.setSceneByName = function(sceneName){
+	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+	        var bundle = require('bundle').instance();
+	        var scene = bundle.sceneList.find({name: sceneName});
+	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
+	        self.setScene(scene);
+	    };
+	
+	    this.getCurrScene = function(){
+	        return this.currScene;
+	    };
+	
+	    this.addTweenMovie = function(tm) {
+	        tweenMovies.push(tm);
+	    };
+	
+	    this.update = function(currTime,deltaTime){
+	        tweenMovies.forEach(function(tweenMovie){
+	            if (tweenMovie.completed) {
+	                tweenMovies.remove(tweenMovie);
+	            }
+	            tweenMovie._update(currTime);
+	        });
+	    };
+	
+	};
+	
+	
+	var instance = null;
+	
+	module.exports.instance = function(){
+	    if (instance==null) instance = new Game();
+	    return instance;
+	};
+	
+}};
+
 modules['audioNode'] = {code: function(module,exports){
 	
 	var cache = require('resourceCache');
@@ -864,7 +996,7 @@ modules['audioPlayer'] = {code: function(module,exports){
 	    }
 	
 	    var audioNodeSet = new AudioNodeSet(Context,5);
-	    var tweenable = new Tweenable();
+	    var tweenable = new Tweenable({global:true});
 	
 	    this.loadSound = function( url, opts, progress, callback) {
 	        Context.load(url,opts,progress,callback);
@@ -1971,7 +2103,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        this._layer._scene._allGameObjects.remove({id:this.id});
 	    },
 	    getScene: function(){
-	        return require('sceneManager').instance().getCurrScene();
+	        return require('game').instance().getCurrScene();
 	    },
 	    moveTo:function(x,y,time,easeFnName){
 	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
@@ -2163,14 +2295,14 @@ modules['tweenable'] = {code: function(module,exports){
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	
 	exports.Tweenable = BaseModel.extend({
+	    global: false,
 	    tween: function(objOrTween,fromToVal,tweenTime,easeFnName){
 	        var movie = new TweenMovie();
 	        var tween;
-	        console.log();
 	        if (objOrTween instanceof Tween) tween = objOrTween;
 	        else tween = new Tween(objOrTween,fromToVal,tweenTime,easeFnName);
 	        movie.tween(0,tween);
-	        movie.play();
+	        movie.play(this.global);
 	    }
 	});
 }};
@@ -2234,7 +2366,7 @@ modules['gameObject'] = {code: function(module,exports){
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
 	var utils = require('utils');
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	
 	exports.GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -2317,10 +2449,10 @@ modules['gameObject'] = {code: function(module,exports){
 	    }
 	}, {
 	    find: function(name){
-	        return sceneManager.getCurrScene()._allGameObjects.find({name:name});
+	        return game.getCurrScene()._allGameObjects.find({name:name});
 	    },
 	    findAll: function(name) {
-	        return sceneManager.getCurrScene()._allGameObjects.findAll({name: name});
+	        return game.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
 }};
@@ -2464,6 +2596,7 @@ modules['scene'] = {code: function(module,exports){
 	    _allGameObjects:null,
 	    useBG:false,
 	    colorBG:[255,255,255],
+	    onShow: function(){},
 	    _tweenMovies:null,
 	    __onResourcesReady: function(){
 	        var self = this;
@@ -2496,6 +2629,9 @@ modules['scene'] = {code: function(module,exports){
 	            self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
 	        }
 	    },
+	    addTweenMovie: function(tm){
+	        this._tweenMovies.push(tm);
+	    },
 	    getAllSpriteSheets:function() {
 	        var dataSet = new collections.Set();
 	        this._layers.forEach(function(l){
@@ -2520,7 +2656,7 @@ modules['scene'] = {code: function(module,exports){
 	        }
 	        self._tweenMovies.forEach(function(tweenMovie){
 	            if (tweenMovie.completed) {
-	                self._tweenMovies.splice(self._tweenMovies.indexOf(tweenMovie),1);
+	                self._tweenMovies.remove(tweenMovie);
 	            }
 	            tweenMovie._update(currTime);
 	        });
@@ -2945,6 +3081,7 @@ modules['renderer'] = {code: function(module,exports){
 	var canvasContext = require('canvasContext').instance();
 	var resourceCache = require('resourceCache');
 	var camera = require('camera').instance();
+	var game = require('game').instance();
 	
 	var Renderer = function(){
 	
@@ -3010,6 +3147,7 @@ modules['renderer'] = {code: function(module,exports){
 	        ctx.beginFrameBuffer();
 	        ctx.clear();
 	
+	        game.update(currTime);
 	        camera.update(ctx);
 	        scene.update(currTime,deltaTime);
 	        bundle.particleSystemList.forEach(function(p){
@@ -3876,122 +4014,6 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	};
 }};
 
-modules['game'] = {code: function(module,exports){
-	
-	var ResourceLoader = require('resourceLoader').ResourceLoader;
-	
-	var SceneManager = function(){
-	
-	    var self = this;
-	
-	    var renderer;
-	    var bundle;
-	    var progressScene;
-	
-	    this.currScene = null;
-	    var booted = false;
-	
-	    var bootEssentialResources = function(callBack){
-	
-	        if (booted) {
-	            callBack();
-	            return;
-	        }
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            callBack();
-	        };
-	        if (bundle.gameProps.preloadingSceneId){
-	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
-	        }
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            progressScene.__onResourcesReady();
-	            progressScene.
-	                getAllSpriteSheets().
-	                asArray().
-	                forEach(function(spSheet){
-	                    loader.loadImage(spSheet.resourcePath);
-	                });
-	        }
-	        bundle.fontList.forEach(function(font){
-	            loader.loadImage(font.resourcePath);
-	        });
-	        loader.start();
-	    };
-	
-	    var preloadSceneAndSetIt = function(scene){
-	
-	        if (!renderer) renderer = require('renderer').instance();
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            renderer.setScene(progressScene);
-	            bundle.applyBehaviourForScene(progressScene);
-	        }
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            self.currScene = scene;
-	            bundle.applyBehaviourForScene(scene);
-	            renderer.setScene(scene);
-	        };
-	        loader.onProgress = function(e){
-	            progressScene &&
-	            progressScene.onProgress &&
-	            progressScene.onProgress(e);
-	        };
-	
-	        var allSprSheets = scene.getAllSpriteSheets();
-	
-	        bundle.particleSystemList.forEach(function(ps){
-	            allSprSheets.add(ps._gameObject._spriteSheet);
-	        });
-	        allSprSheets.asArray().forEach(function(spSheet){
-	            loader.loadImage(spSheet.resourcePath);
-	        });
-	        bundle.soundList.forEach(function(snd){
-	            loader.loadSound(snd.resourcePath,snd.name);
-	        });
-	        loader.start();
-	    };
-	
-	    this.setScene = function(scene){
-	        var Scene = require('scene').Scene;
-	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
-	        if (this.currScene==scene) return;
-	        bootEssentialResources(function(){
-	            preloadSceneAndSetIt(scene);
-	        });
-	    };
-	
-	    this.setSceneByName = function(sceneName){
-	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-	        var bundle = require('bundle').instance();
-	        var scene = bundle.sceneList.find({name: sceneName});
-	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
-	        self.setScene(scene);
-	    };
-	
-	    this.getCurrScene = function(){
-	        return this.currScene;
-	    }
-	
-	};
-	
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new SceneManager();
-	    return instance;
-	};
-	
-}};
-
 modules['tween'] = {code: function(module,exports){
 	
 	
@@ -4037,7 +4059,7 @@ modules['tween'] = {code: function(module,exports){
 	
 	    };
 	
-	    this.progress = function(_progressFn){ // todo remane to onProgress?
+	    this.progress = function(_progressFn){
 	        progressFn = _progressFn;
 	    };
 	
@@ -4065,7 +4087,6 @@ modules['tweenChain'] = {code: function(module,exports){
 	
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	var Tween = require('tween').Tween;
-	var sceneManager = require('sceneManager').instance();
 	
 	exports.TweenChain = function(){
 	    var timeOffset = 0;
@@ -4108,7 +4129,7 @@ modules['tweenChain'] = {code: function(module,exports){
 
 modules['tweenMovie'] = {code: function(module,exports){
 	
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var Tween = require('tween').Tween;
 	
 	exports.TweenMovie = function(){
@@ -4139,9 +4160,13 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        return this;
 	    };
 	
-	    this.play = function(){
-	        var scene = sceneManager.getCurrScene();
-	        scene._tweenMovies.push(this);
+	    this.play = function(isGlobal){
+	        if (isGlobal) {
+	            game.addTweenMovie(this);
+	        } else {
+	            var scene = game.getCurrScene();
+	            scene.addTweenMovie(this);
+	        }
 	    };
 	
 	    this._update = function(time){
@@ -4218,1034 +4243,1172 @@ modules['index'] = {code: function(module,exports){
 	        "fontContext": {
 	            "symbols": {
 	                "0": {
-	                    "x": 240,
-	                    "y": 0,
+	                    "x": 24,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "1": {
-	                    "x": 255,
-	                    "y": 0,
+	                    "x": 45,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "2": {
-	                    "x": 270,
-	                    "y": 0,
+	                    "x": 66,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "3": {
-	                    "x": 285,
-	                    "y": 0,
+	                    "x": 87,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "4": {
-	                    "x": 301,
-	                    "y": 0,
+	                    "x": 108,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "5": {
-	                    "x": 0,
-	                    "y": 29,
+	                    "x": 129,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "6": {
-	                    "x": 15,
-	                    "y": 29,
+	                    "x": 150,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "7": {
-	                    "x": 30,
-	                    "y": 29,
+	                    "x": 171,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "8": {
-	                    "x": 45,
-	                    "y": 29,
+	                    "x": 192,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "9": {
-	                    "x": 60,
-	                    "y": 29,
+	                    "x": 213,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                " ": {
-	                    "x": 0,
-	                    "y": 0,
+	                    "x": 3,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "!": {
-	                    "x": 15,
-	                    "y": 0,
+	                    "x": 24,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "\"": {
-	                    "x": 30,
-	                    "y": 0,
+	                    "x": 45,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "#": {
-	                    "x": 45,
-	                    "y": 0,
+	                    "x": 66,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "$": {
-	                    "x": 60,
-	                    "y": 0,
+	                    "x": 87,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "%": {
-	                    "x": 75,
-	                    "y": 0,
+	                    "x": 108,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "&": {
-	                    "x": 90,
-	                    "y": 0,
+	                    "x": 129,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "'": {
-	                    "x": 105,
-	                    "y": 0,
+	                    "x": 150,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "(": {
-	                    "x": 120,
-	                    "y": 0,
+	                    "x": 171,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                ")": {
-	                    "x": 135,
-	                    "y": 0,
+	                    "x": 192,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "*": {
-	                    "x": 150,
-	                    "y": 0,
+	                    "x": 213,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "+": {
-	                    "x": 165,
-	                    "y": 0,
+	                    "x": 234,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                ",": {
-	                    "x": 180,
-	                    "y": 0,
+	                    "x": 255,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "-": {
-	                    "x": 195,
-	                    "y": 0,
+	                    "x": 276,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                ".": {
-	                    "x": 210,
-	                    "y": 0,
+	                    "x": 297,
+	                    "y": 3,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "/": {
-	                    "x": 225,
-	                    "y": 0,
+	                    "x": 3,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                ":": {
-	                    "x": 75,
-	                    "y": 29,
+	                    "x": 234,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                ";": {
-	                    "x": 90,
-	                    "y": 29,
+	                    "x": 255,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "<": {
-	                    "x": 105,
-	                    "y": 29,
+	                    "x": 276,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "=": {
-	                    "x": 120,
-	                    "y": 29,
+	                    "x": 297,
+	                    "y": 38,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                ">": {
-	                    "x": 135,
-	                    "y": 29,
+	                    "x": 3,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "?": {
-	                    "x": 150,
-	                    "y": 29,
+	                    "x": 24,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "@": {
-	                    "x": 165,
-	                    "y": 29,
+	                    "x": 45,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "A": {
-	                    "x": 180,
-	                    "y": 29,
+	                    "x": 66,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "B": {
-	                    "x": 195,
-	                    "y": 29,
+	                    "x": 87,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "C": {
-	                    "x": 210,
-	                    "y": 29,
+	                    "x": 108,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "D": {
-	                    "x": 225,
-	                    "y": 29,
+	                    "x": 129,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "E": {
-	                    "x": 240,
-	                    "y": 29,
+	                    "x": 150,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "F": {
-	                    "x": 255,
-	                    "y": 29,
+	                    "x": 171,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "G": {
-	                    "x": 270,
-	                    "y": 29,
+	                    "x": 192,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "H": {
-	                    "x": 285,
-	                    "y": 29,
+	                    "x": 213,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "I": {
-	                    "x": 301,
-	                    "y": 29,
+	                    "x": 234,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "J": {
-	                    "x": 0,
-	                    "y": 58,
+	                    "x": 255,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "K": {
-	                    "x": 15,
-	                    "y": 58,
+	                    "x": 276,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "L": {
-	                    "x": 30,
-	                    "y": 58,
+	                    "x": 297,
+	                    "y": 73,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "M": {
-	                    "x": 45,
-	                    "y": 58,
+	                    "x": 3,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "N": {
-	                    "x": 60,
-	                    "y": 58,
+	                    "x": 24,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "O": {
-	                    "x": 75,
-	                    "y": 58,
+	                    "x": 45,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "P": {
-	                    "x": 90,
-	                    "y": 58,
+	                    "x": 66,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Q": {
-	                    "x": 105,
-	                    "y": 58,
+	                    "x": 87,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "R": {
-	                    "x": 120,
-	                    "y": 58,
+	                    "x": 108,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "S": {
-	                    "x": 135,
-	                    "y": 58,
+	                    "x": 129,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "T": {
 	                    "x": 150,
-	                    "y": 58,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "U": {
-	                    "x": 165,
-	                    "y": 58,
+	                    "x": 171,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "V": {
-	                    "x": 180,
-	                    "y": 58,
+	                    "x": 192,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "W": {
-	                    "x": 195,
-	                    "y": 58,
+	                    "x": 213,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "X": {
-	                    "x": 210,
-	                    "y": 58,
+	                    "x": 234,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Y": {
-	                    "x": 225,
-	                    "y": 58,
+	                    "x": 255,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Z": {
-	                    "x": 240,
-	                    "y": 58,
+	                    "x": 276,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "[": {
-	                    "x": 255,
-	                    "y": 58,
+	                    "x": 297,
+	                    "y": 108,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "\\": {
-	                    "x": 270,
-	                    "y": 58,
+	                    "x": 3,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "]": {
-	                    "x": 285,
-	                    "y": 58,
+	                    "x": 24,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "^": {
-	                    "x": 301,
-	                    "y": 58,
+	                    "x": 45,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "_": {
-	                    "x": 0,
-	                    "y": 87,
+	                    "x": 66,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "`": {
-	                    "x": 15,
-	                    "y": 87,
+	                    "x": 87,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "a": {
-	                    "x": 30,
-	                    "y": 87,
+	                    "x": 108,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "b": {
-	                    "x": 45,
-	                    "y": 87,
+	                    "x": 129,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "c": {
-	                    "x": 60,
-	                    "y": 87,
+	                    "x": 150,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "d": {
-	                    "x": 75,
-	                    "y": 87,
+	                    "x": 171,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "e": {
-	                    "x": 90,
-	                    "y": 87,
+	                    "x": 192,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "f": {
-	                    "x": 105,
-	                    "y": 87,
+	                    "x": 213,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "g": {
-	                    "x": 120,
-	                    "y": 87,
+	                    "x": 234,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "h": {
-	                    "x": 135,
-	                    "y": 87,
+	                    "x": 255,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "i": {
-	                    "x": 150,
-	                    "y": 87,
+	                    "x": 276,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "j": {
-	                    "x": 165,
-	                    "y": 87,
+	                    "x": 297,
+	                    "y": 143,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "k": {
-	                    "x": 180,
-	                    "y": 87,
+	                    "x": 3,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "l": {
-	                    "x": 195,
-	                    "y": 87,
+	                    "x": 24,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "m": {
-	                    "x": 210,
-	                    "y": 87,
+	                    "x": 45,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "n": {
-	                    "x": 225,
-	                    "y": 87,
+	                    "x": 66,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "o": {
-	                    "x": 240,
-	                    "y": 87,
+	                    "x": 87,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "p": {
-	                    "x": 255,
-	                    "y": 87,
+	                    "x": 108,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "q": {
-	                    "x": 270,
-	                    "y": 87,
+	                    "x": 129,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "r": {
-	                    "x": 285,
-	                    "y": 87,
+	                    "x": 150,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "s": {
-	                    "x": 301,
-	                    "y": 87,
+	                    "x": 171,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "t": {
-	                    "x": 0,
-	                    "y": 116,
+	                    "x": 192,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "u": {
-	                    "x": 15,
-	                    "y": 116,
+	                    "x": 213,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "v": {
-	                    "x": 30,
-	                    "y": 116,
+	                    "x": 234,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "w": {
-	                    "x": 45,
-	                    "y": 116,
+	                    "x": 255,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "x": {
-	                    "x": 60,
-	                    "y": 116,
+	                    "x": 276,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "y": {
-	                    "x": 75,
-	                    "y": 116,
+	                    "x": 297,
+	                    "y": 178,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "z": {
-	                    "x": 90,
-	                    "y": 116,
+	                    "x": 3,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "{": {
-	                    "x": 105,
-	                    "y": 116,
+	                    "x": 24,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "|": {
-	                    "x": 120,
-	                    "y": 116,
+	                    "x": 45,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "}": {
-	                    "x": 135,
-	                    "y": 116,
+	                    "x": 66,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "~": {
-	                    "x": 150,
-	                    "y": 116,
+	                    "x": 87,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
+	                "": {
+	                    "x": 108,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 114,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 120,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 126,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 132,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 138,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 144,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 150,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 156,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 162,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 168,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 174,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 180,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 186,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 192,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 198,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 204,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 210,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 216,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 222,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 228,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 234,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
+	                "": {
+	                    "x": 240,
+	                    "y": 213,
+	                    "width": 0,
+	                    "height": 29
+	                },
 	                "А": {
-	                    "x": 165,
-	                    "y": 116,
+	                    "x": 246,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Б": {
-	                    "x": 180,
-	                    "y": 116,
+	                    "x": 267,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "В": {
-	                    "x": 195,
-	                    "y": 116,
+	                    "x": 288,
+	                    "y": 213,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Г": {
-	                    "x": 210,
-	                    "y": 116,
+	                    "x": 3,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Д": {
-	                    "x": 225,
-	                    "y": 116,
+	                    "x": 24,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Е": {
-	                    "x": 240,
-	                    "y": 116,
+	                    "x": 45,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ж": {
-	                    "x": 255,
-	                    "y": 116,
+	                    "x": 66,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "З": {
-	                    "x": 270,
-	                    "y": 116,
+	                    "x": 87,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "И": {
-	                    "x": 285,
-	                    "y": 116,
+	                    "x": 108,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Й": {
-	                    "x": 301,
-	                    "y": 116,
+	                    "x": 129,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "К": {
-	                    "x": 0,
-	                    "y": 145,
+	                    "x": 150,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Л": {
-	                    "x": 15,
-	                    "y": 145,
+	                    "x": 171,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "М": {
-	                    "x": 30,
-	                    "y": 145,
+	                    "x": 192,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Н": {
-	                    "x": 45,
-	                    "y": 145,
+	                    "x": 213,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "О": {
-	                    "x": 60,
-	                    "y": 145,
+	                    "x": 234,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "П": {
-	                    "x": 75,
-	                    "y": 145,
+	                    "x": 255,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Р": {
-	                    "x": 90,
-	                    "y": 145,
+	                    "x": 276,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "С": {
-	                    "x": 105,
-	                    "y": 145,
+	                    "x": 297,
+	                    "y": 248,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Т": {
-	                    "x": 120,
-	                    "y": 145,
+	                    "x": 3,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "У": {
-	                    "x": 135,
-	                    "y": 145,
+	                    "x": 24,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ф": {
-	                    "x": 150,
-	                    "y": 145,
+	                    "x": 45,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Х": {
-	                    "x": 165,
-	                    "y": 145,
+	                    "x": 66,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ц": {
-	                    "x": 180,
-	                    "y": 145,
+	                    "x": 87,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ч": {
-	                    "x": 195,
-	                    "y": 145,
+	                    "x": 108,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ш": {
-	                    "x": 210,
-	                    "y": 145,
+	                    "x": 129,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Щ": {
-	                    "x": 225,
-	                    "y": 145,
+	                    "x": 150,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ъ": {
-	                    "x": 240,
-	                    "y": 145,
+	                    "x": 171,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ы": {
-	                    "x": 255,
-	                    "y": 145,
+	                    "x": 192,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ь": {
-	                    "x": 270,
-	                    "y": 145,
+	                    "x": 213,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Э": {
-	                    "x": 285,
-	                    "y": 145,
+	                    "x": 234,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Ю": {
-	                    "x": 301,
-	                    "y": 145,
+	                    "x": 255,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "Я": {
-	                    "x": 0,
-	                    "y": 174,
+	                    "x": 276,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "а": {
-	                    "x": 15,
-	                    "y": 174,
+	                    "x": 297,
+	                    "y": 283,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "б": {
-	                    "x": 30,
-	                    "y": 174,
+	                    "x": 3,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "в": {
-	                    "x": 45,
-	                    "y": 174,
+	                    "x": 24,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "г": {
-	                    "x": 60,
-	                    "y": 174,
+	                    "x": 45,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "д": {
-	                    "x": 75,
-	                    "y": 174,
+	                    "x": 66,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "е": {
-	                    "x": 90,
-	                    "y": 174,
+	                    "x": 87,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ж": {
-	                    "x": 105,
-	                    "y": 174,
+	                    "x": 108,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "з": {
-	                    "x": 120,
-	                    "y": 174,
+	                    "x": 129,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "и": {
-	                    "x": 135,
-	                    "y": 174,
+	                    "x": 150,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "й": {
-	                    "x": 150,
-	                    "y": 174,
+	                    "x": 171,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "к": {
-	                    "x": 165,
-	                    "y": 174,
+	                    "x": 192,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "л": {
-	                    "x": 180,
-	                    "y": 174,
+	                    "x": 213,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "м": {
-	                    "x": 195,
-	                    "y": 174,
+	                    "x": 234,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "н": {
-	                    "x": 210,
-	                    "y": 174,
+	                    "x": 255,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "о": {
-	                    "x": 225,
-	                    "y": 174,
+	                    "x": 276,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "п": {
-	                    "x": 240,
-	                    "y": 174,
+	                    "x": 297,
+	                    "y": 318,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "р": {
-	                    "x": 255,
-	                    "y": 174,
+	                    "x": 3,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "с": {
-	                    "x": 270,
-	                    "y": 174,
+	                    "x": 24,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "т": {
-	                    "x": 285,
-	                    "y": 174,
+	                    "x": 45,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "у": {
-	                    "x": 301,
-	                    "y": 174,
+	                    "x": 66,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ф": {
-	                    "x": 0,
-	                    "y": 203,
+	                    "x": 87,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "х": {
-	                    "x": 15,
-	                    "y": 203,
+	                    "x": 108,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ц": {
-	                    "x": 30,
-	                    "y": 203,
+	                    "x": 129,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ч": {
-	                    "x": 45,
-	                    "y": 203,
+	                    "x": 150,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ш": {
-	                    "x": 60,
-	                    "y": 203,
+	                    "x": 171,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "щ": {
-	                    "x": 75,
-	                    "y": 203,
+	                    "x": 192,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ъ": {
-	                    "x": 90,
-	                    "y": 203,
+	                    "x": 213,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ы": {
-	                    "x": 105,
-	                    "y": 203,
+	                    "x": 234,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ь": {
-	                    "x": 120,
-	                    "y": 203,
+	                    "x": 255,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "э": {
-	                    "x": 135,
-	                    "y": 203,
+	                    "x": 276,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ю": {
-	                    "x": 150,
-	                    "y": 203,
+	                    "x": 297,
+	                    "y": 353,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "я": {
-	                    "x": 165,
-	                    "y": 203,
+	                    "x": 3,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ѐ": {
-	                    "x": 180,
-	                    "y": 203,
+	                    "x": 24,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ё": {
-	                    "x": 195,
-	                    "y": 203,
+	                    "x": 45,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ђ": {
-	                    "x": 210,
-	                    "y": 203,
+	                    "x": 66,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ѓ": {
-	                    "x": 225,
-	                    "y": 203,
+	                    "x": 87,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "є": {
-	                    "x": 240,
-	                    "y": 203,
+	                    "x": 108,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ѕ": {
-	                    "x": 255,
-	                    "y": 203,
+	                    "x": 129,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "і": {
-	                    "x": 270,
-	                    "y": 203,
+	                    "x": 150,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ї": {
-	                    "x": 285,
-	                    "y": 203,
+	                    "x": 171,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ј": {
-	                    "x": 301,
-	                    "y": 203,
+	                    "x": 192,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "љ": {
-	                    "x": 0,
-	                    "y": 232,
+	                    "x": 213,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "њ": {
-	                    "x": 15,
-	                    "y": 232,
+	                    "x": 234,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                },
 	                "ћ": {
-	                    "x": 30,
-	                    "y": 232,
+	                    "x": 255,
+	                    "y": 388,
 	                    "width": 15,
 	                    "height": 29
 	                }
 	            },
 	            "width": 320,
-	            "height": 261
+	            "height": 420
 	        },
 	        "type": "font",
 	        "fontColor": "black",
@@ -5377,7 +5540,7 @@ modules['index'] = {code: function(module,exports){
 	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 	
 	var renderer = require('renderer').instance();
-	var sceneManager = require('sceneManager').instance();
+	var game = require('game').instance();
 	var keyboard = require('keyboard').instance();
 	
 	
@@ -5390,7 +5553,7 @@ modules['index'] = {code: function(module,exports){
 	    renderer.init();
 	    require('mouse').instance();
 	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
-	    sceneManager.setScene(startScene);
+	    game.setScene(startScene);
 	});
 }};
 

@@ -11,6 +11,8 @@ window.app.
         i18n,
         utils) {
 
+        var SYMBOL_PADDING = utils.FONT_SYMBOL_PADDING;
+
         var s = $scope;
         s.editData = editData;
         s.uiHelper = uiHelper;
@@ -34,7 +36,7 @@ window.app.
             var cnv = document.createElement('canvas');
             var ctx = cnv.getContext('2d');
             ctx.font = strFont;
-            var textHeight = getFontHeight(strFont);
+            var textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
             var symbols = {};
             var currX = 0, currY = 0, cnvHeight = textHeight;
             for (var k = 0; k < arrFromTo.length; k++) {
@@ -44,6 +46,7 @@ window.app.
 
                     ctx = cnv.getContext('2d');
                     var textWidth = ctx.measureText(currentChar).width;
+                    textWidth += 2 * SYMBOL_PADDING;
                     if (textWidth == 0) continue;
                     if (currX + textWidth > w) {
                         currX = 0;
@@ -51,10 +54,10 @@ window.app.
                         cnvHeight = currY + textHeight;
                     }
                     var symbol = {};
-                    symbol.x = ~~currX;
-                    symbol.y = ~~currY;
-                    symbol.width = ~~textWidth;
-                    symbol.height = textHeight;
+                    symbol.x = ~~currX + SYMBOL_PADDING;
+                    symbol.y = ~~currY + SYMBOL_PADDING;
+                    symbol.width = ~~textWidth - 2 * SYMBOL_PADDING;
+                    symbol.height = textHeight - 2 * SYMBOL_PADDING;
                     symbols[currentChar] = symbol;
                     currX += textWidth;
                 }

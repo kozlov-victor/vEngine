@@ -26,6 +26,7 @@ var god = location && location.search.indexOf('god')>-1;
 
 var introSnd = Sound.find('intro');
 
+
 var spin = function(){
     if (!canSpin) return;
     if (!totalMoney) return;

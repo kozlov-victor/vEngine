@@ -39,6 +39,10 @@ var AudioPlayer = function(){
         node.stop();
     };
 
+    this.stopAll = function(){
+        audioNodeSet.stopAll();
+    };
+
     this.setGain = function(sound,toVal,time,easeFnName){
         var node = audioNodeSet.getNodeBySound(sound);
         if (!node) return;

@@ -14,6 +14,12 @@ exports.AudioNodeSet = function(Context,numOfNodes){
         return null;
     };
 
+    this.stopAll = function(){
+        for (var i = 0;i<numOfNodes;i++) {
+            nodes[i].stop();
+        }
+    };
+
     this.getNodeBySound = function(sound){
         for (var i = 0;i<numOfNodes;i++) {
             if (nodes[i].getCurrSound()==sound) return nodes[i];

@@ -32,7 +32,7 @@ exports.BaseGameObject = Renderable.extend({
         this._layer._scene._allGameObjects.remove({id:this.id});
     },
     getScene: function(){
-        return require('sceneManager').instance().getCurrScene();
+        return require('game').instance().getCurrScene();
     },
     moveTo:function(x,y,time,easeFnName){
         return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
