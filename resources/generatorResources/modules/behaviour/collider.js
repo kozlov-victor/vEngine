@@ -1,6 +1,5 @@
 
 var mathEx = require('mathEx');
-var game = require('game').instance();
 
 var Collider = function(){
 
@@ -8,7 +7,7 @@ var Collider = function(){
     var scene;
 
     this.setUp = function(){
-        scene = game.getCurrScene();
+        scene = require('game').instance().getCurrScene();
         gos = scene.getAllGameObjects();
     };
 

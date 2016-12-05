@@ -1,18 +1,16 @@
 
-var bundle = require('bundle').instance();
-var collider = require('collider').instance();
-var keyboard = require('keyboard').instance();
-var glContext = require('glContext').instance();
-var canvasContext = require('canvasContext').instance();
+
+var GlContext = require('glContext').GlContext;
+var CanvasContext = require('canvasContext').CanvasContext;
 var resourceCache = require('resourceCache');
-var camera = require('camera').instance();
+var bundle = require('bundle').instance();
 var game = require('game').instance();
 
 var Renderer = function(){
 
     var canvas;
     var ctx;
-    var scene;
+    var ctxClass;
     var self = this;
     var currTime = 0;
     var lastTime = 0;
@@ -20,9 +18,12 @@ var Renderer = function(){
     var gameProps;
 
 
-
     this.getContext = function(){
         return ctx;
+    };
+
+    this.getContextClass = function(){
+        return ctxClass;
     };
 
     this.getCanvas = function(){
@@ -36,8 +37,10 @@ var Renderer = function(){
             canvas = document.createElement('canvas');
             document.body.appendChild(canvas);
         }
-        ctx = glContext;
+        ctxClass = GlContext;
+        ctx = new ctxClass();
         //ctx = canvasContext;
+        game.setCtx(ctx);
         require('scaleManager').instance(canvas,ctx).manage();
         ctx.init(canvas);
 
@@ -63,8 +66,6 @@ var Renderer = function(){
 
         reqAnimFrame(drawScene);
 
-        if (!scene) return;
-
         lastTime = currTime;
         currTime = Date.now();
         var deltaTime = lastTime ? currTime - lastTime : 0;
@@ -72,26 +73,10 @@ var Renderer = function(){
         ctx.beginFrameBuffer();
         ctx.clear();
 
-        game.update(currTime);
-        camera.update(ctx);
-        scene.update(currTime,deltaTime);
-        bundle.particleSystemList.forEach(function(p){
-            p.update(currTime,deltaTime);
-        });
+        game.update(currTime,deltaTime);
 
         ctx.flipFrameBuffer();
 
-
-        keyboard.update();
-    };
-
-    this.setScene = function(_scene){
-        scene = _scene;
-        if (scene.useBG) ctx.colorBG = scene.colorBG;
-        else {
-            ctx.colorBG = ctx.DEFAULT_COLOR_BG;
-        }
-        collider.setUp();
     };
 
 

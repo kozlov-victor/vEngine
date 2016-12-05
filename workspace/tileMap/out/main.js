@@ -150,6 +150,7 @@ modules['behaviour'] = {code: function(module,exports){
 	var keyboard = require('keyboard').instance();
 	var animations = {};
 	
+	
 	var _stop = function(lastDirection){
 	    self.stopFrAnimations();
 	    self.vel.x = 0;
@@ -171,7 +172,8 @@ modules['behaviour'] = {code: function(module,exports){
 	    parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
 	});
 	
-	function onUpdate(){
+	
+	exports.onUpdate = function(){
 	    if (keyboard.isPressed(keyboard.KEY_UP)) {
 	        self.vel.y = -parameters.velocity;
 	        _go('Up');
@@ -198,7 +200,7 @@ modules['behaviour'] = {code: function(module,exports){
 	    } else if (keyboard.isJustReleased(keyboard.KEY_DOWN)) {
 	        _stop('Down');
 	    }
-	}
+	};
 	}
 	
 	commonBehaviour['draggable'] = function(exports,parameters){
@@ -322,7 +324,6 @@ modules['behaviour'] = {code: function(module,exports){
 	
 	btnUp.
 	on(['mouseDown','mouseEnter'],function(){
-	    console.log('btn up!')
 	    keyboard.emulatePress(keyboard.KEY_UP);
 	}).
 	on(['mouseUp','mouseLeave'],function(){
@@ -364,7 +365,6 @@ modules['behaviour'] = {code: function(module,exports){
 modules['collider'] = {code: function(module,exports){
 	
 	var mathEx = require('mathEx');
-	var game = require('game').instance();
 	
 	var Collider = function(){
 	
@@ -372,7 +372,7 @@ modules['collider'] = {code: function(module,exports){
 	    var scene;
 	
 	    this.setUp = function(){
-	        scene = game.getCurrScene();
+	        scene = require('game').instance().getCurrScene();
 	        gos = scene.getAllGameObjects();
 	    };
 	
@@ -923,10 +923,15 @@ modules['device'] = {code: function(module,exports){
 modules['game'] = {code: function(module,exports){
 	
 	var ResourceLoader = require('resourceLoader').ResourceLoader;
+	var collider = require('collider').instance();
+	// var bundle = require('bundle').instance();
+	var keyboard = require('keyboard').instance();
+	var camera = require('camera').instance();
 	
 	var Game = function(){
 	
 	    var self = this;
+	    var ctx = null;
 	
 	    var renderer;
 	    var bundle;
@@ -974,7 +979,6 @@ modules['game'] = {code: function(module,exports){
 	
 	        if (progressScene) {
 	            self.currScene = progressScene;
-	            renderer.setScene(progressScene);
 	            bundle.applyBehaviourForScene(progressScene);
 	        }
 	
@@ -982,7 +986,11 @@ modules['game'] = {code: function(module,exports){
 	        loader.onComplete = function(){
 	            self.currScene = scene;
 	            bundle.applyBehaviourForScene(scene);
-	            renderer.setScene(scene);
+	            collider.setUp();
+	            if (scene.useBG) ctx.colorBG = scene.colorBG;
+	            else {
+	                ctx.colorBG = ctx.DEFAULT_COLOR_BG;
+	            }
 	            scene.onShow();
 	        };
 	        loader.onProgress = function(e){
@@ -1003,6 +1011,10 @@ modules['game'] = {code: function(module,exports){
 	            loader.loadSound(snd.resourcePath,snd.name);
 	        });
 	        loader.start();
+	    };
+	
+	    this.setCtx = function(_ctx){
+	        ctx = _ctx;
 	    };
 	
 	    this.setScene = function(scene){
@@ -1031,11 +1043,18 @@ modules['game'] = {code: function(module,exports){
 	    };
 	
 	    this.update = function(currTime,deltaTime){
+	        if (!this.currScene) return;
 	        tweenMovies.forEach(function(tweenMovie){
 	            if (tweenMovie.completed) {
 	                tweenMovies.remove(tweenMovie);
 	            }
 	            tweenMovie._update(currTime);
+	        });
+	        this.currScene.update(currTime,deltaTime);
+	        camera.update(ctx);
+	        keyboard.update();
+	        bundle.particleSystemList.forEach(function(p){
+	            p.update(currTime,deltaTime);
 	        });
 	    };
 	
@@ -3230,26 +3249,22 @@ modules['camera'] = {code: function(module,exports){
 
 modules['renderer'] = {code: function(module,exports){
 	
-	var bundle = require('bundle').instance();
-	var collider = require('collider').instance();
-	var keyboard = require('keyboard').instance();
+	
 	var glContext = require('glContext').instance();
 	var canvasContext = require('canvasContext').instance();
 	var resourceCache = require('resourceCache');
-	var camera = require('camera').instance();
+	var bundle = require('bundle').instance();
 	var game = require('game').instance();
 	
 	var Renderer = function(){
 	
 	    var canvas;
 	    var ctx;
-	    var scene;
 	    var self = this;
 	    var currTime = 0;
 	    var lastTime = 0;
 	    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 	    var gameProps;
-	
 	
 	
 	    this.getContext = function(){
@@ -3269,6 +3284,7 @@ modules['renderer'] = {code: function(module,exports){
 	        }
 	        ctx = glContext;
 	        //ctx = canvasContext;
+	        game.setCtx(ctx);
 	        require('scaleManager').instance(canvas,ctx).manage();
 	        ctx.init(canvas);
 	
@@ -3294,8 +3310,6 @@ modules['renderer'] = {code: function(module,exports){
 	
 	        reqAnimFrame(drawScene);
 	
-	        if (!scene) return;
-	
 	        lastTime = currTime;
 	        currTime = Date.now();
 	        var deltaTime = lastTime ? currTime - lastTime : 0;
@@ -3303,26 +3317,10 @@ modules['renderer'] = {code: function(module,exports){
 	        ctx.beginFrameBuffer();
 	        ctx.clear();
 	
-	        game.update(currTime);
-	        camera.update(ctx);
-	        scene.update(currTime,deltaTime);
-	        bundle.particleSystemList.forEach(function(p){
-	            p.update(currTime,deltaTime);
-	        });
+	        game.update(currTime,deltaTime);
 	
 	        ctx.flipFrameBuffer();
 	
-	
-	        keyboard.update();
-	    };
-	
-	    this.setScene = function(_scene){
-	        scene = _scene;
-	        if (scene.useBG) ctx.colorBG = scene.colorBG;
-	        else {
-	            ctx.colorBG = ctx.DEFAULT_COLOR_BG;
-	        }
-	        collider.setUp();
 	    };
 	
 	

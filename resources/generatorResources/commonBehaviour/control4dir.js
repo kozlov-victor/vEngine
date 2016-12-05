@@ -16,6 +16,7 @@
 var keyboard = require('keyboard').instance();
 var animations = {};
 
+
 var _stop = function(lastDirection){
     self.stopFrAnimations();
     self.vel.x = 0;
@@ -37,7 +38,8 @@ dirs.forEach(function(dir){
     parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
 });
 
-function onUpdate(){
+
+exports.onUpdate = function(){
     if (keyboard.isPressed(keyboard.KEY_UP)) {
         self.vel.y = -parameters.velocity;
         _go('Up');
@@ -64,4 +66,4 @@ function onUpdate(){
     } else if (keyboard.isJustReleased(keyboard.KEY_DOWN)) {
         _stop('Down');
     }
-}
+};

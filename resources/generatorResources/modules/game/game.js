@@ -1,9 +1,14 @@
 
 var ResourceLoader = require('resourceLoader').ResourceLoader;
+var collider = require('collider').instance();
+// var bundle = require('bundle').instance();
+var keyboard = require('keyboard').instance();
+var camera = require('camera').instance();
 
 var Game = function(){
 
     var self = this;
+    var ctx = null;
 
     var renderer;
     var bundle;
@@ -51,7 +56,6 @@ var Game = function(){
 
         if (progressScene) {
             self.currScene = progressScene;
-            renderer.setScene(progressScene);
             bundle.applyBehaviourForScene(progressScene);
         }
 
@@ -59,7 +63,11 @@ var Game = function(){
         loader.onComplete = function(){
             self.currScene = scene;
             bundle.applyBehaviourForScene(scene);
-            renderer.setScene(scene);
+            collider.setUp();
+            if (scene.useBG) ctx.colorBG = scene.colorBG;
+            else {
+                ctx.colorBG = ctx.DEFAULT_COLOR_BG;
+            }
             scene.onShow();
         };
         loader.onProgress = function(e){
@@ -80,6 +88,10 @@ var Game = function(){
             loader.loadSound(snd.resourcePath,snd.name);
         });
         loader.start();
+    };
+
+    this.setCtx = function(_ctx){
+        ctx = _ctx;
     };
 
     this.setScene = function(scene){
@@ -108,11 +120,18 @@ var Game = function(){
     };
 
     this.update = function(currTime,deltaTime){
+        if (!this.currScene) return;
         tweenMovies.forEach(function(tweenMovie){
             if (tweenMovie.completed) {
                 tweenMovies.remove(tweenMovie);
             }
             tweenMovie._update(currTime);
+        });
+        this.currScene.update(currTime,deltaTime);
+        camera.update(ctx);
+        keyboard.update();
+        bundle.particleSystemList.forEach(function(p){
+            p.update(currTime,deltaTime);
         });
     };
 

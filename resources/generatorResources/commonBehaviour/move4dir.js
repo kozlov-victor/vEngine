@@ -65,6 +65,3 @@ var _go = function(direction){
             break;
     }
 };
-
-
-function onUpdate(){}

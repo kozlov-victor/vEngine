@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<script>
+
+    var points;
+    var canvasWidth = 1000, canvasHeight = 600;
+    var initializePoints = function () {
+        var offsetX = canvasWidth / 5;
+        points = [{x:0,y:0}];// [{x:12,y:12},{x:12,y:33},{x:900,y:900}];
+        points.push({x: offsetX, y: canvasHeight / 2});
+        points.push({x: offsetX * 2, y: canvasHeight / 2 - canvasHeight / 4});
+        points.push({x: offsetX * 3, y: canvasHeight / 2 + canvasHeight / 4});
+        points.push({x: offsetX * 4, y: canvasHeight / 2});
+        points.push({x: 600, y: 200});
+        points.push({x:660,y:660});
+    };
+
+    var lagrange = function (n, k, t) {
+        var l = 1.0, ti, tk;
+        tk = k / (n - 1.0);
+        for (var i = 0; i < n; i++) {
+            if (i != k) {
+                ti = i / (n - 1.0);
+                l *= ((t - ti) / (tk - ti));
+            }
+        }
+        return l;
+    };
+
+    var getCurrPos = function (t) {
+        var result = {x: 0, y: 0};
+        for (var i = 0; i < points.length; i++) {
+            var l = lagrange(points.length, i, t);
+            result.x += l * points[i].x;
+            result.y += l * points[i].y;
+        }
+        return result;
+    };
+
+    var c = document.createElement('canvas');
+    c.width = canvasWidth;
+    c.height = canvasHeight;
+
+    document.body.appendChild(c);
+    var context = c.getContext('2d');
+
+    var draw = function () {
+        context.moveTo(points[0].x, points[0].y);
+        var t = 0.0;
+        for (t = 0; t <= 1; t += 0.01) {
+            var next = getCurrPos(t);
+            context.lineTo(next.x, next.y);
+        }
+        context.stroke();
+        for (var i = 0; i < points.length; i++) {
+            context.beginPath();
+            context.rect(points[i].x - 3, points[i].y - 3, 6, 6);
+            context.fillStyle = "#f00";
+            context.fill();
+            context.closePath();
+        }
+
+    };
+
+    initializePoints();
+    var t = 0;
+    setInterval(function(){
+        draw();
+        var next = getCurrPos(t);
+        console.log(next)
+        t+=0.01;
+        context.beginPath();
+        context.rect(next.x, next.y, 6, 6);
+        context.fillStyle = "#f0";
+        context.fill();
+        context.closePath();
+    },100);
+
+//    this.fillRect = function (x, y, w, h, color) {
+//        simpleTextureShader.setUniform('u_matrix',createPositionMatrix(x, y, w, h));
+//        gl.drawArrays(gl.TRIANGLES, 0, 6);
+//    };
+//
+//    this.strokeRect = function (x, y, w, h, color) {
+//        this.fillRect(x, y, w, 1, color);
+//        this.fillRect(x, y + h, w, 1, color);
+//        this.fillRect(x, y, 1, h, color);
+//        this.fillRect(x + w, y, 1, h, color);
+//    };
+//
+//    this.point = function (x, y, color) {
+//        this.fillRect(x, y, 1, 1, color);
+//    };
+
+</script>
+
+</body>
+</html>
+
+
+

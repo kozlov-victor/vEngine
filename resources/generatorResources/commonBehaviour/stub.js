@@ -3,7 +3,7 @@
  exports.description = 'Stub for commonBehaviour';
  */
 
-function onUpdate(){
+exports.onUpdate = function(){
 
-}
+};
 

@@ -24,7 +24,7 @@ exports.ResourceLoader = function(){
                 bundle.embeddedResources.data[resourcePath]:
                 resourcePath;
             renderer.
-                getContext().
+                getContextClass().
                 loadTextureInfo(
                 path,
                 {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},

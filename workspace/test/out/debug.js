@@ -41,7 +41,7 @@
             var rightBox = document.createElement('div');
             rightBox.style.cssText = 'width:10%;display:inline-block;cursor:pointer;text-align:right;vertical-align:top;';
             rightBox.textContent = 'x';
-            rightBox.onclick = function(){
+            rightBox.ontouchstart  = rightBox.onclick = function(){
                 popup.remove();
             };
             leftBox.innerHTML = (e && e.message)?e.message:e;
@@ -68,6 +68,7 @@
         console.error(e);
         window.showError(e,lineNum);
         window.canceled = true;
+        window.require && window.require('audioPlayer') && (window.require('audioPlayer').instance().stopAll());
     });
 
 })();

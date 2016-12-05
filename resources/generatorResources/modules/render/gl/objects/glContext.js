@@ -10,7 +10,13 @@ var bundle = require('bundle').instance();
 var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 
-var GlContext = function(){
+var getCtx = (function(){
+    var el = document.createElement('canvas');
+    if (!el) return null;
+    return el.getContext("webgl");
+})();
+
+exports.GlContext = require('class').Class.extend(function(it){
 
     var gl;
     var mScaleX = 1, mScaleY = 1;
@@ -20,10 +26,9 @@ var GlContext = function(){
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
-    this.DEFAULT_COLOR_BG = [255,255,255];
-    this.colorBG = this.DEFAULT_COLOR_BG;
+    it.colorBG = [255,255,255];
 
-    this.init = function(canvas){
+    it.init = function(canvas){
 
         gameProps = bundle.gameProps;
         gl = canvas.getContext("webgl",{ alpha: false });
@@ -63,49 +68,11 @@ var GlContext = function(){
     };
 
 
-    this.setAlpha = function(alpha) {
+    it.setAlpha = function(alpha) {
         shader.setUniform('u_alpha',alpha);
     };
 
-    var arrayBufferToBase64 = function(buffer) {
-        var bytes = new Uint8Array(buffer);
-        var rawArr = [];
-        for (var i=0;i<bytes.length;i++){
-            var b = bytes[i];
-            rawArr.push(b);
-        }
-        return require('base64').fromByteArray(rawArr);
-    };
-
-    this.loadTextureInfo = function(url,opts,progress,callBack) {
-        if (cache.has(url)) {
-            callBack(cache.get(url));
-            return;
-        }
-
-        var img = new Image();
-        var texture = new Texture(gl,img);
-
-        if (opts.type=='base64') {
-            url = utils.getBase64prefix('image',opts.fileName) + url;
-            img.src = url;
-            texture.apply(img);
-            callBack(texture);
-            return;
-        }
-
-        utils.loadBinary(url,progress,function(buffer){
-            var base64String = arrayBufferToBase64(buffer);
-            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
-            img.onload = function(){
-                texture.apply(img);
-                callBack(texture);
-            };
-            img.src = base64String;
-        });
-    };
-
-    this.getError = function(){
+    it.getError = function(){
         return 0;
         var err = gl.getError();
         return err==gl.NO_ERROR?0:err;
@@ -143,7 +110,7 @@ var GlContext = function(){
     
     var currTex = null;
 
-    this.drawImage = function(
+    it.drawImage = function(
         texture,
         srcX, srcY, srcWidth, srcHeight,
         dstX, dstY) {
@@ -192,48 +159,48 @@ var GlContext = function(){
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
 
-    this.clear = function() {
+    it.clear = function() {
         //gl.colorMask(false, false, false, true);
-        gl.clearColor(this.colorBG[0]/255,this.colorBG[1]/255,this.colorBG[2]/255,1);
+        gl.clearColor(it.colorBG[0]/255,it.colorBG[1]/255,it.colorBG[2]/255,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
     };
 
-    this.save = function() {
+    it.save = function() {
         matrixStack.save();
     };
 
-    this.scale = function(x,y) {
+    it.scale = function(x,y) {
         matrixStack.scale(x,y);
     };
 
-    this.rotateZ = function(angleInRadians) {
+    it.rotateZ = function(angleInRadians) {
         matrixStack.rotateZ(angleInRadians);
     };
 
-    this.rotateY = function(angleInRadians) {
+    it.rotateY = function(angleInRadians) {
         matrixStack.rotateY(angleInRadians);
     };
 
-    this.translate = function(x,y){
+    it.translate = function(x,y){
         matrixStack.translate(x,y);
     };
 
-    this.restore = function(){
+    it.restore = function(){
         matrixStack.restore();
     };
 
-    this.rescaleView = function(scaleX,scaleY){
+    it.rescaleView = function(scaleX,scaleY){
         mScaleX = scaleX;
         mScaleY = scaleY;
     };
 
-    this.beginFrameBuffer = function(){
+    it.beginFrameBuffer = function(){
         this.save();
         gl.viewport(0, 0, gameProps.width, gameProps.height);
         frameBuffer.bind();
     };
 
-    this.flipFrameBuffer = function(){
+    it.flipFrameBuffer = function(){
         currTex = null;
         this.restore();
         this.save();
@@ -276,14 +243,39 @@ var GlContext = function(){
         this.restore();
     };
 
+},{
+    isAcceptable: function(){
+        return !!getCtx();
+    },
+    loadTextureInfo:function(url,opts,progress,callBack) {
+        if (cache.has(url)) {
+            callBack(cache.get(url));
+            return;
+        }
+
+        var img = new Image();
+        var texture = new Texture(gl, img);
+
+        if (opts.type == 'base64') {
+            url = utils.getBase64prefix('image', opts.fileName) + url;
+            img.src = url;
+            texture.apply(img);
+            callBack(texture);
+            return;
+        }
+
+        utils.loadBinary(url, progress, function (buffer) {
+            var base64String = utils.arrayBufferToBase64(buffer);
+            base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+            img.onload = function () {
+                texture.apply(img);
+                callBack(texture);
+            };
+            img.src = base64String;
+        });
+    }
+});
 
 
 
-};
 
-var instance = null;
-
-module.exports.instance = function(){
-    if (instance==null) instance = new GlContext();
-    return instance;
-};
