@@ -57,6 +57,7 @@ var Game = function(){
         if (progressScene) {
             self.currScene = progressScene;
             bundle.applyBehaviourForScene(progressScene);
+            renderer.setScene(progressScene);
             if (!renderer.isRunning()) renderer.start();
         }
 
@@ -65,10 +66,8 @@ var Game = function(){
             self.currScene = scene;
             bundle.applyBehaviourForScene(scene);
             collider.setUp();
-            if (scene.useBG) ctx.colorBG = scene.colorBG;
-            else {
-                ctx.colorBG = ctx.DEFAULT_COLOR_BG;
-            }
+            renderer.setScene(scene);
+            if (!renderer.isRunning()) renderer.start();
             scene.onShow();
         };
         loader.onProgress = function(e){
@@ -121,7 +120,6 @@ var Game = function(){
     };
 
     this.update = function(currTime,deltaTime){
-        if (!this.currScene) return;
         tweenMovies.forEach(function(tweenMovie){
             if (tweenMovie.completed) {
                 tweenMovies.remove(tweenMovie);

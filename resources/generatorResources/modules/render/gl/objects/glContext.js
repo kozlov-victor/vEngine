@@ -1,7 +1,7 @@
 
 var mat4 = require('mat4');
 var utils = require('utils');
-var Shader = require('shader').Shader;
+var ShaderProgram = require('shaderProgram').ShaderProgram;
 var VertexBuffer = require('vertexBuffer').VertexBuffer;
 var Texture = require('texture').Texture;
 var MatrixStack = require('matrixStack').MatrixStack;
@@ -10,37 +10,38 @@ var bundle = require('bundle').instance();
 var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 
-var getCtx = (function(){
-    var el = document.createElement('canvas');
+var getCtx = function(el){
+    if (!el) el = document.createElement('canvas');
     if (!el) return null;
-    return el.getContext("webgl");
-})();
+    return el.getContext("webgl",{ alpha: false });
+};
 
 exports.GlContext = require('class').Class.extend(function(it){
 
     var gl;
     var mScaleX = 1, mScaleY = 1;
-    var shader;
+    var commonShaderPrg;
     var posVertexBuffer;
     var texVertexBuffer;
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
-    it.colorBG = [255,255,255];
+    var colorBGDefault = [255,255,255];
+    var scene = null;
 
     it.init = function(canvas){
 
         gameProps = bundle.gameProps;
-        gl = canvas.getContext("webgl",{ alpha: false });
+        gl = getCtx(canvas);
         window.gl = gl;
-        shader = new Shader(gl, [
+        commonShaderPrg = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
             bundle.shaders.basic['fragment.frag']
         ]);
-        shader.bind();
-        shader.setUniform('u_alpha',1);
+        commonShaderPrg.bind();
+        commonShaderPrg.setUniform('u_alpha',1);
 
-        posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
         posVertexBuffer.bind([
             0, 0,
             0, 1,
@@ -50,7 +51,7 @@ exports.GlContext = require('class').Class.extend(function(it){
             1, 1
         ],2,'a_position');
 
-        texVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
         posVertexBuffer.bind([
             0, 0,
             0, 1,
@@ -67,9 +68,12 @@ exports.GlContext = require('class').Class.extend(function(it){
 
     };
 
+    it.setScene = function(_scene){
+        scene = _scene;
+    };
 
     it.setAlpha = function(alpha) {
-        shader.setUniform('u_alpha',alpha);
+        commonShaderPrg.setUniform('u_alpha',alpha);
     };
 
     it.getError = function(){
@@ -137,23 +141,18 @@ exports.GlContext = require('class').Class.extend(function(it){
             currTex = texture;
         }
 
+        // Set the texture matrix.
+        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
 
         // Set the matrix.
-        //console.log(gameProps);
-        shader.setUniform("u_matrix",makePositionMatrix(
+        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
                 gameProps.width,gameProps.height,1,1
             )
         );
 
-        // Set the texture matrix.
-        shader.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-
-        if (texWidth==64) {
-            //gl.blendFunc(gl.ONE, gl.ONE);
-        } else {
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        }
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.ONE, gl.ONE);
 
         // draw the quad (2 triangles, 6 vertices)
         gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -161,9 +160,39 @@ exports.GlContext = require('class').Class.extend(function(it){
 
     it.clear = function() {
         //gl.colorMask(false, false, false, true);
-        gl.clearColor(it.colorBG[0]/255,it.colorBG[1]/255,it.colorBG[2]/255,1);
+        var col = scene.useBG?scene.colorBG:colorBGDefault;
+        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
     };
+
+    it.fillRect = function (x, y, w, h, color) {
+
+        // Set the matrix.
+        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+                x,y,w,h,
+                gameProps.width,gameProps.height,1,1
+            )
+        );
+
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.ONE, gl.ONE);
+
+        // draw the quad (2 triangles, 6 vertices)
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+    };
+
+    //it.strokeRect = function (x, y, w, h, color) {
+    //    this.fillRect(x, y, w, 1, color);
+    //    this.fillRect(x, y + h, w, 1, color);
+    //    this.fillRect(x, y, 1, h, color);
+    //    this.fillRect(x + w, y, 1, h, color);
+    //};
+    //
+    //it.point = function (x, y, color) {
+    //    this.fillRect(x, y, 1, 1, color);
+    //};
 
     it.save = function() {
         matrixStack.save();
@@ -212,7 +241,7 @@ exports.GlContext = require('class').Class.extend(function(it){
         gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-            shader.setUniform('u_matrix',
+            commonShaderPrg.setUniform('u_matrix',
                 makePositionMatrix(
                     gameProps.globalScale.left,gameProps.globalScale.top,
                     gameProps.width, gameProps.height,
@@ -221,7 +250,7 @@ exports.GlContext = require('class').Class.extend(function(it){
                 )
             );
         } else {
-            shader.setUniform('u_matrix',
+            commonShaderPrg.setUniform('u_matrix',
                 makePositionMatrix(
                     0,0,
                     gameProps.width, gameProps.height,
@@ -231,7 +260,7 @@ exports.GlContext = require('class').Class.extend(function(it){
             );
         }
 
-        shader.setUniform('u_textureMatrix',
+        commonShaderPrg.setUniform('u_textureMatrix',
             makeTextureMatrix(
                 0,0,gameProps.canvasWidth,gameProps.canvasHeight,
                 gameProps.canvasWidth,gameProps.canvasHeight
@@ -254,6 +283,7 @@ exports.GlContext = require('class').Class.extend(function(it){
         }
 
         var img = new Image();
+        //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
         var texture = new Texture(gl, img);
 
         if (opts.type == 'base64') {
@@ -265,13 +295,19 @@ exports.GlContext = require('class').Class.extend(function(it){
         }
 
         utils.loadBinary(url, progress, function (buffer) {
-            var base64String = utils.arrayBufferToBase64(buffer);
-            base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+            if (window.Blob && window.URL) {
+                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+                img.src = URL.createObjectURL(blob);
+            } else {
+                var base64String = utils.arrayBufferToBase64(buffer);
+                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+                img.src = base64String;
+            }
             img.onload = function () {
                 texture.apply(img);
                 callBack(texture);
             };
-            img.src = base64String;
+
         });
     }
 });

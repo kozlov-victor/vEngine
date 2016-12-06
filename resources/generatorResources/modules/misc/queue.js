@@ -1,11 +1,10 @@
 exports.Queue = function(){
     var self = this;
     this.size = function(){
-        return tasksTotal;
+        return tasks.length;
     };
     this.onResolved = null;
     this.onProgress = null;
-    var tasksTotal = 0;
     var tasksResolved = 0;
     var tasks = [];
     var tasksProgressById = {};
@@ -15,12 +14,11 @@ exports.Queue = function(){
         Object.keys(tasksProgressById).forEach(function(taskId){
             sum+=tasksProgressById[taskId]||0;
         });
-        return sum/tasksTotal;
+        return sum/tasks.length;
     };
 
     this.addTask = function(taskFn,taskId) {
         tasks.push(taskFn);
-        tasksTotal++;
         tasksProgressById[taskId] = 0;
     };
     this.progressTask = function(taskId,progress){
@@ -30,7 +28,7 @@ exports.Queue = function(){
     this.resolveTask = function(taskId){
         tasksResolved++;
         tasksProgressById[taskId] = 1;
-        if (tasksTotal==tasksResolved) {
+        if (tasks.length==tasksResolved) {
             this.onProgress && this.onProgress(1);
             if (self.onResolved) self.onResolved();
         } else {

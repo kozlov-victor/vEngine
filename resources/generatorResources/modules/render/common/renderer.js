@@ -38,7 +38,10 @@ var Renderer = function(){
             canvas = document.createElement('canvas');
             document.body.appendChild(canvas);
         }
-        ctxClass = GlContext;
+        ctxClass = null;
+        if (GlContext.isAcceptable()) ctxClass = GlContext;
+        else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+        else throw "can not create rendering context";
         ctx = new ctxClass();
         //ctx = canvasContext;
         game.setCtx(ctx);
@@ -62,6 +65,10 @@ var Renderer = function(){
 
     this.isRunning = function() {
         return isRunning;
+    };
+
+    this.setScene = function(scene){
+        ctx.setScene(scene);
     };
 
     var drawSceneLoop = function(){
@@ -91,7 +98,7 @@ var Renderer = function(){
     this.printText = function(x,y,text,font){
         if (!text) return;
         font = font || bundle.fontList.get(0);
-        if (!font) throw 'at least one font must be specified. Create new one please';
+        //<code><%if (opts.debug){%>if (!font) throw 'at least one font must be specified. Create new one please';<%}%>
         var posX = x;
         var oldPosX = x;
         var posY = y;

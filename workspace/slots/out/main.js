@@ -1071,6 +1071,7 @@ modules['game'] = {code: function(module,exports){
 	        if (progressScene) {
 	            self.currScene = progressScene;
 	            bundle.applyBehaviourForScene(progressScene);
+	            renderer.setScene(progressScene);
 	            if (!renderer.isRunning()) renderer.start();
 	        }
 	
@@ -1079,10 +1080,8 @@ modules['game'] = {code: function(module,exports){
 	            self.currScene = scene;
 	            bundle.applyBehaviourForScene(scene);
 	            collider.setUp();
-	            if (scene.useBG) ctx.colorBG = scene.colorBG;
-	            else {
-	                ctx.colorBG = ctx.DEFAULT_COLOR_BG;
-	            }
+	            renderer.setScene(scene);
+	            if (!renderer.isRunning()) renderer.start();
 	            scene.onShow();
 	        };
 	        loader.onProgress = function(e){
@@ -1135,7 +1134,6 @@ modules['game'] = {code: function(module,exports){
 	    };
 	
 	    this.update = function(currTime,deltaTime){
-	        if (!this.currScene) return;
 	        tweenMovies.forEach(function(tweenMovie){
 	            if (tweenMovie.completed) {
 	                tweenMovies.remove(tweenMovie);
@@ -2162,11 +2160,10 @@ modules['queue'] = {code: function(module,exports){
 	exports.Queue = function(){
 	    var self = this;
 	    this.size = function(){
-	        return tasksTotal;
+	        return tasks.length;
 	    };
 	    this.onResolved = null;
 	    this.onProgress = null;
-	    var tasksTotal = 0;
 	    var tasksResolved = 0;
 	    var tasks = [];
 	    var tasksProgressById = {};
@@ -2176,12 +2173,11 @@ modules['queue'] = {code: function(module,exports){
 	        Object.keys(tasksProgressById).forEach(function(taskId){
 	            sum+=tasksProgressById[taskId]||0;
 	        });
-	        return sum/tasksTotal;
+	        return sum/tasks.length;
 	    };
 	
 	    this.addTask = function(taskFn,taskId) {
 	        tasks.push(taskFn);
-	        tasksTotal++;
 	        tasksProgressById[taskId] = 0;
 	    };
 	    this.progressTask = function(taskId,progress){
@@ -2191,7 +2187,7 @@ modules['queue'] = {code: function(module,exports){
 	    this.resolveTask = function(taskId){
 	        tasksResolved++;
 	        tasksProgressById[taskId] = 1;
-	        if (tasksTotal==tasksResolved) {
+	        if (tasks.length==tasksResolved) {
 	            this.onProgress && this.onProgress(1);
 	            if (self.onResolved) self.onResolved();
 	        } else {
@@ -3157,24 +3153,31 @@ modules['textField'] = {code: function(module,exports){
 modules['canvasContext'] = {code: function(module,exports){
 	
 	var mat4 = require('mat4');
-	var MatrixStack = require('matrixStack').MatrixStack;
+	var utils = require('utils');
 	var bundle = require('bundle').instance();
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	var device = require('device');
+	var cache = require('resourceCache');
 	
-	var CanvasContext = function(){
+	var getCtx = function(el){
+	    if (!el) el = document.createElement('canvas');
+	    if (!el) return null;
+	    return el.getContext("2d");
+	};
+	
+	
+	exports.CanvasContext = require('class').Class.extend(function(it){
 	
 	    var ctx;
 	    var mScaleX = 1, mScaleY = 1;
 	    var gameProps;
-	    var matrixStack = new MatrixStack();
 	
-	    this.init = function(canvas) {
-	        ctx = canvas.getContext('2d');
+	    it.init = function(canvas) {
+	        ctx = getCtx(canvas);
 	        gameProps = bundle.gameProps;
 	    };
 	
-	    this.drawImage = function(
+	    it.drawImage = function(
 	        textureInfo,
 	        fromX,
 	        fromY,
@@ -3183,8 +3186,6 @@ modules['canvasContext'] = {code: function(module,exports){
 	        toX,
 	        toY
 	    ) {
-	
-	        var m;
 	
 	        ctx.drawImage(
 	            textureInfo.image,
@@ -3200,21 +3201,87 @@ modules['canvasContext'] = {code: function(module,exports){
 	
 	    };
 	
-	    var cache = {};
+	    it.clear = function(){
 	
+	        ctx.fillStyle='#ffffff';
+	        ctx.fillRect(
+	            0,
+	            0,
+	            screen.width*device.scale,
+	            screen.height*device.scale);
 	
-	    this.loadTextureInfo = function(url,opts,callBack) {
-	        if (cache.url) {
-	            callBack(cache[url]);
+	    };
+	
+	    it.save = function() {
+	        ctx.save();
+	    };
+	
+	    it.scale = function(scaleX,scaleY){
+	        ctx.scale(scaleX,scaleY);
+	    };
+	
+	    it.rotateZ = function(angleInRadians) {
+	        ctx.rotate(angleInRadians);
+	    };
+	
+	    it.rotateY = function(angleInRadians) {
+	        //
+	    };
+	
+	    it.translate = function(x,y){
+	        ctx.translate(x,y);
+	    };
+	
+	    it.restore = function(){
+	        ctx.restore();
+	    };
+	
+	    it.rescaleView = function(scaleX,scaleY){
+	        //it.scale(scaleX,scaleY);
+	    };
+	
+	    it.getError = function(){
+	
+	    };
+	
+	    it.setAlpha = function(a){
+	        ctx.globalAlpha = a;
+	    };
+	
+	    it.beginFrameBuffer = function(){
+	        ctx.save();
+	        ctx.beginPath();
+	        //ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
+	        //ctx.clip();
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
+	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+	        }
+	    };
+	
+	    it.flipFrameBuffer = function(){
+	        ctx.restore();
+	    };
+	
+	},{
+	    isAcceptable: function(){
+	        return !!getCtx();
+	    },
+	    loadTextureInfo: function(url,opts,progress,callBack) {
+	
+	        if (cache.has(url)) {
+	            callBack(cache.get(url));
 	            return;
 	        }
-	        if (opts.type=='base64') {
-	            url = utils.getBase64prefix('image',opts.fileName) + url;
-	        }
 	
-	        var img = new Image(url);
-	        img.onload = function(){
-	            var texture = {
+	        var img = new Image();
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var texture = {};
+	
+	        if (opts.type == 'base64') {
+	            url = utils.getBase64prefix('image', opts.fileName) + url;
+	            img.src = url;
+	            texture = {
 	                image:img,
 	                getSize: function(){
 	                    return {
@@ -3224,76 +3291,28 @@ modules['canvasContext'] = {code: function(module,exports){
 	                }
 	            };
 	            callBack(texture);
-	        };
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
-	        img.src = url;
-	    };
-	
-	    this.clear = function(){
-	
-	        ctx.fillStyle="#000000";
-	        ctx.fillRect(
-	            0,
-	            0,
-	            screen.width*device.scale,
-	            screen.height*device.scale);
-	
-	    };
-	
-	    this.save = function() {
-	        ctx.save();
-	    };
-	
-	    this.scale = function(scaleX,scaleY){
-	        ctx.scale(scaleX,scaleY);
-	    };
-	
-	    this.rotateZ = function(angleInRadians) {
-	        ctx.rotate(angleInRadians);
-	    };
-	
-	    this.rotateY = function(angleInRadians) {
-	        //
-	    };
-	
-	    this.translate = function(x,y){
-	        ctx.translate(x,y);
-	    };
-	
-	    this.restore = function(){
-	        ctx.restore();
-	    };
-	
-	    this.rescaleView = function(scaleX,scaleY){
-	        mScaleX = scaleX;
-	        mScaleY = scaleY;
-	    };
-	
-	    this.beginFrameBuffer = function(){
-	        ctx.save();
-	        ctx.beginPath();
-	        ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
-	        ctx.clip();
-	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
-	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
-	
-	
+	            return;
 	        }
-	    };
 	
-	    this.flipFrameBuffer = function(){
-	        ctx.restore();
-	    };
-	
-	};
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new CanvasContext();
-	    return instance;
-	};
+	        utils.loadBinary(url, progress, function (buffer) {
+	            var base64String = utils.arrayBufferToBase64(buffer);
+	            base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	            img.onload = function () {
+	                texture = {
+	                    image:img,
+	                    getSize: function(){
+	                        return {
+	                            width:img.width,
+	                            height:img.height
+	                        }
+	                    }
+	                };
+	                callBack(texture);
+	            };
+	            img.src = base64String;
+	        });
+	    }
+	});
 }};
 
 modules['camera'] = {code: function(module,exports){
@@ -3389,7 +3408,10 @@ modules['renderer'] = {code: function(module,exports){
 	            canvas = document.createElement('canvas');
 	            document.body.appendChild(canvas);
 	        }
-	        ctxClass = GlContext;
+	        ctxClass = null;
+	        if (GlContext.isAcceptable()) ctxClass = GlContext;
+	        else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+	        else throw "can not create rendering context";
 	        ctx = new ctxClass();
 	        //ctx = canvasContext;
 	        game.setCtx(ctx);
@@ -3413,6 +3435,10 @@ modules['renderer'] = {code: function(module,exports){
 	
 	    this.isRunning = function() {
 	        return isRunning;
+	    };
+	
+	    this.setScene = function(scene){
+	        ctx.setScene(scene);
 	    };
 	
 	    var drawSceneLoop = function(){
@@ -3671,7 +3697,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	var mat4 = require('mat4');
 	var utils = require('utils');
-	var Shader = require('shader').Shader;
+	var ShaderProgram = require('shaderProgram').ShaderProgram;
 	var VertexBuffer = require('vertexBuffer').VertexBuffer;
 	var Texture = require('texture').Texture;
 	var MatrixStack = require('matrixStack').MatrixStack;
@@ -3680,37 +3706,38 @@ modules['glContext'] = {code: function(module,exports){
 	var cache = require('resourceCache');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	
-	var getCtx = (function(){
-	    var el = document.createElement('canvas');
+	var getCtx = function(el){
+	    if (!el) el = document.createElement('canvas');
 	    if (!el) return null;
-	    return el.getContext("webgl");
-	})();
+	    return el.getContext("webgl",{ alpha: false });
+	};
 	
 	exports.GlContext = require('class').Class.extend(function(it){
 	
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
-	    var shader;
+	    var commonShaderPrg;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
-	    it.colorBG = [255,255,255];
+	    var colorBGDefault = [255,255,255];
+	    var scene = null;
 	
 	    it.init = function(canvas){
 	
 	        gameProps = bundle.gameProps;
-	        gl = canvas.getContext("webgl",{ alpha: false });
+	        gl = getCtx(canvas);
 	        window.gl = gl;
-	        shader = new Shader(gl, [
+	        commonShaderPrg = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
 	        ]);
-	        shader.bind();
-	        shader.setUniform('u_alpha',1);
+	        commonShaderPrg.bind();
+	        commonShaderPrg.setUniform('u_alpha',1);
 	
-	        posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
 	        posVertexBuffer.bind([
 	            0, 0,
 	            0, 1,
@@ -3720,7 +3747,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_position');
 	
-	        texVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+	        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
 	        posVertexBuffer.bind([
 	            0, 0,
 	            0, 1,
@@ -3737,9 +3764,12 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    };
 	
+	    it.setScene = function(_scene){
+	        scene = _scene;
+	    };
 	
 	    it.setAlpha = function(alpha) {
-	        shader.setUniform('u_alpha',alpha);
+	        commonShaderPrg.setUniform('u_alpha',alpha);
 	    };
 	
 	    it.getError = function(){
@@ -3807,23 +3837,18 @@ modules['glContext'] = {code: function(module,exports){
 	            currTex = texture;
 	        }
 	
+	        // Set the texture matrix.
+	        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
 	
 	        // Set the matrix.
-	        //console.log(gameProps);
-	        shader.setUniform("u_matrix",makePositionMatrix(
+	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
 	
-	        // Set the texture matrix.
-	        shader.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	
-	        if (texWidth==64) {
-	            //gl.blendFunc(gl.ONE, gl.ONE);
-	        } else {
-	            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        }
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
 	        // draw the quad (2 triangles, 6 vertices)
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -3831,9 +3856,39 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    it.clear = function() {
 	        //gl.colorMask(false, false, false, true);
-	        gl.clearColor(it.colorBG[0]/255,it.colorBG[1]/255,it.colorBG[2]/255,1);
+	        var col = scene.useBG?scene.colorBG:colorBGDefault;
+	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
 	        gl.clear(gl.COLOR_BUFFER_BIT);
 	    };
+	
+	    it.fillRect = function (x, y, w, h, color) {
+	
+	        // Set the matrix.
+	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+	                x,y,w,h,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendFunc(gl.ONE, gl.ONE);
+	
+	        // draw the quad (2 triangles, 6 vertices)
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	    };
+	
+	    //it.strokeRect = function (x, y, w, h, color) {
+	    //    this.fillRect(x, y, w, 1, color);
+	    //    this.fillRect(x, y + h, w, 1, color);
+	    //    this.fillRect(x, y, 1, h, color);
+	    //    this.fillRect(x + w, y, 1, h, color);
+	    //};
+	    //
+	    //it.point = function (x, y, color) {
+	    //    this.fillRect(x, y, 1, 1, color);
+	    //};
 	
 	    it.save = function() {
 	        matrixStack.save();
@@ -3882,7 +3937,7 @@ modules['glContext'] = {code: function(module,exports){
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            shader.setUniform('u_matrix',
+	            commonShaderPrg.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
 	                    gameProps.width, gameProps.height,
@@ -3891,7 +3946,7 @@ modules['glContext'] = {code: function(module,exports){
 	                )
 	            );
 	        } else {
-	            shader.setUniform('u_matrix',
+	            commonShaderPrg.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
 	                    gameProps.width, gameProps.height,
@@ -3901,7 +3956,7 @@ modules['glContext'] = {code: function(module,exports){
 	            );
 	        }
 	
-	        shader.setUniform('u_textureMatrix',
+	        commonShaderPrg.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
 	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
 	                gameProps.canvasWidth,gameProps.canvasHeight
@@ -3924,6 +3979,7 @@ modules['glContext'] = {code: function(module,exports){
 	        }
 	
 	        var img = new Image();
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
 	        var texture = new Texture(gl, img);
 	
 	        if (opts.type == 'base64') {
@@ -3935,13 +3991,19 @@ modules['glContext'] = {code: function(module,exports){
 	        }
 	
 	        utils.loadBinary(url, progress, function (buffer) {
-	            var base64String = utils.arrayBufferToBase64(buffer);
-	            base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	            if (window.Blob && window.URL) {
+	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+	                img.src = URL.createObjectURL(blob);
+	            } else {
+	                var base64String = utils.arrayBufferToBase64(buffer);
+	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	                img.src = base64String;
+	            }
 	            img.onload = function () {
 	                texture.apply(img);
 	                callBack(texture);
 	            };
-	            img.src = base64String;
+	
 	        });
 	    }
 	});
@@ -4017,7 +4079,7 @@ modules['matrixStack'] = {code: function(module,exports){
 	};
 }};
 
-modules['shader'] = {code: function(module,exports){
+modules['shaderProgram'] = {code: function(module,exports){
 	function compileShader(gl, shaderSource, shaderType) {
 	    // Create the shader object
 	    var shader = gl.createShader(shaderType);
@@ -4166,7 +4228,7 @@ modules['shader'] = {code: function(module,exports){
 	};
 	
 	
-	exports.Shader = function(gl,sources){
+	exports.ShaderProgram = function(gl,sources){
 	
 	    var program;
 	    var uniforms;
@@ -7482,12 +7544,15 @@ modules['index'] = {code: function(module,exports){
 	            }
 	        ],
 	        "colorBG": [
-	            0,
-	            136,
-	            0
+	            243,
+	            255,
+	            243
 	        ],
 	        "id": "2590_5247_34",
-	        "useBG": 0
+	        "useBG": 1,
+	        "alpha": 1,
+	        "width": 0,
+	        "height": 0
 	    },
 	    {
 	        "tileMap": {
