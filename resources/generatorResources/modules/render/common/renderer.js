@@ -16,6 +16,7 @@ var Renderer = function(){
     var lastTime = 0;
     var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
     var gameProps;
+    var isRunning = false;
 
 
     this.getContext = function(){
@@ -43,9 +44,11 @@ var Renderer = function(){
         game.setCtx(ctx);
         require('scaleManager').instance(canvas,ctx).manage();
         ctx.init(canvas);
+    };
 
-        drawScene();
-
+    this.start = function(){
+        drawSceneLoop();
+        isRunning = true;
     };
 
     this.getCanvas = function(){
@@ -54,9 +57,14 @@ var Renderer = function(){
 
     this.cancel = function(){
         window.canceled = true;
+        isRunning = false;
     };
 
-    var drawScene = function(){
+    this.isRunning = function() {
+        return isRunning;
+    };
+
+    var drawSceneLoop = function(){
         if (window.canceled) {
            return;
         }
@@ -64,7 +72,7 @@ var Renderer = function(){
         //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
         //<code><%if (opts.debug){%>var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;<%}%>
 
-        reqAnimFrame(drawScene);
+        reqAnimFrame(drawSceneLoop);
 
         lastTime = currTime;
         currTime = Date.now();

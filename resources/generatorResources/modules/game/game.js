@@ -25,6 +25,7 @@ var Game = function(){
             return;
         }
         if (!bundle) bundle = require('bundle').instance();
+        if (!renderer) renderer = require('renderer').instance();
 
         var loader = new ResourceLoader();
         loader.onComplete = function(){
@@ -51,12 +52,12 @@ var Game = function(){
 
     var preloadSceneAndSetIt = function(scene){
 
-        if (!renderer) renderer = require('renderer').instance();
         if (!bundle) bundle = require('bundle').instance();
 
         if (progressScene) {
             self.currScene = progressScene;
             bundle.applyBehaviourForScene(progressScene);
+            if (!renderer.isRunning()) renderer.start();
         }
 
         var loader = new ResourceLoader();

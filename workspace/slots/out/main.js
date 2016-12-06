@@ -1039,6 +1039,7 @@ modules['game'] = {code: function(module,exports){
 	            return;
 	        }
 	        if (!bundle) bundle = require('bundle').instance();
+	        if (!renderer) renderer = require('renderer').instance();
 	
 	        var loader = new ResourceLoader();
 	        loader.onComplete = function(){
@@ -1065,12 +1066,12 @@ modules['game'] = {code: function(module,exports){
 	
 	    var preloadSceneAndSetIt = function(scene){
 	
-	        if (!renderer) renderer = require('renderer').instance();
 	        if (!bundle) bundle = require('bundle').instance();
 	
 	        if (progressScene) {
 	            self.currScene = progressScene;
 	            bundle.applyBehaviourForScene(progressScene);
+	            if (!renderer.isRunning()) renderer.start();
 	        }
 	
 	        var loader = new ResourceLoader();
@@ -3366,6 +3367,7 @@ modules['renderer'] = {code: function(module,exports){
 	    var lastTime = 0;
 	    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
 	    var gameProps;
+	    var isRunning = false;
 	
 	
 	    this.getContext = function(){
@@ -3393,9 +3395,11 @@ modules['renderer'] = {code: function(module,exports){
 	        game.setCtx(ctx);
 	        require('scaleManager').instance(canvas,ctx).manage();
 	        ctx.init(canvas);
+	    };
 	
-	        drawScene();
-	
+	    this.start = function(){
+	        drawSceneLoop();
+	        isRunning = true;
 	    };
 	
 	    this.getCanvas = function(){
@@ -3404,9 +3408,14 @@ modules['renderer'] = {code: function(module,exports){
 	
 	    this.cancel = function(){
 	        window.canceled = true;
+	        isRunning = false;
 	    };
 	
-	    var drawScene = function(){
+	    this.isRunning = function() {
+	        return isRunning;
+	    };
+	
+	    var drawSceneLoop = function(){
 	        if (window.canceled) {
 	           return;
 	        }
@@ -3414,7 +3423,7 @@ modules['renderer'] = {code: function(module,exports){
 	        if (window.canceled) return
 	        var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
 	
-	        reqAnimFrame(drawScene);
+	        reqAnimFrame(drawSceneLoop);
 	
 	        lastTime = currTime;
 	        currTime = Date.now();
