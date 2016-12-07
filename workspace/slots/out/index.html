@@ -21,12 +21,19 @@
         canvas {
             position: relative;
             display: block;
+            z-index: 20;
+        }
+        #loading {
+            position: absolute;
+            z-index: 10;
         }
     </style>
-    <script src="debug.js"></script>
-    <script src="main.js"></script>
 </head>
 
-<body></body>
+<body>
+<span id="loading">loading...</span>
+<script src="debug.js"></script>
+<script src="main.js"></script>
+</body>
 
 </html>
