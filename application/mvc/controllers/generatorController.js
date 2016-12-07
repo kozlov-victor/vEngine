@@ -17,7 +17,10 @@ var Source = function(){
         return path.replace('.js','').split('/').pop();
     };
     var wrapAsCommonJS = function(path,code){
-        return 'modules[\''+extractModuleName(path)+'\'] = {code: function(module,exports){\n' + addLeadTab(code) + '\n}};\n';
+        return processTemplate('resources/generatorResources/misc/moduleTemplate.js',{
+            name: extractModuleName(path),
+            code: addLeadTab(code)
+        });
     };
     var addLeadTab = function(code){
         return (
@@ -63,22 +66,6 @@ var Source = function(){
         fs.readDirSync(path).forEach(function(file){
             self.addCommonTemplate(file.fullName,{});
         });
-    };
-    this.addResource = function(path,opts){
-        var src;
-        var params = {};
-        if (!opts.ignoreEJS) {
-            src = processTemplate(path,{
-                resourceNames:resourcesController.RESOURCE_NAMES,
-                opts: {}
-            });
-        } else {
-            src = fs.readFileSync(path)
-        }
-        if (!opts.ignoreCommonJS) {
-             src = wrapAsCommonJS(path,src);
-        }
-        this.add(src);
     };
     this.get = function(){
         return res.join('\n');

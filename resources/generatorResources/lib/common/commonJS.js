@@ -13,7 +13,7 @@ var modules = {}, require = function(name){
         var module = {
             exports:{}
         };
-        moduleObj.code(module,module.exports);
+        moduleObj.code(module);
         moduleObj.inited = module;
     }
 };

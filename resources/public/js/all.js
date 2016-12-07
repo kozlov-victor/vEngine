@@ -173,7 +173,7 @@ window.app.
         i18n,
         utils) {
 
-        const SYMBOL_PADDING = 3;
+        var SYMBOL_PADDING = utils.FONT_SYMBOL_PADDING;
 
         var s = $scope;
         s.editData = editData;
@@ -2129,6 +2129,8 @@ window.app
         var bundle = require('bundle').instance();
         var mathEx = require('mathEx');
         var GameObject = require('gameObject').GameObject;
+
+        this.FONT_SYMBOL_PADDING =
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});

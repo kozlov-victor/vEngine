@@ -13,7 +13,7 @@ var modules = {}, require = function(name){
         var module = {
             exports:{}
         };
-        moduleObj.code(module,module.exports);
+        moduleObj.code(module);
         moduleObj.inited = module;
     }
 };
@@ -38,8 +38,10 @@ var modules = {}, require = function(name){
 Array.prototype.remove = function(el){
     this.splice(this.indexOf(el),1);
 };
-modules['class'] = {code: function(module,exports){
-	var Class = function() {};
+modules['class'] =
+    {code: function(module){
+    var exports = module.exports;
+        	var Class = function() {};
 	
 	Class.extend = function(props, staticProps) {
 	
@@ -123,10 +125,12 @@ modules['class'] = {code: function(module,exports){
 	
 	
 	
+    module.exports = exports;
 }};
-
-modules['behaviour'] = {code: function(module,exports){
-	
+modules['behaviour'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var commonBehaviour = {};
 	
 	
@@ -213,10 +217,12 @@ modules['behaviour'] = {code: function(module,exports){
 	exports.scripts = scripts;
 	
 	
+    module.exports = exports;
 }};
-
-modules['collider'] = {code: function(module,exports){
-	
+modules['collider'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var mathEx = require('mathEx');
 	
 	var Collider = function(){
@@ -276,10 +282,12 @@ modules['collider'] = {code: function(module,exports){
 	    if (instance==null) instance = new Collider();
 	    return instance;
 	};
+    module.exports = exports;
 }};
-
-modules['eventEmitter'] = {code: function(module,exports){
-	
+modules['eventEmitter'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	
 	var EventEmitter = function(){
 	
@@ -312,10 +320,12 @@ modules['eventEmitter'] = {code: function(module,exports){
 	};
 	
 	exports.EventEmitter = EventEmitter;
+    module.exports = exports;
 }};
-
-modules['consts'] = {code: function(module,exports){
-	
+modules['consts'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	module.exports.noop = function(){};
 	module.exports.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameObject","layer","scene","particleSystem"];
 	
@@ -326,10 +336,12 @@ modules['consts'] = {code: function(module,exports){
 	    CSS_STRETCH:                    3,
 	    HARDWARE_STRETCH:               4
 	};
+    module.exports = exports;
 }};
-
-modules['keyboard'] = {code: function(module,exports){
-	var Keyboard = function(){
+modules['keyboard'] =
+    {code: function(module){
+    var exports = module.exports;
+        	var Keyboard = function(){
 	
 	    var buffer = {};
 	    var KEY_PRESSED = 1;
@@ -411,10 +423,12 @@ modules['keyboard'] = {code: function(module,exports){
 	    if (instance==null) instance = new Keyboard();
 	    return instance;
 	};
+    module.exports = exports;
 }};
-
-modules['mouse'] = {code: function(module,exports){
-	
+modules['mouse'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var bundle = require('bundle').instance();
 	var renderer = require('renderer').instance();
 	var mathEx = require('mathEx');
@@ -541,10 +555,12 @@ modules['mouse'] = {code: function(module,exports){
 	    if (instance==null) instance = new Mouse();
 	    return instance;
 	};
+    module.exports = exports;
 }};
-
-modules['bundle'] = {code: function(module,exports){
-	
+modules['bundle'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var collections = require('collections');
 	var consts = require('consts');
 	var utils = require('utils');
@@ -654,10 +670,12 @@ modules['bundle'] = {code: function(module,exports){
 	    }
 	    return instance;
 	};
+    module.exports = exports;
 }};
-
-modules['resourceCache'] = {code: function(module,exports){
-	
+modules['resourceCache'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var cache = {};
 	
 	exports.get = function(name){
@@ -684,10 +702,12 @@ modules['resourceCache'] = {code: function(module,exports){
 	
 	
 	
+    module.exports = exports;
 }};
-
-modules['resourceLoader'] = {code: function(module,exports){
-	
+modules['resourceLoader'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	exports.ResourceLoader = function(){
 	
 	    var self = this;
@@ -755,10 +775,12 @@ modules['resourceLoader'] = {code: function(module,exports){
 	    };
 	
 	};
+    module.exports = exports;
 }};
-
-modules['device'] = {code: function(module,exports){
-	
+modules['device'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var isCocoonJS = !!navigator.isCocoonJS;
 	exports.isCocoonJS = isCocoonJS;
 	exports.scale = isCocoonJS?(window.devicePixelRatio||1):1;
@@ -771,10 +793,12 @@ modules['device'] = {code: function(module,exports){
 	        console.log(key + ':' + exports[key]);
 	    }
 	};
+    module.exports = exports;
 }};
-
-modules['game'] = {code: function(module,exports){
-	
+modules['game'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var ResourceLoader = require('resourceLoader').ResourceLoader;
 	var collider = require('collider').instance();
 	// var bundle = require('bundle').instance();
@@ -833,6 +857,7 @@ modules['game'] = {code: function(module,exports){
 	        if (progressScene) {
 	            self.currScene = progressScene;
 	            bundle.applyBehaviourForScene(progressScene);
+	            renderer.setScene(progressScene);
 	            if (!renderer.isRunning()) renderer.start();
 	        }
 	
@@ -841,10 +866,7 @@ modules['game'] = {code: function(module,exports){
 	            self.currScene = scene;
 	            bundle.applyBehaviourForScene(scene);
 	            collider.setUp();
-	            if (scene.useBG) ctx.colorBG = scene.colorBG;
-	            else {
-	                ctx.colorBG = ctx.DEFAULT_COLOR_BG;
-	            }
+	            renderer.setScene(scene);
 	            if (!renderer.isRunning()) renderer.start();
 	            scene.onShow();
 	        };
@@ -922,10 +944,12 @@ modules['game'] = {code: function(module,exports){
 	    return instance;
 	};
 	
+    module.exports = exports;
 }};
-
-modules['audioNode'] = {code: function(module,exports){
-	
+modules['audioNode'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var cache = require('resourceCache');
 	
 	exports.AudioNode = function(context){
@@ -962,10 +986,12 @@ modules['audioNode'] = {code: function(module,exports){
 	
 	
 	
+    module.exports = exports;
 }};
-
-modules['audioNodeSet'] = {code: function(module,exports){
-	
+modules['audioNodeSet'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var AudioNode = require('audioNode').AudioNode;
 	
 	exports.AudioNodeSet = function(Context,numOfNodes){
@@ -995,10 +1021,12 @@ modules['audioNodeSet'] = {code: function(module,exports){
 	    }
 	
 	};
+    module.exports = exports;
 }};
-
-modules['audioPlayer'] = {code: function(module,exports){
-	
+modules['audioPlayer'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var bundle = require('bundle').instance();
 	var AudioNodeSet = require('audioNodeSet').AudioNodeSet;
 	var cache = require('resourceCache');
@@ -1064,10 +1092,12 @@ modules['audioPlayer'] = {code: function(module,exports){
 	    if (instance==null) instance = new AudioPlayer();
 	    return instance;
 	};
+    module.exports = exports;
 }};
-
-modules['fakeAudioContext'] = {code: function(module,exports){
-	
+modules['fakeAudioContext'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	exports.FakeAudioContext = require('class').Class.extend(
 	    {
 	        type:'fakeAudioContext',
@@ -1099,10 +1129,12 @@ modules['fakeAudioContext'] = {code: function(module,exports){
 	        }
 	    }
 	);
+    module.exports = exports;
 }};
-
-modules['htmlAudioContext'] = {code: function(module,exports){
-	
+modules['htmlAudioContext'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var utils = require('utils');
 	
 	var getCtx = function(){
@@ -1154,10 +1186,12 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 	    }
 	);
 	
+    module.exports = exports;
 }};
-
-modules['webAudioContext'] = {code: function(module,exports){
-	
+modules['webAudioContext'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var utils = require('utils');
 	var cache = require('resourceCache');
 	
@@ -1241,10 +1275,12 @@ modules['webAudioContext'] = {code: function(module,exports){
 	        }
 	    }
 	);
+    module.exports = exports;
 }};
-
-modules['base64'] = {code: function(module,exports){
-	// https://github.com/beatgammit/base64-js/blob/master/index.js
+modules['base64'] =
+    {code: function(module){
+    var exports = module.exports;
+        	// https://github.com/beatgammit/base64-js/blob/master/index.js
 	
 	'use strict';
 	
@@ -1360,10 +1396,12 @@ modules['base64'] = {code: function(module,exports){
 	
 	    return parts.join('');
 	}
+    module.exports = exports;
 }};
-
-modules['collections'] = {code: function(module,exports){
-	
+modules['collections'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var isObjectMatchTo = function(obj,matcher){
 	    var isCandidate = true;
 	    Object.keys(matcher).some(function(conditionKey){
@@ -1521,10 +1559,12 @@ modules['collections'] = {code: function(module,exports){
 	        return res;
 	    }
 	};
+    module.exports = exports;
 }};
-
-modules['mat4'] = {code: function(module,exports){
-	
+modules['mat4'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	exports.makeIdentity = function () {
 	    return [
 	        1, 0, 0, 0,
@@ -1647,10 +1687,12 @@ modules['mat4'] = {code: function(module,exports){
 	        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
 	        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
 	};
+    module.exports = exports;
 }};
-
-modules['mathEx'] = {code: function(module,exports){
-	var Vec2 = require('vec2').Vec2;
+modules['mathEx'] =
+    {code: function(module){
+    var exports = module.exports;
+        	var Vec2 = require('vec2').Vec2;
 	
 	exports.isPointInRect = function(point,rect,angle) {
 	    if (angle) {
@@ -1918,17 +1960,18 @@ modules['mathEx'] = {code: function(module,exports){
 	};
 	
 	exports.ease = ease;
+    module.exports = exports;
 }};
-
-modules['queue'] = {code: function(module,exports){
-	exports.Queue = function(){
+modules['queue'] =
+    {code: function(module){
+    var exports = module.exports;
+        	exports.Queue = function(){
 	    var self = this;
 	    this.size = function(){
-	        return tasksTotal;
+	        return tasks.length;
 	    };
 	    this.onResolved = null;
 	    this.onProgress = null;
-	    var tasksTotal = 0;
 	    var tasksResolved = 0;
 	    var tasks = [];
 	    var tasksProgressById = {};
@@ -1938,12 +1981,11 @@ modules['queue'] = {code: function(module,exports){
 	        Object.keys(tasksProgressById).forEach(function(taskId){
 	            sum+=tasksProgressById[taskId]||0;
 	        });
-	        return sum/tasksTotal;
+	        return sum/tasks.length;
 	    };
 	
 	    this.addTask = function(taskFn,taskId) {
 	        tasks.push(taskFn);
-	        tasksTotal++;
 	        tasksProgressById[taskId] = 0;
 	    };
 	    this.progressTask = function(taskId,progress){
@@ -1953,7 +1995,7 @@ modules['queue'] = {code: function(module,exports){
 	    this.resolveTask = function(taskId){
 	        tasksResolved++;
 	        tasksProgressById[taskId] = 1;
-	        if (tasksTotal==tasksResolved) {
+	        if (tasks.length==tasksResolved) {
 	            this.onProgress && this.onProgress(1);
 	            if (self.onResolved) self.onResolved();
 	        } else {
@@ -1967,10 +2009,12 @@ modules['queue'] = {code: function(module,exports){
 	        });
 	    }
 	};
+    module.exports = exports;
 }};
-
-modules['utils'] = {code: function(module,exports){
-	
+modules['utils'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	exports.merge = function(obj1,obj2){
 	    Object.keys(obj2).forEach(function(key){
 	        obj1[key]=obj2[key];
@@ -2015,10 +2059,12 @@ modules['utils'] = {code: function(module,exports){
 	    request.onerror=function(e){throw 'can not load sound with url '+url};
 	    request.send();
 	};
+    module.exports = exports;
 }};
-
-modules['vec2'] = {code: function(module,exports){
-	
+modules['vec2'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	exports.Vec2 = function(_x,_y){
 	
 	    var x = _x||0;
@@ -2104,10 +2150,12 @@ modules['vec2'] = {code: function(module,exports){
 	    })();
 	
 	};
+    module.exports = exports;
 }};
-
-modules['baseGameObject'] = {code: function(module,exports){
-	
+modules['baseGameObject'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	
 	var renderer = require('renderer').instance();
 	var camera = require('camera').instance();
@@ -2159,10 +2207,12 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        this._moveable._gameObject = this;
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['baseModel'] = {code: function(module,exports){
-	var EventEmitter = require('eventEmitter').EventEmitter;
+modules['baseModel'] =
+    {code: function(module){
+    var exports = module.exports;
+        	var EventEmitter = require('eventEmitter').EventEmitter;
 	
 	var isPropNotFit = function(key,val){
 	    if (!key) return true;
@@ -2245,10 +2295,12 @@ modules['baseModel'] = {code: function(module,exports){
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['moveable'] = {code: function(module,exports){
-	
+modules['moveable'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var collider = require('collider').instance();
 	var BaseModel = require('baseModel').BaseModel;
 	
@@ -2263,10 +2315,12 @@ modules['moveable'] = {code: function(module,exports){
 	        collider.manage(_gameObject,posX,posY);
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['renderable'] = {code: function(module,exports){
-	
+modules['renderable'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var camera = require('camera').instance();
 	var renderer = require('renderer').instance();
 	var collider = require('collider').instance();
@@ -2315,19 +2369,23 @@ modules['renderable'] = {code: function(module,exports){
 	    };
 	
 	});
+    module.exports = exports;
 }};
-
-modules['resource'] = {code: function(module,exports){
-	
+modules['resource'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.Resource = BaseModel.extend({
 	    resourcePath:''
 	});
+    module.exports = exports;
 }};
-
-modules['tweenable'] = {code: function(module,exports){
-	
+modules['tweenable'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var BaseModel = require('baseModel').BaseModel;
 	var Tween = require('tween').Tween;
 	var TweenMovie = require('tweenMovie').TweenMovie;
@@ -2343,10 +2401,12 @@ modules['tweenable'] = {code: function(module,exports){
 	        movie.play(this.global);
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['commonBehaviour'] = {code: function(module,exports){
-	
+modules['commonBehaviour'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.CommonBehaviour = BaseModel.extend({
@@ -2358,10 +2418,12 @@ modules['commonBehaviour'] = {code: function(module,exports){
 	
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['frameAnimation'] = {code: function(module,exports){
-	
+modules['frameAnimation'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var BaseModel = require('baseModel').BaseModel;
 	
 	
@@ -2393,10 +2455,12 @@ modules['frameAnimation'] = {code: function(module,exports){
 	        }
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['gameObject'] = {code: function(module,exports){
-	
+modules['gameObject'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var renderer = require('renderer').instance();
 	var BaseGameObject = require('baseGameObject').BaseGameObject;
 	var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
@@ -2493,10 +2557,12 @@ modules['gameObject'] = {code: function(module,exports){
 	        return game.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['layer'] = {code: function(module,exports){
-	
+modules['layer'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var BaseModel = require('baseModel').BaseModel;
 	var collections = require('collections');
 	var TextField = require('textField').TextField;
@@ -2543,10 +2609,12 @@ modules['layer'] = {code: function(module,exports){
 	        }
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['particleSystem'] = {code: function(module,exports){
-	
+modules['particleSystem'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var mathEx = require('mathEx');
 	var bundle = require('bundle').instance();
 	var BaseModel = require('baseModel').BaseModel;
@@ -2611,10 +2679,12 @@ modules['particleSystem'] = {code: function(module,exports){
 	        return bundle.particleSystemList.findAll({name:name});
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['scene'] = {code: function(module,exports){
-	
+modules['scene'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var Renderable = require('renderable').Renderable;
 	var collections = require('collections');
 	var bundle = require('bundle').instance();
@@ -2753,10 +2823,12 @@ modules['scene'] = {code: function(module,exports){
 	        this.printText(0,0,text);
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['sound'] = {code: function(module,exports){
-	var Resource = require('resource').Resource;
+modules['sound'] =
+    {code: function(module){
+    var exports = module.exports;
+        	var Resource = require('resource').Resource;
 	var audioPlayer = require('audioPlayer').instance();
 	var bundle = require('bundle').instance();
 	
@@ -2781,10 +2853,12 @@ modules['sound'] = {code: function(module,exports){
 	        return bundle.soundList.find({name:name});
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['spriteSheet'] = {code: function(module,exports){
-	
+modules['spriteSheet'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var Resource = require('resource').Resource;
 	
 	exports.SpriteSheet = Resource.extend({
@@ -2813,10 +2887,12 @@ modules['spriteSheet'] = {code: function(module,exports){
 	        this.calcFrameSize();
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['font'] = {code: function(module,exports){
-	
+modules['font'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var Resource = require('resource').Resource;
 	
 	exports.Font = Resource.extend({
@@ -2826,10 +2902,12 @@ modules['font'] = {code: function(module,exports){
 	    fontFamily:'Monospace',
 	    fontContext:null
 	});
+    module.exports = exports;
 }};
-
-modules['textField'] = {code: function(module,exports){
-	
+modules['textField'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var renderer = require('renderer').instance();
 	var BaseGameObject = require('baseGameObject').BaseGameObject;
 	var SpriteSheet = require('spriteSheet').SpriteSheet;
@@ -2914,10 +2992,12 @@ modules['textField'] = {code: function(module,exports){
 	        ctx.restore();
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['canvasContext'] = {code: function(module,exports){
-	
+modules['canvasContext'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var mat4 = require('mat4');
 	var utils = require('utils');
 	var bundle = require('bundle').instance();
@@ -3003,8 +3083,7 @@ modules['canvasContext'] = {code: function(module,exports){
 	    };
 	
 	    it.rescaleView = function(scaleX,scaleY){
-	        mScaleX = scaleX;
-	        mScaleY = scaleY;
+	        //it.scale(scaleX,scaleY);
 	    };
 	
 	    it.getError = function(){
@@ -3018,8 +3097,8 @@ modules['canvasContext'] = {code: function(module,exports){
 	    it.beginFrameBuffer = function(){
 	        ctx.save();
 	        ctx.beginPath();
-	        ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
-	        ctx.clip();
+	        //ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
+	        //ctx.clip();
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
 	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
@@ -3080,10 +3159,12 @@ modules['canvasContext'] = {code: function(module,exports){
 	        });
 	    }
 	});
+    module.exports = exports;
 }};
-
-modules['camera'] = {code: function(module,exports){
-	
+modules['camera'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var bundle = require('bundle').instance();
 	
 	var Camera = function(){
@@ -3132,10 +3213,12 @@ modules['camera'] = {code: function(module,exports){
 	};
 	
 	
+    module.exports = exports;
 }};
-
-modules['renderer'] = {code: function(module,exports){
-	
+modules['renderer'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	
 	var GlContext = require('glContext').GlContext;
 	var CanvasContext = require('canvasContext').CanvasContext;
@@ -3204,6 +3287,10 @@ modules['renderer'] = {code: function(module,exports){
 	        return isRunning;
 	    };
 	
+	    this.setScene = function(scene){
+	        ctx.setScene(scene);
+	    };
+	
 	    var drawSceneLoop = function(){
 	        if (window.canceled) {
 	           return;
@@ -3265,10 +3352,12 @@ modules['renderer'] = {code: function(module,exports){
 	    if (instance==null) instance = new Renderer();
 	    return instance;
 	};
+    module.exports = exports;
 }};
-
-modules['scaleManager'] = {code: function(module,exports){
-	
+modules['scaleManager'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	var scale = require('device').scale;
 	var bundle = require('bundle').instance();
@@ -3402,10 +3491,12 @@ modules['scaleManager'] = {code: function(module,exports){
 	};
 	
 	
+    module.exports = exports;
 }};
-
-modules['frameBuffer'] = {code: function(module,exports){
-	
+modules['frameBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	exports.FrameBuffer = function(gl,width,height){
 	
 	    var glTexture;
@@ -3454,10 +3545,12 @@ modules['frameBuffer'] = {code: function(module,exports){
 	    })();
 	
 	};
+    module.exports = exports;
 }};
-
-modules['glContext'] = {code: function(module,exports){
-	
+modules['glContext'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var mat4 = require('mat4');
 	var utils = require('utils');
 	var ShaderProgram = require('shaderProgram').ShaderProgram;
@@ -3485,7 +3578,8 @@ modules['glContext'] = {code: function(module,exports){
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
-	    it.colorBG = [255,255,255];
+	    var colorBGDefault = [255,255,255];
+	    var scene = null;
 	
 	    it.init = function(canvas){
 	
@@ -3526,6 +3620,9 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    };
 	
+	    it.setScene = function(_scene){
+	        scene = _scene;
+	    };
 	
 	    it.setAlpha = function(alpha) {
 	        commonShaderPrg.setUniform('u_alpha',alpha);
@@ -3615,7 +3712,8 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    it.clear = function() {
 	        //gl.colorMask(false, false, false, true);
-	        gl.clearColor(it.colorBG[0]/255,it.colorBG[1]/255,it.colorBG[2]/255,1);
+	        var col = scene.useBG?scene.colorBG:colorBGDefault;
+	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
 	        gl.clear(gl.COLOR_BUFFER_BIT);
 	    };
 	
@@ -3728,7 +3826,7 @@ modules['glContext'] = {code: function(module,exports){
 	
 	},{
 	    isAcceptable: function(){
-	        return false;//!!getCtx();
+	        return !!getCtx();
 	    },
 	    loadTextureInfo:function(url,opts,progress,callBack) {
 	        if (cache.has(url)) {
@@ -3749,13 +3847,19 @@ modules['glContext'] = {code: function(module,exports){
 	        }
 	
 	        utils.loadBinary(url, progress, function (buffer) {
-	            var base64String = utils.arrayBufferToBase64(buffer);
-	            base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	            if (window.Blob && window.URL) {
+	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+	                img.src = URL.createObjectURL(blob);
+	            } else {
+	                var base64String = utils.arrayBufferToBase64(buffer);
+	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	                img.src = base64String;
+	            }
 	            img.onload = function () {
 	                texture.apply(img);
 	                callBack(texture);
 	            };
-	            img.src = base64String;
+	
 	        });
 	    }
 	});
@@ -3764,10 +3868,12 @@ modules['glContext'] = {code: function(module,exports){
 	
 	
 	
+    module.exports = exports;
 }};
-
-modules['matrixStack'] = {code: function(module,exports){
-	
+modules['matrixStack'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var mat4 = require('mat4');
 	
 	exports.MatrixStack = function () {
@@ -3829,10 +3935,12 @@ modules['matrixStack'] = {code: function(module,exports){
 	    })();
 	
 	};
+    module.exports = exports;
 }};
-
-modules['shaderProgram'] = {code: function(module,exports){
-	function compileShader(gl, shaderSource, shaderType) {
+modules['shaderProgram'] =
+    {code: function(module){
+    var exports = module.exports;
+        	function compileShader(gl, shaderSource, shaderType) {
 	    // Create the shader object
 	    var shader = gl.createShader(shaderType);
 	
@@ -4013,10 +4121,12 @@ modules['shaderProgram'] = {code: function(module,exports){
 	    };
 	
 	};
+    module.exports = exports;
 }};
-
-modules['texture'] = {code: function(module,exports){
-	
+modules['texture'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var isPowerOf2 = function(value) {
 	    return (value & (value - 1)) == 0;
 	};
@@ -4066,10 +4176,12 @@ modules['texture'] = {code: function(module,exports){
 	    })();
 	
 	};
+    module.exports = exports;
 }};
-
-modules['vertexBuffer'] = {code: function(module,exports){
-	
+modules['vertexBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	module.exports.VertexBuffer = function(gl,program){
 	    var buffer = gl.createBuffer();
 	
@@ -4088,10 +4200,12 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	    };
 	};
+    module.exports = exports;
 }};
-
-modules['tween'] = {code: function(module,exports){
-	
+modules['tween'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	
 	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 	    var startedTime = null;
@@ -4157,10 +4271,12 @@ modules['tween'] = {code: function(module,exports){
 	
 	
 	};
+    module.exports = exports;
 }};
-
-modules['tweenChain'] = {code: function(module,exports){
-	
+modules['tweenChain'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	var Tween = require('tween').Tween;
 	
@@ -4201,10 +4317,12 @@ modules['tweenChain'] = {code: function(module,exports){
 	    };
 	};
 	
+    module.exports = exports;
 }};
-
-modules['tweenMovie'] = {code: function(module,exports){
-	
+modules['tweenMovie'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var game = require('game').instance();
 	var Tween = require('tween').Tween;
 	
@@ -4280,10 +4398,12 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        return this;
 	    }
 	};
+    module.exports = exports;
 }};
-
-modules['index'] = {code: function(module,exports){
-	
+modules['index'] =
+    {code: function(module){
+    var exports = module.exports;
+        	
 	var data;
 	
 	data = {
@@ -5631,6 +5751,6 @@ modules['index'] = {code: function(module,exports){
 	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
 	    game.setScene(startScene);
 	});
+    module.exports = exports;
 }};
-
 require('index');
