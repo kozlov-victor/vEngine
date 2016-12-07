@@ -1,13 +1,13 @@
 
 var mathEx = require('mathEx');
 
-var Collider = function(){
+exports = new function(){
 
     var gos;
     var scene;
 
     this.setUp = function(){
-        scene = require('game').instance().getCurrScene();
+        scene = require('game').getCurrScene();
         gos = scene.getAllGameObjects();
     };
 
@@ -50,11 +50,4 @@ var Collider = function(){
         return hasCollision;
     };
 
-};
-
-var instance = null;
-
-module.exports.instance = function(){
-    if (instance==null) instance = new Collider();
-    return instance;
 };

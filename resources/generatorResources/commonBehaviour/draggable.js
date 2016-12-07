@@ -4,11 +4,11 @@
  exports.description = 'draggable behaviour with multitouch supporting';
  */
 
-var mouse = require('mouse').instance();
+var mouse = require('mouse');
 var points = {};
 var scene = self.getScene();
-var collider = require('collider').instance();
-var camera = require('camera').instance();
+var collider = require('collider');
+var camera = require('camera');
 
 var getEventId = function(e){
     return e.id || 1;

@@ -13,7 +13,7 @@
  exports.description = "control character with cursor to walk up, down, left and right";
  */
 
-var keyboard = require('keyboard').instance();
+var keyboard = require('keyboard');
 var animations = {};
 
 

@@ -1,5 +1,5 @@
 
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 var AudioNodeSet = require('audioNodeSet').AudioNodeSet;
 var cache = require('resourceCache');
 var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
@@ -10,7 +10,7 @@ var Tween = require('tween').Tween;
 
 var Context  = null;
 
-var AudioPlayer = function(){
+exports = new function(){
 
     if (WebAudioContext.isAcceptable()) {
         Context = WebAudioContext;

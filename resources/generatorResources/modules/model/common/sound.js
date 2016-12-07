@@ -1,6 +1,6 @@
 var Resource = require('resource').Resource;
-var audioPlayer = require('audioPlayer').instance();
-var bundle = require('bundle').instance();
+var audioPlayer = require('audioPlayer');
+var bundle = require('bundle');
 
 exports.Sound = Resource.extend({
     type:'sound',

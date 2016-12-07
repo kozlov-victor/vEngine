@@ -1,7 +1,7 @@
 
-var camera = require('camera').instance();
-var renderer = require('renderer').instance();
-var collider = require('collider').instance();
+var camera = require('camera');
+var renderer = require('renderer');
+var collider = require('collider');
 
 var BaseModel = require('baseModel').BaseModel;
 var Tweenable = require('tweenable').Tweenable;

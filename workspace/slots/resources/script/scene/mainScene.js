@@ -172,7 +172,7 @@ betLabel.on('click',function(){
 });
 
 GameObject.find('textBack').on('click',function(){
-    require('game').instance().setSceneByName('introScene');
+    require('game').setSceneByName('introScene');
 });
 
 

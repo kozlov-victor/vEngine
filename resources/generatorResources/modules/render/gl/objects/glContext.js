@@ -6,7 +6,7 @@ var VertexBuffer = require('vertexBuffer').VertexBuffer;
 var Texture = require('texture').Texture;
 var MatrixStack = require('matrixStack').MatrixStack;
 var FrameBuffer = require('frameBuffer').FrameBuffer;
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 

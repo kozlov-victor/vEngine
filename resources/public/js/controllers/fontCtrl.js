@@ -20,7 +20,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var Font = require('font').Font;
 
         var getFontContext = function(arrFromTo, strFont, w) {

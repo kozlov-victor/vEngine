@@ -1,7 +1,7 @@
 
 var mat4 = require('mat4');
 var utils = require('utils');
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 var device = require('device');
 var cache = require('resourceCache');

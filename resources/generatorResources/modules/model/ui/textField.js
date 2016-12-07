@@ -1,8 +1,8 @@
 
-var renderer = require('renderer').instance();
+var renderer = require('renderer');
 var BaseGameObject = require('baseGameObject').BaseGameObject;
 var SpriteSheet = require('spriteSheet').SpriteSheet;
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 var resourceCache = require('resourceCache');
 
 exports.TextField = BaseGameObject.extend({

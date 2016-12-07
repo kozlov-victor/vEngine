@@ -1,6 +1,6 @@
 
 var mathEx = require('mathEx');
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 var BaseModel = require('baseModel').BaseModel;
 
 exports.ParticleSystem = BaseModel.extend({

@@ -1,7 +1,7 @@
 
 
-var renderer = require('renderer').instance();
-var camera = require('camera').instance();
+var renderer = require('renderer');
+var camera = require('camera');
 
 var Renderable = require('renderable').Renderable;
 var Moveable = require('moveable').Moveable;
@@ -32,7 +32,7 @@ exports.BaseGameObject = Renderable.extend({
         this._layer._scene._allGameObjects.remove({id:this.id});
     },
     getScene: function(){
-        return require('game').instance().getCurrScene();
+        return require('game').getCurrScene();
     },
     moveTo:function(x,y,time,easeFnName){
         return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);

@@ -2,7 +2,7 @@
 var BaseModel = require('baseModel').BaseModel;
 var collections = require('collections');
 var TextField = require('textField').TextField;
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 
 exports.Layer = BaseModel.extend({
     type:'layer',

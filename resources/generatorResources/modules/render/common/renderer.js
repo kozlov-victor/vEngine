@@ -3,10 +3,10 @@
 var GlContext = require('glContext').GlContext;
 var CanvasContext = require('canvasContext').CanvasContext;
 var resourceCache = require('resourceCache');
-var bundle = require('bundle').instance();
-var game = require('game').instance();
+var bundle = require('bundle');
+var game = require('game');
 
-var Renderer = function(){
+exports = new function(){
 
     var canvas;
     var ctx;

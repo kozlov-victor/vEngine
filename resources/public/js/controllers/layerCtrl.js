@@ -15,7 +15,7 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var Layer = require('layer').Layer;
 
 

@@ -1,10 +1,10 @@
 
 var Renderable = require('renderable').Renderable;
 var collections = require('collections');
-var bundle = require('bundle').instance();
-var renderer = require('renderer').instance();
+var bundle = require('bundle');
+var renderer = require('renderer');
 var resourceCache = require('resourceCache');
-var camera = require('camera').instance();
+var camera = require('camera');
 
 var tweenModule = require('tween');
 var tweenMovieModule = require('tweenMovie');

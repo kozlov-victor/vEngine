@@ -1,5 +1,5 @@
 
-var collider = require('collider').instance();
+var collider = require('collider');
 var BaseModel = require('baseModel').BaseModel;
 
 exports.Moveable = BaseModel.extend({

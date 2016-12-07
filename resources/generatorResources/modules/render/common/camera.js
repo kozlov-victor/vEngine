@@ -1,7 +1,7 @@
 
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 
-var Camera = function(){
+exports = new function(){
 
     var objFollowTo = null;
     var scene = null;

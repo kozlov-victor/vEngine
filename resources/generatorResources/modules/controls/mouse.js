@@ -1,13 +1,13 @@
 
-var bundle = require('bundle').instance();
-var renderer = require('renderer').instance();
+var bundle = require('bundle');
+var renderer = require('renderer');
 var mathEx = require('mathEx');
-var game = require('game').instance();
+var game = require('game');
 var device = require('device');
 
 var objectsCaptured = {};
 
-var Mouse = function(){
+exports = new function(){
 
     var self = this;
     var gameProps = bundle.gameProps;
@@ -117,11 +117,4 @@ var Mouse = function(){
         delete objectsCaptured[point.id];
     };
 
-};
-
-var instance = null;
-
-module.exports.instance = function(){
-    if (instance==null) instance = new Mouse();
-    return instance;
 };

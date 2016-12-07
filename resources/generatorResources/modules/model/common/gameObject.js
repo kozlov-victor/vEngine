@@ -1,12 +1,12 @@
 
-var renderer = require('renderer').instance();
+var renderer = require('renderer');
 var BaseGameObject = require('baseGameObject').BaseGameObject;
 var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 var collections = require('collections');
 var resourceCache = require('resourceCache');
 var utils = require('utils');
-var game = require('game').instance();
+var game = require('game');
 
 exports.GameObject = BaseGameObject.extend({
     type:'gameObject',

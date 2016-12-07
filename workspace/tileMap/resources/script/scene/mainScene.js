@@ -6,7 +6,7 @@ var btnDown =  GameObject.find('btnDown');
 var btnLeft = GameObject.find('btnLeft');
 var btnRight =  GameObject.find('btnRight');
  
-var keyboard = require('keyboard').instance(); 
+var keyboard = require('keyboard');
 
 btnUp.
 on(['mouseDown','mouseEnter'],function(){

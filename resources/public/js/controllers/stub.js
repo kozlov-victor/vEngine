@@ -16,7 +16,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
 
         (function(){
 

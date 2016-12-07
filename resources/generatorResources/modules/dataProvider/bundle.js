@@ -4,7 +4,7 @@ var consts = require('consts');
 var utils = require('utils');
 var behaviour = require('behaviour');
 
-var Bundle = function(data){
+exports = new function(data){
 
     this.spriteSheetList = new collections.List();
     this.gameObjectList = new collections.List();

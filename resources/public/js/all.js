@@ -52,7 +52,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var model;
 
         s.rgbChanged = function(){
@@ -111,7 +111,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
 
         s.createOrEditCommonBehaviour = function(obj){
@@ -182,7 +182,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var Font = require('font').Font;
 
         var getFontContext = function(arrFromTo, strFont, w) {
@@ -318,7 +318,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var FrameAnimation = require('frameAnimation').FrameAnimation;
         var GameObject = require('gameObject').GameObject;
 
@@ -435,7 +435,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var GameObject = require('gameObject').GameObject;
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
@@ -544,7 +544,7 @@ window.app.
         s.uiHelper = uiHelper;
         s.i18n = i18n.getAll();
         s.utils = utils;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var Layer = require('layer').Layer;
 
 
@@ -827,7 +827,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
 
         s.openColorPickerForScene = function(){
             s.showDialog(
@@ -864,7 +864,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var Scene = require('scene').Scene;
 
         s.createOrEditScene = function(){
@@ -1079,7 +1079,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var Sound = require('sound').Sound;
 
         s.onSoundUpload = function(file,src){
@@ -1128,7 +1128,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var SpriteSheet = require('spriteSheet').SpriteSheet;
 
         s.onSpriteSheetUpload = function(file,src) {
@@ -1213,7 +1213,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
 
         (function(){
 
@@ -1767,7 +1767,7 @@ app
         uiHelper
     ){
         var self = this;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var collections = require('collections');
         var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
         var TextField = require('textField').TextField;
@@ -2126,7 +2126,7 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var mathEx = require('mathEx');
         var GameObject = require('gameObject').GameObject;
 

@@ -1,5 +1,5 @@
 
-var game = require('game').instance();
+var game = require('game');
 var Tween = require('tween').Tween;
 
 exports.TweenMovie = function(){

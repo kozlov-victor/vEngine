@@ -1,6 +1,6 @@
 
-require('camera').instance().follow(self);
-var ps = require('bundle').instance().particleSystemList.find({name:'test'});
+require('camera').follow(self);
+var ps = require('bundle').particleSystemList.find({name:'test'});
 var scene = self.getScene();
 
 var onUpdate = function(){

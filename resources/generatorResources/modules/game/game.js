@@ -1,11 +1,10 @@
 
 var ResourceLoader = require('resourceLoader').ResourceLoader;
-var collider = require('collider').instance();
-// var bundle = require('bundle').instance();
-var keyboard = require('keyboard').instance();
-var camera = require('camera').instance();
+var collider = require('collider');
+var keyboard = require('keyboard');
+var camera = require('camera');
 
-var Game = function(){
+exports = new function(){
 
     var self = this;
     var ctx = null;
@@ -24,8 +23,8 @@ var Game = function(){
             callBack();
             return;
         }
-        if (!bundle) bundle = require('bundle').instance();
-        if (!renderer) renderer = require('renderer').instance();
+        if (!bundle) bundle = require('bundle');
+        if (!renderer) renderer = require('renderer');
 
         var loader = new ResourceLoader();
         loader.onComplete = function(){
@@ -52,7 +51,7 @@ var Game = function(){
 
     var preloadSceneAndSetIt = function(scene){
 
-        if (!bundle) bundle = require('bundle').instance();
+        if (!bundle) bundle = require('bundle');
 
         if (progressScene) {
             self.currScene = progressScene;
@@ -105,7 +104,7 @@ var Game = function(){
 
     this.setSceneByName = function(sceneName){
         if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var scene = bundle.sceneList.find({name: sceneName});
         if (!scene) throw 'no scene with name ' + sceneName + ' found';
         self.setScene(scene);

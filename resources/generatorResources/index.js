@@ -8,14 +8,14 @@ var data;
 //<code><%})%>
 //<code>};
 
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 bundle.prepare(data);
 //<code><%if (opts.debug){%>
 if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 //<code><%}%>
-var renderer = require('renderer').instance();
-var game = require('game').instance();
-var keyboard = require('keyboard').instance();
+var renderer = require('renderer');
+var game = require('game');
+var keyboard = require('keyboard');
 
 
 window.addEventListener('load',function(){
@@ -25,7 +25,7 @@ window.addEventListener('load',function(){
     };
 
     renderer.init();
-    require('mouse').instance();
+    require('mouse');
     var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
     game.setScene(startScene);
 });

@@ -1,7 +1,7 @@
 
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 var scale = require('device').scale;
-var bundle = require('bundle').instance();
+var bundle = require('bundle');
 
 var ScaleManager = function(canvas,ctx){
 

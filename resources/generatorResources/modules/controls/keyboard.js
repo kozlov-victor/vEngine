@@ -1,4 +1,4 @@
-var Keyboard = function(){
+exports = new function(){
 
     var buffer = {};
     var KEY_PRESSED = 1;
@@ -72,11 +72,4 @@ var Keyboard = function(){
                 break;
         }
     });
-};
-
-var instance = null;
-
-module.exports.instance = function(){
-    if (instance==null) instance = new Keyboard();
-    return instance;
 };

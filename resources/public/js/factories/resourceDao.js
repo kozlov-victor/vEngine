@@ -8,7 +8,7 @@ app
         uiHelper
     ){
         var self = this;
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var collections = require('collections');
         var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
         var TextField = require('textField').TextField;

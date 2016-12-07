@@ -1,5 +1,5 @@
 
-var camera = require('camera').instance();
+var camera = require('camera');
 camera.follow(self);
 
 function onUpdate(time) {

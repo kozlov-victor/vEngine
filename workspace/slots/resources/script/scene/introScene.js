@@ -1,5 +1,5 @@
 
-var game = require('game').instance();
+var game = require('game');
 var Sound = require('sound').Sound;
 var GameObject = require('gameObject').GameObject;
 

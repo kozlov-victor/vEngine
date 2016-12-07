@@ -4,7 +4,7 @@ window.app
 
     .factory('utils',function(editData, $http, uiHelper){
 
-        var bundle = require('bundle').instance();
+        var bundle = require('bundle');
         var mathEx = require('mathEx');
         var GameObject = require('gameObject').GameObject;
 
