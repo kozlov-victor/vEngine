@@ -937,10 +937,12 @@ modules['resourceLoader'] =
 	
 	    var q = new Queue();
 	    q.onResolved = function(){
+	        document.getElementById('informer').innerHTML = 'loaded'
 	        self.onComplete && self.onComplete();
 	    };
 	    q.onProgress = function(progress){
 	        self.onProgress && self.onProgress(progress);
+	        document.getElementById('informer').innerHTML = progress
 	    };
 	
 	    this.loadImage = function(resourcePath) {

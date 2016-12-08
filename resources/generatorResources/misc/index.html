@@ -7,28 +7,33 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name ="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style type="text/css" rel="stylesheet">
+        html, body, div, canvas {
+            border:none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        canvas {
+            position: relative;
+            display: block;
+            z-index: 20;
+        }
+        #loading {
+            position: absolute;
+            z-index: 10;
+        }
+        #informer {
+            position: absolute;
+            z-index: 30;
+        }
+    </style>
     <title></title>
 </head>
 
 <body>
 <span id="loading">loading...</span>
-<style type="text/css" rel="stylesheet">
-    html, body, div, canvas {
-        border:none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-    }
-    canvas {
-        position: relative;
-        display: block;
-        z-index: 20;
-    }
-    #loading {
-        position: absolute;
-        z-index: 10;
-    }
-</style>
+<span id="informer"></span>
 {{script_debug}}
 {{script_main}}
 </body>
