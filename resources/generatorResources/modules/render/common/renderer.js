@@ -38,10 +38,9 @@ exports.init = function(){
     }
     ctxClass = null;
     if (GlContext.isAcceptable()) ctxClass = GlContext;
-    else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+    //else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
     else throw "can not create rendering context";
     ctx = new ctxClass();
-    //ctx = canvasContext;
     game.setCtx(ctx);
     require('scaleManager').instance(canvas,ctx).manage();
     ctx.init(canvas);

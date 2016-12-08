@@ -6,8 +6,8 @@ var camera = require('camera');
 
 var ctx = null;
 
-var renderer;
-var bundle;
+var renderer = require('renderer');
+var bundle = require('bundle');
 var progressScene;
 var tweenMovies = [];
 
@@ -20,8 +20,6 @@ var bootEssentialResources = function(callBack){
         callBack();
         return;
     }
-    if (!bundle) bundle = require('bundle');
-    if (!renderer) renderer = require('renderer');
 
     var loader = new ResourceLoader();
     loader.onComplete = function(){
@@ -47,8 +45,6 @@ var bootEssentialResources = function(callBack){
 };
 
 var preloadSceneAndSetIt = function(scene){
-
-    if (!bundle) bundle = require('bundle');
 
     if (progressScene) {
         exports.currScene = progressScene;

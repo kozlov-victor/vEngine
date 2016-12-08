@@ -68,7 +68,7 @@
         console.error(e);
         window.showError(e,lineNum);
         window.canceled = true;
-        window.require && window.require('audioPlayer') && (window.require('audioPlayer').instance().stopAll());
+        window.require && window.require('audioPlayer') && (window.require('audioPlayer').stopAll());
     });
 
 })();

@@ -13,8 +13,8 @@ var modules = {}, require = function(name){
         var module = {
             exports:{}
         };
-        moduleObj.code(module,module.exports);
         moduleObj.inited = module;
+        moduleObj.code(module);
     }
 };
 
@@ -38,8 +38,10 @@ var modules = {}, require = function(name){
 Array.prototype.remove = function(el){
     this.splice(this.indexOf(el),1);
 };
-modules['class'] = {code: function(module,exports){
-	var Class = function() {};
+modules['class'] =
+    {code: function(module){
+    var exports = module.exports;
+    	var Class = function() {};
 	
 	Class.extend = function(props, staticProps) {
 	
@@ -118,15 +120,17 @@ modules['class'] = {code: function(module,exports){
 	    return new F;
 	};
 	
-	exports.Class = Class;
+	exports.extend = Class.extend.bind(Class);
 	
 	
 	
 	
+    
 }};
-
-modules['behaviour'] = {code: function(module,exports){
-	
+modules['behaviour'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var commonBehaviour = {};
 	
 	
@@ -147,7 +151,7 @@ modules['behaviour'] = {code: function(module,exports){
 	 exports.description = "control character with cursor to walk up, down, left and right";
 	 */
 	
-	var keyboard = require('keyboard').instance();
+	var keyboard = require('keyboard');
 	var animations = {};
 	
 	
@@ -223,7 +227,7 @@ modules['behaviour'] = {code: function(module,exports){
 	scripts.gameObject['walker.js'] = function(exports){
 	    var module = exports, self = exports;
 	    
-	var camera = require('camera').instance();
+	var camera = require('camera');
 	camera.follow(self);
 	
 	function onUpdate(time) {
@@ -262,73 +266,66 @@ modules['behaviour'] = {code: function(module,exports){
 	exports.scripts = scripts;
 	
 	
+    
 }};
-
-modules['collider'] = {code: function(module,exports){
-	
+modules['collider'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var mathEx = require('mathEx');
 	
-	var Collider = function(){
+	var gos;
+	var scene;
 	
-	    var gos;
-	    var scene;
+	exports.setUp = function(){
+	    scene = require('game').getCurrScene();
+	    gos = scene.getAllGameObjects();
+	};
 	
-	    this.setUp = function(){
-	        scene = require('game').instance().getCurrScene();
-	        gos = scene.getAllGameObjects();
-	    };
+	exports.manage = function(obj,newX,newY){
+	    if (obj.pos.x==newX && obj.pos.y==newY) return;
+	    if (!obj.rigid) {
+	        obj.pos.x = newX;
+	        obj.pos.y = newY;
+	    } else {
+	        var tileOn = scene.getTileAt(
+	            newX + obj.getRect().width / 2,
+	            newY + obj.getRect().height / 2
+	        );
+	        if (tileOn==16 || tileOn==17) return;
+	    }
+	    var hasCollision = false;
+	    var all = gos.rs;
+	    for (var i = 0,l = all.length;i<l;i++) {
+	        var go = all[i];
+	        if (obj==go) continue;
 	
-	    this.manage = function(obj,newX,newY){
-	        if (obj.pos.x==newX && obj.pos.y==newY) return;
-	        if (!obj.rigid) {
-	            obj.pos.x = newX;
-	            obj.pos.y = newY;
-	        } else {
-	            var tileOn = scene.getTileAt(
-	                newX + obj.getRect().width / 2,
-	                newY + obj.getRect().height / 2
-	            );
-	            if (tileOn==16 || tileOn==17) return;
-	        }
-	        var hasCollision = false;
-	        var all = gos.rs;
-	        for (var i = 0,l = all.length;i<l;i++) {
-	            var go = all[i];
-	            if (obj==go) continue;
+	        var objRect = obj.getRect();
+	        objRect.x = newX;
+	        objRect.y = newY;
 	
-	            var objRect = obj.getRect();
-	            objRect.x = newX;
-	            objRect.y = newY;
-	
-	            if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
-	                if (obj.rigid && go.rigid) {
-	                    hasCollision = true;
-	                    obj.trigger('collide',go);
-	                    //console.log('collided',obj.name,go.name,go.rigid);
-	                } else {
-	                    obj.trigger('overlap',go);
-	                }
+	        if (mathEx.isRectIntersectRect(objRect,go.getRect())) {
+	            if (obj.rigid && go.rigid) {
+	                hasCollision = true;
+	                obj.trigger('collide',go);
+	                //console.log('collided',obj.name,go.name,go.rigid);
+	            } else {
+	                obj.trigger('overlap',go);
 	            }
 	        }
-	        if (!hasCollision) {
-	            obj.pos.x = newX;
-	            obj.pos.y = newY;
-	        }
-	        return hasCollision;
-	    };
-	
+	    }
+	    if (!hasCollision) {
+	        obj.pos.x = newX;
+	        obj.pos.y = newY;
+	    }
+	    return hasCollision;
 	};
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Collider();
-	    return instance;
-	};
+    
 }};
-
-modules['eventEmitter'] = {code: function(module,exports){
-	
+modules['eventEmitter'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	
 	var EventEmitter = function(){
 	
@@ -361,10 +358,12 @@ modules['eventEmitter'] = {code: function(module,exports){
 	};
 	
 	exports.EventEmitter = EventEmitter;
+    
 }};
-
-modules['consts'] = {code: function(module,exports){
-	
+modules['consts'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	module.exports.noop = function(){};
 	module.exports.RESOURCE_NAMES = ["sound","spriteSheet","frameAnimation","font","gameObject","layer","scene","particleSystem"];
 	
@@ -375,338 +374,309 @@ modules['consts'] = {code: function(module,exports){
 	    CSS_STRETCH:                    3,
 	    HARDWARE_STRETCH:               4
 	};
+    
 }};
-
-modules['keyboard'] = {code: function(module,exports){
-	var Keyboard = function(){
+modules['keyboard'] =
+    {code: function(module){
+    var exports = module.exports;
+    	var buffer = {};
+	var KEY_PRESSED = 1;
+	var KEY_JUST_PRESSED = 2;
+	var KEY_RELEASED = 0;
+	var KEY_JUST_RELEASED = -1;
 	
-	    var buffer = {};
-	    var KEY_PRESSED = 1;
-	    var KEY_JUST_PRESSED = 2;
-	    var KEY_RELEASED = 0;
-	    var KEY_JUST_RELEASED = -1;
-	    var self = this;
+	exports.KEY_UP = 38;
+	exports.KEY_DOWN = 40;
+	exports.KEY_LEFT = 37;
+	exports.KEY_RIGHT = 39;
 	
-	    this.KEY_UP = 38;
-	    this.KEY_DOWN = 40;
-	    this.KEY_LEFT = 37;
-	    this.KEY_RIGHT = 39;
+	exports.emulatePress = function(code){
+	    buffer[code] = KEY_PRESSED;
+	};
 	
-	    this.emulatePress = function(code){
-	        buffer[code] = KEY_PRESSED;
-	    };
+	exports.emulateRelease = function(code){
+	    buffer[code] = KEY_JUST_RELEASED;
+	};
 	
-	    this.emulateRelease = function(code){
-	        buffer[code] = KEY_JUST_RELEASED;
-	    };
+	exports.isPressed = function(key){
+	    return buffer[key]>KEY_RELEASED;
+	};
 	
-	    this.isPressed = function(key){
-	        return buffer[key]>KEY_RELEASED;
-	    };
+	exports.isJustPressed = function(key){
+	    return buffer[key]==KEY_JUST_PRESSED;
+	};
 	
-	    this.isJustPressed = function(key){
-	        return buffer[key]==KEY_JUST_PRESSED;
-	    };
+	exports.isReleased = function(key) {
+	    return  buffer[key]<=KEY_RELEASED || !buffer[key];
+	};
 	
-	    this.isReleased = function(key) {
-	        return  buffer[key]<=KEY_RELEASED || !buffer[key];
-	    };
+	exports.isJustReleased = function(key) {
+	    return buffer[key] == KEY_JUST_RELEASED;
+	};
 	
-	    this.isJustReleased = function(key) {
-	        return buffer[key] == KEY_JUST_RELEASED;
-	    };
-	
-	    this.update = function(){
-	        if (window.canceled) return
-	        [
-	            this.KEY_UP,
-	            this.KEY_DOWN,
-	            this.KEY_LEFT,
-	            this.KEY_RIGHT
-	        ].forEach(function(key){
-	                if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
-	                else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
+	exports.update = function(){
+	    if (window.canceled) return
+	    [
+	        this.KEY_UP,
+	        this.KEY_DOWN,
+	        this.KEY_LEFT,
+	        this.KEY_RIGHT
+	    ].forEach(function(key){
+	            if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
+	            else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
 	        });
-	    };
-	
-	    window.addEventListener('keydown',function(e){
-	        var code = e.keyCode;
-	        switch (code) {
-	            case self.KEY_UP:
-	            case self.KEY_DOWN:
-	            case self.KEY_LEFT:
-	            case self.KEY_RIGHT:
-	                buffer[code] = KEY_PRESSED;
-	                break;
-	        }
-	    });
-	
-	    window.addEventListener('keyup',function(e){
-	        var code = e.keyCode;
-	        switch (code) {
-	            case self.KEY_UP:
-	            case self.KEY_DOWN:
-	            case self.KEY_LEFT:
-	            case self.KEY_RIGHT:
-	                buffer[code] = KEY_JUST_RELEASED;
-	                break;
-	        }
-	    });
 	};
 	
-	var instance = null;
+	window.addEventListener('keydown',function(e){
+	    var code = e.keyCode;
+	    switch (code) {
+	        case self.KEY_UP:
+	        case self.KEY_DOWN:
+	        case self.KEY_LEFT:
+	        case self.KEY_RIGHT:
+	            buffer[code] = KEY_PRESSED;
+	            break;
+	    }
+	});
 	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Keyboard();
-	    return instance;
-	};
+	window.addEventListener('keyup',function(e){
+	    var code = e.keyCode;
+	    switch (code) {
+	        case self.KEY_UP:
+	        case self.KEY_DOWN:
+	        case self.KEY_LEFT:
+	        case self.KEY_RIGHT:
+	            buffer[code] = KEY_JUST_RELEASED;
+	            break;
+	    }
+	});
+    
 }};
-
-modules['mouse'] = {code: function(module,exports){
-	
-	var bundle = require('bundle').instance();
-	var renderer = require('renderer').instance();
+modules['mouse'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
+	var renderer = require('renderer');
 	var mathEx = require('mathEx');
-	var game = require('game').instance();
+	var game = require('game');
 	var device = require('device');
 	
 	var objectsCaptured = {};
 	
-	var Mouse = function(){
+	var self = this;
+	var gameProps = bundle.gameProps;
+	var globalScale = bundle.gameProps.globalScale;
+	var canvas = renderer.getCanvas();
 	
-	    var self = this;
-	    var gameProps = bundle.gameProps;
-	    var globalScale = bundle.gameProps.globalScale;
-	    var canvas = renderer.getCanvas();
-	
-	    if (device.isTouch) {
-	        canvas.ontouchstart = function(e){
-	            var l = e.touches.length;
-	            while (l--){
-	                resolveClick(e.touches[l]);
-	            }
-	        };
-	        canvas.ontouchend = canvas.ontouchcancel = function(e){
-	            var l = e.changedTouches.length;
-	            while (l--){
-	                resolveMouseUp(e.changedTouches[l]);
-	            }
-	        };
-	        canvas.ontouchmove = function(e){
-	            var l = e.touches.length;
-	            while (l--){
-	                resolveMouseMove(e.touches[l]);
-	            }
+	if (device.isTouch) {
+	    canvas.ontouchstart = function(e){
+	        var l = e.touches.length;
+	        while (l--){
+	            resolveClick(e.touches[l]);
 	        }
-	    } else {
-	        canvas.onmousedown = function(e){
-	            (e.button === 0) && resolveClick(e);
-	        };
-	        canvas.onmouseup = function(e){
-	            resolveMouseUp(e);
-	        };
-	        canvas.onmousemove = function(e){
-	            resolveMouseMove(e);
+	    };
+	    canvas.ontouchend = canvas.ontouchcancel = function(e){
+	        var l = e.changedTouches.length;
+	        while (l--){
+	            resolveMouseUp(e.changedTouches[l]);
+	        }
+	    };
+	    canvas.ontouchmove = function(e){
+	        var l = e.touches.length;
+	        while (l--){
+	            resolveMouseMove(e.touches[l]);
 	        }
 	    }
-	
-	    var resolveScreenPoint = function(e){
-	        return {
-	            x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
-	            y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
-	            id: e.identifier || 0
-	        };
+	} else {
+	    canvas.onmousedown = function(e){
+	        (e.button === 0) && resolveClick(e);
 	    };
+	    canvas.onmouseup = function(e){
+	        resolveMouseUp(e);
+	    };
+	    canvas.onmousemove = function(e){
+	        resolveMouseMove(e);
+	    }
+	}
 	
-	    var triggerEvent = function(e,name){
-	        var scene = game.getCurrScene();
-	        if (!scene) return;
-	        var point = resolveScreenPoint(e);
-	        scene._layers.someReversed(function(l){
-	            var found = false;
-	            l._gameObjects.someReversed(function(g){
-	                if (
-	                    mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
-	                ) {
-	                    g.trigger(name,{
-	                        screenX:point.x,
-	                        screenY:point.y,
-	                        objectX:point.x - g.pos.x,
-	                        objectY:point.y - g.pos.y,
-	                        id:point.id
-	                    });
-	                    point.object = g;
-	                    return found = true;
-	                }
-	            });
-	            return found;
+	var resolveScreenPoint = function(e){
+	    return {
+	        x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
+	        y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
+	        id: e.identifier || 0
+	    };
+	};
+	
+	var triggerEvent = function(e,name){
+	    var scene = game.getCurrScene();
+	    if (!scene) return;
+	    var point = resolveScreenPoint(e);
+	    scene._layers.someReversed(function(l){
+	        var found = false;
+	        l._gameObjects.someReversed(function(g){
+	            if (
+	                mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
+	            ) {
+	                g.trigger(name,{
+	                    screenX:point.x,
+	                    screenY:point.y,
+	                    objectX:point.x - g.pos.x,
+	                    objectY:point.y - g.pos.y,
+	                    id:point.id
+	                });
+	                point.object = g;
+	                return found = true;
+	            }
 	        });
-	        scene.trigger(name,{
-	            screenX:point.x,
-	            screenY:point.y,
-	            id:point.id,
-	            target:point.object
-	        });
-	        return point;
-	    };
+	        return found;
+	    });
+	    scene.trigger(name,{
+	        screenX:point.x,
+	        screenY:point.y,
+	        id:point.id,
+	        target:point.object
+	    });
+	    return point;
+	};
 	
-	    var resolveClick = function(e){
-	        if (window.canceled) return
-	        var point = triggerEvent(e,'click');
-	        triggerEvent(e,'mouseDown');
-	    };
+	var resolveClick = function(e){
+	    if (window.canceled) return
+	    var point = triggerEvent(e,'click');
+	    triggerEvent(e,'mouseDown');
+	};
 	
-	    var resolveMouseMove = function(e){
-	        if (window.canceled) return
-	        var point = triggerEvent(e,'mouseMove');
-	        if (!point) return;
-	        var lastMouseDownObject = objectsCaptured[point.id];
-	        if (lastMouseDownObject && lastMouseDownObject!=point.object) {
-	            lastMouseDownObject.trigger('mouseLeave');
-	            delete objectsCaptured[point.id];
-	        }
-	        if (point.object && lastMouseDownObject!=point.object) {
-	            point.object.trigger('mouseEnter');
-	            objectsCaptured[point.id] = point.object;
-	        }
-	
-	    };
-	
-	    var resolveMouseUp = function(e){
-	        if (window.canceled) return
-	        var point = triggerEvent(e,'mouseUp');
-	        if (!point) return;
-	        var lastMouseDownObject = objectsCaptured[point.id];
-	        if (!lastMouseDownObject) return;
-	        lastMouseDownObject.trigger('mouseUp');
+	var resolveMouseMove = function(e){
+	    if (window.canceled) return
+	    var point = triggerEvent(e,'mouseMove');
+	    if (!point) return;
+	    var lastMouseDownObject = objectsCaptured[point.id];
+	    if (lastMouseDownObject && lastMouseDownObject!=point.object) {
+	        lastMouseDownObject.trigger('mouseLeave');
 	        delete objectsCaptured[point.id];
-	    };
+	    }
+	    if (point.object && lastMouseDownObject!=point.object) {
+	        point.object.trigger('mouseEnter');
+	        objectsCaptured[point.id] = point.object;
+	    }
 	
 	};
 	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Mouse();
-	    return instance;
+	var resolveMouseUp = function(e){
+	    if (window.canceled) return
+	    var point = triggerEvent(e,'mouseUp');
+	    if (!point) return;
+	    var lastMouseDownObject = objectsCaptured[point.id];
+	    if (!lastMouseDownObject) return;
+	    lastMouseDownObject.trigger('mouseUp');
+	    delete objectsCaptured[point.id];
 	};
+    
 }};
-
-modules['bundle'] = {code: function(module,exports){
-	
+modules['bundle'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var collections = require('collections');
 	var consts = require('consts');
 	var utils = require('utils');
 	var behaviour = require('behaviour');
 	
-	var Bundle = function(data){
-	
-	    this.spriteSheetList = new collections.List();
-	    this.gameObjectList = new collections.List();
-	    this.frameAnimationList = new collections.List();
-	    this.layerList = new collections.List();
-	    this.sceneList = new collections.List();
-	    this.layerList = new collections.List();
-	    this.fontList = new collections.List();
-	    this.soundList = new collections.List();
-	    this.particleSystemList = new collections.List();
-	    this.gameProps = {};
-	
-	    var self = this;
-	
-	    var toDataSource = function(ResourceClass,dataList,resourceList){
-	        resourceList.clear();
-	        dataList.forEach(function(item){
-	            resourceList.add(new ResourceClass(item));
-	        });
-	    };
+	exports.spriteSheetList = new collections.List();
+	exports.gameObjectList = new collections.List();
+	exports.frameAnimationList = new collections.List();
+	exports.layerList = new collections.List();
+	exports.sceneList = new collections.List();
+	exports.layerList = new collections.List();
+	exports.fontList = new collections.List();
+	exports.soundList = new collections.List();
+	exports.particleSystemList = new collections.List();
+	exports.gameProps = {};
 	
 	
-	    this.prepare = function(data){
-	        if (!data) throw 'can not prepare bundle, no data provided';
-	        self.gameProps = data.gameProps;
-	        consts.RESOURCE_NAMES.forEach(function(itm){
-	            toDataSource(
-	                require(itm)[utils.capitalize(itm)],
-	                data[itm],
-	                self[itm+'List']);
-	        });
-	    };
-	
-	    var applyIndividualBehaviour = function(model){
-	        var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
-	        if (behaviourFn) {
-	            var exports = model;
-	            behaviourFn(exports);
-	            model.__updateIndividualBehaviour__ = function(time){
-	                exports.onUpdate(time);
-	            }
-	        } else {
-	            model.__updateIndividualBehaviour__ = consts.noop;
-	        }
-	
-	    };
-	
-	    var applyCommonBehaviour = function(model){
-	
-	        var exportsList = [];
-	        if (!model._commonBehaviour || !model._commonBehaviour.size()) {
-	            model.__updateCommonBehaviour__ = consts.noop;
-	            return;
-	        }
-	        model._commonBehaviour.forEach(function(cb){
-	            var exports = model;
-	            behaviour.commonBehaviour[cb.name](exports,cb.parameters);
-	            exportsList.push(exports);
-	        });
-	        model.__updateCommonBehaviour__ = function(){
-	            exportsList.forEach(function(item){
-	                item.onUpdate();
-	            });
-	        }
-	    };
-	
-	    this.applyBehaviourForScene = function(scene){
-	        if (scene.__applied) return;
-	        scene.__onResourcesReady();
-	        self.applyBehaviour(scene);
-	        scene._layers.forEach(function(layer){
-	            layer._gameObjects.forEach(function(gameObject){
-	                self.applyBehaviour(gameObject);
-	            });
-	        });
-	        scene.__applied = true;
-	    };
-	
-	    this.applyBehaviour = function(model){
-	        applyCommonBehaviour(model);
-	        applyIndividualBehaviour(model);
-	    };
-	
-	    this.embeddedResources = {};
-	    this.embeddedResources.data = {};
-	    this.embeddedResources.isEmbedded = false;
-	
-	
-	    this.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
-	
-	    this.embeddedResources.isEmbedded = false;
-	
+	var toDataSource = function(ResourceClass,dataList,resourceList){
+	    resourceList.clear();
+	    dataList.forEach(function(item){
+	        resourceList.add(new ResourceClass(item));
+	    });
 	};
 	
 	
-	var instance = null;
+	exports.prepare = function(data){
+	    if (!data) throw 'can not prepare bundle, no data provided';
+	    exports.gameProps = data.gameProps;
+	    consts.RESOURCE_NAMES.forEach(function(itm){
+	        toDataSource(
+	            require(itm)[utils.capitalize(itm)],
+	            data[itm],
+	            exports[itm+'List']);
+	    });
+	};
 	
-	module.exports.instance = function(){
-	    if (instance==null) {
-	        instance = new Bundle();
+	var applyIndividualBehaviour = function(model){
+	    var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
+	    if (behaviourFn) {
+	        var exports = model;
+	        behaviourFn(exports);
+	        model.__updateIndividualBehaviour__ = function(time){
+	            exports.onUpdate(time);
+	        }
+	    } else {
+	        model.__updateIndividualBehaviour__ = consts.noop;
 	    }
-	    return instance;
-	};
-}};
-
-modules['resourceCache'] = {code: function(module,exports){
 	
+	};
+	
+	var applyCommonBehaviour = function(model){
+	
+	    var exportsList = [];
+	    if (!model._commonBehaviour || !model._commonBehaviour.size()) {
+	        model.__updateCommonBehaviour__ = consts.noop;
+	        return;
+	    }
+	    model._commonBehaviour.forEach(function(cb){
+	        var exports = model;
+	        behaviour.commonBehaviour[cb.name](exports,cb.parameters);
+	        exportsList.push(exports);
+	    });
+	    model.__updateCommonBehaviour__ = function(){
+	        exportsList.forEach(function(item){
+	            item.onUpdate();
+	        });
+	    }
+	};
+	
+	exports.applyBehaviourForScene = function(scene){
+	    if (scene.__applied) return;
+	    scene.__onResourcesReady();
+	    exports.applyBehaviour(scene);
+	    scene._layers.forEach(function(layer){
+	        layer._gameObjects.forEach(function(gameObject){
+	            exports.applyBehaviour(gameObject);
+	        });
+	    });
+	    scene.__applied = true;
+	};
+	
+	exports.applyBehaviour = function(model){
+	    applyCommonBehaviour(model);
+	    applyIndividualBehaviour(model);
+	};
+	
+	exports.embeddedResources = {};
+	exports.embeddedResources.data = {};
+	exports.embeddedResources.isEmbedded = false;
+	
+	
+	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	
+	exports.embeddedResources.isEmbedded = false;
+    
+}};
+modules['resourceCache'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var cache = {};
 	
 	exports.get = function(name){
@@ -733,19 +703,21 @@ modules['resourceCache'] = {code: function(module,exports){
 	
 	
 	
+    
 }};
-
-modules['resourceLoader'] = {code: function(module,exports){
-	
+modules['resourceLoader'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	exports.ResourceLoader = function(){
 	
 	    var self = this;
 	
 	    var Queue = require('queue').Queue;
-	    var renderer = require('renderer').instance();
-	    var bundle = require('bundle').instance();
+	    var renderer = require('renderer');
+	    var bundle = require('bundle');
 	    var cache = require('resourceCache');
-	    var audioPlayer = require('audioPlayer').instance();
+	    var audioPlayer = require('audioPlayer');
 	
 	    var q = new Queue();
 	    q.onResolved = function(){
@@ -762,7 +734,7 @@ modules['resourceLoader'] = {code: function(module,exports){
 	                bundle.embeddedResources.data[resourcePath]:
 	                resourcePath;
 	            renderer.
-	                getContext().
+	                getContextClass().
 	                loadTextureInfo(
 	                path,
 	                {type:bundle.embeddedResources.isEmbedded?'base64':'',fileName:resourcePath},
@@ -804,10 +776,12 @@ modules['resourceLoader'] = {code: function(module,exports){
 	    };
 	
 	};
+    
 }};
-
-modules['device'] = {code: function(module,exports){
-	
+modules['device'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var isCocoonJS = !!navigator.isCocoonJS;
 	exports.isCocoonJS = isCocoonJS;
 	exports.scale = isCocoonJS?(window.devicePixelRatio||1):1;
@@ -820,160 +794,144 @@ modules['device'] = {code: function(module,exports){
 	        console.log(key + ':' + exports[key]);
 	    }
 	};
+    
 }};
-
-modules['game'] = {code: function(module,exports){
-	
+modules['game'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var ResourceLoader = require('resourceLoader').ResourceLoader;
-	var collider = require('collider').instance();
-	// var bundle = require('bundle').instance();
-	var keyboard = require('keyboard').instance();
-	var camera = require('camera').instance();
+	var collider = require('collider');
+	var keyboard = require('keyboard');
+	var camera = require('camera');
 	
-	var Game = function(){
+	var ctx = null;
 	
-	    var self = this;
-	    var ctx = null;
+	var renderer = require('renderer');
+	var bundle = require('bundle');
+	var progressScene;
+	var tweenMovies = [];
 	
-	    var renderer;
-	    var bundle;
-	    var progressScene;
-	    var tweenMovies = [];
+	exports.currScene = null;
+	var booted = false;
 	
-	    this.currScene = null;
-	    var booted = false;
+	var bootEssentialResources = function(callBack){
 	
-	    var bootEssentialResources = function(callBack){
+	    if (booted) {
+	        callBack();
+	        return;
+	    }
 	
-	        if (booted) {
-	            callBack();
-	            return;
-	        }
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            callBack();
-	        };
-	        if (bundle.gameProps.preloadingSceneId){
-	            progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
-	        }
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            progressScene.__onResourcesReady();
-	            progressScene.
-	                getAllSpriteSheets().
-	                asArray().
-	                forEach(function(spSheet){
-	                    loader.loadImage(spSheet.resourcePath);
-	                });
-	        }
-	        bundle.fontList.forEach(function(font){
-	            loader.loadImage(font.resourcePath);
-	        });
-	        loader.start();
+	    var loader = new ResourceLoader();
+	    loader.onComplete = function(){
+	        callBack();
 	    };
-	
-	    var preloadSceneAndSetIt = function(scene){
-	
-	        if (!renderer) renderer = require('renderer').instance();
-	        if (!bundle) bundle = require('bundle').instance();
-	
-	        if (progressScene) {
-	            self.currScene = progressScene;
-	            bundle.applyBehaviourForScene(progressScene);
-	        }
-	
-	        var loader = new ResourceLoader();
-	        loader.onComplete = function(){
-	            self.currScene = scene;
-	            bundle.applyBehaviourForScene(scene);
-	            collider.setUp();
-	            if (scene.useBG) ctx.colorBG = scene.colorBG;
-	            else {
-	                ctx.colorBG = ctx.DEFAULT_COLOR_BG;
-	            }
-	            scene.onShow();
-	        };
-	        loader.onProgress = function(e){
-	            progressScene &&
-	            progressScene.onProgress &&
-	            progressScene.onProgress(e);
-	        };
-	
-	        var allSprSheets = scene.getAllSpriteSheets();
-	
-	        bundle.particleSystemList.forEach(function(ps){
-	            allSprSheets.add(ps._gameObject._spriteSheet);
-	        });
-	        allSprSheets.asArray().forEach(function(spSheet){
-	            loader.loadImage(spSheet.resourcePath);
-	        });
-	        bundle.soundList.forEach(function(snd){
-	            loader.loadSound(snd.resourcePath,snd.name);
-	        });
-	        loader.start();
-	    };
-	
-	    this.setCtx = function(_ctx){
-	        ctx = _ctx;
-	    };
-	
-	    this.setScene = function(scene){
-	        var Scene = require('scene').Scene;
-	        if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
-	        if (this.currScene==scene) return;
-	        bootEssentialResources(function(){
-	            preloadSceneAndSetIt(scene);
-	        });
-	    };
-	
-	    this.setSceneByName = function(sceneName){
-	        if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-	        var bundle = require('bundle').instance();
-	        var scene = bundle.sceneList.find({name: sceneName});
-	        if (!scene) throw 'no scene with name ' + sceneName + ' found';
-	        self.setScene(scene);
-	    };
-	
-	    this.getCurrScene = function(){
-	        return this.currScene;
-	    };
-	
-	    this.addTweenMovie = function(tm) {
-	        tweenMovies.push(tm);
-	    };
-	
-	    this.update = function(currTime,deltaTime){
-	        if (!this.currScene) return;
-	        tweenMovies.forEach(function(tweenMovie){
-	            if (tweenMovie.completed) {
-	                tweenMovies.remove(tweenMovie);
-	            }
-	            tweenMovie._update(currTime);
-	        });
-	        this.currScene.update(currTime,deltaTime);
-	        camera.update(ctx);
-	        keyboard.update();
-	        bundle.particleSystemList.forEach(function(p){
-	            p.update(currTime,deltaTime);
-	        });
-	    };
-	
+	    if (bundle.gameProps.preloadingSceneId){
+	        progressScene = bundle.sceneList.find({id:bundle.gameProps.preloadingSceneId});
+	    }
+	    if (progressScene) {
+	        exports.currScene = progressScene;
+	        progressScene.__onResourcesReady();
+	        progressScene.
+	            getAllSpriteSheets().
+	            asArray().
+	            forEach(function(spSheet){
+	                loader.loadImage(spSheet.resourcePath);
+	            });
+	    }
+	    bundle.fontList.forEach(function(font){
+	        loader.loadImage(font.resourcePath);
+	    });
+	    loader.start();
 	};
 	
+	var preloadSceneAndSetIt = function(scene){
 	
-	var instance = null;
+	    if (progressScene) {
+	        exports.currScene = progressScene;
+	        bundle.applyBehaviourForScene(progressScene);
+	        renderer.setScene(progressScene);
+	        if (!renderer.isRunning()) renderer.start();
+	    }
 	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Game();
-	    return instance;
+	    var loader = new ResourceLoader();
+	    loader.onComplete = function(){
+	        exports.currScene = scene;
+	        bundle.applyBehaviourForScene(scene);
+	        collider.setUp();
+	        renderer.setScene(scene);
+	        if (!renderer.isRunning()) renderer.start();
+	        scene.onShow();
+	    };
+	    loader.onProgress = function(e){
+	        progressScene &&
+	        progressScene.onProgress &&
+	        progressScene.onProgress(e);
+	    };
+	
+	    var allSprSheets = scene.getAllSpriteSheets();
+	
+	    bundle.particleSystemList.forEach(function(ps){
+	        allSprSheets.add(ps._gameObject._spriteSheet);
+	    });
+	    allSprSheets.asArray().forEach(function(spSheet){
+	        loader.loadImage(spSheet.resourcePath);
+	    });
+	    bundle.soundList.forEach(function(snd){
+	        loader.loadSound(snd.resourcePath,snd.name);
+	    });
+	    loader.start();
 	};
 	
+	exports.setCtx = function(_ctx){
+	    ctx = _ctx;
+	};
+	
+	exports.setScene = function(scene){
+	    var Scene = require('scene').Scene;
+	    if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
+	    if (exports.currScene==scene) return;
+	    bootEssentialResources(function(){
+	        preloadSceneAndSetIt(scene);
+	    });
+	};
+	
+	exports.setSceneByName = function(sceneName){
+	    if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
+	    var bundle = require('bundle');
+	    var scene = bundle.sceneList.find({name: sceneName});
+	    if (!scene) throw 'no scene with name ' + sceneName + ' found';
+	    exports.setScene(scene);
+	};
+	
+	exports.getCurrScene = function(){
+	    return exports.currScene;
+	};
+	
+	exports.addTweenMovie = function(tm) {
+	    tweenMovies.push(tm);
+	};
+	
+	exports.update = function(currTime,deltaTime){
+	    tweenMovies.forEach(function(tweenMovie){
+	        if (tweenMovie.completed) {
+	            tweenMovies.remove(tweenMovie);
+	        }
+	        tweenMovie._update(currTime);
+	    });
+	    exports.currScene.update(currTime,deltaTime);
+	    camera.update(ctx);
+	    keyboard.update();
+	    bundle.particleSystemList.forEach(function(p){
+	        p.update(currTime,deltaTime);
+	    });
+	};
+    
 }};
-
-modules['audioNode'] = {code: function(module,exports){
-	
+modules['audioNode'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var cache = require('resourceCache');
 	
 	exports.AudioNode = function(context){
@@ -1010,10 +968,12 @@ modules['audioNode'] = {code: function(module,exports){
 	
 	
 	
+    
 }};
-
-modules['audioNodeSet'] = {code: function(module,exports){
-	
+modules['audioNodeSet'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var AudioNode = require('audioNode').AudioNode;
 	
 	exports.AudioNodeSet = function(Context,numOfNodes){
@@ -1043,11 +1003,13 @@ modules['audioNodeSet'] = {code: function(module,exports){
 	    }
 	
 	};
+    
 }};
-
-modules['audioPlayer'] = {code: function(module,exports){
-	
-	var bundle = require('bundle').instance();
+modules['audioPlayer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
 	var AudioNodeSet = require('audioNodeSet').AudioNodeSet;
 	var cache = require('resourceCache');
 	var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
@@ -1058,65 +1020,60 @@ modules['audioPlayer'] = {code: function(module,exports){
 	
 	var Context  = null;
 	
-	var AudioPlayer = function(){
+	if (WebAudioContext.isAcceptable()) {
+	    Context = WebAudioContext;
+	} else if (HtmlAudioContext.isAcceptable()) {
+	    Context = HtmlAudioContext;
+	} else {
+	    Context = FakeAudioContext;
+	}
 	
-	    if (WebAudioContext.isAcceptable()) {
-	        Context = WebAudioContext;
-	    } else if (HtmlAudioContext.isAcceptable()) {
-	        Context = HtmlAudioContext;
+	var audioNodeSet = new AudioNodeSet(Context,5);
+	var tweenable = new Tweenable({global:true});
+	
+	exports.loadSound = function( url, opts, progress, callback) {
+	    Context.load(url,opts,progress,callback);
+	};
+	
+	exports.play = function(sound){
+	    var node = audioNodeSet.getFreeNode();
+	    if (!node) return;
+	    node.play(sound);
+	};
+	
+	exports.stop = function(sound){
+	    var node = audioNodeSet.getNodeBySound(sound);
+	    if (!node) return;
+	    node.stop();
+	};
+	
+	exports.stopAll = function(){
+	    audioNodeSet.stopAll();
+	};
+	
+	exports.setGain = function(sound,toVal,time,easeFnName){
+	    var node = audioNodeSet.getNodeBySound(sound);
+	    if (!node) return;
+	    if (time) {
+	        var tween = new Tween(sound,{to:{_gain:toVal}},time,easeFnName);
+	        tween.progress(function(s){
+	            node.setGain(s._gain);
+	        });
+	        tweenable.tween(tween);
 	    } else {
-	        Context = FakeAudioContext;
+	        sound._gain = val;
+	        node.setGain(sound._gain);
 	    }
-	
-	    var audioNodeSet = new AudioNodeSet(Context,5);
-	    var tweenable = new Tweenable({global:true});
-	
-	    this.loadSound = function( url, opts, progress, callback) {
-	        Context.load(url,opts,progress,callback);
-	    };
-	
-	    this.play = function(sound){
-	        var node = audioNodeSet.getFreeNode();
-	        if (!node) return;
-	        node.play(sound);
-	    };
-	
-	    this.stop = function(sound){
-	        var node = audioNodeSet.getNodeBySound(sound);
-	        if (!node) return;
-	        node.stop();
-	    };
-	
-	    this.stopAll = function(){
-	        audioNodeSet.stopAll();
-	    };
-	
-	    this.setGain = function(sound,toVal,time,easeFnName){
-	        var node = audioNodeSet.getNodeBySound(sound);
-	        if (!node) return;
-	        if (time) {
-	            var tween = new Tween(sound,{to:{_gain:toVal}},time,easeFnName);
-	            tween.progress(function(s){
-	                node.setGain(s._gain);
-	            });
-	            tweenable.tween(tween);
-	        } else {
-	            sound._gain = val;
-	            node.setGain(sound._gain);
-	        }
-	    };
 	};
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new AudioPlayer();
-	    return instance;
-	};
+    
 }};
-
-modules['fakeAudioContext'] = {code: function(module,exports){
+modules['fakeAudioContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var Class = require('class');
 	
-	exports.FakeAudioContext = require('class').Class.extend(
+	exports.FakeAudioContext = Class.extend(
 	    {
 	        type:'fakeAudioContext',
 	        play: function(buffer,loop){
@@ -1147,18 +1104,21 @@ modules['fakeAudioContext'] = {code: function(module,exports){
 	        }
 	    }
 	);
+    
 }};
-
-modules['htmlAudioContext'] = {code: function(module,exports){
-	
+modules['htmlAudioContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var utils = require('utils');
+	var Class = require('class');
 	
 	var getCtx = function(){
 	    var Ctx = window && window.Audio;
 	    return new Ctx();
 	} ;
 	
-	exports.HtmlAudioContext = require('class').Class.extend(
+	exports.HtmlAudioContext = Class.extend(
 	    {
 	        type:'htmlAudioContext',
 	        free:true,
@@ -1202,12 +1162,15 @@ modules['htmlAudioContext'] = {code: function(module,exports){
 	    }
 	);
 	
+    
 }};
-
-modules['webAudioContext'] = {code: function(module,exports){
-	
+modules['webAudioContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var utils = require('utils');
 	var cache = require('resourceCache');
+	var Class = require('class');
 	
 	var getCtx = (function(){
 	    var ctx = window.AudioContext || window.webkitAudioContext;
@@ -1230,7 +1193,7 @@ modules['webAudioContext'] = {code: function(module,exports){
 	    );
 	};
 	
-	exports.WebAudioContext = require('class').Class.extend(
+	exports.WebAudioContext = Class.extend(
 	    {
 	        type:'webAudioContext',
 	        _ctx:null,
@@ -1289,10 +1252,12 @@ modules['webAudioContext'] = {code: function(module,exports){
 	        }
 	    }
 	);
+    
 }};
-
-modules['base64'] = {code: function(module,exports){
-	// https://github.com/beatgammit/base64-js/blob/master/index.js
+modules['base64'] =
+    {code: function(module){
+    var exports = module.exports;
+    	// https://github.com/beatgammit/base64-js/blob/master/index.js
 	
 	'use strict';
 	
@@ -1408,10 +1373,12 @@ modules['base64'] = {code: function(module,exports){
 	
 	    return parts.join('');
 	}
+    
 }};
-
-modules['collections'] = {code: function(module,exports){
-	
+modules['collections'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var isObjectMatchTo = function(obj,matcher){
 	    var isCandidate = true;
 	    Object.keys(matcher).some(function(conditionKey){
@@ -1569,10 +1536,12 @@ modules['collections'] = {code: function(module,exports){
 	        return res;
 	    }
 	};
+    
 }};
-
-modules['mat4'] = {code: function(module,exports){
-	
+modules['mat4'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	exports.makeIdentity = function () {
 	    return [
 	        1, 0, 0, 0,
@@ -1695,10 +1664,12 @@ modules['mat4'] = {code: function(module,exports){
 	        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
 	        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
 	};
+    
 }};
-
-modules['mathEx'] = {code: function(module,exports){
-	var Vec2 = require('vec2').Vec2;
+modules['mathEx'] =
+    {code: function(module){
+    var exports = module.exports;
+    	var Vec2 = require('vec2').Vec2;
 	
 	exports.isPointInRect = function(point,rect,angle) {
 	    if (angle) {
@@ -1966,17 +1937,18 @@ modules['mathEx'] = {code: function(module,exports){
 	};
 	
 	exports.ease = ease;
+    
 }};
-
-modules['queue'] = {code: function(module,exports){
-	exports.Queue = function(){
+modules['queue'] =
+    {code: function(module){
+    var exports = module.exports;
+    	exports.Queue = function(){
 	    var self = this;
 	    this.size = function(){
-	        return tasksTotal;
+	        return tasks.length;
 	    };
 	    this.onResolved = null;
 	    this.onProgress = null;
-	    var tasksTotal = 0;
 	    var tasksResolved = 0;
 	    var tasks = [];
 	    var tasksProgressById = {};
@@ -1986,12 +1958,11 @@ modules['queue'] = {code: function(module,exports){
 	        Object.keys(tasksProgressById).forEach(function(taskId){
 	            sum+=tasksProgressById[taskId]||0;
 	        });
-	        return sum/tasksTotal;
+	        return sum/tasks.length;
 	    };
 	
 	    this.addTask = function(taskFn,taskId) {
 	        tasks.push(taskFn);
-	        tasksTotal++;
 	        tasksProgressById[taskId] = 0;
 	    };
 	    this.progressTask = function(taskId,progress){
@@ -2001,7 +1972,7 @@ modules['queue'] = {code: function(module,exports){
 	    this.resolveTask = function(taskId){
 	        tasksResolved++;
 	        tasksProgressById[taskId] = 1;
-	        if (tasksTotal==tasksResolved) {
+	        if (tasks.length==tasksResolved) {
 	            this.onProgress && this.onProgress(1);
 	            if (self.onResolved) self.onResolved();
 	        } else {
@@ -2015,10 +1986,12 @@ modules['queue'] = {code: function(module,exports){
 	        });
 	    }
 	};
+    
 }};
-
-modules['utils'] = {code: function(module,exports){
-	
+modules['utils'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	exports.merge = function(obj1,obj2){
 	    Object.keys(obj2).forEach(function(key){
 	        obj1[key]=obj2[key];
@@ -2034,6 +2007,15 @@ modules['utils'] = {code: function(module,exports){
 	exports.getBase64prefix = function(fileType,fileName) {
 	    var ext = fileName.split('.').pop();
 	    return 'data:'+fileType+'/'+ext+';base64,'
+	};
+	exports.arrayBufferToBase64 = function(buffer) {
+	    var bytes = new Uint8Array(buffer);
+	    var rawArr = [];
+	    for (var i=0;i<bytes.length;i++){
+	        var b = bytes[i];
+	        rawArr.push(b);
+	    }
+	    return require('base64').fromByteArray(rawArr);
 	};
 	
 	
@@ -2054,10 +2036,12 @@ modules['utils'] = {code: function(module,exports){
 	    request.onerror=function(e){throw 'can not load sound with url '+url};
 	    request.send();
 	};
+    
 }};
-
-modules['vec2'] = {code: function(module,exports){
-	
+modules['vec2'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	exports.Vec2 = function(_x,_y){
 	
 	    var x = _x||0;
@@ -2143,13 +2127,15 @@ modules['vec2'] = {code: function(module,exports){
 	    })();
 	
 	};
+    
 }};
-
-modules['baseGameObject'] = {code: function(module,exports){
+modules['baseGameObject'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	
-	
-	var renderer = require('renderer').instance();
-	var camera = require('camera').instance();
+	var renderer = require('renderer');
+	var camera = require('camera');
 	
 	var Renderable = require('renderable').Renderable;
 	var Moveable = require('moveable').Moveable;
@@ -2180,7 +2166,7 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        this._layer._scene._allGameObjects.remove({id:this.id});
 	    },
 	    getScene: function(){
-	        return require('game').instance().getCurrScene();
+	        return require('game').getCurrScene();
 	    },
 	    moveTo:function(x,y,time,easeFnName){
 	        return this.tween(this.pos,{to:{x:x,y:y}},time,easeFnName);
@@ -2198,10 +2184,13 @@ modules['baseGameObject'] = {code: function(module,exports){
 	        this._moveable._gameObject = this;
 	    }
 	});
+    
 }};
-
-modules['baseModel'] = {code: function(module,exports){
-	var EventEmitter = require('eventEmitter').EventEmitter;
+modules['baseModel'] =
+    {code: function(module){
+    var exports = module.exports;
+    	var EventEmitter = require('eventEmitter').EventEmitter;
+	var Class = require('class');
 	
 	var isPropNotFit = function(key,val){
 	    if (!key) return true;
@@ -2231,7 +2220,7 @@ modules['baseModel'] = {code: function(module,exports){
 	    return obj;
 	}
 	
-	exports.BaseModel = require('class').Class.extend({
+	exports.BaseModel = Class.extend({
 	    id:null,
 	    protoId:null,
 	    name:'',
@@ -2284,11 +2273,13 @@ modules['baseModel'] = {code: function(module,exports){
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
 	    }
 	});
+    
 }};
-
-modules['moveable'] = {code: function(module,exports){
-	
-	var collider = require('collider').instance();
+modules['moveable'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var collider = require('collider');
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.Moveable = BaseModel.extend({
@@ -2302,13 +2293,15 @@ modules['moveable'] = {code: function(module,exports){
 	        collider.manage(_gameObject,posX,posY);
 	    }
 	});
+    
 }};
-
-modules['renderable'] = {code: function(module,exports){
-	
-	var camera = require('camera').instance();
-	var renderer = require('renderer').instance();
-	var collider = require('collider').instance();
+modules['renderable'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var camera = require('camera');
+	var renderer = require('renderer');
+	var collider = require('collider');
 	
 	var BaseModel = require('baseModel').BaseModel;
 	var Tweenable = require('tweenable').Tweenable;
@@ -2354,19 +2347,23 @@ modules['renderable'] = {code: function(module,exports){
 	    };
 	
 	});
+    
 }};
-
-modules['resource'] = {code: function(module,exports){
-	
+modules['resource'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.Resource = BaseModel.extend({
 	    resourcePath:''
 	});
+    
 }};
-
-modules['tweenable'] = {code: function(module,exports){
-	
+modules['tweenable'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var BaseModel = require('baseModel').BaseModel;
 	var Tween = require('tween').Tween;
 	var TweenMovie = require('tweenMovie').TweenMovie;
@@ -2382,10 +2379,12 @@ modules['tweenable'] = {code: function(module,exports){
 	        movie.play(this.global);
 	    }
 	});
+    
 }};
-
-modules['commonBehaviour'] = {code: function(module,exports){
-	
+modules['commonBehaviour'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.CommonBehaviour = BaseModel.extend({
@@ -2397,10 +2396,12 @@ modules['commonBehaviour'] = {code: function(module,exports){
 	
 	    }
 	});
+    
 }};
-
-modules['frameAnimation'] = {code: function(module,exports){
-	
+modules['frameAnimation'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var BaseModel = require('baseModel').BaseModel;
 	
 	
@@ -2432,18 +2433,20 @@ modules['frameAnimation'] = {code: function(module,exports){
 	        }
 	    }
 	});
+    
 }};
-
-modules['gameObject'] = {code: function(module,exports){
-	
-	var renderer = require('renderer').instance();
+modules['gameObject'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var renderer = require('renderer');
 	var BaseGameObject = require('baseGameObject').BaseGameObject;
 	var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
 	var utils = require('utils');
-	var game = require('game').instance();
+	var game = require('game');
 	
 	exports.GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -2532,14 +2535,16 @@ modules['gameObject'] = {code: function(module,exports){
 	        return game.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
+    
 }};
-
-modules['layer'] = {code: function(module,exports){
-	
+modules['layer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var BaseModel = require('baseModel').BaseModel;
 	var collections = require('collections');
 	var TextField = require('textField').TextField;
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	
 	exports.Layer = BaseModel.extend({
 	    type:'layer',
@@ -2582,12 +2587,14 @@ modules['layer'] = {code: function(module,exports){
 	        }
 	    }
 	});
+    
 }};
-
-modules['particleSystem'] = {code: function(module,exports){
-	
+modules['particleSystem'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var mathEx = require('mathEx');
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	var BaseModel = require('baseModel').BaseModel;
 	
 	exports.ParticleSystem = BaseModel.extend({
@@ -2650,16 +2657,18 @@ modules['particleSystem'] = {code: function(module,exports){
 	        return bundle.particleSystemList.findAll({name:name});
 	    }
 	});
+    
 }};
-
-modules['scene'] = {code: function(module,exports){
-	
+modules['scene'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var Renderable = require('renderable').Renderable;
 	var collections = require('collections');
-	var bundle = require('bundle').instance();
-	var renderer = require('renderer').instance();
+	var bundle = require('bundle');
+	var renderer = require('renderer');
 	var resourceCache = require('resourceCache');
-	var camera = require('camera').instance();
+	var camera = require('camera');
 	
 	var tweenModule = require('tween');
 	var tweenMovieModule = require('tweenMovie');
@@ -2792,12 +2801,14 @@ modules['scene'] = {code: function(module,exports){
 	        this.printText(0,0,text);
 	    }
 	});
+    
 }};
-
-modules['sound'] = {code: function(module,exports){
-	var Resource = require('resource').Resource;
-	var audioPlayer = require('audioPlayer').instance();
-	var bundle = require('bundle').instance();
+modules['sound'] =
+    {code: function(module){
+    var exports = module.exports;
+    	var Resource = require('resource').Resource;
+	var audioPlayer = require('audioPlayer');
+	var bundle = require('bundle');
 	
 	exports.Sound = Resource.extend({
 	    type:'sound',
@@ -2820,10 +2831,12 @@ modules['sound'] = {code: function(module,exports){
 	        return bundle.soundList.find({name:name});
 	    }
 	});
+    
 }};
-
-modules['spriteSheet'] = {code: function(module,exports){
-	
+modules['spriteSheet'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var Resource = require('resource').Resource;
 	
 	exports.SpriteSheet = Resource.extend({
@@ -2852,10 +2865,12 @@ modules['spriteSheet'] = {code: function(module,exports){
 	        this.calcFrameSize();
 	    }
 	});
+    
 }};
-
-modules['font'] = {code: function(module,exports){
-	
+modules['font'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var Resource = require('resource').Resource;
 	
 	exports.Font = Resource.extend({
@@ -2865,14 +2880,16 @@ modules['font'] = {code: function(module,exports){
 	    fontFamily:'Monospace',
 	    fontContext:null
 	});
+    
 }};
-
-modules['textField'] = {code: function(module,exports){
-	
-	var renderer = require('renderer').instance();
+modules['textField'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var renderer = require('renderer');
 	var BaseGameObject = require('baseGameObject').BaseGameObject;
 	var SpriteSheet = require('spriteSheet').SpriteSheet;
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	var resourceCache = require('resourceCache');
 	
 	exports.TextField = BaseGameObject.extend({
@@ -2953,29 +2970,39 @@ modules['textField'] = {code: function(module,exports){
 	        ctx.restore();
 	    }
 	});
+    
 }};
-
-modules['canvasContext'] = {code: function(module,exports){
-	
+modules['canvasContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var mat4 = require('mat4');
-	var MatrixStack = require('matrixStack').MatrixStack;
-	var bundle = require('bundle').instance();
+	var utils = require('utils');
+	var bundle = require('bundle');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	var device = require('device');
+	var cache = require('resourceCache');
+	var Class = require('class');
 	
-	var CanvasContext = function(){
+	var getCtx = function(el){
+	    if (!el) el = document.createElement('canvas');
+	    if (!el) return null;
+	    return el.getContext("2d");
+	};
+	
+	
+	exports.CanvasContext = Class.extend(function(it){
 	
 	    var ctx;
 	    var mScaleX = 1, mScaleY = 1;
 	    var gameProps;
-	    var matrixStack = new MatrixStack();
 	
-	    this.init = function(canvas) {
-	        ctx = canvas.getContext('2d');
+	    it.init = function(canvas) {
+	        ctx = getCtx(canvas);
 	        gameProps = bundle.gameProps;
 	    };
 	
-	    this.drawImage = function(
+	    it.drawImage = function(
 	        textureInfo,
 	        fromX,
 	        fromY,
@@ -2984,8 +3011,6 @@ modules['canvasContext'] = {code: function(module,exports){
 	        toX,
 	        toY
 	    ) {
-	
-	        var m;
 	
 	        ctx.drawImage(
 	            textureInfo.image,
@@ -3001,21 +3026,87 @@ modules['canvasContext'] = {code: function(module,exports){
 	
 	    };
 	
-	    var cache = {};
+	    it.clear = function(){
 	
+	        ctx.fillStyle='#ffffff';
+	        ctx.fillRect(
+	            0,
+	            0,
+	            screen.width*device.scale,
+	            screen.height*device.scale);
 	
-	    this.loadTextureInfo = function(url,opts,callBack) {
-	        if (cache.url) {
-	            callBack(cache[url]);
+	    };
+	
+	    it.save = function() {
+	        ctx.save();
+	    };
+	
+	    it.scale = function(scaleX,scaleY){
+	        ctx.scale(scaleX,scaleY);
+	    };
+	
+	    it.rotateZ = function(angleInRadians) {
+	        ctx.rotate(angleInRadians);
+	    };
+	
+	    it.rotateY = function(angleInRadians) {
+	        //
+	    };
+	
+	    it.translate = function(x,y){
+	        ctx.translate(x,y);
+	    };
+	
+	    it.restore = function(){
+	        ctx.restore();
+	    };
+	
+	    it.rescaleView = function(scaleX,scaleY){
+	        //it.scale(scaleX,scaleY);
+	    };
+	
+	    it.getError = function(){
+	
+	    };
+	
+	    it.setAlpha = function(a){
+	        ctx.globalAlpha = a;
+	    };
+	
+	    it.beginFrameBuffer = function(){
+	        ctx.save();
+	        ctx.beginPath();
+	        //ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
+	        //ctx.clip();
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
+	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+	        }
+	    };
+	
+	    it.flipFrameBuffer = function(){
+	        ctx.restore();
+	    };
+	
+	},{
+	    isAcceptable: function(){
+	        return !!getCtx();
+	    },
+	    loadTextureInfo: function(url,opts,progress,callBack) {
+	
+	        if (cache.has(url)) {
+	            callBack(cache.get(url));
 	            return;
 	        }
-	        if (opts.type=='base64') {
-	            url = utils.getBase64prefix('image',opts.fileName) + url;
-	        }
 	
-	        var img = new Image(url);
-	        img.onload = function(){
-	            var texture = {
+	        var img = new Image();
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var texture = {};
+	
+	        if (opts.type == 'base64') {
+	            url = utils.getBase64prefix('image', opts.fileName) + url;
+	            img.src = url;
+	            texture = {
 	                image:img,
 	                getSize: function(){
 	                    return {
@@ -3025,251 +3116,207 @@ modules['canvasContext'] = {code: function(module,exports){
 	                }
 	            };
 	            callBack(texture);
-	        };
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
-	        img.src = url;
-	    };
-	
-	    this.clear = function(){
-	
-	        ctx.fillStyle="#000000";
-	        ctx.fillRect(
-	            0,
-	            0,
-	            screen.width*device.scale,
-	            screen.height*device.scale);
-	
-	    };
-	
-	    this.save = function() {
-	        ctx.save();
-	    };
-	
-	    this.scale = function(scaleX,scaleY){
-	        ctx.scale(scaleX,scaleY);
-	    };
-	
-	    this.rotateZ = function(angleInRadians) {
-	        ctx.rotate(angleInRadians);
-	    };
-	
-	    this.rotateY = function(angleInRadians) {
-	        //
-	    };
-	
-	    this.translate = function(x,y){
-	        ctx.translate(x,y);
-	    };
-	
-	    this.restore = function(){
-	        ctx.restore();
-	    };
-	
-	    this.rescaleView = function(scaleX,scaleY){
-	        mScaleX = scaleX;
-	        mScaleY = scaleY;
-	    };
-	
-	    this.beginFrameBuffer = function(){
-	        ctx.save();
-	        ctx.beginPath();
-	        ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
-	        ctx.clip();
-	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
-	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
-	
-	
-	        }
-	    };
-	
-	    this.flipFrameBuffer = function(){
-	        ctx.restore();
-	    };
-	
-	};
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new CanvasContext();
-	    return instance;
-	};
-}};
-
-modules['camera'] = {code: function(module,exports){
-	
-	var bundle = require('bundle').instance();
-	
-	var Camera = function(){
-	
-	    var objFollowTo = null;
-	    var scene = null;
-	    var sceneWidth;
-	    var sceneHeight;
-	
-	    this.pos = {
-	        x:0,
-	        y:0
-	    };
-	
-	    this.follow = function(gameObject) {
-	        objFollowTo = gameObject;
-	        scene = gameObject.getScene();
-	        sceneWidth = scene.tileMap._spriteSheet._frameWidth*scene.tileMap.width;
-	        sceneHeight = scene.tileMap._spriteSheet._frameHeight*scene.tileMap.height;
-	    };
-	
-	
-	    this.update = function(ctx) {
-	        if (!objFollowTo) return;
-	        var pos = this.pos;
-	        var w = bundle.gameProps.width;
-	        var h = bundle.gameProps.height;
-	        var wDiv2 = w/2;
-	        var hDiv2 = h/2;
-	        pos.x = objFollowTo.pos.x - wDiv2;
-	        pos.y = objFollowTo.pos.y - hDiv2;
-	        if (pos.x<0) pos.x = 0;
-	        if (pos.y<0) pos.y = 0;
-	        if (pos.x>sceneWidth - w) pos.x = sceneWidth -w;
-	        if (pos.y>sceneHeight -h) pos.y = sceneHeight -h;
-	        ctx.translate(-pos.x,-pos.y);
-	    };
-	
-	};
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Camera();
-	    return instance;
-	};
-	
-	
-}};
-
-modules['renderer'] = {code: function(module,exports){
-	
-	
-	var glContext = require('glContext').instance();
-	var canvasContext = require('canvasContext').instance();
-	var resourceCache = require('resourceCache');
-	var bundle = require('bundle').instance();
-	var game = require('game').instance();
-	
-	var Renderer = function(){
-	
-	    var canvas;
-	    var ctx;
-	    var self = this;
-	    var currTime = 0;
-	    var lastTime = 0;
-	    var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
-	    var gameProps;
-	
-	
-	    this.getContext = function(){
-	        return ctx;
-	    };
-	
-	    this.getCanvas = function(){
-	        return canvas;
-	    };
-	
-	    this.init = function(){
-	        canvas = document.querySelector('canvas');
-	        gameProps = bundle.gameProps;
-	        if (!canvas) {
-	            canvas = document.createElement('canvas');
-	            document.body.appendChild(canvas);
-	        }
-	        ctx = glContext;
-	        //ctx = canvasContext;
-	        game.setCtx(ctx);
-	        require('scaleManager').instance(canvas,ctx).manage();
-	        ctx.init(canvas);
-	
-	        drawScene();
-	
-	    };
-	
-	    this.getCanvas = function(){
-	        return canvas;
-	    };
-	
-	    this.cancel = function(){
-	        window.canceled = true;
-	    };
-	
-	    var drawScene = function(){
-	        if (window.canceled) {
-	           return;
+	            return;
 	        }
 	
-	        if (window.canceled) return
-	        var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
-	
-	        reqAnimFrame(drawScene);
-	
-	        lastTime = currTime;
-	        currTime = Date.now();
-	        var deltaTime = lastTime ? currTime - lastTime : 0;
-	
-	        ctx.beginFrameBuffer();
-	        ctx.clear();
-	
-	        game.update(currTime,deltaTime);
-	
-	        ctx.flipFrameBuffer();
-	
-	    };
-	
-	
-	    this.printText = function(x,y,text,font){
-	        if (!text) return;
-	        font = font || bundle.fontList.get(0);
-	        if (!font) throw 'at least one font must be specified. Create new one please';
-	        var posX = x;
-	        var oldPosX = x;
-	        var posY = y;
-	        text.split('').forEach(function(ch){
-	            var charInCtx = font.fontContext.symbols[ch]||font.fontContext.symbols['?'];
-	            if (ch=='\n') {
-	                posX = oldPosX;
-	                posY+= charInCtx.height;
-	                return;
-	            }
-	            ctx.drawImage(
-	                resourceCache.get(font.resourcePath),
-	                charInCtx.x,
-	                charInCtx.y,
-	                charInCtx.width,
-	                charInCtx.height,
-	                posX + camera.pos.x,
-	                posY + camera.pos.y,
-	                charInCtx.width,
-	                charInCtx.height
-	            );
-	            posX+=charInCtx.width;
+	        utils.loadBinary(url, progress, function (buffer) {
+	            var base64String = utils.arrayBufferToBase64(buffer);
+	            base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	            img.onload = function () {
+	                texture = {
+	                    image:img,
+	                    getSize: function(){
+	                        return {
+	                            width:img.width,
+	                            height:img.height
+	                        }
+	                    }
+	                };
+	                callBack(texture);
+	            };
+	            img.src = base64String;
 	        });
 	    }
-	
-	};
-	
-	var instance = null;
-	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new Renderer();
-	    return instance;
-	};
+	});
+    
 }};
-
-modules['scaleManager'] = {code: function(module,exports){
+modules['camera'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
 	
+	var objFollowTo = null;
+	var scene = null;
+	var sceneWidth;
+	var sceneHeight;
+	
+	exports.pos = {
+	    x:0,
+	    y:0
+	};
+	
+	exports.follow = function(gameObject) {
+	    objFollowTo = gameObject;
+	    scene = gameObject.getScene();
+	    sceneWidth = scene.tileMap._spriteSheet._frameWidth*scene.tileMap.width;
+	    sceneHeight = scene.tileMap._spriteSheet._frameHeight*scene.tileMap.height;
+	};
+	
+	
+	exports.update = function(ctx) {
+	    if (!objFollowTo) return;
+	    var pos = exports.pos;
+	    var w = bundle.gameProps.width;
+	    var h = bundle.gameProps.height;
+	    var wDiv2 = w/2;
+	    var hDiv2 = h/2;
+	    pos.x = objFollowTo.pos.x - wDiv2;
+	    pos.y = objFollowTo.pos.y - hDiv2;
+	    if (pos.x<0) pos.x = 0;
+	    if (pos.y<0) pos.y = 0;
+	    if (pos.x>sceneWidth - w) pos.x = sceneWidth -w;
+	    if (pos.y>sceneHeight -h) pos.y = sceneHeight -h;
+	    ctx.translate(-pos.x,-pos.y);
+	};
+	
+	
+    
+}};
+modules['renderer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	
+	var GlContext = require('glContext').GlContext;
+	var CanvasContext = require('canvasContext').CanvasContext;
+	var resourceCache = require('resourceCache');
+	var bundle = require('bundle');
+	var game = require('game');
+	
+	var canvas;
+	var ctx;
+	var ctxClass;
+	var self = exports;
+	var currTime = 0;
+	var lastTime = 0;
+	var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+	var gameProps;
+	var isRunning = false;
+	
+	
+	exports.getContext = function(){
+	    return ctx;
+	};
+	
+	exports.getContextClass = function(){
+	    return ctxClass;
+	};
+	
+	exports.getCanvas = function(){
+	    return canvas;
+	};
+	
+	exports.init = function(){
+	    canvas = document.querySelector('canvas');
+	    gameProps = bundle.gameProps;
+	    if (!canvas) {
+	        canvas = document.createElement('canvas');
+	        document.body.appendChild(canvas);
+	    }
+	    ctxClass = null;
+	    if (GlContext.isAcceptable()) ctxClass = GlContext;
+	    //else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+	    else throw "can not create rendering context";
+	    ctx = new ctxClass();
+	    game.setCtx(ctx);
+	    require('scaleManager').instance(canvas,ctx).manage();
+	    ctx.init(canvas);
+	};
+	
+	exports.start = function(){
+	    drawSceneLoop();
+	    isRunning = true;
+	};
+	
+	exports.getCanvas = function(){
+	    return canvas;
+	};
+	
+	exports.cancel = function(){
+	    window.canceled = true;
+	    isRunning = false;
+	};
+	
+	exports.isRunning = function() {
+	    return isRunning;
+	};
+	
+	exports.setScene = function(scene){
+	    ctx.setScene(scene);
+	};
+	
+	var drawSceneLoop = function(){
+	    if (window.canceled) {
+	        return;
+	    }
+	
+	    if (window.canceled) return
+	    var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
+	
+	    reqAnimFrame(drawSceneLoop);
+	
+	    lastTime = currTime;
+	    currTime = Date.now();
+	    var deltaTime = lastTime ? currTime - lastTime : 0;
+	
+	    ctx.beginFrameBuffer();
+	    ctx.clear();
+	
+	    game.update(currTime,deltaTime);
+	
+	    ctx.flipFrameBuffer();
+	
+	};
+	
+	
+	exports.printText = function(x,y,text,font){
+	    if (!text) return;
+	    font = font || bundle.fontList.get(0);
+	    if (!font) throw 'at least one font must be specified. Create new one please';
+	    var posX = x;
+	    var oldPosX = x;
+	    var posY = y;
+	    text.split('').forEach(function(ch){
+	        var charInCtx = font.fontContext.symbols[ch]||font.fontContext.symbols['?'];
+	        if (ch=='\n') {
+	            posX = oldPosX;
+	            posY+= charInCtx.height;
+	            return;
+	        }
+	        ctx.drawImage(
+	            resourceCache.get(font.resourcePath),
+	            charInCtx.x,
+	            charInCtx.y,
+	            charInCtx.width,
+	            charInCtx.height,
+	            posX + camera.pos.x,
+	            posY + camera.pos.y,
+	            charInCtx.width,
+	            charInCtx.height
+	        );
+	        posX+=charInCtx.width;
+	    });
+	}
+    
+}};
+modules['scaleManager'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	var scale = require('device').scale;
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	
 	var ScaleManager = function(canvas,ctx){
 	
@@ -3400,10 +3447,12 @@ modules['scaleManager'] = {code: function(module,exports){
 	};
 	
 	
+    
 }};
-
-modules['frameBuffer'] = {code: function(module,exports){
-	
+modules['frameBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	exports.FrameBuffer = function(gl,width,height){
 	
 	    var glTexture;
@@ -3452,47 +3501,56 @@ modules['frameBuffer'] = {code: function(module,exports){
 	    })();
 	
 	};
+    
 }};
-
-modules['glContext'] = {code: function(module,exports){
-	
+modules['glContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var mat4 = require('mat4');
 	var utils = require('utils');
-	var Shader = require('shader').Shader;
+	var ShaderProgram = require('shaderProgram').ShaderProgram;
 	var VertexBuffer = require('vertexBuffer').VertexBuffer;
 	var Texture = require('texture').Texture;
 	var MatrixStack = require('matrixStack').MatrixStack;
 	var FrameBuffer = require('frameBuffer').FrameBuffer;
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	var cache = require('resourceCache');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	var Class = require('class');
 	
-	var GlContext = function(){
+	var getCtx = function(el){
+	    if (!el) el = document.createElement('canvas');
+	    if (!el) return null;
+	    return el.getContext("webgl",{ alpha: false });
+	};
+	
+	exports.GlContext = Class.extend(function(it){
 	
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
-	    var shader;
+	    var commonShaderPrg;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
-	    this.DEFAULT_COLOR_BG = [255,255,255];
-	    this.colorBG = this.DEFAULT_COLOR_BG;
+	    var colorBGDefault = [255,255,255];
+	    var scene = null;
 	
-	    this.init = function(canvas){
+	    it.init = function(canvas){
 	
 	        gameProps = bundle.gameProps;
-	        gl = canvas.getContext("webgl",{ alpha: false });
+	        gl = getCtx(canvas);
 	        window.gl = gl;
-	        shader = new Shader(gl, [
+	        commonShaderPrg = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
 	        ]);
-	        shader.bind();
-	        shader.setUniform('u_alpha',1);
+	        commonShaderPrg.bind();
+	        commonShaderPrg.setUniform('u_alpha',1);
 	
-	        posVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
 	        posVertexBuffer.bind([
 	            0, 0,
 	            0, 1,
@@ -3502,7 +3560,7 @@ modules['glContext'] = {code: function(module,exports){
 	            1, 1
 	        ],2,'a_position');
 	
-	        texVertexBuffer = new VertexBuffer(gl,shader.getProgram());
+	        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
 	        posVertexBuffer.bind([
 	            0, 0,
 	            0, 1,
@@ -3519,50 +3577,15 @@ modules['glContext'] = {code: function(module,exports){
 	
 	    };
 	
-	
-	    this.setAlpha = function(alpha) {
-	        shader.setUniform('u_alpha',alpha);
+	    it.setScene = function(_scene){
+	        scene = _scene;
 	    };
 	
-	    var arrayBufferToBase64 = function(buffer) {
-	        var bytes = new Uint8Array(buffer);
-	        var rawArr = [];
-	        for (var i=0;i<bytes.length;i++){
-	            var b = bytes[i];
-	            rawArr.push(b);
-	        }
-	        return require('base64').fromByteArray(rawArr);
+	    it.setAlpha = function(alpha) {
+	        commonShaderPrg.setUniform('u_alpha',alpha);
 	    };
 	
-	    this.loadTextureInfo = function(url,opts,progress,callBack) {
-	        if (cache.has(url)) {
-	            callBack(cache.get(url));
-	            return;
-	        }
-	
-	        var img = new Image();
-	        var texture = new Texture(gl,img);
-	
-	        if (opts.type=='base64') {
-	            url = utils.getBase64prefix('image',opts.fileName) + url;
-	            img.src = url;
-	            texture.apply(img);
-	            callBack(texture);
-	            return;
-	        }
-	
-	        utils.loadBinary(url,progress,function(buffer){
-	            var base64String = arrayBufferToBase64(buffer);
-	            base64String = utils.getBase64prefix('image',opts.fileName) + base64String;
-	            img.onload = function(){
-	                texture.apply(img);
-	                callBack(texture);
-	            };
-	            img.src = base64String;
-	        });
-	    };
-	
-	    this.getError = function(){
+	    it.getError = function(){
 	        return 0;
 	        var err = gl.getError();
 	        return err==gl.NO_ERROR?0:err;
@@ -3600,7 +3623,7 @@ modules['glContext'] = {code: function(module,exports){
 	    
 	    var currTex = null;
 	
-	    this.drawImage = function(
+	    it.drawImage = function(
 	        texture,
 	        srcX, srcY, srcWidth, srcHeight,
 	        dstX, dstY) {
@@ -3627,70 +3650,95 @@ modules['glContext'] = {code: function(module,exports){
 	            currTex = texture;
 	        }
 	
+	        // Set the texture matrix.
+	        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
 	
 	        // Set the matrix.
-	        //console.log(gameProps);
-	        shader.setUniform("u_matrix",makePositionMatrix(
+	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
 	
-	        // Set the texture matrix.
-	        shader.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	
-	        if (texWidth==64) {
-	            //gl.blendFunc(gl.ONE, gl.ONE);
-	        } else {
-	            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        }
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
 	        // draw the quad (2 triangles, 6 vertices)
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	    };
 	
-	    this.clear = function() {
+	    it.clear = function() {
 	        //gl.colorMask(false, false, false, true);
-	        gl.clearColor(this.colorBG[0]/255,this.colorBG[1]/255,this.colorBG[2]/255,1);
+	        var col = scene.useBG?scene.colorBG:colorBGDefault;
+	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
 	        gl.clear(gl.COLOR_BUFFER_BIT);
 	    };
 	
-	    this.save = function() {
+	    it.fillRect = function (x, y, w, h, color) {
+	
+	        // Set the matrix.
+	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+	                x,y,w,h,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendFunc(gl.ONE, gl.ONE);
+	
+	        // draw the quad (2 triangles, 6 vertices)
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	    };
+	
+	    //it.strokeRect = function (x, y, w, h, color) {
+	    //    this.fillRect(x, y, w, 1, color);
+	    //    this.fillRect(x, y + h, w, 1, color);
+	    //    this.fillRect(x, y, 1, h, color);
+	    //    this.fillRect(x + w, y, 1, h, color);
+	    //};
+	    //
+	    //it.point = function (x, y, color) {
+	    //    this.fillRect(x, y, 1, 1, color);
+	    //};
+	
+	    it.save = function() {
 	        matrixStack.save();
 	    };
 	
-	    this.scale = function(x,y) {
+	    it.scale = function(x,y) {
 	        matrixStack.scale(x,y);
 	    };
 	
-	    this.rotateZ = function(angleInRadians) {
+	    it.rotateZ = function(angleInRadians) {
 	        matrixStack.rotateZ(angleInRadians);
 	    };
 	
-	    this.rotateY = function(angleInRadians) {
+	    it.rotateY = function(angleInRadians) {
 	        matrixStack.rotateY(angleInRadians);
 	    };
 	
-	    this.translate = function(x,y){
+	    it.translate = function(x,y){
 	        matrixStack.translate(x,y);
 	    };
 	
-	    this.restore = function(){
+	    it.restore = function(){
 	        matrixStack.restore();
 	    };
 	
-	    this.rescaleView = function(scaleX,scaleY){
+	    it.rescaleView = function(scaleX,scaleY){
 	        mScaleX = scaleX;
 	        mScaleY = scaleY;
 	    };
 	
-	    this.beginFrameBuffer = function(){
+	    it.beginFrameBuffer = function(){
 	        this.save();
 	        gl.viewport(0, 0, gameProps.width, gameProps.height);
 	        frameBuffer.bind();
 	    };
 	
-	    this.flipFrameBuffer = function(){
+	    it.flipFrameBuffer = function(){
 	        currTex = null;
 	        this.restore();
 	        this.save();
@@ -3702,7 +3750,7 @@ modules['glContext'] = {code: function(module,exports){
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            shader.setUniform('u_matrix',
+	            commonShaderPrg.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
 	                    gameProps.width, gameProps.height,
@@ -3711,7 +3759,7 @@ modules['glContext'] = {code: function(module,exports){
 	                )
 	            );
 	        } else {
-	            shader.setUniform('u_matrix',
+	            commonShaderPrg.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
 	                    gameProps.width, gameProps.height,
@@ -3721,7 +3769,7 @@ modules['glContext'] = {code: function(module,exports){
 	            );
 	        }
 	
-	        shader.setUniform('u_textureMatrix',
+	        commonShaderPrg.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
 	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
 	                gameProps.canvasWidth,gameProps.canvasHeight
@@ -3733,21 +3781,56 @@ modules['glContext'] = {code: function(module,exports){
 	        this.restore();
 	    };
 	
+	},{
+	    isAcceptable: function(){
+	        return !!getCtx();
+	    },
+	    loadTextureInfo:function(url,opts,progress,callBack) {
+	        if (cache.has(url)) {
+	            callBack(cache.get(url));
+	            return;
+	        }
+	
+	        var img = new Image();
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var texture = new Texture(gl, img);
+	
+	        if (opts.type == 'base64') {
+	            url = utils.getBase64prefix('image', opts.fileName) + url;
+	            img.src = url;
+	            texture.apply(img);
+	            callBack(texture);
+	            return;
+	        }
+	
+	        utils.loadBinary(url, progress, function (buffer) {
+	            if (window.Blob && window.URL) {
+	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+	                img.src = URL.createObjectURL(blob);
+	            } else {
+	                var base64String = utils.arrayBufferToBase64(buffer);
+	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	                img.src = base64String;
+	            }
+	            img.onload = function () {
+	                texture.apply(img);
+	                callBack(texture);
+	            };
+	
+	        });
+	    }
+	});
 	
 	
 	
-	};
 	
-	var instance = null;
 	
-	module.exports.instance = function(){
-	    if (instance==null) instance = new GlContext();
-	    return instance;
-	};
+    
 }};
-
-modules['matrixStack'] = {code: function(module,exports){
-	
+modules['matrixStack'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var mat4 = require('mat4');
 	
 	exports.MatrixStack = function () {
@@ -3809,10 +3892,12 @@ modules['matrixStack'] = {code: function(module,exports){
 	    })();
 	
 	};
+    
 }};
-
-modules['shader'] = {code: function(module,exports){
-	function compileShader(gl, shaderSource, shaderType) {
+modules['shaderProgram'] =
+    {code: function(module){
+    var exports = module.exports;
+    	function compileShader(gl, shaderSource, shaderType) {
 	    // Create the shader object
 	    var shader = gl.createShader(shaderType);
 	
@@ -3960,7 +4045,7 @@ modules['shader'] = {code: function(module,exports){
 	};
 	
 	
-	exports.Shader = function(gl,sources){
+	exports.ShaderProgram = function(gl,sources){
 	
 	    var program;
 	    var uniforms;
@@ -3993,10 +4078,12 @@ modules['shader'] = {code: function(module,exports){
 	    };
 	
 	};
+    
 }};
-
-modules['texture'] = {code: function(module,exports){
-	
+modules['texture'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var isPowerOf2 = function(value) {
 	    return (value & (value - 1)) == 0;
 	};
@@ -4046,10 +4133,12 @@ modules['texture'] = {code: function(module,exports){
 	    })();
 	
 	};
+    
 }};
-
-modules['vertexBuffer'] = {code: function(module,exports){
-	
+modules['vertexBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	module.exports.VertexBuffer = function(gl,program){
 	    var buffer = gl.createBuffer();
 	
@@ -4068,10 +4157,12 @@ modules['vertexBuffer'] = {code: function(module,exports){
 	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	    };
 	};
+    
 }};
-
-modules['tween'] = {code: function(module,exports){
-	
+modules['tween'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	
 	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 	    var startedTime = null;
@@ -4137,10 +4228,12 @@ modules['tween'] = {code: function(module,exports){
 	
 	
 	};
+    
 }};
-
-modules['tweenChain'] = {code: function(module,exports){
-	
+modules['tweenChain'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var TweenMovie = require('tweenMovie').TweenMovie;
 	var Tween = require('tween').Tween;
 	
@@ -4181,11 +4274,13 @@ modules['tweenChain'] = {code: function(module,exports){
 	    };
 	};
 	
+    
 }};
-
-modules['tweenMovie'] = {code: function(module,exports){
-	
-	var game = require('game').instance();
+modules['tweenMovie'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var game = require('game');
 	var Tween = require('tween').Tween;
 	
 	exports.TweenMovie = function(){
@@ -4260,10 +4355,12 @@ modules['tweenMovie'] = {code: function(module,exports){
 	        return this;
 	    }
 	};
+    
 }};
-
-modules['index'] = {code: function(module,exports){
-	
+modules['index'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
 	var data;
 	
 	data = {
@@ -6816,14 +6913,14 @@ modules['index'] = {code: function(module,exports){
 	
 	};
 	
-	var bundle = require('bundle').instance();
+	var bundle = require('bundle');
 	bundle.prepare(data);
 	
 	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 	
-	var renderer = require('renderer').instance();
-	var game = require('game').instance();
-	var keyboard = require('keyboard').instance();
+	var renderer = require('renderer');
+	var game = require('game');
+	var keyboard = require('keyboard');
 	
 	
 	window.addEventListener('load',function(){
@@ -6833,10 +6930,10 @@ modules['index'] = {code: function(module,exports){
 	    };
 	
 	    renderer.init();
-	    require('mouse').instance();
+	    require('mouse');
 	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
 	    game.setScene(startScene);
 	});
+    
 }};
-
 require('index');
