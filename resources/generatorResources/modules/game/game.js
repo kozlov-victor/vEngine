@@ -118,8 +118,8 @@ exports.update = function(currTime,deltaTime){
         }
         tweenMovie._update(currTime);
     });
-    exports.currScene.update(currTime,deltaTime);
     camera.update(ctx);
+    exports.currScene.update(currTime,deltaTime);
     keyboard.update();
     bundle.particleSystemList.forEach(function(p){
         p.update(currTime,deltaTime);
