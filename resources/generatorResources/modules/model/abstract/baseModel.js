@@ -1,4 +1,5 @@
 var EventEmitter = require('eventEmitter').EventEmitter;
+var Class = require('class');
 
 var isPropNotFit = function(key,val){
     if (!key) return true;
@@ -28,7 +29,7 @@ function deepCopy(obj) {
     return obj;
 }
 
-exports.BaseModel = require('class').Class.extend({
+exports.BaseModel = Class.extend({
     id:null,
     protoId:null,
     name:'',

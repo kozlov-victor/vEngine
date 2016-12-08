@@ -9,6 +9,7 @@ var FrameBuffer = require('frameBuffer').FrameBuffer;
 var bundle = require('bundle');
 var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+var Class = require('class');
 
 var getCtx = function(el){
     if (!el) el = document.createElement('canvas');
@@ -16,7 +17,7 @@ var getCtx = function(el){
     return el.getContext("webgl",{ alpha: false });
 };
 
-exports.GlContext = require('class').Class.extend(function(it){
+exports.GlContext = Class.extend(function(it){
 
     var gl;
     var mScaleX = 1, mScaleY = 1;

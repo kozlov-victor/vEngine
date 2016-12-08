@@ -1,5 +1,7 @@
 
-exports.FakeAudioContext = require('class').Class.extend(
+var Class = require('class');
+
+exports.FakeAudioContext = Class.extend(
     {
         type:'fakeAudioContext',
         play: function(buffer,loop){

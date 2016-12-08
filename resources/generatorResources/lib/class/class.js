@@ -77,7 +77,7 @@ Class.inherit = Object.create || function(proto) {
     return new F;
 };
 
-exports.Class = Class;
+exports.extend = Class.extend.bind(Class);
 
 
 

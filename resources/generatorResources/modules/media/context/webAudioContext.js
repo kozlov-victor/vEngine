@@ -1,6 +1,7 @@
 
 var utils = require('utils');
 var cache = require('resourceCache');
+var Class = require('class');
 
 var getCtx = (function(){
     var ctx = window.AudioContext || window.webkitAudioContext;
@@ -23,7 +24,7 @@ var decode = function(buffer,callback){
     );
 };
 
-exports.WebAudioContext = require('class').Class.extend(
+exports.WebAudioContext = Class.extend(
     {
         type:'webAudioContext',
         _ctx:null,

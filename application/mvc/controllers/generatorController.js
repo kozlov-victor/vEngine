@@ -16,10 +16,11 @@ var Source = function(){
     var extractModuleName = function(path){
         return path.replace('.js','').split('/').pop();
     };
-    var wrapAsCommonJS = function(path,code){
+    var wrapAsCommonJS = function(path,code,params){
         return processTemplate('resources/generatorResources/misc/moduleTemplate.js',{
             name: extractModuleName(path),
-            code: addLeadTab(code)
+            code: addLeadTab(code),
+            opts:params||{}
         });
     };
     var addLeadTab = function(code){
@@ -49,7 +50,7 @@ var Source = function(){
     };
     this.addCommonJsModule = function(path,params){
         var code = processTemplate(path,params);
-        code = wrapAsCommonJS(path,code);
+        code = wrapAsCommonJS(path,code,params);
         self.add(code);
     };
     this.addCommonJsModules = function(path,params){

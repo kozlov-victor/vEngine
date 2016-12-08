@@ -1,12 +1,13 @@
 
 var utils = require('utils');
+var Class = require('class');
 
 var getCtx = function(){
     var Ctx = window && window.Audio;
     return new Ctx();
 } ;
 
-exports.HtmlAudioContext = require('class').Class.extend(
+exports.HtmlAudioContext = Class.extend(
     {
         type:'htmlAudioContext',
         free:true,

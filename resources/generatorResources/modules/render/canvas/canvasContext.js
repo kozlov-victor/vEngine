@@ -5,6 +5,7 @@ var bundle = require('bundle');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 var device = require('device');
 var cache = require('resourceCache');
+var Class = require('class');
 
 var getCtx = function(el){
     if (!el) el = document.createElement('canvas');
@@ -13,7 +14,7 @@ var getCtx = function(el){
 };
 
 
-exports.CanvasContext = require('class').Class.extend(function(it){
+exports.CanvasContext = Class.extend(function(it){
 
     var ctx;
     var mScaleX = 1, mScaleY = 1;
