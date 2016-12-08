@@ -606,10 +606,10 @@ modules['keyboard'] =
 	exports.update = function(){
 	    if (window.canceled) return
 	    [
-	        this.KEY_UP,
-	        this.KEY_DOWN,
-	        this.KEY_LEFT,
-	        this.KEY_RIGHT
+	        exports.KEY_UP,
+	        exports.KEY_DOWN,
+	        exports.KEY_LEFT,
+	        exports.KEY_RIGHT
 	    ].forEach(function(key){
 	            if (buffer[key]==KEY_JUST_PRESSED) buffer[key] = KEY_PRESSED;
 	            else if (buffer[key]==KEY_JUST_RELEASED) buffer[key] = KEY_RELEASED;
@@ -619,10 +619,10 @@ modules['keyboard'] =
 	window.addEventListener('keydown',function(e){
 	    var code = e.keyCode;
 	    switch (code) {
-	        case self.KEY_UP:
-	        case self.KEY_DOWN:
-	        case self.KEY_LEFT:
-	        case self.KEY_RIGHT:
+	        case exports.KEY_UP:
+	        case exports.KEY_DOWN:
+	        case exports.KEY_LEFT:
+	        case exports.KEY_RIGHT:
 	            buffer[code] = KEY_PRESSED;
 	            break;
 	    }
@@ -631,10 +631,10 @@ modules['keyboard'] =
 	window.addEventListener('keyup',function(e){
 	    var code = e.keyCode;
 	    switch (code) {
-	        case self.KEY_UP:
-	        case self.KEY_DOWN:
-	        case self.KEY_LEFT:
-	        case self.KEY_RIGHT:
+	        case exports.KEY_UP:
+	        case exports.KEY_DOWN:
+	        case exports.KEY_LEFT:
+	        case exports.KEY_RIGHT:
 	            buffer[code] = KEY_JUST_RELEASED;
 	            break;
 	    }
@@ -1035,7 +1035,7 @@ modules['game'] =
 	};
 	
 	var preloadSceneAndSetIt = function(scene){
-	    
+	
 	    if (progressScene) {
 	        exports.currScene = progressScene;
 	        bundle.applyBehaviourForScene(progressScene);
@@ -1108,8 +1108,8 @@ modules['game'] =
 	        }
 	        tweenMovie._update(currTime);
 	    });
-	    exports.currScene.update(currTime,deltaTime);
 	    camera.update(ctx);
+	    exports.currScene.update(currTime,deltaTime);
 	    keyboard.update();
 	    bundle.particleSystemList.forEach(function(p){
 	        p.update(currTime,deltaTime);
@@ -3415,10 +3415,9 @@ modules['renderer'] =
 	    }
 	    ctxClass = null;
 	    if (GlContext.isAcceptable()) ctxClass = GlContext;
-	    else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+	    //else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
 	    else throw "can not create rendering context";
 	    ctx = new ctxClass();
-	    //ctx = canvasContext;
 	    game.setCtx(ctx);
 	    require('scaleManager').instance(canvas,ctx).manage();
 	    ctx.init(canvas);
