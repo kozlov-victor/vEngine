@@ -4,6 +4,8 @@ var Sound = require('sound');
 var GameObject = require('gameObject');
 
 var txtMoney = GameObject.find('txtMoney');
+var coin = GameObject.find('coin');
+// coin.blockRotation(); // todo
 
 var introSnd = Sound.find('intro');
 
@@ -17,6 +19,7 @@ self.on('click',function(){
 exports.onShow = function(){
     introSnd.setGain(1,1000);    
     txtMoney.setText(localStorage.totalMoney||0);
+    coin.blockRotation();
 };
 
 exports.onUpdate = function(time) {

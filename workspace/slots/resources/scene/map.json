@@ -41,7 +41,7 @@
     {
         "tileMap": {
             "_spriteSheet": null,
-            "spriteSheetId": null,
+            "spriteSheetId": "",
             "width": 0,
             "height": 0,
             "data": []
@@ -61,7 +61,10 @@
             255
         ],
         "id": "6337_8986_28",
-        "useBG": 0
+        "useBG": 0,
+        "alpha": 1,
+        "width": 0,
+        "height": 0
     },
     {
         "tileMap": {

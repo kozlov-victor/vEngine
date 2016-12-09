@@ -152,7 +152,14 @@ modules['behaviour'] =
 	self._frameAnimations.get(0).play();
 	self.setFrameIndex(~~(Math.random()*10));
 	
+	var isBlocked = false;
+	
+	self.blockRotation = function(){
+	    isBlocked = true;
+	};
+	
 	exports.onUpdate = function(time) {
+	    if (isBlocked) return;
 	    self.angle+=0.5;
 	};
 	};
@@ -216,6 +223,8 @@ modules['behaviour'] =
 	var GameObject = require('gameObject');
 	
 	var txtMoney = GameObject.find('txtMoney');
+	var coin = GameObject.find('coin');
+	// coin.blockRotation(); // todo
 	
 	var introSnd = Sound.find('intro');
 	
@@ -229,6 +238,7 @@ modules['behaviour'] =
 	exports.onShow = function(){
 	    introSnd.setGain(1,1000);    
 	    txtMoney.setText(localStorage.totalMoney||0);
+	    coin.blockRotation();
 	};
 	
 	exports.onUpdate = function(time) {
@@ -441,8 +451,12 @@ modules['behaviour'] =
 	var progressLabel = GameObject.find('progress');
 	
 	exports.onProgress = function(pr){
-	    var txt = ~~(pr*100)+' %';
-	    progressLabel.setText(txt);
+	    var txt = ~~(pr*100);
+	    if (txt==100) {
+	        progressLabel.setText('processing...');
+	    } else {
+	        progressLabel.setText(txt + '%');
+	    }
 	};
 	
 	exports.onShow = function(){
@@ -7737,7 +7751,7 @@ modules['index'] =
 	    {
 	        "tileMap": {
 	            "_spriteSheet": null,
-	            "spriteSheetId": null,
+	            "spriteSheetId": "",
 	            "width": 0,
 	            "height": 0,
 	            "data": []
@@ -7757,7 +7771,10 @@ modules['index'] =
 	            255
 	        ],
 	        "id": "6337_8986_28",
-	        "useBG": 0
+	        "useBG": 0,
+	        "alpha": 1,
+	        "width": 0,
+	        "height": 0
 	    },
 	    {
 	        "tileMap": {

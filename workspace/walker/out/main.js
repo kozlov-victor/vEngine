@@ -3337,7 +3337,6 @@ modules['renderer'] =
 	var canvas;
 	var ctx;
 	var ctxClass;
-	var self = exports;
 	var currTime = 0;
 	var lastTime = 0;
 	var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
@@ -5829,8 +5828,8 @@ modules['index'] =
 	            {
 	                "spriteSheetId": "9996_3491_187",
 	                "pos": {
-	                    "x": 103,
-	                    "y": 152
+	                    "x": 86,
+	                    "y": 100
 	                },
 	                "scale": {
 	                    "x": 1,
@@ -5876,7 +5875,8 @@ modules['index'] =
 	                "groupName": "",
 	                "angle": 0,
 	                "protoId": "8971_6636_188",
-	                "id": "4428_2087_197"
+	                "id": "4428_2087_197",
+	                "alpha": 1
 	            }
 	        ],
 	        "id": "1186_9522_195"
