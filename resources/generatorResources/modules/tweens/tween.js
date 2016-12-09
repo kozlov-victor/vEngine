@@ -1,6 +1,6 @@
 
 
-exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
+var Tween = function(obj,fromToVal,tweenTime,easeFnName){
     var startedTime = null;
     var progressFn;
 
@@ -64,3 +64,5 @@ exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
 
 
 };
+
+module.exports = Tween;

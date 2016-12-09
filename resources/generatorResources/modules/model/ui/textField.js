@@ -1,11 +1,11 @@
 
 var renderer = require('renderer');
-var BaseGameObject = require('baseGameObject').BaseGameObject;
-var SpriteSheet = require('spriteSheet').SpriteSheet;
+var BaseGameObject = require('baseGameObject');
+var SpriteSheet = require('spriteSheet');
 var bundle = require('bundle');
 var resourceCache = require('resourceCache');
 
-exports.TextField = BaseGameObject.extend({
+var TextField = BaseGameObject.extend({
     type:'userInterface',
     subType:'textField',
     _chars:null,
@@ -83,3 +83,5 @@ exports.TextField = BaseGameObject.extend({
         ctx.restore();
     }
 });
+
+module.exports = TextField;

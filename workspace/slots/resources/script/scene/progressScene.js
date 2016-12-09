@@ -1,5 +1,5 @@
 
-var GameObject = require('gameObject').GameObject;
+var GameObject = require('gameObject');
 
 var progressLabel = GameObject.find('progress');
 

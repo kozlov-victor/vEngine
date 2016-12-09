@@ -21,7 +21,7 @@ window.app.
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
         var bundle = require('bundle');
-        var Font = require('font').Font;
+        var Font = require('font');
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {

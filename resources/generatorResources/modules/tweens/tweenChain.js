@@ -1,8 +1,8 @@
 
-var TweenMovie = require('tweenMovie').TweenMovie;
-var Tween = require('tween').Tween;
+var TweenMovie = require('tweenMovie');
+var Tween = require('tween');
 
-exports.TweenChain = function(){
+var TweenChain = function(){
     var timeOffset = 0;
     var tweenMovie = new TweenMovie();
 
@@ -38,3 +38,5 @@ exports.TweenChain = function(){
         tweenMovie.play();
     };
 };
+
+module.exports = TweenChain;

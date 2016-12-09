@@ -123,6 +123,7 @@ var ScaleManager = function(canvas,ctx){
 
 var instance = null;
 
+// todo
 module.exports.instance = function(canvas,ctx){
     if (instance==null) {
         if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';

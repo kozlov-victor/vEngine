@@ -1,5 +1,5 @@
 
-var GameObject = require('gameObject').GameObject;
+var GameObject = require('gameObject');
 
 var btnUp = GameObject.find('btnUp');
 var btnDown =  GameObject.find('btnDown');

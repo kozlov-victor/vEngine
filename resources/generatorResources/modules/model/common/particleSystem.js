@@ -1,9 +1,9 @@
 
 var mathEx = require('mathEx');
 var bundle = require('bundle');
-var BaseModel = require('baseModel').BaseModel;
+var BaseModel = require('baseModel');
 
-exports.ParticleSystem = BaseModel.extend({
+var ParticleSystem = BaseModel.extend({
     type:'particleSystem',
     gameObjectId:null,
     _gameObject:null,
@@ -63,3 +63,5 @@ exports.ParticleSystem = BaseModel.extend({
         return bundle.particleSystemList.findAll({name:name});
     }
 });
+
+module.exports = ParticleSystem;

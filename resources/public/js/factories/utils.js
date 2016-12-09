@@ -6,7 +6,7 @@ window.app
 
         var bundle = require('bundle');
         var mathEx = require('mathEx');
-        var GameObject = require('gameObject').GameObject;
+        var GameObject = require('gameObject');
 
         this.FONT_SYMBOL_PADDING =
 

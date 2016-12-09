@@ -24,7 +24,7 @@ var decode = function(buffer,callback){
     );
 };
 
-exports.WebAudioContext = Class.extend(
+var WebAudioContext = Class.extend(
     {
         type:'webAudioContext',
         _ctx:null,
@@ -83,3 +83,5 @@ exports.WebAudioContext = Class.extend(
         }
     }
 );
+
+module.exports = WebAudioContext;

@@ -13,6 +13,7 @@ exports.layerList = new collections.List();
 exports.fontList = new collections.List();
 exports.soundList = new collections.List();
 exports.particleSystemList = new collections.List();
+
 exports.gameProps = {};
 
 
@@ -29,7 +30,7 @@ exports.prepare = function(data){
     exports.gameProps = data.gameProps;
     consts.RESOURCE_NAMES.forEach(function(itm){
         toDataSource(
-            require(itm)[utils.capitalize(itm)],
+            require(itm),
             data[itm],
             exports[itm+'List']);
     });

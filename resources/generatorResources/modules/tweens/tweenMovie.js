@@ -1,8 +1,8 @@
 
 var game = require('game');
-var Tween = require('tween').Tween;
+var Tween = require('tween');
 
-exports.TweenMovie = function(){
+var TweenMovie = function(){
     var tweens = [];
     var startedTime = null;
     this.completed = false;
@@ -74,3 +74,6 @@ exports.TweenMovie = function(){
         return this;
     }
 };
+
+
+module.exports = TweenMovie;

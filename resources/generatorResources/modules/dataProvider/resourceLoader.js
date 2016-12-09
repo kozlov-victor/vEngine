@@ -1,9 +1,9 @@
 
-exports.ResourceLoader = function(){
+var ResourceLoader = function(){
 
     var self = this;
 
-    var Queue = require('queue').Queue;
+    var Queue = require('queue');
     var renderer = require('renderer');
     var bundle = require('bundle');
     var cache = require('resourceCache');
@@ -66,3 +66,6 @@ exports.ResourceLoader = function(){
     };
 
 };
+
+
+module.exports = ResourceLoader;

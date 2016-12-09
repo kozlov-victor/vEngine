@@ -16,7 +16,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var GameObject = require('gameObject').GameObject;
+        var GameObject = require('gameObject');
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;

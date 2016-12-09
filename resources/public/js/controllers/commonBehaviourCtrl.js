@@ -17,10 +17,9 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+        var CommonBehaviour = require('commonBehaviour');
 
         s.createOrEditCommonBehaviour = function(obj){
-            console.log('createOrEditCommonBehaviour>>>>>',obj);
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
                 obj.type,obj,

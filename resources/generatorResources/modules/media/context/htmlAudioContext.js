@@ -7,7 +7,7 @@ var getCtx = function(){
     return new Ctx();
 } ;
 
-exports.HtmlAudioContext = Class.extend(
+var HtmlAudioContext = Class.extend(
     {
         type:'htmlAudioContext',
         free:true,
@@ -50,3 +50,5 @@ exports.HtmlAudioContext = Class.extend(
         }
     }
 );
+
+module.exports = HtmlAudioContext;

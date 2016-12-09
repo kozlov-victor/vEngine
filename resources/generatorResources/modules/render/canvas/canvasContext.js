@@ -14,7 +14,7 @@ var getCtx = function(el){
 };
 
 
-exports.CanvasContext = Class.extend(function(it){
+var CanvasContext = Class.extend(function(it){
 
     var ctx;
     var mScaleX = 1, mScaleY = 1;
@@ -161,3 +161,5 @@ exports.CanvasContext = Class.extend(function(it){
         });
     }
 });
+
+module.exports = CanvasContext;

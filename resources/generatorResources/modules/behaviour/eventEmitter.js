@@ -30,4 +30,4 @@ var EventEmitter = function(){
     };
 };
 
-exports.EventEmitter = EventEmitter;
+module.exports = EventEmitter;

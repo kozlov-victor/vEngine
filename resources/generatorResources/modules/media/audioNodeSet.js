@@ -1,7 +1,7 @@
 
-var AudioNode = require('audioNode').AudioNode;
+var AudioNode = require('audioNode');
 
-exports.AudioNodeSet = function(Context,numOfNodes){
+var AudioNodeSet = function(Context,numOfNodes){
     var nodes = [];
     for (var i = 0;i<numOfNodes;i++) {
         nodes.push(new AudioNode(new Context()));
@@ -28,3 +28,5 @@ exports.AudioNodeSet = function(Context,numOfNodes){
     }
 
 };
+
+module.exports = AudioNodeSet;

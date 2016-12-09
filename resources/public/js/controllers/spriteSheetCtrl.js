@@ -16,7 +16,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var SpriteSheet = require('spriteSheet').SpriteSheet;
+        var SpriteSheet = require('spriteSheet');
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;

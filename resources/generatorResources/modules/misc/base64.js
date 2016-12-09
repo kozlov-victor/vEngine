@@ -19,7 +19,7 @@ for (var i = 0, len = code.length; i < len; ++i) {
 revLookup['-'.charCodeAt(0)] = 62;
 revLookup['_'.charCodeAt(0)] = 63;
 
-function placeHoldersCount (b64) {
+function placeHoldersCount(b64) {
     var len = b64.length;
     if (len % 4 > 0) {
         throw new Error('Invalid string. Length must be a multiple of 4')
@@ -33,12 +33,12 @@ function placeHoldersCount (b64) {
     return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0;
 }
 
-function byteLength (b64) {
+function byteLength(b64) {
     // base64 is 4/3 + up to two characters of the original data
     return b64.length * 3 / 4 - placeHoldersCount(b64);
 }
 
-function toByteArray (b64) {
+function toByteArray(b64) {
     var i, j, l, tmp, placeHolders, arr;
     var len = b64.length;
     placeHolders = placeHoldersCount(b64);
@@ -69,11 +69,11 @@ function toByteArray (b64) {
     return arr;
 }
 
-function tripletToBase64 (num) {
+function tripletToBase64(num) {
     return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
 }
 
-function encodeChunk (uint8, start, end) {
+function encodeChunk(uint8, start, end) {
     var tmp;
     var output = [];
     for (var i = start; i < end; i += 3) {
@@ -83,7 +83,7 @@ function encodeChunk (uint8, start, end) {
     return output.join('');
 }
 
-function fromByteArray (uint8) {
+function fromByteArray(uint8) {
     var tmp;
     var len = uint8.length;
     var extraBytes = len % 3 ;// if we have 1 byte left, pad 2 bytes

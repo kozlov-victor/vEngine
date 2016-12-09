@@ -1,10 +1,10 @@
 
-var BaseModel = require('baseModel').BaseModel;
+var BaseModel = require('baseModel');
 var collections = require('collections');
-var TextField = require('textField').TextField;
+var TextField = require('textField');
 var bundle = require('bundle');
 
-exports.Layer = BaseModel.extend({
+var Layer = BaseModel.extend({
     type:'layer',
     gameObjectProps:[],
     _gameObjects:null,
@@ -45,3 +45,5 @@ exports.Layer = BaseModel.extend({
         }
     }
 });
+
+module.exports = Layer;

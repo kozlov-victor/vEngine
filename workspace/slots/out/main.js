@@ -160,8 +160,8 @@ modules['behaviour'] =
 	scripts.gameObject['slotsColumn.js'] = function(exports){
 	    var module = exports, self = exports;
 	    
-	var Sound = require('sound').Sound;
-	var TweenChain = require('tweenChain').TweenChain;
+	var Sound = require('sound');
+	var TweenChain = require('tweenChain');
 	
 	var spinSnd = Sound.find('spinSnd');
 	
@@ -212,8 +212,8 @@ modules['behaviour'] =
 	    var module = exports, self = exports;
 	    
 	var game = require('game');
-	var Sound = require('sound').Sound;
-	var GameObject = require('gameObject').GameObject;
+	var Sound = require('sound');
+	var GameObject = require('gameObject');
 	
 	var txtMoney = GameObject.find('txtMoney');
 	
@@ -238,7 +238,7 @@ modules['behaviour'] =
 	
 	scripts.scene['mainScene.js'] = function(exports){
 	    var module = exports, self = exports;
-	    var GameObject = require('gameObject').GameObject;
+	    var GameObject = require('gameObject');
 	
 	var scoreLabel = GameObject.find('scoreLabel');
 	var winLabel = GameObject.find('winLabel');
@@ -247,13 +247,13 @@ modules['behaviour'] =
 	var betMinusLabel = GameObject.find('betMinusLabel');
 	var betLabel = GameObject.find('betLabel');
 	var jackPotLabel = GameObject.find('jackPotLabel');
-	var particles = require('particleSystem').ParticleSystem.find('coins');
+	var particles = require('particleSystem').find('coins');
 	
 	
-	var Queue = require('queue').Queue;
-	var Sound = require('sound').Sound;
-	var TweenMovie = require('tweenMovie').TweenMovie;
-	var Tween = require('tween').Tween;
+	var Queue = require('queue');
+	var Sound = require('sound');
+	var TweenMovie = require('tweenMovie');
+	var Tween = require('tween');
 	
 	var spinPullSnd = Sound.find('spinPull');
 	var powerUpSnd = Sound.find('powerUp');
@@ -436,7 +436,7 @@ modules['behaviour'] =
 	scripts.scene['progressScene.js'] = function(exports){
 	    var module = exports, self = exports;
 	    
-	var GameObject = require('gameObject').GameObject;
+	var GameObject = require('gameObject');
 	
 	var progressLabel = GameObject.find('progress');
 	
@@ -549,7 +549,7 @@ modules['eventEmitter'] =
 	    };
 	};
 	
-	exports.EventEmitter = EventEmitter;
+	module.exports = EventEmitter;
     
 }};
 modules['consts'] =
@@ -656,7 +656,6 @@ modules['mouse'] =
 	
 	var objectsCaptured = {};
 	
-	var self = this;
 	var gameProps = bundle.gameProps;
 	var globalScale = bundle.gameProps.globalScale;
 	var canvas = renderer.getCanvas();
@@ -783,6 +782,7 @@ modules['bundle'] =
 	exports.fontList = new collections.List();
 	exports.soundList = new collections.List();
 	exports.particleSystemList = new collections.List();
+	
 	exports.gameProps = {};
 	
 	
@@ -799,7 +799,7 @@ modules['bundle'] =
 	    exports.gameProps = data.gameProps;
 	    consts.RESOURCE_NAMES.forEach(function(itm){
 	        toDataSource(
-	            require(itm)[utils.capitalize(itm)],
+	            require(itm),
 	            data[itm],
 	            exports[itm+'List']);
 	    });
@@ -901,11 +901,11 @@ modules['resourceLoader'] =
     {code: function(module){
     var exports = module.exports;
     	
-	exports.ResourceLoader = function(){
+	var ResourceLoader = function(){
 	
 	    var self = this;
 	
-	    var Queue = require('queue').Queue;
+	    var Queue = require('queue');
 	    var renderer = require('renderer');
 	    var bundle = require('bundle');
 	    var cache = require('resourceCache');
@@ -968,6 +968,9 @@ modules['resourceLoader'] =
 	    };
 	
 	};
+	
+	
+	module.exports = ResourceLoader;
     
 }};
 modules['device'] =
@@ -992,7 +995,7 @@ modules['game'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var ResourceLoader = require('resourceLoader').ResourceLoader;
+	var ResourceLoader = require('resourceLoader');
 	var collider = require('collider');
 	var keyboard = require('keyboard');
 	var camera = require('camera');
@@ -1080,7 +1083,7 @@ modules['game'] =
 	};
 	
 	exports.setScene = function(scene){
-	    var Scene = require('scene').Scene;
+	    var Scene = require('scene');
 	    if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
 	    if (exports.currScene==scene) return;
 	    bootEssentialResources(function(){
@@ -1126,7 +1129,7 @@ modules['audioNode'] =
     	
 	var cache = require('resourceCache');
 	
-	exports.AudioNode = function(context){
+	var AudioNode = function(context){
 	
 	    var currSound = null;
 	
@@ -1158,7 +1161,7 @@ modules['audioNode'] =
 	
 	};
 	
-	
+	module.exports = AudioNode;
 	
     
 }};
@@ -1166,9 +1169,9 @@ modules['audioNodeSet'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var AudioNode = require('audioNode').AudioNode;
+	var AudioNode = require('audioNode');
 	
-	exports.AudioNodeSet = function(Context,numOfNodes){
+	var AudioNodeSet = function(Context,numOfNodes){
 	    var nodes = [];
 	    for (var i = 0;i<numOfNodes;i++) {
 	        nodes.push(new AudioNode(new Context()));
@@ -1195,6 +1198,8 @@ modules['audioNodeSet'] =
 	    }
 	
 	};
+	
+	module.exports = AudioNodeSet;
     
 }};
 modules['audioPlayer'] =
@@ -1202,13 +1207,13 @@ modules['audioPlayer'] =
     var exports = module.exports;
     	
 	var bundle = require('bundle');
-	var AudioNodeSet = require('audioNodeSet').AudioNodeSet;
+	var AudioNodeSet = require('audioNodeSet');
 	var cache = require('resourceCache');
-	var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
-	var WebAudioContext = require('webAudioContext').WebAudioContext;
-	var FakeAudioContext = require('fakeAudioContext').FakeAudioContext;
-	var Tweenable = require('tweenable').Tweenable;
-	var Tween = require('tween').Tween;
+	var HtmlAudioContext = require('htmlAudioContext');
+	var WebAudioContext = require('webAudioContext');
+	var FakeAudioContext = require('fakeAudioContext');
+	var Tweenable = require('tweenable');
+	var Tween = require('tween');
 	
 	var Context  = null;
 	
@@ -1353,7 +1358,7 @@ modules['fakeAudioContext'] =
     	
 	var Class = require('class');
 	
-	exports.FakeAudioContext = Class.extend(
+	var FakeAudioContext = Class.extend(
 	    {
 	        type:'fakeAudioContext',
 	        play: function(buffer,loop){
@@ -1384,6 +1389,9 @@ modules['fakeAudioContext'] =
 	        }
 	    }
 	);
+	
+	
+	module.exports = FakeAudioContext;
     
 }};
 modules['htmlAudioContext'] =
@@ -1398,7 +1406,7 @@ modules['htmlAudioContext'] =
 	    return new Ctx();
 	} ;
 	
-	exports.HtmlAudioContext = Class.extend(
+	var HtmlAudioContext = Class.extend(
 	    {
 	        type:'htmlAudioContext',
 	        free:true,
@@ -1442,6 +1450,7 @@ modules['htmlAudioContext'] =
 	    }
 	);
 	
+	module.exports = HtmlAudioContext;
     
 }};
 modules['webAudioContext'] =
@@ -1473,7 +1482,7 @@ modules['webAudioContext'] =
 	    );
 	};
 	
-	exports.WebAudioContext = Class.extend(
+	var WebAudioContext = Class.extend(
 	    {
 	        type:'webAudioContext',
 	        _ctx:null,
@@ -1532,6 +1541,8 @@ modules['webAudioContext'] =
 	        }
 	    }
 	);
+	
+	module.exports = WebAudioContext;
     
 }};
 modules['base64'] =
@@ -1558,7 +1569,7 @@ modules['base64'] =
 	revLookup['-'.charCodeAt(0)] = 62;
 	revLookup['_'.charCodeAt(0)] = 63;
 	
-	function placeHoldersCount (b64) {
+	function placeHoldersCount(b64) {
 	    var len = b64.length;
 	    if (len % 4 > 0) {
 	        throw new Error('Invalid string. Length must be a multiple of 4')
@@ -1572,12 +1583,12 @@ modules['base64'] =
 	    return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0;
 	}
 	
-	function byteLength (b64) {
+	function byteLength(b64) {
 	    // base64 is 4/3 + up to two characters of the original data
 	    return b64.length * 3 / 4 - placeHoldersCount(b64);
 	}
 	
-	function toByteArray (b64) {
+	function toByteArray(b64) {
 	    var i, j, l, tmp, placeHolders, arr;
 	    var len = b64.length;
 	    placeHolders = placeHoldersCount(b64);
@@ -1608,11 +1619,11 @@ modules['base64'] =
 	    return arr;
 	}
 	
-	function tripletToBase64 (num) {
+	function tripletToBase64(num) {
 	    return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F];
 	}
 	
-	function encodeChunk (uint8, start, end) {
+	function encodeChunk(uint8, start, end) {
 	    var tmp;
 	    var output = [];
 	    for (var i = start; i < end; i += 3) {
@@ -1622,7 +1633,7 @@ modules['base64'] =
 	    return output.join('');
 	}
 	
-	function fromByteArray (uint8) {
+	function fromByteArray(uint8) {
 	    var tmp;
 	    var len = uint8.length;
 	    var extraBytes = len % 3 ;// if we have 1 byte left, pad 2 bytes
@@ -1949,7 +1960,7 @@ modules['mat4'] =
 modules['mathEx'] =
     {code: function(module){
     var exports = module.exports;
-    	var Vec2 = require('vec2').Vec2;
+    	var Vec2 = require('vec2');
 	
 	exports.isPointInRect = function(point,rect,angle) {
 	    if (angle) {
@@ -2222,7 +2233,7 @@ modules['mathEx'] =
 modules['queue'] =
     {code: function(module){
     var exports = module.exports;
-    	exports.Queue = function(){
+    	var Queue = function(){
 	    var self = this;
 	    this.size = function(){
 	        return tasks.length;
@@ -2266,6 +2277,8 @@ modules['queue'] =
 	        });
 	    }
 	};
+	
+	module.exports = Queue;
     
 }};
 modules['utils'] =
@@ -2322,7 +2335,7 @@ modules['vec2'] =
     {code: function(module){
     var exports = module.exports;
     	
-	exports.Vec2 = function(_x,_y){
+	var Vec2 = function(_x,_y){
 	
 	    var x = _x||0;
 	    var y = _y||0;
@@ -2407,6 +2420,9 @@ modules['vec2'] =
 	    })();
 	
 	};
+	
+	
+	module.exports = Vec2;
     
 }};
 modules['baseGameObject'] =
@@ -2417,10 +2433,10 @@ modules['baseGameObject'] =
 	var renderer = require('renderer');
 	var camera = require('camera');
 	
-	var Renderable = require('renderable').Renderable;
-	var Moveable = require('moveable').Moveable;
+	var Renderable = require('renderable');
+	var Moveable = require('moveable');
 	
-	exports.BaseGameObject = Renderable.extend({
+	var BaseGameObject = Renderable.extend({
 	    type:'baseGameObject',
 	    groupName:'',
 	    _spriteSheet:null,
@@ -2464,12 +2480,14 @@ modules['baseGameObject'] =
 	        this._moveable._gameObject = this;
 	    }
 	});
+	
+	module.exports = BaseGameObject;
     
 }};
 modules['baseModel'] =
     {code: function(module){
     var exports = module.exports;
-    	var EventEmitter = require('eventEmitter').EventEmitter;
+    	var EventEmitter = require('eventEmitter');
 	var Class = require('class');
 	
 	var isPropNotFit = function(key,val){
@@ -2500,7 +2518,7 @@ modules['baseModel'] =
 	    return obj;
 	}
 	
-	exports.BaseModel = Class.extend({
+	var BaseModel = Class.extend({
 	    id:null,
 	    protoId:null,
 	    name:'',
@@ -2553,6 +2571,8 @@ modules['baseModel'] =
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
 	    }
 	});
+	
+	module.exports = BaseModel;
     
 }};
 modules['moveable'] =
@@ -2560,9 +2580,9 @@ modules['moveable'] =
     var exports = module.exports;
     	
 	var collider = require('collider');
-	var BaseModel = require('baseModel').BaseModel;
+	var BaseModel = require('baseModel');
 	
-	exports.Moveable = BaseModel.extend({
+	var Moveable = BaseModel.extend({
 	    _gameObject: null,
 	    update: function(time,delta){
 	        var _gameObject = this._gameObject;
@@ -2573,6 +2593,8 @@ modules['moveable'] =
 	        collider.manage(_gameObject,posX,posY);
 	    }
 	});
+	
+	module.exports = Moveable;
     
 }};
 modules['renderable'] =
@@ -2583,11 +2605,11 @@ modules['renderable'] =
 	var renderer = require('renderer');
 	var collider = require('collider');
 	
-	var BaseModel = require('baseModel').BaseModel;
-	var Tweenable = require('tweenable').Tweenable;
+	var BaseModel = require('baseModel');
+	var Tweenable = require('tweenable');
 	
 	
-	exports.Renderable = BaseModel.extend(function(self){
+	var Renderable = BaseModel.extend(function(self){
 	
 	    self.type = 'renderable';
 	    self.alpha = 1;
@@ -2627,28 +2649,32 @@ modules['renderable'] =
 	    };
 	
 	});
+	
+	module.exports = Renderable;
     
 }};
 modules['resource'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var BaseModel = require('baseModel').BaseModel;
+	var BaseModel = require('baseModel');
 	
-	exports.Resource = BaseModel.extend({
+	var Resource = BaseModel.extend({
 	    resourcePath:''
 	});
+	
+	module.exports = Resource;
     
 }};
 modules['tweenable'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var BaseModel = require('baseModel').BaseModel;
-	var Tween = require('tween').Tween;
-	var TweenMovie = require('tweenMovie').TweenMovie;
+	var BaseModel = require('baseModel');
+	var Tween = require('tween');
+	var TweenMovie = require('tweenMovie');
 	
-	exports.Tweenable = BaseModel.extend({
+	var Tweenable = BaseModel.extend({
 	    global: false,
 	    tween: function(objOrTween,fromToVal,tweenTime,easeFnName){
 	        var movie = new TweenMovie();
@@ -2659,15 +2685,17 @@ modules['tweenable'] =
 	        movie.play(this.global);
 	    }
 	});
+	
+	module.exports = Tweenable;
     
 }};
 modules['commonBehaviour'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var BaseModel = require('baseModel').BaseModel;
+	var BaseModel = require('baseModel');
 	
-	exports.CommonBehaviour = BaseModel.extend({
+	var CommonBehaviour = BaseModel.extend({
 	    type:'commonBehaviour',
 	    name:'',
 	    description:'',
@@ -2676,16 +2704,17 @@ modules['commonBehaviour'] =
 	
 	    }
 	});
+	
+	module.exports = CommonBehaviour;
     
 }};
 modules['frameAnimation'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var BaseModel = require('baseModel').BaseModel;
+	var BaseModel = require('baseModel');
 	
-	
-	exports.FrameAnimation = BaseModel.extend({
+	var FrameAnimation = BaseModel.extend({
 	    type:'frameAnimation',
 	    name:'',
 	    frames:[],
@@ -2713,6 +2742,8 @@ modules['frameAnimation'] =
 	        }
 	    }
 	});
+	
+	module.exports = FrameAnimation;
     
 }};
 modules['gameObject'] =
@@ -2720,15 +2751,15 @@ modules['gameObject'] =
     var exports = module.exports;
     	
 	var renderer = require('renderer');
-	var BaseGameObject = require('baseGameObject').BaseGameObject;
-	var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+	var BaseGameObject = require('baseGameObject');
+	var CommonBehaviour = require('commonBehaviour');
 	var bundle = require('bundle');
 	var collections = require('collections');
 	var resourceCache = require('resourceCache');
 	var utils = require('utils');
 	var game = require('game');
 	
-	exports.GameObject = BaseGameObject.extend({
+	var GameObject = BaseGameObject.extend({
 	    type:'gameObject',
 	    spriteSheetId:null,
 	    _spriteSheet: null,
@@ -2815,18 +2846,20 @@ modules['gameObject'] =
 	        return game.getCurrScene()._allGameObjects.findAll({name: name});
 	    }
 	});
+	
+	module.exports = GameObject;
     
 }};
 modules['layer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var BaseModel = require('baseModel').BaseModel;
+	var BaseModel = require('baseModel');
 	var collections = require('collections');
-	var TextField = require('textField').TextField;
+	var TextField = require('textField');
 	var bundle = require('bundle');
 	
-	exports.Layer = BaseModel.extend({
+	var Layer = BaseModel.extend({
 	    type:'layer',
 	    gameObjectProps:[],
 	    _gameObjects:null,
@@ -2867,6 +2900,8 @@ modules['layer'] =
 	        }
 	    }
 	});
+	
+	module.exports = Layer;
     
 }};
 modules['particleSystem'] =
@@ -2875,9 +2910,9 @@ modules['particleSystem'] =
     	
 	var mathEx = require('mathEx');
 	var bundle = require('bundle');
-	var BaseModel = require('baseModel').BaseModel;
+	var BaseModel = require('baseModel');
 	
-	exports.ParticleSystem = BaseModel.extend({
+	var ParticleSystem = BaseModel.extend({
 	    type:'particleSystem',
 	    gameObjectId:null,
 	    _gameObject:null,
@@ -2937,13 +2972,15 @@ modules['particleSystem'] =
 	        return bundle.particleSystemList.findAll({name:name});
 	    }
 	});
+	
+	module.exports = ParticleSystem;
     
 }};
 modules['scene'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var Renderable = require('renderable').Renderable;
+	var Renderable = require('renderable');
 	var collections = require('collections');
 	var bundle = require('bundle');
 	var renderer = require('renderer');
@@ -2953,7 +2990,7 @@ modules['scene'] =
 	var tweenModule = require('tween');
 	var tweenMovieModule = require('tweenMovie');
 	
-	exports.Scene = Renderable.extend({
+	var Scene = Renderable.extend({
 	    type:'scene',
 	    layerProps:[],
 	    alpha:1,
@@ -3081,16 +3118,18 @@ modules['scene'] =
 	        this.printText(0,0,text);
 	    }
 	});
+	
+	module.exports = Scene;
     
 }};
 modules['sound'] =
     {code: function(module){
     var exports = module.exports;
-    	var Resource = require('resource').Resource;
+    	var Resource = require('resource');
 	var audioPlayer = require('audioPlayer');
 	var bundle = require('bundle');
 	
-	module.exports.Sound = Resource.extend({
+	var Sound = Resource.extend({
 	    type:'sound',
 	    _gain:1,
 	    _loop:false,
@@ -3111,15 +3150,17 @@ modules['sound'] =
 	        return bundle.soundList.find({name:name});
 	    }
 	});
+	
+	module.exports = Sound;
     
 }};
 modules['spriteSheet'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var Resource = require('resource').Resource;
+	var Resource = require('resource');
 	
-	exports.SpriteSheet = Resource.extend({
+	var SpriteSheet = Resource.extend({
 	    type:'spriteSheet',
 	    width:0,
 	    height:0,
@@ -3145,21 +3186,25 @@ modules['spriteSheet'] =
 	        this.calcFrameSize();
 	    }
 	});
+	
+	module.exports = SpriteSheet;
     
 }};
 modules['font'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var Resource = require('resource').Resource;
+	var Resource = require('resource');
 	
-	exports.Font = Resource.extend({
+	var Font = Resource.extend({
 	    type:'font',
 	    fontColor:'black',
 	    fontSize:12,
 	    fontFamily:'Monospace',
 	    fontContext:null
 	});
+	
+	module.exports = Font;
     
 }};
 modules['textField'] =
@@ -3167,12 +3212,12 @@ modules['textField'] =
     var exports = module.exports;
     	
 	var renderer = require('renderer');
-	var BaseGameObject = require('baseGameObject').BaseGameObject;
-	var SpriteSheet = require('spriteSheet').SpriteSheet;
+	var BaseGameObject = require('baseGameObject');
+	var SpriteSheet = require('spriteSheet');
 	var bundle = require('bundle');
 	var resourceCache = require('resourceCache');
 	
-	exports.TextField = BaseGameObject.extend({
+	var TextField = BaseGameObject.extend({
 	    type:'userInterface',
 	    subType:'textField',
 	    _chars:null,
@@ -3250,6 +3295,8 @@ modules['textField'] =
 	        ctx.restore();
 	    }
 	});
+	
+	module.exports = TextField;
     
 }};
 modules['canvasContext'] =
@@ -3271,7 +3318,7 @@ modules['canvasContext'] =
 	};
 	
 	
-	exports.CanvasContext = Class.extend(function(it){
+	var CanvasContext = Class.extend(function(it){
 	
 	    var ctx;
 	    var mScaleX = 1, mScaleY = 1;
@@ -3418,6 +3465,8 @@ modules['canvasContext'] =
 	        });
 	    }
 	});
+	
+	module.exports = CanvasContext;
     
 }};
 modules['camera'] =
@@ -3468,8 +3517,8 @@ modules['renderer'] =
     var exports = module.exports;
     	
 	
-	var GlContext = require('glContext').GlContext;
-	var CanvasContext = require('canvasContext').CanvasContext;
+	var GlContext = require('glContext');
+	var CanvasContext = require('canvasContext');
 	var resourceCache = require('resourceCache');
 	var bundle = require('bundle');
 	var game = require('game');
@@ -3587,7 +3636,7 @@ modules['renderer'] =
 	        );
 	        posX+=charInCtx.width;
 	    });
-	}
+	};
     
 }};
 modules['scaleManager'] =
@@ -3718,6 +3767,7 @@ modules['scaleManager'] =
 	
 	var instance = null;
 	
+	// todo
 	module.exports.instance = function(canvas,ctx){
 	    if (instance==null) {
 	        if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';
@@ -3733,7 +3783,7 @@ modules['frameBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	exports.FrameBuffer = function(gl,width,height){
+	var FrameBuffer = function(gl,width,height){
 	
 	    var glTexture;
 	    var glRenderBuffer;
@@ -3781,6 +3831,8 @@ modules['frameBuffer'] =
 	    })();
 	
 	};
+	
+	module.exports = FrameBuffer;
     
 }};
 modules['glContext'] =
@@ -3789,11 +3841,11 @@ modules['glContext'] =
     	
 	var mat4 = require('mat4');
 	var utils = require('utils');
-	var ShaderProgram = require('shaderProgram').ShaderProgram;
-	var VertexBuffer = require('vertexBuffer').VertexBuffer;
-	var Texture = require('texture').Texture;
-	var MatrixStack = require('matrixStack').MatrixStack;
-	var FrameBuffer = require('frameBuffer').FrameBuffer;
+	var ShaderProgram = require('shaderProgram');
+	var VertexBuffer = require('vertexBuffer');
+	var Texture = require('texture');
+	var MatrixStack = require('matrixStack');
+	var FrameBuffer = require('frameBuffer');
 	var bundle = require('bundle');
 	var cache = require('resourceCache');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
@@ -3805,7 +3857,7 @@ modules['glContext'] =
 	    return el.getContext("webgl",{ alpha: false });
 	};
 	
-	exports.GlContext = Class.extend(function(it){
+	var GlContext = Class.extend(function(it){
 	
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
@@ -4101,6 +4153,8 @@ modules['glContext'] =
 	    }
 	});
 	
+	module.exports = GlContext;
+	
 	
 	
 	
@@ -4113,7 +4167,7 @@ modules['matrixStack'] =
     	
 	var mat4 = require('mat4');
 	
-	exports.MatrixStack = function () {
+	var MatrixStack = function () {
 	    var self = this;
 	    this.stack = [];
 	
@@ -4172,6 +4226,8 @@ modules['matrixStack'] =
 	    })();
 	
 	};
+	
+	module.exports = MatrixStack;
     
 }};
 modules['shaderProgram'] =
@@ -4325,7 +4381,7 @@ modules['shaderProgram'] =
 	};
 	
 	
-	exports.ShaderProgram = function(gl,sources){
+	var ShaderProgram = function(gl,sources){
 	
 	    var program;
 	    var uniforms;
@@ -4358,6 +4414,8 @@ modules['shaderProgram'] =
 	    };
 	
 	};
+	
+	module.exports = ShaderProgram;
     
 }};
 modules['texture'] =
@@ -4368,7 +4426,7 @@ modules['texture'] =
 	    return (value & (value - 1)) == 0;
 	};
 	
-	exports.Texture = function(gl,img){
+	var Texture = function(gl,img){
 	
 	    var tex;
 	    var size;
@@ -4413,13 +4471,16 @@ modules['texture'] =
 	    })();
 	
 	};
+	
+	
+	module.exports = Texture;
     
 }};
 modules['vertexBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	module.exports.VertexBuffer = function(gl,program){
+	var VertexBuffer = function(gl,program){
 	    var buffer = gl.createBuffer();
 	
 	    this.bind = function(bufferData, itemSize, uniformLocationName){
@@ -4437,6 +4498,8 @@ modules['vertexBuffer'] =
 	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	    };
 	};
+	
+	module.exports = VertexBuffer;
     
 }};
 modules['tween'] =
@@ -4444,7 +4507,7 @@ modules['tween'] =
     var exports = module.exports;
     	
 	
-	exports.Tween = function(obj,fromToVal,tweenTime,easeFnName){
+	var Tween = function(obj,fromToVal,tweenTime,easeFnName){
 	    var startedTime = null;
 	    var progressFn;
 	
@@ -4508,16 +4571,19 @@ modules['tween'] =
 	
 	
 	};
+	
+	module.exports = Tween;
+	
     
 }};
 modules['tweenChain'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var TweenMovie = require('tweenMovie').TweenMovie;
-	var Tween = require('tween').Tween;
+	var TweenMovie = require('tweenMovie');
+	var Tween = require('tween');
 	
-	exports.TweenChain = function(){
+	var TweenChain = function(){
 	    var timeOffset = 0;
 	    var tweenMovie = new TweenMovie();
 	
@@ -4554,6 +4620,8 @@ modules['tweenChain'] =
 	    };
 	};
 	
+	module.exports = TweenChain;
+	
     
 }};
 modules['tweenMovie'] =
@@ -4561,9 +4629,9 @@ modules['tweenMovie'] =
     var exports = module.exports;
     	
 	var game = require('game');
-	var Tween = require('tween').Tween;
+	var Tween = require('tween');
 	
-	exports.TweenMovie = function(){
+	var TweenMovie = function(){
 	    var tweens = [];
 	    var startedTime = null;
 	    this.completed = false;
@@ -4635,6 +4703,9 @@ modules['tweenMovie'] =
 	        return this;
 	    }
 	};
+	
+	
+	module.exports = TweenMovie;
     
 }};
 modules['index'] =

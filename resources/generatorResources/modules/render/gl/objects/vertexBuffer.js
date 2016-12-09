@@ -1,5 +1,5 @@
 
-module.exports.VertexBuffer = function(gl,program){
+var VertexBuffer = function(gl,program){
     var buffer = gl.createBuffer();
 
     this.bind = function(bufferData, itemSize, uniformLocationName){
@@ -17,3 +17,5 @@ module.exports.VertexBuffer = function(gl,program){
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
     };
 };
+
+module.exports = VertexBuffer;

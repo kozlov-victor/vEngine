@@ -1,7 +1,7 @@
 
 var mat4 = require('mat4');
 
-exports.MatrixStack = function () {
+var MatrixStack = function () {
     var self = this;
     this.stack = [];
 
@@ -60,3 +60,5 @@ exports.MatrixStack = function () {
     })();
 
 };
+
+module.exports = MatrixStack;

@@ -1,7 +1,7 @@
 
-var BaseModel = require('baseModel').BaseModel;
+var BaseModel = require('baseModel');
 
-exports.CommonBehaviour = BaseModel.extend({
+var CommonBehaviour = BaseModel.extend({
     type:'commonBehaviour',
     name:'',
     description:'',
@@ -10,3 +10,5 @@ exports.CommonBehaviour = BaseModel.extend({
 
     }
 });
+
+module.exports = CommonBehaviour;

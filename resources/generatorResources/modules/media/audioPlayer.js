@@ -1,12 +1,12 @@
 
 var bundle = require('bundle');
-var AudioNodeSet = require('audioNodeSet').AudioNodeSet;
+var AudioNodeSet = require('audioNodeSet');
 var cache = require('resourceCache');
-var HtmlAudioContext = require('htmlAudioContext').HtmlAudioContext;
-var WebAudioContext = require('webAudioContext').WebAudioContext;
-var FakeAudioContext = require('fakeAudioContext').FakeAudioContext;
-var Tweenable = require('tweenable').Tweenable;
-var Tween = require('tween').Tween;
+var HtmlAudioContext = require('htmlAudioContext');
+var WebAudioContext = require('webAudioContext');
+var FakeAudioContext = require('fakeAudioContext');
+var Tweenable = require('tweenable');
+var Tween = require('tween');
 
 var Context  = null;
 

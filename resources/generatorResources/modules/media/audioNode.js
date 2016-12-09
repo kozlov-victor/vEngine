@@ -1,7 +1,7 @@
 
 var cache = require('resourceCache');
 
-exports.AudioNode = function(context){
+var AudioNode = function(context){
 
     var currSound = null;
 
@@ -33,4 +33,4 @@ exports.AudioNode = function(context){
 
 };
 
-
+module.exports = AudioNode;

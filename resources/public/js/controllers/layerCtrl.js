@@ -16,7 +16,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         var bundle = require('bundle');
-        var Layer = require('layer').Layer;
+        var Layer = require('layer');
 
 
         s.createOrEditLayer = function(){

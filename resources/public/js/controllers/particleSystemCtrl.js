@@ -17,7 +17,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var ParticleSystem = require('particleSystem').ParticleSystem;
+        var ParticleSystem = require('particleSystem');
 
 
         (function(){

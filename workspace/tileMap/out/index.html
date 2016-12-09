@@ -11,7 +11,19 @@
 </head>
 
 <body>
-<span id="loading">loading...</span>
+<div id="loading">
+    <div style="
+    display: table;
+    height: 100%;
+    width: 100%;
+">
+        <div style="
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+">loading...</div>
+    </div>
+</div>
 <style type="text/css" rel="stylesheet">
     html, body, div, canvas {
         border:none;
@@ -26,7 +38,12 @@
     }
     #loading {
         position: absolute;
-        z-index: 100;
+        z-index: 10;
+        left: 0;
+        right: 0;
+        top:0;
+        bottom: 0;
+        text-align: center;
     }
 </style>
 <script src="debug.js"></script>

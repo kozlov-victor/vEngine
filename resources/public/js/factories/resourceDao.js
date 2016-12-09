@@ -10,9 +10,9 @@ app
         var self = this;
         var bundle = require('bundle');
         var collections = require('collections');
-        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
-        var TextField = require('textField').TextField;
-        var Layer = require('layer').Layer;
+        var CommonBehaviour = require('commonBehaviour');
+        var TextField = require('textField');
+        var Layer = require('layer');
 
         var _loadResources = function(projectName){
             return new Promise(function(resolve){

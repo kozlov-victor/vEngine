@@ -1,5 +1,5 @@
 
-var ResourceLoader = require('resourceLoader').ResourceLoader;
+var ResourceLoader = require('resourceLoader');
 var collider = require('collider');
 var keyboard = require('keyboard');
 var camera = require('camera');
@@ -87,7 +87,7 @@ exports.setCtx = function(_ctx){
 };
 
 exports.setScene = function(scene){
-    var Scene = require('scene').Scene;
+    var Scene = require('scene');
     if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
     if (exports.currScene==scene) return;
     bootEssentialResources(function(){

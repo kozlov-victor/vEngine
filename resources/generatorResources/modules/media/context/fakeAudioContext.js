@@ -1,7 +1,7 @@
 
 var Class = require('class');
 
-exports.FakeAudioContext = Class.extend(
+var FakeAudioContext = Class.extend(
     {
         type:'fakeAudioContext',
         play: function(buffer,loop){
@@ -32,3 +32,6 @@ exports.FakeAudioContext = Class.extend(
         }
     }
 );
+
+
+module.exports = FakeAudioContext;

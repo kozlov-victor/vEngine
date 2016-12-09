@@ -1,7 +1,7 @@
 
-var Resource = require('resource').Resource;
+var Resource = require('resource');
 
-exports.SpriteSheet = Resource.extend({
+var SpriteSheet = Resource.extend({
     type:'spriteSheet',
     width:0,
     height:0,
@@ -27,3 +27,5 @@ exports.SpriteSheet = Resource.extend({
         this.calcFrameSize();
     }
 });
+
+module.exports = SpriteSheet;

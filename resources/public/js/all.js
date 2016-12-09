@@ -112,10 +112,9 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+        var CommonBehaviour = require('commonBehaviour');
 
         s.createOrEditCommonBehaviour = function(obj){
-            console.log('createOrEditCommonBehaviour>>>>>',obj);
             resourceDao.createOrEditObjectInResource(
                 s.editData.currGameObjectInEdit.type,s.editData.currGameObjectInEdit.id,
                 obj.type,obj,
@@ -183,7 +182,7 @@ window.app.
         s.resourceDao = resourceDao;
         s.fontSample = 'test this font!';
         var bundle = require('bundle');
-        var Font = require('font').Font;
+        var Font = require('font');
 
         var getFontContext = function(arrFromTo, strFont, w) {
             function getFontHeight(strFont) {
@@ -319,8 +318,8 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var FrameAnimation = require('frameAnimation').FrameAnimation;
-        var GameObject = require('gameObject').GameObject;
+        var FrameAnimation = require('frameAnimation');
+        var GameObject = require('gameObject');
 
         var isStopped = false;
 
@@ -436,7 +435,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var GameObject = require('gameObject').GameObject;
+        var GameObject = require('gameObject');
 
         s.refreshGameObjectFramePreview = function(gameObject,ind){
             var spriteSheet = gameObject._spriteSheet;
@@ -545,7 +544,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         var bundle = require('bundle');
-        var Layer = require('layer').Layer;
+        var Layer = require('layer');
 
 
         s.createOrEditLayer = function(){
@@ -651,7 +650,7 @@ window.app.
         s.i18n = i18n.getAll();
         s.utils = utils;
         s.resourceDao = resourceDao;
-        var ParticleSystem = require('particleSystem').ParticleSystem;
+        var ParticleSystem = require('particleSystem');
 
 
         (function(){
@@ -865,7 +864,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var Scene = require('scene').Scene;
+        var Scene = require('scene');
 
         s.createOrEditScene = function(){
             resourceDao.
@@ -1080,7 +1079,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var Sound = require('sound').Sound;
+        var Sound = require('sound');
 
         s.onSoundUpload = function(file,src){
             s.soundUrl = $sce.trustAsResourceUrl(src);
@@ -1129,7 +1128,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var SpriteSheet = require('spriteSheet').SpriteSheet;
+        var SpriteSheet = require('spriteSheet');
 
         s.onSpriteSheetUpload = function(file,src) {
             s.editData.currSpriteSheetInEdit._file = file;
@@ -1769,9 +1768,9 @@ app
         var self = this;
         var bundle = require('bundle');
         var collections = require('collections');
-        var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
-        var TextField = require('textField').TextField;
-        var Layer = require('layer').Layer;
+        var CommonBehaviour = require('commonBehaviour');
+        var TextField = require('textField');
+        var Layer = require('layer');
 
         var _loadResources = function(projectName){
             return new Promise(function(resolve){
@@ -2128,7 +2127,7 @@ window.app
 
         var bundle = require('bundle');
         var mathEx = require('mathEx');
-        var GameObject = require('gameObject').GameObject;
+        var GameObject = require('gameObject');
 
         this.FONT_SYMBOL_PADDING =
 

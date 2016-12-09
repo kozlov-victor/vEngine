@@ -1,4 +1,4 @@
-exports.Queue = function(){
+var Queue = function(){
     var self = this;
     this.size = function(){
         return tasks.length;
@@ -42,3 +42,5 @@ exports.Queue = function(){
         });
     }
 };
+
+module.exports = Queue;

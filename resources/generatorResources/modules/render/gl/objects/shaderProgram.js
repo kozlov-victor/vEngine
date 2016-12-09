@@ -146,7 +146,7 @@ var getUniformSetter = function(size,type){
 };
 
 
-exports.ShaderProgram = function(gl,sources){
+var ShaderProgram = function(gl,sources){
 
     var program;
     var uniforms;
@@ -179,3 +179,5 @@ exports.ShaderProgram = function(gl,sources){
     };
 
 };
+
+module.exports = ShaderProgram;

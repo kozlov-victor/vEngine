@@ -1,5 +1,5 @@
 
-exports.Vec2 = function(_x,_y){
+var Vec2 = function(_x,_y){
 
     var x = _x||0;
     var y = _y||0;
@@ -84,3 +84,6 @@ exports.Vec2 = function(_x,_y){
     })();
 
 };
+
+
+module.exports = Vec2;

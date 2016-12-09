@@ -1,6 +1,8 @@
 
-var BaseModel = require('baseModel').BaseModel;
+var BaseModel = require('baseModel');
 
-exports.Resource = BaseModel.extend({
+var Resource = BaseModel.extend({
     resourcePath:''
 });
+
+module.exports = Resource;

@@ -1,5 +1,5 @@
 
-var Renderable = require('renderable').Renderable;
+var Renderable = require('renderable');
 var collections = require('collections');
 var bundle = require('bundle');
 var renderer = require('renderer');
@@ -9,7 +9,7 @@ var camera = require('camera');
 var tweenModule = require('tween');
 var tweenMovieModule = require('tweenMovie');
 
-exports.Scene = Renderable.extend({
+var Scene = Renderable.extend({
     type:'scene',
     layerProps:[],
     alpha:1,
@@ -137,3 +137,5 @@ exports.Scene = Renderable.extend({
         this.printText(0,0,text);
     }
 });
+
+module.exports = Scene;

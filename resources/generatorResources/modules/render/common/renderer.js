@@ -1,7 +1,7 @@
 
 
-var GlContext = require('glContext').GlContext;
-var CanvasContext = require('canvasContext').CanvasContext;
+var GlContext = require('glContext');
+var CanvasContext = require('canvasContext');
 var resourceCache = require('resourceCache');
 var bundle = require('bundle');
 var game = require('game');
@@ -119,4 +119,4 @@ exports.printText = function(x,y,text,font){
         );
         posX+=charInCtx.width;
     });
-}
+};

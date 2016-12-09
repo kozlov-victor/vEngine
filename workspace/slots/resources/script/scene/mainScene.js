@@ -1,4 +1,4 @@
-var GameObject = require('gameObject').GameObject;
+var GameObject = require('gameObject');
 
 var scoreLabel = GameObject.find('scoreLabel');
 var winLabel = GameObject.find('winLabel');
@@ -7,13 +7,13 @@ var betPlusLabel = GameObject.find('betPlusLabel');
 var betMinusLabel = GameObject.find('betMinusLabel');
 var betLabel = GameObject.find('betLabel');
 var jackPotLabel = GameObject.find('jackPotLabel');
-var particles = require('particleSystem').ParticleSystem.find('coins');
+var particles = require('particleSystem').find('coins');
 
 
-var Queue = require('queue').Queue;
-var Sound = require('sound').Sound;
-var TweenMovie = require('tweenMovie').TweenMovie;
-var Tween = require('tween').Tween;
+var Queue = require('queue');
+var Sound = require('sound');
+var TweenMovie = require('tweenMovie');
+var Tween = require('tween');
 
 var spinPullSnd = Sound.find('spinPull');
 var powerUpSnd = Sound.find('powerUp');

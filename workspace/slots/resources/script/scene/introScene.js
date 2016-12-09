@@ -1,7 +1,7 @@
 
 var game = require('game');
-var Sound = require('sound').Sound;
-var GameObject = require('gameObject').GameObject;
+var Sound = require('sound');
+var GameObject = require('gameObject');
 
 var txtMoney = GameObject.find('txtMoney');
 

@@ -1,8 +1,7 @@
 
-var BaseModel = require('baseModel').BaseModel;
+var BaseModel = require('baseModel');
 
-
-exports.FrameAnimation = BaseModel.extend({
+var FrameAnimation = BaseModel.extend({
     type:'frameAnimation',
     name:'',
     frames:[],
@@ -30,3 +29,5 @@ exports.FrameAnimation = BaseModel.extend({
         }
     }
 });
+
+module.exports = FrameAnimation;

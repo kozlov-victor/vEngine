@@ -1,14 +1,14 @@
 
 var renderer = require('renderer');
-var BaseGameObject = require('baseGameObject').BaseGameObject;
-var CommonBehaviour = require('commonBehaviour').CommonBehaviour;
+var BaseGameObject = require('baseGameObject');
+var CommonBehaviour = require('commonBehaviour');
 var bundle = require('bundle');
 var collections = require('collections');
 var resourceCache = require('resourceCache');
 var utils = require('utils');
 var game = require('game');
 
-exports.GameObject = BaseGameObject.extend({
+var GameObject = BaseGameObject.extend({
     type:'gameObject',
     spriteSheetId:null,
     _spriteSheet: null,
@@ -95,3 +95,5 @@ exports.GameObject = BaseGameObject.extend({
         return game.getCurrScene()._allGameObjects.findAll({name: name});
     }
 });
+
+module.exports = GameObject;

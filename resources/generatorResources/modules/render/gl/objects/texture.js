@@ -3,7 +3,7 @@ var isPowerOf2 = function(value) {
     return (value & (value - 1)) == 0;
 };
 
-exports.Texture = function(gl,img){
+var Texture = function(gl,img){
 
     var tex;
     var size;
@@ -48,3 +48,6 @@ exports.Texture = function(gl,img){
     })();
 
 };
+
+
+module.exports = Texture;

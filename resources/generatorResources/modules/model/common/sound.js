@@ -1,8 +1,8 @@
-var Resource = require('resource').Resource;
+var Resource = require('resource');
 var audioPlayer = require('audioPlayer');
 var bundle = require('bundle');
 
-module.exports.Sound = Resource.extend({
+var Sound = Resource.extend({
     type:'sound',
     _gain:1,
     _loop:false,
@@ -23,3 +23,5 @@ module.exports.Sound = Resource.extend({
         return bundle.soundList.find({name:name});
     }
 });
+
+module.exports = Sound;

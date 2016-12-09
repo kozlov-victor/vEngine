@@ -1,9 +1,9 @@
 
-var BaseModel = require('baseModel').BaseModel;
-var Tween = require('tween').Tween;
-var TweenMovie = require('tweenMovie').TweenMovie;
+var BaseModel = require('baseModel');
+var Tween = require('tween');
+var TweenMovie = require('tweenMovie');
 
-exports.Tweenable = BaseModel.extend({
+var Tweenable = BaseModel.extend({
     global: false,
     tween: function(objOrTween,fromToVal,tweenTime,easeFnName){
         var movie = new TweenMovie();
@@ -14,3 +14,5 @@ exports.Tweenable = BaseModel.extend({
         movie.play(this.global);
     }
 });
+
+module.exports = Tweenable;

@@ -3,10 +3,10 @@
 var renderer = require('renderer');
 var camera = require('camera');
 
-var Renderable = require('renderable').Renderable;
-var Moveable = require('moveable').Moveable;
+var Renderable = require('renderable');
+var Moveable = require('moveable');
 
-exports.BaseGameObject = Renderable.extend({
+var BaseGameObject = Renderable.extend({
     type:'baseGameObject',
     groupName:'',
     _spriteSheet:null,
@@ -50,3 +50,5 @@ exports.BaseGameObject = Renderable.extend({
         this._moveable._gameObject = this;
     }
 });
+
+module.exports = BaseGameObject;

@@ -17,8 +17,8 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var FrameAnimation = require('frameAnimation').FrameAnimation;
-        var GameObject = require('gameObject').GameObject;
+        var FrameAnimation = require('frameAnimation');
+        var GameObject = require('gameObject');
 
         var isStopped = false;
 

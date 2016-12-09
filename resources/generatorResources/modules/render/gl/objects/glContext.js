@@ -1,11 +1,11 @@
 
 var mat4 = require('mat4');
 var utils = require('utils');
-var ShaderProgram = require('shaderProgram').ShaderProgram;
-var VertexBuffer = require('vertexBuffer').VertexBuffer;
-var Texture = require('texture').Texture;
-var MatrixStack = require('matrixStack').MatrixStack;
-var FrameBuffer = require('frameBuffer').FrameBuffer;
+var ShaderProgram = require('shaderProgram');
+var VertexBuffer = require('vertexBuffer');
+var Texture = require('texture');
+var MatrixStack = require('matrixStack');
+var FrameBuffer = require('frameBuffer');
 var bundle = require('bundle');
 var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
@@ -17,7 +17,7 @@ var getCtx = function(el){
     return el.getContext("webgl",{ alpha: false });
 };
 
-exports.GlContext = Class.extend(function(it){
+var GlContext = Class.extend(function(it){
 
     var gl;
     var mScaleX = 1, mScaleY = 1;
@@ -312,6 +312,8 @@ exports.GlContext = Class.extend(function(it){
         });
     }
 });
+
+module.exports = GlContext;
 
 
 

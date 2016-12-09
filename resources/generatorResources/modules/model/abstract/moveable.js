@@ -1,8 +1,8 @@
 
 var collider = require('collider');
-var BaseModel = require('baseModel').BaseModel;
+var BaseModel = require('baseModel');
 
-exports.Moveable = BaseModel.extend({
+var Moveable = BaseModel.extend({
     _gameObject: null,
     update: function(time,delta){
         var _gameObject = this._gameObject;
@@ -13,3 +13,5 @@ exports.Moveable = BaseModel.extend({
         collider.manage(_gameObject,posX,posY);
     }
 });
+
+module.exports = Moveable;

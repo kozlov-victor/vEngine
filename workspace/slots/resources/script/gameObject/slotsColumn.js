@@ -1,6 +1,6 @@
 
-var Sound = require('sound').Sound;
-var TweenChain = require('tweenChain').TweenChain;
+var Sound = require('sound');
+var TweenChain = require('tweenChain');
 
 var spinSnd = Sound.find('spinSnd');
 

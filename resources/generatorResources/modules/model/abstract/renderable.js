@@ -3,11 +3,11 @@ var camera = require('camera');
 var renderer = require('renderer');
 var collider = require('collider');
 
-var BaseModel = require('baseModel').BaseModel;
-var Tweenable = require('tweenable').Tweenable;
+var BaseModel = require('baseModel');
+var Tweenable = require('tweenable');
 
 
-exports.Renderable = BaseModel.extend(function(self){
+var Renderable = BaseModel.extend(function(self){
 
     self.type = 'renderable';
     self.alpha = 1;
@@ -47,3 +47,5 @@ exports.Renderable = BaseModel.extend(function(self){
     };
 
 });
+
+module.exports = Renderable;

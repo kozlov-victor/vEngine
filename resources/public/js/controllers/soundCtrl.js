@@ -19,7 +19,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var Sound = require('sound').Sound;
+        var Sound = require('sound');
 
         s.onSoundUpload = function(file,src){
             s.soundUrl = $sce.trustAsResourceUrl(src);

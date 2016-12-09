@@ -17,7 +17,7 @@ window.app.
         s.utils = utils;
         s.resourceDao = resourceDao;
         var bundle = require('bundle');
-        var Scene = require('scene').Scene;
+        var Scene = require('scene');
 
         s.createOrEditScene = function(){
             resourceDao.

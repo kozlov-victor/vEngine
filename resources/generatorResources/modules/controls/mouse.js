@@ -7,7 +7,6 @@ var device = require('device');
 
 var objectsCaptured = {};
 
-var self = this;
 var gameProps = bundle.gameProps;
 var globalScale = bundle.gameProps.globalScale;
 var canvas = renderer.getCanvas();

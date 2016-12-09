@@ -1,5 +1,5 @@
 
-exports.FrameBuffer = function(gl,width,height){
+var FrameBuffer = function(gl,width,height){
 
     var glTexture;
     var glRenderBuffer;
@@ -47,3 +47,5 @@ exports.FrameBuffer = function(gl,width,height){
     })();
 
 };
+
+module.exports = FrameBuffer;

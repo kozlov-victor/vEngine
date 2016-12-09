@@ -1,4 +1,4 @@
-var Vec2 = require('vec2').Vec2;
+var Vec2 = require('vec2');
 
 exports.isPointInRect = function(point,rect,angle) {
     if (angle) {
