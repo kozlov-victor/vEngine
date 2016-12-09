@@ -2,7 +2,7 @@ var Resource = require('resource').Resource;
 var audioPlayer = require('audioPlayer');
 var bundle = require('bundle');
 
-exports.Sound = Resource.extend({
+module.exports.Sound = Resource.extend({
     type:'sound',
     _gain:1,
     _loop:false,
