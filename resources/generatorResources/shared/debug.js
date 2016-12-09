@@ -24,6 +24,13 @@
         console.log(msg);
     };
 
+    var _consoleError = console.error;
+
+    console.error = function(e){
+       _consoleError.call(console,e);
+       window.showError(e);
+    };
+
     window.showError = function _err(e,lineNum){
         if (navigator.isCocoonJS) {
             _showErr(e,lineNum);

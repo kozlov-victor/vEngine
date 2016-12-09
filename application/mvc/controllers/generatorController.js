@@ -181,7 +181,7 @@ var processGameResourcesFiles = function(generatedCode,opts){
     }
 
     var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
-    var debugCode = fs.readFileSync('resources/generatorResources/debug/debug.js');
+    var debugCode = fs.readFileSync('resources/generatorResources/shared/debug.js');
 
     indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
     indexHtml = processScriptPlace(indexHtml,'script_debug',debugCode,'debug.js',opts);
