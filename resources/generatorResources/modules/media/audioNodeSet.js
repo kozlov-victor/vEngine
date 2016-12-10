@@ -20,6 +20,20 @@ var AudioNodeSet = function(Context,numOfNodes){
         }
     };
 
+    this.pauseAll = function(){
+        for (var i = 0;i<numOfNodes;i++) {
+            nodes[i].pause();
+        }
+    };
+
+    this.resumeAll = function(){
+        for (var i = 0;i<numOfNodes;i++) {
+            nodes[i].resume();
+        }
+    };
+
+
+
     this.getNodeBySound = function(sound){
         for (var i = 0;i<numOfNodes;i++) {
             if (nodes[i].getCurrSound()==sound) return nodes[i];

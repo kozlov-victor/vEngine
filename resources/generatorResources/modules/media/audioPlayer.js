@@ -41,6 +41,14 @@ exports.stopAll = function(){
     audioNodeSet.stopAll();
 };
 
+exports.pauseAll = function(){
+    audioNodeSet.pauseAll();
+};
+
+exports.resumeAll = function(){
+    audioNodeSet.resumeAll();
+};
+
 exports.setGain = function(sound,toVal,time,easeFnName){
     var node = audioNodeSet.getNodeBySound(sound);
     if (!node) return;

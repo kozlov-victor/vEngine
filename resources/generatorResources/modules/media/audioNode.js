@@ -23,6 +23,14 @@ var AudioNode = function(context){
         context.setGain(val);
     };
 
+    this.pause = function() {
+        context.pause();
+    };
+
+    this.resume = function(){
+        context.resume();
+    };
+
     this.isFree = function() {
         return context.isFree();
     };

@@ -224,7 +224,6 @@ modules['behaviour'] =
 	
 	var txtMoney = GameObject.find('txtMoney');
 	var coin = GameObject.find('coin');
-	// coin.blockRotation(); // todo
 	
 	var introSnd = Sound.find('intro');
 	
@@ -1165,6 +1164,14 @@ modules['audioNode'] =
 	        context.setGain(val);
 	    };
 	
+	    this.pause = function() {
+	        context.pause();
+	    };
+	
+	    this.resume = function(){
+	        context.resume();
+	    };
+	
 	    this.isFree = function() {
 	        return context.isFree();
 	    };
@@ -1203,6 +1210,20 @@ modules['audioNodeSet'] =
 	            nodes[i].stop();
 	        }
 	    };
+	
+	    this.pauseAll = function(){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            nodes[i].pause();
+	        }
+	    };
+	
+	    this.resumeAll = function(){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            nodes[i].resume();
+	        }
+	    };
+	
+	
 	
 	    this.getNodeBySound = function(sound){
 	        for (var i = 0;i<numOfNodes;i++) {
@@ -1260,6 +1281,14 @@ modules['audioPlayer'] =
 	
 	exports.stopAll = function(){
 	    audioNodeSet.stopAll();
+	};
+	
+	exports.pauseAll = function(){
+	    audioNodeSet.pauseAll();
+	};
+	
+	exports.resumeAll = function(){
+	    audioNodeSet.resumeAll();
 	};
 	
 	exports.setGain = function(sound,toVal,time,easeFnName){
@@ -1387,6 +1416,12 @@ modules['fakeAudioContext'] =
 	        setGain: function(val){
 	
 	        },
+	        pause: function(){
+	
+	        },
+	        resume: function(){
+	
+	        },
 	        construct: function(){
 	            console.log('audio not supported');
 	        }
@@ -1442,6 +1477,12 @@ modules['htmlAudioContext'] =
 	        },
 	        setGain: function(val){
 	            this._ctx.volume = val;
+	        },
+	        pause: function(){
+	            this._ctx.pause();
+	        },
+	        resume: function(){
+	            throw "not implemented for now"
 	        },
 	        construct: function(){
 	            this._ctx = getCtx();
@@ -1531,6 +1572,12 @@ modules['webAudioContext'] =
 	        setGain: function(val){
 	            this._gainNode.gain.value = val;
 	
+	        },
+	        pause: function(){
+	            this._ctx.suspend();
+	        },
+	        resume: function(){
+	            this._ctx.resume();
 	        },
 	        construct: function(){
 	            this._ctx = getCtx();
@@ -3578,16 +3625,15 @@ modules['renderer'] =
 	};
 	
 	exports.start = function(){
-	    drawSceneLoop();
 	    isRunning = true;
+	    drawSceneLoop();
 	};
 	
 	exports.getCanvas = function(){
 	    return canvas;
 	};
 	
-	exports.cancel = function(){
-	    window.canceled = true;
+	exports.stop = function(){
 	    isRunning = false;
 	};
 	
@@ -3600,11 +3646,9 @@ modules['renderer'] =
 	};
 	
 	var drawSceneLoop = function(){
-	    if (window.canceled) {
-	        return;
-	    }
 	
-	    if (window.canceled) return
+	    if (!isRunning) return;
+	
 	    var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
 	
 	    reqAnimFrame(drawSceneLoop);
@@ -7834,7 +7878,7 @@ modules['index'] =
 	    gameProps:{
 	    "width": 320,
 	    "height": 200,
-	    "scaleStrategy": "2",
+	    "scaleStrategy": "1",
 	    "preloadingSceneId": "6337_8986_28",
 	    "startSceneId": "5220_1729_151"
 	}
@@ -7849,7 +7893,7 @@ modules['index'] =
 	var renderer = require('renderer');
 	var game = require('game');
 	var keyboard = require('keyboard');
-	
+	var audioPlayer = require('audioPlayer');
 	
 	window.addEventListener('load',function(){
 	    document.body.ontouchstart = function(e){
@@ -7861,6 +7905,16 @@ modules['index'] =
 	    require('mouse');
 	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
 	    game.setScene(startScene);
+	});
+	
+	window.addEventListener('blur',function(){
+	    audioPlayer.pauseAll();
+	    renderer.stop();
+	});
+	
+	window.addEventListener('focus',function(){
+	    audioPlayer.resumeAll();
+	    renderer.start();
 	});
     
 }};

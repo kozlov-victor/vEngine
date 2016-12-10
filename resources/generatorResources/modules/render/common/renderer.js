@@ -47,16 +47,15 @@ exports.init = function(){
 };
 
 exports.start = function(){
-    drawSceneLoop();
     isRunning = true;
+    drawSceneLoop();
 };
 
 exports.getCanvas = function(){
     return canvas;
 };
 
-exports.cancel = function(){
-    window.canceled = true;
+exports.stop = function(){
     isRunning = false;
 };
 
@@ -69,11 +68,9 @@ exports.setScene = function(scene){
 };
 
 var drawSceneLoop = function(){
-    if (window.canceled) {
-        return;
-    }
 
-    //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+    if (!isRunning) return;
+
     //<code><%if (opts.debug){%>var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;<%}%>
 
     reqAnimFrame(drawSceneLoop);

@@ -60,6 +60,12 @@ var WebAudioContext = Class.extend(
             this._gainNode.gain.value = val;
 
         },
+        pause: function(){
+            this._ctx.suspend();
+        },
+        resume: function(){
+            this._ctx.resume();
+        },
         construct: function(){
             this._ctx = getCtx();
             this._gainNode = this._ctx.createGain();

@@ -5,7 +5,6 @@ var GameObject = require('gameObject');
 
 var txtMoney = GameObject.find('txtMoney');
 var coin = GameObject.find('coin');
-// coin.blockRotation(); // todo
 
 var introSnd = Sound.find('intro');
 

@@ -16,6 +16,12 @@ var FakeAudioContext = Class.extend(
         setGain: function(val){
 
         },
+        pause: function(){
+
+        },
+        resume: function(){
+
+        },
         construct: function(){
             console.log('audio not supported');
         }

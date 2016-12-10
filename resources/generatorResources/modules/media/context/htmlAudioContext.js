@@ -30,6 +30,12 @@ var HtmlAudioContext = Class.extend(
         setGain: function(val){
             this._ctx.volume = val;
         },
+        pause: function(){
+            this._ctx.pause();
+        },
+        resume: function(){
+            throw "not implemented for now"
+        },
         construct: function(){
             this._ctx = getCtx();
         }
