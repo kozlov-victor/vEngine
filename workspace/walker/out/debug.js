@@ -75,7 +75,10 @@
         console.error(e);
         window.showError(e,lineNum);
         window.canceled = true;
-        window.require && window.require('audioPlayer') && (window.require('audioPlayer').stopAll());
+        if (window.require) {
+            window.require('audioPlayer') && (window.require('audioPlayer').stopAll());
+            window.require('renderer') && (window.require('renderer').stop());
+        }
     });
 
 })();

@@ -34,13 +34,13 @@ var GlContext = Class.extend(function(it){
 
         gameProps = bundle.gameProps;
         gl = getCtx(canvas);
-        window.gl = gl;
         commonShaderPrg = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
             bundle.shaders.basic['fragment.frag']
         ]);
         commonShaderPrg.bind();
         commonShaderPrg.setUniform('u_alpha',1);
+        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 
         posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
         posVertexBuffer.bind([
@@ -112,13 +112,12 @@ var GlContext = Class.extend(function(it){
         // multiply them together
         return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
     };
-    
+
     var currTex = null;
 
-    it.drawImage = function(
-        texture,
-        srcX, srcY, srcWidth, srcHeight,
-        dstX, dstY) {
+    var _draw = function(texture,
+                               srcX, srcY, srcWidth, srcHeight,
+                               dstX, dstY){
 
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
@@ -152,11 +151,31 @@ var GlContext = Class.extend(function(it){
             )
         );
 
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+    };
+
+    it.drawImage = function(
+        texture,
+        srcX, srcY, srcWidth, srcHeight,
+        dstX, dstY
+    ) {
+
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendColor(0, 0.5, 1, 1);
         //gl.blendFunc(gl.ONE, gl.ONE);
 
-        // draw the quad (2 triangles, 6 vertices)
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        _draw(texture,
+            srcX, srcY, srcWidth, srcHeight,
+            dstX, dstY);
+    };
+
+    it.lockRect = function(rect) {
+        gl.enable(gl.SCISSOR_TEST);
+        gl.scissor(rect.x,gameProps.height - rect.y - rect.height,rect.width,rect.height);
+    };
+
+    it.unlockRect = function(){
+        gl.disable(gl.SCISSOR_TEST);
     };
 
     it.clear = function() {
@@ -230,6 +249,10 @@ var GlContext = Class.extend(function(it){
         frameBuffer.bind();
     };
 
+    it.getNativeContext = function(){
+        return gl;
+    };
+
     it.flipFrameBuffer = function(){
         currTex = null;
         this.restore();
@@ -285,6 +308,7 @@ var GlContext = Class.extend(function(it){
 
         var img = new Image();
         //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
+        var gl = require('renderer').getContext().getNativeContext();
         var texture = new Texture(gl, img);
 
         if (opts.type == 'base64') {

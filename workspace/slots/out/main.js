@@ -179,6 +179,8 @@ modules['behaviour'] =
 	    wait(300).
 	    tween(self.scale,{to:{x:1,y:1}},500,'easeOutBounce');
 	
+	self.tileRepeat = true;
+	
 	self.spin = function(callBack,hackedVal){
 	    var n = ~~((Math.random())*10)+5;
 	    n+=lastN;
@@ -186,10 +188,10 @@ modules['behaviour'] =
 	    var time = 1000+~~(Math.random()*5000);
 	    new TweenChain().
 	            tween(
-	                self,
+	                self.tileOffset,
 	                {
-	                    from:    {_sprPosY:lastN*51.2},
-	                    to:      {_sprPosY:n*51.2}
+	                    from:    {y:lastN*51.2},
+	                    to:      {y:n*51.2}
 	                },
 	                time, 'easeOutBounce'
 	            ).
@@ -210,6 +212,13 @@ modules['behaviour'] =
 	    return lastN;
 	};
 	
+	
+	self.onUpdate = function(){
+	   
+	}
+	
+	
+	
 	};
 	;
 	
@@ -226,6 +235,7 @@ modules['behaviour'] =
 	var coin = GameObject.find('coin');
 	
 	var introSnd = Sound.find('intro');
+	
 	
 	introSnd.play();
 	
@@ -873,7 +883,7 @@ modules['bundle'] =
 	exports.embeddedResources.isEmbedded = false;
 	
 	
-	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
 	
 	exports.embeddedResources.isEmbedded = false;
     
@@ -2536,6 +2546,7 @@ modules['baseGameObject'] =
 	    },
 	    construct:function(){
 	        if (!this.pos) this.pos = {x:0,y:0};
+	        if (!this.vel) this.vel = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
 	        this._moveable = new Moveable();
 	        this._moveable._gameObject = this;
@@ -2820,6 +2831,43 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
+	
+	var _draw = function(ctx,self,x,y){
+	    ctx.drawImage(
+	        resourceCache.get(self._spriteSheet.resourcePath),
+	        self._sprPosX,
+	        self._sprPosY,
+	        self.width,
+	        self.height,
+	        x||0,
+	        y||0
+	    );
+	    console.log(self._sprPosX,
+	        self._sprPosY,
+	        self.width,
+	        self.height);
+	};
+	
+	var _drawPattern = function(ctx,self,offsetX,offsetY){
+	
+	    ctx.lockRect(self.getRect());
+	
+	    for (
+	        var y = -offsetY;
+	        y<self.height + self._spriteSheet._frameHeight;
+	        y+=self._spriteSheet._frameHeight
+	    ) {
+	        for (
+	            var x = -offsetX;
+	            x<self.width + self._spriteSheet._frameWidth;
+	            x+=self._spriteSheet._frameWidth
+	        ) {
+	            _draw(ctx,self,x,y);
+	        }
+	    }
+	    ctx.unlockRect();
+	};
+	
 	var GameObject = BaseGameObject.extend({
 	    type:'gameObject',
 	    spriteSheetId:null,
@@ -2835,10 +2883,12 @@ modules['gameObject'] =
 	    _currFrameAnimation:null,
 	    rigid:true,
 	    _timeCreated:null,
+	    tileOffset: null,
+	    tileRepeat:false,
 	    construct: function(){
 	        var self = this;
 	        self._super();
-	        self.vel = {x:0,y:0};
+	        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
 	        self._frameAnimations = new collections.List();
 	        if (!self.spriteSheetId) {
 	            return;
@@ -2888,15 +2938,17 @@ modules['gameObject'] =
 	        var ctx = renderer.getContext();
 	        ctx.save();
 	        self._super();
-	        ctx.drawImage(
-	            resourceCache.get(self._spriteSheet.resourcePath),
-	            self._sprPosX,
-	            self._sprPosY,
-	            self.width,
-	            self.height,
-	            0,
-	            0
-	        );
+	
+	        var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
+	        var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
+	        offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
+	        offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
+	
+	        var tex = resourceCache.get(self._spriteSheet.resourcePath);
+	        self.tileRepeat ?
+	            _drawPattern(ctx,self,offsetX,offsetY):
+	            _draw(ctx,self);
+	
 	        ctx.restore();
 	    }
 	}, {
@@ -3625,6 +3677,7 @@ modules['renderer'] =
 	};
 	
 	exports.start = function(){
+	    if (window.canceled) return;
 	    isRunning = true;
 	    drawSceneLoop();
 	};
@@ -3650,6 +3703,7 @@ modules['renderer'] =
 	    if (!isRunning) return;
 	
 	    var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
+	    if (window.canceled) return;
 	
 	    reqAnimFrame(drawSceneLoop);
 	
@@ -3932,13 +3986,13 @@ modules['glContext'] =
 	
 	        gameProps = bundle.gameProps;
 	        gl = getCtx(canvas);
-	        window.gl = gl;
 	        commonShaderPrg = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
 	        ]);
 	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform('u_alpha',1);
+	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 	
 	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
 	        posVertexBuffer.bind([
@@ -4010,13 +4064,12 @@ modules['glContext'] =
 	        // multiply them together
 	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 	    };
-	    
+	
 	    var currTex = null;
 	
-	    it.drawImage = function(
-	        texture,
-	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY) {
+	    var _draw = function(texture,
+	                               srcX, srcY, srcWidth, srcHeight,
+	                               dstX, dstY){
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
@@ -4050,11 +4103,31 @@ modules['glContext'] =
 	            )
 	        );
 	
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	    };
+	
+	    it.drawImage = function(
+	        texture,
+	        srcX, srcY, srcWidth, srcHeight,
+	        dstX, dstY
+	    ) {
+	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendColor(0, 0.5, 1, 1);
 	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
-	        // draw the quad (2 triangles, 6 vertices)
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        _draw(texture,
+	            srcX, srcY, srcWidth, srcHeight,
+	            dstX, dstY);
+	    };
+	
+	    it.lockRect = function(rect) {
+	        gl.enable(gl.SCISSOR_TEST);
+	        gl.scissor(rect.x,gameProps.height - rect.y - rect.height,rect.width,rect.height);
+	    };
+	
+	    it.unlockRect = function(){
+	        gl.disable(gl.SCISSOR_TEST);
 	    };
 	
 	    it.clear = function() {
@@ -4128,6 +4201,10 @@ modules['glContext'] =
 	        frameBuffer.bind();
 	    };
 	
+	    it.getNativeContext = function(){
+	        return gl;
+	    };
+	
 	    it.flipFrameBuffer = function(){
 	        currTex = null;
 	        this.restore();
@@ -4183,6 +4260,7 @@ modules['glContext'] =
 	
 	        var img = new Image();
 	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var gl = require('renderer').getContext().getNativeContext();
 	        var texture = new Texture(gl, img);
 	
 	        if (opts.type == 'base64') {
@@ -4489,12 +4567,15 @@ modules['texture'] =
 	    var tex;
 	    var size;
 	
+	    this.isPowerOfTwo = false;
+	
 	    this.apply = function(){
 	        size = {width:img.width,height:img.height};
 	        this.bind();
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
 	        // Check if the image is a power of 2 in both dimensions.
-	        if (isPowerOf2(img.width) && isPowerOf2(img.height)) {
+	        if (this.isPowerOfTwo) {
 	            gl.generateMipmap(gl.TEXTURE_2D);
 	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
@@ -7878,7 +7959,7 @@ modules['index'] =
 	    gameProps:{
 	    "width": 320,
 	    "height": 200,
-	    "scaleStrategy": "1",
+	    "scaleStrategy": "2",
 	    "preloadingSceneId": "6337_8986_28",
 	    "startSceneId": "5220_1729_151"
 	}

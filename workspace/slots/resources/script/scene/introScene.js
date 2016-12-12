@@ -8,6 +8,7 @@ var coin = GameObject.find('coin');
 
 var introSnd = Sound.find('intro');
 
+
 introSnd.play();
 
 self.on('click',function(){

@@ -47,6 +47,7 @@ exports.init = function(){
 };
 
 exports.start = function(){
+    //<code><%if (opts.debug){%>if (window.canceled) return;<%}%>
     isRunning = true;
     drawSceneLoop();
 };
@@ -72,6 +73,7 @@ var drawSceneLoop = function(){
     if (!isRunning) return;
 
     //<code><%if (opts.debug){%>var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;<%}%>
+    //<code><%if (opts.debug){%>if (window.canceled) return;<%}%>
 
     reqAnimFrame(drawSceneLoop);
 

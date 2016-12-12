@@ -19,7 +19,7 @@
                 },
                 "currFrameIndex": 0,
                 "name": "eye",
-                "width": 24,
+                "width": 50,
                 "height": 24,
                 "type": "gameObject",
                 "commonBehaviour": [],

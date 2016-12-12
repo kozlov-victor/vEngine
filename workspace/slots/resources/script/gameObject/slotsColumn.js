@@ -11,6 +11,8 @@ var tChain = new TweenChain().
     wait(300).
     tween(self.scale,{to:{x:1,y:1}},500,'easeOutBounce');
 
+self.tileRepeat = true;
+
 self.spin = function(callBack,hackedVal){
     var n = ~~((Math.random())*10)+5;
     n+=lastN;
@@ -18,10 +20,10 @@ self.spin = function(callBack,hackedVal){
     var time = 1000+~~(Math.random()*5000);
     new TweenChain().
             tween(
-                self,
+                self.tileOffset,
                 {
-                    from:    {_sprPosY:lastN*51.2},
-                    to:      {_sprPosY:n*51.2}
+                    from:    {y:lastN*51.2},
+                    to:      {y:n*51.2}
                 },
                 time, 'easeOutBounce'
             ).
@@ -41,3 +43,10 @@ self.blink = function(){
 self.val = function(){
     return lastN;
 };
+
+
+self.onUpdate = function(){
+   
+}
+
+

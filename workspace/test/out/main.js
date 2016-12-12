@@ -622,7 +622,7 @@ modules['bundle'] =
 	exports.embeddedResources.isEmbedded = false;
 	
 	
-	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
 	
 	exports.embeddedResources.isEmbedded = false;
     
@@ -913,6 +913,14 @@ modules['audioNode'] =
 	        context.setGain(val);
 	    };
 	
+	    this.pause = function() {
+	        context.pause();
+	    };
+	
+	    this.resume = function(){
+	        context.resume();
+	    };
+	
 	    this.isFree = function() {
 	        return context.isFree();
 	    };
@@ -951,6 +959,20 @@ modules['audioNodeSet'] =
 	            nodes[i].stop();
 	        }
 	    };
+	
+	    this.pauseAll = function(){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            nodes[i].pause();
+	        }
+	    };
+	
+	    this.resumeAll = function(){
+	        for (var i = 0;i<numOfNodes;i++) {
+	            nodes[i].resume();
+	        }
+	    };
+	
+	
 	
 	    this.getNodeBySound = function(sound){
 	        for (var i = 0;i<numOfNodes;i++) {
@@ -1008,6 +1030,14 @@ modules['audioPlayer'] =
 	
 	exports.stopAll = function(){
 	    audioNodeSet.stopAll();
+	};
+	
+	exports.pauseAll = function(){
+	    audioNodeSet.pauseAll();
+	};
+	
+	exports.resumeAll = function(){
+	    audioNodeSet.resumeAll();
 	};
 	
 	exports.setGain = function(sound,toVal,time,easeFnName){
@@ -1135,6 +1165,12 @@ modules['fakeAudioContext'] =
 	        setGain: function(val){
 	
 	        },
+	        pause: function(){
+	
+	        },
+	        resume: function(){
+	
+	        },
 	        construct: function(){
 	            console.log('audio not supported');
 	        }
@@ -1190,6 +1226,12 @@ modules['htmlAudioContext'] =
 	        },
 	        setGain: function(val){
 	            this._ctx.volume = val;
+	        },
+	        pause: function(){
+	            this._ctx.pause();
+	        },
+	        resume: function(){
+	            throw "not implemented for now"
 	        },
 	        construct: function(){
 	            this._ctx = getCtx();
@@ -1279,6 +1321,12 @@ modules['webAudioContext'] =
 	        setGain: function(val){
 	            this._gainNode.gain.value = val;
 	
+	        },
+	        pause: function(){
+	            this._ctx.suspend();
+	        },
+	        resume: function(){
+	            this._ctx.resume();
 	        },
 	        construct: function(){
 	            this._ctx = getCtx();
@@ -3326,16 +3374,16 @@ modules['renderer'] =
 	};
 	
 	exports.start = function(){
-	    drawSceneLoop();
+	    if (window.canceled) return;
 	    isRunning = true;
+	    drawSceneLoop();
 	};
 	
 	exports.getCanvas = function(){
 	    return canvas;
 	};
 	
-	exports.cancel = function(){
-	    window.canceled = true;
+	exports.stop = function(){
 	    isRunning = false;
 	};
 	
@@ -3348,12 +3396,11 @@ modules['renderer'] =
 	};
 	
 	var drawSceneLoop = function(){
-	    if (window.canceled) {
-	        return;
-	    }
 	
-	    if (window.canceled) return
+	    if (!isRunning) return;
+	
 	    var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
+	    if (window.canceled) return;
 	
 	    reqAnimFrame(drawSceneLoop);
 	
@@ -3636,13 +3683,13 @@ modules['glContext'] =
 	
 	        gameProps = bundle.gameProps;
 	        gl = getCtx(canvas);
-	        window.gl = gl;
 	        commonShaderPrg = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
 	        ]);
 	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform('u_alpha',1);
+	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 	
 	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
 	        posVertexBuffer.bind([
@@ -3714,13 +3761,12 @@ modules['glContext'] =
 	        // multiply them together
 	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 	    };
-	    
+	
 	    var currTex = null;
 	
-	    it.drawImage = function(
-	        texture,
-	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY) {
+	    var _draw = function(texture,
+	                               srcX, srcY, srcWidth, srcHeight,
+	                               dstX, dstY){
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
@@ -3754,11 +3800,71 @@ modules['glContext'] =
 	            )
 	        );
 	
+	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	    };
+	
+	    it.drawImage = function(
+	        texture,
+	        srcX, srcY, srcWidth, srcHeight,
+	        dstX, dstY) {
+	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
-	        // draw the quad (2 triangles, 6 vertices)
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        //_draw(texture,
+	        //    srcX, srcY, srcWidth, srcHeight,
+	        //    dstX, dstY);
+	
+	        var texSize = texture.getSize();
+	        var repeaterY = dstY;
+	        var repeaterX;
+	        var  repeaterWidth,repeaterHeight;
+	        var tileOffsetX = (window.offsetX)||0;
+	        var tileOffsetY = (window.offsetY)||0;
+	        tileOffsetX-=1;
+	        tileOffsetY-=2;
+	        window.offsetX = tileOffsetX;
+	        window.offsetY = tileOffsetY;
+	        tileOffsetX = tileOffsetX % texSize.width;
+	        if (tileOffsetX<0) tileOffsetX = texSize.width + tileOffsetX;
+	        tileOffsetY = tileOffsetY % texSize.height;
+	        if (tileOffsetX<0) tileOffsetX = texSize.width + tileOffsetX;
+	        if (tileOffsetY<0) tileOffsetY = texSize.height + tileOffsetY;
+	
+	        // draw col;
+	        while (repeaterY<srcHeight) {
+	            repeaterHeight = texSize.height - tileOffsetY;
+	            if (repeaterY + texSize.height >srcHeight) {
+	                repeaterHeight  = srcHeight - srcY - repeaterY;
+	            }
+	            // draw row
+	            repeaterX = dstX;
+	            repeaterWidth = texSize.width;
+	            var w = srcX + repeaterWidth - tileOffsetX;
+	            if (w>srcWidth) w = srcWidth;
+	            _draw(texture,
+	                srcX  + tileOffsetX,srcY + tileOffsetY,
+	                w,srcY + repeaterHeight,
+	                repeaterX, repeaterY
+	            );
+	            repeaterX+=repeaterWidth - tileOffsetX;
+	            while (repeaterX<srcWidth) {
+	                if (repeaterX + texSize.width >srcWidth) {
+	                    repeaterWidth  = srcWidth - srcX - repeaterX;
+	                }
+	                _draw(texture,
+	                    srcX,srcY + tileOffsetY,repeaterWidth,srcY + repeaterHeight,
+	                    repeaterX,repeaterY
+	                );
+	                repeaterX+=texSize.width;
+	            }
+	            // --- draw row
+	            repeaterHeight = texSize.height;
+	            //repeaterY+=repeaterHeight - tileOffsetY;
+	            repeaterY+=texSize.height - tileOffsetY;
+	            tileOffsetY = 0;
+	        }
+	        // ---- draw col
 	    };
 	
 	    it.clear = function() {
@@ -3832,6 +3938,10 @@ modules['glContext'] =
 	        frameBuffer.bind();
 	    };
 	
+	    it.getNativeContext = function(){
+	        return gl;
+	    };
+	
 	    it.flipFrameBuffer = function(){
 	        currTex = null;
 	        this.restore();
@@ -3887,6 +3997,7 @@ modules['glContext'] =
 	
 	        var img = new Image();
 	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var gl = require('renderer').getContext().getNativeContext();
 	        var texture = new Texture(gl, img);
 	
 	        if (opts.type == 'base64') {
@@ -4193,12 +4304,15 @@ modules['texture'] =
 	    var tex;
 	    var size;
 	
+	    this.isPowerOfTwo = false;
+	
 	    this.apply = function(){
 	        size = {width:img.width,height:img.height};
 	        this.bind();
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
 	        // Check if the image is a power of 2 in both dimensions.
-	        if (isPowerOf2(img.width) && isPowerOf2(img.height)) {
+	        if (this.isPowerOfTwo) {
 	            gl.generateMipmap(gl.TEXTURE_2D);
 	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
@@ -5744,7 +5858,7 @@ modules['index'] =
 	                },
 	                "currFrameIndex": 0,
 	                "name": "eye",
-	                "width": 24,
+	                "width": 50,
 	                "height": 24,
 	                "type": "gameObject",
 	                "commonBehaviour": [],
@@ -5808,7 +5922,7 @@ modules['index'] =
 	var renderer = require('renderer');
 	var game = require('game');
 	var keyboard = require('keyboard');
-	
+	var audioPlayer = require('audioPlayer');
 	
 	window.addEventListener('load',function(){
 	    document.body.ontouchstart = function(e){
@@ -5820,6 +5934,16 @@ modules['index'] =
 	    require('mouse');
 	    var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
 	    game.setScene(startScene);
+	});
+	
+	window.addEventListener('blur',function(){
+	    audioPlayer.pauseAll();
+	    renderer.stop();
+	});
+	
+	window.addEventListener('focus',function(){
+	    audioPlayer.resumeAll();
+	    renderer.start();
 	});
     
 }};

@@ -8,6 +8,44 @@ var resourceCache = require('resourceCache');
 var utils = require('utils');
 var game = require('game');
 
+
+var _draw = function(ctx,self,x,y){
+    ctx.drawImage(
+        resourceCache.get(self._spriteSheet.resourcePath),
+        self._sprPosX,
+        self._sprPosY,
+        self.width,
+        self.height,
+        x||0,
+        y||0
+    );
+};
+
+var _drawPattern = function(ctx,self){
+
+    var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
+    var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
+    offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
+    offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
+
+    ctx.lockRect(self.getRect());
+
+    for (
+        var y = -offsetY;
+        y<self.height + self._spriteSheet._frameHeight;
+        y+=self._spriteSheet._frameHeight
+    ) {
+        for (
+            var x = -offsetX;
+            x<self.width + self._spriteSheet._frameWidth;
+            x+=self._spriteSheet._frameWidth
+        ) {
+            _draw(ctx,self,x,y);
+        }
+    }
+    ctx.unlockRect();
+};
+
 var GameObject = BaseGameObject.extend({
     type:'gameObject',
     spriteSheetId:null,
@@ -23,10 +61,12 @@ var GameObject = BaseGameObject.extend({
     _currFrameAnimation:null,
     rigid:true,
     _timeCreated:null,
+    tileOffset: null,
+    tileRepeat:false,
     construct: function(){
         var self = this;
         self._super();
-        self.vel = {x:0,y:0};
+        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
         self._frameAnimations = new collections.List();
         if (!self.spriteSheetId) {
             return;
@@ -76,15 +116,11 @@ var GameObject = BaseGameObject.extend({
         var ctx = renderer.getContext();
         ctx.save();
         self._super();
-        ctx.drawImage(
-            resourceCache.get(self._spriteSheet.resourcePath),
-            self._sprPosX,
-            self._sprPosY,
-            self.width,
-            self.height,
-            0,
-            0
-        );
+
+        self.tileRepeat ?
+            _drawPattern(ctx,self):
+            _draw(ctx,self);
+
         ctx.restore();
     }
 }, {

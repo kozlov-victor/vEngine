@@ -8,12 +8,15 @@ var Texture = function(gl,img){
     var tex;
     var size;
 
+    this.isPowerOfTwo = false;
+
     this.apply = function(){
         size = {width:img.width,height:img.height};
         this.bind();
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
         // Check if the image is a power of 2 in both dimensions.
-        if (isPowerOf2(img.width) && isPowerOf2(img.height)) {
+        if (this.isPowerOfTwo) {
             gl.generateMipmap(gl.TEXTURE_2D);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
