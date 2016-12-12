@@ -40,7 +40,15 @@ var _drawPattern = function(ctx,self){
             x<self.width + self._spriteSheet._frameWidth;
             x+=self._spriteSheet._frameWidth
         ) {
-            _draw(ctx,self,x,y);
+            ctx.drawImage(
+                resourceCache.get(self._spriteSheet.resourcePath),
+                self._sprPosX,
+                self._sprPosY,
+                self._spriteSheet._frameWidth,
+                self._spriteSheet._frameHeight,
+                x,
+                y
+            );
         }
     }
     ctx.unlockRect();

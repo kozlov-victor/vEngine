@@ -2842,13 +2842,14 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
-	    console.log(self._sprPosX,
-	        self._sprPosY,
-	        self.width,
-	        self.height);
 	};
 	
-	var _drawPattern = function(ctx,self,offsetX,offsetY){
+	var _drawPattern = function(ctx,self){
+	
+	    var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
+	    var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
+	    offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
+	    offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
 	
 	    ctx.lockRect(self.getRect());
 	
@@ -2862,7 +2863,15 @@ modules['gameObject'] =
 	            x<self.width + self._spriteSheet._frameWidth;
 	            x+=self._spriteSheet._frameWidth
 	        ) {
-	            _draw(ctx,self,x,y);
+	            ctx.drawImage(
+	                resourceCache.get(self._spriteSheet.resourcePath),
+	                self._sprPosX,
+	                self._sprPosY,
+	                self._spriteSheet._frameWidth,
+	                self._spriteSheet._frameHeight,
+	                x,
+	                y
+	            );
 	        }
 	    }
 	    ctx.unlockRect();
@@ -2939,14 +2948,8 @@ modules['gameObject'] =
 	        ctx.save();
 	        self._super();
 	
-	        var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
-	        var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
-	        offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
-	        offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
-	
-	        var tex = resourceCache.get(self._spriteSheet.resourcePath);
 	        self.tileRepeat ?
-	            _drawPattern(ctx,self,offsetX,offsetY):
+	            _drawPattern(ctx,self):
 	            _draw(ctx,self);
 	
 	        ctx.restore();
