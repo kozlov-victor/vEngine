@@ -372,8 +372,8 @@
             {
                 "spriteSheetId": "4021_7193_32",
                 "pos": {
-                    "x": 116,
-                    "y": 96
+                    "x": 115,
+                    "y": 93
                 },
                 "scale": {
                     "x": 1,
@@ -386,7 +386,7 @@
                 "currFrameIndex": 0,
                 "name": "slotsColumn",
                 "width": 64,
-                "height": 52,
+                "height": 51,
                 "type": "gameObject",
                 "commonBehaviour": [],
                 "frameAnimationIds": [],
@@ -395,7 +395,11 @@
                 "angle": 0,
                 "alpha": 1,
                 "protoId": "2146_8639_33",
-                "id": "6961_5750_155"
+                "id": "6961_5750_155",
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                }
             },
             {
                 "spriteSheetId": "9537_4496_35",

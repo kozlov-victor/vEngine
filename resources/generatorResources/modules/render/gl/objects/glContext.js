@@ -62,7 +62,7 @@ var GlContext = Class.extend(function(it){
             1, 1
         ],2,'a_texcoord');
 
-        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
+        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
@@ -171,7 +171,12 @@ var GlContext = Class.extend(function(it){
 
     it.lockRect = function(rect) {
         gl.enable(gl.SCISSOR_TEST);
-        gl.scissor(rect.x,gameProps.height - rect.y - rect.height,rect.width,rect.height);
+        gl.scissor(
+            rect.x,
+            gameProps.height - rect.y - rect.height,
+            rect.width,
+            rect.height
+        );
     };
 
     it.unlockRect = function(){
@@ -261,6 +266,8 @@ var GlContext = Class.extend(function(it){
         this.scale(1,-1);
         frameBuffer.unbind();
         this.clear();
+        gl.clearColor(1,1,1,1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
         gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
         gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 

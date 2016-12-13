@@ -3817,7 +3817,7 @@ modules['scaleManager'] =
 	                scaledHeight = gameProps.height * scaleFactor;
 	                gameProps.globalScale.x = scaledWidth / gameProps.width;
 	                gameProps.globalScale.y = scaledHeight / gameProps.height;
-	                gameProps.scaledWidth = scaledWidth; // one in global scale - other in gameProps
+	                gameProps.scaledWidth = scaledWidth;
 	                gameProps.scaledHeight = scaledHeight;
 	                gameProps.globalScale.left = (w-scaledWidth) / 2 / scaleFactor;
 	                gameProps.globalScale.top = (h-scaledHeight) / 2 / scaleFactor;
@@ -4017,7 +4017,7 @@ modules['glContext'] =
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -4126,7 +4126,14 @@ modules['glContext'] =
 	
 	    it.lockRect = function(rect) {
 	        gl.enable(gl.SCISSOR_TEST);
-	        gl.scissor(rect.x,gameProps.height - rect.y - rect.height,rect.width,rect.height);
+	        //gl.clearColor(1,0,0,1);
+	        //gl.clear(gl.COLOR_BUFFER_BIT);
+	        gl.scissor(
+	            rect.x,
+	            gameProps.height - rect.y - rect.height,
+	            rect.width,
+	            rect.height
+	        );
 	    };
 	
 	    it.unlockRect = function(){
@@ -4216,6 +4223,8 @@ modules['glContext'] =
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
+	        gl.clearColor(1,1,1,1);
+	        gl.clear(gl.COLOR_BUFFER_BIT);
 	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
@@ -7732,8 +7741,8 @@ modules['index'] =
 	            {
 	                "spriteSheetId": "4021_7193_32",
 	                "pos": {
-	                    "x": 116,
-	                    "y": 96
+	                    "x": 115,
+	                    "y": 93
 	                },
 	                "scale": {
 	                    "x": 1,
@@ -7746,7 +7755,7 @@ modules['index'] =
 	                "currFrameIndex": 0,
 	                "name": "slotsColumn",
 	                "width": 64,
-	                "height": 52,
+	                "height": 51,
 	                "type": "gameObject",
 	                "commonBehaviour": [],
 	                "frameAnimationIds": [],
@@ -7755,7 +7764,11 @@ modules['index'] =
 	                "angle": 0,
 	                "alpha": 1,
 	                "protoId": "2146_8639_33",
-	                "id": "6961_5750_155"
+	                "id": "6961_5750_155",
+	                "tileOffset": {
+	                    "x": 0,
+	                    "y": 0
+	                }
 	            },
 	            {
 	                "spriteSheetId": "9537_4496_35",
