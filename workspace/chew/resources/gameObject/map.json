@@ -24,7 +24,7 @@
         "type": "gameObject",
         "commonBehaviour": [],
         "frameAnimationIds": [],
-        "rigid": true,
+        "rigid": 0,
         "groupName": "",
         "angle": 0,
         "alpha": 1,
@@ -55,10 +55,41 @@
         "type": "gameObject",
         "commonBehaviour": [],
         "frameAnimationIds": [],
-        "rigid": true,
+        "rigid": 0,
         "groupName": "",
         "angle": 0,
         "alpha": 1,
         "id": "7472_5113_146"
+    },
+    {
+        "spriteSheetId": "2624_1805_160",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "heart",
+        "width": 263,
+        "height": 263,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "rigid": 0,
+        "groupName": "",
+        "angle": 0,
+        "alpha": 1,
+        "id": "7872_8416_161"
     }
 ]

@@ -1,7 +1,12 @@
 
 var GameObject = require('gameObject');
+var ParticleSystem = require('particleSystem');
+
 var bg = GameObject.find('bg');
 bg.tileRepeat = true;
+var ps = ParticleSystem.find('ps');
+
+var emit = false;
 
 var TweenMovie = require('tweenMovie');
 var Tween = require('tween');
@@ -23,8 +28,12 @@ exports.onShow = function(){
         .tween(200,chewBacca.scale,{to:{x:2,y:2}},2000)
         .play();
     }, 12000);
+    setTimeout(function() {
+        emit = true;
+    }, 14000);
 };
 
 exports.onUpdate = function(time) {
     bg.tileOffset.x++;
+    if (emit && Math.random()<0.1) ps.emit(Math.random()*200,Math.random()*200);
 };

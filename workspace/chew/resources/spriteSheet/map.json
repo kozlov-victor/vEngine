@@ -18,5 +18,15 @@
         "numOfFramesH": 1,
         "numOfFramesV": 1,
         "id": "2050_3230_145"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/heart.png",
+        "name": "heart",
+        "width": 263,
+        "height": 263,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "2624_1805_160"
     }
 ]
