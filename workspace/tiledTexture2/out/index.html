@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name ="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title></title>
+</head>
+
+<body>
+<div id="loading">
+    <div style="
+    display: table;
+    height: 100%;
+    width: 100%;
+">
+        <div style="
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+">loading...</div>
+    </div>
+</div>
+<style type="text/css" rel="stylesheet">
+    html, body, div, canvas {
+        border:none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    canvas {
+        position: relative;
+        display: block;
+        z-index: 20;
+    }
+    #loading {
+        position: absolute;
+        z-index: 10;
+        left: 0;
+        right: 0;
+        top:0;
+        bottom: 0;
+        text-align: center;
+    }
+</style>
+<script src="debug.js"></script>
+<script src="main.js"></script>
+</body>
+
+</html>

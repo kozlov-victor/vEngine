@@ -1,0 +1,22 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/sprite_explosion_fx_0001.png",
+        "name": "sprite_explosion_fx_0001",
+        "width": 483,
+        "height": 339,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "9594_1588_130"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/chewBacca.png",
+        "name": "chewBacca",
+        "width": 300,
+        "height": 250,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "2050_3230_145"
+    }
+]

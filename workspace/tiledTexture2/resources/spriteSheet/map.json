@@ -1,0 +1,22 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/cat.png",
+        "name": "cat",
+        "width": 256,
+        "height": 384,
+        "numOfFramesH": 4,
+        "numOfFramesV": 4,
+        "type": "spriteSheet",
+        "id": "1722_4777_32"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/stones.jpg",
+        "name": "stones",
+        "width": 278,
+        "height": 181,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "1077_0578_99"
+    }
+]

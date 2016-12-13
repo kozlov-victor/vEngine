@@ -1,0 +1,73 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "1722_4777_32",
+                "pos": {
+                    "x": 63,
+                    "y": 31
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "cat",
+                "width": 64,
+                "height": 96,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "protoId": "3343_4043_33",
+                "id": "3081_7028_45",
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "spriteSheetId": "1077_0578_99",
+                "pos": {
+                    "x": 63,
+                    "y": 130
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "stones",
+                "width": 332,
+                "height": 181,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "protoId": "4741_9442_100",
+                "id": "2823_1172_101",
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                }
+            }
+        ],
+        "id": "2877_1306_39"
+    }
+]

@@ -1,0 +1,99 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "9594_1588_130",
+                "pos": {
+                    "x": -1,
+                    "y": 4
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "bg",
+                "width": 483,
+                "height": 339,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "protoId": "1354_1172_131",
+                "id": "9140_7285_143"
+            },
+            {
+                "pos": {
+                    "x": 148,
+                    "y": 160
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "height": 29,
+                "text": "o goat!!!!!!",
+                "width": 180,
+                "type": "userInterface",
+                "subType": "textField",
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "name": "tf",
+                "protoId": null,
+                "id": "3074_0666_144",
+                "fontId": "6991_3497_4"
+            },
+            {
+                "spriteSheetId": "2050_3230_145",
+                "pos": {
+                    "x": 80,
+                    "y": 43
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "chewBacca",
+                "width": 300,
+                "height": 250,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 1,
+                "protoId": "7472_5113_146",
+                "id": "7131_6392_147"
+            }
+        ],
+        "id": "4600_4404_137"
+    }
+]
