@@ -20,6 +20,7 @@ self.spin = function(callBack,hackedVal){
     var time = 1000+~~(Math.random()*5000);
     new TweenChain().
             tween(
+                0,
                 self.tileOffset,
                 {
                     from:    {y:lastN*51.2},

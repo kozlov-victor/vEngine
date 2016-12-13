@@ -188,6 +188,7 @@ modules['behaviour'] =
 	    var time = 1000+~~(Math.random()*5000);
 	    new TweenChain().
 	            tween(
+	                0,
 	                self.tileOffset,
 	                {
 	                    from:    {y:lastN*51.2},
@@ -4126,8 +4127,6 @@ modules['glContext'] =
 	
 	    it.lockRect = function(rect) {
 	        gl.enable(gl.SCISSOR_TEST);
-	        //gl.clearColor(1,0,0,1);
-	        //gl.clear(gl.COLOR_BUFFER_BIT);
 	        gl.scissor(
 	            rect.x,
 	            gameProps.height - rect.y - rect.height,
