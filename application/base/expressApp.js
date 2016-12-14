@@ -3,14 +3,22 @@ var app = express();
 var fs = require.main.require('./application/base/fs');
 var path = require('path');
 var appDir = path.dirname(require.main.filename);
+var exphbs  = require('express-handlebars');
 
 
 var session = require('express-session');
 var bodyParser = require('body-parser');
 
 app.set('views', './application/mvc/views');
-app.engine('ejs', require('ejs').renderFile);
-app.set('view engine', 'ejs');
+
+//app.engine('ejs', require('ejs').renderFile);
+//app.set('view engine', 'ejs');
+
+app.engine('html', exphbs({
+    // defaultLayout: 'main'
+}));
+app.set('view engine', 'html');
+
 app.use(session({
     key: 'session_cookie_name',
     secret: 'session_cookie_secret' ,
