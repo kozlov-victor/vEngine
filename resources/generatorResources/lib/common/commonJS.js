@@ -18,19 +18,7 @@ var modules = {}, require = function(name){
     }
 };
 
-//<code><%if (opts.debug){%>
-//<code>window.require = require;
-//<code><%}%>
 
-//modules['1'] = {code:function(){
-//    var m2 = require('2');
-//    console.log(1);
-//}};
-//
-//
-//modules['2'] = {code:function(){
-//    var m1 = require('1');
-//    console.log(2);
-//}};
-//
-//require('1');
+//<code>{{#if opts.debug }}
+//<code>window.require = require;
+//<code>{{/if}}

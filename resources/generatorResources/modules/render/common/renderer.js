@@ -47,7 +47,9 @@ exports.init = function(){
 };
 
 exports.start = function(){
-    //<code><%if (opts.debug){%>if (window.canceled) return;<%}%>
+    //<code>{{#if opts.debug}}
+    if (window.canceled) return;
+    //<code>{{/if}}
     isRunning = true;
     drawSceneLoop();
 };
@@ -72,8 +74,14 @@ var drawSceneLoop = function(){
 
     if (!isRunning) return;
 
-    //<code><%if (opts.debug){%>var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;<%}%>
-    //<code><%if (opts.debug){%>if (window.canceled) return;<%}%>
+    //<code>{{#if opts.debug}}
+    var lastErr = ctx.getError();
+    if (lastErr) throw "GL error: " + lastErr;
+    //<code>{{/if}}
+
+    //<code>{{#if opts.debug}}
+    if (window.canceled) return;
+    //{{/if}}
 
     reqAnimFrame(drawSceneLoop);
 
@@ -94,7 +102,9 @@ var drawSceneLoop = function(){
 exports.printText = function(x,y,text,font){
     if (!text) return;
     font = font || bundle.fontList.get(0);
-    //<code><%if (opts.debug){%>if (!font) throw 'at least one font must be specified. Create new one please';<%}%>
+    //<code>{{#if opts.debug}}
+    if (!font) throw 'at least one font must be specified. Create new one';
+    //<code>{{/if}}
     var posX = x;
     var oldPosX = x;
     var posY = y;

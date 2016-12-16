@@ -25,11 +25,19 @@ module.exports.readFileSync = function (path) {
 
 module.exports.createFileSync = function(path,content){
     if (fs.existsSync(path)) return;
-    fs.writeFileSync(path, content||'');
+    module.exports.writeFileSync(
+        path,
+        content||''
+    );
 };
 
 module.exports.writeFileSync = function (path, content) {
-    fs.writeFileSync(path, content);
+    fs.writeFileSync(
+        path,
+        content,{
+            encoding: "utf-8"
+        }
+    );
 };
 
 module.exports.copyFolderSync = function cpf(src, dest) {

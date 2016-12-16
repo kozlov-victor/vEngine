@@ -87,10 +87,6 @@ exports.applyBehaviour = function(model){
 };
 
 //<code>exports.embeddedResources = {};
-//<code>exports.embeddedResources.data = <%- JSON.stringify(embeddedResources)%>;
-//<code>exports.embeddedResources.isEmbedded = <%- Object.keys(embeddedResources).length>0 %>;
-
-
-//<code>exports.shaders = <%- JSON.stringify(shaders)%>;
-
-//<code>exports.embeddedResources.isEmbedded = <%- Object.keys(embeddedResources).length>0 %>;
+//<code>exports.embeddedResources.data = {{{json embeddedResources}}};
+//<code>exports.embeddedResources.isEmbedded = {{{isEmptyObject embeddedResources}}};
+//<code>exports.shaders = {{{json shaders}}};

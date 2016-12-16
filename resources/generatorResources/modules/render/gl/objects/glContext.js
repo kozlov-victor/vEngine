@@ -314,7 +314,9 @@ var GlContext = Class.extend(function(it){
         }
 
         var img = new Image();
-        //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
+        //<code>{{#if opts.debug}}
+        img.onerror=function(e){throw 'can not load image with url '+ url};
+        //<code>{{/if}}
         var gl = require('renderer').getContext().getNativeContext();
         var texture = new Texture(gl, img);
 

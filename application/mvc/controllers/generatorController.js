@@ -3,6 +3,7 @@ var resourcesController = require.main.require('./application/mvc/controllers/re
 var nodeHint = require('node-hint');
 var UglifyJS = require("uglify-js");
 var ejs = require('ejs');
+var hbs = require('handlebars');
 
 var Source = function(){
     var res = [];
@@ -11,7 +12,9 @@ var Source = function(){
         res.push(s);
     };
     var processTemplate = function(path,params){
-       return ejs.render(fs.readFileSync(path).split('//<code>').join(''),params);
+        //return ejs.render(fs.readFileSync(path).split('//<code>').join(''),params);
+        var code = fs.readFileSync(path).split('//<code>').join('');
+        return hbs.compile(code)(params);
     };
     var extractModuleName = function(path){
         return path.replace('.js','').split('/').pop();
@@ -30,22 +33,13 @@ var Source = function(){
             }).join('\n')
         );
     };
-    this.addFile = function(path){
-        var content = fs.readFileSync(path);
-        res.push(content);
-    };
-    this.addFiles = function(arr){
-        arr.forEach(function(f){
-            self.addFile(f);
-        })
-    };
     this.addTemplate = function(path,params) {
         self.add(processTemplate(path,params));
     };
-    this.addTemplates = function(pathList,params) {
+    this.addTemplates = function(path,params) {
         var self = this;
-        pathList.forEach(function(path){
-            self.addTemplate(path,params);
+        fs.readDirSync(path).forEach(function(file){
+            self.addTemplate(file.fullName,params);
         });
     };
     this.addCommonJsModule = function(path,params){
@@ -59,13 +53,13 @@ var Source = function(){
             self.addCommonJsModule(file.fullName,params);
         });
     };
-    this.addCommonTemplate = function(path,params){
+    this.addFile = function(path,params){
         self.addFile(path,params);
     };
-    this.addCommonTemplates = function(path){
+    this.addFiles = function(path){
         var self = this;
         fs.readDirSync(path).forEach(function(file){
-            self.addCommonTemplate(file.fullName,{});
+            self.addTemplate(file.fullName,{});
         });
     };
     this.get = function(){
@@ -80,9 +74,9 @@ var createResourcesParams = function(opts){
     templateObj.commonResources = {};
     templateObj.specialResources = {};
     resourcesController.RESOURCE_NAMES.forEach(function(r){
-        templateObj.commonResources[r] = fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json')
+        templateObj.commonResources[r] = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json'));
     });
-    templateObj.commonResources.gameProps = fs.readFileSync('workspace/'+opts.projectName+'/gameProps.json');
+    templateObj.commonResources.gameProps = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/gameProps.json'));
 
     templateObj.specialResources.gameObjectScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/gameObject','utf8');
     templateObj.specialResources.sceneScripts = fs.readDirSync('workspace/'+opts.projectName+'/resources/script/scene','utf8');
@@ -188,6 +182,8 @@ var processGameResourcesFiles = function(generatedCode,opts){
 
     fs.writeFileSync('workspace/'+opts.projectName+'/out/index.html',indexHtml);
 
+    return {};
+
 };
 
 
@@ -211,9 +207,9 @@ var prepareGeneratorParams = function(opts){
         .forEach(function (dir) {
             shaders[dir] = {};
             fs.readDirSync('resources/generatorResources/shaders/'+dir,'utf-8').
-            forEach(function(file){
-                shaders[dir][file.name] = file.content;
-            });
+                forEach(function(file){
+                    shaders[dir][file.name] = file.content;
+                });
         });
     return  {
         resourceNames:resourcesController.RESOURCE_NAMES,
@@ -230,8 +226,8 @@ module.exports.generateEngine = function(opts){
     var generatorParams = prepareGeneratorParams(opts);
 
     var sourceMain = new Source();
-    sourceMain.addCommonTemplates('resources/generatorResources/lib/common');
-    sourceMain.addCommonJsModules('resources/generatorResources/lib/class');
+    sourceMain.addTemplates('resources/generatorResources/lib/common',generatorParams);
+    sourceMain.addCommonJsModules('resources/generatorResources/lib/class',generatorParams);
     sourceMain.addCommonJsModules(
         'resources/generatorResources/modules',
         generatorParams
