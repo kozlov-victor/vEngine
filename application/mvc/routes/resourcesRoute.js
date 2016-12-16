@@ -134,7 +134,7 @@ module.exports.init = function(app) {
     app.get('/generate',function(req,res){
         var queryData = url.parse(req.url, true).query;
         generatorController.generate(queryData,function(result){
-            res.send(result)
+            res.send({})
         });
     });
 

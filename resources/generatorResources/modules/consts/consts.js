@@ -1,6 +1,6 @@
 
 module.exports.noop = function(){};
-//<code>module.exports.RESOURCE_NAMES = <%-JSON.stringify(resourceNames)%>;
+//<code>module.exports.RESOURCE_NAMES = {{{json resourceNames}}};
 
 exports.SCALE_STRATEGY = {
     NO_SCALE:                       0,

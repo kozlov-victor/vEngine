@@ -18,22 +18,7 @@ var modules = {}, require = function(name){
     }
 };
 
-//<code><%if (opts.debug){%>
-//<code>window.require = require;
-//<code><%}%>
 
-//modules['1'] = {code:function(){
-//    var m2 = require('2');
-//    console.log(1);
-//}};
-//
-//
-//modules['2'] = {code:function(){
-//    var m1 = require('1');
-//    console.log(2);
-//}};
-//
-//require('1');
 
 Array.prototype.remove = function(el){
     this.splice(this.indexOf(el),1);
@@ -45,7 +30,7 @@ modules['class'] =
     {code: function(module){
     var exports = module.exports;
     	var Class = function() {};
-	
+	// проверка кирилицы
 	Class.extend = function(props, staticProps) {
 	
 	    var mixins = [];
@@ -128,14 +113,12 @@ modules['class'] =
 	
 	
 	
-    
 }};
 modules['behaviour'] =
     {code: function(module){
     var exports = module.exports;
     	
 	var commonBehaviour = {};
-	
 	
 	commonBehaviour['draggable'] = function(exports,parameters){
 	var module = exports,self = exports;
@@ -178,14 +161,11 @@ modules['behaviour'] =
 	});
 	}
 	
-	
 	exports.commonBehaviour = commonBehaviour;
 	
 	var scripts = {};
 	scripts.gameObject = {};
 	scripts.scene = {};
-	
-	
 	
 	scripts.gameObject['eye.js'] = function(exports){
 	    var module = exports, self = exports;
@@ -198,9 +178,6 @@ modules['behaviour'] =
 	    self.angle+=0.1;
 	}
 	};
-	;
-	
-	
 	
 	scripts.scene['mainScene.js'] = function(exports){
 	    var module = exports, self = exports;
@@ -215,12 +192,10 @@ modules['behaviour'] =
 	    
 	}
 	};
-	;
 	
 	exports.scripts = scripts;
 	
 	
-    
 }};
 modules['collider'] =
     {code: function(module){
@@ -274,7 +249,6 @@ modules['collider'] =
 	    }
 	    return hasCollision;
 	};
-    
 }};
 modules['eventEmitter'] =
     {code: function(module){
@@ -312,7 +286,6 @@ modules['eventEmitter'] =
 	};
 	
 	module.exports = EventEmitter;
-    
 }};
 modules['consts'] =
     {code: function(module){
@@ -328,7 +301,6 @@ modules['consts'] =
 	    CSS_STRETCH:                    3,
 	    HARDWARE_STRETCH:               4
 	};
-    
 }};
 modules['keyboard'] =
     {code: function(module){
@@ -369,7 +341,7 @@ modules['keyboard'] =
 	};
 	
 	exports.update = function(){
-	    if (window.canceled) return
+	
 	    [
 	        exports.KEY_UP,
 	        exports.KEY_DOWN,
@@ -404,7 +376,6 @@ modules['keyboard'] =
 	            break;
 	    }
 	});
-    
 }};
 modules['mouse'] =
     {code: function(module){
@@ -494,13 +465,13 @@ modules['mouse'] =
 	};
 	
 	var resolveClick = function(e){
-	    if (window.canceled) return
+	
 	    var point = triggerEvent(e,'click');
 	    triggerEvent(e,'mouseDown');
 	};
 	
 	var resolveMouseMove = function(e){
-	    if (window.canceled) return
+	
 	    var point = triggerEvent(e,'mouseMove');
 	    if (!point) return;
 	    var lastMouseDownObject = objectsCaptured[point.id];
@@ -516,7 +487,7 @@ modules['mouse'] =
 	};
 	
 	var resolveMouseUp = function(e){
-	    if (window.canceled) return
+	    
 	    var point = triggerEvent(e,'mouseUp');
 	    if (!point) return;
 	    var lastMouseDownObject = objectsCaptured[point.id];
@@ -524,7 +495,6 @@ modules['mouse'] =
 	    lastMouseDownObject.trigger('mouseUp');
 	    delete objectsCaptured[point.id];
 	};
-    
 }};
 modules['bundle'] =
     {code: function(module){
@@ -620,12 +590,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	
-	
 	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
-	
-	exports.embeddedResources.isEmbedded = false;
-    
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -657,7 +622,6 @@ modules['resourceCache'] =
 	
 	
 	
-    
 }};
 modules['resourceLoader'] =
     {code: function(module){
@@ -733,7 +697,6 @@ modules['resourceLoader'] =
 	
 	
 	module.exports = ResourceLoader;
-    
 }};
 modules['device'] =
     {code: function(module){
@@ -751,7 +714,6 @@ modules['device'] =
 	        console.log(key + ':' + exports[key]);
 	    }
 	};
-    
 }};
 modules['game'] =
     {code: function(module){
@@ -883,7 +845,6 @@ modules['game'] =
 	        p.update(currTime,deltaTime);
 	    });
 	};
-    
 }};
 modules['audioNode'] =
     {code: function(module){
@@ -933,7 +894,6 @@ modules['audioNode'] =
 	
 	module.exports = AudioNode;
 	
-    
 }};
 modules['audioNodeSet'] =
     {code: function(module){
@@ -984,7 +944,6 @@ modules['audioNodeSet'] =
 	};
 	
 	module.exports = AudioNodeSet;
-    
 }};
 modules['audioPlayer'] =
     {code: function(module){
@@ -1054,95 +1013,6 @@ modules['audioPlayer'] =
 	        node.setGain(sound._gain);
 	    }
 	};
-    
-}};
-modules['__'] =
-    {code: function(module){
-    var exports = module.exports;
-    	//
-	//var utils = require('utils');
-	//var cache = require('resourceCache');
-	//var Class = require('class');
-	//
-	//var getCtx = (function(){
-	//    var ctx = window.AudioContext || window.webkitAudioContext;
-	//    var res = null;
-	//    return function(){
-	//        if (ctx && !res) res = new ctx();
-	//        return res;
-	//    }
-	//})();
-	//
-	//var decode = function(buffer,callback){
-	//    getCtx().decodeAudioData(
-	//        buffer,
-	//        function(decoded) {
-	//            callback(decoded);
-	//        },
-	//        function(err){
-	//            window.showError(err)
-	//        }
-	//    );
-	//};
-	//
-	//exports.WebAudioContext = Class.extend(
-	//    function(self){
-	//        self.type = 'webAudioContext';
-	//        var _ctx = null;
-	//        var _currSource = null;
-	//        var _gainNode = null;
-	//        var _free = true;
-	//        self.isFree = function(){
-	//            return _free;
-	//        };
-	//        self.play = function(buffer,loop){
-	//            _free = false;
-	//            var currSource = _ctx.createBufferSource();
-	//            currSource.buffer = buffer;
-	//            currSource.loop = loop;
-	//            currSource.connect(_gainNode);
-	//            currSource.start(0);
-	//            currSource.onended = function(){
-	//                self.stop();
-	//            };
-	//            _currSource = currSource;
-	//        };
-	//        self.stop = function() {
-	//            if (_currSource)  {
-	//                _currSource.stop();
-	//                _currSource.disconnect(_gainNode);
-	//            }
-	//            this._currSource = null;
-	//            this._free = true;
-	//        };
-	//        self.setGain = function(val){
-	//            _gainNode.gain.value = val;
-	//
-	//        };
-	//        self.construct = function(){
-	//            _ctx = getCtx();
-	//            _gainNode = _ctx.createGain();
-	//            _gainNode.connect(_ctx.destination);
-	//        }
-	//    },
-	//    {
-	//        isAcceptable: function(){
-	//            return !!(window && getCtx());
-	//        },
-	//        load: function(url,opts,progress,callBack){
-	//            if (opts.type=='base64') {
-	//                var buffer = require('base64').toByteArray(url).buffer;
-	//                decode(buffer,callBack);
-	//            } else {
-	//                utils.loadBinary(url,progress,function(buffer){
-	//                    decode(buffer,callBack);
-	//                });
-	//            }
-	//
-	//        }
-	//    }
-	//);
-    
 }};
 modules['fakeAudioContext'] =
     {code: function(module){
@@ -1190,7 +1060,6 @@ modules['fakeAudioContext'] =
 	
 	
 	module.exports = FakeAudioContext;
-    
 }};
 modules['htmlAudioContext'] =
     {code: function(module){
@@ -1255,7 +1124,6 @@ modules['htmlAudioContext'] =
 	);
 	
 	module.exports = HtmlAudioContext;
-    
 }};
 modules['webAudioContext'] =
     {code: function(module){
@@ -1266,7 +1134,7 @@ modules['webAudioContext'] =
 	var Class = require('class');
 	
 	var getCtx = (function(){
-	    var ctx = window.AudioContext || window.webkitAudioContext;
+	    var ctx = window.AudioContext;
 	    var res = null;
 	    return function(){
 	        if (ctx && !res) res = new ctx();
@@ -1281,7 +1149,7 @@ modules['webAudioContext'] =
 	            callback(decoded);
 	        },
 	        function(err){
-	            window.showError(err)
+	
 	        }
 	    );
 	};
@@ -1353,7 +1221,6 @@ modules['webAudioContext'] =
 	);
 	
 	module.exports = WebAudioContext;
-    
 }};
 modules['base64'] =
     {code: function(module){
@@ -1474,7 +1341,6 @@ modules['base64'] =
 	
 	    return parts.join('');
 	}
-    
 }};
 modules['collections'] =
     {code: function(module){
@@ -1637,7 +1503,6 @@ modules['collections'] =
 	        return res;
 	    }
 	};
-    
 }};
 modules['mat4'] =
     {code: function(module){
@@ -1765,7 +1630,6 @@ modules['mat4'] =
 	        a30 * b02 + a31 * b12 + a32 * b22 + a33 * b32,
 	        a30 * b03 + a31 * b13 + a32 * b23 + a33 * b33];
 	};
-    
 }};
 modules['mathEx'] =
     {code: function(module){
@@ -2038,7 +1902,6 @@ modules['mathEx'] =
 	};
 	
 	exports.ease = ease;
-    
 }};
 modules['queue'] =
     {code: function(module){
@@ -2089,7 +1952,6 @@ modules['queue'] =
 	};
 	
 	module.exports = Queue;
-    
 }};
 modules['utils'] =
     {code: function(module){
@@ -2136,10 +1998,10 @@ modules['utils'] =
 	    request.onprogress = function(e){
 	        progress(url,e.loaded/ e.total);
 	    };
-	    request.onerror=function(e){throw 'can not load sound with url '+url};
+	
+	
 	    request.send();
 	};
-    
 }};
 modules['vec2'] =
     {code: function(module){
@@ -2233,7 +2095,6 @@ modules['vec2'] =
 	
 	
 	module.exports = Vec2;
-    
 }};
 modules['baseGameObject'] =
     {code: function(module){
@@ -2285,6 +2146,7 @@ modules['baseGameObject'] =
 	    },
 	    construct:function(){
 	        if (!this.pos) this.pos = {x:0,y:0};
+	        if (!this.vel) this.vel = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
 	        this._moveable = new Moveable();
 	        this._moveable._gameObject = this;
@@ -2292,7 +2154,6 @@ modules['baseGameObject'] =
 	});
 	
 	module.exports = BaseGameObject;
-    
 }};
 modules['baseModel'] =
     {code: function(module){
@@ -2383,7 +2244,6 @@ modules['baseModel'] =
 	});
 	
 	module.exports = BaseModel;
-    
 }};
 modules['moveable'] =
     {code: function(module){
@@ -2405,7 +2265,6 @@ modules['moveable'] =
 	});
 	
 	module.exports = Moveable;
-    
 }};
 modules['renderable'] =
     {code: function(module){
@@ -2461,7 +2320,6 @@ modules['renderable'] =
 	});
 	
 	module.exports = Renderable;
-    
 }};
 modules['resource'] =
     {code: function(module){
@@ -2474,7 +2332,6 @@ modules['resource'] =
 	});
 	
 	module.exports = Resource;
-    
 }};
 modules['tweenable'] =
     {code: function(module){
@@ -2497,7 +2354,6 @@ modules['tweenable'] =
 	});
 	
 	module.exports = Tweenable;
-    
 }};
 modules['commonBehaviour'] =
     {code: function(module){
@@ -2516,7 +2372,6 @@ modules['commonBehaviour'] =
 	});
 	
 	module.exports = CommonBehaviour;
-    
 }};
 modules['frameAnimation'] =
     {code: function(module){
@@ -2554,7 +2409,6 @@ modules['frameAnimation'] =
 	});
 	
 	module.exports = FrameAnimation;
-    
 }};
 modules['gameObject'] =
     {code: function(module){
@@ -2568,6 +2422,52 @@ modules['gameObject'] =
 	var resourceCache = require('resourceCache');
 	var utils = require('utils');
 	var game = require('game');
+	
+	
+	var _draw = function(ctx,self,x,y){
+	    ctx.drawImage(
+	        resourceCache.get(self._spriteSheet.resourcePath),
+	        self._sprPosX,
+	        self._sprPosY,
+	        self.width,
+	        self.height,
+	        x||0,
+	        y||0
+	    );
+	};
+	
+	var _drawPattern = function(ctx,self){
+	
+	    var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
+	    var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
+	    offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
+	    offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
+	
+	    ctx.lockRect(self.getRect());
+	
+	    for (
+	        var y = -offsetY;
+	        y<self.height + self._spriteSheet._frameHeight;
+	        y+=self._spriteSheet._frameHeight
+	    ) {
+	        for (
+	            var x = -offsetX;
+	            x<self.width + self._spriteSheet._frameWidth;
+	            x+=self._spriteSheet._frameWidth
+	        ) {
+	            ctx.drawImage(
+	                resourceCache.get(self._spriteSheet.resourcePath),
+	                self._sprPosX,
+	                self._sprPosY,
+	                self._spriteSheet._frameWidth,
+	                self._spriteSheet._frameHeight,
+	                x,
+	                y
+	            );
+	        }
+	    }
+	    ctx.unlockRect();
+	};
 	
 	var GameObject = BaseGameObject.extend({
 	    type:'gameObject',
@@ -2584,16 +2484,17 @@ modules['gameObject'] =
 	    _currFrameAnimation:null,
 	    rigid:true,
 	    _timeCreated:null,
+	    tileOffset: null,
+	    tileRepeat:false,
 	    construct: function(){
 	        var self = this;
 	        self._super();
-	        self.vel = {x:0,y:0};
+	        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
 	        self._frameAnimations = new collections.List();
 	        if (!self.spriteSheetId) {
 	            return;
 	        }
 	        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
-	        if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name
 	        self.setFrameIndex(self.currFrameIndex);
 	        self._frameAnimations.clear();
 	        self.frameAnimationIds.forEach(function(id){
@@ -2637,15 +2538,11 @@ modules['gameObject'] =
 	        var ctx = renderer.getContext();
 	        ctx.save();
 	        self._super();
-	        ctx.drawImage(
-	            resourceCache.get(self._spriteSheet.resourcePath),
-	            self._sprPosX,
-	            self._sprPosY,
-	            self.width,
-	            self.height,
-	            0,
-	            0
-	        );
+	
+	        self.tileRepeat ?
+	            _drawPattern(ctx,self):
+	            _draw(ctx,self);
+	
 	        ctx.restore();
 	    }
 	}, {
@@ -2658,7 +2555,6 @@ modules['gameObject'] =
 	});
 	
 	module.exports = GameObject;
-    
 }};
 modules['layer'] =
     {code: function(module){
@@ -2712,7 +2608,6 @@ modules['layer'] =
 	});
 	
 	module.exports = Layer;
-    
 }};
 modules['particleSystem'] =
     {code: function(module){
@@ -2784,7 +2679,6 @@ modules['particleSystem'] =
 	});
 	
 	module.exports = ParticleSystem;
-    
 }};
 modules['scene'] =
     {code: function(module){
@@ -2930,7 +2824,6 @@ modules['scene'] =
 	});
 	
 	module.exports = Scene;
-    
 }};
 modules['sound'] =
     {code: function(module){
@@ -2962,7 +2855,6 @@ modules['sound'] =
 	});
 	
 	module.exports = Sound;
-    
 }};
 modules['spriteSheet'] =
     {code: function(module){
@@ -2998,7 +2890,6 @@ modules['spriteSheet'] =
 	});
 	
 	module.exports = SpriteSheet;
-    
 }};
 modules['font'] =
     {code: function(module){
@@ -3015,7 +2906,6 @@ modules['font'] =
 	});
 	
 	module.exports = Font;
-    
 }};
 modules['textField'] =
     {code: function(module){
@@ -3107,7 +2997,6 @@ modules['textField'] =
 	});
 	
 	module.exports = TextField;
-    
 }};
 modules['canvasContext'] =
     {code: function(module){
@@ -3237,7 +3126,6 @@ modules['canvasContext'] =
 	        }
 	
 	        var img = new Image();
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
 	        var texture = {};
 	
 	        if (opts.type == 'base64') {
@@ -3277,7 +3165,6 @@ modules['canvasContext'] =
 	});
 	
 	module.exports = CanvasContext;
-    
 }};
 modules['camera'] =
     {code: function(module){
@@ -3320,7 +3207,6 @@ modules['camera'] =
 	};
 	
 	
-    
 }};
 modules['renderer'] =
     {code: function(module){
@@ -3374,7 +3260,6 @@ modules['renderer'] =
 	};
 	
 	exports.start = function(){
-	    if (window.canceled) return;
 	    isRunning = true;
 	    drawSceneLoop();
 	};
@@ -3399,8 +3284,8 @@ modules['renderer'] =
 	
 	    if (!isRunning) return;
 	
-	    var lastErr = ctx.getError(); if (lastErr) throw "GL error: " + lastErr;
-	    if (window.canceled) return;
+	
+	
 	
 	    reqAnimFrame(drawSceneLoop);
 	
@@ -3421,7 +3306,6 @@ modules['renderer'] =
 	exports.printText = function(x,y,text,font){
 	    if (!text) return;
 	    font = font || bundle.fontList.get(0);
-	    if (!font) throw 'at least one font must be specified. Create new one please';
 	    var posX = x;
 	    var oldPosX = x;
 	    var posY = y;
@@ -3446,7 +3330,6 @@ modules['renderer'] =
 	        posX+=charInCtx.width;
 	    });
 	};
-    
 }};
 modules['scaleManager'] =
     {code: function(module){
@@ -3511,7 +3394,7 @@ modules['scaleManager'] =
 	                scaledHeight = gameProps.height * scaleFactor;
 	                gameProps.globalScale.x = scaledWidth / gameProps.width;
 	                gameProps.globalScale.y = scaledHeight / gameProps.height;
-	                gameProps.scaledWidth = scaledWidth; // one in global scale - other in gameProps
+	                gameProps.scaledWidth = scaledWidth;
 	                gameProps.scaledHeight = scaledHeight;
 	                gameProps.globalScale.left = (w-scaledWidth) / 2 / scaleFactor;
 	                gameProps.globalScale.top = (h-scaledHeight) / 2 / scaleFactor;
@@ -3586,7 +3469,6 @@ modules['scaleManager'] =
 	};
 	
 	
-    
 }};
 modules['frameBuffer'] =
     {code: function(module){
@@ -3642,7 +3524,6 @@ modules['frameBuffer'] =
 	};
 	
 	module.exports = FrameBuffer;
-    
 }};
 modules['glContext'] =
     {code: function(module){
@@ -3711,7 +3592,7 @@ modules['glContext'] =
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -3806,65 +3687,30 @@ modules['glContext'] =
 	    it.drawImage = function(
 	        texture,
 	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY) {
+	        dstX, dstY
+	    ) {
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendColor(0, 0.5, 1, 1);
 	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
-	        //_draw(texture,
-	        //    srcX, srcY, srcWidth, srcHeight,
-	        //    dstX, dstY);
+	        _draw(texture,
+	            srcX, srcY, srcWidth, srcHeight,
+	            dstX, dstY);
+	    };
 	
-	        var texSize = texture.getSize();
-	        var repeaterY = dstY;
-	        var repeaterX;
-	        var  repeaterWidth,repeaterHeight;
-	        var tileOffsetX = (window.offsetX)||0;
-	        var tileOffsetY = (window.offsetY)||0;
-	        tileOffsetX-=1;
-	        tileOffsetY-=2;
-	        window.offsetX = tileOffsetX;
-	        window.offsetY = tileOffsetY;
-	        tileOffsetX = tileOffsetX % texSize.width;
-	        if (tileOffsetX<0) tileOffsetX = texSize.width + tileOffsetX;
-	        tileOffsetY = tileOffsetY % texSize.height;
-	        if (tileOffsetX<0) tileOffsetX = texSize.width + tileOffsetX;
-	        if (tileOffsetY<0) tileOffsetY = texSize.height + tileOffsetY;
+	    it.lockRect = function(rect) {
+	        gl.enable(gl.SCISSOR_TEST);
+	        gl.scissor(
+	            rect.x,
+	            gameProps.height - rect.y - rect.height,
+	            rect.width,
+	            rect.height
+	        );
+	    };
 	
-	        // draw col;
-	        while (repeaterY<srcHeight) {
-	            repeaterHeight = texSize.height - tileOffsetY;
-	            if (repeaterY + texSize.height >srcHeight) {
-	                repeaterHeight  = srcHeight - srcY - repeaterY;
-	            }
-	            // draw row
-	            repeaterX = dstX;
-	            repeaterWidth = texSize.width;
-	            var w = srcX + repeaterWidth - tileOffsetX;
-	            if (w>srcWidth) w = srcWidth;
-	            _draw(texture,
-	                srcX  + tileOffsetX,srcY + tileOffsetY,
-	                w,srcY + repeaterHeight,
-	                repeaterX, repeaterY
-	            );
-	            repeaterX+=repeaterWidth - tileOffsetX;
-	            while (repeaterX<srcWidth) {
-	                if (repeaterX + texSize.width >srcWidth) {
-	                    repeaterWidth  = srcWidth - srcX - repeaterX;
-	                }
-	                _draw(texture,
-	                    srcX,srcY + tileOffsetY,repeaterWidth,srcY + repeaterHeight,
-	                    repeaterX,repeaterY
-	                );
-	                repeaterX+=texSize.width;
-	            }
-	            // --- draw row
-	            repeaterHeight = texSize.height;
-	            //repeaterY+=repeaterHeight - tileOffsetY;
-	            repeaterY+=texSize.height - tileOffsetY;
-	            tileOffsetY = 0;
-	        }
-	        // ---- draw col
+	    it.unlockRect = function(){
+	        gl.disable(gl.SCISSOR_TEST);
 	    };
 	
 	    it.clear = function() {
@@ -3950,6 +3796,8 @@ modules['glContext'] =
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
+	        gl.clearColor(1,1,1,1);
+	        gl.clear(gl.COLOR_BUFFER_BIT);
 	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
@@ -3996,7 +3844,6 @@ modules['glContext'] =
 	        }
 	
 	        var img = new Image();
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
 	        var gl = require('renderer').getContext().getNativeContext();
 	        var texture = new Texture(gl, img);
 	
@@ -4032,7 +3879,6 @@ modules['glContext'] =
 	
 	
 	
-    
 }};
 modules['matrixStack'] =
     {code: function(module){
@@ -4101,7 +3947,6 @@ modules['matrixStack'] =
 	};
 	
 	module.exports = MatrixStack;
-    
 }};
 modules['shaderProgram'] =
     {code: function(module){
@@ -4289,7 +4134,6 @@ modules['shaderProgram'] =
 	};
 	
 	module.exports = ShaderProgram;
-    
 }};
 modules['texture'] =
     {code: function(module){
@@ -4350,7 +4194,6 @@ modules['texture'] =
 	
 	
 	module.exports = Texture;
-    
 }};
 modules['vertexBuffer'] =
     {code: function(module){
@@ -4376,7 +4219,6 @@ modules['vertexBuffer'] =
 	};
 	
 	module.exports = VertexBuffer;
-    
 }};
 modules['tween'] =
     {code: function(module){
@@ -4450,7 +4292,6 @@ modules['tween'] =
 	
 	module.exports = Tween;
 	
-    
 }};
 modules['tweenChain'] =
     {code: function(module){
@@ -4498,7 +4339,6 @@ modules['tweenChain'] =
 	
 	module.exports = TweenChain;
 	
-    
 }};
 modules['tweenMovie'] =
     {code: function(module){
@@ -4582,1343 +4422,16 @@ modules['tweenMovie'] =
 	
 	
 	module.exports = TweenMovie;
-    
 }};
 modules['index'] =
     {code: function(module){
     var exports = module.exports;
     	
 	var data;
-	
-	data = {
-	
-	
-	    sound:[
-	    {
-	        "name": "msk",
-	        "type": "sound",
-	        "resourcePath": "resources/sound/msk.mp3",
-	        "id": "8101_8219_9"
-	    }
-	],
-	
-	    spriteSheet:[
-	    {
-	        "resourcePath": "resources/spriteSheet/eye.png",
-	        "name": "eye",
-	        "width": 24,
-	        "height": 24,
-	        "type": "spriteSheet",
-	        "numOfFramesH": 1,
-	        "numOfFramesV": 1,
-	        "id": "6889_5338_7"
-	    }
-	],
-	
-	    frameAnimation:[],
-	
-	    font:[
-	    {
-	        "name": "default",
-	        "fontContext": {
-	            "symbols": {
-	                "0": {
-	                    "x": 24,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "1": {
-	                    "x": 45,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "2": {
-	                    "x": 66,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "3": {
-	                    "x": 87,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "4": {
-	                    "x": 108,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "5": {
-	                    "x": 129,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "6": {
-	                    "x": 150,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "7": {
-	                    "x": 171,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "8": {
-	                    "x": 192,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "9": {
-	                    "x": 213,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                " ": {
-	                    "x": 3,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "!": {
-	                    "x": 24,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "\"": {
-	                    "x": 45,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "#": {
-	                    "x": 66,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "$": {
-	                    "x": 87,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "%": {
-	                    "x": 108,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "&": {
-	                    "x": 129,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "'": {
-	                    "x": 150,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "(": {
-	                    "x": 171,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                ")": {
-	                    "x": 192,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "*": {
-	                    "x": 213,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "+": {
-	                    "x": 234,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                ",": {
-	                    "x": 255,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "-": {
-	                    "x": 276,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                ".": {
-	                    "x": 297,
-	                    "y": 3,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "/": {
-	                    "x": 3,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                ":": {
-	                    "x": 234,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                ";": {
-	                    "x": 255,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "<": {
-	                    "x": 276,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "=": {
-	                    "x": 297,
-	                    "y": 38,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                ">": {
-	                    "x": 3,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "?": {
-	                    "x": 24,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "@": {
-	                    "x": 45,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "A": {
-	                    "x": 66,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "B": {
-	                    "x": 87,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "C": {
-	                    "x": 108,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "D": {
-	                    "x": 129,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "E": {
-	                    "x": 150,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "F": {
-	                    "x": 171,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "G": {
-	                    "x": 192,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "H": {
-	                    "x": 213,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "I": {
-	                    "x": 234,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "J": {
-	                    "x": 255,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "K": {
-	                    "x": 276,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "L": {
-	                    "x": 297,
-	                    "y": 73,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "M": {
-	                    "x": 3,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "N": {
-	                    "x": 24,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "O": {
-	                    "x": 45,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "P": {
-	                    "x": 66,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Q": {
-	                    "x": 87,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "R": {
-	                    "x": 108,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "S": {
-	                    "x": 129,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "T": {
-	                    "x": 150,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "U": {
-	                    "x": 171,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "V": {
-	                    "x": 192,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "W": {
-	                    "x": 213,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "X": {
-	                    "x": 234,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Y": {
-	                    "x": 255,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Z": {
-	                    "x": 276,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "[": {
-	                    "x": 297,
-	                    "y": 108,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "\\": {
-	                    "x": 3,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "]": {
-	                    "x": 24,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "^": {
-	                    "x": 45,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "_": {
-	                    "x": 66,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "`": {
-	                    "x": 87,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "a": {
-	                    "x": 108,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "b": {
-	                    "x": 129,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "c": {
-	                    "x": 150,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "d": {
-	                    "x": 171,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "e": {
-	                    "x": 192,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "f": {
-	                    "x": 213,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "g": {
-	                    "x": 234,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "h": {
-	                    "x": 255,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "i": {
-	                    "x": 276,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "j": {
-	                    "x": 297,
-	                    "y": 143,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "k": {
-	                    "x": 3,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "l": {
-	                    "x": 24,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "m": {
-	                    "x": 45,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "n": {
-	                    "x": 66,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "o": {
-	                    "x": 87,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "p": {
-	                    "x": 108,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "q": {
-	                    "x": 129,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "r": {
-	                    "x": 150,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "s": {
-	                    "x": 171,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "t": {
-	                    "x": 192,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "u": {
-	                    "x": 213,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "v": {
-	                    "x": 234,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "w": {
-	                    "x": 255,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "x": {
-	                    "x": 276,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "y": {
-	                    "x": 297,
-	                    "y": 178,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "z": {
-	                    "x": 3,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "{": {
-	                    "x": 24,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "|": {
-	                    "x": 45,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "}": {
-	                    "x": 66,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "~": {
-	                    "x": 87,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 108,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 114,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 120,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 126,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 132,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 138,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 144,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 150,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 156,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 162,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 168,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 174,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 180,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 186,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 192,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 198,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 204,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 210,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 216,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 222,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 228,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 234,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "": {
-	                    "x": 240,
-	                    "y": 213,
-	                    "width": 0,
-	                    "height": 29
-	                },
-	                "А": {
-	                    "x": 246,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Б": {
-	                    "x": 267,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "В": {
-	                    "x": 288,
-	                    "y": 213,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Г": {
-	                    "x": 3,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Д": {
-	                    "x": 24,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Е": {
-	                    "x": 45,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ж": {
-	                    "x": 66,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "З": {
-	                    "x": 87,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "И": {
-	                    "x": 108,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Й": {
-	                    "x": 129,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "К": {
-	                    "x": 150,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Л": {
-	                    "x": 171,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "М": {
-	                    "x": 192,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Н": {
-	                    "x": 213,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "О": {
-	                    "x": 234,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "П": {
-	                    "x": 255,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Р": {
-	                    "x": 276,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "С": {
-	                    "x": 297,
-	                    "y": 248,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Т": {
-	                    "x": 3,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "У": {
-	                    "x": 24,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ф": {
-	                    "x": 45,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Х": {
-	                    "x": 66,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ц": {
-	                    "x": 87,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ч": {
-	                    "x": 108,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ш": {
-	                    "x": 129,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Щ": {
-	                    "x": 150,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ъ": {
-	                    "x": 171,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ы": {
-	                    "x": 192,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ь": {
-	                    "x": 213,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Э": {
-	                    "x": 234,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Ю": {
-	                    "x": 255,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "Я": {
-	                    "x": 276,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "а": {
-	                    "x": 297,
-	                    "y": 283,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "б": {
-	                    "x": 3,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "в": {
-	                    "x": 24,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "г": {
-	                    "x": 45,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "д": {
-	                    "x": 66,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "е": {
-	                    "x": 87,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ж": {
-	                    "x": 108,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "з": {
-	                    "x": 129,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "и": {
-	                    "x": 150,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "й": {
-	                    "x": 171,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "к": {
-	                    "x": 192,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "л": {
-	                    "x": 213,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "м": {
-	                    "x": 234,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "н": {
-	                    "x": 255,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "о": {
-	                    "x": 276,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "п": {
-	                    "x": 297,
-	                    "y": 318,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "р": {
-	                    "x": 3,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "с": {
-	                    "x": 24,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "т": {
-	                    "x": 45,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "у": {
-	                    "x": 66,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ф": {
-	                    "x": 87,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "х": {
-	                    "x": 108,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ц": {
-	                    "x": 129,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ч": {
-	                    "x": 150,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ш": {
-	                    "x": 171,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "щ": {
-	                    "x": 192,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ъ": {
-	                    "x": 213,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ы": {
-	                    "x": 234,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ь": {
-	                    "x": 255,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "э": {
-	                    "x": 276,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ю": {
-	                    "x": 297,
-	                    "y": 353,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "я": {
-	                    "x": 3,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ѐ": {
-	                    "x": 24,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ё": {
-	                    "x": 45,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ђ": {
-	                    "x": 66,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ѓ": {
-	                    "x": 87,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "є": {
-	                    "x": 108,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ѕ": {
-	                    "x": 129,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "і": {
-	                    "x": 150,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ї": {
-	                    "x": 171,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ј": {
-	                    "x": 192,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "љ": {
-	                    "x": 213,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "њ": {
-	                    "x": 234,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                },
-	                "ћ": {
-	                    "x": 255,
-	                    "y": 388,
-	                    "width": 15,
-	                    "height": 29
-	                }
-	            },
-	            "width": 320,
-	            "height": 420
-	        },
-	        "type": "font",
-	        "fontColor": "black",
-	        "fontSize": 25,
-	        "fontFamily": "Monospace",
-	        "resourcePath": "resources/font/default.png",
-	        "id": "6991_3497_4"
-	    }
-	],
-	
-	    gameObject:[
-	    {
-	        "spriteSheetId": "6889_5338_7",
-	        "pos": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "scale": {
-	            "x": 1,
-	            "y": 1
-	        },
-	        "vel": {
-	            "x": 0,
-	            "y": 0
-	        },
-	        "currFrameIndex": 0,
-	        "name": "eye",
-	        "width": 24,
-	        "height": 24,
-	        "type": "gameObject",
-	        "commonBehaviour": [
-	            {
-	                "name": "draggable",
-	                "parameters": {},
-	                "description": "draggable behaviour with multitouch supporting",
-	                "id": "6711_2335_8",
-	                "type": "commonBehaviour"
-	            }
-	        ],
-	        "frameAnimationIds": [],
-	        "rigid": 1,
-	        "groupName": "",
-	        "angle": 0,
-	        "alpha": 1,
-	        "id": "3952_8743_8"
-	    }
-	],
-	
-	    layer:[
-	    {
-	        "name": "mainLayer",
-	        "type": "layer",
-	        "gameObjectProps": [
-	            {
-	                "spriteSheetId": "6889_5338_7",
-	                "pos": {
-	                    "x": 141,
-	                    "y": 107
-	                },
-	                "scale": {
-	                    "x": 1,
-	                    "y": 1
-	                },
-	                "vel": {
-	                    "x": 0,
-	                    "y": 0
-	                },
-	                "currFrameIndex": 0,
-	                "name": "eye",
-	                "width": 50,
-	                "height": 24,
-	                "type": "gameObject",
-	                "commonBehaviour": [],
-	                "frameAnimationIds": [],
-	                "rigid": 1,
-	                "groupName": "",
-	                "angle": 0,
-	                "alpha": 1,
-	                "protoId": "3952_8743_8",
-	                "id": "7247_0652_9"
-	            }
-	        ],
-	        "id": "8555_2032_5"
-	    }
-	],
-	
-	    scene:[
-	    {
-	        "tileMap": {
-	            "_spriteSheet": null,
-	            "spriteSheetId": null,
-	            "width": 0,
-	            "height": 0,
-	            "data": []
-	        },
-	        "name": "mainScene",
-	        "type": "scene",
-	        "layerProps": [
-	            {
-	                "type": "layer",
-	                "protoId": "8555_2032_5",
-	                "id": "1939_2070_6"
-	            }
-	        ],
-	        "colorBG": [
-	            255,
-	            255,
-	            255
-	        ],
-	        "id": "9666_8108_4"
-	    }
-	],
-	
-	    particleSystem:[],
-	
-	    gameProps:{
-	    "width": 320,
-	    "height": 240,
-	    "scaleStrategy": "2",
-	    "preloadingSceneId": "",
-	    "startSceneId": "9666_8108_4"
-	}
-	
-	};
+	data = {"sound":[{"name":"msk","type":"sound","resourcePath":"resources/sound/msk.mp3","id":"8101_8219_9"}],"spriteSheet":[{"resourcePath":"resources/spriteSheet/eye.png","name":"eye","width":24,"height":24,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"6889_5338_7"}],"frameAnimation":[],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":24,"y":38,"width":15,"height":29},"1":{"x":45,"y":38,"width":15,"height":29},"2":{"x":66,"y":38,"width":15,"height":29},"3":{"x":87,"y":38,"width":15,"height":29},"4":{"x":108,"y":38,"width":15,"height":29},"5":{"x":129,"y":38,"width":15,"height":29},"6":{"x":150,"y":38,"width":15,"height":29},"7":{"x":171,"y":38,"width":15,"height":29},"8":{"x":192,"y":38,"width":15,"height":29},"9":{"x":213,"y":38,"width":15,"height":29}," ":{"x":3,"y":3,"width":15,"height":29},"!":{"x":24,"y":3,"width":15,"height":29},"\"":{"x":45,"y":3,"width":15,"height":29},"#":{"x":66,"y":3,"width":15,"height":29},"$":{"x":87,"y":3,"width":15,"height":29},"%":{"x":108,"y":3,"width":15,"height":29},"&":{"x":129,"y":3,"width":15,"height":29},"'":{"x":150,"y":3,"width":15,"height":29},"(":{"x":171,"y":3,"width":15,"height":29},")":{"x":192,"y":3,"width":15,"height":29},"*":{"x":213,"y":3,"width":15,"height":29},"+":{"x":234,"y":3,"width":15,"height":29},",":{"x":255,"y":3,"width":15,"height":29},"-":{"x":276,"y":3,"width":15,"height":29},".":{"x":297,"y":3,"width":15,"height":29},"/":{"x":3,"y":38,"width":15,"height":29},":":{"x":234,"y":38,"width":15,"height":29},";":{"x":255,"y":38,"width":15,"height":29},"<":{"x":276,"y":38,"width":15,"height":29},"=":{"x":297,"y":38,"width":15,"height":29},">":{"x":3,"y":73,"width":15,"height":29},"?":{"x":24,"y":73,"width":15,"height":29},"@":{"x":45,"y":73,"width":15,"height":29},"A":{"x":66,"y":73,"width":15,"height":29},"B":{"x":87,"y":73,"width":15,"height":29},"C":{"x":108,"y":73,"width":15,"height":29},"D":{"x":129,"y":73,"width":15,"height":29},"E":{"x":150,"y":73,"width":15,"height":29},"F":{"x":171,"y":73,"width":15,"height":29},"G":{"x":192,"y":73,"width":15,"height":29},"H":{"x":213,"y":73,"width":15,"height":29},"I":{"x":234,"y":73,"width":15,"height":29},"J":{"x":255,"y":73,"width":15,"height":29},"K":{"x":276,"y":73,"width":15,"height":29},"L":{"x":297,"y":73,"width":15,"height":29},"M":{"x":3,"y":108,"width":15,"height":29},"N":{"x":24,"y":108,"width":15,"height":29},"O":{"x":45,"y":108,"width":15,"height":29},"P":{"x":66,"y":108,"width":15,"height":29},"Q":{"x":87,"y":108,"width":15,"height":29},"R":{"x":108,"y":108,"width":15,"height":29},"S":{"x":129,"y":108,"width":15,"height":29},"T":{"x":150,"y":108,"width":15,"height":29},"U":{"x":171,"y":108,"width":15,"height":29},"V":{"x":192,"y":108,"width":15,"height":29},"W":{"x":213,"y":108,"width":15,"height":29},"X":{"x":234,"y":108,"width":15,"height":29},"Y":{"x":255,"y":108,"width":15,"height":29},"Z":{"x":276,"y":108,"width":15,"height":29},"[":{"x":297,"y":108,"width":15,"height":29},"\\":{"x":3,"y":143,"width":15,"height":29},"]":{"x":24,"y":143,"width":15,"height":29},"^":{"x":45,"y":143,"width":15,"height":29},"_":{"x":66,"y":143,"width":15,"height":29},"`":{"x":87,"y":143,"width":15,"height":29},"a":{"x":108,"y":143,"width":15,"height":29},"b":{"x":129,"y":143,"width":15,"height":29},"c":{"x":150,"y":143,"width":15,"height":29},"d":{"x":171,"y":143,"width":15,"height":29},"e":{"x":192,"y":143,"width":15,"height":29},"f":{"x":213,"y":143,"width":15,"height":29},"g":{"x":234,"y":143,"width":15,"height":29},"h":{"x":255,"y":143,"width":15,"height":29},"i":{"x":276,"y":143,"width":15,"height":29},"j":{"x":297,"y":143,"width":15,"height":29},"k":{"x":3,"y":178,"width":15,"height":29},"l":{"x":24,"y":178,"width":15,"height":29},"m":{"x":45,"y":178,"width":15,"height":29},"n":{"x":66,"y":178,"width":15,"height":29},"o":{"x":87,"y":178,"width":15,"height":29},"p":{"x":108,"y":178,"width":15,"height":29},"q":{"x":129,"y":178,"width":15,"height":29},"r":{"x":150,"y":178,"width":15,"height":29},"s":{"x":171,"y":178,"width":15,"height":29},"t":{"x":192,"y":178,"width":15,"height":29},"u":{"x":213,"y":178,"width":15,"height":29},"v":{"x":234,"y":178,"width":15,"height":29},"w":{"x":255,"y":178,"width":15,"height":29},"x":{"x":276,"y":178,"width":15,"height":29},"y":{"x":297,"y":178,"width":15,"height":29},"z":{"x":3,"y":213,"width":15,"height":29},"{":{"x":24,"y":213,"width":15,"height":29},"|":{"x":45,"y":213,"width":15,"height":29},"}":{"x":66,"y":213,"width":15,"height":29},"~":{"x":87,"y":213,"width":15,"height":29},"":{"x":108,"y":213,"width":0,"height":29},"":{"x":114,"y":213,"width":0,"height":29},"":{"x":120,"y":213,"width":0,"height":29},"":{"x":126,"y":213,"width":0,"height":29},"":{"x":132,"y":213,"width":0,"height":29},"":{"x":138,"y":213,"width":0,"height":29},"":{"x":144,"y":213,"width":0,"height":29},"":{"x":150,"y":213,"width":0,"height":29},"":{"x":156,"y":213,"width":0,"height":29},"":{"x":162,"y":213,"width":0,"height":29},"":{"x":168,"y":213,"width":0,"height":29},"":{"x":174,"y":213,"width":0,"height":29},"":{"x":180,"y":213,"width":0,"height":29},"":{"x":186,"y":213,"width":0,"height":29},"":{"x":192,"y":213,"width":0,"height":29},"":{"x":198,"y":213,"width":0,"height":29},"":{"x":204,"y":213,"width":0,"height":29},"":{"x":210,"y":213,"width":0,"height":29},"":{"x":216,"y":213,"width":0,"height":29},"":{"x":222,"y":213,"width":0,"height":29},"":{"x":228,"y":213,"width":0,"height":29},"":{"x":234,"y":213,"width":0,"height":29},"":{"x":240,"y":213,"width":0,"height":29},"А":{"x":246,"y":213,"width":15,"height":29},"Б":{"x":267,"y":213,"width":15,"height":29},"В":{"x":288,"y":213,"width":15,"height":29},"Г":{"x":3,"y":248,"width":15,"height":29},"Д":{"x":24,"y":248,"width":15,"height":29},"Е":{"x":45,"y":248,"width":15,"height":29},"Ж":{"x":66,"y":248,"width":15,"height":29},"З":{"x":87,"y":248,"width":15,"height":29},"И":{"x":108,"y":248,"width":15,"height":29},"Й":{"x":129,"y":248,"width":15,"height":29},"К":{"x":150,"y":248,"width":15,"height":29},"Л":{"x":171,"y":248,"width":15,"height":29},"М":{"x":192,"y":248,"width":15,"height":29},"Н":{"x":213,"y":248,"width":15,"height":29},"О":{"x":234,"y":248,"width":15,"height":29},"П":{"x":255,"y":248,"width":15,"height":29},"Р":{"x":276,"y":248,"width":15,"height":29},"С":{"x":297,"y":248,"width":15,"height":29},"Т":{"x":3,"y":283,"width":15,"height":29},"У":{"x":24,"y":283,"width":15,"height":29},"Ф":{"x":45,"y":283,"width":15,"height":29},"Х":{"x":66,"y":283,"width":15,"height":29},"Ц":{"x":87,"y":283,"width":15,"height":29},"Ч":{"x":108,"y":283,"width":15,"height":29},"Ш":{"x":129,"y":283,"width":15,"height":29},"Щ":{"x":150,"y":283,"width":15,"height":29},"Ъ":{"x":171,"y":283,"width":15,"height":29},"Ы":{"x":192,"y":283,"width":15,"height":29},"Ь":{"x":213,"y":283,"width":15,"height":29},"Э":{"x":234,"y":283,"width":15,"height":29},"Ю":{"x":255,"y":283,"width":15,"height":29},"Я":{"x":276,"y":283,"width":15,"height":29},"а":{"x":297,"y":283,"width":15,"height":29},"б":{"x":3,"y":318,"width":15,"height":29},"в":{"x":24,"y":318,"width":15,"height":29},"г":{"x":45,"y":318,"width":15,"height":29},"д":{"x":66,"y":318,"width":15,"height":29},"е":{"x":87,"y":318,"width":15,"height":29},"ж":{"x":108,"y":318,"width":15,"height":29},"з":{"x":129,"y":318,"width":15,"height":29},"и":{"x":150,"y":318,"width":15,"height":29},"й":{"x":171,"y":318,"width":15,"height":29},"к":{"x":192,"y":318,"width":15,"height":29},"л":{"x":213,"y":318,"width":15,"height":29},"м":{"x":234,"y":318,"width":15,"height":29},"н":{"x":255,"y":318,"width":15,"height":29},"о":{"x":276,"y":318,"width":15,"height":29},"п":{"x":297,"y":318,"width":15,"height":29},"р":{"x":3,"y":353,"width":15,"height":29},"с":{"x":24,"y":353,"width":15,"height":29},"т":{"x":45,"y":353,"width":15,"height":29},"у":{"x":66,"y":353,"width":15,"height":29},"ф":{"x":87,"y":353,"width":15,"height":29},"х":{"x":108,"y":353,"width":15,"height":29},"ц":{"x":129,"y":353,"width":15,"height":29},"ч":{"x":150,"y":353,"width":15,"height":29},"ш":{"x":171,"y":353,"width":15,"height":29},"щ":{"x":192,"y":353,"width":15,"height":29},"ъ":{"x":213,"y":353,"width":15,"height":29},"ы":{"x":234,"y":353,"width":15,"height":29},"ь":{"x":255,"y":353,"width":15,"height":29},"э":{"x":276,"y":353,"width":15,"height":29},"ю":{"x":297,"y":353,"width":15,"height":29},"я":{"x":3,"y":388,"width":15,"height":29},"ѐ":{"x":24,"y":388,"width":15,"height":29},"ё":{"x":45,"y":388,"width":15,"height":29},"ђ":{"x":66,"y":388,"width":15,"height":29},"ѓ":{"x":87,"y":388,"width":15,"height":29},"є":{"x":108,"y":388,"width":15,"height":29},"ѕ":{"x":129,"y":388,"width":15,"height":29},"і":{"x":150,"y":388,"width":15,"height":29},"ї":{"x":171,"y":388,"width":15,"height":29},"ј":{"x":192,"y":388,"width":15,"height":29},"љ":{"x":213,"y":388,"width":15,"height":29},"њ":{"x":234,"y":388,"width":15,"height":29},"ћ":{"x":255,"y":388,"width":15,"height":29}},"width":320,"height":420},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"6889_5338_7","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":24,"height":24,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"6711_2335_8","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":1,"id":"3952_8743_8"}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"6889_5338_7","pos":{"x":141,"y":107},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":50,"height":24,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":1,"protoId":"3952_8743_8","id":"7247_0652_9"}],"id":"8555_2032_5"}],"scene":[{"tileMap":{"_spriteSheet":null,"spriteSheetId":null,"width":0,"height":0,"data":[]},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"8555_2032_5","id":"1939_2070_6"}],"colorBG":[255,255,255],"id":"9666_8108_4"}],"particleSystem":[],"gameProps":{"width":320,"height":240,"scaleStrategy":"2","preloadingSceneId":"","startSceneId":"9666_8108_4"}}
 	
 	var bundle = require('bundle');
 	bundle.prepare(data);
-	
-	if (!bundle.sceneList.size()) throw 'at least one scene must be created';
-	
 	var renderer = require('renderer');
 	var game = require('game');
 	var keyboard = require('keyboard');
@@ -5945,6 +4458,5 @@ modules['index'] =
 	    audioPlayer.resumeAll();
 	    renderer.start();
 	});
-    
 }};
 require('index');

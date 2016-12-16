@@ -83,13 +83,17 @@ var triggerEvent = function(e,name){
 };
 
 var resolveClick = function(e){
-    //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+    //<code>{{#if opts.debug}}
+    if (window.canceled) return;
+    // {{/if}}
     var point = triggerEvent(e,'click');
     triggerEvent(e,'mouseDown');
 };
 
 var resolveMouseMove = function(e){
-    //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+    //<code>{{#if opts.debug}}
+    if (window.canceled) return;
+    // {{/if}}
     var point = triggerEvent(e,'mouseMove');
     if (!point) return;
     var lastMouseDownObject = objectsCaptured[point.id];
@@ -105,7 +109,7 @@ var resolveMouseMove = function(e){
 };
 
 var resolveMouseUp = function(e){
-    //<code><%if (opts.debug){%>if (window.canceled) return<%}%>
+    //<code>{{#if opts.debug}} if (window.canceled) return;{{/if}}
     var point = triggerEvent(e,'mouseUp');
     if (!point) return;
     var lastMouseDownObject = objectsCaptured[point.id];

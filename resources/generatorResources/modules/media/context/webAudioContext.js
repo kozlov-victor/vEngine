@@ -4,7 +4,7 @@ var cache = require('resourceCache');
 var Class = require('class');
 
 var getCtx = (function(){
-    var ctx = window.AudioContext || window.webkitAudioContext;
+    var ctx = window.AudioContext;
     var res = null;
     return function(){
         if (ctx && !res) res = new ctx();
@@ -19,7 +19,9 @@ var decode = function(buffer,callback){
             callback(decoded);
         },
         function(err){
-            //<code><%if (opts.debug){%>window.showError(err)<%}%>
+            //<code>{{#if opts.debug}}
+            window.showError(err);
+            // {{/if}}
         }
     );
 };

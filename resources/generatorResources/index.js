@@ -1,18 +1,12 @@
 
 var data;
-
-//<code>data = {
-//<code><%var l = Object.keys(commonResources).length;%>
-//<code><%Object.keys(commonResources).forEach(function(key,i){%>
-//<code>    <%-key%>:<%-commonResources[key]%><%if (i<l-1){%><%=','%><%}%>
-//<code><%})%>
-//<code>};
+//<code>data = {{{json commonResources}}}
 
 var bundle = require('bundle');
 bundle.prepare(data);
-//<code><%if (opts.debug){%>
+//<code>{{#if opts.debug}}
 if (!bundle.sceneList.size()) throw 'at least one scene must be created';
-//<code><%}%>
+//<code>{{/if}}
 var renderer = require('renderer');
 var game = require('game');
 var keyboard = require('keyboard');

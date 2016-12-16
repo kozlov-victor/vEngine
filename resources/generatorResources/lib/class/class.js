@@ -1,5 +1,5 @@
 var Class = function() {};
-
+// проверка кирилицы
 Class.extend = function(props, staticProps) {
 
     var mixins = [];

@@ -40,6 +40,8 @@ var setUpRotes = function(app){
     });
 };
 
+require.main.require('./application/base/hbsSettings').init();
+
 setUpRotes(app);
 
 module.exports.app = app;

@@ -123,7 +123,9 @@ var CanvasContext = Class.extend(function(it){
         }
 
         var img = new Image();
-        //<code><%if (opts.debug){%>img.onerror=function(e){throw 'can not load image with url '+ url};<%}%>
+        //<code>{{#if opts.debug}}
+        img.onerror=function(e){throw 'can not load image with url '+ url};
+        //<code>{{/if}}
         var texture = {};
 
         if (opts.type == 'base64') {
