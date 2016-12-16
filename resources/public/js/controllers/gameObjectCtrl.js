@@ -33,7 +33,7 @@ window.app.
                 if (op.type=='create') {
                     resourceDao.createFile(
                         s.editData.currGameObjectInEdit.name+'.js',
-                        'script/gameObject',window.DEFAULT_CODE_SCRIPT);
+                        'script/gameObject',document.getElementById('defaultCodeScript').textContent);
                 }
             });
         };

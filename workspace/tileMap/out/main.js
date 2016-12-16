@@ -2404,7 +2404,6 @@ modules['baseGameObject'] =
 	    _layer:null,
 	    _moveable:null,
 	    vel:null,
-	    tileOffset: null,
 	    getRect: function(){
 	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
 	    },
@@ -2434,7 +2433,6 @@ modules['baseGameObject'] =
 	    construct:function(){
 	        if (!this.pos) this.pos = {x:0,y:0};
 	        if (!this.vel) this.vel = {x:0,y:0};
-	        if (!this.tileOffset) this.tileOffset = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
 	        this._moveable = new Moveable();
 	        this._moveable._gameObject = this;
@@ -2719,6 +2717,52 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
+	
+	var _draw = function(ctx,self,x,y){
+	    ctx.drawImage(
+	        resourceCache.get(self._spriteSheet.resourcePath),
+	        self._sprPosX,
+	        self._sprPosY,
+	        self.width,
+	        self.height,
+	        x||0,
+	        y||0
+	    );
+	};
+	
+	var _drawPattern = function(ctx,self){
+	
+	    var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
+	    var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
+	    offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
+	    offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
+	
+	    ctx.lockRect(self.getRect());
+	
+	    for (
+	        var y = -offsetY;
+	        y<self.height + self._spriteSheet._frameHeight;
+	        y+=self._spriteSheet._frameHeight
+	    ) {
+	        for (
+	            var x = -offsetX;
+	            x<self.width + self._spriteSheet._frameWidth;
+	            x+=self._spriteSheet._frameWidth
+	        ) {
+	            ctx.drawImage(
+	                resourceCache.get(self._spriteSheet.resourcePath),
+	                self._sprPosX,
+	                self._sprPosY,
+	                self._spriteSheet._frameWidth,
+	                self._spriteSheet._frameHeight,
+	                x,
+	                y
+	            );
+	        }
+	    }
+	    ctx.unlockRect();
+	};
+	
 	var GameObject = BaseGameObject.extend({
 	    type:'gameObject',
 	    spriteSheetId:null,
@@ -2734,9 +2778,12 @@ modules['gameObject'] =
 	    _currFrameAnimation:null,
 	    rigid:true,
 	    _timeCreated:null,
+	    tileOffset: null,
+	    tileRepeat:false,
 	    construct: function(){
 	        var self = this;
 	        self._super();
+	        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
 	        self._frameAnimations = new collections.List();
 	        if (!self.spriteSheetId) {
 	            return;
@@ -2786,21 +2833,11 @@ modules['gameObject'] =
 	        var ctx = renderer.getContext();
 	        ctx.save();
 	        self._super();
-	        self.tileOffset.x+=1;
-	        self.tileOffset.y+=1;
-	        ctx.drawImage(
-	            resourceCache.get(self._spriteSheet.resourcePath),
-	            self._sprPosX,
-	            self._sprPosY,
-	            self.width,
-	            self.height,
-	            0,
-	            0,
-	            self.tileOffset.x,
-	            self.tileOffset.y,
-	            self._spriteSheet._frameWidth,
-	            self._spriteSheet._frameHeight
-	        );
+	
+	        self.tileRepeat ?
+	            _drawPattern(ctx,self):
+	            _draw(ctx,self);
+	
 	        ctx.restore();
 	    }
 	}, {
@@ -3666,7 +3703,7 @@ modules['scaleManager'] =
 	                scaledHeight = gameProps.height * scaleFactor;
 	                gameProps.globalScale.x = scaledWidth / gameProps.width;
 	                gameProps.globalScale.y = scaledHeight / gameProps.height;
-	                gameProps.scaledWidth = scaledWidth; // one in global scale - other in gameProps
+	                gameProps.scaledWidth = scaledWidth;
 	                gameProps.scaledHeight = scaledHeight;
 	                gameProps.globalScale.left = (w-scaledWidth) / 2 / scaleFactor;
 	                gameProps.globalScale.top = (h-scaledHeight) / 2 / scaleFactor;
@@ -3866,7 +3903,7 @@ modules['glContext'] =
 	            1, 1
 	        ],2,'a_texcoord');
 	
-	        frameBuffer = new FrameBuffer(gl,gameProps.canvasWidth,gameProps.canvasHeight);
+	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        gl.enable(gl.BLEND);
@@ -3961,74 +3998,30 @@ modules['glContext'] =
 	    it.drawImage = function(
 	        texture,
 	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY,
-	        tileOffsetX,tileOffsetY,
-	        frameWidth,frameHeight
+	        dstX, dstY
 	    ) {
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendColor(0, 0.5, 1, 1);
 	        //gl.blendFunc(gl.ONE, gl.ONE);
-	
-	        gl.enable(gl.SCISSOR_TEST);
-	        gl.scissor(110, 110, 200, 200);
 	
 	        _draw(texture,
 	            srcX, srcY, srcWidth, srcHeight,
 	            dstX, dstY);
+	    };
+	
+	    it.lockRect = function(rect) {
+	        gl.enable(gl.SCISSOR_TEST);
+	        gl.scissor(
+	            rect.x,
+	            gameProps.height - rect.y - rect.height,
+	            rect.width,
+	            rect.height
+	        );
+	    };
+	
+	    it.unlockRect = function(){
 	        gl.disable(gl.SCISSOR_TEST);
-	        return;
-	
-	        tileOffsetX = tileOffsetX || 0;
-	        tileOffsetY = tileOffsetY || 0;
-	        frameWidth = frameWidth || srcWidth;
-	        frameHeight = frameHeight || srcHeight;
-	
-	        var repeaterY = dstY;
-	        var repeaterX;
-	        var  repeaterWidth,repeaterHeight;
-	        tileOffsetX = tileOffsetX % frameWidth;
-	        if (tileOffsetX<0) tileOffsetX = frameWidth + tileOffsetX;
-	        tileOffsetY = tileOffsetY % frameHeight;
-	        if (tileOffsetY<0) tileOffsetY = frameHeight + tileOffsetY;
-	
-	        // draw col;
-	        while (repeaterY<srcHeight) {
-	            repeaterHeight = frameHeight - tileOffsetY;
-	            if (repeaterY + repeaterHeight >srcHeight) {
-	                repeaterHeight  = srcHeight - srcY - repeaterY;
-	            }
-	            // draw row
-	            repeaterX = dstX;
-	            repeaterWidth = frameWidth;
-	            var w = srcX + repeaterWidth - tileOffsetX;
-	            if (w>frameWidth) w = frameWidth;
-	            var h = srcY + repeaterHeight;
-	            if (h>frameHeight - tileOffsetY) h = frameHeight - tileOffsetY;
-	            _draw(texture,
-	                srcX  + tileOffsetX,srcY + tileOffsetY,
-	                w,h,
-	                repeaterX, repeaterY
-	            );
-	            repeaterX+=repeaterWidth - tileOffsetX;
-	            while (repeaterX<srcWidth) {
-	                if (repeaterX + repeaterWidth >srcWidth) {
-	                    repeaterWidth  = srcWidth - repeaterX;
-	                }
-	                h = srcY + repeaterHeight;
-	                if (h>frameHeight) h = frameHeight;
-	                _draw(texture,
-	                    srcX,srcY + tileOffsetY,repeaterWidth,h,
-	                    repeaterX,repeaterY
-	                );
-	                repeaterX+=frameWidth;
-	            }
-	            // --- draw row
-	            repeaterHeight = frameHeight;
-	            //repeaterY+=repeaterHeight - tileOffsetY;
-	            repeaterY+=frameHeight - tileOffsetY;
-	            tileOffsetY = 0;
-	        }
-	        // ---- draw col
 	    };
 	
 	    it.clear = function() {
@@ -4114,6 +4107,8 @@ modules['glContext'] =
 	        this.scale(1,-1);
 	        frameBuffer.unbind();
 	        this.clear();
+	        gl.clearColor(1,1,1,1);
+	        gl.clear(gl.COLOR_BUFFER_BIT);
 	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
