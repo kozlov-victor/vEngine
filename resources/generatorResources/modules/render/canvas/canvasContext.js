@@ -1,5 +1,4 @@
 
-var mat4 = require('mat4');
 var utils = require('utils');
 var bundle = require('bundle');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
@@ -19,6 +18,7 @@ var CanvasContext = Class.extend(function(it){
     var ctx;
     var mScaleX = 1, mScaleY = 1;
     var gameProps;
+    var scene;
 
     it.init = function(canvas) {
         ctx = getCtx(canvas);
@@ -51,7 +51,8 @@ var CanvasContext = Class.extend(function(it){
 
     it.clear = function(){
 
-        ctx.fillStyle='#ffffff';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle='rgba('+scene.colorBG[0]+','+scene.colorBG[1]+','+scene.colorBG[2]+',255)';
         ctx.fillRect(
             0,
             0,
@@ -85,7 +86,7 @@ var CanvasContext = Class.extend(function(it){
     };
 
     it.rescaleView = function(scaleX,scaleY){
-        //it.scale(scaleX,scaleY);
+        ctx.scale(scaleX,scaleY);
     };
 
     it.getError = function(){
@@ -96,14 +97,28 @@ var CanvasContext = Class.extend(function(it){
         ctx.globalAlpha = a;
     };
 
-    it.beginFrameBuffer = function(){
+    it.lockRect = function(rect) {
         ctx.save();
         ctx.beginPath();
-        //ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
-        //ctx.clip();
+        ctx.rect(rect.x,rect.y,rect.width,rect.height);
+        ctx.clip();
+    };
+
+    it.unlockRect = function(){
+        ctx.restore();
+    };
+
+    it.setScene = function(_scene){
+        scene = _scene;
+    };
+
+    it.beginFrameBuffer = function(){
+        ctx.save();
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
             ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+            ctx.beginPath();
+            ctx.rect(0,0,gameProps.width,gameProps.height);
+            ctx.clip();
         }
     };
 

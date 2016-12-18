@@ -151,7 +151,7 @@ var ShaderProgram = function(gl,sources){
     var program;
     var uniforms;
 
-    var uniformValuesCache = {};
+    //var uniformValuesCache = {};
 
     (function(){
 
@@ -175,7 +175,7 @@ var ShaderProgram = function(gl,sources){
         if (!uniform) throw 'no uniform with name '+ name + ' found!';
         //if (uniformValuesCache[name]===value) return;
         uniform.setter(gl,uniform.location,value);
-        uniformValuesCache[name] = value;
+        //uniformValuesCache[name] = value;
     };
 
 };

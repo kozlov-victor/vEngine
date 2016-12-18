@@ -18,10 +18,19 @@
         return container;
     };
 
-    var _showErr = function(e,lineNum){
-        var msg = 'error: ' + (e.message || e);
+    var _prepareMessage = function(e,lineNum){
+        var msg = (e.message || e.toString() || 'Unknown error');
+        if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','');
         if (lineNum) msg+=' in line ' + lineNum;
-        console.log(msg);
+        return msg;
+    };
+
+    var _showErrToConsole = function(e,lineNum){
+        console.log(_prepareMessage(e,lineNum));
+    };
+
+    var _showErrorToDom = function(el,e,lineNum) {
+        el.innerHTML = _prepareMessage(e,lineNum);
     };
 
     var _consoleError = console.error;
@@ -33,7 +42,7 @@
 
     window.showError = function _err(e,lineNum){
         if (navigator.isCocoonJS) {
-            _showErr(e,lineNum);
+            _showErrToConsole(e,lineNum);
             return;
         }
         if (document.body) {
@@ -51,14 +60,14 @@
             rightBox.ontouchstart  = rightBox.onclick = function(){
                 popup.remove();
             };
-            leftBox.innerHTML = (e && e.message)?e.message:e;
+            _showErrorToDom(leftBox,e,lineNum);
             popup.appendChild(leftBox);
             popup.appendChild(rightBox);
             var popupContainer = getPopupContainer();
             if (popupContainer) {
                 popupContainer.appendChild(popup);
             } else {
-                _showErr(e,lineNum);
+                _showErrToConsole(e,lineNum);
             }
         } else {
             setTimeout(function(){

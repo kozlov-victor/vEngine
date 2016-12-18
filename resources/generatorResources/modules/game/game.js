@@ -50,6 +50,10 @@ var preloadSceneAndSetIt = function(scene){
         exports.currScene = progressScene;
         bundle.applyBehaviourForScene(progressScene);
         renderer.setScene(progressScene);
+        progressScene.onShow();
+        progressScene._allGameObjects.forEach(function(g){
+            g.onShow && g.onShow();
+        });
         if (!renderer.isRunning()) renderer.start();
     }
 
@@ -61,6 +65,9 @@ var preloadSceneAndSetIt = function(scene){
         renderer.setScene(scene);
         if (!renderer.isRunning()) renderer.start();
         scene.onShow();
+        scene._allGameObjects.forEach(function(g){
+            g.onShow && g.onShow();
+        });
     };
     loader.onProgress = function(e){
         progressScene &&

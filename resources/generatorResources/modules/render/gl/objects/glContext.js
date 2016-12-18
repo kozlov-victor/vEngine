@@ -29,6 +29,7 @@ var GlContext = Class.extend(function(it){
     var gameProps;
     var colorBGDefault = [255,255,255];
     var scene = null;
+    var self = this;
 
     it.init = function(canvas){
 
@@ -297,6 +298,7 @@ var GlContext = Class.extend(function(it){
                 gameProps.canvasWidth,gameProps.canvasHeight
             )
         );
+        commonShaderPrg.setUniform('u_alpha',1);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.drawArrays(gl.TRIANGLES, 0, 6);

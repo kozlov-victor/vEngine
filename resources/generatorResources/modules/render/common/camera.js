@@ -22,6 +22,8 @@ exports.follow = function(gameObject) {
 exports.update = function(ctx) {
     if (!objFollowTo) return;
     var pos = exports.pos;
+    var tileWidth = scene.tileMap._spriteSheet._frameWidth;
+    var tileHeight = scene.tileMap._spriteSheet._frameHeight;
     var w = bundle.gameProps.width;
     var h = bundle.gameProps.height;
     var wDiv2 = w/2;
@@ -30,8 +32,8 @@ exports.update = function(ctx) {
     pos.y = objFollowTo.pos.y - hDiv2;
     if (pos.x<0) pos.x = 0;
     if (pos.y<0) pos.y = 0;
-    if (pos.x>sceneWidth - w) pos.x = sceneWidth -w;
-    if (pos.y>sceneHeight -h) pos.y = sceneHeight -h;
+    if (pos.x>sceneWidth - w + tileWidth) pos.x = sceneWidth -w + tileWidth;
+    if (pos.y>sceneHeight -h + tileHeight) pos.y = sceneHeight -h + tileHeight;
     ctx.translate(-pos.x,-pos.y);
 };
 

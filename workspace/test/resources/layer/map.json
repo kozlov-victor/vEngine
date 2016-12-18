@@ -29,7 +29,51 @@
                 "angle": 0,
                 "alpha": 1,
                 "protoId": "3952_8743_8",
-                "id": "7247_0652_9"
+                "id": "7247_0652_9",
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            {
+                "spriteSheetId": "6889_5338_7",
+                "pos": {
+                    "x": 35,
+                    "y": 46
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "eye",
+                "width": 24,
+                "height": 24,
+                "type": "gameObject",
+                "commonBehaviour": [
+                    {
+                        "name": "draggable",
+                        "parameters": {},
+                        "description": "draggable behaviour with multitouch supporting",
+                        "id": "6711_2335_8",
+                        "type": "commonBehaviour"
+                    }
+                ],
+                "frameAnimationIds": [],
+                "rigid": 1,
+                "groupName": "",
+                "angle": 0,
+                "alpha": 0.2,
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "protoId": "3952_8743_8",
+                "id": "8860_9796_20"
             }
         ],
         "id": "8555_2032_5"

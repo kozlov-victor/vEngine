@@ -26,6 +26,7 @@ var ScaleManager = function(canvas,ctx){
                 gameProps.canvasHeight = gameProps.height;
                 canvas.width = gameProps.width;
                 canvas.height = gameProps.height;
+                canvas.style.display = 'inline-block';
                 break;
             case SCALE_STRATEGY.CSS_PRESERVE_ASPECT_RATIO:
                 w = window.innerWidth*scale;
@@ -45,6 +46,7 @@ var ScaleManager = function(canvas,ctx){
                 gameProps.canvasHeight = gameProps.height;
                 canvas.width = gameProps.width;
                 canvas.height = gameProps.height;
+                canvas.style.display = 'block';
                 canvas.style.width = scaledWidth + 'px';
                 canvas.style.height = scaledHeight + 'px';
                 canvas.style.marginTop = gameProps.top + 'px';
@@ -123,10 +125,11 @@ var ScaleManager = function(canvas,ctx){
 
 var instance = null;
 
-// todo
+
 module.exports.instance = function(canvas,ctx){
     if (instance==null) {
         if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';
+        if (!canvas) throw 'can not instantiate ScaleManager: rendering context not specified';
         instance = new ScaleManager(canvas,ctx);
     }
     return instance;

@@ -37,13 +37,13 @@ exports.init = function(){
         document.body.appendChild(canvas);
     }
     ctxClass = null;
-    if (GlContext.isAcceptable()) ctxClass = GlContext;
-    //else if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+    //if (GlContext.isAcceptable()) ctxClass = GlContext;
+    if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
     else throw "can not create rendering context";
     ctx = new ctxClass();
     game.setCtx(ctx);
-    require('scaleManager').instance(canvas,ctx).manage();
     ctx.init(canvas);
+    require('scaleManager').instance(canvas,ctx).manage();
 };
 
 exports.start = function(){

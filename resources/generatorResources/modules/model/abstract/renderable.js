@@ -10,7 +10,7 @@ var Tweenable = require('tweenable');
 var Renderable = BaseModel.extend(function(self){
 
     self.type = 'renderable';
-    self.alpha = 1;
+    self.alpha = 1.0;
     self.width = 0;
     self.height = 0;
     var _tweenable = new Tweenable();

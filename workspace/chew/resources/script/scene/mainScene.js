@@ -26,11 +26,15 @@ exports.onShow = function(){
         new TweenMovie()
         .tween(0,chewBacca.pos,{to:{y:40}},2000)
         .tween(200,chewBacca.scale,{to:{x:2,y:2}},2000)
+        .tween(300,chewBacca,{from:{alpa:0},to:{alpha:1}},5000)
         .play();
     }, 12000);
     setTimeout(function() {
         emit = true;
     }, 14000);
+    setTimeout(function() {
+        emit = false;
+    }, 20000);
 };
 
 exports.onUpdate = function(time) {

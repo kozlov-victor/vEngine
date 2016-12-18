@@ -2148,6 +2148,7 @@ window.app
                 backgroundPositionY: -gameObj._sprPosY+'px',
                 backgroundPositionX: -gameObj._sprPosX+'px',
                 backgroundRepeat:     'no-repeat',
+                opacity:              gameObj.alpha,
                 transform:            'scale('+gameObj.scale.x+','+gameObj.scale.y+') rotateZ('+mathEx.radToDeg(gameObj.angle)+'deg)'
             };
         };

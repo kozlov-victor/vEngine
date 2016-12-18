@@ -7,7 +7,7 @@
                 "spriteSheetId": "9594_1588_130",
                 "pos": {
                     "x": -1,
-                    "y": 4
+                    "y": -1
                 },
                 "vel": {
                     "x": 0,
@@ -57,15 +57,15 @@
                 "angle": 0,
                 "alpha": 1,
                 "name": "tf",
-                "protoId": null,
+                "protoId": {},
                 "id": "3074_0666_144",
                 "fontId": "6991_3497_4"
             },
             {
                 "spriteSheetId": "2050_3230_145",
                 "pos": {
-                    "x": 80,
-                    "y": 43
+                    "x": 90,
+                    "y": 254
                 },
                 "vel": {
                     "x": 0,
@@ -89,7 +89,7 @@
                 "rigid": 1,
                 "groupName": "",
                 "angle": 0,
-                "alpha": 1,
+                "alpha": 0.4,
                 "protoId": "7472_5113_146",
                 "id": "7131_6392_147"
             }
