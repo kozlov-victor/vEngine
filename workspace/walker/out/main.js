@@ -26,7 +26,13 @@ Array.prototype.remove = function(el){
 };
 
 window.URL = window.URL || window.webkitURL;
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+window.requestAnimationFrame =
+    window.requestAnimationFrame||
+    window.webkitRequestAnimationFrame||
+    function(f){setTimeout(f,17)};
 modules['class'] =
     {code: function(module){
     var exports = module.exports;
@@ -640,7 +646,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n    gl_FragColor.r = 0.0;\n    gl_FragColor.g = gl_FragColor.g>0.5?0.0:1.0;\n    gl_FragColor.b = 0.0;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -3062,7 +3068,6 @@ modules['canvasContext'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var mat4 = require('mat4');
 	var utils = require('utils');
 	var bundle = require('bundle');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
@@ -3115,7 +3120,8 @@ modules['canvasContext'] =
 	
 	    it.clear = function(){
 	
-	        ctx.fillStyle='rgb('+scene.colorBG[0]||255+','+scene.colorBG[1]||255+','+scene.colorBG[2]||255+')';
+	        ctx.globalAlpha = 1;
+	        ctx.fillStyle='rgba('+scene.colorBG[0]+','+scene.colorBG[1]+','+scene.colorBG[2]+',255)';
 	        ctx.fillRect(
 	            0,
 	            0,
@@ -3149,7 +3155,7 @@ modules['canvasContext'] =
 	    };
 	
 	    it.rescaleView = function(scaleX,scaleY){
-	        //it.scale(scaleX,scaleY);
+	        ctx.scale(scaleX,scaleY);
 	    };
 	
 	    it.getError = function(){
@@ -3160,18 +3166,28 @@ modules['canvasContext'] =
 	        ctx.globalAlpha = a;
 	    };
 	
+	    it.lockRect = function(rect) {
+	        ctx.save();
+	        ctx.beginPath();
+	        ctx.rect(rect.x,rect.y,rect.width,rect.height);
+	        ctx.clip();
+	    };
+	
+	    it.unlockRect = function(){
+	        ctx.restore();
+	    };
+	
 	    it.setScene = function(_scene){
 	        scene = _scene;
 	    };
 	
 	    it.beginFrameBuffer = function(){
 	        ctx.save();
-	        ctx.beginPath();
-	        //ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
-	        //ctx.clip();
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
 	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+	            ctx.beginPath();
+	            ctx.rect(0,0,gameProps.width,gameProps.height);
+	            ctx.clip();
 	        }
 	    };
 	
@@ -3293,7 +3309,7 @@ modules['renderer'] =
 	var self = exports;
 	var currTime = 0;
 	var lastTime = 0;
-	var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+	var reqAnimFrame = window.requestAnimationFrame;
 	var gameProps;
 	var isRunning = false;
 	
@@ -3318,13 +3334,13 @@ modules['renderer'] =
 	        document.body.appendChild(canvas);
 	    }
 	    ctxClass = null;
-	    //if (GlContext.isAcceptable()) ctxClass = GlContext;
-	    if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+	    if (GlContext.isAcceptable()) ctxClass = GlContext;
+	    //if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
 	    else throw "can not create rendering context";
 	    ctx = new ctxClass();
 	    game.setCtx(ctx);
-	    require('scaleManager').instance(canvas,ctx).manage();
 	    ctx.init(canvas);
+	    require('scaleManager').instance(canvas,ctx).manage();
 	};
 	
 	exports.start = function(){
@@ -3534,10 +3550,11 @@ modules['scaleManager'] =
 	
 	var instance = null;
 	
-	// todo
+	
 	module.exports.instance = function(canvas,ctx){
 	    if (instance==null) {
 	        if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';
+	        if (!canvas) throw 'can not instantiate ScaleManager: rendering context not specified';
 	        instance = new ScaleManager(canvas,ctx);
 	    }
 	    return instance;

@@ -26,7 +26,13 @@ Array.prototype.remove = function(el){
 };
 
 window.URL = window.URL || window.webkitURL;
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+window.requestAnimationFrame =
+    window.requestAnimationFrame||
+    window.webkitRequestAnimationFrame||
+    function(f){setTimeout(f,17)};
 modules['class'] =
     {code: function(module){
     var exports = module.exports;
@@ -147,6 +153,8 @@ modules['behaviour'] =
 	scripts.gameObject['stones.js'] = function(exports){
 	    var module = exports, self = exports;
 	    
+	var ctx = require('renderer').getContext();
+	
 	
 	self.tileRepeat = true;
 	
@@ -3234,7 +3242,7 @@ modules['renderer'] =
 	var self = exports;
 	var currTime = 0;
 	var lastTime = 0;
-	var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+	var reqAnimFrame = window.requestAnimationFrame;
 	var gameProps;
 	var isRunning = false;
 	
@@ -3259,8 +3267,8 @@ modules['renderer'] =
 	        document.body.appendChild(canvas);
 	    }
 	    ctxClass = null;
-	    //if (GlContext.isAcceptable()) ctxClass = GlContext;
-	    if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+	    if (GlContext.isAcceptable()) ctxClass = GlContext;
+	    //if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
 	    else throw "can not create rendering context";
 	    ctx = new ctxClass();
 	    game.setCtx(ctx);

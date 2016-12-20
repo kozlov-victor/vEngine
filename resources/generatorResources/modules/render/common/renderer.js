@@ -12,7 +12,7 @@ var ctxClass;
 var self = exports;
 var currTime = 0;
 var lastTime = 0;
-var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+var reqAnimFrame = window.requestAnimationFrame;
 var gameProps;
 var isRunning = false;
 
@@ -37,8 +37,8 @@ exports.init = function(){
         document.body.appendChild(canvas);
     }
     ctxClass = null;
-    //if (GlContext.isAcceptable()) ctxClass = GlContext;
-    if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+    if (GlContext.isAcceptable()) ctxClass = GlContext;
+    //if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
     else throw "can not create rendering context";
     ctx = new ctxClass();
     game.setCtx(ctx);

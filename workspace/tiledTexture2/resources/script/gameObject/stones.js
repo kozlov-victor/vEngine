@@ -1,4 +1,6 @@
 
+var ctx = require('renderer').getContext();
+
 
 self.tileRepeat = true;
 

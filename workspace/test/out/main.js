@@ -26,7 +26,13 @@ Array.prototype.remove = function(el){
 };
 
 window.URL = window.URL || window.webkitURL;
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+window.requestAnimationFrame =
+    window.requestAnimationFrame||
+    window.webkitRequestAnimationFrame||
+    function(f){setTimeout(f,17)};
 modules['class'] =
     {code: function(module){
     var exports = module.exports;
@@ -3016,7 +3022,6 @@ modules['canvasContext'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var mat4 = require('mat4');
 	var utils = require('utils');
 	var bundle = require('bundle');
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
@@ -3104,7 +3109,7 @@ modules['canvasContext'] =
 	    };
 	
 	    it.rescaleView = function(scaleX,scaleY){
-	        //it.scale(scaleX,scaleY);
+	        ctx.scale(scaleX,scaleY);
 	    };
 	
 	    it.getError = function(){
@@ -3115,18 +3120,28 @@ modules['canvasContext'] =
 	        ctx.globalAlpha = a;
 	    };
 	
+	    it.lockRect = function(rect) {
+	        ctx.save();
+	        ctx.beginPath();
+	        ctx.rect(rect.x,rect.y,rect.width,rect.height);
+	        ctx.clip();
+	    };
+	
+	    it.unlockRect = function(){
+	        ctx.restore();
+	    };
+	
 	    it.setScene = function(_scene){
 	        scene = _scene;
 	    };
 	
 	    it.beginFrameBuffer = function(){
 	        ctx.save();
-	        ctx.beginPath();
-	        //ctx.rect(gameProps.left,gameProps.top,gameProps.scaledWidth,gameProps.scaledHeight);
-	        //ctx.clip();
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            ctx.scale(mScaleX/device.scale,mScaleY/device.scale);
 	            ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
+	            ctx.beginPath();
+	            ctx.rect(0,0,gameProps.width,gameProps.height);
+	            ctx.clip();
 	        }
 	    };
 	
@@ -3248,7 +3263,7 @@ modules['renderer'] =
 	var self = exports;
 	var currTime = 0;
 	var lastTime = 0;
-	var reqAnimFrame = window.requestAnimationFrame||window.webkitRequestAnimationFrame||function(f){setTimeout(f,17)};
+	var reqAnimFrame = window.requestAnimationFrame;
 	var gameProps;
 	var isRunning = false;
 	
@@ -3273,13 +3288,13 @@ modules['renderer'] =
 	        document.body.appendChild(canvas);
 	    }
 	    ctxClass = null;
-	    //if (GlContext.isAcceptable()) ctxClass = GlContext;
+	    if (GlContext.isAcceptable()) ctxClass = GlContext;
 	    if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
 	    else throw "can not create rendering context";
 	    ctx = new ctxClass();
 	    game.setCtx(ctx);
-	    require('scaleManager').instance(canvas,ctx).manage();
 	    ctx.init(canvas);
+	    require('scaleManager').instance(canvas,ctx).manage();
 	};
 	
 	exports.start = function(){
@@ -3489,10 +3504,11 @@ modules['scaleManager'] =
 	
 	var instance = null;
 	
-	// todo
+	
 	module.exports.instance = function(canvas,ctx){
 	    if (instance==null) {
 	        if (!canvas) throw 'can not instantiate ScaleManager: canvas not specified';
+	        if (!canvas) throw 'can not instantiate ScaleManager: rendering context not specified';
 	        instance = new ScaleManager(canvas,ctx);
 	    }
 	    return instance;
@@ -3646,14 +3662,14 @@ modules['glContext'] =
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
 	        // this matirx will convert from pixels to clip space
-	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, 1);
+	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, -100);
 	
 	        // this matrix will scale our 1 unit quad
 	        // from 1 unit to dstWidth, dstHeight units
 	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
 	
 	        // this matrix will translate our quad to dstX, dstY
-	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
+	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 1);
 	
 	        // multiply them all togehter
 	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
