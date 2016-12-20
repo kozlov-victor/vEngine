@@ -1,5 +1,4 @@
 var modules = {}, require = function(name){
-    //console.trace('require: ',name);
     var moduleObj = modules[name];
 
     if (!moduleObj) {
@@ -20,5 +19,9 @@ var modules = {}, require = function(name){
 
 
 //<code>{{#if opts.debug }}
-//<code>window.require = require;
+//<code>{{var "requireName" opts.require}}
+//<code>{{#unless requireName}}
+//<code>{{var "requireName"  "require"}}
+//<code>{{/unless}}
+//<code>window.{{requireName}} = require;
 //<code>{{/if}}

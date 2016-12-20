@@ -15,12 +15,10 @@ var generatorController = require.main.require('./application/mvc/controllers/ge
 module.exports.init = function(app) {
 
     app.get('/generateEngine',function(req,res){
+        var queryData = url.parse(req.url, true).query || {};
+        if (!queryData.engineOnly) queryData.engineOnly = 1;
         res.send(
-            generatorController.generateEngine(
-                {
-                    engineOnly:1
-                }
-            )
+            generatorController.generateEngine(queryData)
         )
     });
 
@@ -28,6 +26,10 @@ module.exports.init = function(app) {
         res.render('main',{
             defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT
         });
+    });
+
+    app.get('/mainNew',function(req,res){
+        res.render('mainNew');
     });
 
     app.get('/editor',function(req,res){
