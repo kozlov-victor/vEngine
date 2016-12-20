@@ -1,4 +1,4 @@
-require('./components/leftPanel/leftPanel');
+require('./components/leftPanel/gameProps/gameProps');
 
 var onMounted = function _onMounted(){
     Split(['#a', '#b', '#e'], {

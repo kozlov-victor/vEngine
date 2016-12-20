@@ -1,6 +1,6 @@
 Vue.component('left-panel', {
     props: [],
-    template: require('./leftPanel.html'),
+    template: require('./gameProps.html'),
     data: function(){
         return {
             editData: require('providers/editData'),

@@ -1,10 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = "<div class=\"template\">\r\n    {{i18n.loadImage}}\r\n</div>";
+module.exports = "<div class=\"template\">\r\n    gameProps: {{i18n.loadImage}}\r\n</div>";
 
 },{}],2:[function(require,module,exports){
 Vue.component('left-panel', {
     props: [],
-    template: require('./leftPanel.html'),
+    template: require('./gameProps.html'),
     data: function(){
         return {
             editData: require('providers/editData'),
@@ -15,11 +15,11 @@ Vue.component('left-panel', {
 
     }
 });
-},{"./leftPanel.html":1,"providers/editData":5,"providers/i18n":7}],3:[function(require,module,exports){
+},{"./gameProps.html":1,"providers/editData":5,"providers/i18n":7}],3:[function(require,module,exports){
 module.exports = "<div class=\"template\">\r\n    <div id=\"c\" class=\"split\">\r\n        <div id=\"a\" class=\"split split-horizontal content\">\r\n            <left-panel/>\r\n        </div>\r\n        <div id=\"b\" class=\"split split-horizontal content\">\r\n            b\r\n        </div>\r\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\r\n    </div>\r\n    <div id=\"d\" class=\"split content\">d</div>\r\n</div>\r\n\r\n";
 
 },{}],4:[function(require,module,exports){
-require('./components/leftPanel/leftPanel');
+require('./components/leftPanel/gameProps/gameProps');
 
 var onMounted = function _onMounted(){
     Split(['#a', '#b', '#e'], {
@@ -52,7 +52,7 @@ module.exports = {
 
     }
 };
-},{"./components/leftPanel/leftPanel":2,"./editor.html":3}],5:[function(require,module,exports){
+},{"./components/leftPanel/gameProps/gameProps":2,"./editor.html":3}],5:[function(require,module,exports){
 
 var collections = _require('collections');
 
