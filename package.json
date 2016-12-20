@@ -2,9 +2,15 @@
   "name": "vEngine",
   "version": "0.1.0",
   "devDependencies": {
+    "browserify": "latest",
     "grunt": "^1.0.1",
     "grunt-contrib-concat": "^1.0.1",
-    "grunt-contrib-less": "^1.4.0"
+    "grunt-contrib-less": "^1.4.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-less": "^3.3.0",
+    "stringify": "^5.1.0",
+    "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
     "body-parser": "^1.15.2",

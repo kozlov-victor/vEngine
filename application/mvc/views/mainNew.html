@@ -5,13 +5,19 @@
     <title></title>
     <link rel="icon"  href="images/script.png">
 
-    <script type="text/javascript" src="/debug.js"></script>
-    <script type="text/javascript" src="/generateEngine"></script>
+    <link rel="stylesheet" type="text/css" href="css/build.css">
 
+    <script type="text/javascript" src="/debug.js"></script>
+    <script type="text/javascript" src="/generateEngine?debug=1&require=_require"></script>
+    <script type="text/javascript" src="/js/build/vendor.js"></script>
 
 </head>
+
 <body>
-
-    <div id="app"></div>
-
+    <div id="app">
+        <router-view></router-view>
+    </div>
+    <script type="text/javascript" src="/js/build/bundle.js"></script>
 </body>
+
+</html>
