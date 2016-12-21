@@ -1,3 +1,12 @@
-/**
- * Created by victor on 20.12.16.
- */
+module.exports = Vue.component('app-collapsible', {
+    props: ['title'],
+    template: require('./collapsible.html'),
+    data: function(){
+        return {
+            opened: false
+        }
+    },
+    methods: {
+
+    }
+});

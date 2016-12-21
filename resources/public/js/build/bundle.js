@@ -1,7 +1,23 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = "<div class=\"template\">\r\n    gameProps: {{i18n.loadImage}}\r\n</div>";
+module.exports = "<div>\n    <div\n        class=\"collapsible_header\"\n        @click=\"opened=!opened\"\n    >\n        {{title}}\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
 
 },{}],2:[function(require,module,exports){
+module.exports = Vue.component('app-collapsible', {
+    props: ['title'],
+    template: require('./collapsible.html'),
+    data: function(){
+        return {
+            opened: false
+        }
+    },
+    methods: {
+
+    }
+});
+},{"./collapsible.html":1}],3:[function(require,module,exports){
+module.exports = "\n<div class=\"template\">\n    <app-collapsible title=\"title here\">\n        content here\n    </app-collapsible>\n\n    <app-collapsible title=\"title here2\">\n        content here2\n    </app-collapsible>\n</div>";
+
+},{}],4:[function(require,module,exports){
 Vue.component('left-panel', {
     props: [],
     template: require('./gameProps.html'),
@@ -11,14 +27,17 @@ Vue.component('left-panel', {
             i18n: require('providers/i18n').getAll()
         }
     },
+    components: {
+        appCollapsible: require('components/collapsible/collapsible')
+    },
     methods: {
 
     }
 });
-},{"./gameProps.html":1,"providers/editData":5,"providers/i18n":7}],3:[function(require,module,exports){
+},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":7,"providers/i18n":9}],5:[function(require,module,exports){
 module.exports = "<div class=\"template\">\r\n    <div id=\"c\" class=\"split\">\r\n        <div id=\"a\" class=\"split split-horizontal content\">\r\n            <left-panel/>\r\n        </div>\r\n        <div id=\"b\" class=\"split split-horizontal content\">\r\n            b\r\n        </div>\r\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\r\n    </div>\r\n    <div id=\"d\" class=\"split content\">d</div>\r\n</div>\r\n\r\n";
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 require('./components/leftPanel/gameProps/gameProps');
 
 var onMounted = function _onMounted(){
@@ -52,7 +71,7 @@ module.exports = {
 
     }
 };
-},{"./components/leftPanel/gameProps/gameProps":2,"./editor.html":3}],5:[function(require,module,exports){
+},{"./components/leftPanel/gameProps/gameProps":4,"./editor.html":5}],7:[function(require,module,exports){
 
 var collections = _require('collections');
 
@@ -98,7 +117,7 @@ reset();
 module.exports.reset = reset;
 
 module.exports.raw = res;
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
     Vue.http.
@@ -120,7 +139,7 @@ module.exports.post = function(url,data,callBack){
         }
     );
 };
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 
 var _i18n = {};
 
@@ -215,7 +234,7 @@ _i18n.getAll = function(){
 };
 
 module.exports = _i18n;
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 var Resource = function(){
 
@@ -500,6 +519,7 @@ var Resource = function(){
     //
     //
     (function(){
+        sessionStorage.projectName = 'test';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {
@@ -509,7 +529,7 @@ var Resource = function(){
 };
 
 module.exports = new Resource();
-},{"providers/editData":5,"providers/http":6}],9:[function(require,module,exports){
+},{"providers/editData":7,"providers/http":8}],11:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -530,4 +550,4 @@ const app = new Vue(
 ).$mount('#app');
 
 router.init(app);
-},{"pages/editor/editor":4,"providers/resource":8}]},{},[9]);
+},{"pages/editor/editor":6,"providers/resource":10}]},{},[11]);

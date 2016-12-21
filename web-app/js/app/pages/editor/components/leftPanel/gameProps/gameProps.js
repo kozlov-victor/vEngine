@@ -7,6 +7,9 @@ Vue.component('left-panel', {
             i18n: require('providers/i18n').getAll()
         }
     },
+    components: {
+        appCollapsible: require('components/collapsible/collapsible')
+    },
     methods: {
 
     }

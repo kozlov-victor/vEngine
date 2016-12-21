@@ -3,9 +3,8 @@ var browserify = require('browserify');
 var stringify = require('stringify');
 var gulp = require('gulp');
 var source = require('vinyl-source-stream');
-
+var addSrc = require('gulp-add-src');
 var concat = require('gulp-concat');
-
 var less = require('gulp-less');
 var path = require('path');
 
@@ -30,17 +29,17 @@ gulp.task('js-bundle', function() {
         })
         .transform(stringify(['.hjs', '.html']))
         .bundle()
-        // Передаем имя файла, который получим на выходе, vinyl-source-stream
         .pipe(source('bundle.js'))
         .pipe(gulp.dest('resources/public/js/build/'))
     )
 });
 
 gulp.task('less', function () {
-    return gulp.src('web-app/less/build.less')
-        .pipe(less({
-            paths: [ path.join(__dirname, 'less', 'includes') ]
-        }))
+    return gulp
+        .src('web-app/less/main.less')
+        .pipe(addSrc('web-app/js/app/**/*.less'))
+        .pipe(concat('bundle.less'))
+        .pipe(less())
         .pipe(gulp.dest('resources/public/css'));
 });
 

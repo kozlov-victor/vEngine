@@ -282,6 +282,7 @@ var Resource = function(){
     //
     //
     (function(){
+        sessionStorage.projectName = 'test';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

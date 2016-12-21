@@ -1,4 +1,13 @@
 html,
+body {
+  height: 100%;
+  box-sizing: border-box;
+}
+body {
+  background-color: #F6F6F6;
+  margin: 0;
+}
+html,
 body,
 div {
   margin: 0;
@@ -9,14 +18,16 @@ div {
 .template {
   height: 100%;
 }
-html,
-body {
-  height: 100%;
-  box-sizing: border-box;
-}
-body {
-  background-color: #F6F6F6;
+.collapsible_header {
+  background-color: #aaa;
   margin: 0;
+  cursor: pointer;
+}
+.collapsible_content {
+  display: none;
+}
+.collapsible_content.opened {
+  display: block;
 }
 .split {
   -webkit-box-sizing: border-box;
