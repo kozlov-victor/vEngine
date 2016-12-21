@@ -23,7 +23,7 @@ var Tween = function(obj,fromToVal,tweenTime,easeFnName){
         propsToChange = Object.keys(allPropsMap);
         propsToChange.forEach(function(prp){
             if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = obj[prp];
-            if (fromToVal.top[prp]===undefined) fromToVal.from[prp] = obj[prp];
+            if (fromToVal.to[prp]===undefined) fromToVal.from[prp] = obj[prp];
         });
         return fromToVal;
     };

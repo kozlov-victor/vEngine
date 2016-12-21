@@ -130,6 +130,20 @@ label,
 [type=radio] {
   cursor: pointer;
 }
+.collapsible_header {
+  background-color: #aaa;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px solid grey;
+  cursor: pointer;
+}
+.collapsible_content {
+  display: none;
+  background-color: #f2f2f2;
+}
+.collapsible_content.opened {
+  display: block;
+}
 .split {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -165,18 +179,4 @@ label,
 }
 .split {
   border-radius: 2px;
-}
-.collapsible_header {
-  background-color: #aaa;
-  padding: 5px;
-  margin: 0;
-  border-bottom: 1px solid grey;
-  cursor: pointer;
-}
-.collapsible_content {
-  display: none;
-  background-color: #f2f2f2;
-}
-.collapsible_content.opened {
-  display: block;
 }

@@ -30,7 +30,7 @@
     };
 
     var _showErrorToDom = function(el,e,lineNum) {
-        el.innerHTML = _prepareMessage(e,lineNum);
+        el.textContent = _prepareMessage(e,lineNum);
     };
 
     var _consoleError = console.error;

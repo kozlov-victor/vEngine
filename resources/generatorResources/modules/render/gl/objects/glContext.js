@@ -21,7 +21,8 @@ var GlContext = Class.extend(function(it){
 
     var gl;
     var mScaleX = 1, mScaleY = 1;
-    var commonShaderPrg;
+    var alpha = 1;
+    var commonShaderPrg, colorShaderPrg;
     var posVertexBuffer;
     var texVertexBuffer;
     var matrixStack = new MatrixStack();
@@ -29,7 +30,6 @@ var GlContext = Class.extend(function(it){
     var gameProps;
     var colorBGDefault = [255,255,255];
     var scene = null;
-    var self = this;
 
     it.init = function(canvas){
 
@@ -38,6 +38,10 @@ var GlContext = Class.extend(function(it){
         commonShaderPrg = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
             bundle.shaders.basic['fragment.frag']
+        ]);
+        colorShaderPrg = new ShaderProgram(gl, [
+            bundle.shaders.basic['vertex.vert'],
+            bundle.shaders.color['fragment.frag']
         ]);
         commonShaderPrg.bind();
         commonShaderPrg.setUniform('u_alpha',1);
@@ -74,8 +78,8 @@ var GlContext = Class.extend(function(it){
         scene = _scene;
     };
 
-    it.setAlpha = function(alpha) {
-        commonShaderPrg.setUniform('u_alpha',alpha);
+    it.setAlpha = function(_alpha) {
+        alpha = _alpha;
     };
 
     it.getError = function(){
@@ -142,16 +146,14 @@ var GlContext = Class.extend(function(it){
             currTex = texture;
         }
 
-        // Set the texture matrix.
+        commonShaderPrg.bind();
         commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-
-        // Set the matrix.
         commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
                 gameProps.width,gameProps.height,1,1
             )
         );
-
+        commonShaderPrg.setUniform('u_alpha',alpha);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
 
@@ -191,34 +193,32 @@ var GlContext = Class.extend(function(it){
         gl.clear(gl.COLOR_BUFFER_BIT);
     };
 
-    it.fillRect = function (x, y, w, h, color) {
+    var fillRect = function (x, y, w, h, color) {
 
-        // Set the matrix.
-        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+        colorShaderPrg.bind();
+        colorShaderPrg.setUniform("u_matrix",makePositionMatrix(
                 x,y,w,h,
                 gameProps.width,gameProps.height,1,1
             )
         );
-
+        colorShaderPrg.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        //gl.blendFunc(gl.ONE, gl.ONE);
-
-        // draw the quad (2 triangles, 6 vertices)
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
     };
 
-    //it.strokeRect = function (x, y, w, h, color) {
-    //    this.fillRect(x, y, w, 1, color);
-    //    this.fillRect(x, y + h, w, 1, color);
-    //    this.fillRect(x, y, 1, h, color);
-    //    this.fillRect(x + w, y, 1, h, color);
-    //};
-    //
-    //it.point = function (x, y, color) {
-    //    this.fillRect(x, y, 1, 1, color);
-    //};
+    it.fillRect = fillRect;
+
+    it.strokeRect = function (x, y, w, h, color) {
+        fillRect(x, y, w, 1, color);
+        fillRect(x, y + h, w, 1, color);
+        fillRect(x, y, 1, h, color);
+        fillRect(x + w, y, 1, h, color);
+    };
+
+    it.point = function (x, y, color) {
+        this.fillRect(x, y, 1, 1, color);
+    };
 
     it.save = function() {
         matrixStack.save();
@@ -272,6 +272,8 @@ var GlContext = Class.extend(function(it){
         gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
         gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 
+        commonShaderPrg.bind();
+
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
             commonShaderPrg.setUniform('u_matrix',
                 makePositionMatrix(
@@ -304,6 +306,8 @@ var GlContext = Class.extend(function(it){
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         this.restore();
     };
+
+    var self = it;
 
 },{
     isAcceptable: function(){

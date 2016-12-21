@@ -1,5 +1,4 @@
 var modules = {}, require = function(name){
-    //console.trace('require: ',name);
     var moduleObj = modules[name];
 
     if (!moduleObj) {
@@ -17,6 +16,8 @@ var modules = {}, require = function(name){
         moduleObj.code(module);
     }
 };
+
+
 
 
 window.require = require;
@@ -600,7 +601,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -2562,6 +2563,7 @@ modules['gameObject'] =
 	        self.tileRepeat ?
 	            _drawPattern(ctx,self):
 	            _draw(ctx,self);
+	        ctx.strokeRect(0,0,self.width,self.height,[0.2,1,1,0.5]);
 	
 	        ctx.restore();
 	    }
@@ -3289,7 +3291,7 @@ modules['renderer'] =
 	    }
 	    ctxClass = null;
 	    if (GlContext.isAcceptable()) ctxClass = GlContext;
-	    if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
+	    //if (CanvasContext.isAcceptable()) ctxClass = CanvasContext;
 	    else throw "can not create rendering context";
 	    ctx = new ctxClass();
 	    game.setCtx(ctx);
@@ -3597,7 +3599,8 @@ modules['glContext'] =
 	
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
-	    var commonShaderPrg;
+	    var alpha = 1;
+	    var commonShaderPrg, colorShaderPrg;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
@@ -3605,7 +3608,6 @@ modules['glContext'] =
 	    var gameProps;
 	    var colorBGDefault = [255,255,255];
 	    var scene = null;
-	    var self = this;
 	
 	    it.init = function(canvas){
 	
@@ -3614,6 +3616,10 @@ modules['glContext'] =
 	        commonShaderPrg = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
+	        ]);
+	        colorShaderPrg = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.color['fragment.frag']
 	        ]);
 	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform('u_alpha',1);
@@ -3650,8 +3656,8 @@ modules['glContext'] =
 	        scene = _scene;
 	    };
 	
-	    it.setAlpha = function(alpha) {
-	        commonShaderPrg.setUniform('u_alpha',alpha);
+	    it.setAlpha = function(_alpha) {
+	        alpha = _alpha;
 	    };
 	
 	    it.getError = function(){
@@ -3662,14 +3668,14 @@ modules['glContext'] =
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
 	        // this matirx will convert from pixels to clip space
-	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, -100);
+	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, 1);
 	
 	        // this matrix will scale our 1 unit quad
 	        // from 1 unit to dstWidth, dstHeight units
 	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
 	
 	        // this matrix will translate our quad to dstX, dstY
-	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 1);
+	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
 	
 	        // multiply them all togehter
 	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
@@ -3718,16 +3724,14 @@ modules['glContext'] =
 	            currTex = texture;
 	        }
 	
-	        // Set the texture matrix.
+	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	
-	        // Set the matrix.
 	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
-	
+	        commonShaderPrg.setUniform('u_alpha',alpha);
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	    };
 	
@@ -3767,34 +3771,32 @@ modules['glContext'] =
 	        gl.clear(gl.COLOR_BUFFER_BIT);
 	    };
 	
-	    it.fillRect = function (x, y, w, h, color) {
+	    var fillRect = function (x, y, w, h, color) {
 	
-	        // Set the matrix.
-	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+	        colorShaderPrg.bind();
+	        colorShaderPrg.setUniform("u_matrix",makePositionMatrix(
 	                x,y,w,h,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
-	
+	        colorShaderPrg.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        //gl.blendFunc(gl.ONE, gl.ONE);
-	
-	        // draw the quad (2 triangles, 6 vertices)
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	    };
 	
-	    //it.strokeRect = function (x, y, w, h, color) {
-	    //    this.fillRect(x, y, w, 1, color);
-	    //    this.fillRect(x, y + h, w, 1, color);
-	    //    this.fillRect(x, y, 1, h, color);
-	    //    this.fillRect(x + w, y, 1, h, color);
-	    //};
-	    //
-	    //it.point = function (x, y, color) {
-	    //    this.fillRect(x, y, 1, 1, color);
-	    //};
+	    it.fillRect = fillRect;
+	
+	    it.strokeRect = function (x, y, w, h, color) {
+	        fillRect(x, y, w, 1, color);
+	        fillRect(x, y + h, w, 1, color);
+	        fillRect(x, y, 1, h, color);
+	        fillRect(x + w, y, 1, h, color);
+	    };
+	
+	    it.point = function (x, y, color) {
+	        this.fillRect(x, y, 1, 1, color);
+	    };
 	
 	    it.save = function() {
 	        matrixStack.save();
@@ -3848,6 +3850,8 @@ modules['glContext'] =
 	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
+	        commonShaderPrg.bind();
+	
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            commonShaderPrg.setUniform('u_matrix',
 	                makePositionMatrix(
@@ -3880,6 +3884,8 @@ modules['glContext'] =
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	        this.restore();
 	    };
+	
+	    var self = it;
 	
 	},{
 	    isAcceptable: function(){
@@ -4286,8 +4292,18 @@ modules['tween'] =
 	
 	    var normalizeFromTo = function(fromToVal){
 	        fromToVal.from = fromToVal.from || {};
+	        fromToVal.to = fromToVal.to || {};
+	        var allPropsMap = {};
+	        Object.keys(fromToVal.from).forEach(function(keyFrom){
+	            allPropsMap[keyFrom] = true;
+	        });
 	        Object.keys(fromToVal.to).forEach(function(keyTo){
-	            propsToChange.push(keyTo);
+	            allPropsMap[keyTo] = true;
+	        });
+	        propsToChange = Object.keys(allPropsMap);
+	        propsToChange.forEach(function(prp){
+	            if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = obj[prp];
+	            if (fromToVal.top[prp]===undefined) fromToVal.from[prp] = obj[prp];
 	        });
 	        return fromToVal;
 	    };
@@ -4309,7 +4325,6 @@ modules['tween'] =
 	        var l = propsToChange.length;
 	        while(l--){
 	            var prp = propsToChange[l];
-	            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
 	            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
 	        }
 	        progressFn && progressFn(obj);
