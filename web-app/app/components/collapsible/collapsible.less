@@ -1,13 +1,15 @@
 .collapsible_header {
   background-color: #aaa;
+  padding: 5px;
   margin: 0;
+  border-bottom: 1px solid grey;
   cursor: pointer;
 }
 
 .collapsible_content {
   display: none;
-}
-
-.collapsible_content.opened {
-  display: block;
+  background-color: #f2f2f2;
+  &.opened {
+    display: block;
+  }
 }

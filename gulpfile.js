@@ -11,10 +11,11 @@ var path = require('path');
 
 gulp.task('js-vendor', function() {
     return gulp.src([
-            'web-app/js/vendor/split.js',
-            'web-app/js/vendor/vue.js',
-            'web-app/js/vendor/vue-resources.js',
-            'web-app/js/vendor/vue-router.js'
+            'web-app/vendor/split.js',
+            'web-app/vendor/vue.js',
+            'web-app/vendor/vue-form.js',
+            'web-app/vendor/vue-resources.js',
+            'web-app/vendor/vue-router.js'
         ])
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('resources/public/js/build/'));
@@ -24,10 +25,10 @@ gulp.task('js-vendor', function() {
 gulp.task('js-bundle', function() {
     return (
         browserify({
-            entries: ['web-app/js/bootstrap.js'],
-            paths: ['./web-app/js/app/']
+            entries: ['web-app/bootstrap.js'],
+            paths: ['./web-app/app/']
         })
-        .transform(stringify(['.hjs', '.html']))
+        .transform(stringify(['.html']))
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(gulp.dest('resources/public/js/build/'))
@@ -36,8 +37,8 @@ gulp.task('js-bundle', function() {
 
 gulp.task('less', function () {
     return gulp
-        .src('web-app/less/main.less')
-        .pipe(addSrc('web-app/js/app/**/*.less'))
+        .src('web-app/main.less')
+        .pipe(addSrc('web-app/app/**/*.less'))
         .pipe(concat('bundle.less'))
         .pipe(less())
         .pipe(gulp.dest('resources/public/css'));

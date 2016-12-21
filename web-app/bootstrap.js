@@ -11,6 +11,8 @@ const router = new VueRouter({
     ]
 });
 
+VeeValidate.install(Vue);
+
 const app = new Vue(
     {
         router:router

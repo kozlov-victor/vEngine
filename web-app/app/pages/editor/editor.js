@@ -9,13 +9,13 @@ var onMounted = function _onMounted(){
     });
     var vertical = Split(['#c', '#d'], {
         direction: 'vertical',
-        sizes: [95,5],
+        sizes: [94,5],
         gutterSize: 5,
         cursor: 'col-resize',
         minSize:10
     });
     window.addEventListener('resize',function(){
-        vertical.setSizes([95,5]);
+        vertical.setSizes([94,5]);
     });
 };
 

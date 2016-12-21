@@ -16,19 +16,19 @@ var Resource = function(){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
                 if (bundle[key] && bundle[key].call) return;
-                editData.raw[key] = bundle[key];
+                editData[key] = bundle[key];
             });
-            editData.raw.gameProps = bundle.gameProps;
-            editData.raw.commonBehaviourList = new collections.List();
+            editData.gameProps = bundle.gameProps;
+            editData.commonBehaviourList = new collections.List();
             response.commonBehaviour.forEach(function(cb){
-                editData.raw.commonBehaviourList.add(new CommonBehaviour(cb));
+                editData.commonBehaviourList.add(new CommonBehaviour(cb));
             });
-            editData.raw.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
+            editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
         });
     };
     this.loadProject = function(projectName){
         editData.reset();
-        editData.raw.projectName = projectName;
+        editData.projectName = projectName;
         document.title = projectName;
         sessionStorage.projectName = projectName;
         Promise.

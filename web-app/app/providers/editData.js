@@ -1,11 +1,10 @@
 
 var collections = _require('collections');
 
-var res;
+var res = {};
 
-var reset = function(){
+res.reset = function(){
 
-    res = {};
     res.testEditData = 'edit data ok';
     res.commonBehaviourList = null;
     res.currGameObjectInEdit = null;
@@ -20,6 +19,7 @@ var reset = function(){
     res.currParticleSystemInEdit = null;
     res.currProjectInEdit = null;
     res.currTileIndexInEdit = null;
+    res.gameProps = {};
 
     res.userInterfaceList = new collections.List();
 
@@ -38,8 +38,6 @@ var reset = function(){
     };
 };
 
-reset();
+res.reset();
 
-module.exports.reset = reset;
-
-module.exports.raw = res;
+module.exports = res;

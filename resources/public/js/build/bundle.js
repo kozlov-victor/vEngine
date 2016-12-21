@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = "<div>\n    <div\n        class=\"collapsible_header\"\n        @click=\"opened=!opened\"\n    >\n        {{title}}\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
+module.exports = "<div>\n    <div\n        class=\"collapsible_header noSelect\"\n        @click=\"opened=!opened\"\n    >\n        {{title}}\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
 
 },{}],2:[function(require,module,exports){
 module.exports = Vue.component('app-collapsible', {
@@ -15,14 +15,15 @@ module.exports = Vue.component('app-collapsible', {
     }
 });
 },{"./collapsible.html":1}],3:[function(require,module,exports){
-module.exports = "\n<div class=\"template\">\n    <app-collapsible title=\"title here\">\n        content here\n    </app-collapsible>\n\n    <app-collapsible title=\"title here2\">\n        content here2\n    </app-collapsible>\n</div>";
+module.exports = "\n<div>\n    <app-collapsible :title=\"i18n.game\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                {{errors}}\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-validate=\"editData.gameProps.width\" data-vv-rules=\"min:1|max:20\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            qv-change=\"gamePropsForm.$valid && saveGameProps()\"/>\n                </div>\n            </div>\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.height}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<input class=\"narrow\" ng-model=\"editData.gameProps.height\" type=\"number\" min=\"1\" max=\"20000\" ng-change=\"gameProps.$valid && saveGameProps()\"/>-->\n                <!--</div>-->\n            <!--</div>-->\n\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.scaleStrategy}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.scaleStrategy\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"{{value}}\" ng-repeat=\"(key,value) in scales\">{{key}}</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.preloadingScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.preloadingSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"\">&#45;&#45;</option>-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.startSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.startScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.startSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.preloadingSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
 },{}],4:[function(require,module,exports){
-Vue.component('left-panel', {
+Vue.component('app-game-props', {
     props: [],
     template: require('./gameProps.html'),
     data: function(){
         return {
+            errors: {},
             editData: require('providers/editData'),
             i18n: require('providers/i18n').getAll()
         }
@@ -35,7 +36,7 @@ Vue.component('left-panel', {
     }
 });
 },{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":7,"providers/i18n":9}],5:[function(require,module,exports){
-module.exports = "<div class=\"template\">\r\n    <div id=\"c\" class=\"split\">\r\n        <div id=\"a\" class=\"split split-horizontal content\">\r\n            <left-panel/>\r\n        </div>\r\n        <div id=\"b\" class=\"split split-horizontal content\">\r\n            b\r\n        </div>\r\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\r\n    </div>\r\n    <div id=\"d\" class=\"split content\">d</div>\r\n</div>\r\n\r\n";
+module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
 
 },{}],6:[function(require,module,exports){
 require('./components/leftPanel/gameProps/gameProps');
@@ -49,13 +50,13 @@ var onMounted = function _onMounted(){
     });
     var vertical = Split(['#c', '#d'], {
         direction: 'vertical',
-        sizes: [95,5],
+        sizes: [94,5],
         gutterSize: 5,
         cursor: 'col-resize',
         minSize:10
     });
     window.addEventListener('resize',function(){
-        vertical.setSizes([95,5]);
+        vertical.setSizes([94,5]);
     });
 };
 
@@ -75,11 +76,10 @@ module.exports = {
 
 var collections = _require('collections');
 
-var res;
+var res = {};
 
-var reset = function(){
+res.reset = function(){
 
-    res = {};
     res.testEditData = 'edit data ok';
     res.commonBehaviourList = null;
     res.currGameObjectInEdit = null;
@@ -94,6 +94,7 @@ var reset = function(){
     res.currParticleSystemInEdit = null;
     res.currProjectInEdit = null;
     res.currTileIndexInEdit = null;
+    res.gameProps = {};
 
     res.userInterfaceList = new collections.List();
 
@@ -112,11 +113,10 @@ var reset = function(){
     };
 };
 
-reset();
+res.reset();
 
-module.exports.reset = reset;
+module.exports = res;
 
-module.exports.raw = res;
 },{}],8:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
@@ -253,19 +253,19 @@ var Resource = function(){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
                 if (bundle[key] && bundle[key].call) return;
-                editData.raw[key] = bundle[key];
+                editData[key] = bundle[key];
             });
-            editData.raw.gameProps = bundle.gameProps;
-            editData.raw.commonBehaviourList = new collections.List();
+            editData.gameProps = bundle.gameProps;
+            editData.commonBehaviourList = new collections.List();
             response.commonBehaviour.forEach(function(cb){
-                editData.raw.commonBehaviourList.add(new CommonBehaviour(cb));
+                editData.commonBehaviourList.add(new CommonBehaviour(cb));
             });
-            editData.raw.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
+            editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
         });
     };
     this.loadProject = function(projectName){
         editData.reset();
-        editData.raw.projectName = projectName;
+        editData.projectName = projectName;
         document.title = projectName;
         sessionStorage.projectName = projectName;
         Promise.
@@ -543,6 +543,8 @@ const router = new VueRouter({
     ]
 });
 
+VeeValidate.install(Vue);
+
 const app = new Vue(
     {
         router:router
@@ -550,4 +552,5 @@ const app = new Vue(
 ).$mount('#app');
 
 router.init(app);
+
 },{"pages/editor/editor":6,"providers/resource":10}]},{},[11]);

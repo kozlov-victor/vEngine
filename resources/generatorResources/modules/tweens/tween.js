@@ -12,8 +12,18 @@ var Tween = function(obj,fromToVal,tweenTime,easeFnName){
 
     var normalizeFromTo = function(fromToVal){
         fromToVal.from = fromToVal.from || {};
+        fromToVal.to = fromToVal.to || {};
+        var allPropsMap = {};
+        Object.keys(fromToVal.from).forEach(function(keyFrom){
+            allPropsMap[keyFrom] = true;
+        });
         Object.keys(fromToVal.to).forEach(function(keyTo){
-            propsToChange.push(keyTo);
+            allPropsMap[keyTo] = true;
+        });
+        propsToChange = Object.keys(allPropsMap);
+        propsToChange.forEach(function(prp){
+            if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = obj[prp];
+            if (fromToVal.top[prp]===undefined) fromToVal.from[prp] = obj[prp];
         });
         return fromToVal;
     };
@@ -35,7 +45,6 @@ var Tween = function(obj,fromToVal,tweenTime,easeFnName){
         var l = propsToChange.length;
         while(l--){
             var prp = propsToChange[l];
-            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
             obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
         }
         progressFn && progressFn(obj);
