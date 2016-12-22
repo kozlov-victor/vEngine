@@ -3,7 +3,7 @@ Vue.component('app-game-props', {
     template: require('./gameProps.html'),
     data: function(){
         return {
-            errors: {},
+            form:require('providers/validator').new(),
             editData: require('providers/editData'),
             i18n: require('providers/i18n').getAll()
         }
@@ -12,6 +12,8 @@ Vue.component('app-game-props', {
         appCollapsible: require('components/collapsible/collapsible')
     },
     methods: {
-
+        saveGameProps: function(){
+            console.log('save',JSON.stringify(this.editData.gameProps));
+        }
     }
 });

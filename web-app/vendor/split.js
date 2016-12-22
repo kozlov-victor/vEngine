@@ -197,8 +197,8 @@
 
                     // Set the cursor, both on the gutter and the parent element.
                     // Doing only a, b and gutter causes flickering.
-                    self.gutter.style.cursor = options.cursor
-                    self.parent.style.cursor = options.cursor
+                    //self.gutter.style.cursor = options.cursor
+                    //self.parent.style.cursor = options.cursor
 
                     // Cache the initial sizes of the pair.
                     calculateSizes.call(self)

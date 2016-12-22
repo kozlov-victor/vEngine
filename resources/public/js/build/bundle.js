@@ -15,7 +15,7 @@ module.exports = Vue.component('app-collapsible', {
     }
 });
 },{"./collapsible.html":1}],3:[function(require,module,exports){
-module.exports = "\n<div>\n    <app-collapsible :title=\"i18n.game\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                {{errors}}\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            qv-change=\"gamePropsForm.$valid && saveGameProps()\"/>\n                </div>\n            </div>\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.height}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<input class=\"narrow\" ng-model=\"editData.gameProps.height\" type=\"number\" min=\"1\" max=\"20000\" ng-change=\"gameProps.$valid && saveGameProps()\"/>-->\n                <!--</div>-->\n            <!--</div>-->\n\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.scaleStrategy}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.scaleStrategy\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"{{value}}\" ng-repeat=\"(key,value) in scales\">{{key}}</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.preloadingScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.preloadingSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"\">&#45;&#45;</option>-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.startSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.startScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.startSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.preloadingSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n\n        </form>\n\n    </app-collapsible>\n</div>";
+module.exports = "\n<div>\n    <app-collapsible :title=\"i18n.game\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.scaleStrategy}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.scaleStrategy\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"{{value}}\" ng-repeat=\"(key,value) in scales\">{{key}}</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.preloadingScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.preloadingSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"\">&#45;&#45;</option>-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.startSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.startScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.startSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.preloadingSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
 },{}],4:[function(require,module,exports){
 Vue.component('app-game-props', {
@@ -23,7 +23,7 @@ Vue.component('app-game-props', {
     template: require('./gameProps.html'),
     data: function(){
         return {
-            errors: {},
+            form:require('providers/validator').new(),
             editData: require('providers/editData'),
             i18n: require('providers/i18n').getAll()
         }
@@ -32,10 +32,12 @@ Vue.component('app-game-props', {
         appCollapsible: require('components/collapsible/collapsible')
     },
     methods: {
-
+        saveGameProps: function(){
+            console.log('save',JSON.stringify(this.editData.gameProps));
+        }
     }
 });
-},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":7,"providers/i18n":9}],5:[function(require,module,exports){
+},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":7,"providers/i18n":9,"providers/validator":11}],5:[function(require,module,exports){
 module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
 
 },{}],6:[function(require,module,exports){
@@ -531,6 +533,15 @@ var Resource = function(){
 module.exports = new Resource();
 },{"providers/editData":7,"providers/http":8}],11:[function(require,module,exports){
 
+module.exports.new = function(){
+    return {
+        valid: function(){
+            return true;
+        }
+    }
+};
+},{}],12:[function(require,module,exports){
+
 require('providers/resource');
 
 const router = new VueRouter({
@@ -551,4 +562,4 @@ const app = new Vue(
 
 router.init(app);
 
-},{"pages/editor/editor":6,"providers/resource":10}]},{},[11]);
+},{"pages/editor/editor":6,"providers/resource":10}]},{},[12]);
