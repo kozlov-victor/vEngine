@@ -91,9 +91,8 @@ module.exports.init = function(app) {
         res.send({});
     });
 
-    app.post('/gameProps/save',multipart,function(req,res){
-        var projectName = req.body.projectName;
-        resourcesController.saveGameProps(getModelFromBody(req),projectName);
+    app.post('/gameProps/save',function(req,res){
+        resourcesController.saveGameProps(req.body.model,req.body.projectName);
         res.send({});
     });
 

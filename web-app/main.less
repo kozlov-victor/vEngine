@@ -10,6 +10,7 @@ html,body,div {
   margin: 0;
   padding: 0;
   border: none;
+  font-family: monospace;
 }
 #app,.template {
   height: 100%;
@@ -28,6 +29,12 @@ img {
   cursor:pointer;
 }
 
+input,select {
+  display: inline-block;
+  vertical-align: top;
+  width: 90%;
+}
+
 input.error {
   color:red;
   outline: 1px solid red;
@@ -36,6 +43,10 @@ input.error {
 .table {
   display: table;
   border-collapse: collapse;
+}
+
+.width100 {
+  width: 100%;
 }
 
 .row {

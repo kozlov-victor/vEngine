@@ -1,8 +1,11 @@
 <div>
     <div
-        class="collapsible_header noSelect"
-        @click="opened=!opened"
+        class="collapsible_header bold noSelect"
+        @click="toggle()"
     >
+        <span
+                class="collapsible_point"
+                :class="{rotated:opened}">▷</span>
         {{title}}
     </div>
     <div

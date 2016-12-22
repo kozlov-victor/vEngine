@@ -13,6 +13,7 @@ div {
   margin: 0;
   padding: 0;
   border: none;
+  font-family: monospace;
 }
 #app,
 .template {
@@ -28,6 +29,12 @@ img {
 .pointer {
   cursor: pointer;
 }
+input,
+select {
+  display: inline-block;
+  vertical-align: top;
+  width: 90%;
+}
 input.error {
   color: red;
   outline: 1px solid red;
@@ -35,6 +42,9 @@ input.error {
 .table {
   display: table;
   border-collapse: collapse;
+}
+.width100 {
+  width: 100%;
 }
 .row {
   display: table-row;
@@ -147,6 +157,13 @@ label,
 }
 .collapsible_content.opened {
   display: block;
+}
+.collapsible_point {
+  display: inline-block;
+  vertical-align: bottom;
+}
+.collapsible_point.rotated {
+  transform: rotate(90deg);
 }
 .split {
   -webkit-box-sizing: border-box;

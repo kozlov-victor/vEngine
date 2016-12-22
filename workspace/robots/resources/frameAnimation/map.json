@@ -1,0 +1,38 @@
+[
+    {
+        "frames": [
+            12,
+            13,
+            14,
+            13
+        ],
+        "name": "walk",
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "8341_6957_9"
+    },
+    {
+        "frames": [
+            33,
+            34,
+            35,
+            34
+        ],
+        "name": "walk",
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "9199_8749_11"
+    },
+    {
+        "frames": [
+            18,
+            19,
+            20,
+            19
+        ],
+        "name": "walk",
+        "type": "frameAnimation",
+        "duration": 1000,
+        "id": "5001_7141_35"
+    }
+]

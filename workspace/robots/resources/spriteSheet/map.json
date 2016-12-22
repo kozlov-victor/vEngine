@@ -1,0 +1,32 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/robots.png",
+        "name": "robots",
+        "width": 384,
+        "height": 256,
+        "numOfFramesH": 12,
+        "numOfFramesV": 8,
+        "type": "spriteSheet",
+        "id": "5054_3316_7"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/mage.gif",
+        "name": "mage",
+        "width": 956,
+        "height": 380,
+        "numOfFramesH": 10,
+        "numOfFramesV": 4,
+        "type": "spriteSheet",
+        "id": "0654_0857_58"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/map.gif",
+        "name": "map",
+        "width": 480,
+        "height": 480,
+        "numOfFramesH": 12,
+        "numOfFramesV": 12,
+        "type": "spriteSheet",
+        "id": "4817_7543_59"
+    }
+]

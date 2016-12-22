@@ -1,4 +1,3 @@
-require('./components/leftPanel/gameProps/gameProps');
 
 var onMounted = function _onMounted(){
     Split(['#a', '#b', '#e'], {
@@ -29,5 +28,9 @@ module.exports = {
     },
     methods: {
 
+    },
+    components: {
+        appGameProps: require('./components/leftPanel/gameProps/gameProps'),
+        appScenes: require('./components/leftPanel/scenes/scenes')
     }
 };

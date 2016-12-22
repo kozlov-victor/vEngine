@@ -1,31 +1,39 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = "<div>\n    <div\n        class=\"collapsible_header noSelect\"\n        @click=\"opened=!opened\"\n    >\n        {{title}}\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
+module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n        @click=\"toggle()\"\n    >\n        <span\n                class=\"collapsible_point\"\n                :class=\"{rotated:opened}\">▷</span>\n        {{title}}\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
 
 },{}],2:[function(require,module,exports){
+
+
 module.exports = Vue.component('app-collapsible', {
-    props: ['title'],
+    props: ['title','id'],
     template: require('./collapsible.html'),
     data: function(){
         return {
-            opened: false
+            opened: localStorage[this.id]=='true'
         }
     },
     methods: {
-
+        toggle: function(){
+            this.opened = ! this.opened;
+            localStorage[this.id] = this.opened;
+        }
     }
 });
 },{"./collapsible.html":1}],3:[function(require,module,exports){
-module.exports = "\n<div>\n    <app-collapsible :title=\"i18n.game\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.scaleStrategy}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.scaleStrategy\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"{{value}}\" ng-repeat=\"(key,value) in scales\">{{key}}</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.preloadingScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.preloadingSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option value=\"\">&#45;&#45;</option>-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.startSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n            <!--<div class=\"row\">-->\n                <!--<div class=\"cell\">-->\n                    <!--{{i18n.startScene}}-->\n                <!--</div>-->\n                <!--<div class=\"cell\">-->\n                    <!--<select class=\"narrow\" ng-model=\"editData.gameProps.startSceneId\" ng-change=\"saveGameProps()\">-->\n                        <!--<option-->\n                                <!--ng-disabled=\"item.id==editData.gameProps.preloadingSceneId\"-->\n                                <!--value=\"{{item.id}}\"-->\n                                <!--ng-repeat=\"item in editData.sceneList.rs\">{{item.name}}-->\n                        <!--</option>-->\n                    <!--</select>-->\n                <!--</div>-->\n            <!--</div>-->\n\n\n        </form>\n\n    </app-collapsible>\n</div>";
+module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
 },{}],4:[function(require,module,exports){
-Vue.component('app-game-props', {
+var resource = require('providers/resource');
+
+module.exports = Vue.component('app-game-props', {
     props: [],
     template: require('./gameProps.html'),
     data: function(){
         return {
             form:require('providers/validator').new(),
             editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
+            i18n: require('providers/i18n').getAll(),
+            scales: _require('consts').SCALE_STRATEGY
         }
     },
     components: {
@@ -33,15 +41,37 @@ Vue.component('app-game-props', {
     },
     methods: {
         saveGameProps: function(){
-            console.log('save',JSON.stringify(this.editData.gameProps));
+            resource.saveGameProps(this.editData.gameProps);
         }
     }
 });
-},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":7,"providers/i18n":9,"providers/validator":11}],5:[function(require,module,exports){
-module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
+},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":9,"providers/i18n":11,"providers/resource":12,"providers/validator":13}],5:[function(require,module,exports){
+module.exports = "<app-collapsible\n        :title=\"i18n.scenes\"\n        :id=\"'scenes'\"\n        >\n    <div\n            class=\"withPaddingLeft\"\n            v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible\n                :title=\"scene.name\"\n                :id=\"scene.id\">\n            {{scene.name}}\n        </app-collapsible>\n    </div>\n\n\n</app-collapsible>";
 
 },{}],6:[function(require,module,exports){
-require('./components/leftPanel/gameProps/gameProps');
+var resource = require('providers/resource');
+
+module.exports = Vue.component('app-scenes', {
+    props: [],
+    template: require('./scenes.html'),
+    data: function(){
+        return {
+            editData: require('providers/editData'),
+            i18n: require('providers/i18n').getAll()
+        }
+    },
+    components: {
+
+    },
+    methods: {
+
+    }
+});
+
+},{"./scenes.html":5,"providers/editData":9,"providers/i18n":11,"providers/resource":12}],7:[function(require,module,exports){
+module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
+
+},{}],8:[function(require,module,exports){
 
 var onMounted = function _onMounted(){
     Split(['#a', '#b', '#e'], {
@@ -72,9 +102,13 @@ module.exports = {
     },
     methods: {
 
+    },
+    components: {
+        appGameProps: require('./components/leftPanel/gameProps/gameProps'),
+        appScenes: require('./components/leftPanel/scenes/scenes')
     }
 };
-},{"./components/leftPanel/gameProps/gameProps":4,"./editor.html":5}],7:[function(require,module,exports){
+},{"./components/leftPanel/gameProps/gameProps":4,"./components/leftPanel/scenes/scenes":6,"./editor.html":7}],9:[function(require,module,exports){
 
 var collections = _require('collections');
 
@@ -119,7 +153,7 @@ res.reset();
 
 module.exports = res;
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
     Vue.http.
@@ -141,7 +175,7 @@ module.exports.post = function(url,data,callBack){
         }
     );
 };
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 
 var _i18n = {};
 
@@ -236,7 +270,7 @@ _i18n.getAll = function(){
 };
 
 module.exports = _i18n;
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 var Resource = function(){
 
@@ -255,6 +289,7 @@ var Resource = function(){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
                 if (bundle[key] && bundle[key].call) return;
+                Vue.set(editData,key,bundle[key]);
                 editData[key] = bundle[key];
             });
             editData.gameProps = bundle.gameProps;
@@ -353,17 +388,16 @@ var Resource = function(){
     //            callBack && callBack();
     //        });
     //};
-    //this.saveGameProps = function(gameProps){
-    //    var formData = new FormData();
-    //    formData.append('model',JSON.stringify(gameProps));
-    //    formData.append('projectName',editData.projectName);
-    //    $http({
-    //        url: '/gameProps/save',
-    //        method: "POST",
-    //        data: formData,
-    //        headers: {'Content-Type': undefined}
-    //    })
-    //};
+    this.saveGameProps = function(gameProps){
+        http.post(
+            '/gameProps/save',
+            {
+                model:gameProps,
+                projectName: editData.projectName
+            }
+        )
+    };
+
     //this.post = function(url,data,callBack){
     //    data.projectName = editData.projectName;
     //    $http({
@@ -521,7 +555,7 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'test';
+        sessionStorage.projectName = 'slots';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {
@@ -531,7 +565,7 @@ var Resource = function(){
 };
 
 module.exports = new Resource();
-},{"providers/editData":7,"providers/http":8}],11:[function(require,module,exports){
+},{"providers/editData":9,"providers/http":10}],13:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
@@ -540,7 +574,7 @@ module.exports.new = function(){
         }
     }
 };
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -562,4 +596,4 @@ const app = new Vue(
 
 router.init(app);
 
-},{"pages/editor/editor":6,"providers/resource":10}]},{},[12]);
+},{"pages/editor/editor":8,"providers/resource":12}]},{},[14]);

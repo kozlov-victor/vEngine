@@ -1,12 +1,17 @@
+
+
 module.exports = Vue.component('app-collapsible', {
-    props: ['title'],
+    props: ['title','id'],
     template: require('./collapsible.html'),
     data: function(){
         return {
-            opened: false
+            opened: localStorage[this.id]=='true'
         }
     },
     methods: {
-
+        toggle: function(){
+            this.opened = ! this.opened;
+            localStorage[this.id] = this.opened;
+        }
     }
 });

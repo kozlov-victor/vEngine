@@ -16,6 +16,7 @@ var Resource = function(){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
                 if (bundle[key] && bundle[key].call) return;
+                Vue.set(editData,key,bundle[key]);
                 editData[key] = bundle[key];
             });
             editData.gameProps = bundle.gameProps;
@@ -114,17 +115,16 @@ var Resource = function(){
     //            callBack && callBack();
     //        });
     //};
-    //this.saveGameProps = function(gameProps){
-    //    var formData = new FormData();
-    //    formData.append('model',JSON.stringify(gameProps));
-    //    formData.append('projectName',editData.projectName);
-    //    $http({
-    //        url: '/gameProps/save',
-    //        method: "POST",
-    //        data: formData,
-    //        headers: {'Content-Type': undefined}
-    //    })
-    //};
+    this.saveGameProps = function(gameProps){
+        http.post(
+            '/gameProps/save',
+            {
+                model:gameProps,
+                projectName: editData.projectName
+            }
+        )
+    };
+
     //this.post = function(url,data,callBack){
     //    data.projectName = editData.projectName;
     //    $http({
@@ -282,7 +282,7 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'test';
+        sessionStorage.projectName = 'slots';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

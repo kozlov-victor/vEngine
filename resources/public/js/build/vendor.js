@@ -8675,6 +8675,13 @@ return Vue$3;
 
 })));
 
+
+var baseRule = {
+    required: function(value){
+        return value!=='';
+    }
+};
+
 var rules = {
     min: function (value,pattern) {
         return Number(value)>=Number(pattern);
@@ -8685,33 +8692,31 @@ var rules = {
 };
 
 
-var checkRule = function(ruleName,el,bindings){
+var checkRule = function(rulesObject,ruleName,el,bindings){
     var formObject = bindings.value.form;
     var prop = bindings.value.prop;
     if (formObject[prop]==undefined) {
         Vue.set(formObject,prop,{});
     }
 
-    if (el.value==='') {
-        if (!el.getAttribute('required')) return;
-    } else {
-        Vue.set(formObject[prop],'required',false);
-        return;
-    }
-
     var ruleValue = el.getAttribute(ruleName);
-    var ruleFn = rules[ruleName];
+    var ruleFn = rulesObject[ruleName];
     var result = ruleFn(el.value,ruleValue);
     if (!result) {
         el.classList.add('error');
     }
     Vue.set(formObject[prop],ruleName,result);
+    return result;
 };
 
 var validate = function(el,bindings){
     el.classList.remove('error');
+
+    var isRequiredPassed = checkRule(baseRule,'required',el,bindings);
+    if (!isRequiredPassed) return;
+
     Object.keys(rules).forEach(function(rule){
-        checkRule(rule,el,bindings);
+        checkRule(rules,rule,el,bindings);
     });
 };
 

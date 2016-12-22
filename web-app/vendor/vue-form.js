@@ -35,8 +35,8 @@ var checkRule = function(rulesObject,ruleName,el,bindings){
 var validate = function(el,bindings){
     el.classList.remove('error');
 
-    var isRequired = //
-
+    var isRequiredPassed = checkRule(baseRule,'required',el,bindings);
+    if (!isRequiredPassed) return;
 
     Object.keys(rules).forEach(function(rule){
         checkRule(rules,rule,el,bindings);

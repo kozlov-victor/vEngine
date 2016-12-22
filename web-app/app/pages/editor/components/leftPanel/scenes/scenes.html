@@ -1,0 +1,16 @@
+<app-collapsible
+        :title="i18n.scenes"
+        :id="'scenes'"
+        >
+    <div
+            class="withPaddingLeft"
+            v-for="scene in (editData.sceneList && editData.sceneList.rs)">
+        <app-collapsible
+                :title="scene.name"
+                :id="scene.id">
+            {{scene.name}}
+        </app-collapsible>
+    </div>
+
+
+</app-collapsible>

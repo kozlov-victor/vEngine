@@ -1,0 +1,101 @@
+[
+    {
+        "spriteSheetId": "5054_3316_7",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 12,
+        "name": "robot1",
+        "width": 32,
+        "height": 32,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [
+            "8341_6957_9"
+        ],
+        "rigid": 0,
+        "groupName": "",
+        "angle": 0,
+        "alpha": 1,
+        "id": "5751_4970_8"
+    },
+    {
+        "spriteSheetId": "5054_3316_7",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 34,
+        "name": "robot2",
+        "width": 32,
+        "height": 32,
+        "groupName": "",
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [
+            "9199_8749_11"
+        ],
+        "rigid": 0,
+        "angle": 0,
+        "alpha": 1,
+        "id": "1933_7627_10"
+    },
+    {
+        "spriteSheetId": "5054_3316_7",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 18,
+        "name": "robot3",
+        "width": 32,
+        "height": 32,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [
+            "5001_7141_35"
+        ],
+        "rigid": 0,
+        "groupName": "",
+        "angle": 0,
+        "alpha": 1,
+        "id": "9908_4747_34"
+    }
+]
