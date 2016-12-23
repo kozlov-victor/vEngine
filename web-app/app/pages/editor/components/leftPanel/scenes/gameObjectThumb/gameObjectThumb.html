@@ -1,0 +1,14 @@
+<div>
+    <div
+            v-if="!gameObject.subType"
+            :style="utils.merge(
+                utils.getGameObjectCss(gameObject),
+                {zoom:gameObject.height>30?30/gameObject.height:1}
+            )">
+    </div>
+    <div
+            ng-if="gameObject.subType"
+            :title="gameObject.name"
+            >
+    </div>
+</div>

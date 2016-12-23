@@ -8,7 +8,7 @@ window.app
         var mathEx = require('mathEx');
         var GameObject = require('gameObject');
 
-        this.FONT_SYMBOL_PADDING =
+        this.FONT_SYMBOL_PADDING = 5;
 
         this.recalcGameObjectSize = function(gameObject){
             var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});

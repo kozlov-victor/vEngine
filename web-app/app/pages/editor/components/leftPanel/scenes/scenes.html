@@ -1,16 +1,17 @@
-<app-collapsible
-        :title="i18n.scenes"
-        :id="'scenes'"
-        >
-    <div
-            class="withPaddingLeft"
-            v-for="scene in (editData.sceneList && editData.sceneList.rs)">
-        <app-collapsible
-                :title="scene.name"
-                :id="scene.id">
-            {{scene.name}}
+<app-collapsible :title="i18n.scenes" :id="'scenes'">
+    <div class="withPaddingLeft" v-for="scene in (editData.sceneList && editData.sceneList.rs)">
+        <app-collapsible :title="scene.name" :id="scene.id">
+            <div v-for="layer in scene._layers.rs" class="withPaddingLeft">
+                <app-collapsible :title="layer.name" :id="layer.id">
+                    <div class="withPaddingLeft">
+                        <app-collapsible :title="i18n.gameObjects+'('+layer._gameObjects.size()+')'" :id="layer.id">
+                            <div v-for="gameObject in layer._gameObjects.rs">
+                                <app-game-object-thumb :game-object="gameObject"/>
+                            </div>
+                        </app-collapsible>
+                    </div>
+                </app-collapsible>
+            </div>
         </app-collapsible>
     </div>
-
-
 </app-collapsible>

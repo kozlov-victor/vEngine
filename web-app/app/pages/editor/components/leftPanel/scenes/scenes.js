@@ -10,7 +10,7 @@ module.exports = Vue.component('app-scenes', {
         }
     },
     components: {
-
+        appGameObjectThumb: require('./gameObjectThumb/gameObjectThumb')
     },
     methods: {
 

@@ -45,10 +45,30 @@ module.exports = Vue.component('app-game-props', {
         }
     }
 });
-},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":9,"providers/i18n":11,"providers/resource":12,"providers/validator":13}],5:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :title=\"i18n.scenes\"\n        :id=\"'scenes'\"\n        >\n    <div\n            class=\"withPaddingLeft\"\n            v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible\n                :title=\"scene.name\"\n                :id=\"scene.id\">\n            {{scene.name}}\n        </app-collapsible>\n    </div>\n\n\n</app-collapsible>";
+},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":11,"providers/i18n":13,"providers/resource":14,"providers/validator":16}],5:[function(require,module,exports){
+module.exports = "<div>\r\n    <div\r\n            v-if=\"!gameObject.subType\"\r\n            :style=\"utils.merge(\r\n                utils.getGameObjectCss(gameObject),\r\n                {zoom:gameObject.height>30?30/gameObject.height:1}\r\n            )\">\r\n    </div>\r\n    <div\r\n            ng-if=\"gameObject.subType\"\r\n            :title=\"gameObject.name\"\r\n            >\r\n    </div>\r\n</div>";
 
 },{}],6:[function(require,module,exports){
+
+module.exports = Vue.component('app-game-object-thumb', {
+    props: ['gameObject'],
+    template: require('./gameObjectThumb.html'),
+    data: function(){
+        return {
+            utils: require('providers/utils')
+        }
+    },
+    components: {
+
+    },
+    methods: {
+
+    }
+});
+},{"./gameObjectThumb.html":5,"providers/utils":15}],7:[function(require,module,exports){
+module.exports = "<app-collapsible :title=\"i18n.scenes\" :id=\"'scenes'\">\n    <div class=\"withPaddingLeft\" v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible :title=\"scene.name\" :id=\"scene.id\">\n            <div v-for=\"layer in scene._layers.rs\" class=\"withPaddingLeft\">\n                <app-collapsible :title=\"layer.name\" :id=\"layer.id\">\n                    <div class=\"withPaddingLeft\">\n                        <app-collapsible :title=\"i18n.gameObjects+'('+layer._gameObjects.size()+')'\" :id=\"layer.id\">\n                            <div v-for=\"gameObject in layer._gameObjects.rs\">\n                                <app-game-object-thumb :game-object=\"gameObject\"/>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </app-collapsible>\n            </div>\n        </app-collapsible>\n    </div>\n</app-collapsible>";
+
+},{}],8:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-scenes', {
@@ -61,17 +81,17 @@ module.exports = Vue.component('app-scenes', {
         }
     },
     components: {
-
+        appGameObjectThumb: require('./gameObjectThumb/gameObjectThumb')
     },
     methods: {
 
     }
 });
 
-},{"./scenes.html":5,"providers/editData":9,"providers/i18n":11,"providers/resource":12}],7:[function(require,module,exports){
+},{"./gameObjectThumb/gameObjectThumb":6,"./scenes.html":7,"providers/editData":11,"providers/i18n":13,"providers/resource":14}],9:[function(require,module,exports){
 module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 var onMounted = function _onMounted(){
     Split(['#a', '#b', '#e'], {
@@ -108,7 +128,7 @@ module.exports = {
         appScenes: require('./components/leftPanel/scenes/scenes')
     }
 };
-},{"./components/leftPanel/gameProps/gameProps":4,"./components/leftPanel/scenes/scenes":6,"./editor.html":7}],9:[function(require,module,exports){
+},{"./components/leftPanel/gameProps/gameProps":4,"./components/leftPanel/scenes/scenes":8,"./editor.html":9}],11:[function(require,module,exports){
 
 var collections = _require('collections');
 
@@ -153,7 +173,7 @@ res.reset();
 
 module.exports = res;
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
     Vue.http.
@@ -175,7 +195,7 @@ module.exports.post = function(url,data,callBack){
         }
     );
 };
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 
 var _i18n = {};
 
@@ -270,7 +290,7 @@ _i18n.getAll = function(){
 };
 
 module.exports = _i18n;
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 var Resource = function(){
 
@@ -565,7 +585,37 @@ var Resource = function(){
 };
 
 module.exports = new Resource();
-},{"providers/editData":9,"providers/http":10}],13:[function(require,module,exports){
+},{"providers/editData":11,"providers/http":12}],15:[function(require,module,exports){
+
+var mathEx = _require('mathEx');
+var editData = require('providers/editData');
+
+
+var Utils = function(){
+    this.getGameObjectCss = function(gameObj){
+        if (!gameObj) return {};
+        return  {
+            width:                 gameObj.width+'px',
+            height:                gameObj.height+'px',
+            backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
+            backgroundPositionY: -gameObj._sprPosY+'px',
+            backgroundPositionX: -gameObj._sprPosX+'px',
+            backgroundRepeat:     'no-repeat',
+            opacity:              gameObj.alpha,
+            transform:            'scale('+gameObj.scale.x+','+gameObj.scale.y+') rotateZ('+mathEx.radToDeg(gameObj.angle)+'deg)'
+        };
+    };
+    this.merge = function(a,b){
+        var res = Object.create(a);
+        Object.keys(b).forEach(function(key){
+            res[key] = b[key];
+        });
+        return res;
+    };
+};
+
+module.exports = new Utils();
+},{"providers/editData":11}],16:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
@@ -574,7 +624,7 @@ module.exports.new = function(){
         }
     }
 };
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -596,4 +646,4 @@ const app = new Vue(
 
 router.init(app);
 
-},{"pages/editor/editor":8,"providers/resource":12}]},{},[14]);
+},{"pages/editor/editor":10,"providers/resource":14}]},{},[17]);
