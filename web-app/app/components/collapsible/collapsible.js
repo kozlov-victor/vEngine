@@ -1,7 +1,7 @@
 
 
 module.exports = Vue.component('app-collapsible', {
-    props: ['title','id'],
+    props: ['title','id','crud','object'],
     template: require('./collapsible.html'),
     data: function(){
         return {

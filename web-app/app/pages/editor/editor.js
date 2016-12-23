@@ -30,7 +30,8 @@ module.exports = {
 
     },
     components: {
-        appGameProps: require('./components/leftPanel/gameProps/gameProps'),
-        appScenes: require('./components/leftPanel/scenes/scenes')
+        appGameProps: require('./components/gameProps/gameProps'),
+        appScenes: require('./components/scenes/scenes'),
+        appGameObjects: require('./components/gameObjects/gameObjects')
     }
 };

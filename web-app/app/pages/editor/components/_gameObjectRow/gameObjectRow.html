@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="cell">
+        <span class="textOverflow">
+            {{gameObject.name}}
+        </span>
+    </div>
+    <div    class="cell"
+            v-if="!gameObject.subType">
+        <div :style="
+                utils.merge(
+                        utils.getGameObjectCss(gameObject),
+                        {zoom:gameObject.height>30?30/gameObject.height:1}
+                )"></div>
+    </div>
+    <div
+            class="cell"
+            v-if="gameObject.subType"
+            :title="gameObject.name"
+            >
+        <span class="textOverflow">
+            {{gameObject.subType}}
+        </span>
+    </div>
+    <div class="cell width30">
+        <div class="delete"></div>
+    </div>
+</div>

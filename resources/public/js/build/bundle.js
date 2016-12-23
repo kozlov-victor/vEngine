@@ -1,11 +1,11 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n        @click=\"toggle()\"\n    >\n        <span\n                class=\"collapsible_point\"\n                :class=\"{rotated:opened}\">▷</span>\n        {{title}}\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
+module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div\n        class=\"collapsible_header bold noSelect\"\n        @click=\"toggle()\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            :class=\"{rotated:opened}\">▷</span>\n                    <span>{{title}}</span>\n                </div>\n                <div class=\"cell rightAlign\">\n                    <div v-if=\"crud && crud.create\" class=\"add\" v-on:click.stop=\"crud.create()\"></div>\n                </div>\n                <div class=\"cell rightAlign\">\n                    <div v-if=\"crud && crud.edit\" class=\"edit\" v-on:click.stop=\"crud.edit(object)\"></div>\n                </div>\n                <div class=\"cell rightAlign\">\n                    <div v-if=\"crud && crud.delete\" class=\"delete\" v-on:click.stop=\"crud.delete(object)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
 
 },{}],2:[function(require,module,exports){
 
 
 module.exports = Vue.component('app-collapsible', {
-    props: ['title','id'],
+    props: ['title','id','crud','object'],
     template: require('./collapsible.html'),
     data: function(){
         return {
@@ -20,9 +20,53 @@ module.exports = Vue.component('app-collapsible', {
     }
 });
 },{"./collapsible.html":1}],3:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
+module.exports = "<div class=\"row\">\n    <div class=\"cell\">\n        <span class=\"textOverflow\">\n            {{gameObject.name}}\n        </span>\n    </div>\n    <div    class=\"cell\"\n            v-if=\"!gameObject.subType\">\n        <div :style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {zoom:gameObject.height>30?30/gameObject.height:1}\n                )\"></div>\n    </div>\n    <div\n            class=\"cell\"\n            v-if=\"gameObject.subType\"\n            :title=\"gameObject.name\"\n            >\n        <span class=\"textOverflow\">\n            {{gameObject.subType}}\n        </span>\n    </div>\n    <div class=\"cell width30\">\n        <div class=\"delete\"></div>\n    </div>\n</div>";
 
 },{}],4:[function(require,module,exports){
+
+module.exports = Vue.component('app-game-object-row', {
+    props: ['gameObject'],
+    template: require('./gameObjectRow.html'),
+    data: function(){
+        return {
+            utils: require('providers/utils')
+        }
+    },
+    components: {
+
+    },
+    methods: {
+
+    }
+});
+},{"./gameObjectRow.html":3,"providers/utils":17}],5:[function(require,module,exports){
+module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObjects\"\n            :crud=\"{\n                create:createGameObject\n            }\"\n            >\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100 rightText\">\n                <div\n                        is=\"appGameObjectRow\"\n                        :game-object=\"gameObject\"\n                        v-for=\"gameObject in (editData.gameObjectList && editData.gameObjectList.rs)\"\n                        >\n                </div>\n            </div>\n        </div>\n    </app-collapsible>\n</div>";
+
+},{}],6:[function(require,module,exports){
+
+module.exports = Vue.component('app-game-objects', {
+    props: [],
+    template: require('./gameObjects.html'),
+    data: function(){
+        return {
+            editData: require('providers/editData'),
+            i18n: require('providers/i18n').getAll()
+        }
+    },
+    components: {
+        appGameObjectRow: require('../_gameObjectRow/gameObjectRow')
+    },
+    methods: {
+        createGameObject: function(){
+            console.log('create go');
+        }
+    }
+});
+
+},{"../_gameObjectRow/gameObjectRow":4,"./gameObjects.html":5,"providers/editData":13,"providers/i18n":15}],7:[function(require,module,exports){
+module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
+
+},{}],8:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-game-props', {
@@ -45,30 +89,10 @@ module.exports = Vue.component('app-game-props', {
         }
     }
 });
-},{"./gameProps.html":3,"components/collapsible/collapsible":2,"providers/editData":11,"providers/i18n":13,"providers/resource":14,"providers/validator":16}],5:[function(require,module,exports){
-module.exports = "<div>\r\n    <div\r\n            v-if=\"!gameObject.subType\"\r\n            :style=\"utils.merge(\r\n                utils.getGameObjectCss(gameObject),\r\n                {zoom:gameObject.height>30?30/gameObject.height:1}\r\n            )\">\r\n    </div>\r\n    <div\r\n            ng-if=\"gameObject.subType\"\r\n            :title=\"gameObject.name\"\r\n            >\r\n    </div>\r\n</div>";
+},{"./gameProps.html":7,"components/collapsible/collapsible":2,"providers/editData":13,"providers/i18n":15,"providers/resource":16,"providers/validator":18}],9:[function(require,module,exports){
+module.exports = "<app-collapsible\n        :crud=\"{\n            create:createScene\n        }\"\n        :title=\"i18n.scenes\" :id=\"'scenes'\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\" v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible\n                :object=\"scene\"\n                :crud=\"{\n                    edit:editScene,\n                    delete:deleteScene\n                }\"\n                :title=\"scene.name\"\n                :id=\"scene.id\">\n            <div class=\"withPaddingLeft\">\n                <app-collapsible\n                        :title=\"i18n.layers\"\n                        :crud=\"{\n                            create:createLayer\n                        }\"\n                        >\n                    <div v-for=\"layer in scene._layers.rs\" class=\"withPaddingLeft\">\n                        <app-collapsible\n                                :object=\"layer\"\n                                :crud=\"{\n                            edit:editLayer,\n                            delete:deleteLayer\n                        }\"\n                                :title=\"layer.name\" :id=\"layer.id\">\n                            <div class=\"withPaddingLeft\">\n                                <div class=\"table width100\">\n                                    <div\n                                            is=\"appGameObjectRow\"\n                                            :game-object=\"gameObject\"\n                                            v-for=\"gameObject in layer._gameObjects.rs\"></div>\n                                </div>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </app-collapsible>\n            </div>\n        </app-collapsible>\n    </div>\n</app-collapsible>";
 
-},{}],6:[function(require,module,exports){
-
-module.exports = Vue.component('app-game-object-thumb', {
-    props: ['gameObject'],
-    template: require('./gameObjectThumb.html'),
-    data: function(){
-        return {
-            utils: require('providers/utils')
-        }
-    },
-    components: {
-
-    },
-    methods: {
-
-    }
-});
-},{"./gameObjectThumb.html":5,"providers/utils":15}],7:[function(require,module,exports){
-module.exports = "<app-collapsible :title=\"i18n.scenes\" :id=\"'scenes'\">\n    <div class=\"withPaddingLeft\" v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible :title=\"scene.name\" :id=\"scene.id\">\n            <div v-for=\"layer in scene._layers.rs\" class=\"withPaddingLeft\">\n                <app-collapsible :title=\"layer.name\" :id=\"layer.id\">\n                    <div class=\"withPaddingLeft\">\n                        <app-collapsible :title=\"i18n.gameObjects+'('+layer._gameObjects.size()+')'\" :id=\"layer.id\">\n                            <div v-for=\"gameObject in layer._gameObjects.rs\">\n                                <app-game-object-thumb :game-object=\"gameObject\"/>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </app-collapsible>\n            </div>\n        </app-collapsible>\n    </div>\n</app-collapsible>";
-
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-scenes', {
@@ -81,17 +105,43 @@ module.exports = Vue.component('app-scenes', {
         }
     },
     components: {
-        appGameObjectThumb: require('./gameObjectThumb/gameObjectThumb')
+        appGameObjectRow: require('../_gameObjectRow/gameObjectRow')
     },
     methods: {
-
+        createScene: function(){
+            console.log('createScene invoked');
+        },
+        editScene: function(scene){
+            console.log('editScene invoked',scene);
+        },
+        deleteScene: function(scene){
+            console.log('deleteScene invoked',scene);
+        },
+        createLayer: function(){
+            console.log('createLayer invoked');
+        },
+        editLayer: function(scene){
+            console.log('editLayer invoked',scene);
+        },
+        deleteLayer: function(scene){
+            console.log('delete l invoked',scene);
+        },
+        createGameObject: function(){
+            console.log('create go invoked');
+        },
+        editGameObject: function(scene){
+            console.log('edit go invoked',scene);
+        },
+        deleteGameObject: function(scene){
+            console.log('delete go invoked',scene);
+        }
     }
 });
 
-},{"./gameObjectThumb/gameObjectThumb":6,"./scenes.html":7,"providers/editData":11,"providers/i18n":13,"providers/resource":14}],9:[function(require,module,exports){
-module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
+},{"../_gameObjectRow/gameObjectRow":4,"./scenes.html":9,"providers/editData":13,"providers/i18n":15,"providers/resource":16}],11:[function(require,module,exports){
+module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n            <app-game-objects/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
 
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 
 var onMounted = function _onMounted(){
     Split(['#a', '#b', '#e'], {
@@ -124,11 +174,12 @@ module.exports = {
 
     },
     components: {
-        appGameProps: require('./components/leftPanel/gameProps/gameProps'),
-        appScenes: require('./components/leftPanel/scenes/scenes')
+        appGameProps: require('./components/gameProps/gameProps'),
+        appScenes: require('./components/scenes/scenes'),
+        appGameObjects: require('./components/gameObjects/gameObjects')
     }
 };
-},{"./components/leftPanel/gameProps/gameProps":4,"./components/leftPanel/scenes/scenes":8,"./editor.html":9}],11:[function(require,module,exports){
+},{"./components/gameObjects/gameObjects":6,"./components/gameProps/gameProps":8,"./components/scenes/scenes":10,"./editor.html":11}],13:[function(require,module,exports){
 
 var collections = _require('collections');
 
@@ -173,7 +224,7 @@ res.reset();
 
 module.exports = res;
 
-},{}],12:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
     Vue.http.
@@ -195,7 +246,7 @@ module.exports.post = function(url,data,callBack){
         }
     );
 };
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 
 var _i18n = {};
 
@@ -290,7 +341,7 @@ _i18n.getAll = function(){
 };
 
 module.exports = _i18n;
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 
 var Resource = function(){
 
@@ -585,7 +636,7 @@ var Resource = function(){
 };
 
 module.exports = new Resource();
-},{"providers/editData":11,"providers/http":12}],15:[function(require,module,exports){
+},{"providers/editData":13,"providers/http":14}],17:[function(require,module,exports){
 
 var mathEx = _require('mathEx');
 var editData = require('providers/editData');
@@ -615,7 +666,7 @@ var Utils = function(){
 };
 
 module.exports = new Utils();
-},{"providers/editData":11}],16:[function(require,module,exports){
+},{"providers/editData":13}],18:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
@@ -624,7 +675,7 @@ module.exports.new = function(){
         }
     }
 };
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -646,4 +697,4 @@ const app = new Vue(
 
 router.init(app);
 
-},{"pages/editor/editor":10,"providers/resource":14}]},{},[17]);
+},{"pages/editor/editor":12,"providers/resource":16}]},{},[19]);

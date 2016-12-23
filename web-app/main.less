@@ -1,3 +1,18 @@
+.for(@list, @code) {
+  & {
+    .loop(@i:1) when (@i =< length(@list)) {
+      @value: extract(@list, @i);
+
+      @code();
+
+      .loop(@i + 1);
+    }
+
+    .loop();
+  }
+}
+
+
 html, body {
   height: 100%;
   box-sizing: border-box;
@@ -14,11 +29,6 @@ html,body,div {
 }
 #app,.template {
   height: 100%;
-}
-
-ul {
-  margin: 0;
-  list-style-type: none;
 }
 
 img {
@@ -45,19 +55,6 @@ input.error {
   border-collapse: collapse;
 }
 
-.width100 {
-  width: 100%;
-}
-
-.row {
-  display: table-row;
-}
-
-.cell {
-  display: table-cell;
-  padding: 3px;
-}
-
 .noSelect {
   -webkit-user-select: none;
   user-select: none;
@@ -69,10 +66,6 @@ input.error {
 
 .small {
   font-size: 10px;
-}
-
-.width100 {
-  width: 100%;
 }
 
 .noDisplay {
@@ -162,14 +155,65 @@ input[type="file"] {
   text-align: left;
 }
 
-.center {
-  margin: 0 auto;
+.rightText {
+  text-align: right;
 }
 
-.centerVert {
-  vertical-align: middle;
+.noBrake {
+  word-break: keep-all;
 }
 
 [click],label,[type=checkbox],[type=radio] {
   cursor: pointer;
+}
+
+.inlineBlock(){
+  display: inline-block;
+  vertical-align: middle;
+}
+
+@icons: delete, edit, script, eye, add;
+
+.for(@icons, {
+.@{value} {
+  background: url("../images/@{value}.png") no-repeat;
+  width: 24px;
+  height: 24px;
+  zoom: 0.5;
+  .inlineBlock();
+}
+});
+
+.width100 {
+  width: 100%;
+}
+
+.width50 {
+  width:50%;
+}
+
+.width30 {
+  width:50%;
+}
+
+.width10 {
+  width:10%;
+}
+
+.table {
+  display: table;
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.textOverflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

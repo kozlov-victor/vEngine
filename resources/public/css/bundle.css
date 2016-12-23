@@ -19,10 +19,6 @@ div {
 .template {
   height: 100%;
 }
-ul {
-  margin: 0;
-  list-style-type: none;
-}
 img {
   display: inline-block;
 }
@@ -43,16 +39,6 @@ input.error {
   display: table;
   border-collapse: collapse;
 }
-.width100 {
-  width: 100%;
-}
-.row {
-  display: table-row;
-}
-.cell {
-  display: table-cell;
-  padding: 3px;
-}
 .noSelect {
   -webkit-user-select: none;
   user-select: none;
@@ -62,9 +48,6 @@ input.error {
 }
 .small {
   font-size: 10px;
-}
-.width100 {
-  width: 100%;
 }
 .noDisplay {
   display: none;
@@ -132,11 +115,11 @@ input[type="file"] {
 .leftText {
   text-align: left;
 }
-.center {
-  margin: 0 auto;
+.rightText {
+  text-align: right;
 }
-.centerVert {
-  vertical-align: middle;
+.noBrake {
+  word-break: keep-all;
 }
 [click],
 label,
@@ -144,26 +127,71 @@ label,
 [type=radio] {
   cursor: pointer;
 }
-.collapsible_header {
-  background-color: #aaa;
-  padding: 5px;
-  margin: 0;
-  border-bottom: 1px solid grey;
-  cursor: pointer;
-}
-.collapsible_content {
-  display: none;
-  background-color: #f2f2f2;
-}
-.collapsible_content.opened {
-  display: block;
-}
-.collapsible_point {
+.delete {
+  background: url("../images/delete.png") no-repeat;
+  width: 24px;
+  height: 24px;
+  zoom: 0.5;
   display: inline-block;
-  vertical-align: bottom;
+  vertical-align: middle;
 }
-.collapsible_point.rotated {
-  transform: rotate(90deg);
+.edit {
+  background: url("../images/edit.png") no-repeat;
+  width: 24px;
+  height: 24px;
+  zoom: 0.5;
+  display: inline-block;
+  vertical-align: middle;
+}
+.script {
+  background: url("../images/script.png") no-repeat;
+  width: 24px;
+  height: 24px;
+  zoom: 0.5;
+  display: inline-block;
+  vertical-align: middle;
+}
+.eye {
+  background: url("../images/eye.png") no-repeat;
+  width: 24px;
+  height: 24px;
+  zoom: 0.5;
+  display: inline-block;
+  vertical-align: middle;
+}
+.add {
+  background: url("../images/add.png") no-repeat;
+  width: 24px;
+  height: 24px;
+  zoom: 0.5;
+  display: inline-block;
+  vertical-align: middle;
+}
+.width100 {
+  width: 100%;
+}
+.width50 {
+  width: 50%;
+}
+.width30 {
+  width: 50%;
+}
+.width10 {
+  width: 10%;
+}
+.table {
+  display: table;
+}
+.row {
+  display: table-row;
+}
+.cell {
+  display: table-cell;
+  vertical-align: top;
+}
+.textOverflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .split {
   -webkit-box-sizing: border-box;
@@ -200,4 +228,25 @@ label,
 }
 .split {
   border-radius: 2px;
+}
+.collapsible_header {
+  background-color: #aaa;
+  padding: 5px;
+  margin: 0;
+  border-bottom: 1px solid grey;
+  cursor: pointer;
+}
+.collapsible_content {
+  display: none;
+  background-color: #f2f2f2;
+}
+.collapsible_content.opened {
+  display: block;
+}
+.collapsible_point {
+  display: inline-block;
+  vertical-align: bottom;
+}
+.collapsible_point.rotated {
+  transform: rotate(90deg);
 }

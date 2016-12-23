@@ -1,0 +1,44 @@
+<app-collapsible
+        :crud="{
+            create:createScene
+        }"
+        :title="i18n.scenes" :id="'scenes'" xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div class="withPaddingLeft" v-for="scene in (editData.sceneList && editData.sceneList.rs)">
+        <app-collapsible
+                :object="scene"
+                :crud="{
+                    edit:editScene,
+                    delete:deleteScene
+                }"
+                :title="scene.name"
+                :id="scene.id">
+            <div class="withPaddingLeft">
+                <app-collapsible
+                        :title="i18n.layers"
+                        :crud="{
+                            create:createLayer
+                        }"
+                        >
+                    <div v-for="layer in scene._layers.rs" class="withPaddingLeft">
+                        <app-collapsible
+                                :object="layer"
+                                :crud="{
+                            edit:editLayer,
+                            delete:deleteLayer
+                        }"
+                                :title="layer.name" :id="layer.id">
+                            <div class="withPaddingLeft">
+                                <div class="table width100">
+                                    <div
+                                            is="appGameObjectRow"
+                                            :game-object="gameObject"
+                                            v-for="gameObject in layer._gameObjects.rs"></div>
+                                </div>
+                            </div>
+                        </app-collapsible>
+                    </div>
+                </app-collapsible>
+            </div>
+        </app-collapsible>
+    </div>
+</app-collapsible>
