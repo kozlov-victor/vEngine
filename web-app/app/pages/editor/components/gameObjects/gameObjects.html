@@ -8,6 +8,10 @@
         <div class="withPaddingLeft">
             <div class="table rightText">
                 <div
+                        :crud="{
+                            edit: editGameObject,
+                            editScript: editGameObjectScript
+                        }"
                         is="appGameObjectRow"
                         :game-object="gameObject"
                         v-for="gameObject in (editData.gameObjectList && editData.gameObjectList.rs)"

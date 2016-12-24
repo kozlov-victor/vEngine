@@ -1,0 +1,29 @@
+
+<app-collapsible
+        :crud="{
+            create:createFont
+        }"
+        :title="i18n.fonts"
+        >
+    <div class="withPaddingLeft">
+        <div class="table width100">
+            <div class="row"
+                 v-for="font in (editData.fontList && editData.fontList.rs)">
+
+                <div class="cell">
+                    <span class="inlineBlock withPaddingTop withPaddingBottom">
+                        {{font.name}}
+                    </span>
+                </div>
+
+                <div class="cell width1">
+                    <div class="edit"/>
+                </div>
+                <div class="cell width1">
+                    <div class="delete"/>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</app-collapsible>

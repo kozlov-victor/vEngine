@@ -14,6 +14,12 @@ module.exports = Vue.component('app-game-objects', {
     methods: {
         createGameObject: function(){
             console.log('create go');
+        },
+        editGameObjectScript: function(){
+            console.log('edit scr');
+        },
+        editGameObject: function(){
+            console.log('edit go');
         }
     }
 });

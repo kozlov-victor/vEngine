@@ -11,10 +11,15 @@ const router = new VueRouter({
     ]
 });
 
+//Vue.filter('nbsp', function (value) {
+//    return value.split(' ').join('&nbsp;')
+//});
+
 const app = new Vue(
     {
         router:router
     }
-).$mount('#app');
+)
+.$mount('#app');
 
 router.init(app);

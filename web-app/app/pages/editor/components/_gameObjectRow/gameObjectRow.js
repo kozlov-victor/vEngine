@@ -1,6 +1,6 @@
 
 module.exports = Vue.component('app-game-object-row', {
-    props: ['gameObject'],
+    props: ['gameObject','crud'],
     template: require('./gameObjectRow.html'),
     data: function(){
         return {

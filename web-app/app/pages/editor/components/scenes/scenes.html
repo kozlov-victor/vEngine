@@ -2,7 +2,7 @@
         :crud="{
             create:createScene
         }"
-        :title="i18n.scenes" :id="'scenes'" xmlns:v-on="http://www.w3.org/1999/xhtml">
+        :title="i18n.scenes" xmlns:v-on="http://www.w3.org/1999/xhtml">
     <div class="withPaddingLeft" v-for="scene in (editData.sceneList && editData.sceneList.rs)">
         <app-collapsible
                 :object="scene"
@@ -11,7 +11,7 @@
                     delete:deleteScene
                 }"
                 :title="scene.name"
-                :id="scene.id">
+                >
             <div class="withPaddingLeft">
                 <app-collapsible
                         :title="i18n.layers"

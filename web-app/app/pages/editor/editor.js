@@ -32,6 +32,11 @@ module.exports = {
     components: {
         appGameProps: require('./components/gameProps/gameProps'),
         appScenes: require('./components/scenes/scenes'),
-        appGameObjects: require('./components/gameObjects/gameObjects')
+        appGameObjects: require('./components/gameObjects/gameObjects'),
+        appSpriteSheets: require('./components/spriteSheets/spriteSheets'),
+        appUserInterface: require('./components/userInterface/userInterface'),
+        appFonts: require('./components/fonts/fonts'),
+        appSounds: require('./components/sounds/sounds'),
+        appParticleSystems: require('./components/particleSystems/particleSystems'),
     }
 };
