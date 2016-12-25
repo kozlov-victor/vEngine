@@ -33,6 +33,8 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
+
+
 var setUpRotes = function(app){
     fs.readDirSync(appDir+'/application/mvc/routes').forEach(function(itm){
         var fileNameWithoutExt = itm.name.split('.')[0];
@@ -40,8 +42,18 @@ var setUpRotes = function(app){
     });
 };
 
+var handleErrors = function(app){
+    app.use(function(err, req, res, next) {
+        res.status(500).send(
+            'error 500: ' + err.message
+        );
+    });
+};
+
 require.main.require('./application/base/hbsSettings').init();
 
 setUpRotes(app);
+
+handleErrors(app);
 
 module.exports.app = app;

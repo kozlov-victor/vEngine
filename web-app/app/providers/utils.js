@@ -18,6 +18,8 @@ var Utils = function(){
         };
     };
     this.merge = function(a,b){
+        a = a || {};
+        b = b || {};
         var res = Object.create(a);
         Object.keys(b).forEach(function(key){
             res[key] = b[key];

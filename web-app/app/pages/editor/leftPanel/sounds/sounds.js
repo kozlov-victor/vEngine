@@ -25,12 +25,12 @@ module.exports = Vue.component('app-sounds', {
             soundDialog.instance.open();
         },
         deleteSound: function(sound){
-            require('components/confirmDialog/confirmDialog').instance.open(
+            window.confirmEx(
                 this.i18n.confirmQuestion,
                 function(){
                     resource.deleteResource(sound);
                 }
-            );
+            )
         }
     }
 });

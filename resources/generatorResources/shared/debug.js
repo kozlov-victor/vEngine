@@ -19,8 +19,9 @@
     };
 
     var _prepareMessage = function(e,lineNum){
-        var msg = (e.message || e.toString() || 'Unknown error');
-        if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','');
+        var msg = (e.message || e.toString() || '');
+        if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();
+        if (!msg) msg = 'Unknown error. Is your server running?';
         if (lineNum) msg+=' in line ' + lineNum;
         return msg;
     };
@@ -41,6 +42,7 @@
     };
 
     window.showError = function _err(e,lineNum){
+        console.log('showerror',e,lineNum);
         if (navigator.isCocoonJS) {
             _showErrToConsole(e,lineNum);
             return;

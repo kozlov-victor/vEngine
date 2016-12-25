@@ -9,7 +9,8 @@ module.exports = Vue.component('app-dialogs', {
         }
     },
     components: {
-        appSoundDialog: require('./soundDialog/soundDialog').component
+        appSoundDialog: require('./soundDialog/soundDialog').component,
+        appParticleSystemDialog: require('./particleSystemDialog/particleSystemDialog').component
     },
     methods: {
 

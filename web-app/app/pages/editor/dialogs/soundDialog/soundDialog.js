@@ -1,4 +1,5 @@
 
+
 var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');

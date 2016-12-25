@@ -2558,7 +2558,6 @@ modules['gameObject'] =
 	        self.tileRepeat ?
 	            _drawPattern(ctx,self):
 	            _draw(ctx,self);
-	        ctx.strokeRect(0,0,self.width,self.height,[0.2,1,1,0.5]);
 	
 	        ctx.restore();
 	    }
@@ -4298,7 +4297,7 @@ modules['tween'] =
 	        propsToChange = Object.keys(allPropsMap);
 	        propsToChange.forEach(function(prp){
 	            if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = obj[prp];
-	            if (fromToVal.top[prp]===undefined) fromToVal.from[prp] = obj[prp];
+	            if (fromToVal.to[prp]===undefined) fromToVal.from[prp] = obj[prp];
 	        });
 	        return fromToVal;
 	    };

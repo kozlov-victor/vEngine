@@ -11,18 +11,18 @@ const router = new VueRouter({
     ]
 });
 
-//Vue.filter('nbsp', function (value) {
-//    return value.split(' ').join('&nbsp;')
-//});
+require('providers/userDefinedFns');
 
 const app = new Vue(
     {
         router:router,
         components: {
-            appConfirmDialog: require('components/confirmDialog/confirmDialog')
+            appConfirmDialog: require('components/confirmDialog/confirmDialog').component,
+            appAlertDialog: require('components/alertDialog/alertDialog').component
         }
     }
 )
 .$mount('#app');
+
 
 router.init(app);

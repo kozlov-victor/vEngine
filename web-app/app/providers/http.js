@@ -15,6 +15,6 @@ module.exports.post = function(url,data,callBack){
             callBack(resp.body);
         }).
         catch(function(err){
-            setTimeout(function() { throw err.body; },0);
+            setTimeout(function() { throw err.body || ''; },0);
         });
 };
