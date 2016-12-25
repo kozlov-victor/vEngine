@@ -9,7 +9,7 @@ module.exports = Vue.component('app-collapsible', {
             id:null
         }
     },
-    mounted: function(){
+    created: function(){
         this.id = id;
         this.opened = localStorage['clps_'+this.id]=='true';
         id++;

@@ -1,7 +1,7 @@
 
-module.exports = Vue.component('app-sounds', {
+module.exports = Vue.component('app-dialogs', {
     props: [],
-    template: require('./sounds.html'),
+    template: require('./dialogs.html'),
     data: function () {
         return {
             editData: require('providers/editData'),
@@ -9,11 +9,9 @@ module.exports = Vue.component('app-sounds', {
         }
     },
     components: {
-
+        appSoundDialog: require('./soundDialog/soundDialog').component
     },
     methods: {
-        createSound: function(){
 
-        }
     }
 });

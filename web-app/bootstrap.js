@@ -17,7 +17,10 @@ const router = new VueRouter({
 
 const app = new Vue(
     {
-        router:router
+        router:router,
+        components: {
+            appConfirmDialog: require('components/confirmDialog/confirmDialog')
+        }
     }
 )
 .$mount('#app');

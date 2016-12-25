@@ -27,6 +27,26 @@ html,body,div {
   border: none;
   font-family: monospace;
 }
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-corner       {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+
 #app,.template {
   height: 100%;
 }
@@ -43,6 +63,10 @@ input,select {
   display: inline-block;
   vertical-align: top;
   width: 90%;
+}
+
+button,label {
+  cursor: pointer;
 }
 
 input.error {

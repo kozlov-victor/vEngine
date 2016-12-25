@@ -11,9 +11,6 @@ module.exports = Vue.component('app-game-props', {
             scales: _require('consts').SCALE_STRATEGY
         }
     },
-    components: {
-        appCollapsible: require('components/collapsible/collapsible')
-    },
     methods: {
         saveGameProps: function(){
             resource.saveGameProps(this.editData.gameProps);

@@ -1,0 +1,40 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+    <table class="width100">
+        <tr>
+            <td>
+                {{i18n.name}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input
+                        required
+                        v-control="{form:form,model:editData.currSoundInEdit,prop:'name'}"
+                        v-model="editData.currSoundInEdit.name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <app-input-file
+                        v-on:picked="onFilePicked"
+                        :title="i18n.loadSound"
+                        />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <audio controls="controls" :src="soundUrl"></audio>
+            </td>
+        </tr>
+    </table>
+
+    <button
+            :disabled="!(form.valid() && soundUrl)"
+            v-on:click="createOrEditSound(editData.currSoundInEdit)">
+        {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}
+    </button>
+
+</app-modal>

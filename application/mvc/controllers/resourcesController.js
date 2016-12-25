@@ -127,7 +127,7 @@ module.exports.delete = function(id,type,projectName){
     var indexToDel = getIndexById(arr,id);
     if (indexToDel!==null) {
         var resourcePath = arr[indexToDel].resourcePath;
-        fs.deleteFileSync('workspace/'+projectName+'/'+resourcePath);
+        resourcePath && fs.deleteFileSync('workspace/'+projectName+'/'+resourcePath);
         arr.splice(indexToDel,1);
         writeResource(arr,'workspace/'+projectName+'/resources/'+type+'/map.json');
     }

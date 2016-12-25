@@ -6,19 +6,19 @@ var res = {};
 res.reset = function(){
 
     res.testEditData = 'edit data ok';
-    res.commonBehaviourList = null;
-    res.currGameObjectInEdit = null;
-    res.currSpriteSheetInEdit = null;
-    res.currFrAnimationInEdit = null;
-    res.currSceneInEdit = null;
-    res.currSceneGameObjectInEdit = null;
-    res.currLayerInEdit = null;
-    res.currFontInEdit = null;
-    res.currCommonBehaviourInEdit = null;
-    res.currSoundInEdit = null;
-    res.currParticleSystemInEdit = null;
-    res.currProjectInEdit = null;
-    res.currTileIndexInEdit = null;
+    res.commonBehaviourList = {};
+    res.currGameObjectInEdit = {};
+    res.currSpriteSheetInEdit = {};
+    res.currFrAnimationInEdit = {};
+    res.currSceneInEdit = {};
+    res.currSceneGameObjectInEdit = {};
+    res.currLayerInEdit = {};
+    res.currFontInEdit = {};
+    res.currCommonBehaviourInEdit = {};
+    res.currSoundInEdit = {};
+    res.currParticleSystemInEdit = {};
+    res.currProjectInEdit = {};
+    res.currTileIndexInEdit = {};
     res.gameProps = {};
 
     res.userInterfaceList = new collections.List();
@@ -29,7 +29,7 @@ res.reset = function(){
     res.tileMapPosY = res.tileMapPosX = 0;
 
     res.projectName = undefined;
-    res.projects = null;
+    res.projects = {};
     res.buildOpts = {
         debug: false,
         embedResources: false,

@@ -13,7 +13,7 @@ module.exports = Vue.component('app-collapsible', {
             id:null
         }
     },
-    mounted: function(){
+    created: function(){
         this.id = id;
         this.opened = localStorage['clps_'+this.id]=='true';
         id++;
@@ -26,9 +26,249 @@ module.exports = Vue.component('app-collapsible', {
     }
 });
 },{"./collapsible.html":1}],3:[function(require,module,exports){
-module.exports = "<div class=\"row\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            v-if=\"!gameObject.subType\">\n        <div :style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {zoom:gameObject.height>30?30/gameObject.height:1}\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            v-if=\"gameObject.subType\"\n            :title=\"gameObject.name\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.editScript\" class=\"script\" v-on:click=\"crud.editScript()\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.edit\" class=\"edit\" v-on:click=\"crud.edit()\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div class=\"delete\"></div>\n    </div>\n</div>";
+module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withMargin\">\n        <div class=\"alert_body\">\n            {{message}}\n        </div>\n        <div>\n            <button v-on:click=\"confirmChoose()\">{{i18n.confirm}}</button>\n            <button v-on:click=\"close()\">{{i18n.cancel}}</button>\n        </div>\n    </div>\n</app-modal>";
 
 },{}],4:[function(require,module,exports){
+
+
+var abstractDialog = require('providers/abstractDialog');
+
+
+module.exports.component = Vue.component('app-confirm-dialog', {
+    mixins:[abstractDialog],
+    props: [],
+    template: require('./confirmDialog.html'),
+    data: function () {
+        return {
+            message:'default message',
+            confirm: function(){},
+            i18n: require('providers/i18n').getAll()
+        }
+    },
+    created: function(){
+        module.exports.instance = this;
+    },
+    components: {
+        appModal: require('components/modal/modal')
+    },
+    methods: {
+        open: function(message,confirmCallback){
+            this.opened = true;
+            this.message = message;
+            this.confirm = confirmCallback;
+        },
+        confirmChoose: function(){
+            this.confirm();
+            this.close();
+        }
+    }
+});
+},{"./confirmDialog.html":3,"components/modal/modal":8,"providers/abstractDialog":33,"providers/i18n":36}],5:[function(require,module,exports){
+module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <button>{{title}}</button>\n    <input  required accept=\"audio/*\" type=\"file\"/>\n</div>";
+
+},{}],6:[function(require,module,exports){
+
+module.exports = Vue.component('app-input-file', {
+    props: ['title'],
+    template: require('./inputFile.html'),
+    data: function(){
+        return {
+
+        }
+    },
+    created: function(){
+
+    },
+    mounted: function(){
+        var btn = this.$el.querySelector('button');
+        var input = this.$el.querySelector('input');
+        btn.onclick = function(){
+            input.click();
+        };
+        var self = this;
+        input.onchange = function(){
+            var file = input.files[0];
+            var name = file.name.split('.')[0];
+            var url = window.URL || window.webkitURL;
+            var src = url.createObjectURL(file);
+            self.$emit('picked',src,file,name);
+        }
+    },
+    methods: {
+        toggle: function(){
+
+        }
+    }
+});
+
+},{"./inputFile.html":5}],7:[function(require,module,exports){
+module.exports = "<div class=\"dialogWrapper\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"fullscreen shadow\"></div>\n    <div class=\"dialog\">\n        <div class=\"dialogContent\">\n            <div class=\"dialogClose\">\n                <span v-on:click=\"close()\" class=\"pointer\">X</span>\n            </div>\n\n            <slot></slot>\n\n        </div>\n    </div>\n</div>\n";
+
+},{}],8:[function(require,module,exports){
+
+
+module.exports = Vue.component('app-modal', {
+    props: [],
+    template: require('./modal.html'),
+    data: function(){
+        return {
+
+        }
+    },
+    created: function(){
+
+    },
+    methods: {
+        close: function(){
+            this.$emit('close');
+        }
+    }
+});
+},{"./modal.html":7}],9:[function(require,module,exports){
+module.exports = "<div>\n\n    <app-sound-dialog/>\n\n</div>";
+
+},{}],10:[function(require,module,exports){
+
+module.exports = Vue.component('app-dialogs', {
+    props: [],
+    template: require('./dialogs.html'),
+    data: function () {
+        return {
+            editData: require('providers/editData'),
+            i18n: require('providers/i18n').getAll()
+        }
+    },
+    components: {
+        appSoundDialog: require('./soundDialog/soundDialog').component
+    },
+    methods: {
+
+    }
+});
+},{"./dialogs.html":9,"./soundDialog/soundDialog":12,"providers/editData":34,"providers/i18n":36}],11:[function(require,module,exports){
+module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <input\n                        required\n                        v-control=\"{form:form,model:editData.currSoundInEdit,prop:'name'}\"\n                        v-model=\"editData.currSoundInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <app-input-file\n                        v-on:picked=\"onFilePicked\"\n                        :title=\"i18n.loadSound\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <audio controls=\"controls\" :src=\"soundUrl\"></audio>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            :disabled=\"!(form.valid() && soundUrl)\"\n            v-on:click=\"createOrEditSound(editData.currSoundInEdit)\">\n        {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
+
+},{}],12:[function(require,module,exports){
+
+var abstractDialog = require('providers/abstractDialog');
+
+var editData = require('providers/editData');
+var resource = require('providers/resource');
+var Sound = _require('sound');
+
+module.exports.component = Vue.component('app-sound-dialog', {
+    mixins:[abstractDialog],
+    props: [],
+    template: require('./soundDialog.html'),
+    data: function () {
+        return {
+            form:require('providers/validator').new(),
+            editData: editData,
+            i18n: require('providers/i18n').getAll(),
+            soundUrl:'',
+            _file: ''
+        }
+    },
+    created: function(){
+        module.exports.instance = this;
+    },
+    components: {
+
+    },
+    methods: {
+        open: function(){
+            this.opened = true;
+            if (editData.currSoundInEdit.id)
+                this.soundUrl =
+                    editData.projectName + '/' +
+                    editData.currSoundInEdit.resourcePath + '?' + Math.random();
+            else this.soundUrl = '';
+        },
+        onFilePicked: function(src,file){
+            this.soundUrl = src;
+            this._file = file;
+        },
+        createOrEditSound: function(sound){
+            var model = sound.toJSON();
+            model._file = this._file;
+            this._file = '';
+            var self = this;
+            resource.createOrEditResource(
+                model,
+                Sound,
+                editData.soundList,
+                function(result){
+                    self.close();
+                }
+            );
+        }
+    }
+});
+},{"./soundDialog.html":11,"providers/abstractDialog":33,"providers/editData":34,"providers/i18n":36,"providers/resource":37,"providers/validator":39}],13:[function(require,module,exports){
+module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n            <app-game-objects/>\n            <app-sprite-sheets/>\n            <app-user-interface/>\n            <app-fonts/>\n            <app-sounds/>\n            <app-particle-systems/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs/>\n\n</div>";
+
+},{}],14:[function(require,module,exports){
+
+var onMounted = function _onMounted(){
+    var layoutSizes = {};
+
+    layoutSizes.a =   15;
+    layoutSizes.b =   70;
+    layoutSizes.e =  (100 - layoutSizes.a - layoutSizes.b);
+
+    layoutSizes.c =   94;
+    layoutSizes.d =   (100 - layoutSizes.c);
+
+
+    Split(['#a', '#b', '#e'], {
+        sizes: [layoutSizes.a,layoutSizes.b,layoutSizes.e],
+        gutterSize: 5,
+        cursor: 'row-resize',
+        minSize:10
+    });
+    var vertical = Split(['#c', '#d'], {
+        direction: 'vertical',
+        sizes: [layoutSizes.c,layoutSizes.d],
+        gutterSize: 5,
+        cursor: 'col-resize',
+        minSize:10
+    });
+    window.addEventListener('resize',function(){
+        vertical.setSizes([layoutSizes.c,layoutSizes.d]);
+    });
+};
+
+module.exports = {
+    template: require('./editor.html'),
+    data: function () {
+        return {}
+    },
+    mounted: function(){
+        onMounted();
+    },
+    methods: {
+
+    },
+    components: {
+        appCollapsible: require('components/collapsible/collapsible'),
+        appModal: require('components/modal/modal'),
+        appInputFile: require('components/inputFile/inputFile'),
+
+        appGameProps: require('./leftPanel/gameProps/gameProps'),
+        appScenes: require('./leftPanel/scenes/scenes'),
+        appGameObjects: require('./leftPanel/gameObjects/gameObjects'),
+        appSpriteSheets: require('./leftPanel/spriteSheets/spriteSheets'),
+        appUserInterface: require('./leftPanel/userInterface/userInterface'),
+        appFonts: require('./leftPanel/fonts/fonts'),
+        appSounds: require('./leftPanel/sounds/sounds'),
+        appParticleSystems: require('./leftPanel/particleSystems/particleSystems'),
+        appDialogs: require('./dialogs/dialogs')
+    }
+};
+},{"./dialogs/dialogs":10,"./editor.html":13,"./leftPanel/fonts/fonts":18,"./leftPanel/gameObjects/gameObjects":20,"./leftPanel/gameProps/gameProps":22,"./leftPanel/particleSystems/particleSystems":24,"./leftPanel/scenes/scenes":26,"./leftPanel/sounds/sounds":28,"./leftPanel/spriteSheets/spriteSheets":30,"./leftPanel/userInterface/userInterface":32,"components/collapsible/collapsible":2,"components/inputFile/inputFile":6,"components/modal/modal":8}],15:[function(require,module,exports){
+module.exports = "<div class=\"row\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            v-if=\"!gameObject.subType\">\n        <div :style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {zoom:gameObject.height>30?30/gameObject.height:1}\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            v-if=\"gameObject.subType\"\n            :title=\"gameObject.name\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.editScript\" class=\"script\" v-on:click=\"crud.editScript()\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.edit\" class=\"edit\" v-on:click=\"crud.edit()\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div class=\"delete\"></div>\n    </div>\n</div>";
+
+},{}],16:[function(require,module,exports){
 
 module.exports = Vue.component('app-game-object-row', {
     props: ['gameObject','crud'],
@@ -45,10 +285,10 @@ module.exports = Vue.component('app-game-object-row', {
 
     }
 });
-},{"./gameObjectRow.html":3,"providers/utils":27}],5:[function(require,module,exports){
+},{"./gameObjectRow.html":15,"providers/utils":38}],17:[function(require,module,exports){
 module.exports = "\n<app-collapsible\n        :crud=\"{\n            create:createFont\n        }\"\n        :title=\"i18n.fonts\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"font in (editData.fontList && editData.fontList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],6:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 
 module.exports = Vue.component('app-fonts', {
     props: [],
@@ -68,10 +308,10 @@ module.exports = Vue.component('app-fonts', {
         }
     }
 });
-},{"./fonts.html":5,"providers/editData":23,"providers/i18n":25}],7:[function(require,module,exports){
+},{"./fonts.html":17,"providers/editData":34,"providers/i18n":36}],19:[function(require,module,exports){
 module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObjects\"\n            :crud=\"{\n                create:createGameObject\n            }\"\n            >\n        <div class=\"withPaddingLeft\">\n            <div class=\"table rightText\">\n                <div\n                        :crud=\"{\n                            edit: editGameObject,\n                            editScript: editGameObjectScript\n                        }\"\n                        is=\"appGameObjectRow\"\n                        :game-object=\"gameObject\"\n                        v-for=\"gameObject in (editData.gameObjectList && editData.gameObjectList.rs)\"\n                        >\n                </div>\n            </div>\n        </div>\n    </app-collapsible>\n</div>";
 
-},{}],8:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 module.exports = Vue.component('app-game-objects', {
     props: [],
@@ -93,15 +333,15 @@ module.exports = Vue.component('app-game-objects', {
             console.log('edit scr');
         },
         editGameObject: function(){
-            console.log('edit go');
+            console.log('create go');
         }
     }
 });
 
-},{"../_gameObjectRow/gameObjectRow":4,"./gameObjects.html":7,"providers/editData":23,"providers/i18n":25}],9:[function(require,module,exports){
+},{"../_gameObjectRow/gameObjectRow":16,"./gameObjects.html":19,"providers/editData":34,"providers/i18n":36}],21:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
-},{}],10:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-game-props', {
@@ -115,19 +355,16 @@ module.exports = Vue.component('app-game-props', {
             scales: _require('consts').SCALE_STRATEGY
         }
     },
-    components: {
-        appCollapsible: require('components/collapsible/collapsible')
-    },
     methods: {
         saveGameProps: function(){
             resource.saveGameProps(this.editData.gameProps);
         }
     }
 });
-},{"./gameProps.html":9,"components/collapsible/collapsible":2,"providers/editData":23,"providers/i18n":25,"providers/resource":26,"providers/validator":28}],11:[function(require,module,exports){
+},{"./gameProps.html":21,"providers/editData":34,"providers/i18n":36,"providers/resource":37,"providers/validator":39}],23:[function(require,module,exports){
 module.exports = "\n<app-collapsible\n        :crud=\"{\n            create:createParticleSystem\n        }\"\n        :title=\"i18n.particleSystems\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ps in (editData.particleSystemList && editData.particleSystemList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],12:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 module.exports = Vue.component('app-particle-systems', {
     props: [],
@@ -147,10 +384,10 @@ module.exports = Vue.component('app-particle-systems', {
         }
     }
 });
-},{"./particleSystems.html":11,"providers/editData":23,"providers/i18n":25}],13:[function(require,module,exports){
+},{"./particleSystems.html":23,"providers/editData":34,"providers/i18n":36}],25:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createScene\n        }\"\n        :title=\"i18n.scenes\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\" v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible\n                :object=\"scene\"\n                :crud=\"{\n                    edit:editScene,\n                    delete:deleteScene\n                }\"\n                :title=\"scene.name\"\n                >\n            <div class=\"withPaddingLeft\">\n                <app-collapsible\n                        :title=\"i18n.layers\"\n                        :crud=\"{\n                            create:createLayer\n                        }\"\n                        >\n                    <div v-for=\"layer in scene._layers.rs\" class=\"withPaddingLeft\">\n                        <app-collapsible\n                                :object=\"layer\"\n                                :crud=\"{\n                            edit:editLayer,\n                            delete:deleteLayer\n                        }\"\n                                :title=\"layer.name\" :id=\"layer.id\">\n                            <div class=\"withPaddingLeft\">\n                                <div class=\"table width100\">\n                                    <div\n                                            is=\"appGameObjectRow\"\n                                            :game-object=\"gameObject\"\n                                            v-for=\"gameObject in layer._gameObjects.rs\"></div>\n                                </div>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </app-collapsible>\n            </div>\n        </app-collapsible>\n    </div>\n</app-collapsible>";
 
-},{}],14:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-scenes', {
@@ -196,10 +433,14 @@ module.exports = Vue.component('app-scenes', {
     }
 });
 
-},{"../_gameObjectRow/gameObjectRow":4,"./scenes.html":13,"providers/editData":23,"providers/i18n":25,"providers/resource":26}],15:[function(require,module,exports){
-module.exports = "\n<app-collapsible\n        :crud=\"{\n            create:createSound\n        }\"\n        :title=\"i18n.sounds\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"sound in (editData.soundList && editData.soundList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
+},{"../_gameObjectRow/gameObjectRow":16,"./scenes.html":25,"providers/editData":34,"providers/i18n":36,"providers/resource":37}],27:[function(require,module,exports){
+module.exports = "<app-collapsible\n        :crud=\"{\n            create:createSound\n        }\"\n        :title=\"i18n.sounds\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"sound in (editData.soundList && editData.soundList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editSound(sound)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteSound(sound)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],16:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+
+var Sound = _require('sound');
+var soundDialog = require('../../dialogs/soundDialog/soundDialog');
+var resource = require('providers/resource');
 
 module.exports = Vue.component('app-sounds', {
     props: [],
@@ -215,14 +456,27 @@ module.exports = Vue.component('app-sounds', {
     },
     methods: {
         createSound: function(){
-
+            this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
+            soundDialog.instance.open();
+        },
+        editSound: function(sound){
+            this.editData.currSoundInEdit = sound.clone();
+            soundDialog.instance.open();
+        },
+        deleteSound: function(sound){
+            require('components/confirmDialog/confirmDialog').instance.open(
+                this.i18n.confirmQuestion,
+                function(){
+                    resource.deleteResource(sound);
+                }
+            );
         }
     }
 });
-},{"./sounds.html":15,"providers/editData":23,"providers/i18n":25}],17:[function(require,module,exports){
+},{"../../dialogs/soundDialog/soundDialog":12,"./sounds.html":27,"components/confirmDialog/confirmDialog":4,"providers/editData":34,"providers/i18n":36,"providers/resource":37}],29:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :title=\"i18n.spriteSheets\"\n        :crud=\"{\n            create:createSpriteSheet\n        }\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"spriteSheet in (editData.spriteSheetList && editData.spriteSheetList.rs)\">\n\n                <div class=\"cell\">\n                    <img\n                        height=\"20\"\n                        class=\"spriteSheetThumb\"\n                        :src=\"editData.projectName+'/'+spriteSheet.resourcePath\"/>\n                </div>\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],18:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 module.exports = Vue.component('app-sprite-sheets', {
     props: [],
@@ -243,10 +497,10 @@ module.exports = Vue.component('app-sprite-sheets', {
     }
 });
 
-},{"./spriteSheets.html":17,"providers/editData":23,"providers/i18n":25}],19:[function(require,module,exports){
+},{"./spriteSheets.html":29,"providers/editData":34,"providers/i18n":36}],31:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :title=\"i18n.userInterface\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ui in (editData.userInterfaceList && editData.userInterfaceList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ui.subType}}</span>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],20:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 
 module.exports = Vue.component('app-user-interface', {
     props: [],
@@ -264,53 +518,24 @@ module.exports = Vue.component('app-user-interface', {
 
     }
 });
-},{"./userInterface.html":19,"providers/editData":23,"providers/i18n":25}],21:[function(require,module,exports){
-module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n            <app-game-objects/>\n            <app-sprite-sheets/>\n            <app-user-interface/>\n            <app-fonts/>\n            <app-sounds/>\n            <app-particle-systems/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n</div>";
-
-},{}],22:[function(require,module,exports){
-
-var onMounted = function _onMounted(){
-    Split(['#a', '#b', '#e'], {
-        sizes: [15,70,15],
-        gutterSize: 5,
-        cursor: 'row-resize',
-        minSize:10
-    });
-    var vertical = Split(['#c', '#d'], {
-        direction: 'vertical',
-        sizes: [94,5],
-        gutterSize: 5,
-        cursor: 'col-resize',
-        minSize:10
-    });
-    window.addEventListener('resize',function(){
-        vertical.setSizes([94,5]);
-    });
-};
+},{"./userInterface.html":31,"providers/editData":34,"providers/i18n":36}],33:[function(require,module,exports){
 
 module.exports = {
-    template: require('./editor.html'),
     data: function () {
-        return {}
-    },
-    mounted: function(){
-        onMounted();
+        return {
+            opened: false
+        }
     },
     methods: {
-
-    },
-    components: {
-        appGameProps: require('./components/gameProps/gameProps'),
-        appScenes: require('./components/scenes/scenes'),
-        appGameObjects: require('./components/gameObjects/gameObjects'),
-        appSpriteSheets: require('./components/spriteSheets/spriteSheets'),
-        appUserInterface: require('./components/userInterface/userInterface'),
-        appFonts: require('./components/fonts/fonts'),
-        appSounds: require('./components/sounds/sounds'),
-        appParticleSystems: require('./components/particleSystems/particleSystems'),
+        open: function () {
+            this.opened = true;
+        },
+        close: function(){
+            this.opened = false;
+        }
     }
 };
-},{"./components/fonts/fonts":6,"./components/gameObjects/gameObjects":8,"./components/gameProps/gameProps":10,"./components/particleSystems/particleSystems":12,"./components/scenes/scenes":14,"./components/sounds/sounds":16,"./components/spriteSheets/spriteSheets":18,"./components/userInterface/userInterface":20,"./editor.html":21}],23:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 
 var collections = _require('collections');
 
@@ -319,19 +544,19 @@ var res = {};
 res.reset = function(){
 
     res.testEditData = 'edit data ok';
-    res.commonBehaviourList = null;
-    res.currGameObjectInEdit = null;
-    res.currSpriteSheetInEdit = null;
-    res.currFrAnimationInEdit = null;
-    res.currSceneInEdit = null;
-    res.currSceneGameObjectInEdit = null;
-    res.currLayerInEdit = null;
-    res.currFontInEdit = null;
-    res.currCommonBehaviourInEdit = null;
-    res.currSoundInEdit = null;
-    res.currParticleSystemInEdit = null;
-    res.currProjectInEdit = null;
-    res.currTileIndexInEdit = null;
+    res.commonBehaviourList = {};
+    res.currGameObjectInEdit = {};
+    res.currSpriteSheetInEdit = {};
+    res.currFrAnimationInEdit = {};
+    res.currSceneInEdit = {};
+    res.currSceneGameObjectInEdit = {};
+    res.currLayerInEdit = {};
+    res.currFontInEdit = {};
+    res.currCommonBehaviourInEdit = {};
+    res.currSoundInEdit = {};
+    res.currParticleSystemInEdit = {};
+    res.currProjectInEdit = {};
+    res.currTileIndexInEdit = {};
     res.gameProps = {};
 
     res.userInterfaceList = new collections.List();
@@ -342,7 +567,7 @@ res.reset = function(){
     res.tileMapPosY = res.tileMapPosX = 0;
 
     res.projectName = undefined;
-    res.projects = null;
+    res.projects = {};
     res.buildOpts = {
         debug: false,
         embedResources: false,
@@ -355,13 +580,13 @@ res.reset();
 
 module.exports = res;
 
-},{}],24:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
     Vue.http.
         get(url, data).
-        then(callBack, function(e){
-            throw e;
+        then(callBack, function(err){
+            setTimeout(function() { throw err.body; },0);
         }
     );
 };
@@ -371,13 +596,12 @@ module.exports.post = function(url,data,callBack){
         post(url, data).
         then(function(resp){
             callBack(resp.body);
-        },
-        function(e){
-            throw e;
-        }
-    );
+        }).
+        catch(function(err){
+            setTimeout(function() { throw err.body; },0);
+        });
 };
-},{}],25:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 
 var _i18n = {};
 
@@ -385,6 +609,9 @@ _i18n.locale = 'en';
 
 _i18n.bundle = {
     'en': {
+        confirm: 'confirm',
+        confirmQuestion:'delete this item?',
+        cancel:'cancel',
         assets:'assets',
         addSpriteSheet:'add sprite sheet',
         loadImage:'load image',
@@ -472,7 +699,7 @@ _i18n.getAll = function(){
 };
 
 module.exports = _i18n;
-},{}],26:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 
 var Resource = function(){
 
@@ -514,7 +741,7 @@ var Resource = function(){
             }).
             then(function(){
                 if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
-                if (editData.currSceneInEdit) {
+                if (editData.currSceneInEdit._layers) {
                     if (editData.currSceneInEdit._layers.size()) {
                         editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
                     }
@@ -522,39 +749,29 @@ var Resource = function(){
                 location.href = '#/editor';
             });
     };
-    //this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack, preserveDialog){
-    //    var formData = new FormData();
-    //    formData.append('file',currResourceInEdit._file);
-    //    var model = {};
-    //    currResourceInEdit.toJSON_Array().forEach(function(item){
-    //        model[item.key] = item.value;
-    //    });
-    //    formData.append('model',JSON.stringify(model));
-    //    formData.append('projectName',editData.projectName);
-    //    var op = currResourceInEdit.id?'edit':'create';
-    //    $http({
-    //        url: '/resource/'+op,
-    //        method: "POST",
-    //        data: formData,
-    //        headers: {'Content-Type': undefined}
-    //    }).
-    //        success(function (item) {
-    //            if (!(ResourceClass && resourceList)) {
-    //                uiHelper.closeDialog();
-    //                return;
-    //            }
-    //            if (op=='create') {
-    //                var r = new ResourceClass(item);
-    //                resourceList.add(r);
-    //                callBack && callBack({type:'create',r:r});
-    //            } else {
-    //                var index = resourceList.indexOf({id:item.id});
-    //                resourceList.rs[index] = new ResourceClass(item);
-    //                callBack && callBack({type:'edit',r:resourceList.rs[index]});
-    //            }
-    //            !preserveDialog && uiHelper.closeDialog();
-    //        });
-    //};
+    this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack){
+        var formData = new FormData();
+        formData.append('file',currResourceInEdit._file);
+        delete currResourceInEdit._file;
+        var model = {};
+        Object.keys(currResourceInEdit).forEach(function(key){
+            model[key] = currResourceInEdit[key];
+        });
+        formData.append('model',JSON.stringify(model));
+        formData.append('projectName',editData.projectName);
+        var op = currResourceInEdit.id?'edit':'create';
+        http.post('/resource/'+op,formData,function(item){
+            if (op=='create') {
+                var r = new ResourceClass(item);
+                resourceList.add(r);
+                callBack && callBack({type:'create',r:r});
+            } else {
+                var index = resourceList.indexOf({id:item.id});
+                resourceList.get(index).fromJSON(item);
+                callBack && callBack({type:'edit',r:resourceList.rs[index]});
+            }
+        });
+    };
     //this.createOrEditResourceSimple = function(objResource){
     //    this.createOrEditResource(objResource,objResource.constructor,bundle[objResource.type+'List']);
     //};
@@ -575,21 +792,24 @@ var Resource = function(){
     //            callback && callback();
     //        });
     //};
-    //this.deleteResource = function(id,type,callBack){
-    //    $http({
-    //        url: '/resource/delete',
-    //        method: "POST",
-    //        data: {
-    //            id:id,
-    //            type:type,
-    //            projectName:editData.projectName
-    //        }
-    //    }).
-    //        success(function (res) {
-    //            editData[type+'List'].remove({id: id});
-    //            callBack && callBack();
-    //        });
-    //};
+
+    this.deleteResource = function(idOrObject,type,callBack) {
+        var id = (typeof idOrObject == 'object')? idOrObject.id:idOrObject;
+        type = type || idOrObject.type;
+        http.post(
+            '/resource/delete',
+            {
+                id: id,
+                type: type,
+                projectName: editData.projectName
+            },
+            function () {
+                editData[type + 'List'].remove({id: id});
+                callBack && callBack();
+            }
+        );
+    };
+
     this.saveGameProps = function(gameProps){
         http.post(
             '/gameProps/save',
@@ -767,7 +987,7 @@ var Resource = function(){
 };
 
 module.exports = new Resource();
-},{"providers/editData":23,"providers/http":24}],27:[function(require,module,exports){
+},{"providers/editData":34,"providers/http":35}],38:[function(require,module,exports){
 
 var mathEx = _require('mathEx');
 var editData = require('providers/editData');
@@ -797,7 +1017,7 @@ var Utils = function(){
 };
 
 module.exports = new Utils();
-},{"providers/editData":23}],28:[function(require,module,exports){
+},{"providers/editData":34}],39:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
@@ -806,7 +1026,7 @@ module.exports.new = function(){
         }
     }
 };
-},{}],29:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -826,11 +1046,14 @@ const router = new VueRouter({
 
 const app = new Vue(
     {
-        router:router
+        router:router,
+        components: {
+            appConfirmDialog: require('components/confirmDialog/confirmDialog')
+        }
     }
 )
 .$mount('#app');
 
 router.init(app);
 
-},{"pages/editor/editor":22,"providers/resource":26}]},{},[29]);
+},{"components/confirmDialog/confirmDialog":4,"pages/editor/editor":14,"providers/resource":37}]},{},[40]);

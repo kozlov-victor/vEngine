@@ -4,7 +4,9 @@ process.on('uncaughtException',function(e){
     console.log(e);
 });
 
-var server = app.listen(9000, function () {
+const PORT = 9000;
+
+var server = app.listen(PORT, function () {
 
     var host = server.address().address;
     var port = server.address().port;

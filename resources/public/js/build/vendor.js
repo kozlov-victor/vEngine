@@ -325,8 +325,16 @@
             // Element a's size is the same as offset. b's size is total size - a size.
             // Both sizes are calculated from the initial parent percentage, then the gutter size is subtracted.
                 , adjust = function (offset) {
-                    this.a.style[dimension] = calc + '(' + (offset / this.size * this.percentage) + '% - ' + this.aGutterSize + 'px)'
-                    this.b.style[dimension] = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + this.bGutterSize + 'px)'
+                    var aSize = offset / this.size * this.percentage;
+                    var bSize = this.percentage - (offset / this.size * this.percentage);
+                    //var aId = this.a.getAttribute('id');
+                    //var bId = this.b.getAttribute('id');
+                    //var toSave = {};
+                    //toSave[aId] = aSize.toFixed(1);
+                    //toSave[bId] = bSize.toFixed(1);
+                    //localStorage.layout = JSON.stringify(toSave);
+                    this.a.style[dimension] = calc + '(' + (aSize) + '% - ' + this.aGutterSize + 'px)'
+                    this.b.style[dimension] = calc + '(' + (bSize) + '% - ' + this.bGutterSize + 'px)'
                 }
 
             // 4. Define a few more functions that "balance" the entire split instance.
@@ -8698,6 +8706,7 @@ var checkRule = function(rulesObject,ruleName,el,bindings){
     if (formObject[prop]==undefined) {
         Vue.set(formObject,prop,{});
     }
+    if (!el.hasAttribute(ruleName)) return true;
 
     var ruleValue = el.getAttribute(ruleName);
     var ruleFn = rulesObject[ruleName];

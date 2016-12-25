@@ -21,6 +21,7 @@ var checkRule = function(rulesObject,ruleName,el,bindings){
     if (formObject[prop]==undefined) {
         Vue.set(formObject,prop,{});
     }
+    if (!el.hasAttribute(ruleName)) return true;
 
     var ruleValue = el.getAttribute(ruleName);
     var ruleFn = rulesObject[ruleName];

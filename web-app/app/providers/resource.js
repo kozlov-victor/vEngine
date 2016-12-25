@@ -39,7 +39,7 @@ var Resource = function(){
             }).
             then(function(){
                 if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
-                if (editData.currSceneInEdit) {
+                if (editData.currSceneInEdit._layers) {
                     if (editData.currSceneInEdit._layers.size()) {
                         editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
                     }
@@ -47,39 +47,29 @@ var Resource = function(){
                 location.href = '#/editor';
             });
     };
-    //this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack, preserveDialog){
-    //    var formData = new FormData();
-    //    formData.append('file',currResourceInEdit._file);
-    //    var model = {};
-    //    currResourceInEdit.toJSON_Array().forEach(function(item){
-    //        model[item.key] = item.value;
-    //    });
-    //    formData.append('model',JSON.stringify(model));
-    //    formData.append('projectName',editData.projectName);
-    //    var op = currResourceInEdit.id?'edit':'create';
-    //    $http({
-    //        url: '/resource/'+op,
-    //        method: "POST",
-    //        data: formData,
-    //        headers: {'Content-Type': undefined}
-    //    }).
-    //        success(function (item) {
-    //            if (!(ResourceClass && resourceList)) {
-    //                uiHelper.closeDialog();
-    //                return;
-    //            }
-    //            if (op=='create') {
-    //                var r = new ResourceClass(item);
-    //                resourceList.add(r);
-    //                callBack && callBack({type:'create',r:r});
-    //            } else {
-    //                var index = resourceList.indexOf({id:item.id});
-    //                resourceList.rs[index] = new ResourceClass(item);
-    //                callBack && callBack({type:'edit',r:resourceList.rs[index]});
-    //            }
-    //            !preserveDialog && uiHelper.closeDialog();
-    //        });
-    //};
+    this.createOrEditResource = function(currResourceInEdit,ResourceClass,resourceList,callBack){
+        var formData = new FormData();
+        formData.append('file',currResourceInEdit._file);
+        delete currResourceInEdit._file;
+        var model = {};
+        Object.keys(currResourceInEdit).forEach(function(key){
+            model[key] = currResourceInEdit[key];
+        });
+        formData.append('model',JSON.stringify(model));
+        formData.append('projectName',editData.projectName);
+        var op = currResourceInEdit.id?'edit':'create';
+        http.post('/resource/'+op,formData,function(item){
+            if (op=='create') {
+                var r = new ResourceClass(item);
+                resourceList.add(r);
+                callBack && callBack({type:'create',r:r});
+            } else {
+                var index = resourceList.indexOf({id:item.id});
+                resourceList.get(index).fromJSON(item);
+                callBack && callBack({type:'edit',r:resourceList.rs[index]});
+            }
+        });
+    };
     //this.createOrEditResourceSimple = function(objResource){
     //    this.createOrEditResource(objResource,objResource.constructor,bundle[objResource.type+'List']);
     //};
@@ -100,21 +90,24 @@ var Resource = function(){
     //            callback && callback();
     //        });
     //};
-    //this.deleteResource = function(id,type,callBack){
-    //    $http({
-    //        url: '/resource/delete',
-    //        method: "POST",
-    //        data: {
-    //            id:id,
-    //            type:type,
-    //            projectName:editData.projectName
-    //        }
-    //    }).
-    //        success(function (res) {
-    //            editData[type+'List'].remove({id: id});
-    //            callBack && callBack();
-    //        });
-    //};
+
+    this.deleteResource = function(idOrObject,type,callBack) {
+        var id = (typeof idOrObject == 'object')? idOrObject.id:idOrObject;
+        type = type || idOrObject.type;
+        http.post(
+            '/resource/delete',
+            {
+                id: id,
+                type: type,
+                projectName: editData.projectName
+            },
+            function () {
+                editData[type + 'List'].remove({id: id});
+                callBack && callBack();
+            }
+        );
+    };
+
     this.saveGameProps = function(gameProps){
         http.post(
             '/gameProps/save',

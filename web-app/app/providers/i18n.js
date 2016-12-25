@@ -5,6 +5,9 @@ _i18n.locale = 'en';
 
 _i18n.bundle = {
     'en': {
+        confirm: 'confirm',
+        confirmQuestion:'delete this item?',
+        cancel:'cancel',
         assets:'assets',
         addSpriteSheet:'add sprite sheet',
         loadImage:'load image',
