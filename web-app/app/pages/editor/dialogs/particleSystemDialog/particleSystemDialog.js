@@ -20,7 +20,7 @@ module.exports.component = Vue.component('app-particle-system-dialog', {
         module.exports.instance = this;
     },
     components: {
-
+        appAnglePicker: require('components/anglePicker/anglePicker')
     },
     methods: {
         open: function(){
@@ -29,6 +29,10 @@ module.exports.component = Vue.component('app-particle-system-dialog', {
         onGameObjectIdChanged: function(id){
             editData.currParticleSystemInEdit._gameObject =
                 editData.gameObjectList.find({id:id});
+        },
+        showPreview: function(){
+            require('../particleSystemPreviewDialog/particleSystemPreviewDialog')
+                .instance.open();
         }
     }
 });

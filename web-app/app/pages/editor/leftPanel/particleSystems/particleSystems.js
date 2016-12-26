@@ -27,6 +27,10 @@ module.exports = Vue.component('app-particle-systems', {
             Vue.set(ps,'_gameObject',firstInList);
 
             particleSystemDialog.instance.open();
+        },
+        editParticleSystem: function(ps){
+            this.editData.currParticleSystemInEdit = ps.clone();
+            particleSystemDialog.instance.open();
         }
     }
 });

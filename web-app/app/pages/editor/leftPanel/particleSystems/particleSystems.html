@@ -1,10 +1,9 @@
-
 <app-collapsible
         :crud="{
             create:createParticleSystem
         }"
         :title="i18n.particleSystems"
-        >
+        xmlns:v-on="http://www.w3.org/1999/xhtml">
     <div class="withPaddingLeft">
         <div class="table width100">
             <div class="row"
@@ -17,7 +16,7 @@
                 </div>
 
                 <div class="cell width1">
-                    <div class="edit"/>
+                    <div class="edit" v-on:click="editParticleSystem(ps)"/>
                 </div>
                 <div class="cell width1">
                     <div class="delete"/>

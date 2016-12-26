@@ -12,8 +12,9 @@
             </td>
             <td>
                 <input
-                        required
-                        v-model="editData.currParticleSystemInEdit.name"/>
+                    required
+                    v-control="{form:form,model:editData.currParticleSystemInEdit,prop:'name'}"
+                    v-model="editData.currParticleSystemInEdit.name"/>
             </td>
         </tr>
         <tr>
@@ -25,9 +26,10 @@
             </td>
             <td>
                 <input
-                        required
-                        type="number"
-                        v-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.from"/>
+                    required
+                    type="number"
+                    v-control="{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'from'}"
+                    v-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.from"/>
             </td>
         </tr>
         <tr>
@@ -36,9 +38,10 @@
             </td>
             <td>
                 <input
-                        required
-                        type="number"
-                        v-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.to"/>
+                    required
+                    type="number"
+                    v-control="{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'to'}"
+                    v-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.to"/>
             </td>
         </tr>
         <tr>
@@ -52,6 +55,7 @@
                 <input
                         required
                         type="number"
+                        v-control="{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'from'}"
                         v-model="editData.currParticleSystemInEdit.particleVelocity.from"/>
             </td>
         </tr>
@@ -63,6 +67,7 @@
                 <input
                         required
                         type="number"
+                        v-control="{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'to'}"
                         v-model="editData.currParticleSystemInEdit.particleVelocity.to"/>
             </td>
         </tr>
@@ -76,9 +81,10 @@
             </td>
             <td>
                 <input
-                        required
-                        type="number"
-                        v-model="editData.currParticleSystemInEdit.particleLiveTime.from"/>
+                    required
+                    type="number"
+                    v-control="{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'from'}"
+                    v-model="editData.currParticleSystemInEdit.particleLiveTime.from"/>
             </td>
         </tr>
         <tr>
@@ -87,9 +93,10 @@
             </td>
             <td>
                 <input
-                        required
-                        type="number"
-                        v-model="editData.currParticleSystemInEdit.particleLiveTime.to"/>
+                    required
+                    type="number"
+                    v-control="{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'to'}"
+                    v-model="editData.currParticleSystemInEdit.particleLiveTime.to"/>
             </td>
         </tr>
 
@@ -102,42 +109,31 @@
                 <input
                         required
                         type="number"
-                        ng-model="editData.currParticleSystemInEdit.emissionRadius"/>
+                        v-control="{form:form,model:editData.currParticleSystemInEdit,prop:'emissionRadius'}"
+                        v-model="editData.currParticleSystemInEdit.emissionRadius"/>
             </td>
         </tr>
 
         <tr>
-            <td rowspan="2">
+            <td>
                 particleAngle
             </td>
             <td>
                 from / to
             </td>
             <td>
-                <!--<app-input-angle-->
-                        <!--class="inlineBlock"-->
-                        <!--ng-model="editData.currParticleSystemInEdit.particleAngle"-->
-                        <!--app-field="from"-->
-                        <!-->-->
-                <!--</app-input-angle>-->
-                <!--<app-input-angle-->
-                        <!--class="inlineBlock"-->
-                        <!--ng-model="editData.currParticleSystemInEdit.particleAngle"-->
-                        <!--app-field="to"-->
-                        <!-->-->
-                <!--</app-input-angle>-->
-
-                <div class="small">
-                    <!--<div>-->
-                        <!--{{editData.currParticleSystemInEdit.particleAngle.from | toFixed}}-->
-                    <!--</div>-->
-                    <!--<div>-->
-                        <!--{{editData.currParticleSystemInEdit.particleAngle.to | toFixed}}-->
-                    <!--</div>-->
-                </div>
+                <app-angle-picker
+                        :object="editData.currParticleSystemInEdit.particleAngle"
+                        :value="'from'"
+                        />
+                <app-angle-picker
+                        :object="editData.currParticleSystemInEdit.particleAngle"
+                        :value="'to'"
+                        />
             </td>
         </tr>
         <tr>
+            <td></td>
             <td>
                 {{i18n.gameObject}}
             </td>
@@ -148,6 +144,7 @@
                         <td>
                             <select
                                     required
+                                    v-control="{form:form,model:editData.currParticleSystemInEdit,prop:'gameObjectId'}"
                                     v-on:change="onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectId)"
                                     v-model="editData.currParticleSystemInEdit.gameObjectId"
                                     >
@@ -185,7 +182,7 @@
 
     <button
             ng-disabled="!frmCreateParticleSystem.$valid"
-            ng-click="showDialog('particleSystemPreview','')">
+            v-on:click="showPreview()">
         {{i18n.preview}}
     </button>
 

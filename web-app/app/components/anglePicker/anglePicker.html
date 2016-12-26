@@ -1,0 +1,21 @@
+<div
+        class="inlineBlock"
+        v-on:click="click($event)"
+        v-on:mousemove="mouseMove($event)"
+        xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div data-container class="inlineBlock">
+        <svg viewBox="0 0 200 200" width="30" height="30" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="100" r="100" stroke="black" stroke-width="1" fill="white"></circle>
+            <line id="line" x1="100" y1="100"
+                  x2="200" y2="100"
+                  stroke="black"
+                  stroke-width="2"
+                  :transform="'rotate('+angleInDeg+',100,100)'"
+                    >
+            </line>
+        </svg>
+    </div>
+    <div class="small" :title="angleInRad.toFixed(1)+' rad'">
+        {{angleInDeg.toFixed(1)}}&deg;
+    </div>
+</div>

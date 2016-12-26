@@ -29,6 +29,10 @@ div {
 ::-webkit-scrollbar-corner {
   background-color: rgba(0, 0, 0, 0.06);
 }
+.subFullScreen {
+  width: 70vw;
+  height: 70vh;
+}
 #app,
 .template {
   height: 100%;
@@ -38,6 +42,9 @@ img {
 }
 .pointer {
   cursor: pointer;
+}
+.small {
+  font-size: 10px;
 }
 input,
 select {
