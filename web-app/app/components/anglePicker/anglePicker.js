@@ -10,7 +10,7 @@ module.exports = Vue.component('app-angle-picker', {
     },
     created: function(){
         this.angleInRad = this.object[this.value];
-        this.angleInDeg = this.angleInRad * 180 / Math.PI;
+        this.angleInDeg = (this.angleInRad * 180 / Math.PI) % 360;
     },
     methods: {
         calcAngleFromEvent: function(e){

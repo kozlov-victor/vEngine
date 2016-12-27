@@ -175,13 +175,13 @@
     </table>
 
     <button
-            ng-disabled="!frmCreateParticleSystem.$valid"
-            ng-click="resourceDao.createOrEditResourceSimple(editData.currParticleSystemInEdit)">
+            :disabled="!form.valid()"
+            v-on:click="createOrEditPs(editData.currParticleSystemInEdit)">
         {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}
     </button>
 
     <button
-            ng-disabled="!frmCreateParticleSystem.$valid"
+            :disabled="!form.valid()"
             v-on:click="showPreview()">
         {{i18n.preview}}
     </button>

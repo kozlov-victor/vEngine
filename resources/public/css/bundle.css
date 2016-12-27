@@ -71,8 +71,8 @@ input.error {
 .underLine {
   text-decoration: underline;
 }
-.small {
-  font-size: 10px;
+.smallXX {
+  font-size: 7px;
 }
 .noDisplay {
   display: none;
@@ -301,6 +301,9 @@ label,
   display: inline-block;
   position: relative;
   background-color: #f8f8f8;
+  max-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: auto;
   z-index: 300;
 }
 .dialogClose {

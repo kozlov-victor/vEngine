@@ -1,6 +1,7 @@
 
 var particleSystemDialog = require('../../dialogs/particleSystemDialog/particleSystemDialog');
 var ParticleSystem = _require('particleSystem');
+var resource = require('providers/resource');
 
 module.exports = Vue.component('app-particle-systems', {
     props: [],
@@ -31,6 +32,14 @@ module.exports = Vue.component('app-particle-systems', {
         editParticleSystem: function(ps){
             this.editData.currParticleSystemInEdit = ps.clone();
             particleSystemDialog.instance.open();
+        },
+        deleteParticleSystem: function(ps){
+            window.confirmEx(
+                this.i18n.confirmQuestion,
+                function(){
+                    resource.deleteResource(ps);
+                }
+            )
         }
     }
 });

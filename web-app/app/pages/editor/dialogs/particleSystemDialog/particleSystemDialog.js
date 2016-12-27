@@ -3,6 +3,7 @@ var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');
 var resource = require('providers/resource');
+var ParticleSystem = _require('particleSystem');
 
 module.exports.component = Vue.component('app-particle-system-dialog', {
     mixins:[abstractDialog],
@@ -33,6 +34,17 @@ module.exports.component = Vue.component('app-particle-system-dialog', {
         showPreview: function(){
             require('../particleSystemPreviewDialog/particleSystemPreviewDialog')
                 .instance.open();
+        },
+        createOrEditPs: function(ps){
+            var self = this;
+            resource.createOrEditResource(
+                ps,
+                ParticleSystem,
+                editData.particleSystemList,
+                function(result){
+                    self.close();
+                }
+            );
         }
     }
 });
