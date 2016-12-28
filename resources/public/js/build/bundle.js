@@ -281,6 +281,8 @@ var resource = require('providers/resource');
 
 var abstractDialog = require('providers/abstractDialog');
 
+var tid;
+
 module.exports.component = Vue.component('app-particle-system-preview-dialog', {
     mixins:[abstractDialog],
     props: [],
@@ -299,6 +301,14 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
 
     },
     methods: {
+        open: function(){
+            this.opened = true;
+            this.run();
+        },
+        close: function(){
+            this.opened = false;
+            clearInterval(tid);
+        },
         run: function(){
             var prevTime = null;
 
@@ -325,13 +335,13 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
                     }
                 });
             };
-            setInterval(function(){
+            tid = setInterval(function(){
                 update();
             },10);
         },
         emit: function(e){
-            editData.currParticleSystemInEdit.emit(e.clientX,e.clientY);
-            this.run();
+            var rect = e.target.getBoundingClientRect();
+            editData.currParticleSystemInEdit.emit(e.clientX - rect.left,e.clientY - rect.top);
         }
     }
 });
