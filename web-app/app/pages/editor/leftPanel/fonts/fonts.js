@@ -1,4 +1,7 @@
 
+var fontDialog = require('../../dialogs/fontDialog/fontDialog');
+var Font = _require('font');
+
 module.exports = Vue.component('app-fonts', {
     props: [],
     template: require('./fonts.html'),
@@ -13,7 +16,8 @@ module.exports = Vue.component('app-fonts', {
     },
     methods: {
         createFont: function(){
-
+            this.editData.currFontInEdit = new Font(new Font().toJSON());
+            fontDialog.instance.open();
         }
     }
 });

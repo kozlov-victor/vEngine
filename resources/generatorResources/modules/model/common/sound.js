@@ -20,7 +20,11 @@ var Sound = Resource.extend({
     }
 }, {
     find: function(name){
-        return bundle.soundList.find({name:name});
+        var res = bundle.soundList.find({name:name});
+        //<code>{{#if opts.debug}}
+        if (!res) throw 'can not found sound with name ' + name;
+        // {{/if}}
+        return res;
     }
 });
 

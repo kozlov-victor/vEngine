@@ -45,7 +45,6 @@ var bootEssentialResources = function(callBack){
 };
 
 var preloadSceneAndSetIt = function(scene){
-
     if (progressScene) {
         exports.currScene = progressScene;
         bundle.applyBehaviourForScene(progressScene);

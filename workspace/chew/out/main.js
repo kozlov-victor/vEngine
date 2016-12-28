@@ -1187,6 +1187,7 @@ modules['htmlAudioContext'] =
 	            if (opts.type=='base64') {
 	                callBack(url);
 	            } else {
+	                console.log('dfdffdf');
 	                utils.loadBinary(url,progress,function(){
 	                    callBack(url);
 	                });
@@ -1742,7 +1743,7 @@ modules['mathEx'] =
 	    return deg *  Math.PI / 180;
 	};
 	
-	exports.getRandomInRange = function(min, max){
+	exports.random = function(min, max){
 	    if (min>max) {
 	        var tmp = min;
 	        min = max;
@@ -1751,7 +1752,7 @@ modules['mathEx'] =
 	    var res = Math.random() * (max - min) + min;
 	    if (res>max) res = max;
 	    else if (res<min) res = min;
-	    return ~~res;
+	    return res;
 	};
 	
 	exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
@@ -2618,7 +2619,6 @@ modules['gameObject'] =
 	        self.tileRepeat ?
 	            _drawPattern(ctx,self):
 	            _draw(ctx,self);
-	        ctx.strokeRect(0,0,self.width,self.height,[0.2,1,1,0.5]);
 	
 	        ctx.restore();
 	    }
@@ -2708,7 +2708,7 @@ modules['particleSystem'] =
 	        this._particles = [];
 	        if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
 	        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
-	        if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
+	        //if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
 	        if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
 	        if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
 	        if (!this.emissionRadius) this.emissionRadius = 0;
@@ -2716,11 +2716,12 @@ modules['particleSystem'] =
 	    },
 	    emit: function(x,y){
 	        var r = function(obj){
-	            return mathEx.getRandomInRange(obj.from,obj.to);
+	            return mathEx.random(obj.from,obj.to);
 	        };
 	        for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
 	            var particle = this._gameObject.clone();
 	            var angle = r(this.particleAngle);
+	            console.log(angle);
 	            var vel = r(this.particleVelocity);
 	            particle.vel.x = vel*Math.cos(angle);
 	            particle.vel.y = vel*Math.sin(angle);
@@ -2927,7 +2928,10 @@ modules['sound'] =
 	    }
 	}, {
 	    find: function(name){
-	        return bundle.soundList.find({name:name});
+	        var res = bundle.soundList.find({name:name});
+	        if (!res) throw 'can not found sound with name ' + name;
+	        // 
+	        return res;
 	    }
 	});
 	

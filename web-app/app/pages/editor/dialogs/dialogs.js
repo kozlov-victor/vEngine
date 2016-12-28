@@ -11,7 +11,8 @@ module.exports = Vue.component('app-dialogs', {
     components: {
         appSoundDialog: require('./soundDialog/soundDialog').component,
         appParticleSystemDialog: require('./particleSystemDialog/particleSystemDialog').component,
-        appParticleSystemPreviewDialog: require('./particleSystemPreviewDialog/particleSystemPreviewDialog').component
+        appParticleSystemPreviewDialog: require('./particleSystemPreviewDialog/particleSystemPreviewDialog').component,
+        appFontDialog: require('./fontDialog/fontDialog').component
     },
     methods: {
 

@@ -60,7 +60,7 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
             };
             tid = setInterval(function(){
                 update();
-            },10);
+            },5);
         },
         emit: function(e){
             var rect = e.target.getBoundingClientRect();

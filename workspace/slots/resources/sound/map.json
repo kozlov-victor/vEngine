@@ -1,6 +1,6 @@
 [
     {
-        "name": "powerUpw",
+        "name": "powerUp",
         "type": "sound",
         "resourcePath": "resources/sound/powerUp.mp3",
         "id": "5708_0669_12",

@@ -30,7 +30,7 @@ module.exports.component = Vue.component('app-alert-dialog', {
         }
     }
 });
-},{"./alertDialog.html":1,"components/modal/modal":12,"providers/abstractDialog":41,"providers/i18n":44}],3:[function(require,module,exports){
+},{"./alertDialog.html":1,"components/modal/modal":12,"providers/abstractDialog":43,"providers/i18n":46}],3:[function(require,module,exports){
 module.exports = "<div\n        class=\"inlineBlock\"\n        v-on:click=\"click($event)\"\n        v-on:mousemove=\"mouseMove($event)\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div data-container class=\"inlineBlock\">\n        <svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n            <circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle>\n            <line id=\"line\" x1=\"100\" y1=\"100\"\n                  x2=\"200\" y2=\"100\"\n                  stroke=\"black\"\n                  stroke-width=\"2\"\n                  :transform=\"'rotate('+angleInDeg+',100,100)'\"\n                    >\n            </line>\n        </svg>\n    </div>\n    <div class=\"smallXX\" :title=\"angleInRad.toFixed(1)+' rad'\">\n        {{angleInDeg.toFixed(1)}}&deg;\n    </div>\n</div>";
 
 },{}],4:[function(require,module,exports){
@@ -133,7 +133,7 @@ module.exports.component = Vue.component('app-confirm-dialog', {
         }
     }
 });
-},{"./confirmDialog.html":7,"components/modal/modal":12,"providers/abstractDialog":41,"providers/i18n":44}],9:[function(require,module,exports){
+},{"./confirmDialog.html":7,"components/modal/modal":12,"providers/abstractDialog":43,"providers/i18n":46}],9:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <button>{{title}}</button>\n    <input  required accept=\"audio/*\" type=\"file\"/>\n</div>";
 
 },{}],10:[function(require,module,exports){
@@ -195,7 +195,7 @@ module.exports = Vue.component('app-modal', {
     }
 });
 },{"./modal.html":11}],13:[function(require,module,exports){
-module.exports = "<div>\n    <app-sound-dialog/>\n    <app-particle-system-dialog/>\n    <app-particle-system-preview-dialog/>\n</div>";
+module.exports = "<div>\n    <app-sound-dialog/>\n    <app-particle-system-dialog/>\n    <app-particle-system-preview-dialog/>\n    <app-font-dialog/>\n</div>";
 
 },{}],14:[function(require,module,exports){
 
@@ -211,16 +211,49 @@ module.exports = Vue.component('app-dialogs', {
     components: {
         appSoundDialog: require('./soundDialog/soundDialog').component,
         appParticleSystemDialog: require('./particleSystemDialog/particleSystemDialog').component,
-        appParticleSystemPreviewDialog: require('./particleSystemPreviewDialog/particleSystemPreviewDialog').component
+        appParticleSystemPreviewDialog: require('./particleSystemPreviewDialog/particleSystemPreviewDialog').component,
+        appFontDialog: require('./fontDialog/fontDialog').component
     },
     methods: {
 
     }
 });
-},{"./dialogs.html":13,"./particleSystemDialog/particleSystemDialog":16,"./particleSystemPreviewDialog/particleSystemPreviewDialog":18,"./soundDialog/soundDialog":20,"providers/editData":42,"providers/i18n":44}],15:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n\n            </td>\n            <td>\n                <input\n                    required\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'name'}\"\n                    v-model=\"editData.currParticleSystemInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                numOfParticlesToEmit\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                particleVelocity\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'from'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'to'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\">\n                particleLiveTime\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                emissionRadius\n            </td>\n            <td></td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'emissionRadius'}\"\n                        v-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                particleAngle\n            </td>\n            <td>\n                from / to\n            </td>\n            <td>\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'from'\"\n                        />\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'to'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td></td>\n            <td>\n                {{i18n.gameObject}}\n            </td>\n            <td>\n\n                <table>\n                    <tr>\n                        <td>\n                            <select\n                                    required\n                                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'gameObjectId'}\"\n                                    v-on:change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectId)\"\n                                    v-model=\"editData.currParticleSystemInEdit.gameObjectId\"\n                                    >\n                                <option\n                                        :value=\"item.id\"\n                                        v-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <div :style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit._gameObject),\n                                    {\n                                        zoom:editData.currParticleSystemInEdit._gameObject.height>30?\n                                        30/editData.currParticleSystemInEdit._gameObject.height:\n                                        1\n                                    }\n                               )\">\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n\n\n            </td>\n        </tr>\n\n    </table>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n        {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"showPreview()\">\n        {{i18n.preview}}\n    </button>\n\n</app-modal>";
+},{"./dialogs.html":13,"./fontDialog/fontDialog":16,"./particleSystemDialog/particleSystemDialog":18,"./particleSystemPreviewDialog/particleSystemPreviewDialog":20,"./soundDialog/soundDialog":22,"providers/editData":44,"providers/i18n":46}],15:[function(require,module,exports){
+module.exports = "\n<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.selectFont}}\n            </td>\n            <td>\n                <!--<select required ng-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">-->\n                    <!--<option value=\"{{fnt.displayName}}\" ng-repeat=\"fnt in editData.systemFontList\">-->\n                        <!--{{fnt.displayName}}-->\n                    <!--</option>-->\n                <!--</select>-->\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n                <input required ng-model=\"editData.currFontInEdit.name\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontSize}}\n            </td>\n            <td>\n                <input required type=\"number\" ng-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontColor}}\n            </td>\n            <td>\n                <div\n                        ng-click=\"openColorPickerForFont()\"\n                        ng-style=\"\n                        {\n                            width: '20px',\n                            height:'20px',\n                            backgroundColor:utils.rgbToHex(editData.currFontInEdit.fontColor)\n                        }\n                        \"\n                        ></div>\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <input ng-model=\"fontSample\" class=\"width100\"/>\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <div ng-style='{\n                fontFamily:editData.currFontInEdit.fontFamily,\n                fontSize:editData.currFontInEdit.fontSize+\"px\",\n                color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n            }'>{{fontSample}}</div>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            ng-disabled=\"!frmCreateFont.$valid\"\n            ng-click=\"createOrEditFont(editData.currFontInEdit)\">\n        {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
 
 },{}],16:[function(require,module,exports){
+
+var abstractDialog = require('providers/abstractDialog');
+
+var editData = require('providers/editData');
+var resource = require('providers/resource');
+var Font = _require('font');
+
+module.exports.component = Vue.component('app-font-dialog', {
+    mixins:[abstractDialog],
+    props: [],
+    template: require('./fontDialog.html'),
+    data: function () {
+        return {
+            form:require('providers/validator').new(),
+            editData: editData,
+            i18n: require('providers/i18n').getAll()
+        }
+    },
+    created: function(){
+        module.exports.instance = this;
+    },
+    components: {
+
+    },
+    methods: {
+
+    }
+});
+},{"./fontDialog.html":15,"providers/abstractDialog":43,"providers/editData":44,"providers/i18n":46,"providers/resource":47,"providers/validator":50}],17:[function(require,module,exports){
+module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n\n            </td>\n            <td>\n                <input\n                    required\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'name'}\"\n                    v-model=\"editData.currParticleSystemInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                numOfParticlesToEmit\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                particleVelocity\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'from'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'to'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\">\n                particleLiveTime\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                emissionRadius\n            </td>\n            <td></td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'emissionRadius'}\"\n                        v-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                particleAngle\n            </td>\n            <td>\n                from / to\n            </td>\n            <td>\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'from'\"\n                        />\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'to'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td></td>\n            <td>\n                {{i18n.gameObject}}\n            </td>\n            <td>\n\n                <table>\n                    <tr>\n                        <td>\n                            <select\n                                    required\n                                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'gameObjectId'}\"\n                                    v-on:change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectId)\"\n                                    v-model=\"editData.currParticleSystemInEdit.gameObjectId\"\n                                    >\n                                <option\n                                        :value=\"item.id\"\n                                        v-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <div :style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit._gameObject),\n                                    {\n                                        zoom:editData.currParticleSystemInEdit._gameObject.height>30?\n                                        30/editData.currParticleSystemInEdit._gameObject.height:\n                                        1\n                                    }\n                               )\">\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n\n\n            </td>\n        </tr>\n\n    </table>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n        {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"showPreview()\">\n        {{i18n.preview}}\n    </button>\n\n</app-modal>";
+
+},{}],18:[function(require,module,exports){
 
 var abstractDialog = require('providers/abstractDialog');
 
@@ -271,10 +304,10 @@ module.exports.component = Vue.component('app-particle-system-dialog', {
         }
     }
 });
-},{"../particleSystemPreviewDialog/particleSystemPreviewDialog":18,"./particleSystemDialog.html":15,"components/anglePicker/anglePicker":4,"providers/abstractDialog":41,"providers/editData":42,"providers/i18n":44,"providers/resource":45,"providers/utils":47,"providers/validator":48}],17:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n\n    <div>\n        {{i18n.preview}} {{i18n.particleSystem}}\n        <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n    </div>\n    <div\n            v-on:click=\"emit($event)\"\n            class=\"subFullScreen relative noOverFlow\">\n        <div\n                v-for=\"item in editData.currParticleSystemInEdit._particles\"\n                :style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px'\n                            }\n                    )\"\n                >\n        </div>\n    </div>\n    <div>\n        <button v-on:click=\"close()\">{{i18n.close}}</button>\n    </div>\n\n\n</app-modal>";
+},{"../particleSystemPreviewDialog/particleSystemPreviewDialog":20,"./particleSystemDialog.html":17,"components/anglePicker/anglePicker":4,"providers/abstractDialog":43,"providers/editData":44,"providers/i18n":46,"providers/resource":47,"providers/utils":49,"providers/validator":50}],19:[function(require,module,exports){
+module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n\n    <div>\n        {{i18n.preview}} {{i18n.particleSystem}}\n        <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n    </div>\n    <div\n            v-on:click=\"emit($event)\"\n            v-on:mousemove=\"$event.buttons==1 && emit($event)\"\n            class=\"subFullScreen relative noOverFlow\">\n        <div\n                v-for=\"item in editData.currParticleSystemInEdit._particles\"\n                :style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px',\n                                pointerEvents:'none'\n                            }\n                    )\"\n                >\n        </div>\n    </div>\n    <div>\n        <button v-on:click=\"close()\">{{i18n.close}}</button>\n    </div>\n\n\n</app-modal>";
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 
 var editData = require('providers/editData');
 var resource = require('providers/resource');
@@ -337,7 +370,7 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
             };
             tid = setInterval(function(){
                 update();
-            },10);
+            },5);
         },
         emit: function(e){
             var rect = e.target.getBoundingClientRect();
@@ -345,10 +378,10 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
         }
     }
 });
-},{"./particleSystemPreviewDialog.html":17,"providers/abstractDialog":41,"providers/editData":42,"providers/i18n":44,"providers/resource":45,"providers/utils":47}],19:[function(require,module,exports){
+},{"./particleSystemPreviewDialog.html":19,"providers/abstractDialog":43,"providers/editData":44,"providers/i18n":46,"providers/resource":47,"providers/utils":49}],21:[function(require,module,exports){
 module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <input\n                        required\n                        v-control=\"{form:form,model:editData.currSoundInEdit,prop:'name'}\"\n                        v-model=\"editData.currSoundInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <app-input-file\n                        v-on:picked=\"onFilePicked\"\n                        :title=\"i18n.loadSound\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <audio controls=\"controls\" :src=\"soundUrl\"></audio>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            :disabled=\"!(form.valid() && soundUrl)\"\n            v-on:click=\"createOrEditSound(editData.currSoundInEdit)\">\n        {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 
 
 var abstractDialog = require('providers/abstractDialog');
@@ -405,10 +438,10 @@ module.exports.component = Vue.component('app-sound-dialog', {
         }
     }
 });
-},{"./soundDialog.html":19,"providers/abstractDialog":41,"providers/editData":42,"providers/i18n":44,"providers/resource":45,"providers/validator":48}],21:[function(require,module,exports){
+},{"./soundDialog.html":21,"providers/abstractDialog":43,"providers/editData":44,"providers/i18n":46,"providers/resource":47,"providers/validator":50}],23:[function(require,module,exports){
 module.exports = "<div class=\"template\">\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n            <app-game-objects/>\n            <app-sprite-sheets/>\n            <app-user-interface/>\n            <app-fonts/>\n            <app-sounds/>\n            <app-particle-systems/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content\">\n            b\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">e</div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs/>\n\n</div>";
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 
 var onMounted = function _onMounted(){
     var layoutSizes = {};
@@ -466,10 +499,10 @@ module.exports = {
         appDialogs: require('./dialogs/dialogs')
     }
 };
-},{"./dialogs/dialogs":14,"./editor.html":21,"./leftPanel/fonts/fonts":26,"./leftPanel/gameObjects/gameObjects":28,"./leftPanel/gameProps/gameProps":30,"./leftPanel/particleSystems/particleSystems":32,"./leftPanel/scenes/scenes":34,"./leftPanel/sounds/sounds":36,"./leftPanel/spriteSheets/spriteSheets":38,"./leftPanel/userInterface/userInterface":40,"components/collapsible/collapsible":6,"components/inputFile/inputFile":10,"components/modal/modal":12}],23:[function(require,module,exports){
+},{"./dialogs/dialogs":14,"./editor.html":23,"./leftPanel/fonts/fonts":28,"./leftPanel/gameObjects/gameObjects":30,"./leftPanel/gameProps/gameProps":32,"./leftPanel/particleSystems/particleSystems":34,"./leftPanel/scenes/scenes":36,"./leftPanel/sounds/sounds":38,"./leftPanel/spriteSheets/spriteSheets":40,"./leftPanel/userInterface/userInterface":42,"components/collapsible/collapsible":6,"components/inputFile/inputFile":10,"components/modal/modal":12}],25:[function(require,module,exports){
 module.exports = "<div class=\"row\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            v-if=\"!gameObject.subType\">\n        <div :style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {zoom:gameObject.height>30?30/gameObject.height:1}\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            v-if=\"gameObject.subType\"\n            :title=\"gameObject.name\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.editScript\" class=\"script\" v-on:click=\"crud.editScript()\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.edit\" class=\"edit\" v-on:click=\"crud.edit()\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div class=\"delete\"></div>\n    </div>\n</div>";
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 
 module.exports = Vue.component('app-game-object-row', {
     props: ['gameObject','crud'],
@@ -486,10 +519,13 @@ module.exports = Vue.component('app-game-object-row', {
 
     }
 });
-},{"./gameObjectRow.html":23,"providers/utils":47}],25:[function(require,module,exports){
+},{"./gameObjectRow.html":25,"providers/utils":49}],27:[function(require,module,exports){
 module.exports = "\n<app-collapsible\n        :crud=\"{\n            create:createFont\n        }\"\n        :title=\"i18n.fonts\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"font in (editData.fontList && editData.fontList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+
+var fontDialog = require('../../dialogs/fontDialog/fontDialog');
+var Font = _require('font');
 
 module.exports = Vue.component('app-fonts', {
     props: [],
@@ -505,14 +541,15 @@ module.exports = Vue.component('app-fonts', {
     },
     methods: {
         createFont: function(){
-
+            this.editData.currFontInEdit = new Font(new Font().toJSON());
+            fontDialog.instance.open();
         }
     }
 });
-},{"./fonts.html":25,"providers/editData":42,"providers/i18n":44}],27:[function(require,module,exports){
+},{"../../dialogs/fontDialog/fontDialog":16,"./fonts.html":27,"providers/editData":44,"providers/i18n":46}],29:[function(require,module,exports){
 module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObjects\"\n            :crud=\"{\n                create:createGameObject\n            }\"\n            >\n        <div class=\"withPaddingLeft\">\n            <div class=\"table rightText\">\n                <div\n                        :crud=\"{\n                            edit: editGameObject,\n                            editScript: editGameObjectScript\n                        }\"\n                        is=\"appGameObjectRow\"\n                        :game-object=\"gameObject\"\n                        v-for=\"gameObject in (editData.gameObjectList && editData.gameObjectList.rs)\"\n                        >\n                </div>\n            </div>\n        </div>\n    </app-collapsible>\n</div>";
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 module.exports = Vue.component('app-game-objects', {
     props: [],
@@ -539,10 +576,10 @@ module.exports = Vue.component('app-game-objects', {
     }
 });
 
-},{"../_gameObjectRow/gameObjectRow":24,"./gameObjects.html":27,"providers/editData":42,"providers/i18n":44}],29:[function(require,module,exports){
+},{"../_gameObjectRow/gameObjectRow":26,"./gameObjects.html":29,"providers/editData":44,"providers/i18n":46}],31:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
-},{}],30:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-game-props', {
@@ -562,10 +599,10 @@ module.exports = Vue.component('app-game-props', {
         }
     }
 });
-},{"./gameProps.html":29,"providers/editData":42,"providers/i18n":44,"providers/resource":45,"providers/validator":48}],31:[function(require,module,exports){
+},{"./gameProps.html":31,"providers/editData":44,"providers/i18n":46,"providers/resource":47,"providers/validator":50}],33:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createParticleSystem\n        }\"\n        :title=\"i18n.particleSystems\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ps in (editData.particleSystemList && editData.particleSystemList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editParticleSystem(ps)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteParticleSystem(ps)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 
 var particleSystemDialog = require('../../dialogs/particleSystemDialog/particleSystemDialog');
 var ParticleSystem = _require('particleSystem');
@@ -611,10 +648,10 @@ module.exports = Vue.component('app-particle-systems', {
         }
     }
 });
-},{"../../dialogs/particleSystemDialog/particleSystemDialog":16,"./particleSystems.html":31,"providers/editData":42,"providers/i18n":44,"providers/resource":45}],33:[function(require,module,exports){
+},{"../../dialogs/particleSystemDialog/particleSystemDialog":18,"./particleSystems.html":33,"providers/editData":44,"providers/i18n":46,"providers/resource":47}],35:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createScene\n        }\"\n        :title=\"i18n.scenes\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\" v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible\n                :object=\"scene\"\n                :crud=\"{\n                    edit:editScene,\n                    delete:deleteScene\n                }\"\n                :title=\"scene.name\"\n                >\n            <div class=\"withPaddingLeft\">\n                <app-collapsible\n                        :title=\"i18n.layers\"\n                        :crud=\"{\n                            create:createLayer\n                        }\"\n                        >\n                    <div v-for=\"layer in scene._layers.rs\" class=\"withPaddingLeft\">\n                        <app-collapsible\n                                :object=\"layer\"\n                                :crud=\"{\n                            edit:editLayer,\n                            delete:deleteLayer\n                        }\"\n                                :title=\"layer.name\" :id=\"layer.id\">\n                            <div class=\"withPaddingLeft\">\n                                <div class=\"table width100\">\n                                    <div\n                                            is=\"appGameObjectRow\"\n                                            :game-object=\"gameObject\"\n                                            v-for=\"gameObject in layer._gameObjects.rs\"></div>\n                                </div>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </app-collapsible>\n            </div>\n        </app-collapsible>\n    </div>\n</app-collapsible>";
 
-},{}],34:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 var resource = require('providers/resource');
 
 module.exports = Vue.component('app-scenes', {
@@ -660,10 +697,10 @@ module.exports = Vue.component('app-scenes', {
     }
 });
 
-},{"../_gameObjectRow/gameObjectRow":24,"./scenes.html":33,"providers/editData":42,"providers/i18n":44,"providers/resource":45}],35:[function(require,module,exports){
+},{"../_gameObjectRow/gameObjectRow":26,"./scenes.html":35,"providers/editData":44,"providers/i18n":46,"providers/resource":47}],37:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createSound\n        }\"\n        :title=\"i18n.sounds\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"sound in (editData.soundList && editData.soundList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editSound(sound)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteSound(sound)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 
 var Sound = _require('sound');
 var soundDialog = require('../../dialogs/soundDialog/soundDialog');
@@ -700,10 +737,10 @@ module.exports = Vue.component('app-sounds', {
         }
     }
 });
-},{"../../dialogs/soundDialog/soundDialog":20,"./sounds.html":35,"providers/editData":42,"providers/i18n":44,"providers/resource":45}],37:[function(require,module,exports){
+},{"../../dialogs/soundDialog/soundDialog":22,"./sounds.html":37,"providers/editData":44,"providers/i18n":46,"providers/resource":47}],39:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :title=\"i18n.spriteSheets\"\n        :crud=\"{\n            create:createSpriteSheet\n        }\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"spriteSheet in (editData.spriteSheetList && editData.spriteSheetList.rs)\">\n\n                <div class=\"cell\">\n                    <img\n                        height=\"20\"\n                        class=\"spriteSheetThumb\"\n                        :src=\"editData.projectName+'/'+spriteSheet.resourcePath\"/>\n                </div>\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 module.exports = Vue.component('app-sprite-sheets', {
     props: [],
@@ -724,10 +761,10 @@ module.exports = Vue.component('app-sprite-sheets', {
     }
 });
 
-},{"./spriteSheets.html":37,"providers/editData":42,"providers/i18n":44}],39:[function(require,module,exports){
+},{"./spriteSheets.html":39,"providers/editData":44,"providers/i18n":46}],41:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :title=\"i18n.userInterface\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ui in (editData.userInterfaceList && editData.userInterfaceList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ui.subType}}</span>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 
 module.exports = Vue.component('app-user-interface', {
     props: [],
@@ -745,7 +782,7 @@ module.exports = Vue.component('app-user-interface', {
 
     }
 });
-},{"./userInterface.html":39,"providers/editData":42,"providers/i18n":44}],41:[function(require,module,exports){
+},{"./userInterface.html":41,"providers/editData":44,"providers/i18n":46}],43:[function(require,module,exports){
 
 module.exports = {
     data: function () {
@@ -762,7 +799,7 @@ module.exports = {
         }
     }
 };
-},{}],42:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 
 var collections = _require('collections');
 
@@ -807,7 +844,7 @@ res.reset();
 
 module.exports = res;
 
-},{}],43:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 
 module.exports.get = function(url,data,callBack){
     Vue.http.
@@ -828,7 +865,7 @@ module.exports.post = function(url,data,callBack){
             setTimeout(function() { throw err.body || ''; },0);
         });
 };
-},{}],44:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 
 var _i18n = {};
 
@@ -927,7 +964,7 @@ _i18n.getAll = function(){
 };
 
 module.exports = _i18n;
-},{}],45:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 
 var Resource = function(){
 
@@ -1215,7 +1252,7 @@ var Resource = function(){
 };
 
 module.exports = new Resource();
-},{"providers/editData":42,"providers/http":43}],46:[function(require,module,exports){
+},{"providers/editData":44,"providers/http":45}],48:[function(require,module,exports){
 
 //Vue.filter('nbsp', function (value) {
 //    return value.split(' ').join('&nbsp;')
@@ -1228,7 +1265,7 @@ window.alertEx = function(msg){
 window.confirmEx = function(msg,callback){
     require('components/confirmDialog/confirmDialog').instance.open(msg,callback);
 };
-},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":8}],47:[function(require,module,exports){
+},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":8}],49:[function(require,module,exports){
 
 var mathEx = _require('mathEx');
 var editData = require('providers/editData');
@@ -1260,7 +1297,7 @@ var Utils = function(){
 };
 
 module.exports = new Utils();
-},{"providers/editData":42}],48:[function(require,module,exports){
+},{"providers/editData":44}],50:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
@@ -1269,7 +1306,7 @@ module.exports.new = function(){
         }
     }
 };
-},{}],49:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -1299,4 +1336,4 @@ const app = new Vue(
 
 router.init(app);
 
-},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":8,"pages/editor/editor":22,"providers/resource":45,"providers/userDefinedFns":46}]},{},[49]);
+},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":8,"pages/editor/editor":24,"providers/resource":47,"providers/userDefinedFns":48}]},{},[51]);

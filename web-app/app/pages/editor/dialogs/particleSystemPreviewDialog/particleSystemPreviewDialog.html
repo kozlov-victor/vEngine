@@ -9,6 +9,7 @@
     </div>
     <div
             v-on:click="emit($event)"
+            v-on:mousemove="$event.buttons==1 && emit($event)"
             class="subFullScreen relative noOverFlow">
         <div
                 v-for="item in editData.currParticleSystemInEdit._particles"
@@ -17,7 +18,8 @@
                             {
                                 position:'absolute',
                                 left:item.pos.x+'px',
-                                top: item.pos.y+'px'
+                                top: item.pos.y+'px',
+                                pointerEvents:'none'
                             }
                     )"
                 >

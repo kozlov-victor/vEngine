@@ -48,6 +48,7 @@ var HtmlAudioContext = Class.extend(
             if (opts.type=='base64') {
                 callBack(url);
             } else {
+                console.log('dfdffdf');
                 utils.loadBinary(url,progress,function(){
                     callBack(url);
                 });
