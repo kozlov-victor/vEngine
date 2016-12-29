@@ -21,7 +21,8 @@ gulp.task('js-vendor', function() {
         .pipe(gulp.dest('resources/public/js/build/'));
 });
 
-
+// process.env.NODE_ENV === "production"
+// browserify -t vueify -e src/main.js -o build/build.js
 gulp.task('js-bundle', function() {
     return (
         browserify({
