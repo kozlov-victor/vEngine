@@ -20,7 +20,7 @@ module.exports.component = Vue.component('app-font-dialog', {
         module.exports.instance = this;
     },
     components: {
-
+        appColorPicker: require('components/colorPicker/colorPicker')
     },
     methods: {
 

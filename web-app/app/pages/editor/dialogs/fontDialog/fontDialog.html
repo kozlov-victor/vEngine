@@ -37,6 +37,10 @@
                 {{i18n.fontColor}}
             </td>
             <td>
+                <app-color-picker
+                        :object="editData.currFontInEdit"
+                        :value="'fontColor'"
+                        />
                 <div
                         ng-click="openColorPickerForFont()"
                         ng-style="
@@ -56,11 +60,11 @@
         </tr>
         <tr>
             <td colspan="2">
-                <div ng-style='{
-                fontFamily:editData.currFontInEdit.fontFamily,
-                fontSize:editData.currFontInEdit.fontSize+"px",
-                color:utils.rgbToHex(editData.currFontInEdit.fontColor)
-            }'>{{fontSample}}</div>
+                <!--<div ng-style='{-->
+                <!--fontFamily:editData.currFontInEdit.fontFamily,-->
+                <!--fontSize:editData.currFontInEdit.fontSize+"px",-->
+                <!--color:utils.rgbToHex(editData.currFontInEdit.fontColor)-->
+            <!--}'>{{fontSample}}</div>-->
             </td>
         </tr>
     </table>
