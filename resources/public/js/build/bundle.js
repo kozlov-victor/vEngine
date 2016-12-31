@@ -348,11 +348,9 @@ module.exports.component = Vue.component('app-font-dialog', {
             if (systemFontList.length==1) {
                 var self = this;
                 chrome.requestToApi({method:'getFontList'},function(list){
-                    console.log(list);
                     list.forEach(function(item,i){
                         Vue.set(self.systemFontList,i,item);
                     });
-                    console.log(self.systemFontList);
                 });
             }
         }
@@ -925,7 +923,6 @@ module.exports.requestToApi = function(params,callBack) {
     events[eventUUID] = callBack;
     params.eventUUID = eventUUID;
     window.top.postMessage(params,'*');
-    console.log('requested to api');
 };
 },{}],49:[function(require,module,exports){
 

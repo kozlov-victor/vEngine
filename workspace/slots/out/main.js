@@ -2713,6 +2713,7 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
+	    ctx.strokeRect(0,0,self.width,self.height,[1,0,0,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -3183,10 +3184,13 @@ modules['font'] =
 	
 	var Font = Resource.extend({
 	    type:'font',
-	    fontColor:'black',
 	    fontSize:12,
+	    fontColor: null,
 	    fontFamily:'Monospace',
-	    fontContext:null
+	    fontContext:null,
+	    construct: function(){
+	        this.fontColor = [0,0,0]
+	    }
 	});
 	
 	module.exports = Font;
@@ -3887,25 +3891,29 @@ modules['glContext'] =
 	        commonShaderPrg.setUniform('u_alpha',1);
 	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 	
-	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
 	            1, 0,
 	            0, 1,
 	            1, 1
-	        ],2,'a_position');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
+	        colorShaderPrg.bindBuffer(posVertexBuffer,'a_position');
 	
-	        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        texVertexBuffer = new VertexBuffer(gl);
+	        texVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
 	            1, 0,
 	            0, 1,
 	            1, 1
-	        ],2,'a_texcoord');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
+	        colorShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
@@ -4448,6 +4456,21 @@ modules['shaderProgram'] =
 	        //uniformValuesCache[name] = value;
 	    };
 	
+	    this.bindBuffer = function(buffer,uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	        gl.enableVertexAttribArray(uniformLocation);
+	        gl.vertexAttribPointer(
+	            uniformLocation,
+	            buffer.getItemSize(),
+	            buffer.getItemType(),
+	            false,  // if the content is normalized vectors
+	            0,  // number of bytes to skip in between elements
+	            0
+	        ); // offsets to the first element
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	    };
+	
 	};
 	
 	module.exports = ShaderProgram;
@@ -4516,23 +4539,49 @@ modules['vertexBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var VertexBuffer = function(gl,program){
+	var VertexBuffer = function(gl){
 	    var buffer = gl.createBuffer();
+	    var bufferItemSize, bufferItemType;
 	
-	    this.bind = function(bufferData, itemSize, uniformLocationName){
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+	    this.setData = function(bufferData,itemType, itemSize){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	        bufferItemSize = itemSize;
+	        bufferItemType = itemType;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bind = function(program, uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
-	            itemSize,
-	            gl.FLOAT,
+	            bufferItemSize,
+	            bufferItemType,
 	            false,  // if the content is normalized vectors
 	            0,  // number of bytes to skip in between elements
 	            0
 	        ); // offsets to the first element
-	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	    };
+	
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.getItemSize = function(){
+	        return bufferItemSize;
+	    };
+	
+	    this.getItemType = function(){
+	        return bufferItemType;
+	    }
+	
 	};
 	
 	module.exports = VertexBuffer;

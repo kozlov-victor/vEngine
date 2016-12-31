@@ -178,6 +178,21 @@ var ShaderProgram = function(gl,sources){
         //uniformValuesCache[name] = value;
     };
 
+    this.bindBuffer = function(buffer,uniformLocationName){
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
+        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+        gl.enableVertexAttribArray(uniformLocation);
+        gl.vertexAttribPointer(
+            uniformLocation,
+            buffer.getItemSize(),
+            buffer.getItemType(),
+            false,  // if the content is normalized vectors
+            0,  // number of bytes to skip in between elements
+            0
+        ); // offsets to the first element
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    };
+
 };
 
 module.exports = ShaderProgram;

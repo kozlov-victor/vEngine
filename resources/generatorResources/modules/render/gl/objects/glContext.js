@@ -47,25 +47,29 @@ var GlContext = Class.extend(function(it){
         commonShaderPrg.setUniform('u_alpha',1);
         // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 
-        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-        posVertexBuffer.bind([
+        posVertexBuffer = new VertexBuffer(gl);
+        posVertexBuffer.setData([
             0, 0,
             0, 1,
             1, 0,
             1, 0,
             0, 1,
             1, 1
-        ],2,'a_position');
+        ],gl.FLOAT,2);
+        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
+        colorShaderPrg.bindBuffer(posVertexBuffer,'a_position');
 
-        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-        posVertexBuffer.bind([
+        texVertexBuffer = new VertexBuffer(gl);
+        texVertexBuffer.setData([
             0, 0,
             0, 1,
             1, 0,
             1, 0,
             0, 1,
             1, 1
-        ],2,'a_texcoord');
+        ],gl.FLOAT,2);
+        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
+        colorShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
 
         frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 

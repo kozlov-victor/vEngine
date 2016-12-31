@@ -15,5 +15,4 @@ module.exports.requestToApi = function(params,callBack) {
     events[eventUUID] = callBack;
     params.eventUUID = eventUUID;
     window.top.postMessage(params,'*');
-    console.log('requested to api');
 };

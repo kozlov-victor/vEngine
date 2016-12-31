@@ -1,5 +1,4 @@
 var modules = {}, require = function(name){
-    //console.trace('require: ',name);
     var moduleObj = modules[name];
 
     if (!moduleObj) {
@@ -17,6 +16,8 @@ var modules = {}, require = function(name){
         moduleObj.code(module);
     }
 };
+
+
 
 
 window.require = require;
@@ -741,7 +742,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n//uniform vec4 u_rgb;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n    gl_FragColor.r = 0.0;\n    gl_FragColor.g = gl_FragColor.g>0.5?0.0:1.0;\n    gl_FragColor.b = 0.0;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"}};
+	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -916,7 +917,6 @@ modules['game'] =
 	};
 	
 	var preloadSceneAndSetIt = function(scene){
-	
 	    if (progressScene) {
 	        exports.currScene = progressScene;
 	        bundle.applyBehaviourForScene(progressScene);
@@ -1272,6 +1272,7 @@ modules['htmlAudioContext'] =
 	            if (opts.type=='base64') {
 	                callBack(url);
 	            } else {
+	                console.log('dfdffdf');
 	                utils.loadBinary(url,progress,function(){
 	                    callBack(url);
 	                });
@@ -1827,7 +1828,7 @@ modules['mathEx'] =
 	    return deg *  Math.PI / 180;
 	};
 	
-	exports.getRandomInRange = function(min, max){
+	exports.random = function(min, max){
 	    if (min>max) {
 	        var tmp = min;
 	        min = max;
@@ -1836,7 +1837,7 @@ modules['mathEx'] =
 	    var res = Math.random() * (max - min) + min;
 	    if (res>max) res = max;
 	    else if (res<min) res = min;
-	    return ~~res;
+	    return res;
 	};
 	
 	exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
@@ -2792,7 +2793,7 @@ modules['particleSystem'] =
 	        this._particles = [];
 	        if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
 	        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
-	        if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
+	        if (this.particleAngle.to<this.particleAngle.from) this.particleAngle.to += 2*Math.PI;
 	        if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
 	        if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
 	        if (!this.emissionRadius) this.emissionRadius = 0;
@@ -2800,11 +2801,12 @@ modules['particleSystem'] =
 	    },
 	    emit: function(x,y){
 	        var r = function(obj){
-	            return mathEx.getRandomInRange(obj.from,obj.to);
+	            return mathEx.random(obj.from,obj.to);
 	        };
 	        for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
 	            var particle = this._gameObject.clone();
 	            var angle = r(this.particleAngle);
+	            console.log(angle);
 	            var vel = r(this.particleVelocity);
 	            particle.vel.x = vel*Math.cos(angle);
 	            particle.vel.y = vel*Math.sin(angle);
@@ -3011,7 +3013,10 @@ modules['sound'] =
 	    }
 	}, {
 	    find: function(name){
-	        return bundle.soundList.find({name:name});
+	        var res = bundle.soundList.find({name:name});
+	        if (!res) throw 'can not found sound with name ' + name;
+	        // 
+	        return res;
 	    }
 	});
 	
@@ -3060,10 +3065,13 @@ modules['font'] =
 	
 	var Font = Resource.extend({
 	    type:'font',
-	    fontColor:'black',
 	    fontSize:12,
+	    fontColor: null,
 	    fontFamily:'Monospace',
-	    fontContext:null
+	    fontContext:null,
+	    construct: function(){
+	        this.fontColor = [0,0,0]
+	    }
 	});
 	
 	module.exports = Font;
@@ -3738,7 +3746,8 @@ modules['glContext'] =
 	
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
-	    var commonShaderPrg;
+	    var alpha = 1;
+	    var commonShaderPrg, colorShaderPrg;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
 	    var matrixStack = new MatrixStack();
@@ -3746,7 +3755,6 @@ modules['glContext'] =
 	    var gameProps;
 	    var colorBGDefault = [255,255,255];
 	    var scene = null;
-	    var self = this;
 	
 	    it.init = function(canvas){
 	
@@ -3756,29 +3764,35 @@ modules['glContext'] =
 	            bundle.shaders.basic['vertex.vert'],
 	            bundle.shaders.basic['fragment.frag']
 	        ]);
+	        colorShaderPrg = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.color['fragment.frag']
+	        ]);
 	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform('u_alpha',1);
 	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 	
-	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
 	            1, 0,
 	            0, 1,
 	            1, 1
-	        ],2,'a_position');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
 	
-	        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        texVertexBuffer = new VertexBuffer(gl);
+	        texVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
 	            1, 0,
 	            0, 1,
 	            1, 1
-	        ],2,'a_texcoord');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
@@ -3791,8 +3805,8 @@ modules['glContext'] =
 	        scene = _scene;
 	    };
 	
-	    it.setAlpha = function(alpha) {
-	        commonShaderPrg.setUniform('u_alpha',alpha);
+	    it.setAlpha = function(_alpha) {
+	        alpha = _alpha;
 	    };
 	
 	    it.getError = function(){
@@ -3859,16 +3873,14 @@ modules['glContext'] =
 	            currTex = texture;
 	        }
 	
-	        // Set the texture matrix.
+	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	
-	        // Set the matrix.
 	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
-	
+	        commonShaderPrg.setUniform('u_alpha',alpha);
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	    };
 	
@@ -3908,34 +3920,32 @@ modules['glContext'] =
 	        gl.clear(gl.COLOR_BUFFER_BIT);
 	    };
 	
-	    it.fillRect = function (x, y, w, h, color) {
+	    var fillRect = function (x, y, w, h, color) {
 	
-	        // Set the matrix.
-	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+	        colorShaderPrg.bind();
+	        colorShaderPrg.setUniform("u_matrix",makePositionMatrix(
 	                x,y,w,h,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
-	
+	        colorShaderPrg.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        //gl.blendFunc(gl.ONE, gl.ONE);
-	
-	        // draw the quad (2 triangles, 6 vertices)
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	    };
 	
-	    //it.strokeRect = function (x, y, w, h, color) {
-	    //    this.fillRect(x, y, w, 1, color);
-	    //    this.fillRect(x, y + h, w, 1, color);
-	    //    this.fillRect(x, y, 1, h, color);
-	    //    this.fillRect(x + w, y, 1, h, color);
-	    //};
-	    //
-	    //it.point = function (x, y, color) {
-	    //    this.fillRect(x, y, 1, 1, color);
-	    //};
+	    it.fillRect = fillRect;
+	
+	    it.strokeRect = function (x, y, w, h, color) {
+	        fillRect(x, y, w, 1, color);
+	        fillRect(x, y + h, w, 1, color);
+	        fillRect(x, y, 1, h, color);
+	        fillRect(x + w, y, 1, h, color);
+	    };
+	
+	    it.point = function (x, y, color) {
+	        this.fillRect(x, y, 1, 1, color);
+	    };
 	
 	    it.save = function() {
 	        matrixStack.save();
@@ -3989,6 +3999,8 @@ modules['glContext'] =
 	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
+	        commonShaderPrg.bind();
+	
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
 	            commonShaderPrg.setUniform('u_matrix',
 	                makePositionMatrix(
@@ -4021,6 +4033,8 @@ modules['glContext'] =
 	        gl.drawArrays(gl.TRIANGLES, 0, 6);
 	        this.restore();
 	    };
+	
+	    var self = it;
 	
 	},{
 	    isAcceptable: function(){
@@ -4321,6 +4335,21 @@ modules['shaderProgram'] =
 	        //uniformValuesCache[name] = value;
 	    };
 	
+	    this.bindBuffer = function(buffer,uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	        gl.enableVertexAttribArray(uniformLocation);
+	        gl.vertexAttribPointer(
+	            uniformLocation,
+	            buffer.getItemSize(),
+	            buffer.getItemType(),
+	            false,  // if the content is normalized vectors
+	            0,  // number of bytes to skip in between elements
+	            0
+	        ); // offsets to the first element
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	    };
+	
 	};
 	
 	module.exports = ShaderProgram;
@@ -4389,23 +4418,49 @@ modules['vertexBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var VertexBuffer = function(gl,program){
+	var VertexBuffer = function(gl){
 	    var buffer = gl.createBuffer();
+	    var bufferItemSize, bufferItemType;
 	
-	    this.bind = function(bufferData, itemSize, uniformLocationName){
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+	    this.setData = function(bufferData,itemType, itemSize){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	        bufferItemSize = itemSize;
+	        bufferItemType = itemType;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bind = function(program, uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
-	            itemSize,
-	            gl.FLOAT,
+	            bufferItemSize,
+	            bufferItemType,
 	            false,  // if the content is normalized vectors
 	            0,  // number of bytes to skip in between elements
 	            0
 	        ); // offsets to the first element
-	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	    };
+	
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.getItemSize = function(){
+	        return bufferItemSize;
+	    };
+	
+	    this.getItemType = function(){
+	        return bufferItemType;
+	    }
+	
 	};
 	
 	module.exports = VertexBuffer;
@@ -4427,8 +4482,18 @@ modules['tween'] =
 	
 	    var normalizeFromTo = function(fromToVal){
 	        fromToVal.from = fromToVal.from || {};
+	        fromToVal.to = fromToVal.to || {};
+	        var allPropsMap = {};
+	        Object.keys(fromToVal.from).forEach(function(keyFrom){
+	            allPropsMap[keyFrom] = true;
+	        });
 	        Object.keys(fromToVal.to).forEach(function(keyTo){
-	            propsToChange.push(keyTo);
+	            allPropsMap[keyTo] = true;
+	        });
+	        propsToChange = Object.keys(allPropsMap);
+	        propsToChange.forEach(function(prp){
+	            if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = obj[prp];
+	            if (fromToVal.to[prp]===undefined) fromToVal.from[prp] = obj[prp];
 	        });
 	        return fromToVal;
 	    };
@@ -4450,7 +4515,6 @@ modules['tween'] =
 	        var l = propsToChange.length;
 	        while(l--){
 	            var prp = propsToChange[l];
-	            if (fromToVal.from[prp] === undefined) fromToVal.from[prp] = obj[prp];
 	            obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
 	        }
 	        progressFn && progressFn(obj);

@@ -19,6 +19,7 @@ var _draw = function(ctx,self,x,y){
         x||0,
         y||0
     );
+    //ctx.strokeRect(0,0,self.width,self.height,[1,0,0,1]);
 };
 
 var _drawPattern = function(ctx,self){
