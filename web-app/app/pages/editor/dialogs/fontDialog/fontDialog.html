@@ -9,11 +9,11 @@
                 {{i18n.selectFont}}
             </td>
             <td>
-                <!--<select required ng-model="editData.currFontInEdit.fontFamily" class="width100">-->
-                    <!--<option value="{{fnt.displayName}}" ng-repeat="fnt in editData.systemFontList">-->
-                        <!--{{fnt.displayName}}-->
-                    <!--</option>-->
-                <!--</select>-->
+                <select v-model="editData.currFontInEdit.fontFamily" class="width100">
+                    <option :value="fnt.displayName" v-for="fnt in systemFontList">
+                        {{fnt.displayName}}
+                    </option>
+                </select>
             </td>
         </tr>
         <tr>
@@ -21,7 +21,7 @@
                 {{i18n.name}}
             </td>
             <td>
-                <input required ng-model="editData.currFontInEdit.name" class="width100">
+                <input required v-model="editData.currFontInEdit.name" class="width100">
             </td>
         </tr>
         <tr>
@@ -29,7 +29,7 @@
                 {{i18n.fontSize}}
             </td>
             <td>
-                <input required type="number" ng-model="editData.currFontInEdit.fontSize" class="width100">
+                <input required type="number" v-model="editData.currFontInEdit.fontSize" class="width100">
             </td>
         </tr>
         <tr>
@@ -41,30 +41,20 @@
                         :object="editData.currFontInEdit"
                         :value="'fontColor'"
                         />
-                <div
-                        ng-click="openColorPickerForFont()"
-                        ng-style="
-                        {
-                            width: '20px',
-                            height:'20px',
-                            backgroundColor:utils.rgbToHex(editData.currFontInEdit.fontColor)
-                        }
-                        "
-                        ></div>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <input ng-model="fontSample" class="width100"/>
+                <input v-model="fontSample" class="width100"/>
             </td>
         </tr>
         <tr>
             <td colspan="2">
-                <!--<div ng-style='{-->
-                <!--fontFamily:editData.currFontInEdit.fontFamily,-->
-                <!--fontSize:editData.currFontInEdit.fontSize+"px",-->
-                <!--color:utils.rgbToHex(editData.currFontInEdit.fontColor)-->
-            <!--}'>{{fontSample}}</div>-->
+                <div :style='{
+                    fontFamily:editData.currFontInEdit.fontFamily,
+                    fontSize:editData.currFontInEdit.fontSize+"px",
+                    color:utils.rgbToHex(editData.currFontInEdit.fontColor)
+                }'>{{fontSample}}</div>
             </td>
         </tr>
     </table>

@@ -14,7 +14,11 @@ module.exports = Vue.component('app-color-picker', {
     },
     methods: {
         click: function(e){
-            colorPickerDialog.instance.open();
+            colorPickerDialog.instance.open(this,this.currentColorRGB);
+        },
+        applyColor: function(color){
+            this.object[this.value] = color;
+            this.currentColorRGB = this.object[this.value];
         }
     },
     components: {
