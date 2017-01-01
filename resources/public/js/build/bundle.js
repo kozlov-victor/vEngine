@@ -178,7 +178,12 @@ module.exports.component = Vue.component('app-color-picker-dialog', {
             this.currentColorHex = utils.rgbToHex(this.currentColorRGB);
         },
         applyColor: function(){
-            colorPicker.applyColor(this.currentColorRGB);
+
+            colorPicker.applyColor([
+                +this.currentColorRGB[0],
+                +this.currentColorRGB[1],
+                +this.currentColorRGB[2]
+            ]);
             this.close();
         }
     }
@@ -308,7 +313,7 @@ module.exports = Vue.component('app-dialogs', {
     }
 });
 },{"./dialogs.html":17,"./fontDialog/fontDialog":20,"./particleSystemDialog/particleSystemDialog":22,"./particleSystemPreviewDialog/particleSystemPreviewDialog":24,"./soundDialog/soundDialog":26,"providers/editData":49,"providers/i18n":51}],19:[function(require,module,exports){
-module.exports = "\n<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.selectFont}}\n            </td>\n            <td>\n                <select v-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                    <option :value=\"fnt.displayName\" v-for=\"fnt in systemFontList\">\n                        {{fnt.displayName}}\n                    </option>\n                </select>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n                <input required v-model=\"editData.currFontInEdit.name\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontSize}}\n            </td>\n            <td>\n                <input required type=\"number\" v-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontColor}}\n            </td>\n            <td>\n                <app-color-picker\n                        :object=\"editData.currFontInEdit\"\n                        :value=\"'fontColor'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <input v-model=\"fontSample\" class=\"width100\"/>\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <div :style='{\n                    fontFamily:editData.currFontInEdit.fontFamily,\n                    fontSize:editData.currFontInEdit.fontSize+\"px\",\n                    color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n                }'>{{fontSample}}</div>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            ng-disabled=\"!frmCreateFont.$valid\"\n            ng-click=\"createOrEditFont(editData.currFontInEdit)\">\n        {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
+module.exports = "\n<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.selectFont}}\n            </td>\n            <td>\n                {{editData.currFontInEdit.fontFamily}}\n                <select\n                        required\n                        v-control=\"{form:form,model:editData.currFontInEdit,prop:'fontFamily'}\"\n                        v-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                    <option :value=\"fnt.displayName\" v-for=\"fnt in systemFontList\">\n                        {{fnt.displayName}}\n                    </option>\n                </select>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n                <input required\n                       v-control=\"{form:form,model:editData.currFontInEdit,prop:'name'}\"\n                       v-model=\"editData.currFontInEdit.name\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontSize}}\n            </td>\n            <td>\n                <input required type=\"number\"\n                       min=\"1\"\n                       max=\"1000\"\n                       v-control=\"{form:form,model:editData.currFontInEdit,prop:'fontSize'}\"\n                       v-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontColor}}\n            </td>\n            <td>\n                <app-color-picker\n                        :object=\"editData.currFontInEdit\"\n                        :value=\"'fontColor'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <input v-model=\"fontSample\" class=\"width100\"/>\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <div :style='{\n                    fontFamily:editData.currFontInEdit.fontFamily,\n                    fontSize:editData.currFontInEdit.fontSize+\"px\",\n                    color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n                }'>{{fontSample}}</div>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"createOrEditFont(editData.currFontInEdit)\">\n        {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
 
 },{}],20:[function(require,module,exports){
 
@@ -321,6 +326,68 @@ var Font = _require('font');
 var fontSample = 'test font';
 var systemFontList = [{displayName:'monospace'}];
 var chrome = require('providers/chrome');
+var utils = require('providers/utils');
+
+var SYMBOL_PADDING = 4;
+
+var getFontContext = function(arrFromTo, strFont, w) {
+    function getFontHeight(strFont) {
+        var parent = document.createElement("span");
+        parent.appendChild(document.createTextNode("height!ДдЙЇ"));
+        document.body.appendChild(parent);
+        parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
+        var height = parent.offsetHeight;
+        document.body.removeChild(parent);
+        return height;
+    }
+    var cnv = document.createElement('canvas');
+    var ctx = cnv.getContext('2d');
+    ctx.font = strFont;
+    var textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
+    var symbols = {};
+    var currX = 0, currY = 0, cnvHeight = textHeight;
+    for (var k = 0; k < arrFromTo.length; k++) {
+        var arrFromToCurr = arrFromTo[k];
+        for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
+            var currentChar = String.fromCharCode(i);
+
+            ctx = cnv.getContext('2d');
+            var textWidth = ctx.measureText(currentChar).width;
+            textWidth += 2 * SYMBOL_PADDING;
+            if (textWidth == 0) continue;
+            if (currX + textWidth > w) {
+                currX = 0;
+                currY += textHeight;
+                cnvHeight = currY + textHeight;
+            }
+            var symbol = {};
+            symbol.x = ~~currX + SYMBOL_PADDING;
+            symbol.y = ~~currY + SYMBOL_PADDING;
+            symbol.width = ~~textWidth - 2 * SYMBOL_PADDING;
+            symbol.height = textHeight - 2 * SYMBOL_PADDING;
+            symbols[currentChar] = symbol;
+            currX += textWidth;
+        }
+    }
+    return {symbols: symbols, width: w, height: cnvHeight};
+};
+
+
+var getFontImage = function(symbolsContext,strFont,color){
+    var cnv = document.createElement('canvas');
+    cnv.width = symbolsContext.width;
+    cnv.height = symbolsContext.height;
+    var ctx = cnv.getContext('2d');
+    ctx.font = strFont;
+    ctx.fillStyle = color;
+    ctx.textBaseline = "top";
+    var symbols = symbolsContext.symbols;
+    for (var symbol in symbols) {
+        if (!symbols.hasOwnProperty(symbol)) continue;
+        ctx.fillText(symbol, symbols[symbol].x, symbols[symbol].y);
+    }
+    return cnv.toDataURL();
+};
 
 module.exports.component = Vue.component('app-font-dialog', {
     mixins:[abstractDialog],
@@ -331,7 +398,7 @@ module.exports.component = Vue.component('app-font-dialog', {
             form:require('providers/validator').new(),
             editData: editData,
             i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils'),
+            utils: utils,
             fontSample:fontSample,
             systemFontList: systemFontList || []
         }
@@ -353,6 +420,20 @@ module.exports.component = Vue.component('app-font-dialog', {
                     });
                 });
             }
+        },
+        createOrEditFont: function(fnt){
+            var self = this;
+            var strFont = fnt.fontSize +'px'+' '+fnt.fontFamily;
+            fnt.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
+            fnt._file = utils.dataURItoBlob(getFontImage(fnt.fontContext,strFont,utils.rgbToHex(fnt.fontColor)));
+            resource.createOrEditResource(
+                fnt,
+                Font,
+                editData.fontList,
+                function(result){
+                    self.close();
+                }
+            );
         }
     }
 });
@@ -626,12 +707,13 @@ module.exports = Vue.component('app-game-object-row', {
     }
 });
 },{"./gameObjectRow.html":29,"providers/utils":54}],31:[function(require,module,exports){
-module.exports = "\n<app-collapsible\n        :crud=\"{\n            create:createFont\n        }\"\n        :title=\"i18n.fonts\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"font in (editData.fontList && editData.fontList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
+module.exports = "<app-collapsible\n        :crud=\"{\n            create:createFont\n        }\"\n        :title=\"i18n.fonts\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"font in (editData.fontList && editData.fontList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editFont(font)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteFont(font)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
 },{}],32:[function(require,module,exports){
 
 var fontDialog = require('../../dialogs/fontDialog/fontDialog');
 var Font = _require('font');
+var resource = require('providers/resource');
 
 module.exports = Vue.component('app-fonts', {
     props: [],
@@ -649,10 +731,22 @@ module.exports = Vue.component('app-fonts', {
         createFont: function(){
             this.editData.currFontInEdit = new Font(new Font().toJSON());
             fontDialog.instance.open();
+        },
+        editFont: function(fnt){
+            this.editData.currFontInEdit = fnt.clone();
+            fontDialog.instance.open();
+        },
+        deleteFont: function(fnt){
+            window.confirmEx(
+                this.i18n.confirmQuestion,
+                function(){
+                    resource.deleteResource(fnt);
+                }
+            )
         }
     }
 });
-},{"../../dialogs/fontDialog/fontDialog":20,"./fonts.html":31,"providers/editData":49,"providers/i18n":51}],33:[function(require,module,exports){
+},{"../../dialogs/fontDialog/fontDialog":20,"./fonts.html":31,"providers/editData":49,"providers/i18n":51,"providers/resource":52}],33:[function(require,module,exports){
 module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObjects\"\n            :crud=\"{\n                create:createGameObject\n            }\"\n            >\n        <div class=\"withPaddingLeft\">\n            <div class=\"table rightText\">\n                <div\n                        :crud=\"{\n                            edit: editGameObject,\n                            editScript: editGameObjectScript\n                        }\"\n                        is=\"appGameObjectRow\"\n                        :game-object=\"gameObject\"\n                        v-for=\"gameObject in (editData.gameObjectList && editData.gameObjectList.rs)\"\n                        >\n                </div>\n            </div>\n        </div>\n    </app-collapsible>\n</div>";
 
 },{}],34:[function(require,module,exports){
@@ -1433,6 +1527,27 @@ var Utils = function(){
         var r = +col[0],g=+col[1],b=+col[2];
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     };
+
+    this.dataURItoBlob =function (dataURI) {
+        // convert base64/URLEncoded data component to raw binary data held in a string
+        var byteString;
+        if (dataURI.split(',')[0].indexOf('base64') >= 0)
+            byteString = atob(dataURI.split(',')[1]);
+        else
+            byteString = unescape(dataURI.split(',')[1]);
+
+        // separate out the mime component
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+        // write the bytes of the string to a typed array
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], {type:mimeString});
+    };
+
 };
 
 module.exports = new Utils();

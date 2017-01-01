@@ -8,7 +8,7 @@ var Font = Resource.extend({
     fontFamily:'Monospace',
     fontContext:null,
     construct: function(){
-        this.fontColor = [0,0,0]
+        if (!this.fontColor) this.fontColor = [0,0,0]
     }
 });
 

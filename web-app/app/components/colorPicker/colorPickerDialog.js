@@ -46,7 +46,12 @@ module.exports.component = Vue.component('app-color-picker-dialog', {
             this.currentColorHex = utils.rgbToHex(this.currentColorRGB);
         },
         applyColor: function(){
-            colorPicker.applyColor(this.currentColorRGB);
+
+            colorPicker.applyColor([
+                +this.currentColorRGB[0],
+                +this.currentColorRGB[1],
+                +this.currentColorRGB[2]
+            ]);
             this.close();
         }
     }

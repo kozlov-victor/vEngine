@@ -3,7 +3,7 @@ var VertexBuffer = function(gl){
     var buffer = gl.createBuffer();
     var bufferItemSize, bufferItemType;
 
-    this.setData = function(bufferData,itemType, itemSize){
+    this.setData = function(bufferData, itemType, itemSize){
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -17,7 +17,7 @@ var VertexBuffer = function(gl){
 
     this.bind = function(program, uniformLocationName){
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
         gl.enableVertexAttribArray(uniformLocation);
         gl.vertexAttribPointer(
             uniformLocation,
@@ -25,8 +25,8 @@ var VertexBuffer = function(gl){
             bufferItemType,
             false,  // if the content is normalized vectors
             0,  // number of bytes to skip in between elements
-            0
-        ); // offsets to the first element
+            0   // offsets to the first element
+        );
     };
 
 

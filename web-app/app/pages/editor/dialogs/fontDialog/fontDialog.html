@@ -9,7 +9,10 @@
                 {{i18n.selectFont}}
             </td>
             <td>
-                <select v-model="editData.currFontInEdit.fontFamily" class="width100">
+                <select
+                        required
+                        v-control="{form:form,model:editData.currFontInEdit,prop:'fontFamily'}"
+                        v-model="editData.currFontInEdit.fontFamily" class="width100">
                     <option :value="fnt.displayName" v-for="fnt in systemFontList">
                         {{fnt.displayName}}
                     </option>
@@ -21,7 +24,9 @@
                 {{i18n.name}}
             </td>
             <td>
-                <input required v-model="editData.currFontInEdit.name" class="width100">
+                <input required
+                       v-control="{form:form,model:editData.currFontInEdit,prop:'name'}"
+                       v-model="editData.currFontInEdit.name" class="width100">
             </td>
         </tr>
         <tr>
@@ -29,7 +34,11 @@
                 {{i18n.fontSize}}
             </td>
             <td>
-                <input required type="number" v-model="editData.currFontInEdit.fontSize" class="width100">
+                <input required type="number"
+                       min="1"
+                       max="1000"
+                       v-control="{form:form,model:editData.currFontInEdit,prop:'fontSize'}"
+                       v-model="editData.currFontInEdit.fontSize" class="width100">
             </td>
         </tr>
         <tr>
@@ -60,8 +69,8 @@
     </table>
 
     <button
-            ng-disabled="!frmCreateFont.$valid"
-            ng-click="createOrEditFont(editData.currFontInEdit)">
+            :disabled="!form.valid()"
+            v-on:click="createOrEditFont(editData.currFontInEdit)">
         {{editData.currFontInEdit.id?i18n.edit:i18n.create}}
     </button>
 

@@ -34,6 +34,7 @@ var Renderable = BaseModel.extend(function(self){
         ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
         ctx.scale(this.scale.x,this.scale.y);
         ctx.rotateZ(this.angle);
+        //ctx.rotateY(a);
         ctx.translate(-this.width /2, -this.height/2);
         ctx.setAlpha(this.alpha);
     };

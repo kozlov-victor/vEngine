@@ -8,7 +8,7 @@ var resourceCache = require('resourceCache');
 var utils = require('utils');
 var game = require('game');
 
-
+var a = 0;
 var _draw = function(ctx,self,x,y){
     ctx.drawImage(
         resourceCache.get(self._spriteSheet.resourcePath),

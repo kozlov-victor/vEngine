@@ -44,9 +44,9 @@ self.val = function(){
     return lastN;
 };
 
-
+ 
 self.onUpdate = function(){
-   
+    
 }
 
 
