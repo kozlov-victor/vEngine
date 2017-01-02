@@ -198,21 +198,12 @@ var Resource = function(){
     //            callback && callback(resp);
     //        });
     //};
-    //this.readFile = function(name,path,callback){
-    //    $http({
-    //        url: '/readFile',
-    //        method: "POST",
-    //        data: {
-    //            name:name,
-    //            path:path,
-    //            projectName: editData.projectName
-    //        },
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
+    this.readFile = function(path,callback){
+        http.post('/readFile',{
+            path:path,
+            projectName: editData.projectName
+        },callback);
+    };
     //this.getProjects = function(callback){
     //    $http({
     //        url: '/getProjects',

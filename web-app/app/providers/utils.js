@@ -61,6 +61,24 @@ var Utils = function(){
         return new Blob([ia], {type:mimeString});
     };
 
+    this.range = function(rFr,rTo) {
+        var arr = [], i;
+        if (rTo==undefined) {
+            rTo = rFr;
+            rFr = 0;
+        }
+        if (rFr<rTo) {
+            for (i=rFr;i<=rTo;i++) {
+                arr.push(i);
+            }
+        } else {
+            for (i=rFr;i>=rTo;i--) {
+                arr.push(i);
+            }
+        }
+        return arr;
+    };
+
 };
 
 module.exports = new Utils();

@@ -1,6 +1,6 @@
 <html>
 <body>
-<div id="editor" style="height: 500px; width: 100%"></div>
+<div id="editor" style="width: 100%"></div>
 <div id="commandline" style="position: absolute; bottom: 10px; height: 20px; width: 800px;"></div>
 </body>
 <script type="text/javascript" src="debug.js"></script>
@@ -29,7 +29,6 @@
 
         var setUpEditor = function(){
             editor = ace.edit("editor");
-            window.e = editor;
             editor.session.setMode("ace/mode/javascript");
             editor.setOptions({
                 enableBasicAutocompletion: true,
@@ -77,9 +76,23 @@
             });
         };
 
+        var setUpNew = function(){
+            var parentFrame = window.parent.document.getElementById('scriptEditor');
+            $('#editor').css({height: parentFrame.getBoundingClientRect().height+'px'});
+            editor.resize();
+
+            window.parent.readFile(function(code){
+                editor.setValue(code,1);
+                editor.session.getUndoManager().reset();
+                editor.resize();
+            });
+
+        };
+
         return function(){
             setUpEditor();
             setUpMessageDigest();
+            setUpNew();
         }
 
 

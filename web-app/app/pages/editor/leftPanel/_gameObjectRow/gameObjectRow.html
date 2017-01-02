@@ -26,7 +26,7 @@
         </span>
     </div>
     <div class="cell width1">
-        <div v-if="crud && crud.editScript" class="script" v-on:click="crud.editScript()"></div>
+        <div v-if="crud && crud.editScript" class="script" v-on:click="crud.editScript(gameObject)"></div>
     </div>
     <div class="cell width1">
         <div v-if="crud && crud.edit" class="edit" v-on:click="crud.edit()"></div>

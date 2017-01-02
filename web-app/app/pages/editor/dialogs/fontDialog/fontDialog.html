@@ -13,7 +13,9 @@
                         required
                         v-control="{form:form,model:editData.currFontInEdit,prop:'fontFamily'}"
                         v-model="editData.currFontInEdit.fontFamily" class="width100">
-                    <option :value="fnt.displayName" v-for="fnt in systemFontList">
+                    <option
+                            :value="fnt.displayName"
+                            v-for="fnt in systemFontList">
                         {{fnt.displayName}}
                     </option>
                 </select>

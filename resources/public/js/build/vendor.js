@@ -8710,7 +8710,8 @@ var checkRule = function(rulesObject,ruleName,el,bindings){
 
     var ruleValue = el.getAttribute(ruleName);
     var ruleFn = rulesObject[ruleName];
-    var result = ruleFn(el.value,ruleValue);
+    var currModelValue = bindings.value.model[bindings.value.prop];
+    var result = ruleFn(currModelValue,ruleValue);
     if (!result) {
         el.classList.add('error');
     }

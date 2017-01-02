@@ -6,7 +6,6 @@ var resource = require('providers/resource');
 var Font = _require('font');
 
 var fontSample = 'test font';
-var systemFontList = [{displayName:'monospace'}];
 var chrome = require('providers/chrome');
 var utils = require('providers/utils');
 
@@ -82,7 +81,7 @@ module.exports.component = Vue.component('app-font-dialog', {
             i18n: require('providers/i18n').getAll(),
             utils: utils,
             fontSample:fontSample,
-            systemFontList: systemFontList || []
+            systemFontList: []
         }
     },
     created: function(){
@@ -94,12 +93,10 @@ module.exports.component = Vue.component('app-font-dialog', {
     methods: {
         open: function(){
             this.opened = true;
-            if (systemFontList.length==1) {
+            if (!this.systemFontList.length) {
                 var self = this;
                 chrome.requestToApi({method:'getFontList'},function(list){
-                    list.forEach(function(item,i){
-                        Vue.set(self.systemFontList,i,item);
-                    });
+                    self.systemFontList = list;
                 });
             }
         },

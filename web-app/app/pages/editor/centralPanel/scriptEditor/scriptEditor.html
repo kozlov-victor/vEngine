@@ -1,0 +1,15 @@
+<div
+        class="height100"
+        v-if="editData.scriptEditorUrl"
+        >
+    <div style="height:10px;font-size: 10px;">
+        {{editData.scriptEditorUrl}}
+    </div>
+    <iframe
+            id="scriptEditor"
+            frameborder="0"
+            style="height:calc(100% - 10px)"
+            class="block width100 noOverFlow"
+            src="/editor"
+            ></iframe>
+</div>

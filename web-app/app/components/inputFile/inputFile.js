@@ -1,6 +1,6 @@
 
 module.exports = Vue.component('app-input-file', {
-    props: ['title'],
+    props: ['title','accept'],
     template: require('./inputFile.html'),
     data: function(){
         return {

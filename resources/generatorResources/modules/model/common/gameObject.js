@@ -68,7 +68,6 @@ var GameObject = BaseGameObject.extend({
     _frameAnimations: null,
     frameAnimationIds:[],
     _currFrameAnimation:null,
-    rigid:true,
     _timeCreated:null,
     tileOffset: null,
     tileRepeat:false,

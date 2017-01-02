@@ -37,5 +37,36 @@
             "x": 0,
             "y": 0
         }
+    },
+    {
+        "spriteSheetId": "7616_4866_16",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "saw",
+        "width": 471,
+        "height": 473,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "groupName": "",
+        "angle": 0,
+        "angleVel": 0,
+        "alpha": 1,
+        "id": "3204_1323_17"
     }
 ]

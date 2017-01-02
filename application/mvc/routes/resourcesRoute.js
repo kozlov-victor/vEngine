@@ -123,11 +123,10 @@ module.exports.init = function(app) {
     });
 
     app.post('/readFile',function(req,res){
-        var name = req.body.name;
         var path = req.body.path;
         var projectName = req.body.projectName;
         res.send(
-            resourcesController.readFile(name,path,projectName)
+            resourcesController.readFile(path,projectName)
         );
     });
 

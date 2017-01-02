@@ -10,13 +10,17 @@ var BaseGameObject = Renderable.extend({
     type:'baseGameObject',
     groupName:'',
     _spriteSheet:null,
-    pos:null,
-    scale:null,
-    angle:0,
     fixedToCamera:false,
     _layer:null,
     _moveable:null,
+
+    pos:null,
+    scale:null,
+    rigid:false,
+    angle:0,
+    angleVel:0,
     vel:null,
+
     getRect: function(){
         return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
     },

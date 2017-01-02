@@ -231,6 +231,15 @@ label,
 .width1 {
   width: 1px;
 }
+.height100 {
+  height: 100%;
+}
+.height10 {
+  height: 10%;
+}
+.height90 {
+  height: 90%;
+}
 .table {
   display: table;
 }
