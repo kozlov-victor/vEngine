@@ -1,4 +1,6 @@
 
+var utils = require('providers/utils');
+
 module.exports = Vue.component('app-game-objects', {
     props: [],
     template: require('./gameObjects.html'),
@@ -16,7 +18,7 @@ module.exports = Vue.component('app-game-objects', {
             console.log('create go');
         },
         editGameObjectScript: function(gameObject){
-            this.editData.scriptEditorUrl = gameObject.type + '/' +gameObject.name + '.js';
+            utils.openEditor(gameObject.type + '/' +gameObject.name + '.js');
         },
         editGameObject: function(){
             console.log('create go');

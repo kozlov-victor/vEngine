@@ -11,10 +11,7 @@ module.exports = Vue.component('app-script-editor', {
         }
     },
     created: function(){
-        var self = this;
-        window.readFile = function(callBack){
-            resource.readFile('script/'+self.editData.scriptEditorUrl,callBack);
-        };
+
     },
     components: {
 

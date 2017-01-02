@@ -1,7 +1,7 @@
 
 var mathEx = _require('mathEx');
 var editData = require('providers/editData');
-
+var resource = require('providers/resource');
 
 var Utils = function(){
     this.getGameObjectCss = function(gameObj){
@@ -77,6 +77,28 @@ var Utils = function(){
             }
         }
         return arr;
+    };
+
+    var waitForFrameAndDo = function(file){
+        var frame = document.getElementById('scriptEditorFrame');
+        var contentWindow = frame && frame.contentWindow;
+        if (!contentWindow.ready) {
+            setTimeout(function(){
+                waitForFrameAndDo(file);
+            },100);
+            return;
+        }
+        contentWindow.setCode(file);
+        contentWindow.calcEditorSize();
+        window.removeEventListener('resize',contentWindow.calcEditorSize);
+        window.addEventListener('resize',contentWindow.calcEditorSize);
+    };
+
+    this.openEditor = function(resourceUrl) {
+        editData.scriptEditorUrl = resourceUrl;
+        resource.readFile('script/'+resourceUrl,function(file){
+            waitForFrameAndDo(file);
+        });
     };
 
 };

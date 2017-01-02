@@ -5,11 +5,15 @@
     <div style="height:10px;font-size: 10px;">
         {{editData.scriptEditorUrl}}
     </div>
-    <iframe
+    <div
             id="scriptEditor"
-            frameborder="0"
             style="height:calc(100% - 10px)"
-            class="block width100 noOverFlow"
-            src="/editor"
-            ></iframe>
+            >
+        <iframe
+                id="scriptEditorFrame"
+                frameborder="0"
+                class="block width100 height100 noOverFlow"
+                src="/editor"
+                ></iframe>
+    </div>
 </div>

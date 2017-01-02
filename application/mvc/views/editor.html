@@ -76,24 +76,24 @@
             });
         };
 
-        var setUpNew = function(){
+        window.calcEditorSize = function(){
             var parentFrame = window.parent.document.getElementById('scriptEditor');
-            $('#editor').css({height: parentFrame.getBoundingClientRect().height+'px'});
+            $('#editor').css({height: parentFrame.getBoundingClientRect().height - 25 +'px'});
             editor.resize();
-
-            window.parent.readFile(function(code){
-                editor.setValue(code,1);
-                editor.session.getUndoManager().reset();
-                editor.resize();
-            });
-
         };
+        window.setCode = function(code){
+            editor.setValue(code,1);
+            editor.session.getUndoManager().reset();
+            editor.resize();
+        };
+        window.ready = true;
 
         return function(){
             setUpEditor();
             setUpMessageDigest();
-            setUpNew();
-        }
+        };
+
+
 
 
     }()();

@@ -289,7 +289,7 @@ module.exports = Vue.component('app-modal', {
     }
 });
 },{"./modal.html":15}],17:[function(require,module,exports){
-module.exports = "<div\r\n        class=\"height100\"\r\n        v-if=\"editData.scriptEditorUrl\"\r\n        >\r\n    <div style=\"height:10px;font-size: 10px;\">\r\n        {{editData.scriptEditorUrl}}\r\n    </div>\r\n    <iframe\r\n            id=\"scriptEditor\"\r\n            frameborder=\"0\"\r\n            style=\"height:calc(100% - 10px)\"\r\n            class=\"block width100 noOverFlow\"\r\n            src=\"/editor\"\r\n            ></iframe>\r\n</div>";
+module.exports = "<div\r\n        class=\"height100\"\r\n        v-if=\"editData.scriptEditorUrl\"\r\n        >\r\n    <div style=\"height:10px;font-size: 10px;\">\r\n        {{editData.scriptEditorUrl}}\r\n    </div>\r\n    <div\r\n            id=\"scriptEditor\"\r\n            style=\"height:calc(100% - 10px)\"\r\n            >\r\n        <iframe\r\n                id=\"scriptEditorFrame\"\r\n                frameborder=\"0\"\r\n                class=\"block width100 height100 noOverFlow\"\r\n                src=\"/editor\"\r\n                ></iframe>\r\n    </div>\r\n</div>";
 
 },{}],18:[function(require,module,exports){
 
@@ -305,10 +305,7 @@ module.exports = Vue.component('app-script-editor', {
         }
     },
     created: function(){
-        var self = this;
-        window.readFile = function(callBack){
-            resource.readFile('script/'+self.editData.scriptEditorUrl,callBack);
-        };
+
     },
     components: {
 
@@ -862,6 +859,8 @@ module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObj
 
 },{}],38:[function(require,module,exports){
 
+var utils = require('providers/utils');
+
 module.exports = Vue.component('app-game-objects', {
     props: [],
     template: require('./gameObjects.html'),
@@ -879,7 +878,7 @@ module.exports = Vue.component('app-game-objects', {
             console.log('create go');
         },
         editGameObjectScript: function(gameObject){
-            this.editData.scriptEditorUrl = gameObject.type + '/' +gameObject.name + '.js';
+            utils.openEditor(gameObject.type + '/' +gameObject.name + '.js');
         },
         editGameObject: function(){
             console.log('create go');
@@ -887,7 +886,7 @@ module.exports = Vue.component('app-game-objects', {
     }
 });
 
-},{"../_gameObjectRow/gameObjectRow":34,"./gameObjects.html":37,"providers/editData":53,"providers/i18n":55}],39:[function(require,module,exports){
+},{"../_gameObjectRow/gameObjectRow":34,"./gameObjects.html":37,"providers/editData":53,"providers/i18n":55,"providers/utils":58}],39:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
 },{}],40:[function(require,module,exports){
@@ -1609,7 +1608,7 @@ window.confirmEx = function(msg,callback){
 
 var mathEx = _require('mathEx');
 var editData = require('providers/editData');
-
+var resource = require('providers/resource');
 
 var Utils = function(){
     this.getGameObjectCss = function(gameObj){
@@ -1687,10 +1686,32 @@ var Utils = function(){
         return arr;
     };
 
+    var waitForFrameAndDo = function(file){
+        var frame = document.getElementById('scriptEditorFrame');
+        var contentWindow = frame && frame.contentWindow;
+        if (!contentWindow.ready) {
+            setTimeout(function(){
+                waitForFrameAndDo(file);
+            },100);
+            return;
+        }
+        contentWindow.setCode(file);
+        contentWindow.calcEditorSize();
+        window.removeEventListener('resize',contentWindow.calcEditorSize);
+        window.addEventListener('resize',contentWindow.calcEditorSize);
+    };
+
+    this.openEditor = function(resourceUrl) {
+        editData.scriptEditorUrl = resourceUrl;
+        resource.readFile('script/'+resourceUrl,function(file){
+            waitForFrameAndDo(file);
+        });
+    };
+
 };
 
 module.exports = new Utils();
-},{"providers/editData":53}],59:[function(require,module,exports){
+},{"providers/editData":53,"providers/resource":56}],59:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
