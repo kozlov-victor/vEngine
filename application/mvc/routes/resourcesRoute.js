@@ -36,6 +36,10 @@ module.exports.init = function(app) {
         res.render('editor',utils.parametrize({}));
     });
 
+    app.get('/editorNew',function(req,res){
+        res.render('editorNew',utils.parametrize({}));
+    });
+
     var getModelFromBody = function(req) {
         return JSON.parse((req.body && req.body.model)||'{}');
     };
@@ -113,12 +117,11 @@ module.exports.init = function(app) {
     });
 
     app.post('/createFile',function(req,res){
-        var name = req.body.name;
         var path = req.body.path;
         var content = req.body.content;
         var projectName = req.body.projectName;
         res.send(
-            resourcesController.createFile(name,path,content,projectName)
+            resourcesController.createFile(path,content,projectName)
         );
     });
 

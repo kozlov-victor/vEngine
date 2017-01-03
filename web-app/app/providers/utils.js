@@ -79,25 +79,53 @@ var Utils = function(){
         return arr;
     };
 
-    var waitForFrameAndDo = function(file){
+    var createAceCompleter = function(){
+        var result = [];
+        var res = {};
+        var objs = ['gameObject'];
+        objs.forEach(function(go){
+            var GObjClass = _require(go);
+            var goObj = new GObjClass();
+            for (var key in goObj) {
+                if (key.indexOf('_')==0) continue;
+                res[key] = {
+                    name:key,
+                    value:key,
+                    score:1,
+                    meta:'gameObject property'
+                }
+            }
+        });
+        Object.keys(res).forEach(function(key){
+            result.push(res[key]);
+        });
+        return result;
+    };
+
+    var waitForFrameAndDo = function(file,path){
         var frame = document.getElementById('scriptEditorFrame');
         var contentWindow = frame && frame.contentWindow;
         if (!contentWindow.ready) {
             setTimeout(function(){
-                waitForFrameAndDo(file);
+                waitForFrameAndDo(file,path);
             },100);
             return;
         }
         contentWindow.setCode(file);
         contentWindow.calcEditorSize();
+        contentWindow.setAutocomplete(createAceCompleter());
         window.removeEventListener('resize',contentWindow.calcEditorSize);
         window.addEventListener('resize',contentWindow.calcEditorSize);
+        window.saveCode = function(code){
+            resource.createFile(path,code);
+        };
     };
 
     this.openEditor = function(resourceUrl) {
         editData.scriptEditorUrl = resourceUrl;
-        resource.readFile('script/'+resourceUrl,function(file){
-            waitForFrameAndDo(file);
+        var path = 'script/'+resourceUrl;
+        resource.readFile(path,function(file){
+            waitForFrameAndDo(file,path);
         });
     };
 

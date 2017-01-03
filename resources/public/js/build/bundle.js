@@ -96,7 +96,7 @@ module.exports = Vue.component('app-collapsible', {
     }
 });
 },{"./collapsible.html":5}],7:[function(require,module,exports){
-module.exports = "<div class=\"inlineBlock\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div\r\n            :style=\"{\r\n                cursor: 'pointer',\r\n                width: 24 + 'px',\r\n                height:24 + 'px',\r\n                backgroundColor: 'rgb('+currentColorRGB[0]+','+currentColorRGB[1]+','+currentColorRGB[2]+')'\r\n            }\"\r\n            v-on:click=\"click()\"\r\n            >\r\n    </div>\r\n\r\n    <app-color-picker-dialog/>\r\n\r\n</div>\r\n\r\n";
+module.exports = "<div class=\"inlineBlock\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <div\n            :style=\"{\n                cursor: 'pointer',\n                width: 24 + 'px',\n                height:24 + 'px',\n                backgroundColor: 'rgb('+currentColorRGB[0]+','+currentColorRGB[1]+','+currentColorRGB[2]+')'\n            }\"\n            v-on:click=\"click()\"\n            >\n    </div>\n\n    <app-color-picker-dialog/>\n\n</div>\n\n";
 
 },{}],8:[function(require,module,exports){
 
@@ -127,7 +127,7 @@ module.exports = Vue.component('app-color-picker', {
     }
 });
 },{"./colorPicker.html":7,"./colorPickerDialog":10,"components/colorPicker/colorPickerDialog":10}],9:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\"\r\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table>\r\n        <tr>\r\n            <td>\r\n                <input type=\"color\" v-model=\"currentColorHex\" v-on:change=\"hexChanged()\"/>\r\n            </td>\r\n            <td>\r\n                <input type=\"text\"  v-model=\"currentColorHex\" v-on:change=\"hexChanged()\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n\r\n        <table class=\"width100\">\r\n            <tr\r\n                    v-for=\"item in colorEnums\">\r\n                <td\r\n                        :style=\"{\r\n                            color: item.left\r\n                        }\"\r\n                        >\r\n                    {{item.left}}\r\n                </td>\r\n                <td class=\"centerText\">\r\n                    <input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" v-model=\"currentColorRGB[item.index]\" v-on:change=\"rgbChanged()\"/>\r\n                    <br/>\r\n                    <input class=\"small vAlign\" v-model=\"currentColorRGB[item.index]\" v-on:change=\"rgbChanged()\"/>\r\n                    <hr/>\r\n                </td>\r\n                <td\r\n                        :style=\"{\r\n                            color: item.right\r\n                        }\"\r\n                        >{{item.right}}</td>\r\n            </tr>\r\n\r\n\r\n        </table>\r\n    </table>\r\n\r\n    <button\r\n            v-on:click=\"applyColor()\">\r\n        {{i18n.edit}}\r\n    </button>\r\n\r\n</app-modal>";
+module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table>\n        <tr>\n            <td>\n                <input type=\"color\" v-model=\"currentColorHex\" v-on:change=\"hexChanged()\"/>\n            </td>\n            <td>\n                <input type=\"text\"  v-model=\"currentColorHex\" v-on:change=\"hexChanged()\"/>\n            </td>\n            <td></td>\n        </tr>\n\n        <table class=\"width100\">\n            <tr\n                    v-for=\"item in colorEnums\">\n                <td\n                        :style=\"{\n                            color: item.left\n                        }\"\n                        >\n                    {{item.left}}\n                </td>\n                <td class=\"centerText\">\n                    <input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" v-model=\"currentColorRGB[item.index]\" v-on:change=\"rgbChanged()\"/>\n                    <br/>\n                    <input class=\"small vAlign\" v-model=\"currentColorRGB[item.index]\" v-on:change=\"rgbChanged()\"/>\n                    <hr/>\n                </td>\n                <td\n                        :style=\"{\n                            color: item.right\n                        }\"\n                        >{{item.right}}</td>\n            </tr>\n\n\n        </table>\n    </table>\n\n    <button\n            v-on:click=\"applyColor()\">\n        {{i18n.edit}}\n    </button>\n\n</app-modal>";
 
 },{}],10:[function(require,module,exports){
 
@@ -289,7 +289,7 @@ module.exports = Vue.component('app-modal', {
     }
 });
 },{"./modal.html":15}],17:[function(require,module,exports){
-module.exports = "<div\r\n        class=\"height100\"\r\n        v-if=\"editData.scriptEditorUrl\"\r\n        >\r\n    <div style=\"height:10px;font-size: 10px;\">\r\n        {{editData.scriptEditorUrl}}\r\n    </div>\r\n    <div\r\n            id=\"scriptEditor\"\r\n            style=\"height:calc(100% - 10px)\"\r\n            >\r\n        <iframe\r\n                id=\"scriptEditorFrame\"\r\n                frameborder=\"0\"\r\n                class=\"block width100 height100 noOverFlow\"\r\n                src=\"/editor\"\r\n                ></iframe>\r\n    </div>\r\n</div>";
+module.exports = "<div\n        class=\"height100\"\n        v-if=\"editData.scriptEditorUrl\"\n        >\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editorNew\"\n                ></iframe>\n    </div>\n</div>";
 
 },{}],18:[function(require,module,exports){
 
@@ -651,7 +651,7 @@ module.exports.component = Vue.component('app-sound-dialog', {
     }
 });
 },{"./soundDialog.html":27,"providers/abstractDialog":51,"providers/editData":53,"providers/i18n":55,"providers/resource":56,"providers/validator":59}],29:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'name'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n            </td>\r\n            <td rowspan=\"6\">\r\n                <div style=\"max-height: 40vh;max-width:60vw;overflow: scroll;\"\r\n                        >\r\n                    <div class=\"relative\"\r\n                         :style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                        <div\r\n                                :title=\"i\"\r\n                                v-for=\"(val,i) in numOfSpriteSheetCells\"\r\n                                :style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.image}}\r\n            </td>\r\n            <td>\r\n                <app-input-file\r\n                        v-on:picked=\"onFilePicked\"\r\n                        :title=\"i18n.loadImage\"\r\n                        :accept=\"'image/*'\"\r\n                        />\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.width}}\r\n            </td>\r\n            <td>\r\n                {{editData.currSpriteSheetInEdit.width}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.height}}\r\n            </td>\r\n            <td>\r\n                {{editData.currSpriteSheetInEdit.height}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.numOfFramesH}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        min=\"1\"\r\n                        max=\"100\"\r\n                        type=\"number\"\r\n                        v-on:change=\"refreshNumOfCells()\"\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesH'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.numOfFramesV}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        min=\"1\"\r\n                        max=\"100\"\r\n                        type=\"number\"\r\n                        v-on:change=\"refreshNumOfCells()\"\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesV'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            v-on:click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n            :disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n        {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
+module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n                <input\n                        required\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'name'}\"\n                        v-model=\"editData.currSpriteSheetInEdit.name\"/>\n            </td>\n            <td rowspan=\"6\">\n                <div style=\"max-height: 40vh;max-width:60vw;overflow: scroll;\"\n                        >\n                    <div class=\"relative\"\n                         :style=\"{\n                                    'background-image':   'url('+spriteSheetUrl+')',\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\n                               }\">\n                        <div\n                                :title=\"i\"\n                                v-for=\"(val,i) in numOfSpriteSheetCells\"\n                                :style=\"{\n                                    'display':        'inline-block',\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\n                                    'position':       'absolute',\n                                    'text-align':     'left',\n                                    'border':         '1px solid red',\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\n                                }\">{{i}}</div>\n                    </div>\n                </div>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.image}}\n            </td>\n            <td>\n                <app-input-file\n                        v-on:picked=\"onFilePicked\"\n                        :title=\"i18n.loadImage\"\n                        :accept=\"'image/*'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.width}}\n            </td>\n            <td>\n                {{editData.currSpriteSheetInEdit.width}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.height}}\n            </td>\n            <td>\n                {{editData.currSpriteSheetInEdit.height}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.numOfFramesH}}\n            </td>\n            <td>\n                <input\n                        required\n                        min=\"1\"\n                        max=\"100\"\n                        type=\"number\"\n                        v-on:change=\"refreshNumOfCells()\"\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesH'}\"\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.numOfFramesV}}\n            </td>\n            <td>\n                <input\n                        required\n                        min=\"1\"\n                        max=\"100\"\n                        type=\"number\"\n                        v-on:change=\"refreshNumOfCells()\"\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesV'}\"\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\n            </td>\n        </tr>\n    </table>\n    <button\n            v-on:click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\n            :disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\n        {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
 
 },{}],30:[function(require,module,exports){
 
@@ -1497,22 +1497,13 @@ var Resource = function(){
     //            }
     //        });
     //};
-    //this.createFile = function(name,path,content,callback){
-    //    $http({
-    //        url: '/createFile',
-    //        method: "POST",
-    //        data: {
-    //            name:name,
-    //            path:path,
-    //            content:content,
-    //            projectName: editData.projectName
-    //        },
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
+    this.createFile = function(path,content,callback){
+        http.post('/createFile',{
+            path:path,
+            content:content,
+            projectName: editData.projectName
+        },callback);
+    };
     this.readFile = function(path,callback){
         http.post('/readFile',{
             path:path,
@@ -1686,25 +1677,53 @@ var Utils = function(){
         return arr;
     };
 
-    var waitForFrameAndDo = function(file){
+    var createAceCompleter = function(){
+        var result = [];
+        var res = {};
+        var objs = ['gameObject'];
+        objs.forEach(function(go){
+            var GObjClass = _require(go);
+            var goObj = new GObjClass();
+            for (var key in goObj) {
+                if (key.indexOf('_')==0) continue;
+                res[key] = {
+                    name:key,
+                    value:key,
+                    score:1,
+                    meta:'gameObject property'
+                }
+            }
+        });
+        Object.keys(res).forEach(function(key){
+            result.push(res[key]);
+        });
+        return result;
+    };
+
+    var waitForFrameAndDo = function(file,path){
         var frame = document.getElementById('scriptEditorFrame');
         var contentWindow = frame && frame.contentWindow;
         if (!contentWindow.ready) {
             setTimeout(function(){
-                waitForFrameAndDo(file);
+                waitForFrameAndDo(file,path);
             },100);
             return;
         }
         contentWindow.setCode(file);
         contentWindow.calcEditorSize();
+        contentWindow.setAutocomplete(createAceCompleter());
         window.removeEventListener('resize',contentWindow.calcEditorSize);
         window.addEventListener('resize',contentWindow.calcEditorSize);
+        window.saveCode = function(code){
+            resource.createFile(path,code);
+        };
     };
 
     this.openEditor = function(resourceUrl) {
         editData.scriptEditorUrl = resourceUrl;
-        resource.readFile('script/'+resourceUrl,function(file){
-            waitForFrameAndDo(file);
+        var path = 'script/'+resourceUrl;
+        resource.readFile(path,function(file){
+            waitForFrameAndDo(file,path);
         });
     };
 

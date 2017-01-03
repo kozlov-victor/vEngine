@@ -182,22 +182,13 @@ var Resource = function(){
     //            }
     //        });
     //};
-    //this.createFile = function(name,path,content,callback){
-    //    $http({
-    //        url: '/createFile',
-    //        method: "POST",
-    //        data: {
-    //            name:name,
-    //            path:path,
-    //            content:content,
-    //            projectName: editData.projectName
-    //        },
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
+    this.createFile = function(path,content,callback){
+        http.post('/createFile',{
+            path:path,
+            content:content,
+            projectName: editData.projectName
+        },callback);
+    };
     this.readFile = function(path,callback){
         http.post('/readFile',{
             path:path,

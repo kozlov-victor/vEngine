@@ -208,9 +208,9 @@ module.exports.getCommonBehaviourAttrs = function(projectName){
     return attrs;
 };
 
-module.exports.createFile = function(name,path,content,projectName) {
+module.exports.createFile = function(path,content,projectName) {
     if (!projectName) throw 'project name not specified';
-    fs.writeFileSync('workspace/'+projectName+'/resources/'+path+'/'+name,content);
+    fs.writeFileSync('workspace/'+projectName+'/resources/'+path,content);
     return {};
 };
 
