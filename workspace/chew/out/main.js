@@ -831,7 +831,6 @@ modules['game'] =
 	};
 	
 	var preloadSceneAndSetIt = function(scene){
-	
 	    if (progressScene) {
 	        exports.currScene = progressScene;
 	        bundle.applyBehaviourForScene(progressScene);
@@ -2510,6 +2509,8 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
+	    //ctx.strokeRect(0,0,self.width,self.height,[1,0,0,1]);
+	    ctx.rotateY(2);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -2708,7 +2709,7 @@ modules['particleSystem'] =
 	        this._particles = [];
 	        if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
 	        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
-	        //if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
+	        if (this.particleAngle.to<this.particleAngle.from) this.particleAngle.to += 2*Math.PI;
 	        if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
 	        if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
 	        if (!this.emissionRadius) this.emissionRadius = 0;
@@ -2980,10 +2981,13 @@ modules['font'] =
 	
 	var Font = Resource.extend({
 	    type:'font',
-	    fontColor:'black',
 	    fontSize:12,
+	    fontColor: null,
 	    fontFamily:'Monospace',
-	    fontContext:null
+	    fontContext:null,
+	    construct: function(){
+	        this.fontColor = [0,0,0]
+	    }
 	});
 	
 	module.exports = Font;
@@ -3577,61 +3581,6 @@ modules['scaleManager'] =
 	
 	
 }};
-modules['frameBuffer'] =
-    {code: function(module){
-    var exports = module.exports;
-    	
-	var FrameBuffer = function(gl,width,height){
-	
-	    var glTexture;
-	    var glRenderBuffer;
-	    var glFrameBuffer;
-	
-	    this.bind = function(){
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.viewport(0, 0, width,height);
-	    };
-	
-	    this.unbind = function(){
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	    };
-	
-	    this.getGlTexture = function(){
-	        return glTexture;
-	    };
-	
-	
-	    (function(){
-	
-	        //1. Init Color Texture
-	        glTexture = gl.createTexture();
-	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-	        //2. Init Render Buffer
-	        glRenderBuffer = gl.createRenderbuffer();
-	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
-	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-	        //3. Init Frame Buffer
-	        glFrameBuffer = gl.createFramebuffer();
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
-	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
-	        //4. Clean up
-	        gl.bindTexture(gl.TEXTURE_2D, null);
-	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	
-	
-	    })();
-	
-	};
-	
-	module.exports = FrameBuffer;
-}};
 modules['glContext'] =
     {code: function(module){
     var exports = module.exports;
@@ -3640,6 +3589,7 @@ modules['glContext'] =
 	var utils = require('utils');
 	var ShaderProgram = require('shaderProgram');
 	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
 	var Texture = require('texture');
 	var MatrixStack = require('matrixStack');
 	var FrameBuffer = require('frameBuffer');
@@ -3651,7 +3601,10 @@ modules['glContext'] =
 	var getCtx = function(el){
 	    if (!el) el = document.createElement('canvas');
 	    if (!el) return null;
-	    return el.getContext("webgl",{ alpha: false });
+	    return (
+	        el.getContext("webgl",{alpha: false}) ||
+	        el.getContext('experimental-webgl',{alpha: false})
+	    );
 	};
 	
 	var GlContext = Class.extend(function(it){
@@ -3662,6 +3615,7 @@ modules['glContext'] =
 	    var commonShaderPrg, colorShaderPrg;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
+	    var posIndexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
@@ -3682,27 +3636,32 @@ modules['glContext'] =
 	        ]);
 	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform('u_alpha',1);
-	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 	
-	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
-	            1, 0,
-	            0, 1,
 	            1, 1
-	        ],2,'a_position');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
+	        colorShaderPrg.bindBuffer(posVertexBuffer,'a_position');
 	
-	        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        posIndexBuffer = new IndexBuffer(gl);
+	        posIndexBuffer.setData([
+	            0,1,2,2,1,3
+	        ]);
+	        posIndexBuffer.bindBuffer();
+	
+	        texVertexBuffer = new VertexBuffer(gl);
+	        texVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
-	            1, 0,
-	            0, 1,
 	            1, 1
-	        ],2,'a_texcoord');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
+	        colorShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
@@ -3749,7 +3708,7 @@ modules['glContext'] =
 	        // we can select an area of the texture by scaling the unit quad
 	        // down
 	        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 110);
 	
 	        // multiply them together
 	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
@@ -3757,9 +3716,11 @@ modules['glContext'] =
 	
 	    var currTex = null;
 	
-	    var _draw = function(texture,
-	                               srcX, srcY, srcWidth, srcHeight,
-	                               dstX, dstY){
+	    var _draw = function(
+	           texture,
+	           srcX, srcY, srcWidth, srcHeight,
+	           dstX, dstY
+	    ){
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
@@ -3791,7 +3752,7 @@ modules['glContext'] =
 	            )
 	        );
 	        commonShaderPrg.setUniform('u_alpha',alpha);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	    };
 	
 	    it.drawImage = function(
@@ -3840,8 +3801,7 @@ modules['glContext'] =
 	        );
 	        colorShaderPrg.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
-	
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	    };
 	
 	    it.fillRect = fillRect;
@@ -3940,7 +3900,7 @@ modules['glContext'] =
 	        commonShaderPrg.setUniform('u_alpha',1);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	        this.restore();
 	    };
 	
@@ -3993,6 +3953,97 @@ modules['glContext'] =
 	
 	
 	
+}};
+modules['frameBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var FrameBuffer = function(gl,width,height){
+	
+	    var glTexture;
+	    var glRenderBuffer;
+	    var glFrameBuffer;
+	
+	    this.bind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.viewport(0, 0, width,height);
+	    };
+	
+	    this.unbind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	    };
+	
+	    this.getGlTexture = function(){
+	        return glTexture;
+	    };
+	
+	
+	    (function(){
+	
+	        //1. Init Color Texture
+	        glTexture = gl.createTexture();
+	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        //2. Init Render Buffer
+	        glRenderBuffer = gl.createRenderbuffer();
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
+	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+	        //3. Init Frame Buffer
+	        glFrameBuffer = gl.createFramebuffer();
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
+	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
+	        //4. Clean up
+	        gl.bindTexture(gl.TEXTURE_2D, null);
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	
+	    })();
+	
+	};
+	
+	module.exports = FrameBuffer;
+}};
+modules['indexBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	
+	var IndexBuffer = function(gl){
+	    var buffer = gl.createBuffer();
+	    var dataLength;
+	
+	    this.setData = function(bufferData){
+	        dataLength = bufferData.length;
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bindBuffer = function(){
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	    };
+	
+	    this.getBufferLength = function(){
+	       return dataLength;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	};
+	
+	module.exports = IndexBuffer;
 }};
 modules['matrixStack'] =
     {code: function(module){
@@ -4245,6 +4296,21 @@ modules['shaderProgram'] =
 	        //uniformValuesCache[name] = value;
 	    };
 	
+	    this.bindBuffer = function(buffer,uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	        gl.enableVertexAttribArray(uniformLocation);
+	        gl.vertexAttribPointer(
+	            uniformLocation,
+	            buffer.getItemSize(),
+	            buffer.getItemType(),
+	            false,  // if the content is normalized vectors
+	            0,  // number of bytes to skip in between elements
+	            0
+	        ); // offsets to the first element
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	    };
+	
 	};
 	
 	module.exports = ShaderProgram;
@@ -4302,6 +4368,7 @@ modules['texture'] =
 	        // Fill the texture with a 1x1 blue pixel.
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
 	            new Uint8Array([0, 0, 255, 255]));
+	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	    })();
 	
 	};
@@ -4313,23 +4380,49 @@ modules['vertexBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var VertexBuffer = function(gl,program){
+	var VertexBuffer = function(gl){
 	    var buffer = gl.createBuffer();
+	    var bufferItemSize, bufferItemType;
 	
-	    this.bind = function(bufferData, itemSize, uniformLocationName){
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+	    this.setData = function(bufferData, itemType, itemSize){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	        bufferItemSize = itemSize;
+	        bufferItemType = itemType;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bind = function(program, uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
-	            itemSize,
-	            gl.FLOAT,
+	            bufferItemSize,
+	            bufferItemType,
 	            false,  // if the content is normalized vectors
 	            0,  // number of bytes to skip in between elements
-	            0
-	        ); // offsets to the first element
-	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	            0   // offsets to the first element
+	        );
 	    };
+	
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.getItemSize = function(){
+	        return bufferItemSize;
+	    };
+	
+	    this.getItemType = function(){
+	        return bufferItemType;
+	    }
+	
 	};
 	
 	module.exports = VertexBuffer;

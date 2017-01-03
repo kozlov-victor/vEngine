@@ -1,8 +1,9 @@
 
 
 //self.fadeOut(10000);
-self.vel.x = 10;
+self.vel.x = 1;
+ 
 
-function onUpdate(time) {
-    self.angle+=0.1;
+exports.onUpdate = function(time) {
+     
 }

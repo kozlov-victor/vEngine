@@ -180,11 +180,27 @@ modules['behaviour'] =
 	    
 	
 	//self.fadeOut(10000);
-	self.vel.x = 10;
+	self.vel.x = 1;
+	 
 	
-	function onUpdate(time) {
-	    self.angle+=0.1;
+	exports.onUpdate = function(time) {
+	     
 	}
+	};
+	scripts.gameObject['saw.js'] = function(exports){
+	    var module = exports, self = exports;
+	    
+	
+	self.angleVel = 10;
+	var delta = 1;
+	
+	exports.onUpdate = function(time) {
+	    self.vel.x = delta * 100;
+	    self.angleVel +=delta;
+	    if (self.angleVel>100) delta = -1;
+	    if (self.angleVel<-100) delta = 1;
+	};
+	    
 	};
 	
 	scripts.scene['mainScene.js'] = function(exports){
@@ -776,7 +792,6 @@ modules['game'] =
 	};
 	
 	var preloadSceneAndSetIt = function(scene){
-	
 	    if (progressScene) {
 	        exports.currScene = progressScene;
 	        bundle.applyBehaviourForScene(progressScene);
@@ -1132,6 +1147,7 @@ modules['htmlAudioContext'] =
 	            if (opts.type=='base64') {
 	                callBack(url);
 	            } else {
+	                console.log('dfdffdf');
 	                utils.loadBinary(url,progress,function(){
 	                    callBack(url);
 	                });
@@ -1687,7 +1703,7 @@ modules['mathEx'] =
 	    return deg *  Math.PI / 180;
 	};
 	
-	exports.getRandomInRange = function(min, max){
+	exports.random = function(min, max){
 	    if (min>max) {
 	        var tmp = min;
 	        min = max;
@@ -1696,7 +1712,7 @@ modules['mathEx'] =
 	    var res = Math.random() * (max - min) + min;
 	    if (res>max) res = max;
 	    else if (res<min) res = min;
-	    return ~~res;
+	    return res;
 	};
 	
 	exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
@@ -2131,13 +2147,17 @@ modules['baseGameObject'] =
 	    type:'baseGameObject',
 	    groupName:'',
 	    _spriteSheet:null,
-	    pos:null,
-	    scale:null,
-	    angle:0,
 	    fixedToCamera:false,
 	    _layer:null,
 	    _moveable:null,
+	
+	    pos:null,
+	    scale:null,
+	    rigid:false,
+	    angle:0,
+	    angleVel:0,
 	    vel:null,
+	
 	    getRect: function(){
 	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
 	    },
@@ -2280,6 +2300,7 @@ modules['moveable'] =
 	        var deltaY = _gameObject.vel.y * delta / 1000;
 	        var posX = _gameObject.pos.x+deltaX;
 	        var posY = _gameObject.pos.y+deltaY;
+	        if (_gameObject.angleVel) _gameObject.angle += _gameObject.angleVel * delta / 1000;
 	        collider.manage(_gameObject,posX,posY);
 	    }
 	});
@@ -2325,6 +2346,7 @@ modules['renderable'] =
 	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
 	        ctx.scale(this.scale.x,this.scale.y);
 	        ctx.rotateZ(this.angle);
+	        //ctx.rotateY(a);
 	        ctx.translate(-this.width /2, -this.height/2);
 	        ctx.setAlpha(this.alpha);
 	    };
@@ -2443,7 +2465,7 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
-	
+	var a = 0;
 	var _draw = function(ctx,self,x,y){
 	    ctx.drawImage(
 	        resourceCache.get(self._spriteSheet.resourcePath),
@@ -2454,6 +2476,7 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
+	    //ctx.strokeRect(0,0,self.width,self.height,[1,0,0,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -2502,7 +2525,6 @@ modules['gameObject'] =
 	    _frameAnimations: null,
 	    frameAnimationIds:[],
 	    _currFrameAnimation:null,
-	    rigid:true,
 	    _timeCreated:null,
 	    tileOffset: null,
 	    tileRepeat:false,
@@ -2563,7 +2585,6 @@ modules['gameObject'] =
 	        self.tileRepeat ?
 	            _drawPattern(ctx,self):
 	            _draw(ctx,self);
-	        ctx.strokeRect(0,0,self.width,self.height,[0.2,1,1,0.5]);
 	
 	        ctx.restore();
 	    }
@@ -2653,7 +2674,7 @@ modules['particleSystem'] =
 	        this._particles = [];
 	        if (!this.numOfParticlesToEmit) this.numOfParticlesToEmit = {from:1,to:10};
 	        if (!this.particleAngle) this.particleAngle = {from:0,to:0};
-	        if (this.particleAngle.to>this.particleAngle.from) this.particleAngle.from += 2*Math.PI;
+	        if (this.particleAngle.to<this.particleAngle.from) this.particleAngle.to += 2*Math.PI;
 	        if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
 	        if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
 	        if (!this.emissionRadius) this.emissionRadius = 0;
@@ -2661,7 +2682,7 @@ modules['particleSystem'] =
 	    },
 	    emit: function(x,y){
 	        var r = function(obj){
-	            return mathEx.getRandomInRange(obj.from,obj.to);
+	            return mathEx.random(obj.from,obj.to);
 	        };
 	        for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
 	            var particle = this._gameObject.clone();
@@ -2872,7 +2893,10 @@ modules['sound'] =
 	    }
 	}, {
 	    find: function(name){
-	        return bundle.soundList.find({name:name});
+	        var res = bundle.soundList.find({name:name});
+	        if (!res) throw 'can not found sound with name ' + name;
+	        // 
+	        return res;
 	    }
 	});
 	
@@ -2921,10 +2945,13 @@ modules['font'] =
 	
 	var Font = Resource.extend({
 	    type:'font',
-	    fontColor:'black',
 	    fontSize:12,
+	    fontColor: null,
 	    fontFamily:'Monospace',
-	    fontContext:null
+	    fontContext:null,
+	    construct: function(){
+	        if (!this.fontColor) this.fontColor = [0,0,0]
+	    }
 	});
 	
 	module.exports = Font;
@@ -3518,61 +3545,6 @@ modules['scaleManager'] =
 	
 	
 }};
-modules['frameBuffer'] =
-    {code: function(module){
-    var exports = module.exports;
-    	
-	var FrameBuffer = function(gl,width,height){
-	
-	    var glTexture;
-	    var glRenderBuffer;
-	    var glFrameBuffer;
-	
-	    this.bind = function(){
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.viewport(0, 0, width,height);
-	    };
-	
-	    this.unbind = function(){
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	    };
-	
-	    this.getGlTexture = function(){
-	        return glTexture;
-	    };
-	
-	
-	    (function(){
-	
-	        //1. Init Color Texture
-	        glTexture = gl.createTexture();
-	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-	        //2. Init Render Buffer
-	        glRenderBuffer = gl.createRenderbuffer();
-	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
-	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-	        //3. Init Frame Buffer
-	        glFrameBuffer = gl.createFramebuffer();
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
-	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
-	        //4. Clean up
-	        gl.bindTexture(gl.TEXTURE_2D, null);
-	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	
-	
-	    })();
-	
-	};
-	
-	module.exports = FrameBuffer;
-}};
 modules['glContext'] =
     {code: function(module){
     var exports = module.exports;
@@ -3581,6 +3553,7 @@ modules['glContext'] =
 	var utils = require('utils');
 	var ShaderProgram = require('shaderProgram');
 	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
 	var Texture = require('texture');
 	var MatrixStack = require('matrixStack');
 	var FrameBuffer = require('frameBuffer');
@@ -3592,7 +3565,10 @@ modules['glContext'] =
 	var getCtx = function(el){
 	    if (!el) el = document.createElement('canvas');
 	    if (!el) return null;
-	    return el.getContext("webgl",{ alpha: false });
+	    return (
+	        el.getContext("webgl",{alpha: false}) ||
+	        el.getContext('experimental-webgl',{alpha: false})
+	    );
 	};
 	
 	var GlContext = Class.extend(function(it){
@@ -3603,11 +3579,13 @@ modules['glContext'] =
 	    var commonShaderPrg, colorShaderPrg;
 	    var posVertexBuffer;
 	    var texVertexBuffer;
+	    var posIndexBuffer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
 	    var colorBGDefault = [255,255,255];
 	    var scene = null;
+	    var SCENE_DEPTH = 1;
 	
 	    it.init = function(canvas){
 	
@@ -3623,27 +3601,32 @@ modules['glContext'] =
 	        ]);
 	        commonShaderPrg.bind();
 	        commonShaderPrg.setUniform('u_alpha',1);
-	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 	
-	        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
-	            1, 0,
-	            0, 1,
 	            1, 1
-	        ],2,'a_position');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
+	        colorShaderPrg.bindBuffer(posVertexBuffer,'a_position');
 	
-	        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-	        posVertexBuffer.bind([
+	        posIndexBuffer = new IndexBuffer(gl);
+	        posIndexBuffer.setData([
+	            0,1,2,2,1,3
+	        ]);
+	        posIndexBuffer.bindBuffer();
+	
+	        texVertexBuffer = new VertexBuffer(gl);
+	        texVertexBuffer.setData([
 	            0, 0,
 	            0, 1,
 	            1, 0,
-	            1, 0,
-	            0, 1,
 	            1, 1
-	        ],2,'a_texcoord');
+	        ],gl.FLOAT,2);
+	        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
+	        colorShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
@@ -3668,7 +3651,7 @@ modules['glContext'] =
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
 	        // this matirx will convert from pixels to clip space
-	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, 1);
+	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
 	
 	        // this matrix will scale our 1 unit quad
 	        // from 1 unit to dstWidth, dstHeight units
@@ -3698,9 +3681,11 @@ modules['glContext'] =
 	
 	    var currTex = null;
 	
-	    var _draw = function(texture,
-	                               srcX, srcY, srcWidth, srcHeight,
-	                               dstX, dstY){
+	    var _draw = function(
+	           texture,
+	           srcX, srcY, srcWidth, srcHeight,
+	           dstX, dstY
+	    ){
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
@@ -3732,7 +3717,7 @@ modules['glContext'] =
 	            )
 	        );
 	        commonShaderPrg.setUniform('u_alpha',alpha);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	    };
 	
 	    it.drawImage = function(
@@ -3781,8 +3766,7 @@ modules['glContext'] =
 	        );
 	        colorShaderPrg.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
-	
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	    };
 	
 	    it.fillRect = fillRect;
@@ -3881,7 +3865,7 @@ modules['glContext'] =
 	        commonShaderPrg.setUniform('u_alpha',1);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	        this.restore();
 	    };
 	
@@ -3934,6 +3918,97 @@ modules['glContext'] =
 	
 	
 	
+}};
+modules['frameBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var FrameBuffer = function(gl,width,height){
+	
+	    var glTexture;
+	    var glRenderBuffer;
+	    var glFrameBuffer;
+	
+	    this.bind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.viewport(0, 0, width,height);
+	    };
+	
+	    this.unbind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	    };
+	
+	    this.getGlTexture = function(){
+	        return glTexture;
+	    };
+	
+	
+	    (function(){
+	
+	        //1. Init Color Texture
+	        glTexture = gl.createTexture();
+	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        //2. Init Render Buffer
+	        glRenderBuffer = gl.createRenderbuffer();
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
+	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+	        //3. Init Frame Buffer
+	        glFrameBuffer = gl.createFramebuffer();
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
+	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
+	        //4. Clean up
+	        gl.bindTexture(gl.TEXTURE_2D, null);
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	
+	    })();
+	
+	};
+	
+	module.exports = FrameBuffer;
+}};
+modules['indexBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	
+	var IndexBuffer = function(gl){
+	    var buffer = gl.createBuffer();
+	    var dataLength;
+	
+	    this.setData = function(bufferData){
+	        dataLength = bufferData.length;
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bindBuffer = function(){
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	    };
+	
+	    this.getBufferLength = function(){
+	       return dataLength;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	};
+	
+	module.exports = IndexBuffer;
 }};
 modules['matrixStack'] =
     {code: function(module){
@@ -4186,6 +4261,21 @@ modules['shaderProgram'] =
 	        //uniformValuesCache[name] = value;
 	    };
 	
+	    this.bindBuffer = function(buffer,uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	        gl.enableVertexAttribArray(uniformLocation);
+	        gl.vertexAttribPointer(
+	            uniformLocation,
+	            buffer.getItemSize(),
+	            buffer.getItemType(),
+	            false,  // if the content is normalized vectors
+	            0,  // number of bytes to skip in between elements
+	            0
+	        ); // offsets to the first element
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	    };
+	
 	};
 	
 	module.exports = ShaderProgram;
@@ -4243,6 +4333,7 @@ modules['texture'] =
 	        // Fill the texture with a 1x1 blue pixel.
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
 	            new Uint8Array([0, 0, 255, 255]));
+	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	    })();
 	
 	};
@@ -4254,23 +4345,49 @@ modules['vertexBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
-	var VertexBuffer = function(gl,program){
+	var VertexBuffer = function(gl){
 	    var buffer = gl.createBuffer();
+	    var bufferItemSize, bufferItemType;
 	
-	    this.bind = function(bufferData, itemSize, uniformLocationName){
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+	    this.setData = function(bufferData, itemType, itemSize){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+	        bufferItemSize = itemSize;
+	        bufferItemType = itemType;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bind = function(program, uniformLocationName){
+	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
-	            itemSize,
-	            gl.FLOAT,
+	            bufferItemSize,
+	            bufferItemType,
 	            false,  // if the content is normalized vectors
 	            0,  // number of bytes to skip in between elements
-	            0
-	        ); // offsets to the first element
-	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
+	            0   // offsets to the first element
+	        );
 	    };
+	
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.getItemSize = function(){
+	        return bufferItemSize;
+	    };
+	
+	    this.getItemType = function(){
+	        return bufferItemType;
+	    }
+	
 	};
 	
 	module.exports = VertexBuffer;
@@ -4303,7 +4420,7 @@ modules['tween'] =
 	        propsToChange = Object.keys(allPropsMap);
 	        propsToChange.forEach(function(prp){
 	            if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = obj[prp];
-	            if (fromToVal.top[prp]===undefined) fromToVal.from[prp] = obj[prp];
+	            if (fromToVal.to[prp]===undefined) fromToVal.from[prp] = obj[prp];
 	        });
 	        return fromToVal;
 	    };
@@ -4492,7 +4609,7 @@ modules['index'] =
     var exports = module.exports;
     	
 	var data;
-	data = {"sound":[{"name":"msk","type":"sound","resourcePath":"resources/sound/msk.mp3","id":"8101_8219_9"}],"spriteSheet":[{"resourcePath":"resources/spriteSheet/eye.png","name":"eye","width":24,"height":24,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"6889_5338_7"}],"frameAnimation":[],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":24,"y":38,"width":15,"height":29},"1":{"x":45,"y":38,"width":15,"height":29},"2":{"x":66,"y":38,"width":15,"height":29},"3":{"x":87,"y":38,"width":15,"height":29},"4":{"x":108,"y":38,"width":15,"height":29},"5":{"x":129,"y":38,"width":15,"height":29},"6":{"x":150,"y":38,"width":15,"height":29},"7":{"x":171,"y":38,"width":15,"height":29},"8":{"x":192,"y":38,"width":15,"height":29},"9":{"x":213,"y":38,"width":15,"height":29}," ":{"x":3,"y":3,"width":15,"height":29},"!":{"x":24,"y":3,"width":15,"height":29},"\"":{"x":45,"y":3,"width":15,"height":29},"#":{"x":66,"y":3,"width":15,"height":29},"$":{"x":87,"y":3,"width":15,"height":29},"%":{"x":108,"y":3,"width":15,"height":29},"&":{"x":129,"y":3,"width":15,"height":29},"'":{"x":150,"y":3,"width":15,"height":29},"(":{"x":171,"y":3,"width":15,"height":29},")":{"x":192,"y":3,"width":15,"height":29},"*":{"x":213,"y":3,"width":15,"height":29},"+":{"x":234,"y":3,"width":15,"height":29},",":{"x":255,"y":3,"width":15,"height":29},"-":{"x":276,"y":3,"width":15,"height":29},".":{"x":297,"y":3,"width":15,"height":29},"/":{"x":3,"y":38,"width":15,"height":29},":":{"x":234,"y":38,"width":15,"height":29},";":{"x":255,"y":38,"width":15,"height":29},"<":{"x":276,"y":38,"width":15,"height":29},"=":{"x":297,"y":38,"width":15,"height":29},">":{"x":3,"y":73,"width":15,"height":29},"?":{"x":24,"y":73,"width":15,"height":29},"@":{"x":45,"y":73,"width":15,"height":29},"A":{"x":66,"y":73,"width":15,"height":29},"B":{"x":87,"y":73,"width":15,"height":29},"C":{"x":108,"y":73,"width":15,"height":29},"D":{"x":129,"y":73,"width":15,"height":29},"E":{"x":150,"y":73,"width":15,"height":29},"F":{"x":171,"y":73,"width":15,"height":29},"G":{"x":192,"y":73,"width":15,"height":29},"H":{"x":213,"y":73,"width":15,"height":29},"I":{"x":234,"y":73,"width":15,"height":29},"J":{"x":255,"y":73,"width":15,"height":29},"K":{"x":276,"y":73,"width":15,"height":29},"L":{"x":297,"y":73,"width":15,"height":29},"M":{"x":3,"y":108,"width":15,"height":29},"N":{"x":24,"y":108,"width":15,"height":29},"O":{"x":45,"y":108,"width":15,"height":29},"P":{"x":66,"y":108,"width":15,"height":29},"Q":{"x":87,"y":108,"width":15,"height":29},"R":{"x":108,"y":108,"width":15,"height":29},"S":{"x":129,"y":108,"width":15,"height":29},"T":{"x":150,"y":108,"width":15,"height":29},"U":{"x":171,"y":108,"width":15,"height":29},"V":{"x":192,"y":108,"width":15,"height":29},"W":{"x":213,"y":108,"width":15,"height":29},"X":{"x":234,"y":108,"width":15,"height":29},"Y":{"x":255,"y":108,"width":15,"height":29},"Z":{"x":276,"y":108,"width":15,"height":29},"[":{"x":297,"y":108,"width":15,"height":29},"\\":{"x":3,"y":143,"width":15,"height":29},"]":{"x":24,"y":143,"width":15,"height":29},"^":{"x":45,"y":143,"width":15,"height":29},"_":{"x":66,"y":143,"width":15,"height":29},"`":{"x":87,"y":143,"width":15,"height":29},"a":{"x":108,"y":143,"width":15,"height":29},"b":{"x":129,"y":143,"width":15,"height":29},"c":{"x":150,"y":143,"width":15,"height":29},"d":{"x":171,"y":143,"width":15,"height":29},"e":{"x":192,"y":143,"width":15,"height":29},"f":{"x":213,"y":143,"width":15,"height":29},"g":{"x":234,"y":143,"width":15,"height":29},"h":{"x":255,"y":143,"width":15,"height":29},"i":{"x":276,"y":143,"width":15,"height":29},"j":{"x":297,"y":143,"width":15,"height":29},"k":{"x":3,"y":178,"width":15,"height":29},"l":{"x":24,"y":178,"width":15,"height":29},"m":{"x":45,"y":178,"width":15,"height":29},"n":{"x":66,"y":178,"width":15,"height":29},"o":{"x":87,"y":178,"width":15,"height":29},"p":{"x":108,"y":178,"width":15,"height":29},"q":{"x":129,"y":178,"width":15,"height":29},"r":{"x":150,"y":178,"width":15,"height":29},"s":{"x":171,"y":178,"width":15,"height":29},"t":{"x":192,"y":178,"width":15,"height":29},"u":{"x":213,"y":178,"width":15,"height":29},"v":{"x":234,"y":178,"width":15,"height":29},"w":{"x":255,"y":178,"width":15,"height":29},"x":{"x":276,"y":178,"width":15,"height":29},"y":{"x":297,"y":178,"width":15,"height":29},"z":{"x":3,"y":213,"width":15,"height":29},"{":{"x":24,"y":213,"width":15,"height":29},"|":{"x":45,"y":213,"width":15,"height":29},"}":{"x":66,"y":213,"width":15,"height":29},"~":{"x":87,"y":213,"width":15,"height":29},"":{"x":108,"y":213,"width":0,"height":29},"":{"x":114,"y":213,"width":0,"height":29},"":{"x":120,"y":213,"width":0,"height":29},"":{"x":126,"y":213,"width":0,"height":29},"":{"x":132,"y":213,"width":0,"height":29},"":{"x":138,"y":213,"width":0,"height":29},"":{"x":144,"y":213,"width":0,"height":29},"":{"x":150,"y":213,"width":0,"height":29},"":{"x":156,"y":213,"width":0,"height":29},"":{"x":162,"y":213,"width":0,"height":29},"":{"x":168,"y":213,"width":0,"height":29},"":{"x":174,"y":213,"width":0,"height":29},"":{"x":180,"y":213,"width":0,"height":29},"":{"x":186,"y":213,"width":0,"height":29},"":{"x":192,"y":213,"width":0,"height":29},"":{"x":198,"y":213,"width":0,"height":29},"":{"x":204,"y":213,"width":0,"height":29},"":{"x":210,"y":213,"width":0,"height":29},"":{"x":216,"y":213,"width":0,"height":29},"":{"x":222,"y":213,"width":0,"height":29},"":{"x":228,"y":213,"width":0,"height":29},"":{"x":234,"y":213,"width":0,"height":29},"":{"x":240,"y":213,"width":0,"height":29},"А":{"x":246,"y":213,"width":15,"height":29},"Б":{"x":267,"y":213,"width":15,"height":29},"В":{"x":288,"y":213,"width":15,"height":29},"Г":{"x":3,"y":248,"width":15,"height":29},"Д":{"x":24,"y":248,"width":15,"height":29},"Е":{"x":45,"y":248,"width":15,"height":29},"Ж":{"x":66,"y":248,"width":15,"height":29},"З":{"x":87,"y":248,"width":15,"height":29},"И":{"x":108,"y":248,"width":15,"height":29},"Й":{"x":129,"y":248,"width":15,"height":29},"К":{"x":150,"y":248,"width":15,"height":29},"Л":{"x":171,"y":248,"width":15,"height":29},"М":{"x":192,"y":248,"width":15,"height":29},"Н":{"x":213,"y":248,"width":15,"height":29},"О":{"x":234,"y":248,"width":15,"height":29},"П":{"x":255,"y":248,"width":15,"height":29},"Р":{"x":276,"y":248,"width":15,"height":29},"С":{"x":297,"y":248,"width":15,"height":29},"Т":{"x":3,"y":283,"width":15,"height":29},"У":{"x":24,"y":283,"width":15,"height":29},"Ф":{"x":45,"y":283,"width":15,"height":29},"Х":{"x":66,"y":283,"width":15,"height":29},"Ц":{"x":87,"y":283,"width":15,"height":29},"Ч":{"x":108,"y":283,"width":15,"height":29},"Ш":{"x":129,"y":283,"width":15,"height":29},"Щ":{"x":150,"y":283,"width":15,"height":29},"Ъ":{"x":171,"y":283,"width":15,"height":29},"Ы":{"x":192,"y":283,"width":15,"height":29},"Ь":{"x":213,"y":283,"width":15,"height":29},"Э":{"x":234,"y":283,"width":15,"height":29},"Ю":{"x":255,"y":283,"width":15,"height":29},"Я":{"x":276,"y":283,"width":15,"height":29},"а":{"x":297,"y":283,"width":15,"height":29},"б":{"x":3,"y":318,"width":15,"height":29},"в":{"x":24,"y":318,"width":15,"height":29},"г":{"x":45,"y":318,"width":15,"height":29},"д":{"x":66,"y":318,"width":15,"height":29},"е":{"x":87,"y":318,"width":15,"height":29},"ж":{"x":108,"y":318,"width":15,"height":29},"з":{"x":129,"y":318,"width":15,"height":29},"и":{"x":150,"y":318,"width":15,"height":29},"й":{"x":171,"y":318,"width":15,"height":29},"к":{"x":192,"y":318,"width":15,"height":29},"л":{"x":213,"y":318,"width":15,"height":29},"м":{"x":234,"y":318,"width":15,"height":29},"н":{"x":255,"y":318,"width":15,"height":29},"о":{"x":276,"y":318,"width":15,"height":29},"п":{"x":297,"y":318,"width":15,"height":29},"р":{"x":3,"y":353,"width":15,"height":29},"с":{"x":24,"y":353,"width":15,"height":29},"т":{"x":45,"y":353,"width":15,"height":29},"у":{"x":66,"y":353,"width":15,"height":29},"ф":{"x":87,"y":353,"width":15,"height":29},"х":{"x":108,"y":353,"width":15,"height":29},"ц":{"x":129,"y":353,"width":15,"height":29},"ч":{"x":150,"y":353,"width":15,"height":29},"ш":{"x":171,"y":353,"width":15,"height":29},"щ":{"x":192,"y":353,"width":15,"height":29},"ъ":{"x":213,"y":353,"width":15,"height":29},"ы":{"x":234,"y":353,"width":15,"height":29},"ь":{"x":255,"y":353,"width":15,"height":29},"э":{"x":276,"y":353,"width":15,"height":29},"ю":{"x":297,"y":353,"width":15,"height":29},"я":{"x":3,"y":388,"width":15,"height":29},"ѐ":{"x":24,"y":388,"width":15,"height":29},"ё":{"x":45,"y":388,"width":15,"height":29},"ђ":{"x":66,"y":388,"width":15,"height":29},"ѓ":{"x":87,"y":388,"width":15,"height":29},"є":{"x":108,"y":388,"width":15,"height":29},"ѕ":{"x":129,"y":388,"width":15,"height":29},"і":{"x":150,"y":388,"width":15,"height":29},"ї":{"x":171,"y":388,"width":15,"height":29},"ј":{"x":192,"y":388,"width":15,"height":29},"љ":{"x":213,"y":388,"width":15,"height":29},"њ":{"x":234,"y":388,"width":15,"height":29},"ћ":{"x":255,"y":388,"width":15,"height":29}},"width":320,"height":420},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"6889_5338_7","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":24,"height":24,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"6711_2335_8","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":1,"id":"3952_8743_8","tileOffset":{"x":0,"y":0}}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"6889_5338_7","pos":{"x":141,"y":107},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":50,"height":24,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":1,"protoId":"3952_8743_8","id":"7247_0652_9","tileOffset":{"x":0,"y":0}},{"spriteSheetId":"6889_5338_7","pos":{"x":35,"y":46},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":24,"height":24,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"6711_2335_8","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":0.2,"tileOffset":{"x":0,"y":0},"protoId":"3952_8743_8","id":"8860_9796_20"}],"id":"8555_2032_5"}],"scene":[{"tileMap":{"_spriteSheet":null,"spriteSheetId":null,"width":0,"height":0,"data":[]},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"8555_2032_5","id":"1939_2070_6"}],"colorBG":[255,255,220],"id":"9666_8108_4","useBG":1,"alpha":1,"width":0,"height":0}],"particleSystem":[],"gameProps":{"width":320,"height":240,"scaleStrategy":"4","preloadingSceneId":"","startSceneId":"9666_8108_4"}}
+	data = {"sound":[{"name":"msk","type":"sound","resourcePath":"resources/sound/msk.mp3","id":"8101_8219_9"}],"spriteSheet":[{"resourcePath":"resources/spriteSheet/eye.png","name":"eye","width":24,"height":24,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"6889_5338_7"},{"resourcePath":"resources/spriteSheet/saw.png","name":"saw","width":471,"height":473,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"7616_4866_16"}],"frameAnimation":[],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":24,"y":38,"width":15,"height":29},"1":{"x":45,"y":38,"width":15,"height":29},"2":{"x":66,"y":38,"width":15,"height":29},"3":{"x":87,"y":38,"width":15,"height":29},"4":{"x":108,"y":38,"width":15,"height":29},"5":{"x":129,"y":38,"width":15,"height":29},"6":{"x":150,"y":38,"width":15,"height":29},"7":{"x":171,"y":38,"width":15,"height":29},"8":{"x":192,"y":38,"width":15,"height":29},"9":{"x":213,"y":38,"width":15,"height":29}," ":{"x":3,"y":3,"width":15,"height":29},"!":{"x":24,"y":3,"width":15,"height":29},"\"":{"x":45,"y":3,"width":15,"height":29},"#":{"x":66,"y":3,"width":15,"height":29},"$":{"x":87,"y":3,"width":15,"height":29},"%":{"x":108,"y":3,"width":15,"height":29},"&":{"x":129,"y":3,"width":15,"height":29},"'":{"x":150,"y":3,"width":15,"height":29},"(":{"x":171,"y":3,"width":15,"height":29},")":{"x":192,"y":3,"width":15,"height":29},"*":{"x":213,"y":3,"width":15,"height":29},"+":{"x":234,"y":3,"width":15,"height":29},",":{"x":255,"y":3,"width":15,"height":29},"-":{"x":276,"y":3,"width":15,"height":29},".":{"x":297,"y":3,"width":15,"height":29},"/":{"x":3,"y":38,"width":15,"height":29},":":{"x":234,"y":38,"width":15,"height":29},";":{"x":255,"y":38,"width":15,"height":29},"<":{"x":276,"y":38,"width":15,"height":29},"=":{"x":297,"y":38,"width":15,"height":29},">":{"x":3,"y":73,"width":15,"height":29},"?":{"x":24,"y":73,"width":15,"height":29},"@":{"x":45,"y":73,"width":15,"height":29},"A":{"x":66,"y":73,"width":15,"height":29},"B":{"x":87,"y":73,"width":15,"height":29},"C":{"x":108,"y":73,"width":15,"height":29},"D":{"x":129,"y":73,"width":15,"height":29},"E":{"x":150,"y":73,"width":15,"height":29},"F":{"x":171,"y":73,"width":15,"height":29},"G":{"x":192,"y":73,"width":15,"height":29},"H":{"x":213,"y":73,"width":15,"height":29},"I":{"x":234,"y":73,"width":15,"height":29},"J":{"x":255,"y":73,"width":15,"height":29},"K":{"x":276,"y":73,"width":15,"height":29},"L":{"x":297,"y":73,"width":15,"height":29},"M":{"x":3,"y":108,"width":15,"height":29},"N":{"x":24,"y":108,"width":15,"height":29},"O":{"x":45,"y":108,"width":15,"height":29},"P":{"x":66,"y":108,"width":15,"height":29},"Q":{"x":87,"y":108,"width":15,"height":29},"R":{"x":108,"y":108,"width":15,"height":29},"S":{"x":129,"y":108,"width":15,"height":29},"T":{"x":150,"y":108,"width":15,"height":29},"U":{"x":171,"y":108,"width":15,"height":29},"V":{"x":192,"y":108,"width":15,"height":29},"W":{"x":213,"y":108,"width":15,"height":29},"X":{"x":234,"y":108,"width":15,"height":29},"Y":{"x":255,"y":108,"width":15,"height":29},"Z":{"x":276,"y":108,"width":15,"height":29},"[":{"x":297,"y":108,"width":15,"height":29},"\\":{"x":3,"y":143,"width":15,"height":29},"]":{"x":24,"y":143,"width":15,"height":29},"^":{"x":45,"y":143,"width":15,"height":29},"_":{"x":66,"y":143,"width":15,"height":29},"`":{"x":87,"y":143,"width":15,"height":29},"a":{"x":108,"y":143,"width":15,"height":29},"b":{"x":129,"y":143,"width":15,"height":29},"c":{"x":150,"y":143,"width":15,"height":29},"d":{"x":171,"y":143,"width":15,"height":29},"e":{"x":192,"y":143,"width":15,"height":29},"f":{"x":213,"y":143,"width":15,"height":29},"g":{"x":234,"y":143,"width":15,"height":29},"h":{"x":255,"y":143,"width":15,"height":29},"i":{"x":276,"y":143,"width":15,"height":29},"j":{"x":297,"y":143,"width":15,"height":29},"k":{"x":3,"y":178,"width":15,"height":29},"l":{"x":24,"y":178,"width":15,"height":29},"m":{"x":45,"y":178,"width":15,"height":29},"n":{"x":66,"y":178,"width":15,"height":29},"o":{"x":87,"y":178,"width":15,"height":29},"p":{"x":108,"y":178,"width":15,"height":29},"q":{"x":129,"y":178,"width":15,"height":29},"r":{"x":150,"y":178,"width":15,"height":29},"s":{"x":171,"y":178,"width":15,"height":29},"t":{"x":192,"y":178,"width":15,"height":29},"u":{"x":213,"y":178,"width":15,"height":29},"v":{"x":234,"y":178,"width":15,"height":29},"w":{"x":255,"y":178,"width":15,"height":29},"x":{"x":276,"y":178,"width":15,"height":29},"y":{"x":297,"y":178,"width":15,"height":29},"z":{"x":3,"y":213,"width":15,"height":29},"{":{"x":24,"y":213,"width":15,"height":29},"|":{"x":45,"y":213,"width":15,"height":29},"}":{"x":66,"y":213,"width":15,"height":29},"~":{"x":87,"y":213,"width":15,"height":29},"":{"x":108,"y":213,"width":0,"height":29},"":{"x":114,"y":213,"width":0,"height":29},"":{"x":120,"y":213,"width":0,"height":29},"":{"x":126,"y":213,"width":0,"height":29},"":{"x":132,"y":213,"width":0,"height":29},"":{"x":138,"y":213,"width":0,"height":29},"":{"x":144,"y":213,"width":0,"height":29},"":{"x":150,"y":213,"width":0,"height":29},"":{"x":156,"y":213,"width":0,"height":29},"":{"x":162,"y":213,"width":0,"height":29},"":{"x":168,"y":213,"width":0,"height":29},"":{"x":174,"y":213,"width":0,"height":29},"":{"x":180,"y":213,"width":0,"height":29},"":{"x":186,"y":213,"width":0,"height":29},"":{"x":192,"y":213,"width":0,"height":29},"":{"x":198,"y":213,"width":0,"height":29},"":{"x":204,"y":213,"width":0,"height":29},"":{"x":210,"y":213,"width":0,"height":29},"":{"x":216,"y":213,"width":0,"height":29},"":{"x":222,"y":213,"width":0,"height":29},"":{"x":228,"y":213,"width":0,"height":29},"":{"x":234,"y":213,"width":0,"height":29},"":{"x":240,"y":213,"width":0,"height":29},"А":{"x":246,"y":213,"width":15,"height":29},"Б":{"x":267,"y":213,"width":15,"height":29},"В":{"x":288,"y":213,"width":15,"height":29},"Г":{"x":3,"y":248,"width":15,"height":29},"Д":{"x":24,"y":248,"width":15,"height":29},"Е":{"x":45,"y":248,"width":15,"height":29},"Ж":{"x":66,"y":248,"width":15,"height":29},"З":{"x":87,"y":248,"width":15,"height":29},"И":{"x":108,"y":248,"width":15,"height":29},"Й":{"x":129,"y":248,"width":15,"height":29},"К":{"x":150,"y":248,"width":15,"height":29},"Л":{"x":171,"y":248,"width":15,"height":29},"М":{"x":192,"y":248,"width":15,"height":29},"Н":{"x":213,"y":248,"width":15,"height":29},"О":{"x":234,"y":248,"width":15,"height":29},"П":{"x":255,"y":248,"width":15,"height":29},"Р":{"x":276,"y":248,"width":15,"height":29},"С":{"x":297,"y":248,"width":15,"height":29},"Т":{"x":3,"y":283,"width":15,"height":29},"У":{"x":24,"y":283,"width":15,"height":29},"Ф":{"x":45,"y":283,"width":15,"height":29},"Х":{"x":66,"y":283,"width":15,"height":29},"Ц":{"x":87,"y":283,"width":15,"height":29},"Ч":{"x":108,"y":283,"width":15,"height":29},"Ш":{"x":129,"y":283,"width":15,"height":29},"Щ":{"x":150,"y":283,"width":15,"height":29},"Ъ":{"x":171,"y":283,"width":15,"height":29},"Ы":{"x":192,"y":283,"width":15,"height":29},"Ь":{"x":213,"y":283,"width":15,"height":29},"Э":{"x":234,"y":283,"width":15,"height":29},"Ю":{"x":255,"y":283,"width":15,"height":29},"Я":{"x":276,"y":283,"width":15,"height":29},"а":{"x":297,"y":283,"width":15,"height":29},"б":{"x":3,"y":318,"width":15,"height":29},"в":{"x":24,"y":318,"width":15,"height":29},"г":{"x":45,"y":318,"width":15,"height":29},"д":{"x":66,"y":318,"width":15,"height":29},"е":{"x":87,"y":318,"width":15,"height":29},"ж":{"x":108,"y":318,"width":15,"height":29},"з":{"x":129,"y":318,"width":15,"height":29},"и":{"x":150,"y":318,"width":15,"height":29},"й":{"x":171,"y":318,"width":15,"height":29},"к":{"x":192,"y":318,"width":15,"height":29},"л":{"x":213,"y":318,"width":15,"height":29},"м":{"x":234,"y":318,"width":15,"height":29},"н":{"x":255,"y":318,"width":15,"height":29},"о":{"x":276,"y":318,"width":15,"height":29},"п":{"x":297,"y":318,"width":15,"height":29},"р":{"x":3,"y":353,"width":15,"height":29},"с":{"x":24,"y":353,"width":15,"height":29},"т":{"x":45,"y":353,"width":15,"height":29},"у":{"x":66,"y":353,"width":15,"height":29},"ф":{"x":87,"y":353,"width":15,"height":29},"х":{"x":108,"y":353,"width":15,"height":29},"ц":{"x":129,"y":353,"width":15,"height":29},"ч":{"x":150,"y":353,"width":15,"height":29},"ш":{"x":171,"y":353,"width":15,"height":29},"щ":{"x":192,"y":353,"width":15,"height":29},"ъ":{"x":213,"y":353,"width":15,"height":29},"ы":{"x":234,"y":353,"width":15,"height":29},"ь":{"x":255,"y":353,"width":15,"height":29},"э":{"x":276,"y":353,"width":15,"height":29},"ю":{"x":297,"y":353,"width":15,"height":29},"я":{"x":3,"y":388,"width":15,"height":29},"ѐ":{"x":24,"y":388,"width":15,"height":29},"ё":{"x":45,"y":388,"width":15,"height":29},"ђ":{"x":66,"y":388,"width":15,"height":29},"ѓ":{"x":87,"y":388,"width":15,"height":29},"є":{"x":108,"y":388,"width":15,"height":29},"ѕ":{"x":129,"y":388,"width":15,"height":29},"і":{"x":150,"y":388,"width":15,"height":29},"ї":{"x":171,"y":388,"width":15,"height":29},"ј":{"x":192,"y":388,"width":15,"height":29},"љ":{"x":213,"y":388,"width":15,"height":29},"њ":{"x":234,"y":388,"width":15,"height":29},"ћ":{"x":255,"y":388,"width":15,"height":29}},"width":320,"height":420},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"6889_5338_7","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":24,"height":24,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"6711_2335_8","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":1,"id":"3952_8743_8","tileOffset":{"x":0,"y":0}},{"spriteSheetId":"7616_4866_16","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":0,"name":"saw","width":471,"height":473,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"groupName":"","angle":0,"angleVel":0,"alpha":1,"id":"3204_1323_17"}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"6889_5338_7","pos":{"x":115,"y":75},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":50,"height":24,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":1,"protoId":"3952_8743_8","id":"7247_0652_9","tileOffset":{"x":0,"y":0}},{"spriteSheetId":"6889_5338_7","pos":{"x":39,"y":29},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"eye","width":24,"height":24,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"6711_2335_8","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"alpha":0.2,"tileOffset":{"x":0,"y":0},"protoId":"3952_8743_8","id":"8860_9796_20"},{"spriteSheetId":"7616_4866_16","pos":{"x":-139,"y":-70},"vel":{"x":0,"y":0},"scale":{"x":0.1,"y":0.1},"tileOffset":{"x":0,"y":0},"currFrameIndex":0,"name":"saw","width":471,"height":473,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"groupName":"","angle":0,"angleVel":0,"alpha":1,"protoId":"3204_1323_17","id":"2324_1231_18"}],"id":"8555_2032_5"}],"scene":[{"tileMap":{"_spriteSheet":null,"spriteSheetId":null,"width":0,"height":0,"data":[]},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"8555_2032_5","id":"1939_2070_6"}],"colorBG":[255,255,220],"id":"9666_8108_4","useBG":1,"alpha":1,"width":0,"height":0}],"particleSystem":[],"gameProps":{"width":320,"height":240,"scaleStrategy":1,"preloadingSceneId":"","startSceneId":"9666_8108_4"}}
 	
 	var bundle = require('bundle');
 	bundle.prepare(data);

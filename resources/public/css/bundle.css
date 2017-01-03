@@ -60,6 +60,9 @@ input.error {
   color: red;
   outline: 1px solid red;
 }
+select.error {
+  outline: 1px solid red;
+}
 .table {
   display: table;
   border-collapse: collapse;
@@ -227,6 +230,15 @@ label,
 }
 .width1 {
   width: 1px;
+}
+.height100 {
+  height: 100%;
+}
+.height10 {
+  height: 10%;
+}
+.height90 {
+  height: 90%;
 }
 .table {
   display: table;

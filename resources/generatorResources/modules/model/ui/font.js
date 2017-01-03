@@ -3,10 +3,13 @@ var Resource = require('resource');
 
 var Font = Resource.extend({
     type:'font',
-    fontColor:'black',
     fontSize:12,
+    fontColor: null,
     fontFamily:'Monospace',
-    fontContext:null
+    fontContext:null,
+    construct: function(){
+        if (!this.fontColor) this.fontColor = [0,0,0]
+    }
 });
 
 module.exports = Font;

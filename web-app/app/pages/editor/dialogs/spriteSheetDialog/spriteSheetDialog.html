@@ -1,0 +1,107 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+    <table class="width100">
+        <tr>
+            <td>
+                {{i18n.name}}
+            </td>
+            <td>
+                <input
+                        required
+                        v-control="{form:form,model:editData.currSpriteSheetInEdit,prop:'name'}"
+                        v-model="editData.currSpriteSheetInEdit.name"/>
+            </td>
+            <td rowspan="6">
+                <div style="max-height: 40vh;max-width:60vw;overflow: scroll;"
+                        >
+                    <div class="relative"
+                         :style="{
+                                    'background-image':   'url('+spriteSheetUrl+')',
+                                    'width':              editData.currSpriteSheetInEdit.width+'px',
+                                    'height':             editData.currSpriteSheetInEdit.height+'px',
+                               }">
+                        <div
+                                :title="i"
+                                v-for="(val,i) in numOfSpriteSheetCells"
+                                :style="{
+                                    'display':        'inline-block',
+                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',
+                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',
+                                    'position':       'absolute',
+                                    'text-align':     'left',
+                                    'border':         '1px solid red',
+                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',
+                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'
+                                }">{{i}}</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.image}}
+            </td>
+            <td>
+                <app-input-file
+                        v-on:picked="onFilePicked"
+                        :title="i18n.loadImage"
+                        :accept="'image/*'"
+                        />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.width}}
+            </td>
+            <td>
+                {{editData.currSpriteSheetInEdit.width}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.height}}
+            </td>
+            <td>
+                {{editData.currSpriteSheetInEdit.height}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.numOfFramesH}}
+            </td>
+            <td>
+                <input
+                        required
+                        min="1"
+                        max="100"
+                        type="number"
+                        v-on:change="refreshNumOfCells()"
+                        v-control="{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesH'}"
+                        v-model="editData.currSpriteSheetInEdit.numOfFramesH"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.numOfFramesV}}
+            </td>
+            <td>
+                <input
+                        required
+                        min="1"
+                        max="100"
+                        type="number"
+                        v-on:change="refreshNumOfCells()"
+                        v-control="{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesV'}"
+                        v-model="editData.currSpriteSheetInEdit.numOfFramesV"/>
+            </td>
+        </tr>
+    </table>
+    <button
+            v-on:click="createOrEditSpriteSheet(editData.currSpriteSheetInEdit)"
+            :disabled="!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)">
+        {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}
+    </button>
+
+</app-modal>

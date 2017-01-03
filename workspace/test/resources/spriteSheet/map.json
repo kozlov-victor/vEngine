@@ -8,5 +8,15 @@
         "numOfFramesH": 1,
         "numOfFramesV": 1,
         "id": "6889_5338_7"
+    },
+    {
+        "resourcePath": "resources/spriteSheet/saw.png",
+        "name": "saw",
+        "width": 471,
+        "height": 473,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "7616_4866_16"
     }
 ]

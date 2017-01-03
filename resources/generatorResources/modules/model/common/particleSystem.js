@@ -30,7 +30,6 @@ var ParticleSystem = BaseModel.extend({
         for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
             var particle = this._gameObject.clone();
             var angle = r(this.particleAngle);
-            console.log(angle);
             var vel = r(this.particleVelocity);
             particle.vel.x = vel*Math.cos(angle);
             particle.vel.y = vel*Math.sin(angle);

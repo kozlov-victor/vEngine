@@ -3,6 +3,7 @@ var mat4 = require('mat4');
 var utils = require('utils');
 var ShaderProgram = require('shaderProgram');
 var VertexBuffer = require('vertexBuffer');
+var IndexBuffer = require('indexBuffer');
 var Texture = require('texture');
 var MatrixStack = require('matrixStack');
 var FrameBuffer = require('frameBuffer');
@@ -14,7 +15,10 @@ var Class = require('class');
 var getCtx = function(el){
     if (!el) el = document.createElement('canvas');
     if (!el) return null;
-    return el.getContext("webgl",{ alpha: false });
+    return (
+        el.getContext("webgl",{alpha: false}) ||
+        el.getContext('experimental-webgl',{alpha: false})
+    );
 };
 
 var GlContext = Class.extend(function(it){
@@ -25,11 +29,13 @@ var GlContext = Class.extend(function(it){
     var commonShaderPrg, colorShaderPrg;
     var posVertexBuffer;
     var texVertexBuffer;
+    var posIndexBuffer;
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
     var colorBGDefault = [255,255,255];
     var scene = null;
+    var SCENE_DEPTH = 1;
 
     it.init = function(canvas){
 
@@ -45,27 +51,32 @@ var GlContext = Class.extend(function(it){
         ]);
         commonShaderPrg.bind();
         commonShaderPrg.setUniform('u_alpha',1);
-        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
 
-        posVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-        posVertexBuffer.bind([
+        posVertexBuffer = new VertexBuffer(gl);
+        posVertexBuffer.setData([
             0, 0,
             0, 1,
             1, 0,
-            1, 0,
-            0, 1,
             1, 1
-        ],2,'a_position');
+        ],gl.FLOAT,2);
+        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
+        colorShaderPrg.bindBuffer(posVertexBuffer,'a_position');
 
-        texVertexBuffer = new VertexBuffer(gl,commonShaderPrg.getProgram());
-        posVertexBuffer.bind([
+        posIndexBuffer = new IndexBuffer(gl);
+        posIndexBuffer.setData([
+            0,1,2,2,1,3
+        ]);
+        posIndexBuffer.bindBuffer();
+
+        texVertexBuffer = new VertexBuffer(gl);
+        texVertexBuffer.setData([
             0, 0,
             0, 1,
             1, 0,
-            1, 0,
-            0, 1,
             1, 1
-        ],2,'a_texcoord');
+        ],gl.FLOAT,2);
+        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
+        colorShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
 
         frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 
@@ -90,7 +101,7 @@ var GlContext = Class.extend(function(it){
 
     var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
         // this matirx will convert from pixels to clip space
-        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, 1);
+        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
 
         // this matrix will scale our 1 unit quad
         // from 1 unit to dstWidth, dstHeight units
@@ -120,9 +131,11 @@ var GlContext = Class.extend(function(it){
 
     var currTex = null;
 
-    var _draw = function(texture,
-                               srcX, srcY, srcWidth, srcHeight,
-                               dstX, dstY){
+    var _draw = function(
+           texture,
+           srcX, srcY, srcWidth, srcHeight,
+           dstX, dstY
+    ){
 
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
@@ -154,7 +167,7 @@ var GlContext = Class.extend(function(it){
             )
         );
         commonShaderPrg.setUniform('u_alpha',alpha);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
     };
 
     it.drawImage = function(
@@ -203,8 +216,7 @@ var GlContext = Class.extend(function(it){
         );
         colorShaderPrg.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-
+        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
     };
 
     it.fillRect = fillRect;
@@ -303,7 +315,7 @@ var GlContext = Class.extend(function(it){
         commonShaderPrg.setUniform('u_alpha',1);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
         this.restore();
     };
 

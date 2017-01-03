@@ -52,6 +52,8 @@ module.exports = {
         appFonts: require('./leftPanel/fonts/fonts'),
         appSounds: require('./leftPanel/sounds/sounds'),
         appParticleSystems: require('./leftPanel/particleSystems/particleSystems'),
-        appDialogs: require('./dialogs/dialogs')
+        appDialogs: require('./dialogs/dialogs'),
+
+        appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor')
     }
 };

@@ -214,9 +214,9 @@ module.exports.createFile = function(name,path,content,projectName) {
     return {};
 };
 
-module.exports.readFile = function(name,path,projectName) {
+module.exports.readFile = function(path,projectName) {
     if (!projectName) throw 'project name not specified';
-    return fs.readFileSync('workspace/'+projectName+'/resources/'+path+'/'+name);
+    return fs.readFileSync('workspace/'+projectName+'/resources/'+path);
 };
 
 module.exports.editFont = function(model,pathToUploadedFile,projectName) {

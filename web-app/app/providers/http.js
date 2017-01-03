@@ -2,10 +2,12 @@
 module.exports.get = function(url,data,callBack){
     Vue.http.
         get(url, data).
-        then(callBack, function(err){
-            setTimeout(function() { throw err.body; },0);
-        }
-    );
+        then(function(resp){
+            callBack(resp.body);
+        }).
+        catch(function(err){
+            setTimeout(function() { throw err.body || ''; },0);
+        });
 };
 
 module.exports.post = function(url,data,callBack){
@@ -15,6 +17,6 @@ module.exports.post = function(url,data,callBack){
             callBack(resp.body);
         }).
         catch(function(err){
-            setTimeout(function() { throw err.body || ''; },0);
+            //setTimeout(function() { throw err.body || ''; },0);
         });
 };

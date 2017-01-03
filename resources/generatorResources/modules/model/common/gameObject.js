@@ -8,7 +8,7 @@ var resourceCache = require('resourceCache');
 var utils = require('utils');
 var game = require('game');
 
-
+var a = 0;
 var _draw = function(ctx,self,x,y){
     ctx.drawImage(
         resourceCache.get(self._spriteSheet.resourcePath),
@@ -19,6 +19,7 @@ var _draw = function(ctx,self,x,y){
         x||0,
         y||0
     );
+    //ctx.strokeRect(0,0,self.width,self.height,[1,0,0,1]);
 };
 
 var _drawPattern = function(ctx,self){
@@ -67,7 +68,6 @@ var GameObject = BaseGameObject.extend({
     _frameAnimations: null,
     frameAnimationIds:[],
     _currFrameAnimation:null,
-    rigid:true,
     _timeCreated:null,
     tileOffset: null,
     tileRepeat:false,

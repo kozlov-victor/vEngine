@@ -23,7 +23,7 @@ res.reset = function(){
 
     res.userInterfaceList = new collections.List();
 
-    res.debugFrameUrl = '/about:blank';
+    res.debugFrameUrl = '';
     res.scriptEditorUrl = '';
 
     res.tileMapPosY = res.tileMapPosX = 0;

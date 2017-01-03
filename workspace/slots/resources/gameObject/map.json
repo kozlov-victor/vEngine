@@ -20,10 +20,15 @@
         "type": "gameObject",
         "commonBehaviour": [],
         "frameAnimationIds": [],
-        "rigid": 1,
+        "rigid": 0,
         "groupName": "",
         "angle": 0,
-        "id": "2146_8639_33"
+        "id": "2146_8639_33",
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "alpha": 1
     },
     {
         "spriteSheetId": "9537_4496_35",
