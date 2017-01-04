@@ -1,9 +1,8 @@
 
 var mat4 = require('mat4');
 var utils = require('utils');
-var ShaderProgram = require('shaderProgram');
-var VertexBuffer = require('vertexBuffer');
-var IndexBuffer = require('indexBuffer');
+var CommonRectDrawer = require('commonRectDrawer');
+var CommonTextureDrawer = require('commonTextureDrawer');
 var Texture = require('texture');
 var MatrixStack = require('matrixStack');
 var FrameBuffer = require('frameBuffer');
@@ -26,10 +25,7 @@ var GlContext = Class.extend(function(it){
     var gl;
     var mScaleX = 1, mScaleY = 1;
     var alpha = 1;
-    var commonShaderPrg, colorShaderPrg;
-    var posVertexBuffer;
-    var texVertexBuffer;
-    var posIndexBuffer;
+    var commonTextureDrawer, commonRectDrawer;
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
@@ -41,43 +37,8 @@ var GlContext = Class.extend(function(it){
 
         gameProps = bundle.gameProps;
         gl = getCtx(canvas);
-        commonShaderPrg = new ShaderProgram(gl, [
-            bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.basic['fragment.frag']
-        ]);
-        colorShaderPrg = new ShaderProgram(gl, [
-            bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.color['fragment.frag']
-        ]);
-        commonShaderPrg.bind();
-        commonShaderPrg.setUniform('u_alpha',1);
-
-        posVertexBuffer = new VertexBuffer(gl);
-        posVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
-        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
-        colorShaderPrg.bindBuffer(posVertexBuffer,'a_position');
-
-        posIndexBuffer = new IndexBuffer(gl);
-        posIndexBuffer.setData([
-            0,1,2,2,1,3
-        ]);
-        posIndexBuffer.bindBuffer();
-
-        texVertexBuffer = new VertexBuffer(gl);
-        texVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
-        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
-        colorShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
-
+        commonTextureDrawer = new CommonTextureDrawer(gl);
+        commonRectDrawer = new CommonRectDrawer(gl);
         frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -159,15 +120,15 @@ var GlContext = Class.extend(function(it){
             currTex = texture;
         }
 
-        commonShaderPrg.bind();
-        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+        commonTextureDrawer.bind();
+        commonTextureDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
+        commonTextureDrawer.setUniform("u_matrix",makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
                 gameProps.width,gameProps.height,1,1
             )
         );
-        commonShaderPrg.setUniform('u_alpha',alpha);
-        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+        commonTextureDrawer.setUniform('u_alpha',alpha);
+        commonTextureDrawer.draw();
     };
 
     it.drawImage = function(
@@ -200,7 +161,6 @@ var GlContext = Class.extend(function(it){
     };
 
     it.clear = function() {
-        //gl.colorMask(false, false, false, true);
         var col = scene.useBG?scene.colorBG:colorBGDefault;
         gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
         gl.clear(gl.COLOR_BUFFER_BIT);
@@ -208,15 +168,15 @@ var GlContext = Class.extend(function(it){
 
     var fillRect = function (x, y, w, h, color) {
 
-        colorShaderPrg.bind();
-        colorShaderPrg.setUniform("u_matrix",makePositionMatrix(
+        commonRectDrawer.bind();
+        commonRectDrawer.setUniform("u_matrix",makePositionMatrix(
                 x,y,w,h,
                 gameProps.width,gameProps.height,1,1
             )
         );
-        colorShaderPrg.setUniform("u_rgba",color);
+        commonRectDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+        commonRectDrawer.draw();
     };
 
     it.fillRect = fillRect;
@@ -284,10 +244,10 @@ var GlContext = Class.extend(function(it){
         gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
         gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 
-        commonShaderPrg.bind();
+        commonTextureDrawer.bind();
 
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-            commonShaderPrg.setUniform('u_matrix',
+            commonTextureDrawer.setUniform('u_matrix',
                 makePositionMatrix(
                     gameProps.globalScale.left,gameProps.globalScale.top,
                     gameProps.width, gameProps.height,
@@ -296,7 +256,7 @@ var GlContext = Class.extend(function(it){
                 )
             );
         } else {
-            commonShaderPrg.setUniform('u_matrix',
+            commonTextureDrawer.setUniform('u_matrix',
                 makePositionMatrix(
                     0,0,
                     gameProps.width, gameProps.height,
@@ -306,16 +266,16 @@ var GlContext = Class.extend(function(it){
             );
         }
 
-        commonShaderPrg.setUniform('u_textureMatrix',
+        commonTextureDrawer.setUniform('u_textureMatrix',
             makeTextureMatrix(
                 0,0,gameProps.canvasWidth,gameProps.canvasHeight,
                 gameProps.canvasWidth,gameProps.canvasHeight
             )
         );
-        commonShaderPrg.setUniform('u_alpha',1);
+        commonTextureDrawer.setUniform('u_alpha',1);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+        commonTextureDrawer.draw();
         this.restore();
     };
 

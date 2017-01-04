@@ -7,6 +7,8 @@ var IndexBuffer = require('indexBuffer');
 
 var CommonTextureDrawer = function(gl){
 
+    var self = this;
+
     var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 
     this.bind = function(){
@@ -50,6 +52,10 @@ var CommonTextureDrawer = function(gl){
             1, 1
         ],gl.FLOAT,2);
         program.bindBuffer(texVertexBuffer,'a_texcoord');
+
+        self.bind();
+        self.setUniform('u_alpha',1);
+
     })();
 
 };
