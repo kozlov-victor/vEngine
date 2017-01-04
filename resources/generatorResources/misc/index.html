@@ -7,6 +7,33 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name ="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style type="text/css" rel="stylesheet">
+        * {
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            outline: none;
+        }
+        html, body, div, canvas {
+            border:none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+        canvas {
+            position: relative;
+            display: inline-block;
+            z-index: 20;
+        }
+        #loading {
+            position: absolute;
+            z-index: 10;
+            left: 0;
+            right: 0;
+            top:0;
+            bottom: 0;
+            text-align: center;
+        }
+    </style>
     <title></title>
 </head>
 
@@ -24,29 +51,6 @@
 ">loading...</div>
     </div>
 </div>
-<style type="text/css" rel="stylesheet">
-    html, body, div, canvas {
-        border:none;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        text-align: center;
-    }
-    canvas {
-        position: relative;
-        display: inline-block;
-        z-index: 20;
-    }
-    #loading {
-        position: absolute;
-        z-index: 10;
-        left: 0;
-        right: 0;
-        top:0;
-        bottom: 0;
-        text-align: center;
-    }
-</style>
 {{script_debug}}
 {{script_main}}
 </body>

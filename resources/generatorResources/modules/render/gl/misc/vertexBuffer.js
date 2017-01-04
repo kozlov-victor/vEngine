@@ -15,6 +15,7 @@ var VertexBuffer = function(gl){
         return buffer;
     };
 
+    // todo remove
     this.bind = function(program, uniformLocationName){
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
