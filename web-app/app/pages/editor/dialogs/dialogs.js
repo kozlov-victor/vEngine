@@ -13,7 +13,9 @@ module.exports = Vue.component('app-dialogs', {
         appParticleSystemDialog: require('./particleSystemDialog/particleSystemDialog').component,
         appParticleSystemPreviewDialog: require('./particleSystemPreviewDialog/particleSystemPreviewDialog').component,
         appFontDialog: require('./fontDialog/fontDialog').component,
-        appSpriteSheetDialog: require('./spriteSheetDialog/spriteSheetDialog').component
+        appSpriteSheetDialog: require('./spriteSheetDialog/spriteSheetDialog').component,
+        appGameObjectDialog: require('./gameObjectDialog/gameObjectDialog').component,
+        appFrameAnimationDialog: require('./frameAnimationDialog/frameAnimationDialog').component
     },
     methods: {
 

@@ -4,13 +4,17 @@ module.exports = Vue.component('app-angle-picker', {
     template: require('./anglePicker.html'),
     data: function(){
         return {
-           angleInDeg: 0,
-           angleInRad: 0
+
         }
     },
     created: function(){
-        this.angleInRad = this.object[this.value];
-        this.angleInDeg = (this.angleInRad * 180 / Math.PI) % 360;
+
+    },
+    computed: {
+        angleInDeg: function(){
+            var res =  (this.object[this.value] * 180 / Math.PI) % 360;
+            return +(res.toFixed(2)) || 0
+        }
     },
     methods: {
         calcAngleFromEvent: function(e){
@@ -19,9 +23,8 @@ module.exports = Vue.component('app-angle-picker', {
             var x = e.clientX - rect.left, y = e.clientY - rect.top;
             var angle = Math.atan2((y -15),(x - 15));
             if (angle<0) angle = 2*Math.PI + angle;
-            this.angleInRad = angle;
-            this.angleInDeg = angle * 180 / Math.PI;
-            this.object[this.value] = this.angleInRad;
+            angle = +(angle.toFixed(2)) || 0;
+            this.object[this.value] = angle;
         },
         click: function(e){
             this.calcAngleFromEvent(e);

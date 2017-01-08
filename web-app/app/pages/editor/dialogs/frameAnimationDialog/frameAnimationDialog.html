@@ -1,0 +1,123 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+    <table class="width100">
+        <tr>
+            <td>
+                {{i18n.name}}
+            </td>
+            <td>
+                <input
+                    required
+                    v-model="editData.currFrameAnimationInEdit.name"/>
+            </td>
+            <td rowspan="3">
+                <div style="max-height: 60vh;max-width:60vw;overflow: auto;"
+                        >
+                    {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}
+
+                    <div :style="utils.merge(
+                                    utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),
+                                    {border:'1px solid blue'}
+                                )">
+                    </div>
+
+                    <div>
+                        <button
+                                v-on:click="playAnimation()"
+                                ng-disabled="!frmCreateFrameAnimation.$valid" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
+                        <button
+                                v-on:click="stopAnimation()"
+                                ng-disabled="!frmCreateFrameAnimation.$valid" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
+                    </div>
+
+
+                    <div class="relative"
+                         :style="{
+                                        'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject._spriteSheet.resourcePath+')',
+                                        'width':                editData.currFrameAnimationInEdit._gameObject._spriteSheet.width+'px',
+                                        'height':               editData.currFrameAnimationInEdit._gameObject._spriteSheet.height+'px'
+                                      }">
+                        <div
+                                v-for="(v,i)  in editData.currFrameAnimationInEdit._gameObject._spriteSheet.numOfFramesH*editData.currFrameAnimationInEdit._gameObject._spriteSheet.numOfFramesV"
+                                :style="{
+                                            'display':        'inline-block',
+                                            'left':           editData.currFrameAnimationInEdit._gameObject._spriteSheet.getFramePosX(i)+'px',
+                                            'top':            editData.currFrameAnimationInEdit._gameObject._spriteSheet.getFramePosY(i)+'px',
+                                            'position':       'absolute',
+                                            'text-align':     'left',
+                                            'border':         '1px solid red',
+                                            'width':          editData.currFrameAnimationInEdit._gameObject._spriteSheet._frameWidth+'px',
+                                            'height':         editData.currFrameAnimationInEdit._gameObject._spriteSheet._frameHeight+'px'
+                                      }">{{i}}</div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.duration}}
+            </td>
+            <td>
+                <input
+                        type="number"
+                        min="1"
+                        required
+                        v-model="editData.currFrameAnimationInEdit.duration"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+                <table>
+                    <tr>
+                        <td>
+                            {{i18n.frames}}
+                        </td>
+                        <td>
+                            <button v-on:click="frames=allIndexes()">{{i18n.all}}</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.from}}
+                        </td>
+                        <td>
+                            <input
+                                    type="number"
+                                    v-model="from"
+                                    min="0"
+                                    v-on:change="frames=utils.range(from,to).join(',')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{i18n.to}}
+                        </td>
+                        <td>
+                            <input
+                                    type="number"
+                                    min="0"
+                                    v-model="to"
+                                    v-on:change="frames=utils.range(from,to).join(',')">
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+            <td>
+           <textarea
+                   required
+                   app-validator="toArray(editData.currFrameAnimationInEdit.frames).length>0"
+                   v-model="frames"></textarea>
+            </td>
+        </tr>
+    </table>
+    <button
+            ng-click="createOrEditFrAnimation()"
+            ng-disabled="!(frmCreateFrameAnimation.$valid)">
+        {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}
+    </button>
+
+</app-modal>

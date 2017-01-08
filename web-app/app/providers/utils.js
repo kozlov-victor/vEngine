@@ -121,6 +121,24 @@ var Utils = function(){
         };
     };
 
+    this.getArray = function(num) {
+        if (!num) return [];
+        var res = [];
+        for (var i=0;i<num;i++) {
+            res.push(i);
+        }
+        return res;
+    };
+
+    this.recalcGameObjectSize = function(gameObject){
+        var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
+        if (!spriteSheet) return;
+        spriteSheet.calcFrameSize();
+        gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
+        gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
+        gameObject._spriteSheet = spriteSheet;
+    };
+
     this.openEditor = function(resourceUrl) {
         editData.scriptEditorUrl = resourceUrl;
         var path = 'script/'+resourceUrl;

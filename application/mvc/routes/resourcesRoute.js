@@ -29,7 +29,9 @@ module.exports.init = function(app) {
     });
 
     app.get('/mainNew',function(req,res){
-        res.render('mainNew');
+        res.render('mainNew',{
+            defaultCodeScript:resourcesController.DEFAULT_CODE_SCRIPT
+        });
     });
 
     app.get('/editor',function(req,res){

@@ -1,6 +1,10 @@
 
 var utils = require('providers/utils');
 
+var gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
+var GameObject = _require('gameObject');
+var resource = require('providers/resource');
+
 module.exports = Vue.component('app-game-objects', {
     props: [],
     template: require('./gameObjects.html'),
@@ -15,13 +19,23 @@ module.exports = Vue.component('app-game-objects', {
     },
     methods: {
         createGameObject: function(){
-            console.log('create go');
+            this.editData.currGameObjectInEdit = new GameObject(new GameObject().clone());
+            gameObjectDialog.instance.open();
         },
         editGameObjectScript: function(gameObject){
             utils.openEditor(gameObject.type + '/' +gameObject.name + '.js');
         },
-        editGameObject: function(){
-            console.log('create go');
+        editGameObject: function(go){
+            this.editData.currGameObjectInEdit = go.clone();
+            gameObjectDialog.instance.open();
+        },
+        deleteGameObject: function(g){
+            window.confirmEx(
+                this.i18n.confirmQuestion,
+                function(){
+                    resource.deleteResource(g);
+                }
+            )
         }
     }
 });

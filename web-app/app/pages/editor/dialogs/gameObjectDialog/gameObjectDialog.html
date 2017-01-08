@@ -1,0 +1,225 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+
+    <table class="width100">
+        <tr>
+            <td>
+                {{i18n.name}}
+            </td>
+            <td>
+                <input
+                    required
+                    v-control="{form:form,model:editData.currGameObjectInEdit,prop:'name'}"
+                    v-model="editData.currGameObjectInEdit.name"/>
+            </td>
+            <td></td>
+            <td rowspan="5">
+                <div class="relative"
+                     style="
+                                        display: inline-block;
+                                        overflow: auto;
+                                        max-width:60vw;
+                                        max-height:60vh;
+                                    "
+                        >
+                    <div :style="utils.merge(
+                        utils.getGameObjectCss(editData.currGameObjectInEdit)
+                        ,
+                        {
+                            'border':'1px solid blue',
+                            'opacity':editData.currGameObjectInEdit.alpha
+                        }
+                    )"></div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.groupName}}
+            </td>
+            <td>
+                <input
+                        v-model="editData.currGameObjectInEdit.groupName"/>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.rigid}}
+            </td>
+            <td>
+                <input
+                        type="checkbox"
+                        v-model="editData.currGameObjectInEdit.rigid"/>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.width}}
+            </td>
+            <td>
+                <input
+                        type="number"
+                        required
+                        v-control="{form:form,model:editData.currGameObjectInEdit,prop:'width'}"
+                        v-model="editData.currGameObjectInEdit.width"/>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.height}}
+            </td>
+            <td>
+                <input
+                        type="number"
+                        required
+                        v-control="{form:form,model:editData.currGameObjectInEdit,prop:'height'}"
+                        v-model="editData.currGameObjectInEdit.height"/>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.angle}}
+            </td>
+            <td>
+                <input
+                        step="0.1"
+                        type="number"
+                        required
+                        v-control="{form:form,model:editData.currGameObjectInEdit,prop:'angle'}"
+                        v-model="editData.currGameObjectInEdit.angle"/>
+                <app-angle-picker
+                        :object="editData.currGameObjectInEdit"
+                        :value="'angle'"
+                        />
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                alpha
+            </td>
+            <td>
+                <input
+                        type="number"
+                        min="0"
+                        max="1"
+                        step="0.1"
+                        required
+                        v-control="{form:form,model:editData.currGameObjectInEdit,prop:'alpha'}"
+                        v-model="editData.currGameObjectInEdit.alpha"/>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.currFrameIndex}}
+            </td>
+            <td>
+                <input type="number"
+                       min="0"
+                       v-on:change="refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)"
+                       required
+                       v-control="{form:form,model:editData.currGameObjectInEdit,prop:'currFrameIndex'}"
+                       v-model="editData.currGameObjectInEdit.currFrameIndex"/>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.spriteSheet}}
+            </td>
+            <td>
+                <select
+                        v-on:change="utils.recalcGameObjectSize(editData.currGameObjectInEdit)"
+                        required
+                        v-control="{form:form,model:editData.currGameObjectInEdit,prop:'spriteSheetId'}"
+                        v-model="editData.currGameObjectInEdit.spriteSheetId">
+                    <option :value="item.id" v-for="item in editData.spriteSheetList.rs">{{item.name}}</option>
+                </select>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.frAnimations}}
+            </td>
+            <td>
+                <div class="table width100">
+                    <div class="row" v-for="animItm in editData.currGameObjectInEdit._frameAnimations.rs">
+                        <div class="cell vAlign">
+                            <span>{{animItm.name}}</span>
+                        </div>
+                        <div class="cell vAlign rightAlign" v-on:click="editFrameAnimation(animItm)">
+                            edit
+                        </div>
+                        <div class="cell pointer vAlign rightAlign" ng-click="deleteFrameAnimation(animItm)">
+                            X
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <button
+                        :disabled="!editData.currGameObjectInEdit.id"
+                        v-on:click="createFrameAnimation()">+</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{i18n.commonBehaviour}}
+            </td>
+            <td>
+                <div class="table width100">
+                    <div class="row" v-for="itm in editData.currGameObjectInEdit._commonBehaviour && editData.currGameObjectInEdit._commonBehaviour.rs">
+                        <div class="cell vAlign">
+                            <span>{{itm.name}}</span>
+                        </div>
+                        <div class="cell vAlign rightAlign" ng-click="showDialog('commonBehaviour','edit',itm)">
+                            edit
+                        </div>
+                        <div class="cell pointer vAlign rightAlign" ng-click="deleteCommonBehaviour(itm)">
+                            X
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <select v-model="selectedBehaviourName">
+                                <option
+                                        :value="cb.name"
+                                        v-for="cb in editData.commonBehaviourList && editData.commonBehaviourList.rs">
+                                    {{cb.name}}
+                                </option>
+                            </select>
+                        </td>
+                        <td>
+                            <button
+                                    ng-disabled="!editData.currGameObjectInEdit.id"
+                                    ng-click="showDialog('commonBehaviour','create',selectedBehaviourName)">
+                                +
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <button
+            :disabled="!form.valid()"
+            v-on:click="createOrEditGameObject(editData.currGameObjectInEdit)">
+        {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
+    </button>
+
+
+
+</app-modal>
