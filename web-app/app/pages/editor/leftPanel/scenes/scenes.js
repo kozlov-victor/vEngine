@@ -39,6 +39,9 @@ module.exports = Vue.component('app-scenes', {
         },
         deleteGameObject: function(scene){
             console.log('delete go invoked',scene);
+        },
+        onGameObjectClick: function(go){
+            console.log(go);
         }
     }
 });

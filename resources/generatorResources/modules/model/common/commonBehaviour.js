@@ -7,7 +7,7 @@ var CommonBehaviour = BaseModel.extend({
     description:'',
     parameters:null,
     construct: function(){
-        this.parameters = [];
+        if (!this.parameters) this.parameters = [];
     }
 });
 

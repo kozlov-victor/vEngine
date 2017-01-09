@@ -216,16 +216,16 @@
             },
             {
                 "pos": {
-                    "x": 139,
+                    "x": 97,
                     "y": 13
                 },
                 "scale": {
                     "x": 1,
                     "y": 1
                 },
-                "height": 36,
+                "height": 42,
                 "text": "JackPot",
-                "width": 91,
+                "width": 105,
                 "type": "userInterface",
                 "subType": "textField",
                 "groupName": "",
@@ -234,11 +234,16 @@
                 "protoId": {},
                 "id": "2570_1987_4",
                 "fontId": "0265_1797_64",
-                "alpha": 1
+                "alpha": 1,
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "angleVel": 0
             },
             {
                 "pos": {
-                    "x": 240,
+                    "x": 231,
                     "y": 18
                 },
                 "scale": {

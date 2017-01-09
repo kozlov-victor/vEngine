@@ -10,10 +10,11 @@
             <td>
                 <input
                     required
+                    v-control="{form:form,model:editData.currFrameAnimationInEdit,prop:'name'}"
                     v-model="editData.currFrameAnimationInEdit.name"/>
             </td>
             <td rowspan="3">
-                <div style="max-height: 60vh;max-width:60vw;overflow: auto;"
+                <div style="max-height: 80vh;max-width:80vw;overflow: scroll;"
                         >
                     {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}
 
@@ -26,10 +27,10 @@
                     <div>
                         <button
                                 v-on:click="playAnimation()"
-                                ng-disabled="!frmCreateFrameAnimation.$valid" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
+                                :disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
                         <button
                                 v-on:click="stopAnimation()"
-                                ng-disabled="!frmCreateFrameAnimation.$valid" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
+                                :disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
                     </div>
 
 
@@ -64,6 +65,7 @@
                         type="number"
                         min="1"
                         required
+                        v-control="{form:form,model:editData.currFrameAnimationInEdit,prop:'duration'}"
                         v-model="editData.currFrameAnimationInEdit.duration"/>
             </td>
         </tr>
@@ -109,14 +111,13 @@
             <td>
            <textarea
                    required
-                   app-validator="toArray(editData.currFrameAnimationInEdit.frames).length>0"
                    v-model="frames"></textarea>
             </td>
         </tr>
     </table>
     <button
-            ng-click="createOrEditFrAnimation()"
-            ng-disabled="!(frmCreateFrameAnimation.$valid)">
+            v-on:click="createOrEditFrameAnimation()"
+            :disabled="!form.valid()">
         {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}
     </button>
 

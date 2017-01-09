@@ -11,7 +11,10 @@ res.reset = function(){
     res.currSpriteSheetInEdit = {};
     res.currFrameAnimationInEdit = {};
     res.currSceneInEdit = {};
-    res.currSceneGameObjectInEdit = {};
+    res.currSceneGameObjectInEdit = {
+        pos: {},
+        scale:{}
+    };
     res.currLayerInEdit = {};
     res.currFontInEdit = {};
     res.currCommonBehaviourInEdit = {};

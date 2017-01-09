@@ -5,6 +5,10 @@
         :title="i18n.scenes" xmlns:v-on="http://www.w3.org/1999/xhtml">
     <div class="withPaddingLeft" v-for="scene in (editData.sceneList && editData.sceneList.rs)">
         <app-collapsible
+                :class="{
+                    currScene:editData.currSceneInEdit==scene
+                }"
+                v-on:click.native="editData.currSceneInEdit=scene"
                 :object="scene"
                 :crud="{
                     edit:editScene,
@@ -30,6 +34,10 @@
                             <div class="withPaddingLeft">
                                 <div class="table width100">
                                     <div
+                                            :class="{
+                                                currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject
+                                            }"
+                                            v-on:click.native="editData.currSceneGameObjectInEdit=gameObject"
                                             is="appGameObjectRow"
                                             :game-object="gameObject"
                                             v-for="gameObject in layer._gameObjects.rs"></div>

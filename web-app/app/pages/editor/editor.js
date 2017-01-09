@@ -54,6 +54,10 @@ module.exports = {
         appParticleSystems: require('./leftPanel/particleSystems/particleSystems'),
         appDialogs: require('./dialogs/dialogs'),
 
-        appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor')
+        appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor'),
+
+        appSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
+        appScene: require('./rightPanel/scene/scene')
+
     }
 };

@@ -1,5 +1,30 @@
 [
     {
+        "type": "frameAnimation",
+        "name": "qq",
+        "frames": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+        ],
+        "duration": 1000,
+        "id": "5030_3003_129"
+    },
+    {
+        "type": "frameAnimation",
         "name": "rotate",
         "frames": [
             0,
@@ -19,8 +44,14 @@
             14,
             15
         ],
+        "duration": 1232,
+        "id": "9426_6674_162"
+    },
+    {
         "type": "frameAnimation",
+        "name": "ss",
+        "frames": [],
         "duration": 1000,
-        "id": "7563_6764_37"
+        "id": "3962_4839_358"
     }
 ]

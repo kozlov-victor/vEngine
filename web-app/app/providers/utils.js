@@ -130,6 +130,10 @@ var Utils = function(){
         return res;
     };
 
+    this.size = function(obj) {
+        return Object.keys(obj).length;
+    };
+
     this.recalcGameObjectSize = function(gameObject){
         var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
         if (!spriteSheet) return;

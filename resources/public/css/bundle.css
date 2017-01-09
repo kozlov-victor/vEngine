@@ -246,6 +246,9 @@ label,
 .table {
   display: table;
 }
+.borderBottom {
+  border-bottom: 1px solid grey;
+}
 .row {
   display: table-row;
 }
@@ -361,4 +364,11 @@ label,
 }
 .split {
   border-radius: 2px;
+}
+.currSceneGameObject {
+  outline: 1px solid green;
+}
+.currScene {
+  outline: 1px solid green;
+  text-decoration: underline;
 }

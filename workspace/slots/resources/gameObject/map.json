@@ -51,7 +51,7 @@
         "type": "gameObject",
         "commonBehaviour": [],
         "frameAnimationIds": [
-            "7563_6764_37"
+            "9426_6674_162"
         ],
         "rigid": 0,
         "groupName": "",
@@ -82,17 +82,38 @@
             "y": 0
         },
         "type": "gameObject",
-        "commonBehaviour": [],
-        "currFrameIndex": 0,
-        "frameAnimationIds": [],
+        "commonBehaviour": [
+            {
+                "name": "move4dir",
+                "description": "allow character to walk up, down, left and right",
+                "parameters": {
+                    "velocity": "103",
+                    "walkLeftAnimation": "left",
+                    "walkRightAnimation": "right",
+                    "walkUpAnimation": "up",
+                    "walkDownAnimation": "down",
+                    "idleLeftAnimation": "idleLeft",
+                    "idleRightAnimation": "idleRight",
+                    "idleUpAnimation": "idleUp",
+                    "idleDownAnimation": "idleDown"
+                },
+                "id": {},
+                "type": "commonBehaviour",
+                "protoId": {}
+            }
+        ],
+        "currFrameIndex": 10,
+        "frameAnimationIds": [
+            "3962_4839_358"
+        ],
         "groupName": "",
-        "angle": 0.21,
+        "angle": 0,
         "angleVel": 0,
-        "alpha": 1,
+        "alpha": "1",
         "width": 30,
-        "height": 31,
-        "name": "ww4",
+        "height": 30,
+        "name": "tt",
         "spriteSheetId": "9537_4496_35",
-        "id": "5420_1114_17"
+        "id": "4201_5308_463"
     }
 ]

@@ -23,6 +23,8 @@ _i18n.bundle = {
         width:'width',
         height:'height',
         currFrameIndex:'current frame index',
+        currGameObject: 'current gameObject',
+        currScene: 'current scene',
         spriteSheet: 'sprite sheet',
         numOfFramesH: 'num of frames horizontally',
         numOfFramesV: 'num of frames vertically',

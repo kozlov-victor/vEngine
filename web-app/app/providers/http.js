@@ -1,13 +1,20 @@
 
+
 var execMethod = function(url,method,data,callBack) {
     Vue.http
         [method](url, data).
         then(function(resp){
-            callBack(resp.body);
+            try {
+                callBack(resp.body);
+            } catch(e){
+                setTimeout(function() {
+                    throw e;
+                },0);
+            }
         }).
         catch(function(err){
             setTimeout(function() {
-                if (err.status && err.status!=200) throw err.body || '';
+                if (err.status || err.status!=200) throw err.body || '';
             },0);
         });
 };

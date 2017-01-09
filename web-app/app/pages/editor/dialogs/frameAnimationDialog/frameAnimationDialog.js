@@ -4,6 +4,7 @@ var abstractDialog = require('providers/abstractDialog');
 var editData = require('providers/editData');
 var resource = require('providers/resource');
 var FrameAnimation = _require('frameAnimation');
+var GameObject = _require('gameObject');
 
 module.exports.component = Vue.component('app-frame-animation-dialog', {
     mixins:[abstractDialog],
@@ -35,10 +36,6 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
             this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
             Vue.set(this.editData.currFrameAnimationInEdit,'_gameObject',this.editData.currGameObjectInEdit.clone());
         },
-        createOrEditFrameAnimation: function(f){
-            var self = this;
-
-        },
         allIndexes: function(){
             var res = this.utils.getArray(this.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
             return res.join(',')
@@ -65,73 +62,38 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
         },
         stopAnimation: function(){
             this.isStopped = true;
+        },
+        createOrEditFrameAnimation: function(){
+            var self = this;
+            self.editData.currFrameAnimationInEdit.frames = JSON.parse('['+self.frames+']');
+
+            resource.createOrEditResource(
+                self.editData.currFrameAnimationInEdit.toJSON(),
+                FrameAnimation,
+                self.editData.frameAnimationList,
+                function(res){
+
+                    if (res.type=='create') {
+
+                        self.editData.currFrameAnimationInEdit.id = res.r.id;
+                        self.editData.currGameObjectInEdit.frameAnimationIds.push(self.editData.currFrameAnimationInEdit.id);
+                        self.editData.currGameObjectInEdit._frameAnimations.add(self.editData.currFrameAnimationInEdit);
+
+                        resource.createOrEditResource(
+                            self.editData.currGameObjectInEdit.toJSON(),
+                            GameObject,
+                            self.editData.gameObjectList,
+                            function(){
+                                self.close();
+                            }
+                        );
+                    } else {
+                        self.editData.currGameObjectInEdit =
+                            self.editData.gameObjectList.find({id:self.editData.currGameObjectInEdit.id}).clone();
+                        self.close();
+                    }
+                }
+            );
         }
     }
 });
-
-
-//
-//
-//s.toArray = function(expr) {
-//    try {
-//        return JSON.parse('['+expr+']');
-//    } catch(e){
-//        return [];
-//    }
-//};
-//
-//s.createOrEditFrAnimation = function(){
-//    s.editData. currFrameAnimationInEdit.frames = JSON.parse('['+s.editData. currFrameAnimationInEdit.frames+']');
-//    resourceDao.createOrEditResource(
-//        s.editData. currFrameAnimationInEdit,
-//        FrameAnimation,
-//        bundle.frameAnimationList,
-//        function(res){
-//            if (res.type=='create') {
-//
-//                s.editData. currFrameAnimationInEdit.id = res.r.id;
-//                var dialogStateObj = uiHelper.findDialogStateObjectById(s.editData.currGameObjectInEdit.id);
-//                dialogStateObj.frameAnimationIds.push(s.editData. currFrameAnimationInEdit.id);
-//                s.editData.currGameObjectInEdit.frameAnimationIds.push(s.editData. currFrameAnimationInEdit.id);
-//                dialogStateObj._frameAnimations.add(s.editData. currFrameAnimationInEdit);
-//
-//                resourceDao.createOrEditResource(
-//                    s.editData.currGameObjectInEdit,
-//                    GameObject,
-//                    bundle.gameObjectList,
-//                    function(){
-//
-//                    },
-//                    true
-//                );
-//            }
-//        }
-//    );
-//};
-
-//s.allIndexes = function(){
-//    var res = utils.getArray(s.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
-//    return res.join(',')
-//};
-//
-
-//
-//s.stopAnimation = function(){
-//    s.editData. currFrameAnimationInEdit.stop();
-//    isStopped = true;
-//};
-//
-//s.setRange = function(from,to) {
-//    if (isNaN(from) || isNaN(to)) return;
-//    s.editData. currFrameAnimationInEdit.frames = [];
-//    if (from<=to) {
-//        for (var i=from;i<=to;i++) {
-//            s.editData. currFrameAnimationInEdit.frames.push(i);
-//        }
-//    } else {
-//        for (i=from;i>=to;i--) {
-//            s.editData. currFrameAnimationInEdit.frames.push(i);
-//        }
-//    }
-//
-//};

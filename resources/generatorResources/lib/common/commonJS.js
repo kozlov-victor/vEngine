@@ -1,11 +1,12 @@
 var modules = {}, require = function(name){
     var moduleObj = modules[name];
 
+    //<code>{{#if opts.debug }}
     if (!moduleObj) {
         console.trace('can not found module with name ' + (name || '(name not specified)'));
         throw 'can not found module with name ' + (name || '(name not specified)');
     }
-
+    //<code>{{/if}}
     if (!moduleObj.inited) initModuleObj(moduleObj);
     return moduleObj.inited.exports;
     function initModuleObj(moduleObj) {

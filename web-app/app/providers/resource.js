@@ -64,6 +64,7 @@ var Resource = function(){
                 resourceList.add(r);
                 callBack && callBack({type:'create',r:r});
             } else {
+                if (!(resourceList && resourceList)) return;
                 var index = resourceList.indexOf({id:item.id});
                 resourceList.get(index).fromJSON(item);
                 callBack && callBack({type:'edit',r:resourceList.rs[index]});
