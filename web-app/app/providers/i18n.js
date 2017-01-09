@@ -79,6 +79,7 @@ _i18n.bundle = {
         sceneNotSelected: 'select scene to drop object',
         noLayer: 'create at least one layer of current scene',
         selected: 'selected',
+        notSelected: 'not selected',
         fixedToCamera:'fixed to camera',
         preloadingScene: 'preloading scene',
         startScene: 'start scene'

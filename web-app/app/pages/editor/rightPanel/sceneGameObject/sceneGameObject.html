@@ -200,6 +200,10 @@
             </div>
         </div>
     </div>
+    <div
+            v-if="!editData.currSceneGameObjectInEdit.id">
+        {{i18n.notSelected}}
+    </div>
 
 </app-collapsible>
 
