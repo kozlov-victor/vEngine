@@ -5,7 +5,7 @@ var ShaderProgram = require('shaderProgram');
 var VertexBuffer = require('vertexBuffer');
 var IndexBuffer = require('indexBuffer');
 
-var CommonRectDrawer = function(gl){
+var ColorRectDrawer = function(gl){
 
     var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 
@@ -24,7 +24,7 @@ var CommonRectDrawer = function(gl){
     (function(){
         program = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.color['fragment.frag']
+            bundle.shaders.colorRect['fragment.frag']
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
@@ -54,4 +54,4 @@ var CommonRectDrawer = function(gl){
 
 };
 
-module.exports = CommonRectDrawer;
+module.exports = ColorRectDrawer;

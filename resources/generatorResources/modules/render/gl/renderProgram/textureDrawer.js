@@ -26,7 +26,7 @@ var CommonTextureDrawer = function(gl){
     (function(){
         program = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.basic['fragment.frag']
+            bundle.shaders.texture['fragment.frag']
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
