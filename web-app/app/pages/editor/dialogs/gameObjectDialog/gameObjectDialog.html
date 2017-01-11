@@ -207,6 +207,7 @@
                         <td>
                             <select v-model="selectedBehaviourName">
                                 <option
+                                        :disabled="editData.currGameObjectInEdit._commonBehaviour.has({name:cb.name})"
                                         :value="cb.name"
                                         v-for="cb in editData.commonBehaviourList && editData.commonBehaviourList.rs">
                                     {{cb.name}}

@@ -18,7 +18,12 @@ var MultiColorRectDrawer = function(gl){
             Math.random(), Math.random(), Math.random(), Math.random()
         ],gl.FLOAT,4);
         program.bindBuffer(vertexColorBuffer,'a_color');
+        posIndexBuffer.bind();
         program.bind();
+    };
+
+    this.unbind = function(){
+        posIndexBuffer.unbind();
     };
 
     this.setUniform = function(name,value){
@@ -32,7 +37,7 @@ var MultiColorRectDrawer = function(gl){
     (function(){
         program = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.multiColorRect['fragment.frag']
+            bundle.shaders.multiColor['fragment.frag']
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
@@ -58,7 +63,6 @@ var MultiColorRectDrawer = function(gl){
         posIndexBuffer.setData([
             0,1,2,2,1,3
         ]);
-        posIndexBuffer.bindBuffer();
 
     })();
 

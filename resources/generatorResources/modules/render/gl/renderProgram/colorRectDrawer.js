@@ -10,7 +10,12 @@ var ColorRectDrawer = function(gl){
     var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 
     this.bind = function(){
+        posIndexBuffer.bind();
         program.bind();
+    };
+
+    this.unbind = function(){
+        posIndexBuffer.unbind();
     };
 
     this.setUniform = function(name,value){
@@ -24,7 +29,7 @@ var ColorRectDrawer = function(gl){
     (function(){
         program = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.colorRect['fragment.frag']
+            bundle.shaders.color['fragment.frag']
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
@@ -40,16 +45,7 @@ var ColorRectDrawer = function(gl){
         posIndexBuffer.setData([
             0,1,2,2,1,3
         ]);
-        posIndexBuffer.bindBuffer();
 
-        texVertexBuffer = new VertexBuffer(gl);
-        texVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
-        program.bindBuffer(texVertexBuffer,'a_texcoord');
     })();
 
 };

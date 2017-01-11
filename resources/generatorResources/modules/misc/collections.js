@@ -80,6 +80,9 @@ exports.List = function () {
         });
         return success?i:-1;
     };
+    this.has = function(obj){
+        return this.indexOf(obj)>-1;
+    };
     this.remove = function (obj){
         if (!obj) return;
         var index = self.indexOf(obj);

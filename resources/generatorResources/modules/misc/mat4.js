@@ -18,6 +18,22 @@ exports.make2DProjection = function(width, height, depth) {
     ];
 };
 
+
+
+
+exports.make3DProjection = function(fieldOfViewInRadians, width, height, near, far){
+    var aspect = width / height;
+    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+    var rangeInv = 1.0 / (near - far);
+
+    return [
+        f / aspect, 0, 0, 0,
+        0, f, 0, 0,
+        0, 0, (near + far) * rangeInv, -1,
+        0, 0, near * far * rangeInv * 2, 0
+    ];
+};
+
 exports.makeTranslation = function(tx, ty, tz) {
     return [
         1,  0,  0,  0,

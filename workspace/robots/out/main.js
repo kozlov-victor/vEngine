@@ -138,6 +138,7 @@ modules['behaviour'] =
 	    var module = exports, self = exports;
 	    
 	
+	var ry = 0;
 	        
 	exports.onShow = function(){
 	    self.getFrAnimation('walk').play();
@@ -145,7 +146,8 @@ modules['behaviour'] =
 	};
 	
 	exports.onUpdate = function(time) {
-	
+	    self.angle+=ry;
+	    //ry+=0.1;
 	};
 	    
 	};
@@ -595,7 +597,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"},"colorRect":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColorRect":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
+	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColor":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -1440,6 +1442,9 @@ modules['collections'] =
 	        });
 	        return success?i:-1;
 	    };
+	    this.has = function(obj){
+	        return this.indexOf(obj)>-1;
+	    };
 	    this.remove = function (obj){
 	        if (!obj) return;
 	        var index = self.indexOf(obj);
@@ -1537,6 +1542,22 @@ modules['mat4'] =
 	        0, -2 / height, 0, 0,
 	        0, 0, 2 / depth, 0,
 	        -1, 1, 0, 1
+	    ];
+	};
+	
+	
+	
+	
+	exports.make3DProjection = function(fieldOfViewInRadians, width, height, near, far){
+	    var aspect = width / height;
+	    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+	    var rangeInv = 1.0 / (near - far);
+	
+	    return [
+	        f / aspect, 0, 0, 0,
+	        0, f, 0, 0,
+	        0, 0, (near + far) * rangeInv, -1,
+	        0, 0, near * far * rangeInv * 2, 0
 	    ];
 	};
 	
@@ -2454,7 +2475,7 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
-	    ctx.fillRect(0,0,self.width,self.height,[1,0,0,1]);
+	    ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -2467,7 +2488,7 @@ modules['gameObject'] =
 	    ctx.lockRect(self.getRect());
 	
 	    for (
-	        var y = -offsetY;
+	        var y = - offsetY;
 	        y<self.height + self._spriteSheet._frameHeight;
 	        y+=self._spriteSheet._frameHeight
 	    ) {
@@ -3590,9 +3611,9 @@ modules['glContext'] =
 	    };
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-	        // this matirx will convert from pixels to clip space
+	        // this matrix will convert from pixels to clip space
 	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
-	
+	        //var projectionMatrix = mat4.make3DProjection(3,viewWidth,viewHeight, 10,100);
 	        // this matrix will scale our 1 unit quad
 	        // from 1 unit to dstWidth, dstHeight units
 	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
@@ -3662,6 +3683,7 @@ modules['glContext'] =
 	        );
 	        textureDrawer.setUniform('u_alpha',alpha);
 	        textureDrawer.draw();
+	        textureDrawer.unbind();
 	    };
 	
 	    it.lockRect = function(rect) {
@@ -3695,6 +3717,7 @@ modules['glContext'] =
 	        colorRectDrawer.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        colorRectDrawer.draw();
+	        colorRectDrawer.unbind();
 	    };
 	
 	    it.fillRect = fillRect;
@@ -3845,7 +3868,22 @@ modules['glContext'] =
 	
 	
 	
-	
+	//canvas.addEventListener('webglcontextlost', function(e) {
+	//    // the default is to do nothing. Preventing the default
+	//    // means allowing context to be restored
+	//    e.preventDefault();
+	//    var div = document.createElement("div");
+	//    div.className = "contextlost";
+	//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
+	//    div.addEventListener('click', function() {
+	//        window.location.reload();
+	//    });
+	//    document.body.appendChild(div);
+	//});
+	//canvas.addEventListener('webglcontextrestored', function() {
+	//    // just reload the page. Easiest.
+	//    window.location.reload();
+	//});
 }};
 modules['frameBuffer'] =
     {code: function(module){
@@ -3922,8 +3960,12 @@ modules['indexBuffer'] =
 	        return buffer;
 	    };
 	
-	    this.bindBuffer = function(){
+	    this.bind = function(){
 	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	    };
+	
+	    this.unbind = function(){
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	    };
 	
 	    this.getBufferLength = function(){
@@ -4289,22 +4331,6 @@ modules['vertexBuffer'] =
 	        return buffer;
 	    };
 	
-	    // todo remove
-	    this.bind = function(program, uniformLocationName){
-	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
-	        gl.enableVertexAttribArray(uniformLocation);
-	        gl.vertexAttribPointer(
-	            uniformLocation,
-	            bufferItemSize,
-	            bufferItemType,
-	            false,  // if the content is normalized vectors
-	            0,  // number of bytes to skip in between elements
-	            0   // offsets to the first element
-	        );
-	    };
-	
-	
 	    this.getGlBuffer = function(){
 	        return buffer;
 	    };
@@ -4336,7 +4362,12 @@ modules['colorRectDrawer'] =
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 	
 	    this.bind = function(){
+	        posIndexBuffer.bind();
 	        program.bind();
+	    };
+	
+	    this.unbind = function(){
+	        posIndexBuffer.unbind();
 	    };
 	
 	    this.setUniform = function(name,value){
@@ -4350,7 +4381,7 @@ modules['colorRectDrawer'] =
 	    (function(){
 	        program = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
-	            bundle.shaders.colorRect['fragment.frag']
+	            bundle.shaders.color['fragment.frag']
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
@@ -4366,16 +4397,7 @@ modules['colorRectDrawer'] =
 	        posIndexBuffer.setData([
 	            0,1,2,2,1,3
 	        ]);
-	        posIndexBuffer.bindBuffer();
 	
-	        texVertexBuffer = new VertexBuffer(gl);
-	        texVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
-	        program.bindBuffer(texVertexBuffer,'a_texcoord');
 	    })();
 	
 	};
@@ -4405,7 +4427,12 @@ modules['multiColorRectDrawer'] =
 	            Math.random(), Math.random(), Math.random(), Math.random()
 	        ],gl.FLOAT,4);
 	        program.bindBuffer(vertexColorBuffer,'a_color');
+	        posIndexBuffer.bind();
 	        program.bind();
+	    };
+	
+	    this.unbind = function(){
+	        posIndexBuffer.unbind();
 	    };
 	
 	    this.setUniform = function(name,value){
@@ -4419,7 +4446,7 @@ modules['multiColorRectDrawer'] =
 	    (function(){
 	        program = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
-	            bundle.shaders.multiColorRect['fragment.frag']
+	            bundle.shaders.multiColor['fragment.frag']
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
@@ -4445,13 +4472,69 @@ modules['multiColorRectDrawer'] =
 	        posIndexBuffer.setData([
 	            0,1,2,2,1,3
 	        ]);
-	        posIndexBuffer.bindBuffer();
 	
 	    })();
 	
 	};
 	
 	module.exports = MultiColorRectDrawer;
+}};
+modules['multiLineDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
+	
+	var MultiLineDrawer = function(gl){
+	
+	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	
+	    this.bind = function(){
+	        posIndexBuffer.bind();
+	        program.bind();
+	    };
+	
+	    this.unbind = function(){
+	        posIndexBuffer.unbind();
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.color['fragment.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ],gl.FLOAT,2);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	
+	        posIndexBuffer = new IndexBuffer(gl);
+	        posIndexBuffer.setData([
+	            0,1,2,2,1,3
+	        ]);
+	
+	    })();
+	
+	};
+	
+	module.exports = MultiLineDrawer;
 }};
 modules['textureDrawer'] =
     {code: function(module){
@@ -4470,7 +4553,12 @@ modules['textureDrawer'] =
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 	
 	    this.bind = function(){
+	        posIndexBuffer.bind();
 	        program.bind();
+	    };
+	
+	    this.unbind  = function(){
+	        posIndexBuffer.unbind();
 	    };
 	
 	    this.setUniform = function(name,value){
@@ -4500,7 +4588,6 @@ modules['textureDrawer'] =
 	        posIndexBuffer.setData([
 	            0,1,2,2,1,3
 	        ]);
-	        posIndexBuffer.bindBuffer();
 	
 	        texVertexBuffer = new VertexBuffer(gl);
 	        texVertexBuffer.setData([
@@ -4737,7 +4824,7 @@ modules['index'] =
     var exports = module.exports;
     	
 	var data;
-	data = {"sound":[],"spriteSheet":[{"resourcePath":"resources/spriteSheet/robots.png","name":"robots","width":384,"height":256,"numOfFramesH":12,"numOfFramesV":8,"type":"spriteSheet","id":"5054_3316_7"},{"resourcePath":"resources/spriteSheet/mage.gif","name":"mage","width":956,"height":380,"numOfFramesH":10,"numOfFramesV":4,"type":"spriteSheet","id":"0654_0857_58"},{"resourcePath":"resources/spriteSheet/map.gif","name":"map","width":480,"height":480,"numOfFramesH":12,"numOfFramesV":12,"type":"spriteSheet","id":"4817_7543_59"}],"frameAnimation":[{"frames":[12,13,14,13],"name":"walk","type":"frameAnimation","duration":1000,"id":"8341_6957_9"},{"frames":[33,34,35,34],"name":"walk","type":"frameAnimation","duration":1000,"id":"9199_8749_11"},{"frames":[18,19,20,19],"name":"walk","type":"frameAnimation","duration":1000,"id":"5001_7141_35"}],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":24,"y":38,"width":15,"height":29},"1":{"x":45,"y":38,"width":15,"height":29},"2":{"x":66,"y":38,"width":15,"height":29},"3":{"x":87,"y":38,"width":15,"height":29},"4":{"x":108,"y":38,"width":15,"height":29},"5":{"x":129,"y":38,"width":15,"height":29},"6":{"x":150,"y":38,"width":15,"height":29},"7":{"x":171,"y":38,"width":15,"height":29},"8":{"x":192,"y":38,"width":15,"height":29},"9":{"x":213,"y":38,"width":15,"height":29}," ":{"x":3,"y":3,"width":15,"height":29},"!":{"x":24,"y":3,"width":15,"height":29},"\"":{"x":45,"y":3,"width":15,"height":29},"#":{"x":66,"y":3,"width":15,"height":29},"$":{"x":87,"y":3,"width":15,"height":29},"%":{"x":108,"y":3,"width":15,"height":29},"&":{"x":129,"y":3,"width":15,"height":29},"'":{"x":150,"y":3,"width":15,"height":29},"(":{"x":171,"y":3,"width":15,"height":29},")":{"x":192,"y":3,"width":15,"height":29},"*":{"x":213,"y":3,"width":15,"height":29},"+":{"x":234,"y":3,"width":15,"height":29},",":{"x":255,"y":3,"width":15,"height":29},"-":{"x":276,"y":3,"width":15,"height":29},".":{"x":297,"y":3,"width":15,"height":29},"/":{"x":3,"y":38,"width":15,"height":29},":":{"x":234,"y":38,"width":15,"height":29},";":{"x":255,"y":38,"width":15,"height":29},"<":{"x":276,"y":38,"width":15,"height":29},"=":{"x":297,"y":38,"width":15,"height":29},">":{"x":3,"y":73,"width":15,"height":29},"?":{"x":24,"y":73,"width":15,"height":29},"@":{"x":45,"y":73,"width":15,"height":29},"A":{"x":66,"y":73,"width":15,"height":29},"B":{"x":87,"y":73,"width":15,"height":29},"C":{"x":108,"y":73,"width":15,"height":29},"D":{"x":129,"y":73,"width":15,"height":29},"E":{"x":150,"y":73,"width":15,"height":29},"F":{"x":171,"y":73,"width":15,"height":29},"G":{"x":192,"y":73,"width":15,"height":29},"H":{"x":213,"y":73,"width":15,"height":29},"I":{"x":234,"y":73,"width":15,"height":29},"J":{"x":255,"y":73,"width":15,"height":29},"K":{"x":276,"y":73,"width":15,"height":29},"L":{"x":297,"y":73,"width":15,"height":29},"M":{"x":3,"y":108,"width":15,"height":29},"N":{"x":24,"y":108,"width":15,"height":29},"O":{"x":45,"y":108,"width":15,"height":29},"P":{"x":66,"y":108,"width":15,"height":29},"Q":{"x":87,"y":108,"width":15,"height":29},"R":{"x":108,"y":108,"width":15,"height":29},"S":{"x":129,"y":108,"width":15,"height":29},"T":{"x":150,"y":108,"width":15,"height":29},"U":{"x":171,"y":108,"width":15,"height":29},"V":{"x":192,"y":108,"width":15,"height":29},"W":{"x":213,"y":108,"width":15,"height":29},"X":{"x":234,"y":108,"width":15,"height":29},"Y":{"x":255,"y":108,"width":15,"height":29},"Z":{"x":276,"y":108,"width":15,"height":29},"[":{"x":297,"y":108,"width":15,"height":29},"\\":{"x":3,"y":143,"width":15,"height":29},"]":{"x":24,"y":143,"width":15,"height":29},"^":{"x":45,"y":143,"width":15,"height":29},"_":{"x":66,"y":143,"width":15,"height":29},"`":{"x":87,"y":143,"width":15,"height":29},"a":{"x":108,"y":143,"width":15,"height":29},"b":{"x":129,"y":143,"width":15,"height":29},"c":{"x":150,"y":143,"width":15,"height":29},"d":{"x":171,"y":143,"width":15,"height":29},"e":{"x":192,"y":143,"width":15,"height":29},"f":{"x":213,"y":143,"width":15,"height":29},"g":{"x":234,"y":143,"width":15,"height":29},"h":{"x":255,"y":143,"width":15,"height":29},"i":{"x":276,"y":143,"width":15,"height":29},"j":{"x":297,"y":143,"width":15,"height":29},"k":{"x":3,"y":178,"width":15,"height":29},"l":{"x":24,"y":178,"width":15,"height":29},"m":{"x":45,"y":178,"width":15,"height":29},"n":{"x":66,"y":178,"width":15,"height":29},"o":{"x":87,"y":178,"width":15,"height":29},"p":{"x":108,"y":178,"width":15,"height":29},"q":{"x":129,"y":178,"width":15,"height":29},"r":{"x":150,"y":178,"width":15,"height":29},"s":{"x":171,"y":178,"width":15,"height":29},"t":{"x":192,"y":178,"width":15,"height":29},"u":{"x":213,"y":178,"width":15,"height":29},"v":{"x":234,"y":178,"width":15,"height":29},"w":{"x":255,"y":178,"width":15,"height":29},"x":{"x":276,"y":178,"width":15,"height":29},"y":{"x":297,"y":178,"width":15,"height":29},"z":{"x":3,"y":213,"width":15,"height":29},"{":{"x":24,"y":213,"width":15,"height":29},"|":{"x":45,"y":213,"width":15,"height":29},"}":{"x":66,"y":213,"width":15,"height":29},"~":{"x":87,"y":213,"width":15,"height":29},"":{"x":108,"y":213,"width":0,"height":29},"":{"x":114,"y":213,"width":0,"height":29},"":{"x":120,"y":213,"width":0,"height":29},"":{"x":126,"y":213,"width":0,"height":29},"":{"x":132,"y":213,"width":0,"height":29},"":{"x":138,"y":213,"width":0,"height":29},"":{"x":144,"y":213,"width":0,"height":29},"":{"x":150,"y":213,"width":0,"height":29},"":{"x":156,"y":213,"width":0,"height":29},"":{"x":162,"y":213,"width":0,"height":29},"":{"x":168,"y":213,"width":0,"height":29},"":{"x":174,"y":213,"width":0,"height":29},"":{"x":180,"y":213,"width":0,"height":29},"":{"x":186,"y":213,"width":0,"height":29},"":{"x":192,"y":213,"width":0,"height":29},"":{"x":198,"y":213,"width":0,"height":29},"":{"x":204,"y":213,"width":0,"height":29},"":{"x":210,"y":213,"width":0,"height":29},"":{"x":216,"y":213,"width":0,"height":29},"":{"x":222,"y":213,"width":0,"height":29},"":{"x":228,"y":213,"width":0,"height":29},"":{"x":234,"y":213,"width":0,"height":29},"":{"x":240,"y":213,"width":0,"height":29},"А":{"x":246,"y":213,"width":15,"height":29},"Б":{"x":267,"y":213,"width":15,"height":29},"В":{"x":288,"y":213,"width":15,"height":29},"Г":{"x":3,"y":248,"width":15,"height":29},"Д":{"x":24,"y":248,"width":15,"height":29},"Е":{"x":45,"y":248,"width":15,"height":29},"Ж":{"x":66,"y":248,"width":15,"height":29},"З":{"x":87,"y":248,"width":15,"height":29},"И":{"x":108,"y":248,"width":15,"height":29},"Й":{"x":129,"y":248,"width":15,"height":29},"К":{"x":150,"y":248,"width":15,"height":29},"Л":{"x":171,"y":248,"width":15,"height":29},"М":{"x":192,"y":248,"width":15,"height":29},"Н":{"x":213,"y":248,"width":15,"height":29},"О":{"x":234,"y":248,"width":15,"height":29},"П":{"x":255,"y":248,"width":15,"height":29},"Р":{"x":276,"y":248,"width":15,"height":29},"С":{"x":297,"y":248,"width":15,"height":29},"Т":{"x":3,"y":283,"width":15,"height":29},"У":{"x":24,"y":283,"width":15,"height":29},"Ф":{"x":45,"y":283,"width":15,"height":29},"Х":{"x":66,"y":283,"width":15,"height":29},"Ц":{"x":87,"y":283,"width":15,"height":29},"Ч":{"x":108,"y":283,"width":15,"height":29},"Ш":{"x":129,"y":283,"width":15,"height":29},"Щ":{"x":150,"y":283,"width":15,"height":29},"Ъ":{"x":171,"y":283,"width":15,"height":29},"Ы":{"x":192,"y":283,"width":15,"height":29},"Ь":{"x":213,"y":283,"width":15,"height":29},"Э":{"x":234,"y":283,"width":15,"height":29},"Ю":{"x":255,"y":283,"width":15,"height":29},"Я":{"x":276,"y":283,"width":15,"height":29},"а":{"x":297,"y":283,"width":15,"height":29},"б":{"x":3,"y":318,"width":15,"height":29},"в":{"x":24,"y":318,"width":15,"height":29},"г":{"x":45,"y":318,"width":15,"height":29},"д":{"x":66,"y":318,"width":15,"height":29},"е":{"x":87,"y":318,"width":15,"height":29},"ж":{"x":108,"y":318,"width":15,"height":29},"з":{"x":129,"y":318,"width":15,"height":29},"и":{"x":150,"y":318,"width":15,"height":29},"й":{"x":171,"y":318,"width":15,"height":29},"к":{"x":192,"y":318,"width":15,"height":29},"л":{"x":213,"y":318,"width":15,"height":29},"м":{"x":234,"y":318,"width":15,"height":29},"н":{"x":255,"y":318,"width":15,"height":29},"о":{"x":276,"y":318,"width":15,"height":29},"п":{"x":297,"y":318,"width":15,"height":29},"р":{"x":3,"y":353,"width":15,"height":29},"с":{"x":24,"y":353,"width":15,"height":29},"т":{"x":45,"y":353,"width":15,"height":29},"у":{"x":66,"y":353,"width":15,"height":29},"ф":{"x":87,"y":353,"width":15,"height":29},"х":{"x":108,"y":353,"width":15,"height":29},"ц":{"x":129,"y":353,"width":15,"height":29},"ч":{"x":150,"y":353,"width":15,"height":29},"ш":{"x":171,"y":353,"width":15,"height":29},"щ":{"x":192,"y":353,"width":15,"height":29},"ъ":{"x":213,"y":353,"width":15,"height":29},"ы":{"x":234,"y":353,"width":15,"height":29},"ь":{"x":255,"y":353,"width":15,"height":29},"э":{"x":276,"y":353,"width":15,"height":29},"ю":{"x":297,"y":353,"width":15,"height":29},"я":{"x":3,"y":388,"width":15,"height":29},"ѐ":{"x":24,"y":388,"width":15,"height":29},"ё":{"x":45,"y":388,"width":15,"height":29},"ђ":{"x":66,"y":388,"width":15,"height":29},"ѓ":{"x":87,"y":388,"width":15,"height":29},"є":{"x":108,"y":388,"width":15,"height":29},"ѕ":{"x":129,"y":388,"width":15,"height":29},"і":{"x":150,"y":388,"width":15,"height":29},"ї":{"x":171,"y":388,"width":15,"height":29},"ј":{"x":192,"y":388,"width":15,"height":29},"љ":{"x":213,"y":388,"width":15,"height":29},"њ":{"x":234,"y":388,"width":15,"height":29},"ћ":{"x":255,"y":388,"width":15,"height":29}},"width":320,"height":420},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"5054_3316_7","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":12,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"id":"5751_4970_8"},{"spriteSheetId":"5054_3316_7","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robot2","width":32,"height":32,"groupName":"","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"id":"1933_7627_10"},{"spriteSheetId":"5054_3316_7","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":18,"name":"robot3","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["5001_7141_35"],"rigid":0,"groupName":"","angle":0,"alpha":1,"id":"9908_4747_34"}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"5054_3316_7","pos":{"x":568,"y":68},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":0,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"5751_4970_8","id":"1232_3049_16"},{"spriteSheetId":"5054_3316_7","pos":{"x":582,"y":27},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robots","width":32,"height":32,"groupName":"robot2","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"protoId":"1933_7627_10","id":"0336_6310_17"},{"spriteSheetId":"5054_3316_7","pos":{"x":568,"y":131},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":18,"name":"robot3","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["5001_7141_35"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"9908_4747_34","id":"5554_0436_36"},{"spriteSheetId":"5054_3316_7","pos":{"x":574,"y":189},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robot2","width":32,"height":32,"groupName":"","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"protoId":"1933_7627_10","id":"4342_4589_37"},{"spriteSheetId":"5054_3316_7","pos":{"x":569,"y":238},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":12,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"5751_4970_8","id":"4030_7373_38"},{"spriteSheetId":"5054_3316_7","pos":{"x":572,"y":298},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":18,"name":"robot3","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["5001_7141_35"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"9908_4747_34","id":"2755_0336_39"},{"spriteSheetId":"5054_3316_7","pos":{"x":580,"y":348},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":12,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"5751_4970_8","id":"5623_2099_40"},{"spriteSheetId":"5054_3316_7","pos":{"x":498,"y":21},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robot2","width":32,"height":32,"groupName":"","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"protoId":"1933_7627_10","id":"8720_5782_41"}],"id":"2475_2336_5"}],"scene":[{"tileMap":{"_spriteSheet":{"resourcePath":"resources/spriteSheet/map.gif","name":"map","width":480,"height":480,"numOfFramesH":12,"numOfFramesV":12,"type":"spriteSheet","id":"4817_7543_59"},"spriteSheetId":"4817_7543_59","width":20,"height":20,"data":[[3,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3],[3,2,2,2,2,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,2,2,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,2,2,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]],"_tilesInScreenX":16,"_tilesInScreenY":10},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"2475_2336_5","id":"5671_2386_6"}],"alpha":1,"colorBG":[255,255,255],"width":0,"height":0,"id":"3894_6567_4"}],"particleSystem":[],"gameProps":{"width":640,"height":400,"scaleStrategy":"2","startSceneId":"3894_6567_4"}}
+	data = {"sound":[],"spriteSheet":[{"resourcePath":"resources/spriteSheet/robots.png","name":"robots","width":384,"height":256,"numOfFramesH":12,"numOfFramesV":8,"type":"spriteSheet","id":"5054_3316_7"},{"resourcePath":"resources/spriteSheet/mage.gif","name":"mage","width":956,"height":380,"numOfFramesH":10,"numOfFramesV":4,"type":"spriteSheet","id":"0654_0857_58"},{"resourcePath":"resources/spriteSheet/map.gif","name":"map","width":480,"height":480,"numOfFramesH":12,"numOfFramesV":12,"type":"spriteSheet","id":"4817_7543_59"}],"frameAnimation":[{"frames":[12,13,14,13],"name":"walk","type":"frameAnimation","duration":1000,"id":"8341_6957_9"},{"frames":[33,34,35,34],"name":"walk","type":"frameAnimation","duration":1000,"id":"9199_8749_11"},{"frames":[18,19,20,19],"name":"walk","type":"frameAnimation","duration":1000,"id":"5001_7141_35"}],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":24,"y":38,"width":15,"height":29},"1":{"x":45,"y":38,"width":15,"height":29},"2":{"x":66,"y":38,"width":15,"height":29},"3":{"x":87,"y":38,"width":15,"height":29},"4":{"x":108,"y":38,"width":15,"height":29},"5":{"x":129,"y":38,"width":15,"height":29},"6":{"x":150,"y":38,"width":15,"height":29},"7":{"x":171,"y":38,"width":15,"height":29},"8":{"x":192,"y":38,"width":15,"height":29},"9":{"x":213,"y":38,"width":15,"height":29}," ":{"x":3,"y":3,"width":15,"height":29},"!":{"x":24,"y":3,"width":15,"height":29},"\"":{"x":45,"y":3,"width":15,"height":29},"#":{"x":66,"y":3,"width":15,"height":29},"$":{"x":87,"y":3,"width":15,"height":29},"%":{"x":108,"y":3,"width":15,"height":29},"&":{"x":129,"y":3,"width":15,"height":29},"'":{"x":150,"y":3,"width":15,"height":29},"(":{"x":171,"y":3,"width":15,"height":29},")":{"x":192,"y":3,"width":15,"height":29},"*":{"x":213,"y":3,"width":15,"height":29},"+":{"x":234,"y":3,"width":15,"height":29},",":{"x":255,"y":3,"width":15,"height":29},"-":{"x":276,"y":3,"width":15,"height":29},".":{"x":297,"y":3,"width":15,"height":29},"/":{"x":3,"y":38,"width":15,"height":29},":":{"x":234,"y":38,"width":15,"height":29},";":{"x":255,"y":38,"width":15,"height":29},"<":{"x":276,"y":38,"width":15,"height":29},"=":{"x":297,"y":38,"width":15,"height":29},">":{"x":3,"y":73,"width":15,"height":29},"?":{"x":24,"y":73,"width":15,"height":29},"@":{"x":45,"y":73,"width":15,"height":29},"A":{"x":66,"y":73,"width":15,"height":29},"B":{"x":87,"y":73,"width":15,"height":29},"C":{"x":108,"y":73,"width":15,"height":29},"D":{"x":129,"y":73,"width":15,"height":29},"E":{"x":150,"y":73,"width":15,"height":29},"F":{"x":171,"y":73,"width":15,"height":29},"G":{"x":192,"y":73,"width":15,"height":29},"H":{"x":213,"y":73,"width":15,"height":29},"I":{"x":234,"y":73,"width":15,"height":29},"J":{"x":255,"y":73,"width":15,"height":29},"K":{"x":276,"y":73,"width":15,"height":29},"L":{"x":297,"y":73,"width":15,"height":29},"M":{"x":3,"y":108,"width":15,"height":29},"N":{"x":24,"y":108,"width":15,"height":29},"O":{"x":45,"y":108,"width":15,"height":29},"P":{"x":66,"y":108,"width":15,"height":29},"Q":{"x":87,"y":108,"width":15,"height":29},"R":{"x":108,"y":108,"width":15,"height":29},"S":{"x":129,"y":108,"width":15,"height":29},"T":{"x":150,"y":108,"width":15,"height":29},"U":{"x":171,"y":108,"width":15,"height":29},"V":{"x":192,"y":108,"width":15,"height":29},"W":{"x":213,"y":108,"width":15,"height":29},"X":{"x":234,"y":108,"width":15,"height":29},"Y":{"x":255,"y":108,"width":15,"height":29},"Z":{"x":276,"y":108,"width":15,"height":29},"[":{"x":297,"y":108,"width":15,"height":29},"\\":{"x":3,"y":143,"width":15,"height":29},"]":{"x":24,"y":143,"width":15,"height":29},"^":{"x":45,"y":143,"width":15,"height":29},"_":{"x":66,"y":143,"width":15,"height":29},"`":{"x":87,"y":143,"width":15,"height":29},"a":{"x":108,"y":143,"width":15,"height":29},"b":{"x":129,"y":143,"width":15,"height":29},"c":{"x":150,"y":143,"width":15,"height":29},"d":{"x":171,"y":143,"width":15,"height":29},"e":{"x":192,"y":143,"width":15,"height":29},"f":{"x":213,"y":143,"width":15,"height":29},"g":{"x":234,"y":143,"width":15,"height":29},"h":{"x":255,"y":143,"width":15,"height":29},"i":{"x":276,"y":143,"width":15,"height":29},"j":{"x":297,"y":143,"width":15,"height":29},"k":{"x":3,"y":178,"width":15,"height":29},"l":{"x":24,"y":178,"width":15,"height":29},"m":{"x":45,"y":178,"width":15,"height":29},"n":{"x":66,"y":178,"width":15,"height":29},"o":{"x":87,"y":178,"width":15,"height":29},"p":{"x":108,"y":178,"width":15,"height":29},"q":{"x":129,"y":178,"width":15,"height":29},"r":{"x":150,"y":178,"width":15,"height":29},"s":{"x":171,"y":178,"width":15,"height":29},"t":{"x":192,"y":178,"width":15,"height":29},"u":{"x":213,"y":178,"width":15,"height":29},"v":{"x":234,"y":178,"width":15,"height":29},"w":{"x":255,"y":178,"width":15,"height":29},"x":{"x":276,"y":178,"width":15,"height":29},"y":{"x":297,"y":178,"width":15,"height":29},"z":{"x":3,"y":213,"width":15,"height":29},"{":{"x":24,"y":213,"width":15,"height":29},"|":{"x":45,"y":213,"width":15,"height":29},"}":{"x":66,"y":213,"width":15,"height":29},"~":{"x":87,"y":213,"width":15,"height":29},"":{"x":108,"y":213,"width":0,"height":29},"":{"x":114,"y":213,"width":0,"height":29},"":{"x":120,"y":213,"width":0,"height":29},"":{"x":126,"y":213,"width":0,"height":29},"":{"x":132,"y":213,"width":0,"height":29},"":{"x":138,"y":213,"width":0,"height":29},"":{"x":144,"y":213,"width":0,"height":29},"":{"x":150,"y":213,"width":0,"height":29},"":{"x":156,"y":213,"width":0,"height":29},"":{"x":162,"y":213,"width":0,"height":29},"":{"x":168,"y":213,"width":0,"height":29},"":{"x":174,"y":213,"width":0,"height":29},"":{"x":180,"y":213,"width":0,"height":29},"":{"x":186,"y":213,"width":0,"height":29},"":{"x":192,"y":213,"width":0,"height":29},"":{"x":198,"y":213,"width":0,"height":29},"":{"x":204,"y":213,"width":0,"height":29},"":{"x":210,"y":213,"width":0,"height":29},"":{"x":216,"y":213,"width":0,"height":29},"":{"x":222,"y":213,"width":0,"height":29},"":{"x":228,"y":213,"width":0,"height":29},"":{"x":234,"y":213,"width":0,"height":29},"":{"x":240,"y":213,"width":0,"height":29},"А":{"x":246,"y":213,"width":15,"height":29},"Б":{"x":267,"y":213,"width":15,"height":29},"В":{"x":288,"y":213,"width":15,"height":29},"Г":{"x":3,"y":248,"width":15,"height":29},"Д":{"x":24,"y":248,"width":15,"height":29},"Е":{"x":45,"y":248,"width":15,"height":29},"Ж":{"x":66,"y":248,"width":15,"height":29},"З":{"x":87,"y":248,"width":15,"height":29},"И":{"x":108,"y":248,"width":15,"height":29},"Й":{"x":129,"y":248,"width":15,"height":29},"К":{"x":150,"y":248,"width":15,"height":29},"Л":{"x":171,"y":248,"width":15,"height":29},"М":{"x":192,"y":248,"width":15,"height":29},"Н":{"x":213,"y":248,"width":15,"height":29},"О":{"x":234,"y":248,"width":15,"height":29},"П":{"x":255,"y":248,"width":15,"height":29},"Р":{"x":276,"y":248,"width":15,"height":29},"С":{"x":297,"y":248,"width":15,"height":29},"Т":{"x":3,"y":283,"width":15,"height":29},"У":{"x":24,"y":283,"width":15,"height":29},"Ф":{"x":45,"y":283,"width":15,"height":29},"Х":{"x":66,"y":283,"width":15,"height":29},"Ц":{"x":87,"y":283,"width":15,"height":29},"Ч":{"x":108,"y":283,"width":15,"height":29},"Ш":{"x":129,"y":283,"width":15,"height":29},"Щ":{"x":150,"y":283,"width":15,"height":29},"Ъ":{"x":171,"y":283,"width":15,"height":29},"Ы":{"x":192,"y":283,"width":15,"height":29},"Ь":{"x":213,"y":283,"width":15,"height":29},"Э":{"x":234,"y":283,"width":15,"height":29},"Ю":{"x":255,"y":283,"width":15,"height":29},"Я":{"x":276,"y":283,"width":15,"height":29},"а":{"x":297,"y":283,"width":15,"height":29},"б":{"x":3,"y":318,"width":15,"height":29},"в":{"x":24,"y":318,"width":15,"height":29},"г":{"x":45,"y":318,"width":15,"height":29},"д":{"x":66,"y":318,"width":15,"height":29},"е":{"x":87,"y":318,"width":15,"height":29},"ж":{"x":108,"y":318,"width":15,"height":29},"з":{"x":129,"y":318,"width":15,"height":29},"и":{"x":150,"y":318,"width":15,"height":29},"й":{"x":171,"y":318,"width":15,"height":29},"к":{"x":192,"y":318,"width":15,"height":29},"л":{"x":213,"y":318,"width":15,"height":29},"м":{"x":234,"y":318,"width":15,"height":29},"н":{"x":255,"y":318,"width":15,"height":29},"о":{"x":276,"y":318,"width":15,"height":29},"п":{"x":297,"y":318,"width":15,"height":29},"р":{"x":3,"y":353,"width":15,"height":29},"с":{"x":24,"y":353,"width":15,"height":29},"т":{"x":45,"y":353,"width":15,"height":29},"у":{"x":66,"y":353,"width":15,"height":29},"ф":{"x":87,"y":353,"width":15,"height":29},"х":{"x":108,"y":353,"width":15,"height":29},"ц":{"x":129,"y":353,"width":15,"height":29},"ч":{"x":150,"y":353,"width":15,"height":29},"ш":{"x":171,"y":353,"width":15,"height":29},"щ":{"x":192,"y":353,"width":15,"height":29},"ъ":{"x":213,"y":353,"width":15,"height":29},"ы":{"x":234,"y":353,"width":15,"height":29},"ь":{"x":255,"y":353,"width":15,"height":29},"э":{"x":276,"y":353,"width":15,"height":29},"ю":{"x":297,"y":353,"width":15,"height":29},"я":{"x":3,"y":388,"width":15,"height":29},"ѐ":{"x":24,"y":388,"width":15,"height":29},"ё":{"x":45,"y":388,"width":15,"height":29},"ђ":{"x":66,"y":388,"width":15,"height":29},"ѓ":{"x":87,"y":388,"width":15,"height":29},"є":{"x":108,"y":388,"width":15,"height":29},"ѕ":{"x":129,"y":388,"width":15,"height":29},"і":{"x":150,"y":388,"width":15,"height":29},"ї":{"x":171,"y":388,"width":15,"height":29},"ј":{"x":192,"y":388,"width":15,"height":29},"љ":{"x":213,"y":388,"width":15,"height":29},"њ":{"x":234,"y":388,"width":15,"height":29},"ћ":{"x":255,"y":388,"width":15,"height":29}},"width":320,"height":420},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"5054_3316_7","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":12,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"id":"5751_4970_8"},{"spriteSheetId":"5054_3316_7","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robot2","width":32,"height":32,"groupName":"","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"id":"1933_7627_10"},{"spriteSheetId":"5054_3316_7","pos":{"x":0,"y":0},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":18,"name":"robot3","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["5001_7141_35"],"rigid":0,"groupName":"","angle":0,"alpha":1,"id":"9908_4747_34"}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"5054_3316_7","pos":{"x":568,"y":68},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":0,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"5751_4970_8","id":"1232_3049_16"},{"spriteSheetId":"5054_3316_7","pos":{"x":582,"y":27},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robots","width":32,"height":32,"groupName":"robot2","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"protoId":"1933_7627_10","id":"0336_6310_17"},{"spriteSheetId":"5054_3316_7","pos":{"x":568,"y":131},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":18,"name":"robot3","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["5001_7141_35"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"9908_4747_34","id":"5554_0436_36"},{"spriteSheetId":"5054_3316_7","pos":{"x":574,"y":189},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robot2","width":32,"height":32,"groupName":"","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"protoId":"1933_7627_10","id":"4342_4589_37"},{"spriteSheetId":"5054_3316_7","pos":{"x":569,"y":238},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":12,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"5751_4970_8","id":"4030_7373_38"},{"spriteSheetId":"5054_3316_7","pos":{"x":572,"y":298},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":18,"name":"robot3","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["5001_7141_35"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"9908_4747_34","id":"2755_0336_39"},{"spriteSheetId":"5054_3316_7","pos":{"x":580,"y":348},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":12,"name":"robot1","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":["8341_6957_9"],"rigid":0,"groupName":"","angle":0,"alpha":1,"protoId":"5751_4970_8","id":"5623_2099_40"},{"spriteSheetId":"5054_3316_7","pos":{"x":498,"y":21},"vel":{"x":0,"y":0},"scale":{"x":1,"y":1},"tileOffset":{"x":0,"y":0},"currFrameIndex":34,"name":"robot2","width":32,"height":32,"groupName":"","type":"gameObject","commonBehaviour":[],"frameAnimationIds":["9199_8749_11"],"rigid":0,"angle":0,"alpha":1,"protoId":"1933_7627_10","id":"8720_5782_41"}],"id":"2475_2336_5"}],"scene":[{"tileMap":{"_spriteSheet":{"resourcePath":"resources/spriteSheet/map.gif","name":"map","width":480,"height":480,"numOfFramesH":12,"numOfFramesV":12,"type":"spriteSheet","id":"4817_7543_59"},"spriteSheetId":"4817_7543_59","width":20,"height":20,"data":[[3,1,1,1,1,1,1,3,3,3,3,3,3,3,3,3],[3,2,2,2,2,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,2,2,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,2,2,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]],"_tilesInScreenX":16,"_tilesInScreenY":10},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"2475_2336_5","id":"5671_2386_6"}],"alpha":1,"colorBG":[255,255,255],"width":0,"height":0,"id":"3894_6567_4","useBG":1}],"particleSystem":[],"gameProps":{"width":640,"height":400,"scaleStrategy":"2","startSceneId":"3894_6567_4"}}
 	
 	var bundle = require('bundle');
 	bundle.prepare(data);

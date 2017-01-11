@@ -100,6 +100,22 @@
                 "id": {},
                 "type": "commonBehaviour",
                 "protoId": {}
+            },
+            {
+                "name": "draggable",
+                "description": "draggable behaviour with multitouch supporting",
+                "parameters": {},
+                "id": "6774_8244_45",
+                "type": "commonBehaviour",
+                "protoId": {}
+            },
+            {
+                "name": "stub",
+                "description": "Stub for commonBehaviour",
+                "parameters": {},
+                "id": "4540_8244_47",
+                "type": "commonBehaviour",
+                "protoId": {}
             }
         ],
         "currFrameIndex": 10,
@@ -107,9 +123,9 @@
             "3962_4839_358"
         ],
         "groupName": "",
-        "angle": 0,
+        "angle": 4.99,
         "angleVel": 0,
-        "alpha": "1",
+        "alpha": 0.3,
         "width": 30,
         "height": 30,
         "name": "tt",

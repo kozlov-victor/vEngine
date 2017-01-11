@@ -19,7 +19,7 @@ var _draw = function(ctx,self,x,y){
         x||0,
         y||0
     );
-    //ctx.fillRect(0,0,self.width,self.height,[1,0,0,1]);
+    ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
 };
 
 var _drawPattern = function(ctx,self){
@@ -32,7 +32,7 @@ var _drawPattern = function(ctx,self){
     ctx.lockRect(self.getRect());
 
     for (
-        var y = -offsetY;
+        var y = - offsetY;
         y<self.height + self._spriteSheet._frameHeight;
         y+=self._spriteSheet._frameHeight
     ) {

@@ -15,8 +15,12 @@ var IndexBuffer = function(gl){
         return buffer;
     };
 
-    this.bindBuffer = function(){
+    this.bind = function(){
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+    };
+
+    this.unbind = function(){
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     };
 
     this.getBufferLength = function(){

@@ -5,9 +5,7 @@ var ShaderProgram = require('shaderProgram');
 var VertexBuffer = require('vertexBuffer');
 var IndexBuffer = require('indexBuffer');
 
-var CommonTextureDrawer = function(gl){
-
-    var self = this;
+var MultiLineDrawer = function(gl){
 
     var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 
@@ -16,7 +14,7 @@ var CommonTextureDrawer = function(gl){
         program.bind();
     };
 
-    this.unbind  = function(){
+    this.unbind = function(){
         posIndexBuffer.unbind();
     };
 
@@ -31,7 +29,7 @@ var CommonTextureDrawer = function(gl){
     (function(){
         program = new ShaderProgram(gl, [
             bundle.shaders.basic['vertex.vert'],
-            bundle.shaders.texture['fragment.frag']
+            bundle.shaders.color['fragment.frag']
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
@@ -48,20 +46,8 @@ var CommonTextureDrawer = function(gl){
             0,1,2,2,1,3
         ]);
 
-        texVertexBuffer = new VertexBuffer(gl);
-        texVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
-        program.bindBuffer(texVertexBuffer,'a_texcoord');
-
-        self.bind();
-        self.setUniform('u_alpha',1);
-
     })();
 
 };
 
-module.exports = CommonTextureDrawer;
+module.exports = MultiLineDrawer;

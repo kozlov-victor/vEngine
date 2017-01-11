@@ -61,9 +61,9 @@ var GlContext = Class.extend(function(it){
     };
 
     var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-        // this matirx will convert from pixels to clip space
+        // this matrix will convert from pixels to clip space
         var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
-
+        //var projectionMatrix = mat4.make3DProjection(3,viewWidth,viewHeight, 10,100);
         // this matrix will scale our 1 unit quad
         // from 1 unit to dstWidth, dstHeight units
         var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
@@ -133,6 +133,7 @@ var GlContext = Class.extend(function(it){
         );
         textureDrawer.setUniform('u_alpha',alpha);
         textureDrawer.draw();
+        textureDrawer.unbind();
     };
 
     it.lockRect = function(rect) {
@@ -166,6 +167,7 @@ var GlContext = Class.extend(function(it){
         colorRectDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         colorRectDrawer.draw();
+        colorRectDrawer.unbind();
     };
 
     it.fillRect = fillRect;
@@ -318,3 +320,19 @@ module.exports = GlContext;
 
 
 
+//canvas.addEventListener('webglcontextlost', function(e) {
+//    // the default is to do nothing. Preventing the default
+//    // means allowing context to be restored
+//    e.preventDefault();
+//    var div = document.createElement("div");
+//    div.className = "contextlost";
+//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
+//    div.addEventListener('click', function() {
+//        window.location.reload();
+//    });
+//    document.body.appendChild(div);
+//});
+//canvas.addEventListener('webglcontextrestored', function() {
+//    // just reload the page. Easiest.
+//    window.location.reload();
+//});

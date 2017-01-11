@@ -5,7 +5,6 @@ var modules = {}, require = function(name){
         console.trace('can not found module with name ' + (name || '(name not specified)'));
         throw 'can not found module with name ' + (name || '(name not specified)');
     }
-
     if (!moduleObj.inited) initModuleObj(moduleObj);
     return moduleObj.inited.exports;
     function initModuleObj(moduleObj) {
@@ -615,7 +614,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","vertex.vert":"attribute vec4 a_position;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"}};
+	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"},"colorRect":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColorRect":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -1560,6 +1559,19 @@ modules['mat4'] =
 	    ];
 	};
 	
+	exports.make3DProjection = function(fieldOfViewInRadians, width, height, near, far){
+	    var aspect = width / height;
+	    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+	    var rangeInv = 1.0 / (near - far);
+	
+	    return [
+	        f / aspect, 0, 0, 0,
+	        0, f, 0, 0,
+	        0, 0, (near + far) * rangeInv, -1,
+	        0, 0, near * far * rangeInv * 2, 0
+	    ];
+	};
+	
 	exports.makeTranslation = function(tx, ty, tz) {
 	    return [
 	        1,  0,  0,  0,
@@ -2145,13 +2157,17 @@ modules['baseGameObject'] =
 	    type:'baseGameObject',
 	    groupName:'',
 	    _spriteSheet:null,
-	    pos:null,
-	    scale:null,
-	    angle:0,
 	    fixedToCamera:false,
 	    _layer:null,
 	    _moveable:null,
+	
+	    pos:null,
+	    scale:null,
+	    rigid:false,
+	    angle:0,
+	    angleVel:0,
 	    vel:null,
+	
 	    getRect: function(){
 	        return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
 	    },
@@ -2294,6 +2310,7 @@ modules['moveable'] =
 	        var deltaY = _gameObject.vel.y * delta / 1000;
 	        var posX = _gameObject.pos.x+deltaX;
 	        var posY = _gameObject.pos.y+deltaY;
+	        if (_gameObject.angleVel) _gameObject.angle += _gameObject.angleVel * delta / 1000;
 	        collider.manage(_gameObject,posX,posY);
 	    }
 	});
@@ -2339,6 +2356,7 @@ modules['renderable'] =
 	        ctx.translate(this.pos.x + this.width /2 + dx,this.pos.y + this.height/2 + dy);
 	        ctx.scale(this.scale.x,this.scale.y);
 	        ctx.rotateZ(this.angle);
+	        //ctx.rotateY(a);
 	        ctx.translate(-this.width /2, -this.height/2);
 	        ctx.setAlpha(this.alpha);
 	    };
@@ -2399,9 +2417,9 @@ modules['commonBehaviour'] =
 	    type:'commonBehaviour',
 	    name:'',
 	    description:'',
-	    parameters:[],
+	    parameters:null,
 	    construct: function(){
-	
+	        if (!this.parameters) this.parameters = [];
 	    }
 	});
 	
@@ -2457,7 +2475,7 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
-	
+	var a = 0;
 	var _draw = function(ctx,self,x,y){
 	    ctx.drawImage(
 	        resourceCache.get(self._spriteSheet.resourcePath),
@@ -2468,6 +2486,7 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
+	    ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -2480,7 +2499,7 @@ modules['gameObject'] =
 	    ctx.lockRect(self.getRect());
 	
 	    for (
-	        var y = -offsetY;
+	        var y = - offsetY;
 	        y<self.height + self._spriteSheet._frameHeight;
 	        y+=self._spriteSheet._frameHeight
 	    ) {
@@ -2516,7 +2535,6 @@ modules['gameObject'] =
 	    _frameAnimations: null,
 	    frameAnimationIds:[],
 	    _currFrameAnimation:null,
-	    rigid:true,
 	    _timeCreated:null,
 	    tileOffset: null,
 	    tileRepeat:false,
@@ -2526,7 +2544,7 @@ modules['gameObject'] =
 	        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
 	        self._frameAnimations = new collections.List();
 	        if (!self.spriteSheetId) {
-	            return;
+	            throw 'spriteSheetId not specified for gameObject'+' with name '+ self.name;
 	        }
 	        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
 	        if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
@@ -2534,7 +2552,8 @@ modules['gameObject'] =
 	        self._frameAnimations.clear();
 	        self.frameAnimationIds.forEach(function(id){
 	            var a = bundle.frameAnimationList.find({id: id});
-	            a = a.clone(exports.FrameAnimation);
+	            if (!a) throw 'can not found FrameAnimation with id ' + id + ' for gameObject with name '+ self.name;
+	            a = a.clone();
 	            a._gameObject = self;
 	            self._frameAnimations.add(a);
 	        });
@@ -2679,7 +2698,6 @@ modules['particleSystem'] =
 	        for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
 	            var particle = this._gameObject.clone();
 	            var angle = r(this.particleAngle);
-	            console.log(angle);
 	            var vel = r(this.particleVelocity);
 	            particle.vel.x = vel*Math.cos(angle);
 	            particle.vel.y = vel*Math.sin(angle);
@@ -2943,7 +2961,7 @@ modules['font'] =
 	    fontFamily:'Monospace',
 	    fontContext:null,
 	    construct: function(){
-	        this.fontColor = [0,0,0]
+	        if (!this.fontColor) this.fontColor = [0,0,0]
 	    }
 	});
 	
@@ -3538,69 +3556,14 @@ modules['scaleManager'] =
 	
 	
 }};
-modules['frameBuffer'] =
-    {code: function(module){
-    var exports = module.exports;
-    	
-	var FrameBuffer = function(gl,width,height){
-	
-	    var glTexture;
-	    var glRenderBuffer;
-	    var glFrameBuffer;
-	
-	    this.bind = function(){
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.viewport(0, 0, width,height);
-	    };
-	
-	    this.unbind = function(){
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	    };
-	
-	    this.getGlTexture = function(){
-	        return glTexture;
-	    };
-	
-	
-	    (function(){
-	
-	        //1. Init Color Texture
-	        glTexture = gl.createTexture();
-	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-	        //2. Init Render Buffer
-	        glRenderBuffer = gl.createRenderbuffer();
-	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
-	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-	        //3. Init Frame Buffer
-	        glFrameBuffer = gl.createFramebuffer();
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
-	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
-	        //4. Clean up
-	        gl.bindTexture(gl.TEXTURE_2D, null);
-	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	
-	
-	    })();
-	
-	};
-	
-	module.exports = FrameBuffer;
-}};
 modules['glContext'] =
     {code: function(module){
     var exports = module.exports;
     	
 	var mat4 = require('mat4');
 	var utils = require('utils');
-	var ShaderProgram = require('shaderProgram');
-	var VertexBuffer = require('vertexBuffer');
+	var ColorRectDrawer = require('colorRectDrawer');
+	var TextureDrawer = require('textureDrawer');
 	var Texture = require('texture');
 	var MatrixStack = require('matrixStack');
 	var FrameBuffer = require('frameBuffer');
@@ -3612,7 +3575,10 @@ modules['glContext'] =
 	var getCtx = function(el){
 	    if (!el) el = document.createElement('canvas');
 	    if (!el) return null;
-	    return el.getContext("webgl",{ alpha: false });
+	    return (
+	        el.getContext("webgl",{alpha: false}) ||
+	        el.getContext('experimental-webgl',{alpha: false})
+	    );
 	};
 	
 	var GlContext = Class.extend(function(it){
@@ -3620,53 +3586,20 @@ modules['glContext'] =
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
 	    var alpha = 1;
-	    var commonShaderPrg, colorShaderPrg;
-	    var posVertexBuffer;
-	    var texVertexBuffer;
+	    var textureDrawer, colorRectDrawer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
 	    var colorBGDefault = [255,255,255];
 	    var scene = null;
+	    var SCENE_DEPTH = 1;
 	
 	    it.init = function(canvas){
 	
 	        gameProps = bundle.gameProps;
 	        gl = getCtx(canvas);
-	        commonShaderPrg = new ShaderProgram(gl, [
-	            bundle.shaders.basic['vertex.vert'],
-	            bundle.shaders.basic['fragment.frag']
-	        ]);
-	        colorShaderPrg = new ShaderProgram(gl, [
-	            bundle.shaders.basic['vertex.vert'],
-	            bundle.shaders.color['fragment.frag']
-	        ]);
-	        commonShaderPrg.bind();
-	        commonShaderPrg.setUniform('u_alpha',1);
-	        // commonShaderPrg.setUniform('u_rgb',[0.5,1,1,1]);
-	
-	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 0,
-	            0, 1,
-	            1, 1
-	        ],gl.FLOAT,2);
-	        commonShaderPrg.bindBuffer(posVertexBuffer,'a_position');
-	
-	        texVertexBuffer = new VertexBuffer(gl);
-	        texVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 0,
-	            0, 1,
-	            1, 1
-	        ],gl.FLOAT,2);
-	        commonShaderPrg.bindBuffer(texVertexBuffer,'a_texcoord');
-	
+	        textureDrawer = new TextureDrawer(gl);
+	        colorRectDrawer = new ColorRectDrawer(gl);
 	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -3689,8 +3622,8 @@ modules['glContext'] =
 	    };
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-	        // this matirx will convert from pixels to clip space
-	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, 1);
+	        // this matrix will convert from pixels to clip space
+	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
 	
 	        // this matrix will scale our 1 unit quad
 	        // from 1 unit to dstWidth, dstHeight units
@@ -3720,13 +3653,19 @@ modules['glContext'] =
 	
 	    var currTex = null;
 	
-	    var _draw = function(texture,
-	                               srcX, srcY, srcWidth, srcHeight,
-	                               dstX, dstY){
+	
+	    it.drawImage = function(
+	        texture,
+	        srcX, srcY, srcWidth, srcHeight,
+	        dstX, dstY
+	    ) {
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendColor(0, 0.5, 1, 1);
+	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
-	
 	
 	        if (dstX === undefined) {
 	            dstX = srcX;
@@ -3746,30 +3685,15 @@ modules['glContext'] =
 	            currTex = texture;
 	        }
 	
-	        commonShaderPrg.bind();
-	        commonShaderPrg.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	        commonShaderPrg.setUniform("u_matrix",makePositionMatrix(
+	        textureDrawer.bind();
+	        textureDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
+	        textureDrawer.setUniform("u_matrix",makePositionMatrix(
 	                dstX,dstY,srcWidth,srcHeight,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
-	        commonShaderPrg.setUniform('u_alpha',alpha);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
-	    };
-	
-	    it.drawImage = function(
-	        texture,
-	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY
-	    ) {
-	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        //gl.blendColor(0, 0.5, 1, 1);
-	        //gl.blendFunc(gl.ONE, gl.ONE);
-	
-	        _draw(texture,
-	            srcX, srcY, srcWidth, srcHeight,
-	            dstX, dstY);
+	        textureDrawer.setUniform('u_alpha',alpha);
+	        textureDrawer.draw();
 	    };
 	
 	    it.lockRect = function(rect) {
@@ -3787,7 +3711,6 @@ modules['glContext'] =
 	    };
 	
 	    it.clear = function() {
-	        //gl.colorMask(false, false, false, true);
 	        var col = scene.useBG?scene.colorBG:colorBGDefault;
 	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
 	        gl.clear(gl.COLOR_BUFFER_BIT);
@@ -3795,16 +3718,15 @@ modules['glContext'] =
 	
 	    var fillRect = function (x, y, w, h, color) {
 	
-	        colorShaderPrg.bind();
-	        colorShaderPrg.setUniform("u_matrix",makePositionMatrix(
+	        colorRectDrawer.bind();
+	        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
 	                x,y,w,h,
 	                gameProps.width,gameProps.height,1,1
 	            )
 	        );
-	        colorShaderPrg.setUniform("u_rgba",color);
+	        colorRectDrawer.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
-	
+	        colorRectDrawer.draw();
 	    };
 	
 	    it.fillRect = fillRect;
@@ -3872,10 +3794,10 @@ modules['glContext'] =
 	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
 	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
 	
-	        commonShaderPrg.bind();
+	        textureDrawer.bind();
 	
 	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            commonShaderPrg.setUniform('u_matrix',
+	            textureDrawer.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    gameProps.globalScale.left,gameProps.globalScale.top,
 	                    gameProps.width, gameProps.height,
@@ -3884,7 +3806,7 @@ modules['glContext'] =
 	                )
 	            );
 	        } else {
-	            commonShaderPrg.setUniform('u_matrix',
+	            textureDrawer.setUniform('u_matrix',
 	                makePositionMatrix(
 	                    0,0,
 	                    gameProps.width, gameProps.height,
@@ -3894,16 +3816,16 @@ modules['glContext'] =
 	            );
 	        }
 	
-	        commonShaderPrg.setUniform('u_textureMatrix',
+	        textureDrawer.setUniform('u_textureMatrix',
 	            makeTextureMatrix(
 	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
 	                gameProps.canvasWidth,gameProps.canvasHeight
 	            )
 	        );
-	        commonShaderPrg.setUniform('u_alpha',1);
+	        textureDrawer.setUniform('u_alpha',1);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.drawArrays(gl.TRIANGLES, 0, 6);
+	        textureDrawer.draw();
 	        this.restore();
 	    };
 	
@@ -3956,6 +3878,97 @@ modules['glContext'] =
 	
 	
 	
+}};
+modules['frameBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var FrameBuffer = function(gl,width,height){
+	
+	    var glTexture;
+	    var glRenderBuffer;
+	    var glFrameBuffer;
+	
+	    this.bind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.viewport(0, 0, width,height);
+	    };
+	
+	    this.unbind = function(){
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	    };
+	
+	    this.getGlTexture = function(){
+	        return glTexture;
+	    };
+	
+	
+	    (function(){
+	
+	        //1. Init Color Texture
+	        glTexture = gl.createTexture();
+	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        //2. Init Render Buffer
+	        glRenderBuffer = gl.createRenderbuffer();
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
+	        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+	        //3. Init Frame Buffer
+	        glFrameBuffer = gl.createFramebuffer();
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
+	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
+	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
+	        //4. Clean up
+	        gl.bindTexture(gl.TEXTURE_2D, null);
+	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+	
+	
+	    })();
+	
+	};
+	
+	module.exports = FrameBuffer;
+}};
+modules['indexBuffer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	
+	var IndexBuffer = function(gl){
+	    var buffer = gl.createBuffer();
+	    var dataLength;
+	
+	    this.setData = function(bufferData){
+	        dataLength = bufferData.length;
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	    this.bindBuffer = function(){
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	    };
+	
+	    this.getBufferLength = function(){
+	       return dataLength;
+	    };
+	
+	    this.getGlBuffer = function(){
+	        return buffer;
+	    };
+	
+	};
+	
+	module.exports = IndexBuffer;
 }};
 modules['matrixStack'] =
     {code: function(module){
@@ -4280,6 +4293,7 @@ modules['texture'] =
 	        // Fill the texture with a 1x1 blue pixel.
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
 	            new Uint8Array([0, 0, 255, 255]));
+	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	    })();
 	
 	};
@@ -4295,7 +4309,7 @@ modules['vertexBuffer'] =
 	    var buffer = gl.createBuffer();
 	    var bufferItemSize, bufferItemType;
 	
-	    this.setData = function(bufferData,itemType, itemSize){
+	    this.setData = function(bufferData, itemType, itemSize){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -4307,9 +4321,10 @@ modules['vertexBuffer'] =
 	        return buffer;
 	    };
 	
+	    // todo remove
 	    this.bind = function(program, uniformLocationName){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName); // todo cache locations
+	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
@@ -4317,8 +4332,8 @@ modules['vertexBuffer'] =
 	            bufferItemType,
 	            false,  // if the content is normalized vectors
 	            0,  // number of bytes to skip in between elements
-	            0
-	        ); // offsets to the first element
+	            0   // offsets to the first element
+	        );
 	    };
 	
 	
@@ -4337,6 +4352,197 @@ modules['vertexBuffer'] =
 	};
 	
 	module.exports = VertexBuffer;
+}};
+modules['colorRectDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
+	
+	var ColorRectDrawer = function(gl){
+	
+	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	
+	    this.bind = function(){
+	        program.bind();
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.colorRect['fragment.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ],gl.FLOAT,2);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	
+	        posIndexBuffer = new IndexBuffer(gl);
+	        posIndexBuffer.setData([
+	            0,1,2,2,1,3
+	        ]);
+	        posIndexBuffer.bindBuffer();
+	
+	    })();
+	
+	};
+	
+	module.exports = ColorRectDrawer;
+}};
+modules['multiColorRectDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
+	
+	var MultiColorRectDrawer = function(gl){
+	
+	    var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
+	
+	    this.bind = function(){
+	        vertexColorBuffer.setData([
+	            Math.random(), 0, 0, 0.5,
+	            0, 1, Math.random(), 1,
+	            Math.random(), Math.random(), 1, 1,
+	            Math.random(), Math.random(), Math.random(), Math.random()
+	        ],gl.FLOAT,4);
+	        program.bindBuffer(vertexColorBuffer,'a_color');
+	        program.bind();
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.multiColorRect['fragment.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ],gl.FLOAT,2);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	
+	
+	        vertexColorBuffer = new VertexBuffer(gl);
+	        vertexColorBuffer.setData([
+	            1, 0, 0, 0.5,
+	            0, 1, 1, 1,
+	            1, 1, 1, 1,
+	            1, 1, 1, 1
+	        ],gl.FLOAT,4);
+	        program.bindBuffer(vertexColorBuffer,'a_color');
+	
+	        posIndexBuffer = new IndexBuffer(gl);
+	        posIndexBuffer.setData([
+	            0,1,2,2,1,3
+	        ]);
+	        posIndexBuffer.bindBuffer();
+	
+	    })();
+	
+	};
+	
+	module.exports = MultiColorRectDrawer;
+}};
+modules['textureDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
+	
+	var CommonTextureDrawer = function(gl){
+	
+	    var self = this;
+	
+	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	
+	    this.bind = function(){
+	        program.bind();
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.texture['fragment.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posVertexBuffer.setData([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ],gl.FLOAT,2);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	
+	        posIndexBuffer = new IndexBuffer(gl);
+	        posIndexBuffer.setData([
+	            0,1,2,2,1,3
+	        ]);
+	        posIndexBuffer.bindBuffer();
+	
+	        texVertexBuffer = new VertexBuffer(gl);
+	        texVertexBuffer.setData([
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ],gl.FLOAT,2);
+	        program.bindBuffer(texVertexBuffer,'a_texcoord');
+	
+	        self.bind();
+	        self.setUniform('u_alpha',1);
+	
+	    })();
+	
+	};
+	
+	module.exports = CommonTextureDrawer;
 }};
 modules['tween'] =
     {code: function(module){
