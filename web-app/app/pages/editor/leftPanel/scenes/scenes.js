@@ -1,4 +1,6 @@
 var resource = require('providers/resource');
+var sceneDialog = require('../../dialogs/sceneDialog/sceneDialog');
+var Scene = _require('scene');
 
 module.exports = Vue.component('app-scenes', {
     props: [],
@@ -14,10 +16,12 @@ module.exports = Vue.component('app-scenes', {
     },
     methods: {
         createScene: function(){
-            console.log('createScene invoked');
+            this.editData.currSceneInEdit = new Scene(new Scene().toJSON());
+            sceneDialog.instance.open();
         },
         editScene: function(scene){
-            console.log('editScene invoked',scene);
+            this.editData.currSceneInEdit = scene.clone();
+            sceneDialog.instance.open();
         },
         deleteScene: function(scene){
             console.log('deleteScene invoked',scene);

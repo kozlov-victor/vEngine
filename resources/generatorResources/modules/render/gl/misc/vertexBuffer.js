@@ -2,6 +2,7 @@
 var VertexBuffer = function(gl){
     var buffer = gl.createBuffer();
     var bufferItemSize, bufferItemType;
+    var dataLength;
 
     this.setData = function(bufferData, itemType, itemSize){
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -9,6 +10,7 @@ var VertexBuffer = function(gl){
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         bufferItemSize = itemSize;
         bufferItemType = itemType;
+        dataLength = bufferData.length;
     };
 
     this.getGlBuffer = function(){
@@ -25,7 +27,11 @@ var VertexBuffer = function(gl){
 
     this.getItemType = function(){
         return bufferItemType;
-    }
+    };
+
+    this.getBufferLength = function(){
+        return dataLength;
+    };
 
 };
 

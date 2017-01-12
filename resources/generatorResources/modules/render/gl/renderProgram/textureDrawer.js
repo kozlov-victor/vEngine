@@ -12,8 +12,9 @@ var CommonTextureDrawer = function(gl){
     var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 
     this.bind = function(){
-        posIndexBuffer.bind();
         program.bind();
+        program.bindBuffer(posVertexBuffer,'a_position');
+        posIndexBuffer.bind();
     };
 
     this.unbind  = function(){

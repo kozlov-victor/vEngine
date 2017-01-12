@@ -3,6 +3,7 @@ var mat4 = require('mat4');
 var utils = require('utils');
 var ColorRectDrawer = require('colorRectDrawer');
 var TextureDrawer = require('textureDrawer');
+var PolyLineDrawer = require('polyLineDrawer');
 var Texture = require('texture');
 var MatrixStack = require('matrixStack');
 var FrameBuffer = require('frameBuffer');
@@ -25,7 +26,7 @@ var GlContext = Class.extend(function(it){
     var gl;
     var mScaleX = 1, mScaleY = 1;
     var alpha = 1;
-    var textureDrawer, colorRectDrawer;
+    var textureDrawer, colorRectDrawer, polyLineDrawer;
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
@@ -37,8 +38,11 @@ var GlContext = Class.extend(function(it){
 
         gameProps = bundle.gameProps;
         gl = getCtx(canvas);
+
         textureDrawer = new TextureDrawer(gl);
         colorRectDrawer = new ColorRectDrawer(gl);
+        polyLineDrawer = new PolyLineDrawer(gl);
+
         frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -181,6 +185,19 @@ var GlContext = Class.extend(function(it){
 
     it.point = function (x, y, color) {
         this.fillRect(x, y, 1, 1, color);
+    };
+
+    it.polyLine = function(vertexArr,color) {
+        polyLineDrawer.bind(vertexArr);
+        polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
+                0,0,1,1,
+                gameProps.width,gameProps.height,1,1
+            )
+        );
+        polyLineDrawer.setUniform("u_rgba",color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        polyLineDrawer.draw();
+        polyLineDrawer.unbind();
     };
 
     it.save = function() {

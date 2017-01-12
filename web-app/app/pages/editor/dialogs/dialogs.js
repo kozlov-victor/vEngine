@@ -16,7 +16,8 @@ module.exports = Vue.component('app-dialogs', {
         appSpriteSheetDialog: require('./spriteSheetDialog/spriteSheetDialog').component,
         appGameObjectDialog: require('./gameObjectDialog/gameObjectDialog').component,
         appFrameAnimationDialog: require('./frameAnimationDialog/frameAnimationDialog').component,
-        appCommonBehaviourDialog: require('./commonBehaviourDialog/commonBehaviourDialog').component
+        appCommonBehaviourDialog: require('./commonBehaviourDialog/commonBehaviourDialog').component,
+        appSceneDialog: require('./sceneDialog/sceneDialog').component
     },
     methods: {
 

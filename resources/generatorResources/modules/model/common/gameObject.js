@@ -19,7 +19,8 @@ var _draw = function(ctx,self,x,y){
         x||0,
         y||0
     );
-    ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
+    //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
+    ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
 };
 
 var _drawPattern = function(ctx,self){

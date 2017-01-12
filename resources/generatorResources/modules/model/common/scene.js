@@ -46,6 +46,10 @@ var Scene = Renderable.extend({
             data:[]
         };
         if (self.tileMap.spriteSheetId) {
+            //<code>{{#if opts.inEditor}}
+            //<code>//editor mode
+            //<code>return;
+            //<code>{{/if}}
             self.tileMap._spriteSheet = bundle.spriteSheetList.find({id:self.tileMap.spriteSheetId});
             self.tileMap._tilesInScreenX = ~~(bundle.gameProps.width/self.tileMap._spriteSheet._frameWidth);
             self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
