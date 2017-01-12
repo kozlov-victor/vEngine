@@ -2,6 +2,24 @@
         v-on:close="close()"
         v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
 
-    s d
+    <div class="withPadding">
+        <div class="table">
+            <div class="row">
+                <div class="cell">
+                    {{i18n.name}}
+                </div>
+                <div class="cell">
+                    <input
+                            required
+                            v-model="editData.currSceneInEdit.name"/>
+                </div>
+            </div>
+        </div>
+        <button
+                :disabled="!form.valid()"
+                ng-click="createOrEditScene(editData.currSceneInEdit)">
+            {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}
+        </button>
+    </div>
 
 </app-modal>

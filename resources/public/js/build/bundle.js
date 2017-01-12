@@ -900,7 +900,7 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
     }
 });
 },{"./particleSystemPreviewDialog.html":31,"providers/abstractDialog":63,"providers/editData":65,"providers/i18n":67,"providers/resource":68,"providers/utils":70}],33:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    s d\r\n\r\n</app-modal>";
+module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"withPadding\">\r\n        <div class=\"table\">\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.name}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            required\r\n                            v-model=\"editData.currSceneInEdit.name\"/>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <button\r\n                :disabled=\"!form.valid()\"\r\n                ng-click=\"createOrEditScene(editData.currSceneInEdit)\">\r\n            {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n\r\n</app-modal>";
 
 },{}],34:[function(require,module,exports){
 
@@ -1351,7 +1351,7 @@ module.exports = Vue.component('app-scenes', {
     },
     methods: {
         createScene: function(){
-            this.editData.currSceneInEdit = new Scene(new Scene().clone());
+            this.editData.currSceneInEdit = new Scene(new Scene().toJSON());
             sceneDialog.instance.open();
         },
         editScene: function(scene){
