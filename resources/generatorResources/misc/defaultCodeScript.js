@@ -1,5 +1,5 @@
 
-exports.onShow = function(){
+exports.onShow = function() {
 
 };
 

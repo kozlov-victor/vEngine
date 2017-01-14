@@ -44,6 +44,7 @@ var setUpRotes = function(app){
 
 var handleErrors = function(app){
     app.use(function(err, req, res, next) {
+        if (err) console.error(err);
         res.status(500).send(
             'error 500: ' + err.message
         );

@@ -3,11 +3,11 @@ var Class = require('class');
 
 var isPropNotFit = function(key,val){
     if (!key) return true;
-    if (key.indexOf('$$')==0) return true;
     if (key.indexOf('_')==0) return true;
     if (val && val.call) return true;
     if (typeof val == 'string') return false;
     if (typeof val == 'number') return false;
+    if (typeof val == 'boolean') return false;
     if (!val) return true;
 };
 
