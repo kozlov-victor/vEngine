@@ -1172,11 +1172,11 @@
             "height": 611
         },
         "type": "font",
-        "fontColor": [
-            0,
-            0,
-            0
-        ],
+        "fontColor": {
+            "r": 0,
+            "g": "81",
+            "b": 0
+        },
         "fontSize": 25,
         "fontFamily": "Andalus",
         "resourcePath": "resources/font/default.png",
@@ -1184,11 +1184,11 @@
         "_emitter": {}
     },
     {
-        "fontColor": [
-            35,
-            20,
-            73
-        ],
+        "fontColor": {
+            "r": 70,
+            "g": 30,
+            "b": 70
+        },
         "fontFamily": "Impact",
         "fontSize": 35,
         "name": "impact",

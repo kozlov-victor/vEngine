@@ -12,12 +12,15 @@ var cache = require('resourceCache');
 var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 var Class = require('class');
 
+
 var getCtx = function(el){
     if (!el) el = document.createElement('canvas');
     if (!el) return null;
     return (
         el.getContext("webgl",{alpha: false}) ||
-        el.getContext('experimental-webgl',{alpha: false})
+        el.getContext('experimental-webgl',{alpha: false}) ||
+        el.getContext('webkit-3d',{alpha: false}) ||
+        el.getContext('moz-webgl',{alpha: false})
     );
 };
 
@@ -103,9 +106,8 @@ var GlContext = Class.extend(function(it){
         dstX, dstY
     ) {
 
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
-        //gl.blendFunc(gl.ONE, gl.ONE);
 
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;

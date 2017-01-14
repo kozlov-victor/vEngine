@@ -655,7 +655,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"},"colorRect":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColorRect":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
+	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColor":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -1500,6 +1500,9 @@ modules['collections'] =
 	        });
 	        return success?i:-1;
 	    };
+	    this.has = function(obj){
+	        return this.indexOf(obj)>-1;
+	    };
 	    this.remove = function (obj){
 	        if (!obj) return;
 	        var index = self.indexOf(obj);
@@ -1597,6 +1600,22 @@ modules['mat4'] =
 	        0, -2 / height, 0, 0,
 	        0, 0, 2 / depth, 0,
 	        -1, 1, 0, 1
+	    ];
+	};
+	
+	
+	
+	
+	exports.make3DProjection = function(fieldOfViewInRadians, width, height, near, far){
+	    var aspect = width / height;
+	    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+	    var rangeInv = 1.0 / (near - far);
+	
+	    return [
+	        f / aspect, 0, 0, 0,
+	        0, f, 0, 0,
+	        0, 0, (near + far) * rangeInv, -1,
+	        0, 0, near * far * rangeInv * 2, 0
 	    ];
 	};
 	
@@ -2514,7 +2533,8 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
-	    //ctx.fillRect(0,0,self.width,self.height,[1,0,0,1]);
+	    //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
+	    ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -2571,12 +2591,12 @@ modules['gameObject'] =
 	        self._super();
 	        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
 	        self._frameAnimations = new collections.List();
-	        if (!self.spriteSheetId) {
-	            throw 'spriteSheetId not specified for gameObject'+' with name '+ self.name;
+	        if (self.spriteSheetId) {
+	            self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
+	            if (!self._spriteSheet)
+	                throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
+	            self.setFrameIndex(self.currFrameIndex);
 	        }
-	        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
-	        if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
-	        self.setFrameIndex(self.currFrameIndex);
 	        self._frameAnimations.clear();
 	        self.frameAnimationIds.forEach(function(id){
 	            var a = bundle.frameAnimationList.find({id: id});
@@ -3592,6 +3612,7 @@ modules['glContext'] =
 	var utils = require('utils');
 	var ColorRectDrawer = require('colorRectDrawer');
 	var TextureDrawer = require('textureDrawer');
+	var PolyLineDrawer = require('polyLineDrawer');
 	var Texture = require('texture');
 	var MatrixStack = require('matrixStack');
 	var FrameBuffer = require('frameBuffer');
@@ -3605,7 +3626,9 @@ modules['glContext'] =
 	    if (!el) return null;
 	    return (
 	        el.getContext("webgl",{alpha: false}) ||
-	        el.getContext('experimental-webgl',{alpha: false})
+	        el.getContext('experimental-webgl',{alpha: false}) ||
+	        el.getContext('webkit-3d',{alpha: false}) ||
+	        el.getContext('moz-webgl',{alpha: false})
 	    );
 	};
 	
@@ -3614,7 +3637,7 @@ modules['glContext'] =
 	    var gl;
 	    var mScaleX = 1, mScaleY = 1;
 	    var alpha = 1;
-	    var textureDrawer, colorRectDrawer;
+	    var textureDrawer, colorRectDrawer, polyLineDrawer;
 	    var matrixStack = new MatrixStack();
 	    var frameBuffer;
 	    var gameProps;
@@ -3626,8 +3649,11 @@ modules['glContext'] =
 	
 	        gameProps = bundle.gameProps;
 	        gl = getCtx(canvas);
+	
 	        textureDrawer = new TextureDrawer(gl);
 	        colorRectDrawer = new ColorRectDrawer(gl);
+	        polyLineDrawer = new PolyLineDrawer(gl);
+	
 	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 	
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -3650,9 +3676,9 @@ modules['glContext'] =
 	    };
 	
 	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-	        // this matirx will convert from pixels to clip space
+	        // this matrix will convert from pixels to clip space
 	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
-	
+	        //var projectionMatrix = mat4.make3DProjection(3,viewWidth,viewHeight, 10,100);
 	        // this matrix will scale our 1 unit quad
 	        // from 1 unit to dstWidth, dstHeight units
 	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
@@ -3688,7 +3714,7 @@ modules['glContext'] =
 	        dstX, dstY
 	    ) {
 	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 	        //gl.blendColor(0, 0.5, 1, 1);
 	        //gl.blendFunc(gl.ONE, gl.ONE);
 	
@@ -3722,6 +3748,7 @@ modules['glContext'] =
 	        );
 	        textureDrawer.setUniform('u_alpha',alpha);
 	        textureDrawer.draw();
+	        textureDrawer.unbind();
 	    };
 	
 	    it.lockRect = function(rect) {
@@ -3755,6 +3782,7 @@ modules['glContext'] =
 	        colorRectDrawer.setUniform("u_rgba",color);
 	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 	        colorRectDrawer.draw();
+	        colorRectDrawer.unbind();
 	    };
 	
 	    it.fillRect = fillRect;
@@ -3768,6 +3796,19 @@ modules['glContext'] =
 	
 	    it.point = function (x, y, color) {
 	        this.fillRect(x, y, 1, 1, color);
+	    };
+	
+	    it.polyLine = function(vertexArr,color) {
+	        polyLineDrawer.bind(vertexArr);
+	        polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
+	                0,0,1,1,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        polyLineDrawer.setUniform("u_rgba",color);
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        polyLineDrawer.draw();
+	        polyLineDrawer.unbind();
 	    };
 	
 	    it.save = function() {
@@ -3905,7 +3946,22 @@ modules['glContext'] =
 	
 	
 	
-	
+	//canvas.addEventListener('webglcontextlost', function(e) {
+	//    // the default is to do nothing. Preventing the default
+	//    // means allowing context to be restored
+	//    e.preventDefault();
+	//    var div = document.createElement("div");
+	//    div.className = "contextlost";
+	//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
+	//    div.addEventListener('click', function() {
+	//        window.location.reload();
+	//    });
+	//    document.body.appendChild(div);
+	//});
+	//canvas.addEventListener('webglcontextrestored', function() {
+	//    // just reload the page. Easiest.
+	//    window.location.reload();
+	//});
 }};
 modules['frameBuffer'] =
     {code: function(module){
@@ -3982,8 +4038,12 @@ modules['indexBuffer'] =
 	        return buffer;
 	    };
 	
-	    this.bindBuffer = function(){
+	    this.bind = function(){
 	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+	    };
+	
+	    this.unbind = function(){
+	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 	    };
 	
 	    this.getBufferLength = function(){
@@ -4286,6 +4346,7 @@ modules['texture'] =
 	    this.apply = function(){
 	        size = {width:img.width,height:img.height};
 	        this.bind();
+	        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
 	        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
 	        // Check if the image is a power of 2 in both dimensions.
@@ -4336,6 +4397,7 @@ modules['vertexBuffer'] =
 	var VertexBuffer = function(gl){
 	    var buffer = gl.createBuffer();
 	    var bufferItemSize, bufferItemType;
+	    var dataLength;
 	
 	    this.setData = function(bufferData, itemType, itemSize){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -4343,27 +4405,12 @@ modules['vertexBuffer'] =
 	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	        bufferItemSize = itemSize;
 	        bufferItemType = itemType;
+	        dataLength = bufferData.length;
 	    };
 	
 	    this.getGlBuffer = function(){
 	        return buffer;
 	    };
-	
-	    // todo remove
-	    this.bind = function(program, uniformLocationName){
-	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
-	        gl.enableVertexAttribArray(uniformLocation);
-	        gl.vertexAttribPointer(
-	            uniformLocation,
-	            bufferItemSize,
-	            bufferItemType,
-	            false,  // if the content is normalized vectors
-	            0,  // number of bytes to skip in between elements
-	            0   // offsets to the first element
-	        );
-	    };
-	
 	
 	    this.getGlBuffer = function(){
 	        return buffer;
@@ -4375,7 +4422,11 @@ modules['vertexBuffer'] =
 	
 	    this.getItemType = function(){
 	        return bufferItemType;
-	    }
+	    };
+	
+	    this.getBufferLength = function(){
+	        return dataLength;
+	    };
 	
 	};
 	
@@ -4396,7 +4447,12 @@ modules['colorRectDrawer'] =
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
 	
 	    this.bind = function(){
+	        posIndexBuffer.bind();
 	        program.bind();
+	    };
+	
+	    this.unbind = function(){
+	        posIndexBuffer.unbind();
 	    };
 	
 	    this.setUniform = function(name,value){
@@ -4410,7 +4466,7 @@ modules['colorRectDrawer'] =
 	    (function(){
 	        program = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
-	            bundle.shaders.colorRect['fragment.frag']
+	            bundle.shaders.color['fragment.frag']
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
@@ -4426,16 +4482,7 @@ modules['colorRectDrawer'] =
 	        posIndexBuffer.setData([
 	            0,1,2,2,1,3
 	        ]);
-	        posIndexBuffer.bindBuffer();
 	
-	        texVertexBuffer = new VertexBuffer(gl);
-	        texVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
-	        program.bindBuffer(texVertexBuffer,'a_texcoord');
 	    })();
 	
 	};
@@ -4465,7 +4512,12 @@ modules['multiColorRectDrawer'] =
 	            Math.random(), Math.random(), Math.random(), Math.random()
 	        ],gl.FLOAT,4);
 	        program.bindBuffer(vertexColorBuffer,'a_color');
+	        posIndexBuffer.bind();
 	        program.bind();
+	    };
+	
+	    this.unbind = function(){
+	        posIndexBuffer.unbind();
 	    };
 	
 	    this.setUniform = function(name,value){
@@ -4479,7 +4531,7 @@ modules['multiColorRectDrawer'] =
 	    (function(){
 	        program = new ShaderProgram(gl, [
 	            bundle.shaders.basic['vertex.vert'],
-	            bundle.shaders.multiColorRect['fragment.frag']
+	            bundle.shaders.multiColor['fragment.frag']
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
@@ -4505,13 +4557,57 @@ modules['multiColorRectDrawer'] =
 	        posIndexBuffer.setData([
 	            0,1,2,2,1,3
 	        ]);
-	        posIndexBuffer.bindBuffer();
 	
 	    })();
 	
 	};
 	
 	module.exports = MultiColorRectDrawer;
+}};
+modules['polyLineDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	
+	var PolyLineDrawer = function(gl){
+	
+	    var program, posVertexBuffer;
+	
+	    this.bind = function(vertexData){
+	        posVertexBuffer.setData(vertexData,gl.FLOAT,2);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	        program.bind();
+	    };
+	
+	    this.unbind = function(){
+	
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawArrays(gl.LINE_STRIP, 0,posVertexBuffer.getBufferLength()/2);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex.vert'],
+	            bundle.shaders.color['fragment.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	
+	    })();
+	
+	};
+	
+	module.exports = PolyLineDrawer;
 }};
 modules['textureDrawer'] =
     {code: function(module){
@@ -4531,6 +4627,12 @@ modules['textureDrawer'] =
 	
 	    this.bind = function(){
 	        program.bind();
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	        posIndexBuffer.bind();
+	    };
+	
+	    this.unbind  = function(){
+	        posIndexBuffer.unbind();
 	    };
 	
 	    this.setUniform = function(name,value){
@@ -4560,7 +4662,6 @@ modules['textureDrawer'] =
 	        posIndexBuffer.setData([
 	            0,1,2,2,1,3
 	        ]);
-	        posIndexBuffer.bindBuffer();
 	
 	        texVertexBuffer = new VertexBuffer(gl);
 	        texVertexBuffer.setData([

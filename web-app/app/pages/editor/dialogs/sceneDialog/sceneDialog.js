@@ -31,8 +31,16 @@ module.exports.component = Vue.component('app-scene-dialog', {
                 model,
                 Scene,
                 editData.sceneList,
-                function(result){
-                    self.close();
+                function(op){
+                    if (op.type=='create') {
+                        resource.createFile(
+                            'script/scene/' + self.editData.currSceneInEdit.name+'.js',
+                            document.getElementById('defaultCodeScript').textContent,
+                            function(){
+                                self.close();
+                            }
+                        )
+                    } else self.close();
                 }
             );
         }

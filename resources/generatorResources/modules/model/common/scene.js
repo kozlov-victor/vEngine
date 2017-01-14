@@ -17,7 +17,7 @@ var Scene = Renderable.extend({
     tileMap:null,
     _allGameObjects:null,
     useBG:false,
-    colorBG:[255,255,255],
+    colorBG:{r:255,g:255,b:255},
     onShow: function(){},
     _tweenMovies:null,
     __onResourcesReady: function(){

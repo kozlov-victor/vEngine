@@ -11,13 +11,14 @@
                 <div class="cell">
                     <input
                             required
+                            v-control="{form:form,model:editData.currSceneInEdit,prop:'name'}"
                             v-model="editData.currSceneInEdit.name"/>
                 </div>
             </div>
         </div>
         <button
                 :disabled="!form.valid()"
-                ng-click="createOrEditScene(editData.currSceneInEdit)">
+                v-on:click="createOrEditScene(editData.currSceneInEdit)">
             {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}
         </button>
     </div>

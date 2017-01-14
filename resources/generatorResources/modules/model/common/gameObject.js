@@ -77,16 +77,12 @@ var GameObject = BaseGameObject.extend({
         self._super();
         if (!self.tileOffset) self.tileOffset = {x:0,y:0};
         self._frameAnimations = new collections.List();
-        //<code>{{#if opts.debug}}
-        if (!self.spriteSheetId) {
-            throw 'spriteSheetId not specified for gameObject'+' with name '+ self.name;
+        if (self.spriteSheetId) {
+            self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
+            if (!self._spriteSheet)
+                throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
+            self.setFrameIndex(self.currFrameIndex);
         }
-        //<code>{{/if}}
-        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
-        //<code>{{#if opts.debug}}
-        if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
-        //<code>{{/if}}
-        self.setFrameIndex(self.currFrameIndex);
         self._frameAnimations.clear();
         self.frameAnimationIds.forEach(function(id){
             var a = bundle.frameAnimationList.find({id: id});

@@ -5,7 +5,7 @@ var execMethod = function(url,method,data,callBack) {
         [method](url, data).
         then(function(resp){
             try {
-                callBack(resp.body);
+                callBack && callBack(resp.body);
             } catch(e){
                 setTimeout(function() {
                     throw e;

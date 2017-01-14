@@ -12,13 +12,15 @@
                 :object="scene"
                 :crud="{
                     edit:editScene,
-                    delete:deleteScene
+                    delete:deleteScene,
+                    editScript: editScript
                 }"
                 :title="scene.name"
                 >
             <div class="withPaddingLeft">
                 <app-collapsible
                         :title="i18n.layers"
+                        :meta="scene"
                         :crud="{
                             create:createLayer
                         }"
@@ -26,10 +28,11 @@
                     <div v-for="layer in scene._layers.rs" class="withPaddingLeft">
                         <app-collapsible
                                 :object="layer"
+                                :meta="scene"
                                 :crud="{
-                            edit:editLayer,
-                            delete:deleteLayer
-                        }"
+                                    edit:editLayer,
+                                    delete:deleteLayer
+                                }"
                                 :title="layer.name" :id="layer.id">
                             <div class="withPaddingLeft">
                                 <div class="table width100">

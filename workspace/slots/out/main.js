@@ -343,6 +343,19 @@ modules['behaviour'] =
 	};
 	    
 	};
+	scripts.gameObject['undefined.js'] = function(exports){
+	    var module = exports, self = exports;
+	    
+	        
+	exports.onShow = function(){
+	
+	};
+	
+	exports.onUpdate = function(time) {
+	
+	};
+	    
+	};
 	scripts.gameObject['ww4.js'] = function(exports){
 	    var module = exports, self = exports;
 	    
@@ -2944,12 +2957,12 @@ modules['gameObject'] =
 	        self._super();
 	        if (!self.tileOffset) self.tileOffset = {x:0,y:0};
 	        self._frameAnimations = new collections.List();
-	        if (!self.spriteSheetId) {
-	            throw 'spriteSheetId not specified for gameObject'+' with name '+ self.name;
+	        if (self.spriteSheetId) {
+	            self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
+	            if (!self._spriteSheet)
+	                throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
+	            self.setFrameIndex(self.currFrameIndex);
 	        }
-	        self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
-	        if (!self._spriteSheet) throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
-	        self.setFrameIndex(self.currFrameIndex);
 	        self._frameAnimations.clear();
 	        self.frameAnimationIds.forEach(function(id){
 	            var a = bundle.frameAnimationList.find({id: id});
@@ -3187,7 +3200,6 @@ modules['scene'] =
 	        };
 	        if (self.tileMap.spriteSheetId) {
 	            self.tileMap._spriteSheet = bundle.spriteSheetList.find({id:self.tileMap.spriteSheetId});
-	            if (!self.tileMap._spriteSheet) return;
 	            self.tileMap._tilesInScreenX = ~~(bundle.gameProps.width/self.tileMap._spriteSheet._frameWidth);
 	            self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height/self.tileMap._spriteSheet._frameHeight);
 	        }
@@ -3975,12 +3987,15 @@ modules['glContext'] =
 	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
 	var Class = require('class');
 	
+	
 	var getCtx = function(el){
 	    if (!el) el = document.createElement('canvas');
 	    if (!el) return null;
 	    return (
 	        el.getContext("webgl",{alpha: false}) ||
-	        el.getContext('experimental-webgl',{alpha: false})
+	        el.getContext('experimental-webgl',{alpha: false}) ||
+	        el.getContext('webkit-3d',{alpha: false}) ||
+	        el.getContext('moz-webgl',{alpha: false})
 	    );
 	};
 	
@@ -4066,9 +4081,8 @@ modules['glContext'] =
 	        dstX, dstY
 	    ) {
 	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        //gl.blendColor(0, 0.5, 1, 1);
-	        //gl.blendFunc(gl.ONE, gl.ONE);
+	        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+	        gl.blendColor(0, 0.5, 1, 1);
 	
 	        var texWidth = texture.getSize().width;
 	        var texHeight = texture.getSize().height;
@@ -4698,6 +4712,7 @@ modules['texture'] =
 	    this.apply = function(){
 	        size = {width:img.width,height:img.height};
 	        this.bind();
+	        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
 	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
 	        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
 	        // Check if the image is a power of 2 in both dimensions.

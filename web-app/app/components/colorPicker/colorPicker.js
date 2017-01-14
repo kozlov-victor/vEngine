@@ -6,11 +6,16 @@ module.exports = Vue.component('app-color-picker', {
     template: require('./colorPicker.html'),
     data: function(){
         return {
-            currentColorRGB: []
+
+        }
+    },
+    computed: {
+        currentColorRGB: function(){
+            return this.object[this.value];
         }
     },
     created: function(){
-        this.currentColorRGB = this.object[this.value];
+
     },
     methods: {
         click: function(e){
@@ -18,7 +23,6 @@ module.exports = Vue.component('app-color-picker', {
         },
         applyColor: function(color){
             this.object[this.value] = color;
-            this.currentColorRGB = this.object[this.value];
         }
     },
     components: {

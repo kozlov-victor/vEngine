@@ -4,6 +4,11 @@
         >
 
     <div
+            v-if="!editData.currSceneGameObjectInEdit.id">
+        {{i18n.notSelected}}
+    </div>
+
+    <div
             class="withPadding"
             v-if="editData.currSceneGameObjectInEdit.id">
         <h3 class="centerText">
@@ -200,10 +205,7 @@
             </div>
         </div>
     </div>
-    <div
-            v-if="!editData.currSceneGameObjectInEdit.id">
-        {{i18n.notSelected}}
-    </div>
+
 
 </app-collapsible>
 

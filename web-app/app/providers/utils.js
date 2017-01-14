@@ -29,15 +29,15 @@ var Utils = function(){
 
     this.hexToRgb = function(hex) {
         var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? [
-            parseInt(result[1], 16)||0,
-            parseInt(result[2], 16)||0,
-            parseInt(result[3], 16)||0
-        ] : [0,0,0];
+        return result ? {
+            r: parseInt(result[1], 16) || 0,
+            g: parseInt(result[2], 16) || 0,
+            b: parseInt(result[3], 16) || 0
+        } : {r:0,g:0,b:0};
     };
 
     this.rgbToHex = function(col) {
-        var r = +col[0],g=+col[1],b=+col[2];
+        var r = +col.r,g=+col.g,b=+col.b;
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     };
 

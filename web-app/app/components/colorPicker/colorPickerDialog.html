@@ -25,9 +25,9 @@
                     {{item.left}}
                 </td>
                 <td class="centerText">
-                    <input class="vAlign" type="range" min="0" max="255" v-model="currentColorRGB[item.index]" v-on:change="rgbChanged()"/>
+                    <input class="vAlign" type="range" min="0" max="255" v-model="currentColorRGB[item.key]" v-on:change="rgbChanged()"/>
                     <br/>
-                    <input class="small vAlign" v-model="currentColorRGB[item.index]" v-on:change="rgbChanged()"/>
+                    <input class="small vAlign" v-model="currentColorRGB[item.key]" v-on:change="rgbChanged()"/>
                     <hr/>
                 </td>
                 <td

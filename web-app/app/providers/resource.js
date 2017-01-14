@@ -109,6 +109,48 @@ var Resource = function(){
         );
     };
 
+    // todo refactor
+    this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback) {
+        var op = object.id ? 'edit' : 'create';
+        http.post(
+            '/createOrEditObjectInResource',
+            {
+                model: JSON.stringify(object),
+                resourceId: resourceId,
+                resourceType: resourceType,
+                objectType: objectType,
+                projectName: editData.projectName
+            },
+            function (resp) {
+                callback && callback({type: op, r: resp});
+            }
+        );
+    };
+    // todo refactor
+    this.createOrEditLayer = function(l,s,dialog){
+        self.createOrEditResource(l,Layer,bundle.layerList,
+            function(item){
+                if (item.type=='create') {
+                    self.createOrEditObjectInResource(
+                        s.type,
+                        s.id,
+                        'layerProps',
+                        {
+                            type:'layer',
+                            protoId:item.r.id
+                        },
+                        function(resp){
+                            l.id = resp.r.id;
+                            l.protoId = item.r.id;
+                            l._scene = editData.currSceneInEdit;
+                            s._layers.add(l);
+                            dialog.close();
+                        }
+                    );
+                }
+            });
+    };
+
     this.saveGameProps = function(gameProps){
         http.post(
             '/gameProps/save',
@@ -258,7 +300,7 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'slots';
+        sessionStorage.projectName = 'testVue';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

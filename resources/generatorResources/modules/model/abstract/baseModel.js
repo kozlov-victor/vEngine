@@ -59,6 +59,7 @@ var BaseModel = Class.extend({
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
                 self[key] = jsonObj[key];
+                if (typeof self[key]==='boolean') return;
                 if (self[key] && !self[key].splice) {
                     self[key] = +self[key]||self[key];
                 }

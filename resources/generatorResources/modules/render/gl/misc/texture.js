@@ -13,6 +13,7 @@ var Texture = function(gl,img){
     this.apply = function(){
         size = {width:img.width,height:img.height};
         this.bind();
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
         this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
         // Check if the image is a power of 2 in both dimensions.
