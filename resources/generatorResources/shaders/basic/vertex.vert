@@ -12,4 +12,5 @@ void main() {
    gl_Position = u_matrix * a_position;
    v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
    v_color = a_color;
+   // gl_PointSize = 1;
 }

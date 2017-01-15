@@ -300,7 +300,7 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'testVue';
+        sessionStorage.projectName = 'tileMap';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

@@ -54,6 +54,27 @@
                     </div>
                     <div class="cell eye"></div>
                 </div>
+                <div class="row">
+                    <div class="cell valign">
+                        tileMap.width
+                    </div>
+                    <div class="cell">
+                        <input type="number"
+                               ng-change="createOrEditScene()"
+                               v-model="editData.currSceneInEdit.tileMap.width"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell valign">
+                        tileMap.height
+                    </div>
+                    <div class="cell">
+                        <input type="number"
+                               ng-change="createOrEditScene()"
+                               v-model="editData.currSceneInEdit.tileMap.height"/>
+                    </div>
+                </div>
 
             </div>
         </div>

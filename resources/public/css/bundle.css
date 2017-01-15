@@ -51,6 +51,7 @@ select {
   display: inline-block;
   vertical-align: top;
   width: 90%;
+  min-width: 60px;
 }
 button,
 label {
