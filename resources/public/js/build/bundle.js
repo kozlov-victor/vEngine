@@ -106,7 +106,7 @@ module.exports = "<div class=\"inlineBlock\" xmlns:v-on=\"http://www.w3.org/1999
 var colorPickerDialog = require('./colorPickerDialog');
 
 module.exports = Vue.component('app-color-picker', {
-    props: ['object','value'],
+    props: ['object','value','onchange'],
     template: require('./colorPicker.html'),
     data: function(){
         return {
@@ -186,6 +186,7 @@ module.exports.component = Vue.component('app-color-picker-dialog', {
         },
         applyColor: function(){
             colorPicker.applyColor(this.currentColorRGB);
+            colorPicker.onchange && colorPicker.onchange();
             this.close();
         }
     }
@@ -1578,28 +1579,53 @@ module.exports = Vue.component('app-scene-game-object', {
     }
 });
 },{"./sceneGameObject.html":61,"providers/editData":67,"providers/i18n":69}],63:[function(require,module,exports){
-module.exports = "<app-collapsible\r\n        :title=\"i18n.currScene\"\r\n        >\r\n\r\n        <div\r\n                v-if=\"!editData.currSceneInEdit.id\">\r\n            {{i18n.notSelected}}\r\n        </div>\r\n\r\n        <div class=\"withPadding\" v-if=\"editData.currSceneInEdit.id\">\r\n\r\n            <b class=\"centerText\">\r\n                {{i18n.scene}} : {{editData.currSceneInEdit.name}}\r\n            </b>\r\n\r\n            <div class=\"table width100\">\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <label for=\"editData.currSceneInEdit.useBG\">{{i18n.useBG}}</label>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"checkbox\"\r\n                               id=\"editData.currSceneInEdit.useBG\"\r\n                               v-model=\"editData.currSceneInEdit.useBG\"\r\n                               ng-change=\"createOrEditScene()\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\" v-if=\"editData.currSceneInEdit.useBG\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.colorBG}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <app-color-picker\r\n                                :object=\"editData.currSceneInEdit\"\r\n                                :value=\"'colorBG'\"\r\n                                />\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign bold\">\r\n                        {{i18n.tileMap}}\r\n                    </div>\r\n                    <div class=\"cell eye\"></div>\r\n                </div>\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.width\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               ng-change=\"createOrEditScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.width\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.height\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               ng-change=\"createOrEditScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.height\"/>\r\n                    </div>\r\n                </div>\r\n\r\n            </div>\r\n        </div>\r\n\r\n\r\n\r\n</app-collapsible>";
+module.exports = "<app-collapsible\r\n        :title=\"i18n.currScene\"\r\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n        <div\r\n                v-if=\"!editData.currSceneInEdit.id\">\r\n            {{i18n.notSelected}}\r\n        </div>\r\n\r\n        <div class=\"withPadding\" v-if=\"editData.currSceneInEdit.id\">\r\n\r\n            <b class=\"centerText\">\r\n                {{i18n.scene}} : {{editData.currSceneInEdit.name}}\r\n            </b>\r\n\r\n            <div class=\"table width100\">\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <label for=\"editData.currSceneInEdit.useBG\">{{i18n.useBG}}</label>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"checkbox\"\r\n                               id=\"editData.currSceneInEdit.useBG\"\r\n                               v-model=\"editData.currSceneInEdit.useBG\"\r\n                               v-on:change=\"editScene()\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\" v-if=\"editData.currSceneInEdit.useBG\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.colorBG}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <app-color-picker\r\n                                :object=\"editData.currSceneInEdit\"\r\n                                :value=\"'colorBG'\"\r\n                                :onchange=\"editScene()\"\r\n                                />\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign bold\">\r\n                        {{i18n.tileMap}}\r\n                    </div>\r\n                    <div class=\"cell eye\"></div>\r\n                </div>\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.width\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               v-on:change=\"editScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.width\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.height\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               v-on:change=\"editScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.height\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.selected}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <div\r\n                            :class=\"{\r\n                                inlineBlock:1,\r\n                                hoverOutline:1\r\n                            }\"\r\n                            :style=\"{\r\n                                width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',\r\n                                verticalAlign:'middle',\r\n                                height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',\r\n                                backgroundImage:      'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',\r\n                                backgroundPositionX:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit)+'px',\r\n                                backgroundPositionY:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit)+'px',\r\n                                backgroundRepeat:     'no-repeat',\r\n                            }\"\r\n                        ></div>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.spriteSheets}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <select\r\n                                v-model=\"editData.currSceneInEdit.tileMap.spriteSheetId\"\r\n                                v-on:change=\"setTileMapSpriteSheet()\"\r\n                                >\r\n                            <option value=\"\">--</option>\r\n                            <option\r\n                                    v-for=\"item in editData.spriteSheetList.rs\"\r\n                                    :value=\"item.id\"\r\n                                    >{{item.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <div\r\n                :style=\"{\r\n                    width: editData.currSceneInEdit.tileMap._spriteSheet._frameWidth*editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH+'px',\r\n                    overflowX: 'auto'\r\n                }\"\r\n                >\r\n                <div :class=\"{\r\n                        inlineBlock:true,\r\n                        selected:i==editData.currTileIndexInEdit,\r\n                        hoverOutline:1\r\n                     }\"\r\n                     :style=\"{\r\n                        width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',\r\n                        verticalAlign:'middle',\r\n                        height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',\r\n                        backgroundImage:'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',\r\n                        backgroundPositionX:   -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(i)+'px',\r\n                        backgroundPositionY:   -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(i)+'px',\r\n                        backgroundRepeat:     'no-repeat',\r\n                     }\"\r\n                     :title=\"i\"\r\n                     v-on:click.capture=\"setCurrSelectedTile(i)\"\r\n                     v-for=\"(v,i) in numOfFramesForSceneSpriteSheet\"\r\n                     ></div>\r\n            </div>\r\n\r\n        </div>\r\n\r\n\r\n\r\n</app-collapsible>";
 
 },{}],64:[function(require,module,exports){
+
+var editData = require('providers/editData');
+var resource = require('providers/resource');
+var Scene = _require('scene');
 
 module.exports = Vue.component('app-scene', {
     props: [],
     template: require('./scene.html'),
     data: function () {
         return {
-            editData: require('providers/editData'),
+            editData: editData,
             i18n: require('providers/i18n').getAll(),
             utils: require('providers/utils')
+        }
+    },
+    computed: {
+        numOfFramesForSceneSpriteSheet: function(){
+            if (!editData.currSceneInEdit) return 0;
+            if (!editData.currSceneInEdit.tileMap) return 0;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
+            return (
+                editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesV *
+                editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH
+            )
         }
     },
     components: {
 
     },
     methods: {
-
+        setCurrSelectedTile: function(i){
+            editData.currTileIndexInEdit = i;
+        },
+        setTileMapSpriteSheet: function(){
+            editData.currSceneInEdit = new Scene(editData.currSceneInEdit.toJSON())
+        },
+        editScene: function(){
+            var self = this;
+            resource.
+                createOrEditResource(self.editData.currSceneInEdit);
+        }
     }
 });
-},{"./scene.html":63,"providers/editData":67,"providers/i18n":69,"providers/utils":72}],65:[function(require,module,exports){
+},{"./scene.html":63,"providers/editData":67,"providers/i18n":69,"providers/resource":70,"providers/utils":72}],65:[function(require,module,exports){
 
 module.exports = {
     data: function () {

@@ -30,10 +30,11 @@ var Texture = function(gl,img){
         gl.bindTexture(gl.TEXTURE_2D, null);
     };
 
-    this.bind = function(){
+    this.bind = function(i) {
+        //gl.activeTexture(gl.TEXTURE0+i);
         gl.bindTexture(gl.TEXTURE_2D, tex);
-        // gl.uniform1i(shaderProgram.samplerUniform, 0);
-
+        // gl.uniform1i(uName, i);
+    };
 
     this.getSize = function(){
         return size;

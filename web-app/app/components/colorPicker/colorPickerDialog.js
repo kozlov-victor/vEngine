@@ -47,6 +47,7 @@ module.exports.component = Vue.component('app-color-picker-dialog', {
         },
         applyColor: function(){
             colorPicker.applyColor(this.currentColorRGB);
+            colorPicker.onchange && colorPicker.onchange();
             this.close();
         }
     }

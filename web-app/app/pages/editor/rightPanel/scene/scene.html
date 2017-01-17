@@ -1,6 +1,6 @@
 <app-collapsible
         :title="i18n.currScene"
-        >
+        xmlns:v-on="http://www.w3.org/1999/xhtml">
 
         <div
                 v-if="!editData.currSceneInEdit.id">
@@ -23,7 +23,7 @@
                         <input type="checkbox"
                                id="editData.currSceneInEdit.useBG"
                                v-model="editData.currSceneInEdit.useBG"
-                               ng-change="createOrEditScene()"/>
+                               v-on:change="editScene()"/>
                     </div>
                 </div>
 
@@ -35,6 +35,7 @@
                         <app-color-picker
                                 :object="editData.currSceneInEdit"
                                 :value="'colorBG'"
+                                :onchange="editScene()"
                                 />
                     </div>
                 </div>
@@ -60,7 +61,7 @@
                     </div>
                     <div class="cell">
                         <input type="number"
-                               ng-change="createOrEditScene()"
+                               v-on:change="editScene()"
                                v-model="editData.currSceneInEdit.tileMap.width"/>
                     </div>
                 </div>
@@ -71,12 +72,79 @@
                     </div>
                     <div class="cell">
                         <input type="number"
-                               ng-change="createOrEditScene()"
+                               v-on:change="editScene()"
                                v-model="editData.currSceneInEdit.tileMap.height"/>
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="cell">
+                        {{i18n.selected}}
+                    </div>
+                    <div class="cell">
+                        <div
+                            :class="{
+                                inlineBlock:1,
+                                hoverOutline:1
+                            }"
+                            :style="{
+                                width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',
+                                verticalAlign:'middle',
+                                height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',
+                                backgroundImage:      'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',
+                                backgroundPositionX:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit)+'px',
+                                backgroundPositionY:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit)+'px',
+                                backgroundRepeat:     'no-repeat',
+                            }"
+                        ></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell">
+                        {{i18n.spriteSheets}}
+                    </div>
+                    <div class="cell">
+                        <select
+                                v-model="editData.currSceneInEdit.tileMap.spriteSheetId"
+                                v-on:change="setTileMapSpriteSheet()"
+                                >
+                            <option value="">--</option>
+                            <option
+                                    v-for="item in editData.spriteSheetList.rs"
+                                    :value="item.id"
+                                    >{{item.name}}</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+            <div
+                :style="{
+                    width: editData.currSceneInEdit.tileMap._spriteSheet._frameWidth*editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH+'px',
+                    overflowX: 'auto'
+                }"
+                >
+                <div :class="{
+                        inlineBlock:true,
+                        selected:i==editData.currTileIndexInEdit,
+                        hoverOutline:1
+                     }"
+                     :style="{
+                        width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',
+                        verticalAlign:'middle',
+                        height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',
+                        backgroundImage:'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',
+                        backgroundPositionX:   -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(i)+'px',
+                        backgroundPositionY:   -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(i)+'px',
+                        backgroundRepeat:     'no-repeat',
+                     }"
+                     :title="i"
+                     v-on:click.capture="setCurrSelectedTile(i)"
+                     v-for="(v,i) in numOfFramesForSceneSpriteSheet"
+                     ></div>
+            </div>
+
         </div>
 
 

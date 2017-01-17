@@ -2,7 +2,7 @@
 var colorPickerDialog = require('./colorPickerDialog');
 
 module.exports = Vue.component('app-color-picker', {
-    props: ['object','value'],
+    props: ['object','value','onchange'],
     template: require('./colorPicker.html'),
     data: function(){
         return {

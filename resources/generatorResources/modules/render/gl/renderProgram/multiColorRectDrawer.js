@@ -31,7 +31,7 @@ var MultiColorRectDrawer = function(gl){
     };
 
     this.draw = function(){
-        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+        gl.drawElements(gl.TRIANGLE_STRIP, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
     };
 
     (function(){
@@ -61,7 +61,7 @@ var MultiColorRectDrawer = function(gl){
 
         posIndexBuffer = new IndexBuffer(gl);
         posIndexBuffer.setData([
-            0,1,2,2,1,3
+            0,1,2,3
         ]);
 
     })();
