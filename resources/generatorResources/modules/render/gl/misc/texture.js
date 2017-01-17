@@ -32,7 +32,7 @@ var Texture = function(gl,img){
 
     this.bind = function(){
         gl.bindTexture(gl.TEXTURE_2D, tex);
-    };
+        // gl.uniform1i(shaderProgram.samplerUniform, 0);
 
 
     this.getSize = function(){
