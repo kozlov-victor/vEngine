@@ -28,7 +28,8 @@ var checkRule = function(rulesObject,ruleName,el,bindings){
 
     var ruleValue = el.getAttribute(ruleName);
     var ruleFn = rulesObject[ruleName];
-    var currModelValue = bindings.value.model[bindings.value.prop]||'';
+    var currModelValue = bindings.value.model[bindings.value.prop];
+    if (currModelValue===undefined || currModelValue===null) currModelValue = '';
     currModelValue = currModelValue.toString().trim();
     var result = ruleFn(currModelValue,ruleValue);
     if (!result) {
