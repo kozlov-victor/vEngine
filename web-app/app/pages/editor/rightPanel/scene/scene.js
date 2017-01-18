@@ -10,7 +10,8 @@ module.exports = Vue.component('app-scene', {
         return {
             editData: editData,
             i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
+            utils: require('providers/utils'),
+            form:require('providers/validator').new()
         }
     },
     computed: {

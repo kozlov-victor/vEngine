@@ -10,13 +10,8 @@ var MultiColorRectDrawer = function(gl){
 
     var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
 
-    this.bind = function(){
-        vertexColorBuffer.setData([
-            Math.random(), 0, 0, 0.5,
-            0, 1, Math.random(), 1,
-            Math.random(), Math.random(), 1, 1,
-            Math.random(), Math.random(), Math.random(), Math.random()
-        ],gl.FLOAT,4);
+    this.bind = function(colors){
+        vertexColorBuffer.setData(colors,gl.FLOAT,4);
         program.bindBuffer(vertexColorBuffer,'a_color');
         posIndexBuffer.bind();
         program.bind();
@@ -52,8 +47,8 @@ var MultiColorRectDrawer = function(gl){
 
         vertexColorBuffer = new VertexBuffer(gl);
         vertexColorBuffer.setData([
-            1, 0, 0, 0.5,
-            0, 1, 1, 1,
+            1, 1, 1, 1,
+            1, 1, 1, 1,
             1, 1, 1, 1,
             1, 1, 1, 1
         ],gl.FLOAT,4);

@@ -8696,6 +8696,9 @@ var rules = {
     },
     max: function (value,pattern) {
         return Number(value)<=Number(pattern)
+    },
+    maxlength: function(value,pattern){
+        return (''+value).length<=+pattern
     }
 };
 
@@ -8710,7 +8713,8 @@ var checkRule = function(rulesObject,ruleName,el,bindings){
 
     var ruleValue = el.getAttribute(ruleName);
     var ruleFn = rulesObject[ruleName];
-    var currModelValue = bindings.value.model[bindings.value.prop];
+    var currModelValue = bindings.value.model[bindings.value.prop]||'';
+    currModelValue = currModelValue.toString().trim();
     var result = ruleFn(currModelValue,ruleValue);
     if (!result) {
         el.classList.add('error');

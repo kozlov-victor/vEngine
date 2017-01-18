@@ -2,17 +2,17 @@
     {
         "tileMap": {
             "_spriteSheet": {
-                "resourcePath": "resources/spriteSheet/imgWall.png",
-                "name": "imgWall",
-                "width": 512,
+                "resourcePath": "resources/spriteSheet/btn.png",
+                "name": "btn",
+                "width": 64,
                 "height": 64,
-                "numOfFramesV": 2,
-                "numOfFramesH": 16,
                 "type": "spriteSheet",
-                "id": "0967_6478_69"
+                "numOfFramesH": 1,
+                "numOfFramesV": 1,
+                "id": "8588_3274_122"
             },
             "spriteSheetId": "8588_3274_122",
-            "width": 24,
+            "width": 22,
             "height": 28,
             "data": [
                 [
@@ -666,8 +666,8 @@
                     16
                 ]
             ],
-            "_tilesInScreenX": 14,
-            "_tilesInScreenY": 10
+            "_tilesInScreenX": 7,
+            "_tilesInScreenY": 5
         },
         "name": "mainScene",
         "type": "scene",

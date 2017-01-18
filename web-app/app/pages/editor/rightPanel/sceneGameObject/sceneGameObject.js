@@ -5,7 +5,8 @@ module.exports = Vue.component('app-scene-game-object', {
     data: function () {
         return {
             editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
+            i18n: require('providers/i18n').getAll(),
+            form:require('providers/validator').new()
         }
     },
     components: {

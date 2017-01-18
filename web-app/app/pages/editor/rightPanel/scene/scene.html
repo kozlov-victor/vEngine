@@ -61,6 +61,9 @@
                     </div>
                     <div class="cell">
                         <input type="number"
+                               min="0"
+                               maxlength="4"
+                               v-control="{form:form,model:editData.currSceneInEdit.tileMap,prop:'width'}"
                                v-on:change="editScene()"
                                v-model="editData.currSceneInEdit.tileMap.width"/>
                     </div>
@@ -72,6 +75,9 @@
                     </div>
                     <div class="cell">
                         <input type="number"
+                               min="0"
+                               maxlength="4"
+                               v-control="{form:form,model:editData.currSceneInEdit.tileMap,prop:'height'}"
                                v-on:change="editScene()"
                                v-model="editData.currSceneInEdit.tileMap.height"/>
                     </div>

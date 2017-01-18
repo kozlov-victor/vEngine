@@ -33,7 +33,11 @@
                 "tileOffset": {
                     "x": 0,
                     "y": 0
-                }
+                },
+                "tileRepeat": false,
+                "fixedToCamera": false,
+                "angleVel": 0,
+                "$$hashKey": "object:586"
             },
             {
                 "spriteSheetId": "8119_2218_36",
