@@ -82,6 +82,7 @@ var GlContext = Class.extend(function(it){
         var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
         matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
         matrix = mat4.matrixMultiply(matrix, projectionMatrix);
+        window.m = matrix;
         return matrix;
     };
 
@@ -248,11 +249,8 @@ var GlContext = Class.extend(function(it){
         this.translate(0,gameProps.canvasHeight);
         this.scale(1,-1);
         frameBuffer.unbind();
-        this.clear();
-        gl.clearColor(1,1,1,1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
         gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
-        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
+        frameBuffer.getTexture().bind();
 
         textureDrawer.bind();
 
@@ -306,12 +304,12 @@ var GlContext = Class.extend(function(it){
         img.onerror=function(e){throw 'can not load image with url '+ url};
         //<code>{{/if}}
         var gl = require('renderer').getContext().getNativeContext();
-        var texture = new Texture(gl, img);
+        var texture = new Texture(gl);
 
         if (opts.type == 'base64') {
             url = utils.getBase64prefix('image', opts.fileName) + url;
             img.src = url;
-            texture.apply(img);
+            texture.setImage(img);
             callBack(texture);
             return;
         }
@@ -326,7 +324,7 @@ var GlContext = Class.extend(function(it){
                 img.src = base64String;
             }
             img.onload = function () {
-                texture.apply(img);
+                texture.setImage(img);
                 callBack(texture);
             };
 

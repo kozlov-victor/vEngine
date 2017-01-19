@@ -184,24 +184,18 @@ var Resource = function(){
     //            callBack && callBack(resp);
     //        });
     //};
-    //this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
-    //    var op = object.id?'edit':'create';
-    //    $http({
-    //        url: '/createOrEditObjectInResource',
-    //        method: "POST",
-    //        data: {
-    //            model:JSON.stringify(object),
-    //            resourceId:resourceId,
-    //            resourceType:resourceType,
-    //            objectType:objectType,
-    //            projectName:editData.projectName
-    //        },
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback({type:op,r:resp});
-    //        });
-    //};
+    this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
+        var op = object.id?'edit':'create';
+        http.post('/createOrEditObjectInResource',{
+            model:JSON.stringify(object),
+            resourceId:resourceId,
+            resourceType:resourceType,
+            objectType:objectType,
+            projectName:editData.projectName
+        },function(resp){
+            callback && callback({type:op,r:resp});
+        });
+    };
     //this.createOrEditLayer = function(l){
     //    self.createOrEditResource(l,Layer,bundle.layerList,
     //        function(item){

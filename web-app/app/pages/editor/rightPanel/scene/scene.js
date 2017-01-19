@@ -3,7 +3,7 @@ var editData = require('providers/editData');
 var resource = require('providers/resource');
 var Scene = _require('scene');
 
-module.exports = Vue.component('app-scene', {
+module.exports = Vue.component('app-right-scene', {
     props: [],
     template: require('./scene.html'),
     data: function () {

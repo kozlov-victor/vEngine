@@ -19,11 +19,16 @@
     };
 
     var _prepareMessage = function(e,lineNum){
-        var msg = (e.message  || '');
+        var msg;
+        if (typeof msg == 'string') {
+            msg = e;
+        }
+        else msg = e.message;
         if (!msg) {
             if (e.target && e.target.tagName.toUpperCase()=='IMG')
                 msg = 'can not load image ' + e.target.getAttribute('src');
         }
+        if (!msg) msg = '';
         if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();
         if (!msg) msg = 'Unknown error. Is your server running?';
         if (lineNum) msg+=' in line ' + lineNum;

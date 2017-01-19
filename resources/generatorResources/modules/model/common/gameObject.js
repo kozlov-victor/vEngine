@@ -8,7 +8,6 @@ var resourceCache = require('resourceCache');
 var utils = require('utils');
 var game = require('game');
 
-var a = 0;
 var _draw = function(ctx,self,x,y){
     ctx.drawImage(
         resourceCache.get(self._spriteSheet.resourcePath),
@@ -20,7 +19,7 @@ var _draw = function(ctx,self,x,y){
         y||0
     );
     //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
-    ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
+    //ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
 };
 
 var _drawPattern = function(ctx,self){

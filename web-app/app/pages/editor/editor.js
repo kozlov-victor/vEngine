@@ -56,8 +56,9 @@ module.exports = {
 
         appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor'),
 
-        appSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
-        appScene: require('./rightPanel/scene/scene')
+        appRightPanelSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
+        appRightPanelScene: require('./rightPanel/scene/scene'),
+        appCurrScene: require('./centralPanel/scene/scene')
 
     }
 };

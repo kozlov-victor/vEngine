@@ -27,12 +27,17 @@
                 "id": "0583_1855_36"
             }
         ],
-        "colorBG": {"r":12,"g":12,"b":255},
+        "colorBG": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+        },
         "id": "2590_5247_34",
-        "useBG": true,
+        "useBG": 1,
         "alpha": 1,
         "width": 0,
-        "height": 0
+        "height": 0,
+        "$$hashKey": "object:1281"
     },
     {
         "tileMap": {
@@ -51,12 +56,17 @@
                 "id": "2188_0242_36"
             }
         ],
-        "colorBG": {"r":244,"g":244,"b":255},
+        "colorBG": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+        },
         "id": "6337_8986_28",
-        "useBG": true,
+        "useBG": 1,
         "alpha": 1,
         "width": 0,
-        "height": 0
+        "height": 0,
+        "$$hashKey": "object:1282"
     },
     {
         "tileMap": {
@@ -76,10 +86,15 @@
             }
         ],
         "alpha": 1,
-        "colorBG": {"r":255,"g":255,"b":255},
-        "useBG": false,
+        "colorBG": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+        },
+        "useBG": 1,
         "width": 0,
         "height": 0,
-        "id": "5220_1729_151"
+        "id": "5220_1729_151",
+        "$$hashKey": "object:1283"
     }
 ]
