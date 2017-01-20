@@ -37,7 +37,300 @@
         "alpha": 1,
         "width": 0,
         "height": 0,
-        "$$hashKey": "object:1281"
+        "$$hashKey": "object:1281",
+        "_emitter": {},
+        "_layers": [
+            {
+                "name": "mainLayer",
+                "type": "layer",
+                "gameObjectProps": [
+                    {
+                        "spriteSheetId": "4021_7193_32",
+                        "pos": {
+                            "x": 37,
+                            "y": 66
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "vel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "currFrameIndex": 0,
+                        "name": "slotsColumn",
+                        "width": 64,
+                        "height": 52,
+                        "type": "gameObject",
+                        "commonBehaviour": [],
+                        "frameAnimationIds": [],
+                        "rigid": 1,
+                        "groupName": "",
+                        "angle": 0,
+                        "protoId": "2146_8639_33",
+                        "id": "3605_4962_40",
+                        "alpha": 1,
+                        "tileOffset": {
+                            "x": 0,
+                            "y": 0
+                        }
+                    },
+                    {
+                        "spriteSheetId": "4021_7193_32",
+                        "pos": {
+                            "x": 116,
+                            "y": 66
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "vel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "currFrameIndex": 0,
+                        "name": "slotsColumn",
+                        "width": 64,
+                        "height": 52,
+                        "type": "gameObject",
+                        "commonBehaviour": [],
+                        "frameAnimationIds": [],
+                        "rigid": 1,
+                        "groupName": "",
+                        "angle": 0,
+                        "protoId": "2146_8639_33",
+                        "id": "2522_8532_41"
+                    },
+                    {
+                        "spriteSheetId": "4021_7193_32",
+                        "pos": {
+                            "x": 197,
+                            "y": 66
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "vel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "currFrameIndex": 0,
+                        "name": "slotsColumn",
+                        "width": 64,
+                        "height": 52,
+                        "type": "gameObject",
+                        "commonBehaviour": [],
+                        "frameAnimationIds": [],
+                        "rigid": 1,
+                        "groupName": "",
+                        "angle": 0,
+                        "protoId": "2146_8639_33",
+                        "id": "1745_2194_42"
+                    },
+                    {
+                        "pos": {
+                            "x": 18,
+                            "y": 18
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 29,
+                        "text": "",
+                        "width": 0,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "scoreLabel",
+                        "protoId": {},
+                        "id": "0790_6321_63",
+                        "fontId": "6991_3497_4"
+                    },
+                    {
+                        "pos": {
+                            "x": 140,
+                            "y": 100
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 29,
+                        "text": "",
+                        "width": 0,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "winLabel",
+                        "protoId": {},
+                        "id": "6368_9704_65"
+                    },
+                    {
+                        "pos": {
+                            "x": 18,
+                            "y": 152
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 36,
+                        "text": "bet",
+                        "width": 39,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "textField3",
+                        "protoId": {},
+                        "id": "8688_5721_0",
+                        "fontId": "0265_1797_64"
+                    },
+                    {
+                        "pos": {
+                            "x": 72,
+                            "y": 154
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 29,
+                        "text": "+",
+                        "width": 15,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "betPlusLabel",
+                        "protoId": {},
+                        "id": "0068_5684_1",
+                        "fontId": "6991_3497_4"
+                    },
+                    {
+                        "pos": {
+                            "x": 103,
+                            "y": 153
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 29,
+                        "text": "-",
+                        "width": 15,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "betMinusLabel",
+                        "protoId": {},
+                        "id": "6621_2286_2",
+                        "fontId": "6991_3497_4"
+                    },
+                    {
+                        "pos": {
+                            "x": 142,
+                            "y": 157
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 29,
+                        "text": "0",
+                        "width": 15,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "betLabel",
+                        "protoId": {},
+                        "id": "7190_5206_3",
+                        "fontId": "6991_3497_4"
+                    },
+                    {
+                        "pos": {
+                            "x": 97,
+                            "y": 13
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 42,
+                        "text": "JackPot",
+                        "width": 105,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "textField7",
+                        "protoId": {},
+                        "id": "2570_1987_4",
+                        "fontId": "0265_1797_64",
+                        "alpha": 1,
+                        "vel": {
+                            "x": 0,
+                            "y": 0
+                        },
+                        "angleVel": 0
+                    },
+                    {
+                        "pos": {
+                            "x": 231,
+                            "y": 18
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 29,
+                        "text": "0",
+                        "width": 15,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "name": "jackPotLabel",
+                        "protoId": {},
+                        "id": "5858_5431_5",
+                        "fontId": "6991_3497_4"
+                    },
+                    {
+                        "pos": {
+                            "x": 259,
+                            "y": 136
+                        },
+                        "scale": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "height": 36,
+                        "text": "<<<",
+                        "width": 45,
+                        "type": "userInterface",
+                        "subType": "textField",
+                        "groupName": "",
+                        "angle": 0,
+                        "alpha": 1,
+                        "name": "textBack",
+                        "protoId": {},
+                        "id": "3678_7561_6",
+                        "fontId": "0265_1797_64"
+                    }
+                ],
+                "id": "0583_1855_36",
+                "protoId": "0679_1823_35"
+            }
+        ],
+        "_tweenMovies": []
     },
     {
         "tileMap": {

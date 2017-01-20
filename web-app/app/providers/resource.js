@@ -294,7 +294,7 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'tileMap';
+        sessionStorage.projectName = 'slots';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

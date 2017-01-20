@@ -1,6 +1,14 @@
 
 
 var execMethod = function(url,method,data,callBack) {
+    if (method=='get' && data) {
+        var tail =
+            Object.keys(data).map(function(item){
+            return item+'='+data[item]
+        }).join('&');
+        url = url + '?' + tail;
+        data = {};
+    }
     Vue.http
         [method](url, data).
         then(function(resp){

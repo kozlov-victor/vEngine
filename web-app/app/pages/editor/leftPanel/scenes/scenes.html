@@ -25,7 +25,9 @@
                             create:createLayer
                         }"
                         >
-                    <div v-for="layer in scene._layers.rs" class="withPaddingLeft">
+                    <div
+                            v-on:click.capture="editData.currLayerInEdit=layer"
+                            v-for="layer in scene._layers.rs" class="withPaddingLeft">
                         <app-collapsible
                                 :object="layer"
                                 :meta="scene"

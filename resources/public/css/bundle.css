@@ -144,6 +144,9 @@ input[type=range][orient=vertical] {
 .relative {
   position: relative;
 }
+.absolute {
+  position: absolute;
+}
 input[type="file"] {
   display: inline-block;
   height: 0;
@@ -358,13 +361,16 @@ label,
   float: left;
 }
 #c {
-  padding-top: 20px;
+  padding-top: 25px;
 }
 #topMenu {
   position: absolute;
 }
 .split {
   border-radius: 2px;
+}
+.active {
+  outline: 1px solid green;
 }
 .currSceneGameObject {
   outline: 1px solid green;

@@ -22,7 +22,41 @@ module.exports = Vue.component('app-right-scene', {
             return (
                 editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesV *
                 editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH
-            )
+            ) || 0;
+        },
+        frameWidth: function(){
+            if (!editData.currSceneInEdit.tileMap) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
+            return editData.currSceneInEdit.tileMap._spriteSheet._frameWidth;
+        },
+        frameHeight: function(){
+            if (!editData.currSceneInEdit.tileMap) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
+            return editData.currSceneInEdit.tileMap._spriteSheet._frameHeight;
+        },
+        framePosX: function(){
+            if (!editData.currSceneInEdit.tileMap) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX) return null;
+            if (!editData.currTileIndexInEdit) return null;
+            return editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit);
+        },
+        framePosY: function(){
+            if (!editData.currSceneInEdit.tileMap) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY) return null;
+            if (!editData.currTileIndexInEdit) return null;
+            return editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit);
+        },
+        resourcePath: function(){
+            if (!editData.currSceneInEdit.tileMap) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
+            return editData.currSceneInEdit.tileMap._spriteSheet.resourcePath
+        },
+        numOfFramesH: function(){
+            if (!editData.currSceneInEdit.tileMap) return null;
+            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
+            return editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH;
         }
     },
     components: {

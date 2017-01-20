@@ -7,6 +7,10 @@ const router = new VueRouter({
         {
             path: '/editor',
             component: require('pages/editor/editor')
+        },
+        {
+            path: '/explorer',
+            component: require('pages/explorer/explorer')
         }
     ]
 });

@@ -31,7 +31,9 @@ var onMounted = function _onMounted(){
 module.exports = {
     template: require('./editor.html'),
     data: function () {
-        return {}
+        return {
+            editData: require('providers/editData')
+        }
     },
     mounted: function(){
         onMounted();
@@ -58,7 +60,9 @@ module.exports = {
 
         appRightPanelSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
         appRightPanelScene: require('./rightPanel/scene/scene'),
-        appCurrScene: require('./centralPanel/scene/scene')
+        appCurrScene: require('./centralPanel/scene/scene'),
+
+        appTopPanel: require('./topPanel/topPanel')
 
     }
 };

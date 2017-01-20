@@ -94,12 +94,12 @@
                                 hoverOutline:1
                             }"
                             :style="{
-                                width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',
+                                width:frameWidth+'px',
                                 verticalAlign:'middle',
-                                height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',
-                                backgroundImage:      'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',
-                                backgroundPositionX:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit)+'px',
-                                backgroundPositionY:  -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit)+'px',
+                                height:frameHeight+'px',
+                                backgroundImage:      'url('+editData.projectName+'/'+resourcePath+')',
+                                backgroundPositionX:  -framePosX+'px',
+                                backgroundPositionY:  -framePosY+'px',
                                 backgroundRepeat:     'no-repeat',
                             }"
                         ></div>
@@ -127,7 +127,7 @@
 
             <div
                 :style="{
-                    width: editData.currSceneInEdit.tileMap._spriteSheet._frameWidth*editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH+'px',
+                    width: frameWidth*numOfFramesH+'px',
                     overflowX: 'auto'
                 }"
                 >
@@ -137,12 +137,12 @@
                         hoverOutline:1
                      }"
                      :style="{
-                        width:editData.currSceneInEdit.tileMap._spriteSheet._frameWidth+'px',
+                        width:frameWidth+'px',
                         verticalAlign:'middle',
-                        height:editData.currSceneInEdit.tileMap._spriteSheet._frameHeight+'px',
-                        backgroundImage:'url('+editData.projectName+'/'+editData.currSceneInEdit.tileMap._spriteSheet.resourcePath+')',
-                        backgroundPositionX:   -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(i)+'px',
-                        backgroundPositionY:   -editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(i)+'px',
+                        height:frameHeight+'px',
+                        backgroundImage:'url('+resourcePath+')',
+                        backgroundPositionX:   -framePosX+'px',
+                        backgroundPositionY:   -framePosY+'px',
                         backgroundRepeat:     'no-repeat',
                      }"
                      :title="i"

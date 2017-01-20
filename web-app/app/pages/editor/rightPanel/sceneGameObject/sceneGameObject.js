@@ -30,6 +30,9 @@ module.exports = Vue.component('app-scene-game-object', {
                 'gameObjectProps',
                 obj.toJSON()
             );
+        },
+        updateEditText: function(){
+            this.editData.currSceneGameObjectInEdit.setText(this.editData.currSceneGameObjectInEdit.text);
         }
     }
 });

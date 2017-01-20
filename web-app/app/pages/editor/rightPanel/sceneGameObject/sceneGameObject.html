@@ -201,7 +201,7 @@
                 <div class="cell">
                 <textarea
                         class="width100"
-                        v-on:change="editGameObject()"
+                        v-on:keyup="updateEditText() || editGameObject()"
                         v-model="editData.currSceneGameObjectInEdit.text"></textarea>
                 </div>
             </div>

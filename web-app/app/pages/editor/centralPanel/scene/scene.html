@@ -1,53 +1,52 @@
-<div>
-    <div v-for="item in editData.currLayerInEdit._gameObjects && editData.currLayerInEdit._gameObjects.rs">
+<div
+        v-if="editData.currLayerInEdit._gameObjects"
+        xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div v-for="item in editData.currLayerInEdit._gameObjects.rs">
 
         <div
-                ng-if="!item.subType"
+                v-if="!item.subType"
                 app-draggable="gameObjectFromSelf"
                 app-context-menu="ctxGameObject"
-                ng-model="item"
-
-                ng-click="editData.currSceneGameObjectInEdit=item"
-                ng-style="utils.merge(
+                v-on:click.capture="editData.currSceneGameObjectInEdit=item"
+                :style="utils.merge(
                             utils.getGameObjectCss(item),
                             {
                                 position:'absolute',
                                 left:
                                      item.fixedToCamera?(item.pos.x+'px'):
                                      item.pos.x -
-                                     (editData.currSceneInEdit.tileMap._spriteSheet._frameWidth||0) *
+                                     frameWidth *
                                      editData.tileMapPosX +
                                      'px',
                                 top:
                                      item.fixedToCamera?(item.pos.y+'px'):
                                      item.pos.y -
-                                     (editData.currSceneInEdit.tileMap._spriteSheet._frameHeight||0) *
+                                     frameHeight *
                                      editData.tileMapPosY +
                                      'px',
                             }
                     )"
-                ng-class="{active:item==editData.currSceneGameObjectInEdit}"
-                >1
+                :class="{active:item==editData.currSceneGameObjectInEdit}"
+                >
+
         </div>
 
         <div
-                ng-if="item.subType=='textField'"
+                v-if="item.subType=='textField'"
                 app-draggable="gameObjectFromSelf"
-                app-context-menu="ctxGameObject"
-                ng-model="item"
-                ng-click="editData.currSceneGameObjectInEdit=item"
-                ng-style="utils.merge(
+                v-on:click.capture="editData.currSceneGameObjectInEdit=item"
+                :style="utils.merge(
                             utils.getGameObjectCss(item),
                             {
                                 position:'absolute',
                                 left:
                                      item.pos.x -
-                                     (editData.currSceneInEdit.tileMap._spriteSheet._frameWidth||0) *
+                                     frameWidth *
                                      editData.tileMapPosX +
                                      'px',
                                 top:
                                      item.pos.y -
-                                     (editData.currSceneInEdit.tileMap._spriteSheet._frameHeight||0) *
+                                     frameHeight *
                                      editData.tileMapPosY +
                                      'px',
                                 backgroundColor:'rgb(0,222,0.1)',
@@ -57,12 +56,12 @@
                                 backgroundImage:'none'
                             }
                     )"
-                ng-class="{active:item==editData.currSceneGameObjectInEdit}"
+                :class="{active:item==editData.currSceneGameObjectInEdit}"
                 >
 
             <div style="position: relative;left:0;top:0;z-index:10">
                             <span
-                                    ng-style="{
+                                :style="{
                                     left:item.pos.x+'px',
                                     top: item.pos.y+'px',
                                     display:ch=='\n'?'block':'inline-block',
@@ -73,7 +72,7 @@
                                     backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',
                                     backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'
                                 }"
-                                    ng-repeat="ch in item._chars track by $index">
+                                    v-for="ch in item._chars">
                                 </span>
             </div>
 
