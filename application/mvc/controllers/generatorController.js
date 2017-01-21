@@ -5,6 +5,7 @@ var UglifyJS = require("uglify-js");
 var ejs = require('ejs');
 var hbs = require('handlebars');
 
+
 var Source = function(){
     var res = [];
     var self = this;
@@ -20,8 +21,9 @@ var Source = function(){
         return path.replace('.js','').split('/').pop();
     };
     var wrapAsCommonJS = function(path,code,params){
+        var mdlName = extractModuleName(path);
         return processTemplate('resources/generatorResources/misc/moduleTemplate.js',{
-            name: extractModuleName(path),
+            name: mdlName,
             code: addLeadTab(code),
             opts:params||{}
         });

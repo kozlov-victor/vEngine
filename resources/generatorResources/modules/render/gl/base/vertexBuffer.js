@@ -5,6 +5,11 @@ var VertexBuffer = function(gl){
     var dataLength;
 
     this.setData = function(bufferData, itemType, itemSize){
+        //<code>{{#if opts.debug}}
+        if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+        if (!itemType) throw 'can not set data to buffer: itemType not specified';
+        if (!itemSize) throw 'can not set data to buffer: itemSize not specified';
+        //<code>{{/if}}
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);

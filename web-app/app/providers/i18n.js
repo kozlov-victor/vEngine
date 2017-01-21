@@ -82,7 +82,8 @@ _i18n.bundle = {
         notSelected: 'not selected',
         fixedToCamera:'fixed to camera',
         preloadingScene: 'preloading scene',
-        startScene: 'start scene'
+        startScene: 'start scene',
+        projects: 'projects'
     }
 };
 

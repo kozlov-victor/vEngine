@@ -123,6 +123,9 @@ input[type=range][orient=vertical] {
 .withPaddingRightX {
   padding-right: 10px;
 }
+.marginAuto {
+  margin: auto;
+}
 .vAlign {
   vertical-align: middle;
 }

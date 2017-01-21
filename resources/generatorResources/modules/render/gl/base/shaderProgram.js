@@ -1,4 +1,7 @@
 function compileShader(gl, shaderSource, shaderType) {
+    //<code>{{#if opts.debug}}
+    if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
+    //<code>{{/if}}
     // Create the shader object
     var shader = gl.createShader(shaderType);
 
@@ -14,8 +17,7 @@ function compileShader(gl, shaderSource, shaderType) {
         // Something went wrong during compilation; get the error
         var lastError = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
-        console.error('*** Error compiling shader ' + shader + ':' + lastError);
-        throw 'Error compiling shader';
+        throw 'Error compiling shader ' + shader + ':' + lastError;
     }
 
     return shader;
@@ -34,9 +36,8 @@ function createProgram(gl, shaders) {
     if (!linked) {
         // something went wrong with the link
         var lastError = gl.getProgramInfoLog(program);
-        console.error("Error in program linking:" + lastError);
         gl.deleteProgram(program);
-        throw 'Error in program linking';
+        throw "Error in program linking:" + lastError;
     }
     return program;
 }
@@ -181,15 +182,21 @@ var ShaderProgram = function(gl,sources){
     this.bindBuffer = function(buffer,uniformLocationName){
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
         var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+
+        //<code>{{#if opts.debug}}
+        if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
+        if (uniformLocation<0) throw "can not found uniform location for " + uniformLocationName;
+        //<code>{{/if}}
+
         gl.enableVertexAttribArray(uniformLocation);
         gl.vertexAttribPointer(
             uniformLocation,
             buffer.getItemSize(),
             buffer.getItemType(),
             false,  // if the content is normalized vectors
-            0,  // number of bytes to skip in between elements
-            0
-        ); // offsets to the first element
+            0,      // number of bytes to skip in between elements
+            0       // offsets to the first element
+        );
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     };
 

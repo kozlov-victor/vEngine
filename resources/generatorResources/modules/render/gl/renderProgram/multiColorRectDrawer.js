@@ -1,4 +1,5 @@
 
+var Plane = require('plane');
 
 var bundle = require('bundle');
 var ShaderProgram = require('shaderProgram');
@@ -9,6 +10,7 @@ var IndexBuffer = require('indexBuffer');
 var MultiColorRectDrawer = function(gl){
 
     var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
+    var plane = new Plane();
 
     this.bind = function(colors){
         vertexColorBuffer.setData(colors,gl.FLOAT,4);
@@ -36,12 +38,7 @@ var MultiColorRectDrawer = function(gl){
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
-        posVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
+        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
         program.bindBuffer(posVertexBuffer,'a_position');
 
 
@@ -55,9 +52,7 @@ var MultiColorRectDrawer = function(gl){
         program.bindBuffer(vertexColorBuffer,'a_color');
 
         posIndexBuffer = new IndexBuffer(gl);
-        posIndexBuffer.setData([
-            0,1,2,3
-        ]);
+        posIndexBuffer.setData(plane.indexArr);
 
     })();
 

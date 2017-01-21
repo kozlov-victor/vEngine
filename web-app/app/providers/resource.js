@@ -27,6 +27,11 @@ var Resource = function(){
             editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
         });
     };
+    this.getProjects = function(callback){
+        http.get('/getProjects',{},function(projects){
+            callback(projects);
+        });
+    };
     this.loadProject = function(projectName){
         editData.reset();
         editData.projectName = projectName;
@@ -294,7 +299,7 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'slots';
+        sessionStorage.projectName = 'cube';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

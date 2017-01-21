@@ -4863,10 +4863,137 @@ modules['vertexBuffer'] =
 	
 	module.exports = VertexBuffer;
 }};
+modules['abstractPrimitive'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var Class = require('class');
+	
+	var AbstractPrimitive = Class.extend({
+	    vertexArr:null,
+	    indexArr:null,
+	    texCoordArr:null,
+	    normalArr:null
+	});
+	
+	module.exports = AbstractPrimitive;
+}};
+modules['plane'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var Plane = AbstractPrimitive.extend({
+	    construct: function(){
+	        this.vertexArr = [
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ];
+	        this.indexArr = [0,1,2,3];
+	        this.texCoordArr = [
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ];
+	    }
+	});
+	
+	module.exports = Plane;
+}};
+modules['sphere'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var prepareBuffers = function(radius){
+	    var latitudeBands = 30;
+	    var longitudeBands = 30;
+	
+	    var vertexArr = [];
+	    var normalArr = [];
+	    var texCoordArr = [];
+	    for (var latNumber=0; latNumber <= latitudeBands; latNumber++) {
+	        var theta = latNumber * Math.PI / latitudeBands;
+	        var sinTheta = Math.sin(theta);
+	        var cosTheta = Math.cos(theta);
+	
+	        for (var longNumber=0; longNumber <= longitudeBands; longNumber++) {
+	            var phi = longNumber * 2 * Math.PI / longitudeBands;
+	            var sinPhi = Math.sin(phi);
+	            var cosPhi = Math.cos(phi);
+	
+	            var x = cosPhi * sinTheta;
+	            var y = cosTheta;
+	            var z = sinPhi * sinTheta;
+	            var u = 1 - (longNumber / longitudeBands);
+	            var v = 1 - (latNumber / latitudeBands);
+	
+	            normalArr.push(x);
+	            normalArr.push(y);
+	            normalArr.push(z);
+	            texCoordArr.push(u);
+	            texCoordArr.push(v);
+	            vertexArr.push(radius * x);
+	            vertexArr.push(radius * y);
+	            vertexArr.push(radius * z);
+	        }
+	    }
+	
+	    var indexArr = [];
+	    for (latNumber=0; latNumber < latitudeBands; latNumber++) {
+	        for (longNumber=0; longNumber < longitudeBands; longNumber++) {
+	            var first = (latNumber * (longitudeBands + 1)) + longNumber;
+	            var second = first + longitudeBands + 1;
+	            indexArr.push(first);
+	            indexArr.push(second);
+	            indexArr.push(first + 1);
+	
+	            indexArr.push(second);
+	            indexArr.push(second + 1);
+	            indexArr.push(first + 1);
+	        }
+	    }
+	
+	    return {
+	        vertexArr:vertexArr,
+	        normalArr: normalArr,
+	        texCoordArr: texCoordArr,
+	        indexArr: indexArr
+	    }
+	
+	};
+	
+	var Sphere = AbstractPrimitive.extend({
+	    construct: function(r){
+	        r=r||1;
+	        var bufferArrs = prepareBuffers(r);
+	        this.vertexArr = bufferArrs.vertexArr;
+	        this.normalArr = bufferArrs.normalArr;
+	        this.texCoordArr = bufferArrs.texCoordArr;
+	        this.indexArr = bufferArrs.indexArr;
+	    }
+	});
+	
+	module.exports = Sphere;
+	
+	
+	
+	
+	
+	
+	
+}};
 modules['colorRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
+	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
 	
@@ -4876,6 +5003,7 @@ modules['colorRectDrawer'] =
 	var ColorRectDrawer = function(gl){
 	
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(){
 	        posIndexBuffer.bind();
@@ -4901,18 +5029,11 @@ modules['colorRectDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	    })();
 	
@@ -4920,7 +5041,7 @@ modules['colorRectDrawer'] =
 	
 	module.exports = ColorRectDrawer;
 }};
-modules['model3dDrawer'] =
+modules['modelDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	// todo
@@ -4930,6 +5051,7 @@ modules['multiColorRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
 	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
@@ -4940,6 +5062,7 @@ modules['multiColorRectDrawer'] =
 	var MultiColorRectDrawer = function(gl){
 	
 	    var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(colors){
 	        vertexColorBuffer.setData(colors,gl.FLOAT,4);
@@ -4967,12 +5090,7 @@ modules['multiColorRectDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	
@@ -4986,9 +5104,7 @@ modules['multiColorRectDrawer'] =
 	        program.bindBuffer(vertexColorBuffer,'a_color');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	    })();
 	
@@ -5045,6 +5161,8 @@ modules['textureDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
+	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
 	
@@ -5056,6 +5174,7 @@ modules['textureDrawer'] =
 	    var self = this;
 	
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(){
 	        program.bind();
@@ -5082,26 +5201,14 @@ modules['textureDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	        texVertexBuffer = new VertexBuffer(gl);
-	        texVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        texVertexBuffer.setData(plane.texCoordArr,gl.FLOAT,2);
 	        program.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        self.bind();

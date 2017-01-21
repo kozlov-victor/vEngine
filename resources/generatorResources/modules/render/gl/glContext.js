@@ -2,8 +2,9 @@
 var mat4 = require('mat4');
 var utils = require('utils');
 var ColorRectDrawer = require('colorRectDrawer');
-var TextureDrawer = require('textureDrawer');
+var SpriteRectDrawer = require('spriteRectDrawer');
 var PolyLineDrawer = require('polyLineDrawer');
+var ModelDrawer = require('modelDrawer');
 var Texture = require('texture');
 var MatrixStack = require('matrixStack');
 var FrameBuffer = require('frameBuffer');
@@ -29,22 +30,23 @@ var GlContext = Class.extend(function(it){
     var gl;
     var mScaleX = 1, mScaleY = 1;
     var alpha = 1;
-    var textureDrawer, colorRectDrawer, polyLineDrawer;
+    var spriteRectDrawer, colorRectDrawer, polyLineDrawer, modelDrawer;
     var matrixStack = new MatrixStack();
     var frameBuffer;
     var gameProps;
     var colorBGDefault = [255,255,255];
     var scene = null;
-    var SCENE_DEPTH = 1;
+    var SCENE_DEPTH = 1000;
 
     it.init = function(canvas){
 
         gameProps = bundle.gameProps;
         gl = getCtx(canvas);
 
-        textureDrawer = new TextureDrawer(gl);
+        spriteRectDrawer = new SpriteRectDrawer(gl);
         colorRectDrawer = new ColorRectDrawer(gl);
         polyLineDrawer = new PolyLineDrawer(gl);
+        modelDrawer = new ModelDrawer(gl);
 
         frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
 
@@ -62,44 +64,36 @@ var GlContext = Class.extend(function(it){
     };
 
     it.getError = function(){
-        return 0;
         var err = gl.getError();
+        //return 0;
         return err==gl.NO_ERROR?0:err;
     };
 
     var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-        // this matrix will convert from pixels to clip space
-        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
-        //var projectionMatrix = mat4.make3DProjection(3,viewWidth,viewHeight, 10,100);
-        // this matrix will scale our 1 unit quad
-        // from 1 unit to dstWidth, dstHeight units
-        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
 
-        // this matrix will translate our quad to dstX, dstY
+        var zToWMatrix = mat4.makeZToWMatrix(1);
+        var projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
+
+        //var projectionMatrix = mat4.perspective(12,viewWidth / viewHeight,-1000,1000);
+        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
         var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
 
-        // multiply them all togehter
         var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
         matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
         matrix = mat4.matrixMultiply(matrix, projectionMatrix);
-        window.m = matrix;
+        matrix = mat4.matrixMultiply(matrix, zToWMatrix);
         return matrix;
     };
 
     var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
-        // Because texture coordinates go from 0 to 1
-        // and because our texture coordinates are already a unit quad
-        // we can select an area of the texture by scaling the unit quad
-        // down
+
         var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
         var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
 
-        // multiply them together
         return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
     };
 
     var currTex = null;
-
 
     it.drawImage = function(
         texture,
@@ -131,16 +125,34 @@ var GlContext = Class.extend(function(it){
             currTex = texture;
         }
 
-        textureDrawer.bind();
-        textureDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-        textureDrawer.setUniform("u_matrix",makePositionMatrix(
+
+
+        spriteRectDrawer.bind();
+        spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
+        spriteRectDrawer.setUniform("u_matrix",makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
                 gameProps.width,gameProps.height,1,1
             )
         );
-        textureDrawer.setUniform('u_alpha',alpha);
-        textureDrawer.draw();
-        textureDrawer.unbind();
+        spriteRectDrawer.setUniform('u_alpha',alpha);
+        spriteRectDrawer.draw();
+        spriteRectDrawer.unbind();
+    };
+
+    it.drawModel = function(model,texture){
+        modelDrawer.bind(model);
+        texture.bind();
+
+        modelDrawer.setUniform("u_matrix",makePositionMatrix(
+                0,0,1,1,
+                gameProps.width,gameProps.height,1,1
+            )
+        );
+
+        modelDrawer.setUniform('u_alpha',1);
+        gl.enable(gl.DEPTH_TEST);
+        modelDrawer.draw();
+        modelDrawer.unbind();
     };
 
     it.lockRect = function(rect) {
@@ -160,7 +172,7 @@ var GlContext = Class.extend(function(it){
     it.clear = function() {
         var col = scene.useBG?scene.colorBG:colorBGDefault;
         gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo
     };
 
     var fillRect = function (x, y, w, h, color) {
@@ -252,10 +264,10 @@ var GlContext = Class.extend(function(it){
         gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
         frameBuffer.getTexture().bind();
 
-        textureDrawer.bind();
+        spriteRectDrawer.bind();
 
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-            textureDrawer.setUniform('u_matrix',
+            spriteRectDrawer.setUniform('u_matrix',
                 makePositionMatrix(
                     gameProps.globalScale.left,gameProps.globalScale.top,
                     gameProps.width, gameProps.height,
@@ -264,7 +276,7 @@ var GlContext = Class.extend(function(it){
                 )
             );
         } else {
-            textureDrawer.setUniform('u_matrix',
+            spriteRectDrawer.setUniform('u_matrix',
                 makePositionMatrix(
                     0,0,
                     gameProps.width, gameProps.height,
@@ -274,16 +286,16 @@ var GlContext = Class.extend(function(it){
             );
         }
 
-        textureDrawer.setUniform('u_textureMatrix',
+        spriteRectDrawer.setUniform('u_textureMatrix',
             makeTextureMatrix(
                 0,0,gameProps.canvasWidth,gameProps.canvasHeight,
                 gameProps.canvasWidth,gameProps.canvasHeight
             )
         );
-        textureDrawer.setUniform('u_alpha',1);
+        spriteRectDrawer.setUniform('u_alpha',1);
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        textureDrawer.draw();
+        spriteRectDrawer.draw();
         this.restore();
     };
 

@@ -1,15 +1,18 @@
 
+var Plane = require('plane');
+
 var bundle = require('bundle');
 var ShaderProgram = require('shaderProgram');
 
 var VertexBuffer = require('vertexBuffer');
 var IndexBuffer = require('indexBuffer');
 
-var CommonTextureDrawer = function(gl){
+var SpriteRectDrawer = function(gl){
 
     var self = this;
 
     var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+    var plane = new Plane();
 
     this.bind = function(){
         program.bind();
@@ -36,26 +39,14 @@ var CommonTextureDrawer = function(gl){
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
-        posVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
+        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
         program.bindBuffer(posVertexBuffer,'a_position');
 
         posIndexBuffer = new IndexBuffer(gl);
-        posIndexBuffer.setData([
-            0,1,2,3
-        ]);
+        posIndexBuffer.setData(plane.indexArr);
 
         texVertexBuffer = new VertexBuffer(gl);
-        texVertexBuffer.setData([
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ],gl.FLOAT,2);
+        texVertexBuffer.setData(plane.texCoordArr,gl.FLOAT,2);
         program.bindBuffer(texVertexBuffer,'a_texcoord');
 
         self.bind();
@@ -65,4 +56,4 @@ var CommonTextureDrawer = function(gl){
 
 };
 
-module.exports = CommonTextureDrawer;
+module.exports = SpriteRectDrawer;
