@@ -372,6 +372,9 @@ label,
 .split {
   border-radius: 2px;
 }
+.hoverOnProjectRow:hover {
+  outline: 1px solid #00cd4d;
+}
 .active {
   outline: 1px solid green;
 }

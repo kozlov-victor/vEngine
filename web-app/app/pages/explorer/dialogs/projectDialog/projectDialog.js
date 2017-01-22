@@ -23,43 +23,25 @@ module.exports.component = Vue.component('app-project-dialog', {
 
     },
     methods: {
-
+        createOrEditProject: function(proj){
+            if (proj.oldName) {
+                resource.renameFolder(
+                    'workspace/'+proj.oldName,
+                    'workspace/'+proj.name,
+                    function(){
+                        resource.getProjects(function(list){
+                                editData.projects = list;
+                            }
+                        );
+                    });
+            } else  {
+                resource.createProject(proj.name,function(){
+                    resource.getProjects(function(list){
+                        editData.projects = list;
+                    });
+                });
+            }
+            this.close();
+        }
     }
 });
-
-
-
-//s.openProject = function(project){
-//    resourceDao.loadProject(project.name);
-//};
-//
-//s.createOrEditProject = function(proj){
-//    if (proj.name && proj.oldName) {
-//        resourceDao.renameFolder(
-//            'workspace/'+proj.oldName,
-//            'workspace/'+proj.name,
-//            function(){
-//                resourceDao.getProjects(function(list){
-//                        editData.projects = list;
-//                        uiHelper.closeDialog();
-//                    }
-//                );
-//            });
-//    } else if (proj.name) {
-//        resourceDao.createProject(proj.name,function(){
-//            resourceDao.getProjects(function(list){
-//                editData.projects = list;
-//                uiHelper.closeDialog();
-//            });
-//        });
-//    }
-//};
-//
-//s.deleteProject = function(proj){
-//    resourceDao.deleteFolder('workspace/'+proj.name,function(){
-//        resourceDao.getProjects(function(list){
-//            editData.projects = list;
-//            uiHelper.closeDialog();
-//        })
-//    });
-//};

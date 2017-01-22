@@ -14,7 +14,7 @@
             </td>
         </tr>
     </table>
-    <button ng-click="createOrEditProject(editData.currProjectInEdit)">
+    <button v-on:click="createOrEditProject(editData.currProjectInEdit)">
         {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}
     </button>
 

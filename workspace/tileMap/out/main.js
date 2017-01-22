@@ -741,7 +741,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   // gl_PointSize = 1;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColor":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
+	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}","vertex2.vert":"attribute vec4 a_position;\r\nattribute vec2 a_texcoord;\r\n//attribute vec4 a_normal;\r\n\r\nuniform mat4 u_matrix;\r\n\r\nvarying vec2 v_texcoord;\r\n//varying float v_directionLightFactor;\r\n\r\nvoid main() {\r\n\r\n  gl_Position = u_matrix * a_position;\r\n  v_texcoord = a_texcoord;\r\n  //v_directionLightFactor = dot(a_normal,vec4(1.0,0,0,0));\r\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColor":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","fragment2.frag":"precision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n//varying float v_directionLightFactor;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\n\r\n\r\nvoid main() {\r\n    gl_FragColor = texture2D(texture, v_texcoord);\r\n    //gl_FragColor.r = v_directionLightFactor;\r\n    gl_FragColor.a *= u_alpha;\r\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -1679,6 +1679,15 @@ modules['mat4'] =
 	    ];
 	};
 	
+	exports.makeZToWMatrix = function(fudgeFactor) {
+	    return [
+	        1, 0, 0, 0,
+	        0, 1, 0, 0,
+	        0, 0, 1, fudgeFactor,
+	        0, 0, 0, 1
+	    ];
+	};
+	
 	exports.make2DProjection = function(width, height, depth) {
 	    // Note: This matrix flips the Y axis so 0 is at the top.
 	    return [
@@ -1714,20 +1723,33 @@ modules['mat4'] =
 	    return out;
 	};
 	
+	exports.perspective = function (fovy, aspect, near, far) {
+	    var f = 1.0 / Math.tan(fovy / 2),
+	        nf = 1 / (near - far);
+	    var out = [];
 	
+	    out[0] = f / aspect;
+	    out[1] = 0;
+	    out[2] = 0;
+	    out[3] = 0;
 	
-	exports.make3DProjection = function(fieldOfViewInRadians, width, height, near, far){
-	    var aspect = width / height;
-	    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
-	    var rangeInv = 1.0 / (near - far);
+	    out[4] = 0;
+	    out[5] = f;
+	    out[6] = 0;
+	    out[7] = 0;
 	
-	    return [
-	        f / aspect, 0, 0, 0,
-	        0, f, 0, 0,
-	        0, 0, (near + far) * rangeInv, -1,
-	        0, 0, near * far * rangeInv * 2, 0
-	    ];
+	    out[8] = 0;
+	    out[9] = 0;
+	    out[10] = (far + near) * nf;
+	    out[11] = -1;
+	
+	    out[12] = 0;
+	    out[13] = 0;
+	    out[14] = (2 * far * near) * nf;
+	    out[15] = 0;
+	    return out;
 	};
+	
 	
 	exports.makeTranslation = function(tx, ty, tz) {
 	    return [
@@ -2633,7 +2655,13 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
-	var a = 0;
+	//var Sphere = require('sphere');
+	//var Cube = require('cube');
+	//var TeaPot = require('teaPot');
+	//var model = new TeaPot({radius:100,size:50});
+	//
+	//var a = 0;
+	
 	var _draw = function(ctx,self,x,y){
 	    ctx.drawImage(
 	        resourceCache.get(self._spriteSheet.resourcePath),
@@ -2644,8 +2672,15 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
+	
+	    //ctx.scale(10,10,5);
+	    //ctx.rotateY(a);
+	    //ctx.rotateZ(a);
+	    //a+=0.01;
+	    //ctx.drawModel(model,resourceCache.get(self._spriteSheet.resourcePath));
+	
 	    //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
-	    ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
+	    //ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -3716,372 +3751,15 @@ modules['scaleManager'] =
 	
 	
 }};
-modules['glContext'] =
-    {code: function(module){
-    var exports = module.exports;
-    	
-	var mat4 = require('mat4');
-	var utils = require('utils');
-	var ColorRectDrawer = require('colorRectDrawer');
-	var TextureDrawer = require('textureDrawer');
-	var PolyLineDrawer = require('polyLineDrawer');
-	var Texture = require('texture');
-	var MatrixStack = require('matrixStack');
-	var FrameBuffer = require('frameBuffer');
-	var bundle = require('bundle');
-	var cache = require('resourceCache');
-	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
-	var Class = require('class');
-	
-	
-	var getCtx = function(el){
-	    if (!el) el = document.createElement('canvas');
-	    if (!el) return null;
-	    return (
-	        el.getContext("webgl",{alpha: false}) ||
-	        el.getContext('experimental-webgl',{alpha: false}) ||
-	        el.getContext('webkit-3d',{alpha: false}) ||
-	        el.getContext('moz-webgl',{alpha: false})
-	    );
-	};
-	
-	var GlContext = Class.extend(function(it){
-	
-	    var gl;
-	    var mScaleX = 1, mScaleY = 1;
-	    var alpha = 1;
-	    var textureDrawer, colorRectDrawer, polyLineDrawer;
-	    var matrixStack = new MatrixStack();
-	    var frameBuffer;
-	    var gameProps;
-	    var colorBGDefault = [255,255,255];
-	    var scene = null;
-	    var SCENE_DEPTH = 1;
-	
-	    it.init = function(canvas){
-	
-	        gameProps = bundle.gameProps;
-	        gl = getCtx(canvas);
-	
-	        textureDrawer = new TextureDrawer(gl);
-	        colorRectDrawer = new ColorRectDrawer(gl);
-	        polyLineDrawer = new PolyLineDrawer(gl);
-	
-	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
-	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.enable(gl.BLEND);
-	
-	    };
-	
-	    it.setScene = function(_scene){
-	        scene = _scene;
-	    };
-	
-	    it.setAlpha = function(_alpha) {
-	        alpha = _alpha;
-	    };
-	
-	    it.getError = function(){
-	        return 0;
-	        var err = gl.getError();
-	        return err==gl.NO_ERROR?0:err;
-	    };
-	
-	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-	        // this matrix will convert from pixels to clip space
-	        var projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,0, SCENE_DEPTH);
-	        //var projectionMatrix = mat4.make3DProjection(3,viewWidth,viewHeight, 10,100);
-	        // this matrix will scale our 1 unit quad
-	        // from 1 unit to dstWidth, dstHeight units
-	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
-	
-	        // this matrix will translate our quad to dstX, dstY
-	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
-	
-	        // multiply them all togehter
-	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
-	        matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
-	        matrix = mat4.matrixMultiply(matrix, projectionMatrix);
-	        return matrix;
-	    };
-	
-	    var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
-	        // Because texture coordinates go from 0 to 1
-	        // and because our texture coordinates are already a unit quad
-	        // we can select an area of the texture by scaling the unit quad
-	        // down
-	        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
-	
-	        // multiply them together
-	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
-	    };
-	
-	    var currTex = null;
-	
-	
-	    it.drawImage = function(
-	        texture,
-	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY
-	    ) {
-	
-	        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-	        //gl.blendColor(0, 0.5, 1, 1);
-	
-	        var texWidth = texture.getSize().width;
-	        var texHeight = texture.getSize().height;
-	
-	        if (dstX === undefined) {
-	            dstX = srcX;
-	        }
-	        if (dstY === undefined) {
-	            dstY = srcY;
-	        }
-	        if (srcWidth === undefined) {
-	            srcWidth = texWidth;
-	        }
-	        if (srcHeight === undefined) {
-	            srcHeight = texHeight;
-	        }
-	
-	        if (currTex!=texture){
-	            texture.bind();
-	            currTex = texture;
-	        }
-	
-	        textureDrawer.bind();
-	        textureDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	        textureDrawer.setUniform("u_matrix",makePositionMatrix(
-	                dstX,dstY,srcWidth,srcHeight,
-	                gameProps.width,gameProps.height,1,1
-	            )
-	        );
-	        textureDrawer.setUniform('u_alpha',alpha);
-	        textureDrawer.draw();
-	        textureDrawer.unbind();
-	    };
-	
-	    it.lockRect = function(rect) {
-	        gl.enable(gl.SCISSOR_TEST);
-	        gl.scissor(
-	            rect.x,
-	            gameProps.height - rect.y - rect.height,
-	            rect.width,
-	            rect.height
-	        );
-	    };
-	
-	    it.unlockRect = function(){
-	        gl.disable(gl.SCISSOR_TEST);
-	    };
-	
-	    it.clear = function() {
-	        var col = scene.useBG?scene.colorBG:colorBGDefault;
-	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
-	        gl.clear(gl.COLOR_BUFFER_BIT);
-	    };
-	
-	    var fillRect = function (x, y, w, h, color) {
-	
-	        colorRectDrawer.bind();
-	        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
-	                x,y,w,h,
-	                gameProps.width,gameProps.height,1,1
-	            )
-	        );
-	        colorRectDrawer.setUniform("u_rgba",color);
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        colorRectDrawer.draw();
-	        colorRectDrawer.unbind();
-	    };
-	
-	    it.fillRect = fillRect;
-	
-	    it.strokeRect = function (x, y, w, h, color) {
-	        fillRect(x, y, w, 1, color);
-	        fillRect(x, y + h, w, 1, color);
-	        fillRect(x, y, 1, h, color);
-	        fillRect(x + w, y, 1, h, color);
-	    };
-	
-	    it.point = function (x, y, color) {
-	        this.fillRect(x, y, 1, 1, color);
-	    };
-	
-	    it.polyLine = function(vertexArr,color) {
-	        polyLineDrawer.bind(vertexArr);
-	        polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
-	                0,0,1,1,
-	                gameProps.width,gameProps.height,1,1
-	            )
-	        );
-	        polyLineDrawer.setUniform("u_rgba",color);
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        polyLineDrawer.draw();
-	        polyLineDrawer.unbind();
-	    };
-	
-	    it.save = function() {
-	        matrixStack.save();
-	    };
-	
-	    it.scale = function(x,y) {
-	        matrixStack.scale(x,y);
-	    };
-	
-	    it.rotateZ = function(angleInRadians) {
-	        matrixStack.rotateZ(angleInRadians);
-	    };
-	
-	    it.rotateY = function(angleInRadians) {
-	        matrixStack.rotateY(angleInRadians);
-	    };
-	
-	    it.translate = function(x,y){
-	        matrixStack.translate(x,y);
-	    };
-	
-	    it.restore = function(){
-	        matrixStack.restore();
-	    };
-	
-	    it.rescaleView = function(scaleX,scaleY){
-	        mScaleX = scaleX;
-	        mScaleY = scaleY;
-	    };
-	
-	    it.beginFrameBuffer = function(){
-	        this.save();
-	        gl.viewport(0, 0, gameProps.width, gameProps.height);
-	        frameBuffer.bind();
-	    };
-	
-	    it.getNativeContext = function(){
-	        return gl;
-	    };
-	
-	    it.flipFrameBuffer = function(){
-	        currTex = null;
-	        this.restore();
-	        this.save();
-	        this.translate(0,gameProps.canvasHeight);
-	        this.scale(1,-1);
-	        frameBuffer.unbind();
-	        this.clear();
-	        gl.clearColor(1,1,1,1);
-	        gl.clear(gl.COLOR_BUFFER_BIT);
-	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
-	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
-	
-	        textureDrawer.bind();
-	
-	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            textureDrawer.setUniform('u_matrix',
-	                makePositionMatrix(
-	                    gameProps.globalScale.left,gameProps.globalScale.top,
-	                    gameProps.width, gameProps.height,
-	                    gameProps.canvasWidth,gameProps.canvasHeight,
-	                    mScaleX,mScaleY
-	                )
-	            );
-	        } else {
-	            textureDrawer.setUniform('u_matrix',
-	                makePositionMatrix(
-	                    0,0,
-	                    gameProps.width, gameProps.height,
-	                    gameProps.canvasWidth,gameProps.canvasHeight,
-	                    mScaleX,mScaleY
-	                )
-	            );
-	        }
-	
-	        textureDrawer.setUniform('u_textureMatrix',
-	            makeTextureMatrix(
-	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
-	                gameProps.canvasWidth,gameProps.canvasHeight
-	            )
-	        );
-	        textureDrawer.setUniform('u_alpha',1);
-	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        textureDrawer.draw();
-	        this.restore();
-	    };
-	
-	    var self = it;
-	
-	},{
-	    isAcceptable: function(){
-	        return !!getCtx();
-	    },
-	    loadTextureInfo:function(url,opts,progress,callBack) {
-	        if (cache.has(url)) {
-	            callBack(cache.get(url));
-	            return;
-	        }
-	
-	        var img = new Image();
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
-	        var gl = require('renderer').getContext().getNativeContext();
-	        var texture = new Texture(gl, img);
-	
-	        if (opts.type == 'base64') {
-	            url = utils.getBase64prefix('image', opts.fileName) + url;
-	            img.src = url;
-	            texture.apply(img);
-	            callBack(texture);
-	            return;
-	        }
-	
-	        utils.loadBinary(url, progress, function (buffer) {
-	            if (window.Blob && window.URL) {
-	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
-	                img.src = URL.createObjectURL(blob);
-	            } else {
-	                var base64String = utils.arrayBufferToBase64(buffer);
-	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
-	                img.src = base64String;
-	            }
-	            img.onload = function () {
-	                texture.apply(img);
-	                callBack(texture);
-	            };
-	
-	        });
-	    }
-	});
-	
-	module.exports = GlContext;
-	
-	
-	
-	
-	//canvas.addEventListener('webglcontextlost', function(e) {
-	//    // the default is to do nothing. Preventing the default
-	//    // means allowing context to be restored
-	//    e.preventDefault();
-	//    var div = document.createElement("div");
-	//    div.className = "contextlost";
-	//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
-	//    div.addEventListener('click', function() {
-	//        window.location.reload();
-	//    });
-	//    document.body.appendChild(div);
-	//});
-	//canvas.addEventListener('webglcontextrestored', function() {
-	//    // just reload the page. Easiest.
-	//    window.location.reload();
-	//});
-}};
 modules['frameBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Texture = require('texture');
+	
 	var FrameBuffer = function(gl,width,height){
 	
-	    var glTexture;
+	    var texture;
 	    var glRenderBuffer;
 	    var glFrameBuffer;
 	
@@ -4094,21 +3772,17 @@ modules['frameBuffer'] =
 	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	    };
 	
-	    this.getGlTexture = function(){
-	        return glTexture;
+	    this.getTexture = function(){
+	        return texture;
 	    };
 	
 	
 	    (function(){
+	        if (!gl) throw "can not create frameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
 	
 	        //1. Init Color Texture
-	        glTexture = gl.createTexture();
-	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        texture = new Texture(gl);
+	        texture.setImage(null,width,height);
 	        //2. Init Render Buffer
 	        glRenderBuffer = gl.createRenderbuffer();
 	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
@@ -4116,10 +3790,10 @@ modules['frameBuffer'] =
 	        //3. Init Frame Buffer
 	        glFrameBuffer = gl.createFramebuffer();
 	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
+	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture.getGlTexture(), 0);
 	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
 	        //4. Clean up
-	        gl.bindTexture(gl.TEXTURE_2D, null);
+	        texture.unbind();
 	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	
@@ -4140,6 +3814,7 @@ modules['indexBuffer'] =
 	    var dataLength;
 	
 	    this.setData = function(bufferData){
+	        if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
 	        dataLength = bufferData.length;
 	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 	        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
@@ -4242,6 +3917,7 @@ modules['shaderProgram'] =
     {code: function(module){
     var exports = module.exports;
     	function compileShader(gl, shaderSource, shaderType) {
+	    if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
 	    // Create the shader object
 	    var shader = gl.createShader(shaderType);
 	
@@ -4257,8 +3933,7 @@ modules['shaderProgram'] =
 	        // Something went wrong during compilation; get the error
 	        var lastError = gl.getShaderInfoLog(shader);
 	        gl.deleteShader(shader);
-	        console.error('*** Error compiling shader ' + shader + ':' + lastError);
-	        throw 'Error compiling shader';
+	        throw 'Error compiling shader ' + shader + ':' + lastError;
 	    }
 	
 	    return shader;
@@ -4277,9 +3952,8 @@ modules['shaderProgram'] =
 	    if (!linked) {
 	        // something went wrong with the link
 	        var lastError = gl.getProgramInfoLog(program);
-	        console.error("Error in program linking:" + lastError);
 	        gl.deleteProgram(program);
-	        throw 'Error in program linking';
+	        throw "Error in program linking:" + lastError;
 	    }
 	    return program;
 	}
@@ -4424,15 +4098,19 @@ modules['shaderProgram'] =
 	    this.bindBuffer = function(buffer,uniformLocationName){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
 	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	
+	        if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
+	        if (uniformLocation<0) throw "can not found uniform location for " + uniformLocationName;
+	
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
 	            buffer.getItemSize(),
 	            buffer.getItemType(),
 	            false,  // if the content is normalized vectors
-	            0,  // number of bytes to skip in between elements
-	            0
-	        ); // offsets to the first element
+	            0,      // number of bytes to skip in between elements
+	            0       // offsets to the first element
+	        );
 	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	    };
 	
@@ -4448,19 +4126,30 @@ modules['texture'] =
 	    return (value & (value - 1)) == 0;
 	};
 	
-	var Texture = function(gl,img){
+	var Texture = function(gl){
 	
 	    var tex;
 	    var size;
 	
 	    this.isPowerOfTwo = false;
 	
-	    this.apply = function(){
-	        size = {width:img.width,height:img.height};
+	    /**
+	     * @param img - if image is null, width and height must be specified
+	     * @param width -unused if image specified
+	     * @param height -unused if image specified
+	     */
+	    this.setImage = function(img,width,height){
+	        if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+	
+	        if (img) size = {width:img.width,height:img.height};
 	        this.bind();
 	        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-	        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
+	        if (img) {
+	            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	        } else {
+	            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        }
+	        this.isPowerOfTwo = img && isPowerOf2(img.width) && isPowerOf2(img.height);
 	        // Check if the image is a power of 2 in both dimensions.
 	        if (this.isPowerOfTwo) {
 	            gl.generateMipmap(gl.TEXTURE_2D);
@@ -4473,12 +4162,17 @@ modules['texture'] =
 	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	        }
 	        gl.bindTexture(gl.TEXTURE_2D, null);
+	
 	    };
 	
 	    this.bind = function(i) {
 	        //gl.activeTexture(gl.TEXTURE0+i);
 	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	        // gl.uniform1i(uName, i);
+	    };
+	
+	    this.unbind = function(i) {
+	        gl.bindTexture(gl.TEXTURE_2D, null);
 	    };
 	
 	    this.getSize = function(){
@@ -4490,6 +4184,7 @@ modules['texture'] =
 	    };
 	
 	    (function(){
+	        if (!gl) throw "can not create texture, gl context not passed to constructor, expected: Texture(gl)";
 	        tex = gl.createTexture();
 	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	        // Fill the texture with a 1x1 blue pixel.
@@ -4514,6 +4209,9 @@ modules['vertexBuffer'] =
 	    var dataLength;
 	
 	    this.setData = function(bufferData, itemType, itemSize){
+	        if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+	        if (!itemType) throw 'can not set data to buffer: itemType not specified';
+	        if (!itemSize) throw 'can not set data to buffer: itemSize not specified';
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -4546,10 +4244,659 @@ modules['vertexBuffer'] =
 	
 	module.exports = VertexBuffer;
 }};
+modules['glContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var mat4 = require('mat4');
+	var utils = require('utils');
+	var ColorRectDrawer = require('colorRectDrawer');
+	var SpriteRectDrawer = require('spriteRectDrawer');
+	var PolyLineDrawer = require('polyLineDrawer');
+	var ModelDrawer = require('modelDrawer');
+	var Texture = require('texture');
+	var MatrixStack = require('matrixStack');
+	var FrameBuffer = require('frameBuffer');
+	var bundle = require('bundle');
+	var cache = require('resourceCache');
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	var Class = require('class');
+	
+	
+	var getCtx = function(el){
+	    if (!el) el = document.createElement('canvas');
+	    if (!el) return null;
+	    return (
+	        el.getContext("webgl",{alpha: false}) ||
+	        el.getContext('experimental-webgl',{alpha: false}) ||
+	        el.getContext('webkit-3d',{alpha: false}) ||
+	        el.getContext('moz-webgl',{alpha: false})
+	    );
+	};
+	
+	var GlContext = Class.extend(function(it){
+	
+	    var gl;
+	    var mScaleX = 1, mScaleY = 1;
+	    var alpha = 1;
+	    var spriteRectDrawer, colorRectDrawer, polyLineDrawer, modelDrawer;
+	    var matrixStack = new MatrixStack();
+	    var frameBuffer;
+	    var gameProps;
+	    var colorBGDefault = [255,255,255];
+	    var scene = null;
+	    var SCENE_DEPTH = 1000;
+	
+	    it.init = function(canvas){
+	
+	        gameProps = bundle.gameProps;
+	        gl = getCtx(canvas);
+	
+	        spriteRectDrawer = new SpriteRectDrawer(gl);
+	        colorRectDrawer = new ColorRectDrawer(gl);
+	        polyLineDrawer = new PolyLineDrawer(gl);
+	        modelDrawer = new ModelDrawer(gl);
+	
+	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        gl.enable(gl.BLEND);
+	
+	    };
+	
+	    it.setScene = function(_scene){
+	        scene = _scene;
+	    };
+	
+	    it.setAlpha = function(_alpha) {
+	        alpha = _alpha;
+	    };
+	
+	    it.getError = function(){
+	        var err = gl.getError();
+	        //return 0;
+	        return err==gl.NO_ERROR?0:err;
+	    };
+	
+	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
+	
+	        var zToWMatrix = mat4.makeZToWMatrix(1);
+	        var projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
+	
+	        //var projectionMatrix = mat4.perspective(12,viewWidth / viewHeight,-1000,1000);
+	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
+	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
+	
+	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
+	        matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
+	        matrix = mat4.matrixMultiply(matrix, projectionMatrix);
+	        matrix = mat4.matrixMultiply(matrix, zToWMatrix);
+	        return matrix;
+	    };
+	
+	    var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
+	
+	        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
+	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+	
+	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
+	    };
+	
+	    var currTex = null;
+	
+	    it.drawImage = function(
+	        texture,
+	        srcX, srcY, srcWidth, srcHeight,
+	        dstX, dstY
+	    ) {
+	
+	        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendColor(0, 0.5, 1, 1);
+	
+	        var texWidth = texture.getSize().width;
+	        var texHeight = texture.getSize().height;
+	
+	        if (dstX === undefined) {
+	            dstX = srcX;
+	        }
+	        if (dstY === undefined) {
+	            dstY = srcY;
+	        }
+	        if (srcWidth === undefined) {
+	            srcWidth = texWidth;
+	        }
+	        if (srcHeight === undefined) {
+	            srcHeight = texHeight;
+	        }
+	
+	        if (currTex!=texture){
+	            texture.bind();
+	            currTex = texture;
+	        }
+	
+	
+	
+	        spriteRectDrawer.bind();
+	        spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
+	        spriteRectDrawer.setUniform("u_matrix",makePositionMatrix(
+	                dstX,dstY,srcWidth,srcHeight,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        spriteRectDrawer.setUniform('u_alpha',alpha);
+	        spriteRectDrawer.draw();
+	        spriteRectDrawer.unbind();
+	    };
+	
+	    it.drawModel = function(model,texture){
+	        modelDrawer.bind(model);
+	        texture.bind();
+	
+	        modelDrawer.setUniform("u_matrix",makePositionMatrix(
+	                0,0,1,1,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	
+	        modelDrawer.setUniform('u_alpha',1);
+	        gl.enable(gl.DEPTH_TEST);
+	        modelDrawer.draw();
+	        modelDrawer.unbind();
+	    };
+	
+	    it.lockRect = function(rect) {
+	        gl.enable(gl.SCISSOR_TEST);
+	        gl.scissor(
+	            rect.x,
+	            gameProps.height - rect.y - rect.height,
+	            rect.width,
+	            rect.height
+	        );
+	    };
+	
+	    it.unlockRect = function(){
+	        gl.disable(gl.SCISSOR_TEST);
+	    };
+	
+	    it.clear = function() {
+	        var col = scene.useBG?scene.colorBG:colorBGDefault;
+	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
+	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo
+	    };
+	
+	    var fillRect = function (x, y, w, h, color) {
+	
+	        colorRectDrawer.bind();
+	        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
+	                x,y,w,h,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        colorRectDrawer.setUniform("u_rgba",color);
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        colorRectDrawer.draw();
+	        colorRectDrawer.unbind();
+	    };
+	
+	    it.fillRect = fillRect;
+	
+	    it.strokeRect = function (x, y, w, h, color) {
+	        fillRect(x, y, w, 1, color);
+	        fillRect(x, y + h, w, 1, color);
+	        fillRect(x, y, 1, h, color);
+	        fillRect(x + w, y, 1, h, color);
+	    };
+	
+	    it.point = function (x, y, color) {
+	        this.fillRect(x, y, 1, 1, color);
+	    };
+	
+	    it.polyLine = function(vertexArr,color) {
+	        polyLineDrawer.bind(vertexArr);
+	        polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
+	                0,0,1,1,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        polyLineDrawer.setUniform("u_rgba",color);
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        polyLineDrawer.draw();
+	        polyLineDrawer.unbind();
+	    };
+	
+	    it.save = function() {
+	        matrixStack.save();
+	    };
+	
+	    it.scale = function(x,y) {
+	        matrixStack.scale(x,y);
+	    };
+	
+	    it.rotateZ = function(angleInRadians) {
+	        matrixStack.rotateZ(angleInRadians);
+	    };
+	
+	    it.rotateY = function(angleInRadians) {
+	        matrixStack.rotateY(angleInRadians);
+	    };
+	
+	    it.translate = function(x,y){
+	        matrixStack.translate(x,y);
+	    };
+	
+	    it.restore = function(){
+	        matrixStack.restore();
+	    };
+	
+	    it.rescaleView = function(scaleX,scaleY){
+	        mScaleX = scaleX;
+	        mScaleY = scaleY;
+	    };
+	
+	    it.beginFrameBuffer = function(){
+	        this.save();
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
+	        frameBuffer.bind();
+	    };
+	
+	    it.getNativeContext = function(){
+	        return gl;
+	    };
+	
+	    it.flipFrameBuffer = function(){
+	        currTex = null;
+	        this.restore();
+	        this.save();
+	        this.translate(0,gameProps.canvasHeight);
+	        this.scale(1,-1);
+	        frameBuffer.unbind();
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
+	        frameBuffer.getTexture().bind();
+	
+	        spriteRectDrawer.bind();
+	
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            spriteRectDrawer.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    gameProps.globalScale.left,gameProps.globalScale.top,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        } else {
+	            spriteRectDrawer.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    0,0,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        }
+	
+	        spriteRectDrawer.setUniform('u_textureMatrix',
+	            makeTextureMatrix(
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
+	            )
+	        );
+	        spriteRectDrawer.setUniform('u_alpha',1);
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        spriteRectDrawer.draw();
+	        this.restore();
+	    };
+	
+	    var self = it;
+	
+	},{
+	    isAcceptable: function(){
+	        return !!getCtx();
+	    },
+	    loadTextureInfo:function(url,opts,progress,callBack) {
+	        if (cache.has(url)) {
+	            callBack(cache.get(url));
+	            return;
+	        }
+	
+	        var img = new Image();
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var gl = require('renderer').getContext().getNativeContext();
+	        var texture = new Texture(gl);
+	
+	        if (opts.type == 'base64') {
+	            url = utils.getBase64prefix('image', opts.fileName) + url;
+	            img.src = url;
+	            texture.setImage(img);
+	            callBack(texture);
+	            return;
+	        }
+	
+	        utils.loadBinary(url, progress, function (buffer) {
+	            if (window.Blob && window.URL) {
+	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+	                img.src = URL.createObjectURL(blob);
+	            } else {
+	                var base64String = utils.arrayBufferToBase64(buffer);
+	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	                img.src = base64String;
+	            }
+	            img.onload = function () {
+	                texture.setImage(img);
+	                callBack(texture);
+	            };
+	
+	        });
+	    }
+	});
+	
+	module.exports = GlContext;
+	
+	
+	
+	
+	//canvas.addEventListener('webglcontextlost', function(e) {
+	//    // the default is to do nothing. Preventing the default
+	//    // means allowing context to be restored
+	//    e.preventDefault();
+	//    var div = document.createElement("div");
+	//    div.className = "contextlost";
+	//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
+	//    div.addEventListener('click', function() {
+	//        window.location.reload();
+	//    });
+	//    document.body.appendChild(div);
+	//});
+	//canvas.addEventListener('webglcontextrestored', function() {
+	//    // just reload the page. Easiest.
+	//    window.location.reload();
+	//});
+}};
+modules['abstractPrimitive'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var BaseModel = require('baseModel');
+	
+	var AbstractPrimitive = BaseModel.extend({
+	    vertexArr:null,
+	    indexArr:null,
+	    texCoordArr:null,
+	    normalArr:null
+	});
+	
+	module.exports = AbstractPrimitive;
+}};
+modules['cube'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var prepareBuffers = function(size){
+	    
+	    var vertices = [
+	        // Front face
+	        -size, -size,  size,
+	        size, -size,  size,
+	        size,  size,  size,
+	        -size,  size,  size,
+	
+	        // Back face
+	        -size, -size, -size,
+	        -size,  size, -size,
+	        size,  size, -size,
+	        size, -size, -size,
+	
+	        // Top face
+	        -size,  size, -size,
+	        -size,  size,  size,
+	        size,  size,  size,
+	        size,  size, -size,
+	
+	        // Bottom face
+	        -size, -size, -size,
+	        size, -size, -size,
+	        size, -size,  size,
+	        -size, -size,  size,
+	
+	        // Right face
+	        size, -size, -size,
+	        size,  size, -size,
+	        size,  size,  size,
+	        size, -size,  size,
+	
+	        // Left face
+	        -size, -size, -size,
+	        -size, -size,  size,
+	        -size,  size,  size,
+	        -size,  size, -size
+	    ];
+	
+	    var textureCoords = [
+	        // Front face
+	        0.0, 0.0,
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1,
+	
+	        // Back face
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1,
+	        0.0, 0.0,
+	
+	        // Top face
+	        0.0, 1,
+	        0.0, 0.0,
+	        1, 0.0,
+	        1, 1,
+	
+	        // Bottom face
+	        1, 1,
+	        0.0, 1,
+	        0.0, 0.0,
+	        1, 0.0,
+	
+	        // Right face
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1,
+	        0.0, 0.0,
+	
+	        // Left face
+	        0.0, 0.0,
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1
+	    ];
+	
+	    var cubeVertexIndices = [
+	        0, 1, 2,      0, 2, 3,    // Front face
+	        4, 5, 6,      4, 6, 7,    // Back face
+	        8, 9, 10,     8, 10, 11,  // Top face
+	        12, 13, 14,   12, 14, 15, // Bottom face
+	        16, 17, 18,   16, 18, 19, // Right face
+	        20, 21, 22,   20, 22, 23  // Left face
+	    ];
+	
+	    var vertexNormals = [
+	        // Front face
+	        0.0,  0.0,  1,
+	        0.0,  0.0,  1,
+	        0.0,  0.0,  1,
+	        0.0,  0.0,  1,
+	
+	        // Back face
+	        0.0,  0.0, -1,
+	        0.0,  0.0, -1,
+	        0.0,  0.0, -1,
+	        0.0,  0.0, -1,
+	
+	        // Top face
+	        0.0,  1,  0.0,
+	        0.0,  1,  0.0,
+	        0.0,  1,  0.0,
+	        0.0,  1,  0.0,
+	
+	        // Bottom face
+	        0.0, -1,  0.0,
+	        0.0, -1,  0.0,
+	        0.0, -1,  0.0,
+	        0.0, -1,  0.0,
+	
+	        // Right face
+	        1,  0.0,  0.0,
+	        1,  0.0,  0.0,
+	        1,  0.0,  0.0,
+	        1,  0.0,  0.0,
+	
+	        // Left face
+	        -1,  0.0,  0.0,
+	        -1,  0.0,  0.0,
+	        -1,  0.0,  0.0,
+	        -1,  0.0,  0.0
+	    ];
+	
+	    return {
+	        vertexArr:vertices,
+	        normalArr: vertexNormals,
+	        texCoordArr: textureCoords,
+	        indexArr: cubeVertexIndices
+	    }
+	
+	};
+	
+	var Cube = AbstractPrimitive.extend({
+	    size: 10,
+	    construct: function(){
+	        var bufferArrs = prepareBuffers(this.size);
+	        this.vertexArr = bufferArrs.vertexArr;
+	        this.normalArr = bufferArrs.normalArr;
+	        this.texCoordArr = bufferArrs.texCoordArr;
+	        this.indexArr = bufferArrs.indexArr;
+	    }
+	});
+	
+	module.exports = Cube;
+}};
+modules['plane'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var Plane = AbstractPrimitive.extend({
+	    construct: function(){
+	        this.vertexArr = [
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ];
+	        this.indexArr = [0,1,2,3];
+	        this.texCoordArr = [
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ];
+	    }
+	});
+	
+	module.exports = Plane;
+}};
+modules['sphere'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var prepareBuffers = function(radius){
+	    var latitudeBands = 30;
+	    var longitudeBands = 30;
+	
+	    var vertexArr = [];
+	    var normalArr = [];
+	    var texCoordArr = [];
+	    for (var latNumber=0; latNumber <= latitudeBands; latNumber++) {
+	        var theta = latNumber * Math.PI / latitudeBands;
+	        var sinTheta = Math.sin(theta);
+	        var cosTheta = Math.cos(theta);
+	
+	        for (var longNumber=0; longNumber <= longitudeBands; longNumber++) {
+	            var phi = longNumber * 2 * Math.PI / longitudeBands;
+	            var sinPhi = Math.sin(phi);
+	            var cosPhi = Math.cos(phi);
+	
+	            var x = cosPhi * sinTheta;
+	            var y = cosTheta;
+	            var z = sinPhi * sinTheta;
+	            var u = 1 - (longNumber / longitudeBands);
+	            var v = 1 - (latNumber / latitudeBands);
+	
+	            normalArr.push(x);
+	            normalArr.push(y);
+	            normalArr.push(z);
+	            texCoordArr.push(u);
+	            texCoordArr.push(v);
+	            vertexArr.push(radius * x);
+	            vertexArr.push(radius * y);
+	            vertexArr.push(radius * z);
+	        }
+	    }
+	
+	    var indexArr = [];
+	    for (latNumber=0; latNumber < latitudeBands; latNumber++) {
+	        for (longNumber=0; longNumber < longitudeBands; longNumber++) {
+	            var first = (latNumber * (longitudeBands + 1)) + longNumber;
+	            var second = first + longitudeBands + 1;
+	            indexArr.push(first);
+	            indexArr.push(second);
+	            indexArr.push(first + 1);
+	
+	            indexArr.push(second);
+	            indexArr.push(second + 1);
+	            indexArr.push(first + 1);
+	        }
+	    }
+	
+	    return {
+	        vertexArr:vertexArr,
+	        normalArr: normalArr,
+	        texCoordArr: texCoordArr,
+	        indexArr: indexArr
+	    }
+	
+	};
+	
+	var Sphere = AbstractPrimitive.extend({
+	    radius:10,
+	    construct: function(){
+	        var bufferArrs = prepareBuffers(this.radius);
+	        this.vertexArr = bufferArrs.vertexArr;
+	        this.normalArr = bufferArrs.normalArr;
+	        this.texCoordArr = bufferArrs.texCoordArr;
+	        this.indexArr = bufferArrs.indexArr;
+	    }
+	});
+	
+	module.exports = Sphere;
+	
+	
+	
+	
+	
+	
+	
+}};
 modules['colorRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
+	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
 	
@@ -4559,6 +4906,7 @@ modules['colorRectDrawer'] =
 	var ColorRectDrawer = function(gl){
 	
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(){
 	        posIndexBuffer.bind();
@@ -4584,18 +4932,11 @@ modules['colorRectDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
-	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        //posIndexBuffer = new IndexBuffer(gl);
+	        //posIndexBuffer.setData(plane.indexArr);
 	
 	    })();
 	
@@ -4603,13 +4944,7 @@ modules['colorRectDrawer'] =
 	
 	module.exports = ColorRectDrawer;
 }};
-modules['model3dDrawer'] =
-    {code: function(module){
-    var exports = module.exports;
-    	// todo
-	
-}};
-modules['multiColorRectDrawer'] =
+modules['modelDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
@@ -4620,9 +4955,77 @@ modules['multiColorRectDrawer'] =
 	var VertexBuffer = require('vertexBuffer');
 	var IndexBuffer = require('indexBuffer');
 	
+	var ModelDrawer = function(gl){
+	
+	    var self = this;
+	
+	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer, normalBuffer;
+	
+	    this.bind = function(model){
+	        program.bind();
+	
+	        posVertexBuffer.setData(model.vertexArr,gl.FLOAT,3);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	
+	        posIndexBuffer.setData(model.indexArr);
+	        posIndexBuffer.bind();
+	
+	        texVertexBuffer.setData(model.texCoordArr,gl.FLOAT,2);
+	        program.bindBuffer(texVertexBuffer,'a_texcoord');
+	
+	        //normalBuffer.setData(model.normalArr,gl.FLOAT,3);
+	        //program.bindBuffer(normalBuffer,'a_normal');
+	    };
+	
+	    this.unbind  = function(){
+	        posIndexBuffer.unbind();
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex2.vert'],
+	            bundle.shaders.texture['fragment2.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posIndexBuffer = new IndexBuffer(gl);
+	        texVertexBuffer = new VertexBuffer(gl);
+	        //normalBuffer = new VertexBuffer(gl);
+	
+	
+	        program.bind();
+	        self.setUniform('u_alpha',1);
+	
+	    })();
+	
+	};
+	
+	module.exports = ModelDrawer;
+}};
+modules['multiColorRectDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var Plane = require('plane');
+	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
+	
 	var MultiColorRectDrawer = function(gl){
 	
 	    var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(colors){
 	        vertexColorBuffer.setData(colors,gl.FLOAT,4);
@@ -4650,12 +5053,7 @@ modules['multiColorRectDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	
@@ -4669,9 +5067,7 @@ modules['multiColorRectDrawer'] =
 	        program.bindBuffer(vertexColorBuffer,'a_color');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	    })();
 	
@@ -4724,21 +5120,24 @@ modules['polyLineDrawer'] =
 	
 	module.exports = PolyLineDrawer;
 }};
-modules['textureDrawer'] =
+modules['spriteRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
+	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
 	
 	var VertexBuffer = require('vertexBuffer');
 	var IndexBuffer = require('indexBuffer');
 	
-	var CommonTextureDrawer = function(gl){
+	var SpriteRectDrawer = function(gl){
 	
 	    var self = this;
 	
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(){
 	        program.bind();
@@ -4765,26 +5164,14 @@ modules['textureDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	        texVertexBuffer = new VertexBuffer(gl);
-	        texVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        texVertexBuffer.setData(plane.texCoordArr,gl.FLOAT,2);
 	        program.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        self.bind();
@@ -4794,7 +5181,7 @@ modules['textureDrawer'] =
 	
 	};
 	
-	module.exports = CommonTextureDrawer;
+	module.exports = SpriteRectDrawer;
 }};
 modules['tween'] =
     {code: function(module){
@@ -5013,7 +5400,7 @@ modules['index'] =
     var exports = module.exports;
     	
 	var data;
-	data = {"sound":[],"spriteSheet":[{"resourcePath":"resources/spriteSheet/imgWall.png","name":"imgWall","width":512,"height":64,"numOfFramesV":2,"numOfFramesH":16,"type":"spriteSheet","id":"0967_6478_69"},{"resourcePath":"resources/spriteSheet/sprHeroes.png","name":"sprHeroes","width":396,"height":280,"type":"spriteSheet","numOfFramesH":12,"numOfFramesV":8,"id":"7855_3344_73"},{"resourcePath":"resources/spriteSheet/btn.png","name":"btn","width":64,"height":64,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"8588_3274_122"}],"frameAnimation":[{"name":"up","frames":[39,40,41],"type":"frameAnimation","duration":800,"id":"6211_4878_75"},{"name":"down","frames":[3,4,5],"type":"frameAnimation","duration":800,"id":"9849_2404_76"},{"name":"left","frames":[15,16,17],"type":"frameAnimation","duration":800,"id":"2726_6259_77"},{"name":"right","frames":[27,28,29],"type":"frameAnimation","duration":800,"id":"8992_3054_78"}],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":240,"y":0,"width":15,"height":29},"1":{"x":255,"y":0,"width":15,"height":29},"2":{"x":270,"y":0,"width":15,"height":29},"3":{"x":285,"y":0,"width":15,"height":29},"4":{"x":301,"y":0,"width":15,"height":29},"5":{"x":0,"y":29,"width":15,"height":29},"6":{"x":15,"y":29,"width":15,"height":29},"7":{"x":30,"y":29,"width":15,"height":29},"8":{"x":45,"y":29,"width":15,"height":29},"9":{"x":60,"y":29,"width":15,"height":29}," ":{"x":0,"y":0,"width":15,"height":29},"!":{"x":15,"y":0,"width":15,"height":29},"\"":{"x":30,"y":0,"width":15,"height":29},"#":{"x":45,"y":0,"width":15,"height":29},"$":{"x":60,"y":0,"width":15,"height":29},"%":{"x":75,"y":0,"width":15,"height":29},"&":{"x":90,"y":0,"width":15,"height":29},"'":{"x":105,"y":0,"width":15,"height":29},"(":{"x":120,"y":0,"width":15,"height":29},")":{"x":135,"y":0,"width":15,"height":29},"*":{"x":150,"y":0,"width":15,"height":29},"+":{"x":165,"y":0,"width":15,"height":29},",":{"x":180,"y":0,"width":15,"height":29},"-":{"x":195,"y":0,"width":15,"height":29},".":{"x":210,"y":0,"width":15,"height":29},"/":{"x":225,"y":0,"width":15,"height":29},":":{"x":75,"y":29,"width":15,"height":29},";":{"x":90,"y":29,"width":15,"height":29},"<":{"x":105,"y":29,"width":15,"height":29},"=":{"x":120,"y":29,"width":15,"height":29},">":{"x":135,"y":29,"width":15,"height":29},"?":{"x":150,"y":29,"width":15,"height":29},"@":{"x":165,"y":29,"width":15,"height":29},"A":{"x":180,"y":29,"width":15,"height":29},"B":{"x":195,"y":29,"width":15,"height":29},"C":{"x":210,"y":29,"width":15,"height":29},"D":{"x":225,"y":29,"width":15,"height":29},"E":{"x":240,"y":29,"width":15,"height":29},"F":{"x":255,"y":29,"width":15,"height":29},"G":{"x":270,"y":29,"width":15,"height":29},"H":{"x":285,"y":29,"width":15,"height":29},"I":{"x":301,"y":29,"width":15,"height":29},"J":{"x":0,"y":58,"width":15,"height":29},"K":{"x":15,"y":58,"width":15,"height":29},"L":{"x":30,"y":58,"width":15,"height":29},"M":{"x":45,"y":58,"width":15,"height":29},"N":{"x":60,"y":58,"width":15,"height":29},"O":{"x":75,"y":58,"width":15,"height":29},"P":{"x":90,"y":58,"width":15,"height":29},"Q":{"x":105,"y":58,"width":15,"height":29},"R":{"x":120,"y":58,"width":15,"height":29},"S":{"x":135,"y":58,"width":15,"height":29},"T":{"x":150,"y":58,"width":15,"height":29},"U":{"x":165,"y":58,"width":15,"height":29},"V":{"x":180,"y":58,"width":15,"height":29},"W":{"x":195,"y":58,"width":15,"height":29},"X":{"x":210,"y":58,"width":15,"height":29},"Y":{"x":225,"y":58,"width":15,"height":29},"Z":{"x":240,"y":58,"width":15,"height":29},"[":{"x":255,"y":58,"width":15,"height":29},"\\":{"x":270,"y":58,"width":15,"height":29},"]":{"x":285,"y":58,"width":15,"height":29},"^":{"x":301,"y":58,"width":15,"height":29},"_":{"x":0,"y":87,"width":15,"height":29},"`":{"x":15,"y":87,"width":15,"height":29},"a":{"x":30,"y":87,"width":15,"height":29},"b":{"x":45,"y":87,"width":15,"height":29},"c":{"x":60,"y":87,"width":15,"height":29},"d":{"x":75,"y":87,"width":15,"height":29},"e":{"x":90,"y":87,"width":15,"height":29},"f":{"x":105,"y":87,"width":15,"height":29},"g":{"x":120,"y":87,"width":15,"height":29},"h":{"x":135,"y":87,"width":15,"height":29},"i":{"x":150,"y":87,"width":15,"height":29},"j":{"x":165,"y":87,"width":15,"height":29},"k":{"x":180,"y":87,"width":15,"height":29},"l":{"x":195,"y":87,"width":15,"height":29},"m":{"x":210,"y":87,"width":15,"height":29},"n":{"x":225,"y":87,"width":15,"height":29},"o":{"x":240,"y":87,"width":15,"height":29},"p":{"x":255,"y":87,"width":15,"height":29},"q":{"x":270,"y":87,"width":15,"height":29},"r":{"x":285,"y":87,"width":15,"height":29},"s":{"x":301,"y":87,"width":15,"height":29},"t":{"x":0,"y":116,"width":15,"height":29},"u":{"x":15,"y":116,"width":15,"height":29},"v":{"x":30,"y":116,"width":15,"height":29},"w":{"x":45,"y":116,"width":15,"height":29},"x":{"x":60,"y":116,"width":15,"height":29},"y":{"x":75,"y":116,"width":15,"height":29},"z":{"x":90,"y":116,"width":15,"height":29},"{":{"x":105,"y":116,"width":15,"height":29},"|":{"x":120,"y":116,"width":15,"height":29},"}":{"x":135,"y":116,"width":15,"height":29},"~":{"x":150,"y":116,"width":15,"height":29},"А":{"x":165,"y":116,"width":15,"height":29},"Б":{"x":180,"y":116,"width":15,"height":29},"В":{"x":195,"y":116,"width":15,"height":29},"Г":{"x":210,"y":116,"width":15,"height":29},"Д":{"x":225,"y":116,"width":15,"height":29},"Е":{"x":240,"y":116,"width":15,"height":29},"Ж":{"x":255,"y":116,"width":15,"height":29},"З":{"x":270,"y":116,"width":15,"height":29},"И":{"x":285,"y":116,"width":15,"height":29},"Й":{"x":301,"y":116,"width":15,"height":29},"К":{"x":0,"y":145,"width":15,"height":29},"Л":{"x":15,"y":145,"width":15,"height":29},"М":{"x":30,"y":145,"width":15,"height":29},"Н":{"x":45,"y":145,"width":15,"height":29},"О":{"x":60,"y":145,"width":15,"height":29},"П":{"x":75,"y":145,"width":15,"height":29},"Р":{"x":90,"y":145,"width":15,"height":29},"С":{"x":105,"y":145,"width":15,"height":29},"Т":{"x":120,"y":145,"width":15,"height":29},"У":{"x":135,"y":145,"width":15,"height":29},"Ф":{"x":150,"y":145,"width":15,"height":29},"Х":{"x":165,"y":145,"width":15,"height":29},"Ц":{"x":180,"y":145,"width":15,"height":29},"Ч":{"x":195,"y":145,"width":15,"height":29},"Ш":{"x":210,"y":145,"width":15,"height":29},"Щ":{"x":225,"y":145,"width":15,"height":29},"Ъ":{"x":240,"y":145,"width":15,"height":29},"Ы":{"x":255,"y":145,"width":15,"height":29},"Ь":{"x":270,"y":145,"width":15,"height":29},"Э":{"x":285,"y":145,"width":15,"height":29},"Ю":{"x":301,"y":145,"width":15,"height":29},"Я":{"x":0,"y":174,"width":15,"height":29},"а":{"x":15,"y":174,"width":15,"height":29},"б":{"x":30,"y":174,"width":15,"height":29},"в":{"x":45,"y":174,"width":15,"height":29},"г":{"x":60,"y":174,"width":15,"height":29},"д":{"x":75,"y":174,"width":15,"height":29},"е":{"x":90,"y":174,"width":15,"height":29},"ж":{"x":105,"y":174,"width":15,"height":29},"з":{"x":120,"y":174,"width":15,"height":29},"и":{"x":135,"y":174,"width":15,"height":29},"й":{"x":150,"y":174,"width":15,"height":29},"к":{"x":165,"y":174,"width":15,"height":29},"л":{"x":180,"y":174,"width":15,"height":29},"м":{"x":195,"y":174,"width":15,"height":29},"н":{"x":210,"y":174,"width":15,"height":29},"о":{"x":225,"y":174,"width":15,"height":29},"п":{"x":240,"y":174,"width":15,"height":29},"р":{"x":255,"y":174,"width":15,"height":29},"с":{"x":270,"y":174,"width":15,"height":29},"т":{"x":285,"y":174,"width":15,"height":29},"у":{"x":301,"y":174,"width":15,"height":29},"ф":{"x":0,"y":203,"width":15,"height":29},"х":{"x":15,"y":203,"width":15,"height":29},"ц":{"x":30,"y":203,"width":15,"height":29},"ч":{"x":45,"y":203,"width":15,"height":29},"ш":{"x":60,"y":203,"width":15,"height":29},"щ":{"x":75,"y":203,"width":15,"height":29},"ъ":{"x":90,"y":203,"width":15,"height":29},"ы":{"x":105,"y":203,"width":15,"height":29},"ь":{"x":120,"y":203,"width":15,"height":29},"э":{"x":135,"y":203,"width":15,"height":29},"ю":{"x":150,"y":203,"width":15,"height":29},"я":{"x":165,"y":203,"width":15,"height":29},"ѐ":{"x":180,"y":203,"width":15,"height":29},"ё":{"x":195,"y":203,"width":15,"height":29},"ђ":{"x":210,"y":203,"width":15,"height":29},"ѓ":{"x":225,"y":203,"width":15,"height":29},"є":{"x":240,"y":203,"width":15,"height":29},"ѕ":{"x":255,"y":203,"width":15,"height":29},"і":{"x":270,"y":203,"width":15,"height":29},"ї":{"x":285,"y":203,"width":15,"height":29},"ј":{"x":301,"y":203,"width":15,"height":29},"љ":{"x":0,"y":232,"width":15,"height":29},"њ":{"x":15,"y":232,"width":15,"height":29},"ћ":{"x":30,"y":232,"width":15,"height":29}},"width":320,"height":261},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"7855_3344_73","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":3,"name":"hero","width":33,"height":35,"type":"gameObject","commonBehaviour":[{"name":"control4dir","parameters":{"velocity":100,"walkLeftAnimation":"left","walkRightAnimation":"right","walkUpAnimation":"up","walkDownAnimation":"down","idleLeftAnimation":"","idleRightAnimation":"","idleUpAnimation":"","idleDownAnimation":""},"description":"control character with cursor to walk up, down, left and right","id":"9649_8595_79","type":"commonBehaviour"},{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"2875_2182_268","type":"commonBehaviour"}],"frameAnimationIds":["6211_4878_75","9849_2404_76","2726_6259_77","8992_3054_78"],"rigid":1,"groupName":"","angle":0,"id":"1790_3583_74"},{"spriteSheetId":"0967_6478_69","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":2,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"7358_6227_270","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"id":"1957_7947_93"},{"spriteSheetId":"8588_3274_122","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btn","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"id":"1707_9136_123","fixedToCamera":0},{"spriteSheetId":"8588_3274_122","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btn2","width":120,"height":120,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"id":"6070_2283_25"}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[],"id":"1083_7308_67"},{"name":"mainLayer","type":"layer","gameObjectProps":[],"id":"5752_9657_71"},{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"7855_3344_73","pos":{"x":158,"y":61},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":3,"name":"hero","width":33,"height":35,"type":"gameObject","commonBehaviour":[{"name":"control4dir","parameters":{"velocity":100,"walkLeftAnimation":"left","walkRightAnimation":"right","walkUpAnimation":"up","walkDownAnimation":"down","idleLeftAnimation":"","idleRightAnimation":"","idleUpAnimation":"","idleDownAnimation":""},"description":"control character with cursor to walk up, down, left and right","id":"9649_8595_79","type":"commonBehaviour"}],"frameAnimationIds":["6211_4878_75","9849_2404_76","2726_6259_77","8992_3054_78"],"rigid":1,"groupName":"","angle":0,"protoId":"1790_3583_74","id":"9250_5062_87"},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":199},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnUp","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"protoId":"1707_9136_123","id":"7469_1515_124","fixedToCamera":1},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":271},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnDown","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"8553_5489_265"},{"spriteSheetId":"8588_3274_122","pos":{"x":10,"y":237},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnLeft","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"2896_0832_266"},{"spriteSheetId":"8588_3274_122","pos":{"x":116,"y":238},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnRight","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"9901_8558_267"},{"spriteSheetId":"0967_6478_69","pos":{"x":352,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"0310_6343_269"},{"spriteSheetId":"0967_6478_69","pos":{"x":383,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"7358_6227_270","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"8319_3167_4"}],"id":"0645_0474_80"}],"scene":[{"tileMap":{"_spriteSheet":{"resourcePath":"resources/spriteSheet/btn.png","name":"btn","width":64,"height":64,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"8588_3274_122"},"spriteSheetId":"8588_3274_122","width":22,"height":28,"data":[[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16],[16,17,17,16,3,19,20,7,20,20,20,6,6,7,7,5,1,1,1,1,1,1,1,16],[16,22,3,16,3,7,4,20,20,16,16,20,20,16,23,5,1,1,1,1,1,1,1,16],[16,7,6,4,3,7,3,7,3,17,16,19,5,16,20,20,1,1,16,16,16,16,16,16],[16,7,7,16,16,16,16,16,16,16,16,3,19,16,16,16,1,1,17,16,17,17,16,16],[16,6,7,17,17,17,16,17,17,17,17,3,5,17,17,16,1,1,1,16,1,1,17,16],[16,1,1,3,19,19,16,1,1,3,3,5,7,1,1,16,1,1,1,16,1,1,1,16],[16,1,1,1,1,1,16,1,1,1,1,1,1,1,1,16,1,1,1,17,1,1,1,16],[16,1,1,1,1,1,16,1,1,1,1,1,1,1,1,16,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,16,1,1,1,1,1,1,1,1,16,16,1,1,16,16,16,16,16],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,1,1,1,1,1,1,1,16],[16,17,17,17,17,17,17,17,17,1,17,17,17,17,17,16,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,5,5,3,1,1,1,1,1,16,16,1,1,16,16,16,16,16],[16,1,1,1,1,1,5,5,5,5,5,5,5,5,5,16,17,1,1,17,17,17,17,16],[16,1,1,1,1,1,1,5,3,1,1,1,1,1,1,16,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,1,1,1,1,1,1,1,16],[16,5,1,1,1,1,1,1,1,1,1,1,1,1,1,16,16,1,1,16,16,16,16,16],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,17,1,1,17,17,17,17,16],[16,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16]],"_tilesInScreenX":7,"_tilesInScreenY":5},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"0645_0474_80","id":"5280_0503_81"}],"colorBG":{"r":"100","g":203,"b":245},"id":"3217_3071_66","useBG":true,"alpha":1,"width":0,"height":0,"$$hashKey":"object:607","_emitter":{},"_layers":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"7855_3344_73","pos":{"x":158,"y":61},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":3,"name":"hero","width":33,"height":35,"type":"gameObject","commonBehaviour":[{"name":"control4dir","parameters":{"velocity":100,"walkLeftAnimation":"left","walkRightAnimation":"right","walkUpAnimation":"up","walkDownAnimation":"down","idleLeftAnimation":"","idleRightAnimation":"","idleUpAnimation":"","idleDownAnimation":""},"description":"control character with cursor to walk up, down, left and right","id":"9649_8595_79","type":"commonBehaviour"}],"frameAnimationIds":["6211_4878_75","9849_2404_76","2726_6259_77","8992_3054_78"],"rigid":1,"groupName":"","angle":0,"protoId":"1790_3583_74","id":"9250_5062_87"},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":199},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnUp","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"protoId":"1707_9136_123","id":"7469_1515_124","fixedToCamera":1},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":271},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnDown","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"8553_5489_265"},{"spriteSheetId":"8588_3274_122","pos":{"x":10,"y":237},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnLeft","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"2896_0832_266"},{"spriteSheetId":"8588_3274_122","pos":{"x":116,"y":238},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnRight","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"9901_8558_267"},{"spriteSheetId":"0967_6478_69","pos":{"x":352,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"0310_6343_269"},{"spriteSheetId":"0967_6478_69","pos":{"x":383,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"7358_6227_270","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"8319_3167_4"}],"id":"5280_0503_81","protoId":"0645_0474_80"}],"_tweenMovies":[]}],"particleSystem":[{"gameObjectId":"1707_9136_123","numOfParticlesToEmit":{"from":1,"to":10},"particleAngle":{"from":5.348347806051011,"to":1.0416123087822753},"particleVelocity":{"from":1,"to":100},"particleLiveTime":{"from":100,"to":1000},"emissionRadius":18,"name":"test","type":"particleSystem","id":"1636_1556_6"}],"gameProps":{"width":474,"height":344,"scaleStrategy":"2"}}
+	data = {"sound":[],"spriteSheet":[{"resourcePath":"resources/spriteSheet/imgWall.png","name":"imgWall","width":512,"height":64,"numOfFramesV":2,"numOfFramesH":16,"type":"spriteSheet","id":"0967_6478_69"},{"resourcePath":"resources/spriteSheet/sprHeroes.png","name":"sprHeroes","width":396,"height":280,"type":"spriteSheet","numOfFramesH":12,"numOfFramesV":8,"id":"7855_3344_73"},{"resourcePath":"resources/spriteSheet/btn.png","name":"btn","width":64,"height":64,"type":"spriteSheet","numOfFramesH":1,"numOfFramesV":1,"id":"8588_3274_122"}],"frameAnimation":[{"name":"up","frames":[39,40,41],"type":"frameAnimation","duration":800,"id":"6211_4878_75"},{"name":"down","frames":[3,4,5],"type":"frameAnimation","duration":800,"id":"9849_2404_76"},{"name":"left","frames":[15,16,17],"type":"frameAnimation","duration":800,"id":"2726_6259_77"},{"name":"right","frames":[27,28,29],"type":"frameAnimation","duration":800,"id":"8992_3054_78"}],"font":[{"name":"default","fontContext":{"symbols":{"0":{"x":240,"y":0,"width":15,"height":29},"1":{"x":255,"y":0,"width":15,"height":29},"2":{"x":270,"y":0,"width":15,"height":29},"3":{"x":285,"y":0,"width":15,"height":29},"4":{"x":301,"y":0,"width":15,"height":29},"5":{"x":0,"y":29,"width":15,"height":29},"6":{"x":15,"y":29,"width":15,"height":29},"7":{"x":30,"y":29,"width":15,"height":29},"8":{"x":45,"y":29,"width":15,"height":29},"9":{"x":60,"y":29,"width":15,"height":29}," ":{"x":0,"y":0,"width":15,"height":29},"!":{"x":15,"y":0,"width":15,"height":29},"\"":{"x":30,"y":0,"width":15,"height":29},"#":{"x":45,"y":0,"width":15,"height":29},"$":{"x":60,"y":0,"width":15,"height":29},"%":{"x":75,"y":0,"width":15,"height":29},"&":{"x":90,"y":0,"width":15,"height":29},"'":{"x":105,"y":0,"width":15,"height":29},"(":{"x":120,"y":0,"width":15,"height":29},")":{"x":135,"y":0,"width":15,"height":29},"*":{"x":150,"y":0,"width":15,"height":29},"+":{"x":165,"y":0,"width":15,"height":29},",":{"x":180,"y":0,"width":15,"height":29},"-":{"x":195,"y":0,"width":15,"height":29},".":{"x":210,"y":0,"width":15,"height":29},"/":{"x":225,"y":0,"width":15,"height":29},":":{"x":75,"y":29,"width":15,"height":29},";":{"x":90,"y":29,"width":15,"height":29},"<":{"x":105,"y":29,"width":15,"height":29},"=":{"x":120,"y":29,"width":15,"height":29},">":{"x":135,"y":29,"width":15,"height":29},"?":{"x":150,"y":29,"width":15,"height":29},"@":{"x":165,"y":29,"width":15,"height":29},"A":{"x":180,"y":29,"width":15,"height":29},"B":{"x":195,"y":29,"width":15,"height":29},"C":{"x":210,"y":29,"width":15,"height":29},"D":{"x":225,"y":29,"width":15,"height":29},"E":{"x":240,"y":29,"width":15,"height":29},"F":{"x":255,"y":29,"width":15,"height":29},"G":{"x":270,"y":29,"width":15,"height":29},"H":{"x":285,"y":29,"width":15,"height":29},"I":{"x":301,"y":29,"width":15,"height":29},"J":{"x":0,"y":58,"width":15,"height":29},"K":{"x":15,"y":58,"width":15,"height":29},"L":{"x":30,"y":58,"width":15,"height":29},"M":{"x":45,"y":58,"width":15,"height":29},"N":{"x":60,"y":58,"width":15,"height":29},"O":{"x":75,"y":58,"width":15,"height":29},"P":{"x":90,"y":58,"width":15,"height":29},"Q":{"x":105,"y":58,"width":15,"height":29},"R":{"x":120,"y":58,"width":15,"height":29},"S":{"x":135,"y":58,"width":15,"height":29},"T":{"x":150,"y":58,"width":15,"height":29},"U":{"x":165,"y":58,"width":15,"height":29},"V":{"x":180,"y":58,"width":15,"height":29},"W":{"x":195,"y":58,"width":15,"height":29},"X":{"x":210,"y":58,"width":15,"height":29},"Y":{"x":225,"y":58,"width":15,"height":29},"Z":{"x":240,"y":58,"width":15,"height":29},"[":{"x":255,"y":58,"width":15,"height":29},"\\":{"x":270,"y":58,"width":15,"height":29},"]":{"x":285,"y":58,"width":15,"height":29},"^":{"x":301,"y":58,"width":15,"height":29},"_":{"x":0,"y":87,"width":15,"height":29},"`":{"x":15,"y":87,"width":15,"height":29},"a":{"x":30,"y":87,"width":15,"height":29},"b":{"x":45,"y":87,"width":15,"height":29},"c":{"x":60,"y":87,"width":15,"height":29},"d":{"x":75,"y":87,"width":15,"height":29},"e":{"x":90,"y":87,"width":15,"height":29},"f":{"x":105,"y":87,"width":15,"height":29},"g":{"x":120,"y":87,"width":15,"height":29},"h":{"x":135,"y":87,"width":15,"height":29},"i":{"x":150,"y":87,"width":15,"height":29},"j":{"x":165,"y":87,"width":15,"height":29},"k":{"x":180,"y":87,"width":15,"height":29},"l":{"x":195,"y":87,"width":15,"height":29},"m":{"x":210,"y":87,"width":15,"height":29},"n":{"x":225,"y":87,"width":15,"height":29},"o":{"x":240,"y":87,"width":15,"height":29},"p":{"x":255,"y":87,"width":15,"height":29},"q":{"x":270,"y":87,"width":15,"height":29},"r":{"x":285,"y":87,"width":15,"height":29},"s":{"x":301,"y":87,"width":15,"height":29},"t":{"x":0,"y":116,"width":15,"height":29},"u":{"x":15,"y":116,"width":15,"height":29},"v":{"x":30,"y":116,"width":15,"height":29},"w":{"x":45,"y":116,"width":15,"height":29},"x":{"x":60,"y":116,"width":15,"height":29},"y":{"x":75,"y":116,"width":15,"height":29},"z":{"x":90,"y":116,"width":15,"height":29},"{":{"x":105,"y":116,"width":15,"height":29},"|":{"x":120,"y":116,"width":15,"height":29},"}":{"x":135,"y":116,"width":15,"height":29},"~":{"x":150,"y":116,"width":15,"height":29},"А":{"x":165,"y":116,"width":15,"height":29},"Б":{"x":180,"y":116,"width":15,"height":29},"В":{"x":195,"y":116,"width":15,"height":29},"Г":{"x":210,"y":116,"width":15,"height":29},"Д":{"x":225,"y":116,"width":15,"height":29},"Е":{"x":240,"y":116,"width":15,"height":29},"Ж":{"x":255,"y":116,"width":15,"height":29},"З":{"x":270,"y":116,"width":15,"height":29},"И":{"x":285,"y":116,"width":15,"height":29},"Й":{"x":301,"y":116,"width":15,"height":29},"К":{"x":0,"y":145,"width":15,"height":29},"Л":{"x":15,"y":145,"width":15,"height":29},"М":{"x":30,"y":145,"width":15,"height":29},"Н":{"x":45,"y":145,"width":15,"height":29},"О":{"x":60,"y":145,"width":15,"height":29},"П":{"x":75,"y":145,"width":15,"height":29},"Р":{"x":90,"y":145,"width":15,"height":29},"С":{"x":105,"y":145,"width":15,"height":29},"Т":{"x":120,"y":145,"width":15,"height":29},"У":{"x":135,"y":145,"width":15,"height":29},"Ф":{"x":150,"y":145,"width":15,"height":29},"Х":{"x":165,"y":145,"width":15,"height":29},"Ц":{"x":180,"y":145,"width":15,"height":29},"Ч":{"x":195,"y":145,"width":15,"height":29},"Ш":{"x":210,"y":145,"width":15,"height":29},"Щ":{"x":225,"y":145,"width":15,"height":29},"Ъ":{"x":240,"y":145,"width":15,"height":29},"Ы":{"x":255,"y":145,"width":15,"height":29},"Ь":{"x":270,"y":145,"width":15,"height":29},"Э":{"x":285,"y":145,"width":15,"height":29},"Ю":{"x":301,"y":145,"width":15,"height":29},"Я":{"x":0,"y":174,"width":15,"height":29},"а":{"x":15,"y":174,"width":15,"height":29},"б":{"x":30,"y":174,"width":15,"height":29},"в":{"x":45,"y":174,"width":15,"height":29},"г":{"x":60,"y":174,"width":15,"height":29},"д":{"x":75,"y":174,"width":15,"height":29},"е":{"x":90,"y":174,"width":15,"height":29},"ж":{"x":105,"y":174,"width":15,"height":29},"з":{"x":120,"y":174,"width":15,"height":29},"и":{"x":135,"y":174,"width":15,"height":29},"й":{"x":150,"y":174,"width":15,"height":29},"к":{"x":165,"y":174,"width":15,"height":29},"л":{"x":180,"y":174,"width":15,"height":29},"м":{"x":195,"y":174,"width":15,"height":29},"н":{"x":210,"y":174,"width":15,"height":29},"о":{"x":225,"y":174,"width":15,"height":29},"п":{"x":240,"y":174,"width":15,"height":29},"р":{"x":255,"y":174,"width":15,"height":29},"с":{"x":270,"y":174,"width":15,"height":29},"т":{"x":285,"y":174,"width":15,"height":29},"у":{"x":301,"y":174,"width":15,"height":29},"ф":{"x":0,"y":203,"width":15,"height":29},"х":{"x":15,"y":203,"width":15,"height":29},"ц":{"x":30,"y":203,"width":15,"height":29},"ч":{"x":45,"y":203,"width":15,"height":29},"ш":{"x":60,"y":203,"width":15,"height":29},"щ":{"x":75,"y":203,"width":15,"height":29},"ъ":{"x":90,"y":203,"width":15,"height":29},"ы":{"x":105,"y":203,"width":15,"height":29},"ь":{"x":120,"y":203,"width":15,"height":29},"э":{"x":135,"y":203,"width":15,"height":29},"ю":{"x":150,"y":203,"width":15,"height":29},"я":{"x":165,"y":203,"width":15,"height":29},"ѐ":{"x":180,"y":203,"width":15,"height":29},"ё":{"x":195,"y":203,"width":15,"height":29},"ђ":{"x":210,"y":203,"width":15,"height":29},"ѓ":{"x":225,"y":203,"width":15,"height":29},"є":{"x":240,"y":203,"width":15,"height":29},"ѕ":{"x":255,"y":203,"width":15,"height":29},"і":{"x":270,"y":203,"width":15,"height":29},"ї":{"x":285,"y":203,"width":15,"height":29},"ј":{"x":301,"y":203,"width":15,"height":29},"љ":{"x":0,"y":232,"width":15,"height":29},"њ":{"x":15,"y":232,"width":15,"height":29},"ћ":{"x":30,"y":232,"width":15,"height":29}},"width":320,"height":261},"type":"font","fontColor":"black","fontSize":25,"fontFamily":"Monospace","resourcePath":"resources/font/default.png","id":"6991_3497_4"}],"gameObject":[{"spriteSheetId":"7855_3344_73","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":3,"name":"hero","width":33,"height":35,"type":"gameObject","commonBehaviour":[{"name":"control4dir","parameters":{"velocity":100,"walkLeftAnimation":"left","walkRightAnimation":"right","walkUpAnimation":"up","walkDownAnimation":"down","idleLeftAnimation":"","idleRightAnimation":"","idleUpAnimation":"","idleDownAnimation":""},"description":"control character with cursor to walk up, down, left and right","id":"9649_8595_79","type":"commonBehaviour"},{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"2875_2182_268","type":"commonBehaviour"}],"frameAnimationIds":["6211_4878_75","9849_2404_76","2726_6259_77","8992_3054_78"],"rigid":1,"groupName":"","angle":0,"id":"1790_3583_74"},{"spriteSheetId":"0967_6478_69","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":2,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"7358_6227_270","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"id":"1957_7947_93"},{"spriteSheetId":"8588_3274_122","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btn","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"id":"1707_9136_123","fixedToCamera":0},{"spriteSheetId":"8588_3274_122","pos":{"x":0,"y":0},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btn2","width":120,"height":120,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"id":"6070_2283_25"}],"layer":[{"name":"mainLayer","type":"layer","gameObjectProps":[],"id":"1083_7308_67"},{"name":"mainLayer","type":"layer","gameObjectProps":[],"id":"5752_9657_71"},{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"7855_3344_73","pos":{"x":158,"y":61},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":3,"name":"hero","width":33,"height":35,"type":"gameObject","commonBehaviour":[{"name":"control4dir","parameters":{"velocity":100,"walkLeftAnimation":"left","walkRightAnimation":"right","walkUpAnimation":"up","walkDownAnimation":"down","idleLeftAnimation":"","idleRightAnimation":"","idleUpAnimation":"","idleDownAnimation":""},"description":"control character with cursor to walk up, down, left and right","id":"9649_8595_79","type":"commonBehaviour"}],"frameAnimationIds":["6211_4878_75","9849_2404_76","2726_6259_77","8992_3054_78"],"rigid":1,"groupName":"","angle":0,"protoId":"1790_3583_74","id":"9250_5062_87"},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":199},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnUp","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"protoId":"1707_9136_123","id":"7469_1515_124","fixedToCamera":1},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":271},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnDown","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"8553_5489_265"},{"spriteSheetId":"8588_3274_122","pos":{"x":10,"y":237},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnLeft","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"2896_0832_266"},{"spriteSheetId":"8588_3274_122","pos":{"x":116,"y":238},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnRight","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"9901_8558_267"},{"spriteSheetId":"0967_6478_69","pos":{"x":352,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"0310_6343_269"},{"spriteSheetId":"0967_6478_69","pos":{"x":383,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"7358_6227_270","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"8319_3167_4"}],"id":"0645_0474_80"}],"scene":[{"tileMap":{"_spriteSheet":{"resourcePath":"resources/spriteSheet/imgWall.png","name":"imgWall","width":512,"height":64,"numOfFramesV":2,"numOfFramesH":16,"type":"spriteSheet","id":"0967_6478_69"},"spriteSheetId":"0967_6478_69","width":22,"height":28,"data":[[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16],[16,17,17,16,3,19,20,7,20,20,20,6,6,7,7,5,1,1,1,1,1,1,1,16],[16,22,3,16,3,7,4,20,20,16,16,20,20,16,23,5,1,1,1,1,1,1,1,16],[16,7,6,4,3,7,3,7,3,17,16,19,5,16,20,20,1,1,16,16,16,16,16,16],[16,7,7,16,16,16,16,16,16,16,16,3,19,16,16,16,1,1,17,16,17,17,16,16],[16,6,7,17,17,17,16,17,17,17,17,3,5,17,17,16,1,1,1,16,1,1,17,16],[16,1,1,3,19,19,16,1,1,3,3,5,7,1,1,16,1,1,1,16,1,1,1,16],[16,1,1,1,1,1,16,1,1,1,1,1,1,1,1,16,1,1,1,17,1,1,1,16],[16,1,1,1,1,1,16,1,1,1,1,1,1,1,1,16,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,16,1,1,1,1,1,1,1,1,16,16,1,1,16,16,16,16,16],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,1,1,1,1,1,1,1,16],[16,17,17,17,17,17,17,17,17,1,17,17,17,17,17,16,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,5,5,3,1,1,1,1,1,16,16,1,1,16,16,16,16,16],[16,1,1,1,1,1,5,5,5,5,5,5,5,5,5,16,17,1,1,17,17,17,17,16],[16,1,1,1,1,1,1,5,3,1,1,1,1,1,1,16,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16,1,1,1,1,1,1,1,16],[16,5,1,1,1,1,1,1,1,1,1,1,1,1,1,16,16,1,1,16,16,16,16,16],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,17,1,1,17,17,17,17,16],[16,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,16],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16]],"_tilesInScreenX":14,"_tilesInScreenY":10},"name":"mainScene","type":"scene","layerProps":[{"type":"layer","protoId":"0645_0474_80","id":"5280_0503_81"}],"colorBG":{"r":"100","g":203,"b":245},"id":"3217_3071_66","useBG":true,"alpha":1,"width":0,"height":0,"$$hashKey":"object:607","_emitter":{},"_layers":[{"name":"mainLayer","type":"layer","gameObjectProps":[{"spriteSheetId":"7855_3344_73","pos":{"x":158,"y":61},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":3,"name":"hero","width":33,"height":35,"type":"gameObject","commonBehaviour":[{"name":"control4dir","parameters":{"velocity":100,"walkLeftAnimation":"left","walkRightAnimation":"right","walkUpAnimation":"up","walkDownAnimation":"down","idleLeftAnimation":"","idleRightAnimation":"","idleUpAnimation":"","idleDownAnimation":""},"description":"control character with cursor to walk up, down, left and right","id":"9649_8595_79","type":"commonBehaviour"}],"frameAnimationIds":["6211_4878_75","9849_2404_76","2726_6259_77","8992_3054_78"],"rigid":1,"groupName":"","angle":0,"protoId":"1790_3583_74","id":"9250_5062_87"},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":199},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnUp","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"protoId":"1707_9136_123","id":"7469_1515_124","fixedToCamera":1},{"spriteSheetId":"8588_3274_122","pos":{"x":63,"y":271},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnDown","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"8553_5489_265"},{"spriteSheetId":"8588_3274_122","pos":{"x":10,"y":237},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnLeft","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"2896_0832_266"},{"spriteSheetId":"8588_3274_122","pos":{"x":116,"y":238},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"btnRight","width":64,"height":64,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":0,"groupName":"","angle":0,"fixedToCamera":1,"protoId":"1707_9136_123","id":"9901_8558_267"},{"spriteSheetId":"0967_6478_69","pos":{"x":352,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"0310_6343_269"},{"spriteSheetId":"0967_6478_69","pos":{"x":383,"y":64},"scale":{"x":1,"y":1},"vel":{"x":0,"y":0},"currFrameIndex":0,"name":"wall","width":32,"height":32,"type":"gameObject","commonBehaviour":[{"name":"draggable","parameters":{},"description":"draggable behaviour with multitouch supporting","id":"7358_6227_270","type":"commonBehaviour"}],"frameAnimationIds":[],"rigid":1,"groupName":"","angle":0,"protoId":"1957_7947_93","id":"8319_3167_4"}],"id":"5280_0503_81","protoId":"0645_0474_80"}],"_tweenMovies":[]}],"particleSystem":[{"gameObjectId":"1707_9136_123","numOfParticlesToEmit":{"from":1,"to":10},"particleAngle":{"from":5.348347806051011,"to":1.0416123087822753},"particleVelocity":{"from":1,"to":100},"particleLiveTime":{"from":100,"to":1000},"emissionRadius":18,"name":"test","type":"particleSystem","id":"1636_1556_6"}],"gameProps":{"width":474,"height":344,"scaleStrategy":"2"}}
 	
 	var bundle = require('bundle');
 	bundle.prepare(data);

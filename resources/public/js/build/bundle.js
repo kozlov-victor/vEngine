@@ -1787,7 +1787,7 @@ module.exports = Vue.component('app-top-panel', {
     }
 });
 },{"./topPanel.html":67,"providers/editData":75,"providers/http":76,"providers/i18n":77}],69:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        v-model=\"editData.currProjectInEdit.name\"/>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button ng-click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n        {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
+module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        v-model=\"editData.currProjectInEdit.name\"/>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button v-on:click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n        {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
 
 },{}],70:[function(require,module,exports){
 
@@ -1815,66 +1815,49 @@ module.exports.component = Vue.component('app-project-dialog', {
 
     },
     methods: {
-
+        createOrEditProject: function(proj){
+            if (proj.oldName) {
+                resource.renameFolder(
+                    'workspace/'+proj.oldName,
+                    'workspace/'+proj.name,
+                    function(){
+                        resource.getProjects(function(list){
+                                editData.projects = list;
+                            }
+                        );
+                    });
+            } else  {
+                resource.createProject(proj.name,function(){
+                    resource.getProjects(function(list){
+                        editData.projects = list;
+                    });
+                });
+            }
+            this.close();
+        }
     }
 });
 
-
-
-//s.openProject = function(project){
-//    resourceDao.loadProject(project.name);
-//};
-//
-//s.createOrEditProject = function(proj){
-//    if (proj.name && proj.oldName) {
-//        resourceDao.renameFolder(
-//            'workspace/'+proj.oldName,
-//            'workspace/'+proj.name,
-//            function(){
-//                resourceDao.getProjects(function(list){
-//                        editData.projects = list;
-//                        uiHelper.closeDialog();
-//                    }
-//                );
-//            });
-//    } else if (proj.name) {
-//        resourceDao.createProject(proj.name,function(){
-//            resourceDao.getProjects(function(list){
-//                editData.projects = list;
-//                uiHelper.closeDialog();
-//            });
-//        });
-//    }
-//};
-//
-//s.deleteProject = function(proj){
-//    resourceDao.deleteFolder('workspace/'+proj.name,function(){
-//        resourceDao.getProjects(function(list){
-//            editData.projects = list;
-//            uiHelper.closeDialog();
-//        })
-//    });
-//};
 },{"./projectDialog.html":69,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],71:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    v-for=\"p in projects\"\r\n                    class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <div class=\"edit\"\r\n                            v-on:click.capture=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <div class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog/>\r\n\r\n</div>";
+module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    v-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            v-on:click.capture=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            v-on:click.capture=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            v-on:click.capture=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog/>\r\n\r\n</div>";
 
 },{}],72:[function(require,module,exports){
 
 var resource = require('providers/resource');
 var projectDialog = require('./dialogs/projectDialog/projectDialog');
+var editData = require('providers/editData');
 
 module.exports = Vue.component('explorer', {
     props: [],
     template: require('./explorer.html'),
     created: function(){
-        var self = this;
         resource.getProjects(function(p){
-            self.projects = p;
+            editData.projects = p;
         });
     },
     data: function () {
         return {
-            editData: require('providers/editData'),
+            editData: editData,
             i18n: require('providers/i18n').getAll(),
             projects: []
         }
@@ -1885,8 +1868,27 @@ module.exports = Vue.component('explorer', {
     methods: {
         editProject: function(p){
             p.oldName = p.name;
-            this.editData.currProjectInEdit = p;
+            this.editData.currProjectInEdit = {
+                name: p.name,
+                oldName: p.name
+            };
             projectDialog.instance.open();
+        },
+        openProject: function(project){
+            resource.loadProject(project.name);
+        },
+        deleteProject: function(proj){
+            var self = this;
+            window.confirmEx(
+                this.i18n.confirmQuestion,
+                function(){
+                    resource.deleteFolder('workspace/'+proj.name,function(){
+                        resource.getProjects(function(list){
+                            editData.projects = list;
+                        })
+                    });
+                }
+            );
         }
     }
 });
@@ -1934,7 +1936,6 @@ var res = {};
 
 res.reset = function(){
 
-    res.testEditData = 'edit data ok';
     res.commonBehaviourList = {};
     res.currGameObjectInEdit = {};
     res.currSpriteSheetInEdit = {};
@@ -1960,14 +1961,14 @@ res.reset = function(){
 
     res.tileMapPosY = res.tileMapPosX = 0;
 
-    res.projectName = undefined;
+    res.projectName = '';
     res.projects = {};
-    res.buildOpts = {
-        debug: false,
-        embedResources: false,
-        embedScript: false,
-        minify:false
-    };
+    //res.buildOpts = {
+    //    debug: false,
+    //    embedResources: false,
+    //    embedScript: false,
+    //    minify:false
+    //};
 };
 
 res.reset();
@@ -1999,7 +2000,10 @@ var execMethod = function(url,method,data,callBack) {
         }).
         catch(function(err){
             setTimeout(function() {
-                if (err.status || err.status!=200) throw err.body || '';
+                if (err.status || err.status!=200) {
+                    console.log(err);
+                    throw err.body || '';
+                }
             },0);
         });
 };
@@ -2133,8 +2137,13 @@ var Resource = function(){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
                 if (bundle[key] && bundle[key].call) return;
+                if (editData[key] && editData[key].clear) {
+                    editData[key].clear();
+                    bundle[key].forEach(function(el){
+                        editData[key].add(el);
+                    });
+                }
                 Vue.set(editData,key,bundle[key]);
-                editData[key] = bundle[key];
             });
             editData.gameProps = bundle.gameProps;
             editData.commonBehaviourList = new collections.List();
@@ -2152,8 +2161,8 @@ var Resource = function(){
     this.loadProject = function(projectName){
         editData.reset();
         editData.projectName = projectName;
-        document.title = projectName;
-        sessionStorage.projectName = projectName;
+        document.title = editData.projectName;
+        sessionStorage.projectName = editData.projectName;
         Promise.
             resolve().
             then(function(){
@@ -2354,51 +2363,15 @@ var Resource = function(){
             projectName: editData.projectName
         },callback);
     };
-    //this.getProjects = function(callback){
-    //    $http({
-    //        url: '/getProjects',
-    //        method: "GET",
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //this.createProject = function(projectName,callback){
-    //    $http({
-    //        url: '/createProject',
-    //        method: "POST",
-    //        data: {projectName:projectName},
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //this.renameFolder = function(oldName,newName,callback){
-    //    $http({
-    //        url: '/renameFolder',
-    //        method: "POST",
-    //        data: {oldName:oldName,newName:newName},
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //this.deleteFolder = function(name,callback){
-    //    $http({
-    //        url: '/deleteFolder',
-    //        method: "POST",
-    //        data: {name:name},
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //
-    //
+    this.createProject = function(projectName,callback){
+        http.post('/createProject',{projectName:projectName},callback);
+    };
+    this.renameFolder = function(oldName,newName,callback){
+        http.post('/renameFolder',{oldName:oldName,newName:newName},callback);
+    };
+    this.deleteFolder = function(name,callback){
+        http.post('/deleteFolder',{name:name},callback);
+    };
     //this.setTile = function(scene,x,y,tileIndex){
     //    $http({
     //        url: '/setTile/',
@@ -2416,7 +2389,6 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'cube';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {

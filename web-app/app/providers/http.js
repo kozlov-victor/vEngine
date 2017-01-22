@@ -22,7 +22,10 @@ var execMethod = function(url,method,data,callBack) {
         }).
         catch(function(err){
             setTimeout(function() {
-                if (err.status || err.status!=200) throw err.body || '';
+                if (err.status || err.status!=200) {
+                    console.log(err);
+                    throw err.body || '';
+                }
             },0);
         });
 };

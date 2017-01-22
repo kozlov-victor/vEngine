@@ -16,8 +16,13 @@ var Resource = function(){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
                 if (bundle[key] && bundle[key].call) return;
+                if (editData[key] && editData[key].clear) {
+                    editData[key].clear();
+                    bundle[key].forEach(function(el){
+                        editData[key].add(el);
+                    });
+                }
                 Vue.set(editData,key,bundle[key]);
-                editData[key] = bundle[key];
             });
             editData.gameProps = bundle.gameProps;
             editData.commonBehaviourList = new collections.List();
@@ -35,8 +40,8 @@ var Resource = function(){
     this.loadProject = function(projectName){
         editData.reset();
         editData.projectName = projectName;
-        document.title = projectName;
-        sessionStorage.projectName = projectName;
+        document.title = editData.projectName;
+        sessionStorage.projectName = editData.projectName;
         Promise.
             resolve().
             then(function(){
@@ -237,51 +242,15 @@ var Resource = function(){
             projectName: editData.projectName
         },callback);
     };
-    //this.getProjects = function(callback){
-    //    $http({
-    //        url: '/getProjects',
-    //        method: "GET",
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //this.createProject = function(projectName,callback){
-    //    $http({
-    //        url: '/createProject',
-    //        method: "POST",
-    //        data: {projectName:projectName},
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //this.renameFolder = function(oldName,newName,callback){
-    //    $http({
-    //        url: '/renameFolder',
-    //        method: "POST",
-    //        data: {oldName:oldName,newName:newName},
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //this.deleteFolder = function(name,callback){
-    //    $http({
-    //        url: '/deleteFolder',
-    //        method: "POST",
-    //        data: {name:name},
-    //        headers: {'Content-Type': 'application/json'}
-    //    }).
-    //        success(function (resp) {
-    //            callback && callback(resp);
-    //        });
-    //};
-    //
-    //
+    this.createProject = function(projectName,callback){
+        http.post('/createProject',{projectName:projectName},callback);
+    };
+    this.renameFolder = function(oldName,newName,callback){
+        http.post('/renameFolder',{oldName:oldName,newName:newName},callback);
+    };
+    this.deleteFolder = function(name,callback){
+        http.post('/deleteFolder',{name:name},callback);
+    };
     //this.setTile = function(scene,x,y,tileIndex){
     //    $http({
     //        url: '/setTile/',
@@ -299,7 +268,6 @@ var Resource = function(){
     //
     //
     (function(){
-        sessionStorage.projectName = 'cube';
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
         } else {
