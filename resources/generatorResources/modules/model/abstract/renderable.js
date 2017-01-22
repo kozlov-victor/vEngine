@@ -7,24 +7,23 @@ var BaseModel = require('baseModel');
 var Tweenable = require('tweenable');
 
 
-var Renderable = BaseModel.extend(function(self){
-
-    self.type = 'renderable';
-    self.alpha = 1.0;
-    self.width = 0;
-    self.height = 0;
-    var _tweenable = new Tweenable();
-    self.onUpdate = function(){};
-    self.fadeIn = function(time,easeFnName){
+var Renderable = BaseModel.extend({
+    type: 'renderable',
+    alpha: 1.0,
+    width: 0,
+    height: 0,
+    _tweenable:null,
+    onUpdate: function(){},
+    fadeIn: function(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);
-    };
-    self.fadeOut = function(time,easeFnName){
+    },
+    fadeOut:function(time,easeFnName){
         return this.tween(this,{to:{alpha:0}},time,easeFnName);
-    };
-    self.tween =  function(obj,fromToVal,tweenTime,easeFnName){
-        _tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
-    };
-    self._render = function(){
+    },
+    tween: function(obj,fromToVal,tweenTime,easeFnName){
+        this._tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
+    },
+    _render:function(){
         var ctx = renderer.getContext();
         var dx = 0, dy = 0;
         if (this.fixedToCamera) {
@@ -37,16 +36,19 @@ var Renderable = BaseModel.extend(function(self){
         //ctx.rotateY(a);
         ctx.translate(-this.width /2, -this.height/2);
         ctx.setAlpha(this.alpha);
-    };
-    self.update = function(time,delta){
+    },
+    update: function(time,delta) {
         var self = this;
         var deltaX = self.vel.x * delta / 1000;
         var deltaY = self.vel.y * delta / 1000;
-        var posX = self.pos.x+deltaX;
-        var posY = self.pos.y+deltaY;
-        collider.manage(self,posX,posY);
-    };
-
+        var posX = self.pos.x + deltaX;
+        var posY = self.pos.y + deltaY;
+        collider.manage(self, posX, posY);
+    },
+    construct: function(){
+        this._super();
+        this._tweenable = new Tweenable();
+    }
 });
 
 module.exports = Renderable;

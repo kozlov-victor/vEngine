@@ -48,6 +48,7 @@ var BaseGameObject = Renderable.extend({
         this._super();
     },
     construct:function(){
+        this._super();
         if (!this.pos) this.pos = {x:0,y:0};
         if (!this.vel) this.vel = {x:0,y:0};
         if (!this.scale) this.scale = {x:1,y:1};

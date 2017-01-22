@@ -33,11 +33,11 @@
             "b": 255
         },
         "id": "2590_5247_34",
-        "useBG": 1,
+        "useBG": 0,
         "alpha": 1,
         "width": 0,
         "height": 0,
-        "$$hashKey": "object:1281",
+        "$$hashKey": "object:78",
         "_emitter": {},
         "_layers": [
             {
@@ -330,7 +330,11 @@
                 "protoId": "0679_1823_35"
             }
         ],
-        "_tweenMovies": []
+        "_tweenMovies": [],
+        "_tweenable": {
+            "global": false,
+            "name": ""
+        }
     },
     {
         "tileMap": {
@@ -355,11 +359,11 @@
             "b": 255
         },
         "id": "6337_8986_28",
-        "useBG": 1,
+        "useBG": 0,
         "alpha": 1,
         "width": 0,
         "height": 0,
-        "$$hashKey": "object:1282"
+        "$$hashKey": "object:79"
     },
     {
         "tileMap": {
@@ -383,11 +387,11 @@
             "g": 255,
             "b": 255
         },
-        "useBG": 1,
+        "useBG": 0,
         "width": 0,
         "height": 0,
         "id": "5220_1729_151",
-        "$$hashKey": "object:1283",
+        "$$hashKey": "object:80",
         "_emitter": {},
         "_layers": [
             {

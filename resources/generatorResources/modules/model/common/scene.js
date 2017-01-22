@@ -29,6 +29,7 @@ var Scene = Renderable.extend({
     },
     construct: function(){
         var self = this;
+        self._super();
         self._layers = new collections.List();
         this.layerProps.forEach(function(prop){
             var l = bundle.layerList.find({id: prop.protoId});

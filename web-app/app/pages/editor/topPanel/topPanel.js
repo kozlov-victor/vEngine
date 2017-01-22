@@ -37,11 +37,12 @@ module.exports = Vue.component('app-top-panel', {
                 },
                 function(){
                     if (!w || w.closed) {
-                        w = window.open(
-                            '/'+editData.projectName+'/out',
-                            editData.projectName,
-                            'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
-                        );
+                        //w = window.open(
+                        //    '/'+editData.projectName+'/out',
+                        //    editData.projectName,
+                        //    'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
+                        //);
+                        w = window.open('/'+editData.projectName+'/out');
                     }
                     else {
                         w.location.reload();

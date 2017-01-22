@@ -79,8 +79,10 @@ var BaseModel = Class.extend({
         this._emitter.trigger(eventName,data);
     },
     _init:function(){
-        this._emitter = new EventEmitter();
         arguments && arguments[0] && this.fromJSON(arguments[0]);
+    },
+    construct: function(){
+        this._emitter = new EventEmitter();
     }
 });
 
