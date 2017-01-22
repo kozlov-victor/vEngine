@@ -1,0 +1,70 @@
+[
+    {
+        "spriteSheetId": "5692_5440_715",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "moon",
+        "width": 1024,
+        "height": 512,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "tileRepeat": false,
+        "groupName": "",
+        "fixedToCamera": false,
+        "rigid": false,
+        "angle": 0,
+        "angleVel": 0,
+        "alpha": 1,
+        "id": "7959_6126_732"
+    },
+    {
+        "spriteSheetId": "4392_8411_735",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "mars",
+        "width": 1024,
+        "height": 512,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "tileRepeat": false,
+        "groupName": "",
+        "fixedToCamera": false,
+        "rigid": false,
+        "angle": 0,
+        "angleVel": 0,
+        "alpha": 1,
+        "id": "6636_6991_736"
+    }
+]

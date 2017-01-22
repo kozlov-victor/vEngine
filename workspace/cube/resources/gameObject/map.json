@@ -1,0 +1,36 @@
+[
+    {
+        "spriteSheetId": "1285_5649_4",
+        "pos": {
+            "x": 0,
+            "y": 0
+        },
+        "vel": {
+            "x": 0,
+            "y": 0
+        },
+        "scale": {
+            "x": 1,
+            "y": 1
+        },
+        "tileOffset": {
+            "x": 0,
+            "y": 0
+        },
+        "currFrameIndex": 0,
+        "name": "moon",
+        "width": 1024,
+        "height": 512,
+        "type": "gameObject",
+        "commonBehaviour": [],
+        "frameAnimationIds": [],
+        "tileRepeat": false,
+        "groupName": "",
+        "fixedToCamera": false,
+        "rigid": false,
+        "angle": 0,
+        "angleVel": 0,
+        "alpha": 1,
+        "id": "7909_3472_5"
+    }
+]

@@ -13,25 +13,15 @@
             'z-index:10000;' +
             'width:300px;'+
             'max-height:'+window.innerHeight+'px;'+
-            'overflow-y:auto';
+            'overflow-y:scroll';
         document.body.appendChild(container);
         return container;
     };
 
     var _prepareMessage = function(e,lineNum){
-        var msg;
-        if (typeof msg == 'string') {
-            msg = e;
-        }
-        else msg = e.message;
-        if (!msg) {
-            if (e.target && e.target.tagName.toUpperCase()=='IMG')
-                msg = 'can not load image ' + e.target.getAttribute('src');
-        }
-        if (!msg) msg = '';
+        var msg = (e.message || e.toString() || '');
         if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();
         if (!msg) msg = 'Unknown error. Is your server running?';
-        if (lineNum) msg+=' in line ' + lineNum;
         if (lineNum) msg+=' in line ' + lineNum;
         return msg;
     };
@@ -50,7 +40,6 @@
        _consoleError.call(console,e);
        window.showError(e);
     };
-
 
     window.showError = function _err(e,lineNum){
         if (navigator.isCocoonJS) {
@@ -100,6 +89,6 @@
             window.require('audioPlayer') && (window.require('audioPlayer').stopAll());
             window.require('renderer') && (window.require('renderer').stop());
         }
-    },true);
+    });
 
 })();

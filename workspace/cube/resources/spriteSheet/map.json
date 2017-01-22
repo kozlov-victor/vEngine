@@ -1,0 +1,12 @@
+[
+    {
+        "resourcePath": "resources/spriteSheet/moon.gif",
+        "name": "moon",
+        "width": 1024,
+        "height": 512,
+        "type": "spriteSheet",
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "id": "1285_5649_4"
+    }
+]

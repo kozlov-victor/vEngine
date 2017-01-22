@@ -11,7 +11,7 @@
                 "type": "spriteSheet",
                 "id": "4817_7543_59"
             },
-            "spriteSheetId": "5054_3316_7",
+            "spriteSheetId": "4817_7543_59",
             "width": 20,
             "height": 20,
             "data": [
@@ -219,6 +219,10 @@
         "id": "3894_6567_4",
         "useBG": 1,
         "_emitter": {},
+        "_tweenable": {
+            "global": false,
+            "name": ""
+        },
         "_layers": [
             {
                 "name": "mainLayer",

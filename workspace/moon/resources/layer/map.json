@@ -1,0 +1,117 @@
+[
+    {
+        "name": "mainLayer",
+        "type": "layer",
+        "gameObjectProps": [
+            {
+                "spriteSheetId": "1948_2275_695",
+                "pos": {
+                    "x": 112,
+                    "y": 62
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "capust",
+                "width": 50,
+                "height": 50,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "tileRepeat": false,
+                "groupName": "",
+                "fixedToCamera": false,
+                "rigid": false,
+                "angle": 0,
+                "angleVel": 0,
+                "alpha": 1,
+                "$$hashKey": "object:87",
+                "protoId": "7570_9923_696",
+                "id": "9837_6361_713"
+            },
+            {
+                "spriteSheetId": "5692_5440_715",
+                "pos": {
+                    "x": 74,
+                    "y": 220
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "moon",
+                "width": 1024,
+                "height": 512,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "tileRepeat": false,
+                "groupName": "",
+                "fixedToCamera": false,
+                "rigid": false,
+                "angle": 0,
+                "angleVel": 0,
+                "alpha": 1,
+                "$$hashKey": "object:184",
+                "protoId": "7959_6126_732",
+                "id": "3239_9303_733"
+            },
+            {
+                "spriteSheetId": "4392_8411_735",
+                "pos": {
+                    "x": 323,
+                    "y": 76
+                },
+                "vel": {
+                    "x": 0,
+                    "y": 0
+                },
+                "scale": {
+                    "x": 1,
+                    "y": 1
+                },
+                "tileOffset": {
+                    "x": 0,
+                    "y": 0
+                },
+                "currFrameIndex": 0,
+                "name": "mars",
+                "width": 1024,
+                "height": 512,
+                "type": "gameObject",
+                "commonBehaviour": [],
+                "frameAnimationIds": [],
+                "tileRepeat": false,
+                "groupName": "",
+                "fixedToCamera": false,
+                "rigid": false,
+                "angle": 0,
+                "angleVel": 0,
+                "alpha": 1,
+                "$$hashKey": "object:274",
+                "protoId": "6636_6991_736",
+                "id": "4218_9336_737"
+            }
+        ],
+        "id": "4785_6353_693"
+    }
+]

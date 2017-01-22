@@ -1,0 +1,12 @@
+[
+    {
+        "type": "spriteSheet",
+        "width": 350,
+        "height": 350,
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "resourcePath": "resources/spriteSheet/capust.png",
+        "name": "capust",
+        "id": "7753_0918_65"
+    }
+]

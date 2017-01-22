@@ -33,11 +33,11 @@
             "b": 255
         },
         "id": "2590_5247_34",
-        "useBG": 0,
+        "useBG": 1,
         "alpha": 1,
         "width": 0,
         "height": 0,
-        "$$hashKey": "object:78",
+        "$$hashKey": "object:1281",
         "_emitter": {},
         "_layers": [
             {
@@ -330,11 +330,7 @@
                 "protoId": "0679_1823_35"
             }
         ],
-        "_tweenMovies": [],
-        "_tweenable": {
-            "global": false,
-            "name": ""
-        }
+        "_tweenMovies": []
     },
     {
         "tileMap": {
@@ -359,15 +355,16 @@
             "b": 255
         },
         "id": "6337_8986_28",
-        "useBG": 0,
+        "useBG": 1,
         "alpha": 1,
         "width": 0,
         "height": 0,
-        "$$hashKey": "object:79"
+        "$$hashKey": "object:1282"
     },
     {
         "tileMap": {
             "_spriteSheet": null,
+            "spriteSheetId": null,
             "width": 0,
             "height": 0,
             "data": []
@@ -387,150 +384,10 @@
             "g": 255,
             "b": 255
         },
-        "useBG": 0,
+        "useBG": 1,
         "width": 0,
         "height": 0,
         "id": "5220_1729_151",
-        "$$hashKey": "object:80",
-        "_emitter": {},
-        "_layers": [
-            {
-                "name": "mainLayer",
-                "type": "layer",
-                "gameObjectProps": [
-                    {
-                        "pos": {
-                            "x": 53,
-                            "y": 58
-                        },
-                        "scale": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "height": 29,
-                        "text": "Start!!!!!",
-                        "width": 150,
-                        "type": "userInterface",
-                        "subType": "textField",
-                        "groupName": "",
-                        "angle": 0,
-                        "alpha": 1,
-                        "name": "textField1",
-                        "protoId": {},
-                        "id": "2764_5156_154",
-                        "fontId": "6991_3497_4"
-                    },
-                    {
-                        "spriteSheetId": "4021_7193_32",
-                        "pos": {
-                            "x": 115,
-                            "y": 93
-                        },
-                        "scale": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "vel": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "currFrameIndex": 0,
-                        "name": "slotsColumn",
-                        "width": 64,
-                        "height": 51,
-                        "type": "gameObject",
-                        "commonBehaviour": [],
-                        "frameAnimationIds": [],
-                        "rigid": 1,
-                        "groupName": "",
-                        "angle": 0,
-                        "alpha": 1,
-                        "protoId": "2146_8639_33",
-                        "id": "6961_5750_155",
-                        "tileOffset": {
-                            "x": 0,
-                            "y": 0
-                        }
-                    },
-                    {
-                        "spriteSheetId": "9537_4496_35",
-                        "pos": {
-                            "x": 134,
-                            "y": 22
-                        },
-                        "scale": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "vel": {
-                            "x": 0,
-                            "y": 0
-                        },
-                        "currFrameIndex": 0,
-                        "name": "coin",
-                        "width": 30,
-                        "height": 30,
-                        "type": "gameObject",
-                        "commonBehaviour": [],
-                        "frameAnimationIds": [
-                            "7563_6764_37"
-                        ],
-                        "rigid": 0,
-                        "groupName": "",
-                        "angle": 0,
-                        "alpha": 1,
-                        "protoId": "6542_0984_36",
-                        "id": "5056_3944_156"
-                    },
-                    {
-                        "pos": {
-                            "x": 15,
-                            "y": 162
-                        },
-                        "scale": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "height": 29,
-                        "text": "money:",
-                        "width": 90,
-                        "type": "userInterface",
-                        "subType": "textField",
-                        "groupName": "",
-                        "angle": 0,
-                        "alpha": 1,
-                        "name": "textField2",
-                        "protoId": {},
-                        "id": "3127_9759_4",
-                        "fontId": "6991_3497_4"
-                    },
-                    {
-                        "pos": {
-                            "x": 124,
-                            "y": 157
-                        },
-                        "scale": {
-                            "x": 1,
-                            "y": 1
-                        },
-                        "height": 36,
-                        "text": "",
-                        "width": 0,
-                        "type": "userInterface",
-                        "subType": "textField",
-                        "groupName": "",
-                        "angle": 0,
-                        "alpha": 1,
-                        "name": "txtMoney",
-                        "protoId": {},
-                        "id": "5198_2468_5",
-                        "fontId": "0265_1797_64"
-                    }
-                ],
-                "id": "0309_0792_153",
-                "protoId": "0843_0759_152"
-            }
-        ],
-        "_tweenMovies": []
+        "$$hashKey": "object:1283"
     }
 ]
