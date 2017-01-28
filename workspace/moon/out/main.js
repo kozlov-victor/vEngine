@@ -2169,6 +2169,7 @@ modules['baseGameObject'] =
 	        this._super();
 	    },
 	    construct:function(){
+	        this._super();
 	        if (!this.pos) this.pos = {x:0,y:0};
 	        if (!this.vel) this.vel = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
@@ -2263,8 +2264,10 @@ modules['baseModel'] =
 	        this._emitter.trigger(eventName,data);
 	    },
 	    _init:function(){
-	        this._emitter = new EventEmitter();
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
+	    },
+	    construct: function(){
+	        this._emitter = new EventEmitter();
 	    }
 	});
 	
@@ -2304,24 +2307,23 @@ modules['renderable'] =
 	var Tweenable = require('tweenable');
 	
 	
-	var Renderable = BaseModel.extend(function(self){
-	
-	    self.type = 'renderable';
-	    self.alpha = 1.0;
-	    self.width = 0;
-	    self.height = 0;
-	    var _tweenable = new Tweenable();
-	    self.onUpdate = function(){};
-	    self.fadeIn = function(time,easeFnName){
+	var Renderable = BaseModel.extend({
+	    type: 'renderable',
+	    alpha: 1.0,
+	    width: 0,
+	    height: 0,
+	    _tweenable:null,
+	    onUpdate: function(){},
+	    fadeIn: function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
-	    };
-	    self.fadeOut = function(time,easeFnName){
+	    },
+	    fadeOut:function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
-	    };
-	    self.tween =  function(obj,fromToVal,tweenTime,easeFnName){
-	        _tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
-	    };
-	    self._render = function(){
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        this._tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
+	    },
+	    _render:function(){
 	        var ctx = renderer.getContext();
 	        var dx = 0, dy = 0;
 	        if (this.fixedToCamera) {
@@ -2334,16 +2336,19 @@ modules['renderable'] =
 	        //ctx.rotateY(a);
 	        ctx.translate(-this.width /2, -this.height/2);
 	        ctx.setAlpha(this.alpha);
-	    };
-	    self.update = function(time,delta){
+	    },
+	    update: function(time,delta) {
 	        var self = this;
 	        var deltaX = self.vel.x * delta / 1000;
 	        var deltaY = self.vel.y * delta / 1000;
-	        var posX = self.pos.x+deltaX;
-	        var posY = self.pos.y+deltaY;
-	        collider.manage(self,posX,posY);
-	    };
-	
+	        var posX = self.pos.x + deltaX;
+	        var posY = self.pos.y + deltaY;
+	        collider.manage(self, posX, posY);
+	    },
+	    construct: function(){
+	        this._super();
+	        this._tweenable = new Tweenable();
+	    }
 	});
 	
 	module.exports = Renderable;
@@ -2450,12 +2455,12 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
-	//var Sphere = require('sphere');
-	//var Cube = require('cube');
+	var Sphere = require('sphere');
+	var Cube = require('cube');
 	//var TeaPot = require('teaPot');
-	//var model = new TeaPot({radius:100,size:50});
-	//
-	//var a = 0;
+	var model = new Sphere({radius:100,size:50});
+	
+	var a = 0;
 	
 	var _draw = function(ctx,self,x,y){
 	    ctx.drawImage(
@@ -2467,12 +2472,12 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
-	    
-	    //ctx.scale(10,10,5);
-	    //ctx.rotateY(a);
-	    //ctx.rotateZ(a);
-	    //a+=0.01;
-	    //ctx.drawModel(model,resourceCache.get(self._spriteSheet.resourcePath));
+	
+	    ctx.scale(10,10,5);
+	    ctx.rotateY(a);
+	    ctx.rotateZ(a);
+	    a+=0.01;
+	    ctx.drawModel(model,resourceCache.get(self._spriteSheet.resourcePath));
 	
 	    //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
 	    //ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
@@ -2757,6 +2762,7 @@ modules['scene'] =
 	    },
 	    construct: function(){
 	        var self = this;
+	        self._super();
 	        self._layers = new collections.List();
 	        this.layerProps.forEach(function(prop){
 	            var l = bundle.layerList.find({id: prop.protoId});
@@ -4216,7 +4222,7 @@ modules['glContext'] =
 	    it.clear = function() {
 	        var col = scene.useBG?scene.colorBG:colorBGDefault;
 	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
-	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo
+	        gl.clear(gl.COLOR_BUFFER_BIT); // todo  | gl.DEPTH_BUFFER_BIT
 	    };
 	
 	    var fillRect = function (x, y, w, h, color) {

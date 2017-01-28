@@ -15,6 +15,7 @@ var lastTime = 0;
 var reqAnimFrame = window.requestAnimationFrame;
 var gameProps;
 var isRunning = false;
+exports.isReady = false;
 
 
 exports.getContext = function(){
@@ -46,10 +47,12 @@ exports.init = function(){
     require('scaleManager').instance(canvas,ctx).manage();
 };
 
+
 exports.start = function(){
     //<code>{{#if opts.debug}}
     if (window.canceled) return;
     //<code>{{/if}}
+    if (!exports.isReady) return;
     isRunning = true;
     drawSceneLoop();
 };
@@ -59,6 +62,7 @@ exports.getCanvas = function(){
 };
 
 exports.stop = function(){
+    if (!exports.isReady) return;
     isRunning = false;
 };
 
@@ -77,9 +81,6 @@ var drawSceneLoop = function(){
     //<code>{{#if opts.debug}}
     var lastErr = ctx.getError();
     if (lastErr) throw "GL error: " + lastErr;
-    //<code>{{/if}}
-
-    //<code>{{#if opts.debug}}
     if (window.canceled) return;
     //{{/if}}
 

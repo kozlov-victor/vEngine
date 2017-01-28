@@ -18,14 +18,14 @@ var ModelDrawer = function(gl){
         posVertexBuffer.setData(model.vertexArr,gl.FLOAT,3);
         program.bindBuffer(posVertexBuffer,'a_position');
 
-        posIndexBuffer.setData(model.indexArr);
-        posIndexBuffer.bind();
-
         texVertexBuffer.setData(model.texCoordArr,gl.FLOAT,2);
         program.bindBuffer(texVertexBuffer,'a_texcoord');
 
-        //normalBuffer.setData(model.normalArr,gl.FLOAT,3);
-        //program.bindBuffer(normalBuffer,'a_normal');
+        normalBuffer.setData(model.normalArr,gl.FLOAT,3);
+        program.bindBuffer(normalBuffer,'a_normal');
+
+        posIndexBuffer.setData(model.indexArr);
+        posIndexBuffer.bind();
     };
 
     this.unbind  = function(){
@@ -47,13 +47,12 @@ var ModelDrawer = function(gl){
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
-        posIndexBuffer = new IndexBuffer(gl);
         texVertexBuffer = new VertexBuffer(gl);
-        //normalBuffer = new VertexBuffer(gl);
-
+        normalBuffer = new VertexBuffer(gl);
+        posIndexBuffer = new IndexBuffer(gl);
 
         program.bind();
-        self.setUniform('u_alpha',1);
+        //self.setUniform('u_alpha',1);
 
     })();
 

@@ -9,9 +9,9 @@ var PolyLineDrawer = function(gl){
     var program, posVertexBuffer;
 
     this.bind = function(vertexData){
+        program.bind();
         posVertexBuffer.setData(vertexData,gl.FLOAT,2);
         program.bindBuffer(posVertexBuffer,'a_position');
-        program.bind();
     };
 
     this.unbind = function(){

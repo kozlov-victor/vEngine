@@ -655,7 +655,7 @@ modules['bundle'] =
 	exports.embeddedResources = {};
 	exports.embeddedResources.data = {};
 	exports.embeddedResources.isEmbedded = false;
-	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   // gl_PointSize = 1;\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColor":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"}};
+	exports.shaders = {"basic":{"vertex.vert":"attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}","vertex2.vert":"attribute vec4 a_position;\r\nattribute vec2 a_texcoord;\r\n//attribute vec4 a_normal;\r\n\r\nuniform mat4 u_matrix;\r\n\r\nvarying vec2 v_texcoord;\r\n//varying float v_directionLightFactor;\r\n\r\nvoid main() {\r\n\r\n  gl_Position = u_matrix * a_position;\r\n  v_texcoord = a_texcoord;\r\n  //v_directionLightFactor = dot(a_normal,vec4(1.0,0,0,0));\r\n}"},"color":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"},"multiColor":{"fragment.frag":"precision mediump float;\n\nvarying vec4 v_color;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = v_color;\n}"},"texture":{"fragment.frag":"precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}","fragment2.frag":"precision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n//varying float v_directionLightFactor;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\n\r\n\r\nvoid main() {\r\n    gl_FragColor = texture2D(texture, v_texcoord);\r\n    //gl_FragColor.r = v_directionLightFactor;\r\n    gl_FragColor.a *= u_alpha;\r\n}"}};
 }};
 modules['resourceCache'] =
     {code: function(module){
@@ -1593,6 +1593,15 @@ modules['mat4'] =
 	    ];
 	};
 	
+	exports.makeZToWMatrix = function(fudgeFactor) {
+	    return [
+	        1, 0, 0, 0,
+	        0, 1, 0, 0,
+	        0, 0, 1, fudgeFactor,
+	        0, 0, 0, 1
+	    ];
+	};
+	
 	exports.make2DProjection = function(width, height, depth) {
 	    // Note: This matrix flips the Y axis so 0 is at the top.
 	    return [
@@ -1604,20 +1613,57 @@ modules['mat4'] =
 	};
 	
 	
-	
-	
-	exports.make3DProjection = function(fieldOfViewInRadians, width, height, near, far){
-	    var aspect = width / height;
-	    var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
-	    var rangeInv = 1.0 / (near - far);
-	
-	    return [
-	        f / aspect, 0, 0, 0,
-	        0, f, 0, 0,
-	        0, 0, (near + far) * rangeInv, -1,
-	        0, 0, near * far * rangeInv * 2, 0
-	    ];
+	exports.ortho = function (left, right, bottom, top, near, far) {
+	    var lr = 1 / (left - right),
+	        bt = 1 / (bottom - top),
+	        nf = 1 / (near - far);
+	    var out = [];
+	    out[0] = -2 * lr;
+	    out[1] = 0;
+	    out[2] = 0;
+	    out[3] = 0;
+	    out[4] = 0;
+	    out[5] = -2 * bt;
+	    out[6] = 0;
+	    out[7] = 0;
+	    out[8] = 0;
+	    out[9] = 0;
+	    out[10] = 2 * nf;
+	    out[11] = 0;
+	    out[12] = (left + right) * lr;
+	    out[13] = (top + bottom) * bt;
+	    out[14] = (far + near) * nf;
+	    out[15] = 1;
+	    return out;
 	};
+	
+	exports.perspective = function (fovy, aspect, near, far) {
+	    var f = 1.0 / Math.tan(fovy / 2),
+	        nf = 1 / (near - far);
+	    var out = [];
+	
+	    out[0] = f / aspect;
+	    out[1] = 0;
+	    out[2] = 0;
+	    out[3] = 0;
+	
+	    out[4] = 0;
+	    out[5] = f;
+	    out[6] = 0;
+	    out[7] = 0;
+	
+	    out[8] = 0;
+	    out[9] = 0;
+	    out[10] = (far + near) * nf;
+	    out[11] = -1;
+	
+	    out[12] = 0;
+	    out[13] = 0;
+	    out[14] = (2 * far * near) * nf;
+	    out[15] = 0;
+	    return out;
+	};
+	
 	
 	exports.makeTranslation = function(tx, ty, tz) {
 	    return [
@@ -2242,6 +2288,7 @@ modules['baseGameObject'] =
 	        this._super();
 	    },
 	    construct:function(){
+	        this._super();
 	        if (!this.pos) this.pos = {x:0,y:0};
 	        if (!this.vel) this.vel = {x:0,y:0};
 	        if (!this.scale) this.scale = {x:1,y:1};
@@ -2336,8 +2383,10 @@ modules['baseModel'] =
 	        this._emitter.trigger(eventName,data);
 	    },
 	    _init:function(){
-	        this._emitter = new EventEmitter();
 	        arguments && arguments[0] && this.fromJSON(arguments[0]);
+	    },
+	    construct: function(){
+	        this._emitter = new EventEmitter();
 	    }
 	});
 	
@@ -2377,24 +2426,23 @@ modules['renderable'] =
 	var Tweenable = require('tweenable');
 	
 	
-	var Renderable = BaseModel.extend(function(self){
-	
-	    self.type = 'renderable';
-	    self.alpha = 1.0;
-	    self.width = 0;
-	    self.height = 0;
-	    var _tweenable = new Tweenable();
-	    self.onUpdate = function(){};
-	    self.fadeIn = function(time,easeFnName){
+	var Renderable = BaseModel.extend({
+	    type: 'renderable',
+	    alpha: 1.0,
+	    width: 0,
+	    height: 0,
+	    _tweenable:null,
+	    onUpdate: function(){},
+	    fadeIn: function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:1}},time,easeFnName);
-	    };
-	    self.fadeOut = function(time,easeFnName){
+	    },
+	    fadeOut:function(time,easeFnName){
 	        return this.tween(this,{to:{alpha:0}},time,easeFnName);
-	    };
-	    self.tween =  function(obj,fromToVal,tweenTime,easeFnName){
-	        _tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
-	    };
-	    self._render = function(){
+	    },
+	    tween: function(obj,fromToVal,tweenTime,easeFnName){
+	        this._tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
+	    },
+	    _render:function(){
 	        var ctx = renderer.getContext();
 	        var dx = 0, dy = 0;
 	        if (this.fixedToCamera) {
@@ -2407,16 +2455,19 @@ modules['renderable'] =
 	        //ctx.rotateY(a);
 	        ctx.translate(-this.width /2, -this.height/2);
 	        ctx.setAlpha(this.alpha);
-	    };
-	    self.update = function(time,delta){
+	    },
+	    update: function(time,delta) {
 	        var self = this;
 	        var deltaX = self.vel.x * delta / 1000;
 	        var deltaY = self.vel.y * delta / 1000;
-	        var posX = self.pos.x+deltaX;
-	        var posY = self.pos.y+deltaY;
-	        collider.manage(self,posX,posY);
-	    };
-	
+	        var posX = self.pos.x + deltaX;
+	        var posY = self.pos.y + deltaY;
+	        collider.manage(self, posX, posY);
+	    },
+	    construct: function(){
+	        this._super();
+	        this._tweenable = new Tweenable();
+	    }
 	});
 	
 	module.exports = Renderable;
@@ -2523,7 +2574,13 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
+	var Sphere = require('sphere');
+	var Cube = require('cube');
+	//var TeaPot = require('teaPot');
+	var model = new Sphere({radius:100,size:50});
+	
 	var a = 0;
+	
 	var _draw = function(ctx,self,x,y){
 	    ctx.drawImage(
 	        resourceCache.get(self._spriteSheet.resourcePath),
@@ -2534,8 +2591,15 @@ modules['gameObject'] =
 	        x||0,
 	        y||0
 	    );
+	
+	    ctx.scale(10,10,5);
+	    ctx.rotateY(a);
+	    ctx.rotateZ(a);
+	    a+=0.01;
+	    ctx.drawModel(model,resourceCache.get(self._spriteSheet.resourcePath));
+	
 	    //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
-	    ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
+	    //ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
 	};
 	
 	var _drawPattern = function(ctx,self){
@@ -2817,6 +2881,7 @@ modules['scene'] =
 	    },
 	    construct: function(){
 	        var self = this;
+	        self._super();
 	        self._layers = new collections.List();
 	        this.layerProps.forEach(function(prop){
 	            var l = bundle.layerList.find({id: prop.protoId});
@@ -3606,372 +3671,15 @@ modules['scaleManager'] =
 	
 	
 }};
-modules['glContext'] =
-    {code: function(module){
-    var exports = module.exports;
-    	
-	var mat4 = require('mat4');
-	var utils = require('utils');
-	var ColorRectDrawer = require('colorRectDrawer');
-	var TextureDrawer = require('textureDrawer');
-	var PolyLineDrawer = require('polyLineDrawer');
-	var Texture = require('texture');
-	var MatrixStack = require('matrixStack');
-	var FrameBuffer = require('frameBuffer');
-	var bundle = require('bundle');
-	var cache = require('resourceCache');
-	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
-	var Class = require('class');
-	
-	
-	var getCtx = function(el){
-	    if (!el) el = document.createElement('canvas');
-	    if (!el) return null;
-	    return (
-	        el.getContext("webgl",{alpha: false}) ||
-	        el.getContext('experimental-webgl',{alpha: false}) ||
-	        el.getContext('webkit-3d',{alpha: false}) ||
-	        el.getContext('moz-webgl',{alpha: false})
-	    );
-	};
-	
-	var GlContext = Class.extend(function(it){
-	
-	    var gl;
-	    var mScaleX = 1, mScaleY = 1;
-	    var alpha = 1;
-	    var textureDrawer, colorRectDrawer, polyLineDrawer;
-	    var matrixStack = new MatrixStack();
-	    var frameBuffer;
-	    var gameProps;
-	    var colorBGDefault = [255,255,255];
-	    var scene = null;
-	    var SCENE_DEPTH = 1;
-	
-	    it.init = function(canvas){
-	
-	        gameProps = bundle.gameProps;
-	        gl = getCtx(canvas);
-	
-	        textureDrawer = new TextureDrawer(gl);
-	        colorRectDrawer = new ColorRectDrawer(gl);
-	        polyLineDrawer = new PolyLineDrawer(gl);
-	
-	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
-	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        gl.enable(gl.BLEND);
-	
-	    };
-	
-	    it.setScene = function(_scene){
-	        scene = _scene;
-	    };
-	
-	    it.setAlpha = function(_alpha) {
-	        alpha = _alpha;
-	    };
-	
-	    it.getError = function(){
-	        return 0;
-	        var err = gl.getError();
-	        return err==gl.NO_ERROR?0:err;
-	    };
-	
-	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
-	        // this matrix will convert from pixels to clip space
-	        var projectionMatrix = mat4.make2DProjection(viewWidth,viewHeight, SCENE_DEPTH);
-	        //var projectionMatrix = mat4.make3DProjection(3,viewWidth,viewHeight, 10,100);
-	        // this matrix will scale our 1 unit quad
-	        // from 1 unit to dstWidth, dstHeight units
-	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
-	
-	        // this matrix will translate our quad to dstX, dstY
-	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
-	
-	        // multiply them all togehter
-	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
-	        matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
-	        matrix = mat4.matrixMultiply(matrix, projectionMatrix);
-	        return matrix;
-	    };
-	
-	    var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
-	        // Because texture coordinates go from 0 to 1
-	        // and because our texture coordinates are already a unit quad
-	        // we can select an area of the texture by scaling the unit quad
-	        // down
-	        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
-	
-	        // multiply them together
-	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
-	    };
-	
-	    var currTex = null;
-	
-	
-	    it.drawImage = function(
-	        texture,
-	        srcX, srcY, srcWidth, srcHeight,
-	        dstX, dstY
-	    ) {
-	
-	        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-	        //gl.blendColor(0, 0.5, 1, 1);
-	
-	        var texWidth = texture.getSize().width;
-	        var texHeight = texture.getSize().height;
-	
-	        if (dstX === undefined) {
-	            dstX = srcX;
-	        }
-	        if (dstY === undefined) {
-	            dstY = srcY;
-	        }
-	        if (srcWidth === undefined) {
-	            srcWidth = texWidth;
-	        }
-	        if (srcHeight === undefined) {
-	            srcHeight = texHeight;
-	        }
-	
-	        if (currTex!=texture){
-	            texture.bind();
-	            currTex = texture;
-	        }
-	
-	        textureDrawer.bind();
-	        textureDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-	        textureDrawer.setUniform("u_matrix",makePositionMatrix(
-	                dstX,dstY,srcWidth,srcHeight,
-	                gameProps.width,gameProps.height,1,1
-	            )
-	        );
-	        textureDrawer.setUniform('u_alpha',alpha);
-	        textureDrawer.draw();
-	        textureDrawer.unbind();
-	    };
-	
-	    it.lockRect = function(rect) {
-	        gl.enable(gl.SCISSOR_TEST);
-	        gl.scissor(
-	            rect.x,
-	            gameProps.height - rect.y - rect.height,
-	            rect.width,
-	            rect.height
-	        );
-	    };
-	
-	    it.unlockRect = function(){
-	        gl.disable(gl.SCISSOR_TEST);
-	    };
-	
-	    it.clear = function() {
-	        var col = scene.useBG?scene.colorBG:colorBGDefault;
-	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
-	        gl.clear(gl.COLOR_BUFFER_BIT);
-	    };
-	
-	    var fillRect = function (x, y, w, h, color) {
-	
-	        colorRectDrawer.bind();
-	        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
-	                x,y,w,h,
-	                gameProps.width,gameProps.height,1,1
-	            )
-	        );
-	        colorRectDrawer.setUniform("u_rgba",color);
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        colorRectDrawer.draw();
-	        colorRectDrawer.unbind();
-	    };
-	
-	    it.fillRect = fillRect;
-	
-	    it.strokeRect = function (x, y, w, h, color) {
-	        fillRect(x, y, w, 1, color);
-	        fillRect(x, y + h, w, 1, color);
-	        fillRect(x, y, 1, h, color);
-	        fillRect(x + w, y, 1, h, color);
-	    };
-	
-	    it.point = function (x, y, color) {
-	        this.fillRect(x, y, 1, 1, color);
-	    };
-	
-	    it.polyLine = function(vertexArr,color) {
-	        polyLineDrawer.bind(vertexArr);
-	        polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
-	                0,0,1,1,
-	                gameProps.width,gameProps.height,1,1
-	            )
-	        );
-	        polyLineDrawer.setUniform("u_rgba",color);
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        polyLineDrawer.draw();
-	        polyLineDrawer.unbind();
-	    };
-	
-	    it.save = function() {
-	        matrixStack.save();
-	    };
-	
-	    it.scale = function(x,y) {
-	        matrixStack.scale(x,y);
-	    };
-	
-	    it.rotateZ = function(angleInRadians) {
-	        matrixStack.rotateZ(angleInRadians);
-	    };
-	
-	    it.rotateY = function(angleInRadians) {
-	        matrixStack.rotateY(angleInRadians);
-	    };
-	
-	    it.translate = function(x,y){
-	        matrixStack.translate(x,y);
-	    };
-	
-	    it.restore = function(){
-	        matrixStack.restore();
-	    };
-	
-	    it.rescaleView = function(scaleX,scaleY){
-	        mScaleX = scaleX;
-	        mScaleY = scaleY;
-	    };
-	
-	    it.beginFrameBuffer = function(){
-	        this.save();
-	        gl.viewport(0, 0, gameProps.width, gameProps.height);
-	        frameBuffer.bind();
-	    };
-	
-	    it.getNativeContext = function(){
-	        return gl;
-	    };
-	
-	    it.flipFrameBuffer = function(){
-	        currTex = null;
-	        this.restore();
-	        this.save();
-	        this.translate(0,gameProps.canvasHeight);
-	        this.scale(1,-1);
-	        frameBuffer.unbind();
-	        this.clear();
-	        gl.clearColor(1,1,1,1);
-	        gl.clear(gl.COLOR_BUFFER_BIT);
-	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
-	        gl.bindTexture(gl.TEXTURE_2D, frameBuffer.getGlTexture());
-	
-	        textureDrawer.bind();
-	
-	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-	            textureDrawer.setUniform('u_matrix',
-	                makePositionMatrix(
-	                    gameProps.globalScale.left,gameProps.globalScale.top,
-	                    gameProps.width, gameProps.height,
-	                    gameProps.canvasWidth,gameProps.canvasHeight,
-	                    mScaleX,mScaleY
-	                )
-	            );
-	        } else {
-	            textureDrawer.setUniform('u_matrix',
-	                makePositionMatrix(
-	                    0,0,
-	                    gameProps.width, gameProps.height,
-	                    gameProps.canvasWidth,gameProps.canvasHeight,
-	                    mScaleX,mScaleY
-	                )
-	            );
-	        }
-	
-	        textureDrawer.setUniform('u_textureMatrix',
-	            makeTextureMatrix(
-	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
-	                gameProps.canvasWidth,gameProps.canvasHeight
-	            )
-	        );
-	        textureDrawer.setUniform('u_alpha',1);
-	
-	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-	        textureDrawer.draw();
-	        this.restore();
-	    };
-	
-	    var self = it;
-	
-	},{
-	    isAcceptable: function(){
-	        return !!getCtx();
-	    },
-	    loadTextureInfo:function(url,opts,progress,callBack) {
-	        if (cache.has(url)) {
-	            callBack(cache.get(url));
-	            return;
-	        }
-	
-	        var img = new Image();
-	        img.onerror=function(e){throw 'can not load image with url '+ url};
-	        var gl = require('renderer').getContext().getNativeContext();
-	        var texture = new Texture(gl, img);
-	
-	        if (opts.type == 'base64') {
-	            url = utils.getBase64prefix('image', opts.fileName) + url;
-	            img.src = url;
-	            texture.apply(img);
-	            callBack(texture);
-	            return;
-	        }
-	
-	        utils.loadBinary(url, progress, function (buffer) {
-	            if (window.Blob && window.URL) {
-	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
-	                img.src = URL.createObjectURL(blob);
-	            } else {
-	                var base64String = utils.arrayBufferToBase64(buffer);
-	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
-	                img.src = base64String;
-	            }
-	            img.onload = function () {
-	                texture.apply(img);
-	                callBack(texture);
-	            };
-	
-	        });
-	    }
-	});
-	
-	module.exports = GlContext;
-	
-	
-	
-	
-	//canvas.addEventListener('webglcontextlost', function(e) {
-	//    // the default is to do nothing. Preventing the default
-	//    // means allowing context to be restored
-	//    e.preventDefault();
-	//    var div = document.createElement("div");
-	//    div.className = "contextlost";
-	//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
-	//    div.addEventListener('click', function() {
-	//        window.location.reload();
-	//    });
-	//    document.body.appendChild(div);
-	//});
-	//canvas.addEventListener('webglcontextrestored', function() {
-	//    // just reload the page. Easiest.
-	//    window.location.reload();
-	//});
-}};
 modules['frameBuffer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Texture = require('texture');
+	
 	var FrameBuffer = function(gl,width,height){
 	
-	    var glTexture;
+	    var texture;
 	    var glRenderBuffer;
 	    var glFrameBuffer;
 	
@@ -3984,21 +3692,17 @@ modules['frameBuffer'] =
 	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	    };
 	
-	    this.getGlTexture = function(){
-	        return glTexture;
+	    this.getTexture = function(){
+	        return texture;
 	    };
 	
 	
 	    (function(){
+	        if (!gl) throw "can not create frameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
 	
 	        //1. Init Color Texture
-	        glTexture = gl.createTexture();
-	        gl.bindTexture(gl.TEXTURE_2D, glTexture);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        texture = new Texture(gl);
+	        texture.setImage(null,width,height);
 	        //2. Init Render Buffer
 	        glRenderBuffer = gl.createRenderbuffer();
 	        gl.bindRenderbuffer(gl.RENDERBUFFER, glRenderBuffer);
@@ -4006,10 +3710,10 @@ modules['frameBuffer'] =
 	        //3. Init Frame Buffer
 	        glFrameBuffer = gl.createFramebuffer();
 	        gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);
-	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, glTexture, 0);
+	        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture.getGlTexture(), 0);
 	        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, glRenderBuffer);
 	        //4. Clean up
-	        gl.bindTexture(gl.TEXTURE_2D, null);
+	        texture.unbind();
 	        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
 	        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	
@@ -4030,6 +3734,7 @@ modules['indexBuffer'] =
 	    var dataLength;
 	
 	    this.setData = function(bufferData){
+	        if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
 	        dataLength = bufferData.length;
 	        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 	        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
@@ -4132,6 +3837,7 @@ modules['shaderProgram'] =
     {code: function(module){
     var exports = module.exports;
     	function compileShader(gl, shaderSource, shaderType) {
+	    if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
 	    // Create the shader object
 	    var shader = gl.createShader(shaderType);
 	
@@ -4147,8 +3853,7 @@ modules['shaderProgram'] =
 	        // Something went wrong during compilation; get the error
 	        var lastError = gl.getShaderInfoLog(shader);
 	        gl.deleteShader(shader);
-	        console.error('*** Error compiling shader ' + shader + ':' + lastError);
-	        throw 'Error compiling shader';
+	        throw 'Error compiling shader ' + shader + ':' + lastError;
 	    }
 	
 	    return shader;
@@ -4167,9 +3872,8 @@ modules['shaderProgram'] =
 	    if (!linked) {
 	        // something went wrong with the link
 	        var lastError = gl.getProgramInfoLog(program);
-	        console.error("Error in program linking:" + lastError);
 	        gl.deleteProgram(program);
-	        throw 'Error in program linking';
+	        throw "Error in program linking:" + lastError;
 	    }
 	    return program;
 	}
@@ -4314,15 +4018,19 @@ modules['shaderProgram'] =
 	    this.bindBuffer = function(buffer,uniformLocationName){
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
 	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	
+	        if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
+	        if (uniformLocation<0) throw "can not found uniform location for " + uniformLocationName;
+	
 	        gl.enableVertexAttribArray(uniformLocation);
 	        gl.vertexAttribPointer(
 	            uniformLocation,
 	            buffer.getItemSize(),
 	            buffer.getItemType(),
 	            false,  // if the content is normalized vectors
-	            0,  // number of bytes to skip in between elements
-	            0
-	        ); // offsets to the first element
+	            0,      // number of bytes to skip in between elements
+	            0       // offsets to the first element
+	        );
 	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	    };
 	
@@ -4338,19 +4046,30 @@ modules['texture'] =
 	    return (value & (value - 1)) == 0;
 	};
 	
-	var Texture = function(gl,img){
+	var Texture = function(gl){
 	
 	    var tex;
 	    var size;
 	
 	    this.isPowerOfTwo = false;
 	
-	    this.apply = function(){
-	        size = {width:img.width,height:img.height};
+	    /**
+	     * @param img - if image is null, width and height must be specified
+	     * @param width -unused if image specified
+	     * @param height -unused if image specified
+	     */
+	    this.setImage = function(img,width,height){
+	        if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+	
+	        if (img) size = {width:img.width,height:img.height};
 	        this.bind();
 	        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-	        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-	        this.isPowerOfTwo = isPowerOf2(img.width) && isPowerOf2(img.height);
+	        if (img) {
+	            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+	        } else {
+	            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+	        }
+	        this.isPowerOfTwo = img && isPowerOf2(img.width) && isPowerOf2(img.height);
 	        // Check if the image is a power of 2 in both dimensions.
 	        if (this.isPowerOfTwo) {
 	            gl.generateMipmap(gl.TEXTURE_2D);
@@ -4363,12 +4082,17 @@ modules['texture'] =
 	            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 	        }
 	        gl.bindTexture(gl.TEXTURE_2D, null);
+	
 	    };
 	
 	    this.bind = function(i) {
 	        //gl.activeTexture(gl.TEXTURE0+i);
 	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	        // gl.uniform1i(uName, i);
+	    };
+	
+	    this.unbind = function(i) {
+	        gl.bindTexture(gl.TEXTURE_2D, null);
 	    };
 	
 	    this.getSize = function(){
@@ -4380,6 +4104,7 @@ modules['texture'] =
 	    };
 	
 	    (function(){
+	        if (!gl) throw "can not create texture, gl context not passed to constructor, expected: Texture(gl)";
 	        tex = gl.createTexture();
 	        gl.bindTexture(gl.TEXTURE_2D, tex);
 	        // Fill the texture with a 1x1 blue pixel.
@@ -4404,6 +4129,9 @@ modules['vertexBuffer'] =
 	    var dataLength;
 	
 	    this.setData = function(bufferData, itemType, itemSize){
+	        if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+	        if (!itemType) throw 'can not set data to buffer: itemType not specified';
+	        if (!itemSize) throw 'can not set data to buffer: itemSize not specified';
 	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 	        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
 	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -4436,10 +4164,659 @@ modules['vertexBuffer'] =
 	
 	module.exports = VertexBuffer;
 }};
+modules['glContext'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var mat4 = require('mat4');
+	var utils = require('utils');
+	var ColorRectDrawer = require('colorRectDrawer');
+	var SpriteRectDrawer = require('spriteRectDrawer');
+	var PolyLineDrawer = require('polyLineDrawer');
+	var ModelDrawer = require('modelDrawer');
+	var Texture = require('texture');
+	var MatrixStack = require('matrixStack');
+	var FrameBuffer = require('frameBuffer');
+	var bundle = require('bundle');
+	var cache = require('resourceCache');
+	var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+	var Class = require('class');
+	
+	
+	var getCtx = function(el){
+	    if (!el) el = document.createElement('canvas');
+	    if (!el) return null;
+	    return (
+	        el.getContext("webgl",{alpha: false}) ||
+	        el.getContext('experimental-webgl',{alpha: false}) ||
+	        el.getContext('webkit-3d',{alpha: false}) ||
+	        el.getContext('moz-webgl',{alpha: false})
+	    );
+	};
+	
+	var GlContext = Class.extend(function(it){
+	
+	    var gl;
+	    var mScaleX = 1, mScaleY = 1;
+	    var alpha = 1;
+	    var spriteRectDrawer, colorRectDrawer, polyLineDrawer, modelDrawer;
+	    var matrixStack = new MatrixStack();
+	    var frameBuffer;
+	    var gameProps;
+	    var colorBGDefault = [255,255,255];
+	    var scene = null;
+	    var SCENE_DEPTH = 1000;
+	
+	    it.init = function(canvas){
+	
+	        gameProps = bundle.gameProps;
+	        gl = getCtx(canvas);
+	
+	        spriteRectDrawer = new SpriteRectDrawer(gl);
+	        colorRectDrawer = new ColorRectDrawer(gl);
+	        polyLineDrawer = new PolyLineDrawer(gl);
+	        modelDrawer = new ModelDrawer(gl);
+	
+	        frameBuffer = new FrameBuffer(gl,gameProps.width,gameProps.height);
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        gl.enable(gl.BLEND);
+	
+	    };
+	
+	    it.setScene = function(_scene){
+	        scene = _scene;
+	    };
+	
+	    it.setAlpha = function(_alpha) {
+	        alpha = _alpha;
+	    };
+	
+	    it.getError = function(){
+	        var err = gl.getError();
+	        //return 0;
+	        return err==gl.NO_ERROR?0:err;
+	    };
+	
+	    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
+	
+	        var zToWMatrix = mat4.makeZToWMatrix(1);
+	        var projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
+	
+	        //var projectionMatrix = mat4.perspective(12,viewWidth / viewHeight,-1000,1000);
+	        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
+	        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
+	
+	        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
+	        matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
+	        matrix = mat4.matrixMultiply(matrix, projectionMatrix);
+	        matrix = mat4.matrixMultiply(matrix, zToWMatrix);
+	        return matrix;
+	    };
+	
+	    var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
+	
+	        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
+	        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+	
+	        return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
+	    };
+	
+	    var currTex = null;
+	
+	    it.drawImage = function(
+	        texture,
+	        srcX, srcY, srcWidth, srcHeight,
+	        dstX, dstY
+	    ) {
+	
+	        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+	        //gl.blendColor(0, 0.5, 1, 1);
+	
+	        var texWidth = texture.getSize().width;
+	        var texHeight = texture.getSize().height;
+	
+	        if (dstX === undefined) {
+	            dstX = srcX;
+	        }
+	        if (dstY === undefined) {
+	            dstY = srcY;
+	        }
+	        if (srcWidth === undefined) {
+	            srcWidth = texWidth;
+	        }
+	        if (srcHeight === undefined) {
+	            srcHeight = texHeight;
+	        }
+	
+	        if (currTex!=texture){
+	            texture.bind();
+	            currTex = texture;
+	        }
+	
+	
+	
+	        spriteRectDrawer.bind();
+	        spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
+	        spriteRectDrawer.setUniform("u_matrix",makePositionMatrix(
+	                dstX,dstY,srcWidth,srcHeight,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        spriteRectDrawer.setUniform('u_alpha',alpha);
+	        spriteRectDrawer.draw();
+	        spriteRectDrawer.unbind();
+	    };
+	
+	    it.drawModel = function(model,texture){
+	        modelDrawer.bind(model);
+	        texture.bind();
+	
+	        modelDrawer.setUniform("u_matrix",makePositionMatrix(
+	                0,0,1,1,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	
+	        modelDrawer.setUniform('u_alpha',1);
+	        gl.enable(gl.DEPTH_TEST);
+	        modelDrawer.draw();
+	        modelDrawer.unbind();
+	    };
+	
+	    it.lockRect = function(rect) {
+	        gl.enable(gl.SCISSOR_TEST);
+	        gl.scissor(
+	            rect.x,
+	            gameProps.height - rect.y - rect.height,
+	            rect.width,
+	            rect.height
+	        );
+	    };
+	
+	    it.unlockRect = function(){
+	        gl.disable(gl.SCISSOR_TEST);
+	    };
+	
+	    it.clear = function() {
+	        var col = scene.useBG?scene.colorBG:colorBGDefault;
+	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
+	        gl.clear(gl.COLOR_BUFFER_BIT); // todo  | gl.DEPTH_BUFFER_BIT
+	    };
+	
+	    var fillRect = function (x, y, w, h, color) {
+	
+	        colorRectDrawer.bind();
+	        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
+	                x,y,w,h,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        colorRectDrawer.setUniform("u_rgba",color);
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        colorRectDrawer.draw();
+	        colorRectDrawer.unbind();
+	    };
+	
+	    it.fillRect = fillRect;
+	
+	    it.strokeRect = function (x, y, w, h, color) {
+	        fillRect(x, y, w, 1, color);
+	        fillRect(x, y + h, w, 1, color);
+	        fillRect(x, y, 1, h, color);
+	        fillRect(x + w, y, 1, h, color);
+	    };
+	
+	    it.point = function (x, y, color) {
+	        this.fillRect(x, y, 1, 1, color);
+	    };
+	
+	    it.polyLine = function(vertexArr,color) {
+	        polyLineDrawer.bind(vertexArr);
+	        polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
+	                0,0,1,1,
+	                gameProps.width,gameProps.height,1,1
+	            )
+	        );
+	        polyLineDrawer.setUniform("u_rgba",color);
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        polyLineDrawer.draw();
+	        polyLineDrawer.unbind();
+	    };
+	
+	    it.save = function() {
+	        matrixStack.save();
+	    };
+	
+	    it.scale = function(x,y) {
+	        matrixStack.scale(x,y);
+	    };
+	
+	    it.rotateZ = function(angleInRadians) {
+	        matrixStack.rotateZ(angleInRadians);
+	    };
+	
+	    it.rotateY = function(angleInRadians) {
+	        matrixStack.rotateY(angleInRadians);
+	    };
+	
+	    it.translate = function(x,y){
+	        matrixStack.translate(x,y);
+	    };
+	
+	    it.restore = function(){
+	        matrixStack.restore();
+	    };
+	
+	    it.rescaleView = function(scaleX,scaleY){
+	        mScaleX = scaleX;
+	        mScaleY = scaleY;
+	    };
+	
+	    it.beginFrameBuffer = function(){
+	        this.save();
+	        gl.viewport(0, 0, gameProps.width, gameProps.height);
+	        frameBuffer.bind();
+	    };
+	
+	    it.getNativeContext = function(){
+	        return gl;
+	    };
+	
+	    it.flipFrameBuffer = function(){
+	        currTex = null;
+	        this.restore();
+	        this.save();
+	        this.translate(0,gameProps.canvasHeight);
+	        this.scale(1,-1);
+	        frameBuffer.unbind();
+	        gl.viewport(0, 0, gameProps.canvasWidth,gameProps.canvasHeight);
+	        frameBuffer.getTexture().bind();
+	
+	        spriteRectDrawer.bind();
+	
+	        if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
+	            spriteRectDrawer.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    gameProps.globalScale.left,gameProps.globalScale.top,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        } else {
+	            spriteRectDrawer.setUniform('u_matrix',
+	                makePositionMatrix(
+	                    0,0,
+	                    gameProps.width, gameProps.height,
+	                    gameProps.canvasWidth,gameProps.canvasHeight,
+	                    mScaleX,mScaleY
+	                )
+	            );
+	        }
+	
+	        spriteRectDrawer.setUniform('u_textureMatrix',
+	            makeTextureMatrix(
+	                0,0,gameProps.canvasWidth,gameProps.canvasHeight,
+	                gameProps.canvasWidth,gameProps.canvasHeight
+	            )
+	        );
+	        spriteRectDrawer.setUniform('u_alpha',1);
+	
+	        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+	        spriteRectDrawer.draw();
+	        this.restore();
+	    };
+	
+	    var self = it;
+	
+	},{
+	    isAcceptable: function(){
+	        return !!getCtx();
+	    },
+	    loadTextureInfo:function(url,opts,progress,callBack) {
+	        if (cache.has(url)) {
+	            callBack(cache.get(url));
+	            return;
+	        }
+	
+	        var img = new Image();
+	        img.onerror=function(e){throw 'can not load image with url '+ url};
+	        var gl = require('renderer').getContext().getNativeContext();
+	        var texture = new Texture(gl);
+	
+	        if (opts.type == 'base64') {
+	            url = utils.getBase64prefix('image', opts.fileName) + url;
+	            img.src = url;
+	            texture.setImage(img);
+	            callBack(texture);
+	            return;
+	        }
+	
+	        utils.loadBinary(url, progress, function (buffer) {
+	            if (window.Blob && window.URL) {
+	                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+	                img.src = URL.createObjectURL(blob);
+	            } else {
+	                var base64String = utils.arrayBufferToBase64(buffer);
+	                base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
+	                img.src = base64String;
+	            }
+	            img.onload = function () {
+	                texture.setImage(img);
+	                callBack(texture);
+	            };
+	
+	        });
+	    }
+	});
+	
+	module.exports = GlContext;
+	
+	
+	
+	
+	//canvas.addEventListener('webglcontextlost', function(e) {
+	//    // the default is to do nothing. Preventing the default
+	//    // means allowing context to be restored
+	//    e.preventDefault();
+	//    var div = document.createElement("div");
+	//    div.className = "contextlost";
+	//    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
+	//    div.addEventListener('click', function() {
+	//        window.location.reload();
+	//    });
+	//    document.body.appendChild(div);
+	//});
+	//canvas.addEventListener('webglcontextrestored', function() {
+	//    // just reload the page. Easiest.
+	//    window.location.reload();
+	//});
+}};
+modules['abstractPrimitive'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var BaseModel = require('baseModel');
+	
+	var AbstractPrimitive = BaseModel.extend({
+	    vertexArr:null,
+	    indexArr:null,
+	    texCoordArr:null,
+	    normalArr:null
+	});
+	
+	module.exports = AbstractPrimitive;
+}};
+modules['cube'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var prepareBuffers = function(size){
+	    
+	    var vertices = [
+	        // Front face
+	        -size, -size,  size,
+	        size, -size,  size,
+	        size,  size,  size,
+	        -size,  size,  size,
+	
+	        // Back face
+	        -size, -size, -size,
+	        -size,  size, -size,
+	        size,  size, -size,
+	        size, -size, -size,
+	
+	        // Top face
+	        -size,  size, -size,
+	        -size,  size,  size,
+	        size,  size,  size,
+	        size,  size, -size,
+	
+	        // Bottom face
+	        -size, -size, -size,
+	        size, -size, -size,
+	        size, -size,  size,
+	        -size, -size,  size,
+	
+	        // Right face
+	        size, -size, -size,
+	        size,  size, -size,
+	        size,  size,  size,
+	        size, -size,  size,
+	
+	        // Left face
+	        -size, -size, -size,
+	        -size, -size,  size,
+	        -size,  size,  size,
+	        -size,  size, -size
+	    ];
+	
+	    var textureCoords = [
+	        // Front face
+	        0.0, 0.0,
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1,
+	
+	        // Back face
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1,
+	        0.0, 0.0,
+	
+	        // Top face
+	        0.0, 1,
+	        0.0, 0.0,
+	        1, 0.0,
+	        1, 1,
+	
+	        // Bottom face
+	        1, 1,
+	        0.0, 1,
+	        0.0, 0.0,
+	        1, 0.0,
+	
+	        // Right face
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1,
+	        0.0, 0.0,
+	
+	        // Left face
+	        0.0, 0.0,
+	        1, 0.0,
+	        1, 1,
+	        0.0, 1
+	    ];
+	
+	    var cubeVertexIndices = [
+	        0, 1, 2,      0, 2, 3,    // Front face
+	        4, 5, 6,      4, 6, 7,    // Back face
+	        8, 9, 10,     8, 10, 11,  // Top face
+	        12, 13, 14,   12, 14, 15, // Bottom face
+	        16, 17, 18,   16, 18, 19, // Right face
+	        20, 21, 22,   20, 22, 23  // Left face
+	    ];
+	
+	    var vertexNormals = [
+	        // Front face
+	        0.0,  0.0,  1,
+	        0.0,  0.0,  1,
+	        0.0,  0.0,  1,
+	        0.0,  0.0,  1,
+	
+	        // Back face
+	        0.0,  0.0, -1,
+	        0.0,  0.0, -1,
+	        0.0,  0.0, -1,
+	        0.0,  0.0, -1,
+	
+	        // Top face
+	        0.0,  1,  0.0,
+	        0.0,  1,  0.0,
+	        0.0,  1,  0.0,
+	        0.0,  1,  0.0,
+	
+	        // Bottom face
+	        0.0, -1,  0.0,
+	        0.0, -1,  0.0,
+	        0.0, -1,  0.0,
+	        0.0, -1,  0.0,
+	
+	        // Right face
+	        1,  0.0,  0.0,
+	        1,  0.0,  0.0,
+	        1,  0.0,  0.0,
+	        1,  0.0,  0.0,
+	
+	        // Left face
+	        -1,  0.0,  0.0,
+	        -1,  0.0,  0.0,
+	        -1,  0.0,  0.0,
+	        -1,  0.0,  0.0
+	    ];
+	
+	    return {
+	        vertexArr:vertices,
+	        normalArr: vertexNormals,
+	        texCoordArr: textureCoords,
+	        indexArr: cubeVertexIndices
+	    }
+	
+	};
+	
+	var Cube = AbstractPrimitive.extend({
+	    size: 10,
+	    construct: function(){
+	        var bufferArrs = prepareBuffers(this.size);
+	        this.vertexArr = bufferArrs.vertexArr;
+	        this.normalArr = bufferArrs.normalArr;
+	        this.texCoordArr = bufferArrs.texCoordArr;
+	        this.indexArr = bufferArrs.indexArr;
+	    }
+	});
+	
+	module.exports = Cube;
+}};
+modules['plane'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var Plane = AbstractPrimitive.extend({
+	    construct: function(){
+	        this.vertexArr = [
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ];
+	        this.indexArr = [0,1,2,3];
+	        this.texCoordArr = [
+	            0, 0,
+	            0, 1,
+	            1, 0,
+	            1, 1
+	        ];
+	    }
+	});
+	
+	module.exports = Plane;
+}};
+modules['sphere'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	var AbstractPrimitive = require('abstractPrimitive');
+	
+	var prepareBuffers = function(radius){
+	    var latitudeBands = 30;
+	    var longitudeBands = 30;
+	
+	    var vertexArr = [];
+	    var normalArr = [];
+	    var texCoordArr = [];
+	    for (var latNumber=0; latNumber <= latitudeBands; latNumber++) {
+	        var theta = latNumber * Math.PI / latitudeBands;
+	        var sinTheta = Math.sin(theta);
+	        var cosTheta = Math.cos(theta);
+	
+	        for (var longNumber=0; longNumber <= longitudeBands; longNumber++) {
+	            var phi = longNumber * 2 * Math.PI / longitudeBands;
+	            var sinPhi = Math.sin(phi);
+	            var cosPhi = Math.cos(phi);
+	
+	            var x = cosPhi * sinTheta;
+	            var y = cosTheta;
+	            var z = sinPhi * sinTheta;
+	            var u = 1 - (longNumber / longitudeBands);
+	            var v = 1 - (latNumber / latitudeBands);
+	
+	            normalArr.push(x);
+	            normalArr.push(y);
+	            normalArr.push(z);
+	            texCoordArr.push(u);
+	            texCoordArr.push(v);
+	            vertexArr.push(radius * x);
+	            vertexArr.push(radius * y);
+	            vertexArr.push(radius * z);
+	        }
+	    }
+	
+	    var indexArr = [];
+	    for (latNumber=0; latNumber < latitudeBands; latNumber++) {
+	        for (longNumber=0; longNumber < longitudeBands; longNumber++) {
+	            var first = (latNumber * (longitudeBands + 1)) + longNumber;
+	            var second = first + longitudeBands + 1;
+	            indexArr.push(first);
+	            indexArr.push(second);
+	            indexArr.push(first + 1);
+	
+	            indexArr.push(second);
+	            indexArr.push(second + 1);
+	            indexArr.push(first + 1);
+	        }
+	    }
+	
+	    return {
+	        vertexArr:vertexArr,
+	        normalArr: normalArr,
+	        texCoordArr: texCoordArr,
+	        indexArr: indexArr
+	    }
+	
+	};
+	
+	var Sphere = AbstractPrimitive.extend({
+	    radius:10,
+	    construct: function(){
+	        var bufferArrs = prepareBuffers(this.radius);
+	        this.vertexArr = bufferArrs.vertexArr;
+	        this.normalArr = bufferArrs.normalArr;
+	        this.texCoordArr = bufferArrs.texCoordArr;
+	        this.indexArr = bufferArrs.indexArr;
+	    }
+	});
+	
+	module.exports = Sphere;
+	
+	
+	
+	
+	
+	
+	
+}};
 modules['colorRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
+	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
 	
@@ -4449,6 +4826,7 @@ modules['colorRectDrawer'] =
 	var ColorRectDrawer = function(gl){
 	
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(){
 	        posIndexBuffer.bind();
@@ -4464,7 +4842,7 @@ modules['colorRectDrawer'] =
 	    };
 	
 	    this.draw = function(){
-	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	        gl.drawElements(gl.TRIANGLE_STRIP, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	    };
 	
 	    (function(){
@@ -4474,18 +4852,11 @@ modules['colorRectDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
-	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,2,1,3
-	        ]);
+	        //posIndexBuffer = new IndexBuffer(gl);
+	        //posIndexBuffer.setData(plane.indexArr);
 	
 	    })();
 	
@@ -4493,10 +4864,77 @@ modules['colorRectDrawer'] =
 	
 	module.exports = ColorRectDrawer;
 }};
+modules['modelDrawer'] =
+    {code: function(module){
+    var exports = module.exports;
+    	
+	
+	var bundle = require('bundle');
+	var ShaderProgram = require('shaderProgram');
+	
+	var VertexBuffer = require('vertexBuffer');
+	var IndexBuffer = require('indexBuffer');
+	
+	var ModelDrawer = function(gl){
+	
+	    var self = this;
+	
+	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer, normalBuffer;
+	
+	    this.bind = function(model){
+	        program.bind();
+	
+	        posVertexBuffer.setData(model.vertexArr,gl.FLOAT,3);
+	        program.bindBuffer(posVertexBuffer,'a_position');
+	
+	        posIndexBuffer.setData(model.indexArr);
+	        posIndexBuffer.bind();
+	
+	        texVertexBuffer.setData(model.texCoordArr,gl.FLOAT,2);
+	        program.bindBuffer(texVertexBuffer,'a_texcoord');
+	
+	        //normalBuffer.setData(model.normalArr,gl.FLOAT,3);
+	        //program.bindBuffer(normalBuffer,'a_normal');
+	    };
+	
+	    this.unbind  = function(){
+	        posIndexBuffer.unbind();
+	    };
+	
+	    this.setUniform = function(name,value){
+	        program.setUniform(name,value);
+	    };
+	
+	    this.draw = function(){
+	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	    };
+	
+	    (function(){
+	        program = new ShaderProgram(gl, [
+	            bundle.shaders.basic['vertex2.vert'],
+	            bundle.shaders.texture['fragment2.frag']
+	        ]);
+	
+	        posVertexBuffer = new VertexBuffer(gl);
+	        posIndexBuffer = new IndexBuffer(gl);
+	        texVertexBuffer = new VertexBuffer(gl);
+	        //normalBuffer = new VertexBuffer(gl);
+	
+	
+	        program.bind();
+	        self.setUniform('u_alpha',1);
+	
+	    })();
+	
+	};
+	
+	module.exports = ModelDrawer;
+}};
 modules['multiColorRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
 	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
@@ -4507,14 +4945,10 @@ modules['multiColorRectDrawer'] =
 	var MultiColorRectDrawer = function(gl){
 	
 	    var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
+	    var plane = new Plane();
 	
-	    this.bind = function(){
-	        vertexColorBuffer.setData([
-	            Math.random(), 0, 0, 0.5,
-	            0, 1, Math.random(), 1,
-	            Math.random(), Math.random(), 1, 1,
-	            Math.random(), Math.random(), Math.random(), Math.random()
-	        ],gl.FLOAT,4);
+	    this.bind = function(colors){
+	        vertexColorBuffer.setData(colors,gl.FLOAT,4);
 	        program.bindBuffer(vertexColorBuffer,'a_color');
 	        posIndexBuffer.bind();
 	        program.bind();
@@ -4529,7 +4963,7 @@ modules['multiColorRectDrawer'] =
 	    };
 	
 	    this.draw = function(){
-	        gl.drawElements(gl.TRIANGLES, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
+	        gl.drawElements(gl.TRIANGLE_STRIP, posIndexBuffer.getBufferLength(), gl.UNSIGNED_SHORT,0);
 	    };
 	
 	    (function(){
@@ -4539,28 +4973,21 @@ modules['multiColorRectDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	
 	        vertexColorBuffer = new VertexBuffer(gl);
 	        vertexColorBuffer.setData([
-	            1, 0, 0, 0.5,
-	            0, 1, 1, 1,
+	            1, 1, 1, 1,
+	            1, 1, 1, 1,
 	            1, 1, 1, 1,
 	            1, 1, 1, 1
 	        ],gl.FLOAT,4);
 	        program.bindBuffer(vertexColorBuffer,'a_color');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,2,1,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	    })();
 	
@@ -4613,21 +5040,24 @@ modules['polyLineDrawer'] =
 	
 	module.exports = PolyLineDrawer;
 }};
-modules['textureDrawer'] =
+modules['spriteRectDrawer'] =
     {code: function(module){
     var exports = module.exports;
     	
+	var Plane = require('plane');
+	
 	var bundle = require('bundle');
 	var ShaderProgram = require('shaderProgram');
 	
 	var VertexBuffer = require('vertexBuffer');
 	var IndexBuffer = require('indexBuffer');
 	
-	var CommonTextureDrawer = function(gl){
+	var SpriteRectDrawer = function(gl){
 	
 	    var self = this;
 	
 	    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer;
+	    var plane = new Plane();
 	
 	    this.bind = function(){
 	        program.bind();
@@ -4654,26 +5084,14 @@ modules['textureDrawer'] =
 	        ]);
 	
 	        posVertexBuffer = new VertexBuffer(gl);
-	        posVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
 	        program.bindBuffer(posVertexBuffer,'a_position');
 	
 	        posIndexBuffer = new IndexBuffer(gl);
-	        posIndexBuffer.setData([
-	            0,1,2,3
-	        ]);
+	        posIndexBuffer.setData(plane.indexArr);
 	
 	        texVertexBuffer = new VertexBuffer(gl);
-	        texVertexBuffer.setData([
-	            0, 0,
-	            0, 1,
-	            1, 0,
-	            1, 1
-	        ],gl.FLOAT,2);
+	        texVertexBuffer.setData(plane.texCoordArr,gl.FLOAT,2);
 	        program.bindBuffer(texVertexBuffer,'a_texcoord');
 	
 	        self.bind();
@@ -4683,7 +5101,7 @@ modules['textureDrawer'] =
 	
 	};
 	
-	module.exports = CommonTextureDrawer;
+	module.exports = SpriteRectDrawer;
 }};
 modules['tween'] =
     {code: function(module){

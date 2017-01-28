@@ -16,8 +16,15 @@ var SpriteRectDrawer = function(gl){
 
     this.bind = function(){
         program.bind();
-        program.bindBuffer(posVertexBuffer,'a_position');
+
+        posIndexBuffer.setData(plane.indexArr);
         posIndexBuffer.bind();
+
+        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
+        program.bindBuffer(posVertexBuffer,'a_position');
+
+        texVertexBuffer.setData(plane.texCoordArr,gl.FLOAT,2);
+        program.bindBuffer(texVertexBuffer,'a_texcoord');
     };
 
     this.unbind  = function(){
@@ -39,15 +46,8 @@ var SpriteRectDrawer = function(gl){
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
-        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
-        program.bindBuffer(posVertexBuffer,'a_position');
-
         posIndexBuffer = new IndexBuffer(gl);
-        posIndexBuffer.setData(plane.indexArr);
-
         texVertexBuffer = new VertexBuffer(gl);
-        texVertexBuffer.setData(plane.texCoordArr,gl.FLOAT,2);
-        program.bindBuffer(texVertexBuffer,'a_texcoord');
 
         self.bind();
         self.setUniform('u_alpha',1);

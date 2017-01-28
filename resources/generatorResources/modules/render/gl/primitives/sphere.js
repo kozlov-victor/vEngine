@@ -1,9 +1,9 @@
 
 var AbstractPrimitive = require('abstractPrimitive');
 
-var prepareBuffers = function(radius){
-    var latitudeBands = 30;
-    var longitudeBands = 30;
+var prepareBuffers = function(radius,bands){
+    var latitudeBands = bands;
+    var longitudeBands = bands;
 
     var vertexArr = [];
     var normalArr = [];
@@ -61,8 +61,9 @@ var prepareBuffers = function(radius){
 
 var Sphere = AbstractPrimitive.extend({
     radius:10,
+    bands:30,
     construct: function(){
-        var bufferArrs = prepareBuffers(this.radius);
+        var bufferArrs = prepareBuffers(this.radius,this.bands);
         this.vertexArr = bufferArrs.vertexArr;
         this.normalArr = bufferArrs.normalArr;
         this.texCoordArr = bufferArrs.texCoordArr;

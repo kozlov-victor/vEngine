@@ -61,7 +61,7 @@ var Scene = Renderable.extend({
         this._layers.forEach(function(l){
             dataSet.combine(l.getAllSpriteSheets());
         });
-        if (this.tileMap.spriteSheetId) {
+        if (this.tileMap && this.tileMap.spriteSheet) {
             dataSet.add(this.tileMap._spriteSheet);
         }
         return dataSet;

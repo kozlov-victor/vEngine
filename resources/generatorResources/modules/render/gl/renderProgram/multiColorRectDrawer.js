@@ -13,10 +13,16 @@ var MultiColorRectDrawer = function(gl){
     var plane = new Plane();
 
     this.bind = function(colors){
+        program.bind();
+
         vertexColorBuffer.setData(colors,gl.FLOAT,4);
         program.bindBuffer(vertexColorBuffer,'a_color');
+
+        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
+        program.bindBuffer(posVertexBuffer,'a_position');
+
+        posIndexBuffer.setData(plane.indexArr);
         posIndexBuffer.bind();
-        program.bind();
     };
 
     this.unbind = function(){
@@ -38,21 +44,8 @@ var MultiColorRectDrawer = function(gl){
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
-        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
-        program.bindBuffer(posVertexBuffer,'a_position');
-
-
         vertexColorBuffer = new VertexBuffer(gl);
-        vertexColorBuffer.setData([
-            1, 1, 1, 1,
-            1, 1, 1, 1,
-            1, 1, 1, 1,
-            1, 1, 1, 1
-        ],gl.FLOAT,4);
-        program.bindBuffer(vertexColorBuffer,'a_color');
-
         posIndexBuffer = new IndexBuffer(gl);
-        posIndexBuffer.setData(plane.indexArr);
 
     })();
 

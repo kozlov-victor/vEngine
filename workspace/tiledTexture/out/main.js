@@ -2533,12 +2533,12 @@ modules['gameObject'] =
 	var utils = require('utils');
 	var game = require('game');
 	
-	//var Sphere = require('sphere');
-	//var Cube = require('cube');
+	var Sphere = require('sphere');
+	var Cube = require('cube');
 	//var TeaPot = require('teaPot');
-	//var model = new TeaPot({radius:100,size:50});
-	//
-	//var a = 0;
+	var model = new Sphere({radius:100,size:50});
+	
+	var a = 0;
 	
 	var _draw = function(ctx,self,x,y){
 	    ctx.drawImage(
@@ -2551,11 +2551,11 @@ modules['gameObject'] =
 	        y||0
 	    );
 	
-	    //ctx.scale(10,10,5);
-	    //ctx.rotateY(a);
-	    //ctx.rotateZ(a);
-	    //a+=0.01;
-	    //ctx.drawModel(model,resourceCache.get(self._spriteSheet.resourcePath));
+	    ctx.scale(10,10,5);
+	    ctx.rotateY(a);
+	    ctx.rotateZ(a);
+	    a+=0.01;
+	    ctx.drawModel(model,resourceCache.get(self._spriteSheet.resourcePath));
 	
 	    //ctx.fillRect(0,0,self.width,self.height,[1,0.5,0,1]);
 	    //ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
@@ -4300,7 +4300,7 @@ modules['glContext'] =
 	    it.clear = function() {
 	        var col = scene.useBG?scene.colorBG:colorBGDefault;
 	        gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
-	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo
+	        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo  | gl.DEPTH_BUFFER_BIT
 	    };
 	
 	    var fillRect = function (x, y, w, h, color) {

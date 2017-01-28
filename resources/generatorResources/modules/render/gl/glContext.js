@@ -74,7 +74,6 @@ var GlContext = Class.extend(function(it){
         var zToWMatrix = mat4.makeZToWMatrix(1);
         var projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
 
-        //var projectionMatrix = mat4.perspective(12,viewWidth / viewHeight,-1000,1000);
         var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
         var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
 
@@ -143,11 +142,15 @@ var GlContext = Class.extend(function(it){
         modelDrawer.bind(model);
         texture.bind();
 
-        modelDrawer.setUniform("u_matrix",makePositionMatrix(
-                0,0,1,1,
-                gameProps.width,gameProps.height,1,1
-            )
-        );
+
+        var matrix1 = matrixStack.getCurrentMatrix();
+
+        var zToWMatrix = mat4.makeZToWMatrix(1);
+        var projectionMatrix = mat4.ortho(0,gameProps.width,0,gameProps.height,-SCENE_DEPTH,SCENE_DEPTH);
+        var matrix2 = mat4.matrixMultiply(projectionMatrix, zToWMatrix);
+
+        modelDrawer.setUniform("u_modelMatrix",matrix1);
+        modelDrawer.setUniform("u_projectionMatrix",matrix2);
 
         modelDrawer.setUniform('u_alpha',1);
         gl.enable(gl.DEPTH_TEST);
@@ -172,7 +175,7 @@ var GlContext = Class.extend(function(it){
     it.clear = function() {
         var col = scene.useBG?scene.colorBG:colorBGDefault;
         gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo  | gl.DEPTH_BUFFER_BIT
     };
 
     var fillRect = function (x, y, w, h, color) {

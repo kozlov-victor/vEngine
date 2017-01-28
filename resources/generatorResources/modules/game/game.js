@@ -62,7 +62,10 @@ var preloadSceneAndSetIt = function(scene){
         bundle.applyBehaviourForScene(scene);
         collider.setUp();
         renderer.setScene(scene);
-        if (!renderer.isRunning()) renderer.start();
+        if (!renderer.isRunning()) {
+            renderer.isReady = true;
+            renderer.start();
+        }
         scene.onShow();
         scene._allGameObjects.forEach(function(g){
             g.onShow && g.onShow();

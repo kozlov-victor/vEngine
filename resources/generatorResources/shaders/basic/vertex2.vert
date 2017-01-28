@@ -1,15 +1,16 @@
 attribute vec4 a_position;
 attribute vec2 a_texcoord;
-//attribute vec4 a_normal;
+attribute vec3 a_normal;
 
-uniform mat4 u_matrix;
+uniform mat4 u_modelMatrix;
+uniform mat4 u_projectionMatrix;
 
 varying vec2 v_texcoord;
-//varying float v_directionLightFactor;
+varying vec3 v_normal;
 
 void main() {
 
-  gl_Position = u_matrix * a_position;
+  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;
   v_texcoord = a_texcoord;
-  //v_directionLightFactor = dot(a_normal,vec4(1.0,0,0,0));
+  v_normal = a_normal;
 }

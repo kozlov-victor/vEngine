@@ -13,8 +13,13 @@ var ColorRectDrawer = function(gl){
     var plane = new Plane();
 
     this.bind = function(){
-        posIndexBuffer.bind();
         program.bind();
+
+        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
+        program.bindBuffer(posVertexBuffer,'a_position');
+
+        posIndexBuffer.setData(plane.indexArr);
+        posIndexBuffer.bind();
     };
 
     this.unbind = function(){
@@ -36,11 +41,7 @@ var ColorRectDrawer = function(gl){
         ]);
 
         posVertexBuffer = new VertexBuffer(gl);
-        posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
-        program.bindBuffer(posVertexBuffer,'a_position');
-
-        //posIndexBuffer = new IndexBuffer(gl);
-        //posIndexBuffer.setData(plane.indexArr);
+        posIndexBuffer = new IndexBuffer(gl);
 
     })();
 

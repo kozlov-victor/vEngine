@@ -22,14 +22,16 @@ window.addEventListener('load',function(){
     require('mouse');
     var startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
     game.setScene(startScene);
-});
 
-window.addEventListener('blur',function(){
-    audioPlayer.pauseAll();
-    renderer.stop();
-});
 
-window.addEventListener('focus',function(){
-    audioPlayer.resumeAll();
-    renderer.start();
+    window.addEventListener('blur',function(){
+        audioPlayer.pauseAll();
+        renderer.stop();
+    });
+
+    window.addEventListener('focus',function(){
+        audioPlayer.resumeAll();
+        renderer.start();
+    });
+
 });

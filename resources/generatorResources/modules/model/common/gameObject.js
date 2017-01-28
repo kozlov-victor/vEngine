@@ -8,12 +8,12 @@ var resourceCache = require('resourceCache');
 var utils = require('utils');
 var game = require('game');
 
-//var Sphere = require('sphere');
-//var Cube = require('cube');
+var Sphere = require('sphere');
+var Cube = require('cube');
 //var TeaPot = require('teaPot');
-//var model = new TeaPot({radius:100,size:50});
-//
-//var a = 0;
+//var model = new Airplane({radius:50,size:50,bands:6});
+
+var a = 0;
 
 var _draw = function(ctx,self,x,y){
     ctx.drawImage(
@@ -26,7 +26,7 @@ var _draw = function(ctx,self,x,y){
         y||0
     );
 
-    //ctx.scale(10,10,5);
+    //ctx.scale(10,10,10);
     //ctx.rotateY(a);
     //ctx.rotateZ(a);
     //a+=0.01;
