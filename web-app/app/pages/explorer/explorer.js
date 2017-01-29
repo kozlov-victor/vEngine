@@ -30,6 +30,12 @@ module.exports = Vue.component('explorer', {
             };
             projectDialog.instance.open();
         },
+        createProject: function(){
+            this.editData.currProjectInEdit = {
+                name: ''
+            };
+            projectDialog.instance.open();
+        },
         openProject: function(project){
             resource.loadProject(project.name);
         },

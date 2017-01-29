@@ -1757,7 +1757,7 @@ module.exports = Vue.component('app-top-panel', {
     methods: {
         run:function(){
             http.get(
-                '/generate',
+                '/resource/generate',
                 {
                     debug: 1,
                     r: Math.random(),
@@ -1840,7 +1840,7 @@ module.exports.component = Vue.component('app-project-dialog', {
 });
 
 },{"./projectDialog.html":69,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],71:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    v-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            v-on:click.capture=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            v-on:click.capture=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            v-on:click.capture=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog/>\r\n\r\n</div>";
+module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    v-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            v-on:click.capture=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            v-on:click.capture=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            v-on:click.capture=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                v-on:click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog/>\r\n\r\n</div>";
 
 },{}],72:[function(require,module,exports){
 
@@ -1872,6 +1872,12 @@ module.exports = Vue.component('explorer', {
             this.editData.currProjectInEdit = {
                 name: p.name,
                 oldName: p.name
+            };
+            projectDialog.instance.open();
+        },
+        createProject: function(){
+            this.editData.currProjectInEdit = {
+                name: ''
             };
             projectDialog.instance.open();
         },
@@ -1986,7 +1992,7 @@ var execMethod = function(url,method,data,callBack) {
             return item+'='+data[item]
         }).join('&');
         url = url + '?' + tail;
-        data = {};
+        data = undefined;
     }
     Vue.http
         [method](url, data).
@@ -2155,7 +2161,7 @@ var Resource = function(){
         });
     };
     this.getProjects = function(callback){
-        http.get('/getProjects',{},function(projects){
+        http.get('/resource/getProjects',{},function(projects){
             callback(projects);
         });
     };

@@ -29,7 +29,7 @@ module.exports = Vue.component('app-top-panel', {
     methods: {
         run:function(){
             http.get(
-                '/generate',
+                '/resource/generate',
                 {
                     debug: 1,
                     r: Math.random(),

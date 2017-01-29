@@ -20,7 +20,7 @@ Class.extend = function(props, staticProps) {
     function Instance() {
         firstArg.fn && firstArg.fn(firstArg.obj);
         this._init && this._init.apply(this, arguments);
-        this.construct && this.construct();
+        this.construct && this.construct.apply(this,arguments);
     }
 
     Instance.prototype = Class.inherit(this.prototype);

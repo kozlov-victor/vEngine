@@ -1,5 +1,5 @@
 var fs = require.main.require('./application/base/fs');
-var resourcesController = require.main.require('./application/mvc/controllers/resourcesController');
+var resourcesService = require.main.require('./application/mvc/services/resourcesService');
 var nodeHint = require('node-hint');
 var UglifyJS = require("uglify-js");
 var ejs = require('ejs');
@@ -75,7 +75,7 @@ var createResourcesParams = function(opts){
     var templateObj = {};
     templateObj.commonResources = {};
     templateObj.specialResources = {};
-    resourcesController.RESOURCE_NAMES.forEach(function(r){
+    resourcesService.RESOURCE_NAMES.forEach(function(r){
         templateObj.commonResources[r] = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json'));
     });
     templateObj.commonResources.gameProps = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/gameProps.json'));
@@ -214,7 +214,7 @@ var prepareGeneratorParams = function(opts){
                 });
         });
     return  {
-        resourceNames:resourcesController.RESOURCE_NAMES,
+        resourceNames:resourcesService.RESOURCE_NAMES,
         opts: opts,
         commonResources: resourcesOpts.commonResources||{},
         specialResources: resourcesOpts.specialResources||{},

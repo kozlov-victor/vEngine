@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var url = require('url');
 var fs = require.main.require('./application/base/fs');
 var path = require('path');
 var appDir = path.dirname(require.main.filename);
@@ -34,11 +35,35 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 
-
-var setUpRotes = function(app){
-    fs.readDirSync(appDir+'/application/mvc/routes').forEach(function(itm){
+var setUpControllers = function(app){
+    fs.readDirSync(appDir+'/application/mvc/controllers').forEach(function(itm){
         var fileNameWithoutExt = itm.name.split('.')[0];
-        require(appDir+'/application/mvc/routes/'+fileNameWithoutExt).init(app);
+        var Ctrl = require(appDir+'/application/mvc/controllers/'+fileNameWithoutExt).controller;
+        if (!Ctrl) return;
+        var ctrl = new Ctrl();
+        Object.keys(ctrl).forEach(function(key){
+            var controllerName = fileNameWithoutExt.replace('Controller','');
+            var methodObj = ctrl[key];
+            if (key=='index') key = '';
+            if (controllerName=='main') controllerName = '';
+            else controllerName = '/' + controllerName;
+            console.log('mapped: ' + methodObj.type + ': ' +controllerName + '/'+key);
+            app[methodObj.type](controllerName + '/'+key,function(req,res){
+                var params;
+                if (methodObj.type=='post') {
+                    params = req.body;
+                } else {
+                    params = url.parse(req.url, true).query;
+                }
+                var codeResult = methodObj.code(params);
+                if (codeResult) codeResult.params = params;
+                if (methodObj.render=='view') {
+                    res.render(key,codeResult);
+                } else {
+                    res.send(codeResult);
+                }
+            })
+        })
     });
 };
 
@@ -53,7 +78,7 @@ var handleErrors = function(app){
 
 require.main.require('./application/base/hbsSettings').init();
 
-setUpRotes(app);
+setUpControllers(app);
 
 handleErrors(app);
 

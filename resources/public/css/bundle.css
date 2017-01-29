@@ -267,45 +267,6 @@ label,
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.hoverOnProjectRow:hover {
-  outline: 1px solid #00cd4d;
-}
-.split {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.content {
-  box-shadow: inset 0 1px 2px #e4e4e4;
-  background-color: #fff;
-}
-.gutter {
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: 50%;
-}
-.gutter.gutter-horizontal {
-  cursor: col-resize;
-}
-.gutter.gutter-vertical {
-  cursor: row-resize;
-}
-.split.split-horizontal,
-.gutter.gutter-horizontal {
-  height: 100%;
-  float: left;
-}
-#c {
-  padding-top: 25px;
-}
-#topMenu {
-  position: absolute;
-}
-.split {
-  border-radius: 2px;
-}
 .collapsible_header {
   background-color: #aaa;
   padding: 5px 0 5px 5px;
@@ -374,6 +335,45 @@ label,
   text-align: right;
   background-color: #bdbdbd;
   border-bottom: 1px solid #767676;
+}
+.split {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.content {
+  box-shadow: inset 0 1px 2px #e4e4e4;
+  background-color: #fff;
+}
+.gutter {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+}
+.gutter.gutter-vertical {
+  cursor: row-resize;
+}
+.split.split-horizontal,
+.gutter.gutter-horizontal {
+  height: 100%;
+  float: left;
+}
+#c {
+  padding-top: 25px;
+}
+#topMenu {
+  position: absolute;
+}
+.split {
+  border-radius: 2px;
+}
+.hoverOnProjectRow:hover {
+  outline: 1px solid #00cd4d;
 }
 .active {
   outline: 1px solid green;

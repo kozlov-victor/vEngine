@@ -1,7 +1,7 @@
 
 var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');
-var generatorController = require.main.require('./application/mvc/controllers/generatorController');
+var generatorService = require.main.require('./application/mvc/services/generatorService');
 
 var RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,gameObject,layer,scene,particleSystem'
     .split(',');

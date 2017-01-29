@@ -33,7 +33,7 @@ var Resource = function(){
         });
     };
     this.getProjects = function(callback){
-        http.get('/getProjects',{},function(projects){
+        http.get('/resource/getProjects',{},function(projects){
             callback(projects);
         });
     };

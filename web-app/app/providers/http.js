@@ -7,7 +7,7 @@ var execMethod = function(url,method,data,callBack) {
             return item+'='+data[item]
         }).join('&');
         url = url + '?' + tail;
-        data = {};
+        data = undefined;
     }
     Vue.http
         [method](url, data).
