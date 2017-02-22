@@ -192,7 +192,7 @@ module.exports.component = Vue.component('app-color-picker-dialog', {
     }
 });
 
-},{"./colorPickerDialog.html":9,"components/modal/modal":16,"providers/abstractDialog":73,"providers/i18n":77,"providers/utils":80}],11:[function(require,module,exports){
+},{"./colorPickerDialog.html":9,"components/modal/modal":16,"providers/abstractDialog":73,"providers/i18n":77,"providers/utils":82}],11:[function(require,module,exports){
 module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withMargin\">\n        <div class=\"alert_body\">\n            {{message}}\n        </div>\n        <div>\n            <button v-on:click=\"confirmChoose()\">{{i18n.confirm}}</button>\n            <button v-on:click=\"close()\">{{i18n.cancel}}</button>\n        </div>\n    </div>\n</app-modal>";
 
 },{}],12:[function(require,module,exports){
@@ -327,7 +327,7 @@ module.exports = Vue.component('app-curr-scene', {
 
     }
 });
-},{"./scene.html":17,"providers/editData":75,"providers/i18n":77,"providers/utils":80}],19:[function(require,module,exports){
+},{"./scene.html":17,"providers/editData":75,"providers/i18n":77,"providers/utils":82}],19:[function(require,module,exports){
 module.exports = "<div\n        class=\"height100\"\n        v-if=\"editData.scriptEditorUrl\"\n        >\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editorNew\"\n                ></iframe>\n    </div>\n</div>";
 
 },{}],20:[function(require,module,exports){
@@ -417,7 +417,7 @@ module.exports.component = Vue.component('app-common-behaviour-dialog', {
         }
     }
 });
-},{"./commonBehaviourDialog.html":21,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],23:[function(require,module,exports){
+},{"./commonBehaviourDialog.html":21,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82,"providers/validator":83}],23:[function(require,module,exports){
 module.exports = "<div>\n    <app-sound-dialog/>\n    <app-particle-system-dialog/>\n    <app-particle-system-preview-dialog/>\n    <app-font-dialog/>\n    <app-sprite-sheet-dialog/>\n    <app-game-object-dialog/>\n    <app-frame-animation-dialog/>\n    <app-common-behaviour-dialog/>\n    <app-scene-dialog/>\n    <app-layer-dialog/>\n</div>";
 
 },{}],24:[function(require,module,exports){
@@ -569,7 +569,7 @@ module.exports.component = Vue.component('app-font-dialog', {
         }
     }
 });
-},{"./fontDialog.html":25,"components/colorPicker/colorPicker":8,"providers/abstractDialog":73,"providers/chrome":74,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],27:[function(require,module,exports){
+},{"./fontDialog.html":25,"components/colorPicker/colorPicker":8,"providers/abstractDialog":73,"providers/chrome":74,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82,"providers/validator":83}],27:[function(require,module,exports){
 module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                    required\r\n                    v-control=\"{form:form,model:editData.currFrameAnimationInEdit,prop:'name'}\"\r\n                    v-model=\"editData.currFrameAnimationInEdit.name\"/>\r\n            </td>\r\n            <td rowspan=\"3\">\r\n                <div style=\"max-height: 80vh;max-width:80vw;overflow: scroll;\"\r\n                        >\r\n                    {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}\r\n\r\n                    <div :style=\"utils.merge(\r\n                                    utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),\r\n                                    {border:'1px solid blue'}\r\n                                )\">\r\n                    </div>\r\n\r\n                    <div>\r\n                        <button\r\n                                v-on:click=\"playAnimation()\"\r\n                                :disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.playAnim}}</button>\r\n                        <button\r\n                                v-on:click=\"stopAnimation()\"\r\n                                :disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.stopAnim}}</button>\r\n                    </div>\r\n\r\n\r\n                    <div class=\"relative\"\r\n                         :style=\"{\r\n                                        'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject._spriteSheet.resourcePath+')',\r\n                                        'width':                editData.currFrameAnimationInEdit._gameObject._spriteSheet.width+'px',\r\n                                        'height':               editData.currFrameAnimationInEdit._gameObject._spriteSheet.height+'px'\r\n                                      }\">\r\n                        <div\r\n                                v-for=\"(v,i)  in editData.currFrameAnimationInEdit._gameObject._spriteSheet.numOfFramesH*editData.currFrameAnimationInEdit._gameObject._spriteSheet.numOfFramesV\"\r\n                                :style=\"{\r\n                                            'display':        'inline-block',\r\n                                            'left':           editData.currFrameAnimationInEdit._gameObject._spriteSheet.getFramePosX(i)+'px',\r\n                                            'top':            editData.currFrameAnimationInEdit._gameObject._spriteSheet.getFramePosY(i)+'px',\r\n                                            'position':       'absolute',\r\n                                            'text-align':     'left',\r\n                                            'border':         '1px solid red',\r\n                                            'width':          editData.currFrameAnimationInEdit._gameObject._spriteSheet._frameWidth+'px',\r\n                                            'height':         editData.currFrameAnimationInEdit._gameObject._spriteSheet._frameHeight+'px'\r\n                                      }\">{{i}}</div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.duration}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        min=\"1\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currFrameAnimationInEdit,prop:'duration'}\"\r\n                        v-model=\"editData.currFrameAnimationInEdit.duration\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n\r\n                <table>\r\n                    <tr>\r\n                        <td>\r\n                            {{i18n.frames}}\r\n                        </td>\r\n                        <td>\r\n                            <button v-on:click=\"frames=allIndexes()\">{{i18n.all}}</button>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            {{i18n.from}}\r\n                        </td>\r\n                        <td>\r\n                            <input\r\n                                    type=\"number\"\r\n                                    v-model=\"from\"\r\n                                    min=\"0\"\r\n                                    v-on:change=\"frames=utils.range(from,to).join(',')\">\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            {{i18n.to}}\r\n                        </td>\r\n                        <td>\r\n                            <input\r\n                                    type=\"number\"\r\n                                    min=\"0\"\r\n                                    v-model=\"to\"\r\n                                    v-on:change=\"frames=utils.range(from,to).join(',')\">\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n\r\n            </td>\r\n            <td>\r\n           <textarea\r\n                   required\r\n                   v-model=\"frames\"></textarea>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            v-on:click=\"createOrEditFrameAnimation()\"\r\n            :disabled=\"!form.valid()\">\r\n        {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
 
 },{}],28:[function(require,module,exports){
@@ -672,7 +672,7 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
         }
     }
 });
-},{"./frameAnimationDialog.html":27,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],29:[function(require,module,exports){
+},{"./frameAnimationDialog.html":27,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82,"providers/validator":83}],29:[function(require,module,exports){
 module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                    required\r\n                    v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'name'}\"\r\n                    v-model=\"editData.currGameObjectInEdit.name\"/>\r\n            </td>\r\n            <td></td>\r\n            <td rowspan=\"5\">\r\n                <div class=\"relative\"\r\n                     style=\"\r\n                                        display: inline-block;\r\n                                        overflow: scroll;\r\n                                        max-width:60vw;\r\n                                        max-height:60vh;\r\n                                    \"\r\n                        >\r\n                    <div :style=\"utils.merge(\r\n                        utils.getGameObjectCss(editData.currGameObjectInEdit)\r\n                        ,\r\n                        {\r\n                            'border':'1px solid blue',\r\n                            'opacity':editData.currGameObjectInEdit.alpha\r\n                        }\r\n                    )\"></div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.spriteSheet}}\r\n            </td>\r\n            <td>\r\n                <select\r\n                        v-on:change=\"utils.recalcGameObjectSize(editData.currGameObjectInEdit)\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'spriteSheetId'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.spriteSheetId\">\r\n                    <option :value=\"item.id\" v-for=\"item in editData.spriteSheetList.rs\">{{item.name}}</option>\r\n                </select>\r\n            </td>\r\n            <td>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.groupName}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        v-model=\"editData.currGameObjectInEdit.groupName\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.rigid}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"checkbox\"\r\n                        v-model=\"editData.currGameObjectInEdit.rigid\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.width}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'width'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.width\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.height}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'height'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.height\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.angle}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        step=\"0.1\"\r\n                        type=\"number\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'angle'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.angle\"/>\r\n            </td>\r\n            <td align=\"left\">\r\n                <div class=\"inlineBlock\">\r\n                    <app-angle-picker\r\n                            :object=\"editData.currGameObjectInEdit\"\r\n                            :value=\"'angle'\"\r\n                            />\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                alpha\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        min=\"0\"\r\n                        max=\"1\"\r\n                        step=\"0.1\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'alpha'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"range\"\r\n                        min=\"0\"\r\n                        max=\"1\"\r\n                        step=\"0.1\"\r\n                        v-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.currFrameIndex}}\r\n            </td>\r\n            <td>\r\n                <input type=\"number\"\r\n                       min=\"0\"\r\n                       v-on:change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\"\r\n                       required\r\n                       v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'currFrameIndex'}\"\r\n                       v-model=\"editData.currGameObjectInEdit.currFrameIndex\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.frAnimations}}\r\n            </td>\r\n            <td>\r\n                <div class=\"table width100\">\r\n                    <div class=\"row\" v-for=\"animItm in editData.currGameObjectInEdit._frameAnimations.rs\">\r\n                        <div class=\"cell vAlign\">\r\n                            <span>{{animItm.name}}</span>\r\n                        </div>\r\n                        <div class=\"cell vAlign rightAlign pointer\" v-on:click=\"editFrameAnimation(animItm)\">\r\n                            edit\r\n                        </div>\r\n                        <div class=\"cell pointer vAlign rightAlign\" v-on:click=\"deleteFrameAnimation(animItm)\">\r\n                            X\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n            <td align=\"right\">\r\n                <button\r\n                        class=\"inlineBlock\"\r\n                        :disabled=\"!editData.currGameObjectInEdit.id\"\r\n                        v-on:click=\"createFrameAnimation()\">+</button>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.commonBehaviour}}\r\n            </td>\r\n            <td>\r\n                <div class=\"table width100\">\r\n                    <div class=\"row\" v-for=\"itm in editData.currGameObjectInEdit._commonBehaviour && editData.currGameObjectInEdit._commonBehaviour.rs\">\r\n                        <div class=\"cell vAlign\">\r\n                            <span>{{itm.name}}</span>\r\n                        </div>\r\n                        <div class=\"cell vAlign rightAlign pointer\" v-on:click=\"editCommonBehaviour(itm)\">\r\n                            {{i18n.edit}}\r\n                        </div>\r\n                        <div class=\"cell pointer vAlign rightAlign\" v-on:click=\"deleteCommonBehaviour(itm)\">\r\n                            X\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n            <td>\r\n                <table class=\"width100\">\r\n                    <tr>\r\n                        <td>\r\n                            <select v-model=\"selectedBehaviourName\">\r\n                                <option\r\n                                        :disabled=\"editData.currGameObjectInEdit._commonBehaviour.has({name:cb.name})\"\r\n                                        :value=\"cb.name\"\r\n                                        v-for=\"cb in editData.commonBehaviourList && editData.commonBehaviourList.rs\">\r\n                                    {{cb.name}}\r\n                                </option>\r\n                            </select>\r\n                        </td>\r\n                        <td align=\"right\">\r\n                            <button\r\n                                    class=\"inlineBlock\"\r\n                                    :disabled=\"!editData.currGameObjectInEdit.id || !selectedBehaviourName\"\r\n                                    v-on:click=\"createCommonBehaviour(selectedBehaviourName)\">\r\n                                +\r\n                            </button>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            :disabled=\"!form.valid()\"\r\n            v-on:click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">\r\n        {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n\r\n\r\n</app-modal>";
 
 },{}],30:[function(require,module,exports){
@@ -808,7 +808,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
 
     }
 });
-},{"../../dialogs/commonBehaviourDialog/commonBehaviourDialog":22,"../../dialogs/frameAnimationDialog/frameAnimationDialog":28,"./gameObjectDialog.html":29,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],31:[function(require,module,exports){
+},{"../../dialogs/commonBehaviourDialog/commonBehaviourDialog":22,"../../dialogs/frameAnimationDialog/frameAnimationDialog":28,"./gameObjectDialog.html":29,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82,"providers/validator":83}],31:[function(require,module,exports){
 module.exports = "\r\n<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"withPadding\">\r\n        <div>\r\n            {{i18n.scene}}: {{editData.currLayerInEdit._scene.name}}\r\n        </div>\r\n        <b class=\"block centerText\">{{i18n.layer}}</b>\r\n        <div class=\"table width100\">\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.name}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                        v-control=\"{form:form,model:editData.currLayerInEdit,prop:'name'}\"\r\n                        v-model=\"editData.currLayerInEdit.name\"\r\n                        required/>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div>\r\n            <button\r\n                    :disabled=\"!form.valid()\"\r\n                    v-on:click=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\">\r\n                {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}\r\n            </button>\r\n        </div>\r\n    </div>\r\n\r\n</app-modal>";
 
 },{}],32:[function(require,module,exports){
@@ -854,7 +854,7 @@ module.exports.component = Vue.component('app-layer-dialog', {
         }
     }
 });
-},{"./layerDialog.html":31,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],33:[function(require,module,exports){
+},{"./layerDialog.html":31,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":83}],33:[function(require,module,exports){
 module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n\n            </td>\n            <td>\n                <input\n                    required\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'name'}\"\n                    v-model=\"editData.currParticleSystemInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                numOfParticlesToEmit\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                particleVelocity\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'from'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'to'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\">\n                particleLiveTime\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                emissionRadius\n            </td>\n            <td></td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'emissionRadius'}\"\n                        v-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                particleAngle\n            </td>\n            <td>\n                from / to\n            </td>\n            <td>\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'from'\"\n                        />\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'to'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td></td>\n            <td>\n                {{i18n.gameObject}}\n            </td>\n            <td>\n\n                <table>\n                    <tr>\n                        <td>\n                            <select\n                                    required\n                                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'gameObjectId'}\"\n                                    v-on:change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectId)\"\n                                    v-model=\"editData.currParticleSystemInEdit.gameObjectId\"\n                                    >\n                                <option\n                                        :value=\"item.id\"\n                                        v-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <div :style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit._gameObject),\n                                    {\n                                        zoom:editData.currParticleSystemInEdit._gameObject.height>30?\n                                        30/editData.currParticleSystemInEdit._gameObject.height:\n                                        1\n                                    }\n                               )\">\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n\n\n            </td>\n        </tr>\n\n    </table>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n        {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"showPreview()\">\n        {{i18n.preview}}\n    </button>\n\n</app-modal>";
 
 },{}],34:[function(require,module,exports){
@@ -908,7 +908,7 @@ module.exports.component = Vue.component('app-particle-system-dialog', {
         }
     }
 });
-},{"../particleSystemPreviewDialog/particleSystemPreviewDialog":36,"./particleSystemDialog.html":33,"components/anglePicker/anglePicker":4,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],35:[function(require,module,exports){
+},{"../particleSystemPreviewDialog/particleSystemPreviewDialog":36,"./particleSystemDialog.html":33,"components/anglePicker/anglePicker":4,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82,"providers/validator":83}],35:[function(require,module,exports){
 module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n\n    <div>\n        {{i18n.preview}} {{i18n.particleSystem}}\n        <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n    </div>\n    <div\n            v-on:click=\"emit($event)\"\n            v-on:mousemove=\"$event.buttons==1 && emit($event)\"\n            class=\"subFullScreen relative noOverFlow\">\n        <div\n                v-for=\"item in editData.currParticleSystemInEdit._particles\"\n                :style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px',\n                                pointerEvents:'none'\n                            }\n                    )\"\n                >\n        </div>\n    </div>\n    <div>\n        <button v-on:click=\"close()\">{{i18n.close}}</button>\n    </div>\n\n\n</app-modal>";
 
 },{}],36:[function(require,module,exports){
@@ -982,7 +982,7 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
         }
     }
 });
-},{"./particleSystemPreviewDialog.html":35,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80}],37:[function(require,module,exports){
+},{"./particleSystemPreviewDialog.html":35,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82}],37:[function(require,module,exports){
 module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"withPadding\">\r\n        <div class=\"table\">\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.name}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneInEdit,prop:'name'}\"\r\n                            v-model=\"editData.currSceneInEdit.name\"/>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <button\r\n                :disabled=\"!form.valid()\"\r\n                v-on:click=\"createOrEditScene(editData.currSceneInEdit)\">\r\n            {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n\r\n</app-modal>";
 
 },{}],38:[function(require,module,exports){
@@ -1034,7 +1034,7 @@ module.exports.component = Vue.component('app-scene-dialog', {
         }
     }
 });
-},{"./sceneDialog.html":37,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],39:[function(require,module,exports){
+},{"./sceneDialog.html":37,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":83}],39:[function(require,module,exports){
 module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <input\n                        required\n                        v-control=\"{form:form,model:editData.currSoundInEdit,prop:'name'}\"\n                        v-model=\"editData.currSoundInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <app-input-file\n                        v-on:picked=\"onFilePicked\"\n                        :title=\"i18n.loadSound\"\n                        :accept=\"'audio/*'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <audio controls=\"controls\" :src=\"soundUrl\"></audio>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            :disabled=\"!(form.valid() && soundUrl)\"\n            v-on:click=\"createOrEditSound(editData.currSoundInEdit)\">\n        {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
 
 },{}],40:[function(require,module,exports){
@@ -1094,7 +1094,7 @@ module.exports.component = Vue.component('app-sound-dialog', {
         }
     }
 });
-},{"./soundDialog.html":39,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],41:[function(require,module,exports){
+},{"./soundDialog.html":39,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":83}],41:[function(require,module,exports){
 module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'name'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n            </td>\r\n            <td rowspan=\"6\">\r\n                <div style=\"max-height: 40vh;max-width:60vw;overflow: scroll;\"\r\n                        >\r\n                    <div class=\"relative\"\r\n                         :style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                        <div\r\n                                :title=\"i\"\r\n                                v-for=\"(val,i) in numOfSpriteSheetCells\"\r\n                                :style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.image}}\r\n            </td>\r\n            <td>\r\n                <app-input-file\r\n                        v-on:picked=\"onFilePicked\"\r\n                        :title=\"i18n.loadImage\"\r\n                        :accept=\"'image/*'\"\r\n                        />\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.width}}\r\n            </td>\r\n            <td>\r\n                {{editData.currSpriteSheetInEdit.width}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.height}}\r\n            </td>\r\n            <td>\r\n                {{editData.currSpriteSheetInEdit.height}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.numOfFramesH}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        min=\"1\"\r\n                        max=\"100\"\r\n                        type=\"number\"\r\n                        v-on:change=\"refreshNumOfCells()\"\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesH'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.numOfFramesV}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        min=\"1\"\r\n                        max=\"100\"\r\n                        type=\"number\"\r\n                        v-on:change=\"refreshNumOfCells()\"\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesV'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            v-on:click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n            :disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n        {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
 
 },{}],42:[function(require,module,exports){
@@ -1103,6 +1103,7 @@ var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');
 var resource = require('providers/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 var SpriteSheet = _require('spriteSheet');
 
 module.exports.component = Vue.component('app-sprite-sheet-dialog', {
@@ -1160,22 +1161,31 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
             this.editData.currSpriteSheetInEdit.calcFrameSize();
         },
         createOrEditSpriteSheet: function(sprSh){
-            var model = sprSh.toJSON();
-            model._file = this._file;
-            this._file = '';
             var self = this;
-            resource.createOrEditResource(
-                model,
-                SpriteSheet,
-                editData.spriteSheetList,
-                function(result){
-                    self.close();
-                }
-            );
+            restFileSystem.
+                uploadFile(
+                self._file,
+                {}
+            ).
+            then(function(params){
+                console.log('file uploaded');
+            });
+            //var model = sprSh.toJSON();
+            //model._file = this._file;
+            //this._file = '';
+            //var self = this;
+            //resource.createOrEditResource(
+            //    model,
+            //    SpriteSheet,
+            //    editData.spriteSheetList,
+            //    function(result){
+            //        self.close();
+            //    }
+            //);
         }
     }
 });
-},{"./spriteSheetDialog.html":41,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],43:[function(require,module,exports){
+},{"./spriteSheetDialog.html":41,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/rest/fileSystem":79,"providers/utils":82,"providers/validator":83}],43:[function(require,module,exports){
 module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel/>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n            <app-game-objects/>\n            <app-sprite-sheets/>\n            <app-user-interface/>\n            <app-fonts/>\n            <app-sounds/>\n            <app-particle-systems/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor/>\n            <div :style=\"{\n                width:  editData.gameProps.width + 'px',\n                height: editData.gameProps.height + 'px',\n                border: '1px solid green'\n            }\">\n                <app-curr-scene/>\n            </div>\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object/>\n            <app-right-panel-scene/>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs/>\n\n</div>";
 
 },{}],44:[function(require,module,exports){
@@ -1267,7 +1277,7 @@ module.exports = Vue.component('app-game-object-row', {
 
     }
 });
-},{"./gameObjectRow.html":45,"providers/utils":80}],47:[function(require,module,exports){
+},{"./gameObjectRow.html":45,"providers/utils":82}],47:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createFont\n        }\"\n        :title=\"i18n.fonts\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"font in (editData.fontList && editData.fontList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editFont(font)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteFont(font)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
 },{}],48:[function(require,module,exports){
@@ -1353,7 +1363,7 @@ module.exports = Vue.component('app-game-objects', {
     }
 });
 
-},{"../../dialogs/gameObjectDialog/gameObjectDialog":30,"../_gameObjectRow/gameObjectRow":46,"./gameObjects.html":49,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80}],51:[function(require,module,exports){
+},{"../../dialogs/gameObjectDialog/gameObjectDialog":30,"../_gameObjectRow/gameObjectRow":46,"./gameObjects.html":49,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82}],51:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
 },{}],52:[function(require,module,exports){
@@ -1376,7 +1386,7 @@ module.exports = Vue.component('app-game-props', {
         }
     }
 });
-},{"./gameProps.html":51,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],53:[function(require,module,exports){
+},{"./gameProps.html":51,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":83}],53:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createParticleSystem\n        }\"\n        :title=\"i18n.particleSystems\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ps in (editData.particleSystemList && editData.particleSystemList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editParticleSystem(ps)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteParticleSystem(ps)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
 },{}],54:[function(require,module,exports){
@@ -1496,7 +1506,7 @@ module.exports = Vue.component('app-scenes', {
     }
 });
 
-},{"../../dialogs/layerDialog/layerDialog":32,"../../dialogs/sceneDialog/sceneDialog":38,"../_gameObjectRow/gameObjectRow":46,"./scenes.html":55,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80}],57:[function(require,module,exports){
+},{"../../dialogs/layerDialog/layerDialog":32,"../../dialogs/sceneDialog/sceneDialog":38,"../_gameObjectRow/gameObjectRow":46,"./scenes.html":55,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82}],57:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :crud=\"{\n            create:createSound\n        }\"\n        :title=\"i18n.sounds\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"sound in (editData.soundList && editData.soundList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editSound(sound)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteSound(sound)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
 },{}],58:[function(require,module,exports){
@@ -1640,7 +1650,7 @@ module.exports = Vue.component('app-scene-game-object', {
         }
     }
 });
-},{"./sceneGameObject.html":63,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],65:[function(require,module,exports){
+},{"./sceneGameObject.html":63,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":83}],65:[function(require,module,exports){
 module.exports = "<app-collapsible\r\n        :title=\"i18n.currScene\"\r\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n        <div\r\n                v-if=\"!editData.currSceneInEdit.id\">\r\n            {{i18n.notSelected}}\r\n        </div>\r\n\r\n        <div class=\"withPadding\" v-if=\"editData.currSceneInEdit.id\">\r\n\r\n            <b class=\"centerText\">\r\n                {{i18n.scene}} : {{editData.currSceneInEdit.name}}\r\n            </b>\r\n\r\n            <div class=\"table width100\">\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <label for=\"editData.currSceneInEdit.useBG\">{{i18n.useBG}}</label>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"checkbox\"\r\n                               id=\"editData.currSceneInEdit.useBG\"\r\n                               v-model=\"editData.currSceneInEdit.useBG\"\r\n                               v-on:change=\"editScene()\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\" v-if=\"editData.currSceneInEdit.useBG\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.colorBG}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <app-color-picker\r\n                                :object=\"editData.currSceneInEdit\"\r\n                                :value=\"'colorBG'\"\r\n                                :onchange=\"editScene()\"\r\n                                />\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign bold\">\r\n                        {{i18n.tileMap}}\r\n                    </div>\r\n                    <div class=\"cell eye\"></div>\r\n                </div>\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.width\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               min=\"0\"\r\n                               maxlength=\"3\"\r\n                               v-control=\"{form:form,model:editData.currSceneInEdit.tileMap,prop:'width'}\"\r\n                               v-on:change=\"editScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.width\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.height\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               min=\"0\"\r\n                               maxlength=\"3\"\r\n                               v-control=\"{form:form,model:editData.currSceneInEdit.tileMap,prop:'height'}\"\r\n                               v-on:change=\"editScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.height\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.selected}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <div\r\n                            :class=\"{\r\n                                inlineBlock:1,\r\n                                hoverOutline:1\r\n                            }\"\r\n                            :style=\"{\r\n                                width:frameWidth+'px',\r\n                                verticalAlign:'middle',\r\n                                height:frameHeight+'px',\r\n                                backgroundImage:      'url('+editData.projectName+'/'+resourcePath+')',\r\n                                backgroundPositionX:  -framePosX+'px',\r\n                                backgroundPositionY:  -framePosY+'px',\r\n                                backgroundRepeat:     'no-repeat',\r\n                            }\"\r\n                        ></div>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.spriteSheets}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <select\r\n                                v-model=\"editData.currSceneInEdit.tileMap.spriteSheetId\"\r\n                                v-on:change=\"setTileMapSpriteSheet()\"\r\n                                >\r\n                            <option value=\"\">--</option>\r\n                            <option\r\n                                    v-for=\"item in editData.spriteSheetList.rs\"\r\n                                    :value=\"item.id\"\r\n                                    >{{item.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <div\r\n                :style=\"{\r\n                    width: frameWidth*numOfFramesH+'px',\r\n                    overflowX: 'auto'\r\n                }\"\r\n                >\r\n                <div :class=\"{\r\n                        inlineBlock:true,\r\n                        selected:i==editData.currTileIndexInEdit,\r\n                        hoverOutline:1\r\n                     }\"\r\n                     :style=\"{\r\n                        width:frameWidth+'px',\r\n                        verticalAlign:'middle',\r\n                        height:frameHeight+'px',\r\n                        backgroundImage:'url('+resourcePath+')',\r\n                        backgroundPositionX:   -framePosX+'px',\r\n                        backgroundPositionY:   -framePosY+'px',\r\n                        backgroundRepeat:     'no-repeat',\r\n                     }\"\r\n                     :title=\"i\"\r\n                     v-on:click.capture=\"setCurrSelectedTile(i)\"\r\n                     v-for=\"(v,i) in numOfFramesForSceneSpriteSheet\"\r\n                     ></div>\r\n            </div>\r\n\r\n        </div>\r\n\r\n\r\n\r\n</app-collapsible>";
 
 },{}],66:[function(require,module,exports){
@@ -1722,7 +1732,7 @@ module.exports = Vue.component('app-right-scene', {
         }
     }
 });
-},{"./scene.html":65,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":80,"providers/validator":81}],67:[function(require,module,exports){
+},{"./scene.html":65,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/utils":82,"providers/validator":83}],67:[function(require,module,exports){
 module.exports = "<div class=\"panel withPadding pointer\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"inlineBlock\" ng-click=\"showBuildDialog()\">\r\n        {{i18n.build}}\r\n    </div>\r\n    <div class=\"inlineBlock\" v-on:click=\"run()\">\r\n        {{i18n.run}}\r\n    </div>\r\n    <div class=\"inlineBlock\" v-on:click=\"toExplorer()\">\r\n        {{i18n.explorer}}\r\n    </div>\r\n\r\n</div>";
 
 },{}],68:[function(require,module,exports){
@@ -1797,6 +1807,8 @@ var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');
 var resource = require('providers/resource');
+var restProject = require('providers/rest/project');
+var fileSystem = require('providers/rest/fileSystem');
 
 module.exports.component = Vue.component('app-project-dialog', {
     mixins:[abstractDialog],
@@ -1818,18 +1830,18 @@ module.exports.component = Vue.component('app-project-dialog', {
     methods: {
         createOrEditProject: function(proj){
             if (proj.oldName) {
-                resource.renameFolder(
+                fileSystem.renameFolder(
                     'workspace/'+proj.oldName,
                     'workspace/'+proj.name,
                     function(){
-                        resource.getProjects(function(list){
+                        restProject.getAll(function(list){
                                 editData.projects = list;
                             }
                         );
                     });
             } else  {
-                resource.createProject(proj.name,function(){
-                    resource.getProjects(function(list){
+                restProject.create(proj.name,function(){
+                    restProject.getAll(function(list){
                         editData.projects = list;
                     });
                 });
@@ -1839,22 +1851,26 @@ module.exports.component = Vue.component('app-project-dialog', {
     }
 });
 
-},{"./projectDialog.html":69,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/validator":81}],71:[function(require,module,exports){
+},{"./projectDialog.html":69,"providers/abstractDialog":73,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/rest/fileSystem":79,"providers/rest/project":80,"providers/validator":83}],71:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    v-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            v-on:click.capture=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            v-on:click.capture=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            v-on:click.capture=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                v-on:click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog/>\r\n\r\n</div>";
 
 },{}],72:[function(require,module,exports){
 
-var resource = require('providers/resource');
+
 var projectDialog = require('./dialogs/projectDialog/projectDialog');
 var editData = require('providers/editData');
+var restProject = require('providers/rest/project');
+var resource = require('providers/resource');
+var fileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('explorer', {
     props: [],
     template: require('./explorer.html'),
     created: function(){
-        resource.getProjects(function(p){
-            editData.projects = p;
-        });
+        restProject.
+            getAll(function(list){
+                editData.projects = list;
+            });
     },
     data: function () {
         return {
@@ -1889,8 +1905,8 @@ module.exports = Vue.component('explorer', {
             window.confirmEx(
                 this.i18n.confirmQuestion,
                 function(){
-                    resource.deleteFolder('workspace/'+proj.name,function(){
-                        resource.getProjects(function(list){
+                    fileSystem.deleteFolder('workspace/'+proj.name,function(){
+                        restProject.getAll(function(list){
                             editData.projects = list;
                         })
                     });
@@ -1899,7 +1915,7 @@ module.exports = Vue.component('explorer', {
         }
     }
 });
-},{"./dialogs/projectDialog/projectDialog":70,"./explorer.html":71,"providers/editData":75,"providers/i18n":77,"providers/resource":78}],73:[function(require,module,exports){
+},{"./dialogs/projectDialog/projectDialog":70,"./explorer.html":71,"providers/editData":75,"providers/i18n":77,"providers/resource":78,"providers/rest/fileSystem":79,"providers/rest/project":80}],73:[function(require,module,exports){
 
 module.exports = {
     data: function () {
@@ -1985,42 +2001,61 @@ module.exports = res;
 },{}],76:[function(require,module,exports){
 
 
-var execMethod = function(url,method,data,callBack) {
-    if (method=='get' && data) {
+var execMethod = function(url,method,params,callBack) {
+    if (method=='get' && params) {
         var tail =
-            Object.keys(data).map(function(item){
-            return item+'='+data[item]
+            Object.keys(params).map(function(item){
+            return item+'='+params[item]
         }).join('&');
         url = url + '?' + tail;
-        data = undefined;
+        params = undefined;
     }
-    Vue.http
-        [method](url, data).
+    var resolveFn, rejectFn;
+    var p = new Promise(function(resolve,reject){
+        resolveFn = resolve;
+        rejectFn = reject;
+    });
+    Vue.http[method](url, params).
         then(function(resp){
             try {
-                callBack && callBack(resp.body);
+                var r = resp.body;
+                callBack && callBack(r);
+                resolveFn(r);
             } catch(e){
+                rejectFn(e);
                 setTimeout(function() {
                     throw e;
                 },0);
             }
         }).
         catch(function(err){
+            rejectFn(err);
             setTimeout(function() {
                 if (err.status || err.status!=200) {
                     console.log(err);
                     throw err.body || '';
                 }
             },0);
-        });
+    });
+    return p;
 };
 
-module.exports.get = function(url,data,callBack){
-    execMethod(url,'get',data,callBack);
+module.exports.get = function(url,params,callBack){
+    return execMethod(url,'get',params,callBack);
 };
 
-module.exports.post = function(url,data,callBack){
-    execMethod(url,'post',data,callBack);
+module.exports.post = function(url,params,callBack){
+    return execMethod(url,'post',params,callBack);
+};
+
+module.exports.postMultiPart = function(url,file,params,callBack){
+    var formData = new FormData();
+    Object.keys(params).forEach(function(key){
+        formData.append(key,params[key]);
+    });
+    formData.append('file',file);
+    formData.append('fileName',file.name);
+    return execMethod(url,'post',formData,callBack);
 };
 },{}],77:[function(require,module,exports){
 
@@ -2160,11 +2195,7 @@ var Resource = function(){
             editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
         });
     };
-    this.getProjects = function(callback){
-        http.get('/resource/getProjects',{},function(projects){
-            callback(projects);
-        });
-    };
+
     this.loadProject = function(projectName){
         editData.reset();
         editData.projectName = projectName;
@@ -2209,26 +2240,6 @@ var Resource = function(){
             }
         });
     };
-    //this.createOrEditResourceSimple = function(objResource){
-    //    this.createOrEditResource(objResource,objResource.constructor,bundle[objResource.type+'List']);
-    //};
-    //this.deleteObjectFromResource = function(resourceType,resourceId,objectType,objectId,callback){
-    //    $http({
-    //        url: '/deleteObjectFromResource',
-    //        method: "POST",
-    //        headers: {'Content-Type': 'application/json'},
-    //        data: {
-    //            resourceType:resourceType,
-    //            resourceId:resourceId,
-    //            objectType:objectType,
-    //            objectId:objectId,
-    //            projectName:editData.projectName
-    //        }
-    //    }).
-    //        success(function (res) {
-    //            callback && callback();
-    //        });
-    //};
 
     this.deleteResource = function(idOrObject,type,callBack) {
         var id = (typeof idOrObject == 'object')? idOrObject.id:idOrObject;
@@ -2299,29 +2310,7 @@ var Resource = function(){
         )
     };
 
-    //this.post = function(url,data,callBack){
-    //    data.projectName = editData.projectName;
-    //    $http({
-    //        url: '/gameProps/save',
-    //        method: "POST",
-    //        data: data,
-    //        headers: {'Content-Type': undefined}
-    //    }).
-    //        success(function (resp) {
-    //            callBack && callBack(resp);
-    //        });
-    //};
-    //this.postMultiPart = function(url,formData,callBack){
-    //    $http({
-    //        url: url,
-    //        method: "POST",
-    //        data: formData,
-    //        headers: {'Content-Type': undefined}
-    //    }).
-    //        success(function (resp) {
-    //            callBack && callBack(resp);
-    //        });
-    //};
+
     this.createOrEditObjectInResource = function(resourceType,resourceId,objectType,object,callback){
         var op = object.id?'edit':'create';
         http.post('/createOrEditObjectInResource',{
@@ -2334,67 +2323,7 @@ var Resource = function(){
             callback && callback({type:op,r:resp});
         });
     };
-    //this.createOrEditLayer = function(l){
-    //    self.createOrEditResource(l,Layer,bundle.layerList,
-    //        function(item){
-    //            if (item.type=='create') {
-    //                self.createOrEditObjectInResource(
-    //                    editData.currSceneInEdit.type,
-    //                    editData.currSceneInEdit.id,
-    //                    'layerProps',
-    //                    {
-    //                        type:'layer',
-    //                        protoId:item.r.id
-    //                    },
-    //                    function(resp){
-    //                        var l = editData.currLayerInEdit.clone(Layer);
-    //                        l.id = resp.r.id;
-    //                        l.protoId = item.r.id;
-    //                        l._scene = editData.currSceneInEdit;
-    //                        editData.currSceneInEdit._layers.add(l);
-    //                    }
-    //                );
-    //            }
-    //        });
-    //};
-    this.createFile = function(path,content,callback){
-        http.post('/createFile',{
-            path:path,
-            content:content,
-            projectName: editData.projectName
-        },callback);
-    };
-    this.readFile = function(path,callback){
-        http.post('/readFile',{
-            path:path,
-            projectName: editData.projectName
-        },callback);
-    };
-    this.createProject = function(projectName,callback){
-        http.post('/createProject',{projectName:projectName},callback);
-    };
-    this.renameFolder = function(oldName,newName,callback){
-        http.post('/renameFolder',{oldName:oldName,newName:newName},callback);
-    };
-    this.deleteFolder = function(name,callback){
-        http.post('/deleteFolder',{name:name},callback);
-    };
-    //this.setTile = function(scene,x,y,tileIndex){
-    //    $http({
-    //        url: '/setTile/',
-    //        method: "POST",
-    //        data: {
-    //            sceneId:scene.id,
-    //            x:x,
-    //            y:y,
-    //            tileIndex:tileIndex,
-    //            projectName:editData.projectName
-    //        },
-    //        headers: {'Content-Type': 'application/json'}
-    //    });
-    //};
-    //
-    //
+
     (function(){
         if (sessionStorage.projectName) {
             self.loadProject(sessionStorage.projectName);
@@ -2407,6 +2336,55 @@ var Resource = function(){
 module.exports = new Resource();
 },{"providers/editData":75,"providers/http":76}],79:[function(require,module,exports){
 
+var http = require('providers/http');
+var editData = require('providers/editData');
+
+var FileSystem = function(){
+    this.createFile = function(path,content,callback){
+        return http.post('/fileSystem/createFile',{
+            path:path,
+            content:content,
+            projectName: editData.projectName
+        },callback);
+    };
+    this.uploadFile = function(file,params,callback){
+        params = params || {};
+        params.projectName = editData.projectName;
+        return http.postMultiPart('/fileSystem/uploadFile',file,params,callback);
+    };
+    this.readFile = function(path,callback){
+        return http.post('/fileSystem/readFile',{
+            path:path,
+            projectName: editData.projectName
+        },callback);
+    };
+    this.renameFolder = function(oldName,newName,callback){
+        return http.post('/fileSystem/renameFolder',{oldName:oldName,newName:newName},callback);
+    };
+    this.deleteFolder = function(name,callback){
+        return http.post('/fileSystem/deleteFolder',{name:name},callback);
+    };
+};
+
+module.exports = new FileSystem();
+},{"providers/editData":75,"providers/http":76}],80:[function(require,module,exports){
+
+var http = require('providers/http');
+
+var Project = function(){
+    this.getAll = function(callback){
+        http.get('/project/getAll',{},callback);
+    };
+    this.create = function(projectName,callback){
+        http.post('/project/create',{projectName:projectName},callback);
+    };
+};
+
+
+module.exports = new Project();
+
+},{"providers/http":76}],81:[function(require,module,exports){
+
 //Vue.filter('nbsp', function (value) {
 //    return value.split(' ').join('&nbsp;')
 //});
@@ -2418,7 +2396,7 @@ window.alertEx = function(msg){
 window.confirmEx = function(msg,callback){
     require('components/confirmDialog/confirmDialog').instance.open(msg,callback);
 };
-},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":12}],80:[function(require,module,exports){
+},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":12}],82:[function(require,module,exports){
 
 var mathEx = _require('mathEx');
 var editData = require('providers/editData');
@@ -2575,7 +2553,7 @@ var Utils = function(){
 };
 
 module.exports = new Utils();
-},{"providers/editData":75,"providers/resource":78}],81:[function(require,module,exports){
+},{"providers/editData":75,"providers/resource":78}],83:[function(require,module,exports){
 
 module.exports.new = function(){
     return {
@@ -2584,7 +2562,7 @@ module.exports.new = function(){
         }
     }
 };
-},{}],82:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 
 require('providers/resource');
 
@@ -2618,4 +2596,4 @@ const app = new Vue(
 
 router.init(app);
 
-},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":12,"pages/editor/editor":44,"pages/explorer/explorer":72,"providers/resource":78,"providers/userDefinedFns":79}]},{},[82]);
+},{"components/alertDialog/alertDialog":2,"components/confirmDialog/confirmDialog":12,"pages/editor/editor":44,"pages/explorer/explorer":72,"providers/resource":78,"providers/userDefinedFns":81}]},{},[84]);

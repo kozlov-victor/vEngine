@@ -3,6 +3,7 @@ var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');
 var resource = require('providers/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 var SpriteSheet = _require('spriteSheet');
 
 module.exports.component = Vue.component('app-sprite-sheet-dialog', {
@@ -60,18 +61,27 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
             this.editData.currSpriteSheetInEdit.calcFrameSize();
         },
         createOrEditSpriteSheet: function(sprSh){
-            var model = sprSh.toJSON();
-            model._file = this._file;
-            this._file = '';
             var self = this;
-            resource.createOrEditResource(
-                model,
-                SpriteSheet,
-                editData.spriteSheetList,
-                function(result){
-                    self.close();
-                }
-            );
+            restFileSystem.
+                uploadFile(
+                self._file,
+                {}
+            ).
+            then(function(params){
+                console.log('file uploaded');
+            });
+            //var model = sprSh.toJSON();
+            //model._file = this._file;
+            //this._file = '';
+            //var self = this;
+            //resource.createOrEditResource(
+            //    model,
+            //    SpriteSheet,
+            //    editData.spriteSheetList,
+            //    function(result){
+            //        self.close();
+            //    }
+            //);
         }
     }
 });

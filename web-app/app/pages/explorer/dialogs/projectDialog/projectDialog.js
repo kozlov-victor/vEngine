@@ -4,6 +4,8 @@ var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');
 var resource = require('providers/resource');
+var restProject = require('providers/rest/project');
+var fileSystem = require('providers/rest/fileSystem');
 
 module.exports.component = Vue.component('app-project-dialog', {
     mixins:[abstractDialog],
@@ -25,18 +27,18 @@ module.exports.component = Vue.component('app-project-dialog', {
     methods: {
         createOrEditProject: function(proj){
             if (proj.oldName) {
-                resource.renameFolder(
+                fileSystem.renameFolder(
                     'workspace/'+proj.oldName,
                     'workspace/'+proj.name,
                     function(){
-                        resource.getProjects(function(list){
+                        restProject.getAll(function(list){
                                 editData.projects = list;
                             }
                         );
                     });
             } else  {
-                resource.createProject(proj.name,function(){
-                    resource.getProjects(function(list){
+                restProject.create(proj.name,function(){
+                    restProject.getAll(function(list){
                         editData.projects = list;
                     });
                 });

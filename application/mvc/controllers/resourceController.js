@@ -6,12 +6,7 @@ var generatorService = require.main.require('./application/mvc/services/generato
 
 module.exports.controller = function(){
 
-    this.generateEngine = {
-        type:'get',
-        code: function(params){
-            return generatorService.generateEngine(params);
-        }
-    };
+
 
     this.getAll = {
         type:'post',
@@ -27,12 +22,14 @@ module.exports.controller = function(){
         }
     };
 
-    this.getProjects = {
+
+    this.generateEngine = {
         type:'get',
         code: function(params){
-            return resourcesService.getProjects();
+            return generatorService.generateEngine(params);
         }
     };
+
 
     this.generate = {
         type:'get',

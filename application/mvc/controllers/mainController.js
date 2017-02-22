@@ -1,7 +1,6 @@
 'use strict';
 
 
-var multipart = require('connect-multiparty')();
 
 var utils = require.main.require('./application/utils/utils');
 var resourcesService = require.main.require('./application/mvc/services/resourcesService');
@@ -156,23 +155,8 @@ module.exports.controller = function(){
 //        res.send(resourcesService.getProjects());
 //    });
 //
-//    app.post('/createProject',function(req,res){
-//        var projectName = req.body.projectName;
-//        res.send(resourcesService.createProject(projectName));
-//    });
 //
-//    app.post('/renameFolder',function(req,res){
-//        var oldName = req.body.oldName;
-//        var newName = req.body.newName;
-//        resourcesService.renameFolder(oldName,newName);
-//        res.send({});
-//    });
-//
-//    app.post('/deleteFolder',function(req,res){
-//        var name = req.body.name;
-//        resourcesService.deleteFolder(name);
-//        res.send({});
-//    });
+
 //
 //    app.post('/setTile',function(req,res){
 //        var

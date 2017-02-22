@@ -27,7 +27,6 @@ var toDataSource = function(ResourceClass,dataList,resourceList){
 
 exports.prepare = function(data){
     if (!data) throw 'can not prepare bundle, no data provided';
-    console.log(data);
     exports.gameProps = data.gameProps;
     consts.RESOURCE_NAMES.forEach(function(itm){
         toDataSource(

@@ -1,15 +1,19 @@
 
-var resource = require('providers/resource');
+
 var projectDialog = require('./dialogs/projectDialog/projectDialog');
 var editData = require('providers/editData');
+var restProject = require('providers/rest/project');
+var resource = require('providers/resource');
+var fileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('explorer', {
     props: [],
     template: require('./explorer.html'),
     created: function(){
-        resource.getProjects(function(p){
-            editData.projects = p;
-        });
+        restProject.
+            getAll(function(list){
+                editData.projects = list;
+            });
     },
     data: function () {
         return {
@@ -44,8 +48,8 @@ module.exports = Vue.component('explorer', {
             window.confirmEx(
                 this.i18n.confirmQuestion,
                 function(){
-                    resource.deleteFolder('workspace/'+proj.name,function(){
-                        resource.getProjects(function(list){
+                    fileSystem.deleteFolder('workspace/'+proj.name,function(){
+                        restProject.getAll(function(list){
                             editData.projects = list;
                         })
                     });

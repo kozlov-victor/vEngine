@@ -4006,6 +4006,7 @@ modules['shaderProgram'] =
 	
 	    bind: function () {
 	        this.gl.useProgram(this.program);
+	        ShaderProgram.currentProgram = this;
 	    },
 	
 	    setUniform: function (name, value) {
@@ -4034,6 +4035,8 @@ modules['shaderProgram'] =
 	        );
 	        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
 	    }
+	},{
+	    currentProgram:null
 	});
 	
 	

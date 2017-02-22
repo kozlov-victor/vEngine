@@ -163,6 +163,7 @@ var ShaderProgram = require('class').extend({
 
     bind: function () {
         this.gl.useProgram(this.program);
+        ShaderProgram.currentProgram = this;
     },
 
     setUniform: function (name, value) {
@@ -193,6 +194,8 @@ var ShaderProgram = require('class').extend({
         );
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     }
+},{
+    currentProgram:null
 });
 
 

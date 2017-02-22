@@ -1,39 +1,58 @@
 
 
-var execMethod = function(url,method,data,callBack) {
-    if (method=='get' && data) {
+var execMethod = function(url,method,params,callBack) {
+    if (method=='get' && params) {
         var tail =
-            Object.keys(data).map(function(item){
-            return item+'='+data[item]
+            Object.keys(params).map(function(item){
+            return item+'='+params[item]
         }).join('&');
         url = url + '?' + tail;
-        data = undefined;
+        params = undefined;
     }
-    Vue.http
-        [method](url, data).
+    var resolveFn, rejectFn;
+    var p = new Promise(function(resolve,reject){
+        resolveFn = resolve;
+        rejectFn = reject;
+    });
+    Vue.http[method](url, params).
         then(function(resp){
             try {
-                callBack && callBack(resp.body);
+                var r = resp.body;
+                callBack && callBack(r);
+                resolveFn(r);
             } catch(e){
+                rejectFn(e);
                 setTimeout(function() {
                     throw e;
                 },0);
             }
         }).
         catch(function(err){
+            rejectFn(err);
             setTimeout(function() {
                 if (err.status || err.status!=200) {
                     console.log(err);
                     throw err.body || '';
                 }
             },0);
-        });
+    });
+    return p;
 };
 
-module.exports.get = function(url,data,callBack){
-    execMethod(url,'get',data,callBack);
+module.exports.get = function(url,params,callBack){
+    return execMethod(url,'get',params,callBack);
 };
 
-module.exports.post = function(url,data,callBack){
-    execMethod(url,'post',data,callBack);
+module.exports.post = function(url,params,callBack){
+    return execMethod(url,'post',params,callBack);
+};
+
+module.exports.postMultiPart = function(url,file,params,callBack){
+    var formData = new FormData();
+    Object.keys(params).forEach(function(key){
+        formData.append(key,params[key]);
+    });
+    formData.append('file',file);
+    formData.append('fileName',file.name);
+    return execMethod(url,'post',formData,callBack);
 };

@@ -9,6 +9,7 @@ var exphbs  = require('express-handlebars');
 
 var session = require('express-session');
 var bodyParser = require('body-parser');
+var multipart = require('connect-multiparty')();
 
 app.set('views', './application/mvc/views');
 
@@ -34,8 +35,43 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
+var processCommonRequest = function(methodObj,controllerName,methodName){
+    console.log('mapped: ' + methodObj.type + ': ' +controllerName + '/'+methodName);
+    app[methodObj.type](controllerName + '/'+methodName,function(req,res){
 
-var setUpControllers = function(app){
+        var params;
+        switch (methodObj.type) {
+            case 'post':
+                params = req.body;
+                break;
+            default:
+                params = url.parse(req.url, true).query;
+                break;
+        }
+        var codeResult = methodObj.code(params);
+        if (methodObj.render=='view') {
+            if (codeResult) codeResult.params = params;
+            res.render(methodName,codeResult);
+        } else {
+            res.send(codeResult);
+        }
+    })
+};
+
+var processMultiPartRequest = function(methodObj,controllerName,methodName){
+    console.log('mapped: post(multipart): '+ controllerName + '/'+methodName);
+    app.post(controllerName + '/'+methodName,multipart,function(req,res){
+        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
+        var params = req.body;
+        var file = fs.readFileSync(pathToUploadedFile,true);
+        fs.deleteFileSync(pathToUploadedFile);
+        params.file = file;
+        var result = methodObj.code(params);
+        res.send(result);
+    });
+};
+
+var setUpControllers = function(){
     fs.readDirSync(appDir+'/application/mvc/controllers').forEach(function(itm){
         var fileNameWithoutExt = itm.name.split('.')[0];
         var Ctrl = require(appDir+'/application/mvc/controllers/'+fileNameWithoutExt).controller;
@@ -47,22 +83,11 @@ var setUpControllers = function(app){
             if (key=='index') key = '';
             if (controllerName=='main') controllerName = '';
             else controllerName = '/' + controllerName;
-            console.log('mapped: ' + methodObj.type + ': ' +controllerName + '/'+key);
-            app[methodObj.type](controllerName + '/'+key,function(req,res){
-                var params;
-                if (methodObj.type=='post') {
-                    params = req.body;
-                } else {
-                    params = url.parse(req.url, true).query;
-                }
-                var codeResult = methodObj.code(params);
-                if (codeResult) codeResult.params = params;
-                if (methodObj.render=='view') {
-                    res.render(key,codeResult);
-                } else {
-                    res.send(codeResult);
-                }
-            })
+            if (methodObj.type=='multipart') {
+                processMultiPartRequest(methodObj,controllerName,key);
+            } else {
+                processCommonRequest(methodObj,controllerName,key);
+            }
         })
     });
 };

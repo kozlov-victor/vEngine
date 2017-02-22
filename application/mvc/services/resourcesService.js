@@ -61,34 +61,6 @@ var processUploadedFile = function(item,pathToUploadedFile,projectName){
 };
 
 
-var createFolderWithFiles = function(foldersArr,projectName) {
-    foldersArr.forEach(function(folder){
-        fs.createFolderSync('workspace/'+projectName+'/resources/'+folder);
-        fs.createFileSync('workspace/'+projectName+'/resources/'+folder+'/map.json','[]');
-    });
-};
-
-module.exports.createProject = function(projectName){
-
-    fs.createFolderSync('workspace/'+projectName+'/resources');
-    createFolderWithFiles(RESOURCE_NAMES,projectName);
-    fs.createFolderSync('workspace/'+projectName+'/resources/script/gameObject');
-    fs.createFolderSync('workspace/'+projectName+'/resources/font');
-    fs.createFolderSync('workspace/'+projectName+'/resources/script/scene');
-
-    fs.copyFileSync('resources/generatorResources/fonts/default.png',
-        'workspace/'+projectName+'/resources/font/default.png');
-    fs.copyFileSync('resources/generatorResources/fonts/map.json',
-        'workspace/'+projectName+'/resources/font/map.json');
-
-    fs.createFileSync('workspace/'+projectName+'/gameProps.json',JSON.stringify({
-        width:800,
-        height:600,
-        scaleStrategy:0
-    }));
-
-};
-
 
 module.exports.create = function(item,pathToUploadedFile,projectName){
     if (!projectName) throw 'project name not specified';
@@ -228,11 +200,6 @@ module.exports.editFont = function(model,pathToUploadedFile,projectName) {
 
 module.exports.readResource = readResource;
 
-module.exports.getProjects = function(){
-    return fs.getDirListSync('workspace/').map(function(item){
-        return {name:item}
-    });
-};
 
 module.exports.renameFolder = function(oldName,newName){
     fs.renameSync(oldName,newName);

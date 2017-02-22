@@ -19,8 +19,8 @@ module.exports.deleteFileSync = function (source) {
     fs.existsSync(source) && fs.unlinkSync(source);
 };
 
-module.exports.readFileSync = function (path) {
-    return fs.readFileSync(path, "utf8");
+module.exports.readFileSync = function (path,asBin) {
+    return fs.readFileSync(path, asBin?undefined:"utf8");
 };
 
 module.exports.createFileSync = function(path,content){
@@ -31,13 +31,9 @@ module.exports.createFileSync = function(path,content){
     );
 };
 
-module.exports.writeFileSync = function (path, content) {
-    fs.writeFileSync(
-        path,
-        content,{
-            encoding: "utf-8"
-        }
-    );
+module.exports.writeFileSync = function (path, content,asBin) {
+    var opts = asBin?undefined:{encoding: "utf-8"};
+    fs.writeFileSync(path,content,opts);
 };
 
 module.exports.copyFolderSync = function cpf(src, dest) {
