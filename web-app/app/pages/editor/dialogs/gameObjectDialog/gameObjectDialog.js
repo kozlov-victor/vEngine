@@ -1,13 +1,13 @@
 
-var abstractDialog = require('providers/abstractDialog');
-var frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
-var commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
+const abstractDialog = require('providers/abstractDialog');
+const frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
+const commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var GameObject = _require('gameObject');
-var FrameAnimation = _require('frameAnimation');
-var CommonBehaviour = _require('commonBehaviour');
+const editData = require('providers/editData');
+const restResource = require('providers/rest/resource');
+const GameObject = _require('gameObject');
+const FrameAnimation = _require('frameAnimation');
+const CommonBehaviour = _require('commonBehaviour');
 
 module.exports.component = Vue.component('app-game-object-dialog', {
     mixins:[abstractDialog],
@@ -33,29 +33,24 @@ module.exports.component = Vue.component('app-game-object-dialog', {
             this.opened = true;
         },
         createOrEditGameObject: function(g){
-            var self = this;
-            var model = g.toJSON();
-            resource.createOrEditResource(
-                model,
-                GameObject,
-                editData.gameObjectList,
-                function(op){
-                    if (op.type=='create') {
-                        resource.createFile(
-                            'script/gameObject/' + self.editData.currGameObjectInEdit.name+'.js',
-                            document.getElementById('defaultCodeScript').textContent,
-                            function(){
-                                self.close();
-                            }
-                        )
-                    } else self.close();
-                }
-            );
+            let self = this;
+            let model = g.toJSON();
+            restResource.
+                save(model).
+                then((resp)=>{
+                    if (resp.created) {
+                        g.id = resp.id;
+                        editData.gameObjectList.add(g);
+                    } else if (resp.updated) {
+                        g.updateCloner();
+                    }
+                    self.close();
+                });
         },
         refreshGameObjectFramePreview: function(gameObject,ind) {
-            var spriteSheet = gameObject._spriteSheet;
+            let spriteSheet = gameObject.spriteSheet;
             if (!spriteSheet) return;
-            var maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
+            let maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
             if (this.editData.currGameObjectInEdit.currFrameIndex>=maxNumOfFrame) {
                 this.editData.currGameObjectInEdit.currFrameIndex = 0;
                 ind = 0;
@@ -71,13 +66,13 @@ module.exports.component = Vue.component('app-game-object-dialog', {
             frameAnimationDialog.instance.open();
         },
         deleteFrameAnimation: function(fa){
-            var self = this;
+            let self = this;
             window.confirmEx(
                 this.i18n.confirmQuestion,
                 function(){
                     self.editData.currGameObjectInEdit._frameAnimations.remove(fa);
                     self.editData.currGameObjectInEdit.frameAnimationIds.remove(fa);
-                    var origGameObj = self.editData.gameObjectList.find({id:self.editData.currGameObjectInEdit.id});
+                    let origGameObj = self.editData.gameObjectList.find({id:self.editData.currGameObjectInEdit.id});
                     origGameObj._frameAnimations.remove(fa);
                     origGameObj.frameAnimationIds.remove(fa);
 
@@ -102,12 +97,12 @@ module.exports.component = Vue.component('app-game-object-dialog', {
             commonBehaviourDialog.instance.open();
         },
         deleteCommonBehaviour: function (cb) {
-            var self = this;
+            let self = this;
             window.confirmEx(
                 this.i18n.confirmQuestion,
                 function () {
 
-                    var currentCbInGoIndex = -1;
+                    let currentCbInGoIndex = -1;
                     self.editData.currGameObjectInEdit.commonBehaviour.map(function(item,i){
                         if (item.id==self.editData.currCommonBehaviourInEdit.id) currentCbInGoIndex = i;
                     });

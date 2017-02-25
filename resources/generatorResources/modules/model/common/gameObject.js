@@ -71,8 +71,7 @@ var _drawPattern = function(ctx,self){
 
 var GameObject = BaseGameObject.extend({
     type:'gameObject',
-    spriteSheetId:null,
-    _spriteSheet: null,
+    spriteSheet: {type:'spriteSheet'},
     _behaviour:null,
     commonBehaviour:[],
     _commonBehaviour:null,
@@ -89,27 +88,27 @@ var GameObject = BaseGameObject.extend({
         var self = this;
         self._super();
         if (!self.tileOffset) self.tileOffset = {x:0,y:0};
-        self._frameAnimations = new collections.List();
-        if (self.spriteSheetId) {
-            self._spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheetId});
-            if (!self._spriteSheet)
-                throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
-            self.setFrameIndex(self.currFrameIndex);
-        }
-        self._frameAnimations.clear();
-        self.frameAnimationIds.forEach(function(id){
-            var a = bundle.frameAnimationList.find({id: id});
-            //<code>{{#if opts.debug}}
-            if (!a) throw 'can not found FrameAnimation with id ' + id + ' for gameObject with name '+ self.name;
-            //<code>{{/if}}
-            a = a.clone();
-            a._gameObject = self;
-            self._frameAnimations.add(a);
-        });
-        self._commonBehaviour = new collections.List();
-        self.commonBehaviour.forEach(function(cb){
-            self._commonBehaviour.add(new CommonBehaviour(cb));
-        });
+        //self._frameAnimations = new collections.List();
+        // if (self.spriteSheet.id) {
+        //     self.spriteSheet = bundle.spriteSheetList.find({id: self.spriteSheet.id});
+        //     if (!self._spriteSheet)
+        //         throw 'not found spriteSheet with id '+ self.spriteSheetId+' for gameObject with name '+ self.name;
+        //     self.setFrameIndex(self.currFrameIndex);
+        // }
+        // self._frameAnimations.clear();
+        // self.frameAnimationIds.forEach(function(id){
+        //     var a = bundle.frameAnimationList.find({id: id});
+        //     //<code>{{#if opts.debug}}
+        //     if (!a) throw 'can not found FrameAnimation with id ' + id + ' for gameObject with name '+ self.name;
+        //     //<code>{{/if}}
+        //     a = a.clone();
+        //     a._gameObject = self;
+        //     self._frameAnimations.add(a);
+        // });
+        // self._commonBehaviour = new collections.List();
+        // self.commonBehaviour.forEach(function(cb){
+        //     self._commonBehaviour.add(new CommonBehaviour(cb));
+        // });
     },
     getFrAnimation: function(animationName){
         return this._frameAnimations.find({name: animationName});

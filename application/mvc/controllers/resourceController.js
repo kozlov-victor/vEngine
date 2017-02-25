@@ -1,18 +1,17 @@
+"use strict";
 
-var utils = require.main.require('./application/utils/utils');
-var resourcesService = require.main.require('./application/mvc/services/resourcesService');
-var generatorService = require.main.require('./application/mvc/services/generatorService');
-
+let utils = require.main.require('./application/utils/utils');
+let resourcesService = require.main.require('./application/mvc/services/resourcesService');
+let generatorService = require.main.require('./application/mvc/services/generatorService');
+let collectionHelper = require.main.require('./application/mvc/services/collectionHelper');
 
 module.exports.controller = function(){
 
-
-
     this.getAll = {
         type:'post',
-        code: function(params){
-            var result = {};
-            var projectName = params.projectName;
+        code(params){
+            let result = {};
+            let projectName = params.projectName;
             resourcesService.RESOURCE_NAMES.forEach(function(key){
                 result[key] = resourcesService.getAll(key,projectName);
             });
@@ -22,10 +21,17 @@ module.exports.controller = function(){
         }
     };
 
+    this.save = {
+        type:'post',
+        code(params){
+            return collectionHelper.save(params);
+        }
+    };
+
 
     this.generateEngine = {
         type:'get',
-        code: function(params){
+        code(params){
             return generatorService.generateEngine(params);
         }
     };
@@ -33,7 +39,7 @@ module.exports.controller = function(){
 
     this.generate = {
         type:'get',
-        code: function(params){
+        code(params){
             generatorService.generate(params,function(result){});
         }
     };

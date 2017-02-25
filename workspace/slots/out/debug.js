@@ -52,12 +52,17 @@
     };
 
 
+    var lastErr = '';
     window.showError = function _err(e,lineNum){
         if (navigator.isCocoonJS) {
             _showErrToConsole(e,lineNum);
             return;
         }
         if (document.body) {
+            if (lastErr.toString() === (e && e.toString())) {
+                return;
+            }
+            lastErr = e;
             var popup = document.createElement('div');
             popup.style.cssText =
                 'background-color:rgba(255,255,255,0.95);' +
@@ -78,6 +83,10 @@
             var popupContainer = getPopupContainer();
             if (popupContainer) {
                 popupContainer.appendChild(popup);
+                setTimeout(function(){
+                    popup.remove();
+                    lastErr = '';
+                },5000);
             } else {
                 _showErrToConsole(e,lineNum);
             }

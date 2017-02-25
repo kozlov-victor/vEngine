@@ -2,7 +2,6 @@
         v-on:close="close()"
         v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
 
-
     <table class="width100">
         <tr>
             <td>
@@ -43,8 +42,8 @@
                 <select
                         v-on:change="utils.recalcGameObjectSize(editData.currGameObjectInEdit)"
                         required
-                        v-control="{form:form,model:editData.currGameObjectInEdit,prop:'spriteSheetId'}"
-                        v-model="editData.currGameObjectInEdit.spriteSheetId">
+                        v-control="{form:form,model:editData.currGameObjectInEdit.spriteSheet,prop:'id'}"
+                        v-model="editData.currGameObjectInEdit.spriteSheet.id">
                     <option :value="item.id" v-for="item in editData.spriteSheetList.rs">{{item.name}}</option>
                 </select>
             </td>
@@ -162,7 +161,7 @@
             </td>
             <td>
                 <div class="table width100">
-                    <div class="row" v-for="animItm in editData.currGameObjectInEdit._frameAnimations.rs">
+                    <div class="row" v-for="animItm in editData.currGameObjectInEdit.frameAnimations && editData.currGameObjectInEdit.frameAnimations.rs">
                         <div class="cell vAlign">
                             <span>{{animItm.name}}</span>
                         </div>
@@ -207,7 +206,7 @@
                         <td>
                             <select v-model="selectedBehaviourName">
                                 <option
-                                        :disabled="editData.currGameObjectInEdit._commonBehaviour.has({name:cb.name})"
+                                        :disabled="editData.currGameObjectInEdit._commonBehaviour && editData.currGameObjectInEdit._commonBehaviour.has({name:cb.name})"
                                         :value="cb.name"
                                         v-for="cb in editData.commonBehaviourList && editData.commonBehaviourList.rs">
                                     {{cb.name}}

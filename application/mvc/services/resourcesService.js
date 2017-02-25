@@ -1,3 +1,4 @@
+// deprecated
 
 var fs = require.main.require('./application/base/fs');
 var utils = require.main.require('./application/utils/utils');

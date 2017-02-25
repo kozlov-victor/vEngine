@@ -1,15 +1,15 @@
-var express = require('express');
-var app = express();
-var url = require('url');
-var fs = require.main.require('./application/base/fs');
-var path = require('path');
-var appDir = path.dirname(require.main.filename);
-var exphbs  = require('express-handlebars');
+const express = require('express');
+const app = express();
+const url = require('url');
+const fs = require.main.require('./application/base/fs');
+const path = require('path');
+const appDir = path.dirname(require.main.filename);
+const exphbs  = require('express-handlebars');
 
 
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var multipart = require('connect-multiparty')();
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const multipart = require('connect-multiparty')();
 
 app.set('views', './application/mvc/views');
 
@@ -35,11 +35,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
-var processCommonRequest = function(methodObj,controllerName,methodName){
+let processCommonRequest = function(methodObj,controllerName,methodName){
     console.log('mapped: ' + methodObj.type + ': ' +controllerName + '/'+methodName);
     app[methodObj.type](controllerName + '/'+methodName,function(req,res){
 
-        var params;
+        let params;
         switch (methodObj.type) {
             case 'post':
                 params = req.body;
@@ -48,7 +48,8 @@ var processCommonRequest = function(methodObj,controllerName,methodName){
                 params = url.parse(req.url, true).query;
                 break;
         }
-        var codeResult = methodObj.code(params);
+
+        let codeResult = methodObj.code(params);
         if (methodObj.render=='view') {
             if (codeResult) codeResult.params = params;
             res.render(methodName,codeResult);
@@ -58,28 +59,28 @@ var processCommonRequest = function(methodObj,controllerName,methodName){
     })
 };
 
-var processMultiPartRequest = function(methodObj,controllerName,methodName){
+const processMultiPartRequest = function(methodObj,controllerName,methodName){
     console.log('mapped: post(multipart): '+ controllerName + '/'+methodName);
     app.post(controllerName + '/'+methodName,multipart,function(req,res){
-        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
-        var params = req.body;
-        var file = fs.readFileSync(pathToUploadedFile,true);
+        let pathToUploadedFile = req.files && req.files.file && req.files.file.path;
+        let params = req.body;
+        let file = fs.readFileSync(pathToUploadedFile,true);
         fs.deleteFileSync(pathToUploadedFile);
         params.file = file;
-        var result = methodObj.code(params);
+        let result = methodObj.code(params);
         res.send(result);
     });
 };
 
-var setUpControllers = function(){
+const setUpControllers = function(){
     fs.readDirSync(appDir+'/application/mvc/controllers').forEach(function(itm){
-        var fileNameWithoutExt = itm.name.split('.')[0];
-        var Ctrl = require(appDir+'/application/mvc/controllers/'+fileNameWithoutExt).controller;
+        let fileNameWithoutExt = itm.name.split('.')[0];
+        let Ctrl = require(appDir+'/application/mvc/controllers/'+fileNameWithoutExt).controller;
         if (!Ctrl) return;
-        var ctrl = new Ctrl();
+        let ctrl = new Ctrl();
         Object.keys(ctrl).forEach(function(key){
-            var controllerName = fileNameWithoutExt.replace('Controller','');
-            var methodObj = ctrl[key];
+            let controllerName = fileNameWithoutExt.replace('Controller','');
+            let methodObj = ctrl[key];
             if (key=='index') key = '';
             if (controllerName=='main') controllerName = '';
             else controllerName = '/' + controllerName;
@@ -92,7 +93,7 @@ var setUpControllers = function(){
     });
 };
 
-var handleErrors = function(app){
+let handleErrors = function(app){
     app.use(function(err, req, res, next) {
         if (err) console.error(err);
         res.status(500).send(

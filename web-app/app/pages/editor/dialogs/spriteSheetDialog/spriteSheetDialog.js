@@ -1,16 +1,15 @@
 
-var abstractDialog = require('providers/abstractDialog');
+const abstractDialog = require('providers/abstractDialog');
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var restFileSystem = require('providers/rest/fileSystem');
-var SpriteSheet = _require('spriteSheet');
+const editData = require('providers/editData');
+const restFileSystem = require('providers/rest/fileSystem');
+const restResource = require('providers/rest/resource');
 
 module.exports.component = Vue.component('app-sprite-sheet-dialog', {
     mixins:[abstractDialog],
     props: [],
     template: require('./spriteSheetDialog.html'),
-    data: function () {
+    data() {
         return {
             form:require('providers/validator').new(),
             editData: editData,
@@ -21,14 +20,14 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
             numOfSpriteSheetCells: 0
         }
     },
-    created: function(){
+    created(){
         module.exports.instance = this;
     },
     components: {
 
     },
     methods: {
-        open: function(){
+        open(){
             this.opened = true;
             if (editData.currSpriteSheetInEdit.id)
                 this.spriteSheetUrl =
@@ -37,15 +36,15 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
             else this.spriteSheetUrl = '';
             this.refreshNumOfCells();
         },
-        onFilePicked: function(src,file,name){
-            var self = this;
+        onFilePicked(src,file,name){
+            let self = this;
             self._file = file;
             self.spriteSheetUrl = src;
             self.editData.currSpriteSheetInEdit.resourcePath = 'resources/spriteSheet/'+file.name;
             if (!self.editData.currSpriteSheetInEdit.name) {
                 self.editData.currSpriteSheetInEdit.name = name;
             }
-            var img = new Image();
+            let img = new Image();
             img.onload = function() {
                 self.editData.currSpriteSheetInEdit.width = img.width;
                 self.editData.currSpriteSheetInEdit.height = img.height;
@@ -53,35 +52,38 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
             };
             img.src = src;
         },
-        refreshNumOfCells: function(){
+        refreshNumOfCells() {
             this.numOfSpriteSheetCells =
                 this.editData && this.editData.currSpriteSheetInEdit &&
                 this.editData.currSpriteSheetInEdit.numOfFramesH*
                 this.editData.currSpriteSheetInEdit.numOfFramesV;
             this.editData.currSpriteSheetInEdit.calcFrameSize();
         },
-        createOrEditSpriteSheet: function(sprSh){
-            var self = this;
-            restFileSystem.
-                uploadFile(
-                self._file,
-                {}
-            ).
-            then(function(params){
-                console.log('file uploaded');
+        createOrEditSpriteSheet(sprSh){
+            let self = this;
+            Promise.resolve().
+            then(()=>{
+                if (self._file) {
+                    return restFileSystem.
+                        uploadFile(
+                            self._file,
+                            {}
+                        );
+                } else return Promise.resolve();
+            }).
+            then(()=>{
+                let model = sprSh.toJSON();
+                return restResource.save(model);
+            }).
+            then((resp)=>{
+                if (resp.created) {
+                    sprSh.id = resp.id;
+                    editData.spriteSheetList.add(sprSh);
+                } else if (resp.updated) {
+                    sprSh.updateCloner();
+                }
+                self.close();
             });
-            //var model = sprSh.toJSON();
-            //model._file = this._file;
-            //this._file = '';
-            //var self = this;
-            //resource.createOrEditResource(
-            //    model,
-            //    SpriteSheet,
-            //    editData.spriteSheetList,
-            //    function(result){
-            //        self.close();
-            //    }
-            //);
         }
     }
 });

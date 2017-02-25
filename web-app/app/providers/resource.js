@@ -161,13 +161,13 @@ var Resource = function(){
         });
     };
 
-    (function(){
-        if (sessionStorage.projectName) {
-            self.loadProject(sessionStorage.projectName);
-        } else {
-            location.href = '#/explorer';
-        }
-    })();
+    // (function(){
+    //     if (sessionStorage.projectName) {
+    //         self.loadProject(sessionStorage.projectName);
+    //     } else {
+    //         location.href = '#/explorer';
+    //     }
+    // })();
 };
 
 module.exports = new Resource();

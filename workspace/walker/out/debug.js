@@ -13,15 +13,25 @@
             'z-index:10000;' +
             'width:300px;'+
             'max-height:'+window.innerHeight+'px;'+
-            'overflow-y:scroll';
+            'overflow-y:auto';
         document.body.appendChild(container);
         return container;
     };
 
     var _prepareMessage = function(e,lineNum){
-        var msg = (e.message || e.toString() || '');
+        var msg;
+        if (typeof msg == 'string') {
+            msg = e;
+        }
+        else msg = e.message;
+        if (!msg) {
+            if (e.target && e.target.tagName.toUpperCase()=='IMG')
+                msg = 'can not load image ' + e.target.getAttribute('src');
+        }
+        if (!msg) msg = '';
         if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();
         if (!msg) msg = 'Unknown error. Is your server running?';
+        if (lineNum) msg+=' in line ' + lineNum;
         if (lineNum) msg+=' in line ' + lineNum;
         return msg;
     };
@@ -41,12 +51,18 @@
        window.showError(e);
     };
 
+
+    var lastErr = '';
     window.showError = function _err(e,lineNum){
         if (navigator.isCocoonJS) {
             _showErrToConsole(e,lineNum);
             return;
         }
         if (document.body) {
+            if (lastErr.toString() === (e && e.toString())) {
+                return;
+            }
+            lastErr = e;
             var popup = document.createElement('div');
             popup.style.cssText =
                 'background-color:rgba(255,255,255,0.95);' +
@@ -67,6 +83,10 @@
             var popupContainer = getPopupContainer();
             if (popupContainer) {
                 popupContainer.appendChild(popup);
+                setTimeout(function(){
+                    popup.remove();
+                    lastErr = '';
+                },5000);
             } else {
                 _showErrToConsole(e,lineNum);
             }
@@ -89,6 +109,6 @@
             window.require('audioPlayer') && (window.require('audioPlayer').stopAll());
             window.require('renderer') && (window.require('renderer').stop());
         }
-    });
+    },true);
 
 })();

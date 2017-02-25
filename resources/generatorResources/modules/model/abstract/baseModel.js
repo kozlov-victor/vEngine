@@ -1,5 +1,6 @@
 var EventEmitter = require('eventEmitter');
 var Class = require('class');
+var bundle = require('bundle');
 
 var isPropNotFit = function(key,val){
     if (!key) return true;
@@ -40,7 +41,12 @@ var BaseModel = Class.extend({
             if (isPropNotFit(key,this[key])) {
                 continue;
             }
-            res[key]=this[key];
+            if (this[key].type) {
+                res[key] = {
+                   id:this[key].id,
+                   type: this[key].type
+                }
+            } else res[key]=this[key];
         }
         return deepCopy(res);
     },
@@ -58,6 +64,15 @@ var BaseModel = Class.extend({
         var self = this;
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
+                if (jsonObj[key].type) {
+                    if (jsonObj[key].id) {
+                        self[key] = bundle[key+'List'].find({id:jsonObj[key].id});
+                    } else {
+                        var clazz = _require(key);
+                        self[key] = new clazz();
+                    }
+                    return;
+                }
                 self[key] = jsonObj[key];
                 if (typeof self[key]==='boolean') return;
                 if (self[key] && !self[key].splice) {
@@ -68,8 +83,13 @@ var BaseModel = Class.extend({
     },
     clone: function(){
         var newObj = new this.constructor(this.toJSON());
+        newObj.__cloner__ = this;
         newObj._init();
         return newObj;
+    },
+    updateCloner: function(){
+        var cloner = this.__cloner__;
+        cloner.fromJSON(this.toJSON());
     },
     on: function(eventName,callBack){
         this._emitter.on(eventName,callBack);

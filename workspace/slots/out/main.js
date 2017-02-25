@@ -58,7 +58,7 @@ modules['class'] =
 	    function Instance() {
 	        firstArg.fn && firstArg.fn(firstArg.obj);
 	        this._init && this._init.apply(this, arguments);
-	        this.construct && this.construct();
+	        this.construct && this.construct.apply(this,arguments);
 	    }
 	
 	    Instance.prototype = Class.inherit(this.prototype);
@@ -959,7 +959,6 @@ modules['bundle'] =
 	
 	exports.prepare = function(data){
 	    if (!data) throw 'can not prepare bundle, no data provided';
-	    console.log(data);
 	    exports.gameProps = data.gameProps;
 	    consts.RESOURCE_NAMES.forEach(function(itm){
 	        toDataSource(
@@ -2742,8 +2741,13 @@ modules['baseModel'] =
 	    },
 	    clone: function(){
 	        var newObj = new this.constructor(this.toJSON());
+	        newObj.__cloner__ = this;
 	        newObj._init();
 	        return newObj;
+	    },
+	    updateCloner: function(){
+	        var cloner = this.__cloner__;
+	        cloner.fromJSON(this.toJSON());
 	    },
 	    on: function(eventName,callBack){
 	        this._emitter.on(eventName,callBack);
@@ -4355,48 +4359,43 @@ modules['shaderProgram'] =
 	    }
 	};
 	
+	var ShaderProgram = require('class').extend({
+	    program: null,
+	    uniforms: null,
+	    gl:null,
+	    construct: function (gl, sources) {
+	        var vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
+	        var fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
+	        this.program = createProgram(gl, [vShader, fShader]);
+	        this.uniforms = extractUniforms(gl, this.program);
+	        this.gl = gl;
+	    },
+	    getProgram: function () {
+	        return this.program;
+	    },
 	
-	var ShaderProgram = function(gl,sources){
+	    bind: function () {
+	        this.gl.useProgram(this.program);
+	        ShaderProgram.currentProgram = this;
+	    },
 	
-	    var program;
-	    var uniforms;
-	
-	    //var uniformValuesCache = {};
-	
-	    (function(){
-	
-	        var vShader = compileShader(gl,sources[0],gl.VERTEX_SHADER);
-	        var fShader = compileShader(gl,sources[1],gl.FRAGMENT_SHADER);
-	        program = createProgram(gl,[vShader,fShader]);
-	        uniforms = extractUniforms(gl,program);
-	
-	    })();
-	
-	    this.getProgram = function(){
-	        return program;
-	    };
-	
-	    this.bind = function(){
-	        gl.useProgram(program);
-	    };
-	
-	    this.setUniform = function(name,value){
-	        var uniform = uniforms[name];
-	        if (!uniform) throw 'no uniform with name '+ name + ' found!';
+	    setUniform: function (name, value) {
+	        var uniform = this.uniforms[name];
+	        if (!uniform) throw 'no uniform with name ' + name + ' found!';
 	        //if (uniformValuesCache[name]===value) return;
-	        uniform.setter(gl,uniform.location,value);
+	        uniform.setter(this.gl, uniform.location, value);
 	        //uniformValuesCache[name] = value;
-	    };
+	    },
 	
-	    this.bindBuffer = function(buffer,uniformLocationName){
-	        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.getGlBuffer());
-	        var uniformLocation = gl.getAttribLocation(program, uniformLocationName);
+	    bindBuffer: function (buffer, uniformLocationName) {
+	        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
+	        var uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName);
 	
 	        if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
-	        if (uniformLocation<0) throw "can not found uniform location for " + uniformLocationName;
+	        if (uniformLocation < 0) throw "can not found uniform location for " + uniformLocationName;
 	
-	        gl.enableVertexAttribArray(uniformLocation);
-	        gl.vertexAttribPointer(
+	        this.gl.enableVertexAttribArray(uniformLocation);
+	        this.gl.vertexAttribPointer(
 	            uniformLocation,
 	            buffer.getItemSize(),
 	            buffer.getItemType(),
@@ -4404,10 +4403,12 @@ modules['shaderProgram'] =
 	            0,      // number of bytes to skip in between elements
 	            0       // offsets to the first element
 	        );
-	        gl.bindBuffer(gl.ARRAY_BUFFER, null);
-	    };
+	        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+	    }
+	},{
+	    currentProgram:null
+	});
 	
-	};
 	
 	module.exports = ShaderProgram;
 }};

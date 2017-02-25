@@ -1,68 +1,68 @@
 
-var mathEx = _require('mathEx');
-var editData = require('providers/editData');
-var resource = require('providers/resource');
+const mathEx = _require('mathEx');
+const editData = require('providers/editData');
+const resource = require('providers/resource');
 
-var Utils = function(){
-    this.getGameObjectCss = function(gameObj){
+class Utils {
+    getGameObjectCss(gameObj){
         if (!gameObj) return {};
         return  {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
-            backgroundImage:      gameObj._spriteSheet && 'url('+editData.projectName+'/'+gameObj._spriteSheet.resourcePath+')',
-            backgroundPositionY: -gameObj._sprPosY+'px',
-            backgroundPositionX: -gameObj._sprPosX+'px',
+            backgroundImage:       gameObj.spriteSheet && `url(${editData.projectName}/${gameObj.spriteSheet.resourcePath})`,
+            backgroundPositionY:  -gameObj._sprPosY+'px',
+            backgroundPositionX:  -gameObj._sprPosX+'px',
             backgroundRepeat:     'no-repeat',
-            opacity:              gameObj.alpha,
-            transform:            'scale('+gameObj.scale.x+','+gameObj.scale.y+') rotateZ('+mathEx.radToDeg(gameObj.angle)+'deg)'
+            opacity:               gameObj.alpha,
+            transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${mathEx.radToDeg(gameObj.angle)}deg)`
         };
-    };
-    this.merge = function(a,b){
+    }
+    merge(a,b){
         a = a || {};
         b = b || {};
-        var res = Object.create(a);
+        let res = Object.create(a);
         Object.keys(b).forEach(function(key){
             res[key] = b[key];
         });
         return res;
-    };
+    }
 
-    this.hexToRgb = function(hex) {
-        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    hexToRgb(hex) {
+        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
             r: parseInt(result[1], 16) || 0,
             g: parseInt(result[2], 16) || 0,
             b: parseInt(result[3], 16) || 0
         } : {r:0,g:0,b:0};
-    };
+    }
 
-    this.rgbToHex = function(col) {
-        var r = +col.r,g=+col.g,b=+col.b;
+    rgbToHex(col) {
+        let r = +col.r,g=+col.g,b=+col.b;
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-    };
+    }
 
-    this.dataURItoBlob =function (dataURI) {
+    dataURItoBlob(dataURI) {
         // convert base64/URLEncoded data component to raw binary data held in a string
-        var byteString;
+        let byteString;
         if (dataURI.split(',')[0].indexOf('base64') >= 0)
             byteString = atob(dataURI.split(',')[1]);
         else
             byteString = unescape(dataURI.split(',')[1]);
 
         // separate out the mime component
-        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
         // write the bytes of the string to a typed array
-        var ia = new Uint8Array(byteString.length);
-        for (var i = 0; i < byteString.length; i++) {
+        let ia = new Uint8Array(byteString.length);
+        for (let i = 0; i < byteString.length; i++) {
             ia[i] = byteString.charCodeAt(i);
         }
 
         return new Blob([ia], {type:mimeString});
-    };
+    }
 
-    this.range = function(rFr,rTo) {
-        var arr = [], i;
+    range(rFr,rTo) {
+        let arr = [], i;
         if (rTo==undefined) {
             rTo = rFr;
             rFr = 0;
@@ -77,16 +77,16 @@ var Utils = function(){
             }
         }
         return arr;
-    };
+    }
 
-    var createAceCompleter = function(){
-        var result = [];
-        var res = {};
-        var objs = ['gameObject'];
+    _createAceCompleter(){
+        let result = [];
+        let res = {};
+        let objs = ['gameObject'];
         objs.forEach(function(go){
-            var GObjClass = _require(go);
-            var goObj = new GObjClass();
-            for (var key in goObj) {
+            let GObjClass = _require(go);
+            let goObj = new GObjClass();
+            for (let key in goObj) {
                 if (key.indexOf('_')==0) continue;
                 res[key] = {
                     name:key,
@@ -100,20 +100,21 @@ var Utils = function(){
             result.push(res[key]);
         });
         return result;
-    };
+    }
 
-    var waitForFrameAndDo = function(file,path){
-        var frame = document.getElementById('scriptEditorFrame');
-        var contentWindow = frame && frame.contentWindow;
+    _waitForFrameAndDo(file,path){
+        let frame = document.getElementById('scriptEditorFrame');
+        let contentWindow = frame && frame.contentWindow;
+        let self = this;
         if (!contentWindow.ready) {
             setTimeout(function(){
-                waitForFrameAndDo(file,path);
+                self._waitForFrameAndDo(file,path);
             },100);
             return;
         }
         contentWindow.setCode(file);
         contentWindow.calcEditorSize();
-        contentWindow.setAutocomplete(createAceCompleter());
+        contentWindow.setAutocomplete(this._createAceCompleter());
         window.removeEventListener('resize',contentWindow.calcEditorSize);
         window.addEventListener('resize',contentWindow.calcEditorSize);
         window.saveCode = function(code){
@@ -121,36 +122,36 @@ var Utils = function(){
         };
     };
 
-    this.getArray = function(num) {
+    getArray(num) {
         if (!num) return [];
-        var res = [];
-        for (var i=0;i<num;i++) {
+        let res = [];
+        for (let i=0;i<num;i++) {
             res.push(i);
         }
         return res;
-    };
+    }
 
-    this.size = function(obj) {
+    size(obj) {
         return Object.keys(obj).length;
-    };
+    }
 
-    this.recalcGameObjectSize = function(gameObject){
-        var spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheetId});
+    recalcGameObjectSize(gameObject){
+        let spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheet.id});
         if (!spriteSheet) return;
         spriteSheet.calcFrameSize();
         gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
         gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
-        gameObject._spriteSheet = spriteSheet;
-    };
+        gameObject.spriteSheet = spriteSheet; // todo need?
+    }
 
-    this.openEditor = function(resourceUrl) {
+    openEditor(resourceUrl) {
         editData.scriptEditorUrl = resourceUrl;
-        var path = 'script/'+resourceUrl;
+        let path = 'script/'+resourceUrl;
         resource.readFile(path,function(file){
             waitForFrameAndDo(file,path);
         });
-    };
+    }
 
-};
+}
 
 module.exports = new Utils();

@@ -1,15 +1,15 @@
 
-var browserify = require('browserify');
-var stringify = require('stringify');
-var gulp = require('gulp');
-var source = require('vinyl-source-stream');
-var addSrc = require('gulp-add-src');
-var concat = require('gulp-concat');
-var less = require('gulp-less');
-var path = require('path');
+const browserify = require('browserify');
+const stringify = require('stringify');
+const gulp = require('gulp');
+const source = require('vinyl-source-stream');
+const addSrc = require('gulp-add-src');
+const concat = require('gulp-concat');
+const less = require('gulp-less');
+const path = require('path');
 
 
-gulp.task('js-vendor', function() {
+gulp.task('js-vendor', ()=> {
     return gulp.src([
             'web-app/vendor/split.js',
             'web-app/vendor/vue.js',
@@ -23,20 +23,21 @@ gulp.task('js-vendor', function() {
 
 // process.env.NODE_ENV === "production"
 // browserify -t vueify -e src/main.js -o build/build.js
-gulp.task('js-bundle', function() {
+gulp.task('js-bundle', ()=> {
     return (
         browserify({
             entries: ['web-app/bootstrap.js'],
             paths: ['./web-app/app/']
         })
         .transform(stringify(['.html']))
+        .transform("babelify", {presets: ["es2015"]})
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(gulp.dest('resources/public/js/build/'))
     )
 });
 
-gulp.task('less', function () {
+gulp.task('less', ()=> {
     return gulp
         .src('web-app/main.less')
         .pipe(addSrc('web-app/app/**/*.less'))
