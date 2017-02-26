@@ -2,9 +2,9 @@
 
 
 
-var utils = require.main.require('./application/utils/utils');
-var resourcesService = require.main.require('./application/mvc/services/resourcesService');
-var generatorService = require.main.require('./application/mvc/services/generatorService');
+const utils = require.main.require('./application/utils/utils');
+const resourcesService = require.main.require('./application/mvc/services/resourceServiceNew');
+const generatorService = require.main.require('./application/mvc/services/generatorService');
 
 module.exports.controller = function(){
 

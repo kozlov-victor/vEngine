@@ -2262,11 +2262,12 @@ var _loadResources = function _loadResources(projectName) {
             Vue.set(editData, key, bundle[key]);
         });
         editData.gameProps = bundle.gameProps;
-        editData.commonBehaviourList = new collections.List();
-        response.commonBehaviour.forEach(function (cb) {
-            editData.commonBehaviourList.add(new CommonBehaviour(cb));
+        editData.commonBehaviourProtoList = new collections.List();
+        response.commonBehaviourProto.forEach(function (cb) {
+            editData.commonBehaviourProtoList.add(new CommonBehaviour(cb));
         });
         editData.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
+        console.log(editData.commonBehaviourProtoList);
     });
 };
 
