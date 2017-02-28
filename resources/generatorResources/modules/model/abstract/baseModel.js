@@ -1,6 +1,7 @@
 var EventEmitter = require('eventEmitter');
 var Class = require('class');
 var bundle = require('bundle');
+var collections = require('collections');
 
 var isPropNotFit = function(key,val){
     if (!key) return true;
@@ -71,6 +72,16 @@ var BaseModel = Class.extend({
                         var clazz = _require(key);
                         self[key] = new clazz();
                     }
+                    return;
+                } else if (jsonObj[key].splice) {
+                    var arr = [];
+                    jsonObj[key].forEach(function(el){
+                        arr.push(el);
+                    });
+                    jsonObj[key] = new collections.List();
+                    arr.forEach(function(el){
+                        jsonObj[key].add(bundle[el.type+'List'].find({id:el.id}));
+                    });
                     return;
                 }
                 self[key] = jsonObj[key];

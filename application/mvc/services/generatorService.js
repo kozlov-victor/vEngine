@@ -1,5 +1,5 @@
 var fs = require.main.require('./application/base/fs');
-var resourcesService = require.main.require('./application/mvc/services/resourcesService');
+var resourcesService = require.main.require('./application/mvc/services/resourceServiceNew');
 var nodeHint = require('node-hint');
 var UglifyJS = require("uglify-js");
 var ejs = require('ejs');

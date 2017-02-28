@@ -1,7 +1,7 @@
 "use strict";
 
 let utils = require.main.require('./application/utils/utils');
-let resourcesService = require.main.require('./application/mvc/services/resourcesService');
+let resourceService = require.main.require('./application/mvc/services/resourceServiceNew');
 let generatorService = require.main.require('./application/mvc/services/generatorService');
 let collectionHelper = require.main.require('./application/mvc/services/collectionHelper');
 
@@ -12,11 +12,11 @@ module.exports.controller = function(){
         code(params){
             let result = {};
             let projectName = params.projectName;
-            resourcesService.RESOURCE_NAMES.forEach(function(key){
-                result[key] = resourcesService.getAll(key,projectName);
+            resourceService.RESOURCE_NAMES.forEach(function(key){
+                result[key] = resourceService.getAll(key,projectName);
             });
-            result.gameProps = resourcesService.getGameProps(projectName);
-            result.commonBehaviourProto = resourcesService.getCommonBehaviourAttrs(projectName);
+            result.gameProps = resourceService.getGameProps(projectName);
+            //result.commonBehaviour = resourcesService.getCommonBehaviourAttrs(projectName);
             return result;
         }
     };

@@ -12,6 +12,7 @@ exports.sceneList = new collections.List();
 exports.layerList = new collections.List();
 exports.fontList = new collections.List();
 exports.soundList = new collections.List();
+exports.commonBehaviourList = new collections.List();
 exports.particleSystemList = new collections.List();
 
 exports.gameProps = {};

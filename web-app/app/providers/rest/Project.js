@@ -20,10 +20,6 @@ const _loadResources = function(projectName){
             Vue.set(editData,key,bundle[key]);
         });
         editData.gameProps = bundle.gameProps;
-        editData.commonBehaviourProtoList = new collections.List();
-        response.commonBehaviourProto.forEach(function(cb){
-            editData.commonBehaviourProtoList.add(new CommonBehaviour(cb));
-        });
         editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
     });
 };

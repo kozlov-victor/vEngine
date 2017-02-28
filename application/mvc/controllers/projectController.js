@@ -1,8 +1,8 @@
 
 'use strict';
 
-var fs = require.main.require('./application/base/fs');
-var projectService = require.main.require('./application/mvc/services/projectService');
+const fs = require.main.require('./application/base/fs');
+const projectService = require.main.require('./application/mvc/services/projectService');
 
 module.exports.controller = function(){
 
