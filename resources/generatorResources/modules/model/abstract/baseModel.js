@@ -7,6 +7,7 @@ var _req = require;
 var isPropNotFit = function(key,val){
     if (!key) return true;
     if (key.indexOf('_')==0) return true;
+    //if (val && val.rs) return false;
     if (val && val.call) return true;
     if (typeof val == 'string') return false;
     if (typeof val == 'number') return false;
@@ -40,6 +41,7 @@ var BaseModel = Class.extend({
     toJSON: function(){
         var res = {};
         for (var key in this) {
+
             if (isPropNotFit(key,this[key])) {
                 continue;
             }
@@ -48,7 +50,15 @@ var BaseModel = Class.extend({
                    id:this[key].id,
                    type: this[key].type
                 }
-            } else res[key]=this[key];
+            } else if (this[key] && this[key].rs) { // is collections.List
+                var col = this[key];
+                var arr = [];
+                col.forEach(function(el){
+                    arr.push({type:el.type,id:el.id});
+                });
+                this[key] = arr;
+            }
+            else res[key]=this[key];
         }
         return deepCopy(res);
     },
