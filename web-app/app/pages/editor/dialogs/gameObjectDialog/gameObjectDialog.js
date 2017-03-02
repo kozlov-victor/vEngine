@@ -31,7 +31,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
     methods: {
         open: function(){
             this.opened = true;
-            console.log(this.editData.currGameObjectInEdit.commonBehaviour);
+            console.log(this.editData.currGameObjectInEdit.toJSON());
         },
         createOrEditGameObject: function(g){
             let self = this;

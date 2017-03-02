@@ -15,17 +15,7 @@ const findById = (col,id)=>{
     return filtered[0]
 };
 
-let uuid = function() {
-    let uidCnt = 0;
-
-    let uid = function(){
-        return ''+(~~(Math.random()*10));
-    };
-    return function(){
-        let timeStr = new Date().getTime().toString();
-        return  uid()+uid()+uid()+uid() + '_' + timeStr.substring(timeStr.length-4) +'_'+(uidCnt++);
-    };
-}();
+let _uidCnt = 0;
 
 class CollectionHelper {
     save(params){
@@ -33,7 +23,7 @@ class CollectionHelper {
         let col = loadCollection(path);
         let model = params.model;
         if (!model.id){
-            model.id = uuid();
+            model.id = this.uuid();
             col.push(model);
             saveCollection(path,col);
             return {id:model.id,created:true};
@@ -46,6 +36,14 @@ class CollectionHelper {
             saveCollection(path,col);
             return {updated:true}
         }
+    }
+
+    _uid(){
+        return ''+(~~(Math.random()*10));
+    }
+    uuid() {
+        let timeStr = new Date().getTime().toString();
+        return this._uid() + this._uid() + this._uid() + this._uid() + '_' + timeStr.substring(timeStr.length - 4) + '_' + (_uidCnt++);
     }
 }
 

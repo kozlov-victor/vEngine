@@ -1,78 +1,84 @@
-var fs = require.main.require('./application/base/fs');
-var resourcesService = require.main.require('./application/mvc/services/resourceServiceNew');
-var nodeHint = require('node-hint');
-var UglifyJS = require("uglify-js");
-var ejs = require('ejs');
-var hbs = require('handlebars');
+const fs = require.main.require('./application/base/fs');
+const resourcesService = require.main.require('./application/mvc/services/resourceServiceNew');
+const nodeHint = require('node-hint');
+const UglifyJS = require("uglify-js");
+const ejs = require('ejs');
+const hbs = require('handlebars');
+const babel  = require("babel-core");
 
 
-var Source = function(){
-    var res = [];
-    var self = this;
-    this.add = function(s){
-        res.push(s);
+class Source {
+
+    constructor(){
+        this.res = [];
+    }
+
+    add(s){
+        this.res.push(s);
     };
-    var processTemplate = function(path,params){
+    processTemplate(path,params){
         //return ejs.render(fs.readFileSync(path).split('//<code>').join(''),params);
-        var code = fs.readFileSync(path).split('//<code>').join('');
+        let code = fs.readFileSync(path).split('//<code>').join('');
         return hbs.compile(code)(params);
-    };
-    var extractModuleName = function(path){
+    }
+    extractModuleName(path){
         return path.replace('.js','').split('/').pop();
-    };
-    var wrapAsCommonJS = function(path,code,params){
-        var mdlName = extractModuleName(path);
-        return processTemplate('resources/generatorResources/misc/moduleTemplate.js',{
+    }
+    wrapAsCommonJS(path,code,params){
+        let mdlName = this.extractModuleName(path);
+        return this.processTemplate('resources/generatorResources/misc/moduleTemplate.js',{
             name: mdlName,
-            code: addLeadTab(code),
+            code: this.addLeadTab(code),
             opts:params||{}
         });
-    };
-    var addLeadTab = function(code){
+    }
+    addLeadTab(code){
         return (
             code.split('\n').map(function(item){
                 return '\t'+item;
             }).join('\n')
         );
-    };
-    this.addTemplate = function(path,params) {
-        self.add(processTemplate(path,params));
-    };
-    this.addTemplates = function(path,params) {
-        var self = this;
+    }
+    addTemplate(path,params) {
+        this.add(this.processTemplate(path,params));
+    }
+    addTemplates(path,params) {
+        let self = this;
         fs.readDirSync(path).forEach(function(file){
             self.addTemplate(file.fullName,params);
         });
-    };
-    this.addCommonJsModule = function(path,params){
-        var code = processTemplate(path,params);
-        code = wrapAsCommonJS(path,code,params);
-        self.add(code);
-    };
-    this.addCommonJsModules = function(path,params){
-        var self = this;
+    }
+    addCommonJsModule(path,params){
+        let code = this.processTemplate(path,params);
+        code = this.wrapAsCommonJS(path,code,params);
+        this.add(code);
+    }
+    addCommonJsModules(path,params){
+        let self = this;
         fs.readDirSync(path).forEach(function(file){
             self.addCommonJsModule(file.fullName,params);
         });
-    };
-    this.addFile = function(path,params){
-        self.addFile(path,params);
-    };
-    this.addFiles = function(path){
-        var self = this;
+    }
+    addFiles(path){
+        let self = this;
         fs.readDirSync(path).forEach(function(file){
             self.addTemplate(file.fullName,{});
         });
-    };
-    this.get = function(){
-        return res.join('\n');
-    };
-};
+    }
+    get(){
+        let code =  this.res.join('\n');
+        let gen = babel.transform(code, {
+            presets: ['es2015'],
+            plugins: ["transform-es2015-function-name"]
+        });
+        return gen.code;
+    }
+}
 
 
 
-var createResourcesParams = function(opts){
-    var templateObj = {};
+const createResourcesParams = (opts)=>{
+    let templateObj = {};
     templateObj.commonResources = {};
     templateObj.specialResources = {};
     resourcesService.RESOURCE_NAMES.forEach(function(r){
@@ -85,7 +91,7 @@ var createResourcesParams = function(opts){
     templateObj.embeddedResources = {};
 
     opts.embedResources && ['spriteSheet', 'font', 'sound'].forEach(function (r) {
-        var files = fs.readDirSync('workspace/' + opts.projectName + '/resources/' + r, 'base64');
+        let files = fs.readDirSync('workspace/' + opts.projectName + '/resources/' + r, 'base64');
         files.forEach(function (file) {
             if (file.name != 'map.json') {
                 templateObj.embeddedResources['resources/' + r + '/' + file.name] =
@@ -96,15 +102,15 @@ var createResourcesParams = function(opts){
     return templateObj;
 };
 
-var createCommonBehaviourParams = function(opts){
-    var gameObjects = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/gameObject/map.json'));
-    var fileNames = {};
+const createCommonBehaviourParams = (opts)=>{
+    let gameObjects = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/gameObject/map.json'));
+    let fileNames = {};
     gameObjects.forEach(function(go){
         go.commonBehaviour.forEach(function(cb){
             fileNames[cb.name] = 1;
         });
     });
-    var res = [];
+    let res = [];
     Object.keys(fileNames).forEach(function(name){
         res.push({
             name:name,
@@ -114,12 +120,13 @@ var createCommonBehaviourParams = function(opts){
     return res;
 };
 
-var minify = function(code) {
-    var code =  UglifyJS.minify(code, {
-        fromString: true,
-        mangle:{toplevel:true,eval:true},
-        //mangleProperties: { regex: /GameObject/ },
-        compress: {
+const minify = (code)=> {
+    return  (
+        UglifyJS.minify(code, {
+            fromString: true,
+            mangle:{toplevel:true,eval:true},
+            //mangleProperties: { regex: /GameObject/ },
+            compress: {
             screw_ie8: true,
             sequences: true,
             properties: true,
@@ -136,15 +143,15 @@ var minify = function(code) {
             join_vars: true,
             cascade: true,
             drop_console: true
-        }
-    }).code;
-    return code;
+            }
+        }).code);
 };
 
-var processScriptPlace = function(indexHtml,scriptPlaceName,code,outCodeFileName,opts) {
+const processScriptPlace = (indexHtml,scriptPlaceName,code,outCodeFileName,opts)=> {
     if (opts.minify) {
         code = minify(code);
     }
+
     if (opts.embedScript) {
         indexHtml = indexHtml.replace('{{'+scriptPlaceName+'}}','<script>\n'+code+'\n</script>');
     } else {
@@ -154,16 +161,16 @@ var processScriptPlace = function(indexHtml,scriptPlaceName,code,outCodeFileName
     return indexHtml;
 };
 
-var processGameResourcesFiles = function(generatedCode,opts){
+const processGameResourcesFiles = (generatedCode,opts)=>{
     fs.deleteFolderSync('workspace/'+opts.projectName+'/out');
     fs.createFolderSync('workspace/'+opts.projectName+'/out/');
 
     if (!opts.embedResources) {
-        var resMap = {};
+        let resMap = {};
         ['spriteSheet','font','sound'].forEach(function(r){
             JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/'+r+'/map.json')).
                 forEach(function(mapJsonItem){
-                    var resourcePath = mapJsonItem.resourcePath;
+                    let resourcePath = mapJsonItem.resourcePath;
                     if (!resourcePath) return;
                     resMap[resourcePath] = 1;
                 });
@@ -176,8 +183,8 @@ var processGameResourcesFiles = function(generatedCode,opts){
         });
     }
 
-    var indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
-    var debugCode = fs.readFileSync('resources/generatorResources/shared/debug.js');
+    let indexHtml = fs.readFileSync('resources/generatorResources/misc/index.html');
+    let debugCode = fs.readFileSync('resources/generatorResources/shared/debug.js');
 
     indexHtml = processScriptPlace(indexHtml,'script_main',generatedCode,'main.js',opts);
     indexHtml = processScriptPlace(indexHtml,'script_debug',debugCode,'debug.js',opts);
@@ -189,7 +196,7 @@ var processGameResourcesFiles = function(generatedCode,opts){
 };
 
 
-var hint = function(sourceMain){
+const hint = (sourceMain)=>{
     //nodeHint.hint(
     //    {
     //        source:sourceMain.get()
@@ -200,10 +207,10 @@ var hint = function(sourceMain){
     //);
 };
 
-var prepareGeneratorParams = function(opts){
-    var resourcesOpts = opts.projectName?createResourcesParams(opts):{};
-    var commonBehaviourParams = opts.projectName?createCommonBehaviourParams(opts):{};
-    var shaders = {};
+const prepareGeneratorParams = (opts)=>{
+    let resourcesOpts = opts.projectName?createResourcesParams(opts):{};
+    let commonBehaviourParams = opts.projectName?createCommonBehaviourParams(opts):{};
+    let shaders = {};
     fs.
         getDirListSync('resources/generatorResources/shaders')
         .forEach(function (dir) {
@@ -224,10 +231,10 @@ var prepareGeneratorParams = function(opts){
     };
 };
 
-module.exports.generateEngine = function(opts){
-    var generatorParams = prepareGeneratorParams(opts);
+module.exports.generateEngine = (opts)=>{
+    let generatorParams = prepareGeneratorParams(opts);
 
-    var sourceMain = new Source();
+    let sourceMain = new Source();
     sourceMain.addTemplates('resources/generatorResources/lib/common',generatorParams);
     sourceMain.addCommonJsModules('resources/generatorResources/lib/class',generatorParams);
     sourceMain.addCommonJsModules(
@@ -244,9 +251,9 @@ module.exports.generateEngine = function(opts){
     return sourceMain.get();
 };
 
-module.exports.generate = function(opts,callback){
+module.exports.generate = (opts,callback)=>{
 
-    var generatedCode = module.exports.generateEngine(opts);
+    let generatedCode = module.exports.generateEngine(opts);
     processGameResourcesFiles(generatedCode,opts);
 
     callback({});

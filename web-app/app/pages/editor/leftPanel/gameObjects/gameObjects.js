@@ -26,7 +26,8 @@ module.exports = Vue.component('app-game-objects', {
             utils.openEditor(gameObject.type + '/' +gameObject.name + '.js');
         },
         editGameObject: function(go){
-            this.editData.currGameObjectInEdit = go.clone();
+            console.log(go.toJSON());
+            this.editData.currGameObjectInEdit =  new GameObject(go.toJSON());
             gameObjectDialog.instance.open();
         },
         deleteGameObject: function(g){

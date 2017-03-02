@@ -16,7 +16,7 @@ module.exports.controller = function(){
                 result[key] = resourceService.getAll(key,projectName);
             });
             result.gameProps = resourceService.getGameProps(projectName);
-            //result.commonBehaviour = resourcesService.getCommonBehaviourAttrs(projectName);
+            result.commonBehaviourProto = resourceService.getCommonBehaviourAttrs(projectName);
             return result;
         }
     };

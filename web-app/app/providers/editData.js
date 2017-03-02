@@ -22,6 +22,8 @@ res.reset = function(){
     res.currProjectInEdit = {};
     res.currTileIndexInEdit = {};
     res.gameProps = {};
+    res.commonBehaviourProto =  new collections.List();
+
 
     res.userInterfaceList = new collections.List();
 
@@ -32,6 +34,7 @@ res.reset = function(){
 
     res.projectName = '';
     res.projects = {};
+
     //res.buildOpts = {
     //    debug: false,
     //    embedResources: false,

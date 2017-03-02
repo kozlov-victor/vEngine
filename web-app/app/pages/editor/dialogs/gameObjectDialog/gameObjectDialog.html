@@ -2,7 +2,6 @@
         v-on:close="close()"
         v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
 
-    {{editData.currGameObjectInEdit.commonBehaviour}}
 
     <table class="width100">
         <tr>
@@ -208,9 +207,9 @@
                         <td>
                             <select v-model="selectedBehaviourName">
                                 <option
-                                        :disabled="editData.currGameObjectInEdit._commonBehaviour && editData.currGameObjectInEdit._commonBehaviour.has({name:cb.name})"
+                                        :disabled="editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})"
                                         :value="cb.name"
-                                        v-for="cb in editData.commonBehaviourList && editData.commonBehaviourList.rs">
+                                        v-for="cb in editData.commonBehaviourProto.rs">
                                     {{cb.name}}
                                 </option>
                             </select>
@@ -233,7 +232,6 @@
             v-on:click="createOrEditGameObject(editData.currGameObjectInEdit)">
         {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
     </button>
-
 
 
 </app-modal>

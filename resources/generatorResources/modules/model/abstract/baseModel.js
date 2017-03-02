@@ -7,7 +7,7 @@ var _req = require;
 var isPropNotFit = function(key,val){
     if (!key) return true;
     if (key.indexOf('_')==0) return true;
-    //if (val && val.rs) return false;
+    if (val instanceof collections.List) return false;
     if (val && val.call) return true;
     if (typeof val == 'string') return false;
     if (typeof val == 'number') return false;
@@ -38,7 +38,7 @@ var BaseModel = Class.extend({
     protoId:null,
     name:'',
     _emitter:null,
-    toJSON: function(){
+    toJSON(){
         var res = {};
         for (var key in this) {
 
@@ -62,7 +62,7 @@ var BaseModel = Class.extend({
         }
         return deepCopy(res);
     },
-    toJSON_Array: function(){
+    toJSON_Array(){
         var res = [];
         for (var key in this) {
             if (isPropNotFit(key,this[key])) {
@@ -72,7 +72,7 @@ var BaseModel = Class.extend({
         }
         return res;
     },
-    fromJSON:function(jsonObj){
+    fromJSON(jsonObj){
         var self = this;
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
@@ -94,6 +94,9 @@ var BaseModel = Class.extend({
                         col.add(bundle[el.type+'List'].find({id:el.id}));
                     });
                     self[key] = col;
+                    //<code>{{#if opts.inEditor}}
+                    Vue.set(self,key,col);
+                    // {{/if}}
                     return;
                 }
                 self[key] = jsonObj[key];
@@ -107,7 +110,6 @@ var BaseModel = Class.extend({
     clone: function(){
         var newObj = new this.constructor(this.toJSON());
         newObj.__cloner__ = this;
-        newObj._init();
         return newObj;
     },
     updateCloner: function(){
