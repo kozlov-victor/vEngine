@@ -1,10 +1,26 @@
 [
-  {
-    "id":"1",
-    "name":"test1"
-  },
-  {
-    "id":"2",
-    "name":"test2"
-  }
+    {
+        "name": "control4dir",
+        "description": "control character with cursor to walk up, down, left and right",
+        "parameters": {
+            "velocity": 100,
+            "walkLeftAnimation": "left",
+            "walkRightAnimation": "right",
+            "walkUpAnimation": "up",
+            "walkDownAnimation": "down",
+            "idleLeftAnimation": "idleLeft",
+            "idleRightAnimation": "idleRight",
+            "idleUpAnimation": "idleUp",
+            "idleDownAnimation": "idleDown"
+        },
+        "type": "commonBehaviour",
+        "id": "2216_0993_3"
+    },
+    {
+        "name": "draggable",
+        "description": "draggable behaviour with multitouch supporting",
+        "parameters": {},
+        "type": "commonBehaviour",
+        "id": "1095_9937_4"
+    }
 ]

@@ -1,7 +1,7 @@
 
-var SpriteSheet = _require('spriteSheet');
-var spriteSheetDialog = require('../../dialogs/spriteSheetDialog/spriteSheetDialog');
-var resource = require('providers/resource');
+const SpriteSheet = _require('spriteSheet');
+const spriteSheetDialog = require('../../dialogs/spriteSheetDialog/spriteSheetDialog');
+const restResource = require('providers/rest/resource');
 
 module.exports = Vue.component('app-sprite-sheets', {
     props: [],
@@ -25,10 +25,16 @@ module.exports = Vue.component('app-sprite-sheets', {
             spriteSheetDialog.instance.open();
         },
         deleteSpriteSheet: function(sprSh){
+            let hasDepends = this.editData.gameObjectList.filter((it)=>{return it.spriteSheet.id==sprSh.id}).size()>0;
+            if (hasDepends) {
+                window.alertEx(this.i18n.canNotDelete(sprSh));
+                return;
+            }
             window.confirmEx(
-                this.i18n.confirmQuestion,
-                function(){
-                    resource.deleteResource(sprSh);
+                this.i18n.confirmQuestion(sprSh),
+                ()=>{
+                    this.editData.spriteSheetList.remove({id:sprSh.id});
+                    restResource.remove(sprSh);
                 }
             )
         }

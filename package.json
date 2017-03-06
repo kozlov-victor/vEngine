@@ -2,6 +2,7 @@
   "name": "vEngine",
   "version": "0.1.0",
   "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
     "babelify": "^7.3.0",
     "browserify": "latest",
@@ -18,6 +19,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "annotation": "^0.1.0",
     "body-parser": "^1.15.2",
     "connect-multiparty": "^2.0.0",
     "ejs": "^2.5.2",

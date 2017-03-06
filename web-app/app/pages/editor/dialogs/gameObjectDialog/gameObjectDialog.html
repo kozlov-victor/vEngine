@@ -41,7 +41,7 @@
             </td>
             <td>
                 <select
-                        v-on:change="utils.recalcGameObjectSize(editData.currGameObjectInEdit)"
+                        v-on:change="onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)"
                         required
                         v-control="{form:form,model:editData.currGameObjectInEdit.spriteSheet,prop:'id'}"
                         v-model="editData.currGameObjectInEdit.spriteSheet.id">
@@ -188,7 +188,7 @@
             </td>
             <td>
                 <div class="table width100">
-                    <div class="row" v-for="itm in editData.currGameObjectInEdit._commonBehaviour && editData.currGameObjectInEdit._commonBehaviour.rs">
+                    <div class="row" v-for="itm in editData.currGameObjectInEdit.commonBehaviour.rs">
                         <div class="cell vAlign">
                             <span>{{itm.name}}</span>
                         </div>
@@ -205,7 +205,7 @@
                 <table class="width100">
                     <tr>
                         <td>
-                            <select v-model="selectedBehaviourName">
+                            <select v-model="selectedBehaviourId">
                                 <option
                                         :disabled="editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})"
                                         :value="cb.name"
@@ -217,8 +217,8 @@
                         <td align="right">
                             <button
                                     class="inlineBlock"
-                                    :disabled="!editData.currGameObjectInEdit.id || !selectedBehaviourName"
-                                    v-on:click="createCommonBehaviour(selectedBehaviourName)">
+                                    :disabled="!editData.currGameObjectInEdit.id || !selectedBehaviourId"
+                                    v-on:click="createCommonBehaviour(selectedBehaviourId)">
                                 +
                             </button>
                         </td>
@@ -232,6 +232,5 @@
             v-on:click="createOrEditGameObject(editData.currGameObjectInEdit)">
         {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
     </button>
-
 
 </app-modal>

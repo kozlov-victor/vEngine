@@ -1,4 +1,10 @@
 
+window.catchPromise = (e)=>{
+    setTimeout(()=>{
+        throw e;
+    },0)
+};
+
 require('providers/resource');
 
 const router = new VueRouter({

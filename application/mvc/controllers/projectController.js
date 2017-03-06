@@ -4,23 +4,23 @@
 const fs = require.main.require('./application/base/fs');
 const projectService = require.main.require('./application/mvc/services/projectService');
 
-module.exports.controller = function(){
+class ProjectController {
+    /**
+     * @Method("getAll");
+     * @Request({"type":"get"});
+     */
+    getAll(params){
+        return fs.getDirListSync('workspace/').map(function(item){
+            return {name:item}
+        });
+    }
+    /**
+     * @Method("create");
+     * @Request({"type":"post"});
+     */
+    create(params){
+        return projectService.createProject(params.projectName)
+    }
+}
 
-    this.getAll = {
-        type:'get',
-        code: function(params){
-            return fs.getDirListSync('workspace/').map(function(item){
-                return {name:item}
-            });
-        }
-    };
-
-    this.create = {
-        type:'post',
-        code: function(params){
-            return projectService.createProject(params.projectName)
-        }
-    };
-
-
-};
+module.exports.controller = ProjectController;

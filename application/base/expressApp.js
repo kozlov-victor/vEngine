@@ -5,6 +5,7 @@ const fs = require.main.require('./application/base/fs');
 const path = require('path');
 const appDir = path.dirname(require.main.filename);
 const exphbs  = require('express-handlebars');
+const annotation = require('annotation');
 
 
 const session = require('express-session');
@@ -13,8 +14,6 @@ const multipart = require('connect-multiparty')();
 
 app.set('views', './application/mvc/views');
 
-//app.engine('ejs', require('ejs').renderFile);
-//app.set('view engine', 'ejs');
 
 app.engine('html', exphbs({
     // defaultLayout: 'main'
@@ -35,12 +34,13 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
-let processCommonRequest = function(methodObj,controllerName,methodName){
-    console.log('mapped: ' + methodObj.type + ': ' +controllerName + '/'+methodName);
-    app[methodObj.type](controllerName + '/'+methodName,function(req,res){
+const processCommonRequest = function(opts){
+    console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
+
+    app[opts.requestType](`${opts.controllerName}/${opts.methodName}`,function(req,res){
 
         let params;
-        switch (methodObj.type) {
+        switch (opts.requestType) {
             case 'post':
                 params = req.body;
                 break;
@@ -49,47 +49,70 @@ let processCommonRequest = function(methodObj,controllerName,methodName){
                 break;
         }
 
-        let codeResult = methodObj.code(params);
-        if (methodObj.render=='view') {
+        let codeResult = opts.ctrl[opts.methodName](params);
+        if (opts.responseType=='view') {
             if (codeResult) codeResult.params = params;
-            res.render(methodName,codeResult);
+            res.render(opts.methodName,codeResult);
         } else {
             res.send(codeResult);
         }
     })
 };
 
-const processMultiPartRequest = function(methodObj,controllerName,methodName){
-    console.log('mapped: post(multipart): '+ controllerName + '/'+methodName);
-    app.post(controllerName + '/'+methodName,multipart,function(req,res){
+const processMultiPartRequest = function(opts){
+    console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
+    app.post(`${opts.controllerName}/${opts.methodName}`,multipart,function(req,res){
         let pathToUploadedFile = req.files && req.files.file && req.files.file.path;
         let params = req.body;
         let file = fs.readFileSync(pathToUploadedFile,true);
         fs.deleteFileSync(pathToUploadedFile);
         params.file = file;
-        let result = methodObj.code(params);
+        let result = opts.ctrl[opts.methodName](params);
         res.send(result);
     });
 };
 
+const getAnnotations = (reader,methodName)=>{
+    let annotations = reader.getMethodAnnotations(methodName);
+    if (!annotations) return {};
+    let res = {};
+    annotations.forEach((it)=>{
+        res[it.key] = it.value;
+    });
+    return res;
+};
+
 const setUpControllers = function(){
-    fs.readDirSync(appDir+'/application/mvc/controllers').forEach(function(itm){
+    fs.readDirSync(appDir+'/application/mvc/controllers').forEach(function(itm) {
         let fileNameWithoutExt = itm.name.split('.')[0];
-        let Ctrl = require(appDir+'/application/mvc/controllers/'+fileNameWithoutExt).controller;
+        let Ctrl = require(appDir + '/application/mvc/controllers/' + fileNameWithoutExt).controller;
         if (!Ctrl) return;
         let ctrl = new Ctrl();
-        Object.keys(ctrl).forEach(function(key){
-            let controllerName = fileNameWithoutExt.replace('Controller','');
-            let methodObj = ctrl[key];
-            if (key=='index') key = '';
-            if (controllerName=='main') controllerName = '';
-            else controllerName = '/' + controllerName;
-            if (methodObj.type=='multipart') {
-                processMultiPartRequest(methodObj,controllerName,key);
-            } else {
-                processCommonRequest(methodObj,controllerName,key);
-            }
-        })
+
+        annotation(itm.fullName, function(AnnotationReader) {
+            //console.log(AnnotationReader.getClassAnnotations());
+            //console.log(AnnotationReader.getMethodAnnotations('test'));
+            //console.log(AnnotationReader.getPropertyAnnotations('test'));
+            Object.getOwnPropertyNames(Ctrl.prototype).forEach((methodName) => {
+                if (methodName == 'constructor') return;
+
+                let annotations = getAnnotations(AnnotationReader, methodName);
+                let requestType = annotations.Request.type;
+                let responseType = annotations.Response && annotations.Response.type;
+
+                let controllerName = fileNameWithoutExt.replace('Controller', '');
+                if (controllerName == 'main') controllerName = '';
+                else controllerName = '/' + controllerName;
+
+                let opts = {ctrl, requestType, responseType, controllerName, methodName};
+
+                if (requestType == 'multipart') {
+                    processMultiPartRequest(opts);
+                } else {
+                    processCommonRequest(opts);
+                }
+            });
+        });
     });
 };
 

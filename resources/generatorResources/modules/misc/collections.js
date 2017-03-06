@@ -1,6 +1,6 @@
 
-var isObjectMatchTo = function(obj,matcher){
-    var isCandidate = true;
+let isObjectMatchTo = function(obj,matcher){
+    let isCandidate = true;
     Object.keys(matcher).some(function(conditionKey){
         if (obj[conditionKey]!=matcher[conditionKey]) {
             isCandidate = false;
@@ -10,8 +10,8 @@ var isObjectMatchTo = function(obj,matcher){
     return isCandidate;
 };
 
-exports.List = function () {
-    var self = this;
+exports.List = function List() {
+    let self = this;
     this.rs = [];
     this.add = function (r) {
         self.rs.push(r);
@@ -45,33 +45,41 @@ exports.List = function () {
         return self;
     };
     this.forEach = function(callback){
-        for (var i = 0,l=this.rs.length;i<l;i++){
+        for (let i = 0,l=this.rs.length;i<l;i++){
             callback(self.rs[i],i);
         }
     };
     this.forEachReversed = function(callback){
-        for (var i = this.rs.length-1;i>=0;i--){
+        for (let i = this.rs.length-1;i>=0;i--){
             callback(self.rs[i],i);
         }
     };
     this.some = function(callback){
-        for (var i = 0,l=this.rs.length;i<l;i++){
-            var res = callback(self.rs[i],i);
+        for (let i = 0,l=this.rs.length;i<l;i++){
+            let res = callback(self.rs[i],i);
             if (res) return true;
         }
         return false;
     };
+    this.filter = function(callback){
+        let list = new List();
+        for (let i = 0,l=this.rs.length;i<l;i++){
+            let res = callback(self.rs[i]);
+            if (res) list.add(self.rs[i])
+        }
+        return list;
+    };
     this.someReversed = function(callback){
-        for (var i = this.rs.length-1;i>=0;i--){
-            var res = callback(self.rs[i],i);
+        for (let i = this.rs.length-1;i>=0;i--){
+            let res = callback(self.rs[i],i);
             if (res) break;
         }
     };
     this.indexOf = function(obj){
-        var i = 0;
-        var success = false;
+        let i = 0;
+        let success = false;
         self.rs.some(function(item){
-            var isMatch = isObjectMatchTo(item,obj);
+            let isMatch = isObjectMatchTo(item,obj);
             if (isMatch) {
                 success = true;
                 return true;
@@ -85,16 +93,19 @@ exports.List = function () {
     };
     this.remove = function (obj){
         if (!obj) return;
-        var index = self.indexOf(obj);
-        if (index>-1) self.rs.splice(index,1);
+        let index = self.indexOf(obj);
+        //<code>{{#if opts.debug}}
+        if (index==-1) throw `can not remove object ${obj} from collections.list`;
+        // {{/if}}
+        self.rs.splice(index,1);
     };
     this.find = function (obj){
         return self.rs[self.indexOf(obj)];
     };
     this.findAll = function (obj){
-        var res = [];
+        let res = [];
         self.rs.forEach(function(item){
-            var isMatch = isObjectMatchTo(item,obj);
+            let isMatch = isObjectMatchTo(item,obj);
             if (isMatch) res.push(item);
         });
         return res;
@@ -103,7 +114,7 @@ exports.List = function () {
         return self.rs.pop();
     };
     this.fromJSON = function(json,ObjTypeClass){
-        var self = this;
+        let self = this;
         try{
             json.forEach(function(itm){
                 self.add(new ObjTypeClass(itm));
@@ -113,14 +124,14 @@ exports.List = function () {
         }
     };
     this.toJSON = function(){
-        var newArr = [];
-        var sanitize = function(obj){
+        let newArr = [];
+        let sanitize = function(obj){
             if (obj && obj.$$hashKey) {
                 delete obj.$$hashKey;
             }
             //if (!(Object.keys(obj).length && obj.length)) return;
             if (obj.split) return;
-            for (var i in obj) {
+            for (let i in obj) {
                 if (!obj[i]) continue;
                 if (!(obj.hasOwnProperty(i))) continue;
                 sanitize(obj[i]);
@@ -135,7 +146,7 @@ exports.List = function () {
 };
 
 exports.Set = function(){
-    var self = this;
+    let self = this;
     this.rs = {};
     this.add = function(itm){
         if (!this.has(itm.id)) self.rs[itm.id]=itm;
@@ -152,7 +163,7 @@ exports.Set = function(){
         });
     };
     this.asArray = function(){
-        var res = [];
+        let res = [];
         Object.keys(self.rs).forEach(function(key){
             res.push(self.rs[key]);
         });

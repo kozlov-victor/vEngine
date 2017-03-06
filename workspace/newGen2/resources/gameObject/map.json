@@ -18,31 +18,22 @@
         },
         "type": "gameObject",
         "spriteSheet": {
-            "id": "8560_4115_0",
+            "id": "3925_6976_10",
             "type": "spriteSheet"
         },
-        "commonBehaviour": [
-            {
-                "id":"1",
-                "type": "commonBehaviour"
-            },
-            {
-                "id":"2",
-                "type": "commonBehaviour"
-            }
-        ],
+        "commonBehaviour": [],
         "currFrameIndex": 0,
         "frameAnimationIds": [],
         "tileRepeat": false,
         "groupName": "",
         "fixedToCamera": false,
-        "rigid": true,
+        "rigid": false,
         "angle": 0,
         "angleVel": 0,
         "alpha": 1,
         "width": 11,
         "height": 24,
-        "name": "bomb",
+        "name": "plane",
         "id": "4073_6140_1"
     }
 ]

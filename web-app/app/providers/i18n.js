@@ -7,7 +7,12 @@ _i18n.bundle = {
     'en': {
         ok: 'ok',
         confirm: 'confirm',
-        confirmQuestion:'delete this item?',
+        confirmQuestion:(item)=>{
+            return `Delete ${item.type} with name "${item.name}"?`
+        },
+        canNotDelete: (item)=>{
+            return `Can not delete ${item.type} with name "${item.name}", it's used by other objects`
+        },
         cancel:'cancel',
         assets:'assets',
         addSpriteSheet:'add sprite sheet',

@@ -1,13 +1,11 @@
 
-const abstractDialog = require('providers/abstractDialog');
-const frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
-const commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
+let abstractDialog = require('providers/abstractDialog');
+let frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
+let commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
 
 const editData = require('providers/editData');
 const restResource = require('providers/rest/resource');
-const GameObject = _require('gameObject');
 const FrameAnimation = _require('frameAnimation');
-const CommonBehaviour = _require('commonBehaviour');
 
 module.exports.component = Vue.component('app-game-object-dialog', {
     mixins:[abstractDialog],
@@ -19,7 +17,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
             editData: editData,
             i18n: require('providers/i18n').getAll(),
             utils: require('providers/utils'),
-            selectedBehaviourName: ''
+            selectedBehaviourId: ''
         }
     },
     created: function(){
@@ -31,14 +29,12 @@ module.exports.component = Vue.component('app-game-object-dialog', {
     methods: {
         open: function(){
             this.opened = true;
-            console.log(this.editData.currGameObjectInEdit.toJSON());
         },
         createOrEditGameObject: function(g){
             let self = this;
-            let model = g.toJSON();
             restResource.
-                save(model).
-                then((resp)=>{
+                save(g).
+                then(function(resp){
                     if (resp.created) {
                         g.id = resp.id;
                         editData.gameObjectList.add(g);
@@ -69,27 +65,28 @@ module.exports.component = Vue.component('app-game-object-dialog', {
         deleteFrameAnimation: function(fa){
             let self = this;
             window.confirmEx(
-                this.i18n.confirmQuestion,
+                self.i18n.confirmQuestion,
                 function(){
-                    self.editData.currGameObjectInEdit._frameAnimations.remove(fa);
-                    self.editData.currGameObjectInEdit.frameAnimationIds.remove(fa);
-                    let origGameObj = self.editData.gameObjectList.find({id:self.editData.currGameObjectInEdit.id});
-                    origGameObj._frameAnimations.remove(fa);
-                    origGameObj.frameAnimationIds.remove(fa);
 
-                    resource.deleteResource(fa);
-                    resource.createOrEditResource(
-                        origGameObj.toJSON(),
-                        GameObject,
-                        self.editData.gameObjectList
-                    );
                 }
             )
         },
 
-        createCommonBehaviour: function(name){
+        onSpriteSheetSelected: function(sprId){
+            let gameObject = editData.currGameObjectInEdit;
+            let spriteSheet = editData.spriteSheetList.find({id: sprId});
+            if (!spriteSheet) return;
+            spriteSheet = spriteSheet.clone();
+            //if (!gameObject.name) gameObject.name = spriteSheet.name;
+            //spriteSheet.calcFrameSize();
+            gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
+            gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
+            gameObject.spriteSheet = spriteSheet;
+        },
+
+        createCommonBehaviour: function(selectedBehaviourName){
             this.editData.currCommonBehaviourInEdit =
-                this.editData.commonBehaviourList.find({name:name}).clone();
+                this.editData.commonBehaviourProto.find({name:selectedBehaviourName}).clone();
             commonBehaviourDialog.instance.open();
         },
         editCommonBehaviour: function(cb){
@@ -100,26 +97,20 @@ module.exports.component = Vue.component('app-game-object-dialog', {
         deleteCommonBehaviour: function (cb) {
             let self = this;
             window.confirmEx(
-                this.i18n.confirmQuestion,
+                this.i18n.confirmQuestion(cb),
                 function () {
-
-                    let currentCbInGoIndex = -1;
-                    self.editData.currGameObjectInEdit.commonBehaviour.map(function(item,i){
-                        if (item.id==self.editData.currCommonBehaviourInEdit.id) currentCbInGoIndex = i;
-                    });
-
-                    self.editData.currGameObjectInEdit.commonBehaviour.remove(
-                        self.editData.currGameObjectInEdit.commonBehaviour[currentCbInGoIndex]
-                    );
-                    resource.createOrEditResource(
-                        self.editData.currGameObjectInEdit.toJSON(),
-                        GameObject,
-                        self.editData.gameObjectList,
-                        function () {
-                            self.editData.currGameObjectInEdit =
-                                self.editData.gameObjectList.find({id: self.editData.currGameObjectInEdit.id}).clone();
-                        }
-                    );
+                    Promise.
+                    resolve().
+                    then(()=>{
+                        self.editData.commonBehaviourList.remove({id:cb.id});
+                        return restResource.remove(cb);
+                    }).
+                    then(()=>{
+                        self.editData.currGameObjectInEdit.commonBehaviour.remove({id:cb.id});
+                        self.editData.currGameObjectInEdit.updateCloner();
+                        return restResource.save(self.editData.currGameObjectInEdit.toJSON_Patched());
+                    }).
+                    catch(window.catchPromise)
                 }
             )
         }

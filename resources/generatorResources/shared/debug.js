@@ -20,7 +20,7 @@
 
     var _prepareMessage = function(e,lineNum){
         var msg;
-        if (typeof msg == 'string') {
+        if (typeof e == 'string') {
             msg = e;
         }
         else msg = e.message;
@@ -110,5 +110,9 @@
             window.require('renderer') && (window.require('renderer').stop());
         }
     },true);
+
+    window.log = function(){
+        console.log.apply(console,arguments)
+    }
 
 })();

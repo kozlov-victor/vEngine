@@ -1,16 +1,15 @@
+"use strict";
 
-var abstractDialog = require('providers/abstractDialog');
-
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var CommonBehaviour = _require('commonBehaviour');
-var GameObject = _require('gameObject');
+const abstractDialog = require('providers/abstractDialog');
+const editData = require('providers/editData');
+const restResource = require('providers/rest/resource');
+const CommonBehaviour = _require('commonBehaviour');
 
 module.exports.component = Vue.component('app-common-behaviour-dialog', {
     mixins:[abstractDialog],
     props: [],
     template: require('./commonBehaviourDialog.html'),
-    data: function () {
+    data: ()=> {
         return {
             form:require('providers/validator').new(),
             editData: editData,
@@ -26,34 +25,27 @@ module.exports.component = Vue.component('app-common-behaviour-dialog', {
 
     },
     methods: {
-        open: function(){
+        open:function(){
             this.opened = true;
         },
-        createOrEditCommonBehaviour: function(){
-            var self = this;
-
-            if (!self.editData.currCommonBehaviourInEdit._edited) {
-                self.editData.currGameObjectInEdit.commonBehaviour.push(self.editData.currCommonBehaviourInEdit);
-                self.editData.currGameObjectInEdit._commonBehaviour.add(self.editData.currCommonBehaviourInEdit);
-            } else {
-                var currentCbInGoIndex = -1;
-                self.editData.currGameObjectInEdit.commonBehaviour.map(function(item,i){
-                    if (item.name==self.editData.currCommonBehaviourInEdit.name) currentCbInGoIndex = i;
-                });
-                console.log('edited',currentCbInGoIndex);
-                self.editData.currGameObjectInEdit.commonBehaviour[currentCbInGoIndex] =
-                    self.editData.currCommonBehaviourInEdit.toJSON();
-            }
-            resource.createOrEditResource(
-                self.editData.currGameObjectInEdit.toJSON(),
-                GameObject,
-                self.editData.gameObjectList,
-                function(){
-                    self.editData.currGameObjectInEdit =
-                        self.editData.gameObjectList.find({id:self.editData.currGameObjectInEdit.id}).clone();
-                    self.close();
+        createOrEditCommonBehaviour:function(){
+            let cb = editData.currCommonBehaviourInEdit;
+            let self = this;
+            restResource.
+            save(cb).
+            then((resp)=>{
+                if (resp.created) {
+                    cb.id = resp.id;
+                    editData.commonBehaviourList.add(cb);
+                    editData.currGameObjectInEdit.commonBehaviour.add(cb);
+                    return restResource.save(editData.currGameObjectInEdit)
                 }
-            );
+            }).
+            then(function(){
+                editData.currGameObjectInEdit.updateCloner();
+                self.close();
+            }).
+            catch(window.catchPromise)
         }
     }
 });

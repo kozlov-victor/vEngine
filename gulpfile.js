@@ -30,7 +30,10 @@ gulp.task('js-bundle', ()=> {
             paths: ['./web-app/app/']
         })
         .transform(stringify(['.html']))
-        .transform("babelify", {presets: ["es2015"]})
+        .transform("babelify", {
+            presets: ["es2015"],
+            plugins: ["transform-runtime"],
+        })
         .bundle()
         .pipe(source('bundle.js'))
         .pipe(gulp.dest('resources/public/js/build/'))

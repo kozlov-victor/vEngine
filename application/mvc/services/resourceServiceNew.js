@@ -32,7 +32,6 @@ module.exports.getCommonBehaviourAttrs = function(projectName){
         fn(module,exports);
         attr.description = exports.description;
         attr.parameters = exports.parameters;
-        attr.id = collectionHelper.uuid();
         attrs.push(attr);
     });
     return attrs;

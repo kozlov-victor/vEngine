@@ -1,9 +1,9 @@
 
-var utils = require('providers/utils');
+const utils = require('providers/utils');
 
-var gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
-var GameObject = _require('gameObject');
-var resource = require('providers/resource');
+const gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
+const GameObject = _require('gameObject');
+const restResource = require('providers/rest/resource');
 
 module.exports = Vue.component('app-game-objects', {
     props: [],
@@ -23,18 +23,19 @@ module.exports = Vue.component('app-game-objects', {
             gameObjectDialog.instance.open();
         },
         editGameObjectScript: function(gameObject){
-            utils.openEditor(gameObject.type + '/' +gameObject.name + '.js');
+            utils.openEditor(`${gameObject.type}/${gameObject.name}.js`);
         },
         editGameObject: function(go){
-            console.log(go.toJSON());
-            this.editData.currGameObjectInEdit =  new GameObject(go.toJSON());
+            this.editData.currGameObjectInEdit =  go.clone();
             gameObjectDialog.instance.open();
         },
         deleteGameObject: function(g){
+            var self = this;
             window.confirmEx(
-                this.i18n.confirmQuestion,
+                this.i18n.confirmQuestion(g),
                 function(){
-                    resource.deleteResource(g);
+                    self.editData.gameObjectList.remove({id:g.id});
+                    restResource.remove(g);
                 }
             )
         }

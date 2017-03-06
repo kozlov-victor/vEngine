@@ -8,5 +8,25 @@
         "resourcePath": "resources/spriteSheet/bomb_1.png",
         "name": "bomb_1",
         "id": "8560_4115_0"
+    },
+    {
+        "type": "spriteSheet",
+        "width": 28,
+        "height": 32,
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "resourcePath": "resources/spriteSheet/plane_1.png",
+        "name": "plane_1",
+        "id": "3925_6976_10"
+    },
+    {
+        "type": "spriteSheet",
+        "width": 11,
+        "height": 24,
+        "numOfFramesH": 1,
+        "numOfFramesV": 1,
+        "resourcePath": "resources/spriteSheet/bomb_1.png",
+        "name": "bomb_2",
+        "id": "4197_2581_11"
     }
 ]

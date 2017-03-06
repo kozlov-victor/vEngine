@@ -9,7 +9,9 @@ class Utils {
         return  {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
-            backgroundImage:       gameObj.spriteSheet && `url(${editData.projectName}/${gameObj.spriteSheet.resourcePath})`,
+            backgroundImage:       gameObj.spriteSheet &&
+                                        gameObj.spriteSheet.resourcePath &&
+                                        `url(${editData.projectName}/${gameObj.spriteSheet.resourcePath})`,
             backgroundPositionY:  -gameObj._sprPosY+'px',
             backgroundPositionX:  -gameObj._sprPosX+'px',
             backgroundRepeat:     'no-repeat',
@@ -133,15 +135,6 @@ class Utils {
 
     size(obj) {
         return Object.keys(obj).length;
-    }
-
-    recalcGameObjectSize(gameObject){
-        let spriteSheet = editData.spriteSheetList.find({id: gameObject.spriteSheet.id});
-        if (!spriteSheet) return;
-        spriteSheet.calcFrameSize();
-        gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
-        gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
-        gameObject.spriteSheet = spriteSheet; // todo need?
     }
 
     openEditor(resourceUrl) {

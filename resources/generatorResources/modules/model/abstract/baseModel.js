@@ -1,10 +1,10 @@
-var EventEmitter = require('eventEmitter');
-var Class = require('class');
-var bundle = require('bundle');
-var collections = require('collections');
-var _req = require;
+const EventEmitter = require('eventEmitter');
+const Class = require('class');
+const bundle = require('bundle');
+const collections = require('collections');
+const _req = require;
 
-var isPropNotFit = function(key,val){
+const isPropNotFit = (key,val)=>{
     if (!key) return true;
     if (key.indexOf('_')==0) return true;
     if (val instanceof collections.List) return false;
@@ -15,32 +15,40 @@ var isPropNotFit = function(key,val){
     if (!val) return true;
 };
 
-function deepCopy(obj) {
+const deepCopy = (obj)=> {
     if (Object.prototype.toString.call(obj) === '[object Array]') {
-        var out = [], i = 0, len = obj.length;
+        let out = [], i = 0, len = obj.length;
         for ( ; i < len; i++ ) {
             out[i] = deepCopy(obj[i]);
         }
         return out;
     }
     if (typeof obj === 'object') {
-        var out = {}, i;
+        let out = {}, i;
         for ( i in obj ) {
             out[i] = deepCopy(obj[i]);
         }
         return out;
     }
     return obj;
-}
+};
 
-var BaseModel = Class.extend({
+const deepEqual = (x, y)=> {
+    return (x && y && typeof x === 'object' && typeof y === 'object') ?
+        (Object.keys(x).length === Object.keys(y).length) &&
+        Object.keys(x).reduce(function (isEqual, key) {
+            return isEqual && deepEqual(x[key], y[key]);
+        }, true) : (x === y);
+};
+
+const BaseModel = Class.extend({
     id:null,
     protoId:null,
     name:'',
     _emitter:null,
     toJSON(){
-        var res = {};
-        for (var key in this) {
+        let res = {};
+        for (let key in this) {
 
             if (isPropNotFit(key,this[key])) {
                 continue;
@@ -51,53 +59,49 @@ var BaseModel = Class.extend({
                    type: this[key].type
                 }
             } else if (this[key] && this[key].rs) { // is collections.List
-                var col = this[key];
-                var arr = [];
+                let col = this[key];
+                let arr = [];
                 col.forEach(function(el){
                     arr.push({type:el.type,id:el.id});
                 });
-                this[key] = arr;
+                res[key] = arr;
             }
             else res[key]=this[key];
         }
         return deepCopy(res);
     },
-    toJSON_Array(){
-        var res = [];
-        for (var key in this) {
-            if (isPropNotFit(key,this[key])) {
-                continue;
-            }
-            res.push({key:key,value:this[key]});
-        }
-        return res;
-    },
     fromJSON(jsonObj){
-        var self = this;
+        let self = this;
+        //<code>{{#if opts.debug}}
+        this.__jsonObj = jsonObj;
+        // {{/if}}
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
                 if (jsonObj[key].type) {
                     if (jsonObj[key].id) {
                         self[key] = bundle[key+'List'].find({id:jsonObj[key].id});
                     } else {
-                        var clazz = _req(key);
+                        let clazz = _req(self.type);
                         self[key] = new clazz();
                     }
                     return;
-                } else if (jsonObj[key].splice && jsonObj[key].length && jsonObj[key][0].type) {
-                    var arr = [];
-                    jsonObj[key].forEach(function(el){
-                        arr.push(el);
-                    });
-                    var col = new collections.List();
-                    arr.forEach(function(el){
-                        col.add(bundle[el.type+'List'].find({id:el.id}));
-                    });
-                    self[key] = col;
-                    //<code>{{#if opts.inEditor}}
-                    Vue.set(self,key,col);
-                    // {{/if}}
+                } else if (jsonObj[key].splice) {
+                    self[key] = new collections.List();
+                    if (jsonObj[key].length && jsonObj[key][0].type && jsonObj[key][0].id) {
+                        let arr = [];
+                        jsonObj[key].forEach(function(el){
+                            arr.push(el);
+                        });
+                        arr.forEach(function(el){
+                            let elFromList = bundle[el.type+'List'].find({id:el.id});
+                            //<code>{{#if opts.debug}}
+                            if (!elFromList) throw `can not found ${el.type} with ${el.id}`;
+                            // {{/if}}
+                            self[key].add(elFromList);
+                        });
+                    }
                     return;
+
                 }
                 self[key] = jsonObj[key];
                 if (typeof self[key]==='boolean') return;
@@ -108,14 +112,33 @@ var BaseModel = Class.extend({
         });
     },
     clone: function(){
-        var newObj = new this.constructor(this.toJSON());
+        let newObj = new this.constructor(this.toJSON());
+        //<code>{{#if opts.debug}}
         newObj.__cloner__ = this;
+        // {{/if}}
         return newObj;
     },
+    //<code>{{#if opts.debug}}
     updateCloner: function(){
-        var cloner = this.__cloner__;
-        cloner.fromJSON(this.toJSON());
+        if (!this.__cloner__) return;
+        this.__cloner__.fromJSON(this.toJSON());
+        this.__cloner__.updateCloner();
     },
+    toJSON_Patched: function(){
+        let old = this.__jsonObj;
+        let now = this.toJSON();
+        let result = {};
+        for (let key in now) {
+            if (!deepEqual(old[key],now[key])) {
+                result[key] = now[key];
+            }
+        }
+        result.id = old.id;
+        result.type = old.type;
+        result.name = now.name;
+        return result;
+    },
+    // {{/if}}
     on: function(eventName,callBack){
         this._emitter.on(eventName,callBack);
         return this;

@@ -6,19 +6,21 @@ const utils = require.main.require('./application/utils/utils');
 const resourcesService = require.main.require('./application/mvc/services/resourceServiceNew');
 const generatorService = require.main.require('./application/mvc/services/generatorService');
 
-module.exports.controller = function(){
+class MainController{
 
-    this.mainNew = {
-        type:'get',
-        render: 'view',
-        code: function(){
-            return {
-                defaultCodeScript:resourcesService.DEFAULT_CODE_SCRIPT
-            }
+    /**
+     * @Method("mainNew");
+     * @Request({"type":"get"});
+     * @Response({"type":"view"})
+     */
+    mainNew(){
+        return {
+            defaultCodeScript:resourcesService.DEFAULT_CODE_SCRIPT
         }
-    };
+    }
+}
 
-};
+module.exports.controller = MainController;
 
 //module.exports.init = function(app) {
 //
