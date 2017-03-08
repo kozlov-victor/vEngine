@@ -3,7 +3,7 @@
 let utils = require.main.require('./application/utils/utils');
 let resourceService = require.main.require('./application/mvc/services/resourceServiceNew');
 let generatorService = require.main.require('./application/mvc/services/generatorService');
-let collectionHelper = require.main.require('./application/mvc/services/collectionHelper');
+let dataSourceHelper = require.main.require('./application/mvc/services/dataSourceHelper');
 
 class ResourceController {
     /**
@@ -26,7 +26,15 @@ class ResourceController {
      * @Request({"type":"post"});
      */
     save(params){
-        return collectionHelper.save(params);
+        return dataSourceHelper.save(params);
+    }
+
+    /**
+     * @Method("saveGameProps");
+     * @Request({"type":"post"});
+     */
+    saveGameProps(params){
+        return dataSourceHelper.saveGameProps(params);
     }
 
     /**
@@ -34,7 +42,7 @@ class ResourceController {
      * @Request({"type":"post"});
      */
     remove(params){
-        return collectionHelper.remove(params);
+        return dataSourceHelper.remove(params);
     }
 
     /**

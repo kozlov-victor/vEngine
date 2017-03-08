@@ -144,9 +144,9 @@
                         <td>
                             <select
                                     required
-                                    v-control="{form:form,model:editData.currParticleSystemInEdit,prop:'gameObjectId'}"
-                                    v-on:change="onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectId)"
-                                    v-model="editData.currParticleSystemInEdit.gameObjectId"
+                                    v-control="{form:form,model:editData.currParticleSystemInEdit.gameObject,prop:'id'}"
+                                    v-on:change="onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)"
+                                    v-model="editData.currParticleSystemInEdit.gameObject.id"
                                     >
                                 <option
                                         :value="item.id"
@@ -156,10 +156,10 @@
                         <td>
                             <div :style="
                                 utils.merge(
-                                    utils.getGameObjectCss(editData.currParticleSystemInEdit._gameObject),
+                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),
                                     {
-                                        zoom:editData.currParticleSystemInEdit._gameObject.height>30?
-                                        30/editData.currParticleSystemInEdit._gameObject.height:
+                                        zoom:editData.currParticleSystemInEdit.gameObject.height>30?
+                                        30/editData.currParticleSystemInEdit.gameObject.height:
                                         1
                                     }
                                )">

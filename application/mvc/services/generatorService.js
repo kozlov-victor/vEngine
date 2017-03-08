@@ -17,9 +17,13 @@ class Source {
         this.res.push(s);
     };
     processTemplate(path,params){
-        //return ejs.render(fs.readFileSync(path).split('//<code>').join(''),params);
         let code = fs.readFileSync(path).split('//<code>').join('');
-        return hbs.compile(code)(params);
+        try {
+            return hbs.compile(code)(params);
+        } catch (e) {
+            console.error(`can not process code ${code}`);
+            throw e
+        }
     }
     extractModuleName(path){
         return path.replace('.js','').split('/').pop();
@@ -28,14 +32,14 @@ class Source {
         let mdlName = this.extractModuleName(path);
         return this.processTemplate('resources/generatorResources/misc/moduleTemplate.js',{
             name: mdlName,
-            code: this.addLeadTab(code),
+            code: this.addLeadSpace(code),
             opts:params||{}
         });
     }
-    addLeadTab(code){
+    addLeadSpace(code){
         return (
             code.split('\n').map(function(item){
-                return '\t'+item;
+                return ' '+item;
             }).join('\n')
         );
     }
@@ -77,7 +81,7 @@ class Source {
 
 
 
-const createResourcesParams = (opts)=>{
+const createResourcesParams = opts=>{
     let templateObj = {};
     templateObj.commonResources = {};
     templateObj.specialResources = {};
@@ -102,7 +106,7 @@ const createResourcesParams = (opts)=>{
     return templateObj;
 };
 
-const createCommonBehaviourParams = (opts)=>{
+const createCommonBehaviourParams = opts=>{
     let gameObjects = JSON.parse(fs.readFileSync('workspace/'+opts.projectName+'/resources/gameObject/map.json'));
     let fileNames = {};
     gameObjects.forEach(function(go){
@@ -120,7 +124,7 @@ const createCommonBehaviourParams = (opts)=>{
     return res;
 };
 
-const minify = (code)=> {
+const minify = code=> {
     return  (
         UglifyJS.minify(code, {
             fromString: true,
@@ -144,13 +148,10 @@ const minify = (code)=> {
             cascade: true,
             drop_console: true
             }
-        }).code);
+    }).code);
 };
 
 const processScriptPlace = (indexHtml,scriptPlaceName,code,outCodeFileName,opts)=> {
-    if (opts.minify) {
-        code = minify(code);
-    }
 
     if (opts.embedScript) {
         indexHtml = indexHtml.replace('{{'+scriptPlaceName+'}}','<script>\n'+code+'\n</script>');
@@ -207,7 +208,7 @@ const hint = (sourceMain)=>{
     //);
 };
 
-const prepareGeneratorParams = (opts)=>{
+const prepareGeneratorParams = opts =>{
     let resourcesOpts = opts.projectName?createResourcesParams(opts):{};
     let commonBehaviourParams = opts.projectName?createCommonBehaviourParams(opts):{};
     let shaders = {};
@@ -231,7 +232,7 @@ const prepareGeneratorParams = (opts)=>{
     };
 };
 
-module.exports.generateEngine = (opts)=>{
+module.exports.generateEngine = opts =>{
     let generatorParams = prepareGeneratorParams(opts);
 
     let sourceMain = new Source();
@@ -248,7 +249,11 @@ module.exports.generateEngine = (opts)=>{
         );
         sourceMain.add("require('index');");
     }
-    return sourceMain.get();
+    let code = sourceMain.get();
+    if (opts.minify) {
+        code = minify(code);
+    }
+    return code;
 };
 
 module.exports.generate = (opts,callback)=>{

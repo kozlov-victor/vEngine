@@ -13,6 +13,7 @@ _i18n.bundle = {
         canNotDelete: (item)=>{
             return `Can not delete ${item.type} with name "${item.name}", it's used by other objects`
         },
+        noGameObject: 'create at least one game object firstly',
         cancel:'cancel',
         assets:'assets',
         addSpriteSheet:'add sprite sheet',

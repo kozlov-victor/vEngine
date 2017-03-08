@@ -1,7 +1,7 @@
 
-var BaseModel = require('baseModel');
+const BaseModel = require('baseModel');
 
-var Resource = BaseModel.extend({
+const Resource = BaseModel.extend({
     resourcePath:''
 });
 

@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <td>
-                <audio controls="controls" :src="soundUrl"></audio>
+                <audio v-if="soundUrl" controls="controls" :src="soundUrl"></audio>
             </td>
         </tr>
     </table>

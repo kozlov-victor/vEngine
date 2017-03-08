@@ -1,7 +1,7 @@
 
-var particleSystemDialog = require('../../dialogs/particleSystemDialog/particleSystemDialog');
-var ParticleSystem = _require('particleSystem');
-var resource = require('providers/resource');
+const particleSystemDialog = require('../../dialogs/particleSystemDialog/particleSystemDialog');
+const ParticleSystem = _require('particleSystem');
+const utils = require('providers/utils');
 
 module.exports = Vue.component('app-particle-systems', {
     props: [],
@@ -20,12 +20,14 @@ module.exports = Vue.component('app-particle-systems', {
 
             this.editData.currParticleSystemInEdit =
                 new ParticleSystem(new ParticleSystem().toJSON());
-            var ps = this.editData.currParticleSystemInEdit;
-            var firstInList = this.editData.gameObjectList.get(0);
-            if (!firstInList) return;
+            let go = this.editData.gameObjectList.get(0);
 
-            Vue.set(ps,'gameObjectId',firstInList.id);
-            Vue.set(ps,'_gameObject',firstInList);
+            if (!go) {
+                alertEx(this.i18n.noGameObject);
+                return;
+            }
+
+            this.editData.currParticleSystemInEdit.gameObject = go.clone();
 
             particleSystemDialog.instance.open();
         },
@@ -33,13 +35,8 @@ module.exports = Vue.component('app-particle-systems', {
             this.editData.currParticleSystemInEdit = ps.clone();
             particleSystemDialog.instance.open();
         },
-        deleteParticleSystem: function(ps){
-            window.confirmEx(
-                this.i18n.confirmQuestion,
-                function(){
-                    resource.deleteResource(ps);
-                }
-            )
+        deleteParticleSystem: function(model){
+            utils.deleteModel(model);
         }
     }
 });

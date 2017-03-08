@@ -1,11 +1,11 @@
 
-var renderer = require('renderer');
-var BaseGameObject = require('baseGameObject');
-var SpriteSheet = require('spriteSheet');
-var bundle = require('bundle');
-var resourceCache = require('resourceCache');
+const renderer = require('renderer');
+const BaseGameObject = require('baseGameObject');
+const SpriteSheet = require('spriteSheet');
+const bundle = require('bundle');
+const resourceCache = require('resourceCache');
 
-var TextField = BaseGameObject.extend({
+const TextField = BaseGameObject.extend({
     type:'userInterface',
     subType:'textField',
     _chars:null,
@@ -17,12 +17,12 @@ var TextField = BaseGameObject.extend({
         text+='';
         this._chars = [];
         this.text = text;
-        var rows = [{width:0}];
-        var currRowIndex = 0;
+        let rows = [{width:0}];
+        let currRowIndex = 0;
         this.height = this._font.fontContext.symbols[' '].height;
-        for (var i=0,max=text.length;i<max;i++) {
+        for (let i=0,max=text.length;i<max;i++) {
             this._chars.push(text[i]);
-            var currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
+            let currSymbolInFont = this._font.fontContext.symbols[text[i]] || this._font.fontContext.symbols[' '];
             if (text[i]=='\n') {
                 currRowIndex++;
                 this.height+=currSymbolInFont.height;
@@ -43,10 +43,10 @@ var TextField = BaseGameObject.extend({
         return this._super();
     },
     construct: function(){
-        var self = this;
+        let self = this;
         self._super();
         self.rigid = false;
-        var font =
+        let font =
             bundle.fontList.find({id:this.fontId}) ||
             bundle.fontList.find({name:'default'}) ||
             bundle.fontList.get(0);
@@ -56,14 +56,14 @@ var TextField = BaseGameObject.extend({
         this._render();
     },
     _render: function(){
-        var self = this;
-        var ctx = renderer.getContext();
+        let self = this;
+        let ctx = renderer.getContext();
         this._super();
-        var posX = 0;
-        var posY = 0;
-        var img = resourceCache.get(self._spriteSheet.resourcePath);
+        let posX = 0;
+        let posY = 0;
+        let img = resourceCache.get(self._spriteSheet.resourcePath);
         this._chars.forEach(function(ch){
-            var charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
+            let charInCtx = self._font.fontContext.symbols[ch]||self._font.fontContext.symbols['?'];
             if (ch=='\n') {
                 posX = 0;
                 posY+= charInCtx.height;

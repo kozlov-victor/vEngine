@@ -1,7 +1,7 @@
 
-var AbstractPrimitive = require('abstractPrimitive');
+const AbstractPrimitive = require('abstractPrimitive');
 
-var Plane = AbstractPrimitive.extend({
+const Plane = AbstractPrimitive.extend({
     construct: function(){
         this.vertexArr = [
             0, 0,

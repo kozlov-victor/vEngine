@@ -1,10 +1,10 @@
 
-var TweenMovie = require('tweenMovie');
-var Tween = require('tween');
+const TweenMovie = require('tweenMovie');
+const Tween = require('tween');
 
-var TweenChain = function(){
-    var timeOffset = 0;
-    var tweenMovie = new TweenMovie();
+const TweenChain = function(){
+    let timeOffset = 0;
+    let tweenMovie = new TweenMovie();
 
 
     this.tween = function(obj,fromToVal,tweenTime,easeFnName){

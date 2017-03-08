@@ -1,13 +1,13 @@
-var Vec2 = require('vec2');
+const Vec2 = require('vec2');
 
 exports.isPointInRect = function(point,rect,angle) {
     if (angle) {
-        var vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+        let vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
         vec2.setAngle(vec2.getAngle() - angle);
         point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
 
     }
-    var res =  point.x>rect.x &&
+    let res =  point.x>rect.x &&
         point.x<(rect.x+rect.width) &&
         point.y>rect.y &&
         point.y<(rect.y+rect.height);
@@ -34,25 +34,25 @@ exports.degToRad = function(deg) {
 
 exports.random = function(min, max){
     if (min>max) {
-        var tmp = min;
+        let tmp = min;
         min = max;
         max = tmp;
     }
-    var res = Math.random() * (max - min) + min;
+    let res = Math.random() * (max - min) + min;
     if (res>max) res = max;
     else if (res<min) res = min;
     return res;
 };
 
 exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
-    var angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
+    let angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
     return {
         x:Math.cos(angle),
         y:Math.sin(angle)
     }
 };
 
-var ease = {};
+let ease = {};
 
 // simple linear tweening - no easing, no acceleration
 ease.linear = function (t, b, c, d) {
@@ -204,7 +204,7 @@ ease.easeInOutCirc = function (t, b, c, d) {
 };
 
 ease.easeInElastic = function (t, b, c, d) {
-    var s=1.70158;var p=0;var a=c;
+    let s=1.70158;let p=0;let a=c;
     if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
     if (a < Math.abs(c)) { a=c; s=p/4; }
     else s = p/(2*Math.PI) * Math.asin (c/a);
@@ -212,7 +212,7 @@ ease.easeInElastic = function (t, b, c, d) {
 };
 
 ease.easeOutElastic = function (t, b, c, d) {
-    var s=1.70158;var p=0;var a=c;
+    let s=1.70158;let p=0;let a=c;
     if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
     if (a < Math.abs(c)) { a=c; s=p/4; }
     else s = p/(2*Math.PI) * Math.asin (c/a);
@@ -220,7 +220,7 @@ ease.easeOutElastic = function (t, b, c, d) {
 };
 
 ease.easeInOutElastic = function (t, b, c, d) {
-    var s=1.70158;var p=0;var a=c;
+    let s=1.70158;let p=0;let a=c;
     if (t==0) return b;  if ((t/=d/2)==2) return b+c;  if (!p) p=d*(.3*1.5);
     if (a < Math.abs(c)) { a=c; s=p/4; }
     else s = p/(2*Math.PI) * Math.asin (c/a);
@@ -229,17 +229,17 @@ ease.easeInOutElastic = function (t, b, c, d) {
 };
 
 ease.easeInBack = function (t, b, c, d) {
-    var s = 1.70158;
+    let s = 1.70158;
     return c*(t/=d)*t*((s+1)*t - s) + b;
 };
 
 ease.easeOutBack = function (t, b, c, d) {
-    var s = 1.70158;
+    let s = 1.70158;
     return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
 };
 
 ease.easeInOutBack = function (t, b, c, d) {
-    var s = 1.70158;
+    let s = 1.70158;
     if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
     return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
 };

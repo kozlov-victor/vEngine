@@ -1,7 +1,7 @@
 
-var Resource = require('resource');
+const Resource = require('resource');
 
-var SpriteSheet = Resource.extend({
+const SpriteSheet = Resource.extend({
     type:'spriteSheet',
     width:0,
     height:0,

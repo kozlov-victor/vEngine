@@ -1,10 +1,10 @@
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
+const editData = require('providers/editData');
+const resource = require('providers/resource');
 
-var abstractDialog = require('providers/abstractDialog');
+const abstractDialog = require('providers/abstractDialog');
 
-var tid;
+let tid;
 
 module.exports.component = Vue.component('app-particle-system-preview-dialog', {
     mixins:[abstractDialog],
@@ -33,22 +33,22 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
             clearInterval(tid);
         },
         run: function(){
-            var prevTime = null;
+            let prevTime = null;
 
             if (!editData.currParticleSystemInEdit._particles)
                 Vue.set(editData.currParticleSystemInEdit,'_particles',[]);
 
-            var update = function(){
+            const update = function(){
 
-                var currTime = Date.now();
+                let currTime = Date.now();
                 if (!prevTime) prevTime = currTime;
-                var delta = currTime - prevTime;
+                let delta = currTime - prevTime;
                 prevTime = currTime;
                 editData.currParticleSystemInEdit._particles.forEach(function(p){
 
                     p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                    var deltaX = p.vel.x * delta / 1000;
-                    var deltaY = p.vel.y * delta / 1000;
+                    let deltaX = p.vel.x * delta / 1000;
+                    let deltaY = p.vel.y * delta / 1000;
                     p.pos.x = p.pos.x+deltaX;
                     p.pos.y = p.pos.y+deltaY;
 
@@ -63,7 +63,7 @@ module.exports.component = Vue.component('app-particle-system-preview-dialog', {
             },5);
         },
         emit: function(e){
-            var rect = e.target.getBoundingClientRect();
+            let rect = e.target.getBoundingClientRect();
             editData.currParticleSystemInEdit.emit(e.clientX - rect.left,e.clientY - rect.top);
         }
     }

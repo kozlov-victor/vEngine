@@ -1,22 +1,22 @@
 
-var Vec2 = function(_x,_y){
+const Vec2 = function(_x,_y){
 
-    var x = _x||0;
-    var y = _y||0;
-    var angle = 0;
-    var norm = 0;
+    let x = _x||0;
+    let y = _y||0;
+    let angle = 0;
+    let norm = 0;
 
-    var onXY_Changed = function(){
+    let onXY_Changed = function(){
         angle = x==0?0:Math.atan(y/x);
         norm = Math.sqrt(x*x+y*y);
     };
 
-    var onAngleChanged = function(){
+    let onAngleChanged = function(){
         y = Math.sin(angle)*norm;
         x = Math.cos(angle)*norm;
     };
 
-    var onNormChanged = function(){
+    let onNormChanged = function(){
         y = Math.sin(angle)*norm;
         x = Math.cos(angle)*norm;
     };

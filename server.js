@@ -1,4 +1,4 @@
-var app = require.main.require('./application/base/expressApp').app;
+const app = require.main.require('./application/base/expressApp').app;
 
 process.on('uncaughtException',function(e){
     console.log(e);
@@ -6,10 +6,10 @@ process.on('uncaughtException',function(e){
 
 const PORT = 9000;
 
-var server = app.listen(PORT, function () {
+const server = app.listen(PORT, function () {
 
-    var host = server.address().address;
-    var port = server.address().port;
+    let host = server.address().address;
+    let port = server.address().port;
     console.log("app listening at http://" + host + ':' + port);
 
 });

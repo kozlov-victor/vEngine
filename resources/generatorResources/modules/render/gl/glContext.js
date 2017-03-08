@@ -1,20 +1,20 @@
 
-var mat4 = require('mat4');
-var utils = require('utils');
-var ColorRectDrawer = require('colorRectDrawer');
-var SpriteRectDrawer = require('spriteRectDrawer');
-var PolyLineDrawer = require('polyLineDrawer');
-var ModelDrawer = require('modelDrawer');
-var Texture = require('texture');
-var MatrixStack = require('matrixStack');
-var FrameBuffer = require('frameBuffer');
-var bundle = require('bundle');
-var cache = require('resourceCache');
-var SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
-var Class = require('class');
+const mat4 = require('mat4');
+const utils = require('utils');
+const ColorRectDrawer = require('colorRectDrawer');
+const SpriteRectDrawer = require('spriteRectDrawer');
+const PolyLineDrawer = require('polyLineDrawer');
+const ModelDrawer = require('modelDrawer');
+const Texture = require('texture');
+const MatrixStack = require('matrixStack');
+const FrameBuffer = require('frameBuffer');
+const bundle = require('bundle');
+const cache = require('resourceCache');
+const SCALE_STRATEGY = require('consts').SCALE_STRATEGY;
+const Class = require('class');
 
 
-var getCtx = function(el){
+const getCtx = function(el){
     if (!el) el = document.createElement('canvas');
     if (!el) return null;
     return (
@@ -25,18 +25,18 @@ var getCtx = function(el){
     );
 };
 
-var GlContext = Class.extend(function(it){
+const GlContext = Class.extend(function(it){
 
-    var gl;
-    var mScaleX = 1, mScaleY = 1;
-    var alpha = 1;
-    var spriteRectDrawer, colorRectDrawer, polyLineDrawer, modelDrawer;
-    var matrixStack = new MatrixStack();
-    var frameBuffer;
-    var gameProps;
-    var colorBGDefault = [255,255,255];
-    var scene = null;
-    var SCENE_DEPTH = 1000;
+    let gl;
+    let mScaleX = 1, mScaleY = 1;
+    let alpha = 1;
+    let spriteRectDrawer, colorRectDrawer, polyLineDrawer, modelDrawer;
+    let matrixStack = new MatrixStack();
+    let frameBuffer;
+    let gameProps;
+    let colorBGDefault = [255,255,255];
+    let scene = null;
+    let SCENE_DEPTH = 1000;
 
     it.init = function(canvas){
 
@@ -64,35 +64,35 @@ var GlContext = Class.extend(function(it){
     };
 
     it.getError = function(){
-        var err = gl.getError();
+        let err = gl.getError();
         //return 0;
         return err==gl.NO_ERROR?0:err;
     };
 
-    var makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
+    const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
 
-        var zToWMatrix = mat4.makeZToWMatrix(1);
-        var projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
+        let zToWMatrix = mat4.makeZToWMatrix(1);
+        let projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
 
-        var scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
-        var translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
+        let scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
+        let translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
 
-        var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
+        let matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
         matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
         matrix = mat4.matrixMultiply(matrix, projectionMatrix);
         matrix = mat4.matrixMultiply(matrix, zToWMatrix);
         return matrix;
     };
 
-    var makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
+    const makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
 
-        var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-        var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+        let texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
+        let texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
 
         return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
     };
 
-    var currTex = null;
+    let currTex = null;
 
     it.drawImage = function(
         texture,
@@ -103,8 +103,8 @@ var GlContext = Class.extend(function(it){
         gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
-        var texWidth = texture.getSize().width;
-        var texHeight = texture.getSize().height;
+        let texWidth = texture.getSize().width;
+        let texHeight = texture.getSize().height;
 
         if (dstX === undefined) {
             dstX = srcX;
@@ -143,11 +143,11 @@ var GlContext = Class.extend(function(it){
         texture.bind();
 
 
-        var matrix1 = matrixStack.getCurrentMatrix();
+        let matrix1 = matrixStack.getCurrentMatrix();
 
-        var zToWMatrix = mat4.makeZToWMatrix(1);
-        var projectionMatrix = mat4.ortho(0,gameProps.width,0,gameProps.height,-SCENE_DEPTH,SCENE_DEPTH);
-        var matrix2 = mat4.matrixMultiply(projectionMatrix, zToWMatrix);
+        let zToWMatrix = mat4.makeZToWMatrix(1);
+        let projectionMatrix = mat4.ortho(0,gameProps.width,0,gameProps.height,-SCENE_DEPTH,SCENE_DEPTH);
+        let matrix2 = mat4.matrixMultiply(projectionMatrix, zToWMatrix);
 
         modelDrawer.setUniform("u_modelMatrix",matrix1);
         modelDrawer.setUniform("u_projectionMatrix",matrix2);
@@ -173,12 +173,12 @@ var GlContext = Class.extend(function(it){
     };
 
     it.clear = function() {
-        var col = scene.useBG?scene.colorBG:colorBGDefault;
+        let col = scene.useBG?scene.colorBG:colorBGDefault;
         gl.clearColor(col[0]/255,col[1]/255,col[2]/255,1);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // todo  | gl.DEPTH_BUFFER_BIT
     };
 
-    var fillRect = function (x, y, w, h, color) {
+    const fillRect = function (x, y, w, h, color) {
 
         colorRectDrawer.bind();
         colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
@@ -302,7 +302,7 @@ var GlContext = Class.extend(function(it){
         this.restore();
     };
 
-    var self = it;
+    let self = it;
 
 },{
     isAcceptable: function(){
@@ -314,12 +314,12 @@ var GlContext = Class.extend(function(it){
             return;
         }
 
-        var img = new Image();
+        let img = new Image();
         //<code>{{#if opts.debug}}
         img.onerror=function(e){throw 'can not load image with url '+ url};
         //<code>{{/if}}
-        var gl = require('renderer').getContext().getNativeContext();
-        var texture = new Texture(gl);
+        let gl = require('renderer').getContext().getNativeContext();
+        let texture = new Texture(gl);
 
         if (opts.type == 'base64') {
             url = utils.getBase64prefix('image', opts.fileName) + url;
@@ -331,10 +331,10 @@ var GlContext = Class.extend(function(it){
 
         utils.loadBinary(url, progress, function (buffer) {
             if (window.Blob && window.URL) {
-                var blob = new Blob([buffer], {type: 'application/octet-binary'});
+                let blob = new Blob([buffer], {type: 'application/octet-binary'});
                 img.src = URL.createObjectURL(blob);
             } else {
-                var base64String = utils.arrayBufferToBase64(buffer);
+                let base64String = utils.arrayBufferToBase64(buffer);
                 base64String = utils.getBase64prefix('image', opts.fileName) + base64String;
                 img.src = base64String;
             }
@@ -356,7 +356,7 @@ module.exports = GlContext;
 //    // the default is to do nothing. Preventing the default
 //    // means allowing context to be restored
 //    e.preventDefault();
-//    var div = document.createElement("div");
+//    let div = document.createElement("div");
 //    div.className = "contextlost";
 //    div.innerHTML = '<div>Context Lost: Click To Reload</div>';
 //    div.addEventListener('click', function() {

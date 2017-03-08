@@ -1,7 +1,7 @@
 
-var BaseModel = require('baseModel');
+const BaseModel = require('baseModel');
 
-var FrameAnimation = BaseModel.extend({
+const FrameAnimation = BaseModel.extend({
     type:'frameAnimation',
     name:'',
     frames:[],
@@ -21,9 +21,9 @@ var FrameAnimation = BaseModel.extend({
     },
     update: function(time){
         if (!this._startTime) this._startTime = time;
-        var delta = (time - this._startTime)%this.duration;
-        var ind = ~~((this.frames.length)*delta/this.duration);
-        var lastFrIndex = this._gameObject.currFrameIndex;
+        let delta = (time - this._startTime)%this.duration;
+        let ind = ~~((this.frames.length)*delta/this.duration);
+        let lastFrIndex = this._gameObject.currFrameIndex;
         if (lastFrIndex!=this.frames[ind]) {
             this._gameObject.setFrameIndex(this.frames[ind]);
         }

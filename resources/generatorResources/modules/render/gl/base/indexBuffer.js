@@ -1,8 +1,8 @@
 
 
-var IndexBuffer = function(gl){
-    var buffer = gl.createBuffer();
-    var dataLength;
+const IndexBuffer = function(gl){
+    let buffer = gl.createBuffer();
+    let dataLength;
 
     this.setData = function(bufferData){
         //<code>{{#if opts.debug}}

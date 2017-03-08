@@ -25,8 +25,14 @@
         }
         else msg = e.message;
         if (!msg) {
-            if (e.target && e.target.tagName.toUpperCase()=='IMG')
-                msg = 'can not load image ' + e.target.getAttribute('src');
+            if (e.target) {
+                ['img','audio'].some(function(it){
+                    if (e.target.tagName.toLowerCase()==it) {
+                        msg = 'can not load ' +it + ' with src '+ e.target.src;
+                        return true;
+                    }
+                });
+            }
         }
         if (!msg) msg = '';
         if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();

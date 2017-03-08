@@ -1,16 +1,16 @@
-var Queue = function(){
-    var self = this;
+const Queue = function(){
+    let self = this;
     this.size = function(){
         return tasks.length;
     };
     this.onResolved = null;
     this.onProgress = null;
-    var tasksResolved = 0;
-    var tasks = [];
-    var tasksProgressById = {};
+    let tasksResolved = 0;
+    let tasks = [];
+    let tasksProgressById = {};
 
-    var calcProgress = function(){
-        var sum = 0;
+    let calcProgress = function(){
+        let sum = 0;
         Object.keys(tasksProgressById).forEach(function(taskId){
             sum+=tasksProgressById[taskId]||0;
         });

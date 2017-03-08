@@ -1,31 +1,31 @@
 
-var bundle = require('bundle');
-var renderer = require('renderer');
-var mathEx = require('mathEx');
-var game = require('game');
-var device = require('device');
+const bundle = require('bundle');
+const renderer = require('renderer');
+const mathEx = require('mathEx');
+const game = require('game');
+const device = require('device');
 
-var objectsCaptured = {};
+let objectsCaptured = {};
 
-var gameProps = bundle.gameProps;
-var globalScale = bundle.gameProps.globalScale;
-var canvas = renderer.getCanvas();
+const gameProps = bundle.gameProps;
+const globalScale = bundle.gameProps.globalScale;
+const canvas = renderer.getCanvas();
 
 if (device.isTouch) {
     canvas.ontouchstart = function(e){
-        var l = e.touches.length;
+        let l = e.touches.length;
         while (l--){
             resolveClick(e.touches[l]);
         }
     };
     canvas.ontouchend = canvas.ontouchcancel = function(e){
-        var l = e.changedTouches.length;
+        let l = e.changedTouches.length;
         while (l--){
             resolveMouseUp(e.changedTouches[l]);
         }
     };
     canvas.ontouchmove = function(e){
-        var l = e.touches.length;
+        let l = e.touches.length;
         while (l--){
             resolveMouseMove(e.touches[l]);
         }
@@ -42,7 +42,7 @@ if (device.isTouch) {
     }
 }
 
-var resolveScreenPoint = function(e){
+const resolveScreenPoint = function(e){
     return {
         x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
         y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
@@ -50,12 +50,12 @@ var resolveScreenPoint = function(e){
     };
 };
 
-var triggerEvent = function(e,name){
-    var scene = game.getCurrScene();
+const triggerEvent = function(e,name){
+    let scene = game.getCurrScene();
     if (!scene) return;
-    var point = resolveScreenPoint(e);
+    let point = resolveScreenPoint(e);
     scene._layers.someReversed(function(l){
-        var found = false;
+        let found = false;
         l._gameObjects.someReversed(function(g){
             if (
                 mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
@@ -82,21 +82,21 @@ var triggerEvent = function(e,name){
     return point;
 };
 
-var resolveClick = function(e){
+const resolveClick = function(e){
     //<code>{{#if opts.debug}}
     if (window.canceled) return;
     // {{/if}}
-    var point = triggerEvent(e,'click');
+    let point = triggerEvent(e,'click');
     triggerEvent(e,'mouseDown');
 };
 
-var resolveMouseMove = function(e){
+const resolveMouseMove = function(e){
     //<code>{{#if opts.debug}}
     if (window.canceled) return;
     // {{/if}}
-    var point = triggerEvent(e,'mouseMove');
+    let point = triggerEvent(e,'mouseMove');
     if (!point) return;
-    var lastMouseDownObject = objectsCaptured[point.id];
+    let lastMouseDownObject = objectsCaptured[point.id];
     if (lastMouseDownObject && lastMouseDownObject!=point.object) {
         lastMouseDownObject.trigger('mouseLeave');
         delete objectsCaptured[point.id];
@@ -108,11 +108,11 @@ var resolveMouseMove = function(e){
 
 };
 
-var resolveMouseUp = function(e){
+const resolveMouseUp = function(e){
     //<code>{{#if opts.debug}} if (window.canceled) return;{{/if}}
-    var point = triggerEvent(e,'mouseUp');
+    let point = triggerEvent(e,'mouseUp');
     if (!point) return;
-    var lastMouseDownObject = objectsCaptured[point.id];
+    let lastMouseDownObject = objectsCaptured[point.id];
     if (!lastMouseDownObject) return;
     lastMouseDownObject.trigger('mouseUp');
     delete objectsCaptured[point.id];

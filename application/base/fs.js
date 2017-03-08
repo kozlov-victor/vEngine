@@ -1,111 +1,112 @@
 
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-module.exports.copyFileSync = function (source, target) {
-    var pathArr = target.split('/');
-    pathArr.pop();
-    var targetPath = pathArr.join('/');
-    if (!module.exports.existsSync(targetPath)) createFolderSync(targetPath);
-    fs.createReadStream(source).pipe(fs.createWriteStream(target));
-};
-
-module.exports.existsSync = function(target){
-    return fs.existsSync(target);
-};
-
-module.exports.deleteFileSync = function (source) {
-    fs.existsSync(source) && fs.unlinkSync(source);
-};
-
-module.exports.readFileSync = function (path,asBin) {
-    return fs.readFileSync(path, asBin?undefined:"utf8");
-};
-
-module.exports.createFileSync = function(path,content){
-    if (fs.existsSync(path)) return;
-    module.exports.writeFileSync(
-        path,
-        content||''
-    );
-};
-
-module.exports.writeFileSync = function (path, content,asBin) {
-    var opts = asBin?undefined:{encoding: "utf-8"};
-    fs.writeFileSync(path,content,opts);
-};
-
-module.exports.copyFolderSync = function cpf(src, dest) {
-    var exists = fs.existsSync(src);
-    var stats = exists && fs.statSync(src);
-    var isDirectory = exists && stats.isDirectory();
-    if (exists && isDirectory) {
-        !fs.existsSync(dest) && fs.mkdirSync(dest);
-        fs.readdirSync(src).forEach(function (childItemName) {
-            cpf(path.join(src, childItemName),
-                path.join(dest, childItemName));
-        });
-    } else {
-        fs.linkSync(src, dest);
+class FS {
+    copyFileSync(source, target) {
+        let pathArr = target.split('/');
+        pathArr.pop();
+        let targetPath = pathArr.join('/');
+        if (!module.exports.existsSync(targetPath)) this.createFolderSync(targetPath);
+        fs.createReadStream(source).pipe(fs.createWriteStream(target));
     }
-};
 
+    existsSync(target){
+        return fs.existsSync(target);
+    }
 
+    deleteFileSync(source) {
+        fs.existsSync(source) && fs.unlinkSync(source);
+    }
 
-module.exports.readDirSync = function(path,contentType){
+    readFileSync(path,asBin) {
+        return fs.readFileSync(path, asBin?undefined:"utf8");
+    }
 
-    function _read(path,res){
-        fs.readdirSync(path).forEach(function(file){
+    createFileSync(path,content){
+        if (fs.existsSync(path)) return;
+        this.writeFileSync(
+            path,
+            content||''
+        );
+    }
+
+    writeFileSync(path, content,asBin) {
+        let opts = asBin?undefined:{encoding: "utf-8"};
+        fs.writeFileSync(path,content,opts);
+    }
+
+    copyFolderSync(src, dest) {
+        let exists = fs.existsSync(src);
+        let stats = exists && fs.statSync(src);
+        let isDirectory = exists && stats.isDirectory();
+        if (exists && isDirectory) {
+            !fs.existsSync(dest) && fs.mkdirSync(dest);
+            fs.readdirSync(src).forEach((childItemName)=> {
+                this.copyFileSync(path.join(src, childItemName),
+                    path.join(dest, childItemName));
+            });
+        } else {
+            fs.linkSync(src, dest);
+        }
+    }
+
+    _read(path,res,contentType){
+        fs.readdirSync(path).forEach((file)=>{
             if (fs.statSync(path+'/'+file).isDirectory()) {
-                _read(path+'/'+file,res);
+                this._read(path+'/'+file,res);
             } else {
                 res.push({name:file,fullName: path+'/'+file, content:fs.readFileSync(path+'/'+file, contentType)});
             }
         });
     }
 
-    var res = [];
-    _read(path,res);
-    return res;
-};
-
-module.exports.getDirListSync = function(srcpath){
-    return fs.readdirSync(srcpath).filter(function(file) {
-        return fs.statSync(path.join(srcpath, file)).isDirectory();
-    });
-};
-
-module.exports.deleteFolderSync = function delFldr(path) {
-    if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function (file, index) {
-            var curPath = path + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                delFldr(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(path);
+    readDirSync(path,contentType){
+        let res = [];
+        this._read(path,res,contentType);
+        return res;
     }
-};
 
-var createFolderSync = function (path) {
-    try {
-        var pathSeq = '';
-        path.split('/').forEach(function(fldr){
-            pathSeq+=fldr;
-            if (!fs.existsSync(pathSeq)) fs.mkdirSync(pathSeq);
-            pathSeq+='/';
+    getDirListSync(srcpath){
+        return fs.readdirSync(srcpath).filter(function(file) {
+            return fs.statSync(path.join(srcpath, file)).isDirectory();
         });
-        fs.mkdirSync(path);
-    } catch (e) {
-        if (e.code != 'EEXIST') throw e;
     }
-};
 
-module.exports.createFolderSync = createFolderSync;
+    deleteFolderSync(path) {
+        if (fs.existsSync(path)) {
+            fs.readdirSync(path).forEach((file, index)=> {
+                let curPath = path + "/" + file;
+                if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                    this.deleteFolderSync(curPath);
+                } else { // delete file
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(path);
+        }
+    }
 
-module.exports.renameSync = function(oldName,newName){
-    fs.renameSync(oldName,newName);
-};
+    createFolderSync(path) {
+        try {
+            let pathSeq = '';
+            path.split('/').forEach((fldr)=>{
+                pathSeq+=fldr;
+                if (!fs.existsSync(pathSeq)) fs.mkdirSync(pathSeq);
+                pathSeq+='/';
+            });
+            fs.mkdirSync(path);
+        } catch (e) {
+            if (e.code != 'EEXIST') throw e;
+        }
+    }
+
+    renameSync(oldName,newName){
+        fs.renameSync(oldName,newName);
+    }
+
+}
+
+
+module.exports = new FS();

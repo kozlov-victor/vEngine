@@ -4,13 +4,13 @@
  exports.description = 'draggable behaviour with multitouch supporting';
  */
 
-var mouse = require('mouse');
-var points = {};
-var scene = self.getScene();
-var collider = require('collider');
-var camera = require('camera');
+const mouse = require('mouse');
+let points = {};
+let scene = self.getScene();
+let collider = require('collider');
+let camera = require('camera');
 
-var getEventId = function(e){
+const getEventId = function(e){
     return e.id || 1;
 };
 
@@ -23,7 +23,7 @@ self.on('click',function(e){
 });
 
 scene.on('mouseMove',function(e){
-    var point = points[getEventId(e)];
+    let point = points[getEventId(e)];
     if (point && point.isMouseDown) {
         collider.manage(
             self,e.screenX - point.mX,

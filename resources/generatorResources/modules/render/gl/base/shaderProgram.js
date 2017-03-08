@@ -1,9 +1,9 @@
-function compileShader(gl, shaderSource, shaderType) {
+const compileShader = (gl, shaderSource, shaderType)=> {
     //<code>{{#if opts.debug}}
-    if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
+    if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
     //<code>{{/if}}
     // Create the shader object
-    var shader = gl.createShader(shaderType);
+    let shader = gl.createShader(shaderType);
 
     // Load the shader source
     gl.shaderSource(shader, shaderSource);
@@ -12,45 +12,86 @@ function compileShader(gl, shaderSource, shaderType) {
     gl.compileShader(shader);
 
     // Check the compile status
-    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    let compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
     if (!compiled) {
         // Something went wrong during compilation; get the error
-        var lastError = gl.getShaderInfoLog(shader);
+        let lastError = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
         throw 'Error compiling shader ' + shader + ':' + lastError;
     }
 
     return shader;
-}
+};
 
 
-function createProgram(gl, shaders) {
-    var program = gl.createProgram();
+const createProgram = (gl, shaders)=> {
+    let program = gl.createProgram();
     shaders.forEach(function(shader) {
         gl.attachShader(program, shader);
     });
     gl.linkProgram(program);
 
     // Check the link status
-    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+    let linked = gl.getProgramParameter(program, gl.LINK_STATUS);
     if (!linked) {
         // something went wrong with the link
-        var lastError = gl.getProgramInfoLog(program);
+        let lastError = gl.getProgramInfoLog(program);
         gl.deleteProgram(program);
         throw "Error in program linking:" + lastError;
     }
     return program;
-}
+};
 
-var extractUniforms = function (gl, program) {
-    var uniforms = {};
+const mapType = (gl, type)=> {
 
-    var totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    let GL_TABLE = null;
 
-    for (var i = 0; i < totalUniforms; i++) {
-        var uniformData = gl.getActiveUniform(program, i);
-        var name = uniformData.name.replace(/\[.*?]/, "");
-        var type = mapType(gl, uniformData.type);
+    let GL_TO_GLSL_TYPES = {
+        'FLOAT': 'float',
+        'FLOAT_VEC2': 'vec2',
+        'FLOAT_VEC3': 'vec3',
+        'FLOAT_VEC4': 'vec4',
+
+        'INT': 'int',
+        'INT_VEC2': 'ivec2',
+        'INT_VEC3': 'ivec3',
+        'INT_VEC4': 'ivec4',
+
+        'BOOL': 'bool',
+        'BOOL_VEC2': 'bvec2',
+        'BOOL_VEC3': 'bvec3',
+        'BOOL_VEC4': 'bvec4',
+
+        'FLOAT_MAT2': 'mat2',
+        'FLOAT_MAT3': 'mat3',
+        'FLOAT_MAT4': 'mat4',
+
+        'SAMPLER_2D': 'sampler2D'
+    };
+
+    if (!GL_TABLE) {
+        let typeNames = Object.keys(GL_TO_GLSL_TYPES);
+
+        GL_TABLE = {};
+
+        for (let i = 0; i < typeNames.length; ++i) {
+            let tn = typeNames[i];
+            GL_TABLE[gl[tn]] = GL_TO_GLSL_TYPES[tn];
+        }
+    }
+
+    return GL_TABLE[type];
+};
+
+const extractUniforms = (gl, program)=> {
+    let uniforms = {};
+
+    let totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
+    for (let i = 0; i < totalUniforms; i++) {
+        let uniformData = gl.getActiveUniform(program, i);
+        let name = uniformData.name.replace(/\[.*?]/, "");
+        let type = mapType(gl, uniformData.type);
 
         uniforms[name] = {
             type: type,
@@ -62,52 +103,11 @@ var extractUniforms = function (gl, program) {
     }
 
     return uniforms;
-
-
-    function mapType(gl, type) {
-
-        var GL_TABLE = null;
-
-        var GL_TO_GLSL_TYPES = {
-            'FLOAT': 'float',
-            'FLOAT_VEC2': 'vec2',
-            'FLOAT_VEC3': 'vec3',
-            'FLOAT_VEC4': 'vec4',
-
-            'INT': 'int',
-            'INT_VEC2': 'ivec2',
-            'INT_VEC3': 'ivec3',
-            'INT_VEC4': 'ivec4',
-
-            'BOOL': 'bool',
-            'BOOL_VEC2': 'bvec2',
-            'BOOL_VEC3': 'bvec3',
-            'BOOL_VEC4': 'bvec4',
-
-            'FLOAT_MAT2': 'mat2',
-            'FLOAT_MAT3': 'mat3',
-            'FLOAT_MAT4': 'mat4',
-
-            'SAMPLER_2D': 'sampler2D'
-        };
-
-        if (!GL_TABLE) {
-            var typeNames = Object.keys(GL_TO_GLSL_TYPES);
-
-            GL_TABLE = {};
-
-            for (var i = 0; i < typeNames.length; ++i) {
-                var tn = typeNames[i];
-                GL_TABLE[gl[tn]] = GL_TO_GLSL_TYPES[tn];
-            }
-        }
-
-        return GL_TABLE[type];
-    }
+    
 };
 
 
-var getUniformSetter = function(size,type){
+const getUniformSetter = function(size,type){
     if (size==1) {
         switch (type) {
             case 'float':       return  function(gl,location,value) {gl.uniform1f(location, value)};
@@ -146,13 +146,13 @@ var getUniformSetter = function(size,type){
     }
 };
 
-var ShaderProgram = require('class').extend({
+const ShaderProgram = require('class').extend({
     program: null,
     uniforms: null,
     gl:null,
     construct: function (gl, sources) {
-        var vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
-        var fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
+        let vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
+        let fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
         this.program = createProgram(gl, [vShader, fShader]);
         this.uniforms = extractUniforms(gl, this.program);
         this.gl = gl;
@@ -167,7 +167,7 @@ var ShaderProgram = require('class').extend({
     },
 
     setUniform: function (name, value) {
-        var uniform = this.uniforms[name];
+        let uniform = this.uniforms[name];
         if (!uniform) throw 'no uniform with name ' + name + ' found!';
         //if (uniformValuesCache[name]===value) return;
         uniform.setter(this.gl, uniform.location, value);
@@ -176,7 +176,7 @@ var ShaderProgram = require('class').extend({
 
     bindBuffer: function (buffer, uniformLocationName) {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
-        var uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName);
+        let uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName);
 
         //<code>{{#if opts.debug}}
         if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";

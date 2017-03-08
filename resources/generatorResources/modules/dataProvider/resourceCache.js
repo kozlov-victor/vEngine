@@ -1,5 +1,5 @@
 
-var cache = {};
+let cache = {};
 
 exports.get = function(name){
     return cache[name];

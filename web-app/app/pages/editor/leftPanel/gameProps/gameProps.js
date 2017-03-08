@@ -1,4 +1,4 @@
-var resource = require('providers/resource');
+const restResource = require('providers/rest/resource');
 
 module.exports = Vue.component('app-game-props', {
     props: [],
@@ -13,7 +13,7 @@ module.exports = Vue.component('app-game-props', {
     },
     methods: {
         saveGameProps: function(){
-            resource.saveGameProps(this.editData.gameProps);
+            restResource.saveGameProps(this.editData.gameProps);
         }
     }
 });

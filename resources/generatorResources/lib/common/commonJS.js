@@ -1,5 +1,5 @@
-var modules = {}, require = function(name){
-    var moduleObj = modules[name];
+let modules = {}, require = function(name){
+    let moduleObj = modules[name];
 
     //<code>{{#if opts.debug }}
     if (!moduleObj) {
@@ -10,7 +10,7 @@ var modules = {}, require = function(name){
     if (!moduleObj.inited) initModuleObj(moduleObj);
     return moduleObj.inited.exports;
     function initModuleObj(moduleObj) {
-        var module = {
+        let module = {
             exports:{}
         };
         moduleObj.inited = module;

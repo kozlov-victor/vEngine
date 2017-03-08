@@ -1,10 +1,11 @@
 
 
-var abstractDialog = require('providers/abstractDialog');
+const abstractDialog = require('providers/abstractDialog');
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var Sound = _require('sound');
+const editData = require('providers/editData');
+const restResource = require('providers/rest/resource');
+const restFileSystem = require('providers/rest/fileSystem');
+const Sound = _require('sound');
 
 module.exports.component = Vue.component('app-sound-dialog', {
     mixins:[abstractDialog],
@@ -37,20 +38,39 @@ module.exports.component = Vue.component('app-sound-dialog', {
         onFilePicked: function(src,file){
             this.soundUrl = src;
             this._file = file;
+
+            let self = this;
+            self._file = file;
+            self.soundUrl = src;
+            self.editData.currSoundInEdit.resourcePath = 'resources/sound/'+file.name;
+            if (!self.editData.currSoundInEdit.name) {
+                self.editData.currSoundInEdit.name = name;
+            }
         },
-        createOrEditSound: function(sound){
-            var model = sound.toJSON();
-            model._file = this._file;
-            this._file = '';
-            var self = this;
-            resource.createOrEditResource(
-                model,
-                Sound,
-                editData.soundList,
-                function(result){
-                    self.close();
+        createOrEditSound: function(model){
+            let self = this;
+            Promise.resolve().
+            then(()=>{
+                if (self._file) {
+                    return restFileSystem.
+                    uploadFile(
+                        self._file,
+                        {type:model.type}
+                    );
+                } else return Promise.resolve();
+            }).
+            then(()=>{
+                return restResource.save(model);
+            }).
+            then((resp)=>{
+                if (resp.created) {
+                    model.id = resp.id;
+                    editData.soundList.add(model);
+                } else if (resp.updated) {
+                    model.updateCloner();
                 }
-            );
+                self.close();
+            });
         }
     }
 });

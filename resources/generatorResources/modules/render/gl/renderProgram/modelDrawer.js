@@ -1,16 +1,16 @@
 
 
-var bundle = require('bundle');
-var ShaderProgram = require('shaderProgram');
+const bundle = require('bundle');
+const ShaderProgram = require('shaderProgram');
 
-var VertexBuffer = require('vertexBuffer');
-var IndexBuffer = require('indexBuffer');
+const VertexBuffer = require('vertexBuffer');
+const IndexBuffer = require('indexBuffer');
 
-var ModelDrawer = function(gl){
+const ModelDrawer = function(gl){
 
-    var self = this;
+    let self = this;
 
-    var program, posVertexBuffer, posIndexBuffer, texVertexBuffer, normalBuffer;
+    let program, posVertexBuffer, posIndexBuffer, texVertexBuffer, normalBuffer;
 
     this.bind = function(model){
         program.bind();

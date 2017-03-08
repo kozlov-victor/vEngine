@@ -1,13 +1,13 @@
 
-var utils = require('utils');
-var Class = require('class');
+const utils = require('utils');
+const Class = require('class');
 
-var getCtx = function(){
-    var Ctx = window && window.Audio;
+const getCtx = function(){
+    let Ctx = window && window.Audio;
     return new Ctx();
 } ;
 
-var HtmlAudioContext = Class.extend(
+const HtmlAudioContext = Class.extend(
     {
         type:'htmlAudioContext',
         free:true,
@@ -15,7 +15,7 @@ var HtmlAudioContext = Class.extend(
            return this.free;
         },
         play: function(buffer,loop){
-            var self = this;
+            let self = this;
             self.free = false;
             self._ctx.src = buffer;
             self._ctx.play();

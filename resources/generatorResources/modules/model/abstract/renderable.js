@@ -1,13 +1,13 @@
 
-var camera = require('camera');
-var renderer = require('renderer');
-var collider = require('collider');
+const camera = require('camera');
+const renderer = require('renderer');
+const collider = require('collider');
 
-var BaseModel = require('baseModel');
-var Tweenable = require('tweenable');
+const BaseModel = require('baseModel');
+const Tweenable = require('tweenable');
 
 
-var Renderable = BaseModel.extend({
+const Renderable = BaseModel.extend({
     type: 'renderable',
     alpha: 1.0,
     width: 0,
@@ -24,8 +24,8 @@ var Renderable = BaseModel.extend({
         this._tweenable.tween(obj,fromToVal,tweenTime,easeFnName);
     },
     _render:function(){
-        var ctx = renderer.getContext();
-        var dx = 0, dy = 0;
+        let ctx = renderer.getContext();
+        let dx = 0, dy = 0;
         if (this.fixedToCamera) {
             dx = camera.pos.x;
             dy = camera.pos.y;
@@ -38,11 +38,11 @@ var Renderable = BaseModel.extend({
         ctx.setAlpha(this.alpha);
     },
     update: function(time,delta) {
-        var self = this;
-        var deltaX = self.vel.x * delta / 1000;
-        var deltaY = self.vel.y * delta / 1000;
-        var posX = self.pos.x + deltaX;
-        var posY = self.pos.y + deltaY;
+        let self = this;
+        let deltaX = self.vel.x * delta / 1000;
+        let deltaY = self.vel.y * delta / 1000;
+        let posX = self.pos.x + deltaX;
+        let posY = self.pos.y + deltaY;
         collider.manage(self, posX, posY);
     },
     construct: function(){

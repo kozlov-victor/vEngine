@@ -1,10 +1,10 @@
 
 
-var EventEmitter = function(){
+const EventEmitter = function(){
 
-    var events = {};
+    let events = {};
 
-    var _on = function(name,callBack){
+    let _on = function(name,callBack){
         events[name] = events[name] || [];
         events[name].push(callBack);
     };
@@ -21,9 +21,9 @@ var EventEmitter = function(){
     };
 
     this.trigger = function(eventName,data){
-        var es = events[eventName];
+        let es = events[eventName];
         if (!es) return;
-        var l = es.length;
+        let l = es.length;
         while(l--){
            es[l](data);
         }

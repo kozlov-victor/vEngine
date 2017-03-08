@@ -1,8 +1,8 @@
 
-var collections = require('collections');
-var consts = require('consts');
-var utils = require('utils');
-var behaviour = require('behaviour');
+const collections = require('collections');
+const consts = require('consts');
+const utils = require('utils');
+const behaviour = require('behaviour');
 
 exports.spriteSheetList = new collections.List();
 exports.gameObjectList = new collections.List();
@@ -18,7 +18,7 @@ exports.particleSystemList = new collections.List();
 exports.gameProps = {};
 
 
-var toDataSource = function(ResourceClass,dataList,resourceList){
+const toDataSource = function(ResourceClass,dataList,resourceList){
     resourceList.clear();
     dataList.forEach(function(item){
         resourceList.add(new ResourceClass(item));
@@ -37,10 +37,10 @@ exports.prepare = function(data){
     });
 };
 
-var applyIndividualBehaviour = function(model){
-    var behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
+const applyIndividualBehaviour = function(model){
+    let behaviourFn = behaviour && behaviour.scripts && behaviour.scripts[model.type] && behaviour.scripts[model.type][model.name+'.js'];
     if (behaviourFn) {
-        var exports = model;
+        let exports = model;
         behaviourFn(exports);
         model.__updateIndividualBehaviour__ = function(time){
             exports.onUpdate(time);
@@ -51,15 +51,15 @@ var applyIndividualBehaviour = function(model){
 
 };
 
-var applyCommonBehaviour = function(model){
+const applyCommonBehaviour = function(model){
 
-    var exportsList = [];
+    let exportsList = [];
     if (!model._commonBehaviour || !model._commonBehaviour.size()) {
         model.__updateCommonBehaviour__ = consts.noop;
         return;
     }
     model._commonBehaviour.forEach(function(cb){
-        var exports = model;
+        let exports = model;
         behaviour.commonBehaviour[cb.name](exports,cb.parameters);
         exportsList.push(exports);
     });

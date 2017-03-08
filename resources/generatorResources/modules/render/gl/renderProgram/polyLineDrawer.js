@@ -1,12 +1,12 @@
 
-var bundle = require('bundle');
-var ShaderProgram = require('shaderProgram');
+const bundle = require('bundle');
+const ShaderProgram = require('shaderProgram');
 
-var VertexBuffer = require('vertexBuffer');
+const VertexBuffer = require('vertexBuffer');
 
-var PolyLineDrawer = function(gl){
+const PolyLineDrawer = function(gl){
 
-    var program, posVertexBuffer;
+    let program, posVertexBuffer;
 
     this.bind = function(vertexData){
         program.bind();

@@ -91,7 +91,6 @@ module.exports.component = Vue.component('app-game-object-dialog', {
         },
         editCommonBehaviour: function(cb){
             this.editData.currCommonBehaviourInEdit = cb.clone();
-            this.editData.currCommonBehaviourInEdit._edited = true;
             commonBehaviourDialog.instance.open();
         },
         deleteCommonBehaviour: function (cb) {
@@ -106,6 +105,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
                         return restResource.remove(cb);
                     }).
                     then(()=>{
+                        self.editData.currGameObjectInEdit.fixateState();
                         self.editData.currGameObjectInEdit.commonBehaviour.remove({id:cb.id});
                         self.editData.currGameObjectInEdit.updateCloner();
                         return restResource.save(self.editData.currGameObjectInEdit.toJSON_Patched());

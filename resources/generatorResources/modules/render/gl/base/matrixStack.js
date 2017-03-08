@@ -1,8 +1,8 @@
 
-var mat4 = require('mat4');
+const mat4 = require('mat4');
 
-var MatrixStack = function () {
-    var self = this;
+const MatrixStack = function () {
+    let self = this;
     this.stack = [];
 
     this.restore = function () {
@@ -29,20 +29,20 @@ var MatrixStack = function () {
         if (z === undefined) {
             z = 0;
         }
-        var t = mat4.makeTranslation(x, y, z);
-        var m = this.getCurrentMatrix();
+        let t = mat4.makeTranslation(x, y, z);
+        let m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
     };
 
     this.rotateZ = function (angleInRadians) {
-        var t = mat4.makeZRotation(angleInRadians);
-        var m = this.getCurrentMatrix();
+        let t = mat4.makeZRotation(angleInRadians);
+        let m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
     };
 
     this.rotateY = function (angleInRadians) {
-        var t = mat4.makeYRotation(angleInRadians);
-        var m = this.getCurrentMatrix();
+        let t = mat4.makeYRotation(angleInRadians);
+        let m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
     };
 
@@ -50,8 +50,8 @@ var MatrixStack = function () {
         if (z === undefined) {
             z = 1;
         }
-        var t = mat4.makeScale(x, y, z);
-        var m = this.getCurrentMatrix();
+        let t = mat4.makeScale(x, y, z);
+        let m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
     };
 

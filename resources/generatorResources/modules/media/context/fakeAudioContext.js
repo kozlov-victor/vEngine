@@ -1,7 +1,7 @@
 
-var Class = require('class');
+const Class = require('class');
 
-var FakeAudioContext = Class.extend(
+const FakeAudioContext = Class.extend(
     {
         type:'fakeAudioContext',
         play: function(buffer,loop){

@@ -1,21 +1,20 @@
 
-var renderer = require('renderer');
-var BaseGameObject = require('baseGameObject');
-var CommonBehaviour = require('commonBehaviour');
-var bundle = require('bundle');
-var collections = require('collections');
-var resourceCache = require('resourceCache');
-var utils = require('utils');
-var game = require('game');
+const renderer = require('renderer');
+const BaseGameObject = require('baseGameObject');
+const bundle = require('bundle');
+const collections = require('collections');
+const resourceCache = require('resourceCache');
+const utils = require('utils');
+const game = require('game');
 
-var Sphere = require('sphere');
-var Cube = require('cube');
+const Sphere = require('sphere');
+const Cube = require('cube');
 //var TeaPot = require('teaPot');
 //var model = new Airplane({radius:50,size:50,bands:6});
 
 var a = 0;
 
-var _draw = function(ctx,self,x,y){
+const _draw = function(ctx,self,x,y){
     ctx.drawImage(
         resourceCache.get(self._spriteSheet.resourcePath),
         self._sprPosX,
@@ -36,22 +35,22 @@ var _draw = function(ctx,self,x,y){
     //ctx.polyLine([0,0,5,5,20,3],[1,0,1,1]);
 };
 
-var _drawPattern = function(ctx,self){
+const _drawPattern = function(ctx,self){
 
-    var offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
-    var offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
+    let offsetX = self.tileOffset.x % self._spriteSheet._frameWidth;
+    let offsetY = self.tileOffset.y % self._spriteSheet._frameHeight;
     offsetX = offsetX<0?self._spriteSheet._frameWidth + offsetX : offsetX;
     offsetY = offsetY<0?self._spriteSheet._frameHeight + offsetY : offsetY;
 
     ctx.lockRect(self.getRect());
 
     for (
-        var y = - offsetY;
+        let y = - offsetY;
         y<self.height + self._spriteSheet._frameHeight;
         y+=self._spriteSheet._frameHeight
     ) {
         for (
-            var x = -offsetX;
+            let x = -offsetX;
             x<self.width + self._spriteSheet._frameWidth;
             x+=self._spriteSheet._frameWidth
         ) {
@@ -69,7 +68,7 @@ var _drawPattern = function(ctx,self){
     ctx.unlockRect();
 };
 
-var GameObject = BaseGameObject.extend({
+const GameObject = BaseGameObject.extend({
     type:'gameObject',
     spriteSheet: {type:'spriteSheet'},
     _behaviour:null,

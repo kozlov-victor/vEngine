@@ -1,11 +1,11 @@
 
-var Texture = require('texture');
+const Texture = require('texture');
 
-var FrameBuffer = function(gl,width,height){
+const FrameBuffer = function(gl,width,height){
 
-    var texture;
-    var glRenderBuffer;
-    var glFrameBuffer;
+    let texture;
+    let glRenderBuffer;
+    let glFrameBuffer;
 
     this.bind = function(){
         gl.bindFramebuffer(gl.FRAMEBUFFER, glFrameBuffer);

@@ -3,7 +3,7 @@ const RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,commonBehaviour,ga
 module.exports.RESOURCE_NAMES = RESOURCE_NAMES;
 
 const fs = require.main.require('./application/base/fs');
-let collectionHelper = require.main.require('./application/mvc/services/collectionHelper');
+let collectionHelper = require.main.require('./application/mvc/services/dataSourceHelper');
 
 module.exports.getAll = function(type,projectName){
     if (!projectName) throw 'project name not specified';

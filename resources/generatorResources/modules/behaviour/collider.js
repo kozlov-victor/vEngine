@@ -1,8 +1,8 @@
 
-var mathEx = require('mathEx');
+const mathEx = require('mathEx');
 
-var gos;
-var scene;
+let gos;
+let scene;
 
 exports.setUp = function(){
     scene = require('game').getCurrScene();
@@ -15,19 +15,19 @@ exports.manage = function(obj,newX,newY){
         obj.pos.x = newX;
         obj.pos.y = newY;
     } else {
-        var tileOn = scene.getTileAt(
+        let tileOn = scene.getTileAt(
             newX + obj.getRect().width / 2,
             newY + obj.getRect().height / 2
         );
         if (tileOn==16 || tileOn==17) return;
     }
-    var hasCollision = false;
-    var all = gos.rs;
-    for (var i = 0,l = all.length;i<l;i++) {
-        var go = all[i];
+    let hasCollision = false;
+    let all = gos.rs;
+    for (let i = 0,l = all.length;i<l;i++) {
+        let go = all[i];
         if (obj==go) continue;
 
-        var objRect = obj.getRect();
+        let objRect = obj.getRect();
         objRect.x = newX;
         objRect.y = newY;
 

@@ -1,8 +1,8 @@
-var Resource = require('resource');
-var audioPlayer = require('audioPlayer');
-var bundle = require('bundle');
+const Resource = require('resource');
+const audioPlayer = require('audioPlayer');
+const bundle = require('bundle');
 
-var Sound = Resource.extend({
+const Sound = Resource.extend({
     type:'sound',
     _gain:1,
     _loop:false,
@@ -20,9 +20,9 @@ var Sound = Resource.extend({
     }
 }, {
     find: function(name){
-        var res = bundle.soundList.find({name:name});
+        let res = bundle.soundList.find({name:name});
         //<code>{{#if opts.debug}}
-        if (!res) throw 'can not found sound with name ' + name;
+        if (!res) throw `can not found sound with name ${name}`;
         // {{/if}}
         return res;
     }

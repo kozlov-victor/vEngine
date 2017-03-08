@@ -59,7 +59,7 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
                 this.editData.currSpriteSheetInEdit.numOfFramesV;
             this.editData.currSpriteSheetInEdit.calcFrameSize();
         },
-        createOrEditSpriteSheet(sprSh){
+        createOrEditSpriteSheet(model){
             let self = this;
             Promise.resolve().
             then(()=>{
@@ -67,20 +67,19 @@ module.exports.component = Vue.component('app-sprite-sheet-dialog', {
                     return restFileSystem.
                         uploadFile(
                             self._file,
-                            {}
+                            {type:model.type}
                         );
                 } else return Promise.resolve();
             }).
             then(()=>{
-                let model = sprSh.toJSON();
                 return restResource.save(model);
             }).
             then((resp)=>{
                 if (resp.created) {
-                    sprSh.id = resp.id;
-                    editData.spriteSheetList.add(sprSh);
+                    model.id = resp.id;
+                    editData[`${model.type}List`].add(model);
                 } else if (resp.updated) {
-                    sprSh.updateCloner();
+                    model.updateCloner();
                 }
                 self.close();
             });

@@ -6,12 +6,12 @@ exports.byteLength = byteLength;
 exports.toByteArray = toByteArray;
 exports.fromByteArray = fromByteArray;
 
-var lookup = [];
-var revLookup = [];
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
+let lookup = [];
+let revLookup = [];
+let Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array;
 
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-for (var i = 0, len = code.length; i < len; ++i) {
+let code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+for (let i = 0, len = code.length; i < len; ++i) {
     lookup[i] = code[i];
     revLookup[code.charCodeAt(i)] = i;
 }
@@ -20,7 +20,7 @@ revLookup['-'.charCodeAt(0)] = 62;
 revLookup['_'.charCodeAt(0)] = 63;
 
 function placeHoldersCount(b64) {
-    var len = b64.length;
+    let len = b64.length;
     if (len % 4 > 0) {
         throw new Error('Invalid string. Length must be a multiple of 4')
     }
@@ -39,8 +39,8 @@ function byteLength(b64) {
 }
 
 function toByteArray(b64) {
-    var i, j, l, tmp, placeHolders, arr;
-    var len = b64.length;
+    let i, j, l, tmp, placeHolders, arr;
+    let len = b64.length;
     placeHolders = placeHoldersCount(b64);
 
     arr = new Arr(len * 3 / 4 - placeHolders);
@@ -48,7 +48,7 @@ function toByteArray(b64) {
     // if there are placeholders, only get up to the last complete 4 chars
     l = placeHolders > 0 ? len - 4 : len;
 
-    var L = 0;
+    let L = 0;
 
     for (i = 0, j = 0; i < l; i += 4, j += 3) {
         tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)];
@@ -74,9 +74,9 @@ function tripletToBase64(num) {
 }
 
 function encodeChunk(uint8, start, end) {
-    var tmp;
-    var output = [];
-    for (var i = start; i < end; i += 3) {
+    let tmp;
+    let output = [];
+    for (let i = start; i < end; i += 3) {
         tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2]);
         output.push(tripletToBase64(tmp));
     }
@@ -84,15 +84,15 @@ function encodeChunk(uint8, start, end) {
 }
 
 function fromByteArray(uint8) {
-    var tmp;
-    var len = uint8.length;
-    var extraBytes = len % 3 ;// if we have 1 byte left, pad 2 bytes
-    var output = '';
-    var parts = [];
-    var maxChunkLength = 16383; // must be multiple of 3
+    let tmp;
+    let len = uint8.length;
+    let extraBytes = len % 3 ;// if we have 1 byte left, pad 2 bytes
+    let output = '';
+    let parts = [];
+    let maxChunkLength = 16383; // must be multiple of 3
 
     // go through the array every three bytes, we'll deal with trailing stuff later
-    for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+    for (let i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
         parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)));
     }
 

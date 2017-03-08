@@ -1,15 +1,15 @@
 
-var ResourceLoader = function(){
+const ResourceLoader = function(){
 
-    var self = this;
+    let self = this;
 
-    var Queue = require('queue');
-    var renderer = require('renderer');
-    var bundle = require('bundle');
-    var cache = require('resourceCache');
-    var audioPlayer = require('audioPlayer');
+    let Queue = require('queue');
+    let renderer = require('renderer');
+    let bundle = require('bundle');
+    let cache = require('resourceCache');
+    let audioPlayer = require('audioPlayer');
 
-    var q = new Queue();
+    let q = new Queue();
     q.onResolved = function(){
         self.onComplete && self.onComplete();
     };
@@ -20,7 +20,7 @@ var ResourceLoader = function(){
     this.loadImage = function(resourcePath) {
         if (cache.has(resourcePath)) return;
         q.addTask(function(){
-            var path = bundle.embeddedResources.isEmbedded?
+            let path = bundle.embeddedResources.isEmbedded?
                 bundle.embeddedResources.data[resourcePath]:
                 resourcePath;
             renderer.
@@ -41,7 +41,7 @@ var ResourceLoader = function(){
     this.loadSound = function(resourcePath,name){
         if (cache.has(resourcePath)) return;
         q.addTask(function(){
-            var path = bundle.embeddedResources.isEmbedded?
+            let path = bundle.embeddedResources.isEmbedded?
                 bundle.embeddedResources.data[resourcePath]:
                 resourcePath;
             audioPlayer.loadSound(

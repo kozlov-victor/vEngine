@@ -1,7 +1,7 @@
 
-var Resource = require('resource');
+const Resource = require('resource');
 
-var Font = Resource.extend({
+const Font = Resource.extend({
     type:'font',
     fontSize:12,
     fontColor: null,

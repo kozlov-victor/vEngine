@@ -1,9 +1,9 @@
 
-var cache = require('resourceCache');
+const cache = require('resourceCache');
 
-var AudioNode = function(context){
+const AudioNode = function(context){
 
-    var currSound = null;
+    let currSound = null;
 
     this.setGain = function(){
 

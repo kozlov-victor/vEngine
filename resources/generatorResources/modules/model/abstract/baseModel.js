@@ -72,14 +72,11 @@ const BaseModel = Class.extend({
     },
     fromJSON(jsonObj){
         let self = this;
-        //<code>{{#if opts.debug}}
-        this.__jsonObj = jsonObj;
-        // {{/if}}
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
                 if (jsonObj[key].type) {
                     if (jsonObj[key].id) {
-                        self[key] = bundle[key+'List'].find({id:jsonObj[key].id});
+                        self[key] = bundle[key+'List'].find({id:jsonObj[key].id}).clone();
                     } else {
                         let clazz = _req(self.type);
                         self[key] = new clazz();
@@ -97,7 +94,7 @@ const BaseModel = Class.extend({
                             //<code>{{#if opts.debug}}
                             if (!elFromList) throw `can not found ${el.type} with ${el.id}`;
                             // {{/if}}
-                            self[key].add(elFromList);
+                            self[key].add(elFromList.clone());
                         });
                     }
                     return;
@@ -123,6 +120,9 @@ const BaseModel = Class.extend({
         if (!this.__cloner__) return;
         this.__cloner__.fromJSON(this.toJSON());
         this.__cloner__.updateCloner();
+    },
+    fixateState: function(){
+        this.__jsonObj = this.toJSON();
     },
     toJSON_Patched: function(){
         let old = this.__jsonObj;

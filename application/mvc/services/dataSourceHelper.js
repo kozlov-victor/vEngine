@@ -2,11 +2,11 @@
 
 const fs = require.main.require('./application/base/fs');
 
-const loadCollection = (path)=> {
+const loadModel = (path)=> {
     return JSON.parse(fs.readFileSync(path))
 };
 
-const saveCollection = (path,col)=>{
+const saveModel = (path, col)=>{
     fs.writeFileSync(path,JSON.stringify(col,null,4));
 };
 
@@ -23,15 +23,15 @@ const findIndexById = (col,id)=>{
 
 let _uidCnt = 0;
 
-class CollectionHelper {
+class DataSourceHelper {
     save(params){
         let path = ['workspace',params.projectName,'resources',params.model.type,'map.json'].join('/');
-        let col = loadCollection(path);
+        let col = loadModel(path);
         let model = params.model;
         if (!model.id){
             model.id = this.uuid();
             col.push(model);
-            saveCollection(path,col);
+            saveModel(path,col);
             return {id:model.id,created:true};
         } else {
             let modelInCol = findById(col,model.id);
@@ -39,19 +39,28 @@ class CollectionHelper {
             Object.keys(model).forEach(function(key){
                 modelInCol[key]=model[key];
             });
-            saveCollection(path,col);
+            saveModel(path,col);
             return {updated:true}
         }
     }
 
+    saveGameProps(params){
+        let path = `workspace/${params.projectName}/gameProps.json`;
+        let model = loadModel(path);
+        Object.keys(params.model).forEach(function(key){
+            model[key]=params.model[key];
+        });
+        saveModel(path,model)
+    }
+
     remove(params){
-        let path = ['workspace',params.projectName,'resources',params.model.type,'map.json'].join('/');
-        let col = loadCollection(path);
+        let path = `workspace/${params.projectName}/resources/${params.model.type}/map.json`;
+        let col = loadModel(path);
         let model = params.model;
         let modelInColIndex = findIndexById(col,model.id);
         if (modelInColIndex==-1) throw `cannot find index of ${model.id} at collection ${model.type}`;
         col.splice(modelInColIndex,1);
-        saveCollection(path,col);
+        saveModel(path,col);
         return {deleted:true,index:modelInColIndex}
     }
 
@@ -64,4 +73,4 @@ class CollectionHelper {
     }
 }
 
-module.exports = new CollectionHelper();
+module.exports = new DataSourceHelper();

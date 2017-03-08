@@ -12,14 +12,14 @@ exports.capitalize = function(s){
         s.substr(1);
 };
 exports.getBase64prefix = function(fileType,fileName) {
-    var ext = fileName.split('.').pop();
+    let ext = fileName.split('.').pop();
     return 'data:'+fileType+'/'+ext+';base64,'
 };
 exports.arrayBufferToBase64 = function(buffer) {
-    var bytes = new Uint8Array(buffer);
-    var rawArr = [];
-    for (var i=0;i<bytes.length;i++){
-        var b = bytes[i];
+    let bytes = new Uint8Array(buffer);
+    let rawArr = [];
+    for (let i=0;i<bytes.length;i++){
+        let b = bytes[i];
         rawArr.push(b);
     }
     return require('base64').fromByteArray(rawArr);
@@ -27,7 +27,7 @@ exports.arrayBufferToBase64 = function(buffer) {
 
 
 exports.loadBinary = function(url,progress,callBack) {
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open('GET', url, true);
     request.responseType = 'arraybuffer';
 

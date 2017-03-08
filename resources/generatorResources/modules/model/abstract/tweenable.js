@@ -1,9 +1,9 @@
 
-var BaseModel = require('baseModel');
-var Tween = require('tween');
-var TweenMovie = require('tweenMovie');
+const BaseModel = require('baseModel');
+const Tween = require('tween');
+const TweenMovie = require('tweenMovie');
 
-var Tweenable = BaseModel.extend({
+const Tweenable = BaseModel.extend({
     global: false,
     tween: function(objOrTween,fromToVal,tweenTime,easeFnName){
         var movie = new TweenMovie();

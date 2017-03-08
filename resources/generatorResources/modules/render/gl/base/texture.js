@@ -1,12 +1,12 @@
 
-var isPowerOf2 = function(value) {
+const isPowerOf2 = function(value) {
     return (value & (value - 1)) == 0;
 };
 
-var Texture = function(gl){
+const Texture = function(gl){
 
-    var tex;
-    var size;
+    let tex;
+    let size;
 
     this.isPowerOfTwo = false;
 

@@ -1,39 +1,39 @@
 
-var abstractDialog = require('providers/abstractDialog');
+const abstractDialog = require('providers/abstractDialog');
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var Font = _require('font');
+const editData = require('providers/editData');
+const restFileSystem = require('providers/rest/fileSystem');
+const restResource = require('providers/rest/resource');
 
-var fontSample = 'test font';
-var chrome = require('providers/chrome');
-var utils = require('providers/utils');
+const fontSample = 'Test me! Text here';
+const chrome = require('providers/chrome');
+const utils = require('providers/utils');
 
-var SYMBOL_PADDING = 4;
+const SYMBOL_PADDING = 4;
 
-var getFontContext = function(arrFromTo, strFont, w) {
+const getFontContext = function(arrFromTo, strFont, w) {
     function getFontHeight(strFont) {
-        var parent = document.createElement("span");
+        let parent = document.createElement("span");
         parent.appendChild(document.createTextNode("height!ДдЙЇ"));
         document.body.appendChild(parent);
         parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
-        var height = parent.offsetHeight;
+        let height = parent.offsetHeight;
         document.body.removeChild(parent);
         return height;
     }
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
+    let cnv = document.createElement('canvas');
+    let ctx = cnv.getContext('2d');
     ctx.font = strFont;
-    var textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
-    var symbols = {};
-    var currX = 0, currY = 0, cnvHeight = textHeight;
-    for (var k = 0; k < arrFromTo.length; k++) {
-        var arrFromToCurr = arrFromTo[k];
-        for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
-            var currentChar = String.fromCharCode(i);
+    let textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
+    let symbols = {};
+    let currX = 0, currY = 0, cnvHeight = textHeight;
+    for (let k = 0; k < arrFromTo.length; k++) {
+        let arrFromToCurr = arrFromTo[k];
+        for (let i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
+            let currentChar = String.fromCharCode(i);
 
             ctx = cnv.getContext('2d');
-            var textWidth = ctx.measureText(currentChar).width;
+            let textWidth = ctx.measureText(currentChar).width;
             textWidth += 2 * SYMBOL_PADDING;
             if (textWidth == 0) continue;
             if (currX + textWidth > w) {
@@ -41,7 +41,7 @@ var getFontContext = function(arrFromTo, strFont, w) {
                 currY += textHeight;
                 cnvHeight = currY + textHeight;
             }
-            var symbol = {};
+            let symbol = {};
             symbol.x = ~~currX + SYMBOL_PADDING;
             symbol.y = ~~currY + SYMBOL_PADDING;
             symbol.width = ~~textWidth - 2 * SYMBOL_PADDING;
@@ -54,16 +54,16 @@ var getFontContext = function(arrFromTo, strFont, w) {
 };
 
 
-var getFontImage = function(symbolsContext,strFont,color){
-    var cnv = document.createElement('canvas');
+const getFontImage = function(symbolsContext,strFont,color){
+    let cnv = document.createElement('canvas');
     cnv.width = symbolsContext.width;
     cnv.height = symbolsContext.height;
-    var ctx = cnv.getContext('2d');
+    let ctx = cnv.getContext('2d');
     ctx.font = strFont;
     ctx.fillStyle = color;
     ctx.textBaseline = "top";
-    var symbols = symbolsContext.symbols;
-    for (var symbol in symbols) {
+    let symbols = symbolsContext.symbols;
+    for (let symbol in symbols) {
         if (!symbols.hasOwnProperty(symbol)) continue;
         ctx.fillText(symbol, symbols[symbol].x, symbols[symbol].y);
     }
@@ -94,25 +94,38 @@ module.exports.component = Vue.component('app-font-dialog', {
         open: function(){
             this.opened = true;
             if (!this.systemFontList.length) {
-                var self = this;
+                let self = this;
                 chrome.requestToApi({method:'getFontList'},function(list){
                     self.systemFontList = list;
                 });
             }
         },
-        createOrEditFont: function(fnt){
-            var self = this;
-            var strFont = fnt.fontSize +'px'+' '+fnt.fontFamily;
-            fnt.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
-            fnt._file = utils.dataURItoBlob(getFontImage(fnt.fontContext,strFont,utils.rgbToHex(fnt.fontColor)));
-            resource.createOrEditResource(
-                fnt,
-                Font,
-                editData.fontList,
-                function(result){
-                    self.close();
+        createOrEditFont: function(model){
+            let self = this;
+            let strFont = model.fontSize +'px'+' '+model.fontFamily;
+            model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
+            let file = utils.dataURItoBlob(getFontImage(model.fontContext,strFont,utils.rgbToHex(model.fontColor)));
+
+            Promise.resolve().
+            then(()=>{
+                return restFileSystem.
+                    uploadFile(
+                        file,
+                        {type:model.type}
+                    );
+            }).
+            then(()=>{
+                return restResource.save(model);
+            }).
+            then((resp)=>{
+                if (resp.created) {
+                    model.id = resp.id;
+                    editData[`${model.type}List`].add(model);
+                } else if (resp.updated) {
+                    model.updateCloner();
                 }
-            );
+                self.close();
+            });
         }
     }
 });

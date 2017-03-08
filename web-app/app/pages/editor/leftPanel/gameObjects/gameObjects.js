@@ -29,15 +29,8 @@ module.exports = Vue.component('app-game-objects', {
             this.editData.currGameObjectInEdit =  go.clone();
             gameObjectDialog.instance.open();
         },
-        deleteGameObject: function(g){
-            var self = this;
-            window.confirmEx(
-                this.i18n.confirmQuestion(g),
-                function(){
-                    self.editData.gameObjectList.remove({id:g.id});
-                    restResource.remove(g);
-                }
-            )
+        deleteGameObject: function(model){
+            utils.deleteModel(model);
         }
     }
 });

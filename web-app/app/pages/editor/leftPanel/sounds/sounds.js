@@ -1,7 +1,8 @@
 
-var Sound = _require('sound');
-var soundDialog = require('../../dialogs/soundDialog/soundDialog');
-var resource = require('providers/resource');
+const utils = require('providers/utils');
+const Sound = _require('sound');
+const soundDialog = require('../../dialogs/soundDialog/soundDialog');
+const restResource = require('providers/rest/resource');
 
 module.exports = Vue.component('app-sounds', {
     props: [],
@@ -24,13 +25,8 @@ module.exports = Vue.component('app-sounds', {
             this.editData.currSoundInEdit = sound.clone();
             soundDialog.instance.open();
         },
-        deleteSound: function(sound){
-            window.confirmEx(
-                this.i18n.confirmQuestion,
-                function(){
-                    resource.deleteResource(sound);
-                }
-            )
+        deleteSound: function(model){
+            utils.deleteModel(model);
         }
     }
 });

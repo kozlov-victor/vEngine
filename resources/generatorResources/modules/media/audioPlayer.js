@@ -1,14 +1,14 @@
 
-var bundle = require('bundle');
-var AudioNodeSet = require('audioNodeSet');
-var cache = require('resourceCache');
-var HtmlAudioContext = require('htmlAudioContext');
-var WebAudioContext = require('webAudioContext');
-var FakeAudioContext = require('fakeAudioContext');
-var Tweenable = require('tweenable');
-var Tween = require('tween');
+const bundle = require('bundle');
+const AudioNodeSet = require('audioNodeSet');
+const cache = require('resourceCache');
+const HtmlAudioContext = require('htmlAudioContext');
+const WebAudioContext = require('webAudioContext');
+const FakeAudioContext = require('fakeAudioContext');
+const Tweenable = require('tweenable');
+const Tween = require('tween');
 
-var Context  = null;
+let Context  = null;
 
 if (WebAudioContext.isAcceptable()) {
     Context = WebAudioContext;
@@ -18,21 +18,21 @@ if (WebAudioContext.isAcceptable()) {
     Context = FakeAudioContext;
 }
 
-var audioNodeSet = new AudioNodeSet(Context,5);
-var tweenable = new Tweenable({global:true});
+let audioNodeSet = new AudioNodeSet(Context,5);
+let tweenable = new Tweenable({global:true});
 
 exports.loadSound = function( url, opts, progress, callback) {
     Context.load(url,opts,progress,callback);
 };
 
 exports.play = function(sound){
-    var node = audioNodeSet.getFreeNode();
+    let node = audioNodeSet.getFreeNode();
     if (!node) return;
     node.play(sound);
 };
 
 exports.stop = function(sound){
-    var node = audioNodeSet.getNodeBySound(sound);
+    let node = audioNodeSet.getNodeBySound(sound);
     if (!node) return;
     node.stop();
 };
@@ -50,10 +50,10 @@ exports.resumeAll = function(){
 };
 
 exports.setGain = function(sound,toVal,time,easeFnName){
-    var node = audioNodeSet.getNodeBySound(sound);
+    let node = audioNodeSet.getNodeBySound(sound);
     if (!node) return;
     if (time) {
-        var tween = new Tween(sound,{to:{_gain:toVal}},time,easeFnName);
+        let tween = new Tween(sound,{to:{_gain:toVal}},time,easeFnName);
         tween.progress(function(s){
             node.setGain(s._gain);
         });

@@ -1,16 +1,16 @@
 
-var Plane = require('plane');
+const Plane = require('plane');
 
-var bundle = require('bundle');
-var ShaderProgram = require('shaderProgram');
+const bundle = require('bundle');
+const ShaderProgram = require('shaderProgram');
 
-var VertexBuffer = require('vertexBuffer');
-var IndexBuffer = require('indexBuffer');
+const VertexBuffer = require('vertexBuffer');
+const IndexBuffer = require('indexBuffer');
 
-var MultiColorRectDrawer = function(gl){
+const MultiColorRectDrawer = function(gl){
 
-    var program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
-    var plane = new Plane();
+    let program, posVertexBuffer, posIndexBuffer, vertexColorBuffer;
+    let plane = new Plane();
 
     this.bind = function(colors){
         program.bind();

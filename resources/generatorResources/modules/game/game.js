@@ -1,27 +1,27 @@
 
-var ResourceLoader = require('resourceLoader');
-var collider = require('collider');
-var keyboard = require('keyboard');
-var camera = require('camera');
+const ResourceLoader = require('resourceLoader');
+const collider = require('collider');
+const keyboard = require('keyboard');
+const camera = require('camera');
 
-var ctx = null;
+let ctx = null;
 
-var renderer = require('renderer');
-var bundle = require('bundle');
-var progressScene;
-var tweenMovies = [];
+const renderer = require('renderer');
+const bundle = require('bundle');
+let progressScene;
+const tweenMovies = [];
 
 exports.currScene = null;
-var booted = false;
+const booted = false;
 
-var bootEssentialResources = function(callBack){
+const bootEssentialResources = function(callBack){
 
     if (booted) {
         callBack();
         return;
     }
 
-    var loader = new ResourceLoader();
+    let loader = new ResourceLoader();
     loader.onComplete = function(){
         callBack();
     };
@@ -44,7 +44,7 @@ var bootEssentialResources = function(callBack){
     loader.start();
 };
 
-var preloadSceneAndSetIt = function(scene){
+const preloadSceneAndSetIt = function(scene){
     if (progressScene) {
         exports.currScene = progressScene;
         bundle.applyBehaviourForScene(progressScene);
@@ -56,7 +56,7 @@ var preloadSceneAndSetIt = function(scene){
         if (!renderer.isRunning()) renderer.start();
     }
 
-    var loader = new ResourceLoader();
+    let loader = new ResourceLoader();
     loader.onComplete = function(){
         exports.currScene = scene;
         bundle.applyBehaviourForScene(scene);
@@ -77,7 +77,7 @@ var preloadSceneAndSetIt = function(scene){
         progressScene.onProgress(e);
     };
 
-    var allSprSheets = scene.getAllSpriteSheets();
+    let allSprSheets = scene.getAllSpriteSheets();
 
     bundle.particleSystemList.forEach(function(ps){
         allSprSheets.add(ps._gameObject._spriteSheet);
@@ -96,7 +96,7 @@ exports.setCtx = function(_ctx){
 };
 
 exports.setScene = function(scene){
-    var Scene = require('scene');
+    let Scene = require('scene');
     if (!(scene instanceof Scene)) throw 'object '+scene+' is not a scene';
     if (exports.currScene==scene) return;
     bootEssentialResources(function(){
@@ -106,8 +106,8 @@ exports.setScene = function(scene){
 
 exports.setSceneByName = function(sceneName){
     if (!(sceneName && sceneName.substr)) throw 'object '+ sceneName + 'is not a string';
-    var bundle = require('bundle');
-    var scene = bundle.sceneList.find({name: sceneName});
+    let bundle = require('bundle');
+    let scene = bundle.sceneList.find({name: sceneName});
     if (!scene) throw 'no scene with name ' + sceneName + ' found';
     exports.setScene(scene);
 };

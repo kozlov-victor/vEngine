@@ -1,7 +1,7 @@
 
-var BaseModel = require('baseModel');
+const BaseModel = require('baseModel');
 
-var CommonBehaviour = BaseModel.extend({
+const CommonBehaviour = BaseModel.extend({
     type:'commonBehaviour',
     name:'',
     description:'',

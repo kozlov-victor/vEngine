@@ -1,28 +1,28 @@
 
-var AbstractPrimitive = require('abstractPrimitive');
+const AbstractPrimitive = require('abstractPrimitive');
 
-var prepareBuffers = function(radius,bands){
-    var latitudeBands = bands;
-    var longitudeBands = bands;
+const prepareBuffers = function(radius,bands){
+    let latitudeBands = bands;
+    let longitudeBands = bands;
 
-    var vertexArr = [];
-    var normalArr = [];
-    var texCoordArr = [];
-    for (var latNumber=0; latNumber <= latitudeBands; latNumber++) {
-        var theta = latNumber * Math.PI / latitudeBands;
-        var sinTheta = Math.sin(theta);
-        var cosTheta = Math.cos(theta);
+    let vertexArr = [];
+    let normalArr = [];
+    let texCoordArr = [];
+    for (let latNumber=0; latNumber <= latitudeBands; latNumber++) {
+        let theta = latNumber * Math.PI / latitudeBands;
+        let sinTheta = Math.sin(theta);
+        let cosTheta = Math.cos(theta);
 
-        for (var longNumber=0; longNumber <= longitudeBands; longNumber++) {
-            var phi = longNumber * 2 * Math.PI / longitudeBands;
-            var sinPhi = Math.sin(phi);
-            var cosPhi = Math.cos(phi);
+        for (let longNumber=0; longNumber <= longitudeBands; longNumber++) {
+            let phi = longNumber * 2 * Math.PI / longitudeBands;
+            let sinPhi = Math.sin(phi);
+            let cosPhi = Math.cos(phi);
 
-            var x = cosPhi * sinTheta;
-            var y = cosTheta;
-            var z = sinPhi * sinTheta;
-            var u = 1 - (longNumber / longitudeBands);
-            var v = 1 - (latNumber / latitudeBands);
+            let x = cosPhi * sinTheta;
+            let y = cosTheta;
+            let z = sinPhi * sinTheta;
+            let u = 1 - (longNumber / longitudeBands);
+            let v = 1 - (latNumber / latitudeBands);
 
             normalArr.push(x);
             normalArr.push(y);
@@ -35,11 +35,11 @@ var prepareBuffers = function(radius,bands){
         }
     }
 
-    var indexArr = [];
+    let indexArr = [];
     for (latNumber=0; latNumber < latitudeBands; latNumber++) {
         for (longNumber=0; longNumber < longitudeBands; longNumber++) {
-            var first = (latNumber * (longitudeBands + 1)) + longNumber;
-            var second = first + longitudeBands + 1;
+            let first = (latNumber * (longitudeBands + 1)) + longNumber;
+            let second = first + longitudeBands + 1;
             indexArr.push(first);
             indexArr.push(second);
             indexArr.push(first + 1);
@@ -59,11 +59,11 @@ var prepareBuffers = function(radius,bands){
 
 };
 
-var Sphere = AbstractPrimitive.extend({
+const Sphere = AbstractPrimitive.extend({
     radius:10,
     bands:30,
     construct: function(){
-        var bufferArrs = prepareBuffers(this.radius,this.bands);
+        let bufferArrs = prepareBuffers(this.radius,this.bands);
         this.vertexArr = bufferArrs.vertexArr;
         this.normalArr = bufferArrs.normalArr;
         this.texCoordArr = bufferArrs.texCoordArr;

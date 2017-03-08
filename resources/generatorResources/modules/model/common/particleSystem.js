@@ -1,12 +1,11 @@
 
-var mathEx = require('mathEx');
-var bundle = require('bundle');
-var BaseModel = require('baseModel');
+const mathEx = require('mathEx');
+const bundle = require('bundle');
+const BaseModel = require('baseModel');
 
-var ParticleSystem = BaseModel.extend({
+const ParticleSystem = BaseModel.extend({
     type:'particleSystem',
-    gameObjectId:null,
-    _gameObject:null,
+    gameObject:{type:'gameObject'},
     _particles:null,
     numOfParticlesToEmit:null,
     particleAngle:null,
@@ -21,16 +20,15 @@ var ParticleSystem = BaseModel.extend({
         if (!this.particleVelocity) this.particleVelocity = {from:1,to:100};
         if (!this.particleLiveTime) this.particleLiveTime = {from:100,to:1000};
         if (!this.emissionRadius) this.emissionRadius = 0;
-        this._gameObject = bundle.gameObjectList.find({id:this.gameObjectId});
     },
     emit: function(x,y){
-        var r = function(obj){
+        let r = function(obj){
             return mathEx.random(obj.from,obj.to);
         };
-        for (var i = 0;i<r(this.numOfParticlesToEmit);i++) {
-            var particle = this._gameObject.clone();
-            var angle = r(this.particleAngle);
-            var vel = r(this.particleVelocity);
+        for (let i = 0;i<r(this.numOfParticlesToEmit);i++) {
+            let particle = this.gameObject.clone();
+            let angle = r(this.particleAngle);
+            let vel = r(this.particleVelocity);
             particle.vel.x = vel*Math.cos(angle);
             particle.vel.y = vel*Math.sin(angle);
             particle.pos.x = r({from:x-this.emissionRadius,to:x+this.emissionRadius});
@@ -41,12 +39,12 @@ var ParticleSystem = BaseModel.extend({
         }
     },
     update:function(time,delta){
-        var self = this;
-        var all = this._particles;
-        var i = all.length;
-        var l = i - 1;
+        let self = this;
+        let all = this._particles;
+        let i = all.length;
+        let l = i - 1;
         while(i--){
-            var p = all[l-i];
+            let p = all[l-i];
             if (!p) continue;
             if (!p._timeCreated) p._timeCreated = time;
             if (time - p._timeCreated > p.liveTime) {

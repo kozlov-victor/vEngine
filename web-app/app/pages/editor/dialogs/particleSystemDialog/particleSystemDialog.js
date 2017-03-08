@@ -2,7 +2,7 @@
 var abstractDialog = require('providers/abstractDialog');
 
 var editData = require('providers/editData');
-var resource = require('providers/resource');
+const restResource = require('providers/rest/resource');
 var ParticleSystem = _require('particleSystem');
 
 module.exports.component = Vue.component('app-particle-system-dialog', {
@@ -28,23 +28,28 @@ module.exports.component = Vue.component('app-particle-system-dialog', {
             this.opened = true;
         },
         onGameObjectIdChanged: function(id){
-            editData.currParticleSystemInEdit._gameObject =
-                editData.gameObjectList.find({id:id});
+            editData.currParticleSystemInEdit.gameObject =
+                editData.gameObjectList.find({id:id}).clone();
         },
         showPreview: function(){
             require('../particleSystemPreviewDialog/particleSystemPreviewDialog')
                 .instance.open();
         },
-        createOrEditPs: function(ps){
-            var self = this;
-            resource.createOrEditResource(
-                ps,
-                ParticleSystem,
-                editData.particleSystemList,
-                function(result){
-                    self.close();
+        createOrEditPs: function(model){
+            let self = this;
+            Promise.resolve().
+            then(()=>{
+                return restResource.save(model);
+            }).
+            then((resp)=>{
+                if (resp.created) {
+                    model.id = resp.id;
+                    editData[`${model.type}List`].add(model);
+                } else if (resp.updated) {
+                    model.updateCloner();
                 }
-            );
+                self.close();
+            });
         }
     }
 });

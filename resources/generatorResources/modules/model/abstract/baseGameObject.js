@@ -1,12 +1,12 @@
 
 
-var renderer = require('renderer');
-var camera = require('camera');
+const renderer = require('renderer');
+const camera = require('camera');
 
-var Renderable = require('renderable');
-var Moveable = require('moveable');
+const Renderable = require('renderable');
+const Moveable = require('moveable');
 
-var BaseGameObject = Renderable.extend({
+const BaseGameObject = Renderable.extend({
     type:'baseGameObject',
     groupName:'',
     _spriteSheet:null,
@@ -25,7 +25,7 @@ var BaseGameObject = Renderable.extend({
         return {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
     },
     getScreenRect: function(){
-        var rect = {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
+        let rect = {x:this.pos.x,y:this.pos.y,width:this.width,height:this.height};
         if (this.fixedToCamera) return rect;
         rect.x -= camera.pos.x;
         rect.y -= camera.pos.y;

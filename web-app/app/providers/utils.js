@@ -2,6 +2,8 @@
 const mathEx = _require('mathEx');
 const editData = require('providers/editData');
 const resource = require('providers/resource');
+const restResource = require('providers/rest/resource');
+const i18n = require('providers/i18n').getAll();
 
 class Utils {
     getGameObjectCss(gameObj){
@@ -137,11 +139,22 @@ class Utils {
         return Object.keys(obj).length;
     }
 
+    deleteModel(model){
+        window.confirmEx(
+            i18n.confirmQuestion(model),
+            ()=>{
+                editData[`${model.type}List`].remove({id:model.id});
+                restResource.remove(model);
+            }
+        )
+    }
+
     openEditor(resourceUrl) {
+        let self = this;
         editData.scriptEditorUrl = resourceUrl;
         let path = 'script/'+resourceUrl;
         resource.readFile(path,function(file){
-            waitForFrameAndDo(file,path);
+            self._waitForFrameAndDo(file,path);
         });
     }
 

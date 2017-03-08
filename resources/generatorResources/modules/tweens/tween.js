@@ -1,19 +1,20 @@
 
+const mathEx = require('mathEx');
 
-var Tween = function(obj,fromToVal,tweenTime,easeFnName){
-    var startedTime = null;
-    var progressFn;
 
-    var propsToChange = [];
+const Tween = function(obj,fromToVal,tweenTime,easeFnName){
+    let startedTime = null;
+    let progressFn;
+
+    let propsToChange = [];
     easeFnName = easeFnName || 'linear';
     this.completed = false;
-    var mathEx = require('mathEx');
     this.tweenTime = tweenTime;
 
-    var normalizeFromTo = function(fromToVal){
+    const normalizeFromTo = function(fromToVal){
         fromToVal.from = fromToVal.from || {};
         fromToVal.to = fromToVal.to || {};
-        var allPropsMap = {};
+        let allPropsMap = {};
         Object.keys(fromToVal.from).forEach(function(keyFrom){
             allPropsMap[keyFrom] = true;
         });
@@ -37,14 +38,14 @@ var Tween = function(obj,fromToVal,tweenTime,easeFnName){
     this._update = function(time){
         if (!startedTime) startedTime = time;
         if (this.completed) return;
-        var delta = time - startedTime;
+        let delta = time - startedTime;
         if (delta>tweenTime) {
             this.complete();
             return;
         }
-        var l = propsToChange.length;
+        let l = propsToChange.length;
         while(l--){
-            var prp = propsToChange[l];
+            let prp = propsToChange[l];
             obj[prp] = mathEx.ease[easeFnName](delta,fromToVal.from[prp],fromToVal.to[prp] - fromToVal.from[prp],tweenTime);
         }
         progressFn && progressFn(obj);
@@ -62,9 +63,9 @@ var Tween = function(obj,fromToVal,tweenTime,easeFnName){
 
     this._complete = function(){
         if (this.completed) return;
-        var l = propsToChange.length;
+        let l = propsToChange.length;
         while(l--){
-            var prp = propsToChange[l];
+            let prp = propsToChange[l];
             obj[prp] = fromToVal.to[prp];
         }
         progressFn && progressFn(obj);

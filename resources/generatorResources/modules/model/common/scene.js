@@ -1,15 +1,15 @@
 
-var Renderable = require('renderable');
-var collections = require('collections');
-var bundle = require('bundle');
-var renderer = require('renderer');
-var resourceCache = require('resourceCache');
-var camera = require('camera');
+const Renderable = require('renderable');
+const collections = require('collections');
+const bundle = require('bundle');
+const renderer = require('renderer');
+const resourceCache = require('resourceCache');
+const camera = require('camera');
 
-var tweenModule = require('tween');
-var tweenMovieModule = require('tweenMovie');
+const tweenModule = require('tween');
+const tweenMovieModule = require('tweenMovie');
 
-var Scene = Renderable.extend({
+const Scene = Renderable.extend({
     type:'scene',
     layerProps:[],
     alpha:1,
@@ -21,19 +21,19 @@ var Scene = Renderable.extend({
     onShow: function(){},
     _tweenMovies:null,
     __onResourcesReady: function(){
-        var self = this;
+        let self = this;
         self._allGameObjects = new collections.List();
         self._layers.forEach(function(l){
             self._allGameObjects.addAll(l._gameObjects);
         });
     },
     construct: function(){
-        var self = this;
+        let self = this;
         self._super();
         self._layers = new collections.List();
         this.layerProps.forEach(function(prop){
-            var l = bundle.layerList.find({id: prop.protoId});
-            var lCloned = l.clone(exports.Layer);
+            let l = bundle.layerList.find({id: prop.protoId});
+            let lCloned = l.clone(exports.Layer);
             lCloned.fromJSON(prop);
             lCloned._scene = self;
             self._layers.add(lCloned);
@@ -57,7 +57,7 @@ var Scene = Renderable.extend({
         this._tweenMovies.push(tm);
     },
     getAllSpriteSheets:function() {
-        var dataSet = new collections.Set();
+        let dataSet = new collections.Set();
         this._layers.forEach(function(l){
             dataSet.combine(l.getAllSpriteSheets());
         });
@@ -70,11 +70,11 @@ var Scene = Renderable.extend({
         return this._allGameObjects;
     },
     update: function(currTime,deltaTime){
-        var self = this;
+        let self = this;
         self._render();
-        var layers = self._layers.rs;
-        var i = self._layers.size();
-        var l = i -1;
+        let layers = self._layers.rs;
+        let i = self._layers.size();
+        let l = i -1;
         while(i--){
             layers[i-l].update(currTime,deltaTime);
         }
@@ -93,23 +93,23 @@ var Scene = Renderable.extend({
         return this.tween(this,{to:{alpha:0}},time,easeFnName);
     },
     tween: function(obj,fromToVal,tweenTime,easeFnName){
-        var movie = new tweenMovieModule.TweenMovie();
-        var tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+        let movie = new tweenMovieModule.TweenMovie();
+        let tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
         movie.tween(0,tween);
         movie.play();
     },
     _render: function(){
-        var self = this;
-        var spriteSheet = self.tileMap._spriteSheet;
+        let self = this;
+        let spriteSheet = self.tileMap._spriteSheet;
         if (!spriteSheet) return;
-        var ctx = renderer.getContext();
-        var tilePosX = ~~(camera.pos.x / self.tileMap._spriteSheet._frameWidth);
-        var tilePosY = ~~(camera.pos.y / self.tileMap._spriteSheet._frameHeight);
-        var w = tilePosX + self.tileMap._tilesInScreenX + 2;
-        var h = tilePosY + self.tileMap._tilesInScreenY + 2;
-        for (var y=tilePosY;y<h;y++) {
-            for (var x=tilePosX;x<w;x++) {
-                var index = self.tileMap.data[y] && self.tileMap.data[y][x];
+        let ctx = renderer.getContext();
+        let tilePosX = ~~(camera.pos.x / self.tileMap._spriteSheet._frameWidth);
+        let tilePosY = ~~(camera.pos.y / self.tileMap._spriteSheet._frameHeight);
+        let w = tilePosX + self.tileMap._tilesInScreenX + 2;
+        let h = tilePosY + self.tileMap._tilesInScreenY + 2;
+        for (let y=tilePosY;y<h;y++) {
+            for (let x=tilePosX;x<w;x++) {
+                let index = self.tileMap.data[y] && self.tileMap.data[y][x];
                 if (index==undefined) continue;
                 ctx.drawImage(
                     resourceCache.get(spriteSheet.resourcePath),
@@ -124,10 +124,10 @@ var Scene = Renderable.extend({
         }
     },
     getTileAt: function(x,y){
-        var self = this;
+        let self = this;
         if (!self.tileMap._spriteSheet) return null;
-        var tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
-        var tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
+        let tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
+        let tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
         return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];
     },
     printText: function(x,y,text,font){

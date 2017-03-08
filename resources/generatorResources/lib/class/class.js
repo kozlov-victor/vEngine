@@ -1,16 +1,16 @@
-var Class = function() {};
+let Class = function() {};
 // проверка кирилицы
 Class.extend = function(props, staticProps) {
 
-    var mixins = [];
-    var firstArg = {};
+    let mixins = [];
+    let firstArg = {};
 
     if (arguments[0].slice) {
         mixins = arguments[0];
         props = arguments[1];
         staticProps = arguments[2];
     } else if (arguments[0].call) {
-        var obj = {};
+        let obj = {};
         firstArg.obj = obj;
         firstArg.fn = props;
         props(obj);
@@ -31,7 +31,7 @@ Class.extend = function(props, staticProps) {
 
     copyWrappedProps(staticProps, Instance, this);
 
-    for (var i = 0; i < mixins.length; i++) {
+    for (let i = 0; i < mixins.length; i++) {
         copyWrappedProps(mixins[i], Instance.prototype, this.prototype);
     }
     copyWrappedProps(props, Instance.prototype, this.prototype);
@@ -39,12 +39,12 @@ Class.extend = function(props, staticProps) {
     return Instance;
 };
 
-var fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
+let fnTest = /xyz/.test(function() {xyz}) ? /\b_super\b/ : /./;
 
 function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
     if (!props) return;
 
-    for (var name in props) {
+    for (let name in props) {
         if (typeof props[name] == "function"
             && typeof parentPropsObj[name] == "function"
             && fnTest.test(props[name])) {
@@ -59,7 +59,7 @@ function copyWrappedProps(props, targetPropsObj, parentPropsObj) {
 
 function wrap(method, parentMethod) {
     return function() {
-        var backup = this._super;
+        let backup = this._super;
 
         this._super = parentMethod;
 

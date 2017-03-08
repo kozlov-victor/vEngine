@@ -1,8 +1,8 @@
-var buffer = {};
-var KEY_PRESSED = 1;
-var KEY_JUST_PRESSED = 2;
-var KEY_RELEASED = 0;
-var KEY_JUST_RELEASED = -1;
+const buffer = {};
+const KEY_PRESSED = 1;
+const KEY_JUST_PRESSED = 2;
+const KEY_RELEASED = 0;
+const KEY_JUST_RELEASED = -1;
 
 exports.KEY_UP = 38;
 exports.KEY_DOWN = 40;
@@ -49,7 +49,7 @@ exports.update = function(){
 };
 
 window.addEventListener('keydown',function(e){
-    var code = e.keyCode;
+    let code = e.keyCode;
     switch (code) {
         case exports.KEY_UP:
         case exports.KEY_DOWN:
@@ -61,7 +61,7 @@ window.addEventListener('keydown',function(e){
 });
 
 window.addEventListener('keyup',function(e){
-    var code = e.keyCode;
+    let code = e.keyCode;
     switch (code) {
         case exports.KEY_UP:
         case exports.KEY_DOWN:

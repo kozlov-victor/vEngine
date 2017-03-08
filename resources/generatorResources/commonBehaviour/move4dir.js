@@ -14,18 +14,18 @@
  exports.description = 'allow character to walk up, down, left and right';
  */
 
-var animations = {};
+let animations = {};
 
-var dirs = ['Left','Right','Up','Down'];
+const dirs = ['Left','Right','Up','Down'];
 
 dirs.forEach(function(dir){
-    var keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
+    let keyWalk = 'walk'+dir+'Animation', keyIdle = 'idle'+dir+'Animation';
     animations[keyWalk] = self.getFrAnimation(parameters[keyWalk]);
     if (!animations[keyWalk]) throw 'can not find animation ' + parameters[keyWalk] +' an gameObject ' + self.name;
     parameters[keyIdle] && (animations[keyIdle] = self.getFrAnimation(parameters[keyIdle]));
 });
 
-var lastDir = '';
+let lastDir = '';
 
 self.go = function(direction){
     _go(direction);
@@ -36,15 +36,15 @@ self.stop = function(){
     _stop();
 };
 
-var _stop = function(lastDirection){
+let _stop = function(lastDirection){
     self.stopFrAnimations();
     self.vel.x = 0;
     self.vel.y = 0;
-    var idleKey = 'idle'+lastDirection+'Animation';
+    let idleKey = 'idle'+lastDirection+'Animation';
     animations[idleKey] && (animations[idleKey].play());
 };
 
-var _go = function(direction){
+let _go = function(direction){
     animations['walk'+direction+'Animation'].play();
     switch (direction) {
         case 'Up':

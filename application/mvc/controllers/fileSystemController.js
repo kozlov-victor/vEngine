@@ -33,7 +33,7 @@ class FileSystemController{
             [
                 'workspace',
                 params.projectName,
-                'resources/spriteSheet',
+                `resources/${params.type}`,
                 params.fileName
             ].join('/'),
             params.file,

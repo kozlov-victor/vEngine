@@ -1,18 +1,18 @@
 
-var utils = require('utils');
-var cache = require('resourceCache');
-var Class = require('class');
+const utils = require('utils');
+const cache = require('resourceCache');
+const Class = require('class');
 
-var getCtx = (function(){
-    var ctx = window.AudioContext;
-    var res = null;
+const getCtx = (function(){
+    let ctx = window.AudioContext;
+    let res = null;
     return function(){
         if (ctx && !res) res = new ctx();
         return res;
     }
 })();
 
-var decode = function(buffer,callback){
+const decode = function(buffer,callback){
     getCtx().decodeAudioData(
         buffer,
         function(decoded) {
@@ -26,7 +26,7 @@ var decode = function(buffer,callback){
     );
 };
 
-var WebAudioContext = Class.extend(
+const WebAudioContext = Class.extend(
     {
         type:'webAudioContext',
         _ctx:null,
@@ -37,9 +37,9 @@ var WebAudioContext = Class.extend(
             return this._free;
         },
         play: function(buffer,loop){
-            var self = this;
+            let self = this;
             self._free = false;
-            var currSource = self._ctx.createBufferSource();
+            let currSource = self._ctx.createBufferSource();
             currSource.buffer = buffer;
             currSource.loop = loop;
             currSource.connect(self._gainNode);
@@ -50,7 +50,7 @@ var WebAudioContext = Class.extend(
             self._currSource = currSource;
         },
         stop: function(){
-            var currSource = this._currSource;
+            let currSource = this._currSource;
             if (currSource)  {
                 currSource.stop();
                 currSource.disconnect(this._gainNode);
@@ -80,7 +80,7 @@ var WebAudioContext = Class.extend(
         },
         load: function(url,opts,progress,callBack){
             if (opts.type=='base64') {
-                var buffer = require('base64').toByteArray(url).buffer;
+                let buffer = require('base64').toByteArray(url).buffer;
                 decode(buffer,callBack);
             } else {
                 utils.loadBinary(url,progress,function(buffer){

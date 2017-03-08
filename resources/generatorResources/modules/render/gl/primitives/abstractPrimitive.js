@@ -1,7 +1,7 @@
 
-var BaseModel = require('baseModel');
+const BaseModel = require('baseModel');
 
-var AbstractPrimitive = BaseModel.extend({
+const AbstractPrimitive = BaseModel.extend({
     vertexArr:null,
     indexArr:null,
     texCoordArr:null,

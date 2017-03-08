@@ -1,16 +1,16 @@
 
-var game = require('game');
-var Tween = require('tween');
+const game = require('game');
+const Tween = require('tween');
 
-var TweenMovie = function(){
-    var tweens = [];
-    var startedTime = null;
+const TweenMovie = function(){
+    let tweens = [];
+    let startedTime = null;
     this.completed = false;
     this.onComplete = null;
-    var loop = false;
+    let loop = false;
 
     this.tween = function(startTime,obj,fromToVal,tweenTime,easeFnName){
-        var tween;
+        let tween;
         if (obj instanceof Tween) tween = obj;
         else tween = new Tween(obj,fromToVal,tweenTime,easeFnName);
         tweens.push({
@@ -34,7 +34,7 @@ var TweenMovie = function(){
         if (isGlobal) {
             game.addTweenMovie(this);
         } else {
-            var scene = game.getCurrScene();
+            let scene = game.getCurrScene();
             scene.addTweenMovie(this);
         }
     };
@@ -42,8 +42,8 @@ var TweenMovie = function(){
     this._update = function(time){
         if (this.completed) return;
         if (!startedTime) startedTime = time;
-        var deltaTime = time - startedTime;
-        var allCompleted = true;
+        let deltaTime = time - startedTime;
+        let allCompleted = true;
         tweens.forEach(function(item){
             if (deltaTime>item.startTime) {
                 if (deltaTime<item.startTime+item.tween.tweenTime) {

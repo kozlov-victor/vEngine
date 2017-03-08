@@ -1,5 +1,5 @@
 
-var commonBehaviour = {};
+let commonBehaviour = {};
 
 //<code>{{#each commonBehaviour}}
 //<code>commonBehaviour['{{this.name}}'] = function(exports,parameters){
@@ -10,7 +10,7 @@ var commonBehaviour = {};
 
 exports.commonBehaviour = commonBehaviour;
 
-var scripts = {};
+let scripts = {};
 scripts.gameObject = {};
 scripts.scene = {};
 
