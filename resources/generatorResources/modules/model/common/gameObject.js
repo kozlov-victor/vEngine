@@ -12,8 +12,6 @@ const Cube = require('cube');
 //var TeaPot = require('teaPot');
 //var model = new Airplane({radius:50,size:50,bands:6});
 
-var a = 0;
-
 const _draw = function(ctx,self,x,y){
     ctx.drawImage(
         resourceCache.get(self._spriteSheet.resourcePath),
@@ -76,14 +74,13 @@ const GameObject = BaseGameObject.extend({
     currFrameIndex:0,
     _sprPosX:0,
     _sprPosY:0,
-    _frameAnimations: null,
-    frameAnimationIds:[],
+    frameAnimations: [{type:'frameAnimation'}],
     _currFrameAnimation:null,
     _timeCreated:null,
     tileOffset: null,
     tileRepeat:false,
     construct: function(){
-        var self = this;
+        let self = this;
         if (!this.commonBehaviour) this.commonBehaviour=[{type:'commonBehaviour'}];
         self._super();
         if (!self.tileOffset) self.tileOffset = {x:0,y:0};
@@ -114,8 +111,8 @@ const GameObject = BaseGameObject.extend({
     },
     setFrameIndex: function(index){
         this.currFrameIndex = index;
-        this._sprPosX = this._spriteSheet.getFramePosX(this.currFrameIndex);
-        this._sprPosY = this._spriteSheet.getFramePosY(this.currFrameIndex);
+        this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
+        this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
     },
     setSpriteSheet: function(spriteSheet){
         this._spriteSheet = spriteSheet;
@@ -123,10 +120,9 @@ const GameObject = BaseGameObject.extend({
         this.height = spriteSheet._frameHeight;
     },
     update: function(time,delta) {
-        var self = this;
+        let self = this;
         self._super(time,delta);
         self._currFrameAnimation && this._currFrameAnimation.update(time);
-        if (!self.__updateIndividualBehaviour__) console.log('fail',self);
         self.__updateIndividualBehaviour__(delta);
         self.__updateCommonBehaviour__();
         self._render();
@@ -135,8 +131,8 @@ const GameObject = BaseGameObject.extend({
         this._currFrameAnimation && this._currFrameAnimation.stop();
     },
     _render: function(){
-        var self = this;
-        var ctx = renderer.getContext();
+        let self = this;
+        let ctx = renderer.getContext();
         ctx.save();
         self._super();
 

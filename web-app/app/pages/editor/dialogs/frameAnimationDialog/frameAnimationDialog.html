@@ -36,21 +36,21 @@
 
                     <div class="relative"
                          :style="{
-                                        'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject._spriteSheet.resourcePath+')',
-                                        'width':                editData.currFrameAnimationInEdit._gameObject._spriteSheet.width+'px',
-                                        'height':               editData.currFrameAnimationInEdit._gameObject._spriteSheet.height+'px'
+                                        'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')',
+                                        'width':                editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px',
+                                        'height':               editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px'
                                       }">
                         <div
-                                v-for="(v,i)  in editData.currFrameAnimationInEdit._gameObject._spriteSheet.numOfFramesH*editData.currFrameAnimationInEdit._gameObject._spriteSheet.numOfFramesV"
+                                v-for="(v,i)  in editData.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesH*editData.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV"
                                 :style="{
                                             'display':        'inline-block',
-                                            'left':           editData.currFrameAnimationInEdit._gameObject._spriteSheet.getFramePosX(i)+'px',
-                                            'top':            editData.currFrameAnimationInEdit._gameObject._spriteSheet.getFramePosY(i)+'px',
+                                            'left':           editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px',
+                                            'top':            editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px',
                                             'position':       'absolute',
                                             'text-align':     'left',
                                             'border':         '1px solid red',
-                                            'width':          editData.currFrameAnimationInEdit._gameObject._spriteSheet._frameWidth+'px',
-                                            'height':         editData.currFrameAnimationInEdit._gameObject._spriteSheet._frameHeight+'px'
+                                            'width':          editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px',
+                                            'height':         editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px'
                                       }">{{i}}</div>
                     </div>
                 </div>

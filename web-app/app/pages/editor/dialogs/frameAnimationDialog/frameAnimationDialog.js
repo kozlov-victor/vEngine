@@ -1,10 +1,7 @@
 
-var abstractDialog = require('providers/abstractDialog');
-
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var FrameAnimation = _require('frameAnimation');
-var GameObject = _require('gameObject');
+const abstractDialog = require('providers/abstractDialog');
+const editData = require('providers/editData');
+const restResource = require('providers/rest/resource');
 
 module.exports.component = Vue.component('app-frame-animation-dialog', {
     mixins:[abstractDialog],
@@ -33,15 +30,16 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
         open: function(){
             this.opened = true;
             this.isStopped = true;
-            this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
+            console.log(this.editData.currFrameAnimationInEdit);
+            this.frames = this.editData.currFrameAnimationInEdit.frames.rs.join(',');
             Vue.set(this.editData.currFrameAnimationInEdit,'_gameObject',this.editData.currGameObjectInEdit.clone());
         },
         allIndexes: function(){
-            var res = this.utils.getArray(this.editData.currGameObjectInEdit._spriteSheet._numOfFrames);
+            let res = this.utils.getArray(this.editData.currGameObjectInEdit.spriteSheet._numOfFrames);
             return res.join(',')
         },
         playAnimation: function(){
-            var self = this;
+            let self = this;
             self.isStopped = false;
             try {
                 self.editData.currFrameAnimationInEdit.frames = JSON.parse('['+self.frames+']');
@@ -50,7 +48,7 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
             setTimeout(function _anim(){
                 self.editData.currFrameAnimationInEdit.update(new Date().getTime());
 
-                var i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
+                let i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
                 self.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
 
                 if (self.isStopped) {
@@ -64,36 +62,28 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
             this.isStopped = true;
         },
         createOrEditFrameAnimation: function(){
-            var self = this;
+            let self = this;
+            let fa = editData.currFrameAnimationInEdit;
             self.editData.currFrameAnimationInEdit.frames = JSON.parse('['+self.frames+']');
 
-            resource.createOrEditResource(
-                self.editData.currFrameAnimationInEdit.toJSON(),
-                FrameAnimation,
-                self.editData.frameAnimationList,
-                function(res){
-
-                    if (res.type=='create') {
-
-                        self.editData.currFrameAnimationInEdit.id = res.r.id;
-                        self.editData.currGameObjectInEdit.frameAnimationIds.push(self.editData.currFrameAnimationInEdit.id);
-                        self.editData.currGameObjectInEdit._frameAnimations.add(self.editData.currFrameAnimationInEdit);
-
-                        resource.createOrEditResource(
-                            self.editData.currGameObjectInEdit.toJSON(),
-                            GameObject,
-                            self.editData.gameObjectList,
-                            function(){
-                                self.close();
-                            }
-                        );
-                    } else {
-                        self.editData.currGameObjectInEdit =
-                            self.editData.gameObjectList.find({id:self.editData.currGameObjectInEdit.id}).clone();
-                        self.close();
-                    }
+            restResource.
+            save(fa).
+            then((resp)=>{
+                if (resp.created) {
+                    fa.id = resp.id;
+                    editData.frameAnimationList.add(fa);
+                    editData.currGameObjectInEdit.frameAnimations.add(fa);
+                    return restResource.save(editData.currGameObjectInEdit)
+                } else {
+                    fa.updateCloner();
                 }
-            );
+            }).
+            then(function(){
+                editData.currGameObjectInEdit.updateCloner();
+                self.close();
+            }).
+            catch(window.catchPromise)
+
         }
     }
 });

@@ -3,7 +3,6 @@
 const abstractDialog = require('providers/abstractDialog');
 const editData = require('providers/editData');
 const restResource = require('providers/rest/resource');
-const CommonBehaviour = _require('commonBehaviour');
 
 module.exports.component = Vue.component('app-common-behaviour-dialog', {
     mixins:[abstractDialog],
