@@ -30,8 +30,7 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
         open: function(){
             this.opened = true;
             this.isStopped = true;
-            console.log(this.editData.currFrameAnimationInEdit);
-            this.frames = this.editData.currFrameAnimationInEdit.frames.rs.join(',');
+            this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
             Vue.set(this.editData.currFrameAnimationInEdit,'_gameObject',this.editData.currGameObjectInEdit.clone());
         },
         allIndexes: function(){
@@ -60,6 +59,16 @@ module.exports.component = Vue.component('app-frame-animation-dialog', {
         },
         stopAnimation: function(){
             this.isStopped = true;
+        },
+        nextFrame:function(){
+            let self = this;
+            self.stopAnimation();
+            self.editData.currFrameAnimationInEdit.nextFrame();
+        },
+        previousFrame:function(){
+            let self = this;
+            self.stopAnimation();
+            self.editData.currFrameAnimationInEdit.previousFrame();
         },
         createOrEditFrameAnimation: function(){
             let self = this;

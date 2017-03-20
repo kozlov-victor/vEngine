@@ -50,3 +50,4 @@ gulp.task('less', ()=> {
 });
 
 gulp.task('default', ['js-vendor','js-bundle','less']);
+gulp.task('js', ['js-bundle']);

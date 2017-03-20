@@ -82,21 +82,24 @@ const BaseModel = Class.extend({
                         self[key] = new clazz();
                     }
                     return;
-                } else if (jsonObj[key].splice) {
+                } else if (
+                    jsonObj[key].splice &&
+                    jsonObj[key].length &&
+                    jsonObj[key][0].type &&
+                    jsonObj[key][0].id
+                ) {
                     self[key] = new collections.List();
-                    if (jsonObj[key].length && jsonObj[key][0].type && jsonObj[key][0].id) {
-                        let arr = [];
-                        jsonObj[key].forEach(function(el){
-                            arr.push(el);
-                        });
-                        arr.forEach(function(el){
-                            let elFromList = bundle[el.type+'List'].find({id:el.id});
-                            //<code>{{#if opts.debug}}
-                            if (!elFromList) throw `can not found ${el.type} with ${el.id}`;
-                            // {{/if}}
-                            self[key].add(elFromList.clone());
-                        });
-                    }
+                    let arr = [];
+                    jsonObj[key].forEach(function(el){
+                        arr.push(el);
+                    });
+                    arr.forEach(function(el){
+                        let elFromList = bundle[el.type+'List'].find({id:el.id});
+                        //<code>{{#if opts.debug}}
+                        if (!elFromList) throw `can not found ${el.type} with ${el.id}`;
+                        // {{/if}}
+                        self[key].add(elFromList.clone());
+                    });
                     return;
 
                 }

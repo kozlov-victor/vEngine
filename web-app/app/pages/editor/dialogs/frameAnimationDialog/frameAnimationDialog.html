@@ -33,6 +33,17 @@
                                 :disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
                     </div>
 
+                    <div>
+
+                        <button
+                                v-on:click="previousFrame()"
+                                :disabled="!form.valid()" class="inlineBlock withMargin"> << </button>
+
+                        <button
+                                v-on:click="nextFrame()"
+                                :disabled="!form.valid()" class="inlineBlock withMargin"> >> </button>
+                    </div>
+
 
                     <div class="relative"
                          :style="{
