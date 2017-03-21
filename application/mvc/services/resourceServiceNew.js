@@ -1,9 +1,14 @@
+
+const fs = require.main.require('./application/base/fs');
+
 const RESOURCE_NAMES = 'sound,spriteSheet,frameAnimation,font,commonBehaviour,gameObject,layer,scene,particleSystem'
     .split(',');
 module.exports.RESOURCE_NAMES = RESOURCE_NAMES;
 
-const fs = require.main.require('./application/base/fs');
-let collectionHelper = require.main.require('./application/mvc/services/dataSourceHelper');
+module.exports.DEFAULT_CODE_SCRIPT = fs.readFileSync('resources/generatorResources/misc/defaultCodeScript.js');
+
+
+let dataSourceHelper = require.main.require('./application/mvc/services/dataSourceHelper');
 
 module.exports.getAll = function(type,projectName){
     if (!projectName) throw 'project name not specified';
@@ -35,4 +40,29 @@ module.exports.getCommonBehaviourAttrs = function(projectName){
         attrs.push(attr);
     });
     return attrs;
+};
+
+module.exports.readFile = function(path,projectName) {
+    if (!projectName) throw 'project name not specified';
+    return fs.readFileSync('workspace/'+projectName+'/resources/'+path);
+};
+
+module.exports.renameFolder = function(oldName,newName){
+    fs.renameSync(oldName,newName);
+};
+
+module.exports.deleteFolder = function(name){
+    fs.deleteFolderSync(name);
+};
+
+module.exports.createFile = function(path,content,projectName) {
+    if (!projectName) throw 'project name not specified';
+    fs.writeFileSync('workspace/'+projectName+'/resources/'+path,content);
+    return {};
+};
+
+module.exports.removeFile = function(path,projectName) {
+    if (!projectName) throw 'project name not specified';
+    fs.deleteFileSync('workspace/'+projectName+'/resources/'+path);
+    return {};
 };

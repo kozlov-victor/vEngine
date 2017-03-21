@@ -39,6 +39,8 @@ const processCommonRequest = function(opts){
 
     app[opts.requestType](`${opts.controllerName}/${opts.methodName}`,function(req,res){
 
+        opts.methodName = opts.methodName || 'index';
+
         let params;
         switch (opts.requestType) {
             case 'post':
@@ -67,6 +69,10 @@ const processMultiPartRequest = function(opts){
         let file = fs.readFileSync(pathToUploadedFile,true);
         fs.deleteFileSync(pathToUploadedFile);
         params.file = file;
+        if (params.fileName && params.fileName.splice && params.fileName[0]) {
+            params.fileName = params.fileName[0];
+        }
+        console.log(params);
         let result = opts.ctrl[opts.methodName](params);
         res.send(result);
     });
@@ -101,7 +107,10 @@ const setUpControllers = function(){
                 let responseType = annotations.Response && annotations.Response.type;
 
                 let controllerName = fileNameWithoutExt.replace('Controller', '');
-                if (controllerName == 'main') controllerName = '';
+                if (controllerName == 'index') {
+                    controllerName = '';
+                    if (methodName=='index') methodName = '';
+                }
                 else controllerName = '/' + controllerName;
 
                 let opts = {ctrl, requestType, responseType, controllerName, methodName};

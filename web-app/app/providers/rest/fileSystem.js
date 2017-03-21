@@ -15,6 +15,12 @@ class FileSystem {
         params.projectName = editData.projectName;
         return http.postMultiPart('/fileSystem/uploadFile',file,params,callback);
     }
+    removeFile(path,callback){
+        return http.post('/fileSystem/removeFile',{
+            path:path,
+            projectName: editData.projectName
+        },callback);
+    }
     readFile(path,callback){
         return http.post('/fileSystem/readFile',{
             path:path,

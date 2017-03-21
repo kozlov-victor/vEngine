@@ -13,9 +13,9 @@ module.exports.createProject = function(projectName){
 
     fs.createFolderSync(`workspace/${projectName}/resources`);
     createFolderWithFiles(resourcesService.RESOURCE_NAMES,projectName);
-    fs.createFolderSync(`workspace/'${projectName}/resources/script/gameObject`);
     fs.createFolderSync(`workspace/${projectName}/resources/font`);
     fs.createFolderSync(`workspace/${projectName}/resources/script/scene`);
+    fs.createFolderSync(`workspace/${projectName}/resources/script/gameObject`);
 
     fs.copyFileSync('resources/generatorResources/fonts/default.png',
         `workspace/${projectName}/resources/font/default.png`);

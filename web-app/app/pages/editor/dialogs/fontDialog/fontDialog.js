@@ -111,7 +111,10 @@ module.exports.component = Vue.component('app-font-dialog', {
                 return restFileSystem.
                     uploadFile(
                         file,
-                        {type:model.type}
+                        {
+                            type:model.type,
+                            fileName:`${model.name}.png`
+                        }
                     );
             }).
             then(()=>{

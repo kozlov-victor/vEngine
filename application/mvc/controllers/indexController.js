@@ -6,21 +6,30 @@ const utils = require.main.require('./application/utils/utils');
 const resourcesService = require.main.require('./application/mvc/services/resourceServiceNew');
 const generatorService = require.main.require('./application/mvc/services/generatorService');
 
-class MainController{
+class IndexController{
 
     /**
-     * @Method("mainNew");
+     * @Method("index");
      * @Request({"type":"get"});
      * @Response({"type":"view"})
      */
-    mainNew(){
+    index(){
         return {
             defaultCodeScript:resourcesService.DEFAULT_CODE_SCRIPT
         }
     }
+
+    /**
+     * @Method("editor");
+     * @Request({"type":"get"});
+     * @Response({"type":"view"})
+     */
+    editor(){
+
+    }
 }
 
-module.exports.controller = MainController;
+module.exports.controller = IndexController;
 
 //module.exports.init = function(app) {
 //
@@ -34,13 +43,13 @@ module.exports.controller = MainController;
 //
 //    app.get('/',function(req,res){
 //        res.render('main',{
-//            defaultCodeScript:resourcesService.DEFAULT_CODE_SCRIPT
+//            defaultCodeScript:resourceService.DEFAULT_CODE_SCRIPT
 //        });
 //    });
 //
 //    app.get('/mainNew',function(req,res){
 //        res.render('mainNew',{
-//            defaultCodeScript:resourcesService.DEFAULT_CODE_SCRIPT
+//            defaultCodeScript:resourceService.DEFAULT_CODE_SCRIPT
 //        });
 //    });
 //
@@ -59,7 +68,7 @@ module.exports.controller = MainController;
 //    app.post('/resource/create',multipart,function(req,res){
 //        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
 //        var projectName = req.body.projectName;
-//        var result = resourcesService.create(
+//        var result = resourceService.create(
 //            getModelFromBody(req),
 //            pathToUploadedFile,
 //            projectName
@@ -70,18 +79,18 @@ module.exports.controller = MainController;
 //    app.post('/resource/edit',multipart,function(req,res){
 //        var pathToUploadedFile = req.files && req.files.file && req.files.file.path;
 //        var projectName = req.body.projectName;
-//        var result = resourcesService.edit(getModelFromBody(req),pathToUploadedFile,projectName);
+//        var result = resourceService.edit(getModelFromBody(req),pathToUploadedFile,projectName);
 //        res.send(result);
 //    });
 //
 //    app.post('/resource/getAll',function(req,res){
 //        var result = {};
 //        var projectName = req.body.projectName;
-//        resourcesService.RESOURCE_NAMES.forEach(function(key){
-//            result[key] = resourcesService.getAll(key,projectName);
+//        resourceService.RESOURCE_NAMES.forEach(function(key){
+//            result[key] = resourceService.getAll(key,projectName);
 //        });
-//        result.gameProps = resourcesService.getGameProps(projectName);
-//        result.commonBehaviour = resourcesService.getCommonBehaviourAttrs(projectName);
+//        result.gameProps = resourceService.getGameProps(projectName);
+//        result.commonBehaviour = resourceService.getCommonBehaviourAttrs(projectName);
 //        res.send(result);
 //    });
 //
@@ -89,7 +98,7 @@ module.exports.controller = MainController;
 //        var id = req.body.id;
 //        var type = req.body.type;
 //        var projectName = req.body.projectName;
-//        resourcesService.delete(id,type,projectName);
+//        resourceService.delete(id,type,projectName);
 //        res.send({});
 //    });
 //
@@ -100,7 +109,7 @@ module.exports.controller = MainController;
 //        var objectType = req.body.objectType;
 //        var objectId = req.body.objectId;
 //        var projectName = req.body.projectName;
-//        resourcesService.deleteObjectFromResource(
+//        resourceService.deleteObjectFromResource(
 //            resourceType,resourceId,
 //            objectType,objectId,projectName
 //        );
@@ -108,7 +117,7 @@ module.exports.controller = MainController;
 //    });
 //
 //    app.post('/gameProps/save',function(req,res){
-//        resourcesService.saveGameProps(req.body.model,req.body.projectName);
+//        resourceService.saveGameProps(req.body.model,req.body.projectName);
 //        res.send({});
 //    });
 //
@@ -120,7 +129,7 @@ module.exports.controller = MainController;
 //        var objectType = req.body.objectType;
 //        var projectName = req.body.projectName;
 //        res.send(
-//            resourcesService.createOrEditObjectInResource(
+//            resourceService.createOrEditObjectInResource(
 //                resourceType,resourceId,
 //                objectType,model,
 //                projectName
@@ -133,7 +142,7 @@ module.exports.controller = MainController;
 //        var content = req.body.content;
 //        var projectName = req.body.projectName;
 //        res.send(
-//            resourcesService.createFile(path,content,projectName)
+//            resourceService.createFile(path,content,projectName)
 //        );
 //    });
 //
@@ -141,7 +150,7 @@ module.exports.controller = MainController;
 //        var path = req.body.path;
 //        var projectName = req.body.projectName;
 //        res.send(
-//            resourcesService.readFile(path,projectName)
+//            resourceService.readFile(path,projectName)
 //        );
 //    });
 //
@@ -154,7 +163,7 @@ module.exports.controller = MainController;
 //    });
 //
 //    app.get('/getProjects',function(req,res){
-//        res.send(resourcesService.getProjects());
+//        res.send(resourceService.getProjects());
 //    });
 //
 //
@@ -168,7 +177,7 @@ module.exports.controller = MainController;
 //            tileIndex = req.body.tileIndex,
 //            projectName = req.body.projectName;
 //        res.send(
-//            resourcesService.setTile(sceneId,x,y,tileIndex,projectName)
+//            resourceService.setTile(sceneId,x,y,tileIndex,projectName)
 //        );
 //    })
 //

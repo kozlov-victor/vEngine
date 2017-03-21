@@ -1,5 +1,5 @@
 
-const resourcesService = require.main.require('./application/mvc/services/resourcesService');
+const resourceService = require.main.require('./application/mvc/services/resourceServiceNew');
 const fs = require.main.require('./application/base/fs');
 
 class FileSystemController{
@@ -8,21 +8,28 @@ class FileSystemController{
      * @Request({"type":"post"});
      */
     renameFolder(params){
-        resourcesService.renameFolder(params.oldName,params.newName);
+        resourceService.renameFolder(params.oldName,params.newName);
     }
     /**
      * @Method("deleteFolder");
      * @Request({"type":"post"});
      */
     deleteFolder(params){
-        resourcesService.deleteFolder(params.name);
+        resourceService.deleteFolder(params.name);
     }
     /**
      * @Method("createFile");
      * @Request({"type":"post"});
      */
     createFile(params){
-        resourcesService.createFile(params.path,params.content,params.projectName);
+        resourceService.createFile(params.path,params.content,params.projectName);
+    }
+    /**
+     * @Method("removeFile");
+     * @Request({"type":"post"});
+     */
+    removeFile(params){
+        resourceService.removeFile(params.path,params.projectName);
     }
     /**
      * @Method("uploadFile");
@@ -30,12 +37,7 @@ class FileSystemController{
      */
     uploadFile(params){
         fs.writeFileSync(
-            [
-                'workspace',
-                params.projectName,
-                `resources/${params.type}`,
-                params.fileName
-            ].join('/'),
+            `workspace/${params.projectName}/resources/${params.type}/${params.fileName}`,
             params.file,
             true
         );
@@ -47,7 +49,7 @@ class FileSystemController{
      * @Request({"type":"post"});
      */
     readFile(params){
-        return resourcesService.readFile(params.path,params.projectName);
+        return resourceService.readFile(params.path,params.projectName);
     }
 }
 

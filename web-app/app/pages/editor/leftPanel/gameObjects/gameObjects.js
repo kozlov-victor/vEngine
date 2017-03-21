@@ -3,7 +3,7 @@ const utils = require('providers/utils');
 
 const gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
 const GameObject = _require('gameObject');
-const restResource = require('providers/rest/resource');
+const restFileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('app-game-objects', {
     props: [],
@@ -30,7 +30,9 @@ module.exports = Vue.component('app-game-objects', {
             gameObjectDialog.instance.open();
         },
         deleteGameObject: function(model){
-            utils.deleteModel(model);
+            utils.deleteModel(model,()=>{
+                restFileSystem.removeFile(`script/gameObject/${model.name}.js`);
+            });
         }
     }
 });

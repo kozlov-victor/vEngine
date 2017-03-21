@@ -2033,7 +2033,7 @@ module.exports = Vue.component('app-curr-scene', {
 });
 
 },{"./scene.html":115,"providers/editData":173,"providers/i18n":175,"providers/utils":181}],117:[function(require,module,exports){
-module.exports = "<div\n        class=\"height100\"\n        v-if=\"editData.scriptEditorUrl\"\n        >\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editorNew\"\n                ></iframe>\n    </div>\n</div>";
+module.exports = "<div\n        class=\"height100\"\n        v-if=\"editData.scriptEditorUrl\"\n        >\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editor\"\n                ></iframe>\n    </div>\n</div>";
 
 },{}],118:[function(require,module,exports){
 'use strict';
@@ -2254,7 +2254,10 @@ module.exports.component = Vue.component('app-font-dialog', {
             var file = utils.dataURItoBlob(getFontImage(model.fontContext, strFont, utils.rgbToHex(model.fontColor)));
 
             _promise2.default.resolve().then(function () {
-                return restFileSystem.uploadFile(file, { type: model.type });
+                return restFileSystem.uploadFile(file, {
+                    type: model.type,
+                    fileName: model.name + '.png'
+                });
             }).then(function () {
                 return restResource.save(model);
             }).then(function (resp) {
@@ -2385,6 +2388,7 @@ var commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonB
 
 var editData = require('providers/editData');
 var restResource = require('providers/rest/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 var FrameAnimation = _require('frameAnimation');
 
 module.exports.component = Vue.component('app-game-object-dialog', {
@@ -2414,11 +2418,15 @@ module.exports.component = Vue.component('app-game-object-dialog', {
                 if (resp.created) {
                     g.id = resp.id;
                     editData.gameObjectList.add(g);
+                    return resp;
                 } else if (resp.updated) {
                     g.updateCloner();
                 }
+            }).then(function (resp) {
+                if (resp.created) return restFileSystem.createFile('script/gameObject/' + g.name + '.js', document.getElementById('defaultCodeScript').textContent);
+            }).then(function () {
                 self.close();
-            });
+            }).catch(window.catchPromise);
         },
         refreshGameObjectFramePreview: function refreshGameObjectFramePreview(gameObject, ind) {
             var spriteSheet = gameObject.spriteSheet;
@@ -2440,7 +2448,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
         },
         deleteFrameAnimation: function deleteFrameAnimation(fa) {
             var self = this;
-            window.confirmEx(self.i18n.confirmQuestion, function () {});
+            window.confirmEx(self.i18n.confirmQuestion(fa), function () {});
         },
 
         onSpriteSheetSelected: function onSpriteSheetSelected(sprId) {
@@ -2481,7 +2489,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
     }
 });
 
-},{"../../dialogs/commonBehaviourDialog/commonBehaviourDialog":120,"../../dialogs/frameAnimationDialog/frameAnimationDialog":126,"./gameObjectDialog.html":127,"babel-runtime/core-js/promise":5,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],129:[function(require,module,exports){
+},{"../../dialogs/commonBehaviourDialog/commonBehaviourDialog":120,"../../dialogs/frameAnimationDialog/frameAnimationDialog":126,"./gameObjectDialog.html":127,"babel-runtime/core-js/promise":5,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],129:[function(require,module,exports){
 module.exports = "\r\n<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"withPadding\">\r\n        <div>\r\n            {{i18n.scene}}: {{editData.currLayerInEdit._scene.name}}\r\n        </div>\r\n        <b class=\"block centerText\">{{i18n.layer}}</b>\r\n        <div class=\"table width100\">\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.name}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                        v-control=\"{form:form,model:editData.currLayerInEdit,prop:'name'}\"\r\n                        v-model=\"editData.currLayerInEdit.name\"\r\n                        required/>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div>\r\n            <button\r\n                    :disabled=\"!form.valid()\"\r\n                    v-on:click=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\">\r\n                {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}\r\n            </button>\r\n        </div>\r\n    </div>\r\n\r\n</app-modal>";
 
 },{}],130:[function(require,module,exports){
@@ -3001,7 +3009,7 @@ var utils = require('providers/utils');
 
 var gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
 var GameObject = _require('gameObject');
-var restResource = require('providers/rest/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('app-game-objects', {
     props: [],
@@ -3028,12 +3036,14 @@ module.exports = Vue.component('app-game-objects', {
             gameObjectDialog.instance.open();
         },
         deleteGameObject: function deleteGameObject(model) {
-            utils.deleteModel(model);
+            utils.deleteModel(model, function () {
+                restFileSystem.removeFile('script/gameObject/' + model.name + '.js');
+            });
         }
     }
 });
 
-},{"../../dialogs/gameObjectDialog/gameObjectDialog":128,"../_gameObjectRow/gameObjectRow":144,"./gameObjects.html":147,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/utils":181}],149:[function(require,module,exports){
+},{"../../dialogs/gameObjectDialog/gameObjectDialog":128,"../_gameObjectRow/gameObjectRow":144,"./gameObjects.html":147,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/utils":181}],149:[function(require,module,exports){
 module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
 
 },{}],150:[function(require,module,exports){
@@ -3184,6 +3194,7 @@ var utils = require('providers/utils');
 var Sound = _require('sound');
 var soundDialog = require('../../dialogs/soundDialog/soundDialog');
 var restResource = require('providers/rest/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('app-sounds', {
     props: [],
@@ -3205,12 +3216,14 @@ module.exports = Vue.component('app-sounds', {
             soundDialog.instance.open();
         },
         deleteSound: function deleteSound(model) {
-            utils.deleteModel(model);
+            utils.deleteModel(model, function () {
+                restFileSystem.removeFile(model.resourcePath.replace('resources/', ''));
+            });
         }
     }
 });
 
-},{"../../dialogs/soundDialog/soundDialog":138,"./sounds.html":155,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/utils":181}],157:[function(require,module,exports){
+},{"../../dialogs/soundDialog/soundDialog":138,"./sounds.html":155,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/utils":181}],157:[function(require,module,exports){
 module.exports = "<app-collapsible\n        :title=\"i18n.spriteSheets\"\n        :crud=\"{\n            create:createSpriteSheet\n        }\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"spriteSheet in (editData.spriteSheetList && editData.spriteSheetList.rs)\">\n\n                <div class=\"cell\">\n                    <img\n                        height=\"20\"\n                        class=\"spriteSheetThumb\"\n                        :src=\"editData.projectName+'/'+spriteSheet.resourcePath\"/>\n                </div>\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editSpriteSheet(spriteSheet)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteSpriteSheet(spriteSheet)\"/>\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
 },{}],158:[function(require,module,exports){
@@ -3548,7 +3561,8 @@ module.exports = Vue.component('explorer', {
         },
         deleteProject: function deleteProject(proj) {
             var self = this;
-            window.confirmEx(this.i18n.confirmQuestion, function () {
+            proj.type = 'project';
+            window.confirmEx(this.i18n.confirmQuestion(proj), function () {
                 fileSystem.deleteFolder('workspace/' + proj.name, function () {
                     restProject.getAll(function (list) {
                         editData.projects = list;
@@ -4034,7 +4048,16 @@ var FileSystem = function () {
         value: function uploadFile(file, params, callback) {
             params = params || {};
             params.projectName = editData.projectName;
+            console.log(params);
             return http.postMultiPart('/fileSystem/uploadFile', file, params, callback);
+        }
+    }, {
+        key: 'removeFile',
+        value: function removeFile(path, callback) {
+            return http.post('/fileSystem/removeFile', {
+                path: path,
+                projectName: editData.projectName
+            }, callback);
         }
     }, {
         key: 'readFile',
@@ -4243,6 +4266,7 @@ var mathEx = _require('mathEx');
 var editData = require('providers/editData');
 var resource = require('providers/resource');
 var restResource = require('providers/rest/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 var i18n = require('providers/i18n').getAll();
 
 var Utils = function () {
@@ -4374,7 +4398,7 @@ var Utils = function () {
             window.removeEventListener('resize', contentWindow.calcEditorSize);
             window.addEventListener('resize', contentWindow.calcEditorSize);
             window.saveCode = function (code) {
-                resource.createFile(path, code);
+                restFileSystem.createFile(path, code);
             };
         }
     }, {
@@ -4394,10 +4418,10 @@ var Utils = function () {
         }
     }, {
         key: 'deleteModel',
-        value: function deleteModel(model) {
+        value: function deleteModel(model, callback) {
             window.confirmEx(i18n.confirmQuestion(model), function () {
                 editData[model.type + 'List'].remove({ id: model.id });
-                restResource.remove(model);
+                restResource.remove(model, callback);
             });
         }
     }, {
@@ -4406,7 +4430,8 @@ var Utils = function () {
             var self = this;
             editData.scriptEditorUrl = resourceUrl;
             var path = 'script/' + resourceUrl;
-            resource.readFile(path, function (file) {
+            console.log(path);
+            restFileSystem.readFile(path, function (file) {
                 self._waitForFrameAndDo(file, path);
             });
         }
@@ -4416,7 +4441,7 @@ var Utils = function () {
 
 module.exports = new Utils();
 
-},{"babel-runtime/core-js/object/create":2,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/rest/resource":179}],182:[function(require,module,exports){
+},{"babel-runtime/core-js/object/create":2,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/rest/fileSystem":177,"providers/rest/resource":179}],182:[function(require,module,exports){
 "use strict";
 
 module.exports.new = function () {

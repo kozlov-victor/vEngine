@@ -202,13 +202,13 @@ module.exports.editFont = function(model,pathToUploadedFile,projectName) {
 module.exports.readResource = readResource;
 
 
-module.exports.renameFolder = function(oldName,newName){
-    fs.renameSync(oldName,newName);
-};
-
-module.exports.deleteFolder = function(name){
-    fs.deleteFolderSync(name);
-};
+// module.exports.renameFolder = function(oldName,newName){
+//     fs.renameSync(oldName,newName);
+// };
+//
+// module.exports.deleteFolder = function(name){
+//     fs.deleteFolderSync(name);
+// };
 
 var resolveResourceName = function(name,isFile){
     var res =  'resources/generatorResources/'+name.split('.').join('/');

@@ -1,10 +1,11 @@
 
-let abstractDialog = require('providers/abstractDialog');
-let frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
-let commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
+const abstractDialog = require('providers/abstractDialog');
+const frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
+const commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
 
 const editData = require('providers/editData');
 const restResource = require('providers/rest/resource');
+const restFileSystem = require('providers/rest/fileSystem');
 const FrameAnimation = _require('frameAnimation');
 
 module.exports.component = Vue.component('app-game-object-dialog', {
@@ -34,15 +35,22 @@ module.exports.component = Vue.component('app-game-object-dialog', {
             let self = this;
             restResource.
                 save(g).
-                then(function(resp){
+                then(resp=>{
                     if (resp.created) {
                         g.id = resp.id;
                         editData.gameObjectList.add(g);
+                        return resp;
                     } else if (resp.updated) {
                         g.updateCloner();
                     }
+                }).then((resp)=>{
+                      if (resp.created) return restFileSystem.createFile(
+                                    `script/gameObject/${g.name}.js`,
+                                     document.getElementById('defaultCodeScript').textContent);
+                }).then(()=>{
                     self.close();
-                });
+                }).
+                catch(window.catchPromise);
         },
         refreshGameObjectFramePreview: function(gameObject,ind) {
             let spriteSheet = gameObject.spriteSheet;
@@ -65,7 +73,7 @@ module.exports.component = Vue.component('app-game-object-dialog', {
         deleteFrameAnimation: function(fa){
             let self = this;
             window.confirmEx(
-                self.i18n.confirmQuestion,
+                self.i18n.confirmQuestion(fa),
                 function(){
 
                 }

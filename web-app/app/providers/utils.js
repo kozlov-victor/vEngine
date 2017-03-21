@@ -3,6 +3,7 @@ const mathEx = _require('mathEx');
 const editData = require('providers/editData');
 const resource = require('providers/resource');
 const restResource = require('providers/rest/resource');
+const restFileSystem = require('providers/rest/fileSystem');
 const i18n = require('providers/i18n').getAll();
 
 class Utils {
@@ -122,7 +123,7 @@ class Utils {
         window.removeEventListener('resize',contentWindow.calcEditorSize);
         window.addEventListener('resize',contentWindow.calcEditorSize);
         window.saveCode = function(code){
-            resource.createFile(path,code);
+            restFileSystem.createFile(path,code);
         };
     };
 
@@ -139,12 +140,12 @@ class Utils {
         return Object.keys(obj).length;
     }
 
-    deleteModel(model){
+    deleteModel(model,callback){
         window.confirmEx(
             i18n.confirmQuestion(model),
             ()=>{
                 editData[`${model.type}List`].remove({id:model.id});
-                restResource.remove(model);
+                restResource.remove(model,callback);
             }
         )
     }
@@ -153,7 +154,8 @@ class Utils {
         let self = this;
         editData.scriptEditorUrl = resourceUrl;
         let path = 'script/'+resourceUrl;
-        resource.readFile(path,function(file){
+        console.log(path);
+        restFileSystem.readFile(path,function(file){
             self._waitForFrameAndDo(file,path);
         });
     }

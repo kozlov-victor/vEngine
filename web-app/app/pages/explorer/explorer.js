@@ -1,10 +1,10 @@
 
 
-var projectDialog = require('./dialogs/projectDialog/projectDialog');
-var editData = require('providers/editData');
-var restProject = require('providers/rest/project');
-var resource = require('providers/resource');
-var fileSystem = require('providers/rest/fileSystem');
+const projectDialog = require('./dialogs/projectDialog/projectDialog');
+const editData = require('providers/editData');
+const restProject = require('providers/rest/project');
+const resource = require('providers/resource');
+const fileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('explorer', {
     props: [],
@@ -44,9 +44,10 @@ module.exports = Vue.component('explorer', {
             resource.loadProject(project.name);
         },
         deleteProject: function(proj){
-            var self = this;
+            let self = this;
+            proj.type = 'project';
             window.confirmEx(
-                this.i18n.confirmQuestion,
+                this.i18n.confirmQuestion(proj),
                 function(){
                     fileSystem.deleteFolder('workspace/'+proj.name,function(){
                         restProject.getAll(function(list){

@@ -10,22 +10,10 @@
 <script>
 
 
-    !function(){
+    +function(){
 
-        var tid = null;
         var editor;
-        var name;
-
-        var locationParams = function(){
-            var search = location.search && location.search.substring(1)||'';
-            var pairs = search.split('&');
-            var res = {};
-            pairs.forEach(function(pair){
-                var operands = pair.split('=');
-                res[operands[0]] = decodeURIComponent(operands[1]);
-            });
-            return res;
-        }();
+        var tid;
 
         var setUpEditor = function(){
             editor = ace.edit("editor");
@@ -38,44 +26,19 @@
             editor.$blockScrolling = Infinity;
         };
 
-        var setAutocomplete = function(data) {
-            var langTools = ace.require("ace/ext/language_tools");
-            var appCompleter = {
-                getCompletions: function(editor, session, pos, prefix, callback) {
-                    callback(null, data);
-                }
-            };
-            langTools.addCompleter(appCompleter);
-        };
-
-        var setUpMessageDigest = function(){
-            window.top.postMessage({command:'getCode',name:locationParams.name,path:locationParams.path},'*');
-            name = locationParams.name;
-            var $editor = $('#editor');
-
-            window.addEventListener('message',function(m){
-                if (!(m.data && m.data.command)) return;
-                switch (m.data.command) {
-                    case 'resizeWindow':
-                        $editor.css({height: m.data.height+'px'});
-                        editor.resize();
-                        break;
-                    case 'setCode':
-                        editor.setValue(m.data.code,1);
-                        editor.session.getUndoManager().reset();
-                        editor.resize();
-                        setAutocomplete(m.data.completer);
-
-                }
+        var locationParams = function(){
+            var search = location.search && location.search.substring(1)||'';
+            var pairs = search.split('&');
+            var res = {};
+            pairs.forEach(function(pair){
+                var operands = pair.split('=');
+                res[operands[0]] = decodeURIComponent(operands[1]);
             });
-            editor.on('change', function() {
-                clearTimeout(tid);
-                tid = setTimeout(function(){
-                    window.top.postMessage({command:'saveCode',name:name,path:locationParams.path,code:editor.getValue()},'*');
-                },1000);
-            });
-        };
+            return res;
+        }();
 
+
+        setUpEditor();
         window.calcEditorSize = function(){
             var parentFrame = window.parent.document.getElementById('scriptEditor');
             $('#editor').css({height: parentFrame.getBoundingClientRect().height - 25 +'px'});
@@ -86,17 +49,24 @@
             editor.session.getUndoManager().reset();
             editor.resize();
         };
+        window.setAutocomplete = function(data){
+            var langTools = ace.require("ace/ext/language_tools");
+            var appCompleter = {
+                getCompletions: function(editor, session, pos, prefix, callback) {
+                    callback(null, data);
+                }
+            };
+            langTools.addCompleter(appCompleter);
+        };
+        editor.on('change', function() {
+            clearTimeout(tid);
+            tid = setTimeout(function(){
+                window.parent.saveCode(editor.getValue());
+            },1000);
+        });
         window.ready = true;
 
-        return function(){
-            setUpEditor();
-            setUpMessageDigest();
-        };
-
-
-
-
-    }()();
+    }();
 
 
 

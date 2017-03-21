@@ -3,6 +3,7 @@ const utils = require('providers/utils');
 const Sound = _require('sound');
 const soundDialog = require('../../dialogs/soundDialog/soundDialog');
 const restResource = require('providers/rest/resource');
+const restFileSystem = require('providers/rest/fileSystem');
 
 module.exports = Vue.component('app-sounds', {
     props: [],
@@ -26,7 +27,9 @@ module.exports = Vue.component('app-sounds', {
             soundDialog.instance.open();
         },
         deleteSound: function(model){
-            utils.deleteModel(model);
+            utils.deleteModel(model,()=>{
+                restFileSystem.removeFile(model.resourcePath.replace('resources/',''));
+            });
         }
     }
 });
