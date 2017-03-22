@@ -72,7 +72,6 @@ const processMultiPartRequest = function(opts){
         if (params.fileName && params.fileName.splice && params.fileName[0]) {
             params.fileName = params.fileName[0];
         }
-        console.log(params);
         let result = opts.ctrl[opts.methodName](params);
         res.send(result);
     });

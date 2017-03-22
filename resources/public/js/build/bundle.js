@@ -2971,7 +2971,7 @@ module.exports = "<app-collapsible\n        :crud=\"{\n            create:create
 
 var fontDialog = require('../../dialogs/fontDialog/fontDialog');
 var Font = _require('font');
-var resource = require('providers/resource');
+var restFileSystem = require('providers/rest/fileSystem');
 var utils = require('providers/utils');
 
 module.exports = Vue.component('app-fonts', {
@@ -2994,12 +2994,14 @@ module.exports = Vue.component('app-fonts', {
             fontDialog.instance.open();
         },
         deleteFont: function deleteFont(model) {
-            utils.deleteModel(model);
+            utils.deleteModel(model, function () {
+                restFileSystem.removeFile('font/' + model.name + '.png');
+            });
         }
     }
 });
 
-},{"../../dialogs/fontDialog/fontDialog":124,"./fonts.html":145,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/utils":181}],147:[function(require,module,exports){
+},{"../../dialogs/fontDialog/fontDialog":124,"./fonts.html":145,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/utils":181}],147:[function(require,module,exports){
 module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObjects\"\n            :crud=\"{\n                create:createGameObject\n            }\"\n            >\n        <div class=\"withPaddingLeft\">\n            <div class=\"table rightText\">\n                <div\n                        :crud=\"{\n                            edit: editGameObject,\n                            editScript: editGameObjectScript,\n                            delete: deleteGameObject\n                        }\"\n                        is=\"appGameObjectRow\"\n                        :game-object=\"gameObject\"\n                        v-for=\"gameObject in (editData.gameObjectList && editData.gameObjectList.rs)\"\n                        >\n                </div>\n            </div>\n        </div>\n    </app-collapsible>\n</div>";
 
 },{}],148:[function(require,module,exports){
@@ -4048,7 +4050,6 @@ var FileSystem = function () {
         value: function uploadFile(file, params, callback) {
             params = params || {};
             params.projectName = editData.projectName;
-            console.log(params);
             return http.postMultiPart('/fileSystem/uploadFile', file, params, callback);
         }
     }, {
