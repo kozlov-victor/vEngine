@@ -1,6 +1,6 @@
 
-const http = require('providers/http');
-const editData = require('providers/editData');
+import http from 'providers/http';
+import editData from 'providers/editData';
 
 class Resource{
     save(model,callback){
@@ -19,4 +19,4 @@ class Resource{
 }
 
 
-module.exports = new Resource();
+export default new Resource();

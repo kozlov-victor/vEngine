@@ -1,5 +1,6 @@
-<div xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <app-collapsible :title="i18n.game" :id="'game'">
+
+<app-collapsible data-state="{title:i18n.game}">
+    <div data-transclusion="content">
         <form class="table width100">
             <div class="row">
                 <div class="cell">
@@ -8,12 +9,11 @@
                 <div class="cell">
                     <input
                             class="narrow"
-                            v-model="editData.gameProps.width"
-                            v-control="{form:form,model:editData.gameProps,prop:'width'}"
+                            data-model="editData.gameProps.width"
                             type="number"
                             min="1"
                             max="20000"
-                            v-on:change="form.valid() && saveGameProps()"/>
+                            data-change="form.valid() && saveGameProps()"/>
                 </div>
             </div>
             <div class="row">
@@ -23,12 +23,11 @@
                 <div class="cell">
                     <input
                             class="narrow"
-                            v-model="editData.gameProps.height"
+                            data-model="editData.gameProps.height"
                             type="number"
-                            v-control="{form:form,model:editData.gameProps,prop:'height'}"
                             min="1"
                             max="20000"
-                            v-on:change="form.valid() && saveGameProps()"/>
+                            data-change="form.valid() && saveGameProps()"/>
                 </div>
             </div>
 
@@ -39,12 +38,11 @@
                 </div>
                 <div class="cell">
                     <select
-                            v-model="editData.gameProps.scaleStrategy"
-                            v-on:change="form.valid() && saveGameProps()">
+                            data-model="editData.gameProps.scaleStrategy"
+                            data-change="form.valid() && saveGameProps()">
                         <option
-                                :title="value"
-                                :value="value"
-                                v-for="(value,key) in scales">{{key}}</option>
+                                data-value="value"
+                                data-for="(value,key) in scales">{{key}}</option>
                     </select>
                 </div>
             </div>
@@ -55,13 +53,14 @@
                 </div>
                 <div class="cell">
                     <select
-                            v-model="editData.gameProps.preloadingSceneId"
-                            v-on:change="form.valid() && saveGameProps()">
+                            data-model="editData.gameProps.preloadingSceneId"
+                            data-change="form.valid() && saveGameProps()">
                         <option value="">--</option>
                         <option
                                 :disabled="item.id==editData.gameProps.startSceneId"
-                                :value="item.id"
-                                v-for="item in (editData.sceneList && editData.sceneList.rs)">{{item.name}}
+                                data-value="item.id"
+                                data-for="item in editData.sceneList.rs">
+                            {{item.name}}
                         </option>
                     </select>
                 </div>
@@ -72,18 +71,18 @@
                     {{i18n.startScene}}
                 </div>
                 <div class="cell">
-                    <select v-model="editData.gameProps.startSceneId"
-                            v-on:change="form.valid() && saveGameProps()">
+                    <select data-model="editData.gameProps.startSceneId"
+                            data-change="form.valid() && saveGameProps()">
                         <option
-                                :disabled="item.id==editData.gameProps.preloadingSceneId"
-                                :value="item.id"
-                                v-for="item in (editData.sceneList && editData.sceneList.rs)">{{item.name}}
+                                data-disabled="item.id==editData.gameProps.preloadingSceneId"
+                                data-value="item.id"
+                                data-for="item in editData.sceneList.rs">
+                            {{item.name}}
                         </option>
                     </select>
                 </div>
             </div>
 
         </form>
-
-    </app-collapsible>
-</div>
+    </div>
+</app-collapsible>

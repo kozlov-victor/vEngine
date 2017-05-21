@@ -1,25 +1,26 @@
-<div xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+<div>
     <div class="width50 marginAuto">
         <h3 class="centerText">{{i18n.projects}}</h3>
         <div class="table width100">
             <div
-                    v-for="p in editData.projects"
+                    data-for="p in editData.projects"
                     class="row hoverOnProjectRow">
                 <div class="cell">
                     <div
-                            v-on:click.capture="openProject(p)"
+                            data-click="openProject(p)"
                             class="withPadding pointer">
                         {{p.name}}
                     </div>
                 </div>
                 <div class="cell rightAlign">
                     <div class="edit"
-                            v-on:click.capture="editProject(p)"
+                            data-click="editProject(p)"
                             ></div>
                 </div>
                 <div class="cell rightAlign">
                     <div
-                            v-on:click.capture="deleteProject(p)"
+                            data-click="deleteProject(p)"
                             class="delete"></div>
                 </div>
             </div>
@@ -27,7 +28,7 @@
                 <div class="cell">
                     <div class="withPadding">
                         <div class="add"
-                                v-on:click="createProject()"
+                                data-click="createProject()"
                                 ></div>
                     </div>
                 </div>
@@ -35,6 +36,6 @@
         </div>
     </div>
 
-    <app-project-dialog/>
+    <app-project-dialog></app-project-dialog>
 
 </div>

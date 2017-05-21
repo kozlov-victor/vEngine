@@ -1,19 +1,19 @@
 
 
-module.exports = Vue.component('app-modal', {
-    props: [],
-    template: require('./modal.html'),
-    data: function(){
+export default RF.registerComponent('app-modal', {
+    template: {
+        type:'string',
+        value:require('./modal.html')
+    },
+    getInitialState: function() {
         return {
-
+            opened:false
         }
     },
-    created: function(){
-
+    close: function(){
+        this.opened = false;
     },
-    methods: {
-        close: function(){
-            this.$emit('close');
-        }
+    open: function(){
+        this.opened = true;
     }
 });

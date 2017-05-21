@@ -1,0 +1,21 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+    <table class="width100">
+        <tr>
+            <td>
+                {{i18n.name}}
+            </td>
+            <td>
+                <input
+                        required
+                        v-model="editData.currProjectInEdit.name"/>
+            </td>
+        </tr>
+    </table>
+    <button v-on:click="createOrEditProject(editData.currProjectInEdit)">
+        {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}
+    </button>
+
+</app-modal>

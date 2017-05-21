@@ -1,23 +1,27 @@
-var id = 0;
+let id = 0;
 
-module.exports = Vue.component('app-collapsible', {
-    props: ['title','crud','object','meta'],
-    template: require('./collapsible.html'),
-    data: function(){
+export default RF.registerComponent('app-collapsible', {
+    template: {
+        type:'string',
+        value: require('./collapsible.html')
+    },
+    getInitialState(){
         return {
-            opened: false,
-            id:null
+            title:'default',
+            crud:'',
+            object:'',
+            meta:'',
+            id:null,
+            opened:false
         }
     },
-    created: function(){
+    onMounted: function(){
         this.id = id;
         this.opened = localStorage['clps_'+this.id]=='true';
         id++;
     },
-    methods: {
-        toggle: function(){
-            this.opened = ! this.opened;
-            localStorage['clps_'+this.id] = this.opened;
-        }
+    toggle: function(){
+        this.opened = ! this.opened;
+        localStorage['clps_'+this.id] = this.opened;
     }
 });

@@ -1,34 +1,24 @@
 
+import i18n from 'providers/i18n';
 
-var abstractDialog = require('providers/abstractDialog');
-
-
-module.exports.component = Vue.component('app-confirm-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./confirmDialog.html'),
-    data: function () {
-        return {
-            message:'default message',
-            confirm: function(){},
-            i18n: require('providers/i18n').getAll()
-        }
+export default RF.registerComponent('app-confirm-dialog', {
+    template: {
+        type:'string',
+        value: require('./confirmDialog.html')
     },
-    created: function(){
-        module.exports.instance = this;
+    message:'default message',
+    confirm: function(){},
+    i18n: i18n.getAll(),
+    close: function(){
+        RF.getComponentById('confirmModal').close();
     },
-    components: {
-        appModal: require('components/modal/modal')
+    confirmAndClose: function() {
+        this.confirm();
+        this.close();
     },
-    methods: {
-        open: function(message,confirmCallback){
-            this.opened = true;
-            this.message = message;
-            this.confirm = confirmCallback;
-        },
-        confirmChoose: function(){
-            this.confirm();
-            this.close();
-        }
+    open: function(message,callback){
+        RF.getComponentById('confirmModal').open();
+        this.message = message;
+        this.confirm = callback;
     }
 });

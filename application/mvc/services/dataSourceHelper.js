@@ -50,7 +50,8 @@ class DataSourceHelper {
         Object.keys(params.model).forEach(function(key){
             model[key]=params.model[key];
         });
-        saveModel(path,model)
+        saveModel(path,model);
+        return {};
     }
 
     remove(params){

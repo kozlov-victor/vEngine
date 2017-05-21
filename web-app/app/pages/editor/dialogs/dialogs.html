@@ -1,6 +1,10 @@
 <div>
-    <app-sound-dialog/>
-    <app-particle-system-dialog/>
+    <app-modal id="soundModal">
+        <div data-transclusion="content">
+            <app-sound-dialog id="soundDialog"></app-sound-dialog>
+        </div>
+    </app-modal>
+    <app-particle-system-dialog></app-particle-system-dialog>
     <app-particle-system-preview-dialog/>
     <app-font-dialog/>
     <app-sprite-sheet-dialog/>

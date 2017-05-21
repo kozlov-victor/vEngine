@@ -1,6 +1,7 @@
 
-const http = require('providers/http');
-const editData = require('providers/editData');
+import http from 'providers/http';
+import editData from 'providers/editData';
+
 const bundle = _require('bundle');
 const collections = _require('collections');
 const TextField = _require('textField');
@@ -57,10 +58,10 @@ class Project{
 
 const p = new Project();
 
-if (sessionStorage.projectName) {
-    p.load(sessionStorage.projectName);
-} else {
-    location.href = '#/explorer';
-}
+// if (sessionStorage.projectName) {
+//     p.load(sessionStorage.projectName);
+// } else {
+//     location.href = '#/explorer';
+// }
 
 module.exports = new Project();

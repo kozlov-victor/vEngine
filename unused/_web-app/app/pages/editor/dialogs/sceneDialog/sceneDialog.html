@@ -1,0 +1,26 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+    <div class="withPadding">
+        <div class="table">
+            <div class="row">
+                <div class="cell">
+                    {{i18n.name}}
+                </div>
+                <div class="cell">
+                    <input
+                            required
+                            v-control="{form:form,model:editData.currSceneInEdit,prop:'name'}"
+                            v-model="editData.currSceneInEdit.name"/>
+                </div>
+            </div>
+        </div>
+        <button
+                :disabled="!form.valid()"
+                v-on:click="createOrEditScene(editData.currSceneInEdit)">
+            {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}
+        </button>
+    </div>
+
+</app-modal>

@@ -1,0 +1,37 @@
+<div class="row" xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div class="cell">
+        <span class="inlineBlock withPaddingRight">
+            <span class="inlineBlock withPaddingTop withPaddingBottom">
+                {{gameObject.name}}
+            </span>
+        </span>
+    </div>
+    <div    class="cell width100"
+            v-if="!gameObject.subType">
+        <div :style="
+                utils.merge(
+                        utils.getGameObjectCss(gameObject),
+                        {zoom:gameObject.height>30?30/gameObject.height:1}
+                )"></div>
+    </div>
+    <div
+            class="cell width100"
+            v-if="gameObject.subType"
+            :title="gameObject.name"
+            >
+        <span class="textOverflow">
+            <span class="inlineBlock withPaddingTop withPaddingBottom">
+                {{gameObject.subType}}
+            </span>
+        </span>
+    </div>
+    <div class="cell width1">
+        <div v-if="crud && crud.editScript" class="script" v-on:click="crud.editScript(gameObject)"></div>
+    </div>
+    <div class="cell width1">
+        <div v-if="crud && crud.edit" class="edit" v-on:click="crud.edit(gameObject)"></div>
+    </div>
+    <div class="cell width1">
+        <div v-if="crud && crud.delete" v-on:click="crud.delete(gameObject)" class="delete"></div>
+    </div>
+</div>

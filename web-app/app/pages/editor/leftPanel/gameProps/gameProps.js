@@ -1,19 +1,17 @@
-const restResource = require('providers/rest/resource');
+import restResource from 'providers/rest/resource';
+import i18n from 'providers/i18n';
+import editData from 'providers/editData';
 
-module.exports = Vue.component('app-game-props', {
-    props: [],
-    template: require('./gameProps.html'),
-    data: function(){
-        return {
-            form:require('providers/validator').new(),
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll(),
-            scales: _require('consts').SCALE_STRATEGY
-        }
+export default RF.registerComponent('app-game-props', {
+    template: {
+        type:'string',
+        value: require('./gameProps.html')
     },
-    methods: {
-        saveGameProps: function(){
-            restResource.saveGameProps(this.editData.gameProps);
-        }
+    form: {valid: ()=>{return true}},
+    editData,
+    i18n: i18n.getAll(),
+    scales: _require('consts').SCALE_STRATEGY,
+    saveGameProps: function(){
+        restResource.saveGameProps(this.editData.gameProps);
     }
 });

@@ -1,33 +1,29 @@
 
-module.exports = Vue.component('app-input-file', {
-    props: ['title','accept'],
-    template: require('./inputFile.html'),
-    data: function(){
+export default RF.registerComponent('app-input-file', {
+    getInitialState: ()=>{
         return {
-
+            title:'',
+            accept:'',
+            onFilePicked:null
         }
     },
-    created: function(){
-
+    template: {
+        type: 'string',
+        value: require('./inputFile.html')
     },
-    mounted: function(){
-        var btn = this.$el.querySelector('button');
-        var input = this.$el.querySelector('input');
+    onMount: function(){
+        let btn = this.$el.querySelector('button');
+        let input = this.$el.querySelector('input');
         btn.onclick = function(){
             input.click();
         };
-        var self = this;
-        input.onchange = function(){
-            var file = input.files[0];
-            var name = file.name.split('.')[0];
-            var url = window.URL || window.webkitURL;
-            var src = url.createObjectURL(file);
-            self.$emit('picked',src,file,name);
-        }
-    },
-    methods: {
-        toggle: function(){
-
+        input.onchange = ()=>{
+            let file = input.files[0];
+            let name = file.name.split('.')[0];
+            let url = window.URL || window.webkitURL;
+            let src = url.createObjectURL(file);
+            this.onFilePicked(src,file,name);
+            RF.digest();
         }
     }
 });

@@ -1,12 +1,8 @@
 
-//Vue.filter('nbsp', function (value) {
-//    return value.split(' ').join('&nbsp;')
-//});
-
-window.alertEx = function(msg){
-    require('components/alertDialog/alertDialog').instance.open(msg);
+window.alertEx = function(message){
+    RF.getComponentById('alertDialog').open(message);
 };
 
-window.confirmEx = function(msg,callback){
-    require('components/confirmDialog/confirmDialog').instance.open(msg,callback);
+window.confirmEx = function(message,callback){
+    RF.getComponentById('confirmDialog').open(message,callback);
 };

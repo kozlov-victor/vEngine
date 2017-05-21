@@ -1,13 +1,15 @@
 <app-collapsible
-        :crud="{
-            create:createParticleSystem
-        }"
-        :title="i18n.particleSystems"
-        xmlns:v-on="http://www.w3.org/1999/xhtml">
+        data-state="{
+            crud:{
+                create:createParticleSystem
+            },
+            title:i18n.particleSystems
+        }">
+
     <div class="withPaddingLeft">
         <div class="table width100">
             <div class="row"
-                 v-for="ps in (editData.particleSystemList && editData.particleSystemList.rs)">
+                 data-for="ps in editData.particleSystemList.rs">
 
                 <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">
@@ -16,10 +18,10 @@
                 </div>
 
                 <div class="cell width1">
-                    <div class="edit" v-on:click="editParticleSystem(ps)"/>
+                    <div class="edit" data-click="editParticleSystem(ps)"></div>
                 </div>
                 <div class="cell width1">
-                    <div class="delete" v-on:click="deleteParticleSystem(ps)"/>
+                    <div class="delete" data-click="deleteParticleSystem(ps)"></div>
                 </div>
 
             </div>

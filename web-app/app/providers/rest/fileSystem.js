@@ -1,6 +1,6 @@
 
-const http = require('providers/http');
-const editData = require('providers/editData');
+import http from 'providers/http';
+import editData from 'providers/editData';
 
 class FileSystem {
     createFile(path,content,callback){

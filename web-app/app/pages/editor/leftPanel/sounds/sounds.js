@@ -1,35 +1,29 @@
 
-const utils = require('providers/utils');
+
+import editData from 'providers/editData';
+import utils from 'providers/utils';
+import i18n from 'providers/i18n';
 const Sound = _require('sound');
-const soundDialog = require('../../dialogs/soundDialog/soundDialog');
-const restResource = require('providers/rest/resource');
-const restFileSystem = require('providers/rest/fileSystem');
+import restFileSystem from 'providers/rest/fileSystem';
 
-module.exports = Vue.component('app-sounds', {
-    props: [],
-    template: require('./sounds.html'),
-    data: function () {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        }
+export default RF.registerComponent('app-sounds', {
+    template: {
+        type:'string',
+        value: require('./sounds.html')
     },
-    components: {
-
+    editData,
+    i18n: i18n.getAll(),
+    createSound: function(){
+        this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
+        RF.getComponentById('soundDialog').open();
     },
-    methods: {
-        createSound: function(){
-            this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
-            soundDialog.instance.open();
-        },
-        editSound: function(sound){
-            this.editData.currSoundInEdit = sound.clone();
-            soundDialog.instance.open();
-        },
-        deleteSound: function(model){
-            utils.deleteModel(model,()=>{
-                restFileSystem.removeFile(model.resourcePath.replace('resources/',''));
-            });
-        }
+    editSound: function(sound){
+        this.editData.currSoundInEdit = sound.clone();
+        RF.getComponentById('soundDialog').open();
+    },
+    deleteSound: function(model){
+        utils.deleteModel(model,()=>{
+            restFileSystem.removeFile(model.resourcePath.replace('resources/',''));
+        });
     }
 });

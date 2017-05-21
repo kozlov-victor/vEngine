@@ -1,0 +1,14 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened"
+        xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div class="withMargin">
+        <div class="alert_body">
+            {{message}}
+        </div>
+        <div>
+            <button v-on:click="confirmChoose()">{{i18n.confirm}}</button>
+            <button v-on:click="close()">{{i18n.cancel}}</button>
+        </div>
+    </div>
+</app-modal>

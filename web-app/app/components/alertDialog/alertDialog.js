@@ -1,28 +1,19 @@
 
+import i18n from 'providers/i18n';
 
-var abstractDialog = require('providers/abstractDialog');
-
-
-module.exports.component = Vue.component('app-alert-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./alertDialog.html'),
-    data: function () {
-        return {
-            message:'default message',
-            i18n: require('providers/i18n').getAll()
-        }
+export default RF.registerComponent('app-alert-dialog', {
+    template: {
+        type:'string',
+        value: require('./alertDialog.html')
     },
-    created: function(){
-        module.exports.instance = this;
+    message:'',
+    i18n: i18n.getAll(),
+    open(message){
+        RF.getComponentById('alertModal').open();
+        this.message = message;
     },
-    components: {
-        appModal: require('components/modal/modal')
-    },
-    methods: {
-        open: function(msg) {
-            this.opened = true;
-            this.message = msg;
-        }
+    close(){
+        RF.getComponentById('alertModal').close();
+        this.message = null;
     }
 });

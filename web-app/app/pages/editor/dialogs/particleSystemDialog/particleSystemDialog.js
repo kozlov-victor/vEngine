@@ -1,55 +1,39 @@
 
-var abstractDialog = require('providers/abstractDialog');
+import editData from 'providers/editData';
+import restResource from 'providers/rest/resource';
+import utils from 'providers/utils';
+import i18n from 'providers/i18n';
 
-var editData = require('providers/editData');
-const restResource = require('providers/rest/resource');
-var ParticleSystem = _require('particleSystem');
-
-module.exports.component = Vue.component('app-particle-system-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./particleSystemDialog.html'),
-    data: function () {
-        return {
-            form:require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
-        }
+export default RF.registerComponent('app-particle-system-dialog', {
+    template: {
+        type:'string',
+        value:require('./particleSystemDialog.html')
     },
-    created: function(){
-        module.exports.instance = this;
+    form: {valid: ()=>{return true}},
+    editData,
+    utils,
+    i18n:i18n.getAll(),
+    onGameObjectIdChanged: function(id){
+        editData.currParticleSystemInEdit.gameObject =
+            editData.gameObjectList.find({id:id}).clone();
     },
-    components: {
-        appAnglePicker: require('components/anglePicker/anglePicker')
+    showPreview: function(){
+        RF.getComponentById('particleSystemPreviewDialog').open();
     },
-    methods: {
-        open: function(){
-            this.opened = true;
-        },
-        onGameObjectIdChanged: function(id){
-            editData.currParticleSystemInEdit.gameObject =
-                editData.gameObjectList.find({id:id}).clone();
-        },
-        showPreview: function(){
-            require('../particleSystemPreviewDialog/particleSystemPreviewDialog')
-                .instance.open();
-        },
-        createOrEditPs: function(model){
-            let self = this;
-            Promise.resolve().
-            then(()=>{
-                return restResource.save(model);
-            }).
-            then((resp)=>{
-                if (resp.created) {
-                    model.id = resp.id;
-                    editData[`${model.type}List`].add(model);
-                } else if (resp.updated) {
-                    model.updateCloner();
-                }
-                self.close();
-            });
-        }
+    createOrEditPs: function(model){
+        let self = this;
+        Promise.resolve().
+        then(()=>{
+            return restResource.save(model);
+        }).
+        then((resp)=>{
+            if (resp.created) {
+                model.id = resp.id;
+                editData[`${model.type}List`].add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            self.close();
+        });
     }
 });

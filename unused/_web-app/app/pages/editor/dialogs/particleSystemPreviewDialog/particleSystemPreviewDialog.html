@@ -1,0 +1,33 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+
+    <div>
+        {{i18n.preview}} {{i18n.particleSystem}}
+        <span class="underLine">{{editData.currParticleSystemInEdit.name}}</span>
+    </div>
+    <div
+            v-on:click="emit($event)"
+            v-on:mousemove="$event.buttons==1 && emit($event)"
+            class="subFullScreen relative noOverFlow">
+        <div
+                v-for="item in editData.currParticleSystemInEdit._particles"
+                :style="utils.merge(
+                            utils.getGameObjectCss(item),
+                            {
+                                position:'absolute',
+                                left:item.pos.x+'px',
+                                top: item.pos.y+'px',
+                                pointerEvents:'none'
+                            }
+                    )"
+                >
+        </div>
+    </div>
+    <div>
+        <button v-on:click="close()">{{i18n.close}}</button>
+    </div>
+
+
+</app-modal>

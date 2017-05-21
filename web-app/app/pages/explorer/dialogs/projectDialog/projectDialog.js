@@ -1,49 +1,38 @@
 
 
-var abstractDialog = require('providers/abstractDialog');
+import editData from 'providers/editData';
+import restProject from 'providers/rest/project';
+import fileSystem from 'providers/rest/fileSystem';
+import i18n from 'providers/i18n';
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var restProject = require('providers/rest/project');
-var fileSystem = require('providers/rest/fileSystem');
-
-module.exports.component = Vue.component('app-project-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./projectDialog.html'),
-    data: function () {
-        return {
-            form:require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll()
-        }
+export default RF.registerComponent('app-project-dialog', {
+    template: {
+        type:'string',
+        value:require('./projectDialog.html')
     },
+    editData: editData,
+    i18n: i18n.getAll(),
     created: function(){
         module.exports.instance = this;
     },
-    components: {
-
-    },
-    methods: {
-        createOrEditProject: function(proj){
-            if (proj.oldName) {
-                fileSystem.renameFolder(
-                    'workspace/'+proj.oldName,
-                    'workspace/'+proj.name,
-                    function(){
-                        restProject.getAll(function(list){
-                                editData.projects = list;
-                            }
-                        );
-                    });
-            } else  {
-                restProject.create(proj.name,function(){
+    createOrEditProject: function(proj){
+        if (proj.oldName) {
+            fileSystem.renameFolder(
+                'workspace/'+proj.oldName,
+                'workspace/'+proj.name,
+                function(){
                     restProject.getAll(function(list){
-                        editData.projects = list;
-                    });
+                            editData.projects = list;
+                        }
+                    );
                 });
-            }
-            this.close();
+        } else  {
+            restProject.create(proj.name,function(){
+                restProject.getAll(function(list){
+                    editData.projects = list;
+                });
+            });
         }
+        RF.getComponentById('projectDialog').close();
     }
 });

@@ -1,27 +1,30 @@
 <app-collapsible
-        :crud="{
-            create:createSound
-        }"
-        :title="i18n.sounds"
-        xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <div class="withPaddingLeft">
-        <div class="table width100">
-            <div class="row"
-                 v-for="sound in (editData.soundList && editData.soundList.rs)">
+        data-state="{
+            crud:{
+                create:createSound
+            },
+            title:i18n.sounds
+        }">
+    <div data-transclusion="content">
+        <div class="withPaddingLeft">
+            <div class="table width100">
+                <div class="row"
+                     data-for="sound in editData.soundList.rs">
 
-                <div class="cell">
+                    <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">
                         {{sound.name}}
                     </span>
-                </div>
+                    </div>
 
-                <div class="cell width1">
-                    <div class="edit" v-on:click="editSound(sound)"/>
-                </div>
-                <div class="cell width1">
-                    <div class="delete" v-on:click="deleteSound(sound)"/>
-                </div>
+                    <div class="cell width1">
+                        <div class="edit" data-click="editSound(sound)"></div>
+                    </div>
+                    <div class="cell width1">
+                        <div class="delete" data-click="deleteSound(sound)"></div>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>

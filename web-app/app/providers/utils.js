@@ -1,10 +1,10 @@
 
 const mathEx = _require('mathEx');
-const editData = require('providers/editData');
-const resource = require('providers/resource');
-const restResource = require('providers/rest/resource');
-const restFileSystem = require('providers/rest/fileSystem');
-const i18n = require('providers/i18n').getAll();
+
+import editData from 'providers/editData';
+import restResource from 'providers/rest/resource';
+import restFileSystem from 'providers/rest/fileSystem';
+import i18n from 'providers/i18n';
 
 class Utils {
     getGameObjectCss(gameObj){
@@ -142,7 +142,7 @@ class Utils {
 
     deleteModel(model,callback){
         window.confirmEx(
-            i18n.confirmQuestion(model),
+            i18n.getAll().confirmQuestion(model),
             ()=>{
                 editData[`${model.type}List`].remove({id:model.id});
                 restResource.remove(model,callback);
@@ -162,4 +162,4 @@ class Utils {
 
 }
 
-module.exports = new Utils();
+export default new Utils();

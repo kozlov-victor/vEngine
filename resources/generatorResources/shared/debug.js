@@ -90,7 +90,7 @@
             if (popupContainer) {
                 popupContainer.appendChild(popup);
                 setTimeout(function(){
-                    popup.remove();
+                    //popup.remove();
                     lastErr = '';
                 },5000);
             } else {

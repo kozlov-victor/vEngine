@@ -1717,1170 +1717,423 @@ for(var collections = ['NodeList', 'DOMTokenList', 'MediaList', 'StyleSheetList'
   Iterators[NAME] = Iterators.Array;
 }
 },{"./_global":35,"./_hide":37,"./_iterators":50,"./_wks":86,"./es6.array.iterator":88}],99:[function(require,module,exports){
-module.exports = "\n<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withMargin\">\n        <div class=\"alert_body\">\n            {{message}}\n        </div>\n        <div>\n            <button v-on:click=\"close()\">{{i18n.ok}}</button>\n        </div>\n    </div>\n</app-modal>";
+module.exports = "\n<app-modal id=\"alertModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"close()\">{{i18n.ok}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>\n";
 
 },{}],100:[function(require,module,exports){
 'use strict';
 
-var abstractDialog = require('providers/abstractDialog');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-module.exports.component = Vue.component('app-alert-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./alertDialog.html'),
-    data: function data() {
-        return {
-            message: 'default message',
-            i18n: require('providers/i18n').getAll()
-        };
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-alert-dialog', {
+    template: {
+        type: 'string',
+        value: require('./alertDialog.html')
     },
-    created: function created() {
-        module.exports.instance = this;
+    message: '',
+    i18n: _i18n2.default.getAll(),
+    open: function open(message) {
+        RF.getComponentById('alertModal').open();
+        this.message = message;
     },
-    components: {
-        appModal: require('components/modal/modal')
-    },
-    methods: {
-        open: function open(msg) {
-            this.opened = true;
-            this.message = msg;
-        }
+    close: function close() {
+        RF.getComponentById('alertModal').close();
+        this.message = null;
     }
 });
 
-},{"./alertDialog.html":99,"components/modal/modal":114,"providers/abstractDialog":171,"providers/i18n":175}],101:[function(require,module,exports){
-module.exports = "<div\n        class=\"inlineBlock\"\n        v-on:click=\"click($event)\"\n        v-on:mousemove=\"mouseMove($event)\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div data-container class=\"inlineBlock\">\n        <svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n            <circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle>\n            <line id=\"line\" x1=\"100\" y1=\"100\"\n                  x2=\"200\" y2=\"100\"\n                  stroke=\"black\"\n                  stroke-width=\"2\"\n                  :transform=\"'rotate('+angleInDeg+',100,100)'\"\n                    >\n            </line>\n        </svg>\n    </div>\n    <div class=\"smallXX\" :title=\"object[value]+' rad'\">\n        {{angleInDeg}}&deg;\n    </div>\n</div>";
+},{"./alertDialog.html":99,"providers/i18n":132}],101:[function(require,module,exports){
+module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell width1\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            data-click=\"toggle()\"\n                            data-class=\"{rotated:opened}\">▷</span>\n                </div>\n                <div class=\"cell\">\n                    <span\n                            data-click=\"toggle()\"\n                            >&nbsp;{{title}}</span>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            data-class=\"{opened:opened}\">\n        <div data-transclusion=\"content\"></div>\n    </div>\n</div>";
 
 },{}],102:[function(require,module,exports){
 'use strict';
 
-module.exports = Vue.component('app-angle-picker', {
-    props: ['object', 'value'],
-    template: require('./anglePicker.html'),
-    data: function data() {
-        return {};
-    },
-    created: function created() {},
-    computed: {
-        angleInDeg: function angleInDeg() {
-            var res = this.object[this.value] * 180 / Math.PI % 360;
-            return +res.toFixed(2) || 0;
-        }
-    },
-    methods: {
-        calcAngleFromEvent: function calcAngleFromEvent(e) {
-            var el = this.$el.querySelector('[data-container]');
-            var rect = el.getBoundingClientRect();
-            var x = e.clientX - rect.left,
-                y = e.clientY - rect.top;
-            var angle = Math.atan2(y - 15, x - 15);
-            if (angle < 0) angle = 2 * Math.PI + angle;
-            angle = +angle.toFixed(2) || 0;
-            this.object[this.value] = angle;
-        },
-        click: function click(e) {
-            this.calcAngleFromEvent(e);
-        },
-        mouseMove: function mouseMove(e) {
-            if (e.buttons !== 1) return;
-            this.calcAngleFromEvent(e);
-        }
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
-
-},{"./anglePicker.html":101}],103:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div\n        class=\"collapsible_header bold noSelect\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell width1\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            @click=\"toggle()\"\n                            :class=\"{rotated:opened}\">▷</span>\n                </div>\n                <div class=\"cell\">\n                    <span\n                            @click=\"toggle()\"\n                            >&nbsp;{{title}}</span>\n                </div>\n                <div class=\"cell width1\">\n                    <div v-if=\"crud && crud.create\" class=\"add\" v-on:click.stop=\"crud.create(meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div v-if=\"crud && crud.editScript\" class=\"script\" v-on:click.stop=\"crud.editScript(object)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div v-if=\"crud && crud.edit\" class=\"edit\" v-on:click.stop=\"crud.edit(object,meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div v-if=\"crud && crud.delete\" class=\"delete\" v-on:click.stop=\"crud.delete(object,meta)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            :class=\"{opened:opened}\">\n        <slot></slot>\n    </div>\n</div>";
-
-},{}],104:[function(require,module,exports){
-'use strict';
-
 var id = 0;
 
-module.exports = Vue.component('app-collapsible', {
-    props: ['title', 'crud', 'object', 'meta'],
-    template: require('./collapsible.html'),
-    data: function data() {
+exports.default = RF.registerComponent('app-collapsible', {
+    template: {
+        type: 'string',
+        value: require('./collapsible.html')
+    },
+    getInitialState: function getInitialState() {
         return {
-            opened: false,
-            id: null
+            title: 'default',
+            crud: '',
+            object: '',
+            meta: '',
+            id: null,
+            opened: false
         };
     },
-    created: function created() {
+
+    onMounted: function onMounted() {
         this.id = id;
         this.opened = localStorage['clps_' + this.id] == 'true';
         id++;
     },
-    methods: {
-        toggle: function toggle() {
-            this.opened = !this.opened;
-            localStorage['clps_' + this.id] = this.opened;
-        }
+    toggle: function toggle() {
+        this.opened = !this.opened;
+        localStorage['clps_' + this.id] = this.opened;
     }
 });
 
-},{"./collapsible.html":103}],105:[function(require,module,exports){
-module.exports = "<div class=\"inlineBlock\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div\r\n            :style=\"{\r\n                cursor: 'pointer',\r\n                width: 24 + 'px',\r\n                height:24 + 'px',\r\n                backgroundColor: 'rgb('+currentColorRGB.r+','+currentColorRGB.g+','+currentColorRGB.b+')'\r\n            }\"\r\n            v-on:click=\"click()\"\r\n            >\r\n    </div>\r\n\r\n    <app-color-picker-dialog/>\r\n\r\n</div>\r\n\r\n";
+},{"./collapsible.html":101}],103:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"confirmModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"confirmAndClose()\">{{i18n.confirm}}</button>\n                <button data-click=\"close()\">{{i18n.cancel}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>";
+
+},{}],104:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-confirm-dialog', {
+    template: {
+        type: 'string',
+        value: require('./confirmDialog.html')
+    },
+    message: 'default message',
+    confirm: function confirm() {},
+    i18n: _i18n2.default.getAll(),
+    close: function close() {
+        RF.getComponentById('confirmModal').close();
+    },
+    confirmAndClose: function confirmAndClose() {
+        this.confirm();
+        this.close();
+    },
+    open: function open(message, callback) {
+        RF.getComponentById('confirmModal').open();
+        this.message = message;
+        this.confirm = callback;
+    }
+});
+
+},{"./confirmDialog.html":103,"providers/i18n":132}],105:[function(require,module,exports){
+module.exports = "<div>\n    <button>{{title}}</button>\n    <input  required accept=\"{{accept}}\" type=\"file\"/>\n</div>";
 
 },{}],106:[function(require,module,exports){
 'use strict';
 
-var colorPickerDialog = require('./colorPickerDialog');
-
-module.exports = Vue.component('app-color-picker', {
-    props: ['object', 'value', 'onchange'],
-    template: require('./colorPicker.html'),
-    data: function data() {
-        return {};
-    },
-    computed: {
-        currentColorRGB: function currentColorRGB() {
-            return this.object[this.value];
-        }
-    },
-    created: function created() {},
-    methods: {
-        click: function click(e) {
-            colorPickerDialog.instance.open(this, this.currentColorRGB);
-        },
-        applyColor: function applyColor(color) {
-            this.object[this.value] = color;
-        }
-    },
-    components: {
-        appColorPickerDialog: require('components/colorPicker/colorPickerDialog').component
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
-
-},{"./colorPicker.html":105,"./colorPickerDialog":108,"components/colorPicker/colorPickerDialog":108}],107:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table>\n        <tr>\n            <td>\n                <input type=\"color\" v-model=\"currentColorHex\" v-on:change=\"hexChanged()\"/>\n            </td>\n            <td>\n                <input type=\"text\"  v-model=\"currentColorHex\" v-on:change=\"hexChanged()\"/>\n            </td>\n            <td></td>\n        </tr>\n\n        <table class=\"width100\">\n            <tr\n                    v-for=\"item in colorEnums\">\n                <td\n                        :style=\"{\n                            color: item.left\n                        }\"\n                        >\n                    {{item.left}}\n                </td>\n                <td class=\"centerText\">\n                    <input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" v-model=\"currentColorRGB[item.key]\" v-on:change=\"rgbChanged()\"/>\n                    <br/>\n                    <input class=\"small vAlign\" v-model=\"currentColorRGB[item.key]\" v-on:change=\"rgbChanged()\"/>\n                    <hr/>\n                </td>\n                <td\n                        :style=\"{\n                            color: item.right\n                        }\"\n                        >{{item.right}}</td>\n            </tr>\n\n\n        </table>\n    </table>\n\n    <button\n            v-on:click=\"applyColor()\">\n        {{i18n.edit}}\n    </button>\n\n</app-modal>";
-
-},{}],108:[function(require,module,exports){
-'use strict';
-
-var abstractDialog = require('providers/abstractDialog');
-var utils = require('providers/utils');
-var colorPicker = null;
-
-var colorEnums = [{ left: 'red', right: 'cyan', key: 'r' }, { left: 'green', right: 'magenta', key: 'g' }, { left: 'blue', right: 'yellow', key: 'b' }];
-
-module.exports.component = Vue.component('app-color-picker-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./colorPickerDialog.html'),
-    data: function data() {
+exports.default = RF.registerComponent('app-input-file', {
+    getInitialState: function getInitialState() {
         return {
-            i18n: require('providers/i18n').getAll(),
-            currentColorRGB: { r: 0, g: 0, b: 0 },
-            currentColorHex: '#000000',
-            colorEnums: colorEnums
+            title: '',
+            accept: '',
+            onFilePicked: null
         };
     },
-    created: function created() {
-        module.exports.instance = this;
+    template: {
+        type: 'string',
+        value: require('./inputFile.html')
     },
-    components: {
-        appModal: require('components/modal/modal')
-    },
-    methods: {
-        open: function open(_colorPicker, color) {
-            this.opened = true;
-            colorPicker = _colorPicker;
-            this.currentColorRGB.r = color.r;
-            this.currentColorRGB.g = color.g;
-            this.currentColorRGB.b = color.b;
-            this.currentColorHex = utils.rgbToHex(this.currentColorRGB);
-        },
-        hexChanged: function hexChanged() {
-            var color = utils.hexToRgb(this.currentColorHex);
-            Vue.set(this.currentColorRGB, 'r', color.r);
-            Vue.set(this.currentColorRGB, 'g', color.g);
-            Vue.set(this.currentColorRGB, 'b', color.b);
-        },
-        rgbChanged: function rgbChanged() {
-            this.currentColorHex = utils.rgbToHex(this.currentColorRGB);
-        },
-        applyColor: function applyColor() {
-            colorPicker.applyColor(this.currentColorRGB);
-            colorPicker.onchange && colorPicker.onchange();
-            this.close();
-        }
-    }
-});
+    onMount: function onMount() {
+        var _this = this;
 
-},{"./colorPickerDialog.html":107,"components/modal/modal":114,"providers/abstractDialog":171,"providers/i18n":175,"providers/utils":181}],109:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withMargin\">\n        <div class=\"alert_body\">\n            {{message}}\n        </div>\n        <div>\n            <button v-on:click=\"confirmChoose()\">{{i18n.confirm}}</button>\n            <button v-on:click=\"close()\">{{i18n.cancel}}</button>\n        </div>\n    </div>\n</app-modal>";
-
-},{}],110:[function(require,module,exports){
-'use strict';
-
-var abstractDialog = require('providers/abstractDialog');
-
-module.exports.component = Vue.component('app-confirm-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./confirmDialog.html'),
-    data: function data() {
-        return {
-            message: 'default message',
-            confirm: function confirm() {},
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {
-        appModal: require('components/modal/modal')
-    },
-    methods: {
-        open: function open(message, confirmCallback) {
-            this.opened = true;
-            this.message = message;
-            this.confirm = confirmCallback;
-        },
-        confirmChoose: function confirmChoose() {
-            this.confirm();
-            this.close();
-        }
-    }
-});
-
-},{"./confirmDialog.html":109,"components/modal/modal":114,"providers/abstractDialog":171,"providers/i18n":175}],111:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <button>{{title}}</button>\n    <input  required :accept=\"accept\" type=\"file\"/>\n</div>";
-
-},{}],112:[function(require,module,exports){
-'use strict';
-
-module.exports = Vue.component('app-input-file', {
-    props: ['title', 'accept'],
-    template: require('./inputFile.html'),
-    data: function data() {
-        return {};
-    },
-    created: function created() {},
-    mounted: function mounted() {
         var btn = this.$el.querySelector('button');
         var input = this.$el.querySelector('input');
         btn.onclick = function () {
             input.click();
         };
-        var self = this;
         input.onchange = function () {
             var file = input.files[0];
             var name = file.name.split('.')[0];
             var url = window.URL || window.webkitURL;
             var src = url.createObjectURL(file);
-            self.$emit('picked', src, file, name);
+            _this.onFilePicked(src, file, name);
+            RF.digest();
         };
-    },
-    methods: {
-        toggle: function toggle() {}
     }
 });
 
-},{"./inputFile.html":111}],113:[function(require,module,exports){
-module.exports = "<div class=\"dialogWrapper\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"fullscreen shadow\"></div>\n    <div class=\"dialog\">\n        <div class=\"dialogContent\">\n            <div class=\"dialogClose\">\n                <span v-on:click=\"close()\" class=\"pointer\">X</span>\n            </div>\n            <div class=\"withPadding\">\n                <slot></slot>\n            </div>\n        </div>\n    </div>\n</div>\n";
+},{"./inputFile.html":105}],107:[function(require,module,exports){
+module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\">\n    <div class=\"fullscreen shadow\"></div>\n    <div class=\"dialog\">\n        <div class=\"dialogContent\">\n            <div class=\"dialogClose\">\n                <span data-click=\"close()\" class=\"pointer\">X</span>\n            </div>\n            <div class=\"withPadding\">\n                <div data-transclusion=\"content\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
-},{}],114:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 'use strict';
 
-module.exports = Vue.component('app-modal', {
-    props: [],
-    template: require('./modal.html'),
-    data: function data() {
-        return {};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = RF.registerComponent('app-modal', {
+    template: {
+        type: 'string',
+        value: require('./modal.html')
     },
-    created: function created() {},
-    methods: {
-        close: function close() {
-            this.$emit('close');
-        }
+    getInitialState: function getInitialState() {
+        return {
+            opened: false
+        };
+    },
+    close: function close() {
+        this.opened = false;
+    },
+    open: function open() {
+        this.opened = true;
     }
 });
 
-},{"./modal.html":113}],115:[function(require,module,exports){
-module.exports = "<div\r\n        v-if=\"editData.currLayerInEdit._gameObjects\"\r\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div v-for=\"item in editData.currLayerInEdit._gameObjects.rs\">\r\n\r\n        <div\r\n                v-if=\"!item.subType\"\r\n                app-draggable=\"gameObjectFromSelf\"\r\n                app-context-menu=\"ctxGameObject\"\r\n                v-on:click.capture=\"editData.currSceneGameObjectInEdit=item\"\r\n                :style=\"utils.merge(\r\n                            utils.getGameObjectCss(item),\r\n                            {\r\n                                position:'absolute',\r\n                                left:\r\n                                     item.fixedToCamera?(item.pos.x+'px'):\r\n                                     item.pos.x -\r\n                                     frameWidth *\r\n                                     editData.tileMapPosX +\r\n                                     'px',\r\n                                top:\r\n                                     item.fixedToCamera?(item.pos.y+'px'):\r\n                                     item.pos.y -\r\n                                     frameHeight *\r\n                                     editData.tileMapPosY +\r\n                                     'px',\r\n                            }\r\n                    )\"\r\n                :class=\"{active:item==editData.currSceneGameObjectInEdit}\"\r\n                >\r\n\r\n        </div>\r\n\r\n        <div\r\n                v-if=\"item.subType=='textField'\"\r\n                app-draggable=\"gameObjectFromSelf\"\r\n                v-on:click.capture=\"editData.currSceneGameObjectInEdit=item\"\r\n                :style=\"utils.merge(\r\n                            utils.getGameObjectCss(item),\r\n                            {\r\n                                position:'absolute',\r\n                                left:\r\n                                     item.pos.x -\r\n                                     frameWidth *\r\n                                     editData.tileMapPosX +\r\n                                     'px',\r\n                                top:\r\n                                     item.pos.y -\r\n                                     frameHeight *\r\n                                     editData.tileMapPosY +\r\n                                     'px',\r\n                                backgroundColor:'rgb(0,222,0.1)',\r\n                                height:item.height+'px',\r\n                                width:item.width?item.width+'px':'10px',\r\n                                backgroundColor:item.width?'':'#ddd',\r\n                                backgroundImage:'none'\r\n                            }\r\n                    )\"\r\n                :class=\"{active:item==editData.currSceneGameObjectInEdit}\"\r\n                >\r\n\r\n            <div style=\"position: relative;left:0;top:0;z-index:10\">\r\n                            <span\r\n                                :style=\"{\r\n                                    left:item.pos.x+'px',\r\n                                    top: item.pos.y+'px',\r\n                                    display:ch=='\\n'?'block':'inline-block',\r\n                                    width:item._font.fontContext.symbols[ch].width+'px',\r\n                                    height:item._font.fontContext.symbols[ch].height+'px',\r\n                                    backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',\r\n                                    backgroundRepeat:     'no-repeat',\r\n                                    backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',\r\n                                    backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'\r\n                                }\"\r\n                                    v-for=\"ch in item._chars\">\r\n                                </span>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n</div>";
-
-},{}],116:[function(require,module,exports){
+},{"./modal.html":107}],109:[function(require,module,exports){
 'use strict';
 
-var editData = require('providers/editData');
+require('components/modal/modal');
 
-module.exports = Vue.component('app-curr-scene', {
-    props: [],
-    template: require('./scene.html'),
-    data: function data() {
-        return {
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
-        };
-    },
-    computed: {
-        frameWidth: function frameWidth() {
-            if (!editData.currSceneInEdit.tileMap) return 0;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
-            return editData.currSceneInEdit.tileMap._spriteSheet._frameWidth || 0;
-        },
-        frameHeight: function frameHeight() {
-            if (!editData.currSceneInEdit.tileMap) return 0;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
-            return editData.currSceneInEdit.tileMap._spriteSheet._frameHeight || 0;
-        }
-    },
-    components: {},
-    methods: {}
+require('components/collapsible/collapsible');
+
+require('components/alertDialog/alertDialog');
+
+require('components/confirmDialog/confirmDialog');
+
+require('components/inputFile/inputFile');
+
+require('providers/userDefinedFns');
+
+var _explorer = require('pages/explorer/explorer');
+
+var _explorer2 = _interopRequireDefault(_explorer);
+
+var _editor = require('pages/editor/editor');
+
+var _editor2 = _interopRequireDefault(_editor);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+RF.Router.setup({
+    explorer: _explorer2.default,
+    editor: _editor2.default
 });
 
-},{"./scene.html":115,"providers/editData":173,"providers/i18n":175,"providers/utils":181}],117:[function(require,module,exports){
-module.exports = "<div\n        class=\"height100\"\n        v-if=\"editData.scriptEditorUrl\"\n        >\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editor\"\n                ></iframe>\n    </div>\n</div>";
+RF.applyBindings('body');
+RF.Router.navigateTo('explorer');
 
-},{}],118:[function(require,module,exports){
+},{"components/alertDialog/alertDialog":100,"components/collapsible/collapsible":102,"components/confirmDialog/confirmDialog":104,"components/inputFile/inputFile":106,"components/modal/modal":108,"pages/editor/editor":117,"pages/explorer/explorer":129,"providers/userDefinedFns":137}],110:[function(require,module,exports){
+module.exports = "<div>\n    <app-modal id=\"soundModal\">\n        <div data-transclusion=\"content\">\n            <app-sound-dialog id=\"soundDialog\"></app-sound-dialog>\n        </div>\n    </app-modal>\n    <app-particle-system-dialog></app-particle-system-dialog>\n    <app-particle-system-preview-dialog/>\n    <app-font-dialog/>\n    <app-sprite-sheet-dialog/>\n    <app-game-object-dialog/>\n    <app-frame-animation-dialog/>\n    <app-common-behaviour-dialog/>\n    <app-scene-dialog/>\n    <app-layer-dialog/>\n</div>";
+
+},{}],111:[function(require,module,exports){
 'use strict';
 
-var resource = require('providers/resource');
-
-module.exports = Vue.component('app-script-editor', {
-    props: [],
-    template: require('./scriptEditor.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    created: function created() {},
-    components: {},
-    methods: {}
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 
-},{"./scriptEditor.html":117,"providers/editData":173,"providers/i18n":175,"providers/resource":176}],119:[function(require,module,exports){
-module.exports = "\r\n<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td class=\"borderBottom\">\r\n                {{i18n.name}}\r\n            </td>\r\n            <td class=\"borderBottom\">\r\n                {{editData.currCommonBehaviourInEdit.name}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td class=\"borderBottom\">\r\n                {{i18n.description}}\r\n            </td>\r\n            <td class=\"borderBottom\">\r\n                {{editData.currCommonBehaviourInEdit.description}}\r\n            </td>\r\n        </tr>\r\n        <tr v-for=\"(value, key) in editData.currCommonBehaviourInEdit.parameters\">\r\n            <td class=\"borderBottom\">\r\n                {{key}}\r\n            </td>\r\n            <td class=\"borderBottom\">\r\n                <input\r\n                        type=\"text\"\r\n                        v-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"/>\r\n            </td>\r\n        </tr>\r\n        <tr v-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\">\r\n            <td colspan=\"2\" class=\"borderBottom\">\r\n                {{i18n.noDataToEdit}}\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            v-on:click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\"\r\n            :disabled=\"!form.valid()\">\r\n        {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
+var _editData = require('providers/editData');
 
-},{}],120:[function(require,module,exports){
-"use strict";
+var _editData2 = _interopRequireDefault(_editData);
 
-var abstractDialog = require('providers/abstractDialog');
-var editData = require('providers/editData');
-var restResource = require('providers/rest/resource');
+var _i18n = require('providers/i18n');
 
-module.exports.component = Vue.component('app-common-behaviour-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./commonBehaviourDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
+var _i18n2 = _interopRequireDefault(_i18n);
 
-        };
+require('pages/editor/dialogs/soundDialog/soundDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-dialogs', {
+    template: {
+        type: 'string',
+        value: require('./dialogs.html')
     },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        open: function open() {
-            this.opened = true;
-        },
-        createOrEditCommonBehaviour: function createOrEditCommonBehaviour() {
-            var cb = editData.currCommonBehaviourInEdit;
-            var self = this;
-            restResource.save(cb).then(function (resp) {
-                if (resp.created) {
-                    cb.id = resp.id;
-                    editData.commonBehaviourList.add(cb);
-                    editData.currGameObjectInEdit.commonBehaviour.add(cb);
-                    return restResource.save(editData.currGameObjectInEdit);
-                }
-            }).then(function () {
-                editData.currGameObjectInEdit.updateCloner();
-                self.close();
-            }).catch(window.catchPromise);
-        }
-    }
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll()
 });
 
-},{"./commonBehaviourDialog.html":119,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],121:[function(require,module,exports){
-module.exports = "<div>\n    <app-sound-dialog/>\n    <app-particle-system-dialog/>\n    <app-particle-system-preview-dialog/>\n    <app-font-dialog/>\n    <app-sprite-sheet-dialog/>\n    <app-game-object-dialog/>\n    <app-frame-animation-dialog/>\n    <app-common-behaviour-dialog/>\n    <app-scene-dialog/>\n    <app-layer-dialog/>\n</div>";
+},{"./dialogs.html":110,"pages/editor/dialogs/soundDialog/soundDialog":115,"providers/editData":130,"providers/i18n":132}],112:[function(require,module,exports){
+module.exports = "<app-modal id=\"particleSystemDialog\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n\n            </td>\n            <td>\n                <input\n                    required\n                    data-model=\"editData.currParticleSystemInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                numOfParticlesToEmit\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                particleVelocity\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\">\n                particleLiveTime\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                emissionRadius\n            </td>\n            <td></td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        data-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                particleAngle\n            </td>\n            <td>\n                from / to\n            </td>\n            <td>\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'from'\"\n                        />\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'to'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td></td>\n            <td>\n                {{i18n.gameObject}}\n            </td>\n            <td>\n\n                <table>\n                    <tr>\n                        <td>\n                            <select\n                                    required\n                                    data-change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)\"\n                                    data-model=\"editData.currParticleSystemInEdit.gameObject.id\"\n                                    >\n                                <option\n                                        data-value=\"item.id\"\n                                        data-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <div data-style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),\n                                    {\n                                        zoom:editData.currParticleSystemInEdit.gameObject.height>30?\n                                        30/editData.currParticleSystemInEdit.gameObject.height:\n                                        1\n                                    }\n                               )\">\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n\n\n            </td>\n        </tr>\n\n    </table>\n\n    <button\n            data-disabled=\"!form.valid()\"\n            data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n        {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n    <button\n            data-disabled=\"!form.valid()\"\n            data-click=\"showPreview()\">\n        {{i18n.preview}}\n    </button>\n\n</app-modal>";
 
-},{}],122:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 'use strict';
 
-module.exports = Vue.component('app-dialogs', {
-    props: [],
-    template: require('./dialogs.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    components: {
-        appSoundDialog: require('./soundDialog/soundDialog').component,
-        appParticleSystemDialog: require('./particleSystemDialog/particleSystemDialog').component,
-        appParticleSystemPreviewDialog: require('./particleSystemPreviewDialog/particleSystemPreviewDialog').component,
-        appFontDialog: require('./fontDialog/fontDialog').component,
-        appSpriteSheetDialog: require('./spriteSheetDialog/spriteSheetDialog').component,
-        appGameObjectDialog: require('./gameObjectDialog/gameObjectDialog').component,
-        appFrameAnimationDialog: require('./frameAnimationDialog/frameAnimationDialog').component,
-        appCommonBehaviourDialog: require('./commonBehaviourDialog/commonBehaviourDialog').component,
-        appSceneDialog: require('./sceneDialog/sceneDialog').component,
-        appLayerDialog: require('./layerDialog/layerDialog').component
-    },
-    methods: {}
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
-
-},{"./commonBehaviourDialog/commonBehaviourDialog":120,"./dialogs.html":121,"./fontDialog/fontDialog":124,"./frameAnimationDialog/frameAnimationDialog":126,"./gameObjectDialog/gameObjectDialog":128,"./layerDialog/layerDialog":130,"./particleSystemDialog/particleSystemDialog":132,"./particleSystemPreviewDialog/particleSystemPreviewDialog":134,"./sceneDialog/sceneDialog":136,"./soundDialog/soundDialog":138,"./spriteSheetDialog/spriteSheetDialog":140,"providers/editData":173,"providers/i18n":175}],123:[function(require,module,exports){
-module.exports = "\n<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.selectFont}}\n            </td>\n            <td>\n                <select\n                        required\n                        v-control=\"{form:form,model:editData.currFontInEdit,prop:'fontFamily'}\"\n                        v-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                    <option\n                            :value=\"fnt.displayName\"\n                            v-for=\"fnt in systemFontList\">\n                        {{fnt.displayName}}\n                    </option>\n                </select>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n                <input required\n                       v-control=\"{form:form,model:editData.currFontInEdit,prop:'name'}\"\n                       v-model=\"editData.currFontInEdit.name\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontSize}}\n            </td>\n            <td>\n                <input required type=\"number\"\n                       min=\"1\"\n                       max=\"1000\"\n                       v-control=\"{form:form,model:editData.currFontInEdit,prop:'fontSize'}\"\n                       v-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n            </td>\n        </tr>\n        <tr>\n            <td>\n                {{i18n.fontColor}}\n            </td>\n            <td>\n                <app-color-picker\n                        :object=\"editData.currFontInEdit\"\n                        :value=\"'fontColor'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <input v-model=\"fontSample\" class=\"width100\"/>\n            </td>\n        </tr>\n        <tr>\n            <td colspan=\"2\">\n                <div :style='{\n                    fontFamily:editData.currFontInEdit.fontFamily,\n                    fontSize:editData.currFontInEdit.fontSize+\"px\",\n                    color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n                }'>{{fontSample}}</div>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"createOrEditFont(editData.currFontInEdit)\">\n        {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
-
-},{}],124:[function(require,module,exports){
-'use strict';
 
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var abstractDialog = require('providers/abstractDialog');
-
-var editData = require('providers/editData');
-var restFileSystem = require('providers/rest/fileSystem');
-var restResource = require('providers/rest/resource');
-
-var fontSample = 'Test me! Text here';
-var chrome = require('providers/chrome');
-var utils = require('providers/utils');
-
-var SYMBOL_PADDING = 4;
-
-var getFontContext = function getFontContext(arrFromTo, strFont, w) {
-    function getFontHeight(strFont) {
-        var parent = document.createElement("span");
-        parent.appendChild(document.createTextNode("height!ДдЙЇ"));
-        document.body.appendChild(parent);
-        parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
-        var height = parent.offsetHeight;
-        document.body.removeChild(parent);
-        return height;
-    }
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
-    ctx.font = strFont;
-    var textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
-    var symbols = {};
-    var currX = 0,
-        currY = 0,
-        cnvHeight = textHeight;
-    for (var k = 0; k < arrFromTo.length; k++) {
-        var arrFromToCurr = arrFromTo[k];
-        for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
-            var currentChar = String.fromCharCode(i);
-
-            ctx = cnv.getContext('2d');
-            var textWidth = ctx.measureText(currentChar).width;
-            textWidth += 2 * SYMBOL_PADDING;
-            if (textWidth == 0) continue;
-            if (currX + textWidth > w) {
-                currX = 0;
-                currY += textHeight;
-                cnvHeight = currY + textHeight;
+exports.default = RF.registerComponent('app-particle-system-dialog', {
+    template: {
+        type: 'string',
+        value: require('./particleSystemDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    utils: _utils2.default,
+    i18n: _i18n2.default.getAll(),
+    onGameObjectIdChanged: function onGameObjectIdChanged(id) {
+        _editData2.default.currParticleSystemInEdit.gameObject = _editData2.default.gameObjectList.find({ id: id }).clone();
+    },
+    showPreview: function showPreview() {
+        RF.getComponentById('particleSystemPreviewDialog').open();
+    },
+    createOrEditPs: function createOrEditPs(model) {
+        var self = this;
+        _promise2.default.resolve().then(function () {
+            return _resource2.default.save(model);
+        }).then(function (resp) {
+            if (resp.created) {
+                model.id = resp.id;
+                _editData2.default[model.type + 'List'].add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
             }
-            var symbol = {};
-            symbol.x = ~~currX + SYMBOL_PADDING;
-            symbol.y = ~~currY + SYMBOL_PADDING;
-            symbol.width = ~~textWidth - 2 * SYMBOL_PADDING;
-            symbol.height = textHeight - 2 * SYMBOL_PADDING;
-            symbols[currentChar] = symbol;
-            currX += textWidth;
-        }
-    }
-    return { symbols: symbols, width: w, height: cnvHeight };
-};
-
-var getFontImage = function getFontImage(symbolsContext, strFont, color) {
-    var cnv = document.createElement('canvas');
-    cnv.width = symbolsContext.width;
-    cnv.height = symbolsContext.height;
-    var ctx = cnv.getContext('2d');
-    ctx.font = strFont;
-    ctx.fillStyle = color;
-    ctx.textBaseline = "top";
-    var symbols = symbolsContext.symbols;
-    for (var symbol in symbols) {
-        if (!symbols.hasOwnProperty(symbol)) continue;
-        ctx.fillText(symbol, symbols[symbol].x, symbols[symbol].y);
-    }
-    return cnv.toDataURL();
-};
-
-module.exports.component = Vue.component('app-font-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./fontDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: utils,
-            fontSample: fontSample,
-            systemFontList: []
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {
-        appColorPicker: require('components/colorPicker/colorPicker')
-    },
-    methods: {
-        open: function open() {
-            this.opened = true;
-            if (!this.systemFontList.length) {
-                var self = this;
-                chrome.requestToApi({ method: 'getFontList' }, function (list) {
-                    self.systemFontList = list;
-                });
-            }
-        },
-        createOrEditFont: function createOrEditFont(model) {
-            var self = this;
-            var strFont = model.fontSize + 'px' + ' ' + model.fontFamily;
-            model.fontContext = getFontContext([{ from: 32, to: 150 }, { from: 1040, to: 1116 }], strFont, 320);
-            var file = utils.dataURItoBlob(getFontImage(model.fontContext, strFont, utils.rgbToHex(model.fontColor)));
-
-            _promise2.default.resolve().then(function () {
-                return restFileSystem.uploadFile(file, {
-                    type: model.type,
-                    fileName: model.name + '.png'
-                });
-            }).then(function () {
-                return restResource.save(model);
-            }).then(function (resp) {
-                if (resp.created) {
-                    model.id = resp.id;
-                    editData[model.type + 'List'].add(model);
-                } else if (resp.updated) {
-                    model.updateCloner();
-                }
-                self.close();
-            });
-        }
+            self.close();
+        });
     }
 });
 
-},{"./fontDialog.html":123,"babel-runtime/core-js/promise":5,"components/colorPicker/colorPicker":106,"providers/abstractDialog":171,"providers/chrome":172,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],125:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                    required\r\n                    v-control=\"{form:form,model:editData.currFrameAnimationInEdit,prop:'name'}\"\r\n                    v-model=\"editData.currFrameAnimationInEdit.name\"/>\r\n            </td>\r\n            <td rowspan=\"3\">\r\n                <div style=\"max-height: 80vh;max-width:80vw;overflow: scroll;\"\r\n                        >\r\n                    {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}\r\n\r\n                    <div :style=\"utils.merge(\r\n                                    utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),\r\n                                    {border:'1px solid blue'}\r\n                                )\">\r\n                    </div>\r\n\r\n                    <div>\r\n                        <button\r\n                                v-on:click=\"playAnimation()\"\r\n                                :disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.playAnim}}</button>\r\n                        <button\r\n                                v-on:click=\"stopAnimation()\"\r\n                                :disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.stopAnim}}</button>\r\n                    </div>\r\n\r\n                    <div>\r\n\r\n                        <button\r\n                                v-on:click=\"previousFrame()\"\r\n                                :disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> << </button>\r\n\r\n                        <button\r\n                                v-on:click=\"nextFrame()\"\r\n                                :disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> >> </button>\r\n                    </div>\r\n\r\n\r\n                    <div class=\"relative\"\r\n                         :style=\"{\r\n                                        'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')',\r\n                                        'width':                editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px',\r\n                                        'height':               editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px'\r\n                                      }\">\r\n                        <div\r\n                                v-for=\"(v,i)  in editData.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesH*editData.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV\"\r\n                                :style=\"{\r\n                                            'display':        'inline-block',\r\n                                            'left':           editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px',\r\n                                            'top':            editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px',\r\n                                            'position':       'absolute',\r\n                                            'text-align':     'left',\r\n                                            'border':         '1px solid red',\r\n                                            'width':          editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px',\r\n                                            'height':         editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px'\r\n                                      }\">{{i}}</div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.duration}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        min=\"1\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currFrameAnimationInEdit,prop:'duration'}\"\r\n                        v-model=\"editData.currFrameAnimationInEdit.duration\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n\r\n                <table>\r\n                    <tr>\r\n                        <td>\r\n                            {{i18n.frames}}\r\n                        </td>\r\n                        <td>\r\n                            <button v-on:click=\"frames=allIndexes()\">{{i18n.all}}</button>\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            {{i18n.from}}\r\n                        </td>\r\n                        <td>\r\n                            <input\r\n                                    type=\"number\"\r\n                                    v-model=\"from\"\r\n                                    min=\"0\"\r\n                                    v-on:change=\"frames=utils.range(from,to).join(',')\">\r\n                        </td>\r\n                    </tr>\r\n                    <tr>\r\n                        <td>\r\n                            {{i18n.to}}\r\n                        </td>\r\n                        <td>\r\n                            <input\r\n                                    type=\"number\"\r\n                                    min=\"0\"\r\n                                    v-model=\"to\"\r\n                                    v-on:change=\"frames=utils.range(from,to).join(',')\">\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n\r\n            </td>\r\n            <td>\r\n           <textarea\r\n                   required\r\n                   v-model=\"frames\"></textarea>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            v-on:click=\"createOrEditFrameAnimation()\"\r\n            :disabled=\"!form.valid()\">\r\n        {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
+},{"./particleSystemDialog.html":112,"babel-runtime/core-js/promise":5,"providers/editData":130,"providers/i18n":132,"providers/rest/resource":136,"providers/utils":138}],114:[function(require,module,exports){
+module.exports = "<table class=\"width100\">\n    <tr>\n        <td>\n            {{i18n.name}}\n        </td>\n    </tr>\n    <tr>\n        <td>\n            <input\n                    required\n                    data-model=\"editData.currSoundInEdit.name\"/>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            <app-input-file\n                    data-state=\"{\n                        onFilePicked: onFilePicked,\n                        title: i18n.loadSound,\n                        accept: 'audio/*'\n                    }\"\n            ></app-input-file>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            <audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio>\n        </td>\n    </tr>\n</table>\n\n<button\n        data-disabled=\"!(form.valid() && soundUrl)\"\n        data-click=\"createOrEditSound(editData.currSoundInEdit)\">\n    {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n</button>";
 
-},{}],126:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 'use strict';
 
-var abstractDialog = require('providers/abstractDialog');
-var editData = require('providers/editData');
-var restResource = require('providers/rest/resource');
-
-module.exports.component = Vue.component('app-frame-animation-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./frameAnimationDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils'),
-
-            isStopped: true,
-            from: null,
-            to: null,
-            frames: ''
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        open: function open() {
-            this.opened = true;
-            this.isStopped = true;
-            this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
-            Vue.set(this.editData.currFrameAnimationInEdit, '_gameObject', this.editData.currGameObjectInEdit.clone());
-        },
-        allIndexes: function allIndexes() {
-            var res = this.utils.getArray(this.editData.currGameObjectInEdit.spriteSheet._numOfFrames);
-            return res.join(',');
-        },
-        playAnimation: function playAnimation() {
-            var self = this;
-            self.isStopped = false;
-            try {
-                self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
-            } catch (e) {}
-            self.editData.currFrameAnimationInEdit.play();
-            setTimeout(function _anim() {
-                self.editData.currFrameAnimationInEdit.update(new Date().getTime());
-
-                var i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
-                self.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
-
-                if (self.isStopped) {
-                    self.isStopped = false;
-                    return;
-                }
-                if (self.opened) setTimeout(_anim, 50);
-            }, 0);
-        },
-        stopAnimation: function stopAnimation() {
-            this.isStopped = true;
-        },
-        nextFrame: function nextFrame() {
-            var self = this;
-            self.stopAnimation();
-            self.editData.currFrameAnimationInEdit.nextFrame();
-        },
-        previousFrame: function previousFrame() {
-            var self = this;
-            self.stopAnimation();
-            self.editData.currFrameAnimationInEdit.previousFrame();
-        },
-        createOrEditFrameAnimation: function createOrEditFrameAnimation() {
-            var self = this;
-            var fa = editData.currFrameAnimationInEdit;
-            self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
-
-            restResource.save(fa).then(function (resp) {
-                if (resp.created) {
-                    fa.id = resp.id;
-                    editData.frameAnimationList.add(fa);
-                    editData.currGameObjectInEdit.frameAnimations.add(fa);
-                    return restResource.save(editData.currGameObjectInEdit);
-                } else {
-                    fa.updateCloner();
-                }
-            }).then(function () {
-                editData.currGameObjectInEdit.updateCloner();
-                self.close();
-            }).catch(window.catchPromise);
-        }
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
-
-},{"./frameAnimationDialog.html":125,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],127:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                    required\r\n                    v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'name'}\"\r\n                    v-model=\"editData.currGameObjectInEdit.name\"/>\r\n            </td>\r\n            <td></td>\r\n            <td rowspan=\"5\">\r\n                <div class=\"relative\"\r\n                     style=\"\r\n                                        display: inline-block;\r\n                                        overflow: scroll;\r\n                                        max-width:60vw;\r\n                                        max-height:60vh;\r\n                                    \"\r\n                        >\r\n                    <div :style=\"utils.merge(\r\n                        utils.getGameObjectCss(editData.currGameObjectInEdit),\r\n                        {\r\n                            'border':'1px solid blue',\r\n                            'opacity':editData.currGameObjectInEdit.alpha\r\n                        }\r\n                    )\"></div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.spriteSheet}}\r\n            </td>\r\n            <td>\r\n                <select\r\n                        v-on:change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit.spriteSheet,prop:'id'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.spriteSheet.id\">\r\n                    <option :value=\"item.id\" v-for=\"item in editData.spriteSheetList.rs\">{{item.name}}</option>\r\n                </select>\r\n            </td>\r\n            <td>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.groupName}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        v-model=\"editData.currGameObjectInEdit.groupName\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.rigid}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"checkbox\"\r\n                        v-model=\"editData.currGameObjectInEdit.rigid\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.width}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'width'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.width\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.height}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'height'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.height\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.angle}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        step=\"0.1\"\r\n                        type=\"number\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'angle'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.angle\"/>\r\n            </td>\r\n            <td align=\"left\">\r\n                <div class=\"inlineBlock\">\r\n                    <app-angle-picker\r\n                            :object=\"editData.currGameObjectInEdit\"\r\n                            :value=\"'angle'\"\r\n                            />\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                alpha\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"number\"\r\n                        min=\"0\"\r\n                        max=\"1\"\r\n                        step=\"0.1\"\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'alpha'}\"\r\n                        v-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n            </td>\r\n            <td>\r\n                <input\r\n                        type=\"range\"\r\n                        min=\"0\"\r\n                        max=\"1\"\r\n                        step=\"0.1\"\r\n                        v-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.currFrameIndex}}\r\n            </td>\r\n            <td>\r\n                <input type=\"number\"\r\n                       min=\"0\"\r\n                       v-on:change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\"\r\n                       required\r\n                       v-control=\"{form:form,model:editData.currGameObjectInEdit,prop:'currFrameIndex'}\"\r\n                       v-model=\"editData.currGameObjectInEdit.currFrameIndex\"/>\r\n            </td>\r\n            <td></td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.frAnimations}}\r\n            </td>\r\n            <td>\r\n                <div class=\"table width100\">\r\n                    <div class=\"row\" v-for=\"animItm in editData.currGameObjectInEdit.frameAnimations && editData.currGameObjectInEdit.frameAnimations.rs\">\r\n                        <div class=\"cell vAlign\">\r\n                            <span>{{animItm.name}}</span>\r\n                        </div>\r\n                        <div class=\"cell vAlign rightAlign pointer\" v-on:click=\"editFrameAnimation(animItm)\">\r\n                            edit\r\n                        </div>\r\n                        <div class=\"cell pointer vAlign rightAlign\" v-on:click=\"deleteFrameAnimation(animItm)\">\r\n                            X\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n            <td align=\"right\">\r\n                <button\r\n                        class=\"inlineBlock\"\r\n                        :disabled=\"!editData.currGameObjectInEdit.id\"\r\n                        v-on:click=\"createFrameAnimation()\">+</button>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.commonBehaviour}}\r\n            </td>\r\n            <td>\r\n                <div class=\"table width100\">\r\n                    <div class=\"row\" v-for=\"itm in editData.currGameObjectInEdit.commonBehaviour.rs\">\r\n                        <div class=\"cell vAlign\">\r\n                            <span>{{itm.name}}</span>\r\n                        </div>\r\n                        <div class=\"cell vAlign rightAlign pointer\" v-on:click=\"editCommonBehaviour(itm)\">\r\n                            {{i18n.edit}}\r\n                        </div>\r\n                        <div class=\"cell pointer vAlign rightAlign\" v-on:click=\"deleteCommonBehaviour(itm)\">\r\n                            X\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n            <td>\r\n                <table class=\"width100\">\r\n                    <tr>\r\n                        <td>\r\n                            <select v-model=\"selectedBehaviourId\">\r\n                                <option\r\n                                        :disabled=\"editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})\"\r\n                                        :value=\"cb.name\"\r\n                                        v-for=\"cb in editData.commonBehaviourProto.rs\">\r\n                                    {{cb.name}}\r\n                                </option>\r\n                            </select>\r\n                        </td>\r\n                        <td align=\"right\">\r\n                            <button\r\n                                    class=\"inlineBlock\"\r\n                                    :disabled=\"!editData.currGameObjectInEdit.id || !selectedBehaviourId\"\r\n                                    v-on:click=\"createCommonBehaviour(selectedBehaviourId)\">\r\n                                +\r\n                            </button>\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            :disabled=\"!form.valid()\"\r\n            v-on:click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">\r\n        {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
-
-},{}],128:[function(require,module,exports){
-'use strict';
 
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _editData = require('providers/editData');
 
-var abstractDialog = require('providers/abstractDialog');
-var frameAnimationDialog = require('../../dialogs/frameAnimationDialog/frameAnimationDialog');
-var commonBehaviourDialog = require('../../dialogs/commonBehaviourDialog/commonBehaviourDialog');
+var _editData2 = _interopRequireDefault(_editData);
 
-var editData = require('providers/editData');
-var restResource = require('providers/rest/resource');
-var restFileSystem = require('providers/rest/fileSystem');
-var FrameAnimation = _require('frameAnimation');
+var _resource = require('providers/rest/resource');
 
-module.exports.component = Vue.component('app-game-object-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./gameObjectDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils'),
-            selectedBehaviourId: ''
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        open: function open() {
-            this.opened = true;
-        },
-        createOrEditGameObject: function createOrEditGameObject(g) {
-            var self = this;
-            restResource.save(g).then(function (resp) {
-                if (resp.created) {
-                    g.id = resp.id;
-                    editData.gameObjectList.add(g);
-                    return resp;
-                } else if (resp.updated) {
-                    g.updateCloner();
-                }
-            }).then(function (resp) {
-                if (resp.created) return restFileSystem.createFile('script/gameObject/' + g.name + '.js', document.getElementById('defaultCodeScript').textContent);
-            }).then(function () {
-                self.close();
-            }).catch(window.catchPromise);
-        },
-        refreshGameObjectFramePreview: function refreshGameObjectFramePreview(gameObject, ind) {
-            var spriteSheet = gameObject.spriteSheet;
-            if (!spriteSheet) return;
-            var maxNumOfFrame = spriteSheet.numOfFramesH * spriteSheet.numOfFramesV - 1;
-            if (this.editData.currGameObjectInEdit.currFrameIndex >= maxNumOfFrame) {
-                this.editData.currGameObjectInEdit.currFrameIndex = 0;
-                ind = 0;
-            }
-            gameObject.setFrameIndex(ind);
-        },
-        createFrameAnimation: function createFrameAnimation() {
-            this.editData.currFrameAnimationInEdit = new FrameAnimation(new FrameAnimation().toJSON());
-            frameAnimationDialog.instance.open();
-        },
-        editFrameAnimation: function editFrameAnimation(fa) {
-            this.editData.currFrameAnimationInEdit = fa.clone();
-            frameAnimationDialog.instance.open();
-        },
-        deleteFrameAnimation: function deleteFrameAnimation(fa) {
-            var self = this;
-            window.confirmEx(self.i18n.confirmQuestion(fa), function () {});
-        },
+var _resource2 = _interopRequireDefault(_resource);
 
-        onSpriteSheetSelected: function onSpriteSheetSelected(sprId) {
-            var gameObject = editData.currGameObjectInEdit;
-            var spriteSheet = editData.spriteSheetList.find({ id: sprId });
-            if (!spriteSheet) return;
-            spriteSheet = spriteSheet.clone();
-            //if (!gameObject.name) gameObject.name = spriteSheet.name;
-            //spriteSheet.calcFrameSize();
-            gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
-            gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
-            gameObject.spriteSheet = spriteSheet;
-        },
+var _i18n = require('providers/i18n');
 
-        createCommonBehaviour: function createCommonBehaviour(selectedBehaviourName) {
-            this.editData.currCommonBehaviourInEdit = this.editData.commonBehaviourProto.find({ name: selectedBehaviourName }).clone();
-            commonBehaviourDialog.instance.open();
-        },
-        editCommonBehaviour: function editCommonBehaviour(cb) {
-            this.editData.currCommonBehaviourInEdit = cb.clone();
-            commonBehaviourDialog.instance.open();
-        },
-        deleteCommonBehaviour: function deleteCommonBehaviour(cb) {
-            var self = this;
-            window.confirmEx(this.i18n.confirmQuestion(cb), function () {
-                _promise2.default.resolve().then(function () {
-                    self.editData.commonBehaviourList.remove({ id: cb.id });
-                    return restResource.remove(cb);
-                }).then(function () {
-                    self.editData.currGameObjectInEdit.fixateState();
-                    self.editData.currGameObjectInEdit.commonBehaviour.remove({ id: cb.id });
-                    self.editData.currGameObjectInEdit.updateCloner();
-                    return restResource.save(self.editData.currGameObjectInEdit.toJSON_Patched());
-                }).catch(window.catchPromise);
-            });
-        }
+var _i18n2 = _interopRequireDefault(_i18n);
 
-    }
-});
+var _fileSystem = require('providers/rest/fileSystem');
 
-},{"../../dialogs/commonBehaviourDialog/commonBehaviourDialog":120,"../../dialogs/frameAnimationDialog/frameAnimationDialog":126,"./gameObjectDialog.html":127,"babel-runtime/core-js/promise":5,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],129:[function(require,module,exports){
-module.exports = "\r\n<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"withPadding\">\r\n        <div>\r\n            {{i18n.scene}}: {{editData.currLayerInEdit._scene.name}}\r\n        </div>\r\n        <b class=\"block centerText\">{{i18n.layer}}</b>\r\n        <div class=\"table width100\">\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.name}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                        v-control=\"{form:form,model:editData.currLayerInEdit,prop:'name'}\"\r\n                        v-model=\"editData.currLayerInEdit.name\"\r\n                        required/>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <div>\r\n            <button\r\n                    :disabled=\"!form.valid()\"\r\n                    v-on:click=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\">\r\n                {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}\r\n            </button>\r\n        </div>\r\n    </div>\r\n\r\n</app-modal>";
-
-},{}],130:[function(require,module,exports){
-'use strict';
-
-var abstractDialog = require('providers/abstractDialog');
-
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var Layer = _require('layer');
-
-module.exports.component = Vue.component('app-layer-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./layerDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        // todo refactor!!
-        createOrEditLayer: function createOrEditLayer(l, s) {
-            var self = this;
-            if (l.id) {
-                // edit resource
-                var dataToEdit = l.clone();
-                dataToEdit.id = dataToEdit.protoId;
-                resource.createOrEditResource(dataToEdit.toJSON());
-                self.close();
-            } else {
-                // create object in resource
-                resource.createOrEditLayer(l, s, self);
-            }
-        },
-        deleteLayer: function deleteLayer(l) {
-            // todo
-        }
-    }
-});
-
-},{"./layerDialog.html":129,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/validator":182}],131:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n            <td>\n\n            </td>\n            <td>\n                <input\n                    required\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'name'}\"\n                    v-model=\"editData.currParticleSystemInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                numOfParticlesToEmit\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.numOfParticlesToEmit,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n            </td>\n        </tr>\n        <tr>\n            <td rowspan=\"2\">\n                particleVelocity\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'from'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleVelocity,prop:'to'}\"\n                        v-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td rowspan=\"2\">\n                particleLiveTime\n            </td>\n            <td>\n                from\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'from'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                to\n            </td>\n            <td>\n                <input\n                    required\n                    type=\"number\"\n                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.particleLiveTime,prop:'to'}\"\n                    v-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                emissionRadius\n            </td>\n            <td></td>\n            <td>\n                <input\n                        required\n                        type=\"number\"\n                        v-control=\"{form:form,model:editData.currParticleSystemInEdit,prop:'emissionRadius'}\"\n                        v-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n            </td>\n        </tr>\n\n        <tr>\n            <td>\n                particleAngle\n            </td>\n            <td>\n                from / to\n            </td>\n            <td>\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'from'\"\n                        />\n                <app-angle-picker\n                        :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                        :value=\"'to'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td></td>\n            <td>\n                {{i18n.gameObject}}\n            </td>\n            <td>\n\n                <table>\n                    <tr>\n                        <td>\n                            <select\n                                    required\n                                    v-control=\"{form:form,model:editData.currParticleSystemInEdit.gameObject,prop:'id'}\"\n                                    v-on:change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)\"\n                                    v-model=\"editData.currParticleSystemInEdit.gameObject.id\"\n                                    >\n                                <option\n                                        :value=\"item.id\"\n                                        v-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                            </select>\n                        </td>\n                        <td>\n                            <div :style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),\n                                    {\n                                        zoom:editData.currParticleSystemInEdit.gameObject.height>30?\n                                        30/editData.currParticleSystemInEdit.gameObject.height:\n                                        1\n                                    }\n                               )\">\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n\n\n            </td>\n        </tr>\n\n    </table>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n        {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n    <button\n            :disabled=\"!form.valid()\"\n            v-on:click=\"showPreview()\">\n        {{i18n.preview}}\n    </button>\n\n</app-modal>";
-
-},{}],132:[function(require,module,exports){
-'use strict';
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var abstractDialog = require('providers/abstractDialog');
+exports.default = RF.registerComponent('app-sound-dialog', {
+    template: {
+        type: 'string',
+        value: require('./soundDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    soundUrl: '',
+    _file: '',
 
-var editData = require('providers/editData');
-var restResource = require('providers/rest/resource');
-var ParticleSystem = _require('particleSystem');
+    open: function open() {
+        if (_editData2.default.currSoundInEdit.id) this.soundUrl = _editData2.default.projectName + '/' + _editData2.default.currSoundInEdit.resourcePath + '?' + Math.random();else this.soundUrl = '';
+        RF.getComponentById('soundModal').open();
+    },
+    onFilePicked: function onFilePicked(src, file) {
+        this.soundUrl = src;
+        this._file = file;
 
-module.exports.component = Vue.component('app-particle-system-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./particleSystemDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {
-        appAnglePicker: require('components/anglePicker/anglePicker')
-    },
-    methods: {
-        open: function open() {
-            this.opened = true;
-        },
-        onGameObjectIdChanged: function onGameObjectIdChanged(id) {
-            editData.currParticleSystemInEdit.gameObject = editData.gameObjectList.find({ id: id }).clone();
-        },
-        showPreview: function showPreview() {
-            require('../particleSystemPreviewDialog/particleSystemPreviewDialog').instance.open();
-        },
-        createOrEditPs: function createOrEditPs(model) {
-            var self = this;
-            _promise2.default.resolve().then(function () {
-                return restResource.save(model);
-            }).then(function (resp) {
-                if (resp.created) {
-                    model.id = resp.id;
-                    editData[model.type + 'List'].add(model);
-                } else if (resp.updated) {
-                    model.updateCloner();
-                }
-                self.close();
-            });
+        var self = this;
+        self._file = file;
+        self.soundUrl = src;
+        self.editData.currSoundInEdit.resourcePath = 'resources/sound/' + file.name;
+        if (!self.editData.currSoundInEdit.name) {
+            self.editData.currSoundInEdit.name = name;
         }
+    },
+    createOrEditSound: function createOrEditSound(model) {
+        var self = this;
+        _promise2.default.resolve().then(function () {
+            if (self._file) {
+                return _fileSystem2.default.uploadFile(self._file, { type: model.type });
+            } else return _promise2.default.resolve();
+        }).then(function () {
+            return _resource2.default.save(model);
+        }).then(function (resp) {
+            if (resp.created) {
+                model.id = resp.id;
+                _editData2.default.soundList.add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            RF.getComponentById('soundModal').close();
+            RF.digest();
+        });
     }
 });
 
-},{"../particleSystemPreviewDialog/particleSystemPreviewDialog":134,"./particleSystemDialog.html":131,"babel-runtime/core-js/promise":5,"components/anglePicker/anglePicker":102,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],133:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n\n    <div>\n        {{i18n.preview}} {{i18n.particleSystem}}\n        <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n    </div>\n    <div\n            v-on:click=\"emit($event)\"\n            v-on:mousemove=\"$event.buttons==1 && emit($event)\"\n            class=\"subFullScreen relative noOverFlow\">\n        <div\n                v-for=\"item in editData.currParticleSystemInEdit._particles\"\n                :style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px',\n                                pointerEvents:'none'\n                            }\n                    )\"\n                >\n        </div>\n    </div>\n    <div>\n        <button v-on:click=\"close()\">{{i18n.close}}</button>\n    </div>\n\n\n</app-modal>";
+},{"./soundDialog.html":114,"babel-runtime/core-js/promise":5,"providers/editData":130,"providers/i18n":132,"providers/rest/fileSystem":134,"providers/rest/resource":136}],116:[function(require,module,exports){
+module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel/>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props></app-game-props>\n            <app-scenes/>\n            <app-game-objects/>\n            <app-sprite-sheets/>\n            <app-user-interface/>\n            <app-fonts/>\n            <app-sounds></app-sounds>\n            <app-particle-systems></app-particle-systems>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor/>\n            <div :style=\"{\n                width:  editData.gameProps.width + 'px',\n                height: editData.gameProps.height + 'px',\n                border: '1px solid green'\n            }\">\n                <app-curr-scene/>\n            </div>\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object/>\n            <app-right-panel-scene/>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs></app-dialogs>\n\n</div>";
 
-},{}],134:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 'use strict';
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-
-var abstractDialog = require('providers/abstractDialog');
-
-var tid = void 0;
-
-module.exports.component = Vue.component('app-particle-system-preview-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./particleSystemPreviewDialog.html'),
-    data: function data() {
-        return {
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        open: function open() {
-            this.opened = true;
-            this.run();
-        },
-        close: function close() {
-            this.opened = false;
-            clearInterval(tid);
-        },
-        run: function run() {
-            var prevTime = null;
-
-            if (!editData.currParticleSystemInEdit._particles) Vue.set(editData.currParticleSystemInEdit, '_particles', []);
-
-            var update = function update() {
-
-                var currTime = Date.now();
-                if (!prevTime) prevTime = currTime;
-                var delta = currTime - prevTime;
-                prevTime = currTime;
-                editData.currParticleSystemInEdit._particles.forEach(function (p) {
-
-                    p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                    var deltaX = p.vel.x * delta / 1000;
-                    var deltaY = p.vel.y * delta / 1000;
-                    p.pos.x = p.pos.x + deltaX;
-                    p.pos.y = p.pos.y + deltaY;
-
-                    if (!p._timeCreated) p._timeCreated = currTime;
-                    if (currTime - p._timeCreated > p.liveTime) {
-                        editData.currParticleSystemInEdit._particles.splice(editData.currParticleSystemInEdit._particles.indexOf(p), 1);
-                    }
-                });
-            };
-            tid = setInterval(function () {
-                update();
-            }, 5);
-        },
-        emit: function emit(e) {
-            var rect = e.target.getBoundingClientRect();
-            editData.currParticleSystemInEdit.emit(e.clientX - rect.left, e.clientY - rect.top);
-        }
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 
-},{"./particleSystemPreviewDialog.html":133,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/utils":181}],135:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"withPadding\">\r\n        <div class=\"table\">\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.name}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneInEdit,prop:'name'}\"\r\n                            v-model=\"editData.currSceneInEdit.name\"/>\r\n                </div>\r\n            </div>\r\n        </div>\r\n        <button\r\n                :disabled=\"!form.valid()\"\r\n                v-on:click=\"createOrEditScene(editData.currSceneInEdit)\">\r\n            {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n\r\n</app-modal>";
+require('pages/editor/leftPanel/gameProps/gameProps');
 
-},{}],136:[function(require,module,exports){
-'use strict';
+require('pages/editor/leftPanel/particleSystems/particleSystems');
 
-var abstractDialog = require('providers/abstractDialog');
+require('pages/editor/leftPanel/sounds/sounds');
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var Scene = _require('scene');
+require('pages/editor/topPanel/topPanel');
 
-module.exports.component = Vue.component('app-scene-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./sceneDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        createOrEditScene: function createOrEditScene(s) {
-            var model = s.toJSON();
-            var self = this;
-            resource.createOrEditResource(model, Scene, editData.sceneList, function (op) {
-                if (op.type == 'create') {
-                    resource.createFile('script/scene/' + self.editData.currSceneInEdit.name + '.js', document.getElementById('defaultCodeScript').textContent, function () {
-                        self.close();
-                    });
-                } else self.close();
-            });
-        }
-    }
-});
+require('pages/editor/dialogs/dialogs');
 
-},{"./sceneDialog.html":135,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/validator":182}],137:[function(require,module,exports){
-module.exports = "<app-modal\n        v-on:close=\"close()\"\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n\n    <table class=\"width100\">\n        <tr>\n            <td>\n                {{i18n.name}}\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <input\n                        required\n                        v-control=\"{form:form,model:editData.currSoundInEdit,prop:'name'}\"\n                        v-model=\"editData.currSoundInEdit.name\"/>\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <app-input-file\n                        v-on:picked=\"onFilePicked\"\n                        :title=\"i18n.loadSound\"\n                        :accept=\"'audio/*'\"\n                        />\n            </td>\n        </tr>\n        <tr>\n            <td>\n                <audio v-if=\"soundUrl\" controls=\"controls\" :src=\"soundUrl\"></audio>\n            </td>\n        </tr>\n    </table>\n\n    <button\n            :disabled=\"!(form.valid() && soundUrl)\"\n            v-on:click=\"createOrEditSound(editData.currSoundInEdit)\">\n        {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n    </button>\n\n</app-modal>";
+var _i18n = require('providers/i18n');
 
-},{}],138:[function(require,module,exports){
-'use strict';
+var _i18n2 = _interopRequireDefault(_i18n);
 
-var _promise = require('babel-runtime/core-js/promise');
+var _editData = require('providers/editData');
 
-var _promise2 = _interopRequireDefault(_promise);
+var _editData2 = _interopRequireDefault(_editData);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var abstractDialog = require('providers/abstractDialog');
-
-var editData = require('providers/editData');
-var restResource = require('providers/rest/resource');
-var restFileSystem = require('providers/rest/fileSystem');
-var Sound = _require('sound');
-
-module.exports.component = Vue.component('app-sound-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./soundDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            soundUrl: '',
-            _file: ''
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-    components: {},
-    methods: {
-        open: function open() {
-            this.opened = true;
-            if (editData.currSoundInEdit.id) this.soundUrl = editData.projectName + '/' + editData.currSoundInEdit.resourcePath + '?' + Math.random();else this.soundUrl = '';
-        },
-        onFilePicked: function onFilePicked(src, file) {
-            this.soundUrl = src;
-            this._file = file;
-
-            var self = this;
-            self._file = file;
-            self.soundUrl = src;
-            self.editData.currSoundInEdit.resourcePath = 'resources/sound/' + file.name;
-            if (!self.editData.currSoundInEdit.name) {
-                self.editData.currSoundInEdit.name = name;
-            }
-        },
-        createOrEditSound: function createOrEditSound(model) {
-            var self = this;
-            _promise2.default.resolve().then(function () {
-                if (self._file) {
-                    return restFileSystem.uploadFile(self._file, { type: model.type });
-                } else return _promise2.default.resolve();
-            }).then(function () {
-                return restResource.save(model);
-            }).then(function (resp) {
-                if (resp.created) {
-                    model.id = resp.id;
-                    editData.soundList.add(model);
-                } else if (resp.updated) {
-                    model.updateCloner();
-                }
-                self.close();
-            });
-        }
-    }
-});
-
-},{"./soundDialog.html":137,"babel-runtime/core-js/promise":5,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/validator":182}],139:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'name'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n            </td>\r\n            <td rowspan=\"6\">\r\n                <div style=\"max-height: 40vh;max-width:60vw;overflow: scroll;\"\r\n                        >\r\n                    <div class=\"relative\"\r\n                         :style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                        <div\r\n                                :title=\"i\"\r\n                                v-for=\"(val,i) in numOfSpriteSheetCells\"\r\n                                :style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                    </div>\r\n                </div>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.image}}\r\n            </td>\r\n            <td>\r\n                <app-input-file\r\n                        v-on:picked=\"onFilePicked\"\r\n                        :title=\"i18n.loadImage\"\r\n                        :accept=\"'image/*'\"\r\n                        />\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.width}}\r\n            </td>\r\n            <td>\r\n                {{editData.currSpriteSheetInEdit.width}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.height}}\r\n            </td>\r\n            <td>\r\n                {{editData.currSpriteSheetInEdit.height}}\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.numOfFramesH}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        min=\"1\"\r\n                        max=\"100\"\r\n                        type=\"number\"\r\n                        v-on:change=\"refreshNumOfCells()\"\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesH'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td>\r\n                {{i18n.numOfFramesV}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        min=\"1\"\r\n                        max=\"100\"\r\n                        type=\"number\"\r\n                        v-on:change=\"refreshNumOfCells()\"\r\n                        v-control=\"{form:form,model:editData.currSpriteSheetInEdit,prop:'numOfFramesV'}\"\r\n                        v-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button\r\n            v-on:click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n            :disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n        {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
-
-},{}],140:[function(require,module,exports){
-'use strict';
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var abstractDialog = require('providers/abstractDialog');
-
-var editData = require('providers/editData');
-var restFileSystem = require('providers/rest/fileSystem');
-var restResource = require('providers/rest/resource');
-
-module.exports.component = Vue.component('app-sprite-sheet-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./spriteSheetDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils'),
-            spriteSheetUrl: '',
-            _file: '',
-            numOfSpriteSheetCells: 0
-        };
-    },
-    created: function created() {
-        module.exports.instance = this;
-    },
-
-    components: {},
-    methods: {
-        open: function open() {
-            this.opened = true;
-            if (editData.currSpriteSheetInEdit.id) this.spriteSheetUrl = editData.projectName + '/' + editData.currSpriteSheetInEdit.resourcePath + '?' + Math.random();else this.spriteSheetUrl = '';
-            this.refreshNumOfCells();
-        },
-        onFilePicked: function onFilePicked(src, file, name) {
-            var self = this;
-            self._file = file;
-            self.spriteSheetUrl = src;
-            self.editData.currSpriteSheetInEdit.resourcePath = 'resources/spriteSheet/' + file.name;
-            if (!self.editData.currSpriteSheetInEdit.name) {
-                self.editData.currSpriteSheetInEdit.name = name;
-            }
-            var img = new Image();
-            img.onload = function () {
-                self.editData.currSpriteSheetInEdit.width = img.width;
-                self.editData.currSpriteSheetInEdit.height = img.height;
-                self.editData.currSpriteSheetInEdit.calcFrameSize();
-            };
-            img.src = src;
-        },
-        refreshNumOfCells: function refreshNumOfCells() {
-            this.numOfSpriteSheetCells = this.editData && this.editData.currSpriteSheetInEdit && this.editData.currSpriteSheetInEdit.numOfFramesH * this.editData.currSpriteSheetInEdit.numOfFramesV;
-            this.editData.currSpriteSheetInEdit.calcFrameSize();
-        },
-        createOrEditSpriteSheet: function createOrEditSpriteSheet(model) {
-            var self = this;
-            _promise2.default.resolve().then(function () {
-                if (self._file) {
-                    return restFileSystem.uploadFile(self._file, { type: model.type });
-                } else return _promise2.default.resolve();
-            }).then(function () {
-                return restResource.save(model);
-            }).then(function (resp) {
-                if (resp.created) {
-                    model.id = resp.id;
-                    editData[model.type + 'List'].add(model);
-                } else if (resp.updated) {
-                    model.updateCloner();
-                }
-                self.close();
-            });
-        }
-    }
-});
-
-},{"./spriteSheetDialog.html":139,"babel-runtime/core-js/promise":5,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/utils":181,"providers/validator":182}],141:[function(require,module,exports){
-module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel/>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props/>\n            <app-scenes/>\n            <app-game-objects/>\n            <app-sprite-sheets/>\n            <app-user-interface/>\n            <app-fonts/>\n            <app-sounds/>\n            <app-particle-systems/>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor/>\n            <div :style=\"{\n                width:  editData.gameProps.width + 'px',\n                height: editData.gameProps.height + 'px',\n                border: '1px solid green'\n            }\">\n                <app-curr-scene/>\n            </div>\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object/>\n            <app-right-panel-scene/>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs/>\n\n</div>";
-
-},{}],142:[function(require,module,exports){
-'use strict';
-
-var onMounted = function _onMounted() {
+var _onMount = function _onMount() {
     var layoutSizes = {};
 
     layoutSizes.a = 15;
@@ -2908,715 +2161,403 @@ var onMounted = function _onMounted() {
     });
 };
 
-module.exports = {
-    template: require('./editor.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData')
-        };
+// appCollapsible: require('components/collapsible/collapsible'),
+// appModal: require('components/modal/modal'),
+// appInputFile: require('components/inputFile/inputFile'),
+//
+// appGameProps: require('./leftPanel/gameProps/gameProps'),
+// appScenes: require('./leftPanel/scenes/scenes'),
+// appGameObjects: require('./leftPanel/gameObjects/gameObjects'),
+// appSpriteSheets: require('./leftPanel/spriteSheets/spriteSheets'),
+// appUserInterface: require('./leftPanel/userInterface/userInterface'),
+// appFonts: require('./leftPanel/fonts/fonts'),
+// appSounds: require('./leftPanel/sounds/sounds'),
+// appParticleSystems: require('./leftPanel/particleSystems/particleSystems'),
+// appDialogs: require('./dialogs/dialogs'),
+//
+// appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor'),
+//
+// appRightPanelSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
+// appRightPanelScene: require('./rightPanel/scene/scene'),
+// appCurrScene: require('./centralPanel/scene/scene'),
+//
+// appTopPanel: require('./topPanel/topPanel')
+
+exports.default = RF.registerComponent('editor', {
+    template: {
+        type: 'string',
+        value: require('./editor.html')
     },
-    mounted: function mounted() {
-        onMounted();
-    },
-    methods: {},
-    components: {
-        appCollapsible: require('components/collapsible/collapsible'),
-        appModal: require('components/modal/modal'),
-        appInputFile: require('components/inputFile/inputFile'),
-
-        appGameProps: require('./leftPanel/gameProps/gameProps'),
-        appScenes: require('./leftPanel/scenes/scenes'),
-        appGameObjects: require('./leftPanel/gameObjects/gameObjects'),
-        appSpriteSheets: require('./leftPanel/spriteSheets/spriteSheets'),
-        appUserInterface: require('./leftPanel/userInterface/userInterface'),
-        appFonts: require('./leftPanel/fonts/fonts'),
-        appSounds: require('./leftPanel/sounds/sounds'),
-        appParticleSystems: require('./leftPanel/particleSystems/particleSystems'),
-        appDialogs: require('./dialogs/dialogs'),
-
-        appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor'),
-
-        appRightPanelSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
-        appRightPanelScene: require('./rightPanel/scene/scene'),
-        appCurrScene: require('./centralPanel/scene/scene'),
-
-        appTopPanel: require('./topPanel/topPanel')
-
-    }
-};
-
-},{"./centralPanel/scene/scene":116,"./centralPanel/scriptEditor/scriptEditor":118,"./dialogs/dialogs":122,"./editor.html":141,"./leftPanel/fonts/fonts":146,"./leftPanel/gameObjects/gameObjects":148,"./leftPanel/gameProps/gameProps":150,"./leftPanel/particleSystems/particleSystems":152,"./leftPanel/scenes/scenes":154,"./leftPanel/sounds/sounds":156,"./leftPanel/spriteSheets/spriteSheets":158,"./leftPanel/userInterface/userInterface":160,"./rightPanel/scene/scene":164,"./rightPanel/sceneGameObject/sceneGameObject":162,"./topPanel/topPanel":166,"components/collapsible/collapsible":104,"components/inputFile/inputFile":112,"components/modal/modal":114,"providers/editData":173}],143:[function(require,module,exports){
-module.exports = "<div class=\"row\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            v-if=\"!gameObject.subType\">\n        <div :style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {zoom:gameObject.height>30?30/gameObject.height:1}\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            v-if=\"gameObject.subType\"\n            :title=\"gameObject.name\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.editScript\" class=\"script\" v-on:click=\"crud.editScript(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.edit\" class=\"edit\" v-on:click=\"crud.edit(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div v-if=\"crud && crud.delete\" v-on:click=\"crud.delete(gameObject)\" class=\"delete\"></div>\n    </div>\n</div>";
-
-},{}],144:[function(require,module,exports){
-'use strict';
-
-module.exports = Vue.component('app-game-object-row', {
-    props: ['gameObject', 'crud'],
-    template: require('./gameObjectRow.html'),
-    data: function data() {
-        return {
-            utils: require('providers/utils')
-        };
-    },
-    components: {},
-    methods: {}
-});
-
-},{"./gameObjectRow.html":143,"providers/utils":181}],145:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :crud=\"{\n            create:createFont\n        }\"\n        :title=\"i18n.fonts\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"font in (editData.fontList && editData.fontList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editFont(font)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteFont(font)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
-
-},{}],146:[function(require,module,exports){
-'use strict';
-
-var fontDialog = require('../../dialogs/fontDialog/fontDialog');
-var Font = _require('font');
-var restFileSystem = require('providers/rest/fileSystem');
-var utils = require('providers/utils');
-
-module.exports = Vue.component('app-fonts', {
-    props: [],
-    template: require('./fonts.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    components: {},
-    methods: {
-        createFont: function createFont() {
-            this.editData.currFontInEdit = new Font(new Font().toJSON());
-            fontDialog.instance.open();
-        },
-        editFont: function editFont(fnt) {
-            this.editData.currFontInEdit = fnt.clone();
-            fontDialog.instance.open();
-        },
-        deleteFont: function deleteFont(model) {
-            utils.deleteModel(model, function () {
-                restFileSystem.removeFile('font/' + model.name + '.png');
-            });
-        }
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    onMount: function onMount() {
+        _onMount();
     }
 });
 
-},{"../../dialogs/fontDialog/fontDialog":124,"./fonts.html":145,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/utils":181}],147:[function(require,module,exports){
-module.exports = "<div>\n    <app-collapsible\n            :title=\"i18n.gameObjects\"\n            :crud=\"{\n                create:createGameObject\n            }\"\n            >\n        <div class=\"withPaddingLeft\">\n            <div class=\"table rightText\">\n                <div\n                        :crud=\"{\n                            edit: editGameObject,\n                            editScript: editGameObjectScript,\n                            delete: deleteGameObject\n                        }\"\n                        is=\"appGameObjectRow\"\n                        :game-object=\"gameObject\"\n                        v-for=\"gameObject in (editData.gameObjectList && editData.gameObjectList.rs)\"\n                        >\n                </div>\n            </div>\n        </div>\n    </app-collapsible>\n</div>";
+},{"./editor.html":116,"pages/editor/dialogs/dialogs":111,"pages/editor/leftPanel/gameProps/gameProps":119,"pages/editor/leftPanel/particleSystems/particleSystems":121,"pages/editor/leftPanel/sounds/sounds":123,"pages/editor/topPanel/topPanel":125,"providers/editData":130,"providers/i18n":132}],118:[function(require,module,exports){
+module.exports = "\n<app-collapsible data-state=\"{title:i18n.game}\">\n    <div data-transclusion=\"content\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.width\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.scaleStrategy\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-value=\"value\"\n                                data-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.preloadingSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select data-model=\"editData.gameProps.startSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n    </div>\n</app-collapsible>";
 
-},{}],148:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 'use strict';
 
-var utils = require('providers/utils');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
-var GameObject = _require('gameObject');
-var restFileSystem = require('providers/rest/fileSystem');
+var _resource = require('providers/rest/resource');
 
-module.exports = Vue.component('app-game-objects', {
-    props: [],
-    template: require('./gameObjects.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-game-props', {
+    template: {
+        type: 'string',
+        value: require('./gameProps.html')
     },
-    components: {
-        appGameObjectRow: require('../_gameObjectRow/gameObjectRow')
-    },
-    methods: {
-        createGameObject: function createGameObject() {
-            this.editData.currGameObjectInEdit = new GameObject(new GameObject().clone());
-            gameObjectDialog.instance.open();
-        },
-        editGameObjectScript: function editGameObjectScript(gameObject) {
-            utils.openEditor(gameObject.type + '/' + gameObject.name + '.js');
-        },
-        editGameObject: function editGameObject(go) {
-            this.editData.currGameObjectInEdit = go.clone();
-            gameObjectDialog.instance.open();
-        },
-        deleteGameObject: function deleteGameObject(model) {
-            utils.deleteModel(model, function () {
-                restFileSystem.removeFile('script/gameObject/' + model.name + '.js');
-            });
-        }
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    scales: _require('consts').SCALE_STRATEGY,
+    saveGameProps: function saveGameProps() {
+        _resource2.default.saveGameProps(this.editData.gameProps);
     }
 });
 
-},{"../../dialogs/gameObjectDialog/gameObjectDialog":128,"../_gameObjectRow/gameObjectRow":144,"./gameObjects.html":147,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/utils":181}],149:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <app-collapsible :title=\"i18n.game\" :id=\"'game'\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.width\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'width'}\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            v-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            v-control=\"{form:form,model:editData.gameProps,prop:'height'}\"\n                            min=\"1\"\n                            max=\"20000\"\n                            v-on:change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.scaleStrategy\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :title=\"value\"\n                                :value=\"value\"\n                                v-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            v-model=\"editData.gameProps.preloadingSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select v-model=\"editData.gameProps.startSceneId\"\n                            v-on:change=\"form.valid() && saveGameProps()\">\n                        <option\n                                :disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                :value=\"item.id\"\n                                v-for=\"item in (editData.sceneList && editData.sceneList.rs)\">{{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n\n    </app-collapsible>\n</div>";
+},{"./gameProps.html":118,"providers/editData":130,"providers/i18n":132,"providers/rest/resource":136}],120:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createParticleSystem\n            },\n            title:i18n.particleSystems\n        }\">\n\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 data-for=\"ps in editData.particleSystemList.rs\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],150:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 'use strict';
 
-var restResource = require('providers/rest/resource');
-
-module.exports = Vue.component('app-game-props', {
-    props: [],
-    template: require('./gameProps.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll(),
-            scales: _require('consts').SCALE_STRATEGY
-        };
-    },
-    methods: {
-        saveGameProps: function saveGameProps() {
-            restResource.saveGameProps(this.editData.gameProps);
-        }
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 
-},{"./gameProps.html":149,"providers/editData":173,"providers/i18n":175,"providers/rest/resource":179,"providers/validator":182}],151:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :crud=\"{\n            create:createParticleSystem\n        }\"\n        :title=\"i18n.particleSystems\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ps in (editData.particleSystemList && editData.particleSystemList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editParticleSystem(ps)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteParticleSystem(ps)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
+var _editData = require('providers/editData');
 
-},{}],152:[function(require,module,exports){
-'use strict';
+var _editData2 = _interopRequireDefault(_editData);
 
-var particleSystemDialog = require('../../dialogs/particleSystemDialog/particleSystemDialog');
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _particleSystemDialog = require('pages/editor/dialogs/particleSystemDialog/particleSystemDialog');
+
+var _particleSystemDialog2 = _interopRequireDefault(_particleSystemDialog);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var ParticleSystem = _require('particleSystem');
-var utils = require('providers/utils');
 
-module.exports = Vue.component('app-particle-systems', {
-    props: [],
-    template: require('./particleSystems.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
+exports.default = RF.registerComponent('app-particle-systems', {
+    template: {
+        type: 'string',
+        value: require('./particleSystems.html')
     },
-    components: {},
-    methods: {
-        createParticleSystem: function createParticleSystem() {
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    createParticleSystem: function createParticleSystem() {
+        this.editData.currParticleSystemInEdit = new ParticleSystem(new ParticleSystem().toJSON());
+        var go = this.editData.gameObjectList.get(0);
 
-            this.editData.currParticleSystemInEdit = new ParticleSystem(new ParticleSystem().toJSON());
-            var go = this.editData.gameObjectList.get(0);
-
-            if (!go) {
-                alertEx(this.i18n.noGameObject);
-                return;
-            }
-
-            this.editData.currParticleSystemInEdit.gameObject = go.clone();
-
-            particleSystemDialog.instance.open();
-        },
-        editParticleSystem: function editParticleSystem(ps) {
-            this.editData.currParticleSystemInEdit = ps.clone();
-            particleSystemDialog.instance.open();
-        },
-        deleteParticleSystem: function deleteParticleSystem(model) {
-            utils.deleteModel(model);
+        if (!go) {
+            alertEx(this.i18n.noGameObject);
+            return;
         }
+
+        this.editData.currParticleSystemInEdit.gameObject = go.clone();
+        RF.getComponentById('particleSystemDialog').open();
+    },
+    editParticleSystem: function editParticleSystem(ps) {
+        this.editData.currParticleSystemInEdit = ps.clone();
+        RF.getComponentById('particleSystemDialog').open();
+    },
+    deleteParticleSystem: function deleteParticleSystem(model) {
+        _utils2.default.deleteModel(model);
     }
 });
 
-},{"../../dialogs/particleSystemDialog/particleSystemDialog":132,"./particleSystems.html":151,"providers/editData":173,"providers/i18n":175,"providers/utils":181}],153:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :crud=\"{\n            create:createScene\n        }\"\n        :title=\"i18n.scenes\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\" v-for=\"scene in (editData.sceneList && editData.sceneList.rs)\">\n        <app-collapsible\n                :class=\"{\n                    currScene:editData.currSceneInEdit==scene\n                }\"\n                v-on:click.native=\"editData.currSceneInEdit=scene\"\n                :object=\"scene\"\n                :crud=\"{\n                    edit:editScene,\n                    delete:deleteScene,\n                    editScript: editScript\n                }\"\n                :title=\"scene.name\"\n                >\n            <div class=\"withPaddingLeft\">\n                <app-collapsible\n                        :title=\"i18n.layers\"\n                        :meta=\"scene\"\n                        :crud=\"{\n                            create:createLayer\n                        }\"\n                        >\n                    <div\n                            v-on:click.capture=\"editData.currLayerInEdit=layer\"\n                            v-for=\"layer in scene._layers.rs\" class=\"withPaddingLeft\">\n                        <app-collapsible\n                                :object=\"layer\"\n                                :meta=\"scene\"\n                                :crud=\"{\n                                    edit:editLayer,\n                                    delete:deleteLayer\n                                }\"\n                                :title=\"layer.name\" :id=\"layer.id\">\n                            <div class=\"withPaddingLeft\">\n                                <div class=\"table width100\">\n                                    <div\n                                            :class=\"{\n                                                currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject\n                                            }\"\n                                            v-on:click.native=\"editData.currSceneGameObjectInEdit=gameObject\"\n                                            is=\"appGameObjectRow\"\n                                            :game-object=\"gameObject\"\n                                            v-for=\"gameObject in layer._gameObjects.rs\"></div>\n                                </div>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </app-collapsible>\n            </div>\n        </app-collapsible>\n    </div>\n</app-collapsible>";
+},{"./particleSystems.html":120,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":113,"providers/editData":130,"providers/i18n":132,"providers/utils":138}],122:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createSound\n            },\n            title:i18n.sounds\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"sound in editData.soundList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSound(sound)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSound(sound)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],154:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 'use strict';
 
-var resource = require('providers/resource');
-var utils = require('providers/utils');
-var sceneDialog = require('../../dialogs/sceneDialog/sceneDialog');
-var layerDialog = require('../../dialogs/layerDialog/layerDialog');
-var Layer = _require('layer');
-var Scene = _require('scene');
-
-module.exports = Vue.component('app-scenes', {
-    props: [],
-    template: require('./scenes.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    components: {
-        appGameObjectRow: require('../_gameObjectRow/gameObjectRow')
-    },
-    methods: {
-        createScene: function createScene() {
-            this.editData.currSceneInEdit = new Scene(new Scene().toJSON());
-            sceneDialog.instance.open();
-        },
-        editScene: function editScene(scene) {
-            this.editData.currSceneInEdit = scene.clone();
-            sceneDialog.instance.open();
-        },
-        deleteScene: function deleteScene(scene) {
-            window.confirmEx(this.i18n.confirmQuestion, function () {
-                resource.deleteResource(scene);
-            });
-        },
-        createLayer: function createLayer(scene) {
-            this.editData.currLayerInEdit = new Layer(new Layer().clone());
-            this.editData.currLayerInEdit._scene = scene;
-            layerDialog.instance.open();
-        },
-        editLayer: function editLayer(layer, scene) {
-            this.editData.currLayerInEdit = layer.clone();
-            this.editData.currLayerInEdit._scene = scene;
-            layerDialog.instance.open();
-        },
-        editScript: function editScript(scene) {
-            utils.openEditor(scene.type + '/' + scene.name + '.js');
-        },
-        deleteLayer: function deleteLayer(scene) {
-            console.log('delete l invoked', scene);
-        },
-        createGameObject: function createGameObject() {
-            console.log('create go invoked');
-        },
-        editGameObject: function editGameObject(scene) {
-            console.log('edit go invoked', scene);
-        },
-        deleteGameObject: function deleteGameObject(scene) {
-            console.log('delete go invoked', scene);
-        },
-        onGameObjectClick: function onGameObjectClick(go) {
-            console.log(go);
-        }
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 
-},{"../../dialogs/layerDialog/layerDialog":130,"../../dialogs/sceneDialog/sceneDialog":136,"../_gameObjectRow/gameObjectRow":144,"./scenes.html":153,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/utils":181}],155:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :crud=\"{\n            create:createSound\n        }\"\n        :title=\"i18n.sounds\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"sound in (editData.soundList && editData.soundList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                </div>\n\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editSound(sound)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteSound(sound)\"/>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
+var _editData = require('providers/editData');
 
-},{}],156:[function(require,module,exports){
-'use strict';
+var _editData2 = _interopRequireDefault(_editData);
 
-var utils = require('providers/utils');
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var Sound = _require('sound');
-var soundDialog = require('../../dialogs/soundDialog/soundDialog');
-var restResource = require('providers/rest/resource');
-var restFileSystem = require('providers/rest/fileSystem');
-
-module.exports = Vue.component('app-sounds', {
-    props: [],
-    template: require('./sounds.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
+exports.default = RF.registerComponent('app-sounds', {
+    template: {
+        type: 'string',
+        value: require('./sounds.html')
     },
-    components: {},
-    methods: {
-        createSound: function createSound() {
-            this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
-            soundDialog.instance.open();
-        },
-        editSound: function editSound(sound) {
-            this.editData.currSoundInEdit = sound.clone();
-            soundDialog.instance.open();
-        },
-        deleteSound: function deleteSound(model) {
-            utils.deleteModel(model, function () {
-                restFileSystem.removeFile(model.resourcePath.replace('resources/', ''));
-            });
-        }
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    createSound: function createSound() {
+        this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
+        RF.getComponentById('soundDialog').open();
+    },
+    editSound: function editSound(sound) {
+        this.editData.currSoundInEdit = sound.clone();
+        RF.getComponentById('soundDialog').open();
+    },
+    deleteSound: function deleteSound(model) {
+        _utils2.default.deleteModel(model, function () {
+            _fileSystem2.default.removeFile(model.resourcePath.replace('resources/', ''));
+        });
     }
 });
 
-},{"../../dialogs/soundDialog/soundDialog":138,"./sounds.html":155,"providers/editData":173,"providers/i18n":175,"providers/rest/fileSystem":177,"providers/rest/resource":179,"providers/utils":181}],157:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :title=\"i18n.spriteSheets\"\n        :crud=\"{\n            create:createSpriteSheet\n        }\"\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"spriteSheet in (editData.spriteSheetList && editData.spriteSheetList.rs)\">\n\n                <div class=\"cell\">\n                    <img\n                        height=\"20\"\n                        class=\"spriteSheetThumb\"\n                        :src=\"editData.projectName+'/'+spriteSheet.resourcePath\"/>\n                </div>\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"edit\" v-on:click=\"editSpriteSheet(spriteSheet)\"/>\n                </div>\n                <div class=\"cell width1\">\n                    <div class=\"delete\" v-on:click=\"deleteSpriteSheet(spriteSheet)\"/>\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
+},{"./sounds.html":122,"providers/editData":130,"providers/i18n":132,"providers/rest/fileSystem":134,"providers/utils":138}],124:[function(require,module,exports){
+module.exports = "<div class=\"panel withPadding pointer\">\r\n\r\n    <div class=\"inlineBlock\" data-click=\"showBuildDialog()\">\r\n        {{i18n.build}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"run()\">\r\n        {{i18n.run}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"toExplorer()\">\r\n        {{i18n.explorer}}\r\n    </div>\r\n\r\n</div>";
 
-},{}],158:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 'use strict';
 
-var utils = require('providers/utils');
-var SpriteSheet = _require('spriteSheet');
-var spriteSheetDialog = require('../../dialogs/spriteSheetDialog/spriteSheetDialog');
-
-module.exports = Vue.component('app-sprite-sheets', {
-    props: [],
-    template: require('./spriteSheets.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    components: {},
-    methods: {
-        createSpriteSheet: function createSpriteSheet() {
-            this.editData.currSpriteSheetInEdit = new SpriteSheet(new SpriteSheet().toJSON());
-            spriteSheetDialog.instance.open();
-        },
-        editSpriteSheet: function editSpriteSheet(sprSh) {
-            this.editData.currSpriteSheetInEdit = sprSh.clone();
-            spriteSheetDialog.instance.open();
-        },
-        deleteSpriteSheet: function deleteSpriteSheet(model) {
-            var hasDepends = this.editData.gameObjectList.filter(function (it) {
-                return it.spriteSheet.id == model.id;
-            }).size() > 0;
-            if (hasDepends) {
-                window.alertEx(this.i18n.canNotDelete(model));
-                return;
-            }
-            utils.deleteModel(model);
-        }
-    }
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
-
-},{"../../dialogs/spriteSheetDialog/spriteSheetDialog":140,"./spriteSheets.html":157,"providers/editData":173,"providers/i18n":175,"providers/utils":181}],159:[function(require,module,exports){
-module.exports = "<app-collapsible\n        :title=\"i18n.userInterface\"\n        >\n    <div class=\"withPaddingLeft\">\n        <div class=\"table width100\">\n            <div class=\"row\"\n                 v-for=\"ui in (editData.userInterfaceList && editData.userInterfaceList.rs)\">\n\n                <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ui.subType}}</span>\n                </div>\n\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
-
-},{}],160:[function(require,module,exports){
-'use strict';
-
-module.exports = Vue.component('app-user-interface', {
-    props: [],
-    template: require('./userInterface.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
-    },
-    components: {},
-    methods: {}
-});
-
-},{"./userInterface.html":159,"providers/editData":173,"providers/i18n":175}],161:[function(require,module,exports){
-module.exports = "<app-collapsible\r\n        :title=\"i18n.currGameObject\"\r\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div\r\n            v-if=\"!editData.currSceneGameObjectInEdit.id\">\r\n        {{i18n.notSelected}}\r\n    </div>\r\n\r\n    <div\r\n            class=\"withPadding\"\r\n            v-if=\"editData.currSceneGameObjectInEdit.id\">\r\n        <h3 class=\"centerText\">\r\n            {{editData.currSceneGameObjectInEdit.type}}\r\n        </h3>\r\n\r\n        <div class=\"table width100\">\r\n\r\n            <div class=\"row\" v-if=\"editData.currSceneGameObjectInEdit.subType\">\r\n                <div class=\"cell\">\r\n                    subType\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <i>{{editData.currSceneGameObjectInEdit.subType}}</i>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    name\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit,prop:'name'}\"\r\n                            v-on:change=\"editGameObject()\"\r\n                            class=\"width100\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.name\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    pos.x\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            class=\"width100\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit.pos,prop:'x'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.pos.x\"/>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    pos.y\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            class=\"width100\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit.pos,prop:'y'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.pos.y\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    scale.x\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            step=\"0.1\"\r\n                            class=\"width100\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit.scale,prop:'x'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.scale.x\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    scale.y\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            step=\"0.1\"\r\n                            class=\"width100\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit.scale,prop:'y'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.scale.y\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.width}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            class=\"width100\"\r\n                            step=\"1\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit,prop:'width'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.width\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.height}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            class=\"width100\"\r\n                            step=\"1\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit,prop:'height'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.height\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.angle}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            class=\"width100\"\r\n                            step=\"0.1\"\r\n                            required\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit,prop:'angle'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.angle\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    alpha\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"number\"\r\n                            class=\"width100\"\r\n                            step=\"0.1\"\r\n                            required\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            v-control=\"{form:form,model:editData.currSceneGameObjectInEdit,prop:'alpha'}\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.alpha\"/>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.fixedToCamera}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"checkbox\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.fixedToCamera\"\r\n                            />\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    {{i18n.rigid}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <input\r\n                            v-on:change=\"editGameObject()\"\r\n                            type=\"checkbox\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.rigid\"\r\n                            />\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\"\r\n                 v-if=\"editData.currSceneGameObjectInEdit.subType=='textField'\"\r\n                    >\r\n                <div class=\"cell\">\r\n                    {{i18n.text}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                <textarea\r\n                        class=\"width100\"\r\n                        v-on:keyup=\"updateEditText() || editGameObject()\"\r\n                        v-model=\"editData.currSceneGameObjectInEdit.text\"></textarea>\r\n                </div>\r\n            </div>\r\n\r\n            <div class=\"row\"\r\n                 v-if=\"editData.currSceneGameObjectInEdit.subType=='textField'\"\r\n                    >\r\n                <div class=\"cell\">\r\n                    {{i18n.font}}\r\n                </div>\r\n                <div class=\"cell\">\r\n                    <select\r\n                            class=\"width100\"\r\n                            v-model=\"editData.currSceneGameObjectInEdit.fontId\"\r\n                            ng-change=\"editGameObjectFromRightMenu(editData.currSceneGameObjectInEdit)\"\r\n                            required\r\n                            >\r\n                        <option :value=\"item.id\" v-for=\"item in editData.fontList.rs\">{{item.name}}</option>\r\n                    </select>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n\r\n</app-collapsible>\r\n\r\n";
-
-},{}],162:[function(require,module,exports){
-'use strict';
-
-var resource = require('providers/resource');
-
-module.exports = Vue.component('app-scene-game-object', {
-    props: [],
-    template: require('./sceneGameObject.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll(),
-            form: require('providers/validator').new()
-        };
-    },
-    components: {},
-    methods: {
-        editGameObject: function editGameObject() {
-            var obj = this.editData.currSceneGameObjectInEdit;
-            var s = this;
-            if (obj.fontId) {
-                var fnt = s.editData.fontList.find({ id: obj.fontId });
-                s.editData.currSceneGameObjectInEdit._font = fnt;
-                s.editData.currSceneGameObjectInEdit.fontId = fnt.id;
-                obj.setText(obj.text);
-            }
-            resource.createOrEditObjectInResource('layer', s.editData.currLayerInEdit.protoId, 'gameObjectProps', obj.toJSON());
-        },
-        updateEditText: function updateEditText() {
-            this.editData.currSceneGameObjectInEdit.setText(this.editData.currSceneGameObjectInEdit.text);
-        }
-    }
-});
-
-},{"./sceneGameObject.html":161,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/validator":182}],163:[function(require,module,exports){
-module.exports = "<app-collapsible\r\n        :title=\"i18n.currScene\"\r\n        xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n        <div\r\n                v-if=\"!editData.currSceneInEdit.id\">\r\n            {{i18n.notSelected}}\r\n        </div>\r\n\r\n        <div class=\"withPadding\" v-if=\"editData.currSceneInEdit.id\">\r\n\r\n            <b class=\"centerText\">\r\n                {{i18n.scene}} : {{editData.currSceneInEdit.name}}\r\n            </b>\r\n\r\n            <div class=\"table width100\">\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <label for=\"editData.currSceneInEdit.useBG\">{{i18n.useBG}}</label>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"checkbox\"\r\n                               id=\"editData.currSceneInEdit.useBG\"\r\n                               v-model=\"editData.currSceneInEdit.useBG\"\r\n                               v-on:change=\"editScene()\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\" v-if=\"editData.currSceneInEdit.useBG\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.colorBG}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <app-color-picker\r\n                                :object=\"editData.currSceneInEdit\"\r\n                                :value=\"'colorBG'\"\r\n                                :onchange=\"editScene()\"\r\n                                />\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign bold\">\r\n                        {{i18n.tileMap}}\r\n                    </div>\r\n                    <div class=\"cell eye\"></div>\r\n                </div>\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.width\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               min=\"0\"\r\n                               maxlength=\"3\"\r\n                               v-control=\"{form:form,model:editData.currSceneInEdit.tileMap,prop:'width'}\"\r\n                               v-on:change=\"editScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.width\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.height\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               min=\"0\"\r\n                               maxlength=\"3\"\r\n                               v-control=\"{form:form,model:editData.currSceneInEdit.tileMap,prop:'height'}\"\r\n                               v-on:change=\"editScene()\"\r\n                               v-model=\"editData.currSceneInEdit.tileMap.height\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.selected}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <div\r\n                            :class=\"{\r\n                                inlineBlock:1,\r\n                                hoverOutline:1\r\n                            }\"\r\n                            :style=\"{\r\n                                width:frameWidth+'px',\r\n                                verticalAlign:'middle',\r\n                                height:frameHeight+'px',\r\n                                backgroundImage:      'url('+editData.projectName+'/'+resourcePath+')',\r\n                                backgroundPositionX:  -framePosX+'px',\r\n                                backgroundPositionY:  -framePosY+'px',\r\n                                backgroundRepeat:     'no-repeat',\r\n                            }\"\r\n                        ></div>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.spriteSheets}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <select\r\n                                v-model=\"editData.currSceneInEdit.tileMap.spriteSheetId\"\r\n                                v-on:change=\"setTileMapSpriteSheet()\"\r\n                                >\r\n                            <option value=\"\">--</option>\r\n                            <option\r\n                                    v-for=\"item in editData.spriteSheetList.rs\"\r\n                                    :value=\"item.id\"\r\n                                    >{{item.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <div\r\n                :style=\"{\r\n                    width: frameWidth*numOfFramesH+'px',\r\n                    overflowX: 'auto'\r\n                }\"\r\n                >\r\n                <div :class=\"{\r\n                        inlineBlock:true,\r\n                        selected:i==editData.currTileIndexInEdit,\r\n                        hoverOutline:1\r\n                     }\"\r\n                     :style=\"{\r\n                        width:frameWidth+'px',\r\n                        verticalAlign:'middle',\r\n                        height:frameHeight+'px',\r\n                        backgroundImage:'url('+resourcePath+')',\r\n                        backgroundPositionX:   -framePosX+'px',\r\n                        backgroundPositionY:   -framePosY+'px',\r\n                        backgroundRepeat:     'no-repeat',\r\n                     }\"\r\n                     :title=\"i\"\r\n                     v-on:click.capture=\"setCurrSelectedTile(i)\"\r\n                     v-for=\"(v,i) in numOfFramesForSceneSpriteSheet\"\r\n                     ></div>\r\n            </div>\r\n\r\n        </div>\r\n\r\n\r\n\r\n</app-collapsible>";
-
-},{}],164:[function(require,module,exports){
-'use strict';
-
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var Scene = _require('scene');
-
-module.exports = Vue.component('app-right-scene', {
-    props: [],
-    template: require('./scene.html'),
-    data: function data() {
-        return {
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils'),
-            form: require('providers/validator').new()
-        };
-    },
-    computed: {
-        numOfFramesForSceneSpriteSheet: function numOfFramesForSceneSpriteSheet() {
-            if (!editData.currSceneInEdit) return 0;
-            if (!editData.currSceneInEdit.tileMap) return 0;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
-            return editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesV * editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH || 0;
-        },
-        frameWidth: function frameWidth() {
-            if (!editData.currSceneInEdit.tileMap) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
-            return editData.currSceneInEdit.tileMap._spriteSheet._frameWidth;
-        },
-        frameHeight: function frameHeight() {
-            if (!editData.currSceneInEdit.tileMap) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
-            return editData.currSceneInEdit.tileMap._spriteSheet._frameHeight;
-        },
-        framePosX: function framePosX() {
-            if (!editData.currSceneInEdit.tileMap) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX) return null;
-            if (!editData.currTileIndexInEdit) return null;
-            return editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit);
-        },
-        framePosY: function framePosY() {
-            if (!editData.currSceneInEdit.tileMap) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY) return null;
-            if (!editData.currTileIndexInEdit) return null;
-            return editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit);
-        },
-        resourcePath: function resourcePath() {
-            if (!editData.currSceneInEdit.tileMap) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
-            return editData.currSceneInEdit.tileMap._spriteSheet.resourcePath;
-        },
-        numOfFramesH: function numOfFramesH() {
-            if (!editData.currSceneInEdit.tileMap) return null;
-            if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
-            return editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH;
-        }
-    },
-    components: {},
-    methods: {
-        setCurrSelectedTile: function setCurrSelectedTile(i) {
-            editData.currTileIndexInEdit = i;
-        },
-        setTileMapSpriteSheet: function setTileMapSpriteSheet() {
-            editData.currSceneInEdit = new Scene(editData.currSceneInEdit.toJSON());
-        },
-        editScene: function editScene() {
-            var self = this;
-            resource.createOrEditResource(self.editData.currSceneInEdit);
-        }
-    }
-});
-
-},{"./scene.html":163,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/utils":181,"providers/validator":182}],165:[function(require,module,exports){
-module.exports = "<div class=\"panel withPadding pointer\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <div class=\"inlineBlock\" ng-click=\"showBuildDialog()\">\r\n        {{i18n.build}}\r\n    </div>\r\n    <div class=\"inlineBlock\" v-on:click=\"run()\">\r\n        {{i18n.run}}\r\n    </div>\r\n    <div class=\"inlineBlock\" v-on:click=\"toExplorer()\">\r\n        {{i18n.explorer}}\r\n    </div>\r\n\r\n</div>";
-
-},{}],166:[function(require,module,exports){
-'use strict';
 
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _http = require('providers/http');
+
+var _http2 = _interopRequireDefault(_http);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var w;
-var http = require('providers/http');
-var editData = require('providers/editData');
+var w = void 0;
+
 
 var generateBuildUrl = function generateBuildUrl(opts) {
     var url = '/generate?r=' + Math.random();
     (0, _keys2.default)(opts).forEach(function (key) {
         if (opts[key]) url += '&' + key + '=1';
     });
-    url += '&projectName=' + editData.projectName;
+    url += '&projectName=' + _editData2.default.projectName;
     return url;
 };
 
-module.exports = Vue.component('app-top-panel', {
-    props: [],
-    template: require('./topPanel.html'),
-    data: function data() {
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        };
+exports.default = RF.registerComponent('app-top-panel', {
+    template: {
+        value: require('./topPanel.html'),
+        type: 'string'
     },
-    components: {},
-    methods: {
-        run: function run() {
-            http.get('/resource/generate', {
-                debug: 1,
-                r: Math.random(),
-                projectName: editData.projectName
-            }, function () {
-                if (!w || w.closed) {
-                    //w = window.open(
-                    //    '/'+editData.projectName+'/out',
-                    //    editData.projectName,
-                    //    'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
-                    //);
-                    w = window.open('/' + editData.projectName + '/out');
-                } else {
-                    w.location.reload();
-                }
-                w && w.focus();
-            });
-        },
-        showBuildDialog: function showBuildDialog() {
-            //uiHelper.showDialog('buildDialog');
-        },
-        toExplorer: function toExplorer() {
-            location.hash = '#/explorer';
-        }
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    run: function run() {
+        _http2.default.get('/resource/generate', {
+            debug: 1,
+            r: Math.random(),
+            projectName: _editData2.default.projectName
+        }, function () {
+            if (!w || w.closed) {
+                //w = window.open(
+                //    '/'+editData.projectName+'/out',
+                //    editData.projectName,
+                //    'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
+                //);
+                w = window.open('/' + _editData2.default.projectName + '/out');
+            } else {
+                w.location.reload();
+            }
+            w && w.focus();
+        });
+    },
+    showBuildDialog: function showBuildDialog() {
+        //uiHelper.showDialog('buildDialog');
+    },
+    toExplorer: function toExplorer() {
+        RF.Router.navigateTo('explorer');
     }
 });
 
-},{"./topPanel.html":165,"babel-runtime/core-js/object/keys":4,"providers/editData":173,"providers/http":174,"providers/i18n":175}],167:[function(require,module,exports){
-module.exports = "<app-modal\r\n        v-on:close=\"close()\"\r\n        v-if=\"opened\" xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n\r\n    <table class=\"width100\">\r\n        <tr>\r\n            <td>\r\n                {{i18n.name}}\r\n            </td>\r\n            <td>\r\n                <input\r\n                        required\r\n                        v-model=\"editData.currProjectInEdit.name\"/>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n    <button v-on:click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n        {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n    </button>\r\n\r\n</app-modal>";
+},{"./topPanel.html":124,"babel-runtime/core-js/object/keys":4,"providers/editData":130,"providers/http":131,"providers/i18n":132}],126:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"projectDialog\">\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currProjectInEdit.name\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button data-click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n            {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n</app-modal>\r\n\r\n";
 
-},{}],168:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 'use strict';
 
-var abstractDialog = require('providers/abstractDialog');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var restProject = require('providers/rest/project');
-var fileSystem = require('providers/rest/fileSystem');
+var _editData = require('providers/editData');
 
-module.exports.component = Vue.component('app-project-dialog', {
-    mixins: [abstractDialog],
-    props: [],
-    template: require('./projectDialog.html'),
-    data: function data() {
-        return {
-            form: require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll()
-        };
+var _editData2 = _interopRequireDefault(_editData);
+
+var _project = require('providers/rest/project');
+
+var _project2 = _interopRequireDefault(_project);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-project-dialog', {
+    template: {
+        type: 'string',
+        value: require('./projectDialog.html')
     },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
     created: function created() {
         module.exports.instance = this;
     },
-    components: {},
-    methods: {
-        createOrEditProject: function createOrEditProject(proj) {
-            if (proj.oldName) {
-                fileSystem.renameFolder('workspace/' + proj.oldName, 'workspace/' + proj.name, function () {
-                    restProject.getAll(function (list) {
-                        editData.projects = list;
-                    });
+    createOrEditProject: function createOrEditProject(proj) {
+        if (proj.oldName) {
+            _fileSystem2.default.renameFolder('workspace/' + proj.oldName, 'workspace/' + proj.name, function () {
+                _project2.default.getAll(function (list) {
+                    _editData2.default.projects = list;
                 });
-            } else {
-                restProject.create(proj.name, function () {
-                    restProject.getAll(function (list) {
-                        editData.projects = list;
-                    });
-                });
-            }
-            this.close();
-        }
-    }
-});
-
-},{"./projectDialog.html":167,"providers/abstractDialog":171,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/rest/fileSystem":177,"providers/rest/project":178,"providers/validator":182}],169:[function(require,module,exports){
-module.exports = "<div xmlns:v-on=\"http://www.w3.org/1999/xhtml\">\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    v-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            v-on:click.capture=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            v-on:click.capture=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            v-on:click.capture=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                v-on:click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog/>\r\n\r\n</div>";
-
-},{}],170:[function(require,module,exports){
-'use strict';
-
-var projectDialog = require('./dialogs/projectDialog/projectDialog');
-var editData = require('providers/editData');
-var restProject = require('providers/rest/project');
-var resource = require('providers/resource');
-var fileSystem = require('providers/rest/fileSystem');
-
-module.exports = Vue.component('explorer', {
-    props: [],
-    template: require('./explorer.html'),
-    created: function created() {
-        restProject.getAll(function (list) {
-            editData.projects = list;
-        });
-    },
-    data: function data() {
-        return {
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            projects: []
-        };
-    },
-    components: {
-        appProjectDialog: require('./dialogs/projectDialog/projectDialog')
-    },
-    methods: {
-        editProject: function editProject(p) {
-            p.oldName = p.name;
-            this.editData.currProjectInEdit = {
-                name: p.name,
-                oldName: p.name
-            };
-            projectDialog.instance.open();
-        },
-        createProject: function createProject() {
-            this.editData.currProjectInEdit = {
-                name: ''
-            };
-            projectDialog.instance.open();
-        },
-        openProject: function openProject(project) {
-            resource.loadProject(project.name);
-        },
-        deleteProject: function deleteProject(proj) {
-            var self = this;
-            proj.type = 'project';
-            window.confirmEx(this.i18n.confirmQuestion(proj), function () {
-                fileSystem.deleteFolder('workspace/' + proj.name, function () {
-                    restProject.getAll(function (list) {
-                        editData.projects = list;
-                    });
+            });
+        } else {
+            _project2.default.create(proj.name, function () {
+                _project2.default.getAll(function (list) {
+                    _editData2.default.projects = list;
                 });
             });
         }
+        RF.getComponentById('projectDialog').close();
     }
 });
 
-},{"./dialogs/projectDialog/projectDialog":168,"./explorer.html":169,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/rest/fileSystem":177,"providers/rest/project":178}],171:[function(require,module,exports){
-"use strict";
+},{"./projectDialog.html":126,"providers/editData":130,"providers/i18n":132,"providers/rest/fileSystem":134,"providers/rest/project":135}],128:[function(require,module,exports){
+module.exports = "\r\n<div>\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    data-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            data-click=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            data-click=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            data-click=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                data-click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog></app-project-dialog>\r\n\r\n</div>";
 
-module.exports = {
-    data: function data() {
-        return {
-            opened: false
-        };
+},{}],129:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _project = require('providers/rest/project');
+
+var _project2 = _interopRequireDefault(_project);
+
+var _resourceHelper = require('providers/resourceHelper');
+
+var _resourceHelper2 = _interopRequireDefault(_resourceHelper);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+require('./dialogs/projectDialog/projectDialog');
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('explorer', {
+    template: {
+        type: 'string',
+        value: require('./explorer.html')
     },
-    methods: {
-        open: function open() {
-            this.opened = true;
-        },
-        close: function close() {
-            this.opened = false;
-        }
-    }
-};
+    onMount: function onMount() {
+        var _this = this;
 
-},{}],172:[function(require,module,exports){
-'use strict';
-
-var events = {};
-window.addEventListener('message', function (resp) {
-    var data = resp.data && resp.data.response;
-    if (!data) return;
-    var id = resp.data.eventUUID;
-    if (events[id]) {
-        var fn = events[id];
-        delete events[id];
-        fn && data && fn(data);
+        _project2.default.getAll(function (list) {
+            _this.editData.projects = list;
+        });
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    editProject: function editProject(p) {
+        p.oldName = p.name;
+        this.editData.currProjectInEdit = {
+            name: p.name,
+            oldName: p.name
+        };
+        RF.getComponentById('projectDialog').open();
+    },
+    createProject: function createProject() {
+        this.editData.currProjectInEdit = {
+            name: ''
+        };
+        RF.getComponentById('projectDialog').open();
+    },
+    openProject: function openProject(project) {
+        _resourceHelper2.default.loadProject(project.name);
+    },
+    deleteProject: function deleteProject(proj) {
+        var self = this;
+        proj.type = 'project';
+        window.confirmEx(this.i18n.confirmQuestion(proj), function () {
+            _fileSystem2.default.deleteFolder('workspace/' + proj.name, function () {
+                _project2.default.getAll(function (list) {
+                    _editData2.default.projects = list;
+                });
+            });
+        });
     }
 });
-module.exports.requestToApi = function (params, callBack) {
-    var eventUUID = ~~Math.random() * 100 + new Date().getTime();
-    events[eventUUID] = callBack;
-    params.eventUUID = eventUUID;
-    window.top.postMessage(params, '*');
-};
 
-},{}],173:[function(require,module,exports){
+},{"./dialogs/projectDialog/projectDialog":127,"./explorer.html":128,"providers/editData":130,"providers/i18n":132,"providers/resourceHelper":133,"providers/rest/fileSystem":134,"providers/rest/project":135}],130:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var collections = _require('collections');
 
@@ -3651,7 +2592,7 @@ res.reset = function () {
     res.tileMapPosY = res.tileMapPosX = 0;
 
     res.projectName = '';
-    res.projects = {};
+    res.projects = [];
 
     //res.buildOpts = {
     //    debug: false,
@@ -3663,77 +2604,137 @@ res.reset = function () {
 
 res.reset();
 
-module.exports = res;
+exports.default = res;
 
-},{}],174:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 'use strict';
 
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var execMethod = function execMethod(url, method, params, callBack) {
-    if (method == 'get' && params) {
-        var tail = (0, _keys2.default)(params).map(function (item) {
-            return item + '=' + params[item];
-        }).join('&');
-        url = url + '?' + tail;
-        params = undefined;
+var noop = function noop() {};
+
+var objectToQuery = function objectToQuery(o) {
+    if (!o) return '';
+    if (o instanceof window.FormData) return o;
+    var paramsArr = [];
+    if (o == null || o == undefined || typeof o == 'string' || typeof o == 'number') return o;
+    for (var key in o) {
+        paramsArr.push([key, encodeURIComponent(o[key])]);
     }
-    var resolveFn, rejectFn;
-    var p = new _promise2.default(function (resolve, reject) {
+    return paramsArr.map(function (item) {
+        return [item[0] + '=' + item[1]];
+    }).join('&');
+};
+
+var request = function request(data) {
+    var abortTmr = null;
+    var resolved = false;
+    data.method = data.method || 'get';
+    if (data.data && data.method == 'get') data.url += '?' + objectToQuery(data.data);
+    var xhr = new XMLHttpRequest();
+    var resolveFn = noop,
+        rejectFn = noop;
+    var promise = window.Promise && new _promise2.default(function (resolve, reject) {
         resolveFn = resolve;
         rejectFn = reject;
     });
-    Vue.http[method](url, params).then(function (resp) {
-        try {
-            var r = resp.body;
-            callBack && callBack(r);
-            resolveFn(r);
-        } catch (e) {
-            rejectFn(e);
-            setTimeout(function () {
-                throw e;
-            }, 0);
-        }
-    }).catch(function (err) {
-        rejectFn(err);
-        setTimeout(function () {
-            if (err.status || err.status != 200) {
-                console.log(err);
-                throw err.body || '';
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200 || xhr.status == 0) {
+                var resp = JSON.parse(xhr.responseText);
+                if (data.success) data.success(resp);
+                RF.digest();
+                resolveFn(resp);
+            } else {
+                if (data.error) data.error({ status: xhr.status, error: xhr.statusText });
+                rejectFn(xhr.statusText);
             }
-        }, 0);
+            clearTimeout(abortTmr);
+            resolved = true;
+        }
+    };
+    xhr.open(data.method, data.url, true);
+    if (data.requestType) {
+        if (data.requestType != 'multipart/form-data') // at this case header needs to be auto generated
+            xhr.setRequestHeader("Content-Type", data.requestType);
+    } else {
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
+    if (data.requestType == 'application/json') data.data = data.data && (0, _stringify2.default)(data.data);
+    xhr.send(data.data);
+    if (data.timeout) {
+        abortTmr = setTimeout(function () {
+            if (resolved) return;
+            xhr.abort();
+            if (data.ontimeout) data.ontimeout();
+            rejectFn('timeout');
+        }, data.timeout);
+    }
+    return promise;
+};
+
+var get = function get(url, data, success, error) {
+    return request({
+        method: 'get',
+        url: url,
+        data: data,
+        success: success,
+        error: error
     });
-    return p;
 };
 
-module.exports.get = function (url, params, callBack) {
-    return execMethod(url, 'get', params, callBack);
+var post = function post(url, data, success, error) {
+    return request({
+        method: 'post',
+        url: url,
+        data: data,
+        requestType: 'application/json',
+        success: success,
+        error: error
+    });
 };
 
-module.exports.post = function (url, params, callBack) {
-    return execMethod(url, 'post', params, callBack);
-};
-
-module.exports.postMultiPart = function (url, file, params, callBack) {
+var postMultiPart = function postMultiPart(url, file, data, success, error) {
     var formData = new FormData();
-    (0, _keys2.default)(params).forEach(function (key) {
-        formData.append(key, params[key]);
+    (0, _keys2.default)(data).forEach(function (key) {
+        formData.append(key, data[key]);
     });
     formData.append('file', file);
     formData.append('fileName', file.name);
-    return execMethod(url, 'post', formData, callBack);
+    return request({
+        method: 'post',
+        url: url,
+        data: formData,
+        requestType: 'multipart/form-data',
+        success: success,
+        error: error
+    });
 };
 
-},{"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5}],175:[function(require,module,exports){
+exports.default = { get: get, post: post, postMultiPart: postMultiPart };
+
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5}],132:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _i18n = {};
 
@@ -3841,9 +2842,9 @@ _i18n.getAll = function () {
     return _i18n.bundle[_i18n.locale];
 };
 
-module.exports = _i18n;
+exports.default = _i18n;
 
-},{}],176:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
@@ -3862,13 +2863,19 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _http = require('providers/http');
+
+var _http2 = _interopRequireDefault(_http);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Resource = function Resource() {
+var ResourceHelper = function ResourceHelper() {
 
     var self = this;
-    var editData = require('providers/editData');
-    var http = require('providers/http');
 
     var bundle = _require('bundle');
     var collections = _require('collections');
@@ -3877,42 +2884,40 @@ var Resource = function Resource() {
     var Layer = _require('layer');
 
     var _loadResources = function _loadResources(projectName) {
-        http.post('/resource/getAll', { projectName: projectName }, function (response) {
+        _http2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
             bundle.prepare(response);
             (0, _keys2.default)(bundle).forEach(function (key) {
-                if (bundle[key] && bundle[key].call) return;
-                if (editData[key] && editData[key].clear) {
-                    editData[key].clear();
+                if (bundle[key] && bundle[key].clear) {
+                    _editData2.default[key] = new collections.List();
                     bundle[key].forEach(function (el) {
-                        editData[key].add(el);
+                        _editData2.default[key].add(el);
                     });
                 }
-                Vue.set(editData, key, bundle[key]);
             });
-            editData.gameProps = bundle.gameProps;
-            editData.commonBehaviourList = new collections.List();
+            _editData2.default.gameProps = bundle.gameProps;
+            _editData2.default.commonBehaviourList = new collections.List();
             response.commonBehaviour.forEach(function (cb) {
-                editData.commonBehaviourList.add(new CommonBehaviour(cb));
+                _editData2.default.commonBehaviourList.add(new CommonBehaviour(cb));
             });
-            editData.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
+            _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
         });
     };
 
     this.loadProject = function (projectName) {
-        editData.reset();
-        editData.projectName = projectName;
-        document.title = editData.projectName;
-        sessionStorage.projectName = editData.projectName;
+        _editData2.default.reset();
+        _editData2.default.projectName = projectName;
+        document.title = _editData2.default.projectName;
+        sessionStorage.projectName = _editData2.default.projectName;
         _promise2.default.resolve().then(function () {
             return _loadResources(projectName);
         }).then(function () {
-            if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
-            if (editData.currSceneInEdit._layers) {
-                if (editData.currSceneInEdit._layers.size()) {
-                    editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
+            if (!bundle.sceneList.isEmpty()) _editData2.default.currSceneInEdit = bundle.sceneList.get(0);
+            if (_editData2.default.currSceneInEdit._layers) {
+                if (_editData2.default.currSceneInEdit._layers.size()) {
+                    _editData2.default.currLayerInEdit = _editData2.default.currSceneInEdit._layers.get(0);
                 }
             }
-            location.href = '#/editor';
+            RF.Router.navigateTo('editor');
         });
     };
     this.createOrEditResource = function (currResourceInEdit, ResourceClass, resourceList, callBack) {
@@ -3924,9 +2929,9 @@ var Resource = function Resource() {
             model[key] = currResourceInEdit[key];
         });
         formData.append('model', (0, _stringify2.default)(model));
-        formData.append('projectName', editData.projectName);
+        formData.append('projectName', _editData2.default.projectName);
         var op = currResourceInEdit.id ? 'edit' : 'create';
-        http.post('/resource/' + op, formData, function (item) {
+        _http2.default.post('/resource/' + op, formData, function (item) {
             if (op == 'create') {
                 var r = new ResourceClass(item);
                 resourceList.add(r);
@@ -3943,12 +2948,12 @@ var Resource = function Resource() {
     this.deleteResource = function (idOrObject, type, callBack) {
         var id = (typeof idOrObject === 'undefined' ? 'undefined' : (0, _typeof3.default)(idOrObject)) == 'object' ? idOrObject.id : idOrObject;
         type = type || idOrObject.type;
-        http.post('/resource/delete', {
+        _http2.default.post('/resource/delete', {
             id: id,
             type: type,
-            projectName: editData.projectName
+            projectName: _editData2.default.projectName
         }, function () {
-            editData[type + 'List'].remove({ id: id });
+            _editData2.default[type + 'List'].remove({ id: id });
             callBack && callBack();
         });
     };
@@ -3956,12 +2961,12 @@ var Resource = function Resource() {
     // todo refactor
     this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
         var op = object.id ? 'edit' : 'create';
-        http.post('/createOrEditObjectInResource', {
+        _http2.default.post('/createOrEditObjectInResource', {
             model: (0, _stringify2.default)(object),
             resourceId: resourceId,
             resourceType: resourceType,
             objectType: objectType,
-            projectName: editData.projectName
+            projectName: _editData2.default.projectName
         }, function (resp) {
             callback && callback({ type: op, r: resp });
         });
@@ -3976,7 +2981,7 @@ var Resource = function Resource() {
                 }, function (resp) {
                     l.id = resp.r.id;
                     l.protoId = item.r.id;
-                    l._scene = editData.currSceneInEdit;
+                    l._scene = _editData2.default.currSceneInEdit;
                     s._layers.add(l);
                     dialog.close();
                 });
@@ -3985,20 +2990,20 @@ var Resource = function Resource() {
     };
 
     this.saveGameProps = function (gameProps) {
-        http.post('/gameProps/save', {
+        _http2.default.post('/gameProps/save', {
             model: gameProps,
-            projectName: editData.projectName
+            projectName: _editData2.default.projectName
         });
     };
 
     this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
         var op = object.id ? 'edit' : 'create';
-        http.post('/createOrEditObjectInResource', {
+        _http2.default.post('/createOrEditObjectInResource', {
             model: (0, _stringify2.default)(object),
             resourceId: resourceId,
             resourceType: resourceType,
             objectType: objectType,
-            projectName: editData.projectName
+            projectName: _editData2.default.projectName
         }, function (resp) {
             callback && callback({ type: op, r: resp });
         });
@@ -4013,9 +3018,9 @@ var Resource = function Resource() {
     // })();
 };
 
-module.exports = new Resource();
+module.exports = new ResourceHelper();
 
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/typeof":10,"providers/editData":173,"providers/http":174}],177:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/typeof":10,"providers/editData":130,"providers/http":131}],134:[function(require,module,exports){
 'use strict';
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
@@ -4026,10 +3031,15 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _http = require('providers/http');
 
-var http = require('providers/http');
-var editData = require('providers/editData');
+var _http2 = _interopRequireDefault(_http);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var FileSystem = function () {
     function FileSystem() {
@@ -4039,44 +3049,44 @@ var FileSystem = function () {
     (0, _createClass3.default)(FileSystem, [{
         key: 'createFile',
         value: function createFile(path, content, callback) {
-            return http.post('/fileSystem/createFile', {
+            return _http2.default.post('/fileSystem/createFile', {
                 path: path,
                 content: content,
-                projectName: editData.projectName
+                projectName: _editData2.default.projectName
             }, callback);
         }
     }, {
         key: 'uploadFile',
         value: function uploadFile(file, params, callback) {
             params = params || {};
-            params.projectName = editData.projectName;
-            return http.postMultiPart('/fileSystem/uploadFile', file, params, callback);
+            params.projectName = _editData2.default.projectName;
+            return _http2.default.postMultiPart('/fileSystem/uploadFile', file, params, callback);
         }
     }, {
         key: 'removeFile',
         value: function removeFile(path, callback) {
-            return http.post('/fileSystem/removeFile', {
+            return _http2.default.post('/fileSystem/removeFile', {
                 path: path,
-                projectName: editData.projectName
+                projectName: _editData2.default.projectName
             }, callback);
         }
     }, {
         key: 'readFile',
         value: function readFile(path, callback) {
-            return http.post('/fileSystem/readFile', {
+            return _http2.default.post('/fileSystem/readFile', {
                 path: path,
-                projectName: editData.projectName
+                projectName: _editData2.default.projectName
             }, callback);
         }
     }, {
         key: 'renameFolder',
         value: function renameFolder(oldName, newName, callback) {
-            return http.post('/fileSystem/renameFolder', { oldName: oldName, newName: newName }, callback);
+            return _http2.default.post('/fileSystem/renameFolder', { oldName: oldName, newName: newName }, callback);
         }
     }, {
         key: 'deleteFolder',
         value: function deleteFolder(name, callback) {
-            return http.post('/fileSystem/deleteFolder', { name: name }, callback);
+            return _http2.default.post('/fileSystem/deleteFolder', { name: name }, callback);
         }
     }]);
     return FileSystem;
@@ -4084,7 +3094,7 @@ var FileSystem = function () {
 
 module.exports = new FileSystem();
 
-},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":173,"providers/http":174}],178:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":130,"providers/http":131}],135:[function(require,module,exports){
 'use strict';
 
 var _promise = require('babel-runtime/core-js/promise');
@@ -4103,33 +3113,39 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _http = require('providers/http');
+
+var _http2 = _interopRequireDefault(_http);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var http = require('providers/http');
-var editData = require('providers/editData');
 var bundle = _require('bundle');
 var collections = _require('collections');
 var TextField = _require('textField');
 var CommonBehaviour = _require('commonBehaviour');
 
 var _loadResources = function _loadResources(projectName) {
-    http.post('/resource/getAll', { projectName: projectName }, function (response) {
+    _http2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
         bundle.prepare(response);
         (0, _keys2.default)(bundle).forEach(function (key) {
             if (bundle[key] && bundle[key].call) return;
-            if (editData[key] && editData[key].clear) {
-                editData[key].clear();
+            if (_editData2.default[key] && _editData2.default[key].clear) {
+                _editData2.default[key].clear();
                 bundle[key].forEach(function (el) {
-                    editData[key].add(el);
+                    _editData2.default[key].add(el);
                 });
             }
-            Vue.set(editData, key, bundle[key]);
+            Vue.set(_editData2.default, key, bundle[key]);
         });
-        editData.gameProps = bundle.gameProps;
+        _editData2.default.gameProps = bundle.gameProps;
         response.commonBehaviourProto.forEach(function (el) {
-            editData.commonBehaviourProto.add(new CommonBehaviour(el));
+            _editData2.default.commonBehaviourProto.add(new CommonBehaviour(el));
         });
-        editData.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
+        _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
     });
 };
 
@@ -4141,27 +3157,27 @@ var Project = function () {
     (0, _createClass3.default)(Project, [{
         key: 'getAll',
         value: function getAll(callback) {
-            return http.get('/project/getAll', {}, callback);
+            return _http2.default.get('/project/getAll', {}, callback);
         }
     }, {
         key: 'create',
         value: function create(projectName, callback) {
-            return http.post('/project/create', { projectName: projectName }, callback);
+            return _http2.default.post('/project/create', { projectName: projectName }, callback);
         }
     }, {
         key: 'load',
         value: function load(projectName) {
-            editData.reset();
-            editData.projectName = projectName;
-            document.title = editData.projectName;
-            sessionStorage.projectName = editData.projectName;
+            _editData2.default.reset();
+            _editData2.default.projectName = projectName;
+            document.title = _editData2.default.projectName;
+            sessionStorage.projectName = _editData2.default.projectName;
             _promise2.default.resolve().then(function () {
                 return _loadResources(projectName);
             }).then(function () {
-                if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
-                if (editData.currSceneInEdit._layers) {
-                    if (editData.currSceneInEdit._layers.size()) {
-                        editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
+                if (!bundle.sceneList.isEmpty()) _editData2.default.currSceneInEdit = bundle.sceneList.get(0);
+                if (_editData2.default.currSceneInEdit._layers) {
+                    if (_editData2.default.currSceneInEdit._layers.size()) {
+                        _editData2.default.currLayerInEdit = _editData2.default.currSceneInEdit._layers.get(0);
                     }
                 }
                 location.href = '#/editor';
@@ -4173,16 +3189,20 @@ var Project = function () {
 
 var p = new Project();
 
-if (sessionStorage.projectName) {
-    p.load(sessionStorage.projectName);
-} else {
-    location.href = '#/explorer';
-}
+// if (sessionStorage.projectName) {
+//     p.load(sessionStorage.projectName);
+// } else {
+//     location.href = '#/explorer';
+// }
 
 module.exports = new Project();
 
-},{"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":173,"providers/http":174}],179:[function(require,module,exports){
+},{"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":130,"providers/http":131}],136:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -4192,10 +3212,15 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _http = require('providers/http');
 
-var http = require('providers/http');
-var editData = require('providers/editData');
+var _http2 = _interopRequireDefault(_http);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Resource = function () {
     function Resource() {
@@ -4206,17 +3231,17 @@ var Resource = function () {
         key: 'save',
         value: function save(model, callback) {
             if (model.toJSON) model = model.toJSON();
-            return http.post('/resource/save', { projectName: editData.projectName, model: model }, callback);
+            return _http2.default.post('/resource/save', { projectName: _editData2.default.projectName, model: model }, callback);
         }
     }, {
         key: 'saveGameProps',
         value: function saveGameProps(model, callback) {
-            return http.post('/resource/saveGameProps', { projectName: editData.projectName, model: model }, callback);
+            return _http2.default.post('/resource/saveGameProps', { projectName: _editData2.default.projectName, model: model }, callback);
         }
     }, {
         key: 'remove',
         value: function remove(model, callback) {
-            return http.post('/resource/remove', { projectName: editData.projectName, model: {
+            return _http2.default.post('/resource/remove', { projectName: _editData2.default.projectName, model: {
                     id: model.id,
                     type: model.type
                 } }, callback);
@@ -4225,25 +3250,25 @@ var Resource = function () {
     return Resource;
 }();
 
-module.exports = new Resource();
+exports.default = new Resource();
 
-},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":173,"providers/http":174}],180:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":130,"providers/http":131}],137:[function(require,module,exports){
 'use strict';
 
-//Vue.filter('nbsp', function (value) {
-//    return value.split(' ').join('&nbsp;')
-//});
-
-window.alertEx = function (msg) {
-    require('components/alertDialog/alertDialog').instance.open(msg);
+window.alertEx = function (message) {
+    RF.getComponentById('alertDialog').open(message);
 };
 
-window.confirmEx = function (msg, callback) {
-    require('components/confirmDialog/confirmDialog').instance.open(msg, callback);
+window.confirmEx = function (message, callback) {
+    RF.getComponentById('confirmDialog').open(message, callback);
 };
 
-},{"components/alertDialog/alertDialog":100,"components/confirmDialog/confirmDialog":110}],181:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _keys = require('babel-runtime/core-js/object/keys');
 
@@ -4261,14 +3286,25 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mathEx = _require('mathEx');
-var editData = require('providers/editData');
-var resource = require('providers/resource');
-var restResource = require('providers/rest/resource');
-var restFileSystem = require('providers/rest/fileSystem');
-var i18n = require('providers/i18n').getAll();
 
 var Utils = function () {
     function Utils() {
@@ -4282,7 +3318,7 @@ var Utils = function () {
             return {
                 width: gameObj.width + 'px',
                 height: gameObj.height + 'px',
-                backgroundImage: gameObj.spriteSheet && gameObj.spriteSheet.resourcePath && 'url(' + editData.projectName + '/' + gameObj.spriteSheet.resourcePath + ')',
+                backgroundImage: gameObj.spriteSheet && gameObj.spriteSheet.resourcePath && 'url(' + _editData2.default.projectName + '/' + gameObj.spriteSheet.resourcePath + ')',
                 backgroundPositionY: -gameObj._sprPosY + 'px',
                 backgroundPositionX: -gameObj._sprPosX + 'px',
                 backgroundRepeat: 'no-repeat',
@@ -4399,7 +3435,7 @@ var Utils = function () {
             window.removeEventListener('resize', contentWindow.calcEditorSize);
             window.addEventListener('resize', contentWindow.calcEditorSize);
             window.saveCode = function (code) {
-                restFileSystem.createFile(path, code);
+                _fileSystem2.default.createFile(path, code);
             };
         }
     }, {
@@ -4420,19 +3456,19 @@ var Utils = function () {
     }, {
         key: 'deleteModel',
         value: function deleteModel(model, callback) {
-            window.confirmEx(i18n.confirmQuestion(model), function () {
-                editData[model.type + 'List'].remove({ id: model.id });
-                restResource.remove(model, callback);
+            window.confirmEx(_i18n2.default.getAll().confirmQuestion(model), function () {
+                _editData2.default[model.type + 'List'].remove({ id: model.id });
+                _resource2.default.remove(model, callback);
             });
         }
     }, {
         key: 'openEditor',
         value: function openEditor(resourceUrl) {
             var self = this;
-            editData.scriptEditorUrl = resourceUrl;
+            _editData2.default.scriptEditorUrl = resourceUrl;
             var path = 'script/' + resourceUrl;
             console.log(path);
-            restFileSystem.readFile(path, function (file) {
+            _fileSystem2.default.readFile(path, function (file) {
                 self._waitForFrameAndDo(file, path);
             });
         }
@@ -4440,51 +3476,6 @@ var Utils = function () {
     return Utils;
 }();
 
-module.exports = new Utils();
+exports.default = new Utils();
 
-},{"babel-runtime/core-js/object/create":2,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":173,"providers/i18n":175,"providers/resource":176,"providers/rest/fileSystem":177,"providers/rest/resource":179}],182:[function(require,module,exports){
-"use strict";
-
-module.exports.new = function () {
-    return {
-        valid: function valid() {
-            return true;
-        }
-    };
-};
-
-},{}],183:[function(require,module,exports){
-'use strict';
-
-window.catchPromise = function (e) {
-    setTimeout(function () {
-        throw e;
-    }, 0);
-};
-
-require('providers/resource');
-
-var router = new VueRouter({
-    //mode: 'abstract',
-    routes: [{
-        path: '/editor',
-        component: require('pages/editor/editor')
-    }, {
-        path: '/explorer',
-        component: require('pages/explorer/explorer')
-    }]
-});
-
-require('providers/userDefinedFns');
-
-var app = new Vue({
-    router: router,
-    components: {
-        appConfirmDialog: require('components/confirmDialog/confirmDialog').component,
-        appAlertDialog: require('components/alertDialog/alertDialog').component
-    }
-}).$mount('#app');
-
-router.init(app);
-
-},{"components/alertDialog/alertDialog":100,"components/confirmDialog/confirmDialog":110,"pages/editor/editor":142,"pages/explorer/explorer":170,"providers/resource":176,"providers/userDefinedFns":180}]},{},[183]);
+},{"babel-runtime/core-js/object/create":2,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":130,"providers/i18n":132,"providers/rest/fileSystem":134,"providers/rest/resource":136}]},{},[109]);

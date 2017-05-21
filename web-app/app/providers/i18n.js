@@ -1,5 +1,5 @@
 
-var _i18n = {};
+let _i18n = {};
 
 _i18n.locale = 'en';
 
@@ -105,4 +105,4 @@ _i18n.getAll = function(){
     return _i18n.bundle[_i18n.locale];
 };
 
-module.exports = _i18n;
+export default _i18n;

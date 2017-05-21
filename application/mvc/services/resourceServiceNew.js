@@ -49,10 +49,12 @@ module.exports.readFile = function(path,projectName) {
 
 module.exports.renameFolder = function(oldName,newName){
     fs.renameSync(oldName,newName);
+    return {success:true};
 };
 
 module.exports.deleteFolder = function(name){
     fs.deleteFolderSync(name);
+    return {success:true};
 };
 
 module.exports.createFile = function(path,content,projectName) {
@@ -64,5 +66,5 @@ module.exports.createFile = function(path,content,projectName) {
 module.exports.removeFile = function(path,projectName) {
     if (!projectName) throw 'project name not specified';
     fs.deleteFileSync('workspace/'+projectName+'/resources/'+path);
-    return {};
+    return {success:true};
 };

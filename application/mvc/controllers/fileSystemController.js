@@ -8,28 +8,28 @@ class FileSystemController{
      * @Request({"type":"post"});
      */
     renameFolder(params){
-        resourceService.renameFolder(params.oldName,params.newName);
+        return resourceService.renameFolder(params.oldName,params.newName);
     }
     /**
      * @Method("deleteFolder");
      * @Request({"type":"post"});
      */
     deleteFolder(params){
-        resourceService.deleteFolder(params.name);
+        return resourceService.deleteFolder(params.name);
     }
     /**
      * @Method("createFile");
      * @Request({"type":"post"});
      */
     createFile(params){
-        resourceService.createFile(params.path,params.content,params.projectName);
+        return resourceService.createFile(params.path,params.content,params.projectName);
     }
     /**
      * @Method("removeFile");
      * @Request({"type":"post"});
      */
     removeFile(params){
-        resourceService.removeFile(params.path,params.projectName);
+        return resourceService.removeFile(params.path,params.projectName);
     }
     /**
      * @Method("uploadFile");

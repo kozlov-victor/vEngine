@@ -1,61 +1,55 @@
 
 
-const projectDialog = require('./dialogs/projectDialog/projectDialog');
-const editData = require('providers/editData');
-const restProject = require('providers/rest/project');
-const resource = require('providers/resource');
-const fileSystem = require('providers/rest/fileSystem');
+import editData from 'providers/editData';
+import restProject from 'providers/rest/project';
+import resourceHelper from 'providers/resourceHelper';
+import fileSystem from 'providers/rest/fileSystem';
 
-module.exports = Vue.component('explorer', {
-    props: [],
-    template: require('./explorer.html'),
-    created: function(){
+import './dialogs/projectDialog/projectDialog';
+import i18n from 'providers/i18n';
+
+export default RF.registerComponent('explorer', {
+    template: {
+        type:'string',
+        value: require('./explorer.html')
+    },
+    onMount: function(){
         restProject.
-            getAll(function(list){
-                editData.projects = list;
+            getAll(list=>{
+                this.editData.projects = list;
             });
     },
-    data: function () {
-        return {
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            projects: []
-        }
+    editData: editData,
+    i18n: i18n.getAll(),
+    editProject: function(p){
+        p.oldName = p.name;
+        this.editData.currProjectInEdit = {
+            name: p.name,
+            oldName: p.name
+        };
+        RF.getComponentById('projectDialog').open();
     },
-    components: {
-        appProjectDialog: require('./dialogs/projectDialog/projectDialog')
+    createProject: function(){
+        this.editData.currProjectInEdit = {
+            name: ''
+        };
+        RF.getComponentById('projectDialog').open();
     },
-    methods: {
-        editProject: function(p){
-            p.oldName = p.name;
-            this.editData.currProjectInEdit = {
-                name: p.name,
-                oldName: p.name
-            };
-            projectDialog.instance.open();
-        },
-        createProject: function(){
-            this.editData.currProjectInEdit = {
-                name: ''
-            };
-            projectDialog.instance.open();
-        },
-        openProject: function(project){
-            resource.loadProject(project.name);
-        },
-        deleteProject: function(proj){
-            let self = this;
-            proj.type = 'project';
-            window.confirmEx(
-                this.i18n.confirmQuestion(proj),
-                function(){
-                    fileSystem.deleteFolder('workspace/'+proj.name,function(){
-                        restProject.getAll(function(list){
-                            editData.projects = list;
-                        })
-                    });
-                }
-            );
-        }
+    openProject: function(project){
+        resourceHelper.loadProject(project.name);
+    },
+    deleteProject: function(proj){
+        let self = this;
+        proj.type = 'project';
+        window.confirmEx(
+            this.i18n.confirmQuestion(proj),
+            function(){
+                fileSystem.deleteFolder('workspace/'+proj.name,function(){
+                    restProject.getAll(function(list){
+                        editData.projects = list;
+                    })
+                });
+            }
+        );
     }
 });

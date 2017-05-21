@@ -1,0 +1,38 @@
+<div xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div
+        class="collapsible_header bold noSelect"
+    >
+        <div class="table width100">
+            <div class="row">
+                <div class="cell width1">
+                    <span
+                            class="collapsible_point noBrake"
+                            @click="toggle()"
+                            :class="{rotated:opened}">▷</span>
+                </div>
+                <div class="cell">
+                    <span
+                            @click="toggle()"
+                            >&nbsp;{{title}}</span>
+                </div>
+                <div class="cell width1">
+                    <div v-if="crud && crud.create" class="add" v-on:click.stop="crud.create(meta)"></div>
+                </div>
+                <div class="cell width1">
+                    <div v-if="crud && crud.editScript" class="script" v-on:click.stop="crud.editScript(object)"></div>
+                </div>
+                <div class="cell width1">
+                    <div v-if="crud && crud.edit" class="edit" v-on:click.stop="crud.edit(object,meta)"></div>
+                </div>
+                <div class="cell width1">
+                    <div v-if="crud && crud.delete" class="delete" v-on:click.stop="crud.delete(object,meta)"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+            class="collapsible_content"
+            :class="{opened:opened}">
+        <slot></slot>
+    </div>
+</div>

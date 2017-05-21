@@ -27,5 +27,6 @@ module.exports.createProject = function(projectName){
         height:600,
         scaleStrategy:0
     }));
+    return {};
 
 };

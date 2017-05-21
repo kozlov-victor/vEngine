@@ -62,7 +62,6 @@ const processCommonRequest = function(opts){
 };
 
 const processMultiPartRequest = function(opts){
-    console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
     app.post(`${opts.controllerName}/${opts.methodName}`,multipart,function(req,res){
         let pathToUploadedFile = req.files && req.files.file && req.files.file.path;
         let params = req.body;
@@ -75,6 +74,7 @@ const processMultiPartRequest = function(opts){
         let result = opts.ctrl[opts.methodName](params);
         res.send(result);
     });
+    console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
 };
 
 const getAnnotations = (reader,methodName)=>{

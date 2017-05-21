@@ -9,24 +9,19 @@ const less = require('gulp-less');
 const path = require('path');
 
 
-gulp.task('js-vendor', ()=> {
+gulp.task('vendor', ()=> {
     return gulp.src([
             'web-app/vendor/split.js',
-            'web-app/vendor/vue.js',
-            'web-app/vendor/vue-form.js',
-            'web-app/vendor/vue-resources.js',
-            'web-app/vendor/vue-router.js'
+            'web-app/vendor/reactiveForms.js'
         ])
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('resources/public/js/build/'));
 });
 
-// process.env.NODE_ENV === "production"
-// browserify -t vueify -e src/main.js -o build/build.js
-gulp.task('js-bundle', ()=> {
+gulp.task('bundle', ()=> {
     return (
         browserify({
-            entries: ['web-app/bootstrap.js'],
+            entries: ['web-app/app/index.js'],
             paths: ['./web-app/app/']
         })
         .transform(stringify(['.html']))
@@ -49,5 +44,5 @@ gulp.task('less', ()=> {
         .pipe(gulp.dest('resources/public/css'));
 });
 
-gulp.task('default', ['js-vendor','js-bundle','less']);
-gulp.task('js', ['js-bundle']);
+gulp.task('default', ['vendor','bundle','less']);
+gulp.task('js', ['bundle']);

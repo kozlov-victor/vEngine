@@ -1,12 +1,12 @@
-<div class="panel withPadding pointer" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<div class="panel withPadding pointer">
 
-    <div class="inlineBlock" ng-click="showBuildDialog()">
+    <div class="inlineBlock" data-click="showBuildDialog()">
         {{i18n.build}}
     </div>
-    <div class="inlineBlock" v-on:click="run()">
+    <div class="inlineBlock" data-click="run()">
         {{i18n.run}}
     </div>
-    <div class="inlineBlock" v-on:click="toExplorer()">
+    <div class="inlineBlock" data-click="toExplorer()">
         {{i18n.explorer}}
     </div>
 

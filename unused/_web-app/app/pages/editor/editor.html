@@ -1,0 +1,35 @@
+<div class="template">
+    <div class="absolute">
+        <app-top-panel/>
+    </div>
+    <div id="c" class="split">
+        <div id="a" class="split split-horizontal content">
+            <app-game-props/>
+            <app-scenes/>
+            <app-game-objects/>
+            <app-sprite-sheets/>
+            <app-user-interface/>
+            <app-fonts/>
+            <app-sounds/>
+            <app-particle-systems/>
+        </div>
+        <div id="b" class="split split-horizontal content relative">
+            <app-script-editor/>
+            <div :style="{
+                width:  editData.gameProps.width + 'px',
+                height: editData.gameProps.height + 'px',
+                border: '1px solid green'
+            }">
+                <app-curr-scene/>
+            </div>
+        </div>
+        <div id="e" class="split split-horizontal content">
+            <app-right-panel-scene-game-object/>
+            <app-right-panel-scene/>
+        </div>
+    </div>
+    <div id="d" class="split content">d</div>
+
+    <app-dialogs/>
+
+</div>

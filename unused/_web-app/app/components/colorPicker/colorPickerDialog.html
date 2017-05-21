@@ -1,0 +1,49 @@
+<app-modal
+        v-on:close="close()"
+        v-if="opened"
+        xmlns:v-on="http://www.w3.org/1999/xhtml">
+
+    <table>
+        <tr>
+            <td>
+                <input type="color" v-model="currentColorHex" v-on:change="hexChanged()"/>
+            </td>
+            <td>
+                <input type="text"  v-model="currentColorHex" v-on:change="hexChanged()"/>
+            </td>
+            <td></td>
+        </tr>
+
+        <table class="width100">
+            <tr
+                    v-for="item in colorEnums">
+                <td
+                        :style="{
+                            color: item.left
+                        }"
+                        >
+                    {{item.left}}
+                </td>
+                <td class="centerText">
+                    <input class="vAlign" type="range" min="0" max="255" v-model="currentColorRGB[item.key]" v-on:change="rgbChanged()"/>
+                    <br/>
+                    <input class="small vAlign" v-model="currentColorRGB[item.key]" v-on:change="rgbChanged()"/>
+                    <hr/>
+                </td>
+                <td
+                        :style="{
+                            color: item.right
+                        }"
+                        >{{item.right}}</td>
+            </tr>
+
+
+        </table>
+    </table>
+
+    <button
+            v-on:click="applyColor()">
+        {{i18n.edit}}
+    </button>
+
+</app-modal>

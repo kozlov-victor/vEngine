@@ -1,7 +1,7 @@
 
-var collections = _require('collections');
+let collections = _require('collections');
 
-var res = {};
+let res = {};
 
 res.reset = function(){
 
@@ -33,7 +33,7 @@ res.reset = function(){
     res.tileMapPosY = res.tileMapPosX = 0;
 
     res.projectName = '';
-    res.projects = {};
+    res.projects = [];
 
     //res.buildOpts = {
     //    debug: false,
@@ -45,4 +45,4 @@ res.reset = function(){
 
 res.reset();
 
-module.exports = res;
+export default res;

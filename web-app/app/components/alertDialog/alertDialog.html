@@ -1,14 +1,13 @@
 
-<app-modal
-        v-on:close="close()"
-        v-if="opened"
-        xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <div class="withMargin">
-        <div class="alert_body">
-            {{message}}
-        </div>
-        <div>
-            <button v-on:click="close()">{{i18n.ok}}</button>
+<app-modal id="alertModal">
+    <div data-transclusion="content">
+        <div class="withMargin">
+            <div class="alert_body">
+                {{message}}
+            </div>
+            <div>
+                <button data-click="close()">{{i18n.ok}}</button>
+            </div>
         </div>
     </div>
 </app-modal>

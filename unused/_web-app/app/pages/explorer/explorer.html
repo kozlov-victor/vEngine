@@ -1,0 +1,40 @@
+<div xmlns:v-on="http://www.w3.org/1999/xhtml">
+    <div class="width50 marginAuto">
+        <h3 class="centerText">{{i18n.projects}}</h3>
+        <div class="table width100">
+            <div
+                    v-for="p in editData.projects"
+                    class="row hoverOnProjectRow">
+                <div class="cell">
+                    <div
+                            v-on:click.capture="openProject(p)"
+                            class="withPadding pointer">
+                        {{p.name}}
+                    </div>
+                </div>
+                <div class="cell rightAlign">
+                    <div class="edit"
+                            v-on:click.capture="editProject(p)"
+                            ></div>
+                </div>
+                <div class="cell rightAlign">
+                    <div
+                            v-on:click.capture="deleteProject(p)"
+                            class="delete"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="cell">
+                    <div class="withPadding">
+                        <div class="add"
+                                v-on:click="createProject()"
+                                ></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-project-dialog/>
+
+</div>
