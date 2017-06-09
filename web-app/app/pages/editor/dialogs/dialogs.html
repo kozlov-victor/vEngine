@@ -4,11 +4,26 @@
             <app-sound-dialog id="soundDialog"></app-sound-dialog>
         </div>
     </app-modal>
+
     <app-particle-system-dialog></app-particle-system-dialog>
     <app-particle-system-preview-dialog/>
-    <app-font-dialog/>
-    <app-sprite-sheet-dialog/>
-    <app-game-object-dialog/>
+
+    <app-modal id="fontModal">
+        <div data-transclusion="content">
+            <app-font-dialog id="fontDialog"></app-font-dialog>
+        </div>
+    </app-modal>
+    <app-modal id="spriteSheetModal">
+        <div data-transclusion="content">
+            <app-sprite-sheet-dialog id="spriteSheetDialog"></app-sprite-sheet-dialog>
+        </div>
+    </app-modal>
+    <app-modal id="gameObjectModal">
+        <div data-transclusion="content">
+            <app-game-object-dialog id="gameObjectDialog"></app-game-object-dialog>
+        </div>
+    </app-modal>
+
     <app-frame-animation-dialog/>
     <app-common-behaviour-dialog/>
     <app-scene-dialog/>

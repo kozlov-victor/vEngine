@@ -7,8 +7,9 @@ import restFileSystem from 'providers/rest/fileSystem';
 import i18n from 'providers/i18n';
 
 class Utils {
-    getGameObjectCss(gameObj){
-        if (!gameObj) return {};
+    getGameObjectCss(gameObj = {}){
+        gameObj.scale = gameObj.scale || {};
+        gameObj.spriteSheet = gameObj.spriteSheet || {};
         return  {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
@@ -25,14 +26,18 @@ class Utils {
     merge(a,b){
         a = a || {};
         b = b || {};
-        let res = Object.create(a);
-        Object.keys(b).forEach(function(key){
+        let res = {};
+        Object.keys(a).forEach(key=>{
+            res[key] = a[key];
+        });
+        Object.keys(b).forEach(key=>{
             res[key] = b[key];
         });
         return res;
     }
 
     hexToRgb(hex) {
+        if (!hex) return {r:0,g:0,b:0};
         let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
             r: parseInt(result[1], 16) || 0,
@@ -42,6 +47,7 @@ class Utils {
     }
 
     rgbToHex(col) {
+        if (!col) return '#000000';
         let r = +col.r,g=+col.g,b=+col.b;
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }

@@ -4,6 +4,7 @@ import 'components/collapsible/collapsible';
 import 'components/alertDialog/alertDialog';
 import 'components/confirmDialog/confirmDialog';
 import 'components/inputFile/inputFile';
+import 'components/colorPicker/colorPicker';
 import 'providers/userDefinedFns';
 
 import explorer from 'pages/explorer/explorer';

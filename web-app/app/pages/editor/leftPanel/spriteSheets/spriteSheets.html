@@ -1,32 +1,36 @@
 <app-collapsible
-        :title="i18n.spriteSheets"
-        :crud="{
-            create:createSpriteSheet
-        }"
-        xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <div class="withPaddingLeft">
-        <div class="table width100">
-            <div class="row"
-                 v-for="spriteSheet in (editData.spriteSheetList && editData.spriteSheetList.rs)">
+        data-state="{
+            title: i18n.spriteSheets,
+            crud: {
+                create:createSpriteSheet
+            }
+        }">
+    <div data-transclusion="content">
+        <div class="withPaddingLeft">
+            <div class="table width100">
+                <div class="row"
+                     data-for="spriteSheet in editData.spriteSheetList.rs">
 
-                <div class="cell">
-                    <img
-                        height="20"
-                        class="spriteSheetThumb"
-                        :src="editData.projectName+'/'+spriteSheet.resourcePath"/>
-                </div>
-                <div class="cell">
+                    <div class="cell">
+                        <img
+                                height="20"
+                                class="spriteSheetThumb"
+                                data-attributes="{src:editData.projectName+'/'+spriteSheet.resourcePath}"/>
+                    </div>
+                    <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">
                         {{spriteSheet.name}}
                     </span>
-                </div>
-                <div class="cell width1">
-                    <div class="edit" v-on:click="editSpriteSheet(spriteSheet)"/>
-                </div>
-                <div class="cell width1">
-                    <div class="delete" v-on:click="deleteSpriteSheet(spriteSheet)"/>
+                    </div>
+                    <div class="cell width1">
+                        <div class="edit" data-click="editSpriteSheet(spriteSheet)"></div>
+                    </div>
+                    <div class="cell width1">
+                        <div class="delete" data-click="deleteSpriteSheet(spriteSheet)"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </app-collapsible>

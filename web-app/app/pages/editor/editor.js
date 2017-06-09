@@ -25,6 +25,9 @@
 import 'pages/editor/leftPanel/gameProps/gameProps';
 import 'pages/editor/leftPanel/particleSystems/particleSystems';
 import 'pages/editor/leftPanel/sounds/sounds';
+import 'pages/editor/leftPanel/fonts/fonts';
+import 'pages/editor/leftPanel/spriteSheets/spriteSheets';
+import 'pages/editor/leftPanel/gameObjects/gameObjects';
 import 'pages/editor/topPanel/topPanel';
 
 import 'pages/editor/dialogs/dialogs';

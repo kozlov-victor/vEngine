@@ -1,24 +1,35 @@
-<div>
-    <app-collapsible
-            :title="i18n.gameObjects"
-            :crud="{
-                create:createGameObject
-            }"
-            >
+<app-collapsible
+        data-state="{
+                title: i18n.gameObjects,
+                crud: {
+                    create:createGameObject
+                }
+            }">
+
+    <div data-transclusion="content">
+
         <div class="withPaddingLeft">
-            <div class="table rightText">
-                <div
-                        :crud="{
-                            edit: editGameObject,
-                            editScript: editGameObjectScript,
-                            delete: deleteGameObject
-                        }"
-                        is="appGameObjectRow"
-                        :game-object="gameObject"
-                        v-for="gameObject in (editData.gameObjectList && editData.gameObjectList.rs)"
-                        >
+
+            <div class="table width100">
+                <div class="row"
+                     data-for="gameObject in editData.gameObjectList.rs"
+                >
+                    <app-game-object-row
+                            data-state="{
+                            crud: {
+                                 edit: editGameObject,
+                                 editScript: editGameObjectScript,
+                                 delete: deleteGameObject
+                            },
+                            gameObject: gameObject || {}
+                        }">
+                    </app-game-object-row>
                 </div>
+
             </div>
         </div>
-    </app-collapsible>
-</div>
+
+
+    </div>
+
+</app-collapsible>

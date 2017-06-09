@@ -2,44 +2,69 @@
 (function(){
     'use strict';
 
-    var Utils = window.Utils;
+    let Utils = window.Utils;
 
-    var Api = function(request, sender, sendResponse) {
+    let Api = (request, sender, sendResponse)=> {
+
+        let sendToClient = (data)=>{
+            sendResponse({response:data,eventUUID:request.eventUUID});
+        };
+
+
+        // api public methods
         return {
-            getAppUrl: function() {
-                sendResponse({url: chrome.extension.getURL('')});
+            getAppUrl: ()=> {
+                sendToClient({url: chrome.extension.getURL('')});
             },
-            get: function(request){
-                Utils.get(request.url,request.params||{},function(data){
-                    var resp = {};
+            get: request=>{
+                Utils.get(request.url,request.params||{},data=>{
+                    let resp = {};
                     try {
                         resp.response = JSON.parse(data);
                     } catch(e) {
                         resp.response = data;
                     }
-                    resp.eventUUID = request.eventUUID;
-                    sendResponse(resp);
+                    sendToClient(resp);
                 });
                 return true;
             },
-            getFontList: function(){
+            getFontList: ()=>{
                 chrome.fontSettings.getFontList(function(list){
-                    var resp = {};
-                    resp.response = list;
-                    resp.eventUUID = request.eventUUID;
-                    sendResponse(resp);
+                    sendToClient(list);
                 });
                 return true;
             },
-            notifyAll:function(request){
-                chrome.tabs.query({},function(tabs){
-                    tabs.forEach(function(tab){
+            notifyAll:request=>{
+                chrome.tabs.query({},tabs=>{
+                    tabs.forEach(tab=>{
                         chrome.tabs.executeScript(
                             tab.id,
                             {allFrames:true, runAt: 'document_start',code:'window.postMessage('+JSON.stringify(request.data)+',\'*\');'}
                         );
                     });
                 });
+            },
+            getFileList: function(request){
+                let xhr = new XMLHttpRequest();
+                xhr.open("GET", `file:///${request.path}`, true);
+                xhr.onload = function(e) {
+                    let list = [];
+                    let mathArr = xhr.response.match(/<script>addRow.*<\/script>/gi)||[];
+                    mathArr.forEach(item=>{
+                        item = item.replace('<script>','').
+                            replace('<script>','').
+                            replace('</script>','').
+                            replace(';','').
+                            replace('(','').
+                            replace('addRow','').
+                            replace(')','').split(',').map(it=>{return it.split('"').join('')});
+                        if (item[0]=='..') return;
+                        list.push({name:item[0],isFile:item[2]=='0'});
+                    });
+                    sendToClient(list);
+                };
+                xhr.send();
+                return true;
             }
         };
     };
@@ -50,8 +75,8 @@
      */
     chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
-            var apiFn = Api(request, sender, sendResponse);
-            var res;
+            let apiFn = Api(request, sender, sendResponse);
+            let res;
             apiFn[request.method] && (res = apiFn[request.method](request));
             if (res) return true;
         }

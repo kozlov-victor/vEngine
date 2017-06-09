@@ -1,28 +1,31 @@
 <app-collapsible
-        :crud="{
-            create:createFont
-        }"
-        :title="i18n.fonts"
-        xmlns:v-on="http://www.w3.org/1999/xhtml">
-    <div class="withPaddingLeft">
-        <div class="table width100">
-            <div class="row"
-                 v-for="font in (editData.fontList && editData.fontList.rs)">
+        data-state="{
+            crud: {create:createFont},
+            title:i18n.fonts
+        }">
+    <div data-transclusion="content">
 
-                <div class="cell">
+        <div class="withPaddingLeft">
+            <div class="table width100">
+                <div class="row"
+                     data-for="font in editData.fontList.rs">
+
+                    <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">
                         {{font.name}}
                     </span>
-                </div>
+                    </div>
 
-                <div class="cell width1">
-                    <div class="edit" v-on:click="editFont(font)"/>
-                </div>
-                <div class="cell width1">
-                    <div class="delete" v-on:click="deleteFont(font)"/>
-                </div>
+                    <div class="cell width1">
+                        <div class="edit" data-click="editFont(font)"></div>
+                    </div>
+                    <div class="cell width1">
+                        <div class="delete" data-click="deleteFont(font)"></div>
+                    </div>
 
+                </div>
             </div>
         </div>
+
     </div>
 </app-collapsible>

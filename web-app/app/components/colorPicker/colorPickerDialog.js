@@ -1,54 +1,63 @@
 
-var abstractDialog = require('providers/abstractDialog');
-var utils = require('providers/utils');
-var colorPicker = null;
+import utils from 'providers/utils';
+import i18n from 'providers/i18n';
 
-var colorEnums = [
+let defaultColor = {r:0,g:0,b:0};
+let colorEnums = [
     {left:'red',right:'cyan',key:'r'},
     {left:'green',right:'magenta',key:'g'},
     {left:'blue',right:'yellow',key:'b'}
 ];
 
-module.exports.component = Vue.component('app-color-picker-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./colorPickerDialog.html'),
-    data: function () {
+let cmp = RF.registerComponent('app-color-picker-dialog', {
+    template: {
+        type: 'string',
+        value: require('./colorPickerDialog.html')
+    },
+    colorEnums,
+    i18n: i18n.getAll(),
+    getInitialState: function(){
         return {
-            i18n: require('providers/i18n').getAll(),
-            currentColorRGB: {r:0,g:0,b:0},
-            currentColorHex: '#000000',
-            colorEnums: colorEnums
+            currentColor: {
+                RGB: {},
+                hex: ''
+            },
+            model: {field:{}},
+            field: 'field'
         }
     },
-    created: function(){
-        module.exports.instance = this;
+    open: function(model,field){
+        let color = (model && model[field]) || Object.create(defaultColor);
+        this.model = model;
+        this.field = field;
+        this.currentColor.RGB.r = color.r;
+        this.currentColor.RGB.g = color.g;
+        this.currentColor.RGB.b = color.b;
+        this.currentColor.hex = utils.rgbToHex(this.currentColor.RGB);
+        RF.getComponentById('colorPickerModal').open();
     },
-    components: {
-        appModal: require('components/modal/modal')
+    hexChanged: function(){
+        this.currentColor.RGB = utils.hexToRgb(this.currentColor.hex);
     },
-    methods: {
-        open: function(_colorPicker,color){
-            this.opened = true;
-            colorPicker = _colorPicker;
-            this.currentColorRGB.r = color.r;
-            this.currentColorRGB.g = color.g;
-            this.currentColorRGB.b = color.b;
-            this.currentColorHex = utils.rgbToHex(this.currentColorRGB);
-        },
-        hexChanged: function(){
-            var color = utils.hexToRgb(this.currentColorHex);
-            Vue.set(this.currentColorRGB,'r',color.r);
-            Vue.set(this.currentColorRGB,'g',color.g);
-            Vue.set(this.currentColorRGB,'b',color.b);
-        },
-        rgbChanged: function(){
-            this.currentColorHex = utils.rgbToHex(this.currentColorRGB);
-        },
-        applyColor: function(){
-            colorPicker.applyColor(this.currentColorRGB);
-            colorPicker.onchange && colorPicker.onchange();
-            this.close();
-        }
+    rgbChanged: function(){
+        this.currentColor.hex = utils.rgbToHex(this.currentColor.RGB);
+    },
+    getRawColor: function(rgb,key){
+        let col = {
+            r: key=='r'?rgb.r:0,
+            g: key=='g'?rgb.g:0,
+            b: key=='b'?rgb.b:0,
+        };
+        return utils.rgbToHex(col);
+    },
+    applyColor: function(){
+        this.model[this.field] = this.currentColor.RGB;
+        RF.getComponentById('colorPickerModal').close();
     }
 });
+
+// let el = document.createElement('app-color-picker-dialog');
+// el.id = 'colorPickerDialog';
+// document.body.appendChild(el);
+
+export default cmp;

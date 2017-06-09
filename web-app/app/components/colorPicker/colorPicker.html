@@ -1,17 +1,15 @@
-<div class="inlineBlock" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<div class="inlineBlock">
 
     <div
-            :style="{
+            data-style="{
                 cursor: 'pointer',
                 width: 24 + 'px',
                 height:24 + 'px',
-                backgroundColor: 'rgb('+currentColorRGB.r+','+currentColorRGB.g+','+currentColorRGB.b+')'
+                backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')')
             }"
-            v-on:click="click()"
+            data-click="click()"
             >
     </div>
-
-    <app-color-picker-dialog/>
 
 </div>
 

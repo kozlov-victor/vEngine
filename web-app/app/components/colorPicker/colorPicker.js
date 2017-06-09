@@ -1,31 +1,18 @@
 
-var colorPickerDialog = require('./colorPickerDialog');
+import './colorPickerDialog';
 
-module.exports = Vue.component('app-color-picker', {
-    props: ['object','value','onchange'],
-    template: require('./colorPicker.html'),
-    data: function(){
+export default RF.registerComponent('app-color-picker', {
+    template: {
+        type:'string',
+        value: require('./colorPicker.html')
+    },
+    getInitialState: function(){
         return {
-
+            model:{field:''},
+            field:'field'
         }
     },
-    computed: {
-        currentColorRGB: function(){
-            return this.object[this.value];
-        }
-    },
-    created: function(){
-
-    },
-    methods: {
-        click: function(e){
-            colorPickerDialog.instance.open(this,this.currentColorRGB);
-        },
-        applyColor: function(color){
-            this.object[this.value] = color;
-        }
-    },
-    components: {
-        appColorPickerDialog: require('components/colorPicker/colorPickerDialog').component
+    click: function(){
+        RF.getComponentById('colorPickerDialog').open(this.model,this.field);
     }
 });

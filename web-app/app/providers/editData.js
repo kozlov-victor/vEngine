@@ -1,13 +1,14 @@
 
-let collections = _require('collections');
+const collections = _require('collections');
+const SpriteSheet = _require('spriteSheet');
 
-let res = {};
+const res = {};
 
 res.reset = function(){
 
     res.commonBehaviourList = {};
     res.currGameObjectInEdit = {};
-    res.currSpriteSheetInEdit = {};
+    res.currSpriteSheetInEdit = new SpriteSheet();
     res.currFrameAnimationInEdit = {};
     res.currSceneInEdit = {};
     res.currSceneGameObjectInEdit = {

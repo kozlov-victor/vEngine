@@ -1,15 +1,14 @@
 
-const abstractDialog = require('providers/abstractDialog');
 
-const editData = require('providers/editData');
-const restFileSystem = require('providers/rest/fileSystem');
-const restResource = require('providers/rest/resource');
-
-const fontSample = 'Test me! Text here';
-const chrome = require('providers/chrome');
-const utils = require('providers/utils');
+import editData from 'providers/editData';
+import restFileSystem from 'providers/rest/fileSystem';
+import restResource from 'providers/rest/resource';
+import i18n from 'providers/i18n';
+import chrome from 'providers/chrome';
+import utils from 'providers/utils';
 
 const SYMBOL_PADDING = 4;
+const fontSample = 'Test me! Text here';
 
 const getFontContext = function(arrFromTo, strFont, w) {
     function getFontHeight(strFont) {
@@ -70,65 +69,57 @@ const getFontImage = function(symbolsContext,strFont,color){
     return cnv.toDataURL();
 };
 
-module.exports.component = Vue.component('app-font-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./fontDialog.html'),
-    data: function () {
-        return {
-            form:require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: utils,
-            fontSample:fontSample,
-            systemFontList: []
-        }
+export default RF.registerComponent('app-font-dialog', {
+    template: {
+        type:'string',
+        value: require('./fontDialog.html')
     },
-    created: function(){
-        module.exports.instance = this;
-    },
-    components: {
-        appColorPicker: require('components/colorPicker/colorPicker')
-    },
-    methods: {
-        open: function(){
-            this.opened = true;
-            if (!this.systemFontList.length) {
-                let self = this;
-                chrome.requestToApi({method:'getFontList'},function(list){
-                    self.systemFontList = list;
-                });
-            }
-        },
-        createOrEditFont: function(model){
-            let self = this;
-            let strFont = model.fontSize +'px'+' '+model.fontFamily;
-            model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
-            let file = utils.dataURItoBlob(getFontImage(model.fontContext,strFont,utils.rgbToHex(model.fontColor)));
+    form:{valid: ()=>{return true;}},
+    editData,
+    i18n: i18n.getAll(),
+    utils,
+    fontSample,
+    systemFontList: [],
 
-            Promise.resolve().
-            then(()=>{
-                return restFileSystem.
-                    uploadFile(
-                        file,
-                        {
-                            type:model.type,
-                            fileName:`${model.name}.png`
-                        }
-                    );
-            }).
-            then(()=>{
-                return restResource.save(model);
-            }).
-            then((resp)=>{
-                if (resp.created) {
-                    model.id = resp.id;
-                    editData[`${model.type}List`].add(model);
-                } else if (resp.updated) {
-                    model.updateCloner();
-                }
-                self.close();
+    open: function(){
+        if (!this.systemFontList.length) {
+            let self = this;
+            chrome.requestToApi({method:'getFontList'},function(list){
+                self.systemFontList = list;
+                RF.digest();
             });
         }
+        RF.getComponentById('fontModal').open();
+    },
+    createOrEditFont: function(model){
+        let self = this;
+        let strFont = model.fontSize +'px'+' '+model.fontFamily;
+        model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
+        let file = utils.dataURItoBlob(getFontImage(model.fontContext,strFont,utils.rgbToHex(model.fontColor)));
+
+        Promise.resolve().
+        then(()=>{
+            return restFileSystem.
+            uploadFile(
+                file,
+                {
+                    type:model.type,
+                    fileName:`${model.name}.png`
+                }
+            );
+        }).
+        then(()=>{
+            return restResource.save(model);
+        }).
+        then((resp)=>{
+            if (resp.created) {
+                model.id = resp.id;
+                editData[`${model.type}List`].add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            RF.getComponentById('fontModal').close();
+            RF.digest();
+        });
     }
 });

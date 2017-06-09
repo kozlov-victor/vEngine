@@ -6,6 +6,12 @@ let generatorService = require.main.require('./application/mvc/services/generato
 let dataSourceHelper = require.main.require('./application/mvc/services/dataSourceHelper');
 
 class ResourceController {
+
+    constructor(){
+        this.cache = {};
+    }
+
+
     /**
      * @Method("getAll");
      * @Request({"type":"post"});
@@ -50,7 +56,11 @@ class ResourceController {
      * @Request({"type":"get"});
      */
     generateEngine(params){
-        return generatorService.generateEngine(params);
+        let key = JSON.stringify(params);
+        if (!this.cache[key]) {
+            this.cache[key] = generatorService.generateEngine(params);
+        }
+        return this.cache[key];
     }
 
     /**

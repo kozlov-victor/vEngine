@@ -1,38 +1,35 @@
 
-const utils = require('providers/utils');
 
-const gameObjectDialog = require('../../dialogs/gameObjectDialog/gameObjectDialog');
+import i18n from 'providers/i18n';
+import editData from 'providers/editData';
+import utils from 'providers/utils';
+import 'pages/editor/leftPanel/_gameObjectRow/gameObjectRow';
+import restFileSystem from 'providers/rest/fileSystem';
+
 const GameObject = _require('gameObject');
-const restFileSystem = require('providers/rest/fileSystem');
 
-module.exports = Vue.component('app-game-objects', {
-    props: [],
-    template: require('./gameObjects.html'),
-    data: function(){
-        return {
-            editData: require('providers/editData'),
-            i18n: require('providers/i18n').getAll()
-        }
+export default RF.registerComponent('app-game-objects', {
+    template: {
+        type: 'string',
+        value: require('./gameObjects.html')
     },
-    components: {
-        appGameObjectRow: require('../_gameObjectRow/gameObjectRow')
+    editData,
+    i18n: i18n.getAll(),
+
+    createGameObject: function(){
+        this.editData.currGameObjectInEdit = new GameObject(new GameObject().clone());
+        RF.getComponentById('gameObjectModal').open();
     },
-    methods: {
-        createGameObject: function(){
-            this.editData.currGameObjectInEdit = new GameObject(new GameObject().clone());
-            gameObjectDialog.instance.open();
-        },
-        editGameObjectScript: function(gameObject){
-            utils.openEditor(`${gameObject.type}/${gameObject.name}.js`);
-        },
-        editGameObject: function(go){
-            this.editData.currGameObjectInEdit =  go.clone();
-            gameObjectDialog.instance.open();
-        },
-        deleteGameObject: function(model){
-            utils.deleteModel(model,()=>{
-                restFileSystem.removeFile(`script/gameObject/${model.name}.js`);
-            });
-        }
+    editGameObjectScript: function(gameObject){
+        utils.openEditor(`${gameObject.type}/${gameObject.name}.js`);
+    },
+    editGameObject: function(go){
+        this.editData.currGameObjectInEdit =  go.clone();
+        RF.getComponentById('gameObjectModal').open();
+    },
+    deleteGameObject: function(model){
+        utils.deleteModel(model,()=>{
+            restFileSystem.removeFile(`script/gameObject/${model.name}.js`);
+        });
     }
 });

@@ -10,9 +10,11 @@ window.addEventListener('message',function(resp){
         fn && data && fn(data);
     }
 });
-module.exports.requestToApi = function(params,callBack) {
+let requestToApi = function(params,callBack) {
     let eventUUID = (~~Math.random()*100)+new Date().getTime();
     events[eventUUID] = callBack;
     params.eventUUID = eventUUID;
     window.top.postMessage(params,'*');
 };
+
+export default {requestToApi};
