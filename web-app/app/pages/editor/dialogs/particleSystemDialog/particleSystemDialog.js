@@ -33,7 +33,8 @@ export default RF.registerComponent('app-particle-system-dialog', {
             } else if (resp.updated) {
                 model.updateCloner();
             }
-            self.close();
+            RF.getComponentById('particleSystemModal').close();
+            RF.digest();
         });
     }
 });

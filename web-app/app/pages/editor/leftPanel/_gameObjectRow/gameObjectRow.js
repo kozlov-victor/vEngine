@@ -12,11 +12,5 @@ export default RF.registerComponent('app-game-object-row', {
             gameObject: {}
         }
     },
-    calcZoom(gameObject = {}) {
-        if (!gameObject.height) gameObject.height = 30;
-        return gameObject.height>30?
-            30/gameObject.height:
-            1;
-    },
     utils
 });

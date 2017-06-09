@@ -5,6 +5,7 @@ import 'pages/editor/dialogs/soundDialog/soundDialog';
 import 'pages/editor/dialogs/fontDialog/fontDialog';
 import 'pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog';
 import 'pages/editor/dialogs/gameObjectDialog/gameObjectDialog';
+import 'pages/editor/dialogs/particleSystemDialog/particleSystemDialog';
 
 export default RF.registerComponent('app-dialogs', {
     template: {

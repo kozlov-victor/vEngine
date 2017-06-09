@@ -1,178 +1,173 @@
-<app-modal id="particleSystemDialog">
 
-    <table class="width100">
-        <tr>
-            <td>
-                {{i18n.name}}
-            </td>
-            <td>
+<table class="width100">
+    <tr>
+        <td>
+            {{i18n.name}}
+        </td>
+        <td>
 
-            </td>
-            <td>
-                <input
+        </td>
+        <td>
+            <input
                     required
                     data-model="editData.currParticleSystemInEdit.name"/>
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="2">
-                numOfParticlesToEmit
-            </td>
-            <td>
-                from
-            </td>
-            <td>
-                <input
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2">
+            numOfParticlesToEmit
+        </td>
+        <td>
+            from
+        </td>
+        <td>
+            <input
                     required
                     type="number"
                     data-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.from"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                to
-            </td>
-            <td>
-                <input
+        </td>
+    </tr>
+    <tr>
+        <td>
+            to
+        </td>
+        <td>
+            <input
                     required
                     type="number"
                     data-model="editData.currParticleSystemInEdit.numOfParticlesToEmit.to"/>
-            </td>
-        </tr>
-        <tr>
-            <td rowspan="2">
-                particleVelocity
-            </td>
-            <td>
-                from
-            </td>
-            <td>
-                <input
-                        required
-                        type="number"
-                        data-model="editData.currParticleSystemInEdit.particleVelocity.from"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                to
-            </td>
-            <td>
-                <input
-                        required
-                        type="number"
-                        data-model="editData.currParticleSystemInEdit.particleVelocity.to"/>
-            </td>
-        </tr>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="2">
+            particleVelocity
+        </td>
+        <td>
+            from
+        </td>
+        <td>
+            <input
+                    required
+                    type="number"
+                    data-model="editData.currParticleSystemInEdit.particleVelocity.from"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            to
+        </td>
+        <td>
+            <input
+                    required
+                    type="number"
+                    data-model="editData.currParticleSystemInEdit.particleVelocity.to"/>
+        </td>
+    </tr>
 
-        <tr>
-            <td rowspan="2">
-                particleLiveTime
-            </td>
-            <td>
-                from
-            </td>
-            <td>
-                <input
+    <tr>
+        <td rowspan="2">
+            particleLiveTime
+        </td>
+        <td>
+            from
+        </td>
+        <td>
+            <input
                     required
                     type="number"
                     data-model="editData.currParticleSystemInEdit.particleLiveTime.from"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                to
-            </td>
-            <td>
-                <input
+        </td>
+    </tr>
+    <tr>
+        <td>
+            to
+        </td>
+        <td>
+            <input
                     required
                     type="number"
                     data-model="editData.currParticleSystemInEdit.particleLiveTime.to"/>
-            </td>
-        </tr>
+        </td>
+    </tr>
 
-        <tr>
-            <td>
-                emissionRadius
-            </td>
-            <td></td>
-            <td>
-                <input
-                        required
-                        type="number"
-                        data-model="editData.currParticleSystemInEdit.emissionRadius"/>
-            </td>
-        </tr>
+    <tr>
+        <td>
+            emissionRadius
+        </td>
+        <td></td>
+        <td>
+            <input
+                    required
+                    type="number"
+                    data-model="editData.currParticleSystemInEdit.emissionRadius"/>
+        </td>
+    </tr>
 
-        <tr>
-            <td>
-                particleAngle
-            </td>
-            <td>
-                from / to
-            </td>
-            <td>
-                <app-angle-picker
-                        :object="editData.currParticleSystemInEdit.particleAngle"
-                        :value="'from'"
-                        />
-                <app-angle-picker
-                        :object="editData.currParticleSystemInEdit.particleAngle"
-                        :value="'to'"
-                        />
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                {{i18n.gameObject}}
-            </td>
-            <td>
+    <tr>
+        <td>
+            particleAngle
+        </td>
+        <td>
+            from / to
+        </td>
+        <td>
+            <app-angle-picker
+                    :object="editData.currParticleSystemInEdit.particleAngle"
+                    :value="'from'"
+            />
+            <app-angle-picker
+                    :object="editData.currParticleSystemInEdit.particleAngle"
+                    :value="'to'"
+            />
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            {{i18n.gameObject}}
+        </td>
+        <td>
 
-                <table>
-                    <tr>
-                        <td>
-                            <select
-                                    required
-                                    data-change="onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)"
-                                    data-model="editData.currParticleSystemInEdit.gameObject.id"
-                                    >
-                                <option
-                                        data-value="item.id"
-                                        data-for="item in editData.gameObjectList.rs">{{item.name}}</option>
-                            </select>
-                        </td>
-                        <td>
-                            <div data-style="
+            <table>
+                <tr>
+                    <td>
+                        <select
+                                required
+                                data-change="onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)"
+                                data-model="editData.currParticleSystemInEdit.gameObject.id"
+                        >
+                            <option
+                                    data-value="item.id"
+                                    data-for="item in editData.gameObjectList.rs">{{item.name}}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div data-style="
                                 utils.merge(
                                     utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),
                                     {
-                                        zoom:editData.currParticleSystemInEdit.gameObject.height>30?
-                                        30/editData.currParticleSystemInEdit.gameObject.height:
-                                        1
+                                        zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObject)
                                     }
                                )">
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
 
-            </td>
-        </tr>
+        </td>
+    </tr>
 
-    </table>
+</table>
 
-    <button
-            data-disabled="!form.valid()"
-            data-click="createOrEditPs(editData.currParticleSystemInEdit)">
-        {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}
-    </button>
+<button
+        data-disabled="!form.valid()"
+        data-click="createOrEditPs(editData.currParticleSystemInEdit)">
+    {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}
+</button>
 
-    <button
-            data-disabled="!form.valid()"
-            data-click="showPreview()">
-        {{i18n.preview}}
-    </button>
-
-</app-modal>
+<button
+        data-disabled="!form.valid()"
+        data-click="showPreview()">
+    {{i18n.preview}}
+</button>

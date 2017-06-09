@@ -6,25 +6,29 @@
             title:i18n.particleSystems
         }">
 
-    <div class="withPaddingLeft">
-        <div class="table width100">
-            <div class="row"
-                 data-for="ps in editData.particleSystemList.rs">
+    <div data-transclusion="content">
+        <div class="withPaddingLeft">
+            <div class="table width100">
+                <div class="row"
+                     data-for="ps in editData.particleSystemList.rs">
 
-                <div class="cell">
+                    <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">
                         {{ps.name}}
                     </span>
-                </div>
+                    </div>
 
-                <div class="cell width1">
-                    <div class="edit" data-click="editParticleSystem(ps)"></div>
-                </div>
-                <div class="cell width1">
-                    <div class="delete" data-click="deleteParticleSystem(ps)"></div>
-                </div>
+                    <div class="cell width1">
+                        <div class="edit" data-click="editParticleSystem(ps)"></div>
+                    </div>
+                    <div class="cell width1">
+                        <div class="delete" data-click="deleteParticleSystem(ps)"></div>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
+
+
 </app-collapsible>

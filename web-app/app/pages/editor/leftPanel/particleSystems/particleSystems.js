@@ -25,11 +25,11 @@ export default RF.registerComponent('app-particle-systems', {
         }
 
         this.editData.currParticleSystemInEdit.gameObject = go.clone();
-        RF.getComponentById('particleSystemDialog').open();
+        RF.getComponentById('particleSystemModal').open();
     },
     editParticleSystem: function(ps){
         this.editData.currParticleSystemInEdit = ps.clone();
-        RF.getComponentById('particleSystemDialog').open();
+        RF.getComponentById('particleSystemModal').open();
     },
     deleteParticleSystem: function(model){
         utils.deleteModel(model);

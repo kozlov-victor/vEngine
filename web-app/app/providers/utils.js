@@ -23,6 +23,14 @@ class Utils {
             transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${mathEx.radToDeg(gameObj.angle)}deg)`
         };
     }
+
+    calcZoom(gameObject = {}) {
+        if (!gameObject.height) gameObject.height = 30;
+        return gameObject.height>30?
+            30/gameObject.height:
+            1;
+    }
+
     merge(a,b){
         a = a || {};
         b = b || {};
