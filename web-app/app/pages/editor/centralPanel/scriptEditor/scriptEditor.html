@@ -1,0 +1,22 @@
+<div
+        class="height100 relative"
+        data-if="editData.scriptEditorUrl"
+        >
+
+    <div class="scriptEditorClose" data-click="close()">X</div>
+
+    <div style="height:10px;font-size: 10px;">
+        {{editData.scriptEditorUrl}}
+    </div>
+    <div
+            id="scriptEditor"
+            style="height:calc(100% - 10px)"
+            >
+        <iframe
+                id="scriptEditorFrame"
+                frameborder="0"
+                class="block width100 height100 noOverFlow"
+                src="/editor"
+                ></iframe>
+    </div>
+</div>

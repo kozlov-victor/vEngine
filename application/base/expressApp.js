@@ -34,6 +34,11 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
+const setHeader = function(res,responseObj){
+    if (typeof responseObj == 'object')
+        res.setHeader('Content-Type', 'application/json');
+};
+
 const processCommonRequest = function(opts){
     console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
 
@@ -56,6 +61,7 @@ const processCommonRequest = function(opts){
             if (codeResult) codeResult.params = params;
             res.render(opts.methodName,codeResult);
         } else {
+            setHeader(res,codeResult);
             res.send(codeResult);
         }
     })
@@ -72,6 +78,7 @@ const processMultiPartRequest = function(opts){
             params.fileName = params.fileName[0];
         }
         let result = opts.ctrl[opts.methodName](params);
+        setHeader(res,result);
         res.send(result);
     });
     console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);

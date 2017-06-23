@@ -414,9 +414,8 @@ var Component = function () {
     };
 
     Component.prototype.destroy = function destroy() {
-        // todo not implemented yet! todo remove watchers
         this.node.remove();
-        //Component.instances.splice(Component.instances.indexOf(this),1);
+        Component.instances.splice(Component.instances.indexOf(this), 1);
         if (this.children) {
             this.children.forEach(function (c) {
                 c.destroy();
@@ -611,18 +610,18 @@ var ScopedLoopContainer = function (_Component) {
         this.lastFrafmentsLength--;
     };
 
-    ScopedLoopContainer.prototype.run = function run(eachItemName, indexName, iterableObjectName) {
+    ScopedLoopContainer.prototype.run = function run(eachItemName, indexName, iterableObjectExpr) {
         var _this2 = this;
 
         this.eachItemName = eachItemName;
         this.indexName = indexName;
 
-        this.anchor = document.createComment('component-id: ' + this.id + '; loop: ' + eachItemName + ' in ' + iterableObjectName);
+        this.anchor = document.createComment('component-id: ' + this.id + '; loop: ' + eachItemName + ' in ' + iterableObjectExpr);
         this.node.parentNode.insertBefore(this.anchor, this.node.nextSibling);
         this.node.remove();
         this.node = this.node.cloneNode(true);
 
-        this.addWatcher(iterableObjectName, function (newArr, oldArr) {
+        this.addWatcher(iterableObjectExpr, function (newArr, oldArr) {
             _this2._processIterations(newArr, oldArr);
         });
     };
@@ -639,7 +638,7 @@ var ScopedLoopContainer = function (_Component) {
 
         if (!newArr.forEach) {
             console.error(this.node);
-            throw 'can not evaluate loop expression: ' + this.eachItemName + (this.indexName ? ',' + this.eachItemName : '') + '. Expected object or array, but ' + newArr + ' found.';
+            throw 'can not evaluate loop expression: ' + this.eachItemName + (this.indexName ? ',' + this.indexName : '') + '. Expected object or array, but ' + newArr + ' found.';
         }
 
         var index = 0;
@@ -919,7 +918,7 @@ var MiscUtils = function () {
 
     /**
      * @param obj
-     * @_clonedObjects - internal store of cloned object to avoid self-cycled object recursion
+     * @param _clonedObjects - internal store of cloned object to avoid self-cycled object recursion
      * @returns {*}
      */
     MiscUtils.deepCopy = function deepCopy(obj) {
@@ -1003,6 +1002,12 @@ var MiscUtils = function () {
         return res;
     };
 
+    MiscUtils.copyMethods = function copyMethods(src, dest) {
+        Object.keys(dest).forEach(function (name) {
+            src[name] = dest.name;
+        });
+    };
+
     return MiscUtils;
 }();
 
@@ -1060,6 +1065,15 @@ var TemplateLoader = function () {
 }();
 'use strict';
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var dataTransclusion = 'data-transclusion';
+
+var ComponentHelper = function ComponentHelper() {
+    _classCallCheck(this, ComponentHelper);
+};
+'use strict';
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1094,21 +1108,26 @@ var DirectiveEngine = function () {
             var closestTransclusionEl = el.closest('[data-transclusion]');
 
             if (closestTransclusionEl && !closestTransclusionEl.getAttribute('data-_processed')) return false;
-            var tokens = expression.split(' ');
-            if (['in', 'of'].indexOf(tokens[1]) == -1) throw 'can not parse expression ' + expression;
+            expression = expression.replace(/,\s+/, ',').replace(/[\t\n]+/, ' ');
+            var tokens = expression.split(' ').filter(function (it) {
+                return it.length;
+            });
+            if (['in', 'of'].indexOf(tokens[1]) == -1) throw 'can not parse expression: ' + expression;
             var variables = Lexer.tokenize(tokens[0]).filter(function (t) {
                 return [Token.TYPE.VARIABLE, Token.TYPE.OBJECT_KEY].indexOf(t.tokenType) > -1;
             }).map(function (t) {
                 return t.tokenValue;
             });
 
-            if (!variables.length) throw 'can not parse expression ' + expression;
+            if (!variables.length) throw 'can not parse expression: ' + expression;
             var eachItemName = variables[0];
             var indexName = variables[1];
-            var iterableObjectName = tokens[2];
+            tokens.shift();
+            tokens.shift();
+            var iterableObjectExpr = tokens.join(' ');
             var scopedLoopContainer = new ScopedLoopContainer(el, _this.component.modelView);
             scopedLoopContainer.parent = _this.component;
-            scopedLoopContainer.run(eachItemName, indexName, iterableObjectName);
+            scopedLoopContainer.run(eachItemName, indexName, iterableObjectExpr);
         });
     };
 
@@ -1136,7 +1155,9 @@ var DirectiveEngine = function () {
             });
         }
         DomUtils.addEventListener(el, eventName, function (e) {
+            _this3.component.modelView.$event = e;
             ExpressionEngine.runExpressionFn(fn, _this3.component);
+            delete _this3.component.modelView.$event;
             Component.digestAll();
             if (eventName == 'submit') {
                 DomUtils.preventDefault(e);
@@ -1164,16 +1185,46 @@ var DirectiveEngine = function () {
         });
     };
 
-    DirectiveEngine.prototype.runDirective_Bind = function runDirective_Bind() {
+    DirectiveEngine.prototype._runDirectiveEvents = function _runDirectiveEvents(el, expression) {
         var _this6 = this;
 
-        this._eachElementWithAttr('data-bind', function (el, expression) {
-            ExpressionEngine.runExpressionFn(fn, _this6.component);
-            _this6.component.addWatcher(expression, function (value) {
-                DomUtils.setTextNodeValue(el, value);
-            });
+        expression = expression.trim();
+        if (!(expression.startsWith("{") && expression.endsWith("}"))) throw 'Attribute error. can not parse expression ' + expression;
+        expression = expression.substr(1, expression.length - 2);
+        expression.split(',').forEach(function (expr) {
+            var p = expr.split(':');
+            if (p.length !== 2) throw 'Attribute error. can not parse expression ' + expression;
+            _this6._runDomEvent(el, p[1], p[0]);
         });
     };
+
+    DirectiveEngine.prototype.runDirective_Events = function runDirective_Events() {
+        var _this7 = this;
+
+        this._eachElementWithAttr('data-' + 'events', function (el, expression) {
+            _this7._runDirectiveEvents(el, expression);
+        });
+    };
+
+    DirectiveEngine.prototype.runDirective_Event = function runDirective_Event() {
+        var _this8 = this;
+
+        this._eachElementWithAttr('data-' + 'event', function (el, expression) {
+            _this8._runDirectiveEvents(el, '{' + expression + '}');
+        });
+    };
+
+    // runDirective_Bind(){
+    //     this._eachElementWithAttr('data-bind',(el,expression)=>{
+    //         ExpressionEngine.runExpressionFn(fn,this.component);
+    //         this.component.addWatcher(
+    //             expression,
+    //             value=>{
+    //                 DomUtils.setTextNodeValue(el,value);
+    //             }
+    //         )
+    //     });
+    // };
 
     DirectiveEngine.prototype._runDirective_Model_OfSelect = function _runDirective_Model_OfSelect(selectEl, modelExpression) {
         var isMultiple = selectEl.multiple,
@@ -1195,7 +1246,7 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Model = function runDirective_Model() {
-        var _this7 = this;
+        var _this9 = this;
 
         this._eachElementWithAttr('data-model', function (el, expression) {
             if (el.getAttribute('type') == 'radio' && !el.getAttribute('name')) el.setAttribute('name', expression);
@@ -1203,17 +1254,17 @@ var DirectiveEngine = function () {
             eventNames.split(',').forEach(function (eventName) {
                 if (el.tagName.toLowerCase() == 'select') {
                     DomUtils.addEventListener(el, eventName, function (e) {
-                        _this7._runDirective_Model_OfSelect(el, expression);
+                        _this9._runDirective_Model_OfSelect(el, expression);
                         Component.digestAll();
                     });
                 } else {
                     DomUtils.addEventListener(el, eventName, function (e) {
-                        ExpressionEngine.setValueToContext(_this7.component, expression, DomUtils.getInputValue(el));
+                        ExpressionEngine.setValueToContext(_this9.component, expression, DomUtils.getInputValue(el));
                         Component.digestAll();
                     });
                 }
             });
-            _this7.component.addWatcher(expression, function (value) {
+            _this9.component.addWatcher(expression, function (value) {
                 if (el.tagName.toLowerCase() == 'select') {
                     var isMultiple = el.multiple;
                     var isModelSet = false;
@@ -1254,11 +1305,11 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Class = function runDirective_Class() {
-        var _this8 = this;
+        var _this10 = this;
 
         this._eachElementWithAttr('data-class', function (el, expression) {
             var initialClassName = el.className;
-            _this8.component.addWatcher(expression, function (classNameOrObj) {
+            _this10.component.addWatcher(expression, function (classNameOrObj) {
                 if ((typeof classNameOrObj === 'undefined' ? 'undefined' : _typeof(classNameOrObj)) === 'object') {
                     for (var key in classNameOrObj) {
                         if (!classNameOrObj.hasOwnProperty(key)) continue;
@@ -1272,10 +1323,10 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Style = function runDirective_Style() {
-        var _this9 = this;
+        var _this11 = this;
 
         this._eachElementWithAttr('data-style', function (el, expression) {
-            _this9.component.addWatcher(expression, function (styleObject) {
+            _this11.component.addWatcher(expression, function (styleObject) {
                 for (var key in styleObject) {
                     if (!styleObject.hasOwnProperty(key)) continue;
                     try {
@@ -1289,10 +1340,10 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Disabled = function runDirective_Disabled() {
-        var _this10 = this;
+        var _this12 = this;
 
         this._eachElementWithAttr('data-disabled', function (el, expression) {
-            _this10.component.addWatcher(expression, function (value) {
+            _this12.component.addWatcher(expression, function (value) {
                 if (value) el.setAttribute('disabled', 'disabled');else el.removeAttribute('disabled');
             });
         });
@@ -1303,7 +1354,7 @@ var DirectiveEngine = function () {
         var thisId = el.getAttribute('data-component-id');
         var res = [];
         if (!el.children) return [];
-        DomUtils.nodeListToArray(el.children).map(function (it) {
+        DomUtils.nodeListToArray(el.querySelectorAll('*')).map(function (it) {
             return it.getAttribute('data-component-id');
         }).forEach(function (componentId) {
             if (!componentIds[componentId]) {
@@ -1315,13 +1366,13 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_If = function runDirective_If() {
-        var _this11 = this;
+        var _this13 = this;
 
         this._eachElementWithAttr('data-if', function (el, expression) {
             var comment = document.createComment('');
             el.parentNode.insertBefore(comment, el);
-            var childComponents = _this11._getChildComponents(el);
-            _this11.component.addWatcher(expression, function (val) {
+            var childComponents = _this13._getChildComponents(el);
+            _this13.component.addWatcher(expression, function (val) {
                 if (val) {
                     if (!el.parentElement) {
                         comment.parentNode.insertBefore(el, comment.nextSibling);
@@ -1342,12 +1393,12 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Show = function runDirective_Show() {
-        var _this12 = this;
+        var _this14 = this;
 
         this._eachElementWithAttr('data-show', function (el, expression) {
             var initialStyle = el.style.display || '';
-            var childComponents = _this12._getChildComponents(el);
-            _this12.component.addWatcher(expression, function (val) {
+            var childComponents = _this14._getChildComponents(el);
+            _this14.component.addWatcher(expression, function (val) {
                 if (val) {
                     el.style.display = initialStyle;
                     childComponents.forEach(function (cmp) {
@@ -1364,12 +1415,12 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Hide = function runDirective_Hide() {
-        var _this13 = this;
+        var _this15 = this;
 
         this._eachElementWithAttr('data-hide', function (el, expression) {
             var initialStyle = el.style.display || '';
-            var childComponents = _this13._getChildComponents(el);
-            _this13.component.addWatcher(expression, function (val) {
+            var childComponents = _this15._getChildComponents(el);
+            _this15.component.addWatcher(expression, function (val) {
                 if (val) {
                     el.style.display = 'none';
                     childComponents.forEach(function (cmp) {
@@ -1386,10 +1437,10 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Html = function runDirective_Html() {
-        var _this14 = this;
+        var _this16 = this;
 
         this._eachElementWithAttr('data-html', function (el, expression) {
-            _this14.component.addWatcher(expression, function (val) {
+            _this16.component.addWatcher(expression, function (val) {
                 el.innerHTML = val;
             });
         });
@@ -1403,36 +1454,36 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.runDirective_Attributes = function runDirective_Attributes() {
-        var _this15 = this;
+        var _this17 = this;
 
         this._eachElementWithAttr('data-attributes', function (el, expression) {
-            _this15.component.addWatcher(expression, function (properties) {
-                _this15._runAttributes(el, properties);
+            _this17.component.addWatcher(expression, function (properties) {
+                _this17._runAttributes(el, properties);
             });
         });
     };
 
     DirectiveEngine.prototype.runDirective_Attribute = function runDirective_Attribute() {
-        var _this16 = this;
+        var _this18 = this;
 
         this._eachElementWithAttr('data-attribute', function (el, expression) {
-            expression = '{' + expression;
-            _this16.component.addWatcher(expression, function (properties) {
-                _this16._runAttributes(el, properties);
+            expression = '{' + expression + '}';
+            _this18.component.addWatcher(expression, function (properties) {
+                _this18._runAttributes(el, properties);
             });
         });
     };
 
     DirectiveEngine.prototype.runComponents = function runComponents() {
-        var _this17 = this;
+        var _this19 = this;
 
         // todo refactor
         var transclComponents = [];
         ComponentProto.instances.forEach(function (componentProto) {
-            var domEls = DomUtils.nodeListToArray(_this17.component.node.getElementsByTagName(componentProto.name));
-            if (_this17.component.node.tagName.toLowerCase() == componentProto.name.toLowerCase()) {
+            var domEls = DomUtils.nodeListToArray(_this19.component.node.getElementsByTagName(componentProto.name));
+            if (_this19.component.node.tagName.toLowerCase() == componentProto.name.toLowerCase()) {
                 console.error('\n                   Can not use "data-for" attribute at component directly. Use "data-for" directive at parent node');
-                console.error('component node:', _this17.component.node);
+                console.error('component node:', _this19.component.node);
                 throw "Can not use data-for attribute at component";
             }
             var componentNodes = [];
@@ -1467,7 +1518,7 @@ var DirectiveEngine = function () {
                         if (!!closestWithSameName) {
                             console.error(domEl);
                             console.error(closestWithSameName);
-                            throw 'transclusion name conflict: dont use same transclusion name at different components. Conflicted name: ' + name;
+                            throw '\n                                    transclusion name conflict: \n                                    dont use same transclusion name at different components with parent-child relations. \n                                    Conflicted name: "' + name + '"';
                         }
                         return true;
                     });
@@ -1480,11 +1531,11 @@ var DirectiveEngine = function () {
                 domEl.parentNode.insertBefore(componentNode, domEl);
 
                 var dataStateExpression = domEl.getAttribute('data-state');
-                var dataState = dataStateExpression ? ExpressionEngine.executeExpression(dataStateExpression, _this17.component) : {};
+                var dataState = dataStateExpression ? ExpressionEngine.executeExpression(dataStateExpression, _this19.component) : {};
                 var component = componentProto.newInstance(componentNode, dataState);
                 domId && (component.domId = domId);
 
-                component.parent = _this17.component;
+                component.parent = _this19.component;
                 component.parent.addChild(component);
                 if (dataStateExpression) component.stateExpression = dataStateExpression;
                 component.disableParentScopeEvaluation = true; // avoid recursion in Component
@@ -1512,16 +1563,16 @@ var DirectiveEngine = function () {
             DomUtils.nodeListToArray(trnscl.rcp.childNodes).forEach(function (n) {
                 trnscl.transclNode.appendChild(n);
             });
-            var transclComponent = new ScopedDomFragment(trnscl.transclNode, new ModelView(_this17.component.name));
-            _this17.component.addChild(transclComponent);
-            transclComponent.parent = _this17.component;
+            var transclComponent = new ScopedDomFragment(trnscl.transclNode, _this19.component.modelView);
+            _this19.component.addChild(transclComponent);
+            transclComponent.parent = _this19.component;
             trnscl.transclNode.setAttribute('data-_processed', '1');
             transclComponent.run();
         });
     };
 
     DirectiveEngine.prototype.runExpressionsInAttrs = function runExpressionsInAttrs() {
-        var _this18 = this;
+        var _this20 = this;
 
         DomUtils.nodeListToArray(this.component.node.querySelectorAll('*')).forEach(function (node) {
             if (!node.attributes) return;
@@ -1544,7 +1595,7 @@ var DirectiveEngine = function () {
                     }
                 });
                 resultExpr = resultExpArr.join('+');
-                _this18.component.addWatcher(resultExpr, function (expr) {
+                _this20.component.addWatcher(resultExpr, function (expr) {
                     node.setAttribute(name, expr.trim());
                 });
             });
@@ -1552,23 +1603,26 @@ var DirectiveEngine = function () {
     };
 
     DirectiveEngine.prototype.run = function run() {
-        var _this19 = this;
+        var _this21 = this;
 
         this.runDirective_For();
         this.runComponents();
         this.runTextNodes();
         this.runDirective_Model(); // todo check event sequence in legacy browsers
-        ['click', 'blur', 'focus', 'submit', 'keypress', 'keyup', 'keydown', 'input'].forEach(function (eventName) {
-            _this19.runDomEvent(eventName);
+        ['click', 'blur', 'focus', 'submit', 'keypress', 'keyup', 'keydown', 'input', 'mousedown', 'mouseup', 'mousemove', 'mouseleave', 'mouseenter', 'mouseover', 'mousout'].forEach(function (eventName) {
+            _this21.runDomEvent(eventName);
         });
         this.runDomEvent_Change();
-        this.runDirective_Bind();
+        this.runDirective_Events();
+        this.runDirective_Event();
+        //this.runDirective_Bind();
         this.runDirective_Class();
         this.runDirective_Style();
         this.runDirective_Show();
         this.runDirective_Hide();
         this.runDirective_Disabled();
         this.runDirective_Html();
+        this.runDirective_Attribute();
         this.runDirective_Attributes();
         this.runExpressionsInAttrs();
         this.runDirective_If();
@@ -1622,6 +1676,7 @@ var ExpressionEngine = function () {
     ExpressionEngine.getExpressionFn = function getExpressionFn(code) {
         var unconvertedCodeTail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
+        var codeRaw = code;
         code = code.split('\n').join('').split("'").join('"');
         var codeProcessed = '\n                return ' + Lexer.convertExpression(code, RF_API_STR + '.getVal(component,\'{expr}\')') + '\n        ' + unconvertedCodeTail;
         try {
@@ -1631,8 +1686,9 @@ var ExpressionEngine = function () {
             return fn;
         } catch (e) {
             console.error('can not compile function from expression');
-            console.error('expression', code);
+            console.error('expression', codeRaw);
             console.error('compiled code', codeProcessed);
+            throw e;
         }
     };
 
@@ -1713,6 +1769,33 @@ var ExpressionEngine = function () {
 
     return ExpressionEngine;
 }();
+"use strict";
+
+var setTimeoutNative = window.setTimeout;
+var setIntervalNative = window.setInterval;
+var clearTimeOutNative = window.clearTimeout;
+var clearIntervalNative = window.clearInterval;
+
+var Reactivity = {
+    setTimeOut: function setTimeOut(fn, time) {
+        setTimeoutNative(function () {
+            fn();
+            RF.digest();
+        }, time);
+    },
+    setInterval: function setInterval(fn, time) {
+        setIntervalNative(function () {
+            fn();
+            RF.digest();
+        }, time);
+    },
+    clearTimeOut: function clearTimeOut(tid) {
+        clearTimeOutNative(tid);
+    },
+    clearInterval: function clearInterval(tid) {
+        clearIntervalNative(tid);
+    }
+};
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2083,7 +2166,8 @@ var Core = function () {
     return Core;
 }();
 
-Core.version = '0.7.15';
+MiscUtils.copyMethods(Core, Reactivity);
+Core.version = '0.7.19';
 
 window.RF = Core;
 window.RF.Router = Router;

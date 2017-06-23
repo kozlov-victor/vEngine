@@ -1,45 +1,49 @@
 
-<app-modal
-        v-on:close="close()"
-        v-if="opened" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<app-modal id="commonBehaviourModal">
 
-    <table class="width100">
-        <tr>
-            <td class="borderBottom">
-                {{i18n.name}}
-            </td>
-            <td class="borderBottom">
-                {{editData.currCommonBehaviourInEdit.name}}
-            </td>
-        </tr>
-        <tr>
-            <td class="borderBottom">
-                {{i18n.description}}
-            </td>
-            <td class="borderBottom">
-                {{editData.currCommonBehaviourInEdit.description}}
-            </td>
-        </tr>
-        <tr v-for="(value, key) in editData.currCommonBehaviourInEdit.parameters">
-            <td class="borderBottom">
-                {{key}}
-            </td>
-            <td class="borderBottom">
-                <input
-                        type="text"
-                        v-model="editData.currCommonBehaviourInEdit.parameters[key]"/>
-            </td>
-        </tr>
-        <tr v-if="utils.size(editData.currCommonBehaviourInEdit.parameters)==0">
-            <td colspan="2" class="borderBottom">
-                {{i18n.noDataToEdit}}
-            </td>
-        </tr>
-    </table>
-    <button
-            v-on:click="createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)"
-            :disabled="!form.valid()">
-        {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}
-    </button>
+    <div data-transclusion="content">
+
+
+        <table class="width100">
+            <tr>
+                <td class="borderBottom">
+                    {{i18n.name}}
+                </td>
+                <td class="borderBottom">
+                    {{editData.currCommonBehaviourInEdit.name}}
+                </td>
+            </tr>
+            <tr>
+                <td class="borderBottom">
+                    {{i18n.description}}
+                </td>
+                <td class="borderBottom">
+                    {{editData.currCommonBehaviourInEdit.description}}
+                </td>
+            </tr>
+            <tr data-for="value, key in editData.currCommonBehaviourInEdit.parameters">
+                <td class="borderBottom">
+                    {{key}}
+                </td>
+                <td class="borderBottom">
+                    <input
+                            type="text"
+                            data-model="editData.currCommonBehaviourInEdit.parameters[key]"/>
+                </td>
+            </tr>
+            <tr data-if="utils.size(editData.currCommonBehaviourInEdit.parameters)==0">
+                <td colspan="2" class="borderBottom">
+                    {{i18n.noDataToEdit}}
+                </td>
+            </tr>
+        </table>
+        <button
+                data-click="createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)"
+                data-disabled="!form.valid()">
+            {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}
+        </button>
+
+
+    </div>
 
 </app-modal>

@@ -1,36 +1,41 @@
-<table class="width100">
-    <tr>
-        <td>
-            {{i18n.name}}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <input
-                    required
-                    data-model="editData.currSoundInEdit.name"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <app-input-file
-                    data-state="{
+
+<app-modal id="soundModal">
+    <div data-transclusion="content">
+        <table class="width100">
+            <tr>
+                <td>
+                    {{i18n.name}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input
+                            required
+                            data-model="editData.currSoundInEdit.name"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <app-input-file
+                            data-state="{
                         onFilePicked: onFilePicked,
                         title: i18n.loadSound,
                         accept: 'audio/*'
                     }"
-            ></app-input-file>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <audio data-if="soundUrl" controls="controls" data-attributes="{src:soundUrl}"></audio>
-        </td>
-    </tr>
-</table>
+                    ></app-input-file>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <audio data-if="soundUrl" controls="controls" data-attributes="{src:soundUrl}"></audio>
+                </td>
+            </tr>
+        </table>
 
-<button
-        data-disabled="!(form.valid() && soundUrl)"
-        data-click="createOrEditSound(editData.currSoundInEdit)">
-    {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}
-</button>
+        <button
+                data-disabled="!(form.valid() && soundUrl)"
+                data-click="createOrEditSound(editData.currSoundInEdit)">
+            {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}
+        </button>
+    </div>
+</app-modal>

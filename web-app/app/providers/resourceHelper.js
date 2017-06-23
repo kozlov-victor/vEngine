@@ -1,6 +1,6 @@
 
 import editData from 'providers/editData';
-import http from 'providers/http';
+import http from 'providers/rest/httpClient';
 
 let ResourceHelper = function(){
 
@@ -16,17 +16,12 @@ let ResourceHelper = function(){
         http.post('/resource/getAll',{projectName:projectName},function(response){
             bundle.prepare(response);
             Object.keys(bundle).forEach(function(key){
-                if (bundle[key] && bundle[key].clear) {
-                    editData[key] = new collections.List();
-                    bundle[key].forEach(function(el){
-                        editData[key].add(el);
-                    });
-                }
+                editData[key] = bundle[key];
             });
             editData.gameProps = bundle.gameProps;
-            editData.commonBehaviourList = new collections.List();
-            response.commonBehaviour.forEach(function(cb){
-                editData.commonBehaviourList.add(new CommonBehaviour(cb));
+            editData.commonBehaviourProto = new collections.List();
+            response.commonBehaviourProto.forEach(function(cb){
+                editData.commonBehaviourProto.add(new CommonBehaviour(cb));
             });
             editData.userInterfaceList.clear().add(new TextField({protoId:'0_0_1'}));
         });

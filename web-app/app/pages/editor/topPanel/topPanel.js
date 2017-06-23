@@ -1,6 +1,6 @@
 
 let w;
-import http from 'providers/http';
+import http from 'providers/rest/httpClient';
 import editData from 'providers/editData';
 import i18n from 'providers/i18n';
 

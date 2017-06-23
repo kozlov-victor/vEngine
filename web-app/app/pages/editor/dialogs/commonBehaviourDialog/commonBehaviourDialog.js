@@ -1,50 +1,36 @@
-"use strict";
 
-const abstractDialog = require('providers/abstractDialog');
-const editData = require('providers/editData');
-const restResource = require('providers/rest/resource');
+import editData from 'providers/editData';
+import restResource from 'providers/rest/resource';
+import i18n from 'providers/i18n';
+import utils from 'providers/utils';
 
-module.exports.component = Vue.component('app-common-behaviour-dialog', {
-    mixins:[abstractDialog],
-    props: [],
-    template: require('./commonBehaviourDialog.html'),
-    data: ()=> {
-        return {
-            form:require('providers/validator').new(),
-            editData: editData,
-            i18n: require('providers/i18n').getAll(),
-            utils: require('providers/utils')
-
-        }
+export default RF.registerComponent('app-common-behaviour-dialog', {
+    template: {
+        type: 'string',
+        value: require('./commonBehaviourDialog.html')
     },
-    created: function(){
-        module.exports.instance = this;
-    },
-    components: {
+    i18n: i18n.getAll(),
+    utils,
+    editData,
+    form:{valid: ()=>{return true;}},
 
-    },
-    methods: {
-        open:function(){
-            this.opened = true;
-        },
-        createOrEditCommonBehaviour:function(){
-            let cb = editData.currCommonBehaviourInEdit;
-            let self = this;
-            restResource.
-            save(cb).
-            then((resp)=>{
-                if (resp.created) {
-                    cb.id = resp.id;
-                    editData.commonBehaviourList.add(cb);
-                    editData.currGameObjectInEdit.commonBehaviour.add(cb);
-                    return restResource.save(editData.currGameObjectInEdit)
-                }
-            }).
-            then(function(){
-                editData.currGameObjectInEdit.updateCloner();
-                self.close();
-            }).
-            catch(window.catchPromise)
-        }
+    createOrEditCommonBehaviour:function(){
+        let cb = editData.currCommonBehaviourInEdit;
+        restResource.
+        save(cb).
+        then((resp)=>{
+            if (resp.created) {
+                cb.id = resp.id;
+                editData.commonBehaviourList.add(cb);
+                editData.currGameObjectInEdit.commonBehaviour.add(cb);
+                return restResource.save(editData.currGameObjectInEdit)
+            }
+        }).
+        then(function(){
+            editData.currGameObjectInEdit.updateCloner();
+            RF.getComponentById('commonBehaviourModal').close();
+            RF.digest();
+        }).
+        catch(window.catchPromise)
     }
 });

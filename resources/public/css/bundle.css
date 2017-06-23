@@ -328,6 +328,7 @@ label,
   position: relative;
   background-color: #f8f8f8;
   max-height: 90vh;
+  max-width: 95vw;
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 300;
@@ -375,6 +376,17 @@ label,
 }
 .hoverOnProjectRow:hover {
   outline: 1px solid #00cd4d;
+}
+.active {
+  outline: 1px solid green;
+}
+.scriptEditorClose {
+  position: absolute;
+  display: inline-block;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  padding: 10px;
 }
 .currSceneGameObject {
   outline: 1px solid green;

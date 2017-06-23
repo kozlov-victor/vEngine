@@ -1,73 +1,77 @@
-
-
-<table class="width100">
-    <tr>
-        <td>
-            {{i18n.selectFont}}
-        </td>
-        <td>
-            <select
-                    required
-                    data-model="editData.currFontInEdit.fontFamily" class="width100">
-                <option
-                        data-value="fnt.displayName"
-                        data-for="fnt in systemFontList">
-                    {{fnt.displayName}}
-                </option>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.name}}
-        </td>
-        <td>
-            <input required
-                   data-model="editData.currFontInEdit.name" class="width100">
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.fontSize}}
-        </td>
-        <td>
-            <input required type="number"
-                   min="1"
-                   max="1000"
-                   data-model="editData.currFontInEdit.fontSize" class="width100">
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.fontColor}}
-        </td>
-        <td>
-            <app-color-picker
-                    data-state="{
-                        model:editData.currFontInEdit,
-                        field:'fontColor'
-                    }"
-                    />
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <input data-model="fontSample" class="width100"/>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <div data-style='{
+<app-modal id="fontModal">
+    <div data-transclusion="content">
+        <table class="width100">
+            <tr>
+                <td>
+                    {{i18n.selectFont}}
+                </td>
+                <td>
+                    <select
+                            required
+                            data-model="editData.currFontInEdit.fontFamily" class="width100">
+                        <option
+                                data-value="fnt.displayName"
+                                data-for="fnt in systemFontList">
+                            {{fnt.displayName}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.name}}
+                </td>
+                <td>
+                    <input required
+                           data-model="editData.currFontInEdit.name" class="width100">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.fontSize}}
+                </td>
+                <td>
+                    <input required type="number"
+                           min="1"
+                           max="1000"
+                           data-model="editData.currFontInEdit.fontSize" class="width100">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.fontColor}}
+                </td>
+                <td>
+                    <app-color-picker
+                        data-state="{
+                            model:editData.currFontInEdit,
+                            field:'fontColor'
+                        }"
+                    ></app-color-picker>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input data-model="fontSample" class="width100"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div data-style='{
                 fontFamily:editData.currFontInEdit.fontFamily,
                 fontSize:editData.currFontInEdit.fontSize+"px",
                 color:utils.rgbToHex(editData.currFontInEdit.fontColor)
             }'>{{fontSample}}</div>
-        </td>
-    </tr>
-</table>
+                </td>
+            </tr>
+        </table>
 
-<button
-        data-disabled="!form.valid()"
-        data-click="createOrEditFont(editData.currFontInEdit)">
-    {{editData.currFontInEdit.id?i18n.edit:i18n.create}}
-</button>
+        <button
+                data-disabled="!form.valid()"
+                data-click="createOrEditFont(editData.currFontInEdit)">
+            {{editData.currFontInEdit.id?i18n.edit:i18n.create}}
+        </button>
+    </div>
+</app-modal>
+
+

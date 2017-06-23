@@ -11,7 +11,11 @@
         <div data-style="
                 utils.merge(
                         utils.getGameObjectCss(gameObject),
-                        {zoom:utils.calcZoom(gameObject)}
+                        {
+                            zoom:utils.calcZoom(gameObject),
+                            transform: 'scale(1, 1) rotateZ(0deg)',
+                            opacity:1
+                        }
                 )"></div>
     </div>
     <div

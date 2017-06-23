@@ -7,6 +7,14 @@ import 'pages/editor/leftPanel/_gameObjectRow/gameObjectRow';
 import restFileSystem from 'providers/rest/fileSystem';
 
 const GameObject = _require('gameObject');
+const collections = _require('collections');
+
+const fixGameObject = g=>{
+    if (!g.commonBehaviour || g.commonBehaviour.splice)
+        g.commonBehaviour = new collections.List();
+    if (!g.frameAnimations || g.frameAnimations.splice)
+        g.frameAnimations = new collections.List();
+};
 
 export default RF.registerComponent('app-game-objects', {
     template: {
@@ -17,7 +25,8 @@ export default RF.registerComponent('app-game-objects', {
     i18n: i18n.getAll(),
 
     createGameObject: function(){
-        this.editData.currGameObjectInEdit = new GameObject(new GameObject().clone());
+        this.editData.currGameObjectInEdit = new GameObject().clone();
+        fixGameObject(this.editData.currGameObjectInEdit);
         RF.getComponentById('gameObjectModal').open();
     },
     editGameObjectScript: function(gameObject){
@@ -25,6 +34,7 @@ export default RF.registerComponent('app-game-objects', {
     },
     editGameObject: function(go){
         this.editData.currGameObjectInEdit =  go.clone();
+        fixGameObject(this.editData.currGameObjectInEdit);
         RF.getComponentById('gameObjectModal').open();
     },
     deleteGameObject: function(model){

@@ -129,7 +129,6 @@ const minify = code=> {
         UglifyJS.minify(code, {
             fromString: true,
             mangle:{toplevel:true,eval:true},
-            //mangleProperties: { regex: /GameObject/ },
             compress: {
             screw_ie8: true,
             sequences: true,

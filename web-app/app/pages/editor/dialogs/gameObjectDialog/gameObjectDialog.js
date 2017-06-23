@@ -28,6 +28,7 @@ export default RF.registerComponent('app-game-object-dialog', {
             if (resp.created) {
                 g.id = resp.id;
                 editData.gameObjectList.add(g);
+                console.log(editData.gameObjectList);
                 return resp;
             } else if (resp.updated) {
                 g.updateCloner();
@@ -56,24 +57,21 @@ export default RF.registerComponent('app-game-object-dialog', {
     },
     createFrameAnimation: function(){
         this.editData.currFrameAnimationInEdit = new FrameAnimation(new FrameAnimation().toJSON());
-        frameAnimationDialog.instance.open();
+        RF.getComponentById('frameAnimationDialog').open();
     },
     editFrameAnimation: function(fa){
         this.editData.currFrameAnimationInEdit = fa.clone();
-        frameAnimationDialog.instance.open();
+        RF.getComponentById('frameAnimationDialog').open();
     },
     deleteFrameAnimation: function(fa){
-        let self = this;
-        window.confirmEx(
-            self.i18n.confirmQuestion(fa),
-            function(){
-
-            }
-        )
+        utils.deleteModel(fa,()=>{
+            this.editData.currGameObjectInEdit.frameAnimations.remove({id:fa.id});
+            this.editData.currGameObjectInEdit.updateCloner();
+            restResource.save(this.editData.currGameObjectInEdit);
+        });
     },
 
     onSpriteSheetSelected: function(sprId){
-        console.log('on sprite sheet sel',sprId);
         let gameObject = editData.currGameObjectInEdit;
         let spriteSheet = editData.spriteSheetList.find({id: sprId});
         if (!spriteSheet) return;
@@ -86,13 +84,17 @@ export default RF.registerComponent('app-game-object-dialog', {
     },
 
     createCommonBehaviour: function(selectedBehaviourName){
+        if (editData.currGameObjectInEdit.commonBehaviour.find({name:selectedBehaviourName})) {
+            alertEx(i18n.get('objectAlreadyAdded'));
+            return;
+        }
         this.editData.currCommonBehaviourInEdit =
             this.editData.commonBehaviourProto.find({name:selectedBehaviourName}).clone();
-        commonBehaviourDialog.instance.open();
+        RF.getComponentById('commonBehaviourModal').open();
     },
     editCommonBehaviour: function(cb){
         this.editData.currCommonBehaviourInEdit = cb.clone();
-        commonBehaviourDialog.instance.open();
+        RF.getComponentById('commonBehaviourModal').open();
     },
     deleteCommonBehaviour: function (cb) {
         let self = this;

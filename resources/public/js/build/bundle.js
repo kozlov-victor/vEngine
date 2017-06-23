@@ -1749,10 +1749,58 @@ exports.default = RF.registerComponent('app-alert-dialog', {
     }
 });
 
-},{"./alertDialog.html":99,"providers/i18n":151}],101:[function(require,module,exports){
-module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell width1\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            data-click=\"toggle()\"\n                            data-class=\"{rotated:opened}\">▷</span>\n                </div>\n                <div class=\"cell\">\n                    <span\n                            data-click=\"toggle()\"\n                            >&nbsp;{{title}}</span>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            data-class=\"{opened:opened}\">\n        <div data-transclusion=\"content\"></div>\n    </div>\n</div>";
+},{"./alertDialog.html":99,"providers/i18n":162}],101:[function(require,module,exports){
+module.exports = "<div\n        class=\"inlineBlock\"\n        data-click=\"click($event)\"\n        data-mousemove=\"mouseMove($event)\"\n        >\n    <div data-container class=\"inlineBlock\">\n        <svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n            <circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle>\n            <line id=\"line\" x1=\"100\" y1=\"100\"\n                  x2=\"200\" y2=\"100\"\n                  stroke=\"black\"\n                  stroke-width=\"2\"\n                  data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"\n                    >\n            </line>\n        </svg>\n    </div>\n    <div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">\n        {{angleInDeg()}}&deg;\n    </div>\n</div>";
 
 },{}],102:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = RF.registerComponent('app-angle-picker', {
+    getInitialState: function getInitialState() {
+        return {
+            object: { val: 0 },
+            value: 'val'
+        };
+    },
+
+    template: {
+        type: 'string',
+        value: require('./anglePicker.html')
+    },
+
+    angleInDeg: function angleInDeg() {
+        if (!this.object) return 0;
+        var res = this.object[this.value] * 180 / Math.PI % 360;
+        return +res.toFixed(2) || 0;
+    },
+
+    calcAngleFromEvent: function calcAngleFromEvent(e) {
+        if (!this.object) return;
+        var el = this.$el.querySelector('[data-container]');
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX - rect.left,
+            y = e.clientY - rect.top;
+        var angle = Math.atan2(y - 15, x - 15);
+        if (angle < 0) angle = 2 * Math.PI + angle;
+        angle = +angle.toFixed(2) || 0;
+        this.object[this.value] = angle;
+    },
+    click: function click(e) {
+        this.calcAngleFromEvent(e);
+    },
+    mouseMove: function mouseMove(e) {
+        if (e.buttons !== 1) return;
+        this.calcAngleFromEvent(e);
+    }
+});
+
+},{"./anglePicker.html":101}],103:[function(require,module,exports){
+module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell width1\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            data-click=\"toggle()\"\n                            data-class=\"{rotated:opened}\">▷</span>\n                </div>\n                <div class=\"cell\">\n                    <span\n                            data-click=\"toggle()\"\n                            >&nbsp;{{title}}</span>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            data-class=\"{opened:opened}\">\n        <div data-transclusion=\"content\"></div>\n    </div>\n</div>";
+
+},{}],104:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1787,10 +1835,10 @@ exports.default = RF.registerComponent('app-collapsible', {
     }
 });
 
-},{"./collapsible.html":101}],103:[function(require,module,exports){
+},{"./collapsible.html":103}],105:[function(require,module,exports){
 module.exports = "<div class=\"inlineBlock\">\r\n\r\n    <div\r\n            data-style=\"{\r\n                cursor: 'pointer',\r\n                width: 24 + 'px',\r\n                height:24 + 'px',\r\n                backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')')\r\n            }\"\r\n            data-click=\"click()\"\r\n            >\r\n    </div>\r\n\r\n</div>\r\n\r\n";
 
-},{}],104:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1815,10 +1863,10 @@ exports.default = RF.registerComponent('app-color-picker', {
     }
 });
 
-},{"./colorPicker.html":103,"./colorPickerDialog":106}],105:[function(require,module,exports){
+},{"./colorPicker.html":105,"./colorPickerDialog":108}],107:[function(require,module,exports){
 module.exports = "<app-modal id=\"colorPickerModal\">\n\n    <div data-transclusion=\"content\">\n\n        <table>\n            <tr>\n                <td>\n                    <input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"/>\n                </td>\n                <td>\n                    <input type=\"text\"  data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"/>\n                </td>\n                <td></td>\n            </tr>\n\n            <table class=\"width100\">\n                <tr\n                        data-for=\"item in colorEnums\">\n                    <td\n                            data-style=\"{\n                                color: item.left\n                            }\"\n                    >\n                        {{item.left}}\n                    </td>\n                    <td class=\"centerText\">\n                        <input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\">\n                        <br/>\n                        <input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\">\n                        <hr/>\n                    </td>\n                    <td\n                            data-style=\"{\n                                color: item.right\n                            }\"\n                    >\n                        {{item.right}}\n                    </td>\n                    <td>\n                        <div data-style=\"{\n                            width: '5px',\n                            height: '5px',\n                            backgroundColor: getRawColor(currentColor.RGB,item.key)\n                        }\"></div>\n                    </td>\n                </tr>\n\n\n            </table>\n        </table>\n\n        <button\n                data-click=\"applyColor()\">\n            {{i18n.edit}}\n        </button>\n    </div>\n\n</app-modal>";
 
-},{}],106:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1895,10 +1943,10 @@ var cmp = RF.registerComponent('app-color-picker-dialog', {
 
 exports.default = cmp;
 
-},{"./colorPickerDialog.html":105,"babel-runtime/core-js/object/create":2,"providers/i18n":151,"providers/utils":157}],107:[function(require,module,exports){
+},{"./colorPickerDialog.html":107,"babel-runtime/core-js/object/create":2,"providers/i18n":162,"providers/utils":169}],109:[function(require,module,exports){
 module.exports = "\n<app-modal id=\"confirmModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"confirmAndClose()\">{{i18n.confirm}}</button>\n                <button data-click=\"close()\">{{i18n.cancel}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>";
 
-},{}],108:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1933,10 +1981,10 @@ exports.default = RF.registerComponent('app-confirm-dialog', {
     }
 });
 
-},{"./confirmDialog.html":107,"providers/i18n":151}],109:[function(require,module,exports){
+},{"./confirmDialog.html":109,"providers/i18n":162}],111:[function(require,module,exports){
 module.exports = "<div>\n    <button>{{title}}</button>\n    <input  required accept=\"{{accept}}\" type=\"file\"/>\n</div>";
 
-},{}],110:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1973,10 +2021,10 @@ exports.default = RF.registerComponent('app-input-file', {
     }
 });
 
-},{"./inputFile.html":109}],111:[function(require,module,exports){
+},{"./inputFile.html":111}],113:[function(require,module,exports){
 module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\">\n    <div class=\"fullscreen shadow\"></div>\n    <div class=\"dialog\">\n        <div class=\"dialogContent\">\n            <div class=\"dialogClose\">\n                <span data-click=\"close()\" class=\"pointer\">X</span>\n            </div>\n            <div class=\"withPadding\">\n                <div data-transclusion=\"content\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
-},{}],112:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2000,7 +2048,7 @@ exports.default = RF.registerComponent('app-modal', {
     }
 });
 
-},{"./modal.html":111}],113:[function(require,module,exports){
+},{"./modal.html":113}],115:[function(require,module,exports){
 'use strict';
 
 require('components/modal/modal');
@@ -2014,6 +2062,8 @@ require('components/confirmDialog/confirmDialog');
 require('components/inputFile/inputFile');
 
 require('components/colorPicker/colorPicker');
+
+require('components/anglePicker/anglePicker');
 
 require('providers/userDefinedFns');
 
@@ -2035,10 +2085,99 @@ RF.Router.setup({
 RF.applyBindings('body');
 RF.Router.navigateTo('explorer');
 
-},{"components/alertDialog/alertDialog":100,"components/collapsible/collapsible":102,"components/colorPicker/colorPicker":104,"components/confirmDialog/confirmDialog":108,"components/inputFile/inputFile":110,"components/modal/modal":112,"pages/editor/editor":127,"pages/explorer/explorer":147,"providers/userDefinedFns":156}],114:[function(require,module,exports){
-module.exports = "<div>\n    <app-modal id=\"soundModal\">\n        <div data-transclusion=\"content\">\n            <app-sound-dialog id=\"soundDialog\"></app-sound-dialog>\n        </div>\n    </app-modal>\n    <app-modal id=\"particleSystemModal\">\n        <div data-transclusion=\"content\">\n            <app-particle-system-dialog></app-particle-system-dialog>\n        </div>\n    </app-modal>\n\n    <app-particle-system-preview-dialog/>\n\n    <app-modal id=\"fontModal\">\n        <div data-transclusion=\"content\">\n            <app-font-dialog id=\"fontDialog\"></app-font-dialog>\n        </div>\n    </app-modal>\n    <app-modal id=\"spriteSheetModal\">\n        <div data-transclusion=\"content\">\n            <app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog>\n        </div>\n    </app-modal>\n    <app-modal id=\"gameObjectModal\">\n        <div data-transclusion=\"content\">\n            <app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog>\n        </div>\n    </app-modal>\n\n    <app-frame-animation-dialog/>\n    <app-common-behaviour-dialog/>\n    <app-scene-dialog/>\n    <app-layer-dialog/>\n</div>";
+},{"components/alertDialog/alertDialog":100,"components/anglePicker/anglePicker":102,"components/collapsible/collapsible":104,"components/colorPicker/colorPicker":106,"components/confirmDialog/confirmDialog":110,"components/inputFile/inputFile":112,"components/modal/modal":114,"pages/editor/editor":137,"pages/explorer/explorer":159,"providers/userDefinedFns":168}],116:[function(require,module,exports){
+module.exports = "<div\n        class=\"height100 relative\"\n        data-if=\"editData.scriptEditorUrl\"\n        >\n\n    <div class=\"scriptEditorClose\" data-click=\"close()\">X</div>\n\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editor\"\n                ></iframe>\n    </div>\n</div>";
 
-},{}],115:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-script-editor', {
+    template: {
+        type: 'string',
+        value: require('./scriptEditor.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    close: function close() {
+        _editData2.default.scriptEditorUrl = '';
+    }
+});
+
+},{"./scriptEditor.html":116,"providers/editData":161,"providers/i18n":162}],118:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"commonBehaviourModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td class=\"borderBottom\">\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    {{editData.currCommonBehaviourInEdit.name}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td class=\"borderBottom\">\r\n                    {{i18n.description}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    {{editData.currCommonBehaviourInEdit.description}}\r\n                </td>\r\n            </tr>\r\n            <tr data-for=\"value, key in editData.currCommonBehaviourInEdit.parameters\">\r\n                <td class=\"borderBottom\">\r\n                    {{key}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    <input\r\n                            type=\"text\"\r\n                            data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"/>\r\n                </td>\r\n            </tr>\r\n            <tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\">\r\n                <td colspan=\"2\" class=\"borderBottom\">\r\n                    {{i18n.noDataToEdit}}\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\"\r\n                data-disabled=\"!form.valid()\">\r\n            {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n\r\n    </div>\r\n\r\n</app-modal>";
+
+},{}],119:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-common-behaviour-dialog', {
+    template: {
+        type: 'string',
+        value: require('./commonBehaviourDialog.html')
+    },
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    editData: _editData2.default,
+    form: { valid: function valid() {
+            return true;
+        } },
+
+    createOrEditCommonBehaviour: function createOrEditCommonBehaviour() {
+        var cb = _editData2.default.currCommonBehaviourInEdit;
+        _resource2.default.save(cb).then(function (resp) {
+            if (resp.created) {
+                cb.id = resp.id;
+                _editData2.default.commonBehaviourList.add(cb);
+                _editData2.default.currGameObjectInEdit.commonBehaviour.add(cb);
+                return _resource2.default.save(_editData2.default.currGameObjectInEdit);
+            }
+        }).then(function () {
+            _editData2.default.currGameObjectInEdit.updateCloner();
+            RF.getComponentById('commonBehaviourModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    }
+});
+
+},{"./commonBehaviourDialog.html":118,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167,"providers/utils":169}],120:[function(require,module,exports){
+module.exports = "<div>\n    <app-sound-dialog id=\"soundDialog\"></app-sound-dialog>\n    <app-particle-system-dialog></app-particle-system-dialog>\n    <app-font-dialog id=\"fontDialog\"></app-font-dialog>\n    <app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog>\n    <app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog>\n\n\n    <app-scene-dialog/>\n    <app-layer-dialog/>\n</div>";
+
+},{}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2063,6 +2202,12 @@ require('pages/editor/dialogs/gameObjectDialog/gameObjectDialog');
 
 require('pages/editor/dialogs/particleSystemDialog/particleSystemDialog');
 
+require('pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog');
+
+require('pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog');
+
+require('pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = RF.registerComponent('app-dialogs', {
@@ -2074,10 +2219,10 @@ exports.default = RF.registerComponent('app-dialogs', {
     i18n: _i18n2.default.getAll()
 });
 
-},{"./dialogs.html":114,"pages/editor/dialogs/fontDialog/fontDialog":117,"pages/editor/dialogs/gameObjectDialog/gameObjectDialog":119,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":121,"pages/editor/dialogs/soundDialog/soundDialog":123,"pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog":125,"providers/editData":149,"providers/i18n":151}],116:[function(require,module,exports){
-module.exports = "\n\n<table class=\"width100\">\n    <tr>\n        <td>\n            {{i18n.selectFont}}\n        </td>\n        <td>\n            <select\n                    required\n                    data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                <option\n                        data-value=\"fnt.displayName\"\n                        data-for=\"fnt in systemFontList\">\n                    {{fnt.displayName}}\n                </option>\n            </select>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            {{i18n.name}}\n        </td>\n        <td>\n            <input required\n                   data-model=\"editData.currFontInEdit.name\" class=\"width100\">\n        </td>\n    </tr>\n    <tr>\n        <td>\n            {{i18n.fontSize}}\n        </td>\n        <td>\n            <input required type=\"number\"\n                   min=\"1\"\n                   max=\"1000\"\n                   data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n        </td>\n    </tr>\n    <tr>\n        <td>\n            {{i18n.fontColor}}\n        </td>\n        <td>\n            <app-color-picker\n                    data-state=\"{\n                        model:editData.currFontInEdit,\n                        field:'fontColor'\n                    }\"\n                    />\n        </td>\n    </tr>\n    <tr>\n        <td colspan=\"2\">\n            <input data-model=\"fontSample\" class=\"width100\"/>\n        </td>\n    </tr>\n    <tr>\n        <td colspan=\"2\">\n            <div data-style='{\n                fontFamily:editData.currFontInEdit.fontFamily,\n                fontSize:editData.currFontInEdit.fontSize+\"px\",\n                color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n            }'>{{fontSample}}</div>\n        </td>\n    </tr>\n</table>\n\n<button\n        data-disabled=\"!form.valid()\"\n        data-click=\"createOrEditFont(editData.currFontInEdit)\">\n    {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n</button>\n";
+},{"./dialogs.html":120,"pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog":119,"pages/editor/dialogs/fontDialog/fontDialog":123,"pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog":125,"pages/editor/dialogs/gameObjectDialog/gameObjectDialog":127,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":129,"pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog":131,"pages/editor/dialogs/soundDialog/soundDialog":133,"pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog":135,"providers/editData":161,"providers/i18n":162}],122:[function(require,module,exports){
+module.exports = "<app-modal id=\"fontModal\">\n    <div data-transclusion=\"content\">\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.selectFont}}\n                </td>\n                <td>\n                    <select\n                            required\n                            data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                        <option\n                                data-value=\"fnt.displayName\"\n                                data-for=\"fnt in systemFontList\">\n                            {{fnt.displayName}}\n                        </option>\n                    </select>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n                <td>\n                    <input required\n                           data-model=\"editData.currFontInEdit.name\" class=\"width100\">\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.fontSize}}\n                </td>\n                <td>\n                    <input required type=\"number\"\n                           min=\"1\"\n                           max=\"1000\"\n                           data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.fontColor}}\n                </td>\n                <td>\n                    <app-color-picker\n                        data-state=\"{\n                            model:editData.currFontInEdit,\n                            field:'fontColor'\n                        }\"\n                    ></app-color-picker>\n                </td>\n            </tr>\n            <tr>\n                <td colspan=\"2\">\n                    <input data-model=\"fontSample\" class=\"width100\"/>\n                </td>\n            </tr>\n            <tr>\n                <td colspan=\"2\">\n                    <div data-style='{\n                fontFamily:editData.currFontInEdit.fontFamily,\n                fontSize:editData.currFontInEdit.fontSize+\"px\",\n                color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n            }'>{{fontSample}}</div>\n                </td>\n            </tr>\n        </table>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"createOrEditFont(editData.currFontInEdit)\">\n            {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n        </button>\n    </div>\n</app-modal>\n\n\n";
 
-},{}],117:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2227,10 +2372,141 @@ exports.default = RF.registerComponent('app-font-dialog', {
     }
 });
 
-},{"./fontDialog.html":116,"babel-runtime/core-js/promise":5,"providers/chrome":148,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/rest/resource":155,"providers/utils":157}],118:[function(require,module,exports){
-module.exports = "\r\n\r\n<table class=\"width100\">\r\n    <tr>\r\n        <td>\r\n            {{i18n.name}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                required\r\n                data-model=\"editData.currGameObjectInEdit.name\"/>\r\n        </td>\r\n        <td></td>\r\n        <td rowspan=\"5\">\r\n            <div class=\"relative\"\r\n                 style=\"\r\n                        display: inline-block;\r\n                        overflow: scroll;\r\n                        max-width:60vw;\r\n                        max-height:60vh;\r\n                    \"\r\n                    >\r\n\r\n\r\n                <div data-style=\"\r\n                    utils.merge(\r\n                        utils.getGameObjectCss(editData.currGameObjectInEdit),\r\n                        {\r\n                            'border':'1px solid blue',\r\n                            'opacity':editData.currGameObjectInEdit.alpha\r\n                        }\r\n                    )\r\n                \"></div>\r\n            </div>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.spriteSheet}}\r\n        </td>\r\n        <td>\r\n            <select\r\n                    data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)\"\r\n                    required\r\n                    data-model=\"editData.currGameObjectInEdit.spriteSheet.id\">\r\n                <option data-value=\"item.id\" data-for=\"item in editData.spriteSheetList.rs\">{{item.name}}</option>\r\n            </select>\r\n        </td>\r\n        <td>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.groupName}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    data-model=\"editData.currGameObjectInEdit.groupName\"/>\r\n        </td>\r\n        <td></td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.rigid}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    type=\"checkbox\"\r\n                    data-model=\"editData.currGameObjectInEdit.rigid\"/>\r\n        </td>\r\n        <td></td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.width}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    type=\"number\"\r\n                    required\r\n                    data-model=\"editData.currGameObjectInEdit.width\"/>\r\n        </td>\r\n        <td></td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.height}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    type=\"number\"\r\n                    required\r\n                    data-model=\"editData.currGameObjectInEdit.height\"/>\r\n        </td>\r\n        <td></td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.angle}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    step=\"0.1\"\r\n                    type=\"number\"\r\n                    required\r\n                    data-model=\"editData.currGameObjectInEdit.angle\"/>\r\n        </td>\r\n        <td align=\"left\">\r\n            <div class=\"inlineBlock\">\r\n                <app-angle-picker\r\n                        :object=\"editData.currGameObjectInEdit\"\r\n                        :value=\"'angle'\"\r\n                        />\r\n            </div>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            alpha\r\n        </td>\r\n        <td>\r\n            <input\r\n                    type=\"number\"\r\n                    min=\"0\"\r\n                    max=\"1\"\r\n                    step=\"0.1\"\r\n                    required\r\n                    data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n        </td>\r\n        <td>\r\n            <input\r\n                    type=\"range\"\r\n                    min=\"0\"\r\n                    max=\"1\"\r\n                    step=\"0.1\"\r\n                    data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.currFrameIndex}}\r\n        </td>\r\n        <td>\r\n            <input type=\"number\"\r\n                   min=\"0\"\r\n                   data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\"\r\n                   required\r\n                   data-model=\"editData.currGameObjectInEdit.currFrameIndex\"/>\r\n        </td>\r\n        <td></td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.frAnimations}}\r\n        </td>\r\n        <td>\r\n            <div class=\"table width100\">\r\n                <div class=\"row\" data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations && editData.currGameObjectInEdit.frameAnimations.rs\">\r\n                    <div class=\"cell vAlign\">\r\n                        <span>{{animItm.name}}</span>\r\n                    </div>\r\n                    <div class=\"cell vAlign rightAlign pointer\" data-click=\"editFrameAnimation(animItm)\">\r\n                        edit\r\n                    </div>\r\n                    <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteFrameAnimation(animItm)\">\r\n                        X\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </td>\r\n        <td align=\"right\">\r\n            <button\r\n                    class=\"inlineBlock\"\r\n                    data-disabled=\"!editData.currGameObjectInEdit.id\"\r\n                    data-click=\"createFrameAnimation()\">+</button>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.commonBehaviour}}\r\n        </td>\r\n        <td>\r\n            <div class=\"table width100\">\r\n                <div class=\"row\" data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour.rs\">\r\n                    <div class=\"cell vAlign\">\r\n                        <span>{{itm.name}}</span>\r\n                    </div>\r\n                    <div class=\"cell vAlign rightAlign pointer\" data-click=\"editCommonBehaviour(itm)\">\r\n                        {{i18n.edit}}\r\n                    </div>\r\n                    <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteCommonBehaviour(itm)\">\r\n                        X\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </td>\r\n        <td>\r\n            <table class=\"width100\">\r\n                <tr>\r\n                    <td>\r\n                        <select data-model=\"selectedBehaviourId\">\r\n                            <option\r\n                                    data-disabled=\"editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})\"\r\n                                    data-value=\"cb.name\"\r\n                                    data-for=\"cb in editData.commonBehaviourProto.rs\">\r\n                                {{cb.name}}\r\n                            </option>\r\n                        </select>\r\n                    </td>\r\n                    <td align=\"right\">\r\n                        <button\r\n                                class=\"inlineBlock\"\r\n                                data-disabled=\"!editData.currGameObjectInEdit.id || !selectedBehaviourId\"\r\n                                data-click=\"createCommonBehaviour(selectedBehaviourId)\">\r\n                            +\r\n                        </button>\r\n                    </td>\r\n                </tr>\r\n            </table>\r\n        </td>\r\n    </tr>\r\n</table>\r\n<button\r\n        data-disabled=\"!form.valid()\"\r\n        data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">\r\n    {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}\r\n</button>\r\n\r\n";
+},{"./fontDialog.html":122,"babel-runtime/core-js/promise":5,"providers/chrome":160,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],124:[function(require,module,exports){
+module.exports = "<app-modal id=\"frameAnimationModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currFrameAnimationInEdit.name\">\r\n                </td>\r\n                <td rowspan=\"3\">\r\n                    <div style=\"max-height: 80vh;max-width:80vw;overflow: scroll;\"\r\n                    >\r\n                        {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}\r\n\r\n                        <div data-style=\"\r\n                        utils.merge(\r\n                            utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),\r\n                            {border:'1px solid blue'}\r\n                        )\">\r\n                        </div>\r\n\r\n                        <div>\r\n                            <button\r\n                                    data-click=\"playAnimation()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.playAnim}}</button>\r\n                            <button\r\n                                    data-click=\"stopAnimation()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.stopAnim}}</button>\r\n                        </div>\r\n\r\n                        <div>\r\n\r\n                            <button\r\n                                    data-click=\"previousFrame()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> << </button>\r\n\r\n                            <button\r\n                                    data-click=\"nextFrame()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> >> </button>\r\n                        </div>\r\n\r\n\r\n                        <div class=\"relative\"\r\n                             data-style=\"\r\n                              {\r\n                                'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')',\r\n                                'width':                editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px',\r\n                                'height':               editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px'\r\n                              }\">\r\n                            <div\r\n                                    data-for=\"v,i in getLoopArr()\"\r\n                                    data-style=\"{\r\n                                            'display':        'inline-block',\r\n                                            'left':           editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px',\r\n                                            'top':            editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px',\r\n                                            'position':       'absolute',\r\n                                            'text-align':     'left',\r\n                                            'border':         '1px solid red',\r\n                                            'width':          editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px',\r\n                                            'height':         editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px'\r\n                                      }\">{{i}}</div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.duration}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            min=\"1\"\r\n                            required\r\n                            data-model=\"editData.currFrameAnimationInEdit.duration\">\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.frames}}\r\n                            </td>\r\n                            <td>\r\n                                <button data-click=\"setAllIndexes()\">{{i18n.all}}</button>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.from}}\r\n                            </td>\r\n                            <td>\r\n                                <input\r\n                                        type=\"number\"\r\n                                        data-model=\"from\"\r\n                                        min=\"0\"\r\n                                        data-keyup=\"setRangeIndexes()\">\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.to}}\r\n                            </td>\r\n                            <td>\r\n                                <input\r\n                                        type=\"number\"\r\n                                        min=\"0\"\r\n                                        data-model=\"to\"\r\n                                        data-change=\"setRangeIndexes()\">\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n\r\n                </td>\r\n                <td>\r\n                   <textarea\r\n                           required\r\n                           data-model=\"frames\">\r\n                   </textarea>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditFrameAnimation()\"\r\n                data-disabled=\"!form.valid()\">\r\n            {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n\r\n</app-modal>";
 
-},{}],119:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-frame-animation-dialog', {
+    template: {
+        type: 'string',
+        value: require('./frameAnimationDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    utils: _utils2.default,
+    i18n: _i18n2.default.getAll(),
+
+    isStopped: true,
+    from: 0, to: 1,
+    frames: '',
+
+    open: function open() {
+        this.isStopped = true;
+        this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
+        this.editData.currFrameAnimationInEdit._gameObject = this.editData.currGameObjectInEdit.clone();
+        RF.getComponentById('frameAnimationModal').open();
+    },
+    allIndexes: function allIndexes() {
+        var res = this.utils.getArray(this.editData.currGameObjectInEdit.spriteSheet._numOfFrames);
+        return res.join(',');
+    },
+    setAllIndexes: function setAllIndexes() {
+        this.frames = this.allIndexes();
+    },
+    setRangeIndexes: function setRangeIndexes() {
+        this.frames = _utils2.default.range(+this.from, +this.to).join(',');
+        console.log(this.from, this.to);
+        console.log(_utils2.default.range(+this.from, +this.to));
+    },
+    playAnimation: function playAnimation() {
+        var self = this;
+        self.isStopped = false;
+        try {
+            self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+        self.editData.currFrameAnimationInEdit.play();
+        setTimeout(function _anim() {
+            self.editData.currFrameAnimationInEdit.update(new Date().getTime());
+
+            var i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
+            self.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
+
+            if (self.isStopped) {
+                self.isStopped = false;
+                return;
+            }
+            RF.digest();
+            if (RF.getComponentById('frameAnimationModal').opened) setTimeout(_anim, 50);
+        }, 0);
+    },
+    stopAnimation: function stopAnimation() {
+        this.isStopped = true;
+    },
+    nextFrame: function nextFrame() {
+        var self = this;
+        self.stopAnimation();
+        self.editData.currFrameAnimationInEdit.nextFrame();
+    },
+    previousFrame: function previousFrame() {
+        var self = this;
+        self.stopAnimation();
+        self.editData.currFrameAnimationInEdit.previousFrame();
+    },
+    getLoopArr: function getLoopArr() {
+        if (!_editData2.default.currFrameAnimationInEdit._gameObject) _editData2.default.currFrameAnimationInEdit._gameObject = { spriteSheet: {} }; // todo dirty
+        var lastIndex = _editData2.default.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesH * _editData2.default.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV;
+        return _utils2.default.getArray(lastIndex);
+    },
+
+    createOrEditFrameAnimation: function createOrEditFrameAnimation() {
+        var self = this;
+        var fa = _editData2.default.currFrameAnimationInEdit;
+        self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
+
+        _resource2.default.save(fa).then(function (resp) {
+            if (resp.created) {
+                fa.id = resp.id;
+                _editData2.default.frameAnimationList.add(fa);
+                _editData2.default.currGameObjectInEdit.frameAnimations.add(fa);
+                return _resource2.default.save(_editData2.default.currGameObjectInEdit);
+            } else {
+                fa.updateCloner();
+            }
+        }).then(function () {
+            _editData2.default.currGameObjectInEdit.updateCloner();
+            RF.getComponentById('frameAnimationModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    }
+});
+
+},{"./frameAnimationDialog.html":124,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],126:[function(require,module,exports){
+module.exports = "\r\n\r\n<app-modal id=\"gameObjectModal\">\r\n    <div data-transclusion=\"content\">\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.name\"/>\r\n                </td>\r\n                <td></td>\r\n                <td rowspan=\"5\">\r\n                    <div class=\"relative\"\r\n                         style=\"\r\n                        display: inline-block;\r\n                        overflow: scroll;\r\n                        max-width:60vw;\r\n                        max-height:60vh;\r\n                    \"\r\n                    >\r\n\r\n\r\n                        <div data-style=\"\r\n                    utils.merge(\r\n                        utils.getGameObjectCss(editData.currGameObjectInEdit),\r\n                        {\r\n                            'border':'1px solid blue',\r\n                            'opacity':editData.currGameObjectInEdit.alpha\r\n                        }\r\n                    )\r\n                \"></div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.spriteSheet}}\r\n                </td>\r\n                <td>\r\n                    <select\r\n                            data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.spriteSheet.id\">\r\n                        <option data-value=\"item.id\" data-for=\"item in editData.spriteSheetList.rs\">{{item.name}}</option>\r\n                    </select>\r\n                </td>\r\n                <td>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.groupName}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            data-model=\"editData.currGameObjectInEdit.groupName\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.rigid}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"checkbox\"\r\n                            data-model=\"editData.currGameObjectInEdit.rigid\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.width}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.width\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.height}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.height\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.angle}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            step=\"0.1\"\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.angle\"/>\r\n                </td>\r\n                <td align=\"left\">\r\n                    <div class=\"inlineBlock\">\r\n                        <app-angle-picker\r\n                                data-state=\"{\r\n                        object: editData.currGameObjectInEdit,\r\n                        value: 'angle'\r\n                    }\"\r\n                        ></app-angle-picker>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    alpha\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            step=\"0.1\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"range\"\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            step=\"0.1\"\r\n                            data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.currFrameIndex}}\r\n                </td>\r\n                <td>\r\n                    <input type=\"number\"\r\n                           min=\"0\"\r\n                           data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\"\r\n                           required\r\n                           data-model=\"editData.currGameObjectInEdit.currFrameIndex\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.frAnimations}}\r\n                </td>\r\n                <td>\r\n                    <div class=\"table width100\">\r\n                        <div class=\"row\" data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations.rs\">\r\n                            <div class=\"cell vAlign\">\r\n                                <span>{{animItm.name}}</span>\r\n                            </div>\r\n                            <div class=\"cell vAlign rightAlign pointer\" data-click=\"editFrameAnimation(animItm)\">\r\n                                {{i18n.edit}}\r\n                            </div>\r\n                            <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteFrameAnimation(animItm)\">\r\n                                X\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n                <td align=\"right\">\r\n                    <button\r\n                            class=\"inlineBlock\"\r\n                            data-disabled=\"!editData.currGameObjectInEdit.id\"\r\n                            data-click=\"createFrameAnimation()\">+</button>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.commonBehaviour}}\r\n                </td>\r\n                <td>\r\n                    <div class=\"table width100\">\r\n                        <div class=\"row\" data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour.rs\">\r\n                            <div class=\"cell vAlign\">\r\n                                <span>{{itm.name}}</span>\r\n                            </div>\r\n                            <div class=\"cell vAlign rightAlign pointer\" data-click=\"editCommonBehaviour(itm)\">\r\n                                {{i18n.edit}}\r\n                            </div>\r\n                            <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteCommonBehaviour(itm)\">\r\n                                X\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n                <td>\r\n                    <table class=\"width100\">\r\n                        <tr>\r\n                            <td>\r\n                                <select data-model=\"selectedBehaviourId\">\r\n                                    <option value=\"\">-</option>\r\n                                    <option\r\n                                            data-disabled=\"editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})\"\r\n                                            data-value=\"cb.name\"\r\n                                            data-for=\"cb in editData.commonBehaviourProto.rs\">\r\n                                        {{cb.name}}\r\n                                    </option>\r\n                                </select>\r\n                            </td>\r\n                            <td align=\"right\">\r\n                                <button\r\n                                        class=\"inlineBlock\"\r\n                                        data-disabled=\"!editData.currGameObjectInEdit.id || !selectedBehaviourId\"\r\n                                        data-click=\"createCommonBehaviour(selectedBehaviourId)\">\r\n                                    +\r\n                                </button>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-disabled=\"!form.valid()\"\r\n                data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">\r\n            {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n    </div>\r\n</app-modal>\r\n\r\n\r\n";
+
+},{}],127:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2286,6 +2562,7 @@ exports.default = RF.registerComponent('app-game-object-dialog', {
             if (resp.created) {
                 g.id = resp.id;
                 _editData2.default.gameObjectList.add(g);
+                console.log(_editData2.default.gameObjectList);
                 return resp;
             } else if (resp.updated) {
                 g.updateCloner();
@@ -2309,19 +2586,23 @@ exports.default = RF.registerComponent('app-game-object-dialog', {
     },
     createFrameAnimation: function createFrameAnimation() {
         this.editData.currFrameAnimationInEdit = new FrameAnimation(new FrameAnimation().toJSON());
-        frameAnimationDialog.instance.open();
+        RF.getComponentById('frameAnimationDialog').open();
     },
     editFrameAnimation: function editFrameAnimation(fa) {
         this.editData.currFrameAnimationInEdit = fa.clone();
-        frameAnimationDialog.instance.open();
+        RF.getComponentById('frameAnimationDialog').open();
     },
     deleteFrameAnimation: function deleteFrameAnimation(fa) {
-        var self = this;
-        window.confirmEx(self.i18n.confirmQuestion(fa), function () {});
+        var _this = this;
+
+        _utils2.default.deleteModel(fa, function () {
+            _this.editData.currGameObjectInEdit.frameAnimations.remove({ id: fa.id });
+            _this.editData.currGameObjectInEdit.updateCloner();
+            _resource2.default.save(_this.editData.currGameObjectInEdit);
+        });
     },
 
     onSpriteSheetSelected: function onSpriteSheetSelected(sprId) {
-        console.log('on sprite sheet sel', sprId);
         var gameObject = _editData2.default.currGameObjectInEdit;
         var spriteSheet = _editData2.default.spriteSheetList.find({ id: sprId });
         if (!spriteSheet) return;
@@ -2334,12 +2615,16 @@ exports.default = RF.registerComponent('app-game-object-dialog', {
     },
 
     createCommonBehaviour: function createCommonBehaviour(selectedBehaviourName) {
+        if (_editData2.default.currGameObjectInEdit.commonBehaviour.find({ name: selectedBehaviourName })) {
+            alertEx(_i18n2.default.get('objectAlreadyAdded'));
+            return;
+        }
         this.editData.currCommonBehaviourInEdit = this.editData.commonBehaviourProto.find({ name: selectedBehaviourName }).clone();
-        commonBehaviourDialog.instance.open();
+        RF.getComponentById('commonBehaviourModal').open();
     },
     editCommonBehaviour: function editCommonBehaviour(cb) {
         this.editData.currCommonBehaviourInEdit = cb.clone();
-        commonBehaviourDialog.instance.open();
+        RF.getComponentById('commonBehaviourModal').open();
     },
     deleteCommonBehaviour: function deleteCommonBehaviour(cb) {
         var self = this;
@@ -2357,10 +2642,10 @@ exports.default = RF.registerComponent('app-game-object-dialog', {
     }
 });
 
-},{"./gameObjectDialog.html":118,"babel-runtime/core-js/promise":5,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/rest/resource":155,"providers/utils":157}],120:[function(require,module,exports){
-module.exports = "\n<table class=\"width100\">\n    <tr>\n        <td>\n            {{i18n.name}}\n        </td>\n        <td>\n\n        </td>\n        <td>\n            <input\n                    required\n                    data-model=\"editData.currParticleSystemInEdit.name\"/>\n        </td>\n    </tr>\n    <tr>\n        <td rowspan=\"2\">\n            numOfParticlesToEmit\n        </td>\n        <td>\n            from\n        </td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            to\n        </td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n        </td>\n    </tr>\n    <tr>\n        <td rowspan=\"2\">\n            particleVelocity\n        </td>\n        <td>\n            from\n        </td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            to\n        </td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n        </td>\n    </tr>\n\n    <tr>\n        <td rowspan=\"2\">\n            particleLiveTime\n        </td>\n        <td>\n            from\n        </td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            to\n        </td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n        </td>\n    </tr>\n\n    <tr>\n        <td>\n            emissionRadius\n        </td>\n        <td></td>\n        <td>\n            <input\n                    required\n                    type=\"number\"\n                    data-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n        </td>\n    </tr>\n\n    <tr>\n        <td>\n            particleAngle\n        </td>\n        <td>\n            from / to\n        </td>\n        <td>\n            <app-angle-picker\n                    :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                    :value=\"'from'\"\n            />\n            <app-angle-picker\n                    :object=\"editData.currParticleSystemInEdit.particleAngle\"\n                    :value=\"'to'\"\n            />\n        </td>\n    </tr>\n    <tr>\n        <td></td>\n        <td>\n            {{i18n.gameObject}}\n        </td>\n        <td>\n\n            <table>\n                <tr>\n                    <td>\n                        <select\n                                required\n                                data-change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)\"\n                                data-model=\"editData.currParticleSystemInEdit.gameObject.id\"\n                        >\n                            <option\n                                    data-value=\"item.id\"\n                                    data-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                        </select>\n                    </td>\n                    <td>\n                        <div data-style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),\n                                    {\n                                        zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObject)\n                                    }\n                               )\">\n                        </div>\n                    </td>\n                </tr>\n            </table>\n\n\n        </td>\n    </tr>\n\n</table>\n\n<button\n        data-disabled=\"!form.valid()\"\n        data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n    {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n</button>\n\n<button\n        data-disabled=\"!form.valid()\"\n        data-click=\"showPreview()\">\n    {{i18n.preview}}\n</button>";
+},{"./gameObjectDialog.html":126,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],128:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"particleSystemModal\">\n    <div data-transclusion=\"content\">\n\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n                <td>\n\n                </td>\n                <td>\n                    <input\n                            required\n                            data-model=\"editData.currParticleSystemInEdit.name\"/>\n                </td>\n            </tr>\n            <tr>\n                <td rowspan=\"2\">\n                    numOfParticlesToEmit\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n                </td>\n            </tr>\n            <tr>\n                <td rowspan=\"2\">\n                    particleVelocity\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td rowspan=\"2\">\n                    particleLiveTime\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td>\n                    emissionRadius\n                </td>\n                <td></td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td>\n                    particleAngle\n                </td>\n                <td>\n                    from / to\n                </td>\n                <td>\n                    <app-angle-picker\n                            data-state=\"{\n                        object:editData.currParticleSystemInEdit.particleAngle,\n                        value:'from'\n                    }\"\n                    ></app-angle-picker>\n                    <app-angle-picker\n                            data-state=\"{\n                        object:editData.currParticleSystemInEdit.particleAngle,\n                        value:'to'\n                    }\"\n                    ></app-angle-picker>\n                </td>\n            </tr>\n            <tr>\n                <td></td>\n                <td>\n                    {{i18n.gameObject}}\n                </td>\n                <td>\n\n                    <table>\n                        <tr>\n                            <td>\n                                <select\n                                        required\n                                        data-change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)\"\n                                        data-model=\"editData.currParticleSystemInEdit.gameObject.id\"\n                                >\n                                    <option\n                                            data-value=\"item.id\"\n                                            data-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <div data-style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),\n                                    {\n                                        zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObject)\n                                    }\n                               )\">\n                                </div>\n                            </td>\n                        </tr>\n                    </table>\n\n\n                </td>\n            </tr>\n\n        </table>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n            {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n        </button>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"showPreview()\">\n            {{i18n.preview}}\n        </button>\n\n    </div>\n</app-modal>";
 
-},{}],121:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2388,6 +2673,8 @@ var _i18n = require('providers/i18n');
 var _i18n2 = _interopRequireDefault(_i18n);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.editData = _editData2.default;
 
 exports.default = RF.registerComponent('app-particle-system-dialog', {
     template: {
@@ -2423,10 +2710,88 @@ exports.default = RF.registerComponent('app-particle-system-dialog', {
     }
 });
 
-},{"./particleSystemDialog.html":120,"babel-runtime/core-js/promise":5,"providers/editData":149,"providers/i18n":151,"providers/rest/resource":155,"providers/utils":157}],122:[function(require,module,exports){
-module.exports = "<table class=\"width100\">\n    <tr>\n        <td>\n            {{i18n.name}}\n        </td>\n    </tr>\n    <tr>\n        <td>\n            <input\n                    required\n                    data-model=\"editData.currSoundInEdit.name\"/>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            <app-input-file\n                    data-state=\"{\n                        onFilePicked: onFilePicked,\n                        title: i18n.loadSound,\n                        accept: 'audio/*'\n                    }\"\n            ></app-input-file>\n        </td>\n    </tr>\n    <tr>\n        <td>\n            <audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio>\n        </td>\n    </tr>\n</table>\n\n<button\n        data-disabled=\"!(form.valid() && soundUrl)\"\n        data-click=\"createOrEditSound(editData.currSoundInEdit)\">\n    {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n</button>";
+},{"./particleSystemDialog.html":128,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167,"providers/utils":169}],130:[function(require,module,exports){
+module.exports = "<app-modal id=\"particleSystemPreviewModal\">\n    <div data-transclusion=\"content\">\n        <div>\n            {{i18n.preview}} {{i18n.particleSystem}}\n            <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n        </div>\n        <div\n                data-click=\"emit($event)\"\n                data-mousemove=\"$event.buttons==1 && emit($event)\"\n                class=\"subFullScreen relative noOverFlow\">\n            <div\n                    data-for=\"item in editData.currParticleSystemInEdit._particles\"\n                    data-style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px',\n                                pointerEvents:'none'\n                            }\n                    )\"\n            >\n            </div>\n        </div>\n        <div>\n            <button data-click=\"close()\">{{i18n.close}}</button>\n        </div>\n    </div>\n</app-modal>\n\n\n";
 
-},{}],123:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var tid = void 0;
+
+exports.default = RF.registerComponent('app-particle-system-preview-dialog', {
+    template: {
+        type: 'string',
+        value: require('./particleSystemPreviewDialog.html')
+    },
+    editData: _editData2.default, utils: _utils2.default,
+    i18n: _i18n2.default.getAll(),
+
+    open: function open() {
+        RF.getComponentById('particleSystemPreviewModal').open();
+        this.run();
+    },
+    close: function close() {
+        RF.getComponentById('particleSystemPreviewModal').close();
+        clearInterval(tid);
+    },
+    run: function run() {
+        var prevTime = null;
+
+        if (!_editData2.default.currParticleSystemInEdit._particles) _editData2.default.currParticleSystemInEdit._particles = [];
+
+        var update = function update() {
+
+            var currTime = Date.now();
+            if (!prevTime) prevTime = currTime;
+            var delta = currTime - prevTime;
+            prevTime = currTime;
+            _editData2.default.currParticleSystemInEdit._particles.forEach(function (p) {
+
+                p._currFrameAnimation && p._currFrameAnimation.update(currTime);
+                var deltaX = p.vel.x * delta / 1000;
+                var deltaY = p.vel.y * delta / 1000;
+                p.pos.x = p.pos.x + deltaX;
+                p.pos.y = p.pos.y + deltaY;
+
+                if (!p._timeCreated) p._timeCreated = currTime;
+                if (currTime - p._timeCreated > p.liveTime) {
+                    _editData2.default.currParticleSystemInEdit._particles.splice(_editData2.default.currParticleSystemInEdit._particles.indexOf(p), 1);
+                }
+            });
+        };
+        tid = setInterval(function () {
+            update();
+            RF.digest();
+        }, 5);
+    },
+    emit: function emit(e) {
+        var rect = e.target.getBoundingClientRect();
+        _editData2.default.currParticleSystemInEdit.emit(e.clientX - rect.left, e.clientY - rect.top);
+    }
+});
+
+},{"./particleSystemPreviewDialog.html":130,"providers/editData":161,"providers/i18n":162,"providers/utils":169}],132:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"soundModal\">\n    <div data-transclusion=\"content\">\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <input\n                            required\n                            data-model=\"editData.currSoundInEdit.name\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <app-input-file\n                            data-state=\"{\n                        onFilePicked: onFilePicked,\n                        title: i18n.loadSound,\n                        accept: 'audio/*'\n                    }\"\n                    ></app-input-file>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio>\n                </td>\n            </tr>\n        </table>\n\n        <button\n                data-disabled=\"!(form.valid() && soundUrl)\"\n                data-click=\"createOrEditSound(editData.currSoundInEdit)\">\n            {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n        </button>\n    </div>\n</app-modal>\n";
+
+},{}],133:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2505,10 +2870,10 @@ exports.default = RF.registerComponent('app-sound-dialog', {
     }
 });
 
-},{"./soundDialog.html":122,"babel-runtime/core-js/promise":5,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/rest/resource":155}],124:[function(require,module,exports){
-module.exports = "\r\n\r\n<table class=\"width100\">\r\n    <tr>\r\n        <td>\r\n            {{i18n.name}}\r\n        </td>\r\n        <td>\r\n            <input data-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n        </td>\r\n        <td rowspan=\"6\">\r\n            <div style=\"max-width:60vw;overflow: auto;\"\r\n            >\r\n                <div class=\"relative\"\r\n                     data-style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                    <div\r\n                            data-attributes=\"{title:i}\"\r\n                            data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\"\r\n                            data-style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                </div>\r\n            </div>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.image}}\r\n        </td>\r\n        <td>\r\n            <app-input-file\r\n                    data-state=\"{\r\n                        onFilePicked: onFilePicked,\r\n                        title: i18n.loadImage,\r\n                        accept: 'image/*'\r\n                    }\"\r\n            />\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.width}}\r\n        </td>\r\n        <td>\r\n            {{editData.currSpriteSheetInEdit.width}}\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.height}}\r\n        </td>\r\n        <td>\r\n            {{editData.currSpriteSheetInEdit.height}}\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.numOfFramesH}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    required\r\n                    min=\"1\"\r\n                    max=\"100\"\r\n                    type=\"number\"\r\n                    data-change=\"refreshNumOfCells()\"\r\n                    data-input=\"refreshNumOfCells()\"\r\n                    data-keyup=\"refreshNumOfCells()\"\r\n                    data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n        </td>\r\n    </tr>\r\n    <tr>\r\n        <td>\r\n            {{i18n.numOfFramesV}}\r\n        </td>\r\n        <td>\r\n            <input\r\n                    required\r\n                    min=\"1\"\r\n                    max=\"100\"\r\n                    type=\"number\"\r\n                    data-change=\"refreshNumOfCells()\"\r\n                    data-input=\"refreshNumOfCells()\"\r\n                    data-keyup=\"refreshNumOfCells()\"\r\n                    data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n        </td>\r\n    </tr>\r\n</table>\r\n<button\r\n        data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n        data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n    {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n</button>";
+},{"./soundDialog.html":132,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167}],134:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"spriteSheetModal\">\r\n    <div data-transclusion=\"content\">\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input data-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n                </td>\r\n                <td rowspan=\"6\">\r\n                    <div style=\"max-width:60vw;overflow: auto;\"\r\n                    >\r\n                        <div class=\"relative\"\r\n                             data-style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                            <div\r\n                                    data-attributes=\"{title:i}\"\r\n                                    data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\"\r\n                                    data-style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.image}}\r\n                </td>\r\n                <td>\r\n                    <app-input-file\r\n                            data-state=\"{\r\n                        onFilePicked: onFilePicked,\r\n                        title: i18n.loadImage,\r\n                        accept: 'image/*'\r\n                    }\"\r\n                    />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.width}}\r\n                </td>\r\n                <td>\r\n                    {{editData.currSpriteSheetInEdit.width}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.height}}\r\n                </td>\r\n                <td>\r\n                    {{editData.currSpriteSheetInEdit.height}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.numOfFramesH}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            min=\"1\"\r\n                            max=\"100\"\r\n                            type=\"number\"\r\n                            data-change=\"refreshNumOfCells()\"\r\n                            data-input=\"refreshNumOfCells()\"\r\n                            data-keyup=\"refreshNumOfCells()\"\r\n                            data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.numOfFramesV}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            min=\"1\"\r\n                            max=\"100\"\r\n                            type=\"number\"\r\n                            data-change=\"refreshNumOfCells()\"\r\n                            data-input=\"refreshNumOfCells()\"\r\n                            data-keyup=\"refreshNumOfCells()\"\r\n                            data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n                data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n            {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n    </div>\r\n</app-modal>\r\n\r\n";
 
-},{}],125:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2602,10 +2967,10 @@ exports.default = RF.registerComponent('app-sprite-sheet-dialog', {
     }
 });
 
-},{"./spriteSheetDialog.html":124,"babel-runtime/core-js/promise":5,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/rest/resource":155,"providers/utils":157}],126:[function(require,module,exports){
-module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel></app-top-panel>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props></app-game-props>\n            <app-scenes/>\n            <app-game-objects></app-game-objects>\n            <app-sprite-sheets></app-sprite-sheets>\n            <app-user-interface/>\n            <app-fonts></app-fonts>\n            <app-sounds></app-sounds>\n            <app-particle-systems></app-particle-systems>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor/>\n            <div :style=\"{\n                width:  editData.gameProps.width + 'px',\n                height: editData.gameProps.height + 'px',\n                border: '1px solid green'\n            }\">\n                <app-curr-scene/>\n            </div>\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object/>\n            <app-right-panel-scene/>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs></app-dialogs>\n\n</div>";
+},{"./spriteSheetDialog.html":134,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],136:[function(require,module,exports){
+module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel></app-top-panel>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props></app-game-props>\n            <app-scenes></app-scenes>\n            <app-game-objects></app-game-objects>\n            <app-sprite-sheets></app-sprite-sheets>\n            <app-user-interface></app-user-interface>\n            <app-fonts></app-fonts>\n            <app-sounds></app-sounds>\n            <app-particle-systems></app-particle-systems>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor></app-script-editor>\n            <div :style=\"{\n                width:  editData.gameProps.width + 'px',\n                height: editData.gameProps.height + 'px',\n                border: '1px solid green'\n            }\">\n                <app-curr-scene/>\n            </div>\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object/>\n            <app-right-panel-scene/>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs></app-dialogs>\n\n</div>";
 
-},{}],127:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2624,7 +2989,11 @@ require('pages/editor/leftPanel/spriteSheets/spriteSheets');
 
 require('pages/editor/leftPanel/gameObjects/gameObjects');
 
+require('pages/editor/leftPanel/userInterface/userInterface');
+
 require('pages/editor/topPanel/topPanel');
+
+require('pages/editor/centralPanel/scriptEditor/scriptEditor');
 
 require('pages/editor/dialogs/dialogs');
 
@@ -2637,6 +3006,9 @@ var _editData = require('providers/editData');
 var _editData2 = _interopRequireDefault(_editData);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//import 'pages/editor/leftPanel/scenes/scenes';
+
 
 // appCollapsible: require('components/collapsible/collapsible'),
 // appModal: require('components/modal/modal'),
@@ -2700,10 +3072,10 @@ exports.default = RF.registerComponent('editor', {
     }
 });
 
-},{"./editor.html":126,"pages/editor/dialogs/dialogs":115,"pages/editor/leftPanel/fonts/fonts":131,"pages/editor/leftPanel/gameObjects/gameObjects":133,"pages/editor/leftPanel/gameProps/gameProps":135,"pages/editor/leftPanel/particleSystems/particleSystems":137,"pages/editor/leftPanel/sounds/sounds":139,"pages/editor/leftPanel/spriteSheets/spriteSheets":141,"pages/editor/topPanel/topPanel":143,"providers/editData":149,"providers/i18n":151}],128:[function(require,module,exports){
-module.exports = "<div>\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            data-if=\"!gameObject.subType\">\n        <div data-style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {zoom:utils.calcZoom(gameObject)}\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            data-if=\"gameObject.subType\"\n            data-attributes=\"{title:gameObject.name}\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div>\n    </div>\n</div>";
+},{"./editor.html":136,"pages/editor/centralPanel/scriptEditor/scriptEditor":117,"pages/editor/dialogs/dialogs":121,"pages/editor/leftPanel/fonts/fonts":141,"pages/editor/leftPanel/gameObjects/gameObjects":143,"pages/editor/leftPanel/gameProps/gameProps":145,"pages/editor/leftPanel/particleSystems/particleSystems":147,"pages/editor/leftPanel/sounds/sounds":149,"pages/editor/leftPanel/spriteSheets/spriteSheets":151,"pages/editor/leftPanel/userInterface/userInterface":153,"pages/editor/topPanel/topPanel":155,"providers/editData":161,"providers/i18n":162}],138:[function(require,module,exports){
+module.exports = "<div>\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            data-if=\"!gameObject.subType\">\n        <div data-style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {\n                            zoom:utils.calcZoom(gameObject),\n                            transform: 'scale(1, 1) rotateZ(0deg)',\n                            opacity:1\n                        }\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            data-if=\"gameObject.subType\"\n            data-attributes=\"{title:gameObject.name}\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div>\n    </div>\n</div>";
 
-},{}],129:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2731,10 +3103,10 @@ exports.default = RF.registerComponent('app-game-object-row', {
     utils: _utils2.default
 });
 
-},{"./gameObjectRow.html":128,"providers/utils":157}],130:[function(require,module,exports){
+},{"./gameObjectRow.html":138,"providers/utils":169}],140:[function(require,module,exports){
 module.exports = "<app-collapsible\n        data-state=\"{\n            crud: {create:createFont},\n            title:i18n.fonts\n        }\">\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"font in editData.fontList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editFont(font)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteFont(font)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n\n    </div>\n</app-collapsible>";
 
-},{}],131:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2784,10 +3156,10 @@ exports.default = RF.registerComponent('app-fonts', {
     }
 });
 
-},{"./fonts.html":130,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/utils":157}],132:[function(require,module,exports){
+},{"./fonts.html":140,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],142:[function(require,module,exports){
 module.exports = "<app-collapsible\n        data-state=\"{\n                title: i18n.gameObjects,\n                crud: {\n                    create:createGameObject\n                }\n            }\">\n\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"gameObject in editData.gameObjectList.rs\"\n                >\n                    <app-game-object-row\n                            data-state=\"{\n                            crud: {\n                                 edit: editGameObject,\n                                 editScript: editGameObjectScript,\n                                 delete: deleteGameObject\n                            },\n                            gameObject: gameObject || {}\n                        }\">\n                    </app-game-object-row>\n                </div>\n\n            </div>\n        </div>\n\n\n    </div>\n\n</app-collapsible>";
 
-},{}],133:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2815,6 +3187,12 @@ var _fileSystem2 = _interopRequireDefault(_fileSystem);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var GameObject = _require('gameObject');
+var collections = _require('collections');
+
+var fixGameObject = function fixGameObject(g) {
+    if (!g.commonBehaviour || g.commonBehaviour.splice) g.commonBehaviour = new collections.List();
+    if (!g.frameAnimations || g.frameAnimations.splice) g.frameAnimations = new collections.List();
+};
 
 exports.default = RF.registerComponent('app-game-objects', {
     template: {
@@ -2825,7 +3203,8 @@ exports.default = RF.registerComponent('app-game-objects', {
     i18n: _i18n2.default.getAll(),
 
     createGameObject: function createGameObject() {
-        this.editData.currGameObjectInEdit = new GameObject(new GameObject().clone());
+        this.editData.currGameObjectInEdit = new GameObject().clone();
+        fixGameObject(this.editData.currGameObjectInEdit);
         RF.getComponentById('gameObjectModal').open();
     },
     editGameObjectScript: function editGameObjectScript(gameObject) {
@@ -2833,6 +3212,7 @@ exports.default = RF.registerComponent('app-game-objects', {
     },
     editGameObject: function editGameObject(go) {
         this.editData.currGameObjectInEdit = go.clone();
+        fixGameObject(this.editData.currGameObjectInEdit);
         RF.getComponentById('gameObjectModal').open();
     },
     deleteGameObject: function deleteGameObject(model) {
@@ -2842,10 +3222,10 @@ exports.default = RF.registerComponent('app-game-objects', {
     }
 });
 
-},{"./gameObjects.html":132,"pages/editor/leftPanel/_gameObjectRow/gameObjectRow":129,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/utils":157}],134:[function(require,module,exports){
+},{"./gameObjects.html":142,"pages/editor/leftPanel/_gameObjectRow/gameObjectRow":139,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],144:[function(require,module,exports){
 module.exports = "\n<app-collapsible data-state=\"{title:i18n.game}\">\n    <div data-transclusion=\"content\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.width\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.scaleStrategy\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-value=\"value\"\n                                data-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.preloadingSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select data-model=\"editData.gameProps.startSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n    </div>\n</app-collapsible>";
 
-},{}],135:[function(require,module,exports){
+},{}],145:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2882,10 +3262,10 @@ exports.default = RF.registerComponent('app-game-props', {
     }
 });
 
-},{"./gameProps.html":134,"providers/editData":149,"providers/i18n":151,"providers/rest/resource":155}],136:[function(require,module,exports){
+},{"./gameProps.html":144,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167}],146:[function(require,module,exports){
 module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createParticleSystem\n            },\n            title:i18n.particleSystems\n        }\">\n\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"ps in editData.particleSystemList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n\n\n</app-collapsible>";
 
-},{}],137:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2940,10 +3320,10 @@ exports.default = RF.registerComponent('app-particle-systems', {
     }
 });
 
-},{"./particleSystems.html":136,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":121,"providers/editData":149,"providers/i18n":151,"providers/utils":157}],138:[function(require,module,exports){
+},{"./particleSystems.html":146,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":129,"providers/editData":161,"providers/i18n":162,"providers/utils":169}],148:[function(require,module,exports){
 module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createSound\n            },\n            title:i18n.sounds\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"sound in editData.soundList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSound(sound)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSound(sound)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
 
-},{}],139:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2992,10 +3372,10 @@ exports.default = RF.registerComponent('app-sounds', {
     }
 });
 
-},{"./sounds.html":138,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/utils":157}],140:[function(require,module,exports){
+},{"./sounds.html":148,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],150:[function(require,module,exports){
 module.exports = "<app-collapsible\n        data-state=\"{\n            title: i18n.spriteSheets,\n            crud: {\n                create:createSpriteSheet\n            }\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"spriteSheet in editData.spriteSheetList.rs\">\n\n                    <div class=\"cell\">\n                        <img\n                                height=\"20\"\n                                class=\"spriteSheetThumb\"\n                                data-attributes=\"{src:editData.projectName+'/'+spriteSheet.resourcePath}\"/>\n                    </div>\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</app-collapsible>";
 
-},{}],141:[function(require,module,exports){
+},{}],151:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3049,10 +3429,43 @@ exports.default = RF.registerComponent('app-sprite-sheets', {
     }
 });
 
-},{"./spriteSheets.html":140,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/utils":157}],142:[function(require,module,exports){
+},{"./spriteSheets.html":150,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],152:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            title: i18n.userInterface\n        }\">\n\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"ui in (editData.userInterfaceList && editData.userInterfaceList.rs)\">\n\n                    <div class=\"cell\">\n                        <span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ui.subType}}</span>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n\n    </div>\n\n</app-collapsible>";
+
+},{}],153:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-user-interface', {
+    template: {
+        value: require('./userInterface.html'),
+        type: 'string'
+    },
+    i18n: _i18n2.default.getAll(),
+    editData: _editData2.default
+});
+
+},{"./userInterface.html":152,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167}],154:[function(require,module,exports){
 module.exports = "<div class=\"panel withPadding pointer\">\r\n\r\n    <div class=\"inlineBlock\" data-click=\"showBuildDialog()\">\r\n        {{i18n.build}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"run()\">\r\n        {{i18n.run}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"toExplorer()\">\r\n        {{i18n.explorer}}\r\n    </div>\r\n\r\n</div>";
 
-},{}],143:[function(require,module,exports){
+},{}],155:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3063,9 +3476,9 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _http = require('providers/http');
+var _httpClient = require('providers/rest/httpClient');
 
-var _http2 = _interopRequireDefault(_http);
+var _httpClient2 = _interopRequireDefault(_httpClient);
 
 var _editData = require('providers/editData');
 
@@ -3097,7 +3510,7 @@ exports.default = RF.registerComponent('app-top-panel', {
     editData: _editData2.default,
     i18n: _i18n2.default.getAll(),
     run: function run() {
-        _http2.default.get('/resource/generate', {
+        _httpClient2.default.get('/resource/generate', {
             debug: 1,
             r: Math.random(),
             projectName: _editData2.default.projectName
@@ -3123,10 +3536,10 @@ exports.default = RF.registerComponent('app-top-panel', {
     }
 });
 
-},{"./topPanel.html":142,"babel-runtime/core-js/object/keys":4,"providers/editData":149,"providers/http":150,"providers/i18n":151}],144:[function(require,module,exports){
+},{"./topPanel.html":154,"babel-runtime/core-js/object/keys":4,"providers/editData":161,"providers/i18n":162,"providers/rest/httpClient":165}],156:[function(require,module,exports){
 module.exports = "\r\n<app-modal id=\"projectDialog\">\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currProjectInEdit.name\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button data-click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n            {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n</app-modal>\r\n\r\n";
 
-},{}],145:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3179,10 +3592,10 @@ exports.default = RF.registerComponent('app-project-dialog', {
     }
 });
 
-},{"./projectDialog.html":144,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/rest/project":154}],146:[function(require,module,exports){
+},{"./projectDialog.html":156,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/project":166}],158:[function(require,module,exports){
 module.exports = "\r\n<div>\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    data-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            data-click=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            data-click=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            data-click=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                data-click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog></app-project-dialog>\r\n\r\n</div>";
 
-},{}],147:[function(require,module,exports){
+},{}],159:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3257,7 +3670,7 @@ exports.default = RF.registerComponent('explorer', {
     }
 });
 
-},{"./dialogs/projectDialog/projectDialog":145,"./explorer.html":146,"providers/editData":149,"providers/i18n":151,"providers/resourceHelper":152,"providers/rest/fileSystem":153,"providers/rest/project":154}],148:[function(require,module,exports){
+},{"./dialogs/projectDialog/projectDialog":157,"./explorer.html":158,"providers/editData":161,"providers/i18n":162,"providers/resourceHelper":163,"providers/rest/fileSystem":164,"providers/rest/project":166}],160:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3284,7 +3697,7 @@ var requestToApi = function requestToApi(params, callBack) {
 
 exports.default = { requestToApi: requestToApi };
 
-},{}],149:[function(require,module,exports){
+},{}],161:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3339,130 +3752,7 @@ res.reset();
 
 exports.default = res;
 
-},{}],150:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var noop = function noop() {};
-
-var objectToQuery = function objectToQuery(o) {
-    if (!o) return '';
-    if (o instanceof window.FormData) return o;
-    var paramsArr = [];
-    if (o == null || o == undefined || typeof o == 'string' || typeof o == 'number') return o;
-    for (var key in o) {
-        paramsArr.push([key, encodeURIComponent(o[key])]);
-    }
-    return paramsArr.map(function (item) {
-        return [item[0] + '=' + item[1]];
-    }).join('&');
-};
-
-var request = function request(data) {
-    var abortTmr = null;
-    var resolved = false;
-    data.method = data.method || 'get';
-    if (data.data && data.method == 'get') data.url += '?' + objectToQuery(data.data);
-    var xhr = new XMLHttpRequest();
-    var resolveFn = noop,
-        rejectFn = noop;
-    var promise = window.Promise && new _promise2.default(function (resolve, reject) {
-        resolveFn = resolve;
-        rejectFn = reject;
-    });
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200 || xhr.status == 0) {
-                var resp = JSON.parse(xhr.responseText);
-                if (data.success) data.success(resp);
-                RF.digest();
-                resolveFn(resp);
-            } else {
-                if (data.error) data.error({ status: xhr.status, error: xhr.statusText });
-                rejectFn(xhr.statusText);
-            }
-            clearTimeout(abortTmr);
-            resolved = true;
-        }
-    };
-    xhr.open(data.method, data.url, true);
-    if (data.requestType) {
-        if (data.requestType != 'multipart/form-data') // at this case header needs to be auto generated
-            xhr.setRequestHeader("Content-Type", data.requestType);
-    } else {
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    }
-    if (data.requestType == 'application/json') data.data = data.data && (0, _stringify2.default)(data.data);
-    xhr.send(data.data);
-    if (data.timeout) {
-        abortTmr = setTimeout(function () {
-            if (resolved) return;
-            xhr.abort();
-            if (data.ontimeout) data.ontimeout();
-            rejectFn('timeout');
-        }, data.timeout);
-    }
-    return promise;
-};
-
-var get = function get(url, data, success, error) {
-    return request({
-        method: 'get',
-        url: url,
-        data: data,
-        success: success,
-        error: error
-    });
-};
-
-var post = function post(url, data, success, error) {
-    return request({
-        method: 'post',
-        url: url,
-        data: data,
-        requestType: 'application/json',
-        success: success,
-        error: error
-    });
-};
-
-var postMultiPart = function postMultiPart(url, file, data, success, error) {
-    var formData = new FormData();
-    (0, _keys2.default)(data).forEach(function (key) {
-        formData.append(key, data[key]);
-    });
-    formData.append('file', file);
-    formData.append('fileName', file.name);
-    return request({
-        method: 'post',
-        url: url,
-        data: formData,
-        requestType: 'multipart/form-data',
-        success: success,
-        error: error
-    });
-};
-
-exports.default = { get: get, post: post, postMultiPart: postMultiPart };
-
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5}],151:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3559,7 +3849,8 @@ _i18n.bundle = {
         fixedToCamera: 'fixed to camera',
         preloadingScene: 'preloading scene',
         startScene: 'start scene',
-        projects: 'projects'
+        projects: 'projects',
+        objectAlreadyAdded: 'object is already added'
     }
 };
 
@@ -3577,7 +3868,7 @@ _i18n.getAll = function () {
 
 exports.default = _i18n;
 
-},{}],152:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = require('babel-runtime/helpers/typeof');
@@ -3600,9 +3891,9 @@ var _editData = require('providers/editData');
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _http = require('providers/http');
+var _httpClient = require('providers/rest/httpClient');
 
-var _http2 = _interopRequireDefault(_http);
+var _httpClient2 = _interopRequireDefault(_httpClient);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3617,20 +3908,15 @@ var ResourceHelper = function ResourceHelper() {
     var Layer = _require('layer');
 
     var _loadResources = function _loadResources(projectName) {
-        _http2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
+        _httpClient2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
             bundle.prepare(response);
             (0, _keys2.default)(bundle).forEach(function (key) {
-                if (bundle[key] && bundle[key].clear) {
-                    _editData2.default[key] = new collections.List();
-                    bundle[key].forEach(function (el) {
-                        _editData2.default[key].add(el);
-                    });
-                }
+                _editData2.default[key] = bundle[key];
             });
             _editData2.default.gameProps = bundle.gameProps;
-            _editData2.default.commonBehaviourList = new collections.List();
-            response.commonBehaviour.forEach(function (cb) {
-                _editData2.default.commonBehaviourList.add(new CommonBehaviour(cb));
+            _editData2.default.commonBehaviourProto = new collections.List();
+            response.commonBehaviourProto.forEach(function (cb) {
+                _editData2.default.commonBehaviourProto.add(new CommonBehaviour(cb));
             });
             _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
         });
@@ -3664,7 +3950,7 @@ var ResourceHelper = function ResourceHelper() {
         formData.append('model', (0, _stringify2.default)(model));
         formData.append('projectName', _editData2.default.projectName);
         var op = currResourceInEdit.id ? 'edit' : 'create';
-        _http2.default.post('/resource/' + op, formData, function (item) {
+        _httpClient2.default.post('/resource/' + op, formData, function (item) {
             if (op == 'create') {
                 var r = new ResourceClass(item);
                 resourceList.add(r);
@@ -3681,7 +3967,7 @@ var ResourceHelper = function ResourceHelper() {
     this.deleteResource = function (idOrObject, type, callBack) {
         var id = (typeof idOrObject === 'undefined' ? 'undefined' : (0, _typeof3.default)(idOrObject)) == 'object' ? idOrObject.id : idOrObject;
         type = type || idOrObject.type;
-        _http2.default.post('/resource/delete', {
+        _httpClient2.default.post('/resource/delete', {
             id: id,
             type: type,
             projectName: _editData2.default.projectName
@@ -3694,7 +3980,7 @@ var ResourceHelper = function ResourceHelper() {
     // todo refactor
     this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
         var op = object.id ? 'edit' : 'create';
-        _http2.default.post('/createOrEditObjectInResource', {
+        _httpClient2.default.post('/createOrEditObjectInResource', {
             model: (0, _stringify2.default)(object),
             resourceId: resourceId,
             resourceType: resourceType,
@@ -3723,7 +4009,7 @@ var ResourceHelper = function ResourceHelper() {
     };
 
     this.saveGameProps = function (gameProps) {
-        _http2.default.post('/gameProps/save', {
+        _httpClient2.default.post('/gameProps/save', {
             model: gameProps,
             projectName: _editData2.default.projectName
         });
@@ -3731,7 +4017,7 @@ var ResourceHelper = function ResourceHelper() {
 
     this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
         var op = object.id ? 'edit' : 'create';
-        _http2.default.post('/createOrEditObjectInResource', {
+        _httpClient2.default.post('/createOrEditObjectInResource', {
             model: (0, _stringify2.default)(object),
             resourceId: resourceId,
             resourceType: resourceType,
@@ -3753,7 +4039,7 @@ var ResourceHelper = function ResourceHelper() {
 
 module.exports = new ResourceHelper();
 
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/typeof":10,"providers/editData":149,"providers/http":150}],153:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/typeof":10,"providers/editData":161,"providers/rest/httpClient":165}],164:[function(require,module,exports){
 'use strict';
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
@@ -3764,9 +4050,9 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _http = require('providers/http');
+var _httpClient = require('providers/rest/httpClient');
 
-var _http2 = _interopRequireDefault(_http);
+var _httpClient2 = _interopRequireDefault(_httpClient);
 
 var _editData = require('providers/editData');
 
@@ -3782,7 +4068,7 @@ var FileSystem = function () {
     (0, _createClass3.default)(FileSystem, [{
         key: 'createFile',
         value: function createFile(path, content, callback) {
-            return _http2.default.post('/fileSystem/createFile', {
+            return _httpClient2.default.post('/fileSystem/createFile', {
                 path: path,
                 content: content,
                 projectName: _editData2.default.projectName
@@ -3793,12 +4079,12 @@ var FileSystem = function () {
         value: function uploadFile(file, params, callback) {
             params = params || {};
             params.projectName = _editData2.default.projectName;
-            return _http2.default.postMultiPart('/fileSystem/uploadFile', file, params, callback);
+            return _httpClient2.default.postMultiPart('/fileSystem/uploadFile', file, params, callback);
         }
     }, {
         key: 'removeFile',
         value: function removeFile(path, callback) {
-            return _http2.default.post('/fileSystem/removeFile', {
+            return _httpClient2.default.post('/fileSystem/removeFile', {
                 path: path,
                 projectName: _editData2.default.projectName
             }, callback);
@@ -3806,7 +4092,7 @@ var FileSystem = function () {
     }, {
         key: 'readFile',
         value: function readFile(path, callback) {
-            return _http2.default.post('/fileSystem/readFile', {
+            return _httpClient2.default.post('/fileSystem/readFile', {
                 path: path,
                 projectName: _editData2.default.projectName
             }, callback);
@@ -3814,12 +4100,12 @@ var FileSystem = function () {
     }, {
         key: 'renameFolder',
         value: function renameFolder(oldName, newName, callback) {
-            return _http2.default.post('/fileSystem/renameFolder', { oldName: oldName, newName: newName }, callback);
+            return _httpClient2.default.post('/fileSystem/renameFolder', { oldName: oldName, newName: newName }, callback);
         }
     }, {
         key: 'deleteFolder',
         value: function deleteFolder(name, callback) {
-            return _http2.default.post('/fileSystem/deleteFolder', { name: name }, callback);
+            return _httpClient2.default.post('/fileSystem/deleteFolder', { name: name }, callback);
         }
     }]);
     return FileSystem;
@@ -3827,7 +4113,132 @@ var FileSystem = function () {
 
 module.exports = new FileSystem();
 
-},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":149,"providers/http":150}],154:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/rest/httpClient":165}],165:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var noop = function noop() {};
+
+var PromiseProvider = window.PromiseLight || window.Promise;
+
+var objectToQuery = function objectToQuery(o) {
+    if (!o) return '';
+    if (o instanceof window.FormData) return o;
+    var paramsArr = [];
+    if (o == null || o == undefined || typeof o == 'string' || typeof o == 'number') return o;
+    for (var key in o) {
+        paramsArr.push([key, encodeURIComponent(o[key])]);
+    }
+    return paramsArr.map(function (item) {
+        return [item[0] + '=' + item[1]];
+    }).join('&');
+};
+
+var request = function request(data) {
+    var abortTmr = null;
+    var resolved = false;
+    data.method = data.method || 'get';
+    if (data.data && data.method == 'get') data.url += '?' + objectToQuery(data.data);
+    var xhr = new XMLHttpRequest();
+    var resolveFn = noop,
+        rejectFn = noop;
+    var promise = new PromiseProvider(function (resolve, reject) {
+        resolveFn = resolve;
+        rejectFn = reject;
+    });
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200 || xhr.status == 0) {
+                var resp = xhr.responseText;
+                var contentType = xhr.getResponseHeader("Content-Type") || '';
+                if (contentType.toLowerCase().indexOf('json') > -1) resp = JSON.parse(resp);
+                if (data.success) {
+                    data.success(resp);
+                    RF.digest();
+                }
+                resolveFn(resp);
+            } else {
+                if (data.error) data.error({ status: xhr.status, error: xhr.statusText });
+                rejectFn(xhr.statusText);
+            }
+            clearTimeout(abortTmr);
+            resolved = true;
+        }
+    };
+    xhr.open(data.method, data.url, true);
+    if (data.requestType) {
+        if (data.requestType != 'multipart/form-data') // at this case header needs to be auto generated
+            xhr.setRequestHeader("Content-Type", data.requestType);
+    } else {
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
+    if (data.requestType == 'application/json') data.data = data.data && (0, _stringify2.default)(data.data);
+    xhr.send(data.data);
+    if (data.timeout) {
+        abortTmr = setTimeout(function () {
+            if (resolved) return;
+            xhr.abort();
+            if (data.ontimeout) data.ontimeout();
+            rejectFn('timeout');
+        }, data.timeout);
+    }
+    return promise;
+};
+
+var get = function get(url, data, success, error) {
+    return request({
+        method: 'get',
+        url: url,
+        data: data,
+        success: success,
+        error: error
+    });
+};
+
+var post = function post(url, data, success, error) {
+    return request({
+        method: 'post',
+        url: url,
+        data: data,
+        requestType: 'application/json',
+        success: success,
+        error: error
+    });
+};
+
+var postMultiPart = function postMultiPart(url, file, data, success, error) {
+    var formData = new FormData();
+    (0, _keys2.default)(data).forEach(function (key) {
+        formData.append(key, data[key]);
+    });
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    return request({
+        method: 'post',
+        url: url,
+        data: formData,
+        requestType: 'multipart/form-data',
+        success: success,
+        error: error
+    });
+};
+
+exports.default = { get: get, post: post, postMultiPart: postMultiPart };
+
+},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4}],166:[function(require,module,exports){
 'use strict';
 
 var _promise = require('babel-runtime/core-js/promise');
@@ -3846,9 +4257,9 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
-var _http = require('providers/http');
+var _httpClient = require('providers/rest/httpClient');
 
-var _http2 = _interopRequireDefault(_http);
+var _httpClient2 = _interopRequireDefault(_httpClient);
 
 var _editData = require('providers/editData');
 
@@ -3862,7 +4273,7 @@ var TextField = _require('textField');
 var CommonBehaviour = _require('commonBehaviour');
 
 var _loadResources = function _loadResources(projectName) {
-    _http2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
+    _httpClient2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
         bundle.prepare(response);
         (0, _keys2.default)(bundle).forEach(function (key) {
             if (bundle[key] && bundle[key].call) return;
@@ -3890,12 +4301,12 @@ var Project = function () {
     (0, _createClass3.default)(Project, [{
         key: 'getAll',
         value: function getAll(callback) {
-            return _http2.default.get('/project/getAll', {}, callback);
+            return _httpClient2.default.get('/project/getAll', {}, callback);
         }
     }, {
         key: 'create',
         value: function create(projectName, callback) {
-            return _http2.default.post('/project/create', { projectName: projectName }, callback);
+            return _httpClient2.default.post('/project/create', { projectName: projectName }, callback);
         }
     }, {
         key: 'load',
@@ -3930,7 +4341,7 @@ var p = new Project();
 
 module.exports = new Project();
 
-},{"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":149,"providers/http":150}],155:[function(require,module,exports){
+},{"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/rest/httpClient":165}],167:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3945,9 +4356,9 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _http = require('providers/http');
+var _httpClient = require('providers/rest/httpClient');
 
-var _http2 = _interopRequireDefault(_http);
+var _httpClient2 = _interopRequireDefault(_httpClient);
 
 var _editData = require('providers/editData');
 
@@ -3964,17 +4375,17 @@ var Resource = function () {
         key: 'save',
         value: function save(model, callback) {
             if (model.toJSON) model = model.toJSON();
-            return _http2.default.post('/resource/save', { projectName: _editData2.default.projectName, model: model }, callback);
+            return _httpClient2.default.post('/resource/save', { projectName: _editData2.default.projectName, model: model }, callback);
         }
     }, {
         key: 'saveGameProps',
         value: function saveGameProps(model, callback) {
-            return _http2.default.post('/resource/saveGameProps', { projectName: _editData2.default.projectName, model: model }, callback);
+            return _httpClient2.default.post('/resource/saveGameProps', { projectName: _editData2.default.projectName, model: model }, callback);
         }
     }, {
         key: 'remove',
         value: function remove(model, callback) {
-            return _http2.default.post('/resource/remove', { projectName: _editData2.default.projectName, model: {
+            return _httpClient2.default.post('/resource/remove', { projectName: _editData2.default.projectName, model: {
                     id: model.id,
                     type: model.type
                 } }, callback);
@@ -3985,7 +4396,7 @@ var Resource = function () {
 
 exports.default = new Resource();
 
-},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":149,"providers/http":150}],156:[function(require,module,exports){
+},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/rest/httpClient":165}],168:[function(require,module,exports){
 'use strict';
 
 window.alertEx = function (message) {
@@ -3996,7 +4407,7 @@ window.confirmEx = function (message, callback) {
     RF.getComponentById('confirmDialog').open(message, callback);
 };
 
-},{}],157:[function(require,module,exports){
+},{}],169:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4168,7 +4579,7 @@ var Utils = function () {
             var frame = document.getElementById('scriptEditorFrame');
             var contentWindow = frame && frame.contentWindow;
             var self = this;
-            if (!contentWindow.ready) {
+            if (!contentWindow || !contentWindow.ready) {
                 setTimeout(function () {
                     self._waitForFrameAndDo(file, path);
                 }, 100);
@@ -4196,6 +4607,7 @@ var Utils = function () {
     }, {
         key: 'size',
         value: function size(obj) {
+            if (!obj) return 0;
             return (0, _keys2.default)(obj).length;
         }
     }, {
@@ -4223,4 +4635,4 @@ var Utils = function () {
 
 exports.default = new Utils();
 
-},{"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":149,"providers/i18n":151,"providers/rest/fileSystem":153,"providers/rest/resource":155}]},{},[113]);
+},{"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167}]},{},[115]);

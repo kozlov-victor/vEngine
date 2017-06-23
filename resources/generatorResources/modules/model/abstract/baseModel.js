@@ -15,30 +15,63 @@ const isPropNotFit = (key,val)=>{
     if (!val) return true;
 };
 
-const deepCopy = (obj)=> {
+/**
+ * @param obj
+ * @param _clonedObjects - internal store of cloned object to avoid self-cycled object recursion
+ * @returns {*}
+ */
+const deepCopy = function(obj, _clonedObjects = []) {
+    if (obj===undefined) return undefined;
+    else if (obj===null) return null;
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         let out = [], i = 0, len = obj.length;
-        for ( ; i < len; i++ ) {
-            out[i] = deepCopy(obj[i]);
+        for (; i < len; i++) {
+            let clonedObject;
+            if (_clonedObjects.indexOf(obj[i])>-1) {
+                clonedObject = obj[i];
+            } else {
+                _clonedObjects.push(obj[i]);
+                clonedObject = deepCopy(obj[i],_clonedObjects);
+            }
+            out[i] = clonedObject;
         }
         return out;
     }
     if (typeof obj === 'object') {
-        let out = {}, i;
-        for ( i in obj ) {
-            out[i] = deepCopy(obj[i]);
+        let out = {};
+        for (let i in obj) {
+            let clonedObject;
+            if (_clonedObjects.indexOf(obj[i])>-1) {
+                clonedObject = obj[i];
+            } else {
+                _clonedObjects.push(obj[i]);
+                clonedObject = deepCopy(obj[i],_clonedObjects);
+            }
+            out[i] = clonedObject;
         }
         return out;
     }
     return obj;
 };
 
-const deepEqual = (x, y)=> {
-    return (x && y && typeof x === 'object' && typeof y === 'object') ?
-        (Object.keys(x).length === Object.keys(y).length) &&
-        Object.keys(x).reduce(function (isEqual, key) {
-            return isEqual && deepEqual(x[key], y[key]);
-        }, true) : (x === y);
+
+/**
+ * @param x
+ * @param y
+ * @returns {*}
+ */
+const deepEqual = function(x, y) {
+    //if (isNaN(x) && isNaN(y)) return true;
+    if (x && y && typeof x === 'object' && typeof y === 'object') {
+        if (x===y) return true;
+        return (Object.keys(x).length === Object.keys(y).length) &&
+            Object.keys(x).reduce((isEqual, key)=> {
+                return isEqual && deepEqual(x[key], y[key]);
+            },true);
+    } else {
+        return x===y;
+    }
+
 };
 
 const BaseModel = Class.extend({
@@ -81,17 +114,15 @@ const BaseModel = Class.extend({
                         let clazz = _req(self.type);
                         self[key] = new clazz();
                     }
-                    return;
                 } else if (
                     jsonObj[key].splice &&
                     jsonObj[key].length &&
-                    jsonObj[key][0].type &&
-                    jsonObj[key][0].id
+                    jsonObj[key][0].type
                 ) {
                     self[key] = new collections.List();
                     let arr = [];
                     jsonObj[key].forEach(function(el){
-                        arr.push(el);
+                        if (el.id) arr.push(el);
                     });
                     arr.forEach(function(el){
                         let elFromList = bundle[el.type+'List'].find({id:el.id});
@@ -100,14 +131,15 @@ const BaseModel = Class.extend({
                         // {{/if}}
                         self[key].add(elFromList.clone());
                     });
-                    return;
 
+                } else {
+                    self[key] = jsonObj[key];
+                    if (typeof self[key]==='boolean') return;
+                    if (self[key] && !self[key].splice) {
+                        self[key] = +self[key]||self[key];
+                    }
                 }
-                self[key] = jsonObj[key];
-                if (typeof self[key]==='boolean') return;
-                if (self[key] && !self[key].splice) {
-                    self[key] = +self[key]||self[key];
-                }
+
             }
         });
     },

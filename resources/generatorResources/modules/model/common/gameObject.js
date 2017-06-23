@@ -81,7 +81,6 @@ const GameObject = BaseGameObject.extend({
     tileRepeat:false,
     construct: function(){
         let self = this;
-        if (!this.commonBehaviour) this.commonBehaviour=[{type:'commonBehaviour'}];
         self._super();
         if (!self.tileOffset) self.tileOffset = {x:0,y:0};
     },

@@ -1,26 +1,28 @@
 
+<app-modal id="spriteSheetModal">
+    <div data-transclusion="content">
 
-<table class="width100">
-    <tr>
-        <td>
-            {{i18n.name}}
-        </td>
-        <td>
-            <input data-model="editData.currSpriteSheetInEdit.name"/>
-        </td>
-        <td rowspan="6">
-            <div style="max-width:60vw;overflow: auto;"
-            >
-                <div class="relative"
-                     data-style="{
+        <table class="width100">
+            <tr>
+                <td>
+                    {{i18n.name}}
+                </td>
+                <td>
+                    <input data-model="editData.currSpriteSheetInEdit.name"/>
+                </td>
+                <td rowspan="6">
+                    <div style="max-width:60vw;overflow: auto;"
+                    >
+                        <div class="relative"
+                             data-style="{
                                     'background-image':   'url('+spriteSheetUrl+')',
                                     'width':              editData.currSpriteSheetInEdit.width+'px',
                                     'height':             editData.currSpriteSheetInEdit.height+'px',
                                }">
-                    <div
-                            data-attributes="{title:i}"
-                            data-for="i in utils.range(0,numOfSpriteSheetCells-1)"
-                            data-style="{
+                            <div
+                                    data-attributes="{title:i}"
+                                    data-for="i in utils.range(0,numOfSpriteSheetCells-1)"
+                                    data-style="{
                                     'display':        'inline-block',
                                     'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',
                                     'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',
@@ -30,75 +32,79 @@
                                     'width':          editData.currSpriteSheetInEdit._frameWidth+'px',
                                     'height':         editData.currSpriteSheetInEdit._frameHeight+'px'
                                 }">{{i}}</div>
-                </div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.image}}
-        </td>
-        <td>
-            <app-input-file
-                    data-state="{
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.image}}
+                </td>
+                <td>
+                    <app-input-file
+                            data-state="{
                         onFilePicked: onFilePicked,
                         title: i18n.loadImage,
                         accept: 'image/*'
                     }"
-            />
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.width}}
-        </td>
-        <td>
-            {{editData.currSpriteSheetInEdit.width}}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.height}}
-        </td>
-        <td>
-            {{editData.currSpriteSheetInEdit.height}}
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.numOfFramesH}}
-        </td>
-        <td>
-            <input
-                    required
-                    min="1"
-                    max="100"
-                    type="number"
-                    data-change="refreshNumOfCells()"
-                    data-input="refreshNumOfCells()"
-                    data-keyup="refreshNumOfCells()"
-                    data-model="editData.currSpriteSheetInEdit.numOfFramesH"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.numOfFramesV}}
-        </td>
-        <td>
-            <input
-                    required
-                    min="1"
-                    max="100"
-                    type="number"
-                    data-change="refreshNumOfCells()"
-                    data-input="refreshNumOfCells()"
-                    data-keyup="refreshNumOfCells()"
-                    data-model="editData.currSpriteSheetInEdit.numOfFramesV"/>
-        </td>
-    </tr>
-</table>
-<button
-        data-click="createOrEditSpriteSheet(editData.currSpriteSheetInEdit)"
-        data-disabled="!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)">
-    {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}
-</button>
+                    />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.width}}
+                </td>
+                <td>
+                    {{editData.currSpriteSheetInEdit.width}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.height}}
+                </td>
+                <td>
+                    {{editData.currSpriteSheetInEdit.height}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.numOfFramesH}}
+                </td>
+                <td>
+                    <input
+                            required
+                            min="1"
+                            max="100"
+                            type="number"
+                            data-change="refreshNumOfCells()"
+                            data-input="refreshNumOfCells()"
+                            data-keyup="refreshNumOfCells()"
+                            data-model="editData.currSpriteSheetInEdit.numOfFramesH"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.numOfFramesV}}
+                </td>
+                <td>
+                    <input
+                            required
+                            min="1"
+                            max="100"
+                            type="number"
+                            data-change="refreshNumOfCells()"
+                            data-input="refreshNumOfCells()"
+                            data-keyup="refreshNumOfCells()"
+                            data-model="editData.currSpriteSheetInEdit.numOfFramesV"/>
+                </td>
+            </tr>
+        </table>
+        <button
+                data-click="createOrEditSpriteSheet(editData.currSpriteSheetInEdit)"
+                data-disabled="!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)">
+            {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}
+        </button>
+
+    </div>
+</app-modal>
+

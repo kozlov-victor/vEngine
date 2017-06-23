@@ -125,7 +125,7 @@ class Utils {
         let frame = document.getElementById('scriptEditorFrame');
         let contentWindow = frame && frame.contentWindow;
         let self = this;
-        if (!contentWindow.ready) {
+        if (!contentWindow || !contentWindow.ready) {
             setTimeout(function(){
                 self._waitForFrameAndDo(file,path);
             },100);
@@ -151,6 +151,7 @@ class Utils {
     }
 
     size(obj) {
+        if (!obj) return 0;
         return Object.keys(obj).length;
     }
 

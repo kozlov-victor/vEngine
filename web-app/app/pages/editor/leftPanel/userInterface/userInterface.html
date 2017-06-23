@@ -1,16 +1,23 @@
 <app-collapsible
-        :title="i18n.userInterface"
-        >
-    <div class="withPaddingLeft">
-        <div class="table width100">
-            <div class="row"
-                 v-for="ui in (editData.userInterfaceList && editData.userInterfaceList.rs)">
+        data-state="{
+            title: i18n.userInterface
+        }">
 
-                <div class="cell">
-                    <span class="inlineBlock withPaddingTop withPaddingBottom">{{ui.subType}}</span>
+    <div data-transclusion="content">
+
+        <div class="withPaddingLeft">
+            <div class="table width100">
+                <div class="row"
+                     data-for="ui in (editData.userInterfaceList && editData.userInterfaceList.rs)">
+
+                    <div class="cell">
+                        <span class="inlineBlock withPaddingTop withPaddingBottom">{{ui.subType}}</span>
+                    </div>
+
                 </div>
-
             </div>
         </div>
+
     </div>
+
 </app-collapsible>

@@ -89,7 +89,8 @@ _i18n.bundle = {
         fixedToCamera:'fixed to camera',
         preloadingScene: 'preloading scene',
         startScene: 'start scene',
-        projects: 'projects'
+        projects: 'projects',
+        objectAlreadyAdded: 'object is already added'
     }
 };
 

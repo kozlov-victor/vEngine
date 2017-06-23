@@ -1,5 +1,5 @@
 
-import http from 'providers/http';
+import http from 'providers/rest/httpClient';
 import editData from 'providers/editData';
 
 const bundle = _require('bundle');

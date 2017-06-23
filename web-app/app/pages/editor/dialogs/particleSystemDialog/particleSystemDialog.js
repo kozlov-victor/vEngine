@@ -4,6 +4,8 @@ import restResource from 'providers/rest/resource';
 import utils from 'providers/utils';
 import i18n from 'providers/i18n';
 
+window.editData = editData;
+
 export default RF.registerComponent('app-particle-system-dialog', {
     template: {
         type:'string',

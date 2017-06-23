@@ -28,7 +28,10 @@ import 'pages/editor/leftPanel/sounds/sounds';
 import 'pages/editor/leftPanel/fonts/fonts';
 import 'pages/editor/leftPanel/spriteSheets/spriteSheets';
 import 'pages/editor/leftPanel/gameObjects/gameObjects';
+//import 'pages/editor/leftPanel/scenes/scenes';
+import 'pages/editor/leftPanel/userInterface/userInterface';
 import 'pages/editor/topPanel/topPanel';
+import 'pages/editor/centralPanel/scriptEditor/scriptEditor';
 
 import 'pages/editor/dialogs/dialogs';
 

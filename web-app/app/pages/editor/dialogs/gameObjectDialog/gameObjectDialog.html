@@ -1,19 +1,22 @@
 
 
-<table class="width100">
-    <tr>
-        <td>
-            {{i18n.name}}
-        </td>
-        <td>
-            <input
-                required
-                data-model="editData.currGameObjectInEdit.name"/>
-        </td>
-        <td></td>
-        <td rowspan="5">
-            <div class="relative"
-                 style="
+<app-modal id="gameObjectModal">
+    <div data-transclusion="content">
+
+        <table class="width100">
+            <tr>
+                <td>
+                    {{i18n.name}}
+                </td>
+                <td>
+                    <input
+                            required
+                            data-model="editData.currGameObjectInEdit.name"/>
+                </td>
+                <td></td>
+                <td rowspan="5">
+                    <div class="relative"
+                         style="
                         display: inline-block;
                         overflow: scroll;
                         max-width:60vw;
@@ -22,7 +25,7 @@
                     >
 
 
-                <div data-style="
+                        <div data-style="
                     utils.merge(
                         utils.getGameObjectCss(editData.currGameObjectInEdit),
                         {
@@ -31,198 +34,205 @@
                         }
                     )
                 "></div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.spriteSheet}}
-        </td>
-        <td>
-            <select
-                    data-change="onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)"
-                    required
-                    data-model="editData.currGameObjectInEdit.spriteSheet.id">
-                <option data-value="item.id" data-for="item in editData.spriteSheetList.rs">{{item.name}}</option>
-            </select>
-        </td>
-        <td>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.groupName}}
-        </td>
-        <td>
-            <input
-                    data-model="editData.currGameObjectInEdit.groupName"/>
-        </td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.rigid}}
-        </td>
-        <td>
-            <input
-                    type="checkbox"
-                    data-model="editData.currGameObjectInEdit.rigid"/>
-        </td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.width}}
-        </td>
-        <td>
-            <input
-                    type="number"
-                    required
-                    data-model="editData.currGameObjectInEdit.width"/>
-        </td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.height}}
-        </td>
-        <td>
-            <input
-                    type="number"
-                    required
-                    data-model="editData.currGameObjectInEdit.height"/>
-        </td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.angle}}
-        </td>
-        <td>
-            <input
-                    step="0.1"
-                    type="number"
-                    required
-                    data-model="editData.currGameObjectInEdit.angle"/>
-        </td>
-        <td align="left">
-            <div class="inlineBlock">
-                <app-angle-picker
-                        :object="editData.currGameObjectInEdit"
-                        :value="'angle'"
-                        />
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            alpha
-        </td>
-        <td>
-            <input
-                    type="number"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    required
-                    data-model="editData.currGameObjectInEdit.alpha"/>
-        </td>
-        <td>
-            <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    data-model="editData.currGameObjectInEdit.alpha"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.currFrameIndex}}
-        </td>
-        <td>
-            <input type="number"
-                   min="0"
-                   data-change="refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)"
-                   required
-                   data-model="editData.currGameObjectInEdit.currFrameIndex"/>
-        </td>
-        <td></td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.frAnimations}}
-        </td>
-        <td>
-            <div class="table width100">
-                <div class="row" data-for="animItm in editData.currGameObjectInEdit.frameAnimations && editData.currGameObjectInEdit.frameAnimations.rs">
-                    <div class="cell vAlign">
-                        <span>{{animItm.name}}</span>
                     </div>
-                    <div class="cell vAlign rightAlign pointer" data-click="editFrameAnimation(animItm)">
-                        edit
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.spriteSheet}}
+                </td>
+                <td>
+                    <select
+                            data-change="onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)"
+                            required
+                            data-model="editData.currGameObjectInEdit.spriteSheet.id">
+                        <option data-value="item.id" data-for="item in editData.spriteSheetList.rs">{{item.name}}</option>
+                    </select>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.groupName}}
+                </td>
+                <td>
+                    <input
+                            data-model="editData.currGameObjectInEdit.groupName"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.rigid}}
+                </td>
+                <td>
+                    <input
+                            type="checkbox"
+                            data-model="editData.currGameObjectInEdit.rigid"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.width}}
+                </td>
+                <td>
+                    <input
+                            type="number"
+                            required
+                            data-model="editData.currGameObjectInEdit.width"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.height}}
+                </td>
+                <td>
+                    <input
+                            type="number"
+                            required
+                            data-model="editData.currGameObjectInEdit.height"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.angle}}
+                </td>
+                <td>
+                    <input
+                            step="0.1"
+                            type="number"
+                            required
+                            data-model="editData.currGameObjectInEdit.angle"/>
+                </td>
+                <td align="left">
+                    <div class="inlineBlock">
+                        <app-angle-picker
+                                data-state="{
+                        object: editData.currGameObjectInEdit,
+                        value: 'angle'
+                    }"
+                        ></app-angle-picker>
                     </div>
-                    <div class="cell pointer vAlign rightAlign" data-click="deleteFrameAnimation(animItm)">
-                        X
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    alpha
+                </td>
+                <td>
+                    <input
+                            type="number"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            required
+                            data-model="editData.currGameObjectInEdit.alpha"/>
+                </td>
+                <td>
+                    <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.1"
+                            data-model="editData.currGameObjectInEdit.alpha"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.currFrameIndex}}
+                </td>
+                <td>
+                    <input type="number"
+                           min="0"
+                           data-change="refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)"
+                           required
+                           data-model="editData.currGameObjectInEdit.currFrameIndex"/>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.frAnimations}}
+                </td>
+                <td>
+                    <div class="table width100">
+                        <div class="row" data-for="animItm in editData.currGameObjectInEdit.frameAnimations.rs">
+                            <div class="cell vAlign">
+                                <span>{{animItm.name}}</span>
+                            </div>
+                            <div class="cell vAlign rightAlign pointer" data-click="editFrameAnimation(animItm)">
+                                {{i18n.edit}}
+                            </div>
+                            <div class="cell pointer vAlign rightAlign" data-click="deleteFrameAnimation(animItm)">
+                                X
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </td>
-        <td align="right">
-            <button
-                    class="inlineBlock"
-                    data-disabled="!editData.currGameObjectInEdit.id"
-                    data-click="createFrameAnimation()">+</button>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            {{i18n.commonBehaviour}}
-        </td>
-        <td>
-            <div class="table width100">
-                <div class="row" data-for="itm in editData.currGameObjectInEdit.commonBehaviour.rs">
-                    <div class="cell vAlign">
-                        <span>{{itm.name}}</span>
+                </td>
+                <td align="right">
+                    <button
+                            class="inlineBlock"
+                            data-disabled="!editData.currGameObjectInEdit.id"
+                            data-click="createFrameAnimation()">+</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.commonBehaviour}}
+                </td>
+                <td>
+                    <div class="table width100">
+                        <div class="row" data-for="itm in editData.currGameObjectInEdit.commonBehaviour.rs">
+                            <div class="cell vAlign">
+                                <span>{{itm.name}}</span>
+                            </div>
+                            <div class="cell vAlign rightAlign pointer" data-click="editCommonBehaviour(itm)">
+                                {{i18n.edit}}
+                            </div>
+                            <div class="cell pointer vAlign rightAlign" data-click="deleteCommonBehaviour(itm)">
+                                X
+                            </div>
+                        </div>
                     </div>
-                    <div class="cell vAlign rightAlign pointer" data-click="editCommonBehaviour(itm)">
-                        {{i18n.edit}}
-                    </div>
-                    <div class="cell pointer vAlign rightAlign" data-click="deleteCommonBehaviour(itm)">
-                        X
-                    </div>
-                </div>
-            </div>
-        </td>
-        <td>
-            <table class="width100">
-                <tr>
-                    <td>
-                        <select data-model="selectedBehaviourId">
-                            <option
-                                    data-disabled="editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})"
-                                    data-value="cb.name"
-                                    data-for="cb in editData.commonBehaviourProto.rs">
-                                {{cb.name}}
-                            </option>
-                        </select>
-                    </td>
-                    <td align="right">
-                        <button
-                                class="inlineBlock"
-                                data-disabled="!editData.currGameObjectInEdit.id || !selectedBehaviourId"
-                                data-click="createCommonBehaviour(selectedBehaviourId)">
-                            +
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
-<button
-        data-disabled="!form.valid()"
-        data-click="createOrEditGameObject(editData.currGameObjectInEdit)">
-    {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
-</button>
+                </td>
+                <td>
+                    <table class="width100">
+                        <tr>
+                            <td>
+                                <select data-model="selectedBehaviourId">
+                                    <option value="">-</option>
+                                    <option
+                                            data-disabled="editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})"
+                                            data-value="cb.name"
+                                            data-for="cb in editData.commonBehaviourProto.rs">
+                                        {{cb.name}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td align="right">
+                                <button
+                                        class="inlineBlock"
+                                        data-disabled="!editData.currGameObjectInEdit.id || !selectedBehaviourId"
+                                        data-click="createCommonBehaviour(selectedBehaviourId)">
+                                    +
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <button
+                data-disabled="!form.valid()"
+                data-click="createOrEditGameObject(editData.currGameObjectInEdit)">
+            {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
+        </button>
+
+    </div>
+</app-modal>
+
 
