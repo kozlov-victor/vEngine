@@ -1,0 +1,71 @@
+[
+    {
+        "name": "control4dir",
+        "description": "control character with cursor to walk up, down, left and right",
+        "parameters": {
+            "velocity": 100,
+            "walkLeftAnimation": "left",
+            "walkRightAnimation": "right",
+            "walkUpAnimation": "up",
+            "walkDownAnimation": "down",
+            "idleLeftAnimation": "idleLeft",
+            "idleRightAnimation": "idleRight",
+            "idleUpAnimation": "idleUp",
+            "idleDownAnimation": "idleDown"
+        },
+        "type": "commonBehaviour",
+        "id": "1889_0677_0"
+    },
+    {
+        "name": "draggable",
+        "description": "draggable behaviour with multitouch supporting",
+        "parameters": {},
+        "type": "commonBehaviour",
+        "id": "5316_9282_1"
+    },
+    {
+        "name": "draggable",
+        "description": "draggable behaviour with multitouch supporting",
+        "parameters": {},
+        "type": "commonBehaviour",
+        "id": "4402_4566_0"
+    },
+    {
+        "name": "draggable",
+        "description": "draggable behaviour with multitouch supporting",
+        "parameters": {},
+        "type": "commonBehaviour",
+        "id": "4488_7217_1"
+    },
+    {
+        "name": "control4dir",
+        "description": "control character with cursor to walk up, down, left and right",
+        "parameters": {
+            "velocity": 100,
+            "walkLeftAnimation": "left",
+            "walkRightAnimation": "right",
+            "walkUpAnimation": "up",
+            "walkDownAnimation": "down",
+            "idleLeftAnimation": "idleLeft",
+            "idleRightAnimation": "idleRight",
+            "idleUpAnimation": "idleUp",
+            "idleDownAnimation": "idleDown"
+        },
+        "type": "commonBehaviour",
+        "id": "0480_1383_0"
+    },
+    {
+        "name": "draggable",
+        "description": "draggable behaviour with multitouch supporting",
+        "parameters": {},
+        "type": "commonBehaviour",
+        "id": "3929_7912_1"
+    },
+    {
+        "name": "draggable",
+        "description": "draggable behaviour with multitouch supporting",
+        "parameters": {},
+        "type": "commonBehaviour",
+        "id": "5627_7423_0"
+    }
+]
