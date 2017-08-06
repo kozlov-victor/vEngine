@@ -107,7 +107,7 @@ const BaseModel = Class.extend({
         let self = this;
         Object.keys(jsonObj).forEach(function(key){
             if (key in self) {
-                if (jsonObj[key].type) {
+                if (jsonObj[key] && jsonObj[key].type) {
                     if (jsonObj[key].id) {
                         self[key] = bundle[key+'List'].find({id:jsonObj[key].id}).clone();
                     } else {
@@ -115,6 +115,7 @@ const BaseModel = Class.extend({
                         self[key] = new clazz();
                     }
                 } else if (
+                    jsonObj[key] &&
                     jsonObj[key].splice &&
                     jsonObj[key].length &&
                     jsonObj[key][0].type

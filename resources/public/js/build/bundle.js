@@ -1,18 +1,3317 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"alertModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"close()\">{{i18n.ok}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>\n";
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-alert-dialog', {
+    template: {
+        type: 'string',
+        value: require('./alertDialog.html')
+    },
+    message: '',
+    i18n: _i18n2.default.getAll(),
+    open: function open(message) {
+        RF.getComponentById('alertModal').open();
+        this.message = message;
+    },
+    close: function close() {
+        RF.getComponentById('alertModal').close();
+        this.message = null;
+    }
+});
+
+},{"./alertDialog.html":1,"providers/i18n":74}],3:[function(require,module,exports){
+module.exports = "<div\n        class=\"inlineBlock\"\n        data-click=\"click($event)\"\n        data-mousemove=\"mouseMove($event)\"\n        >\n    <div data-container class=\"inlineBlock\">\n        <svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n            <circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle>\n            <line id=\"line\" x1=\"100\" y1=\"100\"\n                  x2=\"200\" y2=\"100\"\n                  stroke=\"black\"\n                  stroke-width=\"2\"\n                  data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"\n                    >\n            </line>\n        </svg>\n    </div>\n    <div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">\n        {{angleInDeg()}}&deg;\n    </div>\n</div>";
+
+},{}],4:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = RF.registerComponent('app-angle-picker', {
+    getInitialState: function getInitialState() {
+        return {
+            object: { val: 0 },
+            value: 'val'
+        };
+    },
+
+    template: {
+        type: 'string',
+        value: require('./anglePicker.html')
+    },
+
+    angleInDeg: function angleInDeg() {
+        if (!this.object) return 0;
+        var res = this.object[this.value] * 180 / Math.PI % 360;
+        return +res.toFixed(2) || 0;
+    },
+
+    calcAngleFromEvent: function calcAngleFromEvent(e) {
+        if (!this.object) return;
+        var el = this.$el.querySelector('[data-container]');
+        var rect = el.getBoundingClientRect();
+        var x = e.clientX - rect.left,
+            y = e.clientY - rect.top;
+        var angle = Math.atan2(y - 15, x - 15);
+        if (angle < 0) angle = 2 * Math.PI + angle;
+        angle = +angle.toFixed(2) || 0;
+        this.object[this.value] = angle;
+    },
+    click: function click(e) {
+        this.calcAngleFromEvent(e);
+    },
+    mouseMove: function mouseMove(e) {
+        if (e.buttons !== 1) return;
+        this.calcAngleFromEvent(e);
+    }
+});
+
+},{"./anglePicker.html":3}],5:[function(require,module,exports){
+module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell width1\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            data-click=\"toggle()\"\n                            data-class=\"{rotated:opened}\">▷</span>\n                </div>\n                <div class=\"cell\">\n                    <span\n                            data-click=\"toggle()\"\n                            >&nbsp;{{title}}</span>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            data-class=\"{opened:opened}\">\n        <div data-transclusion=\"content\"></div>\n    </div>\n</div>";
+
+},{}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = RF.registerComponent('app-collapsible', {
+    template: {
+        type: 'string',
+        value: require('./collapsible.html')
+    },
+    getInitialState: function getInitialState() {
+        return {
+            title: 'default_title',
+            crud: '',
+            object: {},
+            meta: {},
+            id: null,
+            opened: false
+        };
+    },
+
+    toggle: function toggle() {
+        this.opened = !this.opened;
+    }
+});
+
+},{"./collapsible.html":5}],7:[function(require,module,exports){
+module.exports = "<div class=\"inlineBlock\">\r\n\r\n    <div\r\n            data-style=\"{\r\n                cursor: 'pointer',\r\n                width: 24 + 'px',\r\n                height:24 + 'px',\r\n                backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')')\r\n            }\"\r\n            data-click=\"click()\"\r\n            >\r\n    </div>\r\n\r\n    <app-color-picker-dialog id=\"colorPickerDialog\"></app-color-picker-dialog>\r\n\r\n</div>\r\n\r\n";
+
+},{}],8:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('./colorPickerDialog');
+
+exports.default = RF.registerComponent('app-color-picker', {
+    template: {
+        type: 'string',
+        value: require('./colorPicker.html')
+    },
+    getInitialState: function getInitialState() {
+        return {
+            model: { field: '' },
+            field: 'field'
+        };
+    },
+    click: function click() {
+        RF.getComponentById('colorPickerDialog').open(this.model, this.field);
+    }
+});
+
+},{"./colorPicker.html":7,"./colorPickerDialog":10}],9:[function(require,module,exports){
+module.exports = "<app-modal id=\"colorPickerModal\" data-transclusion-id=\"colorPicker\">\n\n    <div data-transclusion=\"content:#colorPicker\">\n\n        <table>\n            <tr>\n                <td>\n                    <input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"/>\n                </td>\n                <td>\n                    <input type=\"text\"  data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"/>\n                </td>\n                <td></td>\n            </tr>\n\n            <table class=\"width100\">\n                <tr\n                        data-for=\"item in colorEnums\">\n                    <td\n                            data-style=\"{\n                                color: item.left\n                            }\"\n                    >\n                        {{item.left}}\n                    </td>\n                    <td class=\"centerText\">\n                        <input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\">\n                        <br/>\n                        <input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\">\n                        <hr/>\n                    </td>\n                    <td\n                            data-style=\"{\n                                color: item.right\n                            }\"\n                    >\n                        {{item.right}}\n                    </td>\n                    <td>\n                        <div data-style=\"{\n                            width: '5px',\n                            height: '5px',\n                            backgroundColor: getRawColor(currentColor.RGB,item.key)\n                        }\"></div>\n                    </td>\n                </tr>\n\n            </table>\n        </table>\n\n        <button\n                data-click=\"applyColor()\">\n            {{i18n.edit}}\n        </button>\n    </div>\n\n</app-modal>";
+
+},{}],10:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _create = require('babel-runtime/core-js/object/create');
+
+var _create2 = _interopRequireDefault(_create);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var defaultColor = { r: 0, g: 0, b: 0 };
+var colorEnums = [{ left: 'red', right: 'cyan', key: 'r' }, { left: 'green', right: 'magenta', key: 'g' }, { left: 'blue', right: 'yellow', key: 'b' }];
+
+var cmp = RF.registerComponent('app-color-picker-dialog', {
+    template: {
+        type: 'string',
+        value: require('./colorPickerDialog.html')
+    },
+    colorEnums: colorEnums,
+    i18n: _i18n2.default.getAll(),
+    getInitialState: function getInitialState() {
+        return {
+            currentColor: {
+                RGB: {},
+                hex: ''
+            },
+            model: { field: {} },
+            field: 'field'
+        };
+    },
+    open: function open(model, field) {
+        var color = model && model[field] || (0, _create2.default)(defaultColor);
+        this.model = model;
+        this.field = field;
+        this.currentColor.RGB.r = color.r;
+        this.currentColor.RGB.g = color.g;
+        this.currentColor.RGB.b = color.b;
+        this.currentColor.hex = _utils2.default.rgbToHex(this.currentColor.RGB);
+        RF.getComponentById('colorPickerModal').open();
+    },
+    hexChanged: function hexChanged() {
+        this.currentColor.RGB = _utils2.default.hexToRgb(this.currentColor.hex);
+    },
+    rgbChanged: function rgbChanged() {
+        this.currentColor.hex = _utils2.default.rgbToHex(this.currentColor.RGB);
+    },
+    getRawColor: function getRawColor(rgb, key) {
+        var col = {
+            r: key == 'r' ? rgb.r : 0,
+            g: key == 'g' ? rgb.g : 0,
+            b: key == 'b' ? rgb.b : 0
+        };
+        return _utils2.default.rgbToHex(col);
+    },
+    applyColor: function applyColor() {
+        this.model[this.field] = this.currentColor.RGB;
+        RF.getComponentById('colorPickerModal').close();
+    }
+});
+
+// let el = document.createElement('app-color-picker-dialog');
+// el.id = 'colorPickerDialog';
+// document.body.appendChild(el);
+
+exports.default = cmp;
+
+},{"./colorPickerDialog.html":9,"babel-runtime/core-js/object/create":83,"providers/i18n":74,"providers/utils":81}],11:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"confirmModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"confirmAndClose()\">{{i18n.confirm}}</button>\n                <button data-click=\"close()\">{{i18n.cancel}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>";
+
+},{}],12:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-confirm-dialog', {
+    template: {
+        type: 'string',
+        value: require('./confirmDialog.html')
+    },
+    message: 'default message',
+    confirm: function confirm() {},
+    i18n: _i18n2.default.getAll(),
+    close: function close() {
+        RF.getComponentById('confirmModal').close();
+    },
+    confirmAndClose: function confirmAndClose() {
+        this.confirm();
+        this.close();
+    },
+    open: function open(message, callback) {
+        RF.getComponentById('confirmModal').open();
+        this.message = message;
+        this.confirm = callback;
+    }
+});
+
+},{"./confirmDialog.html":11,"providers/i18n":74}],13:[function(require,module,exports){
+module.exports = "<div>\n    <button>{{title}}</button>\n    <input  required accept=\"{{accept}}\" type=\"file\"/>\n</div>";
+
+},{}],14:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = RF.registerComponent('app-input-file', {
+    getInitialState: function getInitialState() {
+        return {
+            title: '',
+            accept: '',
+            onFilePicked: null
+        };
+    },
+    template: {
+        type: 'string',
+        value: require('./inputFile.html')
+    },
+    onMount: function onMount() {
+        var _this = this;
+
+        var btn = this.$el.querySelector('button');
+        var input = this.$el.querySelector('input');
+        btn.onclick = function () {
+            input.click();
+        };
+        input.onchange = function () {
+            var file = input.files[0];
+            var name = file.name.split('.')[0];
+            var url = window.URL || window.webkitURL;
+            var src = url.createObjectURL(file);
+            _this.onFilePicked(src, file, name);
+            RF.digest();
+        };
+    }
+});
+
+},{"./inputFile.html":13}],15:[function(require,module,exports){
+module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\">\n    <div class=\"fullscreen shadow\"></div>\n    <div class=\"dialog\">\n        <div class=\"dialogContent\">\n            <div class=\"dialogClose\">\n                <span data-click=\"close()\" class=\"pointer\">X</span>\n            </div>\n            <div class=\"withPadding\">\n                <div data-transclusion=\"content\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n";
+
+},{}],16:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = RF.registerComponent('app-modal', {
+    template: {
+        type: 'string',
+        value: require('./modal.html')
+    },
+    getInitialState: function getInitialState() {
+        return {
+            opened: false
+        };
+    },
+    close: function close() {
+        this.opened = false;
+    },
+    open: function open() {
+        this.opened = true;
+    }
+});
+
+},{"./modal.html":15}],17:[function(require,module,exports){
+'use strict';
+
+require('components/modal/modal');
+
+require('components/collapsible/collapsible');
+
+require('components/alertDialog/alertDialog');
+
+require('components/confirmDialog/confirmDialog');
+
+require('components/inputFile/inputFile');
+
+require('components/colorPicker/colorPicker');
+
+require('components/anglePicker/anglePicker');
+
+require('providers/userDefinedFns');
+
+var _explorer = require('pages/explorer/explorer');
+
+var _explorer2 = _interopRequireDefault(_explorer);
+
+var _editor = require('pages/editor/editor');
+
+var _editor2 = _interopRequireDefault(_editor);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+RF.Router.setup({
+    explorer: _explorer2.default,
+    editor: _editor2.default
+});
+
+RF.applyBindings('body');
+RF.Router.navigateTo('explorer');
+
+},{"components/alertDialog/alertDialog":2,"components/anglePicker/anglePicker":4,"components/collapsible/collapsible":6,"components/colorPicker/colorPicker":8,"components/confirmDialog/confirmDialog":12,"components/inputFile/inputFile":14,"components/modal/modal":16,"pages/editor/editor":45,"pages/explorer/explorer":71,"providers/userDefinedFns":80}],18:[function(require,module,exports){
+module.exports = "<div class=\"height100 relative\" data-droppable=\"onDrop\" id=\"sceneDiv\">\r\n    <div data-for=\"item in editData.currLayerInEdit.gameObjects.rs\">\r\n\r\n\r\n        <div\r\n                data-if=\"!item.subType\"\r\n                data-draggable=\"{obj:item,src:'centralPanel'}\"\r\n                data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\"\r\n                data-style=\"utils.merge(\r\n                    utils.getGameObjectCss(item),\r\n                    {\r\n                        position:'absolute',\r\n                        left:\r\n                             item.fixedToCamera?(item.pos.x+'px'):\r\n                             item.pos.x -\r\n                             frameWidth() *\r\n                             editData.tileMapPosX +\r\n                             'px',\r\n                        top:\r\n                             item.fixedToCamera?(item.pos.y+'px'):\r\n                             item.pos.y -\r\n                             frameHeight() *\r\n                             editData.tileMapPosY +\r\n                             'px',\r\n                    }\r\n                )\"\r\n                data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"\r\n                >\r\n\r\n        </div>\r\n\r\n        <div\r\n                data-if=\"item.subType=='textField'\"\r\n                data-draggable=\"{obj:item,src:'centralPanel'}\"\r\n                data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\"\r\n                data-style=\"utils.merge(\r\n                    utils.getGameObjectCss(item),\r\n                    {\r\n                        position:'absolute',\r\n                        left:\r\n                             item.pos.x -\r\n                             frameWidth() *\r\n                             editData.tileMapPosX +\r\n                             'px',\r\n                        top:\r\n                             item.pos.y -\r\n                             frameHeight() *\r\n                             editData.tileMapPosY +\r\n                             'px',\r\n                        backgroundColor:'rgb(0,222,0.1)',\r\n                        height:item.height+'px',\r\n                        width:item.width?item.width+'px':'10px',\r\n                        backgroundColor:item.width?'':'#ddd',\r\n                        backgroundImage:'none'\r\n                    }\r\n                )\"\r\n                data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"\r\n                >\r\n\r\n            <div style=\"position: relative;left:0;top:0;z-index:10\">\r\n                            <span\r\n                                data-style=\"{\r\n                                    left:item.pos.x+'px',\r\n                                    top: item.pos.y+'px',\r\n                                    display:ch=='\\n'?'block':'inline-block',\r\n                                    width:item._font.fontContext.symbols[ch].width+'px',\r\n                                    height:item._font.fontContext.symbols[ch].height+'px',\r\n                                    backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',\r\n                                    backgroundRepeat:     'no-repeat',\r\n                                    backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',\r\n                                    backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'\r\n                                }\"\r\n                                    data-for=\"ch in item._chars\">\r\n                                </span>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n</div>";
+
+},{}],19:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var GameObject = _require('gameObject');
+
+exports.default = RF.registerComponent('app-curr-scene', {
+    template: {
+        type: 'string',
+        value: require('./scene.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    frameWidth: function frameWidth() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return 0;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return 0;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet._frameWidth || 0;
+    },
+    frameHeight: function frameHeight() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return 0;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return 0;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet._frameHeight || 0;
+    },
+    _onDropFromLeftPanel: function _onDropFromLeftPanel(droppedObj, x, y) {
+        var go = new GameObject({
+            pos: { x: x, y: y },
+            layerId: _editData2.default.currLayerInEdit.id,
+            protoId: droppedObj.obj.id
+        });
+        _resource2.default.save(go).then(function (resp) {
+            if (resp.created) {
+                go.id = resp.id;
+                _editData2.default.gameObjectList.add(go);
+                _editData2.default.currLayerInEdit.addGameObject(go);
+            } else if (resp.updated) {
+                //gs.updateCloner();
+            }
+            RF.digest();
+        });
+    },
+    _onDropFromCentralPanel: function _onDropFromCentralPanel(droppedObj, x, y) {
+        var go = _editData2.default.currLayerInEdit.gameObjects.find({ id: droppedObj.obj.id });
+        go.pos = { x: x, y: y };
+        _resource2.default.save(go).then(function (resp) {
+            RF.digest();
+        });
+    },
+    onDrop: function onDrop(droppedObj, e, coords) {
+        var x = e.offsetX - coords.mouseX;
+        var y = e.offsetY - coords.mouseY;
+        if (droppedObj.src == 'leftPanel') this._onDropFromLeftPanel(droppedObj, x, y);else this._onDropFromCentralPanel(droppedObj, x, y);
+    }
+});
+
+},{"./scene.html":18,"providers/editData":73,"providers/i18n":74,"providers/rest/resource":79,"providers/utils":81}],20:[function(require,module,exports){
+module.exports = "<div\n        class=\"height100 relative\"\n        data-if=\"editData.scriptEditorUrl\"\n        >\n\n    <div class=\"scriptEditorClose\" data-click=\"close()\">X</div>\n\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editor\"\n                ></iframe>\n    </div>\n</div>";
+
+},{}],21:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-script-editor', {
+    template: {
+        type: 'string',
+        value: require('./scriptEditor.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    close: function close() {
+        _editData2.default.scriptEditorUrl = '';
+    }
+});
+
+},{"./scriptEditor.html":20,"providers/editData":73,"providers/i18n":74}],22:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"commonBehaviourModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td class=\"borderBottom\">\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    {{editData.currCommonBehaviourInEdit.name}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td class=\"borderBottom\">\r\n                    {{i18n.description}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    {{editData.currCommonBehaviourInEdit.description}}\r\n                </td>\r\n            </tr>\r\n            <tr data-for=\"value, key in editData.currCommonBehaviourInEdit.parameters\">\r\n                <td class=\"borderBottom\">\r\n                    {{key}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    <input\r\n                            type=\"text\"\r\n                            data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"/>\r\n                </td>\r\n            </tr>\r\n            <tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\">\r\n                <td colspan=\"2\" class=\"borderBottom\">\r\n                    {{i18n.noDataToEdit}}\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\"\r\n                data-disabled=\"!form.valid()\">\r\n            {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n\r\n    </div>\r\n\r\n</app-modal>";
+
+},{}],23:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-common-behaviour-dialog', {
+    template: {
+        type: 'string',
+        value: require('./commonBehaviourDialog.html')
+    },
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    editData: _editData2.default,
+    form: { valid: function valid() {
+            return true;
+        } },
+
+    createOrEditCommonBehaviour: function createOrEditCommonBehaviour() {
+        var cb = _editData2.default.currCommonBehaviourInEdit;
+        _resource2.default.save(cb).then(function (resp) {
+            if (resp.created) {
+                cb.id = resp.id;
+                _editData2.default.commonBehaviourList.add(cb);
+                _editData2.default.currGameObjectInEdit.commonBehaviour.add(cb);
+                return _resource2.default.save(_editData2.default.currGameObjectInEdit);
+            }
+        }).then(function () {
+            _editData2.default.currGameObjectInEdit.updateCloner();
+            RF.getComponentById('commonBehaviourModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    }
+});
+
+},{"./commonBehaviourDialog.html":22,"providers/editData":73,"providers/i18n":74,"providers/rest/resource":79,"providers/utils":81}],24:[function(require,module,exports){
+module.exports = "<div>\n    <app-sound-dialog id=\"soundDialog\"></app-sound-dialog>\n    <app-particle-system-dialog></app-particle-system-dialog>\n    <app-font-dialog id=\"fontDialog\"></app-font-dialog>\n    <app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog>\n    <app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog>\n    <app-scene-dialog></app-scene-dialog>\n    <app-layer-dialog></app-layer-dialog>\n</div>";
+
+},{}],25:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+require('pages/editor/dialogs/soundDialog/soundDialog');
+
+require('pages/editor/dialogs/fontDialog/fontDialog');
+
+require('pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog');
+
+require('pages/editor/dialogs/gameObjectDialog/gameObjectDialog');
+
+require('pages/editor/dialogs/particleSystemDialog/particleSystemDialog');
+
+require('pages/editor/dialogs/sceneDialog/sceneDialog');
+
+require('pages/editor/dialogs/layerDialog/layerDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-dialogs', {
+    template: {
+        type: 'string',
+        value: require('./dialogs.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll()
+});
+
+},{"./dialogs.html":24,"pages/editor/dialogs/fontDialog/fontDialog":27,"pages/editor/dialogs/gameObjectDialog/gameObjectDialog":31,"pages/editor/dialogs/layerDialog/layerDialog":33,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":35,"pages/editor/dialogs/sceneDialog/sceneDialog":39,"pages/editor/dialogs/soundDialog/soundDialog":41,"pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog":43,"providers/editData":73,"providers/i18n":74}],26:[function(require,module,exports){
+module.exports = "<app-modal id=\"fontModal\">\n    <div data-transclusion=\"content\">\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.selectFont}}\n                </td>\n                <td>\n                    <select\n                            required\n                            data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                        <option\n                                data-value=\"fnt.displayName\"\n                                data-for=\"fnt in systemFontList\">\n                            {{fnt.displayName}}\n                        </option>\n                    </select>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n                <td>\n                    <input required\n                           data-model=\"editData.currFontInEdit.name\" class=\"width100\">\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.fontSize}}\n                </td>\n                <td>\n                    <input required type=\"number\"\n                           min=\"1\"\n                           max=\"1000\"\n                           data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.fontColor}}\n                </td>\n                <td>\n                    <app-color-picker\n                        data-state=\"{\n                            model:editData.currFontInEdit,\n                            field:'fontColor'\n                        }\"\n                    ></app-color-picker>\n                </td>\n            </tr>\n            <tr>\n                <td colspan=\"2\">\n                    <input data-model=\"fontSample\" class=\"width100\"/>\n                </td>\n            </tr>\n            <tr>\n                <td colspan=\"2\">\n                    <div data-style='{\n                fontFamily:editData.currFontInEdit.fontFamily,\n                fontSize:editData.currFontInEdit.fontSize+\"px\",\n                color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n            }'>{{fontSample}}</div>\n                </td>\n            </tr>\n        </table>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"createOrEditFont(editData.currFontInEdit)\">\n            {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n        </button>\n    </div>\n</app-modal>\n\n\n";
+
+},{}],27:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _chrome = require('providers/chrome');
+
+var _chrome2 = _interopRequireDefault(_chrome);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SYMBOL_PADDING = 4;
+var fontSample = 'Test me! Text here';
+
+var getFontContext = function getFontContext(arrFromTo, strFont, w) {
+    function getFontHeight(strFont) {
+        var parent = document.createElement("span");
+        parent.appendChild(document.createTextNode("height!ДдЙЇ"));
+        document.body.appendChild(parent);
+        parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
+        var height = parent.offsetHeight;
+        document.body.removeChild(parent);
+        return height;
+    }
+    var cnv = document.createElement('canvas');
+    var ctx = cnv.getContext('2d');
+    ctx.font = strFont;
+    var textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
+    var symbols = {};
+    var currX = 0,
+        currY = 0,
+        cnvHeight = textHeight;
+    for (var k = 0; k < arrFromTo.length; k++) {
+        var arrFromToCurr = arrFromTo[k];
+        for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
+            var currentChar = String.fromCharCode(i);
+
+            ctx = cnv.getContext('2d');
+            var textWidth = ctx.measureText(currentChar).width;
+            textWidth += 2 * SYMBOL_PADDING;
+            if (textWidth == 0) continue;
+            if (currX + textWidth > w) {
+                currX = 0;
+                currY += textHeight;
+                cnvHeight = currY + textHeight;
+            }
+            var symbol = {};
+            symbol.x = ~~currX + SYMBOL_PADDING;
+            symbol.y = ~~currY + SYMBOL_PADDING;
+            symbol.width = ~~textWidth - 2 * SYMBOL_PADDING;
+            symbol.height = textHeight - 2 * SYMBOL_PADDING;
+            symbols[currentChar] = symbol;
+            currX += textWidth;
+        }
+    }
+    return { symbols: symbols, width: w, height: cnvHeight };
+};
+
+var getFontImage = function getFontImage(symbolsContext, strFont, color) {
+    var cnv = document.createElement('canvas');
+    cnv.width = symbolsContext.width;
+    cnv.height = symbolsContext.height;
+    var ctx = cnv.getContext('2d');
+    ctx.font = strFont;
+    ctx.fillStyle = color;
+    ctx.textBaseline = "top";
+    var symbols = symbolsContext.symbols;
+    for (var symbol in symbols) {
+        if (!symbols.hasOwnProperty(symbol)) continue;
+        ctx.fillText(symbol, symbols[symbol].x, symbols[symbol].y);
+    }
+    return cnv.toDataURL();
+};
+
+exports.default = RF.registerComponent('app-font-dialog', {
+    template: {
+        type: 'string',
+        value: require('./fontDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    fontSample: fontSample,
+    systemFontList: [],
+
+    open: function open() {
+        if (!this.systemFontList.length) {
+            var self = this;
+            _chrome2.default.requestToApi({ method: 'getFontList' }, function (list) {
+                self.systemFontList = list;
+                RF.digest();
+            });
+        }
+        RF.getComponentById('fontModal').open();
+    },
+    createOrEditFont: function createOrEditFont(model) {
+        var self = this;
+        var strFont = model.fontSize + 'px' + ' ' + model.fontFamily;
+        model.fontContext = getFontContext([{ from: 32, to: 150 }, { from: 1040, to: 1116 }], strFont, 320);
+        var file = _utils2.default.dataURItoBlob(getFontImage(model.fontContext, strFont, _utils2.default.rgbToHex(model.fontColor)));
+
+        _promise2.default.resolve().then(function () {
+            return _fileSystem2.default.uploadFile(file, {
+                type: model.type,
+                fileName: model.name + '.png'
+            });
+        }).then(function () {
+            return _resource2.default.save(model);
+        }).then(function (resp) {
+            if (resp.created) {
+                model.id = resp.id;
+                _editData2.default[model.type + 'List'].add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            RF.getComponentById('fontModal').close();
+            RF.digest();
+        });
+    }
+});
+
+},{"./fontDialog.html":26,"babel-runtime/core-js/promise":86,"providers/chrome":72,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],28:[function(require,module,exports){
+module.exports = "<app-modal id=\"frameAnimationModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currFrameAnimationInEdit.name\">\r\n                </td>\r\n                <td rowspan=\"3\">\r\n                    <div style=\"max-height: 80vh;max-width:80vw;overflow: scroll;\"\r\n                    >\r\n                        {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}\r\n\r\n                        <div data-style=\"\r\n                        utils.merge(\r\n                            utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),\r\n                            {border:'1px solid blue'}\r\n                        )\">\r\n                        </div>\r\n\r\n                        <div>\r\n                            <button\r\n                                    data-click=\"playAnimation()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.playAnim}}</button>\r\n                            <button\r\n                                    data-click=\"stopAnimation()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.stopAnim}}</button>\r\n                        </div>\r\n\r\n                        <div>\r\n\r\n                            <button\r\n                                    data-click=\"previousFrame()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> << </button>\r\n\r\n                            <button\r\n                                    data-click=\"nextFrame()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> >> </button>\r\n                        </div>\r\n\r\n\r\n                        <div class=\"relative\"\r\n                             data-style=\"\r\n                              {\r\n                                'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')',\r\n                                'width':                editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px',\r\n                                'height':               editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px'\r\n                              }\">\r\n                            <div\r\n                                    data-for=\"v,i in getLoopArr()\"\r\n                                    data-style=\"{\r\n                                            'display':        'inline-block',\r\n                                            'left':           editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px',\r\n                                            'top':            editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px',\r\n                                            'position':       'absolute',\r\n                                            'text-align':     'left',\r\n                                            'border':         '1px solid red',\r\n                                            'width':          editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px',\r\n                                            'height':         editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px'\r\n                                      }\">{{i}}</div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.duration}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            min=\"1\"\r\n                            required\r\n                            data-model=\"editData.currFrameAnimationInEdit.duration\">\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.frames}}\r\n                            </td>\r\n                            <td>\r\n                                <button data-click=\"setAllIndexes()\">{{i18n.all}}</button>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.from}}\r\n                            </td>\r\n                            <td>\r\n                                <input\r\n                                        type=\"number\"\r\n                                        data-model=\"from\"\r\n                                        min=\"0\"\r\n                                        data-keyup=\"setRangeIndexes()\">\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.to}}\r\n                            </td>\r\n                            <td>\r\n                                <input\r\n                                        type=\"number\"\r\n                                        min=\"0\"\r\n                                        data-model=\"to\"\r\n                                        data-change=\"setRangeIndexes()\">\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n\r\n                </td>\r\n                <td>\r\n                   <textarea\r\n                           required\r\n                           data-model=\"frames\">\r\n                   </textarea>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditFrameAnimation()\"\r\n                data-disabled=\"!form.valid()\">\r\n            {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n\r\n</app-modal>";
+
+},{}],29:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-frame-animation-dialog', {
+    template: {
+        type: 'string',
+        value: require('./frameAnimationDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    utils: _utils2.default,
+    i18n: _i18n2.default.getAll(),
+
+    isStopped: true,
+    from: 0, to: 1,
+    frames: '',
+
+    open: function open() {
+        this.isStopped = true;
+        this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
+        this.editData.currFrameAnimationInEdit._gameObject = this.editData.currGameObjectInEdit.clone();
+        RF.getComponentById('frameAnimationModal').open();
+    },
+    allIndexes: function allIndexes() {
+        var res = this.utils.getArray(this.editData.currGameObjectInEdit.spriteSheet._numOfFrames);
+        return res.join(',');
+    },
+    setAllIndexes: function setAllIndexes() {
+        this.frames = this.allIndexes();
+    },
+    setRangeIndexes: function setRangeIndexes() {
+        this.frames = _utils2.default.range(+this.from, +this.to).join(',');
+        console.log(this.from, this.to);
+        console.log(_utils2.default.range(+this.from, +this.to));
+    },
+    playAnimation: function playAnimation() {
+        var self = this;
+        self.isStopped = false;
+        try {
+            self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+        self.editData.currFrameAnimationInEdit.play();
+        setTimeout(function _anim() {
+            self.editData.currFrameAnimationInEdit.update(new Date().getTime());
+
+            var i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
+            self.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
+
+            if (self.isStopped) {
+                self.isStopped = false;
+                return;
+            }
+            RF.digest();
+            if (RF.getComponentById('frameAnimationModal').opened) setTimeout(_anim, 50);
+        }, 0);
+    },
+    stopAnimation: function stopAnimation() {
+        this.isStopped = true;
+    },
+    nextFrame: function nextFrame() {
+        var self = this;
+        self.stopAnimation();
+        self.editData.currFrameAnimationInEdit.nextFrame();
+    },
+    previousFrame: function previousFrame() {
+        var self = this;
+        self.stopAnimation();
+        self.editData.currFrameAnimationInEdit.previousFrame();
+    },
+    getLoopArr: function getLoopArr() {
+        if (!_editData2.default.currFrameAnimationInEdit._gameObject) _editData2.default.currFrameAnimationInEdit._gameObject = { spriteSheet: {} }; // todo dirty
+        var lastIndex = _editData2.default.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesH * _editData2.default.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV;
+        return _utils2.default.getArray(lastIndex);
+    },
+
+    createOrEditFrameAnimation: function createOrEditFrameAnimation() {
+        var self = this;
+        var fa = _editData2.default.currFrameAnimationInEdit;
+        self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
+
+        _resource2.default.save(fa).then(function (resp) {
+            if (resp.created) {
+                fa.id = resp.id;
+                _editData2.default.frameAnimationList.add(fa);
+                _editData2.default.currGameObjectInEdit.frameAnimations.add(fa);
+                return _resource2.default.save(_editData2.default.currGameObjectInEdit);
+            } else {
+                fa.updateCloner();
+            }
+        }).then(function () {
+            _editData2.default.currGameObjectInEdit.updateCloner();
+            RF.getComponentById('frameAnimationModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    }
+});
+
+},{"./frameAnimationDialog.html":28,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],30:[function(require,module,exports){
+module.exports = "\r\n\r\n<app-modal id=\"gameObjectModal\">\r\n    <div data-transclusion=\"content\">\r\n\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.name\"/>\r\n                </td>\r\n                <td></td>\r\n                <td rowspan=\"5\">\r\n                    <div class=\"relative\"\r\n                         style=\"\r\n                        display: inline-block;\r\n                        overflow: scroll;\r\n                        max-width:60vw;\r\n                        max-height:60vh;\r\n                    \"\r\n                    >\r\n\r\n\r\n                        <div data-style=\"\r\n                    utils.merge(\r\n                        utils.getGameObjectCss(editData.currGameObjectInEdit),\r\n                        {\r\n                            'border':'1px solid blue',\r\n                            'opacity':editData.currGameObjectInEdit.alpha\r\n                        }\r\n                    )\r\n                \"></div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.spriteSheet}}\r\n                </td>\r\n                <td>\r\n                    <select\r\n                            data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.spriteSheet.id\">\r\n                        <option data-value=\"item.id\" data-for=\"item in editData.spriteSheetList.rs\">{{item.name}}</option>\r\n                    </select>\r\n                </td>\r\n                <td>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.groupName}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            data-model=\"editData.currGameObjectInEdit.groupName\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.rigid}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"checkbox\"\r\n                            data-model=\"editData.currGameObjectInEdit.rigid\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.width}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.width\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.height}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.height\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.angle}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            step=\"0.1\"\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.angle\"/>\r\n                </td>\r\n                <td align=\"left\">\r\n                    <div class=\"inlineBlock\">\r\n                        <app-angle-picker\r\n                                data-state=\"{\r\n                        object: editData.currGameObjectInEdit,\r\n                        value: 'angle'\r\n                    }\"\r\n                        ></app-angle-picker>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    alpha\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            step=\"0.1\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"range\"\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            step=\"0.1\"\r\n                            data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.currFrameIndex}}\r\n                </td>\r\n                <td>\r\n                    <input type=\"number\"\r\n                           min=\"0\"\r\n                           data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\"\r\n                           required\r\n                           data-model=\"editData.currGameObjectInEdit.currFrameIndex\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.frAnimations}}\r\n                </td>\r\n                <td>\r\n                    <div class=\"table width100\">\r\n                        <div class=\"row\" data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations.rs\">\r\n                            <div class=\"cell vAlign\">\r\n                                <span>{{animItm.name}}</span>\r\n                            </div>\r\n                            <div class=\"cell vAlign rightAlign pointer\" data-click=\"editFrameAnimation(animItm)\">\r\n                                {{i18n.edit}}\r\n                            </div>\r\n                            <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteFrameAnimation(animItm)\">\r\n                                X\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n                <td align=\"right\">\r\n                    <button\r\n                            class=\"inlineBlock\"\r\n                            data-disabled=\"!editData.currGameObjectInEdit.id\"\r\n                            data-click=\"createFrameAnimation()\">+</button>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.commonBehaviour}}\r\n                </td>\r\n                <td>\r\n                    <div class=\"table width100\">\r\n                        <div class=\"row\" data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour.rs\">\r\n                            <div class=\"cell vAlign\">\r\n                                <span>{{itm.name}}</span>\r\n                            </div>\r\n                            <div class=\"cell vAlign rightAlign pointer\" data-click=\"editCommonBehaviour(itm)\">\r\n                                {{i18n.edit}}\r\n                            </div>\r\n                            <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteCommonBehaviour(itm)\">\r\n                                X\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n                <td>\r\n                    <table class=\"width100\">\r\n                        <tr>\r\n                            <td>\r\n                                <select data-model=\"selectedBehaviourId\">\r\n                                    <option value=\"\">-</option>\r\n                                    <option\r\n                                            data-disabled=\"editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})\"\r\n                                            data-value=\"cb.name\"\r\n                                            data-for=\"cb in editData.commonBehaviourProto.rs\">\r\n                                        {{cb.name}}\r\n                                    </option>\r\n                                </select>\r\n                            </td>\r\n                            <td align=\"right\">\r\n                                <button\r\n                                        class=\"inlineBlock\"\r\n                                        data-disabled=\"!editData.currGameObjectInEdit.id || !selectedBehaviourId\"\r\n                                        data-click=\"createCommonBehaviour(selectedBehaviourId)\">\r\n                                    +\r\n                                </button>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-disabled=\"!form.valid()\"\r\n                data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">\r\n            {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n    </div>\r\n</app-modal>\r\n\r\n<app-frame-animation-dialog id=\"frameAnimationDialog\"></app-frame-animation-dialog>\r\n<app-common-behaviour-dialog id=\"commonBehaviourDialog\"></app-common-behaviour-dialog>\r\n";
+
+},{}],31:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+require('pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog');
+
+require('pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FrameAnimation = _require('frameAnimation');
+
+exports.default = RF.registerComponent('app-game-object-dialog', {
+    template: {
+        type: 'string',
+        value: require('./gameObjectDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    selectedBehaviourId: '',
+
+    // open: function(){ // not used at this dialog
+    // },
+    createOrEditGameObject: function createOrEditGameObject(g) {
+        _resource2.default.save(g).then(function (resp) {
+            if (resp.created) {
+                g.id = resp.id;
+                _editData2.default.gameObjectProtoList.add(g);
+                return resp;
+            } else if (resp.updated) {
+                g.updateCloner();
+            }
+        }).then(function (resp) {
+            if (resp && resp.created) return _fileSystem2.default.createFile('script/gameObjectProto/' + g.name + '.js', document.getElementById('defaultCodeScript').textContent);
+        }).then(function () {
+            RF.getComponentById('gameObjectModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    },
+    refreshGameObjectFramePreview: function refreshGameObjectFramePreview(gameObjectProto, ind) {
+        var spriteSheet = gameObjectProto.spriteSheet;
+        console.log(gameObjectProto, spriteSheet);
+        if (!spriteSheet) return;
+        var maxNumOfFrame = spriteSheet.numOfFramesH * spriteSheet.numOfFramesV - 1;
+        if (this.editData.currGameObjectInEdit.currFrameIndex >= maxNumOfFrame) {
+            this.editData.currGameObjectInEdit.currFrameIndex = 0;
+            ind = 0;
+        }
+        gameObjectProto.setFrameIndex(ind);
+    },
+    createFrameAnimation: function createFrameAnimation() {
+        this.editData.currFrameAnimationInEdit = new FrameAnimation(new FrameAnimation().toJSON());
+        RF.getComponentById('frameAnimationDialog').open();
+    },
+    editFrameAnimation: function editFrameAnimation(fa) {
+        this.editData.currFrameAnimationInEdit = fa.clone();
+        RF.getComponentById('frameAnimationDialog').open();
+    },
+    deleteFrameAnimation: function deleteFrameAnimation(fa) {
+        var _this = this;
+
+        _utils2.default.deleteModel(fa, function () {
+            _this.editData.currGameObjectInEdit.frameAnimations.remove({ id: fa.id });
+            _this.editData.currGameObjectInEdit.updateCloner();
+            _resource2.default.save(_this.editData.currGameObjectInEdit);
+        });
+    },
+
+    onSpriteSheetSelected: function onSpriteSheetSelected(sprId) {
+        var gameObjectProto = _editData2.default.currGameObjectInEdit;
+        var spriteSheet = _editData2.default.spriteSheetList.find({ id: sprId });
+        console.log('found sprite', sprId, spriteSheet);
+        if (!spriteSheet) return;
+        spriteSheet = spriteSheet.clone();
+        //if (!gameObject.name) gameObject.name = spriteSheet.name;
+        //spriteSheet.calcFrameSize();
+        gameObjectProto.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
+        gameObjectProto.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
+        gameObjectProto.spriteSheet = spriteSheet;
+    },
+
+    createCommonBehaviour: function createCommonBehaviour(selectedBehaviourName) {
+        if (_editData2.default.currGameObjectInEdit.commonBehaviour.find({ name: selectedBehaviourName })) {
+            alertEx(_i18n2.default.get('objectAlreadyAdded'));
+            return;
+        }
+        this.editData.currCommonBehaviourInEdit = this.editData.commonBehaviourProto.find({ name: selectedBehaviourName }).clone();
+        RF.getComponentById('commonBehaviourModal').open();
+    },
+    editCommonBehaviour: function editCommonBehaviour(cb) {
+        this.editData.currCommonBehaviourInEdit = cb.clone();
+        RF.getComponentById('commonBehaviourModal').open();
+    },
+    deleteCommonBehaviour: function deleteCommonBehaviour(cb) {
+        var self = this;
+        window.confirmEx(this.i18n.confirmQuestion(cb), function () {
+            _promise2.default.resolve().then(function () {
+                self.editData.commonBehaviourList.remove({ id: cb.id });
+                return _resource2.default.remove(cb);
+            }).then(function () {
+                self.editData.currGameObjectInEdit.fixateState();
+                self.editData.currGameObjectInEdit.commonBehaviour.remove({ id: cb.id });
+                self.editData.currGameObjectInEdit.updateCloner();
+                return _resource2.default.save(self.editData.currGameObjectInEdit.toJSON_Patched());
+            }).catch(window.catchPromise);
+        });
+    }
+});
+
+},{"./gameObjectDialog.html":30,"babel-runtime/core-js/promise":86,"pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog":23,"pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog":29,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],32:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"layerModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n\r\n        <div class=\"withPadding\">\r\n            <div>\r\n                {{i18n.scene}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}\r\n            </div>\r\n            <b class=\"block centerText\">{{i18n.layer}}</b>\r\n            <div class=\"table width100\">\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.name}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input\r\n                                data-model=\"editData.currLayerInEdit.name\"\r\n                                required/>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <div>\r\n                <button\r\n                    data-disabled=\"!form.valid()\"\r\n                    data-click=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\">\r\n                    {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}\r\n                </button>\r\n            </div>\r\n        </div>\r\n\r\n    </div>\r\n\r\n</app-modal>";
+
+},{}],33:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Layer = _require('layer');
+var collections = _require('collections');
+
+exports.default = RF.registerComponent('app-layer-dialog', {
+    template: {
+        type: 'string',
+        value: require('./layerDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+
+    createOrEditLayer: function createOrEditLayer(layer, scene) {
+
+        if (!scene.layers) scene.layers = new collections.List(); // todo
+
+        _resource2.default.save(layer).then(function (resp) {
+            if (resp.created) {
+                layer.id = resp.id;
+                scene.layers.add(layer);
+                return _resource2.default.save(scene);
+            }
+        }).then(function () {
+            layer.updateCloner();
+            scene.updateCloner();
+            RF.getComponentById('layerModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    },
+    deleteLayer: function deleteLayer(l) {}
+});
+
+},{"./layerDialog.html":32,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],34:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"particleSystemModal\">\n    <div data-transclusion=\"content\">\n\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n                <td>\n\n                </td>\n                <td>\n                    <input\n                            required\n                            data-model=\"editData.currParticleSystemInEdit.name\"/>\n                </td>\n            </tr>\n            <tr>\n                <td rowspan=\"2\">\n                    numOfParticlesToEmit\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n                </td>\n            </tr>\n            <tr>\n                <td rowspan=\"2\">\n                    particleVelocity\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td rowspan=\"2\">\n                    particleLiveTime\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td>\n                    emissionRadius\n                </td>\n                <td></td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td>\n                    particleAngle\n                </td>\n                <td>\n                    from / to\n                </td>\n                <td>\n                    <app-angle-picker\n                            data-state=\"{\n                        object:editData.currParticleSystemInEdit.particleAngle,\n                        value:'from'\n                    }\"\n                    ></app-angle-picker>\n                    <app-angle-picker\n                            data-state=\"{\n                        object:editData.currParticleSystemInEdit.particleAngle,\n                        value:'to'\n                    }\"\n                    ></app-angle-picker>\n                </td>\n            </tr>\n            <tr>\n                <td></td>\n                <td>\n                    {{i18n.gameObject}}\n                </td>\n                <td>\n\n                    <table>\n                        <tr>\n                            <td>\n                                <select\n                                        required\n                                        data-change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectProto.id)\"\n                                        data-model=\"editData.currParticleSystemInEdit.gameObjectProto.id\"\n                                >\n                                    <option\n                                            data-value=\"item.id\"\n                                            data-for=\"item in editData.gameObjectProtoList.rs\">{{item.name}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <div data-style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObjectProto),\n                                    {\n                                        zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObjectProto)\n                                    }\n                               )\">\n                                </div>\n                            </td>\n                        </tr>\n                    </table>\n\n\n                </td>\n            </tr>\n\n        </table>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n            {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n        </button>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"showPreview()\">\n            {{i18n.preview}}\n        </button>\n\n    </div>\n</app-modal>\n\n<app-particle-system-preview-dialog id=\"particleSystemPreviewDialog\"></app-particle-system-preview-dialog>";
+
+},{}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+require('pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-particle-system-dialog', {
+    template: {
+        type: 'string',
+        value: require('./particleSystemDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    utils: _utils2.default,
+    i18n: _i18n2.default.getAll(),
+    onGameObjectIdChanged: function onGameObjectIdChanged(id) {
+        _editData2.default.currParticleSystemInEdit.gameObjectProto = _editData2.default.gameObjectProtoList.find({ id: id }).clone();
+    },
+    showPreview: function showPreview() {
+        RF.getComponentById('particleSystemPreviewDialog').open();
+    },
+    createOrEditPs: function createOrEditPs(model) {
+        var self = this;
+        _promise2.default.resolve().then(function () {
+            return _resource2.default.save(model);
+        }).then(function (resp) {
+            if (resp.created) {
+                model.id = resp.id;
+                _editData2.default[model.type + 'List'].add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            RF.getComponentById('particleSystemModal').close();
+            RF.digest();
+        });
+    }
+});
+
+},{"./particleSystemDialog.html":34,"babel-runtime/core-js/promise":86,"pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog":37,"providers/editData":73,"providers/i18n":74,"providers/rest/resource":79,"providers/utils":81}],36:[function(require,module,exports){
+module.exports = "<app-modal id=\"particleSystemPreviewModal\">\n    <div data-transclusion=\"content\">\n        <div>\n            {{i18n.preview}} {{i18n.particleSystem}}\n            <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n        </div>\n        <div\n                data-click=\"emit($event)\"\n                data-mousemove=\"$event.buttons==1 && emit($event)\"\n                class=\"subFullScreen relative noOverFlow\">\n            <div\n                    data-for=\"item in editData.currParticleSystemInEdit._particles\"\n                    data-style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px',\n                                pointerEvents:'none'\n                            }\n                    )\"\n            >\n            </div>\n        </div>\n        <div>\n            <button data-click=\"close()\">{{i18n.close}}</button>\n        </div>\n    </div>\n</app-modal>\n\n\n";
+
+},{}],37:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var tid = void 0;
+
+exports.default = RF.registerComponent('app-particle-system-preview-dialog', {
+    template: {
+        type: 'string',
+        value: require('./particleSystemPreviewDialog.html')
+    },
+    editData: _editData2.default, utils: _utils2.default,
+    i18n: _i18n2.default.getAll(),
+
+    open: function open() {
+        RF.getComponentById('particleSystemPreviewModal').open();
+        this.run();
+    },
+    close: function close() {
+        RF.getComponentById('particleSystemPreviewModal').close();
+        clearInterval(tid);
+    },
+    run: function run() {
+        var prevTime = null;
+
+        if (!_editData2.default.currParticleSystemInEdit._particles) _editData2.default.currParticleSystemInEdit._particles = [];
+
+        var update = function update() {
+
+            var currTime = Date.now();
+            if (!prevTime) prevTime = currTime;
+            var delta = currTime - prevTime;
+            prevTime = currTime;
+            _editData2.default.currParticleSystemInEdit._particles.forEach(function (p) {
+
+                p._currFrameAnimation && p._currFrameAnimation.update(currTime);
+                var deltaX = p.vel.x * delta / 1000;
+                var deltaY = p.vel.y * delta / 1000;
+                p.pos.x = p.pos.x + deltaX;
+                p.pos.y = p.pos.y + deltaY;
+
+                if (!p._timeCreated) p._timeCreated = currTime;
+                if (currTime - p._timeCreated > p.liveTime) {
+                    _editData2.default.currParticleSystemInEdit._particles.splice(_editData2.default.currParticleSystemInEdit._particles.indexOf(p), 1);
+                }
+            });
+        };
+        tid = setInterval(function () {
+            update();
+            RF.digest();
+        }, 5);
+    },
+    emit: function emit(e) {
+        var rect = e.target.getBoundingClientRect();
+        _editData2.default.currParticleSystemInEdit.emit(e.clientX - rect.left, e.clientY - rect.top);
+    }
+});
+
+},{"./particleSystemPreviewDialog.html":36,"providers/editData":73,"providers/i18n":74,"providers/utils":81}],38:[function(require,module,exports){
+module.exports = "<app-modal id=\"sceneModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n\r\n        <div class=\"withPadding\">\r\n            <div class=\"table\">\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.name}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input\r\n                                required\r\n                                data-model=\"editData.currSceneInEdit.name\"/>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n            <button\r\n                    data-disabled=\"!form.valid()\"\r\n                    data-click=\"createOrEditScene(editData.currSceneInEdit)\">\r\n                {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}\r\n            </button>\r\n        </div>\r\n\r\n    </div>\r\n\r\n</app-modal>";
+
+},{}],39:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Scene = _require('scene');
+
+exports.default = RF.registerComponent('app-scene-dialog', {
+    template: {
+        type: 'string',
+        value: require('./sceneDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+
+    createOrEditScene: function createOrEditScene(s) {
+        _resource2.default.save(s).then(function (resp) {
+            if (resp.created) {
+                s.id = resp.id;
+                _editData2.default.sceneList.add(s);
+                return resp;
+            } else if (resp.updated) {
+                s.updateCloner();
+            }
+        }).then(function (resp) {
+            if (resp && resp.created) return _fileSystem2.default.createFile('script/scene/' + s.name + '.js', document.getElementById('defaultCodeScript').textContent);
+        }).then(function () {
+            RF.getComponentById('sceneModal').close();
+            RF.digest();
+        }).catch(window.catchPromise);
+    }
+});
+
+},{"./sceneDialog.html":38,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],40:[function(require,module,exports){
+module.exports = "\n<app-modal id=\"soundModal\">\n    <div data-transclusion=\"content\">\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <input\n                            required\n                            data-model=\"editData.currSoundInEdit.name\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <app-input-file\n                            data-state=\"{\n                        onFilePicked: onFilePicked,\n                        title: i18n.loadSound,\n                        accept: 'audio/*'\n                    }\"\n                    ></app-input-file>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio>\n                </td>\n            </tr>\n        </table>\n\n        <button\n                data-disabled=\"!(form.valid() && soundUrl)\"\n                data-click=\"createOrEditSound(editData.currSoundInEdit)\">\n            {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n        </button>\n    </div>\n</app-modal>\n";
+
+},{}],41:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-sound-dialog', {
+    template: {
+        type: 'string',
+        value: require('./soundDialog.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    soundUrl: '',
+    _file: '',
+
+    open: function open() {
+        if (_editData2.default.currSoundInEdit.id) this.soundUrl = _editData2.default.projectName + '/' + _editData2.default.currSoundInEdit.resourcePath + '?' + Math.random();else this.soundUrl = '';
+        RF.getComponentById('soundModal').open();
+    },
+    onFilePicked: function onFilePicked(src, file) {
+        this.soundUrl = src;
+        this._file = file;
+
+        var self = this;
+        self._file = file;
+        self.soundUrl = src;
+        self.editData.currSoundInEdit.resourcePath = 'resources/sound/' + file.name;
+        if (!self.editData.currSoundInEdit.name) {
+            self.editData.currSoundInEdit.name = name;
+        }
+    },
+    createOrEditSound: function createOrEditSound(model) {
+        var self = this;
+        _promise2.default.resolve().then(function () {
+            if (self._file) {
+                return _fileSystem2.default.uploadFile(self._file, { type: model.type });
+            } else return _promise2.default.resolve();
+        }).then(function () {
+            return _resource2.default.save(model);
+        }).then(function (resp) {
+            if (resp.created) {
+                model.id = resp.id;
+                _editData2.default.soundList.add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            RF.getComponentById('soundModal').close();
+            RF.digest();
+        });
+    }
+});
+
+},{"./soundDialog.html":40,"babel-runtime/core-js/promise":86,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79}],42:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"spriteSheetModal\">\r\n    <div data-transclusion=\"content\">\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input data-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n                </td>\r\n                <td rowspan=\"6\">\r\n                    <div style=\"max-width:60vw;overflow: auto;\"\r\n                    >\r\n                        <div class=\"relative\"\r\n                             data-style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                            <div\r\n                                    data-attributes=\"{title:i}\"\r\n                                    data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\"\r\n                                    data-style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.image}}\r\n                </td>\r\n                <td>\r\n                    <app-input-file\r\n                            data-state=\"{\r\n                        onFilePicked: onFilePicked,\r\n                        title: i18n.loadImage,\r\n                        accept: 'image/*'\r\n                    }\"\r\n                    />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.width}}\r\n                </td>\r\n                <td>\r\n                    {{editData.currSpriteSheetInEdit.width}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.height}}\r\n                </td>\r\n                <td>\r\n                    {{editData.currSpriteSheetInEdit.height}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.numOfFramesH}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            min=\"1\"\r\n                            max=\"100\"\r\n                            type=\"number\"\r\n                            data-change=\"refreshNumOfCells()\"\r\n                            data-input=\"refreshNumOfCells()\"\r\n                            data-keyup=\"refreshNumOfCells()\"\r\n                            data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.numOfFramesV}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            min=\"1\"\r\n                            max=\"100\"\r\n                            type=\"number\"\r\n                            data-change=\"refreshNumOfCells()\"\r\n                            data-input=\"refreshNumOfCells()\"\r\n                            data-keyup=\"refreshNumOfCells()\"\r\n                            data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n                data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n            {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n    </div>\r\n</app-modal>\r\n\r\n";
+
+},{}],43:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-sprite-sheet-dialog', {
+    template: {
+        type: 'string',
+        value: require('./spriteSheetDialog.html')
+    },
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    editData: _editData2.default,
+    form: { valid: function valid() {
+            return true;
+        } },
+    spriteSheetUrl: '',
+    _file: '',
+    numOfSpriteSheetCells: 0,
+    open: function open() {
+        if (_editData2.default.currSpriteSheetInEdit.id) this.spriteSheetUrl = _editData2.default.projectName + '/' + _editData2.default.currSpriteSheetInEdit.resourcePath + '?' + Math.random();else this.spriteSheetUrl = '';
+        this.refreshNumOfCells();
+        RF.getComponentById('spriteSheetModal').open();
+    },
+    onFilePicked: function onFilePicked(src, file, name) {
+        var self = this;
+        self._file = file;
+        self.spriteSheetUrl = src;
+        self.editData.currSpriteSheetInEdit.resourcePath = 'resources/spriteSheet/' + file.name;
+        if (!self.editData.currSpriteSheetInEdit.name) {
+            self.editData.currSpriteSheetInEdit.name = name;
+        }
+        var img = new Image();
+        img.onload = function () {
+            self.editData.currSpriteSheetInEdit.width = img.width;
+            self.editData.currSpriteSheetInEdit.height = img.height;
+            self.editData.currSpriteSheetInEdit.calcFrameSize();
+            RF.digest();
+        };
+        img.src = src;
+    },
+    refreshNumOfCells: function refreshNumOfCells() {
+        this.numOfSpriteSheetCells = this.editData && this.editData.currSpriteSheetInEdit && this.editData.currSpriteSheetInEdit.numOfFramesH * this.editData.currSpriteSheetInEdit.numOfFramesV;
+        this.editData.currSpriteSheetInEdit.calcFrameSize();
+    },
+    createOrEditSpriteSheet: function createOrEditSpriteSheet(model) {
+        var self = this;
+        _promise2.default.resolve().then(function () {
+            if (self._file) {
+                return _fileSystem2.default.uploadFile(self._file, { type: model.type });
+            } else return _promise2.default.resolve();
+        }).then(function () {
+            return _resource2.default.save(model);
+        }).then(function (resp) {
+            if (resp.created) {
+                model.id = resp.id;
+                _editData2.default[model.type + 'List'].add(model);
+            } else if (resp.updated) {
+                model.updateCloner();
+            }
+            RF.getComponentById('spriteSheetModal').close();
+            RF.digest();
+        });
+    }
+});
+
+},{"./spriteSheetDialog.html":42,"babel-runtime/core-js/promise":86,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],44:[function(require,module,exports){
+module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel></app-top-panel>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props></app-game-props>\n            <app-scenes></app-scenes>\n            <app-game-objects></app-game-objects>\n            <app-sprite-sheets></app-sprite-sheets>\n            <app-user-interface></app-user-interface>\n            <app-fonts></app-fonts>\n            <app-sounds></app-sounds>\n            <app-particle-systems></app-particle-systems>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor></app-script-editor>\n            <div class=\"table width100 height100\">\n                <div class=\"row\">\n                    <div class=\"cell height100 vAlign\">\n                        <div\n                            data-style=\"{\n                                width:  editData.gameProps.width + 'px',\n                                height: editData.gameProps.height + 'px',\n                                border: '1px solid green',\n                                margin: '0 auto'\n                            }\">\n                            <app-curr-scene></app-curr-scene>\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object></app-right-panel-scene-game-object>\n            <app-right-panel-scene></app-right-panel-scene>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs></app-dialogs>\n\n</div>";
+
+},{}],45:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+require('pages/editor/leftPanel/gameProps/gameProps');
+
+require('pages/editor/leftPanel/particleSystems/particleSystems');
+
+require('pages/editor/leftPanel/sounds/sounds');
+
+require('pages/editor/leftPanel/fonts/fonts');
+
+require('pages/editor/leftPanel/spriteSheets/spriteSheets');
+
+require('pages/editor/leftPanel/gameObjects/gameObjects');
+
+require('pages/editor/leftPanel/scenes/scenes');
+
+require('pages/editor/leftPanel/userInterface/userInterface');
+
+require('pages/editor/topPanel/topPanel');
+
+require('pages/editor/centralPanel/scriptEditor/scriptEditor');
+
+require('pages/editor/centralPanel/scene/scene');
+
+require('pages/editor/rightPanel/scene/scene');
+
+require('pages/editor/dialogs/dialogs');
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var _onMount = function _onMount() {
+    var layoutSizes = {};
+
+    layoutSizes.a = 15;
+    layoutSizes.b = 70;
+    layoutSizes.e = 100 - layoutSizes.a - layoutSizes.b;
+
+    layoutSizes.c = 94;
+    layoutSizes.d = 100 - layoutSizes.c;
+
+    Split(['#a', '#b', '#e'], {
+        sizes: [layoutSizes.a, layoutSizes.b, layoutSizes.e],
+        gutterSize: 5,
+        cursor: 'row-resize',
+        minSize: 10
+    });
+    var vertical = Split(['#c', '#d'], {
+        direction: 'vertical',
+        sizes: [layoutSizes.c, layoutSizes.d],
+        gutterSize: 5,
+        cursor: 'col-resize',
+        minSize: 10
+    });
+    window.addEventListener('resize', function () {
+        vertical.setSizes([layoutSizes.c, layoutSizes.d]);
+    });
+};
+
+exports.default = RF.registerComponent('editor', {
+    template: {
+        type: 'string',
+        value: require('./editor.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    onMount: function onMount() {
+        _onMount();
+    }
+});
+
+},{"./editor.html":44,"pages/editor/centralPanel/scene/scene":19,"pages/editor/centralPanel/scriptEditor/scriptEditor":21,"pages/editor/dialogs/dialogs":25,"pages/editor/leftPanel/fonts/fonts":49,"pages/editor/leftPanel/gameObjects/gameObjects":51,"pages/editor/leftPanel/gameProps/gameProps":53,"pages/editor/leftPanel/particleSystems/particleSystems":55,"pages/editor/leftPanel/scenes/scenes":57,"pages/editor/leftPanel/sounds/sounds":59,"pages/editor/leftPanel/spriteSheets/spriteSheets":61,"pages/editor/leftPanel/userInterface/userInterface":63,"pages/editor/rightPanel/scene/scene":65,"pages/editor/topPanel/topPanel":67,"providers/editData":73,"providers/i18n":74}],46:[function(require,module,exports){
+module.exports = "<div>\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            data-if=\"!gameObject.subType\">\n        <div data-style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {\n                            zoom:utils.calcZoom(gameObject),\n                            transform: 'scale(1, 1) rotateZ(0deg)',\n                            opacity:1\n                        }\n                )\"\n             data-draggable=\"draggable && {obj:gameObject,src: 'leftPanel'}\"\n        ></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            data-if=\"gameObject.subType\"\n            data-attributes=\"{title:gameObject.name}\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div>\n    </div>\n</div>";
+
+},{}],47:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-game-object-row', {
+    template: {
+        type: 'string',
+        value: require('./gameObjectRow.html')
+    },
+    getInitialState: function getInitialState() {
+        return {
+            crud: null,
+            gameObject: {},
+            draggable: false
+        };
+    },
+
+    utils: _utils2.default
+});
+
+},{"./gameObjectRow.html":46,"providers/utils":81}],48:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            crud: {create:createFont},\n            title:i18n.fonts\n        }\">\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"font in editData.fontList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editFont(font)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteFont(font)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n\n    </div>\n</app-collapsible>";
+
+},{}],49:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Font = _require('font');
+
+exports.default = RF.registerComponent('app-fonts', {
+    template: {
+        type: 'string',
+        value: require('./fonts.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+
+    createFont: function createFont() {
+        this.editData.currFontInEdit = new Font(new Font().toJSON());
+        RF.getComponentById('fontDialog').open();
+    },
+    editFont: function editFont(fnt) {
+        this.editData.currFontInEdit = fnt.clone();
+        RF.getComponentById('fontDialog').open();
+    },
+    deleteFont: function deleteFont(model) {
+        _utils2.default.deleteModel(model, function () {
+            _fileSystem2.default.removeFile('font/' + model.name + '.png');
+        });
+    }
+});
+
+},{"./fonts.html":48,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/utils":81}],50:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n                title: i18n.gameObjects,\n                crud: {\n                    create:createGameObject\n                }\n            }\">\n\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"gameObject in editData.gameObjectProtoList.rs\"\n                >\n                    <app-game-object-row\n                            data-state=\"{\n                            crud: {\n                                 edit: editGameObject,\n                                 editScript: editGameObjectScript,\n                                 delete: deleteGameObject\n                            },\n                            gameObject: gameObject || {},\n                            draggable: true\n                        }\">\n                    </app-game-object-row>\n                </div>\n\n            </div>\n        </div>\n\n\n    </div>\n\n</app-collapsible>";
+
+},{}],51:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+require('pages/editor/leftPanel/_gameObjectRow/gameObjectRow');
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var GameObjectProto = _require('gameObjectProto');
+var collections = _require('collections');
+
+var fixGameObject = function fixGameObject(g) {
+    if (!g.commonBehaviour || g.commonBehaviour.splice) g.commonBehaviour = new collections.List();
+    if (!g.frameAnimations || g.frameAnimations.splice) g.frameAnimations = new collections.List();
+};
+
+exports.default = RF.registerComponent('app-game-objects', {
+    template: {
+        type: 'string',
+        value: require('./gameObjects.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+
+    createGameObject: function createGameObject() {
+        this.editData.currGameObjectInEdit = new GameObjectProto().clone();
+        fixGameObject(this.editData.currGameObjectInEdit);
+        RF.getComponentById('gameObjectModal').open();
+    },
+    editGameObjectScript: function editGameObjectScript(gameObject) {
+        _utils2.default.openEditor(gameObject.type + '/' + gameObject.name + '.js');
+    },
+    editGameObject: function editGameObject(go) {
+        this.editData.currGameObjectInEdit = go.clone();
+        fixGameObject(this.editData.currGameObjectInEdit);
+        RF.getComponentById('gameObjectModal').open();
+    },
+    deleteGameObject: function deleteGameObject(model) {
+        _utils2.default.deleteModel(model, function () {
+            _fileSystem2.default.removeFile('script/gameObjectProto/' + model.name + '.js');
+        });
+    }
+});
+
+},{"./gameObjects.html":50,"pages/editor/leftPanel/_gameObjectRow/gameObjectRow":47,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/utils":81}],52:[function(require,module,exports){
+module.exports = "\n<app-collapsible data-state=\"{title:i18n.game}\">\n    <div data-transclusion=\"content\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.width\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.scaleStrategy\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-value=\"value\"\n                                data-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.preloadingSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select data-model=\"editData.gameProps.startSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n    </div>\n</app-collapsible>";
+
+},{}],53:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-game-props', {
+    template: {
+        type: 'string',
+        value: require('./gameProps.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    scales: _require('consts').SCALE_STRATEGY,
+    saveGameProps: function saveGameProps() {
+        _resource2.default.saveGameProps(this.editData.gameProps);
+    }
+});
+
+},{"./gameProps.html":52,"providers/editData":73,"providers/i18n":74,"providers/rest/resource":79}],54:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createParticleSystem\n            },\n            title:i18n.particleSystems\n        }\">\n\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"ps in editData.particleSystemList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n\n\n</app-collapsible>";
+
+},{}],55:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+require('pages/editor/dialogs/particleSystemDialog/particleSystemDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ParticleSystem = _require('particleSystem');
+
+exports.default = RF.registerComponent('app-particle-systems', {
+    template: {
+        type: 'string',
+        value: require('./particleSystems.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    createParticleSystem: function createParticleSystem() {
+        this.editData.currParticleSystemInEdit = new ParticleSystem(new ParticleSystem().toJSON());
+        var go = this.editData.gameObjectProtoList.get(0);
+
+        if (!go) {
+            alertEx(this.i18n.noGameObject);
+            return;
+        }
+
+        this.editData.currParticleSystemInEdit.gameObjectProto = go.clone();
+        RF.getComponentById('particleSystemModal').open();
+    },
+    editParticleSystem: function editParticleSystem(ps) {
+        this.editData.currParticleSystemInEdit = ps.clone();
+        RF.getComponentById('particleSystemModal').open();
+    },
+    deleteParticleSystem: function deleteParticleSystem(model) {
+        _utils2.default.deleteModel(model);
+    }
+});
+
+},{"./particleSystems.html":54,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":35,"providers/editData":73,"providers/i18n":74,"providers/utils":81}],56:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-transclusion-id=\"scenes\"\n        data-state=\"{\n            crud: {\n                create:createScene\n            },\n            title: i18n.scenes\n        }\">\n\n    <div data-transclusion=\"content:#scenes\">\n        <div\n            class=\"withPaddingLeft\"\n            data-class=\"{\n                currScene:editData.currSceneInEdit==scene\n            }\"\n            data-for=\"scene in editData.sceneList.rs\"\n            data-click=\"setCurrentScene(scene)\"\n        >\n            <app-collapsible\n                    data-transclusion-id=\"currScene\"\n                    data-state=\"{\n                        crud: {\n                            edit:editScene,\n                            delete:deleteScene,\n                            editScript: editScript\n                        },\n                        object: scene,\n                        title: scene.name\n                    }\"\n                    >\n                <div data-transclusion=\"content:#currScene\">\n                    <div class=\"withPaddingLeft\">\n                        <app-collapsible\n                                data-transclusion-id=\"layers\"\n                                data-state=\"{\n                                    title: i18n.layers,\n                                    meta: scene,\n                                    crud: {\n                                        create: createLayer\n                                    }\n                                }\"\n                        >\n                            <div data-transclusion=\"content:#layers\">\n                                <div\n                                        data-click=\"setCurrLayer(layer)\"\n                                        data-for=\"layer in scene.layers.rs\" class=\"withPaddingLeft\">\n                                    <app-collapsible\n                                            data-transclusion-id=\"currLayer\"\n                                            data-state=\"{\n                                                object: layer,\n                                                meta: scene,\n                                                crud: {\n                                                    edit:editLayer,\n                                                    delete:deleteLayer\n                                                },\n                                                title: layer.name\n                                            }\">\n                                                <div data-transclusion=\"content:#currLayer\">\n                                                    <div class=\"withPaddingLeft\">\n                                                        <div class=\"table width100\">\n                                                            <div\n                                                                data-class=\"\n                                                                {\n                                                                    currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject\n                                                                }\"\n                                                                data-click=\"setCurrSceneGameObjectInEdit(gameObject)\"\n                                                                data-for=\"gameObject in layer.gameObjects.rs\">\n\n                                                                <app-game-object-row\n                                                                        data-state=\"\n                                                                            {\n                                                                                gameObject: gameObject,\n                                                                                crud: {\n                                                                                     delete: deleteGameObject\n                                                                                },\n                                                                            }\"\n                                                                ></app-game-object-row>\n\n                                                            </div>\n                                                        </div>\n                                                    </div>\n                                                </div>\n                                    </app-collapsible>\n                                </div>\n                            </div>\n                        </app-collapsible>\n                    </div>\n                </div>\n            </app-collapsible>\n        </div>\n    </div>\n</app-collapsible>";
+
+},{}],57:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Layer = _require('layer');
+var Scene = _require('scene');
+
+exports.default = RF.registerComponent('app-scenes', {
+    template: {
+        value: require('./scenes.html'),
+        type: 'string'
+    },
+    i18n: _i18n2.default.getAll(),
+    editData: _editData2.default,
+
+    setCurrentScene: function setCurrentScene(scene) {
+        _editData2.default.currSceneInEdit = scene;
+    },
+    setCurrSceneGameObjectInEdit: function setCurrSceneGameObjectInEdit(gameObject) {
+        _editData2.default.currSceneGameObjectInEdit = gameObject;
+    },
+    setCurrLayer: function setCurrLayer(layer) {
+        _editData2.default.currLayerInEdit = layer;
+    },
+
+
+    createScene: function createScene() {
+        this.editData.currSceneInEdit = new Scene(new Scene().toJSON());
+        RF.getComponentById('sceneModal').open();
+    },
+    editScene: function editScene(scene) {
+        this.editData.currSceneInEdit = scene.clone();
+        RF.getComponentById('sceneModal').open();
+    },
+    deleteScene: function deleteScene(scene) {
+        if (scene.layers && scene.layers.size() > 0) {
+            alertEx(this.i18n.canNotDelete(scene, scene.layers.rs));
+            return;
+        }
+        _utils2.default.deleteModel(scene, function () {
+            _fileSystem2.default.removeFile('script/scene/' + scene.name + '.js');
+        });
+    },
+    createLayer: function createLayer(scene) {
+        this.editData.currLayerInEdit = new Layer(new Layer().clone());
+        this.editData.currLayerInEdit._scene = scene;
+        RF.getComponentById('layerModal').open();
+    },
+    editLayer: function editLayer(layer, scene) {
+        this.editData.currLayerInEdit = new Layer(layer.clone());
+        this.editData.currLayerInEdit._scene = scene;
+        RF.getComponentById('layerModal').open();
+    },
+    editScript: function editScript(scene) {
+        _utils2.default.openEditor(scene.type + '/' + scene.name + '.js');
+    },
+    deleteLayer: function deleteLayer(layer, scene) {
+        if (layer.gameObjects.size()) return alertEx(this.i18n.canNotDelete(layer, layer.gameObjects.rs));
+        _utils2.default.deleteModel(layer, function () {
+            scene.layers.remove({ id: layer.id });
+            scene.updateCloner();
+            _resource2.default.save(scene);
+        });
+    },
+    createGameObject: function createGameObject() {
+        console.log('create go invoked');
+    },
+    editGameObject: function editGameObject(scene) {
+        console.log('edit go invoked', scene);
+    },
+    deleteGameObject: function deleteGameObject(model) {
+        _utils2.default.deleteModel(model, function () {
+            _editData2.default.currLayerInEdit.gameObjects.remove({ id: model.id });
+        });
+    },
+    onGameObjectClick: function onGameObjectClick(go) {
+        console.log(go);
+    }
+});
+
+},{"./scenes.html":56,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79,"providers/utils":81}],58:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createSound\n            },\n            title:i18n.sounds\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"sound in editData.soundList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSound(sound)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSound(sound)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
+
+},{}],59:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Sound = _require('sound');
+
+exports.default = RF.registerComponent('app-sounds', {
+    template: {
+        type: 'string',
+        value: require('./sounds.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    createSound: function createSound() {
+        this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
+        RF.getComponentById('soundDialog').open();
+    },
+    editSound: function editSound(sound) {
+        this.editData.currSoundInEdit = sound.clone();
+        RF.getComponentById('soundDialog').open();
+    },
+    deleteSound: function deleteSound(model) {
+        _utils2.default.deleteModel(model, function () {
+            _fileSystem2.default.removeFile(model.resourcePath.replace('resources/', ''));
+        });
+    }
+});
+
+},{"./sounds.html":58,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/utils":81}],60:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            title: i18n.spriteSheets,\n            crud: {\n                create:createSpriteSheet\n            }\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"spriteSheet in editData.spriteSheetList.rs\">\n\n                    <div class=\"cell\">\n                        <img\n                                height=\"20\"\n                                class=\"spriteSheetThumb\"\n                                data-attributes=\"{src:editData.projectName+'/'+spriteSheet.resourcePath}\"/>\n                    </div>\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</app-collapsible>";
+
+},{}],61:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SpriteSheet = _require('spriteSheet');
+
+exports.default = RF.registerComponent('app-sprite-sheets', {
+    template: {
+        type: 'string',
+        value: require('./spriteSheets.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    createSpriteSheet: function createSpriteSheet() {
+        this.editData.currSpriteSheetInEdit = new SpriteSheet(new SpriteSheet().toJSON());
+        RF.getComponentById('spriteSheetDialog').open();
+    },
+    editSpriteSheet: function editSpriteSheet(sprSh) {
+        this.editData.currSpriteSheetInEdit = sprSh.clone();
+        RF.getComponentById('spriteSheetDialog').open();
+    },
+    deleteSpriteSheet: function deleteSpriteSheet(model) {
+        var hasDepends = this.editData.gameObjectList.filter(function (it) {
+            return it.spriteSheet.id == model.id;
+        }).size() > 0;
+        if (hasDepends) {
+            window.alertEx(this.i18n.canNotDelete(model));
+            return;
+        }
+        _utils2.default.deleteModel(model);
+    }
+});
+
+},{"./spriteSheets.html":60,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/utils":81}],62:[function(require,module,exports){
+module.exports = "<app-collapsible\n        data-state=\"{\n            title: i18n.userInterface\n        }\">\n\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"ui in (editData.userInterfaceList && editData.userInterfaceList.rs)\">\n\n                    <div class=\"cell\">\n                        <span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ui.subType}}</span>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n\n    </div>\n\n</app-collapsible>";
+
+},{}],63:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-user-interface', {
+    template: {
+        value: require('./userInterface.html'),
+        type: 'string'
+    },
+    i18n: _i18n2.default.getAll(),
+    editData: _editData2.default
+});
+
+},{"./userInterface.html":62,"providers/editData":73,"providers/i18n":74,"providers/rest/resource":79}],64:[function(require,module,exports){
+module.exports = "<app-collapsible\r\n    data-state=\"{title:i18n.currScene}\"\r\n>\r\n\r\n    <div data-transclusion=\"content\">\r\n        <div\r\n                data-if=\"!editData.currSceneInEdit.id\">\r\n            {{i18n.notSelected}}\r\n        </div>\r\n\r\n        <div class=\"withPadding\" data-if=\"editData.currSceneInEdit.id\">\r\n\r\n            <b class=\"centerText\">\r\n                {{i18n.scene}} : {{editData.currSceneInEdit.name}}\r\n            </b>\r\n\r\n            <div class=\"table width100\">\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <label for=\"editData.currSceneInEdit.useBG\">{{i18n.useBG}}</label>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"checkbox\"\r\n                               id=\"editData.currSceneInEdit.useBG\"\r\n                               data-model=\"editData.currSceneInEdit.useBG\"\r\n                               data-change=\"editScene()\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\" data-if=\"editData.currSceneInEdit.useBG\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.colorBG}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <app-color-picker\r\n                                data-state=\"{\r\n                                    model:editData.currSceneInEdit,\r\n                                    field: 'colorBG',\r\n\r\n                                }\"\r\n                        ></app-color-picker>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <hr/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign bold\">\r\n                        {{i18n.tileMap}}\r\n                    </div>\r\n                    <div class=\"cell eye\"></div>\r\n                </div>\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.width\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               min=\"0\"\r\n                               maxlength=\"3\"\r\n                               data-change=\"editScene()\"\r\n                               data-model=\"editData.currSceneInEdit.tileMap.width\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell valign\">\r\n                        tileMap.height\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <input type=\"number\"\r\n                               min=\"0\"\r\n                               maxlength=\"3\"\r\n                               data-change=\"editScene()\"\r\n                               data-model=\"editData.currSceneInEdit.tileMap.height\"/>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.selected}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <div\r\n                            data-class=\"{\r\n                                inlineBlock:1,\r\n                                hoverOutline:1\r\n                            }\"\r\n                            data-style=\"{\r\n                                width:frameWidth+'px',\r\n                                verticalAlign:'middle',\r\n                                height:frameHeight+'px',\r\n                                backgroundImage:      'url('+editData.projectName+'/'+resourcePath+')',\r\n                                backgroundPositionX:  -framePosX+'px',\r\n                                backgroundPositionY:  -framePosY+'px',\r\n                                backgroundRepeat:     'no-repeat',\r\n                            }\"\r\n                        ></div>\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"row\">\r\n                    <div class=\"cell\">\r\n                        {{i18n.spriteSheets}}\r\n                    </div>\r\n                    <div class=\"cell\">\r\n                        <select\r\n                                data-model=\"editData.currSceneInEdit.tileMap.spriteSheetId\"\r\n                                data-change=\"setTileMapSpriteSheet()\"\r\n                                >\r\n                            <option value=\"\">--</option>\r\n                            <option\r\n                                    data-for=\"item in editData.spriteSheetList.rs\"\r\n                                    data-value=\"item.id\"\r\n                                    >{{item.name}}</option>\r\n                        </select>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n\r\n            <div\r\n                data-style=\"{\r\n                    width: frameWidth*numOfFramesH+'px',\r\n                    overflowX: 'auto'\r\n                }\"\r\n                >\r\n                <div data-class=\"{\r\n                        inlineBlock:true,\r\n                        selected:i==editData.currTileIndexInEdit,\r\n                        hoverOutline:1\r\n                     }\"\r\n                     data-style=\"{\r\n                        width:frameWidth+'px',\r\n                        verticalAlign:'middle',\r\n                        height:frameHeight+'px',\r\n                        backgroundImage:'url('+resourcePath+')',\r\n                        backgroundPositionX:   -framePosX+'px',\r\n                        backgroundPositionY:   -framePosY+'px',\r\n                        backgroundRepeat:     'no-repeat',\r\n                     }\"\r\n                     data-title=\"i\"\r\n                     data-click=\"setCurrSelectedTile(i)\"\r\n                     data-for=\"v,i in numOfFramesForSceneSpriteSheet\"\r\n                     ></div>\r\n            </div>\r\n\r\n        </div>\r\n    </div>\r\n\r\n\r\n</app-collapsible>";
+
+},{}],65:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _utils = require('providers/utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Scene = _require('scene');
+
+exports.default = RF.registerComponent('app-right-panel-scene', {
+    template: {
+        type: 'string',
+        value: require('./scene.html')
+    },
+    form: { valid: function valid() {
+            return true;
+        } },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    utils: _utils2.default,
+    numOfFramesForSceneSpriteSheet: function numOfFramesForSceneSpriteSheet() {
+        if (!_editData2.default.currSceneInEdit) return 0;
+        if (!_editData2.default.currSceneInEdit.tileMap) return 0;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return 0;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet.numOfFramesV * _editData2.default.currSceneInEdit.tileMap._spriteSheet.numOfFramesH || 0;
+    },
+    frameWidth: function frameWidth() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return null;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet._frameWidth;
+    },
+    frameHeight: function frameHeight() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return null;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet._frameHeight;
+    },
+    framePosX: function framePosX() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet.getFramePosX) return null;
+        if (!_editData2.default.currTileIndexInEdit) return null;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet.getFramePosX(_editData2.default.currTileIndexInEdit);
+    },
+    framePosY: function framePosY() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet.getFramePosY) return null;
+        if (!_editData2.default.currTileIndexInEdit) return null;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet.getFramePosY(_editData2.default.currTileIndexInEdit);
+    },
+    resourcePath: function resourcePath() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return null;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet.resourcePath;
+    },
+    numOfFramesH: function numOfFramesH() {
+        if (!_editData2.default.currSceneInEdit.tileMap) return null;
+        if (!_editData2.default.currSceneInEdit.tileMap._spriteSheet) return null;
+        return _editData2.default.currSceneInEdit.tileMap._spriteSheet.numOfFramesH;
+    },
+
+    setCurrSelectedTile: function setCurrSelectedTile(i) {
+        _editData2.default.currTileIndexInEdit = i;
+    },
+    setTileMapSpriteSheet: function setTileMapSpriteSheet() {
+        _editData2.default.currSceneInEdit = new Scene(_editData2.default.currSceneInEdit.toJSON());
+    },
+    editScene: function editScene() {
+        _resource2.default.save(this.editData.currSceneInEdit);
+    }
+});
+
+},{"./scene.html":64,"providers/editData":73,"providers/i18n":74,"providers/rest/resource":79,"providers/utils":81}],66:[function(require,module,exports){
+module.exports = "<div class=\"panel withPadding pointer\">\r\n\r\n    <div class=\"inlineBlock\" data-click=\"showBuildDialog()\">\r\n        {{i18n.build}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"run()\">\r\n        {{i18n.run}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"toExplorer()\">\r\n        {{i18n.explorer}}\r\n    </div>\r\n\r\n</div>";
+
+},{}],67:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _httpClient = require('providers/rest/httpClient');
+
+var _httpClient2 = _interopRequireDefault(_httpClient);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var w = void 0;
+
+
+//opts: debug minify engineOnly embedResources embedScript
+
+exports.default = RF.registerComponent('app-top-panel', {
+    template: {
+        value: require('./topPanel.html'),
+        type: 'string'
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    run: function run() {
+        _httpClient2.default.get('/resource/generate', {
+            debug: 1,
+            r: Math.random(),
+            projectName: _editData2.default.projectName
+        }, function () {
+            if (!w || w.closed) {
+                //w = window.open(
+                //    '/'+editData.projectName+'/out',
+                //    editData.projectName,
+                //    'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
+                //);
+                w = window.open('/' + _editData2.default.projectName + '/out');
+            } else {
+                w.location.reload();
+            }
+            w && w.focus();
+        });
+    },
+    showBuildDialog: function showBuildDialog() {
+        //uiHelper.showDialog('buildDialog');
+    },
+    toExplorer: function toExplorer() {
+        RF.Router.navigateTo('explorer');
+    }
+});
+
+},{"./topPanel.html":66,"providers/editData":73,"providers/i18n":74,"providers/rest/httpClient":77}],68:[function(require,module,exports){
+module.exports = "\r\n<app-modal id=\"projectDialog\">\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currProjectInEdit.name\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button data-click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n            {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n</app-modal>\r\n\r\n";
+
+},{}],69:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _project = require('providers/rest/project');
+
+var _project2 = _interopRequireDefault(_project);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('app-project-dialog', {
+    template: {
+        type: 'string',
+        value: require('./projectDialog.html')
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    created: function created() {
+        module.exports.instance = this;
+    },
+    createOrEditProject: function createOrEditProject(proj) {
+        if (proj.oldName) {
+            _fileSystem2.default.renameFolder('workspace/' + proj.oldName, 'workspace/' + proj.name, function () {
+                _project2.default.getAll(function (list) {
+                    _editData2.default.projects = list;
+                });
+            });
+        } else {
+            _project2.default.create(proj.name, function () {
+                _project2.default.getAll(function (list) {
+                    _editData2.default.projects = list;
+                });
+            });
+        }
+        RF.getComponentById('projectDialog').close();
+    }
+});
+
+},{"./projectDialog.html":68,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/project":78}],70:[function(require,module,exports){
+module.exports = "\r\n<div>\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    data-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            data-click=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            data-click=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            data-click=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                data-click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog></app-project-dialog>\r\n\r\n</div>";
+
+},{}],71:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _project = require('providers/rest/project');
+
+var _project2 = _interopRequireDefault(_project);
+
+var _resourceHelper = require('providers/resourceHelper');
+
+var _resourceHelper2 = _interopRequireDefault(_resourceHelper);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+require('./dialogs/projectDialog/projectDialog');
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = RF.registerComponent('explorer', {
+    template: {
+        type: 'string',
+        value: require('./explorer.html')
+    },
+    onMount: function onMount() {
+        var _this = this;
+
+        _project2.default.getAll(function (list) {
+            _this.editData.projects = list;
+        });
+    },
+    editData: _editData2.default,
+    i18n: _i18n2.default.getAll(),
+    editProject: function editProject(p) {
+        p.oldName = p.name;
+        this.editData.currProjectInEdit = {
+            name: p.name,
+            oldName: p.name
+        };
+        RF.getComponentById('projectDialog').open();
+    },
+    createProject: function createProject() {
+        this.editData.currProjectInEdit = {
+            name: ''
+        };
+        RF.getComponentById('projectDialog').open();
+    },
+    openProject: function openProject(project) {
+        _resourceHelper2.default.loadProject(project.name);
+    },
+    deleteProject: function deleteProject(proj) {
+        var self = this;
+        proj.type = 'project';
+        window.confirmEx(this.i18n.confirmQuestion(proj), function () {
+            _fileSystem2.default.deleteFolder('workspace/' + proj.name, function () {
+                _project2.default.getAll(function (list) {
+                    _editData2.default.projects = list;
+                });
+            });
+        });
+    }
+});
+
+},{"./dialogs/projectDialog/projectDialog":69,"./explorer.html":70,"providers/editData":73,"providers/i18n":74,"providers/resourceHelper":75,"providers/rest/fileSystem":76,"providers/rest/project":78}],72:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var events = {};
+window.addEventListener('message', function (resp) {
+    var data = resp.data && resp.data.response;
+    if (!data) return;
+    var id = resp.data.eventUUID;
+    if (events[id]) {
+        var fn = events[id];
+        delete events[id];
+        fn && data && fn(data);
+    }
+});
+var requestToApi = function requestToApi(params, callBack) {
+    var eventUUID = ~~Math.random() * 100 + new Date().getTime();
+    events[eventUUID] = callBack;
+    params.eventUUID = eventUUID;
+    window.top.postMessage(params, '*');
+};
+
+exports.default = { requestToApi: requestToApi };
+
+},{}],73:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var collections = _require('collections');
+var SpriteSheet = _require('spriteSheet');
+
+var res = {};
+
+res.reset = function () {
+
+    res.commonBehaviourList = {};
+    res.currGameObjectInEdit = {};
+    res.currSpriteSheetInEdit = new SpriteSheet();
+    res.currFrameAnimationInEdit = {};
+    res.currSceneInEdit = {};
+    res.currSceneGameObjectInEdit = {
+        pos: {},
+        scale: {}
+    };
+    res.currLayerInEdit = {};
+    res.currFontInEdit = {};
+    res.currCommonBehaviourInEdit = {};
+    res.currSoundInEdit = {};
+    res.currParticleSystemInEdit = {};
+    res.currProjectInEdit = {};
+    res.currTileIndexInEdit = {};
+    res.gameProps = {};
+    res.commonBehaviourProto = new collections.List();
+
+    res.userInterfaceList = new collections.List();
+
+    res.debugFrameUrl = '';
+    res.scriptEditorUrl = '';
+
+    res.tileMapPosY = res.tileMapPosX = 0;
+
+    res.projectName = '';
+    res.projects = [];
+
+    //res.buildOpts = {
+    //    debug: false,
+    //    embedResources: false,
+    //    embedScript: false,
+    //    minify:false
+    //};
+};
+
+res.reset();
+
+exports.default = res;
+
+},{}],74:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _i18n = {};
+
+_i18n.locale = 'en';
+
+_i18n.bundle = {
+    'en': {
+        ok: 'ok',
+        confirm: 'confirm',
+        confirmQuestion: function confirmQuestion(item) {
+            return 'Delete ' + item.type + ' with name "' + item.name + '"?';
+        },
+        canNotDelete: function canNotDelete(item, usedByObjects) {
+            var usedByStr = usedByObjects ? usedByObjects.map(function (it) {
+                return it.type + ':' + it.name;
+            }).join(',') : '';
+            return 'Can not delete ' + item.type + ' with name "' + item.name + '", it\'s used by other objects ' + (usedByStr ? usedByStr : '');
+        },
+        noGameObject: 'create at least one game object firstly',
+        cancel: 'cancel',
+        assets: 'assets',
+        addSpriteSheet: 'add sprite sheet',
+        loadImage: 'load image',
+        gameObjects: 'game objects',
+        gameObject: 'gameObject',
+        create: 'create',
+        edit: 'edit',
+        close: 'close',
+        name: 'name',
+        scaleStrategy: 'scale strategy',
+        spriteSheets: 'sprite sheets',
+        width: 'width',
+        height: 'height',
+        currFrameIndex: 'current frame index',
+        currGameObject: 'current gameObject',
+        currScene: 'current scene',
+        spriteSheet: 'sprite sheet',
+        numOfFramesH: 'num of frames horizontally',
+        numOfFramesV: 'num of frames vertically',
+        image: 'image',
+        frAnimations: 'frame animations',
+        duration: 'duration, msec',
+        frames: 'frames (i.e 1,2,3)',
+        playAnim: 'play animation',
+        stopAnim: 'stop animation',
+        saveObjectFirst: 'save object first',
+        all: 'all',
+        game: 'game',
+        editThisGameObject: 'edit this game object',
+        deleteThisGameObject: 'delete this game object',
+        scenes: 'scenes',
+        scene: 'scene',
+        run: 'run',
+        layers: 'layers',
+        layer: 'layer',
+        debug: 'debug',
+        stop: 'stop',
+        addGameObject: 'add game object',
+        nothingToAdd: 'nothing to add',
+        from: 'from',
+        to: 'to',
+        fonts: 'fonts',
+        font: 'font',
+        text: 'text',
+        commonBehaviour: 'common behaviour',
+        groupName: 'group name',
+        selectFont: 'select font',
+        fontSize: 'font size',
+        fontColor: 'font color',
+        userInterface: 'user interface',
+        textField: 'text field',
+        noDataToEdit: 'no data to edit provided',
+        rigid: 'rigid',
+        sounds: 'sounds',
+        play: 'play',
+        loadSound: 'load sound',
+        build: 'build',
+        particleSystems: 'particle systems',
+        particleSystem: 'particle system',
+        preview: 'preview',
+        explorer: 'explorer',
+        description: 'description',
+        colorBG: 'scene background color',
+        useBG: 'use background color',
+        angle: 'angle',
+        tileMap: 'tile map',
+        noScene: 'create at least one scene',
+        sceneNotSelected: 'select scene to drop object',
+        noLayer: 'create at least one layer of current scene',
+        selected: 'selected',
+        notSelected: 'not selected',
+        fixedToCamera: 'fixed to camera',
+        preloadingScene: 'preloading scene',
+        startScene: 'start scene',
+        projects: 'projects',
+        objectAlreadyAdded: 'object is already added'
+    }
+};
+
+_i18n.setLocate = function (_locale) {
+    _i18n.locale = _locale;
+};
+
+_i18n.get = function (key) {
+    return _i18n.bundle[_i18n.locale][key];
+};
+
+_i18n.getAll = function () {
+    return _i18n.bundle[_i18n.locale];
+};
+
+exports.default = _i18n;
+
+},{}],75:[function(require,module,exports){
+'use strict';
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _httpClient = require('providers/rest/httpClient');
+
+var _httpClient2 = _interopRequireDefault(_httpClient);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ResourceHelper = function ResourceHelper() {
+
+    var self = this;
+
+    var bundle = _require('bundle');
+    var collections = _require('collections');
+    var CommonBehaviour = _require('commonBehaviour');
+    var TextField = _require('textField');
+    var Layer = _require('layer');
+
+    var _loadResources = function _loadResources(projectName) {
+        _httpClient2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
+            bundle.prepare(response);
+            (0, _keys2.default)(bundle).forEach(function (key) {
+                _editData2.default[key] = bundle[key];
+            });
+            _editData2.default.gameProps = bundle.gameProps;
+            _editData2.default.commonBehaviourProto = new collections.List();
+            response.commonBehaviourProto.forEach(function (cb) {
+                _editData2.default.commonBehaviourProto.add(new CommonBehaviour(cb));
+            });
+            _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
+        });
+    };
+
+    this.loadProject = function (projectName) {
+        _editData2.default.reset();
+        _editData2.default.projectName = projectName;
+        document.title = _editData2.default.projectName;
+        sessionStorage.projectName = _editData2.default.projectName;
+        _promise2.default.resolve().then(function () {
+            return _loadResources(projectName);
+        }).then(function () {
+            if (!bundle.sceneList.isEmpty()) _editData2.default.currSceneInEdit = bundle.sceneList.get(0);
+            if (_editData2.default.currSceneInEdit._layers) {
+                if (_editData2.default.currSceneInEdit._layers.size()) {
+                    _editData2.default.currLayerInEdit = _editData2.default.currSceneInEdit._layers.get(0);
+                }
+            }
+            RF.Router.navigateTo('editor');
+        });
+    };
+    this.createOrEditResource = function (currResourceInEdit, ResourceClass, resourceList, callBack) {
+        var formData = new FormData();
+        formData.append('file', currResourceInEdit._file);
+        delete currResourceInEdit._file;
+        var model = {};
+        (0, _keys2.default)(currResourceInEdit).forEach(function (key) {
+            model[key] = currResourceInEdit[key];
+        });
+        formData.append('model', (0, _stringify2.default)(model));
+        formData.append('projectName', _editData2.default.projectName);
+        var op = currResourceInEdit.id ? 'edit' : 'create';
+        _httpClient2.default.post('/resource/' + op, formData, function (item) {
+            if (op == 'create') {
+                var r = new ResourceClass(item);
+                resourceList.add(r);
+                callBack && callBack({ type: 'create', r: r });
+            } else {
+                if (!(resourceList && resourceList)) return;
+                var index = resourceList.indexOf({ id: item.id });
+                resourceList.get(index).fromJSON(item);
+                callBack && callBack({ type: 'edit', r: resourceList.rs[index] });
+            }
+        });
+    };
+
+    this.deleteResource = function (idOrObject, type, callBack) {
+        var id = (typeof idOrObject === 'undefined' ? 'undefined' : (0, _typeof3.default)(idOrObject)) == 'object' ? idOrObject.id : idOrObject;
+        type = type || idOrObject.type;
+        _httpClient2.default.post('/resource/delete', {
+            id: id,
+            type: type,
+            projectName: _editData2.default.projectName
+        }, function () {
+            _editData2.default[type + 'List'].remove({ id: id });
+            callBack && callBack();
+        });
+    };
+
+    // todo refactor
+    this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
+        var op = object.id ? 'edit' : 'create';
+        _httpClient2.default.post('/createOrEditObjectInResource', {
+            model: (0, _stringify2.default)(object),
+            resourceId: resourceId,
+            resourceType: resourceType,
+            objectType: objectType,
+            projectName: _editData2.default.projectName
+        }, function (resp) {
+            callback && callback({ type: op, r: resp });
+        });
+    };
+    // todo refactor
+    this.createOrEditLayer = function (l, s, dialog) {
+        self.createOrEditResource(l, Layer, bundle.layerList, function (item) {
+            if (item.type == 'create') {
+                self.createOrEditObjectInResource(s.type, s.id, 'layerProps', {
+                    type: 'layer',
+                    protoId: item.r.id
+                }, function (resp) {
+                    l.id = resp.r.id;
+                    l.protoId = item.r.id;
+                    l._scene = _editData2.default.currSceneInEdit;
+                    s._layers.add(l);
+                    dialog.close();
+                });
+            }
+        });
+    };
+
+    this.saveGameProps = function (gameProps) {
+        _httpClient2.default.post('/gameProps/save', {
+            model: gameProps,
+            projectName: _editData2.default.projectName
+        });
+    };
+
+    this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
+        var op = object.id ? 'edit' : 'create';
+        _httpClient2.default.post('/createOrEditObjectInResource', {
+            model: (0, _stringify2.default)(object),
+            resourceId: resourceId,
+            resourceType: resourceType,
+            objectType: objectType,
+            projectName: _editData2.default.projectName
+        }, function (resp) {
+            callback && callback({ type: op, r: resp });
+        });
+    };
+
+    // (function(){
+    //     if (sessionStorage.projectName) {
+    //         self.loadProject(sessionStorage.projectName);
+    //     } else {
+    //         location.href = '#/explorer';
+    //     }
+    // })();
+};
+
+module.exports = new ResourceHelper();
+
+},{"babel-runtime/core-js/json/stringify":82,"babel-runtime/core-js/object/keys":85,"babel-runtime/core-js/promise":86,"babel-runtime/helpers/typeof":91,"providers/editData":73,"providers/rest/httpClient":77}],76:[function(require,module,exports){
+'use strict';
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _httpClient = require('providers/rest/httpClient');
+
+var _httpClient2 = _interopRequireDefault(_httpClient);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var FileSystem = function () {
+    function FileSystem() {
+        (0, _classCallCheck3.default)(this, FileSystem);
+    }
+
+    (0, _createClass3.default)(FileSystem, [{
+        key: 'createFile',
+        value: function createFile(path, content, callback) {
+            return _httpClient2.default.post('/fileSystem/createFile', {
+                path: path,
+                content: content,
+                projectName: _editData2.default.projectName
+            }, callback);
+        }
+    }, {
+        key: 'uploadFile',
+        value: function uploadFile(file, params, callback) {
+            params = params || {};
+            params.projectName = _editData2.default.projectName;
+            return _httpClient2.default.postMultiPart('/fileSystem/uploadFile', file, params, callback);
+        }
+    }, {
+        key: 'removeFile',
+        value: function removeFile(path, callback) {
+            return _httpClient2.default.post('/fileSystem/removeFile', {
+                path: path,
+                projectName: _editData2.default.projectName
+            }, callback);
+        }
+    }, {
+        key: 'readFile',
+        value: function readFile(path, callback) {
+            return _httpClient2.default.post('/fileSystem/readFile', {
+                path: path,
+                projectName: _editData2.default.projectName
+            }, callback);
+        }
+    }, {
+        key: 'renameFolder',
+        value: function renameFolder(oldName, newName, callback) {
+            return _httpClient2.default.post('/fileSystem/renameFolder', { oldName: oldName, newName: newName }, callback);
+        }
+    }, {
+        key: 'deleteFolder',
+        value: function deleteFolder(name, callback) {
+            return _httpClient2.default.post('/fileSystem/deleteFolder', { name: name }, callback);
+        }
+    }]);
+    return FileSystem;
+}();
+
+module.exports = new FileSystem();
+
+},{"babel-runtime/helpers/classCallCheck":89,"babel-runtime/helpers/createClass":90,"providers/editData":73,"providers/rest/httpClient":77}],77:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var noop = function noop() {};
+
+var PromiseProvider = window.PromiseLight || window.Promise;
+
+var objectToQuery = function objectToQuery(o) {
+    if (!o) return '';
+    if (o instanceof window.FormData) return o;
+    var paramsArr = [];
+    if (o == null || o == undefined || typeof o == 'string' || typeof o == 'number') return o;
+    for (var key in o) {
+        paramsArr.push([key, encodeURIComponent(o[key])]);
+    }
+    return paramsArr.map(function (item) {
+        return [item[0] + '=' + item[1]];
+    }).join('&');
+};
+
+var request = function request(data) {
+    var abortTmr = null;
+    var resolved = false;
+    data.method = data.method || 'get';
+    if (data.data && data.method == 'get') data.url += '?' + objectToQuery(data.data);
+    var xhr = new XMLHttpRequest();
+    var resolveFn = noop,
+        rejectFn = noop;
+    var promise = new PromiseProvider(function (resolve, reject) {
+        resolveFn = resolve;
+        rejectFn = reject;
+    });
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200 || xhr.status == 0) {
+                var resp = xhr.responseText;
+                var contentType = xhr.getResponseHeader("Content-Type") || '';
+                if (contentType.toLowerCase().indexOf('json') > -1) resp = JSON.parse(resp);
+                if (data.success) {
+                    data.success(resp);
+                    RF.digest();
+                }
+                resolveFn(resp);
+            } else {
+                if (data.error) data.error({ status: xhr.status, error: xhr.statusText });
+                rejectFn(xhr.statusText);
+            }
+            clearTimeout(abortTmr);
+            resolved = true;
+        }
+    };
+    xhr.open(data.method, data.url, true);
+    if (data.requestType) {
+        if (data.requestType != 'multipart/form-data') // at this case header needs to be auto generated
+            xhr.setRequestHeader("Content-Type", data.requestType);
+    } else {
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    }
+    if (data.requestType == 'application/json') data.data = data.data && (0, _stringify2.default)(data.data);
+    xhr.send(data.data);
+    if (data.timeout) {
+        abortTmr = setTimeout(function () {
+            if (resolved) return;
+            xhr.abort();
+            if (data.ontimeout) data.ontimeout();
+            rejectFn('timeout');
+        }, data.timeout);
+    }
+    return promise;
+};
+
+var get = function get(url, data, success, error) {
+    return request({
+        method: 'get',
+        url: url,
+        data: data,
+        success: success,
+        error: error
+    });
+};
+
+var post = function post(url, data, success, error) {
+    return request({
+        method: 'post',
+        url: url,
+        data: data,
+        requestType: 'application/json',
+        success: success,
+        error: error
+    });
+};
+
+var postMultiPart = function postMultiPart(url, file, data, success, error) {
+    var formData = new FormData();
+    (0, _keys2.default)(data).forEach(function (key) {
+        formData.append(key, data[key]);
+    });
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    return request({
+        method: 'post',
+        url: url,
+        data: formData,
+        requestType: 'multipart/form-data',
+        success: success,
+        error: error
+    });
+};
+
+exports.default = { get: get, post: post, postMultiPart: postMultiPart };
+
+},{"babel-runtime/core-js/json/stringify":82,"babel-runtime/core-js/object/keys":85}],78:[function(require,module,exports){
+'use strict';
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _httpClient = require('providers/rest/httpClient');
+
+var _httpClient2 = _interopRequireDefault(_httpClient);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var bundle = _require('bundle');
+var collections = _require('collections');
+var TextField = _require('textField');
+var CommonBehaviour = _require('commonBehaviour');
+
+var _loadResources = function _loadResources(projectName) {
+    _httpClient2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
+        bundle.prepare(response);
+        (0, _keys2.default)(bundle).forEach(function (key) {
+            if (bundle[key] && bundle[key].call) return;
+            if (_editData2.default[key] && _editData2.default[key].clear) {
+                _editData2.default[key].clear();
+                bundle[key].forEach(function (el) {
+                    _editData2.default[key].add(el);
+                });
+            }
+            Vue.set(_editData2.default, key, bundle[key]);
+        });
+        _editData2.default.gameProps = bundle.gameProps;
+        response.commonBehaviourProto.forEach(function (el) {
+            _editData2.default.commonBehaviourProto.add(new CommonBehaviour(el));
+        });
+        _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
+    });
+};
+
+var Project = function () {
+    function Project() {
+        (0, _classCallCheck3.default)(this, Project);
+    }
+
+    (0, _createClass3.default)(Project, [{
+        key: 'getAll',
+        value: function getAll(callback) {
+            return _httpClient2.default.get('/project/getAll', {}, callback);
+        }
+    }, {
+        key: 'create',
+        value: function create(projectName, callback) {
+            return _httpClient2.default.post('/project/create', { projectName: projectName }, callback);
+        }
+    }, {
+        key: 'load',
+        value: function load(projectName) {
+            _editData2.default.reset();
+            _editData2.default.projectName = projectName;
+            document.title = _editData2.default.projectName;
+            sessionStorage.projectName = _editData2.default.projectName;
+            _promise2.default.resolve().then(function () {
+                return _loadResources(projectName);
+            }).then(function () {
+                if (!bundle.sceneList.isEmpty()) _editData2.default.currSceneInEdit = bundle.sceneList.get(0);
+                if (_editData2.default.currSceneInEdit._layers) {
+                    if (_editData2.default.currSceneInEdit._layers.size()) {
+                        _editData2.default.currLayerInEdit = _editData2.default.currSceneInEdit._layers.get(0);
+                    }
+                }
+                location.href = '#/editor';
+            });
+        }
+    }]);
+    return Project;
+}();
+
+var p = new Project();
+
+// if (sessionStorage.projectName) {
+//     p.load(sessionStorage.projectName);
+// } else {
+//     location.href = '#/explorer';
+// }
+
+module.exports = new Project();
+
+},{"babel-runtime/core-js/object/keys":85,"babel-runtime/core-js/promise":86,"babel-runtime/helpers/classCallCheck":89,"babel-runtime/helpers/createClass":90,"providers/editData":73,"providers/rest/httpClient":77}],79:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _httpClient = require('providers/rest/httpClient');
+
+var _httpClient2 = _interopRequireDefault(_httpClient);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Resource = function () {
+    function Resource() {
+        (0, _classCallCheck3.default)(this, Resource);
+    }
+
+    (0, _createClass3.default)(Resource, [{
+        key: 'save',
+        value: function save(model, callback) {
+            if (model.toJSON) model = model.toJSON();
+            return _httpClient2.default.post('/resource/save', { projectName: _editData2.default.projectName, model: model }, callback);
+        }
+    }, {
+        key: 'saveGameProps',
+        value: function saveGameProps(model, callback) {
+            return _httpClient2.default.post('/resource/saveGameProps', { projectName: _editData2.default.projectName, model: model }, callback);
+        }
+    }, {
+        key: 'remove',
+        value: function remove(model, callback) {
+            return _httpClient2.default.post('/resource/remove', { projectName: _editData2.default.projectName, model: {
+                    id: model.id,
+                    type: model.type
+                } }, callback);
+        }
+    }]);
+    return Resource;
+}();
+
+exports.default = new Resource();
+
+},{"babel-runtime/helpers/classCallCheck":89,"babel-runtime/helpers/createClass":90,"providers/editData":73,"providers/rest/httpClient":77}],80:[function(require,module,exports){
+'use strict';
+
+window.alertEx = function (message) {
+    RF.getComponentById('alertDialog').open(message);
+};
+
+window.confirmEx = function (message, callback) {
+    RF.getComponentById('confirmDialog').open(message, callback);
+};
+
+},{}],81:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _editData = require('providers/editData');
+
+var _editData2 = _interopRequireDefault(_editData);
+
+var _resource = require('providers/rest/resource');
+
+var _resource2 = _interopRequireDefault(_resource);
+
+var _fileSystem = require('providers/rest/fileSystem');
+
+var _fileSystem2 = _interopRequireDefault(_fileSystem);
+
+var _i18n = require('providers/i18n');
+
+var _i18n2 = _interopRequireDefault(_i18n);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var mathEx = _require('mathEx');
+
+var Utils = function () {
+    function Utils() {
+        (0, _classCallCheck3.default)(this, Utils);
+    }
+
+    (0, _createClass3.default)(Utils, [{
+        key: 'getGameObjectCss',
+        value: function getGameObjectCss() {
+            var gameObj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+            gameObj.scale = gameObj.scale || {};
+            gameObj.spriteSheet = gameObj.spriteSheet || {};
+            return {
+                width: gameObj.width + 'px',
+                height: gameObj.height + 'px',
+                backgroundImage: gameObj.spriteSheet && gameObj.spriteSheet.resourcePath && 'url(' + _editData2.default.projectName + '/' + gameObj.spriteSheet.resourcePath + ')',
+                backgroundPositionY: -gameObj._sprPosY + 'px',
+                backgroundPositionX: -gameObj._sprPosX + 'px',
+                backgroundRepeat: 'no-repeat',
+                opacity: gameObj.alpha,
+                transform: 'scale(' + gameObj.scale.x + ',' + gameObj.scale.y + ') rotateZ(' + mathEx.radToDeg(gameObj.angle) + 'deg)'
+            };
+        }
+    }, {
+        key: 'calcZoom',
+        value: function calcZoom() {
+            var gameObject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+            if (!gameObject.height) gameObject.height = 30;
+            return gameObject.height > 30 ? 30 / gameObject.height : 1;
+        }
+    }, {
+        key: 'merge',
+        value: function merge(a, b) {
+            a = a || {};
+            b = b || {};
+            var res = {};
+            (0, _keys2.default)(a).forEach(function (key) {
+                res[key] = a[key];
+            });
+            (0, _keys2.default)(b).forEach(function (key) {
+                res[key] = b[key];
+            });
+            return res;
+        }
+    }, {
+        key: 'hexToRgb',
+        value: function hexToRgb(hex) {
+            if (!hex) return { r: 0, g: 0, b: 0 };
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16) || 0,
+                g: parseInt(result[2], 16) || 0,
+                b: parseInt(result[3], 16) || 0
+            } : { r: 0, g: 0, b: 0 };
+        }
+    }, {
+        key: 'rgbToHex',
+        value: function rgbToHex(col) {
+            if (!col) return '#000000';
+            var r = +col.r,
+                g = +col.g,
+                b = +col.b;
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        }
+    }, {
+        key: 'dataURItoBlob',
+        value: function dataURItoBlob(dataURI) {
+            // convert base64/URLEncoded data component to raw binary data held in a string
+            var byteString = void 0;
+            if (dataURI.split(',')[0].indexOf('base64') >= 0) byteString = atob(dataURI.split(',')[1]);else byteString = unescape(dataURI.split(',')[1]);
+
+            // separate out the mime component
+            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+            // write the bytes of the string to a typed array
+            var ia = new Uint8Array(byteString.length);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+
+            return new Blob([ia], { type: mimeString });
+        }
+    }, {
+        key: 'range',
+        value: function range(rFr, rTo) {
+            var arr = [],
+                i = void 0;
+            if (rTo == undefined) {
+                rTo = rFr;
+                rFr = 0;
+            }
+            if (rFr < rTo) {
+                for (i = rFr; i <= rTo; i++) {
+                    arr.push(i);
+                }
+            } else {
+                for (i = rFr; i >= rTo; i--) {
+                    arr.push(i);
+                }
+            }
+            return arr;
+        }
+    }, {
+        key: '_createAceCompleter',
+        value: function _createAceCompleter() {
+            var result = [];
+            var res = {};
+            var objs = ['gameObject'];
+            objs.forEach(function (go) {
+                var GObjClass = _require(go);
+                var goObj = new GObjClass();
+                for (var key in goObj) {
+                    if (key.indexOf('_') == 0) continue;
+                    res[key] = {
+                        name: key,
+                        value: key,
+                        score: 1,
+                        meta: 'gameObject property'
+                    };
+                }
+            });
+            (0, _keys2.default)(res).forEach(function (key) {
+                result.push(res[key]);
+            });
+            return result;
+        }
+    }, {
+        key: '_waitForFrameAndDo',
+        value: function _waitForFrameAndDo(file, path) {
+            var frame = document.getElementById('scriptEditorFrame');
+            var contentWindow = frame && frame.contentWindow;
+            var self = this;
+            if (!contentWindow || !contentWindow.ready) {
+                setTimeout(function () {
+                    self._waitForFrameAndDo(file, path);
+                }, 100);
+                return;
+            }
+            contentWindow.setCode(file);
+            contentWindow.calcEditorSize();
+            contentWindow.setAutocomplete(this._createAceCompleter());
+            window.removeEventListener('resize', contentWindow.calcEditorSize);
+            window.addEventListener('resize', contentWindow.calcEditorSize);
+            window.saveCode = function (code) {
+                _fileSystem2.default.createFile(path, code);
+            };
+        }
+    }, {
+        key: 'getArray',
+        value: function getArray(num) {
+            if (!num) return [];
+            var res = [];
+            for (var i = 0; i < num; i++) {
+                res.push(i);
+            }
+            return res;
+        }
+    }, {
+        key: 'size',
+        value: function size(obj) {
+            if (!obj) return 0;
+            return (0, _keys2.default)(obj).length;
+        }
+    }, {
+        key: 'deleteModel',
+        value: function deleteModel(model, callback) {
+            window.confirmEx(_i18n2.default.getAll().confirmQuestion(model), function () {
+                _editData2.default[model.type + 'List'].remove({ id: model.id });
+                _resource2.default.remove(model, callback);
+            });
+        }
+    }, {
+        key: 'openEditor',
+        value: function openEditor(resourceUrl) {
+            var self = this;
+            _editData2.default.scriptEditorUrl = resourceUrl;
+            var path = 'script/' + resourceUrl;
+            console.log(path);
+            _fileSystem2.default.readFile(path, function (file) {
+                self._waitForFrameAndDo(file, path);
+            });
+        }
+    }, {
+        key: 'assign',
+        value: function assign(model, property, value) {
+            model && (model[property] = value);
+        }
+    }]);
+    return Utils;
+}();
+
+exports.default = new Utils();
+
+},{"babel-runtime/core-js/object/keys":85,"babel-runtime/helpers/classCallCheck":89,"babel-runtime/helpers/createClass":90,"providers/editData":73,"providers/i18n":74,"providers/rest/fileSystem":76,"providers/rest/resource":79}],82:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
-},{"core-js/library/fn/json/stringify":11}],2:[function(require,module,exports){
+},{"core-js/library/fn/json/stringify":92}],83:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/create"), __esModule: true };
-},{"core-js/library/fn/object/create":12}],3:[function(require,module,exports){
+},{"core-js/library/fn/object/create":93}],84:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
-},{"core-js/library/fn/object/define-property":13}],4:[function(require,module,exports){
+},{"core-js/library/fn/object/define-property":94}],85:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/object/keys"), __esModule: true };
-},{"core-js/library/fn/object/keys":14}],5:[function(require,module,exports){
+},{"core-js/library/fn/object/keys":95}],86:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/promise"), __esModule: true };
-},{"core-js/library/fn/promise":15}],6:[function(require,module,exports){
+},{"core-js/library/fn/promise":96}],87:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/symbol"), __esModule: true };
-},{"core-js/library/fn/symbol":16}],7:[function(require,module,exports){
+},{"core-js/library/fn/symbol":97}],88:[function(require,module,exports){
 module.exports = { "default": require("core-js/library/fn/symbol/iterator"), __esModule: true };
-},{"core-js/library/fn/symbol/iterator":17}],8:[function(require,module,exports){
+},{"core-js/library/fn/symbol/iterator":98}],89:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -22,7 +3321,7 @@ exports.default = function (instance, Constructor) {
     throw new TypeError("Cannot call a class as a function");
   }
 };
-},{}],9:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -50,7 +3349,7 @@ exports.default = function () {
     return Constructor;
   };
 }();
-},{"../core-js/object/define-property":3}],10:[function(require,module,exports){
+},{"../core-js/object/define-property":84}],91:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -72,63 +3371,63 @@ exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.d
 } : function (obj) {
   return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default && obj !== _symbol2.default.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
 };
-},{"../core-js/symbol":6,"../core-js/symbol/iterator":7}],11:[function(require,module,exports){
+},{"../core-js/symbol":87,"../core-js/symbol/iterator":88}],92:[function(require,module,exports){
 var core  = require('../../modules/_core')
   , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
 module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
   return $JSON.stringify.apply($JSON, arguments);
 };
-},{"../../modules/_core":25}],12:[function(require,module,exports){
+},{"../../modules/_core":106}],93:[function(require,module,exports){
 require('../../modules/es6.object.create');
 var $Object = require('../../modules/_core').Object;
 module.exports = function create(P, D){
   return $Object.create(P, D);
 };
-},{"../../modules/_core":25,"../../modules/es6.object.create":89}],13:[function(require,module,exports){
+},{"../../modules/_core":106,"../../modules/es6.object.create":170}],94:[function(require,module,exports){
 require('../../modules/es6.object.define-property');
 var $Object = require('../../modules/_core').Object;
 module.exports = function defineProperty(it, key, desc){
   return $Object.defineProperty(it, key, desc);
 };
-},{"../../modules/_core":25,"../../modules/es6.object.define-property":90}],14:[function(require,module,exports){
+},{"../../modules/_core":106,"../../modules/es6.object.define-property":171}],95:[function(require,module,exports){
 require('../../modules/es6.object.keys');
 module.exports = require('../../modules/_core').Object.keys;
-},{"../../modules/_core":25,"../../modules/es6.object.keys":91}],15:[function(require,module,exports){
+},{"../../modules/_core":106,"../../modules/es6.object.keys":172}],96:[function(require,module,exports){
 require('../modules/es6.object.to-string');
 require('../modules/es6.string.iterator');
 require('../modules/web.dom.iterable');
 require('../modules/es6.promise');
 module.exports = require('../modules/_core').Promise;
-},{"../modules/_core":25,"../modules/es6.object.to-string":92,"../modules/es6.promise":93,"../modules/es6.string.iterator":94,"../modules/web.dom.iterable":98}],16:[function(require,module,exports){
+},{"../modules/_core":106,"../modules/es6.object.to-string":173,"../modules/es6.promise":174,"../modules/es6.string.iterator":175,"../modules/web.dom.iterable":179}],97:[function(require,module,exports){
 require('../../modules/es6.symbol');
 require('../../modules/es6.object.to-string');
 require('../../modules/es7.symbol.async-iterator');
 require('../../modules/es7.symbol.observable');
 module.exports = require('../../modules/_core').Symbol;
-},{"../../modules/_core":25,"../../modules/es6.object.to-string":92,"../../modules/es6.symbol":95,"../../modules/es7.symbol.async-iterator":96,"../../modules/es7.symbol.observable":97}],17:[function(require,module,exports){
+},{"../../modules/_core":106,"../../modules/es6.object.to-string":173,"../../modules/es6.symbol":176,"../../modules/es7.symbol.async-iterator":177,"../../modules/es7.symbol.observable":178}],98:[function(require,module,exports){
 require('../../modules/es6.string.iterator');
 require('../../modules/web.dom.iterable');
 module.exports = require('../../modules/_wks-ext').f('iterator');
-},{"../../modules/_wks-ext":85,"../../modules/es6.string.iterator":94,"../../modules/web.dom.iterable":98}],18:[function(require,module,exports){
+},{"../../modules/_wks-ext":166,"../../modules/es6.string.iterator":175,"../../modules/web.dom.iterable":179}],99:[function(require,module,exports){
 module.exports = function(it){
   if(typeof it != 'function')throw TypeError(it + ' is not a function!');
   return it;
 };
-},{}],19:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 module.exports = function(){ /* empty */ };
-},{}],20:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 module.exports = function(it, Constructor, name, forbiddenField){
   if(!(it instanceof Constructor) || (forbiddenField !== undefined && forbiddenField in it)){
     throw TypeError(name + ': incorrect invocation!');
   } return it;
 };
-},{}],21:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 var isObject = require('./_is-object');
 module.exports = function(it){
   if(!isObject(it))throw TypeError(it + ' is not an object!');
   return it;
 };
-},{"./_is-object":44}],22:[function(require,module,exports){
+},{"./_is-object":125}],103:[function(require,module,exports){
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = require('./_to-iobject')
@@ -150,7 +3449,7 @@ module.exports = function(IS_INCLUDES){
     } return !IS_INCLUDES && -1;
   };
 };
-},{"./_to-index":77,"./_to-iobject":79,"./_to-length":80}],23:[function(require,module,exports){
+},{"./_to-index":158,"./_to-iobject":160,"./_to-length":161}],104:[function(require,module,exports){
 // getting tag from 19.1.3.6 Object.prototype.toString()
 var cof = require('./_cof')
   , TAG = require('./_wks')('toStringTag')
@@ -174,16 +3473,16 @@ module.exports = function(it){
     // ES3 arguments fallback
     : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
 };
-},{"./_cof":24,"./_wks":86}],24:[function(require,module,exports){
+},{"./_cof":105,"./_wks":167}],105:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = function(it){
   return toString.call(it).slice(8, -1);
 };
-},{}],25:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 var core = module.exports = {version: '2.4.0'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],26:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 // optional / simple context binding
 var aFunction = require('./_a-function');
 module.exports = function(fn, that, length){
@@ -204,18 +3503,18 @@ module.exports = function(fn, that, length){
     return fn.apply(that, arguments);
   };
 };
-},{"./_a-function":18}],27:[function(require,module,exports){
+},{"./_a-function":99}],108:[function(require,module,exports){
 // 7.2.1 RequireObjectCoercible(argument)
 module.exports = function(it){
   if(it == undefined)throw TypeError("Can't call method on  " + it);
   return it;
 };
-},{}],28:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 // Thank's IE8 for his funny defineProperty
 module.exports = !require('./_fails')(function(){
   return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 });
-},{"./_fails":33}],29:[function(require,module,exports){
+},{"./_fails":114}],110:[function(require,module,exports){
 var isObject = require('./_is-object')
   , document = require('./_global').document
   // in old IE typeof document.createElement is 'object'
@@ -223,12 +3522,12 @@ var isObject = require('./_is-object')
 module.exports = function(it){
   return is ? document.createElement(it) : {};
 };
-},{"./_global":35,"./_is-object":44}],30:[function(require,module,exports){
+},{"./_global":116,"./_is-object":125}],111:[function(require,module,exports){
 // IE 8- don't enum bug keys
 module.exports = (
   'constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf'
 ).split(',');
-},{}],31:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 // all enumerable object keys, includes symbols
 var getKeys = require('./_object-keys')
   , gOPS    = require('./_object-gops')
@@ -244,7 +3543,7 @@ module.exports = function(it){
     while(symbols.length > i)if(isEnum.call(it, key = symbols[i++]))result.push(key);
   } return result;
 };
-},{"./_object-gops":61,"./_object-keys":64,"./_object-pie":65}],32:[function(require,module,exports){
+},{"./_object-gops":142,"./_object-keys":145,"./_object-pie":146}],113:[function(require,module,exports){
 var global    = require('./_global')
   , core      = require('./_core')
   , ctx       = require('./_ctx')
@@ -306,7 +3605,7 @@ $export.W = 32;  // wrap
 $export.U = 64;  // safe
 $export.R = 128; // real proto method for `library` 
 module.exports = $export;
-},{"./_core":25,"./_ctx":26,"./_global":35,"./_hide":37}],33:[function(require,module,exports){
+},{"./_core":106,"./_ctx":107,"./_global":116,"./_hide":118}],114:[function(require,module,exports){
 module.exports = function(exec){
   try {
     return !!exec();
@@ -314,7 +3613,7 @@ module.exports = function(exec){
     return true;
   }
 };
-},{}],34:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 var ctx         = require('./_ctx')
   , call        = require('./_iter-call')
   , isArrayIter = require('./_is-array-iter')
@@ -340,17 +3639,17 @@ var exports = module.exports = function(iterable, entries, fn, that, ITERATOR){
 };
 exports.BREAK  = BREAK;
 exports.RETURN = RETURN;
-},{"./_an-object":21,"./_ctx":26,"./_is-array-iter":42,"./_iter-call":45,"./_to-length":80,"./core.get-iterator-method":87}],35:[function(require,module,exports){
+},{"./_an-object":102,"./_ctx":107,"./_is-array-iter":123,"./_iter-call":126,"./_to-length":161,"./core.get-iterator-method":168}],116:[function(require,module,exports){
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
 if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-},{}],36:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 var hasOwnProperty = {}.hasOwnProperty;
 module.exports = function(it, key){
   return hasOwnProperty.call(it, key);
 };
-},{}],37:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 var dP         = require('./_object-dp')
   , createDesc = require('./_property-desc');
 module.exports = require('./_descriptors') ? function(object, key, value){
@@ -359,13 +3658,13 @@ module.exports = require('./_descriptors') ? function(object, key, value){
   object[key] = value;
   return object;
 };
-},{"./_descriptors":28,"./_object-dp":56,"./_property-desc":67}],38:[function(require,module,exports){
+},{"./_descriptors":109,"./_object-dp":137,"./_property-desc":148}],119:[function(require,module,exports){
 module.exports = require('./_global').document && document.documentElement;
-},{"./_global":35}],39:[function(require,module,exports){
+},{"./_global":116}],120:[function(require,module,exports){
 module.exports = !require('./_descriptors') && !require('./_fails')(function(){
   return Object.defineProperty(require('./_dom-create')('div'), 'a', {get: function(){ return 7; }}).a != 7;
 });
-},{"./_descriptors":28,"./_dom-create":29,"./_fails":33}],40:[function(require,module,exports){
+},{"./_descriptors":109,"./_dom-create":110,"./_fails":114}],121:[function(require,module,exports){
 // fast apply, http://jsperf.lnkit.com/fast-apply/5
 module.exports = function(fn, args, that){
   var un = that === undefined;
@@ -382,13 +3681,13 @@ module.exports = function(fn, args, that){
                       : fn.call(that, args[0], args[1], args[2], args[3]);
   } return              fn.apply(that, args);
 };
-},{}],41:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
 var cof = require('./_cof');
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
-},{"./_cof":24}],42:[function(require,module,exports){
+},{"./_cof":105}],123:[function(require,module,exports){
 // check on default Array iterator
 var Iterators  = require('./_iterators')
   , ITERATOR   = require('./_wks')('iterator')
@@ -397,17 +3696,17 @@ var Iterators  = require('./_iterators')
 module.exports = function(it){
   return it !== undefined && (Iterators.Array === it || ArrayProto[ITERATOR] === it);
 };
-},{"./_iterators":50,"./_wks":86}],43:[function(require,module,exports){
+},{"./_iterators":131,"./_wks":167}],124:[function(require,module,exports){
 // 7.2.2 IsArray(argument)
 var cof = require('./_cof');
 module.exports = Array.isArray || function isArray(arg){
   return cof(arg) == 'Array';
 };
-},{"./_cof":24}],44:[function(require,module,exports){
+},{"./_cof":105}],125:[function(require,module,exports){
 module.exports = function(it){
   return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
-},{}],45:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 // call something on iterator step with safe closing on error
 var anObject = require('./_an-object');
 module.exports = function(iterator, fn, value, entries){
@@ -420,7 +3719,7 @@ module.exports = function(iterator, fn, value, entries){
     throw e;
   }
 };
-},{"./_an-object":21}],46:[function(require,module,exports){
+},{"./_an-object":102}],127:[function(require,module,exports){
 'use strict';
 var create         = require('./_object-create')
   , descriptor     = require('./_property-desc')
@@ -434,7 +3733,7 @@ module.exports = function(Constructor, NAME, next){
   Constructor.prototype = create(IteratorPrototype, {next: descriptor(1, next)});
   setToStringTag(Constructor, NAME + ' Iterator');
 };
-},{"./_hide":37,"./_object-create":55,"./_property-desc":67,"./_set-to-string-tag":71,"./_wks":86}],47:[function(require,module,exports){
+},{"./_hide":118,"./_object-create":136,"./_property-desc":148,"./_set-to-string-tag":152,"./_wks":167}],128:[function(require,module,exports){
 'use strict';
 var LIBRARY        = require('./_library')
   , $export        = require('./_export')
@@ -505,7 +3804,7 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
   }
   return methods;
 };
-},{"./_export":32,"./_has":36,"./_hide":37,"./_iter-create":46,"./_iterators":50,"./_library":52,"./_object-gpo":62,"./_redefine":69,"./_set-to-string-tag":71,"./_wks":86}],48:[function(require,module,exports){
+},{"./_export":113,"./_has":117,"./_hide":118,"./_iter-create":127,"./_iterators":131,"./_library":133,"./_object-gpo":143,"./_redefine":150,"./_set-to-string-tag":152,"./_wks":167}],129:[function(require,module,exports){
 var ITERATOR     = require('./_wks')('iterator')
   , SAFE_CLOSING = false;
 
@@ -527,13 +3826,13 @@ module.exports = function(exec, skipClosing){
   } catch(e){ /* empty */ }
   return safe;
 };
-},{"./_wks":86}],49:[function(require,module,exports){
+},{"./_wks":167}],130:[function(require,module,exports){
 module.exports = function(done, value){
   return {value: value, done: !!done};
 };
-},{}],50:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 module.exports = {};
-},{}],51:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 var getKeys   = require('./_object-keys')
   , toIObject = require('./_to-iobject');
 module.exports = function(object, el){
@@ -544,9 +3843,9 @@ module.exports = function(object, el){
     , key;
   while(length > index)if(O[key = keys[index++]] === el)return key;
 };
-},{"./_object-keys":64,"./_to-iobject":79}],52:[function(require,module,exports){
+},{"./_object-keys":145,"./_to-iobject":160}],133:[function(require,module,exports){
 module.exports = true;
-},{}],53:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 var META     = require('./_uid')('meta')
   , isObject = require('./_is-object')
   , has      = require('./_has')
@@ -600,7 +3899,7 @@ var meta = module.exports = {
   getWeak:  getWeak,
   onFreeze: onFreeze
 };
-},{"./_fails":33,"./_has":36,"./_is-object":44,"./_object-dp":56,"./_uid":83}],54:[function(require,module,exports){
+},{"./_fails":114,"./_has":117,"./_is-object":125,"./_object-dp":137,"./_uid":164}],135:[function(require,module,exports){
 var global    = require('./_global')
   , macrotask = require('./_task').set
   , Observer  = global.MutationObserver || global.WebKitMutationObserver
@@ -669,7 +3968,7 @@ module.exports = function(){
     } last = task;
   };
 };
-},{"./_cof":24,"./_global":35,"./_task":76}],55:[function(require,module,exports){
+},{"./_cof":105,"./_global":116,"./_task":157}],136:[function(require,module,exports){
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject    = require('./_an-object')
   , dPs         = require('./_object-dps')
@@ -712,7 +4011,7 @@ module.exports = Object.create || function create(O, Properties){
   return Properties === undefined ? result : dPs(result, Properties);
 };
 
-},{"./_an-object":21,"./_dom-create":29,"./_enum-bug-keys":30,"./_html":38,"./_object-dps":57,"./_shared-key":72}],56:[function(require,module,exports){
+},{"./_an-object":102,"./_dom-create":110,"./_enum-bug-keys":111,"./_html":119,"./_object-dps":138,"./_shared-key":153}],137:[function(require,module,exports){
 var anObject       = require('./_an-object')
   , IE8_DOM_DEFINE = require('./_ie8-dom-define')
   , toPrimitive    = require('./_to-primitive')
@@ -729,7 +4028,7 @@ exports.f = require('./_descriptors') ? Object.defineProperty : function defineP
   if('value' in Attributes)O[P] = Attributes.value;
   return O;
 };
-},{"./_an-object":21,"./_descriptors":28,"./_ie8-dom-define":39,"./_to-primitive":82}],57:[function(require,module,exports){
+},{"./_an-object":102,"./_descriptors":109,"./_ie8-dom-define":120,"./_to-primitive":163}],138:[function(require,module,exports){
 var dP       = require('./_object-dp')
   , anObject = require('./_an-object')
   , getKeys  = require('./_object-keys');
@@ -743,7 +4042,7 @@ module.exports = require('./_descriptors') ? Object.defineProperties : function 
   while(length > i)dP.f(O, P = keys[i++], Properties[P]);
   return O;
 };
-},{"./_an-object":21,"./_descriptors":28,"./_object-dp":56,"./_object-keys":64}],58:[function(require,module,exports){
+},{"./_an-object":102,"./_descriptors":109,"./_object-dp":137,"./_object-keys":145}],139:[function(require,module,exports){
 var pIE            = require('./_object-pie')
   , createDesc     = require('./_property-desc')
   , toIObject      = require('./_to-iobject')
@@ -760,7 +4059,7 @@ exports.f = require('./_descriptors') ? gOPD : function getOwnPropertyDescriptor
   } catch(e){ /* empty */ }
   if(has(O, P))return createDesc(!pIE.f.call(O, P), O[P]);
 };
-},{"./_descriptors":28,"./_has":36,"./_ie8-dom-define":39,"./_object-pie":65,"./_property-desc":67,"./_to-iobject":79,"./_to-primitive":82}],59:[function(require,module,exports){
+},{"./_descriptors":109,"./_has":117,"./_ie8-dom-define":120,"./_object-pie":146,"./_property-desc":148,"./_to-iobject":160,"./_to-primitive":163}],140:[function(require,module,exports){
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 var toIObject = require('./_to-iobject')
   , gOPN      = require('./_object-gopn').f
@@ -781,7 +4080,7 @@ module.exports.f = function getOwnPropertyNames(it){
   return windowNames && toString.call(it) == '[object Window]' ? getWindowNames(it) : gOPN(toIObject(it));
 };
 
-},{"./_object-gopn":60,"./_to-iobject":79}],60:[function(require,module,exports){
+},{"./_object-gopn":141,"./_to-iobject":160}],141:[function(require,module,exports){
 // 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
 var $keys      = require('./_object-keys-internal')
   , hiddenKeys = require('./_enum-bug-keys').concat('length', 'prototype');
@@ -789,9 +4088,9 @@ var $keys      = require('./_object-keys-internal')
 exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
   return $keys(O, hiddenKeys);
 };
-},{"./_enum-bug-keys":30,"./_object-keys-internal":63}],61:[function(require,module,exports){
+},{"./_enum-bug-keys":111,"./_object-keys-internal":144}],142:[function(require,module,exports){
 exports.f = Object.getOwnPropertySymbols;
-},{}],62:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
 var has         = require('./_has')
   , toObject    = require('./_to-object')
@@ -805,7 +4104,7 @@ module.exports = Object.getPrototypeOf || function(O){
     return O.constructor.prototype;
   } return O instanceof Object ? ObjectProto : null;
 };
-},{"./_has":36,"./_shared-key":72,"./_to-object":81}],63:[function(require,module,exports){
+},{"./_has":117,"./_shared-key":153,"./_to-object":162}],144:[function(require,module,exports){
 var has          = require('./_has')
   , toIObject    = require('./_to-iobject')
   , arrayIndexOf = require('./_array-includes')(false)
@@ -823,7 +4122,7 @@ module.exports = function(object, names){
   }
   return result;
 };
-},{"./_array-includes":22,"./_has":36,"./_shared-key":72,"./_to-iobject":79}],64:[function(require,module,exports){
+},{"./_array-includes":103,"./_has":117,"./_shared-key":153,"./_to-iobject":160}],145:[function(require,module,exports){
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
 var $keys       = require('./_object-keys-internal')
   , enumBugKeys = require('./_enum-bug-keys');
@@ -831,9 +4130,9 @@ var $keys       = require('./_object-keys-internal')
 module.exports = Object.keys || function keys(O){
   return $keys(O, enumBugKeys);
 };
-},{"./_enum-bug-keys":30,"./_object-keys-internal":63}],65:[function(require,module,exports){
+},{"./_enum-bug-keys":111,"./_object-keys-internal":144}],146:[function(require,module,exports){
 exports.f = {}.propertyIsEnumerable;
-},{}],66:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 // most Object methods by ES6 should accept primitives
 var $export = require('./_export')
   , core    = require('./_core')
@@ -844,7 +4143,7 @@ module.exports = function(KEY, exec){
   exp[KEY] = exec(fn);
   $export($export.S + $export.F * fails(function(){ fn(1); }), 'Object', exp);
 };
-},{"./_core":25,"./_export":32,"./_fails":33}],67:[function(require,module,exports){
+},{"./_core":106,"./_export":113,"./_fails":114}],148:[function(require,module,exports){
 module.exports = function(bitmap, value){
   return {
     enumerable  : !(bitmap & 1),
@@ -853,7 +4152,7 @@ module.exports = function(bitmap, value){
     value       : value
   };
 };
-},{}],68:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 var hide = require('./_hide');
 module.exports = function(target, src, safe){
   for(var key in src){
@@ -861,9 +4160,9 @@ module.exports = function(target, src, safe){
     else hide(target, key, src[key]);
   } return target;
 };
-},{"./_hide":37}],69:[function(require,module,exports){
+},{"./_hide":118}],150:[function(require,module,exports){
 module.exports = require('./_hide');
-},{"./_hide":37}],70:[function(require,module,exports){
+},{"./_hide":118}],151:[function(require,module,exports){
 'use strict';
 var global      = require('./_global')
   , core        = require('./_core')
@@ -878,7 +4177,7 @@ module.exports = function(KEY){
     get: function(){ return this; }
   });
 };
-},{"./_core":25,"./_descriptors":28,"./_global":35,"./_object-dp":56,"./_wks":86}],71:[function(require,module,exports){
+},{"./_core":106,"./_descriptors":109,"./_global":116,"./_object-dp":137,"./_wks":167}],152:[function(require,module,exports){
 var def = require('./_object-dp').f
   , has = require('./_has')
   , TAG = require('./_wks')('toStringTag');
@@ -886,20 +4185,20 @@ var def = require('./_object-dp').f
 module.exports = function(it, tag, stat){
   if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 };
-},{"./_has":36,"./_object-dp":56,"./_wks":86}],72:[function(require,module,exports){
+},{"./_has":117,"./_object-dp":137,"./_wks":167}],153:[function(require,module,exports){
 var shared = require('./_shared')('keys')
   , uid    = require('./_uid');
 module.exports = function(key){
   return shared[key] || (shared[key] = uid(key));
 };
-},{"./_shared":73,"./_uid":83}],73:[function(require,module,exports){
+},{"./_shared":154,"./_uid":164}],154:[function(require,module,exports){
 var global = require('./_global')
   , SHARED = '__core-js_shared__'
   , store  = global[SHARED] || (global[SHARED] = {});
 module.exports = function(key){
   return store[key] || (store[key] = {});
 };
-},{"./_global":35}],74:[function(require,module,exports){
+},{"./_global":116}],155:[function(require,module,exports){
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
 var anObject  = require('./_an-object')
   , aFunction = require('./_a-function')
@@ -908,7 +4207,7 @@ module.exports = function(O, D){
   var C = anObject(O).constructor, S;
   return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
 };
-},{"./_a-function":18,"./_an-object":21,"./_wks":86}],75:[function(require,module,exports){
+},{"./_a-function":99,"./_an-object":102,"./_wks":167}],156:[function(require,module,exports){
 var toInteger = require('./_to-integer')
   , defined   = require('./_defined');
 // true  -> String#at
@@ -926,7 +4225,7 @@ module.exports = function(TO_STRING){
       : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
   };
 };
-},{"./_defined":27,"./_to-integer":78}],76:[function(require,module,exports){
+},{"./_defined":108,"./_to-integer":159}],157:[function(require,module,exports){
 var ctx                = require('./_ctx')
   , invoke             = require('./_invoke')
   , html               = require('./_html')
@@ -1002,7 +4301,7 @@ module.exports = {
   set:   setTask,
   clear: clearTask
 };
-},{"./_cof":24,"./_ctx":26,"./_dom-create":29,"./_global":35,"./_html":38,"./_invoke":40}],77:[function(require,module,exports){
+},{"./_cof":105,"./_ctx":107,"./_dom-create":110,"./_global":116,"./_html":119,"./_invoke":121}],158:[function(require,module,exports){
 var toInteger = require('./_to-integer')
   , max       = Math.max
   , min       = Math.min;
@@ -1010,34 +4309,34 @@ module.exports = function(index, length){
   index = toInteger(index);
   return index < 0 ? max(index + length, 0) : min(index, length);
 };
-},{"./_to-integer":78}],78:[function(require,module,exports){
+},{"./_to-integer":159}],159:[function(require,module,exports){
 // 7.1.4 ToInteger
 var ceil  = Math.ceil
   , floor = Math.floor;
 module.exports = function(it){
   return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
 };
-},{}],79:[function(require,module,exports){
+},{}],160:[function(require,module,exports){
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = require('./_iobject')
   , defined = require('./_defined');
 module.exports = function(it){
   return IObject(defined(it));
 };
-},{"./_defined":27,"./_iobject":41}],80:[function(require,module,exports){
+},{"./_defined":108,"./_iobject":122}],161:[function(require,module,exports){
 // 7.1.15 ToLength
 var toInteger = require('./_to-integer')
   , min       = Math.min;
 module.exports = function(it){
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 };
-},{"./_to-integer":78}],81:[function(require,module,exports){
+},{"./_to-integer":159}],162:[function(require,module,exports){
 // 7.1.13 ToObject(argument)
 var defined = require('./_defined');
 module.exports = function(it){
   return Object(defined(it));
 };
-},{"./_defined":27}],82:[function(require,module,exports){
+},{"./_defined":108}],163:[function(require,module,exports){
 // 7.1.1 ToPrimitive(input [, PreferredType])
 var isObject = require('./_is-object');
 // instead of the ES6 spec version, we didn't implement @@toPrimitive case
@@ -1050,13 +4349,13 @@ module.exports = function(it, S){
   if(!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it)))return val;
   throw TypeError("Can't convert object to primitive value");
 };
-},{"./_is-object":44}],83:[function(require,module,exports){
+},{"./_is-object":125}],164:[function(require,module,exports){
 var id = 0
   , px = Math.random();
 module.exports = function(key){
   return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 };
-},{}],84:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
 var global         = require('./_global')
   , core           = require('./_core')
   , LIBRARY        = require('./_library')
@@ -1066,9 +4365,9 @@ module.exports = function(name){
   var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
   if(name.charAt(0) != '_' && !(name in $Symbol))defineProperty($Symbol, name, {value: wksExt.f(name)});
 };
-},{"./_core":25,"./_global":35,"./_library":52,"./_object-dp":56,"./_wks-ext":85}],85:[function(require,module,exports){
+},{"./_core":106,"./_global":116,"./_library":133,"./_object-dp":137,"./_wks-ext":166}],166:[function(require,module,exports){
 exports.f = require('./_wks');
-},{"./_wks":86}],86:[function(require,module,exports){
+},{"./_wks":167}],167:[function(require,module,exports){
 var store      = require('./_shared')('wks')
   , uid        = require('./_uid')
   , Symbol     = require('./_global').Symbol
@@ -1080,7 +4379,7 @@ var $exports = module.exports = function(name){
 };
 
 $exports.store = store;
-},{"./_global":35,"./_shared":73,"./_uid":83}],87:[function(require,module,exports){
+},{"./_global":116,"./_shared":154,"./_uid":164}],168:[function(require,module,exports){
 var classof   = require('./_classof')
   , ITERATOR  = require('./_wks')('iterator')
   , Iterators = require('./_iterators');
@@ -1089,7 +4388,7 @@ module.exports = require('./_core').getIteratorMethod = function(it){
     || it['@@iterator']
     || Iterators[classof(it)];
 };
-},{"./_classof":23,"./_core":25,"./_iterators":50,"./_wks":86}],88:[function(require,module,exports){
+},{"./_classof":104,"./_core":106,"./_iterators":131,"./_wks":167}],169:[function(require,module,exports){
 'use strict';
 var addToUnscopables = require('./_add-to-unscopables')
   , step             = require('./_iter-step')
@@ -1124,15 +4423,15 @@ Iterators.Arguments = Iterators.Array;
 addToUnscopables('keys');
 addToUnscopables('values');
 addToUnscopables('entries');
-},{"./_add-to-unscopables":19,"./_iter-define":47,"./_iter-step":49,"./_iterators":50,"./_to-iobject":79}],89:[function(require,module,exports){
+},{"./_add-to-unscopables":100,"./_iter-define":128,"./_iter-step":130,"./_iterators":131,"./_to-iobject":160}],170:[function(require,module,exports){
 var $export = require('./_export')
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 $export($export.S, 'Object', {create: require('./_object-create')});
-},{"./_export":32,"./_object-create":55}],90:[function(require,module,exports){
+},{"./_export":113,"./_object-create":136}],171:[function(require,module,exports){
 var $export = require('./_export');
 // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
 $export($export.S + $export.F * !require('./_descriptors'), 'Object', {defineProperty: require('./_object-dp').f});
-},{"./_descriptors":28,"./_export":32,"./_object-dp":56}],91:[function(require,module,exports){
+},{"./_descriptors":109,"./_export":113,"./_object-dp":137}],172:[function(require,module,exports){
 // 19.1.2.14 Object.keys(O)
 var toObject = require('./_to-object')
   , $keys    = require('./_object-keys');
@@ -1142,9 +4441,9 @@ require('./_object-sap')('keys', function(){
     return $keys(toObject(it));
   };
 });
-},{"./_object-keys":64,"./_object-sap":66,"./_to-object":81}],92:[function(require,module,exports){
+},{"./_object-keys":145,"./_object-sap":147,"./_to-object":162}],173:[function(require,module,exports){
 
-},{}],93:[function(require,module,exports){
+},{}],174:[function(require,module,exports){
 'use strict';
 var LIBRARY            = require('./_library')
   , global             = require('./_global')
@@ -1444,7 +4743,7 @@ $export($export.S + $export.F * !(USE_NATIVE && require('./_iter-detect')(functi
     return capability.promise;
   }
 });
-},{"./_a-function":18,"./_an-instance":20,"./_classof":23,"./_core":25,"./_ctx":26,"./_export":32,"./_for-of":34,"./_global":35,"./_is-object":44,"./_iter-detect":48,"./_library":52,"./_microtask":54,"./_redefine-all":68,"./_set-species":70,"./_set-to-string-tag":71,"./_species-constructor":74,"./_task":76,"./_wks":86}],94:[function(require,module,exports){
+},{"./_a-function":99,"./_an-instance":101,"./_classof":104,"./_core":106,"./_ctx":107,"./_export":113,"./_for-of":115,"./_global":116,"./_is-object":125,"./_iter-detect":129,"./_library":133,"./_microtask":135,"./_redefine-all":149,"./_set-species":151,"./_set-to-string-tag":152,"./_species-constructor":155,"./_task":157,"./_wks":167}],175:[function(require,module,exports){
 'use strict';
 var $at  = require('./_string-at')(true);
 
@@ -1462,7 +4761,7 @@ require('./_iter-define')(String, 'String', function(iterated){
   this._i += point.length;
   return {value: point, done: false};
 });
-},{"./_iter-define":47,"./_string-at":75}],95:[function(require,module,exports){
+},{"./_iter-define":128,"./_string-at":156}],176:[function(require,module,exports){
 'use strict';
 // ECMAScript 6 symbols shim
 var global         = require('./_global')
@@ -1698,11 +4997,11 @@ setToStringTag($Symbol, 'Symbol');
 setToStringTag(Math, 'Math', true);
 // 24.3.3 JSON[@@toStringTag]
 setToStringTag(global.JSON, 'JSON', true);
-},{"./_an-object":21,"./_descriptors":28,"./_enum-keys":31,"./_export":32,"./_fails":33,"./_global":35,"./_has":36,"./_hide":37,"./_is-array":43,"./_keyof":51,"./_library":52,"./_meta":53,"./_object-create":55,"./_object-dp":56,"./_object-gopd":58,"./_object-gopn":60,"./_object-gopn-ext":59,"./_object-gops":61,"./_object-keys":64,"./_object-pie":65,"./_property-desc":67,"./_redefine":69,"./_set-to-string-tag":71,"./_shared":73,"./_to-iobject":79,"./_to-primitive":82,"./_uid":83,"./_wks":86,"./_wks-define":84,"./_wks-ext":85}],96:[function(require,module,exports){
+},{"./_an-object":102,"./_descriptors":109,"./_enum-keys":112,"./_export":113,"./_fails":114,"./_global":116,"./_has":117,"./_hide":118,"./_is-array":124,"./_keyof":132,"./_library":133,"./_meta":134,"./_object-create":136,"./_object-dp":137,"./_object-gopd":139,"./_object-gopn":141,"./_object-gopn-ext":140,"./_object-gops":142,"./_object-keys":145,"./_object-pie":146,"./_property-desc":148,"./_redefine":150,"./_set-to-string-tag":152,"./_shared":154,"./_to-iobject":160,"./_to-primitive":163,"./_uid":164,"./_wks":167,"./_wks-define":165,"./_wks-ext":166}],177:[function(require,module,exports){
 require('./_wks-define')('asyncIterator');
-},{"./_wks-define":84}],97:[function(require,module,exports){
+},{"./_wks-define":165}],178:[function(require,module,exports){
 require('./_wks-define')('observable');
-},{"./_wks-define":84}],98:[function(require,module,exports){
+},{"./_wks-define":165}],179:[function(require,module,exports){
 require('./es6.array.iterator');
 var global        = require('./_global')
   , hide          = require('./_hide')
@@ -1716,2923 +5015,4 @@ for(var collections = ['NodeList', 'DOMTokenList', 'MediaList', 'StyleSheetList'
   if(proto && !proto[TO_STRING_TAG])hide(proto, TO_STRING_TAG, NAME);
   Iterators[NAME] = Iterators.Array;
 }
-},{"./_global":35,"./_hide":37,"./_iterators":50,"./_wks":86,"./es6.array.iterator":88}],99:[function(require,module,exports){
-module.exports = "\n<app-modal id=\"alertModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"close()\">{{i18n.ok}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>\n";
-
-},{}],100:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-alert-dialog', {
-    template: {
-        type: 'string',
-        value: require('./alertDialog.html')
-    },
-    message: '',
-    i18n: _i18n2.default.getAll(),
-    open: function open(message) {
-        RF.getComponentById('alertModal').open();
-        this.message = message;
-    },
-    close: function close() {
-        RF.getComponentById('alertModal').close();
-        this.message = null;
-    }
-});
-
-},{"./alertDialog.html":99,"providers/i18n":162}],101:[function(require,module,exports){
-module.exports = "<div\n        class=\"inlineBlock\"\n        data-click=\"click($event)\"\n        data-mousemove=\"mouseMove($event)\"\n        >\n    <div data-container class=\"inlineBlock\">\n        <svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\">\n            <circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle>\n            <line id=\"line\" x1=\"100\" y1=\"100\"\n                  x2=\"200\" y2=\"100\"\n                  stroke=\"black\"\n                  stroke-width=\"2\"\n                  data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"\n                    >\n            </line>\n        </svg>\n    </div>\n    <div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">\n        {{angleInDeg()}}&deg;\n    </div>\n</div>";
-
-},{}],102:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = RF.registerComponent('app-angle-picker', {
-    getInitialState: function getInitialState() {
-        return {
-            object: { val: 0 },
-            value: 'val'
-        };
-    },
-
-    template: {
-        type: 'string',
-        value: require('./anglePicker.html')
-    },
-
-    angleInDeg: function angleInDeg() {
-        if (!this.object) return 0;
-        var res = this.object[this.value] * 180 / Math.PI % 360;
-        return +res.toFixed(2) || 0;
-    },
-
-    calcAngleFromEvent: function calcAngleFromEvent(e) {
-        if (!this.object) return;
-        var el = this.$el.querySelector('[data-container]');
-        var rect = el.getBoundingClientRect();
-        var x = e.clientX - rect.left,
-            y = e.clientY - rect.top;
-        var angle = Math.atan2(y - 15, x - 15);
-        if (angle < 0) angle = 2 * Math.PI + angle;
-        angle = +angle.toFixed(2) || 0;
-        this.object[this.value] = angle;
-    },
-    click: function click(e) {
-        this.calcAngleFromEvent(e);
-    },
-    mouseMove: function mouseMove(e) {
-        if (e.buttons !== 1) return;
-        this.calcAngleFromEvent(e);
-    }
-});
-
-},{"./anglePicker.html":101}],103:[function(require,module,exports){
-module.exports = "<div>\n    <div\n        class=\"collapsible_header bold noSelect\"\n    >\n        <div class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell width1\">\n                    <span\n                            class=\"collapsible_point noBrake\"\n                            data-click=\"toggle()\"\n                            data-class=\"{rotated:opened}\">▷</span>\n                </div>\n                <div class=\"cell\">\n                    <span\n                            data-click=\"toggle()\"\n                            >&nbsp;{{title}}</span>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div>\n                </div>\n                <div class=\"cell width1\">\n                    <div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div>\n                </div>\n            </div>\n        </div>\n    </div>\n    <div\n            class=\"collapsible_content\"\n            data-class=\"{opened:opened}\">\n        <div data-transclusion=\"content\"></div>\n    </div>\n</div>";
-
-},{}],104:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var id = 0;
-
-exports.default = RF.registerComponent('app-collapsible', {
-    template: {
-        type: 'string',
-        value: require('./collapsible.html')
-    },
-    getInitialState: function getInitialState() {
-        return {
-            title: 'default',
-            crud: '',
-            object: '',
-            meta: '',
-            id: null,
-            opened: false
-        };
-    },
-
-    onMounted: function onMounted() {
-        this.id = id;
-        this.opened = localStorage['clps_' + this.id] == 'true';
-        id++;
-    },
-    toggle: function toggle() {
-        this.opened = !this.opened;
-        localStorage['clps_' + this.id] = this.opened;
-    }
-});
-
-},{"./collapsible.html":103}],105:[function(require,module,exports){
-module.exports = "<div class=\"inlineBlock\">\r\n\r\n    <div\r\n            data-style=\"{\r\n                cursor: 'pointer',\r\n                width: 24 + 'px',\r\n                height:24 + 'px',\r\n                backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')')\r\n            }\"\r\n            data-click=\"click()\"\r\n            >\r\n    </div>\r\n\r\n</div>\r\n\r\n";
-
-},{}],106:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-require('./colorPickerDialog');
-
-exports.default = RF.registerComponent('app-color-picker', {
-    template: {
-        type: 'string',
-        value: require('./colorPicker.html')
-    },
-    getInitialState: function getInitialState() {
-        return {
-            model: { field: '' },
-            field: 'field'
-        };
-    },
-    click: function click() {
-        RF.getComponentById('colorPickerDialog').open(this.model, this.field);
-    }
-});
-
-},{"./colorPicker.html":105,"./colorPickerDialog":108}],107:[function(require,module,exports){
-module.exports = "<app-modal id=\"colorPickerModal\">\n\n    <div data-transclusion=\"content\">\n\n        <table>\n            <tr>\n                <td>\n                    <input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"/>\n                </td>\n                <td>\n                    <input type=\"text\"  data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"/>\n                </td>\n                <td></td>\n            </tr>\n\n            <table class=\"width100\">\n                <tr\n                        data-for=\"item in colorEnums\">\n                    <td\n                            data-style=\"{\n                                color: item.left\n                            }\"\n                    >\n                        {{item.left}}\n                    </td>\n                    <td class=\"centerText\">\n                        <input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\">\n                        <br/>\n                        <input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\">\n                        <hr/>\n                    </td>\n                    <td\n                            data-style=\"{\n                                color: item.right\n                            }\"\n                    >\n                        {{item.right}}\n                    </td>\n                    <td>\n                        <div data-style=\"{\n                            width: '5px',\n                            height: '5px',\n                            backgroundColor: getRawColor(currentColor.RGB,item.key)\n                        }\"></div>\n                    </td>\n                </tr>\n\n\n            </table>\n        </table>\n\n        <button\n                data-click=\"applyColor()\">\n            {{i18n.edit}}\n        </button>\n    </div>\n\n</app-modal>";
-
-},{}],108:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _create = require('babel-runtime/core-js/object/create');
-
-var _create2 = _interopRequireDefault(_create);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var defaultColor = { r: 0, g: 0, b: 0 };
-var colorEnums = [{ left: 'red', right: 'cyan', key: 'r' }, { left: 'green', right: 'magenta', key: 'g' }, { left: 'blue', right: 'yellow', key: 'b' }];
-
-var cmp = RF.registerComponent('app-color-picker-dialog', {
-    template: {
-        type: 'string',
-        value: require('./colorPickerDialog.html')
-    },
-    colorEnums: colorEnums,
-    i18n: _i18n2.default.getAll(),
-    getInitialState: function getInitialState() {
-        return {
-            currentColor: {
-                RGB: {},
-                hex: ''
-            },
-            model: { field: {} },
-            field: 'field'
-        };
-    },
-    open: function open(model, field) {
-        var color = model && model[field] || (0, _create2.default)(defaultColor);
-        this.model = model;
-        this.field = field;
-        this.currentColor.RGB.r = color.r;
-        this.currentColor.RGB.g = color.g;
-        this.currentColor.RGB.b = color.b;
-        this.currentColor.hex = _utils2.default.rgbToHex(this.currentColor.RGB);
-        RF.getComponentById('colorPickerModal').open();
-    },
-    hexChanged: function hexChanged() {
-        this.currentColor.RGB = _utils2.default.hexToRgb(this.currentColor.hex);
-    },
-    rgbChanged: function rgbChanged() {
-        this.currentColor.hex = _utils2.default.rgbToHex(this.currentColor.RGB);
-    },
-    getRawColor: function getRawColor(rgb, key) {
-        var col = {
-            r: key == 'r' ? rgb.r : 0,
-            g: key == 'g' ? rgb.g : 0,
-            b: key == 'b' ? rgb.b : 0
-        };
-        return _utils2.default.rgbToHex(col);
-    },
-    applyColor: function applyColor() {
-        this.model[this.field] = this.currentColor.RGB;
-        RF.getComponentById('colorPickerModal').close();
-    }
-});
-
-// let el = document.createElement('app-color-picker-dialog');
-// el.id = 'colorPickerDialog';
-// document.body.appendChild(el);
-
-exports.default = cmp;
-
-},{"./colorPickerDialog.html":107,"babel-runtime/core-js/object/create":2,"providers/i18n":162,"providers/utils":169}],109:[function(require,module,exports){
-module.exports = "\n<app-modal id=\"confirmModal\">\n    <div data-transclusion=\"content\">\n        <div class=\"withMargin\">\n            <div class=\"alert_body\">\n                {{message}}\n            </div>\n            <div>\n                <button data-click=\"confirmAndClose()\">{{i18n.confirm}}</button>\n                <button data-click=\"close()\">{{i18n.cancel}}</button>\n            </div>\n        </div>\n    </div>\n</app-modal>";
-
-},{}],110:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-confirm-dialog', {
-    template: {
-        type: 'string',
-        value: require('./confirmDialog.html')
-    },
-    message: 'default message',
-    confirm: function confirm() {},
-    i18n: _i18n2.default.getAll(),
-    close: function close() {
-        RF.getComponentById('confirmModal').close();
-    },
-    confirmAndClose: function confirmAndClose() {
-        this.confirm();
-        this.close();
-    },
-    open: function open(message, callback) {
-        RF.getComponentById('confirmModal').open();
-        this.message = message;
-        this.confirm = callback;
-    }
-});
-
-},{"./confirmDialog.html":109,"providers/i18n":162}],111:[function(require,module,exports){
-module.exports = "<div>\n    <button>{{title}}</button>\n    <input  required accept=\"{{accept}}\" type=\"file\"/>\n</div>";
-
-},{}],112:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = RF.registerComponent('app-input-file', {
-    getInitialState: function getInitialState() {
-        return {
-            title: '',
-            accept: '',
-            onFilePicked: null
-        };
-    },
-    template: {
-        type: 'string',
-        value: require('./inputFile.html')
-    },
-    onMount: function onMount() {
-        var _this = this;
-
-        var btn = this.$el.querySelector('button');
-        var input = this.$el.querySelector('input');
-        btn.onclick = function () {
-            input.click();
-        };
-        input.onchange = function () {
-            var file = input.files[0];
-            var name = file.name.split('.')[0];
-            var url = window.URL || window.webkitURL;
-            var src = url.createObjectURL(file);
-            _this.onFilePicked(src, file, name);
-            RF.digest();
-        };
-    }
-});
-
-},{"./inputFile.html":111}],113:[function(require,module,exports){
-module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\">\n    <div class=\"fullscreen shadow\"></div>\n    <div class=\"dialog\">\n        <div class=\"dialogContent\">\n            <div class=\"dialogClose\">\n                <span data-click=\"close()\" class=\"pointer\">X</span>\n            </div>\n            <div class=\"withPadding\">\n                <div data-transclusion=\"content\"></div>\n            </div>\n        </div>\n    </div>\n</div>\n";
-
-},{}],114:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = RF.registerComponent('app-modal', {
-    template: {
-        type: 'string',
-        value: require('./modal.html')
-    },
-    getInitialState: function getInitialState() {
-        return {
-            opened: false
-        };
-    },
-    close: function close() {
-        this.opened = false;
-    },
-    open: function open() {
-        this.opened = true;
-    }
-});
-
-},{"./modal.html":113}],115:[function(require,module,exports){
-'use strict';
-
-require('components/modal/modal');
-
-require('components/collapsible/collapsible');
-
-require('components/alertDialog/alertDialog');
-
-require('components/confirmDialog/confirmDialog');
-
-require('components/inputFile/inputFile');
-
-require('components/colorPicker/colorPicker');
-
-require('components/anglePicker/anglePicker');
-
-require('providers/userDefinedFns');
-
-var _explorer = require('pages/explorer/explorer');
-
-var _explorer2 = _interopRequireDefault(_explorer);
-
-var _editor = require('pages/editor/editor');
-
-var _editor2 = _interopRequireDefault(_editor);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-RF.Router.setup({
-    explorer: _explorer2.default,
-    editor: _editor2.default
-});
-
-RF.applyBindings('body');
-RF.Router.navigateTo('explorer');
-
-},{"components/alertDialog/alertDialog":100,"components/anglePicker/anglePicker":102,"components/collapsible/collapsible":104,"components/colorPicker/colorPicker":106,"components/confirmDialog/confirmDialog":110,"components/inputFile/inputFile":112,"components/modal/modal":114,"pages/editor/editor":137,"pages/explorer/explorer":159,"providers/userDefinedFns":168}],116:[function(require,module,exports){
-module.exports = "<div\n        class=\"height100 relative\"\n        data-if=\"editData.scriptEditorUrl\"\n        >\n\n    <div class=\"scriptEditorClose\" data-click=\"close()\">X</div>\n\n    <div style=\"height:10px;font-size: 10px;\">\n        {{editData.scriptEditorUrl}}\n    </div>\n    <div\n            id=\"scriptEditor\"\n            style=\"height:calc(100% - 10px)\"\n            >\n        <iframe\n                id=\"scriptEditorFrame\"\n                frameborder=\"0\"\n                class=\"block width100 height100 noOverFlow\"\n                src=\"/editor\"\n                ></iframe>\n    </div>\n</div>";
-
-},{}],117:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-script-editor', {
-    template: {
-        type: 'string',
-        value: require('./scriptEditor.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    close: function close() {
-        _editData2.default.scriptEditorUrl = '';
-    }
-});
-
-},{"./scriptEditor.html":116,"providers/editData":161,"providers/i18n":162}],118:[function(require,module,exports){
-module.exports = "\r\n<app-modal id=\"commonBehaviourModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td class=\"borderBottom\">\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    {{editData.currCommonBehaviourInEdit.name}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td class=\"borderBottom\">\r\n                    {{i18n.description}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    {{editData.currCommonBehaviourInEdit.description}}\r\n                </td>\r\n            </tr>\r\n            <tr data-for=\"value, key in editData.currCommonBehaviourInEdit.parameters\">\r\n                <td class=\"borderBottom\">\r\n                    {{key}}\r\n                </td>\r\n                <td class=\"borderBottom\">\r\n                    <input\r\n                            type=\"text\"\r\n                            data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"/>\r\n                </td>\r\n            </tr>\r\n            <tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\">\r\n                <td colspan=\"2\" class=\"borderBottom\">\r\n                    {{i18n.noDataToEdit}}\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\"\r\n                data-disabled=\"!form.valid()\">\r\n            {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n\r\n    </div>\r\n\r\n</app-modal>";
-
-},{}],119:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-common-behaviour-dialog', {
-    template: {
-        type: 'string',
-        value: require('./commonBehaviourDialog.html')
-    },
-    i18n: _i18n2.default.getAll(),
-    utils: _utils2.default,
-    editData: _editData2.default,
-    form: { valid: function valid() {
-            return true;
-        } },
-
-    createOrEditCommonBehaviour: function createOrEditCommonBehaviour() {
-        var cb = _editData2.default.currCommonBehaviourInEdit;
-        _resource2.default.save(cb).then(function (resp) {
-            if (resp.created) {
-                cb.id = resp.id;
-                _editData2.default.commonBehaviourList.add(cb);
-                _editData2.default.currGameObjectInEdit.commonBehaviour.add(cb);
-                return _resource2.default.save(_editData2.default.currGameObjectInEdit);
-            }
-        }).then(function () {
-            _editData2.default.currGameObjectInEdit.updateCloner();
-            RF.getComponentById('commonBehaviourModal').close();
-            RF.digest();
-        }).catch(window.catchPromise);
-    }
-});
-
-},{"./commonBehaviourDialog.html":118,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167,"providers/utils":169}],120:[function(require,module,exports){
-module.exports = "<div>\n    <app-sound-dialog id=\"soundDialog\"></app-sound-dialog>\n    <app-particle-system-dialog></app-particle-system-dialog>\n    <app-font-dialog id=\"fontDialog\"></app-font-dialog>\n    <app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog>\n    <app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog>\n\n\n    <app-scene-dialog/>\n    <app-layer-dialog/>\n</div>";
-
-},{}],121:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-require('pages/editor/dialogs/soundDialog/soundDialog');
-
-require('pages/editor/dialogs/fontDialog/fontDialog');
-
-require('pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog');
-
-require('pages/editor/dialogs/gameObjectDialog/gameObjectDialog');
-
-require('pages/editor/dialogs/particleSystemDialog/particleSystemDialog');
-
-require('pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog');
-
-require('pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog');
-
-require('pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-dialogs', {
-    template: {
-        type: 'string',
-        value: require('./dialogs.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll()
-});
-
-},{"./dialogs.html":120,"pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog":119,"pages/editor/dialogs/fontDialog/fontDialog":123,"pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog":125,"pages/editor/dialogs/gameObjectDialog/gameObjectDialog":127,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":129,"pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog":131,"pages/editor/dialogs/soundDialog/soundDialog":133,"pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog":135,"providers/editData":161,"providers/i18n":162}],122:[function(require,module,exports){
-module.exports = "<app-modal id=\"fontModal\">\n    <div data-transclusion=\"content\">\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.selectFont}}\n                </td>\n                <td>\n                    <select\n                            required\n                            data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\">\n                        <option\n                                data-value=\"fnt.displayName\"\n                                data-for=\"fnt in systemFontList\">\n                            {{fnt.displayName}}\n                        </option>\n                    </select>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n                <td>\n                    <input required\n                           data-model=\"editData.currFontInEdit.name\" class=\"width100\">\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.fontSize}}\n                </td>\n                <td>\n                    <input required type=\"number\"\n                           min=\"1\"\n                           max=\"1000\"\n                           data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\">\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    {{i18n.fontColor}}\n                </td>\n                <td>\n                    <app-color-picker\n                        data-state=\"{\n                            model:editData.currFontInEdit,\n                            field:'fontColor'\n                        }\"\n                    ></app-color-picker>\n                </td>\n            </tr>\n            <tr>\n                <td colspan=\"2\">\n                    <input data-model=\"fontSample\" class=\"width100\"/>\n                </td>\n            </tr>\n            <tr>\n                <td colspan=\"2\">\n                    <div data-style='{\n                fontFamily:editData.currFontInEdit.fontFamily,\n                fontSize:editData.currFontInEdit.fontSize+\"px\",\n                color:utils.rgbToHex(editData.currFontInEdit.fontColor)\n            }'>{{fontSample}}</div>\n                </td>\n            </tr>\n        </table>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"createOrEditFont(editData.currFontInEdit)\">\n            {{editData.currFontInEdit.id?i18n.edit:i18n.create}}\n        </button>\n    </div>\n</app-modal>\n\n\n";
-
-},{}],123:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _chrome = require('providers/chrome');
-
-var _chrome2 = _interopRequireDefault(_chrome);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var SYMBOL_PADDING = 4;
-var fontSample = 'Test me! Text here';
-
-var getFontContext = function getFontContext(arrFromTo, strFont, w) {
-    function getFontHeight(strFont) {
-        var parent = document.createElement("span");
-        parent.appendChild(document.createTextNode("height!ДдЙЇ"));
-        document.body.appendChild(parent);
-        parent.style.cssText = "font: " + strFont + "; white-space: nowrap; display: inline;";
-        var height = parent.offsetHeight;
-        document.body.removeChild(parent);
-        return height;
-    }
-    var cnv = document.createElement('canvas');
-    var ctx = cnv.getContext('2d');
-    ctx.font = strFont;
-    var textHeight = getFontHeight(strFont) + 2 * SYMBOL_PADDING;
-    var symbols = {};
-    var currX = 0,
-        currY = 0,
-        cnvHeight = textHeight;
-    for (var k = 0; k < arrFromTo.length; k++) {
-        var arrFromToCurr = arrFromTo[k];
-        for (var i = arrFromToCurr.from; i < arrFromToCurr.to; i++) {
-            var currentChar = String.fromCharCode(i);
-
-            ctx = cnv.getContext('2d');
-            var textWidth = ctx.measureText(currentChar).width;
-            textWidth += 2 * SYMBOL_PADDING;
-            if (textWidth == 0) continue;
-            if (currX + textWidth > w) {
-                currX = 0;
-                currY += textHeight;
-                cnvHeight = currY + textHeight;
-            }
-            var symbol = {};
-            symbol.x = ~~currX + SYMBOL_PADDING;
-            symbol.y = ~~currY + SYMBOL_PADDING;
-            symbol.width = ~~textWidth - 2 * SYMBOL_PADDING;
-            symbol.height = textHeight - 2 * SYMBOL_PADDING;
-            symbols[currentChar] = symbol;
-            currX += textWidth;
-        }
-    }
-    return { symbols: symbols, width: w, height: cnvHeight };
-};
-
-var getFontImage = function getFontImage(symbolsContext, strFont, color) {
-    var cnv = document.createElement('canvas');
-    cnv.width = symbolsContext.width;
-    cnv.height = symbolsContext.height;
-    var ctx = cnv.getContext('2d');
-    ctx.font = strFont;
-    ctx.fillStyle = color;
-    ctx.textBaseline = "top";
-    var symbols = symbolsContext.symbols;
-    for (var symbol in symbols) {
-        if (!symbols.hasOwnProperty(symbol)) continue;
-        ctx.fillText(symbol, symbols[symbol].x, symbols[symbol].y);
-    }
-    return cnv.toDataURL();
-};
-
-exports.default = RF.registerComponent('app-font-dialog', {
-    template: {
-        type: 'string',
-        value: require('./fontDialog.html')
-    },
-    form: { valid: function valid() {
-            return true;
-        } },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    utils: _utils2.default,
-    fontSample: fontSample,
-    systemFontList: [],
-
-    open: function open() {
-        if (!this.systemFontList.length) {
-            var self = this;
-            _chrome2.default.requestToApi({ method: 'getFontList' }, function (list) {
-                self.systemFontList = list;
-                RF.digest();
-            });
-        }
-        RF.getComponentById('fontModal').open();
-    },
-    createOrEditFont: function createOrEditFont(model) {
-        var self = this;
-        var strFont = model.fontSize + 'px' + ' ' + model.fontFamily;
-        model.fontContext = getFontContext([{ from: 32, to: 150 }, { from: 1040, to: 1116 }], strFont, 320);
-        var file = _utils2.default.dataURItoBlob(getFontImage(model.fontContext, strFont, _utils2.default.rgbToHex(model.fontColor)));
-
-        _promise2.default.resolve().then(function () {
-            return _fileSystem2.default.uploadFile(file, {
-                type: model.type,
-                fileName: model.name + '.png'
-            });
-        }).then(function () {
-            return _resource2.default.save(model);
-        }).then(function (resp) {
-            if (resp.created) {
-                model.id = resp.id;
-                _editData2.default[model.type + 'List'].add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
-            }
-            RF.getComponentById('fontModal').close();
-            RF.digest();
-        });
-    }
-});
-
-},{"./fontDialog.html":122,"babel-runtime/core-js/promise":5,"providers/chrome":160,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],124:[function(require,module,exports){
-module.exports = "<app-modal id=\"frameAnimationModal\">\r\n\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currFrameAnimationInEdit.name\">\r\n                </td>\r\n                <td rowspan=\"3\">\r\n                    <div style=\"max-height: 80vh;max-width:80vw;overflow: scroll;\"\r\n                    >\r\n                        {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}\r\n\r\n                        <div data-style=\"\r\n                        utils.merge(\r\n                            utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),\r\n                            {border:'1px solid blue'}\r\n                        )\">\r\n                        </div>\r\n\r\n                        <div>\r\n                            <button\r\n                                    data-click=\"playAnimation()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.playAnim}}</button>\r\n                            <button\r\n                                    data-click=\"stopAnimation()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.stopAnim}}</button>\r\n                        </div>\r\n\r\n                        <div>\r\n\r\n                            <button\r\n                                    data-click=\"previousFrame()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> << </button>\r\n\r\n                            <button\r\n                                    data-click=\"nextFrame()\"\r\n                                    data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"> >> </button>\r\n                        </div>\r\n\r\n\r\n                        <div class=\"relative\"\r\n                             data-style=\"\r\n                              {\r\n                                'background-image':     'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')',\r\n                                'width':                editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px',\r\n                                'height':               editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px'\r\n                              }\">\r\n                            <div\r\n                                    data-for=\"v,i in getLoopArr()\"\r\n                                    data-style=\"{\r\n                                            'display':        'inline-block',\r\n                                            'left':           editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px',\r\n                                            'top':            editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px',\r\n                                            'position':       'absolute',\r\n                                            'text-align':     'left',\r\n                                            'border':         '1px solid red',\r\n                                            'width':          editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px',\r\n                                            'height':         editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px'\r\n                                      }\">{{i}}</div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.duration}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            min=\"1\"\r\n                            required\r\n                            data-model=\"editData.currFrameAnimationInEdit.duration\">\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n\r\n                    <table>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.frames}}\r\n                            </td>\r\n                            <td>\r\n                                <button data-click=\"setAllIndexes()\">{{i18n.all}}</button>\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.from}}\r\n                            </td>\r\n                            <td>\r\n                                <input\r\n                                        type=\"number\"\r\n                                        data-model=\"from\"\r\n                                        min=\"0\"\r\n                                        data-keyup=\"setRangeIndexes()\">\r\n                            </td>\r\n                        </tr>\r\n                        <tr>\r\n                            <td>\r\n                                {{i18n.to}}\r\n                            </td>\r\n                            <td>\r\n                                <input\r\n                                        type=\"number\"\r\n                                        min=\"0\"\r\n                                        data-model=\"to\"\r\n                                        data-change=\"setRangeIndexes()\">\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n\r\n                </td>\r\n                <td>\r\n                   <textarea\r\n                           required\r\n                           data-model=\"frames\">\r\n                   </textarea>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditFrameAnimation()\"\r\n                data-disabled=\"!form.valid()\">\r\n            {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n\r\n</app-modal>";
-
-},{}],125:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-frame-animation-dialog', {
-    template: {
-        type: 'string',
-        value: require('./frameAnimationDialog.html')
-    },
-    form: { valid: function valid() {
-            return true;
-        } },
-    editData: _editData2.default,
-    utils: _utils2.default,
-    i18n: _i18n2.default.getAll(),
-
-    isStopped: true,
-    from: 0, to: 1,
-    frames: '',
-
-    open: function open() {
-        this.isStopped = true;
-        this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
-        this.editData.currFrameAnimationInEdit._gameObject = this.editData.currGameObjectInEdit.clone();
-        RF.getComponentById('frameAnimationModal').open();
-    },
-    allIndexes: function allIndexes() {
-        var res = this.utils.getArray(this.editData.currGameObjectInEdit.spriteSheet._numOfFrames);
-        return res.join(',');
-    },
-    setAllIndexes: function setAllIndexes() {
-        this.frames = this.allIndexes();
-    },
-    setRangeIndexes: function setRangeIndexes() {
-        this.frames = _utils2.default.range(+this.from, +this.to).join(',');
-        console.log(this.from, this.to);
-        console.log(_utils2.default.range(+this.from, +this.to));
-    },
-    playAnimation: function playAnimation() {
-        var self = this;
-        self.isStopped = false;
-        try {
-            self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
-        } catch (e) {
-            console.error(e);
-            return;
-        }
-        self.editData.currFrameAnimationInEdit.play();
-        setTimeout(function _anim() {
-            self.editData.currFrameAnimationInEdit.update(new Date().getTime());
-
-            var i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
-            self.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
-
-            if (self.isStopped) {
-                self.isStopped = false;
-                return;
-            }
-            RF.digest();
-            if (RF.getComponentById('frameAnimationModal').opened) setTimeout(_anim, 50);
-        }, 0);
-    },
-    stopAnimation: function stopAnimation() {
-        this.isStopped = true;
-    },
-    nextFrame: function nextFrame() {
-        var self = this;
-        self.stopAnimation();
-        self.editData.currFrameAnimationInEdit.nextFrame();
-    },
-    previousFrame: function previousFrame() {
-        var self = this;
-        self.stopAnimation();
-        self.editData.currFrameAnimationInEdit.previousFrame();
-    },
-    getLoopArr: function getLoopArr() {
-        if (!_editData2.default.currFrameAnimationInEdit._gameObject) _editData2.default.currFrameAnimationInEdit._gameObject = { spriteSheet: {} }; // todo dirty
-        var lastIndex = _editData2.default.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesH * _editData2.default.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV;
-        return _utils2.default.getArray(lastIndex);
-    },
-
-    createOrEditFrameAnimation: function createOrEditFrameAnimation() {
-        var self = this;
-        var fa = _editData2.default.currFrameAnimationInEdit;
-        self.editData.currFrameAnimationInEdit.frames = JSON.parse('[' + self.frames + ']');
-
-        _resource2.default.save(fa).then(function (resp) {
-            if (resp.created) {
-                fa.id = resp.id;
-                _editData2.default.frameAnimationList.add(fa);
-                _editData2.default.currGameObjectInEdit.frameAnimations.add(fa);
-                return _resource2.default.save(_editData2.default.currGameObjectInEdit);
-            } else {
-                fa.updateCloner();
-            }
-        }).then(function () {
-            _editData2.default.currGameObjectInEdit.updateCloner();
-            RF.getComponentById('frameAnimationModal').close();
-            RF.digest();
-        }).catch(window.catchPromise);
-    }
-});
-
-},{"./frameAnimationDialog.html":124,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],126:[function(require,module,exports){
-module.exports = "\r\n\r\n<app-modal id=\"gameObjectModal\">\r\n    <div data-transclusion=\"content\">\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.name\"/>\r\n                </td>\r\n                <td></td>\r\n                <td rowspan=\"5\">\r\n                    <div class=\"relative\"\r\n                         style=\"\r\n                        display: inline-block;\r\n                        overflow: scroll;\r\n                        max-width:60vw;\r\n                        max-height:60vh;\r\n                    \"\r\n                    >\r\n\r\n\r\n                        <div data-style=\"\r\n                    utils.merge(\r\n                        utils.getGameObjectCss(editData.currGameObjectInEdit),\r\n                        {\r\n                            'border':'1px solid blue',\r\n                            'opacity':editData.currGameObjectInEdit.alpha\r\n                        }\r\n                    )\r\n                \"></div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.spriteSheet}}\r\n                </td>\r\n                <td>\r\n                    <select\r\n                            data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.spriteSheet.id\">\r\n                        <option data-value=\"item.id\" data-for=\"item in editData.spriteSheetList.rs\">{{item.name}}</option>\r\n                    </select>\r\n                </td>\r\n                <td>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.groupName}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            data-model=\"editData.currGameObjectInEdit.groupName\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.rigid}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"checkbox\"\r\n                            data-model=\"editData.currGameObjectInEdit.rigid\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.width}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.width\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.height}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.height\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.angle}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            step=\"0.1\"\r\n                            type=\"number\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.angle\"/>\r\n                </td>\r\n                <td align=\"left\">\r\n                    <div class=\"inlineBlock\">\r\n                        <app-angle-picker\r\n                                data-state=\"{\r\n                        object: editData.currGameObjectInEdit,\r\n                        value: 'angle'\r\n                    }\"\r\n                        ></app-angle-picker>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    alpha\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"number\"\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            step=\"0.1\"\r\n                            required\r\n                            data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            type=\"range\"\r\n                            min=\"0\"\r\n                            max=\"1\"\r\n                            step=\"0.1\"\r\n                            data-model=\"editData.currGameObjectInEdit.alpha\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.currFrameIndex}}\r\n                </td>\r\n                <td>\r\n                    <input type=\"number\"\r\n                           min=\"0\"\r\n                           data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\"\r\n                           required\r\n                           data-model=\"editData.currGameObjectInEdit.currFrameIndex\"/>\r\n                </td>\r\n                <td></td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.frAnimations}}\r\n                </td>\r\n                <td>\r\n                    <div class=\"table width100\">\r\n                        <div class=\"row\" data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations.rs\">\r\n                            <div class=\"cell vAlign\">\r\n                                <span>{{animItm.name}}</span>\r\n                            </div>\r\n                            <div class=\"cell vAlign rightAlign pointer\" data-click=\"editFrameAnimation(animItm)\">\r\n                                {{i18n.edit}}\r\n                            </div>\r\n                            <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteFrameAnimation(animItm)\">\r\n                                X\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n                <td align=\"right\">\r\n                    <button\r\n                            class=\"inlineBlock\"\r\n                            data-disabled=\"!editData.currGameObjectInEdit.id\"\r\n                            data-click=\"createFrameAnimation()\">+</button>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.commonBehaviour}}\r\n                </td>\r\n                <td>\r\n                    <div class=\"table width100\">\r\n                        <div class=\"row\" data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour.rs\">\r\n                            <div class=\"cell vAlign\">\r\n                                <span>{{itm.name}}</span>\r\n                            </div>\r\n                            <div class=\"cell vAlign rightAlign pointer\" data-click=\"editCommonBehaviour(itm)\">\r\n                                {{i18n.edit}}\r\n                            </div>\r\n                            <div class=\"cell pointer vAlign rightAlign\" data-click=\"deleteCommonBehaviour(itm)\">\r\n                                X\r\n                            </div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n                <td>\r\n                    <table class=\"width100\">\r\n                        <tr>\r\n                            <td>\r\n                                <select data-model=\"selectedBehaviourId\">\r\n                                    <option value=\"\">-</option>\r\n                                    <option\r\n                                            data-disabled=\"editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})\"\r\n                                            data-value=\"cb.name\"\r\n                                            data-for=\"cb in editData.commonBehaviourProto.rs\">\r\n                                        {{cb.name}}\r\n                                    </option>\r\n                                </select>\r\n                            </td>\r\n                            <td align=\"right\">\r\n                                <button\r\n                                        class=\"inlineBlock\"\r\n                                        data-disabled=\"!editData.currGameObjectInEdit.id || !selectedBehaviourId\"\r\n                                        data-click=\"createCommonBehaviour(selectedBehaviourId)\">\r\n                                    +\r\n                                </button>\r\n                            </td>\r\n                        </tr>\r\n                    </table>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-disabled=\"!form.valid()\"\r\n                data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">\r\n            {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n    </div>\r\n</app-modal>\r\n\r\n\r\n";
-
-},{}],127:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var FrameAnimation = _require('frameAnimation');
-
-exports.default = RF.registerComponent('app-game-object-dialog', {
-    template: {
-        type: 'string',
-        value: require('./gameObjectDialog.html')
-    },
-    form: { valid: function valid() {
-            return true;
-        } },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    utils: _utils2.default,
-    selectedBehaviourId: '',
-
-    // open: function(){ // not used at this dialog
-    // },
-    createOrEditGameObject: function createOrEditGameObject(g) {
-        var self = this;
-        _resource2.default.save(g).then(function (resp) {
-            if (resp.created) {
-                g.id = resp.id;
-                _editData2.default.gameObjectList.add(g);
-                console.log(_editData2.default.gameObjectList);
-                return resp;
-            } else if (resp.updated) {
-                g.updateCloner();
-            }
-        }).then(function (resp) {
-            if (resp && resp.created) return _fileSystem2.default.createFile('script/gameObject/' + g.name + '.js', document.getElementById('defaultCodeScript').textContent);
-        }).then(function () {
-            RF.getComponentById('gameObjectModal').close();
-            RF.digest();
-        }).catch(window.catchPromise);
-    },
-    refreshGameObjectFramePreview: function refreshGameObjectFramePreview(gameObject, ind) {
-        var spriteSheet = gameObject.spriteSheet;
-        if (!spriteSheet) return;
-        var maxNumOfFrame = spriteSheet.numOfFramesH * spriteSheet.numOfFramesV - 1;
-        if (this.editData.currGameObjectInEdit.currFrameIndex >= maxNumOfFrame) {
-            this.editData.currGameObjectInEdit.currFrameIndex = 0;
-            ind = 0;
-        }
-        gameObject.setFrameIndex(ind);
-    },
-    createFrameAnimation: function createFrameAnimation() {
-        this.editData.currFrameAnimationInEdit = new FrameAnimation(new FrameAnimation().toJSON());
-        RF.getComponentById('frameAnimationDialog').open();
-    },
-    editFrameAnimation: function editFrameAnimation(fa) {
-        this.editData.currFrameAnimationInEdit = fa.clone();
-        RF.getComponentById('frameAnimationDialog').open();
-    },
-    deleteFrameAnimation: function deleteFrameAnimation(fa) {
-        var _this = this;
-
-        _utils2.default.deleteModel(fa, function () {
-            _this.editData.currGameObjectInEdit.frameAnimations.remove({ id: fa.id });
-            _this.editData.currGameObjectInEdit.updateCloner();
-            _resource2.default.save(_this.editData.currGameObjectInEdit);
-        });
-    },
-
-    onSpriteSheetSelected: function onSpriteSheetSelected(sprId) {
-        var gameObject = _editData2.default.currGameObjectInEdit;
-        var spriteSheet = _editData2.default.spriteSheetList.find({ id: sprId });
-        if (!spriteSheet) return;
-        spriteSheet = spriteSheet.clone();
-        //if (!gameObject.name) gameObject.name = spriteSheet.name;
-        //spriteSheet.calcFrameSize();
-        gameObject.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
-        gameObject.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
-        gameObject.spriteSheet = spriteSheet;
-    },
-
-    createCommonBehaviour: function createCommonBehaviour(selectedBehaviourName) {
-        if (_editData2.default.currGameObjectInEdit.commonBehaviour.find({ name: selectedBehaviourName })) {
-            alertEx(_i18n2.default.get('objectAlreadyAdded'));
-            return;
-        }
-        this.editData.currCommonBehaviourInEdit = this.editData.commonBehaviourProto.find({ name: selectedBehaviourName }).clone();
-        RF.getComponentById('commonBehaviourModal').open();
-    },
-    editCommonBehaviour: function editCommonBehaviour(cb) {
-        this.editData.currCommonBehaviourInEdit = cb.clone();
-        RF.getComponentById('commonBehaviourModal').open();
-    },
-    deleteCommonBehaviour: function deleteCommonBehaviour(cb) {
-        var self = this;
-        window.confirmEx(this.i18n.confirmQuestion(cb), function () {
-            _promise2.default.resolve().then(function () {
-                self.editData.commonBehaviourList.remove({ id: cb.id });
-                return _resource2.default.remove(cb);
-            }).then(function () {
-                self.editData.currGameObjectInEdit.fixateState();
-                self.editData.currGameObjectInEdit.commonBehaviour.remove({ id: cb.id });
-                self.editData.currGameObjectInEdit.updateCloner();
-                return _resource2.default.save(self.editData.currGameObjectInEdit.toJSON_Patched());
-            }).catch(window.catchPromise);
-        });
-    }
-});
-
-},{"./gameObjectDialog.html":126,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],128:[function(require,module,exports){
-module.exports = "\n<app-modal id=\"particleSystemModal\">\n    <div data-transclusion=\"content\">\n\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n                <td>\n\n                </td>\n                <td>\n                    <input\n                            required\n                            data-model=\"editData.currParticleSystemInEdit.name\"/>\n                </td>\n            </tr>\n            <tr>\n                <td rowspan=\"2\">\n                    numOfParticlesToEmit\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"/>\n                </td>\n            </tr>\n            <tr>\n                <td rowspan=\"2\">\n                    particleVelocity\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td rowspan=\"2\">\n                    particleLiveTime\n                </td>\n                <td>\n                    from\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    to\n                </td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td>\n                    emissionRadius\n                </td>\n                <td></td>\n                <td>\n                    <input\n                            required\n                            type=\"number\"\n                            data-model=\"editData.currParticleSystemInEdit.emissionRadius\"/>\n                </td>\n            </tr>\n\n            <tr>\n                <td>\n                    particleAngle\n                </td>\n                <td>\n                    from / to\n                </td>\n                <td>\n                    <app-angle-picker\n                            data-state=\"{\n                        object:editData.currParticleSystemInEdit.particleAngle,\n                        value:'from'\n                    }\"\n                    ></app-angle-picker>\n                    <app-angle-picker\n                            data-state=\"{\n                        object:editData.currParticleSystemInEdit.particleAngle,\n                        value:'to'\n                    }\"\n                    ></app-angle-picker>\n                </td>\n            </tr>\n            <tr>\n                <td></td>\n                <td>\n                    {{i18n.gameObject}}\n                </td>\n                <td>\n\n                    <table>\n                        <tr>\n                            <td>\n                                <select\n                                        required\n                                        data-change=\"onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObject.id)\"\n                                        data-model=\"editData.currParticleSystemInEdit.gameObject.id\"\n                                >\n                                    <option\n                                            data-value=\"item.id\"\n                                            data-for=\"item in editData.gameObjectList.rs\">{{item.name}}</option>\n                                </select>\n                            </td>\n                            <td>\n                                <div data-style=\"\n                                utils.merge(\n                                    utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObject),\n                                    {\n                                        zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObject)\n                                    }\n                               )\">\n                                </div>\n                            </td>\n                        </tr>\n                    </table>\n\n\n                </td>\n            </tr>\n\n        </table>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">\n            {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}\n        </button>\n\n        <button\n                data-disabled=\"!form.valid()\"\n                data-click=\"showPreview()\">\n            {{i18n.preview}}\n        </button>\n\n    </div>\n</app-modal>";
-
-},{}],129:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.editData = _editData2.default;
-
-exports.default = RF.registerComponent('app-particle-system-dialog', {
-    template: {
-        type: 'string',
-        value: require('./particleSystemDialog.html')
-    },
-    form: { valid: function valid() {
-            return true;
-        } },
-    editData: _editData2.default,
-    utils: _utils2.default,
-    i18n: _i18n2.default.getAll(),
-    onGameObjectIdChanged: function onGameObjectIdChanged(id) {
-        _editData2.default.currParticleSystemInEdit.gameObject = _editData2.default.gameObjectList.find({ id: id }).clone();
-    },
-    showPreview: function showPreview() {
-        RF.getComponentById('particleSystemPreviewDialog').open();
-    },
-    createOrEditPs: function createOrEditPs(model) {
-        var self = this;
-        _promise2.default.resolve().then(function () {
-            return _resource2.default.save(model);
-        }).then(function (resp) {
-            if (resp.created) {
-                model.id = resp.id;
-                _editData2.default[model.type + 'List'].add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
-            }
-            RF.getComponentById('particleSystemModal').close();
-            RF.digest();
-        });
-    }
-});
-
-},{"./particleSystemDialog.html":128,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167,"providers/utils":169}],130:[function(require,module,exports){
-module.exports = "<app-modal id=\"particleSystemPreviewModal\">\n    <div data-transclusion=\"content\">\n        <div>\n            {{i18n.preview}} {{i18n.particleSystem}}\n            <span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span>\n        </div>\n        <div\n                data-click=\"emit($event)\"\n                data-mousemove=\"$event.buttons==1 && emit($event)\"\n                class=\"subFullScreen relative noOverFlow\">\n            <div\n                    data-for=\"item in editData.currParticleSystemInEdit._particles\"\n                    data-style=\"utils.merge(\n                            utils.getGameObjectCss(item),\n                            {\n                                position:'absolute',\n                                left:item.pos.x+'px',\n                                top: item.pos.y+'px',\n                                pointerEvents:'none'\n                            }\n                    )\"\n            >\n            </div>\n        </div>\n        <div>\n            <button data-click=\"close()\">{{i18n.close}}</button>\n        </div>\n    </div>\n</app-modal>\n\n\n";
-
-},{}],131:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var tid = void 0;
-
-exports.default = RF.registerComponent('app-particle-system-preview-dialog', {
-    template: {
-        type: 'string',
-        value: require('./particleSystemPreviewDialog.html')
-    },
-    editData: _editData2.default, utils: _utils2.default,
-    i18n: _i18n2.default.getAll(),
-
-    open: function open() {
-        RF.getComponentById('particleSystemPreviewModal').open();
-        this.run();
-    },
-    close: function close() {
-        RF.getComponentById('particleSystemPreviewModal').close();
-        clearInterval(tid);
-    },
-    run: function run() {
-        var prevTime = null;
-
-        if (!_editData2.default.currParticleSystemInEdit._particles) _editData2.default.currParticleSystemInEdit._particles = [];
-
-        var update = function update() {
-
-            var currTime = Date.now();
-            if (!prevTime) prevTime = currTime;
-            var delta = currTime - prevTime;
-            prevTime = currTime;
-            _editData2.default.currParticleSystemInEdit._particles.forEach(function (p) {
-
-                p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                var deltaX = p.vel.x * delta / 1000;
-                var deltaY = p.vel.y * delta / 1000;
-                p.pos.x = p.pos.x + deltaX;
-                p.pos.y = p.pos.y + deltaY;
-
-                if (!p._timeCreated) p._timeCreated = currTime;
-                if (currTime - p._timeCreated > p.liveTime) {
-                    _editData2.default.currParticleSystemInEdit._particles.splice(_editData2.default.currParticleSystemInEdit._particles.indexOf(p), 1);
-                }
-            });
-        };
-        tid = setInterval(function () {
-            update();
-            RF.digest();
-        }, 5);
-    },
-    emit: function emit(e) {
-        var rect = e.target.getBoundingClientRect();
-        _editData2.default.currParticleSystemInEdit.emit(e.clientX - rect.left, e.clientY - rect.top);
-    }
-});
-
-},{"./particleSystemPreviewDialog.html":130,"providers/editData":161,"providers/i18n":162,"providers/utils":169}],132:[function(require,module,exports){
-module.exports = "\n<app-modal id=\"soundModal\">\n    <div data-transclusion=\"content\">\n        <table class=\"width100\">\n            <tr>\n                <td>\n                    {{i18n.name}}\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <input\n                            required\n                            data-model=\"editData.currSoundInEdit.name\"/>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <app-input-file\n                            data-state=\"{\n                        onFilePicked: onFilePicked,\n                        title: i18n.loadSound,\n                        accept: 'audio/*'\n                    }\"\n                    ></app-input-file>\n                </td>\n            </tr>\n            <tr>\n                <td>\n                    <audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio>\n                </td>\n            </tr>\n        </table>\n\n        <button\n                data-disabled=\"!(form.valid() && soundUrl)\"\n                data-click=\"createOrEditSound(editData.currSoundInEdit)\">\n            {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}\n        </button>\n    </div>\n</app-modal>\n";
-
-},{}],133:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-sound-dialog', {
-    template: {
-        type: 'string',
-        value: require('./soundDialog.html')
-    },
-    form: { valid: function valid() {
-            return true;
-        } },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    soundUrl: '',
-    _file: '',
-
-    open: function open() {
-        if (_editData2.default.currSoundInEdit.id) this.soundUrl = _editData2.default.projectName + '/' + _editData2.default.currSoundInEdit.resourcePath + '?' + Math.random();else this.soundUrl = '';
-        RF.getComponentById('soundModal').open();
-    },
-    onFilePicked: function onFilePicked(src, file) {
-        this.soundUrl = src;
-        this._file = file;
-
-        var self = this;
-        self._file = file;
-        self.soundUrl = src;
-        self.editData.currSoundInEdit.resourcePath = 'resources/sound/' + file.name;
-        if (!self.editData.currSoundInEdit.name) {
-            self.editData.currSoundInEdit.name = name;
-        }
-    },
-    createOrEditSound: function createOrEditSound(model) {
-        var self = this;
-        _promise2.default.resolve().then(function () {
-            if (self._file) {
-                return _fileSystem2.default.uploadFile(self._file, { type: model.type });
-            } else return _promise2.default.resolve();
-        }).then(function () {
-            return _resource2.default.save(model);
-        }).then(function (resp) {
-            if (resp.created) {
-                model.id = resp.id;
-                _editData2.default.soundList.add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
-            }
-            RF.getComponentById('soundModal').close();
-            RF.digest();
-        });
-    }
-});
-
-},{"./soundDialog.html":132,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167}],134:[function(require,module,exports){
-module.exports = "\r\n<app-modal id=\"spriteSheetModal\">\r\n    <div data-transclusion=\"content\">\r\n\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input data-model=\"editData.currSpriteSheetInEdit.name\"/>\r\n                </td>\r\n                <td rowspan=\"6\">\r\n                    <div style=\"max-width:60vw;overflow: auto;\"\r\n                    >\r\n                        <div class=\"relative\"\r\n                             data-style=\"{\r\n                                    'background-image':   'url('+spriteSheetUrl+')',\r\n                                    'width':              editData.currSpriteSheetInEdit.width+'px',\r\n                                    'height':             editData.currSpriteSheetInEdit.height+'px',\r\n                               }\">\r\n                            <div\r\n                                    data-attributes=\"{title:i}\"\r\n                                    data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\"\r\n                                    data-style=\"{\r\n                                    'display':        'inline-block',\r\n                                    'left':           editData.currSpriteSheetInEdit.getFramePosX(i)+'px',\r\n                                    'top':            editData.currSpriteSheetInEdit.getFramePosY(i)+'px',\r\n                                    'position':       'absolute',\r\n                                    'text-align':     'left',\r\n                                    'border':         '1px solid red',\r\n                                    'width':          editData.currSpriteSheetInEdit._frameWidth+'px',\r\n                                    'height':         editData.currSpriteSheetInEdit._frameHeight+'px'\r\n                                }\">{{i}}</div>\r\n                        </div>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.image}}\r\n                </td>\r\n                <td>\r\n                    <app-input-file\r\n                            data-state=\"{\r\n                        onFilePicked: onFilePicked,\r\n                        title: i18n.loadImage,\r\n                        accept: 'image/*'\r\n                    }\"\r\n                    />\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.width}}\r\n                </td>\r\n                <td>\r\n                    {{editData.currSpriteSheetInEdit.width}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.height}}\r\n                </td>\r\n                <td>\r\n                    {{editData.currSpriteSheetInEdit.height}}\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.numOfFramesH}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            min=\"1\"\r\n                            max=\"100\"\r\n                            type=\"number\"\r\n                            data-change=\"refreshNumOfCells()\"\r\n                            data-input=\"refreshNumOfCells()\"\r\n                            data-keyup=\"refreshNumOfCells()\"\r\n                            data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"/>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td>\r\n                    {{i18n.numOfFramesV}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            min=\"1\"\r\n                            max=\"100\"\r\n                            type=\"number\"\r\n                            data-change=\"refreshNumOfCells()\"\r\n                            data-input=\"refreshNumOfCells()\"\r\n                            data-keyup=\"refreshNumOfCells()\"\r\n                            data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button\r\n                data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\"\r\n                data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">\r\n            {{editData.currSpriteSheetInEdit.id?i18n.edit:i18n.create}}\r\n        </button>\r\n\r\n    </div>\r\n</app-modal>\r\n\r\n";
-
-},{}],135:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-sprite-sheet-dialog', {
-    template: {
-        type: 'string',
-        value: require('./spriteSheetDialog.html')
-    },
-    i18n: _i18n2.default.getAll(),
-    utils: _utils2.default,
-    editData: _editData2.default,
-    form: { valid: function valid() {
-            return true;
-        } },
-    spriteSheetUrl: '',
-    _file: '',
-    numOfSpriteSheetCells: 0,
-    open: function open() {
-        if (_editData2.default.currSpriteSheetInEdit.id) this.spriteSheetUrl = _editData2.default.projectName + '/' + _editData2.default.currSpriteSheetInEdit.resourcePath + '?' + Math.random();else this.spriteSheetUrl = '';
-        this.refreshNumOfCells();
-        RF.getComponentById('spriteSheetModal').open();
-    },
-    onFilePicked: function onFilePicked(src, file, name) {
-        var self = this;
-        self._file = file;
-        self.spriteSheetUrl = src;
-        self.editData.currSpriteSheetInEdit.resourcePath = 'resources/spriteSheet/' + file.name;
-        if (!self.editData.currSpriteSheetInEdit.name) {
-            self.editData.currSpriteSheetInEdit.name = name;
-        }
-        var img = new Image();
-        img.onload = function () {
-            self.editData.currSpriteSheetInEdit.width = img.width;
-            self.editData.currSpriteSheetInEdit.height = img.height;
-            self.editData.currSpriteSheetInEdit.calcFrameSize();
-            RF.digest();
-        };
-        img.src = src;
-    },
-    refreshNumOfCells: function refreshNumOfCells() {
-        this.numOfSpriteSheetCells = this.editData && this.editData.currSpriteSheetInEdit && this.editData.currSpriteSheetInEdit.numOfFramesH * this.editData.currSpriteSheetInEdit.numOfFramesV;
-        this.editData.currSpriteSheetInEdit.calcFrameSize();
-    },
-    createOrEditSpriteSheet: function createOrEditSpriteSheet(model) {
-        var self = this;
-        _promise2.default.resolve().then(function () {
-            if (self._file) {
-                return _fileSystem2.default.uploadFile(self._file, { type: model.type });
-            } else return _promise2.default.resolve();
-        }).then(function () {
-            return _resource2.default.save(model);
-        }).then(function (resp) {
-            if (resp.created) {
-                model.id = resp.id;
-                _editData2.default[model.type + 'List'].add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
-            }
-            RF.getComponentById('spriteSheetModal').close();
-            RF.digest();
-        });
-    }
-});
-
-},{"./spriteSheetDialog.html":134,"babel-runtime/core-js/promise":5,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167,"providers/utils":169}],136:[function(require,module,exports){
-module.exports = "<div class=\"template\">\n    <div class=\"absolute\">\n        <app-top-panel></app-top-panel>\n    </div>\n    <div id=\"c\" class=\"split\">\n        <div id=\"a\" class=\"split split-horizontal content\">\n            <app-game-props></app-game-props>\n            <app-scenes></app-scenes>\n            <app-game-objects></app-game-objects>\n            <app-sprite-sheets></app-sprite-sheets>\n            <app-user-interface></app-user-interface>\n            <app-fonts></app-fonts>\n            <app-sounds></app-sounds>\n            <app-particle-systems></app-particle-systems>\n        </div>\n        <div id=\"b\" class=\"split split-horizontal content relative\">\n            <app-script-editor></app-script-editor>\n            <div :style=\"{\n                width:  editData.gameProps.width + 'px',\n                height: editData.gameProps.height + 'px',\n                border: '1px solid green'\n            }\">\n                <app-curr-scene/>\n            </div>\n        </div>\n        <div id=\"e\" class=\"split split-horizontal content\">\n            <app-right-panel-scene-game-object/>\n            <app-right-panel-scene/>\n        </div>\n    </div>\n    <div id=\"d\" class=\"split content\">d</div>\n\n    <app-dialogs></app-dialogs>\n\n</div>";
-
-},{}],137:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-require('pages/editor/leftPanel/gameProps/gameProps');
-
-require('pages/editor/leftPanel/particleSystems/particleSystems');
-
-require('pages/editor/leftPanel/sounds/sounds');
-
-require('pages/editor/leftPanel/fonts/fonts');
-
-require('pages/editor/leftPanel/spriteSheets/spriteSheets');
-
-require('pages/editor/leftPanel/gameObjects/gameObjects');
-
-require('pages/editor/leftPanel/userInterface/userInterface');
-
-require('pages/editor/topPanel/topPanel');
-
-require('pages/editor/centralPanel/scriptEditor/scriptEditor');
-
-require('pages/editor/dialogs/dialogs');
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-//import 'pages/editor/leftPanel/scenes/scenes';
-
-
-// appCollapsible: require('components/collapsible/collapsible'),
-// appModal: require('components/modal/modal'),
-// appInputFile: require('components/inputFile/inputFile'),
-//
-// appGameProps: require('./leftPanel/gameProps/gameProps'),
-// appScenes: require('./leftPanel/scenes/scenes'),
-// appGameObjects: require('./leftPanel/gameObjects/gameObjects'),
-// appSpriteSheets: require('./leftPanel/spriteSheets/spriteSheets'),
-// appUserInterface: require('./leftPanel/userInterface/userInterface'),
-// appFonts: require('./leftPanel/fonts/fonts'),
-// appSounds: require('./leftPanel/sounds/sounds'),
-// appParticleSystems: require('./leftPanel/particleSystems/particleSystems'),
-// appDialogs: require('./dialogs/dialogs'),
-//
-// appScriptEditor: require('./centralPanel/scriptEditor/scriptEditor'),
-//
-// appRightPanelSceneGameObject: require('./rightPanel/sceneGameObject/sceneGameObject'),
-// appRightPanelScene: require('./rightPanel/scene/scene'),
-// appCurrScene: require('./centralPanel/scene/scene'),
-//
-// appTopPanel: require('./topPanel/topPanel')
-
-var _onMount = function _onMount() {
-    var layoutSizes = {};
-
-    layoutSizes.a = 15;
-    layoutSizes.b = 70;
-    layoutSizes.e = 100 - layoutSizes.a - layoutSizes.b;
-
-    layoutSizes.c = 94;
-    layoutSizes.d = 100 - layoutSizes.c;
-
-    Split(['#a', '#b', '#e'], {
-        sizes: [layoutSizes.a, layoutSizes.b, layoutSizes.e],
-        gutterSize: 5,
-        cursor: 'row-resize',
-        minSize: 10
-    });
-    var vertical = Split(['#c', '#d'], {
-        direction: 'vertical',
-        sizes: [layoutSizes.c, layoutSizes.d],
-        gutterSize: 5,
-        cursor: 'col-resize',
-        minSize: 10
-    });
-    window.addEventListener('resize', function () {
-        vertical.setSizes([layoutSizes.c, layoutSizes.d]);
-    });
-};
-
-exports.default = RF.registerComponent('editor', {
-    template: {
-        type: 'string',
-        value: require('./editor.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    onMount: function onMount() {
-        _onMount();
-    }
-});
-
-},{"./editor.html":136,"pages/editor/centralPanel/scriptEditor/scriptEditor":117,"pages/editor/dialogs/dialogs":121,"pages/editor/leftPanel/fonts/fonts":141,"pages/editor/leftPanel/gameObjects/gameObjects":143,"pages/editor/leftPanel/gameProps/gameProps":145,"pages/editor/leftPanel/particleSystems/particleSystems":147,"pages/editor/leftPanel/sounds/sounds":149,"pages/editor/leftPanel/spriteSheets/spriteSheets":151,"pages/editor/leftPanel/userInterface/userInterface":153,"pages/editor/topPanel/topPanel":155,"providers/editData":161,"providers/i18n":162}],138:[function(require,module,exports){
-module.exports = "<div>\n    <div class=\"cell\">\n        <span class=\"inlineBlock withPaddingRight\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.name}}\n            </span>\n        </span>\n    </div>\n    <div    class=\"cell width100\"\n            data-if=\"!gameObject.subType\">\n        <div data-style=\"\n                utils.merge(\n                        utils.getGameObjectCss(gameObject),\n                        {\n                            zoom:utils.calcZoom(gameObject),\n                            transform: 'scale(1, 1) rotateZ(0deg)',\n                            opacity:1\n                        }\n                )\"></div>\n    </div>\n    <div\n            class=\"cell width100\"\n            data-if=\"gameObject.subType\"\n            data-attributes=\"{title:gameObject.name}\"\n            >\n        <span class=\"textOverflow\">\n            <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                {{gameObject.subType}}\n            </span>\n        </span>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div>\n    </div>\n    <div class=\"cell width1\">\n        <div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div>\n    </div>\n</div>";
-
-},{}],139:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-game-object-row', {
-    template: {
-        type: 'string',
-        value: require('./gameObjectRow.html')
-    },
-    getInitialState: function getInitialState() {
-        return {
-            crud: null,
-            gameObject: {}
-        };
-    },
-
-    utils: _utils2.default
-});
-
-},{"./gameObjectRow.html":138,"providers/utils":169}],140:[function(require,module,exports){
-module.exports = "<app-collapsible\n        data-state=\"{\n            crud: {create:createFont},\n            title:i18n.fonts\n        }\">\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"font in editData.fontList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{font.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editFont(font)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteFont(font)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n\n    </div>\n</app-collapsible>";
-
-},{}],141:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Font = _require('font');
-
-exports.default = RF.registerComponent('app-fonts', {
-    template: {
-        type: 'string',
-        value: require('./fonts.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-
-    createFont: function createFont() {
-        this.editData.currFontInEdit = new Font(new Font().toJSON());
-        RF.getComponentById('fontDialog').open();
-    },
-    editFont: function editFont(fnt) {
-        this.editData.currFontInEdit = fnt.clone();
-        RF.getComponentById('fontDialog').open();
-    },
-    deleteFont: function deleteFont(model) {
-        _utils2.default.deleteModel(model, function () {
-            _fileSystem2.default.removeFile('font/' + model.name + '.png');
-        });
-    }
-});
-
-},{"./fonts.html":140,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],142:[function(require,module,exports){
-module.exports = "<app-collapsible\n        data-state=\"{\n                title: i18n.gameObjects,\n                crud: {\n                    create:createGameObject\n                }\n            }\">\n\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"gameObject in editData.gameObjectList.rs\"\n                >\n                    <app-game-object-row\n                            data-state=\"{\n                            crud: {\n                                 edit: editGameObject,\n                                 editScript: editGameObjectScript,\n                                 delete: deleteGameObject\n                            },\n                            gameObject: gameObject || {}\n                        }\">\n                    </app-game-object-row>\n                </div>\n\n            </div>\n        </div>\n\n\n    </div>\n\n</app-collapsible>";
-
-},{}],143:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-require('pages/editor/leftPanel/_gameObjectRow/gameObjectRow');
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var GameObject = _require('gameObject');
-var collections = _require('collections');
-
-var fixGameObject = function fixGameObject(g) {
-    if (!g.commonBehaviour || g.commonBehaviour.splice) g.commonBehaviour = new collections.List();
-    if (!g.frameAnimations || g.frameAnimations.splice) g.frameAnimations = new collections.List();
-};
-
-exports.default = RF.registerComponent('app-game-objects', {
-    template: {
-        type: 'string',
-        value: require('./gameObjects.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-
-    createGameObject: function createGameObject() {
-        this.editData.currGameObjectInEdit = new GameObject().clone();
-        fixGameObject(this.editData.currGameObjectInEdit);
-        RF.getComponentById('gameObjectModal').open();
-    },
-    editGameObjectScript: function editGameObjectScript(gameObject) {
-        _utils2.default.openEditor(gameObject.type + '/' + gameObject.name + '.js');
-    },
-    editGameObject: function editGameObject(go) {
-        this.editData.currGameObjectInEdit = go.clone();
-        fixGameObject(this.editData.currGameObjectInEdit);
-        RF.getComponentById('gameObjectModal').open();
-    },
-    deleteGameObject: function deleteGameObject(model) {
-        _utils2.default.deleteModel(model, function () {
-            _fileSystem2.default.removeFile('script/gameObject/' + model.name + '.js');
-        });
-    }
-});
-
-},{"./gameObjects.html":142,"pages/editor/leftPanel/_gameObjectRow/gameObjectRow":139,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],144:[function(require,module,exports){
-module.exports = "\n<app-collapsible data-state=\"{title:i18n.game}\">\n    <div data-transclusion=\"content\">\n        <form class=\"table width100\">\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.width}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.width\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.height}}\n                </div>\n                <div class=\"cell\">\n                    <input\n                            class=\"narrow\"\n                            data-model=\"editData.gameProps.height\"\n                            type=\"number\"\n                            min=\"1\"\n                            max=\"20000\"\n                            data-change=\"form.valid() && saveGameProps()\"/>\n                </div>\n            </div>\n\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.scaleStrategy}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.scaleStrategy\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-value=\"value\"\n                                data-for=\"(value,key) in scales\">{{key}}</option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.preloadingScene}}\n                </div>\n                <div class=\"cell\">\n                    <select\n                            data-model=\"editData.gameProps.preloadingSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option value=\"\">--</option>\n                        <option\n                                :disabled=\"item.id==editData.gameProps.startSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n            <div class=\"row\">\n                <div class=\"cell\">\n                    {{i18n.startScene}}\n                </div>\n                <div class=\"cell\">\n                    <select data-model=\"editData.gameProps.startSceneId\"\n                            data-change=\"form.valid() && saveGameProps()\">\n                        <option\n                                data-disabled=\"item.id==editData.gameProps.preloadingSceneId\"\n                                data-value=\"item.id\"\n                                data-for=\"item in editData.sceneList.rs\">\n                            {{item.name}}\n                        </option>\n                    </select>\n                </div>\n            </div>\n\n        </form>\n    </div>\n</app-collapsible>";
-
-},{}],145:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-game-props', {
-    template: {
-        type: 'string',
-        value: require('./gameProps.html')
-    },
-    form: { valid: function valid() {
-            return true;
-        } },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    scales: _require('consts').SCALE_STRATEGY,
-    saveGameProps: function saveGameProps() {
-        _resource2.default.saveGameProps(this.editData.gameProps);
-    }
-});
-
-},{"./gameProps.html":144,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167}],146:[function(require,module,exports){
-module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createParticleSystem\n            },\n            title:i18n.particleSystems\n        }\">\n\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"ps in editData.particleSystemList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{ps.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n\n\n</app-collapsible>";
-
-},{}],147:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _particleSystemDialog = require('pages/editor/dialogs/particleSystemDialog/particleSystemDialog');
-
-var _particleSystemDialog2 = _interopRequireDefault(_particleSystemDialog);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ParticleSystem = _require('particleSystem');
-
-exports.default = RF.registerComponent('app-particle-systems', {
-    template: {
-        type: 'string',
-        value: require('./particleSystems.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    createParticleSystem: function createParticleSystem() {
-        this.editData.currParticleSystemInEdit = new ParticleSystem(new ParticleSystem().toJSON());
-        var go = this.editData.gameObjectList.get(0);
-
-        if (!go) {
-            alertEx(this.i18n.noGameObject);
-            return;
-        }
-
-        this.editData.currParticleSystemInEdit.gameObject = go.clone();
-        RF.getComponentById('particleSystemModal').open();
-    },
-    editParticleSystem: function editParticleSystem(ps) {
-        this.editData.currParticleSystemInEdit = ps.clone();
-        RF.getComponentById('particleSystemModal').open();
-    },
-    deleteParticleSystem: function deleteParticleSystem(model) {
-        _utils2.default.deleteModel(model);
-    }
-});
-
-},{"./particleSystems.html":146,"pages/editor/dialogs/particleSystemDialog/particleSystemDialog":129,"providers/editData":161,"providers/i18n":162,"providers/utils":169}],148:[function(require,module,exports){
-module.exports = "<app-collapsible\n        data-state=\"{\n            crud:{\n                create:createSound\n            },\n            title:i18n.sounds\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"sound in editData.soundList.rs\">\n\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{sound.name}}\n                    </span>\n                    </div>\n\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSound(sound)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSound(sound)\"></div>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n    </div>\n</app-collapsible>";
-
-},{}],149:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Sound = _require('sound');
-
-exports.default = RF.registerComponent('app-sounds', {
-    template: {
-        type: 'string',
-        value: require('./sounds.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    createSound: function createSound() {
-        this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
-        RF.getComponentById('soundDialog').open();
-    },
-    editSound: function editSound(sound) {
-        this.editData.currSoundInEdit = sound.clone();
-        RF.getComponentById('soundDialog').open();
-    },
-    deleteSound: function deleteSound(model) {
-        _utils2.default.deleteModel(model, function () {
-            _fileSystem2.default.removeFile(model.resourcePath.replace('resources/', ''));
-        });
-    }
-});
-
-},{"./sounds.html":148,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],150:[function(require,module,exports){
-module.exports = "<app-collapsible\n        data-state=\"{\n            title: i18n.spriteSheets,\n            crud: {\n                create:createSpriteSheet\n            }\n        }\">\n    <div data-transclusion=\"content\">\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"spriteSheet in editData.spriteSheetList.rs\">\n\n                    <div class=\"cell\">\n                        <img\n                                height=\"20\"\n                                class=\"spriteSheetThumb\"\n                                data-attributes=\"{src:editData.projectName+'/'+spriteSheet.resourcePath}\"/>\n                    </div>\n                    <div class=\"cell\">\n                    <span class=\"inlineBlock withPaddingTop withPaddingBottom\">\n                        {{spriteSheet.name}}\n                    </span>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div>\n                    </div>\n                    <div class=\"cell width1\">\n                        <div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n\n</app-collapsible>";
-
-},{}],151:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _utils = require('providers/utils');
-
-var _utils2 = _interopRequireDefault(_utils);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var SpriteSheet = _require('spriteSheet');
-
-exports.default = RF.registerComponent('app-sprite-sheets', {
-    template: {
-        type: 'string',
-        value: require('./spriteSheets.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    createSpriteSheet: function createSpriteSheet() {
-        this.editData.currSpriteSheetInEdit = new SpriteSheet(new SpriteSheet().toJSON());
-        RF.getComponentById('spriteSheetDialog').open();
-    },
-    editSpriteSheet: function editSpriteSheet(sprSh) {
-        this.editData.currSpriteSheetInEdit = sprSh.clone();
-        RF.getComponentById('spriteSheetDialog').open();
-    },
-    deleteSpriteSheet: function deleteSpriteSheet(model) {
-        var hasDepends = this.editData.gameObjectList.filter(function (it) {
-            return it.spriteSheet.id == model.id;
-        }).size() > 0;
-        if (hasDepends) {
-            window.alertEx(this.i18n.canNotDelete(model));
-            return;
-        }
-        _utils2.default.deleteModel(model);
-    }
-});
-
-},{"./spriteSheets.html":150,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/utils":169}],152:[function(require,module,exports){
-module.exports = "<app-collapsible\n        data-state=\"{\n            title: i18n.userInterface\n        }\">\n\n    <div data-transclusion=\"content\">\n\n        <div class=\"withPaddingLeft\">\n            <div class=\"table width100\">\n                <div class=\"row\"\n                     data-for=\"ui in (editData.userInterfaceList && editData.userInterfaceList.rs)\">\n\n                    <div class=\"cell\">\n                        <span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ui.subType}}</span>\n                    </div>\n\n                </div>\n            </div>\n        </div>\n\n    </div>\n\n</app-collapsible>";
-
-},{}],153:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-user-interface', {
-    template: {
-        value: require('./userInterface.html'),
-        type: 'string'
-    },
-    i18n: _i18n2.default.getAll(),
-    editData: _editData2.default
-});
-
-},{"./userInterface.html":152,"providers/editData":161,"providers/i18n":162,"providers/rest/resource":167}],154:[function(require,module,exports){
-module.exports = "<div class=\"panel withPadding pointer\">\r\n\r\n    <div class=\"inlineBlock\" data-click=\"showBuildDialog()\">\r\n        {{i18n.build}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"run()\">\r\n        {{i18n.run}}\r\n    </div>\r\n    <div class=\"inlineBlock\" data-click=\"toExplorer()\">\r\n        {{i18n.explorer}}\r\n    </div>\r\n\r\n</div>";
-
-},{}],155:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _httpClient = require('providers/rest/httpClient');
-
-var _httpClient2 = _interopRequireDefault(_httpClient);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var w = void 0;
-
-
-var generateBuildUrl = function generateBuildUrl(opts) {
-    var url = '/generate?r=' + Math.random();
-    (0, _keys2.default)(opts).forEach(function (key) {
-        if (opts[key]) url += '&' + key + '=1';
-    });
-    url += '&projectName=' + _editData2.default.projectName;
-    return url;
-};
-
-exports.default = RF.registerComponent('app-top-panel', {
-    template: {
-        value: require('./topPanel.html'),
-        type: 'string'
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    run: function run() {
-        _httpClient2.default.get('/resource/generate', {
-            debug: 1,
-            r: Math.random(),
-            projectName: _editData2.default.projectName
-        }, function () {
-            if (!w || w.closed) {
-                //w = window.open(
-                //    '/'+editData.projectName+'/out',
-                //    editData.projectName,
-                //    'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
-                //);
-                w = window.open('/' + _editData2.default.projectName + '/out');
-            } else {
-                w.location.reload();
-            }
-            w && w.focus();
-        });
-    },
-    showBuildDialog: function showBuildDialog() {
-        //uiHelper.showDialog('buildDialog');
-    },
-    toExplorer: function toExplorer() {
-        RF.Router.navigateTo('explorer');
-    }
-});
-
-},{"./topPanel.html":154,"babel-runtime/core-js/object/keys":4,"providers/editData":161,"providers/i18n":162,"providers/rest/httpClient":165}],156:[function(require,module,exports){
-module.exports = "\r\n<app-modal id=\"projectDialog\">\r\n    <div data-transclusion=\"content\">\r\n        <table class=\"width100\">\r\n            <tr>\r\n                <td>\r\n                    {{i18n.name}}\r\n                </td>\r\n                <td>\r\n                    <input\r\n                            required\r\n                            data-model=\"editData.currProjectInEdit.name\"/>\r\n                </td>\r\n            </tr>\r\n        </table>\r\n        <button data-click=\"createOrEditProject(editData.currProjectInEdit)\">\r\n            {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}\r\n        </button>\r\n    </div>\r\n</app-modal>\r\n\r\n";
-
-},{}],157:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _project = require('providers/rest/project');
-
-var _project2 = _interopRequireDefault(_project);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('app-project-dialog', {
-    template: {
-        type: 'string',
-        value: require('./projectDialog.html')
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    created: function created() {
-        module.exports.instance = this;
-    },
-    createOrEditProject: function createOrEditProject(proj) {
-        if (proj.oldName) {
-            _fileSystem2.default.renameFolder('workspace/' + proj.oldName, 'workspace/' + proj.name, function () {
-                _project2.default.getAll(function (list) {
-                    _editData2.default.projects = list;
-                });
-            });
-        } else {
-            _project2.default.create(proj.name, function () {
-                _project2.default.getAll(function (list) {
-                    _editData2.default.projects = list;
-                });
-            });
-        }
-        RF.getComponentById('projectDialog').close();
-    }
-});
-
-},{"./projectDialog.html":156,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/project":166}],158:[function(require,module,exports){
-module.exports = "\r\n<div>\r\n    <div class=\"width50 marginAuto\">\r\n        <h3 class=\"centerText\">{{i18n.projects}}</h3>\r\n        <div class=\"table width100\">\r\n            <div\r\n                    data-for=\"p in editData.projects\"\r\n                    class=\"row hoverOnProjectRow\">\r\n                <div class=\"cell\">\r\n                    <div\r\n                            data-click=\"openProject(p)\"\r\n                            class=\"withPadding pointer\">\r\n                        {{p.name}}\r\n                    </div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div class=\"edit\"\r\n                            data-click=\"editProject(p)\"\r\n                            ></div>\r\n                </div>\r\n                <div class=\"cell rightAlign\">\r\n                    <div\r\n                            data-click=\"deleteProject(p)\"\r\n                            class=\"delete\"></div>\r\n                </div>\r\n            </div>\r\n            <div class=\"row\">\r\n                <div class=\"cell\">\r\n                    <div class=\"withPadding\">\r\n                        <div class=\"add\"\r\n                                data-click=\"createProject()\"\r\n                                ></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n    <app-project-dialog></app-project-dialog>\r\n\r\n</div>";
-
-},{}],159:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _project = require('providers/rest/project');
-
-var _project2 = _interopRequireDefault(_project);
-
-var _resourceHelper = require('providers/resourceHelper');
-
-var _resourceHelper2 = _interopRequireDefault(_resourceHelper);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-require('./dialogs/projectDialog/projectDialog');
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = RF.registerComponent('explorer', {
-    template: {
-        type: 'string',
-        value: require('./explorer.html')
-    },
-    onMount: function onMount() {
-        var _this = this;
-
-        _project2.default.getAll(function (list) {
-            _this.editData.projects = list;
-        });
-    },
-    editData: _editData2.default,
-    i18n: _i18n2.default.getAll(),
-    editProject: function editProject(p) {
-        p.oldName = p.name;
-        this.editData.currProjectInEdit = {
-            name: p.name,
-            oldName: p.name
-        };
-        RF.getComponentById('projectDialog').open();
-    },
-    createProject: function createProject() {
-        this.editData.currProjectInEdit = {
-            name: ''
-        };
-        RF.getComponentById('projectDialog').open();
-    },
-    openProject: function openProject(project) {
-        _resourceHelper2.default.loadProject(project.name);
-    },
-    deleteProject: function deleteProject(proj) {
-        var self = this;
-        proj.type = 'project';
-        window.confirmEx(this.i18n.confirmQuestion(proj), function () {
-            _fileSystem2.default.deleteFolder('workspace/' + proj.name, function () {
-                _project2.default.getAll(function (list) {
-                    _editData2.default.projects = list;
-                });
-            });
-        });
-    }
-});
-
-},{"./dialogs/projectDialog/projectDialog":157,"./explorer.html":158,"providers/editData":161,"providers/i18n":162,"providers/resourceHelper":163,"providers/rest/fileSystem":164,"providers/rest/project":166}],160:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var events = {};
-window.addEventListener('message', function (resp) {
-    var data = resp.data && resp.data.response;
-    if (!data) return;
-    var id = resp.data.eventUUID;
-    if (events[id]) {
-        var fn = events[id];
-        delete events[id];
-        fn && data && fn(data);
-    }
-});
-var requestToApi = function requestToApi(params, callBack) {
-    var eventUUID = ~~Math.random() * 100 + new Date().getTime();
-    events[eventUUID] = callBack;
-    params.eventUUID = eventUUID;
-    window.top.postMessage(params, '*');
-};
-
-exports.default = { requestToApi: requestToApi };
-
-},{}],161:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var collections = _require('collections');
-var SpriteSheet = _require('spriteSheet');
-
-var res = {};
-
-res.reset = function () {
-
-    res.commonBehaviourList = {};
-    res.currGameObjectInEdit = {};
-    res.currSpriteSheetInEdit = new SpriteSheet();
-    res.currFrameAnimationInEdit = {};
-    res.currSceneInEdit = {};
-    res.currSceneGameObjectInEdit = {
-        pos: {},
-        scale: {}
-    };
-    res.currLayerInEdit = {};
-    res.currFontInEdit = {};
-    res.currCommonBehaviourInEdit = {};
-    res.currSoundInEdit = {};
-    res.currParticleSystemInEdit = {};
-    res.currProjectInEdit = {};
-    res.currTileIndexInEdit = {};
-    res.gameProps = {};
-    res.commonBehaviourProto = new collections.List();
-
-    res.userInterfaceList = new collections.List();
-
-    res.debugFrameUrl = '';
-    res.scriptEditorUrl = '';
-
-    res.tileMapPosY = res.tileMapPosX = 0;
-
-    res.projectName = '';
-    res.projects = [];
-
-    //res.buildOpts = {
-    //    debug: false,
-    //    embedResources: false,
-    //    embedScript: false,
-    //    minify:false
-    //};
-};
-
-res.reset();
-
-exports.default = res;
-
-},{}],162:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _i18n = {};
-
-_i18n.locale = 'en';
-
-_i18n.bundle = {
-    'en': {
-        ok: 'ok',
-        confirm: 'confirm',
-        confirmQuestion: function confirmQuestion(item) {
-            return 'Delete ' + item.type + ' with name "' + item.name + '"?';
-        },
-        canNotDelete: function canNotDelete(item) {
-            return 'Can not delete ' + item.type + ' with name "' + item.name + '", it\'s used by other objects';
-        },
-        noGameObject: 'create at least one game object firstly',
-        cancel: 'cancel',
-        assets: 'assets',
-        addSpriteSheet: 'add sprite sheet',
-        loadImage: 'load image',
-        gameObjects: 'game objects',
-        gameObject: 'gameObject',
-        create: 'create',
-        edit: 'edit',
-        close: 'close',
-        name: 'name',
-        scaleStrategy: 'scale strategy',
-        spriteSheets: 'sprite sheets',
-        width: 'width',
-        height: 'height',
-        currFrameIndex: 'current frame index',
-        currGameObject: 'current gameObject',
-        currScene: 'current scene',
-        spriteSheet: 'sprite sheet',
-        numOfFramesH: 'num of frames horizontally',
-        numOfFramesV: 'num of frames vertically',
-        image: 'image',
-        frAnimations: 'frame animations',
-        duration: 'duration, msec',
-        frames: 'frames (i.e 1,2,3)',
-        playAnim: 'play animation',
-        stopAnim: 'stop animation',
-        saveObjectFirst: 'save object first',
-        all: 'all',
-        game: 'game',
-        editThisGameObject: 'edit this game object',
-        deleteThisGameObject: 'delete this game object',
-        scenes: 'scenes',
-        scene: 'scene',
-        run: 'run',
-        layers: 'layers',
-        layer: 'layer',
-        debug: 'debug',
-        stop: 'stop',
-        addGameObject: 'add game object',
-        nothingToAdd: 'nothing to add',
-        from: 'from',
-        to: 'to',
-        fonts: 'fonts',
-        font: 'font',
-        text: 'text',
-        commonBehaviour: 'common behaviour',
-        groupName: 'group name',
-        selectFont: 'select font',
-        fontSize: 'font size',
-        fontColor: 'font color',
-        userInterface: 'user interface',
-        textField: 'text field',
-        noDataToEdit: 'no data to edit provided',
-        rigid: 'rigid',
-        sounds: 'sounds',
-        play: 'play',
-        loadSound: 'load sound',
-        build: 'build',
-        particleSystems: 'particle systems',
-        particleSystem: 'particle system',
-        preview: 'preview',
-        explorer: 'explorer',
-        description: 'description',
-        colorBG: 'scene background color',
-        useBG: 'use background color',
-        angle: 'angle',
-        tileMap: 'tile map',
-        noScene: 'create at least one scene',
-        sceneNotSelected: 'select scene to drop object',
-        noLayer: 'create at least one layer of current scene',
-        selected: 'selected',
-        notSelected: 'not selected',
-        fixedToCamera: 'fixed to camera',
-        preloadingScene: 'preloading scene',
-        startScene: 'start scene',
-        projects: 'projects',
-        objectAlreadyAdded: 'object is already added'
-    }
-};
-
-_i18n.setLocate = function (_locale) {
-    _i18n.locale = _locale;
-};
-
-_i18n.get = function (key) {
-    return _i18n.bundle[_i18n.locale][key];
-};
-
-_i18n.getAll = function () {
-    return _i18n.bundle[_i18n.locale];
-};
-
-exports.default = _i18n;
-
-},{}],163:[function(require,module,exports){
-'use strict';
-
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _httpClient = require('providers/rest/httpClient');
-
-var _httpClient2 = _interopRequireDefault(_httpClient);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var ResourceHelper = function ResourceHelper() {
-
-    var self = this;
-
-    var bundle = _require('bundle');
-    var collections = _require('collections');
-    var CommonBehaviour = _require('commonBehaviour');
-    var TextField = _require('textField');
-    var Layer = _require('layer');
-
-    var _loadResources = function _loadResources(projectName) {
-        _httpClient2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
-            bundle.prepare(response);
-            (0, _keys2.default)(bundle).forEach(function (key) {
-                _editData2.default[key] = bundle[key];
-            });
-            _editData2.default.gameProps = bundle.gameProps;
-            _editData2.default.commonBehaviourProto = new collections.List();
-            response.commonBehaviourProto.forEach(function (cb) {
-                _editData2.default.commonBehaviourProto.add(new CommonBehaviour(cb));
-            });
-            _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
-        });
-    };
-
-    this.loadProject = function (projectName) {
-        _editData2.default.reset();
-        _editData2.default.projectName = projectName;
-        document.title = _editData2.default.projectName;
-        sessionStorage.projectName = _editData2.default.projectName;
-        _promise2.default.resolve().then(function () {
-            return _loadResources(projectName);
-        }).then(function () {
-            if (!bundle.sceneList.isEmpty()) _editData2.default.currSceneInEdit = bundle.sceneList.get(0);
-            if (_editData2.default.currSceneInEdit._layers) {
-                if (_editData2.default.currSceneInEdit._layers.size()) {
-                    _editData2.default.currLayerInEdit = _editData2.default.currSceneInEdit._layers.get(0);
-                }
-            }
-            RF.Router.navigateTo('editor');
-        });
-    };
-    this.createOrEditResource = function (currResourceInEdit, ResourceClass, resourceList, callBack) {
-        var formData = new FormData();
-        formData.append('file', currResourceInEdit._file);
-        delete currResourceInEdit._file;
-        var model = {};
-        (0, _keys2.default)(currResourceInEdit).forEach(function (key) {
-            model[key] = currResourceInEdit[key];
-        });
-        formData.append('model', (0, _stringify2.default)(model));
-        formData.append('projectName', _editData2.default.projectName);
-        var op = currResourceInEdit.id ? 'edit' : 'create';
-        _httpClient2.default.post('/resource/' + op, formData, function (item) {
-            if (op == 'create') {
-                var r = new ResourceClass(item);
-                resourceList.add(r);
-                callBack && callBack({ type: 'create', r: r });
-            } else {
-                if (!(resourceList && resourceList)) return;
-                var index = resourceList.indexOf({ id: item.id });
-                resourceList.get(index).fromJSON(item);
-                callBack && callBack({ type: 'edit', r: resourceList.rs[index] });
-            }
-        });
-    };
-
-    this.deleteResource = function (idOrObject, type, callBack) {
-        var id = (typeof idOrObject === 'undefined' ? 'undefined' : (0, _typeof3.default)(idOrObject)) == 'object' ? idOrObject.id : idOrObject;
-        type = type || idOrObject.type;
-        _httpClient2.default.post('/resource/delete', {
-            id: id,
-            type: type,
-            projectName: _editData2.default.projectName
-        }, function () {
-            _editData2.default[type + 'List'].remove({ id: id });
-            callBack && callBack();
-        });
-    };
-
-    // todo refactor
-    this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
-        var op = object.id ? 'edit' : 'create';
-        _httpClient2.default.post('/createOrEditObjectInResource', {
-            model: (0, _stringify2.default)(object),
-            resourceId: resourceId,
-            resourceType: resourceType,
-            objectType: objectType,
-            projectName: _editData2.default.projectName
-        }, function (resp) {
-            callback && callback({ type: op, r: resp });
-        });
-    };
-    // todo refactor
-    this.createOrEditLayer = function (l, s, dialog) {
-        self.createOrEditResource(l, Layer, bundle.layerList, function (item) {
-            if (item.type == 'create') {
-                self.createOrEditObjectInResource(s.type, s.id, 'layerProps', {
-                    type: 'layer',
-                    protoId: item.r.id
-                }, function (resp) {
-                    l.id = resp.r.id;
-                    l.protoId = item.r.id;
-                    l._scene = _editData2.default.currSceneInEdit;
-                    s._layers.add(l);
-                    dialog.close();
-                });
-            }
-        });
-    };
-
-    this.saveGameProps = function (gameProps) {
-        _httpClient2.default.post('/gameProps/save', {
-            model: gameProps,
-            projectName: _editData2.default.projectName
-        });
-    };
-
-    this.createOrEditObjectInResource = function (resourceType, resourceId, objectType, object, callback) {
-        var op = object.id ? 'edit' : 'create';
-        _httpClient2.default.post('/createOrEditObjectInResource', {
-            model: (0, _stringify2.default)(object),
-            resourceId: resourceId,
-            resourceType: resourceType,
-            objectType: objectType,
-            projectName: _editData2.default.projectName
-        }, function (resp) {
-            callback && callback({ type: op, r: resp });
-        });
-    };
-
-    // (function(){
-    //     if (sessionStorage.projectName) {
-    //         self.loadProject(sessionStorage.projectName);
-    //     } else {
-    //         location.href = '#/explorer';
-    //     }
-    // })();
-};
-
-module.exports = new ResourceHelper();
-
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/typeof":10,"providers/editData":161,"providers/rest/httpClient":165}],164:[function(require,module,exports){
-'use strict';
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _httpClient = require('providers/rest/httpClient');
-
-var _httpClient2 = _interopRequireDefault(_httpClient);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var FileSystem = function () {
-    function FileSystem() {
-        (0, _classCallCheck3.default)(this, FileSystem);
-    }
-
-    (0, _createClass3.default)(FileSystem, [{
-        key: 'createFile',
-        value: function createFile(path, content, callback) {
-            return _httpClient2.default.post('/fileSystem/createFile', {
-                path: path,
-                content: content,
-                projectName: _editData2.default.projectName
-            }, callback);
-        }
-    }, {
-        key: 'uploadFile',
-        value: function uploadFile(file, params, callback) {
-            params = params || {};
-            params.projectName = _editData2.default.projectName;
-            return _httpClient2.default.postMultiPart('/fileSystem/uploadFile', file, params, callback);
-        }
-    }, {
-        key: 'removeFile',
-        value: function removeFile(path, callback) {
-            return _httpClient2.default.post('/fileSystem/removeFile', {
-                path: path,
-                projectName: _editData2.default.projectName
-            }, callback);
-        }
-    }, {
-        key: 'readFile',
-        value: function readFile(path, callback) {
-            return _httpClient2.default.post('/fileSystem/readFile', {
-                path: path,
-                projectName: _editData2.default.projectName
-            }, callback);
-        }
-    }, {
-        key: 'renameFolder',
-        value: function renameFolder(oldName, newName, callback) {
-            return _httpClient2.default.post('/fileSystem/renameFolder', { oldName: oldName, newName: newName }, callback);
-        }
-    }, {
-        key: 'deleteFolder',
-        value: function deleteFolder(name, callback) {
-            return _httpClient2.default.post('/fileSystem/deleteFolder', { name: name }, callback);
-        }
-    }]);
-    return FileSystem;
-}();
-
-module.exports = new FileSystem();
-
-},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/rest/httpClient":165}],165:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var noop = function noop() {};
-
-var PromiseProvider = window.PromiseLight || window.Promise;
-
-var objectToQuery = function objectToQuery(o) {
-    if (!o) return '';
-    if (o instanceof window.FormData) return o;
-    var paramsArr = [];
-    if (o == null || o == undefined || typeof o == 'string' || typeof o == 'number') return o;
-    for (var key in o) {
-        paramsArr.push([key, encodeURIComponent(o[key])]);
-    }
-    return paramsArr.map(function (item) {
-        return [item[0] + '=' + item[1]];
-    }).join('&');
-};
-
-var request = function request(data) {
-    var abortTmr = null;
-    var resolved = false;
-    data.method = data.method || 'get';
-    if (data.data && data.method == 'get') data.url += '?' + objectToQuery(data.data);
-    var xhr = new XMLHttpRequest();
-    var resolveFn = noop,
-        rejectFn = noop;
-    var promise = new PromiseProvider(function (resolve, reject) {
-        resolveFn = resolve;
-        rejectFn = reject;
-    });
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200 || xhr.status == 0) {
-                var resp = xhr.responseText;
-                var contentType = xhr.getResponseHeader("Content-Type") || '';
-                if (contentType.toLowerCase().indexOf('json') > -1) resp = JSON.parse(resp);
-                if (data.success) {
-                    data.success(resp);
-                    RF.digest();
-                }
-                resolveFn(resp);
-            } else {
-                if (data.error) data.error({ status: xhr.status, error: xhr.statusText });
-                rejectFn(xhr.statusText);
-            }
-            clearTimeout(abortTmr);
-            resolved = true;
-        }
-    };
-    xhr.open(data.method, data.url, true);
-    if (data.requestType) {
-        if (data.requestType != 'multipart/form-data') // at this case header needs to be auto generated
-            xhr.setRequestHeader("Content-Type", data.requestType);
-    } else {
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    }
-    if (data.requestType == 'application/json') data.data = data.data && (0, _stringify2.default)(data.data);
-    xhr.send(data.data);
-    if (data.timeout) {
-        abortTmr = setTimeout(function () {
-            if (resolved) return;
-            xhr.abort();
-            if (data.ontimeout) data.ontimeout();
-            rejectFn('timeout');
-        }, data.timeout);
-    }
-    return promise;
-};
-
-var get = function get(url, data, success, error) {
-    return request({
-        method: 'get',
-        url: url,
-        data: data,
-        success: success,
-        error: error
-    });
-};
-
-var post = function post(url, data, success, error) {
-    return request({
-        method: 'post',
-        url: url,
-        data: data,
-        requestType: 'application/json',
-        success: success,
-        error: error
-    });
-};
-
-var postMultiPart = function postMultiPart(url, file, data, success, error) {
-    var formData = new FormData();
-    (0, _keys2.default)(data).forEach(function (key) {
-        formData.append(key, data[key]);
-    });
-    formData.append('file', file);
-    formData.append('fileName', file.name);
-    return request({
-        method: 'post',
-        url: url,
-        data: formData,
-        requestType: 'multipart/form-data',
-        success: success,
-        error: error
-    });
-};
-
-exports.default = { get: get, post: post, postMultiPart: postMultiPart };
-
-},{"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4}],166:[function(require,module,exports){
-'use strict';
-
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _httpClient = require('providers/rest/httpClient');
-
-var _httpClient2 = _interopRequireDefault(_httpClient);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var bundle = _require('bundle');
-var collections = _require('collections');
-var TextField = _require('textField');
-var CommonBehaviour = _require('commonBehaviour');
-
-var _loadResources = function _loadResources(projectName) {
-    _httpClient2.default.post('/resource/getAll', { projectName: projectName }, function (response) {
-        bundle.prepare(response);
-        (0, _keys2.default)(bundle).forEach(function (key) {
-            if (bundle[key] && bundle[key].call) return;
-            if (_editData2.default[key] && _editData2.default[key].clear) {
-                _editData2.default[key].clear();
-                bundle[key].forEach(function (el) {
-                    _editData2.default[key].add(el);
-                });
-            }
-            Vue.set(_editData2.default, key, bundle[key]);
-        });
-        _editData2.default.gameProps = bundle.gameProps;
-        response.commonBehaviourProto.forEach(function (el) {
-            _editData2.default.commonBehaviourProto.add(new CommonBehaviour(el));
-        });
-        _editData2.default.userInterfaceList.clear().add(new TextField({ protoId: '0_0_1' }));
-    });
-};
-
-var Project = function () {
-    function Project() {
-        (0, _classCallCheck3.default)(this, Project);
-    }
-
-    (0, _createClass3.default)(Project, [{
-        key: 'getAll',
-        value: function getAll(callback) {
-            return _httpClient2.default.get('/project/getAll', {}, callback);
-        }
-    }, {
-        key: 'create',
-        value: function create(projectName, callback) {
-            return _httpClient2.default.post('/project/create', { projectName: projectName }, callback);
-        }
-    }, {
-        key: 'load',
-        value: function load(projectName) {
-            _editData2.default.reset();
-            _editData2.default.projectName = projectName;
-            document.title = _editData2.default.projectName;
-            sessionStorage.projectName = _editData2.default.projectName;
-            _promise2.default.resolve().then(function () {
-                return _loadResources(projectName);
-            }).then(function () {
-                if (!bundle.sceneList.isEmpty()) _editData2.default.currSceneInEdit = bundle.sceneList.get(0);
-                if (_editData2.default.currSceneInEdit._layers) {
-                    if (_editData2.default.currSceneInEdit._layers.size()) {
-                        _editData2.default.currLayerInEdit = _editData2.default.currSceneInEdit._layers.get(0);
-                    }
-                }
-                location.href = '#/editor';
-            });
-        }
-    }]);
-    return Project;
-}();
-
-var p = new Project();
-
-// if (sessionStorage.projectName) {
-//     p.load(sessionStorage.projectName);
-// } else {
-//     location.href = '#/explorer';
-// }
-
-module.exports = new Project();
-
-},{"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/rest/httpClient":165}],167:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _httpClient = require('providers/rest/httpClient');
-
-var _httpClient2 = _interopRequireDefault(_httpClient);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Resource = function () {
-    function Resource() {
-        (0, _classCallCheck3.default)(this, Resource);
-    }
-
-    (0, _createClass3.default)(Resource, [{
-        key: 'save',
-        value: function save(model, callback) {
-            if (model.toJSON) model = model.toJSON();
-            return _httpClient2.default.post('/resource/save', { projectName: _editData2.default.projectName, model: model }, callback);
-        }
-    }, {
-        key: 'saveGameProps',
-        value: function saveGameProps(model, callback) {
-            return _httpClient2.default.post('/resource/saveGameProps', { projectName: _editData2.default.projectName, model: model }, callback);
-        }
-    }, {
-        key: 'remove',
-        value: function remove(model, callback) {
-            return _httpClient2.default.post('/resource/remove', { projectName: _editData2.default.projectName, model: {
-                    id: model.id,
-                    type: model.type
-                } }, callback);
-        }
-    }]);
-    return Resource;
-}();
-
-exports.default = new Resource();
-
-},{"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/rest/httpClient":165}],168:[function(require,module,exports){
-'use strict';
-
-window.alertEx = function (message) {
-    RF.getComponentById('alertDialog').open(message);
-};
-
-window.confirmEx = function (message, callback) {
-    RF.getComponentById('confirmDialog').open(message, callback);
-};
-
-},{}],169:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
-var _editData = require('providers/editData');
-
-var _editData2 = _interopRequireDefault(_editData);
-
-var _resource = require('providers/rest/resource');
-
-var _resource2 = _interopRequireDefault(_resource);
-
-var _fileSystem = require('providers/rest/fileSystem');
-
-var _fileSystem2 = _interopRequireDefault(_fileSystem);
-
-var _i18n = require('providers/i18n');
-
-var _i18n2 = _interopRequireDefault(_i18n);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var mathEx = _require('mathEx');
-
-var Utils = function () {
-    function Utils() {
-        (0, _classCallCheck3.default)(this, Utils);
-    }
-
-    (0, _createClass3.default)(Utils, [{
-        key: 'getGameObjectCss',
-        value: function getGameObjectCss() {
-            var gameObj = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-            gameObj.scale = gameObj.scale || {};
-            gameObj.spriteSheet = gameObj.spriteSheet || {};
-            return {
-                width: gameObj.width + 'px',
-                height: gameObj.height + 'px',
-                backgroundImage: gameObj.spriteSheet && gameObj.spriteSheet.resourcePath && 'url(' + _editData2.default.projectName + '/' + gameObj.spriteSheet.resourcePath + ')',
-                backgroundPositionY: -gameObj._sprPosY + 'px',
-                backgroundPositionX: -gameObj._sprPosX + 'px',
-                backgroundRepeat: 'no-repeat',
-                opacity: gameObj.alpha,
-                transform: 'scale(' + gameObj.scale.x + ',' + gameObj.scale.y + ') rotateZ(' + mathEx.radToDeg(gameObj.angle) + 'deg)'
-            };
-        }
-    }, {
-        key: 'calcZoom',
-        value: function calcZoom() {
-            var gameObject = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-            if (!gameObject.height) gameObject.height = 30;
-            return gameObject.height > 30 ? 30 / gameObject.height : 1;
-        }
-    }, {
-        key: 'merge',
-        value: function merge(a, b) {
-            a = a || {};
-            b = b || {};
-            var res = {};
-            (0, _keys2.default)(a).forEach(function (key) {
-                res[key] = a[key];
-            });
-            (0, _keys2.default)(b).forEach(function (key) {
-                res[key] = b[key];
-            });
-            return res;
-        }
-    }, {
-        key: 'hexToRgb',
-        value: function hexToRgb(hex) {
-            if (!hex) return { r: 0, g: 0, b: 0 };
-            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? {
-                r: parseInt(result[1], 16) || 0,
-                g: parseInt(result[2], 16) || 0,
-                b: parseInt(result[3], 16) || 0
-            } : { r: 0, g: 0, b: 0 };
-        }
-    }, {
-        key: 'rgbToHex',
-        value: function rgbToHex(col) {
-            if (!col) return '#000000';
-            var r = +col.r,
-                g = +col.g,
-                b = +col.b;
-            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-        }
-    }, {
-        key: 'dataURItoBlob',
-        value: function dataURItoBlob(dataURI) {
-            // convert base64/URLEncoded data component to raw binary data held in a string
-            var byteString = void 0;
-            if (dataURI.split(',')[0].indexOf('base64') >= 0) byteString = atob(dataURI.split(',')[1]);else byteString = unescape(dataURI.split(',')[1]);
-
-            // separate out the mime component
-            var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-            // write the bytes of the string to a typed array
-            var ia = new Uint8Array(byteString.length);
-            for (var i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-
-            return new Blob([ia], { type: mimeString });
-        }
-    }, {
-        key: 'range',
-        value: function range(rFr, rTo) {
-            var arr = [],
-                i = void 0;
-            if (rTo == undefined) {
-                rTo = rFr;
-                rFr = 0;
-            }
-            if (rFr < rTo) {
-                for (i = rFr; i <= rTo; i++) {
-                    arr.push(i);
-                }
-            } else {
-                for (i = rFr; i >= rTo; i--) {
-                    arr.push(i);
-                }
-            }
-            return arr;
-        }
-    }, {
-        key: '_createAceCompleter',
-        value: function _createAceCompleter() {
-            var result = [];
-            var res = {};
-            var objs = ['gameObject'];
-            objs.forEach(function (go) {
-                var GObjClass = _require(go);
-                var goObj = new GObjClass();
-                for (var key in goObj) {
-                    if (key.indexOf('_') == 0) continue;
-                    res[key] = {
-                        name: key,
-                        value: key,
-                        score: 1,
-                        meta: 'gameObject property'
-                    };
-                }
-            });
-            (0, _keys2.default)(res).forEach(function (key) {
-                result.push(res[key]);
-            });
-            return result;
-        }
-    }, {
-        key: '_waitForFrameAndDo',
-        value: function _waitForFrameAndDo(file, path) {
-            var frame = document.getElementById('scriptEditorFrame');
-            var contentWindow = frame && frame.contentWindow;
-            var self = this;
-            if (!contentWindow || !contentWindow.ready) {
-                setTimeout(function () {
-                    self._waitForFrameAndDo(file, path);
-                }, 100);
-                return;
-            }
-            contentWindow.setCode(file);
-            contentWindow.calcEditorSize();
-            contentWindow.setAutocomplete(this._createAceCompleter());
-            window.removeEventListener('resize', contentWindow.calcEditorSize);
-            window.addEventListener('resize', contentWindow.calcEditorSize);
-            window.saveCode = function (code) {
-                _fileSystem2.default.createFile(path, code);
-            };
-        }
-    }, {
-        key: 'getArray',
-        value: function getArray(num) {
-            if (!num) return [];
-            var res = [];
-            for (var i = 0; i < num; i++) {
-                res.push(i);
-            }
-            return res;
-        }
-    }, {
-        key: 'size',
-        value: function size(obj) {
-            if (!obj) return 0;
-            return (0, _keys2.default)(obj).length;
-        }
-    }, {
-        key: 'deleteModel',
-        value: function deleteModel(model, callback) {
-            window.confirmEx(_i18n2.default.getAll().confirmQuestion(model), function () {
-                _editData2.default[model.type + 'List'].remove({ id: model.id });
-                _resource2.default.remove(model, callback);
-            });
-        }
-    }, {
-        key: 'openEditor',
-        value: function openEditor(resourceUrl) {
-            var self = this;
-            _editData2.default.scriptEditorUrl = resourceUrl;
-            var path = 'script/' + resourceUrl;
-            console.log(path);
-            _fileSystem2.default.readFile(path, function (file) {
-                self._waitForFrameAndDo(file, path);
-            });
-        }
-    }]);
-    return Utils;
-}();
-
-exports.default = new Utils();
-
-},{"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"providers/editData":161,"providers/i18n":162,"providers/rest/fileSystem":164,"providers/rest/resource":167}]},{},[115]);
+},{"./_global":116,"./_hide":118,"./_iterators":131,"./_wks":167,"./es6.array.iterator":169}]},{},[17]);

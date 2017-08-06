@@ -11,8 +11,8 @@ const path = require('path');
 
 gulp.task('vendor', ()=> {
     return gulp.src([
-            'web-app/vendor/split.js',
-            'web-app/vendor/reactiveForms.js'
+            'client-app/vendor/split.js',
+            'client-app/vendor/reactiveForms.js'
         ])
         .pipe(concat('vendor.js'))
         .pipe(gulp.dest('resources/public/js/build/'));
@@ -21,8 +21,8 @@ gulp.task('vendor', ()=> {
 gulp.task('bundle', ()=> {
     return (
         browserify({
-            entries: ['web-app/app/index.js'],
-            paths: ['./web-app/app/']
+            entries: ['client-app/app/index.js'],
+            paths: ['./client-app/app/']
         })
         .transform(stringify(['.html']))
         .transform("babelify", {
@@ -37,8 +37,8 @@ gulp.task('bundle', ()=> {
 
 gulp.task('less', ()=> {
     return gulp
-        .src('web-app/main.less')
-        .pipe(addSrc('web-app/app/**/*.less'))
+        .src('client-app/main.less')
+        .pipe(addSrc('client-app/app/**/*.less'))
         .pipe(concat('bundle.less'))
         .pipe(less())
         .pipe(gulp.dest('resources/public/css'));

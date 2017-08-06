@@ -80,7 +80,7 @@ const preloadSceneAndSetIt = function(scene){
     let allSprSheets = scene.getAllSpriteSheets();
 
     bundle.particleSystemList.forEach(function(ps){
-        allSprSheets.add(ps._gameObject._spriteSheet);
+        allSprSheets.add(ps.gameObjectProto.spriteSheet);
     });
     allSprSheets.asArray().forEach(function(spSheet){
         loader.loadImage(spSheet.resourcePath);

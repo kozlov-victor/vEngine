@@ -54,9 +54,9 @@ const triggerEvent = function(e,name){
     let scene = game.getCurrScene();
     if (!scene) return;
     let point = resolveScreenPoint(e);
-    scene._layers.someReversed(function(l){
+    scene.layers.someReversed(function(l){
         let found = false;
-        l._gameObjects.someReversed(function(g){
+        l.gameObjects.someReversed(function(g){
             if (
                 mathEx.isPointInRect(point,g.getScreenRect(),g.angle)
             ) {

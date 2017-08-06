@@ -124,8 +124,6 @@ const GlContext = Class.extend(function(it){
             currTex = texture;
         }
 
-
-
         spriteRectDrawer.bind();
         spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
         spriteRectDrawer.setUniform("u_matrix",makePositionMatrix(

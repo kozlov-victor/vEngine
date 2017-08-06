@@ -5,6 +5,7 @@ const utils = require('utils');
 const behaviour = require('behaviour');
 
 exports.spriteSheetList = new collections.List();
+exports.gameObjectProtoList = new collections.List();
 exports.gameObjectList = new collections.List();
 exports.frameAnimationList = new collections.List();
 exports.layerList = new collections.List();
@@ -74,8 +75,8 @@ exports.applyBehaviourForScene = function(scene){
     if (scene.__applied) return;
     scene.__onResourcesReady();
     exports.applyBehaviour(scene);
-    scene._layers.forEach(function(layer){
-        layer._gameObjects.forEach(function(gameObject){
+    scene.layers.forEach(function(layer){
+        layer.gameObjects.forEach(function(gameObject){
             exports.applyBehaviour(gameObject);
         });
     });

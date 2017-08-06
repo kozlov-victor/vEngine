@@ -1,0 +1,79 @@
+<div class="height100 relative" data-droppable="onDrop" id="sceneDiv">
+    <div data-for="item in editData.currLayerInEdit.gameObjects.rs">
+
+
+        <div
+                data-if="!item.subType"
+                data-draggable="{obj:item,src:'centralPanel'}"
+                data-click="utils.assign(editData,'currSceneGameObjectInEdit',item)"
+                data-style="utils.merge(
+                    utils.getGameObjectCss(item),
+                    {
+                        position:'absolute',
+                        left:
+                             item.fixedToCamera?(item.pos.x+'px'):
+                             item.pos.x -
+                             frameWidth() *
+                             editData.tileMapPosX +
+                             'px',
+                        top:
+                             item.fixedToCamera?(item.pos.y+'px'):
+                             item.pos.y -
+                             frameHeight() *
+                             editData.tileMapPosY +
+                             'px',
+                    }
+                )"
+                data-class="{active:item==editData.currSceneGameObjectInEdit}"
+                >
+
+        </div>
+
+        <div
+                data-if="item.subType=='textField'"
+                data-draggable="{obj:item,src:'centralPanel'}"
+                data-click="utils.assign(editData,'currSceneGameObjectInEdit',item)"
+                data-style="utils.merge(
+                    utils.getGameObjectCss(item),
+                    {
+                        position:'absolute',
+                        left:
+                             item.pos.x -
+                             frameWidth() *
+                             editData.tileMapPosX +
+                             'px',
+                        top:
+                             item.pos.y -
+                             frameHeight() *
+                             editData.tileMapPosY +
+                             'px',
+                        backgroundColor:'rgb(0,222,0.1)',
+                        height:item.height+'px',
+                        width:item.width?item.width+'px':'10px',
+                        backgroundColor:item.width?'':'#ddd',
+                        backgroundImage:'none'
+                    }
+                )"
+                data-class="{active:item==editData.currSceneGameObjectInEdit}"
+                >
+
+            <div style="position: relative;left:0;top:0;z-index:10">
+                            <span
+                                data-style="{
+                                    left:item.pos.x+'px',
+                                    top: item.pos.y+'px',
+                                    display:ch=='\n'?'block':'inline-block',
+                                    width:item._font.fontContext.symbols[ch].width+'px',
+                                    height:item._font.fontContext.symbols[ch].height+'px',
+                                    backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',
+                                    backgroundRepeat:     'no-repeat',
+                                    backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',
+                                    backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'
+                                }"
+                                    data-for="ch in item._chars">
+                                </span>
+            </div>
+
+        </div>
+    </div>
+</div>

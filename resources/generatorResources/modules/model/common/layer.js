@@ -6,37 +6,36 @@ const bundle = require('bundle');
 
 const Layer = BaseModel.extend({
     type:'layer',
-    gameObjectProps:[],
-    _gameObjects:null,
+    gameObjects:null,
     _scene:null,
     construct: function() {
         let self = this;
-        self._gameObjects = new collections.List();
-        this.gameObjectProps.forEach(function(prop){
-            let objCloned;
-            switch (prop.subType) {
-                case 'textField':
-                    objCloned = new TextField(prop);
-                    break;
-                default:
-                    let obj = bundle.gameObjectList.find({id: prop.protoId});
-                    objCloned = obj.clone();
-                    objCloned.fromJSON(prop);
-                    break;
-            }
-            objCloned._layer = self;
-            self._gameObjects.add(objCloned);
+        self.gameObjects = new collections.List(); // todo
+        bundle.gameObjectList.forEach(go=>{
+            self.addGameObject(go);
         });
+    },
+    addGameObject(go){
+        let objCloned = bundle.gameObjectProtoList.find({id:go.protoId});
+        objCloned = objCloned.clone();
+        if (go.toJSON) go = go.toJSON();
+        Object.keys(go).forEach(key=>{
+            if (go[key]!==null && go[key]!==undefined && go[key]!=='') {
+                objCloned[key] = go[key];
+            }
+        });
+        objCloned._layer = this;
+        this.gameObjects.add(objCloned);
     },
     getAllSpriteSheets:function() {
         let dataSet = new collections.Set();
-        this._gameObjects.forEach(function(obj){
-            obj._spriteSheet && dataSet.add(obj._spriteSheet);
+        this.gameObjects.forEach(function(obj){
+            obj.spriteSheet && dataSet.add(obj.spriteSheet);
         });
         return dataSet;
     },
     update: function(currTime,deltaTime){
-        let all = this._gameObjects.rs;
+        let all = this.gameObjects.rs;
         let i = all.length;
         let l = i-1;
         while(i--){

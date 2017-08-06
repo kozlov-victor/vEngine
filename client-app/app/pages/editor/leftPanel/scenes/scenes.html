@@ -1,0 +1,92 @@
+<app-collapsible
+        data-transclusion-id="scenes"
+        data-state="{
+            crud: {
+                create:createScene
+            },
+            title: i18n.scenes
+        }">
+
+    <div data-transclusion="content:#scenes">
+        <div
+            class="withPaddingLeft"
+            data-class="{
+                currScene:editData.currSceneInEdit==scene
+            }"
+            data-for="scene in editData.sceneList.rs"
+            data-click="setCurrentScene(scene)"
+        >
+            <app-collapsible
+                    data-transclusion-id="currScene"
+                    data-state="{
+                        crud: {
+                            edit:editScene,
+                            delete:deleteScene,
+                            editScript: editScript
+                        },
+                        object: scene,
+                        title: scene.name
+                    }"
+                    >
+                <div data-transclusion="content:#currScene">
+                    <div class="withPaddingLeft">
+                        <app-collapsible
+                                data-transclusion-id="layers"
+                                data-state="{
+                                    title: i18n.layers,
+                                    meta: scene,
+                                    crud: {
+                                        create: createLayer
+                                    }
+                                }"
+                        >
+                            <div data-transclusion="content:#layers">
+                                <div
+                                        data-click="setCurrLayer(layer)"
+                                        data-for="layer in scene.layers.rs" class="withPaddingLeft">
+                                    <app-collapsible
+                                            data-transclusion-id="currLayer"
+                                            data-state="{
+                                                object: layer,
+                                                meta: scene,
+                                                crud: {
+                                                    edit:editLayer,
+                                                    delete:deleteLayer
+                                                },
+                                                title: layer.name
+                                            }">
+                                                <div data-transclusion="content:#currLayer">
+                                                    <div class="withPaddingLeft">
+                                                        <div class="table width100">
+                                                            <div
+                                                                data-class="
+                                                                {
+                                                                    currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject
+                                                                }"
+                                                                data-click="setCurrSceneGameObjectInEdit(gameObject)"
+                                                                data-for="gameObject in layer.gameObjects.rs">
+
+                                                                <app-game-object-row
+                                                                        data-state="
+                                                                            {
+                                                                                gameObject: gameObject,
+                                                                                crud: {
+                                                                                     delete: deleteGameObject
+                                                                                },
+                                                                            }"
+                                                                ></app-game-object-row>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                    </app-collapsible>
+                                </div>
+                            </div>
+                        </app-collapsible>
+                    </div>
+                </div>
+            </app-collapsible>
+        </div>
+    </div>
+</app-collapsible>

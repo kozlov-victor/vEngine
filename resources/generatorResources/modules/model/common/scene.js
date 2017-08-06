@@ -11,9 +11,8 @@ const tweenMovieModule = require('tweenMovie');
 
 const Scene = Renderable.extend({
     type:'scene',
-    layerProps:[],
     alpha:1,
-    _layers:null,
+    layers:[{type:'layer'}],
     tileMap:null,
     _allGameObjects:null,
     useBG:false,
@@ -23,21 +22,15 @@ const Scene = Renderable.extend({
     __onResourcesReady: function(){
         let self = this;
         self._allGameObjects = new collections.List();
-        self._layers.forEach(function(l){
-            self._allGameObjects.addAll(l._gameObjects);
+        self.layers.forEach(function(l){
+            self._allGameObjects.addAll(l.gameObjects);
         });
     },
     construct: function(){
         let self = this;
         self._super();
-        self._layers = new collections.List();
-        this.layerProps.forEach(function(prop){
-            let l = bundle.layerList.find({id: prop.protoId});
-            let lCloned = l.clone(exports.Layer);
-            lCloned.fromJSON(prop);
-            lCloned._scene = self;
-            self._layers.add(lCloned);
-        });
+        if (self.layers.splice) self.layers = new collections.List(); // todo
+
         self._tweenMovies = [];
         if (!self.tileMap) self.tileMap = {
             _spriteSheet:null,
@@ -58,7 +51,7 @@ const Scene = Renderable.extend({
     },
     getAllSpriteSheets:function() {
         let dataSet = new collections.Set();
-        this._layers.forEach(function(l){
+        this.layers.forEach(function(l){
             dataSet.combine(l.getAllSpriteSheets());
         });
         if (this.tileMap && this.tileMap.spriteSheet) {
@@ -72,8 +65,8 @@ const Scene = Renderable.extend({
     update: function(currTime,deltaTime){
         let self = this;
         self._render();
-        let layers = self._layers.rs;
-        let i = self._layers.size();
+        let layers = self.layers.rs;
+        let i = self.layers.size();
         let l = i -1;
         while(i--){
             layers[i-l].update(currTime,deltaTime);

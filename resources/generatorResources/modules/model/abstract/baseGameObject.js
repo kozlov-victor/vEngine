@@ -9,7 +9,7 @@ const Moveable = require('moveable');
 const BaseGameObject = Renderable.extend({
     type:'baseGameObject',
     groupName:'',
-    _spriteSheet:null,
+    spriteSheet:null,
     fixedToCamera:false,
     _layer:null,
     _moveable:null,
@@ -32,7 +32,7 @@ const BaseGameObject = Renderable.extend({
         return rect;
     },
     kill: function(){
-        this._layer._gameObjects.remove({id:this.id});
+        this._layer.gameObjects.remove({id:this.id});
         this._layer._scene._allGameObjects.remove({id:this.id});
     },
     getScene: function(){

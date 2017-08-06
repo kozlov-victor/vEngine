@@ -613,6 +613,14 @@ if (!ElementPrototype.closest) {
     })(Element.prototype);
 }
 
+if (!ElementPrototype.addEventListener) {
+    ElementPrototype.addEventListener = function (name, fn) {
+        this.attachEvent(name, function (e) {
+            fn(e || window.event);
+        });
+    };
+}
+
 if (!Object.keys) {
     Object.keys = function (obj) {
         var keys = [];
@@ -753,8 +761,20 @@ if (!String.prototype.trim) {
 }
 
 if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (str) {
-        return !this.indexOf(str);
+    String.prototype.startsWith = function (searchString, position) {
+        position = position || 0;
+        return this.indexOf(searchString, position) === position;
+    };
+}
+if (!String.prototype.endsWith) {
+    String.prototype.endsWith = function (searchString, position) {
+        var subjectString = this.toString();
+        if (position === undefined || position > subjectString.length) {
+            position = subjectString.length;
+        }
+        position -= searchString.length;
+        var lastIndex = subjectString.indexOf(searchString, position);
+        return lastIndex !== -1 && lastIndex === position;
     };
 }
 
@@ -785,7 +805,7 @@ if (!window.Node) window.Node = {
     var nativeSplit = String.prototype.split,
         compliantExecNpcg = /()??/.exec("")[1] === undef,
         // NPCG: nonparticipating capturing group
-    self;
+    self = void 0;
 
     self = function self(str, separator, limit) {
         // If `separator` is not a regex, use `nativeSplit`
@@ -940,12 +960,13 @@ var Component = function () {
         return res;
     };
 
-    Component.prototype.addWatcher = function addWatcher(expression, listenerFn) {
+    Component.prototype.addWatcher = function addWatcher(expression, listenerFn, ifExpressionsList) {
         var watcherFn = ExpressionEngine.getExpressionFn(expression);
         this.watchers.push({
             expression: expression,
             watcherFn: watcherFn,
-            listenerFn: listenerFn
+            listenerFn: listenerFn,
+            ifExpressionsList: ifExpressionsList
         });
         listenerFn(ExpressionEngine.runExpressionFn(watcherFn, this));
     };
@@ -956,7 +977,9 @@ var Component = function () {
         if (!this.stateExpression) return;
         var newExternalState = ExpressionEngine.executeExpression(this.stateExpression, this.parent);
         Object.keys(newExternalState).forEach(function (key) {
-            if (_this4.modelView[key] !== newExternalState[key]) _this4.modelView[key] = newExternalState[key];
+            if (_this4.modelView[key] !== null && _this4.modelView[key] !== undefined && _this4.modelView[key] !== newExternalState[key]) {
+                _this4.modelView[key] = newExternalState[key];
+            }
         });
     };
 
@@ -964,9 +987,18 @@ var Component = function () {
         var _this5 = this;
 
         if (!this.isWatchEnable) return;
-
         this._updateExternalState();
         this.watchers.forEach(function (watcher) {
+            var ifDirective = true;
+            watcher.ifExpressionsList.some(function (ifExpression) {
+                var res = ExpressionEngine.executeExpression(ifExpression, _this5);
+                if (!res) {
+                    ifDirective = false;
+                    return true;
+                }
+            });
+            if (!ifDirective) return;
+
             var newValue = ExpressionEngine.runExpressionFn(watcher.watcherFn, _this5);
             var oldValue = watcher.last;
             var newValDeepCopy = MiscUtils.deepCopy(newValue);
@@ -979,6 +1011,7 @@ var Component = function () {
 
     Component.prototype.run = function run() {
         new DirectiveEngine(this).run();
+        this.digest();
     };
 
     Component.prototype.destroy = function destroy() {
@@ -1191,14 +1224,15 @@ var ScopedLoopContainer = function (_Component) {
 
         this.addWatcher(iterableObjectExpr, function (newArr, oldArr) {
             _this2._processIterations(newArr, oldArr);
-        });
+        }, [] // todo!!!! replace to real array of "if" expressions
+        );
+        this.digest();
     };
 
     ScopedLoopContainer.prototype._processIterations = function _processIterations() {
         var _this3 = this;
 
         var newArr = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-        var oldArr = arguments[1];
 
 
         var currNodeInIteration = this.anchor;
@@ -1388,8 +1422,9 @@ var DomUtils = function () {
                         return 'click'; // ie8 change returns previous value
                         break;
                     case 'range':
+                    case 'date':
                     case 'number':
-                        return 'input,change';
+                        return 'oninput' in el ? 'input' : 'keyup,change';
                         break;
                     default:
                         return 'keyup,input,change';
@@ -1469,6 +1504,34 @@ var DomUtils = function () {
         }
     };
 
+    DomUtils.__getAttribute = function __getAttribute(el, attr) {
+        return el.getAttribute && el.getAttribute('data-' + attr);
+    };
+
+    DomUtils._get_If_expressionTopDownList = function _get_If_expressionTopDownList(el) {
+        var res = [];
+        do {
+            var dataIfExp = DomUtils.__getAttribute(el, 'if');
+            if (dataIfExp) {
+                res.unshift(dataIfExp);
+            }
+        } while (el = el.parentNode);
+        return res;
+    };
+
+    DomUtils._replaceAll = function _replaceAll(val, delimiter, value) {
+        return val.split(delimiter).join(value);
+    };
+
+    DomUtils.sanitize = function sanitize(value) {
+        var node = document.createElement('div');
+        node.innerHTML = value;
+        DomUtils.nodeListToArray(node.querySelectorAll('script,style,iframe,frame')).forEach(function (nodeItem) {
+            nodeItem.parentNode.removeChild(nodeItem);
+        });
+        return node.innerHTML;
+    };
+
     return DomUtils;
 }();
 
@@ -1492,7 +1555,7 @@ var MiscUtils = function () {
     MiscUtils.deepCopy = function deepCopy(obj) {
         var _clonedObjects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-        if (obj === undefined) return undefined;else if (obj === null) return null;
+        if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;
         if (Object.prototype.toString.call(obj) === '[object Array]') {
             var out = [],
                 i = 0,
@@ -1637,9 +1700,125 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var dataTransclusion = 'data-transclusion';
 
-var ComponentHelper = function ComponentHelper() {
-    _classCallCheck(this, ComponentHelper);
-};
+var ComponentHelper = function () {
+    function ComponentHelper() {
+        _classCallCheck(this, ComponentHelper);
+    }
+
+    ComponentHelper._runTransclNode = function _runTransclNode(componentProto, domEl, transclNode, transclComponents) {
+        var transclusionId = domEl.getAttribute('data-transclusion-id') || '';
+        var name = transclNode.getAttribute(dataTransclusion);
+        var nameSpecifiedById = transclusionId ? name += '\\:\\#' + transclusionId : '';
+        if (!name) {
+            console.error(componentProto.node);
+            console.error(transclNode);
+            throw dataTransclusion + ' attribute can not be empty';
+        }
+
+        var recipients = DomUtils.nodeListToArray(domEl.querySelectorAll('[' + dataTransclusion + '="' + name + '"],[' + dataTransclusion + '="' + nameSpecifiedById + '"]')).filter(function (el) {
+            var closestWithSameName = el.parentNode && (el.parentNode.closest('[' + dataTransclusion + '="' + name + '"]') || el.parentNode.closest('[' + dataTransclusion + '="' + nameSpecifiedById + '"]'));
+            if (!!closestWithSameName) {
+                console.error(domEl);
+                console.error(closestWithSameName);
+                throw '\n                            transclusion name conflict:\n                            dont use same transclusion name at different components with parent-child relations.\n                            Conflicted name: "' + name + '"';
+            }
+            return true;
+        });
+
+        recipients.forEach(function (rcp) {
+            transclNode.innerHTML = '';
+            transclComponents.push({ transclNode: transclNode, rcp: rcp });
+        });
+    };
+
+    ComponentHelper._runComponentDomEl = function _runComponentDomEl(rootComponent, componentProto, domEl, transclComponents, componentNodes) {
+        if (domEl.getAttribute('data-_processed')) return;
+        domEl.setAttribute('data-_processed', '1');
+
+        var hasNotTranscluded = false;
+        DomUtils.nodeListToArray(domEl.childNodes).forEach(function (chdrn) {
+            if (chdrn.hasAttribute && !chdrn.hasAttribute(dataTransclusion)) hasNotTranscluded = true;
+        });
+        if (hasNotTranscluded) {
+            console.warn(domEl);
+            console.warn('children elements of component ' + componentProto.name + ' will be removed');
+        }
+
+        var domId = domEl.getAttribute('id');
+        var componentNode = componentProto.node.cloneNode(true);
+        DomUtils.nodeListToArray(componentNode.querySelectorAll('[' + dataTransclusion + ']')).forEach(function (transclNode) {
+            ComponentHelper._runTransclNode(componentProto, domEl, transclNode, transclComponents);
+        });
+        domEl.parentNode.insertBefore(componentNode, domEl);
+
+        var dataStateExpression = domEl.getAttribute('data-state');
+        var dataState = dataStateExpression ? ExpressionEngine.executeExpression(dataStateExpression, rootComponent) : {};
+        var component = componentProto.newInstance(componentNode, dataState);
+        domId && (component.domId = domId);
+
+        component.parent = rootComponent;
+        component.parent.addChild(component);
+        if (dataStateExpression) component.stateExpression = dataStateExpression;
+        component.disableParentScopeEvaluation = true; // avoid recursion in Component
+
+        component.run();
+
+        domEl.parentNode.removeChild(domEl);
+        componentNodes.push({ component: component, componentNode: componentNode });
+    };
+
+    ComponentHelper._runComponent = function _runComponent(rootComponent, componentProto) {
+        var transclComponents = [];
+        var domEls = DomUtils.nodeListToArray(rootComponent.node.getElementsByTagName(componentProto.name));
+        if (rootComponent.node.tagName.toLowerCase() == componentProto.name.toLowerCase()) {
+            console.error('\n                   Can not use "data-for" attribute at component directly. Use "data-for" directive at parent node');
+            console.error('component node:', rootComponent.node);
+            throw "Can not use data-for attribute at component";
+        }
+        var componentNodes = [];
+        domEls.forEach(function (domEl) {
+            var hasClosestSameComponent = domEl.parentNode && domEl.parentNode.closest(domEl.tagName.toLowerCase());
+            if (hasClosestSameComponent) return;
+            ComponentHelper._runComponentDomEl(rootComponent, componentProto, domEl, transclComponents, componentNodes);
+        });
+        var hasStateChanged = false;
+        componentNodes.forEach(function (item) {
+            var children = DomUtils.removeParentButNotChildren(item.componentNode);
+            if (children.length == 1) {
+                item.component.modelView.$el = children[0];
+            } else {
+                item.component.modelView.$el = children;
+            }
+            hasStateChanged = item.component.setMounted(true) != 'noChanged' || hasStateChanged;
+            hasStateChanged = item.component.setShown(true) != 'noChanged' || hasStateChanged;
+        });
+        hasStateChanged && Component.digestAll();
+        return transclComponents;
+    };
+
+    ComponentHelper._runTransclusionComponent = function _runTransclusionComponent(rootComponent, trnscl) {
+        DomUtils.nodeListToArray(trnscl.rcp.childNodes).forEach(function (n) {
+            trnscl.transclNode.appendChild(n);
+        });
+        var transclComponent = new ScopedDomFragment(trnscl.transclNode, rootComponent.modelView);
+        rootComponent.addChild(transclComponent);
+        transclComponent.parent = rootComponent;
+        trnscl.transclNode.setAttribute('data-_processed', '1');
+        transclComponent.run();
+    };
+
+    ComponentHelper.runComponents = function runComponents(rootComponent) {
+        var transclComponents = [];
+        ComponentProto.instances.forEach(function (componentProto) {
+            transclComponents = transclComponents.concat(ComponentHelper._runComponent(rootComponent, componentProto));
+        });
+        transclComponents.forEach(function (trnscl) {
+            ComponentHelper._runTransclusionComponent(rootComponent, trnscl);
+        });
+    };
+
+    return ComponentHelper;
+}();
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -1647,7 +1826,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DirectiveEngine = function () {
-    function DirectiveEngine(component, ignoreComponents) {
+    function DirectiveEngine(component) {
         _classCallCheck(this, DirectiveEngine);
 
         this.component = component;
@@ -1706,7 +1885,7 @@ var DirectiveEngine = function () {
             _this2.component.addWatcher(it.expression, function (value) {
                 if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object') value = JSON.stringify(value);
                 DomUtils.setTextNodeValue(it.node, value);
-            });
+            }, DomUtils._get_If_expressionTopDownList(it.node));
         });
     };
 
@@ -1722,7 +1901,9 @@ var DirectiveEngine = function () {
                 return false;
             });
         }
+
         DomUtils.addEventListener(el, eventName, function (e) {
+
             _this3.component.modelView.$event = e;
             ExpressionEngine.runExpressionFn(fn, _this3.component);
             delete _this3.component.modelView.$event;
@@ -1747,7 +1928,8 @@ var DirectiveEngine = function () {
         var _this5 = this;
 
         this._eachElementWithAttr('data-' + 'change', function (el, expression) {
-            ['keyup', 'blur', 'input', 'change'].forEach(function (eventName) {
+            var events = DomUtils.getDefaultInputChangeEvents(el).split(',');
+            events.forEach(function (eventName) {
                 _this5._runDomEvent(el, expression, eventName);
             });
         });
@@ -1781,18 +1963,6 @@ var DirectiveEngine = function () {
             _this8._runDirectiveEvents(el, '{' + expression + '}');
         });
     };
-
-    // runDirective_Bind(){
-    //     this._eachElementWithAttr('data-bind',(el,expression)=>{
-    //         ExpressionEngine.runExpressionFn(fn,this.component);
-    //         this.component.addWatcher(
-    //             expression,
-    //             value=>{
-    //                 DomUtils.setTextNodeValue(el,value);
-    //             }
-    //         )
-    //     });
-    // };
 
     DirectiveEngine.prototype._runDirective_Model_OfSelect = function _runDirective_Model_OfSelect(selectEl, modelExpression) {
         var isMultiple = selectEl.multiple,
@@ -1868,7 +2038,7 @@ var DirectiveEngine = function () {
                 } else {
                     if (DomUtils.getInputValue(el) !== value) DomUtils.setInputValue(el, value);
                 }
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -1886,7 +2056,7 @@ var DirectiveEngine = function () {
                 } else {
                     el.className = initialClassName + ' ' + classNameOrObj;
                 }
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -1903,7 +2073,7 @@ var DirectiveEngine = function () {
                         //ie8 throws error if style is incorrect
                     }
                 }
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -1913,7 +2083,7 @@ var DirectiveEngine = function () {
         this._eachElementWithAttr('data-disabled', function (el, expression) {
             _this12.component.addWatcher(expression, function (value) {
                 if (value) el.setAttribute('disabled', 'disabled');else el.removeAttribute('disabled');
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -1956,7 +2126,7 @@ var DirectiveEngine = function () {
                         cmp.setShown(false);
                     });
                 }
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -1978,7 +2148,7 @@ var DirectiveEngine = function () {
                         cmp.setShown(false);
                     });
                 }
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -2000,7 +2170,7 @@ var DirectiveEngine = function () {
                         cmp.setShown(true);
                     });
                 }
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -2009,8 +2179,8 @@ var DirectiveEngine = function () {
 
         this._eachElementWithAttr('data-html', function (el, expression) {
             _this16.component.addWatcher(expression, function (val) {
-                el.innerHTML = val;
-            });
+                el.innerHTML = DomUtils.sanitize(val);
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -2027,7 +2197,7 @@ var DirectiveEngine = function () {
         this._eachElementWithAttr('data-attributes', function (el, expression) {
             _this17.component.addWatcher(expression, function (properties) {
                 _this17._runAttributes(el, properties);
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
@@ -2038,113 +2208,20 @@ var DirectiveEngine = function () {
             expression = '{' + expression + '}';
             _this18.component.addWatcher(expression, function (properties) {
                 _this18._runAttributes(el, properties);
-            });
+            }, DomUtils._get_If_expressionTopDownList(el));
         });
     };
 
     DirectiveEngine.prototype.runComponents = function runComponents() {
-        var _this19 = this;
-
-        // todo refactor
-        var transclComponents = [];
-        ComponentProto.instances.forEach(function (componentProto) {
-            var domEls = DomUtils.nodeListToArray(_this19.component.node.getElementsByTagName(componentProto.name));
-            if (_this19.component.node.tagName.toLowerCase() == componentProto.name.toLowerCase()) {
-                console.error('\n                   Can not use "data-for" attribute at component directly. Use "data-for" directive at parent node');
-                console.error('component node:', _this19.component.node);
-                throw "Can not use data-for attribute at component";
-            }
-            var componentNodes = [];
-            domEls.forEach(function (domEl) {
-
-                if (domEl.getAttribute('data-_processed')) return;
-                domEl.setAttribute('data-_processed', '1');
-
-                var dataTransclusion = 'data-transclusion';
-
-                var hasNotTranscluded = false;
-                DomUtils.nodeListToArray(domEl.childNodes).forEach(function (chdrn) {
-                    if (chdrn.hasAttribute && !chdrn.hasAttribute(dataTransclusion)) hasNotTranscluded = true;
-                });
-                if (hasNotTranscluded) {
-                    console.warn(domEl);
-                    console.warn('children elements of component ' + componentProto.name + ' will be removed');
-                }
-
-                var domId = domEl.getAttribute('id');
-                var componentNode = componentProto.node.cloneNode(true);
-                DomUtils.nodeListToArray(componentNode.querySelectorAll('[' + dataTransclusion + ']')).forEach(function (transclNode) {
-                    var name = transclNode.getAttribute(dataTransclusion);
-                    if (!name) {
-                        console.error(componentProto.node);
-                        console.error(transclNode);
-                        throw dataTransclusion + ' attribute can not be empty';
-                    }
-
-                    var recipients = DomUtils.nodeListToArray(domEl.querySelectorAll('[' + dataTransclusion + '=' + name + ']')).filter(function (el) {
-                        var closestWithSameName = el.parentNode && el.parentNode.closest('[' + dataTransclusion + '=' + name + ']');
-                        if (!!closestWithSameName) {
-                            console.error(domEl);
-                            console.error(closestWithSameName);
-                            throw '\n                                    transclusion name conflict: \n                                    dont use same transclusion name at different components with parent-child relations. \n                                    Conflicted name: "' + name + '"';
-                        }
-                        return true;
-                    });
-
-                    recipients.forEach(function (rcp) {
-                        transclNode.innerHTML = '';
-                        transclComponents.push({ transclNode: transclNode, rcp: rcp });
-                    });
-                });
-                domEl.parentNode.insertBefore(componentNode, domEl);
-
-                var dataStateExpression = domEl.getAttribute('data-state');
-                var dataState = dataStateExpression ? ExpressionEngine.executeExpression(dataStateExpression, _this19.component) : {};
-                var component = componentProto.newInstance(componentNode, dataState);
-                domId && (component.domId = domId);
-
-                component.parent = _this19.component;
-                component.parent.addChild(component);
-                if (dataStateExpression) component.stateExpression = dataStateExpression;
-                component.disableParentScopeEvaluation = true; // avoid recursion in Component
-
-                component.run();
-
-                domEl.parentNode.removeChild(domEl);
-                componentNodes.push({ component: component, componentNode: componentNode });
-            });
-            var hasStateChanged = false;
-            componentNodes.forEach(function (item) {
-                var children = DomUtils.removeParentButNotChildren(item.componentNode);
-                if (children.length == 1) {
-                    item.component.modelView.$el = children[0];
-                } else {
-                    item.component.modelView.$el = children;
-                }
-                hasStateChanged = item.component.setMounted(true) != 'noChanged' || hasStateChanged;
-                hasStateChanged = item.component.setShown(true) != 'noChanged' || hasStateChanged;
-            });
-            hasStateChanged && Component.digestAll();
-        });
-        transclComponents.forEach(function (trnscl) {
-            //trnscl.transclNode.innerHTML = trnscl.rcp.innerHTML;
-            DomUtils.nodeListToArray(trnscl.rcp.childNodes).forEach(function (n) {
-                trnscl.transclNode.appendChild(n);
-            });
-            var transclComponent = new ScopedDomFragment(trnscl.transclNode, _this19.component.modelView);
-            _this19.component.addChild(transclComponent);
-            transclComponent.parent = _this19.component;
-            trnscl.transclNode.setAttribute('data-_processed', '1');
-            transclComponent.run();
-        });
+        ComponentHelper.runComponents(this.component);
     };
 
     DirectiveEngine.prototype.runExpressionsInAttrs = function runExpressionsInAttrs() {
-        var _this20 = this;
+        var _this19 = this;
 
-        DomUtils.nodeListToArray(this.component.node.querySelectorAll('*')).forEach(function (node) {
-            if (!node.attributes) return;
-            Array.prototype.forEach.call(node.attributes, function (attr) {
+        DomUtils.nodeListToArray(this.component.node.querySelectorAll('*')).forEach(function (el) {
+            if (!el.attributes) return;
+            Array.prototype.forEach.call(el.attributes, function (attr) {
                 if (!attr) return;
                 var name = attr.name,
                     value = attr.value;
@@ -2152,7 +2229,7 @@ var DirectiveEngine = function () {
                 if (value.indexOf('{{') == -1 && value.indexOf('}}') == -1) return;
                 value = value.split(/[\n\t]|[\s]{2,}/).join(' ').trim();
                 var resultExpArr = [],
-                    resultExpr = '';
+                    resultExpr = void 0;
                 value.split(DomUtils.EXPRESSION_REGEXP).forEach(function (token) {
                     if (!token.length) return;
                     if (token.indexOf('{{') == 0) {
@@ -2163,9 +2240,52 @@ var DirectiveEngine = function () {
                     }
                 });
                 resultExpr = resultExpArr.join('+');
-                _this20.component.addWatcher(resultExpr, function (expr) {
-                    node.setAttribute(name, expr.trim());
-                });
+                _this19.component.addWatcher(resultExpr, function (expr) {
+                    el.setAttribute(name, expr.trim());
+                }, DomUtils._get_If_expressionTopDownList(el));
+            });
+        });
+    };
+
+    DirectiveEngine.prototype.runDragAndDrop = function runDragAndDrop() {
+        var _this20 = this;
+
+        this._eachElementWithAttr('data-draggable', function (el, expression) {
+            DomUtils.addEventListener(el, 'mousedown', function (e) {
+                var mouseX = e.offsetX,
+                    mouseY = e.offsetY;
+                el.__coords = { mouseX: mouseX, mouseY: mouseY };
+            });
+            DomUtils.addEventListener(el, 'dragstart', function (e) {
+                var id = Math.random() + '_' + Math.random();
+                var clientRect = el.getBoundingClientRect();
+                var mouseX = e.clientX,
+                    mouseY = e.clientY;
+                DirectiveEngine.ddObjects[id] = {
+                    obj: ExpressionEngine.executeExpression(expression, _this20.component),
+                    coords: el.__coords
+                };
+                e.dataTransfer.setData('text/plain', id); //cannot be empty string
+                e.dataTransfer.effectAllowed = 'move';
+            });
+            _this20.component.addWatcher(expression, function (draggableObj) {
+                el.setAttribute('draggable', '' + !!draggableObj);
+            }, DomUtils._get_If_expressionTopDownList(el));
+        });
+        this._eachElementWithAttr('data-droppable', function (el, expression) {
+            var callbackFn = ExpressionEngine.executeExpression(expression, _this20.component);
+            DomUtils.addEventListener(el, 'dragover', function (e) {
+                e.preventDefault();
+            });
+            DomUtils.addEventListener(el, 'drop', function (e) {
+                e.preventDefault();
+                var id = e.dataTransfer.getData('text/plain');
+                var _DirectiveEngine$ddOb = DirectiveEngine.ddObjects[id],
+                    obj = _DirectiveEngine$ddOb.obj,
+                    coords = _DirectiveEngine$ddOb.coords;
+
+                callbackFn && callbackFn(obj, e, coords);
+                delete DirectiveEngine.ddObjects[id];
             });
         });
     };
@@ -2176,14 +2296,13 @@ var DirectiveEngine = function () {
         this.runDirective_For();
         this.runComponents();
         this.runTextNodes();
-        this.runDirective_Model(); // todo check event sequence in legacy browsers
+        this.runDirective_Model();
         ['click', 'blur', 'focus', 'submit', 'keypress', 'keyup', 'keydown', 'input', 'mousedown', 'mouseup', 'mousemove', 'mouseleave', 'mouseenter', 'mouseover', 'mousout'].forEach(function (eventName) {
             _this21.runDomEvent(eventName);
         });
         this.runDomEvent_Change();
         this.runDirective_Events();
         this.runDirective_Event();
-        //this.runDirective_Bind();
         this.runDirective_Class();
         this.runDirective_Style();
         this.runDirective_Show();
@@ -2193,11 +2312,14 @@ var DirectiveEngine = function () {
         this.runDirective_Attribute();
         this.runDirective_Attributes();
         this.runExpressionsInAttrs();
+        this.runDragAndDrop();
         this.runDirective_If();
     };
 
     return DirectiveEngine;
 }();
+
+DirectiveEngine.ddObjects = {};
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -2234,7 +2356,8 @@ var getVal = function getVal(component, path) {
 var RF_API = { getVal: getVal };
 var RF_API_STR = '__RF__';
 
-var cache = {};
+var getterFnCache = {};
+var setterFnCache = {};
 
 var ExpressionEngine = function () {
     function ExpressionEngine() {
@@ -2254,8 +2377,13 @@ var ExpressionEngine = function () {
             return fn;
         } catch (e) {
             console.error('can not compile function from expression');
-            console.error('expression', codeRaw);
-            console.error('compiled code', codeProcessed);
+            console.error({
+                debugContext: {
+                    expression: codeRaw,
+                    compiled: codeProcessed,
+                    exception: e
+                }
+            });
             throw e;
         }
     };
@@ -2265,17 +2393,22 @@ var ExpressionEngine = function () {
             return fn.call(component.modelView, component, RF_API);
         } catch (e) {
             console.error('getting value error');
-            console.error('can not evaluate expression:' + fn.expression);
-            console.error('     at compiled function:' + fn.fnProcessed);
-            console.error('component', component);
+            console.error({
+                debugContext: {
+                    expression: fn.expression,
+                    compiled: fn.fnProcessed,
+                    component: component,
+                    exception: e
+                }
+            });
             throw e;
         }
     };
 
     ExpressionEngine.executeExpression = function executeExpression(code, component) {
-        var fn = cache[code];
+        var fn = getterFnCache[code];
         if (!fn) {
-            fn = cache[code] = ExpressionEngine.getExpressionFn(code);
+            fn = getterFnCache[code] = ExpressionEngine.getExpressionFn(code);
         }
         return ExpressionEngine.runExpressionFn(fn, component);
     };
@@ -2289,7 +2422,7 @@ var ExpressionEngine = function () {
 
 
     ExpressionEngine.setValueToContext = function setValueToContext(component, expression, value) {
-        var fn = cache[expression];
+        var fn = setterFnCache[expression];
         try {
             if (!fn) {
                 var exprTokens = expression.split(/(\..[_$a-zA-Z0-9]+)|(\[.+])/).filter(function (it) {
@@ -2306,15 +2439,19 @@ var ExpressionEngine = function () {
                 expression = exprTokens.join('');
                 expression = Lexer.convertExpression(expression, RF_API_STR + '.getVal(component,\'{expr}\')');
                 expression = '' + expression + lastToken + '=value';
-                cache[expression] = fn = new Function('component', '' + RF_API_STR, 'value', expression);
+                setterFnCache[expression] = fn = new Function('component', '' + RF_API_STR, 'value', expression);
             }
             fn(component, RF_API, value);
         } catch (e) {
             console.error('setting value error');
-            console.error('current component', component);
-            console.error('can not evaluate expression:' + expression);
-            console.error(' at compiled fn:', fn);
-            console.error('desired value to set', value);
+            console.error({
+                debugContext: {
+                    expression: expression,
+                    compiled: fn,
+                    value: value,
+                    exception: e
+                }
+            });
             throw e;
         }
     };
@@ -2326,6 +2463,7 @@ var ExpressionEngine = function () {
 
 
     ExpressionEngine.getObjectFromString = function getObjectFromString(code) {
+        code = code.replace(/[\n\t\r\s]+/gi, '');
         try {
             var fn = new Function('return (' + code + ')');
             return fn();
@@ -2435,6 +2573,7 @@ var Lexer = function () {
             t = void 0,
             lastChar = '';
         expression = expression.trim();
+        expression = expression.replace(/[\n\t\r]+/gi, '');
         if (!isEndWithSemicolon) expression = expression + Token.SYMBOL.SEMICOLON;
 
         var isStringCurrent = void 0;
@@ -2604,6 +2743,7 @@ var RouterStrategyProvider = function () {
 var routeNode = null;
 var lastPageItem = void 0;
 var __showPage = function __showPage(pageName, params) {
+
     if (lastPageItem) {
         lastPageItem.component.setShown(false);
         DomUtils.nodeListToArray(routeNode.childNodes).forEach(function (el) {
@@ -2704,9 +2844,9 @@ var Core = function () {
         if (!domElement) throw 'can not apply bindings: root element with selector ' + domElementSelector + ' not defined';
         var modelView = new ModelView(null, properties);
         var fragment = new ScopedDomFragment(domElement, modelView);
-        fragment.run();
         fragment.setMounted(true);
         fragment.setShown(true);
+        fragment.run();
         modelView.component = fragment;
         return fragment;
     };
@@ -2735,7 +2875,8 @@ var Core = function () {
 }();
 
 MiscUtils.copyMethods(Core, Reactivity);
-Core.version = '0.7.19';
+
+Core.version = '0.8.4';
 
 window.RF = Core;
 window.RF.Router = Router;

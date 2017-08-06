@@ -1,0 +1,36 @@
+<app-collapsible
+        data-state="{
+                title: i18n.gameObjects,
+                crud: {
+                    create:createGameObject
+                }
+            }">
+
+    <div data-transclusion="content">
+
+        <div class="withPaddingLeft">
+
+            <div class="table width100">
+                <div class="row"
+                     data-for="gameObject in editData.gameObjectProtoList.rs"
+                >
+                    <app-game-object-row
+                            data-state="{
+                            crud: {
+                                 edit: editGameObject,
+                                 editScript: editGameObjectScript,
+                                 delete: deleteGameObject
+                            },
+                            gameObject: gameObject || {},
+                            draggable: true
+                        }">
+                    </app-game-object-row>
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</app-collapsible>

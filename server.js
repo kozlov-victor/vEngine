@@ -1,4 +1,4 @@
-const app = require.main.require('./application/base/expressApp').app;
+const app = require.main.require('./node-app/base/expressApp').app;
 
 process.on('uncaughtException',function(e){
     console.log(e);

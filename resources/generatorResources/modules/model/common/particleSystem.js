@@ -5,7 +5,7 @@ const BaseModel = require('baseModel');
 
 const ParticleSystem = BaseModel.extend({
     type:'particleSystem',
-    gameObject:{type:'gameObject'},
+    gameObjectProto:{type:'gameObjectProto'},
     _particles:null,
     numOfParticlesToEmit:null,
     particleAngle:null,
@@ -26,7 +26,7 @@ const ParticleSystem = BaseModel.extend({
             return mathEx.random(obj.from,obj.to);
         };
         for (let i = 0;i<r(this.numOfParticlesToEmit);i++) {
-            let particle = this.gameObject.clone();
+            let particle = this.gameObjectProto.clone();
             let angle = r(this.particleAngle);
             let vel = r(this.particleVelocity);
             particle.vel.x = vel*Math.cos(angle);

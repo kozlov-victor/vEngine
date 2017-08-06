@@ -127,12 +127,6 @@ input[type=range][orient=vertical] {
 .marginAuto {
   margin: auto;
 }
-.vAlign {
-  vertical-align: middle;
-}
-.topAlign {
-  vertical-align: top;
-}
 .block {
   display: block;
 }
@@ -160,7 +154,7 @@ input[type="file"] {
 .bold {
   font-weight: bold;
 }
-[draggable] {
+[draggable="true"] {
   cursor: copy;
 }
 .droppable {
@@ -262,6 +256,12 @@ label,
 }
 .cell {
   display: table-cell;
+  vertical-align: top;
+}
+.vAlign {
+  vertical-align: middle;
+}
+.topAlign {
   vertical-align: top;
 }
 .textOverflow {
@@ -374,6 +374,9 @@ label,
 .split {
   border-radius: 2px;
 }
+[draggable] {
+  cursor: hand;
+}
 .hoverOnProjectRow:hover {
   outline: 1px solid #00cd4d;
 }
@@ -394,4 +397,13 @@ label,
 .currScene {
   outline: 1px solid green;
   text-decoration: underline;
+}
+.hoverOutline:hover,
+.hoverOutline.selected {
+  outline: 1px solid #e0e9ff;
+  position: relative;
+  z-index: 100;
+}
+.hoverOutline.selected {
+  outline: 2px solid #00ff1a;
 }
