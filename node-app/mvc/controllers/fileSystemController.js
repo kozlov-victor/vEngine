@@ -1,5 +1,4 @@
 
-const resourceService = require.main.require('./node-app/mvc/services/resourceService');
 const fs = require.main.require('./node-app/base/fs');
 
 class FileSystemController{
@@ -8,28 +7,34 @@ class FileSystemController{
      * @Request({"type":"post"});
      */
     renameFolder(params){
-        return resourceService.renameFolder(params.oldName,params.newName);
+        fs.renameSync(params.oldName,params.newName);
+        return {success:true};
     }
     /**
      * @Method("deleteFolder");
      * @Request({"type":"post"});
      */
     deleteFolder(params){
-        return resourceService.deleteFolder(params.name);
+        fs.deleteFolderSync(params.name);
+        return {success:true};
     }
     /**
      * @Method("createFile");
      * @Request({"type":"post"});
      */
     createFile(params){
-        return resourceService.createFile(params.path,params.content,params.projectName);
+        if (!params.projectName) throw 'project name not specified';
+        fs.writeFileSync('workspace/'+params.projectName+'/resources/'+params.path,params.content);
+        return {};
     }
     /**
      * @Method("removeFile");
      * @Request({"type":"post"});
      */
     removeFile(params){
-        return resourceService.removeFile(params.path,params.projectName);
+        if (!params.projectName) throw 'project name not specified';
+        fs.deleteFileSync('workspace/'+params.projectName+'/resources/'+params.path);
+        return {success:true};
     }
     /**
      * @Method("uploadFile");
@@ -49,7 +54,8 @@ class FileSystemController{
      * @Request({"type":"post"});
      */
     readFile(params){
-        return resourceService.readFile(params.path,params.projectName);
+        if (!params.projectName) throw 'project name not specified';
+        return fs.readFileSync('workspace/'+params.projectName+'/resources/'+params.path);
     }
 }
 

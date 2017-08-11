@@ -1,11 +1,11 @@
 
 
-import editData from 'providers/editData';
-import utils from 'providers/utils';
-import i18n from 'providers/i18n';
-import restFileSystem from 'providers/rest/fileSystem';
+import editData from 'app/providers/editData';
+import utils from 'app/providers/utils';
+import i18n from 'app/providers/i18n';
+import restFileSystem from 'app/providers/rest/fileSystem';
 
-const Sound = _require('sound');
+import Sound from 'coreEngine/src/model/generic/sound';
 
 export default RF.registerComponent('app-sounds', {
     template: {

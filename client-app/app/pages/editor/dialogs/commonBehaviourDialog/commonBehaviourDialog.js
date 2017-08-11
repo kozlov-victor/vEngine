@@ -1,8 +1,8 @@
 
-import editData from 'providers/editData';
-import restResource from 'providers/rest/resource';
-import i18n from 'providers/i18n';
-import utils from 'providers/utils';
+import editData from 'app/providers/editData';
+import restResource from 'app/providers/rest/resource';
+import i18n from 'app/providers/i18n';
+import utils from 'app/providers/utils';
 
 export default RF.registerComponent('app-common-behaviour-dialog', {
     template: {

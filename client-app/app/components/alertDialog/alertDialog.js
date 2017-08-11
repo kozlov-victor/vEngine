@@ -1,5 +1,5 @@
 
-import i18n from 'providers/i18n';
+import i18n from 'app/providers/i18n';
 
 export default RF.registerComponent('app-alert-dialog', {
     template: {

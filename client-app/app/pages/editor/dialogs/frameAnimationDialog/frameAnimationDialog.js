@@ -1,9 +1,9 @@
 
-import editData from 'providers/editData';
-import restResource from 'providers/rest/resource';
-import i18n from 'providers/i18n';
-import restFileSystem from 'providers/rest/fileSystem';
-import utils from 'providers/utils';
+import editData from 'app/providers/editData';
+import restResource from 'app/providers/rest/resource';
+import i18n from 'app/providers/i18n';
+import restFileSystem from 'app/providers/rest/fileSystem';
+import utils from 'app/providers/utils';
 
 export default RF.registerComponent('app-frame-animation-dialog', {
     template: {

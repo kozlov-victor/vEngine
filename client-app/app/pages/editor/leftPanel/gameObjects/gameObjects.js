@@ -1,15 +1,14 @@
 
 
-import i18n from 'providers/i18n';
-import editData from 'providers/editData';
-import utils from 'providers/utils';
-import 'pages/editor/leftPanel/_gameObjectRow/gameObjectRow';
-import restFileSystem from 'providers/rest/fileSystem';
+import i18n from 'app/providers/i18n';
+import editData from 'app/providers/editData';
+import utils from 'app/providers/utils';
+import 'app/pages/editor/leftPanel/_gameObjectRow/gameObjectRow';
+import restFileSystem from 'app/providers/rest/fileSystem';
 
-const GameObjectProto = _require('gameObjectProto');
-const collections = _require('collections');
+import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto';
 
-const fixGameObject = g=>{
+const fixGameObject = g=>{ // todo remove
     if (!g.commonBehaviour || g.commonBehaviour.splice)
         g.commonBehaviour = new collections.List();
     if (!g.frameAnimations || g.frameAnimations.splice)

@@ -1,13 +1,13 @@
 
 
-import restFileSystem from 'providers/rest/fileSystem';
-import restResource from 'providers/rest/resource';
-import i18n from 'providers/i18n';
-import editData from 'providers/editData';
-import utils from 'providers/utils';
+import restFileSystem from 'app/providers/rest/fileSystem';
+import restResource from 'app/providers/rest/resource';
+import i18n from 'app/providers/i18n';
+import editData from 'app/providers/editData';
+import utils from 'app/providers/utils';
 
-const Layer = _require('layer');
-const Scene = _require('scene');
+import Layer from 'coreEngine/src/model/generic/layer';
+import Scene from 'coreEngine/src/model/generic/scene';
 
 export default RF.registerComponent('app-scenes', {
     template: {

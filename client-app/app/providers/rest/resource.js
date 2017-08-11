@@ -1,8 +1,11 @@
 
-import http from 'providers/rest/httpClient';
-import editData from 'providers/editData';
+import http from 'app/providers/rest/httpClient';
+import editData from 'app/providers/editData';
 
 class Resource{
+    getAll(){
+        return http.post('/resource/getAll',{projectName:editData.projectName});
+    }
     save(model,callback){
         if (model.toJSON) model = model.toJSON();
         return http.post('/resource/save',{projectName:editData.projectName,model:model},callback);

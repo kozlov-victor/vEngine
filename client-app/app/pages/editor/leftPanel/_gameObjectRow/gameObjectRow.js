@@ -1,5 +1,5 @@
 
-import utils from 'providers/utils';
+import utils from 'app/providers/utils';
 
 export default RF.registerComponent('app-game-object-row', {
     template: {

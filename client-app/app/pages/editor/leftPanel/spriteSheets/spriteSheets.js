@@ -1,11 +1,10 @@
 
-import editData from 'providers/editData';
-import utils from 'providers/utils';
-import i18n from 'providers/i18n';
-import restFileSystem from 'providers/rest/fileSystem';
+import editData from 'app/providers/editData';
+import utils from 'app/providers/utils';
+import i18n from 'app/providers/i18n';
+import restFileSystem from 'app/providers/rest/fileSystem';
 
-
-const SpriteSheet = _require('spriteSheet');
+import SpriteSheet from 'coreEngine/src/model/generic/spriteSheet';
 
 export default RF.registerComponent('app-sprite-sheets', {
     template: {

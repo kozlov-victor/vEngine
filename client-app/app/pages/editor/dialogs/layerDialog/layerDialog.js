@@ -1,13 +1,12 @@
 
 
-import editData from 'providers/editData';
-import restResource from 'providers/rest/resource';
-import i18n from 'providers/i18n';
-import restFileSystem from 'providers/rest/fileSystem';
-import utils from 'providers/utils';
+import editData from 'app/providers/editData';
+import restResource from 'app/providers/rest/resource';
+import i18n from 'app/providers/i18n';
+import restFileSystem from 'app/providers/rest/fileSystem';
+import utils from 'app/providers/utils';
 
-let Layer = _require('layer');
-let collections = _require('collections');
+import Layer from  'coreEngine/src/model/generic/layer';
 
 export default RF.registerComponent('app-layer-dialog', {
     template: {

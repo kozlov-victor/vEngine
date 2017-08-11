@@ -1,22 +1,22 @@
 
 
-import 'pages/editor/leftPanel/gameProps/gameProps';
-import 'pages/editor/leftPanel/particleSystems/particleSystems';
-import 'pages/editor/leftPanel/sounds/sounds';
-import 'pages/editor/leftPanel/fonts/fonts';
-import 'pages/editor/leftPanel/spriteSheets/spriteSheets';
-import 'pages/editor/leftPanel/gameObjects/gameObjects';
-import 'pages/editor/leftPanel/scenes/scenes';
-import 'pages/editor/leftPanel/userInterface/userInterface';
-import 'pages/editor/topPanel/topPanel';
-import 'pages/editor/centralPanel/scriptEditor/scriptEditor';
-import 'pages/editor/centralPanel/scene/scene';
-import 'pages/editor/rightPanel/scene/scene';
+import 'app/pages/editor/leftPanel/gameProps/gameProps';
+import 'app/pages/editor/leftPanel/particleSystems/particleSystems';
+import 'app/pages/editor/leftPanel/sounds/sounds';
+import 'app/pages/editor/leftPanel/fonts/fonts';
+import 'app/pages/editor/leftPanel/spriteSheets/spriteSheets';
+import 'app/pages/editor/leftPanel/gameObjects/gameObjects';
+import 'app/pages/editor/leftPanel/scenes/scenes';
+import 'app/pages/editor/leftPanel/userInterface/userInterface';
+import 'app/pages/editor/topPanel/topPanel';
+import 'app/pages/editor/centralPanel/scriptEditor/scriptEditor';
+import 'app/pages/editor/centralPanel/scene/scene';
+import 'app/pages/editor/rightPanel/scene/scene';
 
-import 'pages/editor/dialogs/dialogs';
+import 'app/pages/editor/dialogs/dialogs';
 
-import i18n from 'providers/i18n';
-import editData from 'providers/editData';
+import i18n from 'app/providers/i18n';
+import editData from 'app/providers/editData';
 
 let onMount = function(){
     let layoutSizes = {};

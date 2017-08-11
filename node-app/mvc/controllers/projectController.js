@@ -10,8 +10,8 @@ class ProjectController {
      * @Request({"type":"get"});
      */
     getAll(params){
-        return fs.getDirListSync('workspace/').map(function(item){
-            return {name:item}
+        return fs.getDirListSync('./workspace').map(it=>{
+            return {name:it}
         });
     }
     /**

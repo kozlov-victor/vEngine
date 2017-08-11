@@ -1,11 +1,11 @@
 
-import http from 'providers/rest/httpClient';
-import editData from 'providers/editData';
+import http from 'app/providers/rest/httpClient';
+import editData from 'app/providers/editData';
 
-const bundle = _require('bundle');
-const collections = _require('collections');
-const TextField = _require('textField');
-const CommonBehaviour = _require('commonBehaviour');
+//const bundle = _require('bundle');
+//const collections = _require('collections');
+//const TextField = _require('textField');
+//const CommonBehaviour = _require('commonBehaviour');
 
 const _loadResources = function(projectName){
     http.post('/resource/getAll',{projectName:projectName},function(response){

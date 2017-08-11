@@ -1,15 +1,18 @@
 
-import 'components/modal/modal';
-import 'components/collapsible/collapsible';
-import 'components/alertDialog/alertDialog';
-import 'components/confirmDialog/confirmDialog';
-import 'components/inputFile/inputFile';
-import 'components/colorPicker/colorPicker';
-import 'components/anglePicker/anglePicker';
-import 'providers/userDefinedFns';
+import 'app/vendor/split'
+import 'app/vendor/reactiveForms'
 
-import explorer from 'pages/explorer/explorer';
-import editor from 'pages/editor/editor';
+import 'app/components/modal/modal';
+import 'app/components/collapsible/collapsible';
+import 'app/components/alertDialog/alertDialog';
+import 'app/components/confirmDialog/confirmDialog';
+import 'app/components/inputFile/inputFile';
+import 'app/components/colorPicker/colorPicker';
+import 'app/components/anglePicker/anglePicker';
+import 'app/providers/userDefinedFns';
+
+import explorer from 'app/pages/explorer/explorer';
+import editor from 'app/pages/editor/editor';
 
 RF.Router.setup({
     explorer,

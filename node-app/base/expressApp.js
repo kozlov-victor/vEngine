@@ -26,9 +26,8 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-app.use(express.static('resources/public'));
+app.use(express.static('assets'));
 app.use(express.static('workspace'));
-app.use(express.static('resources/generatorResources/shared'));
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true

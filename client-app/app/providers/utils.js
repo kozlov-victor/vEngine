@@ -1,10 +1,12 @@
 
-const mathEx = _require('mathEx');
+import mathEx from 'coreEngine/src/engine/mathEx';
 
-import editData from 'providers/editData';
-import restResource from 'providers/rest/resource';
-import restFileSystem from 'providers/rest/fileSystem';
-import i18n from 'providers/i18n';
+import editData from 'app/providers/editData';
+import restResource from 'app/providers/rest/resource';
+import restFileSystem from 'app/providers/rest/fileSystem';
+import i18n from 'app/providers/i18n';
+
+import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
 
 class Utils {
     getGameObjectCss(gameObj = {}){
@@ -103,7 +105,7 @@ class Utils {
         let res = {};
         let objs = ['gameObject'];
         objs.forEach(function(go){
-            let GObjClass = _require(go);
+            let GObjClass = GameObjectProto;
             let goObj = new GObjClass();
             for (let key in goObj) {
                 if (key.indexOf('_')==0) continue;
@@ -169,7 +171,6 @@ class Utils {
         let self = this;
         editData.scriptEditorUrl = resourceUrl;
         let path = 'script/'+resourceUrl;
-        console.log(path);
         restFileSystem.readFile(path,function(file){
             self._waitForFrameAndDo(file,path);
         });

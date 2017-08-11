@@ -1,13 +1,13 @@
-import editData from 'providers/editData';
-import i18n from 'providers/i18n';
+import editData from 'app/providers/editData';
+import i18n from 'app/providers/i18n';
 
-import 'pages/editor/dialogs/soundDialog/soundDialog';
-import 'pages/editor/dialogs/fontDialog/fontDialog';
-import 'pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog';
-import 'pages/editor/dialogs/gameObjectDialog/gameObjectDialog';
-import 'pages/editor/dialogs/particleSystemDialog/particleSystemDialog';
-import 'pages/editor/dialogs/sceneDialog/sceneDialog';
-import 'pages/editor/dialogs/layerDialog/layerDialog';
+import 'app/pages/editor/dialogs/soundDialog/soundDialog';
+import 'app/pages/editor/dialogs/fontDialog/fontDialog';
+import 'app/pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog';
+import 'app/pages/editor/dialogs/gameObjectDialog/gameObjectDialog';
+import 'app/pages/editor/dialogs/particleSystemDialog/particleSystemDialog';
+import 'app/pages/editor/dialogs/sceneDialog/sceneDialog';
+import 'app/pages/editor/dialogs/layerDialog/layerDialog';
 
 export default RF.registerComponent('app-dialogs', {
     template: {

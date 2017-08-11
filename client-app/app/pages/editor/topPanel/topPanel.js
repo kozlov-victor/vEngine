@@ -1,11 +1,11 @@
 
-let w;
-import http from 'providers/rest/httpClient';
-import editData from 'providers/editData';
-import i18n from 'providers/i18n';
+import http from 'app/providers/rest/httpClient';
+import editData from 'app/providers/editData';
+import i18n from 'app/providers/i18n';
 
 //opts: debug minify engineOnly embedResources embedScript
 
+let w;
 export default RF.registerComponent('app-top-panel', {
     template: {
         value: require('./topPanel.html'),
@@ -19,7 +19,9 @@ export default RF.registerComponent('app-top-panel', {
             {
                 debug: 1,
                 r: Math.random(),
-                projectName: editData.projectName
+                projectName: editData.projectName,
+                //embedResources: 1,
+                //embedScript: 1
             },
             ()=>{
                 if (!w || w.closed) {

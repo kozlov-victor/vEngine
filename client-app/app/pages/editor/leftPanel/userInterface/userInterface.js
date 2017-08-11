@@ -1,7 +1,6 @@
 
-import restResource from 'providers/rest/resource';
-import i18n from 'providers/i18n';
-import editData from 'providers/editData';
+import i18n from 'app/providers/i18n';
+import editData from 'app/providers/editData';
 
 export default RF.registerComponent('app-user-interface', {
     template: {

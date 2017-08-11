@@ -1,10 +1,10 @@
 
-import editData from 'providers/editData';
-import utils from 'providers/utils';
-import i18n from 'providers/i18n';
-import  'pages/editor/dialogs/particleSystemDialog/particleSystemDialog';
+import editData from 'app/providers/editData';
+import utils from 'app/providers/utils';
+import i18n from 'app/providers/i18n';
+import  'app/pages/editor/dialogs/particleSystemDialog/particleSystemDialog';
 
-const ParticleSystem = _require('particleSystem');
+import ParticleSystem from 'coreEngine/src/model/generic/particleSystem';
 
 
 export default RF.registerComponent('app-particle-systems', {

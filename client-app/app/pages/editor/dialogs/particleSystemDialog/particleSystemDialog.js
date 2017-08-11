@@ -1,10 +1,10 @@
 
-import editData from 'providers/editData';
-import restResource from 'providers/rest/resource';
-import utils from 'providers/utils';
-import i18n from 'providers/i18n';
+import editData from 'app/providers/editData';
+import restResource from 'app/providers/rest/resource';
+import utils from 'app/providers/utils';
+import i18n from 'app/providers/i18n';
 
-import 'pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog';
+import 'app/pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog';
 
 export default RF.registerComponent('app-particle-system-dialog', {
     template: {

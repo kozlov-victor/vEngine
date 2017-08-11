@@ -1,10 +1,10 @@
 
-import restFileSystem from 'providers/rest/fileSystem';
-import i18n from 'providers/i18n';
-import editData from 'providers/editData';
-import utils from 'providers/utils';
+import restFileSystem from 'app/providers/rest/fileSystem';
+import i18n from 'app/providers/i18n';
+import editData from 'app/providers/editData';
+import utils from 'app/providers/utils';
 
-const Font = _require('font');
+import Font from 'coreEngine/src/model/generic/font';
 
 export default RF.registerComponent('app-fonts', {
     template: {

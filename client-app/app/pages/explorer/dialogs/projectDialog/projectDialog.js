@@ -1,9 +1,9 @@
 
 
-import editData from 'providers/editData';
-import restProject from 'providers/rest/project';
-import fileSystem from 'providers/rest/fileSystem';
-import i18n from 'providers/i18n';
+import editData from 'app/providers/editData';
+import restProject from 'app/providers/rest/project';
+import fileSystem from 'app/providers/rest/fileSystem';
+import i18n from 'app/providers/i18n';
 
 export default RF.registerComponent('app-project-dialog', {
     template: {

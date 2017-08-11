@@ -1,11 +1,11 @@
 
 
-import editData from 'providers/editData';
-import restFileSystem from 'providers/rest/fileSystem';
-import restResource from 'providers/rest/resource';
-import i18n from 'providers/i18n';
-import chrome from 'providers/chrome';
-import utils from 'providers/utils';
+import editData from 'app/providers/editData';
+import restFileSystem from 'app/providers/rest/fileSystem';
+import restResource from 'app/providers/rest/resource';
+import i18n from 'app/providers/i18n';
+import chrome from 'app/providers/chrome';
+import utils from 'app/providers/utils';
 
 const SYMBOL_PADDING = 4;
 const fontSample = 'Test me! Text here';

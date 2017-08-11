@@ -1,6 +1,6 @@
 
-import http from 'providers/rest/httpClient';
-import editData from 'providers/editData';
+import http from 'app/providers/rest/httpClient';
+import editData from 'app/providers/editData';
 
 class FileSystem {
     createFile(path,content,callback){

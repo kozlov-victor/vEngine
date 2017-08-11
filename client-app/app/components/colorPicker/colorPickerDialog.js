@@ -1,6 +1,6 @@
 
-import utils from 'providers/utils';
-import i18n from 'providers/i18n';
+import utils from 'app/providers/utils';
+import i18n from 'app/providers/i18n';
 
 let defaultColor = {r:0,g:0,b:0};
 let colorEnums = [
