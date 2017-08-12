@@ -15,6 +15,8 @@ import 'app/pages/editor/rightPanel/scene/scene';
 
 import 'app/pages/editor/dialogs/dialogs';
 
+import Split from 'app/vendor/split';
+
 import i18n from 'app/providers/i18n';
 import editData from 'app/providers/editData';
 
@@ -27,7 +29,6 @@ let onMount = function(){
 
     layoutSizes.c =   94;
     layoutSizes.d =   (100 - layoutSizes.c);
-
 
     Split(['#a', '#b', '#e'], {
         sizes: [layoutSizes.a,layoutSizes.b,layoutSizes.e],

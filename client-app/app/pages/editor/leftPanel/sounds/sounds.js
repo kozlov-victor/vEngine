@@ -6,6 +6,8 @@ import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 
 import Sound from 'coreEngine/src/model/generic/sound';
+import repository from 'coreEngine/src/engine/repository';
+
 
 export default RF.registerComponent('app-sounds', {
     template: {
@@ -13,9 +15,10 @@ export default RF.registerComponent('app-sounds', {
         value: require('./sounds.html')
     },
     editData,
+    repository,
     i18n: i18n.getAll(),
     createSound: function(){
-        this.editData.currSoundInEdit = new Sound(new Sound().toJSON());
+        this.editData.currSoundInEdit = new Sound();
         RF.getComponentById('soundDialog').open();
     },
     editSound: function(sound){

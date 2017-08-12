@@ -7,6 +7,9 @@ import i18n from 'app/providers/i18n';
 import chrome from 'app/providers/chrome';
 import utils from 'app/providers/utils';
 
+import repository from 'coreEngine/src/engine/repository';
+
+
 const SYMBOL_PADDING = 4;
 const fontSample = 'Test me! Text here';
 
@@ -81,45 +84,36 @@ export default RF.registerComponent('app-font-dialog', {
     fontSample,
     systemFontList: [],
 
-    open: function(){
+    open(){
         if (!this.systemFontList.length) {
-            let self = this;
-            chrome.requestToApi({method:'getFontList'},function(list){
-                self.systemFontList = list;
+            chrome.requestToApi({method:'getFontList'},list=>{
+                this.systemFontList = list;
                 RF.digest();
             });
         }
         RF.getComponentById('fontModal').open();
     },
-    createOrEditFont: function(model){
-        let self = this;
+
+    async createOrEditFont(model){
+
         let strFont = model.fontSize +'px'+' '+model.fontFamily;
         model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
         let file = utils.dataURItoBlob(getFontImage(model.fontContext,strFont,utils.rgbToHex(model.fontColor)));
 
-        Promise.resolve().
-        then(()=>{
-            return restFileSystem.
-            uploadFile(
-                file,
-                {
-                    type:model.type,
-                    fileName:`${model.name}.png`
-                }
-            );
-        }).
-        then(()=>{
-            return restResource.save(model);
-        }).
-        then((resp)=>{
-            if (resp.created) {
-                model.id = resp.id;
-                editData[`${model.type}List`].add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
+        await restFileSystem.uploadFile(
+            file,
+            {
+                type:model.type,
+                fileName:`${model.name}.png`
             }
-            RF.getComponentById('fontModal').close();
-            RF.digest();
-        });
+        );
+        let resp = await restResource.save(model);
+        if (resp.created) {
+            model.id = resp.id;
+            repository.addObject(model);
+        } else if (resp.updated) {
+            model.updateCloner();
+        }
+        RF.getComponentById('fontModal').close();
     }
 });

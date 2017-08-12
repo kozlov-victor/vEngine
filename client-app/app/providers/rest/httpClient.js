@@ -1,6 +1,7 @@
+
+
 let noop = function(){};
 
-let PromiseProvider = window.PromiseLight || window.Promise;
 
 let objectToQuery = function(o) {
     if (!o) return '';
@@ -21,10 +22,10 @@ let request = function(data) {
     if (data.data && data.method=='get') data.url+='?'+objectToQuery(data.data);
     let xhr=new XMLHttpRequest();
     let resolveFn = noop, rejectFn = noop;
-    let promise = new PromiseProvider(function(resolve,reject){
-            resolveFn = resolve;
-            rejectFn = reject;
-        });
+    let promise = new Promise((resolve,reject)=>{
+        resolveFn = resolve;
+        rejectFn = reject;
+    });
     xhr.onreadystatechange=function() {
         if (xhr.readyState==4) {
             if ( xhr.status==200 || xhr.status==0) {

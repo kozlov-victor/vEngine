@@ -3,6 +3,9 @@ import editData from 'app/providers/editData';
 import http from 'app/providers/rest/httpClient';
 import resourceRest from 'app/providers/rest/resource';
 
+import repository from 'coreEngine/src/engine/repository';
+import CommonBehaviour from 'coreEngine/src/model/generic/commonBehaviour';
+
 class ResourceHelper {
 
      async loadProject(projectName){
@@ -12,34 +15,12 @@ class ResourceHelper {
         sessionStorage.projectName = editData.projectName;
 
         let allData =  await resourceRest.getAll(projectName);
-        console.log(allData);
-
-        // Promise.
-        // resolve().
-        // then(function(){
-        //     return _loadResources(projectName);
-        // }).
-        // then(function(){
-        //     if (!bundle.sceneList.isEmpty()) editData.currSceneInEdit = bundle.sceneList.get(0);
-        //     if (editData.currSceneInEdit._layers) {
-        //         if (editData.currSceneInEdit._layers.size()) {
-        //             editData.currLayerInEdit = editData.currSceneInEdit._layers.get(0);
-        //         }
-        //     }
-        //     RF.Router.navigateTo('editor');
-        // });
-    }
-
-
-    // todo remove
-    saveGameProps(gameProps){
-        http.post(
-            '/gameProps/save',
-            {
-                model:gameProps,
-                projectName: editData.projectName
-            }
-        )
+        editData.commonBehaviourProtos = allData.commonBehaviourProtos.map(it=>{
+           return new CommonBehaviour().fromJSON(it);
+        });
+        editData.gameProps = allData.gameProps;
+        repository.setDescriptions(allData.repository);
+        RF.Router.navigateTo('editor');
     }
 }
 

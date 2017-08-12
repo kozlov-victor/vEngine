@@ -7,6 +7,7 @@ import restFileSystem from 'app/providers/rest/fileSystem';
 import utils from 'app/providers/utils';
 
 import Scene from  'coreEngine/src/model/generic/scene';
+import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-scene-dialog', {
     template: {

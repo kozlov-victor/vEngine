@@ -9,6 +9,8 @@ import 'app/pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog';
 import 'app/pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog';
 
 import FrameAnimation from  'coreEngine/src/model/generic/frameAnimation';
+import repository from 'coreEngine/src/engine/repository';
+
 
 export default RF.registerComponent('app-game-object-dialog', {
     template: {
@@ -17,38 +19,30 @@ export default RF.registerComponent('app-game-object-dialog', {
     },
     form:{valid: ()=>{return true;}},
     editData,
+    repository,
     i18n: i18n.getAll(),
     utils,
     selectedBehaviourId: '',
 
-    // open: function(){ // not used at this dialog
-    // },
-    createOrEditGameObject: function(g){
-        restResource.
-        save(g).
-        then(resp=>{
-            if (resp.created) {
-                g.id = resp.id;
-                editData.gameObjectProtoList.add(g);
-                return resp;
-            } else if (resp.updated) {
-                g.updateCloner();
-            }
-        }).
-        then((resp)=>{
-            if (resp && resp.created) return restFileSystem.createFile(
-                `script/gameObjectProto/${g.name}.js`,
-                document.getElementById('defaultCodeScript').textContent);
-        }).
-        then(()=>{
-            RF.getComponentById('gameObjectModal').close();
-            RF.digest();
-        }).
-        catch(window.catchPromise);
+
+    async createOrEditGameObject(g){
+        let resp = await restResource.save(g);
+        if (resp.created) {
+            g.id = resp.id;
+            repository.addObject(g);
+            await restFileSystem.createFile(
+                `script/${g.name}.js`,
+                document.getElementById('defaultCodeScript').textContent
+            );
+        }
+        else {
+            g.updateCloner();
+        }
+        RF.getComponentById('gameObjectModal').close();
     },
-    refreshGameObjectFramePreview: function(gameObjectProto,ind) {
+
+    refreshGameObjectFramePreview(gameObjectProto,ind) {
         let spriteSheet = gameObjectProto.spriteSheet;
-        console.log(gameObjectProto,spriteSheet);
         if (!spriteSheet) return;
         let maxNumOfFrame = spriteSheet.numOfFramesH*spriteSheet.numOfFramesV-1;
         if (this.editData.currGameObjectInEdit.currFrameIndex>=maxNumOfFrame) {
@@ -57,67 +51,55 @@ export default RF.registerComponent('app-game-object-dialog', {
         }
         gameObjectProto.setFrameIndex(ind);
     },
-    createFrameAnimation: function(){
-        this.editData.currFrameAnimationInEdit = new FrameAnimation(new FrameAnimation().toJSON());
+
+    createFrameAnimation(){
+        this.editData.currFrameAnimationInEdit = new FrameAnimation();
         RF.getComponentById('frameAnimationDialog').open();
     },
-    editFrameAnimation: function(fa){
+
+    editFrameAnimation(fa){
         this.editData.currFrameAnimationInEdit = fa.clone();
         RF.getComponentById('frameAnimationDialog').open();
     },
-    deleteFrameAnimation: function(fa){
-        utils.deleteModel(fa,()=>{
-            this.editData.currGameObjectInEdit.frameAnimations.remove({id:fa.id});
-            this.editData.currGameObjectInEdit.updateCloner();
-            restResource.save(this.editData.currGameObjectInEdit);
-        });
+
+    async deleteFrameAnimation(fa){
+        await utils.deleteModel(fa);
+        this.editData.currGameObjectInEdit.frameAnimations.remove(it=>it.id==fa.id);
+        this.editData.currGameObjectInEdit.updateCloner();
+        restResource.save(this.editData.currGameObjectInEdit);
     },
 
-    onSpriteSheetSelected: function(sprId){
+    onSpriteSheetSelected(spriteSheet){
         let gameObjectProto = editData.currGameObjectInEdit;
-        let spriteSheet = editData.spriteSheetList.find({id: sprId});
-        console.log('found sprite',sprId,spriteSheet);
-        if (!spriteSheet) return;
-        spriteSheet = spriteSheet.clone();
-        //if (!gameObject.name) gameObject.name = spriteSheet.name;
-        //spriteSheet.calcFrameSize();
         gameObjectProto.width = ~~(spriteSheet.width / spriteSheet.numOfFramesH);
         gameObjectProto.height = ~~(spriteSheet.height / spriteSheet.numOfFramesV);
-        gameObjectProto.spriteSheet = spriteSheet;
+        gameObjectProto.name = spriteSheet.name;
     },
 
-    createCommonBehaviour: function(selectedBehaviourName){
-        if (editData.currGameObjectInEdit.commonBehaviour.find({name:selectedBehaviourName})) {
+    createCommonBehaviour(selectedBehaviour){
+        if (editData.currGameObjectInEdit.commonBehaviour.find(it=>it.name==selectedBehaviour.name)) {
             alertEx(i18n.get('objectAlreadyAdded'));
             return;
         }
-        this.editData.currCommonBehaviourInEdit =
-            this.editData.commonBehaviourProto.find({name:selectedBehaviourName}).clone();
+        selectedBehaviour.__originalId = selectedBehaviour.id;
+        selectedBehaviour.id = null;
+        this.editData.currCommonBehaviourInEdit = selectedBehaviour.clone();
         RF.getComponentById('commonBehaviourModal').open();
     },
-    editCommonBehaviour: function(cb){
+
+    editCommonBehaviour(cb){
         this.editData.currCommonBehaviourInEdit = cb.clone();
         RF.getComponentById('commonBehaviourModal').open();
     },
-    deleteCommonBehaviour: function (cb) {
-        let self = this;
-        window.confirmEx(
-            this.i18n.confirmQuestion(cb),
-            function () {
-                Promise.
-                resolve().
-                then(()=>{
-                    self.editData.commonBehaviourList.remove({id:cb.id});
-                    return restResource.remove(cb);
-                }).
-                then(()=>{
-                    self.editData.currGameObjectInEdit.fixateState();
-                    self.editData.currGameObjectInEdit.commonBehaviour.remove({id:cb.id});
-                    self.editData.currGameObjectInEdit.updateCloner();
-                    return restResource.save(self.editData.currGameObjectInEdit.toJSON_Patched());
-                }).
-                catch(window.catchPromise)
-            }
-        )
+
+    async deleteCommonBehaviour(cb){
+        let model = editData.currGameObjectInEdit;
+        model.commonBehaviour.remove(it=>it.id==cb.id);
+        await restResource.save(model);
+        model.updateCloner();
+    },
+
+    isCbItemDisabled(cb){
+        return !!editData.currGameObjectInEdit.commonBehaviour.find(it=>it.name==cb.name)
     }
 });

@@ -9,7 +9,7 @@ let colorEnums = [
     {left:'blue',right:'yellow',key:'b'}
 ];
 
-let cmp = RF.registerComponent('app-color-picker-dialog', {
+export default RF.registerComponent('app-color-picker-dialog', {
     template: {
         type: 'string',
         value: require('./colorPickerDialog.html')
@@ -59,5 +59,3 @@ let cmp = RF.registerComponent('app-color-picker-dialog', {
 // let el = document.createElement('app-color-picker-dialog');
 // el.id = 'colorPickerDialog';
 // document.body.appendChild(el);
-
-export default cmp;

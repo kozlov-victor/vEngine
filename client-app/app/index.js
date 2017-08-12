@@ -1,4 +1,8 @@
 
+import 'app/providers/rest/promise'
+
+import 'coreEngine/src/engine/polyfills'
+
 import 'app/vendor/split'
 import 'app/vendor/reactiveForms'
 

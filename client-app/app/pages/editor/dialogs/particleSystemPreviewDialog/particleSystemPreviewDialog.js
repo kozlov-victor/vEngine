@@ -3,6 +3,8 @@ import editData from 'app/providers/editData';
 import i18n from 'app/providers/i18n';
 import utils from 'app/providers/utils';
 
+import repository from 'coreEngine/src/engine/repository';
+
 let tid;
 
 export default RF.registerComponent('app-particle-system-preview-dialog', {

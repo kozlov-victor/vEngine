@@ -4,14 +4,15 @@ export default class SpriteSheet extends BaseModel {
 
     constructor() {
         super();
-        this.width = null;
-        this.height = null;
-        this.numOfFramesH = null;
-        this.numOfFramesV = null;
-        this._frameWidth = null;
-        this._frameHeight = null;
-        this._numOfFrames = null;
+        this.width = 0;
+        this.height = 0;
+        this.numOfFramesH = 1;
+        this.numOfFramesV = 1;
+        this._frameWidth = 0;
+        this._frameHeight = 0;
+        this._numOfFrames = 0;
         this._textureInfo = null;
+        this.resourcePath = '';
     }
 
     getFramePosX(frameIndex) {

@@ -42,7 +42,7 @@ class FileSystemController{
      */
     uploadFile(params){
         fs.writeFileSync(
-            `workspace/${params.projectName}/resources/${params.type}/${params.fileName}`,
+            `workspace/${params.projectName}/resources/${params.fileName}`,
             params.file,
             true
         );

@@ -3,6 +3,8 @@ import http from 'app/providers/rest/httpClient';
 import editData from 'app/providers/editData';
 import i18n from 'app/providers/i18n';
 
+import repository from 'coreEngine/src/engine/repository';
+
 //opts: debug minify engineOnly embedResources embedScript
 
 let w;

@@ -19,9 +19,9 @@ class ResourceController {
      */
     getAll(params){
         let result = {};
-        result.repository = fs.readFileSync(`workspace/${params.projectName}/repository.json`);
+        result.repository = JSON.parse(fs.readFileSync(`workspace/${params.projectName}/repository.json`));
         result.gameProps = JSON.parse(fs.readFileSync(`workspace/${params.projectName}/gameProps.json`));
-        result.commonBehaviourProto = resourceService.getCommonBehaviourAttrs(params.projectName);
+        result.commonBehaviourProtos = resourceService.getCommonBehaviourAttrs(params.projectName);
         return result;
     }
 
@@ -31,17 +31,18 @@ class ResourceController {
      */
     save(params) {
         let repository = dataSourceHelper.loadModel(`workspace/${params.projectName}/repository.json`);
-        if (!repository[params.type]) repository[params.type] = [];
+        let model = params.model;
+        if (!repository[model.type]) repository[model.type] = [];
         let createdId;
-        if (!params.id) {
+        if (!model.id) {
             createdId = dataSourceHelper.uuid();
-            params.id = createdId;
-            repository[params.type].push(params);
+            model.id = createdId;
+            repository[model.type].push(model);
         } else {
-            let objectToUpdateIndex = repository[params.type].findIndex(it => it.id == params.id);
+            let objectToUpdateIndex = repository[model.type].findIndex(it => it.id == model.id);
             if (objectToUpdateIndex == -1)
-                throw `can not find object with type ${params.type} and id ${params.id}`;
-            repository[params.type][objectToUpdateIndex] = params;
+                throw `can not find object with type ${model.type} and id ${model.id}`;
+            repository[model.type][objectToUpdateIndex] = model;
         }
         dataSourceHelper.saveModel(`workspace/${params.projectName}/repository.json`,repository);
         if (createdId) return {created: true, id: createdId};
@@ -68,10 +69,11 @@ class ResourceController {
      */
     remove(params){
         let repository = dataSourceHelper.loadModel(`workspace/${params.projectName}/repository.json`);
-        let objectToRemoveIndex = repository[params.type].findIndex(it => it.id == params.id);
+        let model = params.model;
+        let objectToRemoveIndex = repository[model.type].findIndex(it => it.id == model.id);
         if (objectToRemoveIndex == -1)
-            throw `can not find object with type ${params.type} and id ${params.id}`;
-        repository[params.type].splice(objectToRemoveIndex,1);
+            throw `can not find object with type ${model.type} and id ${model.id}`;
+        repository[model.type].splice(objectToRemoveIndex,1);
         dataSourceHelper.saveModel(`workspace/${params.projectName}/repository.json`,repository);
     }
 

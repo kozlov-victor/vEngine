@@ -12,6 +12,7 @@ export default RF.registerComponent('app-modal', {
     },
     close: function(){
         this.opened = false;
+        setTimeout(RF.digest,1); //todo
     },
     open: function(){
         this.opened = true;

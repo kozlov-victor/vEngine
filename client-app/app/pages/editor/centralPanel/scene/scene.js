@@ -5,6 +5,7 @@ import i18n from 'app/providers/i18n';
 import utils from 'app/providers/utils';
 
 import GameObject  from  'coreEngine/src/model/generic/gameObject';
+import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-curr-scene', {
     template: {

@@ -7,12 +7,14 @@ import restFileSystem from 'app/providers/rest/fileSystem';
 import i18n from 'app/providers/i18n';
 
 import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
+import repository from 'coreEngine/src/engine/repository';
 
 class Utils {
-    getGameObjectCss(gameObj = {}){
+    getGameObjectCss(gameObj){
+        if (!gameObj) gameObj = {};
         gameObj.scale = gameObj.scale || {};
         gameObj.spriteSheet = gameObj.spriteSheet || {};
-        return  {
+        return {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
             backgroundImage:       gameObj.spriteSheet &&
@@ -24,9 +26,11 @@ class Utils {
             opacity:               gameObj.alpha,
             transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${mathEx.radToDeg(gameObj.angle)}deg)`
         };
+
     }
 
-    calcZoom(gameObject = {}) {
+    calcZoom(gameObject) {
+        if (!gameObject) gameObject = {};
         if (!gameObject.height) gameObject.height = 30;
         return gameObject.height>30?
             30/gameObject.height:
@@ -158,13 +162,17 @@ class Utils {
     }
 
     deleteModel(model,callback){
-        window.confirmEx(
-            i18n.getAll().confirmQuestion(model),
-            ()=>{
-                editData[`${model.type}List`].remove({id:model.id});
-                restResource.remove(model,callback);
-            }
-        )
+        return new Promise(resolve=>{
+            window.confirmEx(
+                i18n.getAll().confirmQuestion(model),
+                ()=>{
+                    restResource.remove(model,callback);
+                    repository.removeObject(model);
+                    resolve();
+                }
+            )
+        });
+
     }
 
     openEditor(resourceUrl) {

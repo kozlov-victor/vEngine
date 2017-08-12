@@ -13,21 +13,30 @@ export default class GameObjectProto extends BaseModel {
     constructor(){
         super();
 
-        this.spriteSheet = {type:'spriteSheet'};
+        this.width = 0;
+        this.height = 0;
+        this.spriteSheet = null;
+        this.scale = {x:1,y:1};
+        this.vel = {x:0,y:0};
+        this.pos = {x:0,y:0};
+        this.angle = 0;
+        this.alpha = 1;
+        this.rigid = false;
         this._behaviour = null;
-        this.commonBehaviour = [{type:'commonBehaviour'}];
+        this.commonBehaviour = [];
         this.currFrameIndex = 0;
         this._sprPosX = 0;
         this._sprPosY = 0;
-        this.frameAnimations =  [{type:'frameAnimation'}];
+        this.frameAnimations =  [];
         this._currFrameAnimation = null;
         this._timeCreated = null;
         this.tileOffset =  {x:0,y:0};
         this.tileRepeat = false;
+        this.groupName = '';
     }
 
     getFrAnimation(animationName){
-        return this.frameAnimations.find({name: animationName});
+        //return this.frameAnimations.find({name: animationName});
     }
     setFrameIndex(index){
         this.currFrameIndex = index;
@@ -40,12 +49,11 @@ export default class GameObjectProto extends BaseModel {
         this.height = spriteSheet._frameHeight;
     }
     update(time,delta) {
-        let self = this;
-        self._super(time,delta);
-        self._currFrameAnimation && this._currFrameAnimation.update(time);
-        self.__updateIndividualBehaviour__(delta);
-        self.__updateCommonBehaviour__();
-        self._render();
+        this._super(time,delta);
+        this._currFrameAnimation && this._currFrameAnimation.update(time);
+        this.__updateIndividualBehaviour__(delta);
+        this.__updateCommonBehaviour__();
+        this._render();
     }
     stopFrAnimations(){
         this._currFrameAnimation && this._currFrameAnimation.stop();

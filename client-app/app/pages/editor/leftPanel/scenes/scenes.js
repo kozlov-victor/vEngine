@@ -8,6 +8,7 @@ import utils from 'app/providers/utils';
 
 import Layer from 'coreEngine/src/model/generic/layer';
 import Scene from 'coreEngine/src/model/generic/scene';
+import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-scenes', {
     template: {

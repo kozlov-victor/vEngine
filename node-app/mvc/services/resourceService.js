@@ -8,7 +8,7 @@ let dataSourceHelper = require.main.require('./node-app/mvc/services/dataSourceH
 module.exports.getCommonBehaviourAttrs = function(projectName){
     if (!projectName) throw 'project name not specified';
     let attrs = [];
-    fs.readDirSync('client-app/coreEngine/src/commonBehaviour','utf-8').forEach(function(itm){
+    fs.readDirSync('client-app/coreEngine/src/commonBehaviour','utf-8').forEach(function(itm,index){
         let attr = {};
         attr.name = itm.name.replace('.js','');
         let module = {};
@@ -22,6 +22,8 @@ module.exports.getCommonBehaviourAttrs = function(projectName){
         fn(module,exports);
         attr.description = exports.description;
         attr.parameters = exports.parameters;
+        attr.type = 'CommonBehaviour';
+        attr.id = attr.name;
         attrs.push(attr);
     });
     return attrs;

@@ -5,6 +5,7 @@ import editData from 'app/providers/editData';
 import utils from 'app/providers/utils';
 
 import Font from 'coreEngine/src/model/generic/font';
+import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-fonts', {
     template: {
@@ -12,19 +13,19 @@ export default RF.registerComponent('app-fonts', {
         value: require('./fonts.html')
     },
     editData,
+    repository,
     i18n: i18n.getAll(),
 
-    createFont: function(){
-        this.editData.currFontInEdit = new Font(new Font().toJSON());
+    createFont(){
+        editData.currFontInEdit = new Font();
         RF.getComponentById('fontDialog').open();
     },
-    editFont: function(fnt){
-        this.editData.currFontInEdit = fnt.clone();
+    editFont(fnt){
+        editData.currFontInEdit = fnt.clone();
         RF.getComponentById('fontDialog').open();
     },
-    deleteFont: function(model){
-        utils.deleteModel(model,()=>{
-            restFileSystem.removeFile(`font/${model.name}.png`);
-        });
+    async deleteFont(model){
+        await utils.deleteModel(model);
+        restFileSystem.removeFile(`font/${model.name}.png`);
     }
 });

@@ -5,6 +5,8 @@ import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 import utils from 'app/providers/utils';
 
+import repository from 'coreEngine/src/engine/repository';
+
 export default RF.registerComponent('app-frame-animation-dialog', {
     template: {
         type: 'string',

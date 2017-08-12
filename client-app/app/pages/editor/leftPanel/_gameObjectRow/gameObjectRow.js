@@ -1,5 +1,6 @@
 
 import utils from 'app/providers/utils';
+import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-game-object-row', {
     template: {

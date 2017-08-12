@@ -25,15 +25,14 @@
                     "
                     >
 
-
                         <div data-style="
-                    utils.merge(
-                        utils.getGameObjectCss(editData.currGameObjectInEdit),
-                        {
-                            'border':'1px solid blue',
-                            'opacity':editData.currGameObjectInEdit.alpha
-                        }
-                    )
+                            utils.merge(
+                                utils.getGameObjectCss(editData.currGameObjectInEdit),
+                                {
+                                    'border':'1px solid blue',
+                                    'opacity':editData.currGameObjectInEdit.alpha
+                                }
+                            )
                 "></div>
                     </div>
                 </td>
@@ -44,10 +43,11 @@
                 </td>
                 <td>
                     <select
-                            data-change="onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet.id)"
+                            data-change="onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet)"
                             required
-                            data-model="editData.currGameObjectInEdit.spriteSheet.id">
-                        <option data-value="item.id" data-for="item in editData.spriteSheetList.rs">{{item.name}}</option>
+                            data-model="editData.currGameObjectInEdit.spriteSheet">
+                        <option>--</option>
+                        <option data-value="item" data-for="item in repository.getArray('SpriteSheet')">{{item.name}}</option>
                     </select>
                 </td>
                 <td>
@@ -113,9 +113,9 @@
                     <div class="inlineBlock">
                         <app-angle-picker
                                 data-state="{
-                        object: editData.currGameObjectInEdit,
-                        value: 'angle'
-                    }"
+                                    object: editData.currGameObjectInEdit,
+                                        value: 'angle'
+                                }"
                         ></app-angle-picker>
                     </div>
                 </td>
@@ -187,7 +187,7 @@
                 </td>
                 <td>
                     <div class="table width100">
-                        <div class="row" data-for="itm in editData.currGameObjectInEdit.commonBehaviour.rs">
+                        <div class="row" data-for="itm in editData.currGameObjectInEdit.commonBehaviour">
                             <div class="cell vAlign">
                                 <span>{{itm.name}}</span>
                             </div>
@@ -204,12 +204,12 @@
                     <table class="width100">
                         <tr>
                             <td>
-                                <select data-model="selectedBehaviourId">
-                                    <option value="">-</option>
+                                <select data-model="selectedCb">
+                                    <option>-</option>
                                     <option
-                                            data-disabled="editData.currGameObjectInEdit.commonBehaviour.has && editData.currGameObjectInEdit.commonBehaviour.has({name:cb.name})"
-                                            data-value="cb.name"
-                                            data-for="cb in editData.commonBehaviourProto.rs">
+                                            data-disabled="isCbItemDisabled(cb)"
+                                            data-value="cb"
+                                            data-for="cb in editData.commonBehaviourProtos">
                                         {{cb.name}}
                                     </option>
                                 </select>
@@ -217,8 +217,8 @@
                             <td align="right">
                                 <button
                                         class="inlineBlock"
-                                        data-disabled="!editData.currGameObjectInEdit.id || !selectedBehaviourId"
-                                        data-click="createCommonBehaviour(selectedBehaviourId)">
+                                        data-disabled="!editData.currGameObjectInEdit.id || !selectedCb"
+                                        data-click="createCommonBehaviour(selectedCb)">
                                     +
                                 </button>
                             </td>

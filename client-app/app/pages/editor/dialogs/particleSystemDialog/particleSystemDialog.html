@@ -140,12 +140,12 @@
                             <td>
                                 <select
                                         required
-                                        data-change="onGameObjectIdChanged(editData.currParticleSystemInEdit.gameObjectProto.id)"
-                                        data-model="editData.currParticleSystemInEdit.gameObjectProto.id"
+                                        data-model="editData.currParticleSystemInEdit.gameObjectProto"
                                 >
+                                    <option>--</option>
                                     <option
-                                            data-value="item.id"
-                                            data-for="item in editData.gameObjectProtoList.rs">{{item.name}}</option>
+                                            data-value="item"
+                                            data-for="item in repository.getArray('GameObjectProto')">{{item.name}}</option>
                                 </select>
                             </td>
                             <td>

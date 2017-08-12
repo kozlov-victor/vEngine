@@ -6,6 +6,9 @@ import restResource from 'app/providers/rest/resource';
 import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 
+
+import repository from 'coreEngine/src/engine/repository';
+
 export default RF.registerComponent('app-sound-dialog', {
     template: {
         type:'string',
@@ -17,7 +20,7 @@ export default RF.registerComponent('app-sound-dialog', {
     soundUrl:'',
     _file: '',
 
-    open: function(){
+    open(){
         if (editData.currSoundInEdit.id)
             this.soundUrl =
                 editData.projectName + '/' +
@@ -25,42 +28,29 @@ export default RF.registerComponent('app-sound-dialog', {
         else this.soundUrl = '';
         RF.getComponentById('soundModal').open();
     },
-    onFilePicked: function(src,file){
+    onFilePicked(src,file,name){
         this.soundUrl = src;
         this._file = file;
 
-        let self = this;
-        self._file = file;
-        self.soundUrl = src;
-        self.editData.currSoundInEdit.resourcePath = 'resources/sound/'+file.name;
-        if (!self.editData.currSoundInEdit.name) {
-            self.editData.currSoundInEdit.name = name;
+        this._file = file;
+        this.soundUrl = src;
+        this.editData.currSoundInEdit.resourcePath = 'resources/'+file.name;
+        if (!this.editData.currSoundInEdit.name) {
+            this.editData.currSoundInEdit.name = name;
         }
     },
-    createOrEditSound: function(model){
-        let self = this;
-        Promise.resolve().
-        then(()=>{
-            if (self._file) {
-                return restFileSystem.
-                uploadFile(
-                    self._file,
-                    {type:model.type}
-                );
-            } else return Promise.resolve();
-        }).
-        then(()=>{
-            return restResource.save(model);
-        }).
-        then((resp)=>{
-            if (resp.created) {
-                model.id = resp.id;
-                editData.soundList.add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
-            }
-            RF.getComponentById('soundModal').close();
-            RF.digest();
-        });
+    async createOrEditSound(model){
+        if (this._file) await restFileSystem.uploadFile(
+            this._file,
+            {type:model.type}
+        );
+        let resp = await restResource.save(model);
+        if (resp.created) {
+            model.id = resp.id;
+            repository.addObject(model);
+        } else if (resp.updated) {
+            model.updateCloner();
+        }
+        RF.getComponentById('soundModal').close();
     }
 });

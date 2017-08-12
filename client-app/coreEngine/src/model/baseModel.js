@@ -52,6 +52,7 @@ export default class BaseModel {
     constructor(){
         this.id = null;
         this.type = this.constructor.name;
+        this.name = null;
     }
 
     fromJSON(params = {},forceNew){
@@ -62,12 +63,14 @@ export default class BaseModel {
                 throw `::fromJSON(): class ${this.constructor.name} has no property ${key}`;
             }
             if (!this[key]) return;
-            let Repository = require('../engine/repository');
-            if (this[key].id && this[key].type)
-                this[key] = Repository.getObject(this[key].id,this[key].type);
-            else if (this[key].splice) {
-                this[key].forEach((item,i)=>{
-                    this[key][i] = Repository.getObject(item.id,item.type,forceNew);
+            let repository = require('../engine/repository').default;
+            if (params[key].id && params[key].type)
+                this[key] = repository.getObject(params[key].id,params[key].type);
+            else if (params[key].splice) {
+                let arr = this[key];
+                this[key] = [];
+                arr.forEach((item,i)=>{
+                    if (item.id) this[key].push(repository.getObject(item.id,item.type,forceNew));
                 });
             }
         });
@@ -80,7 +83,7 @@ export default class BaseModel {
             if (isPropNotFit(key,this[key])) {
                 continue;
             }
-            if (this[key].type) { // is model
+            if (this[key].type && this[key].id) { // is model
                 res[key] = {
                     id:this[key].id,
                     type: this[key].type
@@ -89,7 +92,7 @@ export default class BaseModel {
                 let col = this[key];
                 let arr = [];
                 col.forEach(function(el){
-                    arr.push({type:el.type,id:el.id});
+                    if (el.id) arr.push({type:el.type,id:el.id});
                 });
                 res[key] = arr;
             }
@@ -107,6 +110,10 @@ export default class BaseModel {
 
     updateCloner(){
         let cloner = this._cloner;
-        cloner.fromJSON(this.toJSON())
+        if (!cloner) return;
+        cloner.fromJSON(this.toJSON());
+        cloner.updateCloner();
+        let repository = require('../engine/repository').default;
+        repository.updateObject(this);
     }
 }

@@ -4,25 +4,24 @@ import BaseModel from '../baseModel'
 export default class Scene extends BaseModel {
 
     // __onResourcesReady(){
-    //     let self = this;
-    //     self._allGameObjects = new collections.List();
-    //     self.layers.forEach(function(l){
-    //         self._allGameObjects.addAll(l.gameObjects);
+    //     let this = this;
+    //     this._allGameObjects = new collections.List();
+    //     this.layers.forEach(function(l){
+    //         this._allGameObjects.addAll(l.gameObjects);
     //     });
     // }
     constructor() {
         super();
 
         this.alpha = 1;
-        this.layers = [{type: 'layer'}];
-        this.tileMap = null;
+        this.layers = [];
         this._allGameObjects = [];
         this.useBG = false;
         this.colorBG = {r: 255, g: 255, b: 255};
         this.onShow = function () {
         };
         this._tweenMovies = [];
-        self.tileMap = {
+        this.tileMap = {
             _spriteSheet: null,
             spriteSheetId: null,
             width: 0,
@@ -30,14 +29,14 @@ export default class Scene extends BaseModel {
             data: []
         };
 
-        if (!self.tileMap) {
-            if (self.tileMap.spriteSheetId) {
-                self.tileMap._spriteSheet = bundle.spriteSheetList.find({id: self.tileMap.spriteSheetId});
-                if (!self.tileMap._spriteSheet) return;
-                self.tileMap._tilesInScreenX = ~~(bundle.gameProps.width / self.tileMap._spriteSheet._frameWidth);
-                self.tileMap._tilesInScreenY = ~~(bundle.gameProps.height / self.tileMap._spriteSheet._frameHeight);
-            }
-        }
+        // if (!this.tileMap) {
+        //     if (this.tileMap.spriteSheetId) {
+        //         this.tileMap._spriteSheet = bundle.spriteSheetList.find({id: this.tileMap.spriteSheetId});
+        //         if (!this.tileMap._spriteSheet) return;
+        //         this.tileMap._tilesInScreenX = ~~(bundle.gameProps.width / this.tileMap._spriteSheet._frameWidth);
+        //         this.tileMap._tilesInScreenY = ~~(bundle.gameProps.height / this.tileMap._spriteSheet._frameHeight);
+        //     }
+        // }
     }
     addTweenMovie(tm){
         this._tweenMovies.push(tm);
@@ -58,21 +57,20 @@ export default class Scene extends BaseModel {
         return this._allGameObjects;
     }
     update(currTime,deltaTime){
-        let self = this;
-        self._render();
-        let layers = self.layers.rs;
-        let i = self.layers.size();
+        this._render();
+        let layers = this.layers.rs;
+        let i = this.layers.size();
         let l = i -1;
         while(i--){
             layers[i-l].update(currTime,deltaTime);
         }
-        self._tweenMovies.forEach(function(tweenMovie){
+        this._tweenMovies.forEach(function(tweenMovie){
             if (tweenMovie.completed) {
-                self._tweenMovies.remove(tweenMovie);
+                this._tweenMovies.remove(tweenMovie);
             }
             tweenMovie._update(currTime);
         });
-        self.__updateIndividualBehaviour__(currTime);
+        this.__updateIndividualBehaviour__(currTime);
     }
     fadeIn(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);
@@ -87,17 +85,16 @@ export default class Scene extends BaseModel {
         movie.play();
     }
     _render(){
-        let self = this;
-        let spriteSheet = self.tileMap._spriteSheet;
+        let spriteSheet = this.tileMap._spriteSheet;
         if (!spriteSheet) return;
         let ctx = renderer.getContext();
-        let tilePosX = ~~(camera.pos.x / self.tileMap._spriteSheet._frameWidth);
-        let tilePosY = ~~(camera.pos.y / self.tileMap._spriteSheet._frameHeight);
-        let w = tilePosX + self.tileMap._tilesInScreenX + 2;
-        let h = tilePosY + self.tileMap._tilesInScreenY + 2;
+        let tilePosX = ~~(camera.pos.x / this.tileMap._spriteSheet._frameWidth);
+        let tilePosY = ~~(camera.pos.y / this.tileMap._spriteSheet._frameHeight);
+        let w = tilePosX + this.tileMap._tilesInScreenX + 2;
+        let h = tilePosY + this.tileMap._tilesInScreenY + 2;
         for (let y=tilePosY;y<h;y++) {
             for (let x=tilePosX;x<w;x++) {
-                let index = self.tileMap.data[y] && self.tileMap.data[y][x];
+                let index = this.tileMap.data[y] && this.tileMap.data[y][x];
                 if (index==undefined) continue;
                 ctx.drawImage(
                     resourceCache.get(spriteSheet.resourcePath),
@@ -112,11 +109,10 @@ export default class Scene extends BaseModel {
         }
     }
     getTileAt(x,y){
-        let self = this;
-        if (!self.tileMap._spriteSheet) return null;
-        let tilePosX = ~~(x / self.tileMap._spriteSheet._frameWidth);
-        let tilePosY = ~~(y / self.tileMap._spriteSheet._frameHeight);
-        return self.tileMap.data[tilePosY] && self.tileMap.data[tilePosY][tilePosX];
+        if (!this.tileMap._spriteSheet) return null;
+        let tilePosX = ~~(x / this.tileMap._spriteSheet._frameWidth);
+        let tilePosY = ~~(y / this.tileMap._spriteSheet._frameHeight);
+        return this.tileMap.data[tilePosY] && this.tileMap.data[tilePosY][tilePosX];
     }
     printText(x,y,text,font){
         if (!text) return;

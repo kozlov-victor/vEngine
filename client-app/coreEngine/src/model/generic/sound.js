@@ -5,6 +5,8 @@ export default class Sound extends BaseModel {
 
     constructor(){
         super();
+        this.resourcePath = '';
+
         this._gain = 1;
         this._loop =false;
     }

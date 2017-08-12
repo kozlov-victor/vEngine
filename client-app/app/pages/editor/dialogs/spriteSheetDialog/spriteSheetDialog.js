@@ -6,6 +6,9 @@ import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 import utils from 'app/providers/utils';
 
+import repository from 'coreEngine/src/engine/repository';
+
+
 export default RF.registerComponent('app-sprite-sheet-dialog', {
     template: {
         type: 'string',
@@ -28,18 +31,17 @@ export default RF.registerComponent('app-sprite-sheet-dialog', {
         RF.getComponentById('spriteSheetModal').open();
     },
     onFilePicked(src,file,name){
-        let self = this;
-        self._file = file;
-        self.spriteSheetUrl = src;
-        self.editData.currSpriteSheetInEdit.resourcePath = 'resources/spriteSheet/'+file.name;
-        if (!self.editData.currSpriteSheetInEdit.name) {
-            self.editData.currSpriteSheetInEdit.name = name;
+        this._file = file;
+        this.spriteSheetUrl = src;
+        this.editData.currSpriteSheetInEdit.resourcePath = 'resources/'+file.name;
+        if (!this.editData.currSpriteSheetInEdit.name) {
+            this.editData.currSpriteSheetInEdit.name = name;
         }
         let img = new Image();
-        img.onload = function() {
-            self.editData.currSpriteSheetInEdit.width = img.width;
-            self.editData.currSpriteSheetInEdit.height = img.height;
-            self.editData.currSpriteSheetInEdit.calcFrameSize();
+        img.onload =()=> {
+            this.editData.currSpriteSheetInEdit.width = img.width;
+            this.editData.currSpriteSheetInEdit.height = img.height;
+            this.editData.currSpriteSheetInEdit.calcFrameSize();
             RF.digest();
         };
         img.src = src;
@@ -51,30 +53,21 @@ export default RF.registerComponent('app-sprite-sheet-dialog', {
             this.editData.currSpriteSheetInEdit.numOfFramesV;
         this.editData.currSpriteSheetInEdit.calcFrameSize();
     },
-    createOrEditSpriteSheet(model){
+    async createOrEditSpriteSheet(model){
         let self = this;
-        Promise.resolve().
-        then(()=>{
-            if (self._file) {
-                return restFileSystem.
-                uploadFile(
-                    self._file,
-                    {type:model.type}
-                );
-            } else return Promise.resolve();
-        }).
-        then(()=>{
-            return restResource.save(model);
-        }).
-        then((resp)=>{
-            if (resp.created) {
-                model.id = resp.id;
-                editData[`${model.type}List`].add(model);
-            } else if (resp.updated) {
-                model.updateCloner();
-            }
-            RF.getComponentById('spriteSheetModal').close();
-            RF.digest();
-        });
+
+        if (self._file) await restFileSystem.uploadFile(
+            self._file,
+            {type:model.type}
+        );
+        let resp = await restResource.save(model);
+        if (resp.created) {
+            model.id = resp.id;
+            repository.addObject(model);
+        } else if (resp.updated) {
+            model.updateCloner();
+        }
+        RF.getComponentById('spriteSheetModal').close();
+        RF.digest();
     }
 });
