@@ -6,8 +6,6 @@ import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 import utils from 'app/providers/utils';
 
-import repository from 'coreEngine/src/engine/repository';
-
 
 export default RF.registerComponent('app-sprite-sheet-dialog', {
     template: {
@@ -22,52 +20,62 @@ export default RF.registerComponent('app-sprite-sheet-dialog', {
     _file: '',
     numOfSpriteSheetCells: 0,
     open(){
+        this._file = null;
         if (editData.currSpriteSheetInEdit.id)
             this.spriteSheetUrl =
-                editData.projectName + '/' +
-                editData.currSpriteSheetInEdit.resourcePath + '?' + Math.random();
+                `${editData.projectName}/${editData.currSpriteSheetInEdit.resourcePath}?${Math.random()}`;
         else this.spriteSheetUrl = '';
         this.refreshNumOfCells();
         RF.getComponentById('spriteSheetModal').open();
     },
-    onFilePicked(src,file,name){
+    onFilePicked(src,file,name,ext){
+        if (!editData.currSpriteSheetInEdit.name) {
+            editData.currSpriteSheetInEdit.name = name;
+        }
+
         this._file = file;
         this.spriteSheetUrl = src;
-        this.editData.currSpriteSheetInEdit.resourcePath = 'resources/'+file.name;
-        if (!this.editData.currSpriteSheetInEdit.name) {
-            this.editData.currSpriteSheetInEdit.name = name;
-        }
+        editData.currSpriteSheetInEdit._lastPath = this.editData.currSpriteSheetInEdit.resourcePath;
+        editData.currSpriteSheetInEdit.resourcePath =
+            `resources/${editData.currSpriteSheetInEdit.name}.${ext}`;
+        if (editData.currSpriteSheetInEdit._lastPath == editData.currSpriteSheetInEdit.resourcePath)
+            editData.currSpriteSheetInEdit._lastPath = null;
+
         let img = new Image();
         img.onload =()=> {
-            this.editData.currSpriteSheetInEdit.width = img.width;
-            this.editData.currSpriteSheetInEdit.height = img.height;
-            this.editData.currSpriteSheetInEdit.calcFrameSize();
+            editData.currSpriteSheetInEdit.width = img.width;
+            editData.currSpriteSheetInEdit.height = img.height;
+            editData.currSpriteSheetInEdit.revalidate();
             RF.digest();
         };
         img.src = src;
     },
     refreshNumOfCells() {
         this.numOfSpriteSheetCells =
-            this.editData && this.editData.currSpriteSheetInEdit &&
-            this.editData.currSpriteSheetInEdit.numOfFramesH*
-            this.editData.currSpriteSheetInEdit.numOfFramesV;
-        this.editData.currSpriteSheetInEdit.calcFrameSize();
+            editData && editData.currSpriteSheetInEdit &&
+            editData.currSpriteSheetInEdit.numOfFramesH*
+            editData.currSpriteSheetInEdit.numOfFramesV;
+        editData.currSpriteSheetInEdit.revalidate();
+    },
+    revalidate(){
+        editData.currSpriteSheetInEdit.revalidate();
     },
     async createOrEditSpriteSheet(model){
-        let self = this;
 
-        if (self._file) await restFileSystem.uploadFile(
-            self._file,
-            {type:model.type}
+        if (this._file) await restFileSystem.uploadFile(
+            this._file,
+            {path:editData.currSpriteSheetInEdit.resourcePath}
         );
+        if (this.editData.currSpriteSheetInEdit._lastPath) {
+            await restFileSystem.removeFile(editData.currSpriteSheetInEdit._lastPath);
+        }
         let resp = await restResource.save(model);
         if (resp.created) {
             model.id = resp.id;
-            repository.addObject(model);
+            editData.game._repository.addObject(model);
         } else if (resp.updated) {
             model.updateCloner();
         }
         RF.getComponentById('spriteSheetModal').close();
-        RF.digest();
     }
 });

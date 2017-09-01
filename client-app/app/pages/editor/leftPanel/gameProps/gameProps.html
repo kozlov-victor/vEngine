@@ -9,7 +9,7 @@
                 <div class="cell">
                     <input
                             class="narrow"
-                            data-model="editData.gameProps.width"
+                            data-model="editData.game.width"
                             type="number"
                             min="1"
                             max="20000"
@@ -23,7 +23,7 @@
                 <div class="cell">
                     <input
                             class="narrow"
-                            data-model="editData.gameProps.height"
+                            data-model="editData.game.height"
                             type="number"
                             min="1"
                             max="20000"
@@ -38,7 +38,7 @@
                 </div>
                 <div class="cell">
                     <select
-                            data-model="editData.gameProps.scaleStrategy"
+                            data-model="editData.game.scaleStrategy"
                             data-change="form.valid() && saveGameProps()">
                         <option
                                 data-value="value"
@@ -53,13 +53,13 @@
                 </div>
                 <div class="cell">
                     <select
-                            data-model="editData.gameProps.preloadingSceneId"
+                            data-model="editData.game.preloadingSceneId"
                             data-change="form.valid() && saveGameProps()">
                         <option value="">--</option>
                         <option
-                                :disabled="item.id==editData.gameProps.startSceneId"
+                                data-disabled="item.id==editData.gameProps.startSceneId"
                                 data-value="item.id"
-                                data-for="item in editData.sceneList.rs">
+                                data-for="item in editData.game._repository.getArray('Scene')">
                             {{item.name}}
                         </option>
                     </select>
@@ -71,12 +71,12 @@
                     {{i18n.startScene}}
                 </div>
                 <div class="cell">
-                    <select data-model="editData.gameProps.startSceneId"
+                    <select data-model="editData.game.startSceneId"
                             data-change="form.valid() && saveGameProps()">
                         <option
                                 data-disabled="item.id==editData.gameProps.preloadingSceneId"
                                 data-value="item.id"
-                                data-for="item in editData.sceneList.rs">
+                                data-for="item in editData.game._repository.getArray('Scene')">
                             {{item.name}}
                         </option>
                     </select>

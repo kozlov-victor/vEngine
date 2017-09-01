@@ -163,6 +163,20 @@ e // placeholder
     return d; // give back the new array
 });
 
+Array.prototype.every = Array.prototype.every.every || // Use the native every method if available, otherwise:
+function (a, // expression to test each element of the array against
+b, // optionally change the 'this' context in the given expression
+c, // placeholder iterator variable
+d // placeholder variable (stores context of original array)
+) {
+    for (c = 0, d = this; c < d.length; c++) {
+        // iterate over all of the array elements
+        if (!a.call(b, d[c], c, d)) // call the given expression, passing in context, value, index, and original array
+            return !1;
+    } // if any expression evaluates false, immediately return since 'every' is false
+    return !0; // otherwise return true since all expressions evaluated to true
+};
+
 if (!Array.prototype.map) {
     Array.prototype.map = function (fn) {
         var rv = [];
@@ -436,8 +450,8 @@ var Component = function () {
             var newValDeepCopy = MiscUtils.deepCopy(newValue);
             if (!MiscUtils.deepEqual(newValDeepCopy, oldValue)) {
                 watcher.listenerFn(newValue, oldValue);
+                watcher.last = newValDeepCopy;
             }
-            watcher.last = newValDeepCopy;
         });
     };
 
@@ -792,6 +806,9 @@ var DomUtils = function () {
                         el.checked = value == el.value;
                         break;
                     default:
+                        if (el.getAttribute('type') === 'number') {
+                            value = parseFloat(value);
+                        }
                         el.value = value;
                         break;
                 }
@@ -987,7 +1004,7 @@ var MiscUtils = function () {
     MiscUtils.deepCopy = function deepCopy(obj) {
         var _clonedObjects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-        if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;
+        if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;else if (_clonedObjects.indexOf(obj) > -1) return obj;
         if (Object.prototype.toString.call(obj) === '[object Array]') {
             var out = [],
                 i = 0,
@@ -997,14 +1014,13 @@ var MiscUtils = function () {
                 if (_clonedObjects.indexOf(obj[i]) > -1) {
                     clonedObject = obj[i];
                 } else {
-                    _clonedObjects.push(obj[i]);
                     clonedObject = MiscUtils.deepCopy(obj[i], _clonedObjects);
+                    _clonedObjects.push(obj[i]);
                 }
                 out[i] = clonedObject;
             }
             return out;
-        }
-        if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
+        } else if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object') {
             var _out = {};
             for (var _i in obj) {
                 var _clonedObject = void 0;
@@ -1031,16 +1047,23 @@ var MiscUtils = function () {
     /**
      * @param x
      * @param y
+     * @param _checkCache - circular structure holder
      * @returns {*}
+     *
      */
 
 
     MiscUtils.deepEqual = function deepEqual(x, y) {
+        var _checkCache = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
         //if (isNaN(x) && isNaN(y)) return true;
         if (x && y && (typeof x === 'undefined' ? 'undefined' : _typeof(x)) === 'object' && (typeof y === 'undefined' ? 'undefined' : _typeof(y)) === 'object') {
             if (x === y) return true;
+            if (_checkCache.indexOf(x) > -1 || _checkCache.indexOf(y) > -1) return true;
+            _checkCache.push(x);
+            _checkCache.push(y);
             return Object.keys(x).length === Object.keys(y).length && Object.keys(x).reduce(function (isEqual, key) {
-                return isEqual && MiscUtils.deepEqual(x[key], y[key]);
+                return isEqual && MiscUtils.deepEqual(x[key], y[key], _checkCache);
             }, true);
         } else {
             return x === y;
@@ -1315,7 +1338,7 @@ var DirectiveEngine = function () {
 
         DomUtils.processScopedTextNodes(this.component.node).forEach(function (it) {
             _this2.component.addWatcher(it.expression, function (value) {
-                if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object') value = JSON.stringify(value);
+                if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') value = JSON.stringify(value);
                 DomUtils.setTextNodeValue(it.node, value);
             }, DomUtils._get_If_expressionTopDownList(it.node));
         });
@@ -1419,6 +1442,7 @@ var DirectiveEngine = function () {
         var _this9 = this;
 
         this._eachElementWithAttr('data-model', function (el, expression) {
+            var isNumeric = el.getAttribute('type') === 'number';
             if (el.getAttribute('type') == 'radio' && !el.getAttribute('name')) el.setAttribute('name', expression);
             var eventNames = DomUtils.getDefaultInputChangeEvents(el);
             eventNames.split(',').forEach(function (eventName) {
@@ -1429,7 +1453,9 @@ var DirectiveEngine = function () {
                     });
                 } else {
                     DomUtils.addEventListener(el, eventName, function (e) {
-                        ExpressionEngine.setValueToContext(_this9.component, expression, DomUtils.getInputValue(el));
+                        var val = DomUtils.getInputValue(el);
+                        if (isNumeric && val.length) val = parseFloat(val);
+                        ExpressionEngine.setValueToContext(_this9.component, expression, val);
                         Component.digestAll();
                     });
                 }
@@ -1468,7 +1494,9 @@ var DirectiveEngine = function () {
                         }
                     }
                 } else {
-                    if (DomUtils.getInputValue(el) !== value) DomUtils.setInputValue(el, value);
+                    if (DomUtils.getInputValue(el) == value) return;
+                    if (value == undefined) value = '';
+                    DomUtils.setInputValue(el, value);
                 }
             }, DomUtils._get_If_expressionTopDownList(el));
         });
@@ -2308,7 +2336,7 @@ var Core = function () {
 
 MiscUtils.copyMethods(Core, Reactivity);
 
-Core.version = '0.8.4';
+Core.version = '0.8.7';
 
 window.RF = Core;
 window.RF.Router = Router;

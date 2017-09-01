@@ -4,8 +4,6 @@ import restResource from 'app/providers/rest/resource';
 import i18n from 'app/providers/i18n';
 import utils from 'app/providers/utils';
 
-import repository from 'coreEngine/src/engine/repository';
-
 export default RF.registerComponent('app-common-behaviour-dialog', {
     template: {
         type: 'string',
@@ -21,12 +19,13 @@ export default RF.registerComponent('app-common-behaviour-dialog', {
         let resp = await restResource.save(cb);
         if (resp.created) {
             cb.id = resp.id;
-            repository.addObject(cb);
+            editData.game._repository.addObject(cb);
             editData.currGameObjectInEdit.commonBehaviour.push(cb);
         } else {
             let editedCb = editData.currGameObjectInEdit.commonBehaviour.find(it=>it.id==cb.id);
             editedCb.fromJSON(cb.toJSON());
             cb.updateCloner();
+            editData.game._repository.updateObject(cb);
         }
         await restResource.save(editData.currGameObjectInEdit);
         editData.currGameObjectInEdit.updateCloner();

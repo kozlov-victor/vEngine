@@ -9,13 +9,16 @@
         <div class="withPaddingLeft">
             <div class="table width100">
                 <div class="row"
-                     data-for="spriteSheet in repository.getArray('SpriteSheet')">
+                     data-for="spriteSheet in editData.game._repository.getArray('SpriteSheet')">
 
                     <div class="cell">
                         <img
-                                height="20"
-                                class="spriteSheetThumb"
-                                data-attributes="{src:editData.projectName+'/'+spriteSheet.resourcePath}"/>
+                            class="spriteSheetThumb"
+                            data-attributes="{
+                                src:    editData.projectName+'/'+spriteSheet.resourcePath,
+                                width:  spriteSheet.width,
+                                height: spriteSheet.height
+                            }"/>
                     </div>
                     <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">

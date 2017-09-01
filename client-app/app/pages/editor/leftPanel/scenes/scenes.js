@@ -8,7 +8,6 @@ import utils from 'app/providers/utils';
 
 import Layer from 'coreEngine/src/model/generic/layer';
 import Scene from 'coreEngine/src/model/generic/scene';
-import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-scenes', {
     template: {
@@ -29,7 +28,7 @@ export default RF.registerComponent('app-scenes', {
     },
 
     createScene: function(){
-        this.editData.currSceneInEdit = new Scene(new Scene().toJSON());
+        this.editData.currSceneInEdit = new Scene(editData.game);
         RF.getComponentById('sceneModal').open();
     },
     editScene: function(scene){
@@ -37,33 +36,34 @@ export default RF.registerComponent('app-scenes', {
         RF.getComponentById('sceneModal').open();
     },
     deleteScene: function(scene){
-        if (scene.layers && scene.layers.size()>0) {
+        if (scene.layers && scene.layers.length>0) {
             alertEx(this.i18n.canNotDelete(scene,scene.layers.rs));
             return;
         }
         utils.deleteModel(scene,()=>{
-            restFileSystem.removeFile(`script/scene/${scene.name}.js`);
+            restFileSystem.removeFile(`scripts/${scene.name}.js`);
         });
     },
     createLayer: function(scene){
-        this.editData.currLayerInEdit = new Layer(new Layer().clone());
+        this.editData.currLayerInEdit = new Layer(editData.game);
         this.editData.currLayerInEdit._scene = scene;
         RF.getComponentById('layerModal').open();
     },
     editLayer: function(layer,scene){
-        this.editData.currLayerInEdit = new Layer(layer.clone());
+        this.editData.currLayerInEdit = new Layer(editData.game);
         this.editData.currLayerInEdit._scene = scene;
         RF.getComponentById('layerModal').open();
     },
     editScript: function(scene){
-        utils.openEditor(scene.type + '/' +scene.name + '.js');
+        utils.openEditor(`scripts/${scene.name}.js`);
     },
     deleteLayer: function(layer,scene){
-        if (layer.gameObjects.size())
-            return alertEx(this.i18n.canNotDelete(layer,layer.gameObjects.rs));
+        if (layer.gameObjects.length)
+            return alertEx(this.i18n.canNotDelete(layer,layer.gameObjects));
         utils.deleteModel(layer,()=>{
-            scene.layers.remove({id:layer.id});
+            scene.layers.remove(it=>it.id==layer.id);
             scene.updateCloner();
+            editData.game._repository.updateObject(scene);
             restResource.save(scene);
         });
     },
@@ -74,11 +74,12 @@ export default RF.registerComponent('app-scenes', {
         console.log('edit go invoked',scene);
     },
     deleteGameObject: function(model){
+        let l = editData.currLayerInEdit;
         utils.deleteModel(model,()=>{
-            editData.currLayerInEdit.gameObjects.remove({id:model.id});
+            l.gameObjects.remove(it=>it.id==model.id);
+            l.updateCloner();
+            editData.game._repository.updateObject(l);
+            restResource.save(l);
         });
-    },
-    onGameObjectClick: function(go){
-        console.log(go);
     }
 });

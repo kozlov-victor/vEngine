@@ -7,7 +7,6 @@ import restFileSystem from 'app/providers/rest/fileSystem';
 import utils from 'app/providers/utils';
 
 import Layer from  'coreEngine/src/model/generic/layer';
-import repository from 'coreEngine/src/engine/repository';
 
 
 export default RF.registerComponent('app-layer-dialog', {
@@ -19,26 +18,20 @@ export default RF.registerComponent('app-layer-dialog', {
     editData,
     i18n:i18n.getAll(),
 
-    createOrEditLayer: function(layer,scene){
+    async createOrEditLayer(layer,scene){
 
-        if (!scene.layers) scene.layers = new collections.List(); // todo
-
-        restResource.
-        save(layer).
-        then(resp=>{
-            if (resp.created) {
-                layer.id = resp.id;
-                scene.layers.add(layer);
-                return restResource.save(scene);
-            }
-        }).
-        then(()=>{
-            layer.updateCloner();
+        let resp = await restResource.save(layer);
+        if (resp.created) {
+            layer.id = resp.id;
+            scene.layers.push(layer);
+            editData.game._repository.addObject(layer);
             scene.updateCloner();
-            RF.getComponentById('layerModal').close();
-            RF.digest();
-        }).
-        catch(window.catchPromise);
+            editData.game._repository.updateObject(scene);
+            await restResource.save(scene);
+        } else {
+            layer.updateCloner();
+        }
+        RF.getComponentById('layerModal').close();
     },
     deleteLayer: function(l){
 

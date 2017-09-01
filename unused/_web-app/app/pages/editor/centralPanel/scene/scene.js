@@ -1,5 +1,5 @@
 
-var editData = require('providers/editData')
+var editData = require('providers/editData');
 
 module.exports = Vue.component('app-curr-scene', {
     props: [],

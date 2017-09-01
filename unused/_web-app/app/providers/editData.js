@@ -36,7 +36,7 @@ res.reset = function(){
     res.projects = {};
 
     //res.buildOpts = {
-    //    debug: false,
+    //    minify: false,
     //    embedResources: false,
     //    embedScript: false,
     //    minify:false

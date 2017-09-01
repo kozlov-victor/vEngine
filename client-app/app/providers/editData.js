@@ -8,27 +8,30 @@ import Layer from 'coreEngine/src/model/generic/layer'
 import Font from 'coreEngine/src/model/generic/font'
 import Sound from 'coreEngine/src/model/generic/sound'
 import ParticleSystem from 'coreEngine/src/model/generic/particleSystem'
-
+import Game from 'coreEngine/src/engine/game';
 const res = {};
 
-res.reset = function(){
+res.reset = function(gameProps){
+
+    let g = new Game(gameProps||{});
+    res.game = g;
 
     res.commonBehaviourList = [];
-    res.currGameObjectInEdit = new GameObjectProto();
-    res.currSpriteSheetInEdit = new SpriteSheet();
-    res.currFrameAnimationInEdit = new FrameAnimation();
-    res.currSceneInEdit = new Scene();
+    res.currGameObjectInEdit = new GameObjectProto(g);
+    res.currSpriteSheetInEdit = new SpriteSheet(g);
+    res.currFrameAnimationInEdit = new FrameAnimation(g);
+    res.currFrameAnimationInEdit._gameObject = new GameObjectProto(g);
+    res.currSceneInEdit = new Scene(g);
     res.currSceneGameObjectInEdit = {
         pos: {},
         scale:{}
     };
-    res.currLayerInEdit = new Layer();
-    res.currFontInEdit = new Font();
-    res.currSoundInEdit = new Sound();
-    res.currParticleSystemInEdit = new ParticleSystem();
+    res.currLayerInEdit = new Layer(g);
+    res.currFontInEdit = new Font(g);
+    res.currSoundInEdit = new Sound(g);
+    res.currParticleSystemInEdit = new ParticleSystem(g);
     res.currProjectInEdit = {};
     res.currTileIndexInEdit = {};
-    res.gameProps = {};
     res.commonBehaviourProto =  [];
 
 

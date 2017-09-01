@@ -2,8 +2,9 @@ import BaseModel from '../baseModel'
 
 export default class SpriteSheet extends BaseModel {
 
-    constructor() {
-        super();
+    constructor(game) {
+        super(game);
+        this.type = 'SpriteSheet';
         this.width = 0;
         this.height = 0;
         this.numOfFramesH = 1;
@@ -15,18 +16,18 @@ export default class SpriteSheet extends BaseModel {
         this.resourcePath = '';
     }
 
+    revalidate(){
+        if (!(this.numOfFramesH && this.numOfFramesV)) return;
+        this._frameWidth = ~~(this.width / this.numOfFramesH);
+        this._frameHeight = ~~(this.height / this.numOfFramesV);
+        this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
+    }
+
     getFramePosX(frameIndex) {
         return (frameIndex % this.numOfFramesH) * this._frameWidth;
     }
 
     getFramePosY(frameIndex) {
         return ~~(frameIndex / this.numOfFramesH) * this._frameHeight;
-    }
-
-    calcFrameSize() {
-        if (!(this.numOfFramesH && this.numOfFramesV)) return;
-        this._frameWidth = this.width / this.numOfFramesH;
-        this._frameHeight = this.height / this.numOfFramesV;
-        this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
     }
 }

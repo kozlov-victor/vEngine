@@ -19,7 +19,7 @@ const decode = function(buffer,callback){
             callback(decoded);
         },
         function(err){
-            //<code>{{#if opts.debug}}
+            //<code>{{#if opts.minify}}
             window.showError(err);
             // {{/if}}
         }

@@ -315,7 +315,7 @@ const GlContext = Class.extend(function(it){
         }
 
         let img = new Image();
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         img.onerror=function(e){throw 'can not load image with url '+ url};
         //<code>{{/if}}
         let gl = require('renderer').getContext().getNativeContext();

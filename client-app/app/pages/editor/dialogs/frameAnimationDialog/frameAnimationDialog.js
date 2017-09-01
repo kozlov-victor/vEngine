@@ -1,11 +1,12 @@
 
-import editData from 'app/providers/editData';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import restFileSystem from 'app/providers/rest/fileSystem';
-import utils from 'app/providers/utils';
+import editData from 'app/providers/editData'
+import restResource from 'app/providers/rest/resource'
+import i18n from 'app/providers/i18n'
+import restFileSystem from 'app/providers/rest/fileSystem'
+import utils from 'app/providers/utils'
 
-import repository from 'coreEngine/src/engine/repository';
+import GameObject from 'coreEngine/src/model/generic/gameObject'
+import SpriteSheet from 'coreEngine/src/model/generic/spriteSheet'
 
 export default RF.registerComponent('app-frame-animation-dialog', {
     template: {
@@ -18,7 +19,7 @@ export default RF.registerComponent('app-frame-animation-dialog', {
     i18n: i18n.getAll(),
 
     isStopped: true,
-    from:0,to:1,
+    from:0,to:1,step:1,
     frames:'',
 
     open: function(){
@@ -35,9 +36,7 @@ export default RF.registerComponent('app-frame-animation-dialog', {
         this.frames=this.allIndexes();
     },
     setRangeIndexes: function(){
-        this.frames=utils.range(+this.from,+this.to).join(',');
-        console.log(this.from,this.to);
-        console.log(utils.range(+this.from,+this.to));
+        this.frames=utils.range(+this.from,+this.to,+this.step).join(',');
     },
     playAnimation: function(){
         let self = this;
@@ -67,47 +66,44 @@ export default RF.registerComponent('app-frame-animation-dialog', {
         this.isStopped = true;
     },
     nextFrame:function(){
-        let self = this;
-        self.stopAnimation();
-        self.editData.currFrameAnimationInEdit.nextFrame();
+        this.stopAnimation();
+        this.editData.currFrameAnimationInEdit.nextFrame();
     },
     previousFrame:function(){
-        let self = this;
-        self.stopAnimation();
-        self.editData.currFrameAnimationInEdit.previousFrame();
+        this.stopAnimation();
+        this.editData.currFrameAnimationInEdit.previousFrame();
     },
     getLoopArr(){
         if (!editData.currFrameAnimationInEdit._gameObject)
-            editData.currFrameAnimationInEdit._gameObject = {spriteSheet:{}}; // todo dirty
+            editData.currFrameAnimationInEdit._gameObject = new GameObject(editData.game);
+        if (!editData.currFrameAnimationInEdit._gameObject.spriteSheet) {
+            editData.currFrameAnimationInEdit._gameObject.spriteSheet = new SpriteSheet(editData.game);
+        }
         let lastIndex = editData.currFrameAnimationInEdit.
                 _gameObject.spriteSheet.numOfFramesH
                     *
                 editData.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV;
         return utils.getArray(lastIndex);
     },
-    createOrEditFrameAnimation: function(){
-        let self = this;
+    async createOrEditFrameAnimation(){
         let fa = editData.currFrameAnimationInEdit;
-        self.editData.currFrameAnimationInEdit.frames = JSON.parse('['+self.frames+']');
+        fa.frames = JSON.parse('['+this.frames+']');
 
-        restResource.
-        save(fa).
-        then((resp)=>{
-            if (resp.created) {
-                fa.id = resp.id;
-                editData.frameAnimationList.add(fa);
-                editData.currGameObjectInEdit.frameAnimations.add(fa);
-                return restResource.save(editData.currGameObjectInEdit)
-            } else {
-                fa.updateCloner();
-            }
-        }).
-        then(function(){
-            editData.currGameObjectInEdit.updateCloner();
-            RF.getComponentById('frameAnimationModal').close();
-            RF.digest();
-        }).
-        catch(window.catchPromise)
+        let resp = await restResource.save(fa);
+        if (resp.created) {
+            fa.id = resp.id;
+            editData.game._repository.addObject(fa);
+            editData.currGameObjectInEdit.frameAnimations.push(fa);
+        } else {
+            let editedFa = editData.currGameObjectInEdit.frameAnimations.find(it=>it.id==fa.id);
+            editedFa.fromJSON(fa.toJSON());
+            fa.updateCloner();
+            editData.game._repository.updateObject(fa);
+        }
+        await restResource.save(editData.currGameObjectInEdit);
+        editData.currGameObjectInEdit.updateCloner();
+
+        RF.getComponentById('frameAnimationModal').close();
 
     }
 });

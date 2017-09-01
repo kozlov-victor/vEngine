@@ -1,8 +1,16 @@
 
-exports.onShow = function() {
+export class ${name}Behaviour {
 
-};
+    onCreate(){
 
-exports.onUpdate = function(time) {
+    }
 
-};
+    onUpdate(){
+
+    }
+
+    onDestroy(){
+
+    }
+
+}

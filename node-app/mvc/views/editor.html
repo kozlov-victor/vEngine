@@ -3,12 +3,11 @@
 <div id="editor" style="width: 100%"></div>
 <div id="commandline" style="position: absolute; bottom: 10px; height: 20px; width: 800px;"></div>
 </body>
-<script type="text/javascript" src="debug.js"></script>
+<script type="text/javascript" src="js/debug.js"></script>
 <script src="js/lib/ace/src-min/ace.js" type="text/javascript"></script>
 <script src="js/lib/ace/src-min/ext-language_tools.js" type="text/javascript"></script>
 <script src="js/lib/jquery.js" type="text/javascript"></script>
 <script>
-
 
     +function(){
 
@@ -26,20 +25,9 @@
             editor.$blockScrolling = Infinity;
         };
 
-        var locationParams = function(){
-            var search = location.search && location.search.substring(1)||'';
-            var pairs = search.split('&');
-            var res = {};
-            pairs.forEach(function(pair){
-                var operands = pair.split('=');
-                res[operands[0]] = decodeURIComponent(operands[1]);
-            });
-            return res;
-        }();
-
-
         setUpEditor();
         window.calcEditorSize = function(){
+            if (!window.parent) return;
             var parentFrame = window.parent.document.getElementById('scriptEditor');
             $('#editor').css({height: parentFrame.getBoundingClientRect().height - 25 +'px'});
             editor.resize();
@@ -67,10 +55,6 @@
         window.ready = true;
 
     }();
-
-
-
-
 
 </script>
 </html>

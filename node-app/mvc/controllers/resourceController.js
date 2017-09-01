@@ -81,8 +81,13 @@ class ResourceController {
      * @Method("generate");
      * @Request({"type":"get"});
      */
-    generate(params){
-        throw 'not supported now!'
+    generate(params,callback){
+        let onGenerated = res=>{
+            if (!res.success) params.error = res.error;
+            callback();
+        };
+        generatorService.generate(params,onGenerated);
+        return callback;
     }
 
 }

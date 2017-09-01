@@ -83,7 +83,7 @@ const triggerEvent = function(e,name){
 };
 
 const resolveClick = function(e){
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     if (window.canceled) return;
     // {{/if}}
     let point = triggerEvent(e,'click');
@@ -91,7 +91,7 @@ const resolveClick = function(e){
 };
 
 const resolveMouseMove = function(e){
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     if (window.canceled) return;
     // {{/if}}
     let point = triggerEvent(e,'mouseMove');
@@ -109,7 +109,7 @@ const resolveMouseMove = function(e){
 };
 
 const resolveMouseUp = function(e){
-    //<code>{{#if opts.debug}} if (window.canceled) return;{{/if}}
+    //<code>{{#if opts.minify}} if (window.canceled) return;{{/if}}
     let point = triggerEvent(e,'mouseUp');
     if (!point) return;
     let lastMouseDownObject = objectsCaptured[point.id];

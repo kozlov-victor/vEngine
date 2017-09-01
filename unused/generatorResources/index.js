@@ -4,7 +4,7 @@ let data;
 
 const bundle = require('bundle');
 bundle.prepare(data);
-//<code>{{#if opts.debug}}
+//<code>{{#if opts.minify}}
 if (!bundle.sceneList.size()) throw 'at least one scene must be created';
 //<code>{{/if}}
 const renderer = require('renderer');

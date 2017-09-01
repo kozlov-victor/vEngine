@@ -1,13 +1,20 @@
 
-import BaseModel from '../baseModel'
+import GameObjectProto from './gameObjectProto'
 
-export default class GameObject extends BaseModel{
 
-    constructor(){
-        super();
-        this.protoId =  null;
+export default class GameObject extends GameObjectProto{
+
+    constructor(game){
+        super(game);
+        this.type = 'GameObject';
         this.layerId =  null;
-        this.pos = null;
+    }
+
+    setIndividualBehaviour(clazz){
+        let instance = new clazz();
+        instance.game = this._game;
+        instance.object = this;
+        this._individualBehaviour = instance;
     }
 
 };

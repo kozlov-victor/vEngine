@@ -1342,7 +1342,7 @@ function assertType (value, type) {
 
 /**
  * Use function string name to check built-in types,
- * because a simple equality check will fail when running
+ * because a simple equality check will fail when _running
  * across different vms / iframes.
  */
 function getType (fn) {

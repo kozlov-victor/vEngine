@@ -7,7 +7,6 @@ import restFileSystem from 'app/providers/rest/fileSystem';
 import i18n from 'app/providers/i18n';
 
 import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
-import repository from 'coreEngine/src/engine/repository';
 
 class Utils {
     getGameObjectCss(gameObj){
@@ -18,13 +17,14 @@ class Utils {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
             backgroundImage:       gameObj.spriteSheet &&
-                                        gameObj.spriteSheet.resourcePath &&
-                                        `url(${editData.projectName}/${gameObj.spriteSheet.resourcePath})`,
+            gameObj.spriteSheet.resourcePath &&
+            `url(${editData.projectName}/${gameObj.spriteSheet.resourcePath})`,
             backgroundPositionY:  -gameObj._sprPosY+'px',
             backgroundPositionX:  -gameObj._sprPosX+'px',
             backgroundRepeat:     'no-repeat',
             opacity:               gameObj.alpha,
-            transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${mathEx.radToDeg(gameObj.angle)}deg)`
+            transform:            `scale(${gameObj.scale.x},${gameObj.scale.y}) rotateZ(${mathEx.radToDeg(gameObj.angle)}deg)`,
+            backgroundSize:       `${gameObj.spriteSheet.numOfFramesH*gameObj.width}px ${gameObj.spriteSheet.numOfFramesV*gameObj.height}px`
         };
 
     }
@@ -86,18 +86,19 @@ class Utils {
         return new Blob([ia], {type:mimeString});
     }
 
-    range(rFr,rTo) {
+    range(rFr,rTo,step) {
+        if (!step) step = 1;
         let arr = [], i;
         if (rTo==undefined) {
             rTo = rFr;
             rFr = 0;
         }
         if (rFr<rTo) {
-            for (i=rFr;i<=rTo;i++) {
+            for (i=rFr;i<=rTo;i+=step) {
                 arr.push(i);
             }
         } else {
-            for (i=rFr;i>=rTo;i--) {
+            for (i=rFr;i>=rTo;i-=step) {
                 arr.push(i);
             }
         }
@@ -108,9 +109,9 @@ class Utils {
         let result = [];
         let res = {};
         let objs = ['gameObject'];
-        objs.forEach(function(go){
+        objs.forEach(go=>{
             let GObjClass = GameObjectProto;
-            let goObj = new GObjClass();
+            let goObj = new GObjClass(editData.game);
             for (let key in goObj) {
                 if (key.indexOf('_')==0) continue;
                 res[key] = {
@@ -121,7 +122,7 @@ class Utils {
                 }
             }
         });
-        Object.keys(res).forEach(function(key){
+        Object.keys(res).forEach(key=>{
             result.push(res[key]);
         });
         return result;
@@ -130,10 +131,9 @@ class Utils {
     _waitForFrameAndDo(file,path){
         let frame = document.getElementById('scriptEditorFrame');
         let contentWindow = frame && frame.contentWindow;
-        let self = this;
         if (!contentWindow || !contentWindow.ready) {
-            setTimeout(function(){
-                self._waitForFrameAndDo(file,path);
+            setTimeout(()=>{
+                this._waitForFrameAndDo(file,path);
             },100);
             return;
         }
@@ -141,8 +141,10 @@ class Utils {
         contentWindow.calcEditorSize();
         contentWindow.setAutocomplete(this._createAceCompleter());
         window.removeEventListener('resize',contentWindow.calcEditorSize);
-        window.addEventListener('resize',contentWindow.calcEditorSize);
-        window.saveCode = function(code){
+        window.addEventListener('resize',()=>{
+            contentWindow && contentWindow.calcEditorSize();
+        });
+        window.saveCode = code =>{
             restFileSystem.createFile(path,code);
         };
     };
@@ -167,25 +169,26 @@ class Utils {
                 i18n.getAll().confirmQuestion(model),
                 ()=>{
                     restResource.remove(model,callback);
-                    repository.removeObject(model);
+                    editData.game._repository.removeObject(model);
                     resolve();
                 }
             )
         });
-
     }
 
-    openEditor(resourceUrl) {
-        let self = this;
-        editData.scriptEditorUrl = resourceUrl;
-        let path = 'script/'+resourceUrl;
-        restFileSystem.readFile(path,function(file){
-            self._waitForFrameAndDo(file,path);
+    openEditor(path) {
+        editData.scriptEditorUrl = path;
+        restFileSystem.readFile(path,(file)=>{
+            this._waitForFrameAndDo(file,path);
         });
     }
 
     assign(model,property,value){
         model && (model[property] = value);
+    }
+
+    capitalise(s){
+        return s[0].toUpperCase() + s.substr(1);
     }
 
 }

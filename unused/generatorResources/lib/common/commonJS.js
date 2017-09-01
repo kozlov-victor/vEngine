@@ -1,7 +1,7 @@
 let modules = {}, require = function(name){
     let moduleObj = modules[name];
 
-    //<code>{{#if opts.debug }}
+    //<code>{{#if opts.minify }}
     if (!moduleObj) {
         console.trace('can not found module with name ' + (name || '(name not specified)'));
         throw 'can not found module with name ' + (name || '(name not specified)');
@@ -19,7 +19,7 @@ let modules = {}, require = function(name){
 };
 
 
-//<code>{{#if opts.debug }}
+//<code>{{#if opts.minify }}
 //<code>{{var "requireName" opts.require}}
 //<code>{{#unless requireName}}
 //<code>{{var "requireName"  "require"}}

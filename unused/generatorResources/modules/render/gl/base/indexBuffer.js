@@ -5,7 +5,7 @@ const IndexBuffer = function(gl){
     let dataLength;
 
     this.setData = function(bufferData){
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
         //<code>{{/if}}
         dataLength = bufferData.length;

@@ -7,9 +7,6 @@ import i18n from 'app/providers/i18n';
 import chrome from 'app/providers/chrome';
 import utils from 'app/providers/utils';
 
-import repository from 'coreEngine/src/engine/repository';
-
-
 const SYMBOL_PADDING = 4;
 const fontSample = 'Test me! Text here';
 
@@ -99,18 +96,18 @@ export default RF.registerComponent('app-font-dialog', {
         let strFont = model.fontSize +'px'+' '+model.fontFamily;
         model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
         let file = utils.dataURItoBlob(getFontImage(model.fontContext,strFont,utils.rgbToHex(model.fontColor)));
+        model.resourcePath =  `resources/${model.name}.png`;
 
         await restFileSystem.uploadFile(
             file,
             {
-                type:model.type,
-                fileName:`${model.name}.png`
+                path:model.resourcePath
             }
         );
         let resp = await restResource.save(model);
         if (resp.created) {
             model.id = resp.id;
-            repository.addObject(model);
+            editData.game._repository.addObject(model);
         } else if (resp.updated) {
             model.updateCloner();
         }

@@ -6,14 +6,13 @@
             },
             title: i18n.scenes
         }">
-
     <div data-transclusion="content:#scenes">
         <div
             class="withPaddingLeft"
             data-class="{
                 currScene:editData.currSceneInEdit==scene
             }"
-            data-for="scene in editData.sceneList.rs"
+            data-for="scene in editData.game._repository.getArray('Scene')"
             data-click="setCurrentScene(scene)"
         >
             <app-collapsible
@@ -43,7 +42,7 @@
                             <div data-transclusion="content:#layers">
                                 <div
                                         data-click="setCurrLayer(layer)"
-                                        data-for="layer in scene.layers.rs" class="withPaddingLeft">
+                                        data-for="layer in scene.layers" class="withPaddingLeft">
                                     <app-collapsible
                                             data-transclusion-id="currLayer"
                                             data-state="{
@@ -64,7 +63,7 @@
                                                                     currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject
                                                                 }"
                                                                 data-click="setCurrSceneGameObjectInEdit(gameObject)"
-                                                                data-for="gameObject in layer.gameObjects.rs">
+                                                                data-for="gameObject in layer.gameObjects">
 
                                                                 <app-game-object-row
                                                                         data-state="

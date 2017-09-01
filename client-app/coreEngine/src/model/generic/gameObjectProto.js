@@ -1,5 +1,6 @@
 
 import BaseModel from '../baseModel'
+import * as commonBehaviours from '../../commonBehaviour/all';
 
 export default class GameObjectProto extends BaseModel {
 
@@ -10,9 +11,9 @@ export default class GameObjectProto extends BaseModel {
         //return game.getCurrScene()._allGameObjects.findAll({name: name});
     }
 
-    constructor(){
-        super();
-
+    constructor(game){
+        super(game);
+        this.type = 'GameObjectProto';
         this.width = 0;
         this.height = 0;
         this.spriteSheet = null;
@@ -35,39 +36,57 @@ export default class GameObjectProto extends BaseModel {
         this.groupName = '';
     }
 
-    getFrAnimation(animationName){
-        //return this.frameAnimations.find({name: animationName});
+    revalidate(){
+        this.setFrameIndex(this.currFrameIndex);
+        if (this.spriteSheet) {
+            this.width = this.spriteSheet._frameWidth;
+            this.height = this.spriteSheet._frameHeight;
+        }
+        this.frameAnimations.forEach((f,i)=>{
+            this.frameAnimations[i] = this.frameAnimations[i].clone();
+            this.frameAnimations[i]._gameObject = this;
+        });
+        this.commonBehaviour.forEach(cb=>{
+            let CbClazz = commonBehaviours[cb.name];
+            let instance = new CbClazz(this._game);
+            instance.manage(this,cb.parameters);
+        });
     }
+
+    getRect(){
+        return {
+            x:      this.pos.x,
+            y:      this.pos.y,
+            width:  this.width,
+            height: this.height
+        };
+    }
+
+    playFrameAnimation(animationName){
+        let fr = this.frameAnimations.find(it=>it.name===animationName);
+        fr._gameObject = this;
+        this._currFrameAnimation = fr;
+        fr.play();
+    }
+
     setFrameIndex(index){
         this.currFrameIndex = index;
         this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
         this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
     }
-    setSpriteSheet(spriteSheet){
-        this.spriteSheet = spriteSheet;
-        this.width = spriteSheet._frameWidth;
-        this.height = spriteSheet._frameHeight;
-    }
+
     update(time,delta) {
-        this._super(time,delta);
+        super.update(time);
         this._currFrameAnimation && this._currFrameAnimation.update(time);
-        this.__updateIndividualBehaviour__(delta);
-        this.__updateCommonBehaviour__();
-        this._render();
+        this._game._renderer.draw(this);
+        if (this._individualBehaviour) this._individualBehaviour.onUpdate();
     }
+
+    onShow(){
+        if (this._individualBehaviour) this._individualBehaviour.onCreate();
+    }
+
     stopFrAnimations(){
         this._currFrameAnimation && this._currFrameAnimation.stop();
-    }
-    _render(){
-        // let self = this;
-        // let ctx = renderer.getContext();
-        // ctx.save();
-        // self._super();
-        //
-        // self.tileRepeat ?
-        //     _drawPattern(ctx,self):
-        //     _draw(ctx,self);
-        //
-        // ctx.restore();
     }
 }

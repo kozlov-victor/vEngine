@@ -30,7 +30,7 @@
         }
         if (!msg) msg = '';
         if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();
-        if (!msg) msg = 'Unknown error. Is your server running?';
+        if (!msg) msg = 'Unknown error. Is your server _running?';
         if (lineNum) msg+=' in line ' + lineNum;
         if (lineNum) msg+=' in line ' + lineNum;
         return msg;

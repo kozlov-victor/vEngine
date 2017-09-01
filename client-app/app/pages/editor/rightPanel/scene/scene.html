@@ -1,0 +1,159 @@
+<app-collapsible
+    data-state="{title:i18n.currScene}"
+>
+
+    <div data-transclusion="content">
+        <div
+                data-if="!editData.currSceneInEdit.id">
+            {{i18n.notSelected}}
+        </div>
+
+        <div class="withPadding" data-if="editData.currSceneInEdit.id">
+
+            <b class="centerText">
+                {{i18n.scene}} : {{editData.currSceneInEdit.name}}
+            </b>
+
+            <div class="table width100">
+
+                <div class="row">
+                    <div class="cell">
+                        <label for="editData.currSceneInEdit.useBG">{{i18n.useBG}}</label>
+                    </div>
+                    <div class="cell">
+                        <input type="checkbox"
+                               id="editData.currSceneInEdit.useBG"
+                               data-model="editData.currSceneInEdit.useBG"
+                               data-change="editScene()"/>
+                    </div>
+                </div>
+
+                <div class="row" data-if="editData.currSceneInEdit.useBG">
+                    <div class="cell">
+                        {{i18n.colorBG}}
+                    </div>
+                    <div class="cell">
+                        <app-color-picker
+                                data-state="{
+                                    model:editData.currSceneInEdit,
+                                    field: 'colorBG',
+
+                                }"
+                        ></app-color-picker>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell">
+                        <hr/>
+                    </div>
+                    <div class="cell">
+                        <hr/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell valign bold">
+                        {{i18n.tileMap}}
+                    </div>
+                    <div class="cell eye"></div>
+                </div>
+                <div class="row">
+                    <div class="cell valign">
+                        tileMap.width
+                    </div>
+                    <div class="cell">
+                        <input type="number"
+                               min="0"
+                               maxlength="3"
+                               data-change="editScene()"
+                               data-model="editData.currSceneInEdit.tileMap.width"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell valign">
+                        tileMap.height
+                    </div>
+                    <div class="cell">
+                        <input type="number"
+                               min="0"
+                               maxlength="3"
+                               data-change="editScene()"
+                               data-model="editData.currSceneInEdit.tileMap.height"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell">
+                        {{i18n.selected}}
+                    </div>
+                    <div class="cell">
+                        <div
+                            data-class="{
+                                inlineBlock:1,
+                                hoverOutline:1
+                            }"
+                            data-style="{
+                                width:frameWidth+'px',
+                                verticalAlign:'middle',
+                                height:frameHeight+'px',
+                                backgroundImage:      'url('+editData.projectName+'/'+resourcePath+')',
+                                backgroundPositionX:  -framePosX+'px',
+                                backgroundPositionY:  -framePosY+'px',
+                                backgroundRepeat:     'no-repeat',
+                            }"
+                        ></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="cell">
+                        {{i18n.spriteSheets}}
+                    </div>
+                    <div class="cell">
+                        <select
+                                data-model="editData.currSceneInEdit.tileMap.spriteSheetId"
+                                data-change="setTileMapSpriteSheet()"
+                                >
+                            <option value="">--</option>
+                            <option
+                                    data-for="item in editData.spriteSheetList.rs"
+                                    data-value="item.id"
+                                    >{{item.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                data-style="{
+                    width: frameWidth*numOfFramesH+'px',
+                    overflowX: 'auto'
+                }"
+                >
+                <div data-class="{
+                        inlineBlock:true,
+                        selected:i==editData.currTileIndexInEdit,
+                        hoverOutline:1
+                     }"
+                     data-style="{
+                        width:frameWidth+'px',
+                        verticalAlign:'middle',
+                        height:frameHeight+'px',
+                        backgroundImage:'url('+resourcePath+')',
+                        backgroundPositionX:   -framePosX+'px',
+                        backgroundPositionY:   -framePosY+'px',
+                        backgroundRepeat:     'no-repeat',
+                     }"
+                     data-title="i"
+                     data-click="setCurrSelectedTile(i)"
+                     data-for="v,i in numOfFramesForSceneSpriteSheet"
+                     ></div>
+            </div>
+
+        </div>
+    </div>
+
+
+</app-collapsible>

@@ -34,7 +34,7 @@ exports.isJustReleased = function(key) {
 };
 
 exports.update = function(){
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     if (window.canceled) return;
     // {{/if}}
     [

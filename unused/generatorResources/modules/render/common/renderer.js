@@ -49,7 +49,7 @@ exports.init = function(){
 
 
 exports.start = function(){
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     if (window.canceled) return;
     //<code>{{/if}}
     if (!exports.isReady) return;
@@ -78,7 +78,7 @@ var drawSceneLoop = function(){
 
     if (!isRunning) return;
 
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     var lastErr = ctx.getError();
     if (lastErr) throw "GL error: " + lastErr;
     if (window.canceled) return;
@@ -103,7 +103,7 @@ var drawSceneLoop = function(){
 exports.printText = function(x,y,text,font){
     if (!text) return;
     font = font || bundle.fontList.get(0);
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     if (!font) throw 'at least one font must be specified. Create new one';
     //<code>{{/if}}
     var posX = x;

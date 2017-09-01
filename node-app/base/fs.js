@@ -25,7 +25,7 @@ class FS {
     }
 
     createFileSync(path,content){
-        if (fs.existsSync(path)) return;
+        this.deleteFileSync(path);
         this.writeFileSync(
             path,
             content||''
@@ -37,18 +37,35 @@ class FS {
         fs.writeFileSync(path,content,opts);
     }
 
-    copyFolderSync(src, dest) {
-        let exists = fs.existsSync(src);
-        let stats = exists && fs.statSync(src);
-        let isDirectory = exists && stats.isDirectory();
-        if (exists && isDirectory) {
-            !fs.existsSync(dest) && fs.mkdirSync(dest);
-            fs.readdirSync(src).forEach((childItemName)=> {
-                this.copyFileSync(path.join(src, childItemName),
-                    path.join(dest, childItemName));
-            });
-        } else {
-            fs.linkSync(src, dest);
+    _copyFilesToFolderSync( source, target ) {
+        var targetFile = target;
+        //if target is a directory a new file with the same name will be created
+        if ( fs.existsSync( target ) ) {
+            if ( fs.lstatSync( target ).isDirectory() ) {
+                targetFile = path.join( target, path.basename( source ) );
+            }
+        }
+        fs.writeFileSync(targetFile, fs.readFileSync(source));
+    }
+
+    copyFolderSync( source, target ) {
+        let files = [];
+        //check if folder needs to be created or integrated
+        let targetFolder = path.join( target, path.basename( source ) );
+        if ( !fs.existsSync( targetFolder ) ) {
+            fs.mkdirSync( targetFolder );
+        }
+        //copy
+        if ( fs.lstatSync( source ).isDirectory() ) {
+            files = fs.readdirSync( source );
+            files.forEach(   file=> {
+                let curSource = path.join( source, file );
+                if ( fs.lstatSync( curSource ).isDirectory() ) {
+                    this.copyFolderSync( curSource, targetFolder );
+                } else {
+                    this._copyFilesToFolderSync( curSource, targetFolder );
+                }
+            } );
         }
     }
 
@@ -57,7 +74,8 @@ class FS {
             if (fs.statSync(path+'/'+file).isDirectory()) {
                 this._read(path+'/'+file,res);
             } else {
-                res.push({name:file,fullName: path+'/'+file, content:fs.readFileSync(path+'/'+file, contentType)});
+                let fullPath = (path+'/'+file).split('/').filter(s=>{return !!s.length}).join('/');
+                res.push({name:file,fullName: fullPath, content:fs.readFileSync(fullPath, contentType)});
             }
         });
     }
@@ -75,10 +93,10 @@ class FS {
     }
 
     deleteFolderSync(path) {
-        if (fs.existsSync(path)) {
-            fs.readdirSync(path).forEach((file, index)=> {
+        if( fs.existsSync(path) ) {
+            fs.readdirSync(path).forEach((file,index)=>{
                 let curPath = path + "/" + file;
-                if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                if(fs.lstatSync(curPath).isDirectory()) { // recurse
                     this.deleteFolderSync(curPath);
                 } else { // delete file
                     fs.unlinkSync(curPath);
@@ -86,17 +104,19 @@ class FS {
             });
             fs.rmdirSync(path);
         }
-    }
+    };
 
     createFolderSync(path) {
+        this.deleteFolderSync(path);
         try {
             let pathSeq = '';
             path.split('/').forEach((fldr)=>{
+                if (!fldr) return;
                 pathSeq+=fldr;
                 if (!fs.existsSync(pathSeq)) fs.mkdirSync(pathSeq);
                 pathSeq+='/';
             });
-            fs.mkdirSync(path);
+            if (path) fs.mkdirSync(path);
         } catch (e) {
             if (e.code != 'EEXIST') throw e;
         }

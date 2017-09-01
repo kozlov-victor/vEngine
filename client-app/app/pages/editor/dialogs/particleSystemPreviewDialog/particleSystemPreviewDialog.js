@@ -3,8 +3,6 @@ import editData from 'app/providers/editData';
 import i18n from 'app/providers/i18n';
 import utils from 'app/providers/utils';
 
-import repository from 'coreEngine/src/engine/repository';
-
 let tid;
 
 export default RF.registerComponent('app-particle-system-preview-dialog', {
@@ -56,6 +54,8 @@ export default RF.registerComponent('app-particle-system-preview-dialog', {
         },5);
     },
     emit: function(e){
+        if (!editData.currParticleSystemInEdit) return;
+        if (!editData.currParticleSystemInEdit.gameObjectProto) return;
         let rect = e.target.getBoundingClientRect();
         editData.currParticleSystemInEdit.emit(e.clientX - rect.left,e.clientY - rect.top);
     }

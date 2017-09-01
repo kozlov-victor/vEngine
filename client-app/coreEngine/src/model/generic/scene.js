@@ -1,25 +1,17 @@
 
 import BaseModel from '../baseModel'
+import LoadingQueue from 'coreEngine/src/engine/loadingQueue'
+
 
 export default class Scene extends BaseModel {
 
-    // __onResourcesReady(){
-    //     let this = this;
-    //     this._allGameObjects = new collections.List();
-    //     this.layers.forEach(function(l){
-    //         this._allGameObjects.addAll(l.gameObjects);
-    //     });
-    // }
-    constructor() {
-        super();
-
+    constructor(game) {
+        super(game);
+        this.type = 'Scene';
         this.alpha = 1;
         this.layers = [];
-        this._allGameObjects = [];
         this.useBG = false;
         this.colorBG = {r: 255, g: 255, b: 255};
-        this.onShow = function () {
-        };
         this._tweenMovies = [];
         this.tileMap = {
             _spriteSheet: null,
@@ -53,24 +45,46 @@ export default class Scene extends BaseModel {
         // }
         return Object.keys(dataSet).map(key=>dataSet[key]);
     }
-    getAllGameObjects(){
-        return this._allGameObjects;
+
+    preload(cb){
+        let resources = this.getAllSpriteSheets();
+        let q = new LoadingQueue();
+        q.onResolved = ()=>{
+            cb && cb();
+        };
+        resources.forEach(res=>{
+            q.addTask(()=>{
+                this._game._renderer.loadTextureInfo(
+                    res.resourcePath,
+                    ()=>q.resolveTask(res.id)
+                );
+            },res.id);
+        });
+        q.start();
+
     }
+
+    onShow(){
+        this.layers.forEach(l=>{
+            l.onShow();
+        });
+    }
+
     update(currTime,deltaTime){
-        this._render();
-        let layers = this.layers.rs;
-        let i = this.layers.size();
+        this._game._renderer.clear();
+        let layers = this.layers;
+        let i = this.layers.length;
         let l = i -1;
         while(i--){
             layers[i-l].update(currTime,deltaTime);
         }
-        this._tweenMovies.forEach(function(tweenMovie){
-            if (tweenMovie.completed) {
-                this._tweenMovies.remove(tweenMovie);
-            }
-            tweenMovie._update(currTime);
-        });
-        this.__updateIndividualBehaviour__(currTime);
+        // this._tweenMovies.forEach(function(tweenMovie){
+        //     if (tweenMovie.completed) {
+        //         this._tweenMovies.remove(tweenMovie);
+        //     }
+        //     tweenMovie._update(currTime);
+        // });
+        // this.__updateIndividualBehaviour__(currTime);
     }
     fadeIn(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);
@@ -85,28 +99,28 @@ export default class Scene extends BaseModel {
         movie.play();
     }
     _render(){
-        let spriteSheet = this.tileMap._spriteSheet;
-        if (!spriteSheet) return;
-        let ctx = renderer.getContext();
-        let tilePosX = ~~(camera.pos.x / this.tileMap._spriteSheet._frameWidth);
-        let tilePosY = ~~(camera.pos.y / this.tileMap._spriteSheet._frameHeight);
-        let w = tilePosX + this.tileMap._tilesInScreenX + 2;
-        let h = tilePosY + this.tileMap._tilesInScreenY + 2;
-        for (let y=tilePosY;y<h;y++) {
-            for (let x=tilePosX;x<w;x++) {
-                let index = this.tileMap.data[y] && this.tileMap.data[y][x];
-                if (index==undefined) continue;
-                ctx.drawImage(
-                    resourceCache.get(spriteSheet.resourcePath),
-                    spriteSheet.getFramePosX(index),
-                    spriteSheet.getFramePosY(index),
-                    spriteSheet._frameWidth,
-                    spriteSheet._frameHeight,
-                    x*spriteSheet._frameWidth,
-                    y*spriteSheet._frameHeight
-                );
-            }
-        }
+        // let spriteSheet = this.tileMap._spriteSheet;
+        // if (!spriteSheet) return;
+        // let ctx = renderer.getContext();
+        // let tilePosX = ~~(camera.pos.x / this.tileMap._spriteSheet._frameWidth);
+        // let tilePosY = ~~(camera.pos.y / this.tileMap._spriteSheet._frameHeight);
+        // let w = tilePosX + this.tileMap._tilesInScreenX + 2;
+        // let h = tilePosY + this.tileMap._tilesInScreenY + 2;
+        // for (let y=tilePosY;y<h;y++) {
+        //     for (let x=tilePosX;x<w;x++) {
+        //         let index = this.tileMap.data[y] && this.tileMap.data[y][x];
+        //         if (index==undefined) continue;
+        //         ctx.drawImage(
+        //             resourceCache.get(spriteSheet.resourcePath),
+        //             spriteSheet.getFramePosX(index),
+        //             spriteSheet.getFramePosY(index),
+        //             spriteSheet._frameWidth,
+        //             spriteSheet._frameHeight,
+        //             x*spriteSheet._frameWidth,
+        //             y*spriteSheet._frameHeight
+        //         );
+        //     }
+        // }
     }
     getTileAt(x,y){
         if (!this.tileMap._spriteSheet) return null;
@@ -117,7 +131,7 @@ export default class Scene extends BaseModel {
     printText(x,y,text,font){
         if (!text) return;
         if (!text.substring) text = JSON.stringify(text,null,4);
-        renderer.printText(x,y,text,font);
+        this.game.renderer.printText(x,y,text,font);
     }
     log(text) {
         this.printText(0,0,text);

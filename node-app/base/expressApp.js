@@ -33,12 +33,31 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 
-const setHeader = function(res,responseObj){
+const setHeader = (res,responseObj)=>{
     if (typeof responseObj == 'object')
         res.setHeader('Content-Type', 'application/json');
 };
 
-const processCommonRequest = function(opts){
+const createResponse = (opts,res,params)=>{
+    let codeResult;
+    let callback = function(){
+        if (opts.responseType=='view') {
+            if (codeResult) codeResult.params = params;
+            res.render(opts.methodName,codeResult);
+        } else {
+            setHeader(res,codeResult);
+            res.send(codeResult);
+        }
+    };
+    codeResult = opts.ctrl[opts.methodName](params,callback);
+    if (typeof codeResult === 'function') {
+        // do nothing, callback will be invoked
+    } else {
+        callback();
+    }
+};
+
+const processCommonRequest = (opts)=>{
     console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
 
     app[opts.requestType](`${opts.controllerName}/${opts.methodName}`,function(req,res){
@@ -55,18 +74,11 @@ const processCommonRequest = function(opts){
                 break;
         }
 
-        let codeResult = opts.ctrl[opts.methodName](params);
-        if (opts.responseType=='view') {
-            if (codeResult) codeResult.params = params;
-            res.render(opts.methodName,codeResult);
-        } else {
-            setHeader(res,codeResult);
-            res.send(codeResult);
-        }
+        createResponse(opts,res,params);
     })
 };
 
-const processMultiPartRequest = function(opts){
+const processMultiPartRequest = opts=>{
     app.post(`${opts.controllerName}/${opts.methodName}`,multipart,function(req,res){
         let pathToUploadedFile = req.files && req.files.file && req.files.file.path;
         let params = req.body;
@@ -76,9 +88,7 @@ const processMultiPartRequest = function(opts){
         if (params.fileName && params.fileName.splice && params.fileName[0]) {
             params.fileName = params.fileName[0];
         }
-        let result = opts.ctrl[opts.methodName](params);
-        setHeader(res,result);
-        res.send(result);
+        createResponse(opts,res,params);
     });
     console.log(`mapped: ${opts.requestType}: ${opts.controllerName}/${opts.methodName}`);
 };
@@ -93,7 +103,7 @@ const getAnnotations = (reader,methodName)=>{
     return res;
 };
 
-const setUpControllers = function(){
+const setUpControllers = ()=>{
     fs.readDirSync(appDir+'/node-app/mvc/controllers').forEach(function(itm) {
         let fileNameWithoutExt = itm.name.split('.')[0];
         let Ctrl = require(appDir + '/node-app/mvc/controllers/' + fileNameWithoutExt).controller;
@@ -130,7 +140,7 @@ const setUpControllers = function(){
     });
 };
 
-let handleErrors = function(app){
+let handleErrors = app=>{
     app.use(function(err, req, res, next) {
         if (err) console.error(err);
         res.status(500).send(

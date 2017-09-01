@@ -6,8 +6,6 @@ import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 import utils from 'app/providers/utils';
 
-import Scene from  'coreEngine/src/model/generic/scene';
-import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-scene-dialog', {
     template: {
@@ -18,27 +16,19 @@ export default RF.registerComponent('app-scene-dialog', {
     editData,
     i18n:i18n.getAll(),
 
-    createOrEditScene: function(s){
-        restResource.
-        save(s).
-        then(resp=>{
-            if (resp.created) {
-                s.id = resp.id;
-                editData.sceneList.add(s);
-                return resp;
-            } else if (resp.updated) {
-                s.updateCloner();
-            }
-        }).
-        then((resp)=>{
-            if (resp && resp.created) return restFileSystem.createFile(
-                `script/scene/${s.name}.js`,
-                document.getElementById('defaultCodeScript').textContent);
-        }).
-        then(()=>{
-            RF.getComponentById('sceneModal').close();
-            RF.digest();
-        }).
-        catch(window.catchPromise);
+    async createOrEditScene(s){
+
+        let resp = await restResource.save(s);
+        if (resp.created) {
+            s.id = resp.id;
+            editData.game._repository.addObject(s);
+            let name = utils.capitalise(editData.currSceneInEdit.name);
+            await restFileSystem.createFile(
+                `scripts/${s.name}.js`,
+                document.getElementById('defaultCodeScript').textContent.replace('${name}',name));
+        } else {
+            s.updateCloner();
+        }
+        RF.getComponentById('sceneModal').close();
     }
 });

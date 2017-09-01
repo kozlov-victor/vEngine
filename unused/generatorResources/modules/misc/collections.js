@@ -94,7 +94,7 @@ exports.List = function List() {
     this.remove = function (obj){
         if (!obj) return;
         let index = self.indexOf(obj);
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (index==-1) throw `can not remove object ${obj} from collections.list`;
         // {{/if}}
         self.rs.splice(index,1);

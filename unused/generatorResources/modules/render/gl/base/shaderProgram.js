@@ -1,5 +1,5 @@
 const compileShader = (gl, shaderSource, shaderType)=> {
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
     //<code>{{/if}}
     // Create the shader object
@@ -178,7 +178,7 @@ const ShaderProgram = require('class').extend({
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
         let uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName);
 
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
         if (uniformLocation < 0) throw "can not found uniform location for " + uniformLocationName;
         //<code>{{/if}}

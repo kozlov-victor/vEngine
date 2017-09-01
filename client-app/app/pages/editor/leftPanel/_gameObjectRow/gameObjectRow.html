@@ -1,13 +1,5 @@
 <div>
-    <div class="cell">
-        <span class="inlineBlock withPaddingRight">
-            <span class="inlineBlock withPaddingTop withPaddingBottom">
-                {{gameObject.name}}
-            </span>
-        </span>
-    </div>
-    <div    class="cell width100"
-            data-if="!gameObject.subType">
+    <div    class="cell width100">
         <div data-style="
                 utils.merge(
                         utils.getGameObjectCss(gameObject),
@@ -20,14 +12,10 @@
              data-draggable="draggable && {obj:gameObject,src: 'leftPanel'}"
         ></div>
     </div>
-    <div
-            class="cell width100"
-            data-if="gameObject.subType"
-            data-attributes="{title:gameObject.name}"
-            >
-        <span class="textOverflow">
+    <div class="cell">
+        <span class="inlineBlock withPaddingRight">
             <span class="inlineBlock withPaddingTop withPaddingBottom">
-                {{gameObject.subType}}
+                {{gameObject.name}}
             </span>
         </span>
     </div>

@@ -16,7 +16,7 @@ const Texture = function(gl){
      * @param height -unused if image specified
      */
     this.setImage = function(img,width,height){
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
         //<code>{{/if}}
 
@@ -63,7 +63,7 @@ const Texture = function(gl){
     };
 
     (function(){
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!gl) throw "can not create texture, gl context not passed to constructor, expected: Texture(gl)";
         //<code>{{/if}}
         tex = gl.createTexture();

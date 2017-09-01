@@ -1,4 +1,6 @@
 
+import './inputFile.less'
+
 export default RF.registerComponent('app-input-file', {
     getInitialState: ()=>{
         return {
@@ -19,10 +21,12 @@ export default RF.registerComponent('app-input-file', {
         };
         input.onchange = ()=>{
             let file = input.files[0];
-            let name = file.name.split('.')[0];
+            let fileNameArr = file.name.split('.');
+            let ext = fileNameArr.pop();
+            let name = fileNameArr.join('');
             let url = window.URL || window.webkitURL;
             let src = url.createObjectURL(file);
-            this.onFilePicked(src,file,name);
+            this.onFilePicked(src,file,name,ext);
             RF.digest();
         }
     }

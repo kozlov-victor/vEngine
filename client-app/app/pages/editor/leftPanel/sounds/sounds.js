@@ -6,7 +6,6 @@ import i18n from 'app/providers/i18n';
 import restFileSystem from 'app/providers/rest/fileSystem';
 
 import Sound from 'coreEngine/src/model/generic/sound';
-import repository from 'coreEngine/src/engine/repository';
 
 
 export default RF.registerComponent('app-sounds', {
@@ -15,10 +14,9 @@ export default RF.registerComponent('app-sounds', {
         value: require('./sounds.html')
     },
     editData,
-    repository,
     i18n: i18n.getAll(),
     createSound: function(){
-        this.editData.currSoundInEdit = new Sound();
+        this.editData.currSoundInEdit = new Sound(editData.game);
         RF.getComponentById('soundDialog').open();
     },
     editSound: function(sound){
@@ -27,7 +25,7 @@ export default RF.registerComponent('app-sounds', {
     },
     deleteSound: function(model){
         utils.deleteModel(model,()=>{
-            restFileSystem.removeFile(model.resourcePath.replace('resources/',''));
+            restFileSystem.removeFile(model.resourcePath);
         });
     }
 });

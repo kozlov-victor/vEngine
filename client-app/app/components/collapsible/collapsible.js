@@ -1,4 +1,6 @@
 
+import './collapsible.less'
+
 export default RF.registerComponent('app-collapsible', {
     template: {
         type:'string',

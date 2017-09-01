@@ -3,8 +3,8 @@ import http from 'app/providers/rest/httpClient';
 import editData from 'app/providers/editData';
 
 class Resource{
-    getAll(){
-        return http.post('/resource/getAll',{projectName:editData.projectName});
+    getAll(projectName){
+        return http.post('/resource/getAll',{projectName});
     }
     save(model,callback){
         if (model.toJSON) model = model.toJSON();

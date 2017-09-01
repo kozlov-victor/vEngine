@@ -41,7 +41,7 @@ exports.loadBinary = function(url,progress,callBack) {
         progress(url,e.loaded/ e.total);
     };
 
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     request.onerror=function(e){throw 'can not load sound with url '+url};
     //<code>{{/if}}
 

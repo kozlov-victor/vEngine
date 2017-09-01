@@ -24,7 +24,7 @@ class FileSystemController{
      */
     createFile(params){
         if (!params.projectName) throw 'project name not specified';
-        fs.writeFileSync('workspace/'+params.projectName+'/resources/'+params.path,params.content);
+        fs.writeFileSync(`workspace/${params.projectName}/${params.path}`,params.content);
         return {};
     }
     /**
@@ -33,7 +33,7 @@ class FileSystemController{
      */
     removeFile(params){
         if (!params.projectName) throw 'project name not specified';
-        fs.deleteFileSync('workspace/'+params.projectName+'/resources/'+params.path);
+        fs.deleteFileSync(`workspace/${params.projectName}/${params.path}`);
         return {success:true};
     }
     /**
@@ -42,7 +42,7 @@ class FileSystemController{
      */
     uploadFile(params){
         fs.writeFileSync(
-            `workspace/${params.projectName}/resources/${params.fileName}`,
+            `workspace/${params.projectName}/${params.path}`,
             params.file,
             true
         );
@@ -55,7 +55,7 @@ class FileSystemController{
      */
     readFile(params){
         if (!params.projectName) throw 'project name not specified';
-        return fs.readFileSync('workspace/'+params.projectName+'/resources/'+params.path);
+        return fs.readFileSync(`workspace/${params.projectName}/${params.path}`);
     }
 }
 

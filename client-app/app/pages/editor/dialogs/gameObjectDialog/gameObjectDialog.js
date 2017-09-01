@@ -9,7 +9,6 @@ import 'app/pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog';
 import 'app/pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog';
 
 import FrameAnimation from  'coreEngine/src/model/generic/frameAnimation';
-import repository from 'coreEngine/src/engine/repository';
 
 
 export default RF.registerComponent('app-game-object-dialog', {
@@ -19,7 +18,6 @@ export default RF.registerComponent('app-game-object-dialog', {
     },
     form:{valid: ()=>{return true;}},
     editData,
-    repository,
     i18n: i18n.getAll(),
     utils,
     selectedBehaviourId: '',
@@ -29,10 +27,11 @@ export default RF.registerComponent('app-game-object-dialog', {
         let resp = await restResource.save(g);
         if (resp.created) {
             g.id = resp.id;
-            repository.addObject(g);
+            editData.game._repository.addObject(g);
+            let name = utils.capitalise(editData.currGameObjectInEdit.name);
             await restFileSystem.createFile(
-                `script/${g.name}.js`,
-                document.getElementById('defaultCodeScript').textContent
+                `scripts/${g.name}.js`,
+                document.getElementById('defaultCodeScript').textContent.replace('${name}',name)
             );
         }
         else {
@@ -53,7 +52,7 @@ export default RF.registerComponent('app-game-object-dialog', {
     },
 
     createFrameAnimation(){
-        this.editData.currFrameAnimationInEdit = new FrameAnimation();
+        this.editData.currFrameAnimationInEdit = new FrameAnimation(editData.game);
         RF.getComponentById('frameAnimationDialog').open();
     },
 
@@ -62,11 +61,14 @@ export default RF.registerComponent('app-game-object-dialog', {
         RF.getComponentById('frameAnimationDialog').open();
     },
 
-    async deleteFrameAnimation(fa){
-        await utils.deleteModel(fa);
-        this.editData.currGameObjectInEdit.frameAnimations.remove(it=>it.id==fa.id);
-        this.editData.currGameObjectInEdit.updateCloner();
-        restResource.save(this.editData.currGameObjectInEdit);
+    deleteFrameAnimation(fa){
+        utils.deleteModel(fa,()=>{
+            let go = this.editData.currGameObjectInEdit;
+            go.frameAnimations.remove(it=>it.id==fa.id);
+            go.updateCloner();
+            editData.game._repository.updateObject(go);
+            restResource.save(go);
+        });
     },
 
     onSpriteSheetSelected(spriteSheet){
@@ -92,11 +94,14 @@ export default RF.registerComponent('app-game-object-dialog', {
         RF.getComponentById('commonBehaviourModal').open();
     },
 
-    async deleteCommonBehaviour(cb){
-        let model = editData.currGameObjectInEdit;
-        model.commonBehaviour.remove(it=>it.id==cb.id);
-        await restResource.save(model);
-        model.updateCloner();
+    deleteCommonBehaviour(cb){
+        utils.deleteModel(cb,()=>{
+            let model = editData.currGameObjectInEdit;
+            model.commonBehaviour.remove(it=>it.id==cb.id);
+            model.updateCloner();
+            editData.game._repository.updateObject(model);
+            restResource.save(model);
+        });
     },
 
     isCbItemDisabled(cb){

@@ -1,4 +1,6 @@
 
+import './confirmDialog.less'
+
 import i18n from 'app/providers/i18n';
 
 export default RF.registerComponent('app-confirm-dialog', {

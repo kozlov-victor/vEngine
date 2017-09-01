@@ -21,7 +21,7 @@ const Sound = Resource.extend({
 }, {
     find: function(name){
         let res = bundle.soundList.find({name:name});
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!res) throw `can not found sound with name ${name}`;
         // {{/if}}
         return res;

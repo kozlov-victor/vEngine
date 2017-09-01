@@ -7,7 +7,6 @@ import 'app/pages/editor/leftPanel/_gameObjectRow/gameObjectRow';
 import restFileSystem from 'app/providers/rest/fileSystem';
 
 import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto';
-import repository from 'coreEngine/src/engine/repository';
 
 
 export default RF.registerComponent('app-game-objects', {
@@ -16,23 +15,35 @@ export default RF.registerComponent('app-game-objects', {
         value: require('./gameObjects.html')
     },
     editData,
-    repository,
     i18n: i18n.getAll(),
 
     createGameObject: function(){
-        this.editData.currGameObjectInEdit = new GameObjectProto();
+        this.editData.currGameObjectInEdit = new GameObjectProto(editData.game);
         RF.getComponentById('gameObjectModal').open();
     },
-    editGameObjectScript: function(gameObject){
-        utils.openEditor(`script/${gameObject.name}.js`);
+    editGameObjectScript: function(model){
+        utils.openEditor(`scripts/${model.name}.js`);
     },
     editGameObject: function(go){
         this.editData.currGameObjectInEdit =  go.clone();
         RF.getComponentById('gameObjectModal').open();
     },
     deleteGameObject: function(model){
+        let scenesUsed = [];
+        editData.gameObject._repository.getArray('Scene').forEach(s=>{
+            s.layers.forEach(l=>{
+                l.gameObjects.forEach(go=>{
+                    if (go.name==model.name) {
+                        if (scenesUsed.indexOf(s)==-1) scenesUsed.push(s);
+                    }
+                });
+            });
+
+        });
+        if (scenesUsed.length)
+            return alertEx(this.i18n.canNotDelete(model,scenesUsed));
         utils.deleteModel(model,()=>{
-            restFileSystem.removeFile(`script/${model.name}.js`);
+            restFileSystem.removeFile(`scripts/${model.name}.js`);
         });
     }
 });

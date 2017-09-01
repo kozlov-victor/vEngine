@@ -47,7 +47,7 @@
                             required
                             data-model="editData.currGameObjectInEdit.spriteSheet">
                         <option>--</option>
-                        <option data-value="item" data-for="item in repository.getArray('SpriteSheet')">{{item.name}}</option>
+                        <option data-value="item" data-for="item in editData.game._repository.getArray('SpriteSheet')">{{item.name}}</option>
                     </select>
                 </td>
                 <td>
@@ -155,78 +155,78 @@
                 </td>
                 <td></td>
             </tr>
+        </table>
+
+        <hr>
+
+        <table class="width100">
             <tr>
                 <td>
                     {{i18n.frAnimations}}
                 </td>
                 <td>
-                    <div class="table width100">
-                        <div class="row" data-for="animItm in editData.currGameObjectInEdit.frameAnimations.rs">
-                            <div class="cell vAlign">
-                                <span>{{animItm.name}}</span>
-                            </div>
-                            <div class="cell vAlign rightAlign pointer" data-click="editFrameAnimation(animItm)">
-                                {{i18n.edit}}
-                            </div>
-                            <div class="cell pointer vAlign rightAlign" data-click="deleteFrameAnimation(animItm)">
-                                X
-                            </div>
-                        </div>
-                    </div>
+                    <table data-for="animItm in editData.currGameObjectInEdit.frameAnimations">
+                        <tr>
+                            <td class="pointer" data-click="editFrameAnimation(animItm)">
+                                <span class="edit"></span>
+                            </td>
+                            <td class="pointer" data-click="deleteFrameAnimation(animItm)">
+                                <span class="delete"></span>
+                            </td>
+                            <td>{{animItm.name}}</td>
+                        </tr>
+                    </table>
                 </td>
+                <td></td>
                 <td align="right">
                     <button
                             class="inlineBlock"
                             data-disabled="!editData.currGameObjectInEdit.id"
                             data-click="createFrameAnimation()">+</button>
                 </td>
-            </tr>
+            </div>
             <tr>
                 <td>
                     {{i18n.commonBehaviour}}
                 </td>
                 <td>
-                    <div class="table width100">
-                        <div class="row" data-for="itm in editData.currGameObjectInEdit.commonBehaviour">
-                            <div class="cell vAlign">
-                                <span>{{itm.name}}</span>
-                            </div>
-                            <div class="cell vAlign rightAlign pointer" data-click="editCommonBehaviour(itm)">
-                                {{i18n.edit}}
-                            </div>
-                            <div class="cell pointer vAlign rightAlign" data-click="deleteCommonBehaviour(itm)">
-                                X
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <table class="width100">
+                    <table data-for="itm in editData.currGameObjectInEdit.commonBehaviour">
                         <tr>
-                            <td>
-                                <select data-model="selectedCb">
-                                    <option>-</option>
-                                    <option
-                                            data-disabled="isCbItemDisabled(cb)"
-                                            data-value="cb"
-                                            data-for="cb in editData.commonBehaviourProtos">
-                                        {{cb.name}}
-                                    </option>
-                                </select>
+                            <td class="pointer" data-click="editCommonBehaviour(itm)">
+                                <span class="edit"></span>
                             </td>
-                            <td align="right">
-                                <button
-                                        class="inlineBlock"
-                                        data-disabled="!editData.currGameObjectInEdit.id || !selectedCb"
-                                        data-click="createCommonBehaviour(selectedCb)">
-                                    +
-                                </button>
+                            <td class="pointer" data-click="deleteCommonBehaviour(itm)">
+                                <span class="delete"></span>
+                            </td>
+                            <td>
+                                {{itm.name}}
                             </td>
                         </tr>
                     </table>
                 </td>
+                <td>
+                    <select data-model="selectedCb">
+                        <option>-</option>
+                        <option
+                                data-disabled="isCbItemDisabled(cb)"
+                                data-value="cb"
+                                data-for="cb in editData.commonBehaviourProtos">
+                            {{cb.name}}
+                        </option>
+                    </select>
+                </td>
+                <td align="right">
+                    <button
+                            class="inlineBlock"
+                            data-disabled="!editData.currGameObjectInEdit.id || !selectedCb"
+                            data-click="createCommonBehaviour(selectedCb)">
+                        +
+                    </button>
+                </td>
             </tr>
         </table>
+
+
         <button
                 data-disabled="!form.valid()"
                 data-click="createOrEditGameObject(editData.currGameObjectInEdit)">

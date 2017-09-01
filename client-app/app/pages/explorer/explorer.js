@@ -1,6 +1,5 @@
 
-
-import repository from 'coreEngine/src/engine/repository';
+import './explorer.less'
 
 import editData from 'app/providers/editData';
 import restProject from 'app/providers/rest/project';
@@ -22,7 +21,6 @@ export default RF.registerComponent('explorer', {
                 this.editData.projects = list;
             });
     },
-    repository: repository,
     i18n: i18n.getAll(),
     editProject: function(p){
         p.oldName = p.name;

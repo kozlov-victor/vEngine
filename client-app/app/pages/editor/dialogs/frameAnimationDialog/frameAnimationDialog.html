@@ -12,14 +12,17 @@
                             data-model="editData.currFrameAnimationInEdit.name">
                 </td>
                 <td rowspan="3">
-                    <div style="max-height: 80vh;max-width:80vw;overflow: scroll;"
+                    <div style="max-height: 80vh;max-width:80vw;overflow: auto;padding: 5px;"
                     >
-                        {{editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0}}
+                        {{
+                            editData.currFrameAnimationInEdit._gameObject &&
+                            editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0
+                        }}
 
                         <div data-style="
                         utils.merge(
                             utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject),
-                            {border:'1px solid blue'}
+                            {outline:'1px solid blue'}
                         )">
                         </div>
 
@@ -59,7 +62,7 @@
                                             'top':            editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px',
                                             'position':       'absolute',
                                             'text-align':     'left',
-                                            'border':         '1px solid red',
+                                            'outline':        '1px solid red',
                                             'width':          editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px',
                                             'height':         editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px'
                                       }">{{i}}</div>
@@ -112,6 +115,18 @@
                                         type="number"
                                         min="0"
                                         data-model="to"
+                                        data-change="setRangeIndexes()">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {{i18n.step}}
+                            </td>
+                            <td>
+                                <input
+                                        type="number"
+                                        min="0"
+                                        data-model="step"
                                         data-change="setRangeIndexes()">
                             </td>
                         </tr>

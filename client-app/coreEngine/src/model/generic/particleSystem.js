@@ -8,16 +8,20 @@ let r = obj=>{
 
 export default class ParticleSystem extends BaseModel {
 
-    constructor(){
-        super();
+    constructor(game){
+        super(game);
+        this.type = 'ParticleSystem';
         this.gameObjectProto = null;
         this._particles = [];
         this.numOfParticlesToEmit = {from:1,to:10};
         this.particleAngle = {from:0,to:0};
-        if (this.particleAngle.to<this.particleAngle.from) this.particleAngle.to += 2*Math.PI;
         this.particleVelocity = {from:1,to:100};
         this.particleLiveTime = {from:100,to:1000};
         this.emissionRadius = 0;
+    }
+
+    revalidate(){
+        if (this.particleAngle.to<this.particleAngle.from) this.particleAngle.to += 2*Math.PI;
     }
 
     static find(name){

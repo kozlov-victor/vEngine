@@ -5,7 +5,7 @@ var VertexBuffer = function(gl){
     var dataLength;
 
     this.setData = function(bufferData, itemType, itemSize){
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
         if (!itemType) throw 'can not set data to buffer: itemType not specified';
         if (!itemSize) throw 'can not set data to buffer: itemSize not specified';

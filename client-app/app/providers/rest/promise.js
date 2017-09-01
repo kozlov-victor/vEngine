@@ -91,6 +91,7 @@ class PromiseLight{
     }
 
     static reject(data){
+        window.onerror && window.onerror(data);
         return new PromiseLight().
         then(()=>{
             return new PromiseLight((resolve,reject)=>{

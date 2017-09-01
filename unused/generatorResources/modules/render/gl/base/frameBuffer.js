@@ -22,7 +22,7 @@ const FrameBuffer = function(gl,width,height){
 
 
     (function(){
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         if (!gl) throw "can not create frameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
         //<code>{{/if}}
 

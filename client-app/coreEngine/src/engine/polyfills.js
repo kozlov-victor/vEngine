@@ -7,3 +7,8 @@ Array.prototype.remove = function(callback) {
         }
     }
 };
+
+window.requestAnimationFrame =
+    window.requestAnimationFrame||
+    window.webkitRequestAnimationFrame||
+    function(f){setTimeout(f,17)};

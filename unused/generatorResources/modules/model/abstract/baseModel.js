@@ -127,7 +127,7 @@ const BaseModel = Class.extend({
                     });
                     arr.forEach(function(el){
                         let elFromList = bundle[el.type+'List'].find({id:el.id});
-                        //<code>{{#if opts.debug}}
+                        //<code>{{#if opts.minify}}
                         if (!elFromList) throw `can not found ${el.type} with ${el.id}`;
                         // {{/if}}
                         self[key].add(elFromList.clone());
@@ -146,12 +146,12 @@ const BaseModel = Class.extend({
     },
     clone: function(){
         let newObj = new this.constructor(this.toJSON());
-        //<code>{{#if opts.debug}}
+        //<code>{{#if opts.minify}}
         newObj.__cloner__ = this;
         // {{/if}}
         return newObj;
     },
-    //<code>{{#if opts.debug}}
+    //<code>{{#if opts.minify}}
     updateCloner: function(){
         if (!this.__cloner__) return;
         this.__cloner__.fromJSON(this.toJSON());

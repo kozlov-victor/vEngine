@@ -1,4 +1,5 @@
 
+import './modal.less'
 
 export default RF.registerComponent('app-modal', {
     template: {

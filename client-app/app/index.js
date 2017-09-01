@@ -17,6 +17,9 @@ import 'app/providers/userDefinedFns';
 
 import explorer from 'app/pages/explorer/explorer';
 import editor from 'app/pages/editor/editor';
+import resourceHelper from 'app/providers/resourceHelper';
+
+import './index.less'
 
 RF.Router.setup({
     explorer,
@@ -24,4 +27,9 @@ RF.Router.setup({
 });
 
 RF.applyBindings('body');
-RF.Router.navigateTo('explorer');
+if (sessionStorage.projectName) {
+    resourceHelper.loadProject(sessionStorage.projectName);
+}
+else RF.Router.navigateTo('explorer');
+
+console.log(`built at: ${new Date(+BUILD_AT)}`);

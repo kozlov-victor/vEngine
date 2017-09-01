@@ -45,6 +45,7 @@ _i18n.bundle = {
         stopAnim:'stop animation',
         saveObjectFirst:'save object first',
         all: 'all',
+        step: 'step',
         game:'game',
         editThisGameObject:'edit this game object',
         deleteThisGameObject:'delete this game object',

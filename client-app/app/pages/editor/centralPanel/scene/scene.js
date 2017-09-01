@@ -1,11 +1,12 @@
 
+import './scene.less'
+
 import editData from 'app/providers/editData';
 import restResource from 'app/providers/rest/resource';
 import i18n from 'app/providers/i18n';
 import utils from 'app/providers/utils';
 
 import GameObject  from  'coreEngine/src/model/generic/gameObject';
-import repository from 'coreEngine/src/engine/repository';
 
 export default RF.registerComponent('app-curr-scene', {
     template: {
@@ -26,34 +27,30 @@ export default RF.registerComponent('app-curr-scene', {
         return  editData.currSceneInEdit.tileMap._spriteSheet._frameHeight || 0;
     },
 
-    _onDropFromLeftPanel(droppedObj,x,y) {
-        let go = new GameObject({
-            pos: {x,y},
-            layerId: editData.currLayerInEdit.id,
-            protoId: droppedObj.obj.id
-        });
-        restResource.
-        save(go).
-        then(resp=>{
-            if (resp.created) {
-                go.id = resp.id;
-                editData.gameObjectList.add(go);
-                editData.currLayerInEdit.addGameObject(go);
-            } else if (resp.updated) {
-                //gs.updateCloner();
-            }
-            RF.digest();
-        });
+    async _onDropFromLeftPanel(droppedObj,x,y) {
+        let go = new GameObject(editData.game).fromJSON(droppedObj.obj.toJSON());
+        go.pos =  {x,y};
+        go.layerId = editData.currLayerInEdit.id;
+        go.id = null;
+
+        let l = editData.currLayerInEdit;
+        let resp = await restResource.save(go);
+        if (resp.created) {
+            go.id = resp.id;
+            editData.game._repository.addObject(go);
+            editData.currLayerInEdit.addGameObject(go);
+            l.updateCloner();
+            editData.game._repository.updateObject(l);
+            restResource.save(l);
+        }
+        RF.digest();
     },
 
-    _onDropFromCentralPanel(droppedObj,x,y){
-        let go = editData.currLayerInEdit.gameObjects.find({id:droppedObj.obj.id});
+    async _onDropFromCentralPanel(droppedObj,x,y){
+        let go = editData.currLayerInEdit.gameObjects.find(it=>it.id==droppedObj.obj.id);
         go.pos = {x,y};
-        restResource.
-        save(go).
-        then(resp=>{
-            RF.digest();
-        });
+        await restResource.save(go);
+        RF.digest();
     },
 
     onDrop(droppedObj,e,coords){
