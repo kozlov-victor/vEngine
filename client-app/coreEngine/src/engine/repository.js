@@ -8,19 +8,21 @@ export default class Repository {
         this.reset();
     }
 
-    addDescription(desc){
-        if (!this.descriptions[desc.type]) this.descriptions[desc.type] = [];
-        this.descriptions[desc.type].push(desc);
+    addDescription(desc,type){
+        if (!this.descriptions[type]) this.descriptions[type] = [];
+        this.descriptions[type].push(desc);
     }
 
     setDescriptions(descs){
-        Object.keys(descs).forEach(key=>{
-            if (!this.descriptions[key]) this.descriptions[key] = [];
-            this.descriptions[key] = this.descriptions[key].concat(descs[key]);
+        Object.keys(descs).forEach(type=>{
+            descs[type].forEach(desc=>{
+                this.addDescription(desc,type);
+            });
         });
     }
 
     getObject(id,type,forceNew = false){
+        if (DEBUG && !type) throw 'repository.getObject: type not specified';
         if (DEBUG && id==null) {
             console.trace("id is null");
             throw `::getObject() id not specified for type ${type}`;
@@ -29,7 +31,7 @@ export default class Repository {
         if (DEBUG && !clazz) {
             throw `::getObject() unknown object type ${type}`
         }
-        if (DEBUG && !this.descriptions[type]) throw `no repository description for type ${type}`;
+        if (DEBUG && !this.descriptions[type]) throw `not found description for type: ${type}`;
         let desc = this.descriptions[type].find(it=>it.id==id);
         if (!desc) {
             throw `can not find object "${type}" with id ${id}`;
@@ -76,7 +78,7 @@ export default class Repository {
                 console.error(desc);
                 throw `object id must me specified`;
             }
-            res.push(this.getObject(desc.id,desc.type));
+            res.push(this.getObject(desc.id,type));
         });
         return this.arrays[type] = res;
     }

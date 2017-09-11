@@ -20,8 +20,8 @@ export default class BaseModel extends CommonObject {
 
     revalidate(){}
 
-    tween(obj,fromToVal,tweenTime,easeFnName){
-        let t = new Tween(obj,fromToVal,tweenTime,easeFnName);
+    tween(desc){
+        let t = new Tween(desc,this);
         this.tweens.push(t);
     }
 

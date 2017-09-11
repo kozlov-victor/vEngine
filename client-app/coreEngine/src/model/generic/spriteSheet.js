@@ -12,7 +12,6 @@ export default class SpriteSheet extends BaseModel {
         this._frameWidth = 0;
         this._frameHeight = 0;
         this._numOfFrames = 0;
-        this._textureInfo = null;
         this.resourcePath = '';
     }
 

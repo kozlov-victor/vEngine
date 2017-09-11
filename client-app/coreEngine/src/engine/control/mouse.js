@@ -13,6 +13,7 @@ export default class Mouse {
 
     listenTo(container) {
         if (isTouch) {
+            let lastTouch = {}; // todo
             container.ontouchstart = e=>{
                 let l = e.touches.length;
                 while (l--){
@@ -40,6 +41,9 @@ export default class Mouse {
             };
             container.onmousemove = e=>{
                 this.resolveMouseMove(e);
+            };
+            container.ondblclick = e=>{
+                this.resolveDoubleClick(e);
             }
         }
     }
@@ -48,8 +52,8 @@ export default class Mouse {
         return {
             //x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
             //y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
-            x: (e.clientX - this.game.pos.x) / this.game.scale.x ,
-            y: (e.clientY - this.game.pos.y) / this.game.scale.y ,
+            x: ~~((e.clientX - this.game.pos.x) / this.game.scale.x) ,
+            y: ~~((e.clientY - this.game.pos.y) / this.game.scale.y) ,
             id: e.identifier || 0
         };
     }
@@ -94,7 +98,7 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     }
 
     resolveMouseMove(e){
-        if (window.canceled) return;
+        if (DEBUG && window.canceled) return;
         let point = this.triggerEvent(e,'mouseMove');
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
@@ -109,12 +113,19 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     }
 
     resolveMouseUp(e){
-        if (window.canceled) return;
+        if (DEBUG && window.canceled) return;
         let point = this.triggerEvent(e,'mouseUp');
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
         lastMouseDownObject.trigger('mouseUp');
+        delete this.objectsCaptured[point.id];
+    }
+
+    resolveDoubleClick(e){
+        if (DEBUG && window.canceled) return;
+        let point = this.triggerEvent(e,'doubleClick');
+        if (!point) return;
         delete this.objectsCaptured[point.id];
     }
 

@@ -1,35 +1,36 @@
 
 import mathEx from './mathEx'
 
-export default class Tween{
+export default class Tween {
 
-    constructor(obj,fromToVal,tweenTime,easeFnName = 'linear'){
-        this.obj = obj;
+    constructor(tweenDesc,obj){
+        this.obj = tweenDesc.target || obj;
         this.propsToChange = [];
         this.startedTime = null;
-        this.progressFn = null;
-        this.easeFnName = easeFnName;
+        this.progressFn = tweenDesc.progress;
+        this.completeFn = tweenDesc.complete;
+        this.easeFnName = tweenDesc.ease || 'linear';
         this.completed = false;
-        this.tweenTime = tweenTime;
-        this.fromToVal = this.normalizeFromTo(fromToVal);
+        this.tweenTime = tweenDesc.time || 1000;
+        this.desc = this.normalizeDesc(tweenDesc);
     }
 
-    normalizeFromTo(fromToVal){
-        fromToVal.from = fromToVal.from || {};
-        fromToVal.to = fromToVal.to || {};
+    normalizeDesc(tweenDesc){
+        tweenDesc.from = tweenDesc.from || {};
+        tweenDesc.to = tweenDesc.to || {};
         let allPropsMap = {};
-        Object.keys(fromToVal.from).forEach(keyFrom=>{
+        Object.keys(tweenDesc.from).forEach(keyFrom=>{
             allPropsMap[keyFrom] = true;
         });
-        Object.keys(fromToVal.to).forEach(keyTo=>{
+        Object.keys(tweenDesc.to).forEach(keyTo=>{
             allPropsMap[keyTo] = true;
         });
         this.propsToChange = Object.keys(allPropsMap);
         this.propsToChange.forEach(prp=>{
-            if (fromToVal.from[prp]===undefined) fromToVal.from[prp] = this.obj[prp];
-            if (fromToVal.to[prp]===undefined) fromToVal.to[prp] = this.obj[prp];
+            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = this.obj[prp];
+            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = this.obj[prp];
         });
-        return fromToVal;
+        return tweenDesc;
     };
 
 
@@ -46,8 +47,8 @@ export default class Tween{
             let prp = this.propsToChange[l];
             this.obj[prp] = mathEx.ease[this.easeFnName](
                 delta,
-                this.fromToVal.from[prp],
-                this.fromToVal.to[prp] - this.fromToVal.from[prp],
+                this.desc.from[prp],
+                this.desc.to[prp] - this.desc.from[prp],
                 this.tweenTime);
         }
         this.progressFn && this.progressFn(this.obj);
@@ -68,9 +69,10 @@ export default class Tween{
         let l = this.propsToChange.length;
         while(l--){
             let prp = this.propsToChange[l];
-            this.obj[prp] = this.fromToVal.to[prp];
+            this.obj[prp] = this.desc.to[prp];
         }
         this.progressFn && this.progressFn(this.obj);
+        this.completeFn && this.completeFn(this.obj);
         this.completed = true;
     };
 

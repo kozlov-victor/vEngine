@@ -51,7 +51,8 @@ let config = {
 config.plugins = [
     new webpack.DefinePlugin({
         BUILD_AT: new Date().getTime(),
-        DEBUG: false
+        DEBUG: false,
+        IN_EDITOR: true
     }),
     new ExtractTextPlugin('css/styles.css'),
 ];

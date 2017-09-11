@@ -5,9 +5,27 @@ const webpack = require('webpack');
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const configFn = require.main.require('./node-app/generator/webpack.config');
+const minify = require('html-minifier').minify;
 
+function stringify(obj_from_json){
+    if(typeof obj_from_json !== "object" || Array.isArray(obj_from_json)){
+        // not an object, stringify using native function
+        return JSON.stringify(obj_from_json);
+    }
+    // Implements recursive object serialization according to JSON spec
+    // but without quotes around the keys.
+    let props = Object
+        .keys(obj_from_json)
+        .map(key => `${key}:${stringify(obj_from_json[key])}`)
+        .join(",");
+    return `{${props}}`;
+}
 
 class GeneratorService {
+
+    constructor(){
+        this.cnt=0;
+    }
 
     _createError(params,e){
         let error = e.toString().split('"').join("'");
@@ -40,8 +58,16 @@ class GeneratorService {
         let indexHtml = fs.readFileSync('./node-app/generator/index.html');
         indexHtml = indexHtml.replace('${embeddedResources}',embeddedResources.join(''));
         let debugJs = params.debug?fs.readFileSync('./assets/js/debug.js'):'';
-        indexHtml = indexHtml.replace('${debug}',`<script>${debugJs}</script>`);
-        indexHtml = indexHtml.replace('${hash}',new Date().getTime());
+        indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
+        indexHtml = indexHtml.replace('${hash}',this.cnt++);
+        if (params.minify) {
+            indexHtml = minify(indexHtml,{ // https://www.npmjs.com/package/html-minifier
+                removeAttributeQuotes: true,
+                removeTagWhitespace: true,
+                minifyCSS: true
+            });
+            indexHtml = indexHtml.split('\n').map(it=>it.trim()).join('');
+        }
         let repositoryData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/repository.json`));
         //repositoryData = Compressor.compressJSON(repositoryData);
         let gamePropsData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/gameProps.json`));
@@ -51,8 +77,8 @@ class GeneratorService {
         try {
             config.plugins.push(
                 new webpack.DefinePlugin({
-                    REPOSITORY_DATA: JSON.stringify(repositoryData),
-                    GAME_PROPS_DATA: JSON.stringify(gamePropsData),
+                    REPOSITORY_DATA: stringify(repositoryData),
+                    GAME_PROPS_DATA: stringify(gamePropsData),
                     DEBUG: !!params.debug
                 })
             );

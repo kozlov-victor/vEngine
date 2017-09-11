@@ -25,6 +25,7 @@ export default class CanvasRenderer extends AbstractDomRenderer {
         //ctx.rotateY(a);
         ctx.translate(-renderable.width /2, -renderable.height/2);
         ctx.globalAlpha = renderable.alpha;
+        ctx.globalCompositeOperation = renderable.blendMode || 'source-over';
         ctx.drawImage(
             this.renderableCache[renderable.spriteSheet.resourcePath],
             renderable._sprPosX,
@@ -51,6 +52,11 @@ export default class CanvasRenderer extends AbstractDomRenderer {
             srcWidth,
             srcHeight
         );
+    }
+
+    fillRect(x,y,w,h,color){
+        this.ctx.fillStyle = color;
+        this.ctx.fillRect(x,y,w,h);
     }
 
     setAlpha(a){

@@ -1,4 +1,5 @@
 
+import './polyfills'
 import RendererFactory from '../engine/renderer/rendererFactory'
 import Repository from './repository';
 import Mouse from '../engine/control/mouse'
@@ -49,6 +50,10 @@ export default class Game extends CommonObject {
 
     getCurrScene(){
         return this._currentScene;
+    }
+
+    setCurrScene(scene){
+        this._currentScene = scene;
     }
 
     static update(self){

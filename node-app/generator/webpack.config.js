@@ -50,6 +50,8 @@ module.exports =  (params)=>{
     config.plugins = [
         new webpack.DefinePlugin({
             BUILD_AT: new Date().getTime(),
+            IN_EDITOR: false,
+            DEBUG: params.debug || false
         }),
         new UglifyJSPlugin({
             output: { // http://lisperator.net/uglifyjs/codegen

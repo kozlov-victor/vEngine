@@ -46,11 +46,13 @@ export default class GameObjectProto extends BaseModel {
             this.frameAnimations[i] = this.frameAnimations[i].clone();
             this.frameAnimations[i]._gameObject = this;
         });
-        this.commonBehaviour.forEach(cb=>{
-            let CbClazz = commonBehaviours[cb.name];
-            let instance = new CbClazz(this._game);
-            instance.manage(this,cb.parameters);
-        });
+        if (!IN_EDITOR) {
+            this.commonBehaviour.forEach(cb=>{
+                let CbClazz = commonBehaviours[cb.name];
+                let instance = new CbClazz(this._game);
+                instance.manage(this,cb.parameters);
+            });
+        }
     }
 
     getRect(){
@@ -88,5 +90,9 @@ export default class GameObjectProto extends BaseModel {
 
     stopFrAnimations(){
         this._currFrameAnimation && this._currFrameAnimation.stop();
+    }
+
+    kill(){
+        this._layer.kill(this);
     }
 }

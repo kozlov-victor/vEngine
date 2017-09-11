@@ -25,6 +25,10 @@ export default class Layer extends BaseModel {
         })
     }
 
+    kill(gObj){
+        this.gameObjects.remove(it=>it.id===gObj.id);
+    }
+
     update(currTime,deltaTime){
         let all = this.gameObjects;
         let i = all.length;
