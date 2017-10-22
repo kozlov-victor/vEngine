@@ -1,10 +1,10 @@
 
-<app-collapsible data-state="{title:i18n.game}">
+<app-collapsible data-state="{title:i18n.get('game')}">
     <div data-transclusion="content">
         <form class="table width100">
             <div class="row">
                 <div class="cell">
-                    {{i18n.width}}
+                    {{i18n.get('width')}}
                 </div>
                 <div class="cell">
                     <input
@@ -18,7 +18,7 @@
             </div>
             <div class="row">
                 <div class="cell">
-                    {{i18n.height}}
+                    {{i18n.get('height')}}
                 </div>
                 <div class="cell">
                     <input
@@ -34,7 +34,7 @@
 
             <div class="row">
                 <div class="cell">
-                    {{i18n.scaleStrategy}}
+                    {{i18n.get('scaleStrategy')}}
                 </div>
                 <div class="cell">
                     <select
@@ -49,7 +49,7 @@
 
             <div class="row">
                 <div class="cell">
-                    {{i18n.preloadingScene}}
+                    {{i18n.get('preloadingScene')}}
                 </div>
                 <div class="cell">
                     <select
@@ -59,7 +59,7 @@
                         <option
                                 data-disabled="item.id==editData.gameProps.startSceneId"
                                 data-value="item.id"
-                                data-for="item in editData.game._repository.getArray('Scene')">
+                                data-for="item in editData.game.repository.getArray('Scene')">
                             {{item.name}}
                         </option>
                     </select>
@@ -68,7 +68,7 @@
 
             <div class="row">
                 <div class="cell">
-                    {{i18n.startScene}}
+                    {{i18n.get('startScene')}}
                 </div>
                 <div class="cell">
                     <select data-model="editData.game.startSceneId"
@@ -76,7 +76,7 @@
                         <option
                                 data-disabled="item.id==editData.gameProps.preloadingSceneId"
                                 data-value="item.id"
-                                data-for="item in editData.game._repository.getArray('Scene')">
+                                data-for="item in editData.game.repository.getArray('Scene')">
                             {{item.name}}
                         </option>
                     </select>

@@ -1,27 +1,27 @@
-
-import editData from 'app/providers/editData';
-import i18n from 'app/providers/i18n';
-import utils from 'app/providers/utils';
+/*global RF:true*/
+import BaseComponent from 'app/baseComponent'
 
 let tid;
 
-export default RF.registerComponent('app-particle-system-preview-dialog', {
-    template: {
-        type: 'string',
-        value: require('./particleSystemPreviewDialog.html')
-    },
-    editData,utils,
-    i18n:i18n.getAll(),
+@RF.decorateComponent({
+    name: 'app-particle-system-preview-dialog',
+    template: require('./particleSystemPreviewDialog.html')
+})
+export default class ParticleSystemPreviewDialog extends BaseComponent {
+    constructor(){
+        super();
+    }
 
-    open: function(){
+    open(){
         RF.getComponentById('particleSystemPreviewModal').open();
         this.run();
-    },
-    close: function(){
+    }
+    close(){
         RF.getComponentById('particleSystemPreviewModal').close();
         clearInterval(tid);
-    },
-    run: function(){
+    }
+    run(){
+        let editData = this.editData;
         let prevTime = null;
 
         if (!editData.currParticleSystemInEdit._particles)
@@ -50,13 +50,13 @@ export default RF.registerComponent('app-particle-system-preview-dialog', {
         };
         tid = setInterval(function(){
             update();
-            RF.digest();
         },5);
-    },
-    emit: function(e){
+    }
+    emit(e){
+        let editData = this.editData;
         if (!editData.currParticleSystemInEdit) return;
         if (!editData.currParticleSystemInEdit.gameObjectProto) return;
         let rect = e.target.getBoundingClientRect();
         editData.currParticleSystemInEdit.emit(e.clientX - rect.left,e.clientY - rect.top);
     }
-});
+}

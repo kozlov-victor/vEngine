@@ -1,24 +1,22 @@
+/*global RF:true*/
+@RF.decorateComponent({
+    name: 'app-angle-picker',
+    template: require('./anglePicker.html')
+})
+export default class AnglePicker {
 
-export default RF.registerComponent('app-angle-picker', {
+    constructor(){
+        this.object = {val:0};
+        this.value = 'val';
+    }
 
-    getInitialState(){
-        return {
-            object:{val:0},
-            value:'val'
-        }
-    },
-    template: {
-        type: 'string',
-        value: require('./anglePicker.html')
-    },
-
-    angleInDeg: function(){
+    angleInDeg(){
         if (!this.object) return 0;
         let res =  (this.object[this.value] * 180 / Math.PI) % 360;
         return +(res.toFixed(2)) || 0
-    },
+    }
 
-    calcAngleFromEvent: function(e){
+    calcAngleFromEvent(e){
         if (!this.object) return;
         let el = this.$el.querySelector('[data-container]');
         let rect = el.getBoundingClientRect();
@@ -27,12 +25,12 @@ export default RF.registerComponent('app-angle-picker', {
         if (angle<0) angle = 2*Math.PI + angle;
         angle = +(angle.toFixed(2)) || 0;
         this.object[this.value] = angle;
-    },
-    click: function(e){
+    }
+    click(e){
         this.calcAngleFromEvent(e);
-    },
-    mouseMove: function(e){
+    }
+    mouseMove(e){
         if (e.buttons!==1) return;
         this.calcAngleFromEvent(e);
     }
-});
+}

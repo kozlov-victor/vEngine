@@ -1,6 +1,6 @@
 <div class="template">
     <div class="absolute">
-        <app-top-panel></app-top-panel>
+        <app-top-panel id="topPanel"></app-top-panel>
     </div>
     <div id="c" class="split">
         <div id="a" class="split split-horizontal content">
@@ -25,7 +25,7 @@
                                 border: '1px solid green',
                                 margin: '0 auto'
                             }">
-                            <app-curr-scene></app-curr-scene>
+                            <app-scene-central-panel></app-scene-central-panel>
                         </div>
                     </div>
                 </div>
@@ -33,11 +33,13 @@
 
         </div>
         <div id="e" class="split split-horizontal content">
-            <app-info-curr-scene></app-info-curr-scene>
-            <app-info-curr-scene-game-object></app-info-curr-scene-game-object>
+            <app-scene-right-panel></app-scene-right-panel>
+            <app-game-object-right-panel></app-game-object-right-panel>
         </div>
     </div>
-    <div id="d" class="split content">d</div>
+    <div id="d" class="split content">
+
+    </div>
 
     <app-dialogs></app-dialogs>
 

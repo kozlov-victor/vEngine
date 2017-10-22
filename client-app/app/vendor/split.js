@@ -21,9 +21,9 @@
 // Save a couple long function names that are used frequently.
 // This optimization saves around 400 bytes.
     var global = this
-        , isIE8 = global.attachEvent && !global[addEventListener]
         , document = global.document
         , addEventListener = 'addEventListener'
+        , isIE8 = global.attachEvent && !global[addEventListener]
         , removeEventListener = 'removeEventListener'
         , getBoundingClientRect = 'getBoundingClientRect'
 
@@ -147,7 +147,7 @@
             // event listener references.
             //
             // startDragging calls `calculateSizes` to store the inital size in the pair object.
-            // It also adds event listeners for mouse/touch events,
+            // It also adds event listeners for _mouse/touch events,
             // and prevents selection while dragging so avoid the selecting text.
             var startDragging = function (e) {
                     // Alias frequently used variables to save space. 200 bytes.

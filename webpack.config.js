@@ -13,6 +13,9 @@ let config = {
         path: path.resolve('./assets/'),
         filename:'js/build/app.bundle.js'
     },
+    resolveLoader: {
+        modules: ['node_modules', path.resolve(__dirname, 'node_tools/loaders')]
+    },
     module: {
         rules: [
             {
@@ -20,16 +23,32 @@ let config = {
                 //exclude: /node_modules/,
                 loader: "babel-loader",
                 query: {
-                    presets: ['es2015'],
-                    plugins: ["transform-async-to-generator"]
+                    presets: ['es2015-loose'],
+                    plugins: [
+                        "transform-async-to-generator",
+                        "transform-decorators-legacy"
+                    ]
                 }
             },
             {
-                test: /\.(html|css)$/,
+                test: /\.js$/,
+                exclude: /node_modules|vendor/,
+                loader: "eslint-loader",
+                options: {
+                    failOnWarning: false,
+                    failOnError: false
+                }
+            },
+            {
+                test: /\.(css)$/,
                 loader: 'text-loader',
                 options: {
                     minimize: true
                 }
+            },
+            {
+                test: /\.(html)$/,
+                loader: 'html-normalize-loader'
             },
             { test: /\.scss$/, use: ExtractTextPlugin.extract(['css-loader', 'sass-loader']) },
             {
@@ -51,10 +70,20 @@ let config = {
 config.plugins = [
     new webpack.DefinePlugin({
         BUILD_AT: new Date().getTime(),
-        DEBUG: false,
+        DEBUG: true,
         IN_EDITOR: true
     }),
     new ExtractTextPlugin('css/styles.css'),
+    function() {
+        this.plugin("done", function(stats)
+        {
+            console.log(`build at ${new Date()}`);
+            // && process.argv.indexOf('--watch') == -1
+            if (stats.compilation.errors && stats.compilation.errors.length ) {
+                console.log(`errors: ${stats.compilation.errors.length}`);
+            }
+        });
+    }
 ];
 
 if (!debug) {

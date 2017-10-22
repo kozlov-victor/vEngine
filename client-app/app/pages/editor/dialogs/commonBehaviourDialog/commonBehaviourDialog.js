@@ -1,34 +1,31 @@
+/*global RF:true*/
+import BaseComponent from 'app/baseComponent'
 
-import editData from 'app/providers/editData';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import utils from 'app/providers/utils';
-
-export default RF.registerComponent('app-common-behaviour-dialog', {
-    template: {
-        type: 'string',
-        value: require('./commonBehaviourDialog.html')
-    },
-    i18n: i18n.getAll(),
-    utils,
-    editData,
-    form:{valid: ()=>{return true;}},
-
+@RF.decorateComponent({
+    name: 'app-common-behaviour-dialog',
+    template: require('./commonBehaviourDialog.html')
+})
+export default class CommonBehaviourDialog extends BaseComponent {
+    constructor(){
+        super();
+    }
     async createOrEditCommonBehaviour(){
+        let editData = this.editData;
         let cb = editData.currCommonBehaviourInEdit;
-        let resp = await restResource.save(cb);
+        delete cb.description;
+        let resp = await this.restResource.save(cb);
         if (resp.created) {
             cb.id = resp.id;
-            editData.game._repository.addObject(cb);
+            editData.game.repository.addObject(cb);
             editData.currGameObjectInEdit.commonBehaviour.push(cb);
         } else {
             let editedCb = editData.currGameObjectInEdit.commonBehaviour.find(it=>it.id==cb.id);
             editedCb.fromJSON(cb.toJSON());
             cb.updateCloner();
-            editData.game._repository.updateObject(cb);
+            editData.game.repository.updateObject(cb);
         }
-        await restResource.save(editData.currGameObjectInEdit);
+        await this.restResource.save(editData.currGameObjectInEdit);
         editData.currGameObjectInEdit.updateCloner();
         RF.getComponentById('commonBehaviourModal').close();
     }
-});
+}

@@ -1,4 +1,4 @@
-
+/*global RF:true*/
 window.alertEx = function(message){
     RF.getComponentById('alertDialog').open(message);
 };

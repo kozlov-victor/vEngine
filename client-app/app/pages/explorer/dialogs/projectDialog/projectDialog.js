@@ -1,38 +1,33 @@
+/*global RF:true*/
 
+import BaseComponent from 'app/baseComponent'
+import restProject from 'app/providers/rest/project'
 
-import editData from 'app/providers/editData';
-import restProject from 'app/providers/rest/project';
-import fileSystem from 'app/providers/rest/fileSystem';
-import i18n from 'app/providers/i18n';
+@RF.decorateComponent({
+    name: 'app-project-dialog',
+    template: require('./projectDialog.html')
+})
+export default class ProjectDialog extends BaseComponent {
 
-export default RF.registerComponent('app-project-dialog', {
-    template: {
-        type:'string',
-        value:require('./projectDialog.html')
-    },
-    editData: editData,
-    i18n: i18n.getAll(),
-    created: function(){
-        module.exports.instance = this;
-    },
-    createOrEditProject: function(proj){
+    constructor(){
+        super();
+        this.restProject = restProject;
+    }
+
+    async createOrEditProject(proj){
         if (proj.oldName) {
-            fileSystem.renameFolder(
+            await this.restFileSystem.renameFolder(
                 'workspace/'+proj.oldName,
-                'workspace/'+proj.name,
-                function(){
-                    restProject.getAll(function(list){
-                            editData.projects = list;
-                        }
-                    );
-                });
+                'workspace/'+proj.name);
+            await this.restProject.getAll(list=>{
+                    this.editData.projects = list;
+                }
+            );
         } else  {
-            restProject.create(proj.name,function(){
-                restProject.getAll(function(list){
-                    editData.projects = list;
-                });
-            });
+            await this.restProject.create(proj.name);
+            this.editData.projects = await this.restProject.getAll();
         }
         RF.getComponentById('projectDialog').close();
     }
-});
+
+}

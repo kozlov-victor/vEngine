@@ -4,7 +4,7 @@
             crud: {
                 create:createScene
             },
-            title: i18n.scenes
+            title: i18n.get('scenes')
         }">
     <div data-transclusion="content:#scenes">
         <div
@@ -12,7 +12,7 @@
             data-class="{
                 currScene:editData.currSceneInEdit==scene
             }"
-            data-for="scene in editData.game._repository.getArray('Scene')"
+            data-for="scene in editData.game.repository.getArray('Scene')"
             data-click="setCurrentScene(scene)"
         >
             <app-collapsible
@@ -32,7 +32,7 @@
                         <app-collapsible
                                 data-transclusion-id="layers"
                                 data-state="{
-                                    title: i18n.layers,
+                                    title: i18n.get('layers'),
                                     meta: scene,
                                     crud: {
                                         create: createLayer

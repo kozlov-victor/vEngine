@@ -1,79 +1,79 @@
-
-import editData from 'app/providers/editData'
-import restResource from 'app/providers/rest/resource'
-import i18n from 'app/providers/i18n'
-import restFileSystem from 'app/providers/rest/fileSystem'
-import utils from 'app/providers/utils'
+/*global RF:true*/
+import BaseComponent from 'app/baseComponent'
 
 import GameObject from 'coreEngine/src/model/generic/gameObject'
 import SpriteSheet from 'coreEngine/src/model/generic/spriteSheet'
 
-export default RF.registerComponent('app-frame-animation-dialog', {
-    template: {
-        type: 'string',
-        value: require('./frameAnimationDialog.html')
-    },
-    form:{valid: ()=>{return true;}},
-    editData,
-    utils,
-    i18n: i18n.getAll(),
+@RF.decorateComponent({
+    name: 'app-frame-animation-dialog',
+    template: require('./frameAnimationDialog.html')
+})
+export default class FrameAnimationDialog extends BaseComponent {
 
-    isStopped: true,
-    from:0,to:1,step:1,
-    frames:'',
+    constructor(){
+        super();
+        this.isStopped = true;
+        this.from = 0;
+        this.to = 1;
+        this.step = 1;
+        this.frames = '';
+    }
 
-    open: function(){
+
+
+    open(){
         this.isStopped = true;
         this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');
         this.editData.currFrameAnimationInEdit._gameObject = this.editData.currGameObjectInEdit.clone();
         RF.getComponentById('frameAnimationModal').open();
-    },
-    allIndexes: function(){
+    }
+    allIndexes(){
         let res = this.utils.getArray(this.editData.currGameObjectInEdit.spriteSheet._numOfFrames);
         return res.join(',')
-    },
-    setAllIndexes: function(){
+    }
+    setAllIndexes(){
         this.frames=this.allIndexes();
-    },
-    setRangeIndexes: function(){
-        this.frames=utils.range(+this.from,+this.to,+this.step).join(',');
-    },
-    playAnimation: function(){
-        let self = this;
-        self.isStopped = false;
+    }
+    setRangeIndexes(){
+        this.frames=this.utils.range(+this.from,+this.to,+this.step).join(',');
+    }
+    playAnimation(){
+        this.isStopped = false;
         try {
-            self.editData.currFrameAnimationInEdit.frames = JSON.parse('['+self.frames+']');
+            this.editData.currFrameAnimationInEdit.frames = JSON.parse('['+this.frames+']');
         } catch(e){
             console.error(e);
             return;
         }
-        self.editData.currFrameAnimationInEdit.play();
-        setTimeout(function _anim(){
-            self.editData.currFrameAnimationInEdit.update(new Date().getTime());
+        this.editData.currFrameAnimationInEdit.play();
 
-            let i = self.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
-            self.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
+        let _anim = ()=>{
+            this.editData.currFrameAnimationInEdit.update(new Date().getTime());
 
-            if (self.isStopped) {
-                self.isStopped = false;
+            let i = this.editData.currFrameAnimationInEdit._gameObject.currFrameIndex;
+            this.editData.currFrameAnimationInEdit._gameObject.setFrameIndex(i);
+
+            if (this.isStopped) {
+                this.isStopped = false;
                 return;
             }
-            RF.digest();
             if (RF.getComponentById('frameAnimationModal').opened) setTimeout(_anim,50);
-        },0);
-    },
-    stopAnimation: function(){
+        };
+        setTimeout(_anim,0);
+    }
+    stopAnimation(){
         this.isStopped = true;
-    },
-    nextFrame:function(){
+    }
+    nextFrame(){
         this.stopAnimation();
         this.editData.currFrameAnimationInEdit.nextFrame();
-    },
-    previousFrame:function(){
+    }
+    previousFrame(){
         this.stopAnimation();
         this.editData.currFrameAnimationInEdit.previousFrame();
-    },
+    }
     getLoopArr(){
+        let editData = this.editData;
         if (!editData.currFrameAnimationInEdit._gameObject)
             editData.currFrameAnimationInEdit._gameObject = new GameObject(editData.game);
         if (!editData.currFrameAnimationInEdit._gameObject.spriteSheet) {
@@ -83,27 +83,27 @@ export default RF.registerComponent('app-frame-animation-dialog', {
                 _gameObject.spriteSheet.numOfFramesH
                     *
                 editData.currFrameAnimationInEdit._gameObject.spriteSheet.numOfFramesV;
-        return utils.getArray(lastIndex);
-    },
+        return this.utils.getArray(lastIndex);
+    }
     async createOrEditFrameAnimation(){
-        let fa = editData.currFrameAnimationInEdit;
+        let fa = this.editData.currFrameAnimationInEdit;
         fa.frames = JSON.parse('['+this.frames+']');
 
-        let resp = await restResource.save(fa);
+        let resp = await this.restResource.save(fa);
         if (resp.created) {
             fa.id = resp.id;
-            editData.game._repository.addObject(fa);
-            editData.currGameObjectInEdit.frameAnimations.push(fa);
+            this.editData.game.repository.addObject(fa);
+            this.editData.currGameObjectInEdit.frameAnimations.push(fa);
         } else {
-            let editedFa = editData.currGameObjectInEdit.frameAnimations.find(it=>it.id==fa.id);
+            let editedFa = this.editData.currGameObjectInEdit.frameAnimations.find(it=>it.id==fa.id);
             editedFa.fromJSON(fa.toJSON());
             fa.updateCloner();
-            editData.game._repository.updateObject(fa);
+            this.editData.game.repository.updateObject(fa);
         }
-        await restResource.save(editData.currGameObjectInEdit);
-        editData.currGameObjectInEdit.updateCloner();
+        await this.restResource.save(this.editData.currGameObjectInEdit);
+        this.editData.currGameObjectInEdit.updateCloner();
 
         RF.getComponentById('frameAnimationModal').close();
 
     }
-});
+}

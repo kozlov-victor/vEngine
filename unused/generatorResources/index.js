@@ -19,7 +19,7 @@ window.addEventListener('load',function(){
     };
 
     renderer.init();
-    require('mouse');
+    require('_mouse');
     let startScene = bundle.sceneList.find({id:bundle.gameProps.startSceneId}) || bundle.sceneList.get(0);
     game.setScene(startScene);
 

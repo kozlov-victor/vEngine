@@ -1,19 +1,20 @@
-
+/*global RF:true*/
 import './inputFile.less'
 
-export default RF.registerComponent('app-input-file', {
-    getInitialState: ()=>{
-        return {
-            title:'',
-            accept:'',
-            onFilePicked:null
-        }
-    },
-    template: {
-        type: 'string',
-        value: require('./inputFile.html')
-    },
-    onMount: function(){
+@RF.decorateComponent({
+    name: 'app-input-file',
+    template: require('./inputFile.html')
+})
+export default class InputFile {
+
+    constructor(){
+        this.title = '';
+        this.accept = '';
+        this.onFilePicked = null;
+    }
+
+
+    onMount(){
         let btn = this.$el.querySelector('button');
         let input = this.$el.querySelector('input');
         btn.onclick = function(){
@@ -30,4 +31,4 @@ export default RF.registerComponent('app-input-file', {
             RF.digest();
         }
     }
-});
+}

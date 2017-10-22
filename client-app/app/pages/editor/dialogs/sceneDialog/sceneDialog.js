@@ -1,29 +1,23 @@
+/*global RF:true*/
 
+import BaseComponent from 'app/baseComponent'
 
-import editData from 'app/providers/editData';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import restFileSystem from 'app/providers/rest/fileSystem';
-import utils from 'app/providers/utils';
-
-
-export default RF.registerComponent('app-scene-dialog', {
-    template: {
-        type: 'string',
-        value: require('./sceneDialog.html')
-    },
-    form:{valid: ()=>{return true;}},
-    editData,
-    i18n:i18n.getAll(),
-
+@RF.decorateComponent({
+    name: 'app-scene-dialog',
+    template: require('./sceneDialog.html')
+})
+export default class SceneDialog extends BaseComponent {
+    constructor(){
+        super();
+    }
     async createOrEditScene(s){
 
-        let resp = await restResource.save(s);
+        let resp = await this.restResource.save(s);
         if (resp.created) {
             s.id = resp.id;
-            editData.game._repository.addObject(s);
-            let name = utils.capitalise(editData.currSceneInEdit.name);
-            await restFileSystem.createFile(
+            this.editData.game.repository.addObject(s);
+            let name = this.utils.capitalise(this.editData.currSceneInEdit.name);
+            await this.restFileSystem.createFile(
                 `scripts/${s.name}.js`,
                 document.getElementById('defaultCodeScript').textContent.replace('${name}',name));
         } else {
@@ -31,4 +25,4 @@ export default RF.registerComponent('app-scene-dialog', {
         }
         RF.getComponentById('sceneModal').close();
     }
-});
+}

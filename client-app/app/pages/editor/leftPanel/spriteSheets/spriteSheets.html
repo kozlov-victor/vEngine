@@ -1,6 +1,6 @@
 <app-collapsible
         data-state="{
-            title: i18n.spriteSheets,
+            title: i18n.get('spriteSheets'),
             crud: {
                 create:createSpriteSheet
             }
@@ -9,7 +9,7 @@
         <div class="withPaddingLeft">
             <div class="table width100">
                 <div class="row"
-                     data-for="spriteSheet in editData.game._repository.getArray('SpriteSheet')">
+                     data-for="spriteSheet in editData.game.repository.getArray('SpriteSheet')">
 
                     <div class="cell">
                         <img

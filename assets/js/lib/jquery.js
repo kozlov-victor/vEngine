@@ -4776,7 +4776,7 @@
             }
 
             // Support: IE<9
-            // For mouse/key events, metaKey==false if it's undefined (#3368, #11328)
+            // For _mouse/key events, metaKey==false if it's undefined (#3368, #11328)
             event.metaKey = !!event.metaKey;
 
             return fixHook.filter ? fixHook.filter( event, originalEvent ) : event;
@@ -5043,7 +5043,7 @@
                     handleObj = event.handleObj;
 
                 // For mousenter/leave call the handler if related is outside the target.
-                // NB: No relatedTarget if the mouse left/entered the browser window
+                // NB: No relatedTarget if the _mouse left/entered the browser window
                 if ( !related || (related !== target && !jQuery.contains( target, related )) ) {
                     event.type = handleObj.origType;
                     ret = handleObj.handler.apply( this, arguments );
@@ -7336,10 +7336,10 @@
                     temp = remaining / animation.duration || 0,
                     percent = 1 - temp,
                     index = 0,
-                    length = animation.tweens.length;
+                    length = animation._tweens.length;
 
                 for ( ; index < length ; index++ ) {
-                    animation.tweens[ index ].run( percent );
+                    animation._tweens[ index ].run( percent );
                 }
 
                 deferred.notifyWith( elem, [ animation, percent, remaining ]);
@@ -7363,20 +7363,20 @@
                 createTween: function( prop, end ) {
                     var tween = jQuery.Tween( elem, animation.opts, prop, end,
                         animation.opts.specialEasing[ prop ] || animation.opts.easing );
-                    animation.tweens.push( tween );
+                    animation._tweens.push( tween );
                     return tween;
                 },
                 stop: function( gotoEnd ) {
                     var index = 0,
-                    // if we are going to the end, we want to run all the tweens
+                    // if we are going to the end, we want to run all the _tweens
                     // otherwise we skip this part
-                        length = gotoEnd ? animation.tweens.length : 0;
+                        length = gotoEnd ? animation._tweens.length : 0;
                     if ( stopped ) {
                         return this;
                     }
                     stopped = true;
                     for ( ; index < length ; index++ ) {
-                        animation.tweens[ index ].run( 1 );
+                        animation._tweens[ index ].run( 1 );
                     }
 
                     // resolve when we played the last frame

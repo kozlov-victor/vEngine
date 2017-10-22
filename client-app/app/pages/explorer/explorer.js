@@ -1,54 +1,57 @@
 
+/*global RF:true*/
+
+import BaseComponent from 'app/baseComponent'
 import './explorer.less'
+import restProject from 'app/providers/rest/project'
 
-import editData from 'app/providers/editData';
-import restProject from 'app/providers/rest/project';
-import resourceHelper from 'app/providers/resourceHelper';
-import fileSystem from 'app/providers/rest/fileSystem';
+@RF.decorateComponent({
+    name: 'explorer',
+    template: require('./explorer.html')
+})
+export default class Explorer extends BaseComponent {
 
-import './dialogs/projectDialog/projectDialog';
-import i18n from 'app/providers/i18n';
+    constructor(){
+        super();
+        this.restProject = restProject;
+    }
 
-export default RF.registerComponent('explorer', {
-    template: {
-        type:'string',
-        value: require('./explorer.html')
-    },
-    editData,
-    onMount: function(){
-        restProject.
-            getAll(list=>{
-                this.editData.projects = list;
-            });
-    },
-    i18n: i18n.getAll(),
-    editProject: function(p){
+    onShow(){
+
+    }
+
+    async onMount(){
+        this.editData.projects = await this.restProject.getAll();
+    }
+
+    editProject(p){
         p.oldName = p.name;
         this.editData.currProjectInEdit = {
             name: p.name,
             oldName: p.name
         };
         RF.getComponentById('projectDialog').open();
-    },
-    createProject: function(){
+    }
+
+    createProject(){
         this.editData.currProjectInEdit = {
             name: ''
         };
         RF.getComponentById('projectDialog').open();
-    },
-    openProject: function(project){
-        resourceHelper.loadProject(project.name);
-    },
-    deleteProject: function(proj){
+    }
+
+    openProject(project){
+        this.resourceHelper.loadProject(project.name);
+    }
+
+    deleteProject(proj){
         window.confirmEx(
-            this.i18n.confirmQuestion(proj),
-            ()=>{
-                fileSystem.deleteFolder('workspace/'+proj.name,function(){
-                    restProject.getAll(function(list){
-                        editData.projects = list;
-                    })
-                });
+            this.i18n.get('confirmQuestion')(proj),
+            async ()=>{
+                await this.restFileSystem.deleteFolder('workspace/'+proj.name);
+                this.editData.projects = await this.restProject.getAll();
             }
         );
     }
-});
+
+}

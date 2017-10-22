@@ -4,7 +4,7 @@
         <table class="width100">
             <tr>
                 <td>
-                    {{i18n.name}}
+                    {{i18n.get('name')}}
                 </td>
             </tr>
             <tr>
@@ -19,7 +19,7 @@
                     <app-input-file
                             data-state="{
                         onFilePicked: onFilePicked,
-                        title: i18n.loadSound,
+                        title: i18n.get('loadSound'),
                         accept: 'audio/*'
                     }"
                     ></app-input-file>
@@ -35,7 +35,7 @@
         <button
                 data-disabled="!(form.valid() && soundUrl)"
                 data-click="createOrEditSound(editData.currSoundInEdit)">
-            {{editData.currSoundInEdit.id?i18n.edit:i18n.create}}
+            {{editData.currSoundInEdit.id?i18n.get('edit'):i18n.get('create')}}
         </button>
     </div>
 </app-modal>

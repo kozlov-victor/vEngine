@@ -35,7 +35,7 @@ class ResourceController {
         if (!repository[model.type]) repository[model.type] = [];
         let createdId;
         if (!model.id) {
-            createdId = dataSourceHelper.uuid();
+            createdId = dataSourceHelper.uuid(params.projectName);
             model.id = createdId;
             repository[model.type].push(model);
         } else {
@@ -44,6 +44,10 @@ class ResourceController {
                 throw `can not find object with type ${model.type} and id ${model.id}`;
             repository[model.type][objectToUpdateIndex] = model;
         }
+        Object.keys(repository).forEach(key=>{
+            if (repository[key].splice && !repository[key].length)
+                delete repository[key];
+        });
         dataSourceHelper.saveModel(`workspace/${params.projectName}/repository.json`,repository);
         if (createdId) return {created: true, id: createdId};
         return {updated: true};

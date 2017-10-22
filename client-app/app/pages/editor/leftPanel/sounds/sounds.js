@@ -1,31 +1,28 @@
+/*global RF:true*/
 
-
-import editData from 'app/providers/editData';
-import utils from 'app/providers/utils';
-import i18n from 'app/providers/i18n';
-import restFileSystem from 'app/providers/rest/fileSystem';
+import BaseComponent from 'app/baseComponent'
 
 import Sound from 'coreEngine/src/model/generic/sound';
 
-
-export default RF.registerComponent('app-sounds', {
-    template: {
-        type:'string',
-        value: require('./sounds.html')
-    },
-    editData,
-    i18n: i18n.getAll(),
-    createSound: function(){
-        this.editData.currSoundInEdit = new Sound(editData.game);
+@RF.decorateComponent({
+    name: 'app-sounds',
+    template: require('./sounds.html')
+})
+export default class Sounds extends BaseComponent {
+    constructor(){
+        super();
+    }
+    createSound(){
+        this.editData.currSoundInEdit = new Sound(this.editData.game);
         RF.getComponentById('soundDialog').open();
-    },
-    editSound: function(sound){
+    }
+    editSound(sound){
         this.editData.currSoundInEdit = sound.clone();
         RF.getComponentById('soundDialog').open();
-    },
-    deleteSound: function(model){
-        utils.deleteModel(model,()=>{
-            restFileSystem.removeFile(model.resourcePath);
+    }
+    deleteSound(model){
+        this.utils.deleteModel(model,()=>{
+            this.restFileSystem.removeFile(model.resourcePath);
         });
     }
-});
+}

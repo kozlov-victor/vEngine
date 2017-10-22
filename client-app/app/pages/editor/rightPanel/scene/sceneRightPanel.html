@@ -1,24 +1,25 @@
+
 <app-collapsible
-    data-state="{title:i18n.currScene}"
+    data-state="{title:i18n.get('currScene')}"
 >
 
     <div data-transclusion="content">
         <div
                 data-if="!editData.currSceneInEdit.id">
-            {{i18n.notSelected}}
+            {{i18n.get('notSelected')}}
         </div>
 
         <div class="withPadding" data-if="editData.currSceneInEdit.id">
 
             <b class="centerText">
-                {{i18n.scene}} : {{editData.currSceneInEdit.name}}
+                {{i18n.get('scene')}} : {{editData.currSceneInEdit.name}}
             </b>
 
             <div class="table width100">
 
                 <div class="row">
                     <div class="cell">
-                        <label for="editData.currSceneInEdit.useBG">{{i18n.useBG}}</label>
+                        <label for="editData.currSceneInEdit.useBG">{{i18n.get('useBG')}}</label>
                     </div>
                     <div class="cell">
                         <input type="checkbox"
@@ -30,14 +31,14 @@
 
                 <div class="row" data-if="editData.currSceneInEdit.useBG">
                     <div class="cell">
-                        {{i18n.colorBG}}
+                        {{i18n.get('colorBG')}}
                     </div>
                     <div class="cell">
                         <app-color-picker
                                 data-state="{
                                     model:editData.currSceneInEdit,
                                     field: 'colorBG',
-
+                                    onChange: editScene
                                 }"
                         ></app-color-picker>
                     </div>
@@ -54,7 +55,7 @@
 
                 <div class="row">
                     <div class="cell valign bold">
-                        {{i18n.tileMap}}
+                        {{i18n.get('tileMap')}}
                     </div>
                     <div class="cell eye"></div>
                 </div>
@@ -86,7 +87,7 @@
 
                 <div class="row">
                     <div class="cell">
-                        {{i18n.selected}}
+                        {{i18n.get('selected')}}
                     </div>
                     <div class="cell">
                         <div
@@ -109,7 +110,7 @@
 
                 <div class="row">
                     <div class="cell">
-                        {{i18n.spriteSheets}}
+                        {{i18n.get('spriteSheets')}}
                     </div>
                     <div class="cell">
                         <select
@@ -144,7 +145,7 @@
                         backgroundImage:'url('+resourcePath+')',
                         backgroundPositionX:   -framePosX+'px',
                         backgroundPositionY:   -framePosY+'px',
-                        backgroundRepeat:     'no-repeat',
+                        backgroundRepeat:     'no-repeat'
                      }"
                      data-title="i"
                      data-click="setCurrSelectedTile(i)"

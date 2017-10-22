@@ -3,13 +3,13 @@
             crud:{
                 create:createSound
             },
-            title:i18n.sounds
+            title:i18n.get('sounds')
         }">
     <div data-transclusion="content">
         <div class="withPaddingLeft">
             <div class="table width100">
                 <div class="row"
-                     data-for="sound in editData.game._repository.getArray('Sound')">
+                     data-for="sound in editData.game.repository.getArray('Sound')">
 
                     <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">

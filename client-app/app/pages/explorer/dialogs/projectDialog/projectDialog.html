@@ -1,21 +1,23 @@
 
 <app-modal id="projectDialog">
     <div data-transclusion="content">
-        <table class="width100">
-            <tr>
-                <td>
-                    {{i18n.name}}
-                </td>
-                <td>
-                    <input
+        <form data-submit="createOrEditProject(editData.currProjectInEdit)">
+            <table class="width100">
+                <tr>
+                    <td>
+                        {{i18n.get('name')}}
+                    </td>
+                    <td>
+                        <input
                             required
                             data-model="editData.currProjectInEdit.name"/>
-                </td>
-            </tr>
-        </table>
-        <button data-click="createOrEditProject(editData.currProjectInEdit)">
-            {{editData.currProjectInEdit.oldName?i18n.edit:i18n.create}}
-        </button>
+                    </td>
+                </tr>
+            </table>
+            <button>
+                {{editData.currProjectInEdit.oldName?i18n.get('edit'):i18n.get('create')}}
+            </button>
+        </form>
     </div>
 </app-modal>
 

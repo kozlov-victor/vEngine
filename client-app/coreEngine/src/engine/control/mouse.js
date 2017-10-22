@@ -1,4 +1,4 @@
-
+/*global DEBUG:true*/
 import mathEx from '../mathEx'
 
 let isTouch = 'ontouchstart' in window;
@@ -13,7 +13,6 @@ export default class Mouse {
 
     listenTo(container) {
         if (isTouch) {
-            let lastTouch = {}; // todo
             container.ontouchstart = e=>{
                 let l = e.touches.length;
                 while (l--){
@@ -58,42 +57,44 @@ export default class Mouse {
         };
     }
 
-    triggerEvent(e,name){
-        let scene = this.game.getCurrScene();
+    triggerEvent(e,eventName){
+        let g = this.game;
+        let scene = g.getCurrScene();
         if (!scene) return;
         let point = this.resolveScreenPoint(e);
 
 exit:   for (let i=0;i<scene.layers.length;i++){
             let layer = scene.layers[scene.layers.length - 1 - i];
             for (let j=0;j<layer.gameObjects.length;j++){
-                let g = layer.gameObjects[layer.gameObjects.length - 1 - j];
+                let go = layer.gameObjects[j];
                 if (
-                    mathEx.isPointInRect(point,g.getRect())
+                    mathEx.isPointInRect(point,go.getRect())
                 ) {
-                    g.trigger(name,{
+                    go.trigger(eventName,{
                         screenX:point.x,
                         screenY:point.y,
-                        objectX:point.x - g.pos.x,
-                        objectY:point.y - g.pos.y,
+                        objectX:point.x - go.pos.x,
+                        objectY:point.y - go.pos.y,
                         id:point.id
-                    });
-                    scene.trigger(name,{
-                        screenX:point.x,
-                        screenY:point.y,
-                        id:point.id,
-                        target:g
                     });
                     break exit;
                 }
             }
         }
 
+        scene.trigger(eventName,{
+            screenX:point.x,
+            screenY:point.y,
+            id:point.id,
+            target:scene
+        });
+
         return point;
     }
 
     resolveClick(e){
         if (window.canceled) return;
-        let point = this.triggerEvent(e,'click');
+        this.triggerEvent(e,'click');
         this.triggerEvent(e,'mouseDown');
     }
 

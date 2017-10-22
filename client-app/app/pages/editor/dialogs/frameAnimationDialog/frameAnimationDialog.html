@@ -4,7 +4,7 @@
         <table class="width100">
             <tr>
                 <td>
-                    {{i18n.name}}
+                    {{i18n.get('name')}}
                 </td>
                 <td>
                     <input
@@ -29,10 +29,10 @@
                         <div>
                             <button
                                     data-click="playAnimation()"
-                                    data-disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.playAnim}}</button>
+                                    data-disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.get('playAnim')}}</button>
                             <button
                                     data-click="stopAnimation()"
-                                    data-disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.stopAnim}}</button>
+                                    data-disabled="!form.valid()" class="inlineBlock withMargin">{{i18n.get('stopAnim')}}</button>
                         </div>
 
                         <div>
@@ -72,7 +72,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.duration}}
+                    {{i18n.get('duration')}}
                 </td>
                 <td>
                     <input
@@ -88,15 +88,15 @@
                     <table>
                         <tr>
                             <td>
-                                {{i18n.frames}}
+                                {{i18n.get('frames')}}
                             </td>
                             <td>
-                                <button data-click="setAllIndexes()">{{i18n.all}}</button>
+                                <button data-click="setAllIndexes()">{{i18n.get('all')}}</button>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                {{i18n.from}}
+                                {{i18n.get('from')}}
                             </td>
                             <td>
                                 <input
@@ -108,7 +108,7 @@
                         </tr>
                         <tr>
                             <td>
-                                {{i18n.to}}
+                                {{i18n.get('to')}}
                             </td>
                             <td>
                                 <input
@@ -120,7 +120,7 @@
                         </tr>
                         <tr>
                             <td>
-                                {{i18n.step}}
+                                {{i18n.get('step')}}
                             </td>
                             <td>
                                 <input
@@ -144,7 +144,7 @@
         <button
                 data-click="createOrEditFrameAnimation()"
                 data-disabled="!form.valid()">
-            {{editData.currFrameAnimationInEdit.id?i18n.edit:i18n.create}}
+            {{editData.currFrameAnimationInEdit.id?i18n.get('edit'):i18n.get('create')}}
         </button>
     </div>
 

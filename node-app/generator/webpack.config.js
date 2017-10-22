@@ -20,7 +20,10 @@ module.exports =  (params)=>{
                     loader: "babel-loader",
                     query: {
                         presets: ['es2015-loose'],
-                        plugins: ["transform-async-to-generator"]
+                        plugins: [
+                            "transform-async-to-generator",
+                            "transform-decorators-legacy"
+                        ]
                     }
                 },
                 {

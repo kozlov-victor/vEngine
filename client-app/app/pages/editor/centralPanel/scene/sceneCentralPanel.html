@@ -1,10 +1,19 @@
-<div class="height100 relative" data-droppable="onDrop" id="sceneDiv">
+<div
+    class="height100 relative noOverFlow"
+    data-droppable="onDropFromLeftPanel"
+    data-style="{
+        backgroundColor: editData.currSceneInEdit.useBG?utils.rgbToCss(editData.currSceneInEdit.colorBG):'white'
+    }"
+    data-draggable-container
+    id="sceneDiv">
     <div data-for="item in editData.currLayerInEdit.gameObjects">
 
-
         <div
-                data-if="!item.subType"
-                data-draggable="{obj:item,src:'centralPanel'}"
+                data-if="item.type=='GameObject'"
+                app-draggable="{
+                    target:    item,
+                    onDragEnd: onDropFromCentralPanel
+                }"
                 data-click="utils.assign(editData,'currSceneGameObjectInEdit',item)"
                 data-style="utils.merge(
                     utils.getGameObjectCss(item),
@@ -30,8 +39,11 @@
         </div>
 
         <div
-                data-if="item.subType=='textField'"
-                data-draggable="{obj:item,src:'centralPanel'}"
+                data-if="item.type=='TextField'"
+                app-draggable="{
+                    target:    item,
+                    onDragEnd: onDropFromCentralPanel
+                }"
                 data-click="utils.assign(editData,'currSceneGameObjectInEdit',item)"
                 data-style="utils.merge(
                     utils.getGameObjectCss(item),
@@ -39,12 +51,12 @@
                         position:'absolute',
                         left:
                              item.pos.x -
-                             frameWidth() *
+                             item.width *
                              editData.tileMapPosX +
                              'px',
                         top:
                              item.pos.y -
-                             frameHeight() *
+                             item.height *
                              editData.tileMapPosY +
                              'px',
                         backgroundColor:'rgb(0,222,0.1)',
@@ -59,17 +71,7 @@
 
             <div style="position: relative;left:0;top:0;z-index:10">
                             <span
-                                data-style="{
-                                    left:item.pos.x+'px',
-                                    top: item.pos.y+'px',
-                                    display:ch=='\n'?'block':'inline-block',
-                                    width:item._font.fontContext.symbols[ch].width+'px',
-                                    height:item._font.fontContext.symbols[ch].height+'px',
-                                    backgroundImage:'url('+editData.projectName+'/'+item._font.resourcePath+')',
-                                    backgroundRepeat:     'no-repeat',
-                                    backgroundPositionX: -item._font.fontContext.symbols[ch].x+'px',
-                                    backgroundPositionY: -item._font.fontContext.symbols[ch].y+'px'
-                                }"
+                                    data-style="getCharCss(item,ch)"
                                     data-for="ch in item._chars">
                                 </span>
             </div>

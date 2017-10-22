@@ -1,3 +1,5 @@
+/*global Blob:true*/
+/*global atob:true*/
 
 import mathEx from 'coreEngine/src/engine/mathEx';
 
@@ -8,8 +10,8 @@ import i18n from 'app/providers/i18n';
 
 import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
 
-class Utils {
-    getGameObjectCss(gameObj){
+export default class Utils {
+    static getGameObjectCss(gameObj){
         if (!gameObj) gameObj = {};
         gameObj.scale = gameObj.scale || {};
         gameObj.spriteSheet = gameObj.spriteSheet || {};
@@ -29,15 +31,16 @@ class Utils {
 
     }
 
-    calcZoom(gameObject) {
-        if (!gameObject) gameObject = {};
-        if (!gameObject.height) gameObject.height = 30;
-        return gameObject.height>30?
-            30/gameObject.height:
+    static calcZoom(gameObject) {
+        const sampleSize = 30;
+        if (!gameObject) gameObject = {width:sampleSize,height:sampleSize};
+        let maxSize = gameObject.width>gameObject.height?gameObject.width:gameObject.height;
+        return maxSize>sampleSize?
+            sampleSize/maxSize:
             1;
     }
 
-    merge(a,b){
+    static merge(a,b){
         a = a || {};
         b = b || {};
         let res = {};
@@ -50,7 +53,7 @@ class Utils {
         return res;
     }
 
-    hexToRgb(hex) {
+    static hexToRgb(hex) {
         if (!hex) return {r:0,g:0,b:0};
         let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
@@ -60,13 +63,17 @@ class Utils {
         } : {r:0,g:0,b:0};
     }
 
-    rgbToHex(col) {
+    static rgbToHex(col) {
         if (!col) return '#000000';
         let r = +col.r,g=+col.g,b=+col.b;
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 
-    dataURItoBlob(dataURI) {
+    static rgbToCss(objRGB){
+        return `rgb(${objRGB.r},${objRGB.g},${objRGB.b})`
+    }
+
+    static dataURItoBlob(dataURI) {
         // convert base64/URLEncoded data component to raw binary data held in a string
         let byteString;
         if (dataURI.split(',')[0].indexOf('base64') >= 0)
@@ -86,7 +93,7 @@ class Utils {
         return new Blob([ia], {type:mimeString});
     }
 
-    range(rFr,rTo,step) {
+    static range(rFr,rTo,step) {
         if (!step) step = 1;
         let arr = [], i;
         if (rTo==undefined) {
@@ -105,7 +112,7 @@ class Utils {
         return arr;
     }
 
-    _createAceCompleter(){
+    static _createAceCompleter(){
         let result = [];
         let res = {};
         let objs = ['gameObject'];
@@ -128,7 +135,7 @@ class Utils {
         return result;
     }
 
-    _waitForFrameAndDo(file,path){
+    static _waitForFrameAndDo(file,path){
         let frame = document.getElementById('scriptEditorFrame');
         let contentWindow = frame && frame.contentWindow;
         if (!contentWindow || !contentWindow.ready) {
@@ -149,7 +156,7 @@ class Utils {
         };
     };
 
-    getArray(num) {
+    static getArray(num) {
         if (!num) return [];
         let res = [];
         for (let i=0;i<num;i++) {
@@ -158,39 +165,67 @@ class Utils {
         return res;
     }
 
-    size(obj) {
+    static size(obj) {
         if (!obj) return 0;
         return Object.keys(obj).length;
     }
 
-    deleteModel(model,callback){
+    static deleteModel(model,callback){
         return new Promise(resolve=>{
             window.confirmEx(
                 i18n.getAll().confirmQuestion(model),
                 ()=>{
                     restResource.remove(model,callback);
-                    editData.game._repository.removeObject(model);
+                    editData.game.repository.removeObject(model);
                     resolve();
                 }
             )
         });
     }
 
-    openEditor(path) {
+    static eachGameObject(callback){
+        editData.game.repository.getArray('GameObjectProto').forEach(go=>{
+            callback(go);
+        });
+        editData.game.repository.getArray('Scene').forEach(scene=>{
+            scene.layers.forEach(layer=>{
+                layer.gameObjects.forEach(go=>{
+                    callback(go);
+                });
+            });
+        });
+    }
+
+    static openEditor(path) {
         editData.scriptEditorUrl = path;
         restFileSystem.readFile(path,(file)=>{
             this._waitForFrameAndDo(file,path);
         });
     }
 
-    assign(model,property,value){
+    static assign(model,property,value){
         model && (model[property] = value);
     }
 
-    capitalise(s){
+    static capitalise(s){
         return s[0].toUpperCase() + s.substr(1);
     }
 
-}
+    static deepEqual(x, y, _checkCache = []) {
+        //if (isNaN(x) && isNaN(y)) return true;
+        if (x && y && typeof x === 'object' && typeof y === 'object') {
+            if (x===y) return true;
+            if (_checkCache.indexOf(x)>-1 || _checkCache.indexOf(y)>-1) return true;
+            _checkCache.push(x);
+            _checkCache.push(y);
+            return (Object.keys(x).length === Object.keys(y).length) &&
+                Object.keys(x).reduce((isEqual, key)=> {
+                    return isEqual && Utils.deepEqual(x[key], y[key], _checkCache);
+                },true);
+        } else {
+            return x===y;
+        }
 
-export default new Utils();
+    }
+
+}

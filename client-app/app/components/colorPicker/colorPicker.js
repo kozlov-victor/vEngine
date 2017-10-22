@@ -1,18 +1,17 @@
+/*global RF:true*/
+@RF.decorateComponent({
+    name: 'app-color-picker',
+    template: require('./colorPicker.html')
+})
+export default class ColorPicker {
 
-import './colorPickerDialog';
-
-export default RF.registerComponent('app-color-picker', {
-    template: {
-        type:'string',
-        value: require('./colorPicker.html')
-    },
-    getInitialState: function(){
-        return {
-            model:{field:''},
-            field:'field'
-        }
-    },
-    click: function(){
-        RF.getComponentById('colorPickerDialog').open(this.model,this.field);
+    constructor(){
+        this.model = {field:''};
+        this.field = 'field';
+        this.onChange = null;
     }
-});
+
+    click(){
+        RF.getComponentById('colorPickerDialog').open(this.model,this.field,this.onChange);
+    }
+}

@@ -1,13 +1,15 @@
 <div class="panel withPadding pointer">
 
-    <div class="inlineBlock" data-click="showBuildDialog()">
-        {{i18n.build}}
+    <div class="inlineBlock withPadding" data-click="showBuildDialog()">
+        {{i18n.get('build')}}
     </div>
-    <div class="inlineBlock" data-click="run()">
-        {{i18n.run}}
+    <div class="inlineBlock withPadding" data-click="run()">
+        {{i18n.get('run')}}
     </div>
-    <div class="inlineBlock" data-click="toExplorer()">
-        {{i18n.explorer}}
+    <div class="inlineBlock withPadding" data-click="toExplorer()">
+        {{i18n.get('explorer')}}
     </div>
 
 </div>
+
+<app-popup-blocked></app-popup-blocked>

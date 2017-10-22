@@ -1,17 +1,18 @@
 <app-collapsible
         data-state="{
-            title: i18n.userInterface
+            title: i18n.get('userInterface')
         }">
 
     <div data-transclusion="content">
 
         <div class="withPaddingLeft">
             <div class="table width100">
-                <div class="row"
-                     data-for="ui in (editData.userInterfaceList && editData.userInterfaceList.rs)">
+                <div
+                    data-draggable="{obj:uiObject,src: 'leftPanel'}"
+                    class="row" data-for="uiObject in editData.ui">
 
                     <div class="cell">
-                        <span class="inlineBlock withPaddingTop withPaddingBottom">{{ui.subType}}</span>
+                        <span class="inlineBlock withPaddingTop withPaddingBottom">{{uiObject.type}}</span>
                     </div>
 
                 </div>

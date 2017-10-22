@@ -1,11 +1,11 @@
 
-const isPropNotFit = (key,val)=>{
-    if (!key) return true;
+const isPropNotFit = (key,val,opts)=>{
+    if (key && !opts.preserveNull) return true;
     if (key.indexOf('_')==0) return true;
     if (val && val.call) return true;
-    if (typeof val == 'string') return false;
-    if (typeof val == 'number') return false;
-    if (typeof val == 'boolean') return false;
+    if (typeof val === 'string') return false;
+    if (typeof val === 'number') return false;
+    if (typeof val === 'boolean') return false;
     if (!val) return true;
 };
 
@@ -15,11 +15,11 @@ const isPrimitive = val=>{
 };
 
 
-const deepCopy = function(obj, _clonedObjects = []) {
+const deepCopy = (obj, _clonedObjects = [])=> {
     if (obj===undefined) return undefined;
-    if (typeof obj === 'function') return undefined;
     else if (obj===null) return null;
     else if (typeof window !== 'undefined' && obj===window) return undefined;
+
     else if (_clonedObjects.indexOf(obj)>-1) return obj;
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         let out = [], i = 0, len = obj.length;
@@ -28,29 +28,31 @@ const deepCopy = function(obj, _clonedObjects = []) {
             if (_clonedObjects.indexOf(obj[i])>-1) {
                 clonedObject = obj[i];
             } else {
-                _clonedObjects.push(obj[i]);
+                _clonedObjects.push(obj);
                 clonedObject = deepCopy(obj[i],_clonedObjects);
+                _clonedObjects.push(obj[i]);
             }
             out[i] = clonedObject;
         }
         return out;
     }
-    if (typeof obj === 'object') {
+    else if (typeof obj === 'object') {
         let out = {};
         for (let i in obj) {
-            if (i.indexOf('_')==0) return;
+            if (!obj.hasOwnProperty(i)) continue;
             let clonedObject;
             if (_clonedObjects.indexOf(obj[i])>-1) {
                 clonedObject = obj[i];
             } else {
-                _clonedObjects.push(obj[i]);
+                _clonedObjects.push(obj);
                 clonedObject = deepCopy(obj[i],_clonedObjects);
+                _clonedObjects.push(obj[i]);
             }
             out[i] = clonedObject;
         }
         return out;
     }
-    return obj;
+    else return obj;
 };
 
 export default class CommonObject {
@@ -63,15 +65,16 @@ export default class CommonObject {
                 console.error(this);
                 throw `::fromJSON(): class ${this.constructor.name} has no property ${key}`;
             }
+
             if (!this[key]) return;
             if (params[key].id && params[key].type)
-                this[key] = this._game._repository.getObject(params[key].id,params[key].type,forceNew);
+                this[key] = this.game.repository.getObject(params[key].id,params[key].type,forceNew);
             else if (params[key].splice) {
                 let arr = this[key];
                 this[key] = [];
                 arr.forEach((item,i)=>{
                     if (item && item.type && item.id) {
-                        this[key].push(this._game._repository.getObject(item.id,item.type,forceNew));
+                        this[key].push(this.game.repository.getObject(item.id,item.type,forceNew));
                     } else {
                         if (isPrimitive(item)) this[key].push(item);
                     }
@@ -81,11 +84,13 @@ export default class CommonObject {
         this.revalidate();
         return this;
     }
-    toJSON(){
+    toJSON(opts = {preserveNull: false}) {
         let res = {};
         for (let key in this) {
-
-            if (isPropNotFit(key,this[key])) {
+            if (isPropNotFit(key,this[key],opts)) {
+                continue;
+            }
+            if (this.constructor.transient && this.constructor.transient[key]) {
                 continue;
             }
             if (this[key].type && this[key].id) { // is model
@@ -105,7 +110,12 @@ export default class CommonObject {
                 });
                 res[key] = arr;
             }
-            else res[key]=deepCopy(this[key]);
+            else {
+                let possiblePrimitive = deepCopy(this[key]);
+                if (possiblePrimitive.splice && !possiblePrimitive.length) continue;
+                else if (typeof possiblePrimitive === 'object' && !Object.keys(possiblePrimitive).length) continue;
+                res[key] = possiblePrimitive;
+            }
         }
         return res;
     }

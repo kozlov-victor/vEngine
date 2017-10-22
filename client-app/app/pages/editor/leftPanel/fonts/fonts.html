@@ -1,14 +1,14 @@
 <app-collapsible
         data-state="{
             crud: {create:createFont},
-            title:i18n.fonts
+            title:i18n.get('fonts')
         }">
     <div data-transclusion="content">
 
         <div class="withPaddingLeft">
             <div class="table width100">
                 <div class="row"
-                     data-for="font in editData.game._repository.getArray('Font')">
+                     data-for="font in editData.game.repository.getArray('Font')">
 
                     <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">

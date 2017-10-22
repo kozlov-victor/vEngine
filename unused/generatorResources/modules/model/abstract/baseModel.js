@@ -140,8 +140,8 @@ const BaseModel = Class.extend({
                         self[key] = +self[key]||self[key];
                     }
                 }
-
             }
+            return self;
         });
     },
     clone: function(){

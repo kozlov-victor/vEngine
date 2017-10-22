@@ -1,25 +1,24 @@
+/*global RF:true*/
+/*global Image:true*/
+
+import BaseComponent from 'app/baseComponent'
+
+@RF.decorateComponent({
+    name: 'app-sprite-sheet-dialog',
+    template: require('./spriteSheetDialog.html')
+})
+export default class SpriteSheetDialog extends BaseComponent {
+
+    constructor(){
+        super();
+        this.spriteSheetUrl='';
+        this._file='';
+        this.numOfSpriteSheetCells=0;
+    }
 
 
-import editData from 'app/providers/editData';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import restFileSystem from 'app/providers/rest/fileSystem';
-import utils from 'app/providers/utils';
-
-
-export default RF.registerComponent('app-sprite-sheet-dialog', {
-    template: {
-        type: 'string',
-        value: require('./spriteSheetDialog.html')
-    },
-    i18n: i18n.getAll(),
-    utils,
-    editData,
-    form:{valid: ()=>{return true;}},
-    spriteSheetUrl:'',
-    _file: '',
-    numOfSpriteSheetCells: 0,
     open(){
+        let editData = this.editData;
         this._file = null;
         if (editData.currSpriteSheetInEdit.id)
             this.spriteSheetUrl =
@@ -27,8 +26,9 @@ export default RF.registerComponent('app-sprite-sheet-dialog', {
         else this.spriteSheetUrl = '';
         this.refreshNumOfCells();
         RF.getComponentById('spriteSheetModal').open();
-    },
+    }
     onFilePicked(src,file,name,ext){
+        let editData = this.editData;
         if (!editData.currSpriteSheetInEdit.name) {
             editData.currSpriteSheetInEdit.name = name;
         }
@@ -49,33 +49,42 @@ export default RF.registerComponent('app-sprite-sheet-dialog', {
             RF.digest();
         };
         img.src = src;
-    },
+    }
     refreshNumOfCells() {
+        let editData = this.editData;
         this.numOfSpriteSheetCells =
             editData && editData.currSpriteSheetInEdit &&
             editData.currSpriteSheetInEdit.numOfFramesH*
             editData.currSpriteSheetInEdit.numOfFramesV;
         editData.currSpriteSheetInEdit.revalidate();
-    },
+    }
     revalidate(){
-        editData.currSpriteSheetInEdit.revalidate();
-    },
+        this.editData.currSpriteSheetInEdit.revalidate();
+    }
     async createOrEditSpriteSheet(model){
 
-        if (this._file) await restFileSystem.uploadFile(
+        if (this._file) await this.restFileSystem.uploadFile(
             this._file,
-            {path:editData.currSpriteSheetInEdit.resourcePath}
+            {path:this.editData.currSpriteSheetInEdit.resourcePath}
         );
         if (this.editData.currSpriteSheetInEdit._lastPath) {
-            await restFileSystem.removeFile(editData.currSpriteSheetInEdit._lastPath);
+            await this.restFileSystem.removeFile(this.editData.currSpriteSheetInEdit._lastPath);
         }
-        let resp = await restResource.save(model);
+        let resp = await this.restResource.save(model);
         if (resp.created) {
             model.id = resp.id;
-            editData.game._repository.addObject(model);
+            this.editData.game.repository.addObject(model);
         } else if (resp.updated) {
             model.updateCloner();
+            this.editData.game.repository.updateObject(model);
+            this.utils.eachGameObject(g=>{
+                if (g.spriteSheet.id==model.id) {
+                    g.spriteSheet = model;
+                    g.revalidate();
+                }
+            })
+
         }
         RF.getComponentById('spriteSheetModal').close();
     }
-});
+}

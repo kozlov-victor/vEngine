@@ -2,25 +2,27 @@
 
     <div data-transclusion="content">
 
-        <div class="withPadding">
-            <div class="table">
-                <div class="row">
-                    <div class="cell">
-                        {{i18n.name}}
-                    </div>
-                    <div class="cell">
-                        <input
-                                required
-                                data-model="editData.currSceneInEdit.name"/>
+        <form data-submit="createOrEditScene(editData.currSceneInEdit)">
+            <div class="withPadding">
+                <div class="table">
+                    <div class="row">
+                        <div class="cell">
+                            {{i18n.get('name')}}
+                        </div>
+                        <div class="cell">
+                            <input
+                                    required
+                                    data-model="editData.currSceneInEdit.name"/>
+                        </div>
                     </div>
                 </div>
+                <button
+                        data-disabled="!form.valid()"
+                >
+                    {{editData.currSceneInEdit.id?i18n.get('edit'):i18n.get('create')}}
+                </button>
             </div>
-            <button
-                    data-disabled="!form.valid()"
-                    data-click="createOrEditScene(editData.currSceneInEdit)">
-                {{editData.currSceneInEdit.id?i18n.edit:i18n.create}}
-            </button>
-        </div>
+        </form>
 
     </div>
 

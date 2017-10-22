@@ -13,6 +13,7 @@ export default class Scene extends BaseModel {
         this.useBG = false;
         this.colorBG = {r: 255, g: 255, b: 255};
         this._tweenMovies = [];
+        this._individualBehaviour = null;
         this.tileMap = {
             _spriteSheet: null,
             spriteSheetId: null,
@@ -47,14 +48,16 @@ export default class Scene extends BaseModel {
     }
 
     preload(cb){
-        let resources = this.getAllSpriteSheets();
+        let resources =
+            this.getAllSpriteSheets().
+            concat(this.game.repository.getArray('Font'));
         let q = new LoadingQueue();
         q.onResolved = ()=>{
             cb && cb();
         };
         resources.forEach(res=>{
             q.addTask(()=>{
-                this._game._renderer.loadTextureInfo(
+                this.game._renderer.loadTextureInfo(
                     res.resourcePath,
                     ()=>q.resolveTask(res.id)
                 );
@@ -65,19 +68,33 @@ export default class Scene extends BaseModel {
     }
 
     onShow(){
+        if (this._individualBehaviour) this._individualBehaviour.onCreate();
         this.layers.forEach(l=>{
             l.onShow();
         });
     }
 
+    setIndividualBehaviour(Clazz){
+        let instance = new Clazz(this.game);
+        instance.game = this.game;
+        instance.scene = this;
+        this._individualBehaviour = instance;
+    }
+
     update(currTime,deltaTime){
-        this._game._renderer.clear();
+        if (this.useBG) this.game._renderer.clearColor(this.colorBG);
+        else this.game._renderer.clear();
+
         let layers = this.layers;
         let i = this.layers.length;
         let l = i -1;
+        if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while(i--){
             layers[i-l].update(currTime,deltaTime);
         }
+        this.game.repository.getArray('ParticleSystem').forEach(ps=>{
+            ps.update(currTime,deltaTime);
+        });
         // this._tweenMovies.forEach(function(tweenMovie){
         //     if (tweenMovie.completed) {
         //         this._tweenMovies.remove(tweenMovie);
@@ -93,10 +110,10 @@ export default class Scene extends BaseModel {
         return this.tween(this,{to:{alpha:0}},time,easeFnName);
     }
     tween(obj,fromToVal,tweenTime,easeFnName){
-        let movie = new tweenMovieModule.TweenMovie();
-        let tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-        movie.tween(0,tween);
-        movie.play();
+        // let movie = new tweenMovieModule.TweenMovie();
+        // let tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
+        // movie.tween(0,tween);
+        // movie.play();
     }
     _render(){
         // let spriteSheet = this.tileMap._spriteSheet;

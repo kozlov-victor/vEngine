@@ -1,6 +1,6 @@
 <app-collapsible
         data-state="{
-                title: i18n.gameObjects,
+                title: i18n.get('gameObjects'),
                 crud: {
                     create:createGameObject
                 }
@@ -12,7 +12,7 @@
 
             <div class="table width100">
                 <div class="row"
-                     data-for="gameObject in editData.game._repository.getArray('GameObjectProto')"
+                     data-for="gameObject in editData.game.repository.getArray('GameObjectProto')"
                 >
                     <app-game-object-row
                             data-state="{

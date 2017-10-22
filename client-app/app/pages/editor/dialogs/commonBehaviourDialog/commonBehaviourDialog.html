@@ -7,7 +7,7 @@
         <table class="width100">
             <tr>
                 <td class="borderBottom">
-                    {{i18n.name}}
+                    {{i18n.get('name')}}
                 </td>
                 <td class="borderBottom">
                     {{editData.currCommonBehaviourInEdit.name}}
@@ -15,7 +15,7 @@
             </tr>
             <tr>
                 <td class="borderBottom">
-                    {{i18n.description}}
+                    {{i18n.get('description')}}
                 </td>
                 <td class="borderBottom">
                     {{editData.currCommonBehaviourInEdit.description}}
@@ -33,14 +33,14 @@
             </tr>
             <tr data-if="utils.size(editData.currCommonBehaviourInEdit.parameters)==0">
                 <td colspan="2" class="borderBottom">
-                    {{i18n.noDataToEdit}}
+                    {{i18n.get('noDataToEdit')}}
                 </td>
             </tr>
         </table>
         <button
                 data-click="createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)"
                 data-disabled="!form.valid()">
-            {{editData.currCommonBehaviourInEdit.id?i18n.edit:i18n.create}}
+            {{editData.currCommonBehaviourInEdit.id?i18n.get('edit'):i18n.get('create')}}
         </button>
 
 

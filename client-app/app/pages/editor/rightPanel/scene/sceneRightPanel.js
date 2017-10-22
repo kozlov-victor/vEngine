@@ -1,23 +1,20 @@
-
-import './scene.less'
-
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import editData from 'app/providers/editData';
-import utils from 'app/providers/utils';
-
+/*global RF:true*/
+import BaseComponent from 'app/baseComponent'
+import './sceneRightPanel.less'
 import Scene from 'coreEngine/src/model/generic/scene';
 
-export default RF.registerComponent('app-info-curr-scene', {
-    template: {
-        type:'string',
-        value: require('./scene.html')
-    },
-    form:{valid: ()=>{return true;}},
-    editData,
-    i18n:i18n.getAll(),
-    utils,
-    numOfFramesForSceneSpriteSheet: function(){
+@RF.decorateComponent({
+    name: 'app-scene-right-panel',
+    template: require('./sceneRightPanel.html')
+})
+export default class SceneRightPanel extends BaseComponent {
+
+    constructor(){
+        super();
+    }
+
+    numOfFramesForSceneSpriteSheet(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit) return 0;
         if (!editData.currSceneInEdit.tileMap) return 0;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
@@ -25,50 +22,57 @@ export default RF.registerComponent('app-info-curr-scene', {
                 editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesV *
                 editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH
             ) || 0;
-    },
-    frameWidth: function(){
+    }
+
+    frameWidth(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
         return editData.currSceneInEdit.tileMap._spriteSheet._frameWidth;
-    },
-    frameHeight: function(){
+    }
+    frameHeight(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
         return editData.currSceneInEdit.tileMap._spriteSheet._frameHeight;
-    },
-    framePosX: function(){
+    }
+    framePosX(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX) return null;
         if (!editData.currTileIndexInEdit) return null;
         return editData.currSceneInEdit.tileMap._spriteSheet.getFramePosX(editData.currTileIndexInEdit);
-    },
-    framePosY: function(){
+    }
+    framePosY(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY) return null;
         if (!editData.currTileIndexInEdit) return null;
         return editData.currSceneInEdit.tileMap._spriteSheet.getFramePosY(editData.currTileIndexInEdit);
-    },
-    resourcePath: function(){
+    }
+    resourcePath(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
         return editData.currSceneInEdit.tileMap._spriteSheet.resourcePath
-    },
-    numOfFramesH: function(){
+    }
+    numOfFramesH(){
+        let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap._spriteSheet) return null;
         return editData.currSceneInEdit.tileMap._spriteSheet.numOfFramesH;
-    },
+    }
 
-    setCurrSelectedTile: function(i){
-        editData.currTileIndexInEdit = i;
-    },
-    setTileMapSpriteSheet: function(){
+    setCurrSelectedTile(i){
+        this.editData.currTileIndexInEdit = i;
+    }
+    setTileMapSpriteSheet(){
         // ??
         // editData.currSceneInEdit = new Scene(editData.currSceneInEdit.toJSON())
-    },
-    editScene: function(){
-        restResource.save(this.editData.currSceneInEdit);
     }
-});
+    editScene(){
+        this.restResource.save(this.editData.currSceneInEdit);
+    }
+}

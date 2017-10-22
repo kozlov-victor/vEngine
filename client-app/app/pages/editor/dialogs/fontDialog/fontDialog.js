@@ -1,14 +1,11 @@
+/*global RF:true*/
 
-
-import editData from 'app/providers/editData';
-import restFileSystem from 'app/providers/rest/fileSystem';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
+import BaseComponent from 'app/baseComponent'
 import chrome from 'app/providers/chrome';
-import utils from 'app/providers/utils';
 
 const SYMBOL_PADDING = 4;
 const fontSample = 'Test me! Text here';
+const SAFE_FONTS = [{displayName:'serif'},{displayName:'sans-serif'},{displayName:'monospace'}];
 
 const getFontContext = function(arrFromTo, strFont, w) {
     function getFontHeight(strFont) {
@@ -69,17 +66,17 @@ const getFontImage = function(symbolsContext,strFont,color){
     return cnv.toDataURL();
 };
 
-export default RF.registerComponent('app-font-dialog', {
-    template: {
-        type:'string',
-        value: require('./fontDialog.html')
-    },
-    form:{valid: ()=>{return true;}},
-    editData,
-    i18n: i18n.getAll(),
-    utils,
-    fontSample,
-    systemFontList: [],
+@RF.decorateComponent({
+    name: 'app-font-dialog',
+    template: require('./fontDialog.html')
+})
+export default class FontDialog extends BaseComponent {
+
+    constructor(){
+        super();
+        this.fontSample = fontSample;
+        this.systemFontList = [];
+    }
 
     open(){
         if (!this.systemFontList.length) {
@@ -87,30 +84,35 @@ export default RF.registerComponent('app-font-dialog', {
                 this.systemFontList = list;
                 RF.digest();
             });
+            setTimeout(()=>{
+                if (!this.systemFontList.length) {
+                    this.systemFontList = SAFE_FONTS;
+                }
+            },5000);
         }
         RF.getComponentById('fontModal').open();
-    },
+    }
 
     async createOrEditFont(model){
 
         let strFont = model.fontSize +'px'+' '+model.fontFamily;
         model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
-        let file = utils.dataURItoBlob(getFontImage(model.fontContext,strFont,utils.rgbToHex(model.fontColor)));
+        let file = this.utils.dataURItoBlob(getFontImage(model.fontContext,strFont,this.utils.rgbToHex(model.fontColor)));
         model.resourcePath =  `resources/${model.name}.png`;
 
-        await restFileSystem.uploadFile(
+        await this.restFileSystem.uploadFile(
             file,
             {
                 path:model.resourcePath
             }
         );
-        let resp = await restResource.save(model);
+        let resp = await this.restResource.save(model);
         if (resp.created) {
             model.id = resp.id;
-            editData.game._repository.addObject(model);
+            this.editData.game.repository.addObject(model);
         } else if (resp.updated) {
             model.updateCloner();
         }
         RF.getComponentById('fontModal').close();
     }
-});
+}

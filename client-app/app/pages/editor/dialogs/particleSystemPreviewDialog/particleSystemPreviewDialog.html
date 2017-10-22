@@ -1,7 +1,7 @@
 <app-modal id="particleSystemPreviewModal">
     <div data-transclusion="content">
         <div>
-            {{i18n.preview}} {{i18n.particleSystem}}
+            {{i18n.get('preview')}} {{i18n.get('particleSystem')}}
             <span class="underLine">{{editData.currParticleSystemInEdit.name}}</span>
         </div>
         <div
@@ -23,7 +23,7 @@
             </div>
         </div>
         <div>
-            <button data-click="close()">{{i18n.close}}</button>
+            <button data-click="close()">{{i18n.get('close')}}</button>
         </div>
     </div>
 </app-modal>

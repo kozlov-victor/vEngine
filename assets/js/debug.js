@@ -53,12 +53,12 @@
         el.textContent = _prepareMessage(e,lineNum);
     };
 
-    var _consoleError = console.error;
-
-    console.error = function(e){
-       _consoleError.call(console,e);
-       window.showError(e);
-    };
+    // var _consoleError = console.error;
+    //
+    // console.error = function(e){
+    //    _consoleError.call(console,e);
+    //    window.showError(e);
+    // };
 
 
     var lastErr = '';

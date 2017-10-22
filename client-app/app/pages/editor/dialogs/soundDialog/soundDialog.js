@@ -1,59 +1,59 @@
+/*global RF:true*/
 
 
+import BaseComponent from 'app/baseComponent'
 
-import editData from 'app/providers/editData';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import restFileSystem from 'app/providers/rest/fileSystem';
+@RF.decorateComponent({
+    name: 'app-sound-dialog',
+    template: require('./soundDialog.html')
+})
+export default class SoundDialog extends BaseComponent {
+
+    constructor(){
+        super();
+        this.soundUrl = '';
+        this._file = null;
+    }
 
 
-export default RF.registerComponent('app-sound-dialog', {
-    template: {
-        type:'string',
-        value: require('./soundDialog.html')
-    },
-    form:{valid: ()=>{return true;}},
-    editData,
-    i18n: i18n.getAll(),
-    soundUrl:'',
-    _file: null,
 
     open(){
-        if (editData.currSoundInEdit.id)
+        if (this.editData.currSoundInEdit.id)
             this.soundUrl =
-                `${editData.projectName}/${editData.currSoundInEdit.resourcePath}?${Math.random()}`;
+                `${this.editData.projectName}/${this.editData.currSoundInEdit.resourcePath}?${Math.random()}`;
         else this.soundUrl = '';
         this._file = null;
         RF.getComponentById('soundModal').open();
-    },
+    }
     onFilePicked(src,file,name,ext){
         this._file = file;
         this.soundUrl = src;
         this.editData.currSoundInEdit._lastPath = this.editData.currSoundInEdit.resourcePath;
-        this.editData.currSoundInEdit.resourcePath = `resources/${editData.currSoundInEdit.name}.${ext}`;
+        this.editData.currSoundInEdit.resourcePath = `resources/${this.editData.currSoundInEdit.name}.${ext}`;
         if (this.editData.currSoundInEdit._lastPath == this.editData.currSoundInEdit.resourcePath)
             this.editData.currSoundInEdit._lastPath = null;
         if (!this.editData.currSoundInEdit.name) {
             this.editData.currSoundInEdit.name = name;
         }
-    },
+    }
     async createOrEditSound(model){
         if (this._file) {
-            await restFileSystem.uploadFile(
+            await this.restFileSystem.uploadFile(
                 this._file,
-                {path:editData.currSoundInEdit.resourcePath}
+                {path:this.editData.currSoundInEdit.resourcePath}
             );
         }
         if (this.editData.currSoundInEdit._lastPath) {
-            await restFileSystem.removeFile(this.editData.currSoundInEdit._lastPath);
+            await this.restFileSystem.removeFile(this.editData.currSoundInEdit._lastPath);
         }
-        let resp = await restResource.save(model);
+        let resp = await this.restResource.save(model);
         if (resp.created) {
             model.id = resp.id;
-            editData.game._repository.addObject(model);
+            this.editData.game.repository.addObject(model);
         } else if (resp.updated) {
             model.updateCloner();
+            this.editData.game.repository.updateObject(model);
         }
         RF.getComponentById('soundModal').close();
     }
-});
+}

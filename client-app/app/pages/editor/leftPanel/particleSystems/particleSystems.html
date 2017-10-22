@@ -3,14 +3,14 @@
             crud:{
                 create:createParticleSystem
             },
-            title:i18n.particleSystems
+            title:i18n.get('particleSystems')
         }">
 
     <div data-transclusion="content">
         <div class="withPaddingLeft">
             <div class="table width100">
                 <div class="row"
-                     data-for="ps in editData.game._repository.getArray('ParticleSystem')">
+                     data-for="ps in editData.game.repository.getArray('ParticleSystem')">
 
                     <div class="cell">
                     <span class="inlineBlock withPaddingTop withPaddingBottom">

@@ -1,9 +1,13 @@
-
+/*global DEBUG:true*/
 
 import CommonObject from './commonObject'
 import Tween from '../engine/tween'
 import EventEmitter from '../engine/eventEmitter'
+import {Transient} from '../engine/decorators'
 
+@Transient({
+    game: true
+})
 export default class BaseModel extends CommonObject {
 
     constructor(game){
@@ -11,32 +15,62 @@ export default class BaseModel extends CommonObject {
         if (DEBUG && !game) throw (
             `can not create model '${this.type}': game instance not passed to model constructor`
         );
-        this._game = game;
+        this.game = game;
+
         this.id = null;
         this.name = null;
-        this.tweens = [];
+        this.width = 0;
+        this.height = 0;
+        this.vel = {x:0,y:0};
+        this.pos = {x:0,y:0};
+        this.scale = {x:1,y:1};
+        this.angle = 0;
+        this.alpha = 1;
+        this.layerId =  null;
+
+        this.rigid = false;
+        this._tweens = [];
         this._emitter = new EventEmitter();
     }
 
     revalidate(){}
 
+    setIndividualBehaviour(Clazz){}
+
+    setCommonBehaviour(){}
+
+    onShow(){}
+
+    getRect(){
+        return {
+            x:      this.pos.x,
+            y:      this.pos.y,
+            width:  this.width,
+            height: this.height
+        };
+    }
+
+    /**
+     * {target:obj,from:a,to:b,progress:fn,complete:fn,ease:str,time:t}}
+     * @param desc
+     */
     tween(desc){
         let t = new Tween(desc,this);
-        this.tweens.push(t);
+        this._tweens.push(t);
     }
 
     update(time){
-        this.tweens.forEach((t,index)=>{
+        this._tweens.forEach((t, index)=>{
             t.update(time);
-            if (t.completed) this.tweens.splice(index,1);
-        })
+            if (t.completed) this._tweens.splice(index,1);
+        });
     }
 
-    clone(){
+    clone(opts){
         let Clazz = this.constructor;
-        let obj = new Clazz(this._game);
+        let obj = new Clazz(this.game);
         obj._cloner = this;
-        return obj.fromJSON(this.toJSON(),true);
+        return obj.fromJSON(this.toJSON(opts),true);
     }
 
     on(eventName,callBack){
@@ -47,12 +81,12 @@ export default class BaseModel extends CommonObject {
         this._emitter.trigger(eventName,data);
     }
 
-    updateCloner(){
+    updateCloner(opts){
         if (!DEBUG) return;
         let cloner = this._cloner;
         if (!cloner) return;
-        cloner.fromJSON(this.toJSON());
-        cloner.updateCloner();
+        cloner.fromJSON(this.toJSON(opts));
+        cloner.updateCloner(opts);
         delete this._cloner;
     }
 }

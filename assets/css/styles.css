@@ -116,6 +116,18 @@ input[type="file"] {
 [draggable] {
   cursor: hand;
 }
+.spriteSheetThumb {
+  max-width: 30px;
+  max-height: 30px;
+  width: auto;
+  height: auto; }
+.currSceneGameObject {
+  outline: 1px solid green;
+}
+.currScene {
+  outline: 1px solid green;
+  text-decoration: underline;
+}
 .scriptEditorClose {
   position: absolute;
   display: inline-block;
@@ -304,6 +316,17 @@ input[type=range][orient=vertical] {
 .rightText {
   text-align: right;
 }
+table.stripped {
+  border-collapse: collapse;
+}
+table.stripped td {
+  margin: 0;
+  padding: 3px;
+}
+table.stripped td,
+table.stripped th {
+  border: 1px solid #b2b2b2;
+}
 .noBrake {
   white-space: nowrap;
 }
@@ -317,7 +340,8 @@ label,
   background: url("../images/delete.png") no-repeat;
   width: 24px;
   height: 24px;
-  zoom: 0.5;
+  cursor: pointer;
+  transform: scale(0.5);
   display: inline-block;
   vertical-align: middle;
 }
@@ -325,7 +349,8 @@ label,
   background: url("../images/edit.png") no-repeat;
   width: 24px;
   height: 24px;
-  zoom: 0.5;
+  cursor: pointer;
+  transform: scale(0.5);
   display: inline-block;
   vertical-align: middle;
 }
@@ -333,7 +358,8 @@ label,
   background: url("../images/script.png") no-repeat;
   width: 24px;
   height: 24px;
-  zoom: 0.5;
+  cursor: pointer;
+  transform: scale(0.5);
   display: inline-block;
   vertical-align: middle;
 }
@@ -341,7 +367,8 @@ label,
   background: url("../images/eye.png") no-repeat;
   width: 24px;
   height: 24px;
-  zoom: 0.5;
+  cursor: pointer;
+  transform: scale(0.5);
   display: inline-block;
   vertical-align: middle;
 }
@@ -349,7 +376,8 @@ label,
   background: url("../images/add.png") no-repeat;
   width: 24px;
   height: 24px;
-  zoom: 0.5;
+  cursor: pointer;
+  transform: scale(0.5);
   display: inline-block;
   vertical-align: middle;
 }
@@ -391,7 +419,7 @@ label,
 }
 .cell {
   display: table-cell;
-  vertical-align: top;
+  vertical-align: middle;
 }
 .vAlign {
   vertical-align: middle;
@@ -408,8 +436,4 @@ label,
 }
 .lightGray {
   background-color: #ddd;
-}
-.spriteSheetThumb {
-  max-width: 30px;
-  max-height: 30px;
 }

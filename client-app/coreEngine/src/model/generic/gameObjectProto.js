@@ -1,6 +1,5 @@
-
+/*global IN_EDITOR:true*/
 import BaseModel from '../baseModel'
-import * as commonBehaviours from '../../commonBehaviour/all';
 
 export default class GameObjectProto extends BaseModel {
 
@@ -14,15 +13,7 @@ export default class GameObjectProto extends BaseModel {
     constructor(game){
         super(game);
         this.type = 'GameObjectProto';
-        this.width = 0;
-        this.height = 0;
         this.spriteSheet = null;
-        this.scale = {x:1,y:1};
-        this.vel = {x:0,y:0};
-        this.pos = {x:0,y:0};
-        this.angle = 0;
-        this.alpha = 1;
-        this.rigid = false;
         this._behaviour = null;
         this.commonBehaviour = [];
         this.currFrameIndex = 0;
@@ -30,10 +21,12 @@ export default class GameObjectProto extends BaseModel {
         this._sprPosY = 0;
         this.frameAnimations =  [];
         this._currFrameAnimation = null;
+        this.startFrameAnimationName = null;
         this._timeCreated = null;
         this.tileOffset =  {x:0,y:0};
         this.tileRepeat = false;
         this.groupName = '';
+        this._individualBehaviour = null;
     }
 
     revalidate(){
@@ -46,29 +39,13 @@ export default class GameObjectProto extends BaseModel {
             this.frameAnimations[i] = this.frameAnimations[i].clone();
             this.frameAnimations[i]._gameObject = this;
         });
-        if (!IN_EDITOR) {
-            this.commonBehaviour.forEach(cb=>{
-                let CbClazz = commonBehaviours[cb.name];
-                let instance = new CbClazz(this._game);
-                instance.manage(this,cb.parameters);
-            });
-        }
     }
 
-    getRect(){
-        return {
-            x:      this.pos.x,
-            y:      this.pos.y,
-            width:  this.width,
-            height: this.height
-        };
-    }
-
-    playFrameAnimation(animationName){
+    playFrameAnimation(animationName,opts){
         let fr = this.frameAnimations.find(it=>it.name===animationName);
         fr._gameObject = this;
         this._currFrameAnimation = fr;
-        fr.play();
+        fr.play(opts);
     }
 
     setFrameIndex(index){
@@ -80,12 +57,23 @@ export default class GameObjectProto extends BaseModel {
     update(time,delta) {
         super.update(time);
         this._currFrameAnimation && this._currFrameAnimation.update(time);
-        this._game._renderer.draw(this);
+
+        let deltaX = this.vel.x * delta / 1000;
+        let deltaY = this.vel.y * delta / 1000;
+        let posX = this.pos.x+deltaX;
+        let posY = this.pos.y+deltaY;
+        //if (_gameObject.angleVel) _gameObject.angle += _gameObject.angleVel * delta / 1000;
+        //collider.manage(_gameObject,posX,posY);
+        this.pos.x = posX;
+        this.pos.y = posY;
+
+        this.game._renderer.draw(this);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
     }
 
     onShow(){
         if (this._individualBehaviour) this._individualBehaviour.onCreate();
+        if (this.startFrameAnimationName!=null) this.playFrameAnimation(this.startFrameAnimationName);
     }
 
     stopFrAnimations(){

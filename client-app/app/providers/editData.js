@@ -1,3 +1,4 @@
+/*global localStorage:true*/
 
 import CommonBehaviour from 'coreEngine/src/model/generic/commonBehaviour'
 import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
@@ -43,12 +44,15 @@ res.reset = function(gameProps){
     res.projectName = '';
     res.projects = [];
 
-    res.buildOpts = {
-       debug: false,
-       embedResources: false,
-       embedScript: false,
-       minify:false
-    };
+    try {
+        res.buildOpts = JSON.parse(localStorage.buildOpts)
+    } catch (e){
+        res.buildOpts = {
+            debug: false,
+            minify:false,
+            windowed: false
+        };
+    }
 };
 
 res.reset();

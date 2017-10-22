@@ -1,13 +1,15 @@
 
 import http from 'app/providers/rest/httpClient';
 
-class Project{
-    getAll(callback){
+export default class Project{
+    static getAll(callback){
         return http.get('/project/getAll',{},callback);
     }
-    create(projectName,callback){
+    static create(projectName,callback){
         return http.post('/project/create',{projectName:projectName},callback);
+    }
+    static exist(projectName,callback){
+        return http.post('/project/exist',{projectName:projectName},callback);
     }
 }
 
-export default new Project();

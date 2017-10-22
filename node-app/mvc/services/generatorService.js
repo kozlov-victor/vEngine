@@ -28,6 +28,7 @@ class GeneratorService {
     }
 
     _createError(params,e){
+        if (!e) e = '';
         let error = e.toString().split('"').join("'");
         fs.createFileSync  (`workspace/${params.projectName}/out/bundle.js`,
             fs.readFileSync('./node-app/generator/generatorError.js').replace('${error}',error)
@@ -36,45 +37,46 @@ class GeneratorService {
 
     generate(params,callback){
 
-        let config = configFn(params);
-
-        fs.createFolderSync(`workspace/${params.projectName}/out/`);
-
-        let allScripts = fs.readDirSync(`workspace/${params.projectName}/scripts`).
-            map((s)=>{return s.content}).join('\n');
-        fs.createFileSync (`./node-app/generator/build/allScripts.js`,allScripts);
-
-        fs.copyFolderSync(`workspace/${params.projectName}/resources/`,`workspace/${params.projectName}/out/`);
-        let embeddedResources = [];
-        // fs.readDirSync(`workspace/${params.projectName}/out/`).forEach(res=>{
-        //    let ext = res.fullName.split('.').pop();
-        //    if (['svg'].indexOf(ext)>-1) {
-        //        fs.deleteFileSync(res.fullName);
-        //        let resId = `resources/${res.name}`.split(/[/.]/).join('_');
-        //        embeddedResources.push(`<div style="display:none" id="${resId}">${res.content}</div>`);
-        //    }
-        // });
-
-        let indexHtml = fs.readFileSync('./node-app/generator/index.html');
-        indexHtml = indexHtml.replace('${embeddedResources}',embeddedResources.join(''));
-        let debugJs = params.debug?fs.readFileSync('./assets/js/debug.js'):'';
-        indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
-        indexHtml = indexHtml.replace('${hash}',this.cnt++);
-        if (params.minify) {
-            indexHtml = minify(indexHtml,{ // https://www.npmjs.com/package/html-minifier
-                removeAttributeQuotes: true,
-                removeTagWhitespace: true,
-                minifyCSS: true
-            });
-            indexHtml = indexHtml.split('\n').map(it=>it.trim()).join('');
-        }
-        let repositoryData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/repository.json`));
-        //repositoryData = Compressor.compressJSON(repositoryData);
-        let gamePropsData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/gameProps.json`));
-
-        fs.createFileSync  (`workspace/${params.projectName}/out/index.html`,indexHtml);
-
         try {
+
+            let config = configFn(params);
+
+            fs.createFolderSync(`workspace/${params.projectName}/out/`);
+
+            let allScripts = fs.readDirSync(`workspace/${params.projectName}/scripts`).
+            map((s)=>{return s.content}).join('\n');
+            fs.createFileSync (`./node-app/generator/build/allScripts.js`,allScripts);
+
+            fs.copyFolderSync(`workspace/${params.projectName}/resources/`,`workspace/${params.projectName}/out/`);
+            let embeddedResources = [];
+            // fs.readDirSync(`workspace/${params.projectName}/out/`).forEach(res=>{
+            //    let ext = res.fullName.split('.').pop();
+            //    if (['svg'].indexOf(ext)>-1) {
+            //        fs.deleteFileSync(res.fullName);
+            //        let resId = `resources/${res.name}`.split(/[/.]/).join('_');
+            //        embeddedResources.push(`<div style="display:none" id="${resId}">${res.content}</div>`);
+            //    }
+            // });
+
+            let indexHtml = fs.readFileSync('./node-app/generator/index.html');
+            indexHtml = indexHtml.replace('${embeddedResources}',embeddedResources.join(''));
+            let debugJs = params.debug?fs.readFileSync('./assets/js/debug.js'):'';
+            indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
+            indexHtml = indexHtml.replace('${hash}',this.cnt++);
+            // if (params.minify) {
+            //     indexHtml = minify(indexHtml,{ // https://www.npmjs.com/package/html-minifier
+            //         removeAttributeQuotes: true,
+            //         removeTagWhitespace: true,
+            //         minifyCSS: true
+            //     });
+            //     indexHtml = indexHtml.split('\n').map(it=>it.trim()).join('');
+            // }
+            let repositoryData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/repository.json`));
+            //repositoryData = Compressor.compressJSON(repositoryData);
+            let gamePropsData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/gameProps.json`));
+
+            fs.createFileSync  (`workspace/${params.projectName}/out/index.html`,indexHtml);
+
             config.plugins.push(
                 new webpack.DefinePlugin({
                     REPOSITORY_DATA: stringify(repositoryData),
@@ -113,7 +115,8 @@ class GeneratorService {
 
                     console.log('webpack compiled');
                     if (data.compilation && data.compilation.errors && data.compilation.errors[0]) {
-                        let errorMsg = data.compilation.errors[0].details;
+                        console.log(data.compilation.errors);
+                        let errorMsg = data.compilation.errors[0].details || data.compilation.errors[0].toString();
                         console.error(errorMsg);
                         this._createError(params,JSON.stringify(errorMsg));
                         callback({success:false});

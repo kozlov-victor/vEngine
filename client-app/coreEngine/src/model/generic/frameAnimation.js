@@ -4,31 +4,37 @@ export default class FrameAnimation extends BaseModel {
 
     constructor(game) {
         super(game);
-        this.type = 'frameAnimation';
+        this.type = 'FrameAnimation';
         this._currFrame = 0;
         this.frames = [];
         this.duration = 1000;
         this._gameObject = null;
         this._startTime = null;
+        this.stop();
     }
 
     revalidate(){
         this._timeForOneFrame = ~~(this.duration / this.frames.length);
     }
 
-    play() {
+    play(opts = {repeat:true}) {
+        this._isRepeat = opts.repeat;
         this._gameObject._currFrameAnimation = this;
     }
 
     stop() {
-        this._gameObject._currFrameAnimation = null;
+        if (this._gameObject) this._gameObject._currFrameAnimation = null;
         this._startTime = null;
+        this._isRepeat = true;
     }
 
     update(time) {
         if (!this._startTime) this._startTime = time;
         let delta = (time - this._startTime) % this.duration;
         this._currFrame = ~~((this.frames.length) * delta / this.duration);
+        if (this._isRepeat==false && this._currFrame>=this.frames.length-1) {
+            this.stop();
+        }
         let lastFrIndex = this._gameObject.currFrameIndex;
         if (lastFrIndex != this.frames[this._currFrame]) {
             this._gameObject.setFrameIndex(this.frames[this._currFrame]);

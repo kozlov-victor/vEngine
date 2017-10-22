@@ -1,20 +1,14 @@
+/*global RF:true*/
 
 
+import BaseComponent from 'app/baseComponent'
 
-import editData from 'app/providers/editData';
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import restFileSystem from 'app/providers/rest/fileSystem';
-import utils from 'app/providers/utils';
-
-
-export default RF.registerComponent('app-svg-editor-dialog', {
-    template: {
-        type: 'string',
-        value: require('./svgEditorDialog.html')
-    },
-    i18n: i18n.getAll(),
-    utils,
-    editData,
-    form:{valid: ()=>{return true;}},
-});
+@RF.decorateComponent({
+    name: 'app-svg-editor-dialog',
+    template: require('./svgEditorDialog.html')
+})
+export default class SvgEditorDialog extends BaseComponent{
+    constructor(){
+        super();
+    }
+}

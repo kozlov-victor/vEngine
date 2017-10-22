@@ -5,7 +5,7 @@
         <table class="width100">
             <tr>
                 <td>
-                    {{i18n.name}}
+                    {{i18n.get('name')}}
                 </td>
                 <td>
 
@@ -131,7 +131,7 @@
             <tr>
                 <td></td>
                 <td>
-                    {{i18n.gameObject}}
+                    {{i18n.get('gameObject')}}
                 </td>
                 <td>
 
@@ -146,7 +146,7 @@
                                     <option>--</option>
                                     <option
                                             data-value="item"
-                                            data-for="item in editData.game._repository.getArray('GameObjectProto')">{{item.name}}</option>
+                                            data-for="item in editData.game.repository.getArray('GameObjectProto') track by id">{{item.name}}</option>
                                 </select>
                             </td>
                             <td>
@@ -156,7 +156,7 @@
                                     {
                                         zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObjectProto)
                                     }
-                               )">
+                                )">
                                 </div>
                             </td>
                         </tr>
@@ -171,13 +171,13 @@
         <button
                 data-disabled="!form.valid()"
                 data-click="createOrEditPs(editData.currParticleSystemInEdit)">
-            {{editData.currParticleSystemInEdit.id?i18n.edit:i18n.create}}
+            {{editData.currParticleSystemInEdit.id?i18n.get('edit'):i18n.get('create')}}
         </button>
 
         <button
                 data-disabled="!form.valid()"
                 data-click="showPreview()">
-            {{i18n.preview}}
+            {{i18n.get('preview')}}
         </button>
 
     </div>

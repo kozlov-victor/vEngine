@@ -20,8 +20,8 @@ export default class AbstractRenderer {
             width = window.innerWidth;
             height = width * canvasRatio;
         }
-        this.game.scale.x = width / this.game.width ;
-        this.game.scale.y = height / this.game.height ;
+        this.game.scale.x = width / this.game.width;
+        this.game.scale.y = height / this.game.height;
         this.game.pos.x = (window.innerWidth - width) / 2;
         this.game.pos.y = (window.innerHeight - height) / 2;
 

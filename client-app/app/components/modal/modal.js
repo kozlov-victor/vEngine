@@ -1,21 +1,21 @@
-
+/*global RF:true*/
 import './modal.less'
 
-export default RF.registerComponent('app-modal', {
-    template: {
-        type:'string',
-        value:require('./modal.html')
-    },
-    getInitialState: function() {
-        return {
-            opened:false
-        }
-    },
-    close: function(){
+@RF.decorateComponent({
+    name: 'app-modal',
+    template: require('./modal.html')
+})
+export default class AppModal {
+
+    constructor(){
         this.opened = false;
-        setTimeout(RF.digest,1); //todo
-    },
-    open: function(){
+    }
+
+    close(){
+        this.opened = false;
+        //setTimeout(RF.digest,1); //todo
+    }
+    open(){
         this.opened = true;
     }
-});
+}

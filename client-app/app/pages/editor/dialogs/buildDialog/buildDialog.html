@@ -1,0 +1,26 @@
+
+<app-modal id="buildModal">
+    <div data-transclusion="content">
+        <table class="width100">
+            <tr>
+                <td>{{i18n.get('minify')}}</td>
+                <td>
+                    <input data-change="onChanged()" data-model="editData.buildOpts.minify" type="checkbox">
+                </td>
+            </tr>
+            <tr>
+                <td>{{i18n.get('debug')}}</td>
+                <td>
+                    <input data-change="onChanged()" data-model="editData.buildOpts.debug" type="checkbox">
+                </td>
+            </tr>
+            <tr>
+                <td>{{i18n.get('windowed')}}</td>
+                <td>
+                    <input data-change="onChanged()" data-model="editData.buildOpts.windowed" type="checkbox">
+                </td>
+            </tr>
+        </table>
+        <button data-click="close()">ok</button>
+    </div>
+</app-modal>

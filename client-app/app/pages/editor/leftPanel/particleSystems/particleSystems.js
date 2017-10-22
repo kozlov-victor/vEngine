@@ -1,23 +1,22 @@
+/*global RF:true*/
+/*global alertEx:true*/
 
-import editData from 'app/providers/editData';
-import utils from 'app/providers/utils';
-import i18n from 'app/providers/i18n';
-import  'app/pages/editor/dialogs/particleSystemDialog/particleSystemDialog';
-
+import BaseComponent from 'app/baseComponent'
 
 import ParticleSystem from 'coreEngine/src/model/generic/particleSystem';
 
-export default RF.registerComponent('app-particle-systems', {
-    template: {
-        type:'string',
-        value: require('./particleSystems.html')
-    },
-    editData,
-    i18n:i18n.getAll(),
-    createParticleSystem: function(){
+@RF.decorateComponent({
+    name: 'app-particle-systems',
+    template: require('./particleSystems.html')
+})
+export default class ParticleSystems extends BaseComponent {
+    constructor(){
+        super();
+    }
+    createParticleSystem(){
         this.editData.currParticleSystemInEdit =
-            new ParticleSystem(editData.game);
-        let go = editData.game._repository.getArray('GameObjectProto')[0];
+            new ParticleSystem(this.editData.game);
+        let go = this.editData.game.repository.getArray('GameObjectProto')[0];
 
         if (!go) {
             alertEx(this.i18n.noGameObject);
@@ -25,12 +24,12 @@ export default RF.registerComponent('app-particle-systems', {
         }
 
         RF.getComponentById('particleSystemModal').open();
-    },
-    editParticleSystem: function(ps){
+    }
+    editParticleSystem(ps){
         this.editData.currParticleSystemInEdit = ps.clone();
         RF.getComponentById('particleSystemModal').open();
-    },
-    deleteParticleSystem: function(model){
-        utils.deleteModel(model);
     }
-});
+    deleteParticleSystem(model){
+        this.utils.deleteModel(model);
+    }
+}

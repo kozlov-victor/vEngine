@@ -3,31 +3,32 @@
 
     <div data-transclusion="content">
 
-        <div class="withPadding">
-            <div>
-                {{i18n.scene}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}
-            </div>
-            <b class="block centerText">{{i18n.layer}}</b>
-            <div class="table width100">
-                <div class="row">
-                    <div class="cell">
-                        {{i18n.name}}
-                    </div>
-                    <div class="cell">
-                        <input
-                                data-model="editData.currLayerInEdit.name"
-                                required/>
+        <form data-submit="createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)">
+            <div class="withPadding">
+                <div>
+                    {{i18n.get('scene')}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}
+                </div>
+                <b class="block centerText">{{i18n.get('layer')}}</b>
+                <div class="table width100">
+                    <div class="row">
+                        <div class="cell">
+                            {{i18n.get('name')}}
+                        </div>
+                        <div class="cell">
+                            <input
+                                    data-model="editData.currLayerInEdit.name"
+                                    required>
+                        </div>
                     </div>
                 </div>
+                <div>
+                    <button
+                            data-disabled="!form.valid()">
+                        {{editData.currLayerInEdit.id?i18n.get('edit'):i18n.get('create')}}
+                    </button>
+                </div>
             </div>
-            <div>
-                <button
-                    data-disabled="!form.valid()"
-                    data-click="createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)">
-                    {{editData.currLayerInEdit.id?i18n.edit:i18n.create}}
-                </button>
-            </div>
-        </div>
+        </form>
 
     </div>
 

@@ -1,9 +1,9 @@
+/*global Image:true*/
+
+import AbstractRenderer from '../abstract/abstractRenderer'
 
 
-import AbstractDomRenderer from '../abstract/abstractRenderer'
-
-
-export default class CanvasRenderer extends AbstractDomRenderer {
+export default class CanvasRenderer extends AbstractRenderer {
 
     constructor(game){
         super(game);
@@ -40,9 +40,9 @@ export default class CanvasRenderer extends AbstractDomRenderer {
         ctx.restore();
     }
 
-    drawImage(img,srcPosX,srcPosY,srcWidth,srcHeight,destPosX,destPosY){
+    drawImage(imgPath,srcPosX,srcPosY,srcWidth,srcHeight,destPosX,destPosY){
         this.ctx.drawImage(
-            img,
+            this.renderableCache[imgPath],
             srcPosX,
             srcPosY,
             srcWidth,
@@ -76,6 +76,10 @@ export default class CanvasRenderer extends AbstractDomRenderer {
 
     clear(){
         this.ctx.clearRect(0,0,this.game.width,this.game.height);
+    }
+
+    clearColor(color){
+        this.fillRect(0,0,this.game.width,this.game.height,`rgb(${color.r},${color.g},${color.b})`)
     }
 
     loadTextureInfo(resourcePath,onLoad){

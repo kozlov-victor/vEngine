@@ -3,11 +3,10 @@
 <app-modal id="gameObjectModal">
     <div data-transclusion="content">
 
-
         <table class="width100">
             <tr>
                 <td>
-                    {{i18n.name}}
+                    {{i18n.get('name')}}
                 </td>
                 <td>
                     <input
@@ -19,7 +18,7 @@
                     <div class="relative"
                          style="
                         display: inline-block;
-                        overflow: scroll;
+                        overflow: auto;
                         max-width:60vw;
                         max-height:60vh;
                     "
@@ -39,7 +38,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.spriteSheet}}
+                    {{i18n.get('spriteSheet')}}
                 </td>
                 <td>
                     <select
@@ -47,7 +46,11 @@
                             required
                             data-model="editData.currGameObjectInEdit.spriteSheet">
                         <option>--</option>
-                        <option data-value="item" data-for="item in editData.game._repository.getArray('SpriteSheet')">{{item.name}}</option>
+                        <option
+                            data-value="item"
+                            data-for="item in editData.game.repository.getArray('SpriteSheet') track by id">
+                                {{item.name}}
+                        </option>
                     </select>
                 </td>
                 <td>
@@ -55,7 +58,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.groupName}}
+                    {{i18n.get('groupName')}}
                 </td>
                 <td>
                     <input
@@ -65,7 +68,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.rigid}}
+                    {{i18n.get('rigid')}}
                 </td>
                 <td>
                     <input
@@ -76,7 +79,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.width}}
+                    {{i18n.get('width')}}
                 </td>
                 <td>
                     <input
@@ -88,7 +91,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.height}}
+                    {{i18n.get('height')}}
                 </td>
                 <td>
                     <input
@@ -100,7 +103,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.angle}}
+                    {{i18n.get('angle')}}
                 </td>
                 <td>
                     <input
@@ -144,7 +147,7 @@
             </tr>
             <tr>
                 <td>
-                    {{i18n.currFrameIndex}}
+                    {{i18n.get('currFrameIndex')}}
                 </td>
                 <td>
                     <input type="number"
@@ -157,55 +160,54 @@
             </tr>
         </table>
 
-        <hr>
-
-        <table class="width100">
+        <table class="width100 stripped">
             <tr>
-                <td>
-                    {{i18n.frAnimations}}
-                </td>
-                <td>
-                    <table data-for="animItm in editData.currGameObjectInEdit.frameAnimations">
-                        <tr>
-                            <td class="pointer" data-click="editFrameAnimation(animItm)">
-                                <span class="edit"></span>
-                            </td>
-                            <td class="pointer" data-click="deleteFrameAnimation(animItm)">
-                                <span class="delete"></span>
-                            </td>
-                            <td>{{animItm.name}}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td></td>
-                <td align="right">
+                <th colspan="4">
+                    {{i18n.get('frAnimations')}}
                     <button
                             class="inlineBlock"
                             data-disabled="!editData.currGameObjectInEdit.id"
                             data-click="createFrameAnimation()">+</button>
-                </td>
-            </div>
+                </th>
+            </tr>
             <tr>
-                <td>
-                    {{i18n.commonBehaviour}}
+                <th colspan="2">{{i18n.get('actions')}}</th>
+                <th>{{i18n.get('name')}}</th>
+                <th>
+
+                    {{i18n.get('isDefault')}}
+
+                    <span class="small withPadding">
+                        {{i18n.get('unselect')}}<button data-click="onStartFrameAnimNameChanged(null)">*</button>
+                    </span>
+                </th>
+            </tr>
+            <tr data-for="animItm in editData.currGameObjectInEdit.frameAnimations">
+                <td class="pointer" data-click="editFrameAnimation(animItm)">
+                    <span class="edit"></span>
+                </td>
+                <td class="pointer" data-click="deleteFrameAnimation(animItm)">
+                    <span class="delete"></span>
                 </td>
                 <td>
-                    <table data-for="itm in editData.currGameObjectInEdit.commonBehaviour">
-                        <tr>
-                            <td class="pointer" data-click="editCommonBehaviour(itm)">
-                                <span class="edit"></span>
-                            </td>
-                            <td class="pointer" data-click="deleteCommonBehaviour(itm)">
-                                <span class="delete"></span>
-                            </td>
-                            <td>
-                                {{itm.name}}
-                            </td>
-                        </tr>
-                    </table>
+                    {{animItm.name}}
                 </td>
                 <td>
-                    <select data-model="selectedCb">
+                    <input
+                        data-attribute="value: animItm.name"
+                        data-change="onStartFrameAnimNameChanged(animItm.name)"
+                        data-model="editData.currGameObjectInEdit.startFrameAnimationName"
+                        type="radio">
+                </td>
+            </tr>
+            <tr>
+                <th colspan="4">
+                    {{i18n.get('commonBehaviour')}}
+                </th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <select class="width50" data-model="selectedCb">
                         <option>-</option>
                         <option
                                 data-disabled="isCbItemDisabled(cb)"
@@ -215,7 +217,7 @@
                         </option>
                     </select>
                 </td>
-                <td align="right">
+                <td colspan="2">
                     <button
                             class="inlineBlock"
                             data-disabled="!editData.currGameObjectInEdit.id || !selectedCb"
@@ -224,13 +226,27 @@
                     </button>
                 </td>
             </tr>
+            <tr>
+                <th colspan="2">{{i18n.get('actions')}}</th>
+                <th colspan="2">{{i18n.get('name')}}</th>
+            </tr>
+            <tr data-for="itm in editData.currGameObjectInEdit.commonBehaviour">
+                <td class="pointer" data-click="editCommonBehaviour(itm)">
+                    <span class="edit"></span>
+                </td>
+                <td class="pointer" data-click="deleteCommonBehaviour(itm)">
+                    <span class="delete"></span>
+                </td>
+                <td colspan="2">
+                    {{itm.name}}
+                </td>
+            </tr>
         </table>
-
 
         <button
                 data-disabled="!form.valid()"
                 data-click="createOrEditGameObject(editData.currGameObjectInEdit)">
-            {{editData.currGameObjectInEdit.id?i18n.edit:i18n.create}}
+            {{editData.currGameObjectInEdit.id?i18n.get('edit'):i18n.get('create')}}
         </button>
 
     </div>

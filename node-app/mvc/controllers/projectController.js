@@ -21,6 +21,14 @@ class ProjectController {
     create(params){
         return projectService.createProject(params.projectName)
     }
+
+    /**
+     * @Method("exist");
+     * @Request({"type":"post"});
+     */
+    exist(params){
+        return projectService.exist(params.projectName)
+    }
 }
 
 module.exports.controller = ProjectController;

@@ -1,22 +1,22 @@
-
+/*global RF:true*/
 import './collapsible.less'
 
-export default RF.registerComponent('app-collapsible', {
-    template: {
-        type:'string',
-        value: require('./collapsible.html')
-    },
-    getInitialState(){
-        return {
-            title:'default_title',
-            crud:'',
-            object:{},
-            meta:{},
-            id:null,
-            opened:false
-        }
-    },
-    toggle: function(){
+@RF.decorateComponent({
+    name: 'app-collapsible',
+    template: require('./collapsible.html')
+})
+export default class Collapsible {
+
+    constructor(){
+        this.title = 'default_title';
+        this.crud = '';
+        this.object = {};
+        this.meta = {};
+        this.id = null;
+        this.opened = false;
+    }
+
+    toggle(){
         this.opened = !this.opened;
     }
-});
+}

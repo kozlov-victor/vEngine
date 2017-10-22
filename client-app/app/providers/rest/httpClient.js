@@ -1,5 +1,6 @@
-
-
+/*global XMLHttpRequest:true*/
+/*global FormData:true*/
+/*global RF:true*/
 let noop = function(){};
 
 

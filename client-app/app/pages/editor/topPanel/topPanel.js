@@ -1,49 +1,62 @@
-
-import http from 'app/providers/rest/httpClient';
-import editData from 'app/providers/editData';
-import i18n from 'app/providers/i18n';
+/*global RF:true*/
+import BaseComponent from 'app/baseComponent'
 
 //opts: minify minify engineOnly embedResources embedScript
 
 let w;
-export default RF.registerComponent('app-top-panel', {
-    template: {
-        value: require('./topPanel.html'),
-        type: 'string'
-    },
-    editData,
-    i18n: i18n.getAll(),
-    run:function(){
-        http.get(
+@RF.decorateComponent({
+    name: 'app-top-panel',
+    template: require('./topPanel.html')
+})
+export default class TopPanel extends BaseComponent {
+
+    constructor(){
+        super();
+    }
+
+    openWindow(){
+        let buildOpts = this.editData.buildOpts;
+        if (buildOpts.windowed) {
+            w = window.open(
+                `/${this.editData.projectName}/out`,
+                this.editData.projectName,
+                `width=${this.editData.game.width},height=${this.editData.game.height},toolbar=0`
+            );
+        } else {
+            w = window.open('/'+this.editData.projectName+'/out');
+        }
+    }
+
+    async run(){
+        let buildOpts = this.editData.buildOpts;
+        await this.http.get(
             '/resource/generate',
             {
-                debug: 1,
+                debug: buildOpts.debug?'1':'',
                 r: Math.random(),
-                projectName: editData.projectName,
-                minify: 1
-                //embedResources: 1,
-                //embedScript: 1
-            },
-            ()=>{
-                if (!w || w.closed) {
-                    //w = window.open(
-                    //    '/'+editData.projectName+'/out',
-                    //    editData.projectName,
-                    //    'width='+editData.gameProps.width+',height='+editData.gameProps.height+',toolbar=0'
-                    //);
-                    w = window.open('/'+editData.projectName+'/out');
-                }
-                else {
-                    w.location.reload();
-                }
-                w && w.focus();
+                projectName: this.editData.projectName,
+                minify: buildOpts.minify?'1':''
             }
         );
-    },
-    showBuildDialog: function() {
-        //uiHelper.showDialog('buildDialog');
-    },
-    toExplorer: function(){
+
+        if (!w || w.closed) {
+            this.openWindow();
+            if (w==null) {
+                RF.getComponentById('popupBlockedModal').open();
+            }
+        }
+        else {
+            w.location.reload();
+        }
+        w && w.focus();
+
+    }
+
+    showBuildDialog() {
+        RF.getComponentById('buildModal').open();
+    }
+
+    toExplorer(){
         RF.Router.navigateTo('explorer');
     }
-});
+}

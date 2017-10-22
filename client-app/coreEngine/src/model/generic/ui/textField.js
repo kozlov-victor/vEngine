@@ -1,0 +1,71 @@
+
+import BaseModel from '../../baseModel'
+
+export default class TextField extends BaseModel {
+
+    constructor(game){
+        super(game);
+        this.type ='TextField';
+        this._chars = null;
+        this.text = '';
+        this.font = null;
+        this.rigid = false;
+    }
+
+
+    revalidate(){
+        this.setFont(this.font);
+    }
+
+    setText(text) {
+        text+='';
+        this._chars = [];
+        this.text = text;
+        let rows = [{width:0}];
+        let currRowIndex = 0;
+        this.height = this.font.fontContext.symbols[' '].height;
+        for (let i=0,max=text.length;i<max;i++) {
+            this._chars.push(text[i]);
+            let currSymbolInFont = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
+            if (text[i]=='\n') {
+                currRowIndex++;
+                this.height+=currSymbolInFont.height;
+                rows[currRowIndex] = {width:0};
+            } else {
+                rows[currRowIndex].width+=currSymbolInFont.width;
+            }
+        }
+        this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
+    }
+    setFont(font){
+        this.font = font;
+        this.setText(this.text);
+    }
+    update(time){
+        super.update(time);
+        this._render();
+    }
+    _render(){
+        let posX = 0;
+        let posY = 0;
+        this._chars.forEach(ch=>{
+            let charInCtx = this.font.fontContext.symbols[ch]||this.font.fontContext.symbols['?'];
+            if (ch=='\n') {
+                posX = 0;
+                posY+= charInCtx.height;
+                return;
+            }
+            this.game._renderer.drawImage(
+                this.font.resourcePath,
+                charInCtx.x,
+                charInCtx.y,
+                charInCtx.width,
+                charInCtx.height,
+                this.pos.x+posX,
+                this.pos.y+posY
+            );
+            posX+=charInCtx.width;
+        });
+    }
+
+}

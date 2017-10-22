@@ -218,6 +218,20 @@ input[type=range][orient=vertical] {
   text-align: right;
 }
 
+table.stripped {
+  border-collapse: collapse;
+}
+
+table.stripped td{
+  margin: 0;
+  padding: 3px;
+}
+
+table.stripped td, table.stripped th {
+  border: 1px solid #b2b2b2;
+}
+
+
 .noBrake {
   white-space: nowrap;
 }
@@ -238,7 +252,8 @@ input[type=range][orient=vertical] {
   background: url("../images/@{value}.png") no-repeat;
   width: 24px;
   height: 24px;
-  zoom: 0.5;
+  cursor: pointer;
+  transform: scale(0.5);
   .inlineBlock();
 }
 });
@@ -293,7 +308,7 @@ input[type=range][orient=vertical] {
 
 .cell {
   display: table-cell;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .vAlign {
@@ -315,9 +330,4 @@ input[type=range][orient=vertical] {
 
 .lightGray {
   background-color: #ddd;
-}
-
-.spriteSheetThumb { // todo!
-  max-width: 30px;
-  max-height: 30px;
 }

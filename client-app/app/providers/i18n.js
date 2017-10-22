@@ -27,6 +27,7 @@ _i18n.bundle = {
         edit:'edit',
         close:'close',
         name:'name',
+        actions: 'actions',
         scaleStrategy:'scale strategy',
         spriteSheets:'sprite sheets',
         width:'width',
@@ -55,6 +56,8 @@ _i18n.bundle = {
         layers: 'layers',
         layer:'layer',
         debug: 'debug',
+        minify:'minify',
+        windowed:'windowed',
         stop: 'stop',
         addGameObject:'add game object',
         nothingToAdd:'nothing to add',
@@ -64,8 +67,11 @@ _i18n.bundle = {
         font:'font',
         text:'text',
         commonBehaviour:'common behaviour',
+        unselect: 'unselect',
         groupName:'group name',
+        noFont: 'Create at least one font firstly',
         selectFont:'select font',
+        isDefault: 'is default',
         fontSize:'font size',
         fontColor:'font color',
         userInterface:'user interface',
@@ -94,7 +100,9 @@ _i18n.bundle = {
         preloadingScene: 'preloading scene',
         startScene: 'start scene',
         projects: 'projects',
-        objectAlreadyAdded: 'object is already added'
+        objectAlreadyAdded: 'object is already added',
+        popupBlocked: 'popup window is blocked by browser',
+        tryAgain: 'try again'
     }
 };
 

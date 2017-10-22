@@ -1,19 +1,20 @@
-import restResource from 'app/providers/rest/resource';
-import i18n from 'app/providers/i18n';
-import editData from 'app/providers/editData';
+/*global RF:true*/
+import BaseComponent from 'app/baseComponent'
 
 import {SCALE_STRATEGY} from 'coreEngine/src/engine/consts'
 
-export default RF.registerComponent('app-game-props', {
-    template: {
-        type:'string',
-        value: require('./gameProps.html')
-    },
-    form: {valid: ()=>{return true}},
-    editData,
-    i18n: i18n.getAll(),
-    scales: SCALE_STRATEGY,
-    saveGameProps: function(){
-        restResource.saveGameProps(this.editData.game);
+@RF.decorateComponent({
+    name: 'app-game-props',
+    template: require('./gameProps.html')
+})
+export default class GameProps extends BaseComponent {
+
+    constructor(){
+        super();
+        this.scales = SCALE_STRATEGY;
     }
-});
+
+    saveGameProps(){
+        this.restResource.saveGameProps(this.editData.game);
+    }
+}
