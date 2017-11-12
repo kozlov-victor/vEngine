@@ -3,14 +3,16 @@
  exports.parameters =  {};
  exports.description = 'draggable behaviour with multitouch supporting';
  */
+import BaseAbstractBehaviour from '../abstract/baseAbstractBehaviour'
 
-export default class DraggableBehaviour {
+export default class DraggableBehaviour extends BaseAbstractBehaviour {
 
     static _getEventId(e){
         return e.id || 1;
     };
 
     constructor(game){
+        super();
         this.game = game;
         this.points = {};
     }

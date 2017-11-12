@@ -17,7 +17,7 @@ export default class ResourceHelper {
              RF.Router.navigateTo('explorer');
              return false;
          } else {
-             document.title = editData.projectName;
+             document.title = projectName;
              sessionStorage.projectName = projectName;
              editData.reset();
              let allData =  await resourceRest.getAll(projectName);

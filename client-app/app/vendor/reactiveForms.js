@@ -173,6 +173,7 @@ var Component = function () {
             expression: expression,
             watcherFn: watcherFn,
             listenerFn: listenerFn,
+            component: this,
             ifExpressionsList: ifExpressionsList
         });
         listenerFn(_expressionEngine2['default'].runExpressionFn(watcherFn, this));
@@ -221,7 +222,7 @@ var Component = function () {
         });
         if (!ifDirective) return;
 
-        var newValue = _expressionEngine2['default'].runExpressionFn(watcher.watcherFn, this);
+        var newValue = _expressionEngine2['default'].runExpressionFn(watcher.watcherFn, watcher.component);
         var oldValue = watcher.last;
         var newValDeepCopy = _miscUtils2['default'].deepCopy(newValue);
         if (!_miscUtils2['default'].deepEqual(newValDeepCopy, oldValue)) {
@@ -1439,7 +1440,7 @@ exports['default'] = Core;
 
 
 Core.version = "0.9.10";
-Core.buildAt = 1508577161808;
+Core.buildAt = 1509136177359;
 
 window.RF = Core;
 window.RF.Router = _router2['default'];
@@ -2518,8 +2519,8 @@ var DirectiveEngine = function () {
                 if (val) {
                     if (!el.parentElement) {
                         comment.parentNode.insertBefore(el, comment.nextSibling);
-                        _this13.component.setMounted(true);
-                        _this13.component.setShown(true);
+                        //this.component.setMounted(true);
+                        //this.component.setShown(true);
                         transclusionChildren.forEach(function (cmp) {
                             cmp.setMounted(true);
                             cmp.setShown(true);
@@ -2527,8 +2528,8 @@ var DirectiveEngine = function () {
                     }
                 } else {
                     _domUtils2['default'].remove(el);
-                    _this13.component.setMounted(false);
-                    _this13.component.setShown(false);
+                    //this.component.setMounted(false);
+                    //this.component.setShown(false);
                     transclusionChildren.forEach(function (cmp) {
                         cmp.setMounted(false);
                         cmp.setShown(false);

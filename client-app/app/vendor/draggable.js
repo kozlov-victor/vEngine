@@ -5,12 +5,15 @@ export let draggable = (el,objVal)=>{
     if (!draggableContainer) throw `[data-draggable-container] not specified`;
 
     let draggedInfo = null;
+    let isMousePressed = false;
     el.addEventListener('mousedown',e=>{
         let rect = el.getBoundingClientRect();
         draggedInfo = {el,offsetX:e.screenX - rect.left,offsetY:e.screenY - rect.top};
+        isMousePressed = true;
     });
 
     let onDragEnd = ()=>{
+        isMousePressed = false;
         if (!(draggedInfo && draggedInfo.pos)) return;
         objVal.onDragEnd && objVal.onDragEnd(objVal.target,draggedInfo.pos);
         draggedInfo = null;
@@ -26,7 +29,8 @@ export let draggable = (el,objVal)=>{
         if (!draggedInfo) return;
         e.preventDefault();
         e.stopPropagation();
-        if(e.buttons!==1) {
+        let _isMousePressed = ('buttons' in e && e.buttons==1) || isMousePressed;
+        if(!_isMousePressed) {
             draggedInfo = null;
             return;
         }

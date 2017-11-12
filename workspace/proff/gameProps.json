@@ -1,0 +1,14 @@
+{
+    "width": 300,
+    "height": 200,
+    "scaleStrategy": 0,
+    "startSceneId": 2,
+    "scale": {
+        "x": 1,
+        "y": 1
+    },
+    "pos": {
+        "x": 0,
+        "y": 0
+    }
+}

@@ -1,12 +1,13 @@
 export default class Queue{
 
+    tasksResolved = 0;
+    tasks = [];
+    tasksProgressById = {};
+    onResolved = null;
+    onProgress = null;
+
     constructor(){
-        this.tasksResolved = 0;
-        this.tasks = [];
-        this.tasksProgressById = {};
-        this.tasts = [];
-        this.onResolved = null;
-        this.onProgress = null;
+
     }
 
     size(){

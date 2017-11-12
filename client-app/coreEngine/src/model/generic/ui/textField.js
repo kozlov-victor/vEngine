@@ -3,13 +3,14 @@ import BaseModel from '../../baseModel'
 
 export default class TextField extends BaseModel {
 
+    type ='TextField';
+    _chars = null;
+    text = '';
+    font = null;
+    rigid = false;
+
     constructor(game){
         super(game);
-        this.type ='TextField';
-        this._chars = null;
-        this.text = '';
-        this.font = null;
-        this.rigid = false;
     }
 
 

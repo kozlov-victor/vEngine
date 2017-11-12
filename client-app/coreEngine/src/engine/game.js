@@ -5,6 +5,8 @@ import './polyfills'
 import RendererFactory from '../engine/renderer/rendererFactory'
 import Repository from './repository';
 import Mouse from '../engine/control/mouse'
+import Keyboard from '../engine/control/keyboard'
+import Collider from '../engine/collider'
 import {Transient} from './decorators'
 
 import CommonObject from '../model/commonObject'
@@ -14,20 +16,26 @@ import CommonObject from '../model/commonObject'
 })
 export default class Game extends CommonObject {
 
+    _lastTime = null;
+    _currTime = null;
+    _currentScene = null;
+    _running = false;
+    scale = {x:1,y:1};
+    pos = {x:0,y:0};
+
     constructor(gameProps){
         super();
-        this.scale = {x:1,y:1};
-        this.pos = {x:0,y:0};
         Object.keys(gameProps).forEach(key=>{
             this[key] = gameProps[key];
         });
-        this._currentScene = null;
         let time = Date.now();
         this._lastTime = this._currTime = time;
         this._deltaTime = 0;
-        this._running = false;
         this.repository = new Repository(this);
-        this._mouse = new Mouse(this);
+        this._mouse = new Mouse(this); //todo mouse not _mouse
+        this._keyboard = new Keyboard(this);
+        this._keyboard.listenTo();
+        this._collider = new Collider(this);
     }
 
     getTime(){
@@ -49,11 +57,11 @@ export default class Game extends CommonObject {
             let sceneBhScriptName = `${scene.name[0].toUpperCase()}${scene.name.substr(1)}Behaviour`;
             if (sceneBhScriptName) scene.setIndividualBehaviour(allScripts[sceneBhScriptName]);
             scene.layers.forEach(l=>{
-                l.gameObjects.forEach(g=>{
-                    g.setCommonBehaviour();
-                    let scriptName = `${g.name[0].toUpperCase()}${g.name.substr(1)}Behaviour`;
+                l.gameObjects.forEach(go=>{
+                    go.setCommonBehaviour();
+                    let scriptName = `${go.name[0].toUpperCase()}${go.name.substr(1)}Behaviour`;
                     let bhClass = allScripts[scriptName];
-                    if (bhClass) g.setIndividualBehaviour(bhClass);
+                    if (bhClass) go.setIndividualBehaviour(bhClass);
                 });
             });
         }
@@ -82,6 +90,7 @@ export default class Game extends CommonObject {
         self._deltaTime = self._currTime - self._lastTime;
 
         self._currentScene && self._currentScene.update(self._currTime,self._deltaTime);
+        self._keyboard.update();
     }
 
 }

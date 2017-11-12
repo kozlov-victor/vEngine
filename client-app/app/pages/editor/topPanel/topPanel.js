@@ -20,7 +20,12 @@ export default class TopPanel extends BaseComponent {
             w = window.open(
                 `/${this.editData.projectName}/out`,
                 this.editData.projectName,
-                `width=${this.editData.game.width},height=${this.editData.game.height},toolbar=0`
+                `
+                left=${(window.screen.width - this.editData.game.width)/2},
+                top=${(window.screen.height - this.editData.game.height)/2},
+                width=${this.editData.game.width},
+                height=${this.editData.game.height},
+                toolbar=0,resizable=0`
             );
         } else {
             w = window.open('/'+this.editData.projectName+'/out');

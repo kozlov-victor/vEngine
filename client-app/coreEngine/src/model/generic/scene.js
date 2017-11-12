@@ -5,22 +5,21 @@ import LoadingQueue from 'coreEngine/src/engine/loadingQueue'
 
 export default class Scene extends BaseModel {
 
+    type = 'Scene';
+    layers = [];
+    useBG = false;
+    colorBG = {r: 255, g: 255, b: 255};
+    _tweenMovies = [];
+    _individualBehaviour = null;
+    tileMap = {
+        spriteSheet: null,
+        width: 0,
+        height: 0,
+        data: []
+    };
+
     constructor(game) {
         super(game);
-        this.type = 'Scene';
-        this.alpha = 1;
-        this.layers = [];
-        this.useBG = false;
-        this.colorBG = {r: 255, g: 255, b: 255};
-        this._tweenMovies = [];
-        this._individualBehaviour = null;
-        this.tileMap = {
-            _spriteSheet: null,
-            spriteSheetId: null,
-            width: 0,
-            height: 0,
-            data: []
-        };
 
         // if (!this.tileMap) {
         //     if (this.tileMap.spriteSheetId) {
@@ -33,6 +32,13 @@ export default class Scene extends BaseModel {
     }
     addTweenMovie(tm){
         this._tweenMovies.push(tm);
+    }
+    getAllGameObjects(){
+        let res = [];
+        this.layers.forEach(l=>{
+            res = res.concat(res,l.gameObjects);
+        });
+        return res;
     }
     getAllSpriteSheets() {
         let dataSet = {};
@@ -82,6 +88,7 @@ export default class Scene extends BaseModel {
     }
 
     update(currTime,deltaTime){
+        this.game._renderer.beginFrameBuffer();
         if (this.useBG) this.game._renderer.clearColor(this.colorBG);
         else this.game._renderer.clear();
 
@@ -102,6 +109,7 @@ export default class Scene extends BaseModel {
         //     tweenMovie._update(currTime);
         // });
         // this.__updateIndividualBehaviour__(currTime);
+        this.game._renderer.flipFrameBuffer();
     }
     fadeIn(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);

@@ -2,14 +2,15 @@ import BaseModel from '../baseModel'
 
 export default class FrameAnimation extends BaseModel {
 
+    type = 'FrameAnimation';
+    _currFrame = 0;
+    frames = [];
+    duration = 1000;
+    _gameObject = null;
+    _startTime = null;
+
     constructor(game) {
         super(game);
-        this.type = 'FrameAnimation';
-        this._currFrame = 0;
-        this.frames = [];
-        this.duration = 1000;
-        this._gameObject = null;
-        this._startTime = null;
         this.stop();
     }
 

@@ -75,6 +75,7 @@ class FS {
                 this._read(path+'/'+file,res);
             } else {
                 let fullPath = (path+'/'+file).split('/').filter(s=>{return !!s.length}).join('/');
+                if (path.indexOf('/')==0) fullPath = '/'+fullPath;
                 res.push({name:file,fullName: fullPath, content:fs.readFileSync(fullPath, contentType)});
             }
         });

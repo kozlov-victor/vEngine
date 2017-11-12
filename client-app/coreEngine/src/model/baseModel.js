@@ -10,26 +10,26 @@ import {Transient} from '../engine/decorators'
 })
 export default class BaseModel extends CommonObject {
 
+    id = null;
+    name = null;
+    width = 0;
+    height = 0;
+    vel = {x:0,y:0};
+    pos = {x:0,y:0};
+    scale = {x:1,y:1};
+    angle = 0;
+    alpha = 1;
+    layerId =  null;
+
+    rigid = false;
+    _tweens = [];
+
     constructor(game){
         super();
         if (DEBUG && !game) throw (
             `can not create model '${this.type}': game instance not passed to model constructor`
         );
         this.game = game;
-
-        this.id = null;
-        this.name = null;
-        this.width = 0;
-        this.height = 0;
-        this.vel = {x:0,y:0};
-        this.pos = {x:0,y:0};
-        this.scale = {x:1,y:1};
-        this.angle = 0;
-        this.alpha = 1;
-        this.layerId =  null;
-
-        this.rigid = false;
-        this._tweens = [];
         this._emitter = new EventEmitter();
     }
 

@@ -6,6 +6,30 @@
     }"
     data-draggable-container
     id="sceneDiv">
+
+    <div data-for="j in utils.getArray(editData.currSceneInEdit.tileMap.width)">
+        <div data-for="i in utils.getArray(editData.currSceneInEdit.tileMap.height)">
+            <div
+                data-class="{
+                    inlineBlock:1
+                }"
+                data-style="{
+                    width:                 utils.tileFrameWidth()+'px',
+                    verticalAlign:         'middle',
+                    height:                utils.tileFrameHeight()+'px',
+                    backgroundImage:       utils.tileResourcePath(),
+                    backgroundPositionX:  -utils.tileFramePosX(1)+'px',
+                    backgroundPositionY:  -utils.tileFramePosY(1)+'px',
+                    backgroundRepeat:     'no-repeat'
+                }"
+            >
+
+            </div>
+        </div>
+
+    </div>
+
+
     <div data-for="item in editData.currLayerInEdit.gameObjects">
 
         <div

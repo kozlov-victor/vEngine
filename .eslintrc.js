@@ -12,7 +12,7 @@ module.exports = {
         //'html'
     ],
     // add your custom rules here
-    'rules': {
+    rules: {
         // allow paren-less arrow functions
         'arrow-parens': 0,
         // allow async-await
@@ -68,6 +68,7 @@ module.exports = {
         'object-property-newline':0,
         'handle-callback-err':0,
         'comma-dangle':0,
-        'no-trailing-spaces':0
+        'no-trailing-spaces':0,
+        'no-mixed-spaces-and-tabs':0
     }
 };

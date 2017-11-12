@@ -46,13 +46,14 @@ export default class SceneCentralPanel extends BaseComponent {
     }
 
     async onDropFromCentralPanel(go,{x,y}){
+
         go.pos = {x,y};
         let json = go.toJSON();
         Object.keys(json).forEach(key=>{
             if (!['id','name','pos','scale','angle','alpha','type','layerId', 'gameObjectProto'].includes(key))
                 delete json[key];
         });
-        await this.restResource.save(json);
+        await this.restResource.save(json,null);
     }
 
     async onDropFromLeftPanel(droppedObj,e,coords){
@@ -79,7 +80,6 @@ export default class SceneCentralPanel extends BaseComponent {
         if (objInScene instanceof GameObject) objInScene.gameObjectProto = droppedObj.obj;
 
         let resp = await this.restResource.save(objInScene);
-
         objInScene.id = resp.id;
         editData.game.repository.addObject(objInScene);
         editData.currLayerInEdit.addGameObject(objInScene);

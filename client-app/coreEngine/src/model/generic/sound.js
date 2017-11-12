@@ -3,13 +3,13 @@ import BaseModel from '../baseModel'
 
 export default class Sound extends BaseModel {
 
+    type = 'Sound';
+    resourcePath = '';
+    _gain = 1;
+    _loop =false;
+
     constructor(game){
         super(game);
-        this.type = 'Sound';
-        this.resourcePath = '';
-
-        this._gain = 1;
-        this._loop =false;
     }
 
     static find(name){

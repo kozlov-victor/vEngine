@@ -31,6 +31,18 @@ export default class gameObjectDialog extends BaseComponent {
         else {
             g.updateCloner();
             this.editData.game.repository.updateObject(g);
+            this.utils.eachGameObject(itG=>{
+                if (itG.gameObjectProto && itG.gameObjectProto.id==g.id) {
+                    let gJSON = g.toJSON();
+                    let itPos = itG.pos;
+                    let itId = itG.id;
+                    itG.gameObjectProto.fromJSON(gJSON);
+                    itG.fromJSON(gJSON);
+                    itG.pos = itPos;
+                    itG.id = itId;
+                    itG.revalidate();
+                }
+            });
         }
         RF.getComponentById('gameObjectModal').close();
     }
@@ -38,10 +50,10 @@ export default class gameObjectDialog extends BaseComponent {
     onStartFrameAnimNameChanged(frName){
         let go = this.editData.currGameObjectInEdit;
         go.startFrameAnimationName = frName;
-        let ops = {preserveNull:true};
+        let opts = {preserveNull:true};
         this.editData.game.repository.updateObject(go,opts);
         go.updateCloner(opts);
-        this.restResource.save(go,null,{startFrameAnimationName:frName});
+        this.restResource.save(go,null,opts);
     }
 
     refreshGameObjectFramePreview(gameObjectProto,ind) {

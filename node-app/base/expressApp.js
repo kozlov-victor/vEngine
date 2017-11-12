@@ -106,6 +106,7 @@ const getAnnotations = (reader,methodName)=>{
 const setUpControllers = ()=>{
     fs.readDirSync(appDir+'/node-app/mvc/controllers').forEach(function(itm) {
         let fileNameWithoutExt = itm.name.split('.')[0];
+
         let Ctrl = require(appDir + '/node-app/mvc/controllers/' + fileNameWithoutExt).controller;
         if (!Ctrl) return;
         let ctrl = new Ctrl();

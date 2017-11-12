@@ -207,6 +207,9 @@ select {
   width: 90%;
   min-width: 60px;
 }
+select {
+  max-width: 120px;
+}
 button,
 label {
   cursor: pointer;

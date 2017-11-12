@@ -22,12 +22,22 @@ module.exports =  (params)=>{
                         presets: ['es2015-loose'],
                         plugins: [
                             "transform-async-to-generator",
-                            "transform-decorators-legacy"
+                            "transform-decorators-legacy",
+                            "transform-class-properties"
                         ]
                     }
                 },
                 {
-                    test: /\.(html|css)$/,
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: "eslint-loader",
+                    options: {
+                        failOnWarning: true,
+                        failOnError: true
+                    }
+                },
+                {
+                    test: /\.(html|css|frag|vert)$/,
                     loader: 'text-loader',
                     options: {
                         minimize: true

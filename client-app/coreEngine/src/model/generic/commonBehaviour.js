@@ -3,10 +3,11 @@ import BaseModel from '../baseModel'
 
 export default class CommonBehaviour extends BaseModel {
 
+    type = 'CommonBehaviour';
+    parameters = [];
+    description = null;
+
     constructor(game){
         super(game);
-        this.type = 'CommonBehaviour';
-        this.parameters = [];
-        this.description = null;
     }
 }

@@ -1,7 +1,25 @@
 /*global IN_EDITOR:true*/
+/*global window:true*/
 import BaseModel from '../baseModel'
 
+
 export default class GameObjectProto extends BaseModel {
+
+    type = 'GameObjectProto';
+    spriteSheet = null;
+    _behaviour = null;
+    commonBehaviour = [];
+    currFrameIndex = 0;
+    _sprPosX = 0;
+    _sprPosY = 0;
+    frameAnimations =  [];
+    _currFrameAnimation = 0;
+    startFrameAnimationName = null;
+    _timeCreated = null;
+    tileOffset =  {x:0,y:0};
+    tileRepeat = false;
+    groupName = '';
+    _individualBehaviour = null;
 
     static find(name){
         //return game.getCurrScene()._allGameObjects.find({name:name});
@@ -12,21 +30,6 @@ export default class GameObjectProto extends BaseModel {
 
     constructor(game){
         super(game);
-        this.type = 'GameObjectProto';
-        this.spriteSheet = null;
-        this._behaviour = null;
-        this.commonBehaviour = [];
-        this.currFrameIndex = 0;
-        this._sprPosX = 0;
-        this._sprPosY = 0;
-        this.frameAnimations =  [];
-        this._currFrameAnimation = null;
-        this.startFrameAnimationName = null;
-        this._timeCreated = null;
-        this.tileOffset =  {x:0,y:0};
-        this.tileRepeat = false;
-        this.groupName = '';
-        this._individualBehaviour = null;
     }
 
     revalidate(){
@@ -36,7 +39,7 @@ export default class GameObjectProto extends BaseModel {
             this.height = this.spriteSheet._frameHeight;
         }
         this.frameAnimations.forEach((f,i)=>{
-            this.frameAnimations[i] = this.frameAnimations[i].clone();
+            this.frameAnimations[i] = this.frameAnimations[i].clone(); // todo need clone?
             this.frameAnimations[i]._gameObject = this;
         });
     }
@@ -60,15 +63,14 @@ export default class GameObjectProto extends BaseModel {
 
         let deltaX = this.vel.x * delta / 1000;
         let deltaY = this.vel.y * delta / 1000;
-        let posX = this.pos.x+deltaX;
-        let posY = this.pos.y+deltaY;
+        this.game._collider.manage(this,this.pos.x+deltaX,this.pos.y+deltaY);
         //if (_gameObject.angleVel) _gameObject.angle += _gameObject.angleVel * delta / 1000;
-        //collider.manage(_gameObject,posX,posY);
-        this.pos.x = posX;
-        this.pos.y = posY;
 
         this.game._renderer.draw(this);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
+        for (let i=0,max = this.commonBehaviour.length;i<max;i++){
+            this.commonBehaviour[i].onUpdate();
+        }
     }
 
     onShow(){

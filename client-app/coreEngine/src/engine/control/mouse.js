@@ -6,9 +6,10 @@ let isTouch = 'ontouchstart' in window;
 
 export default class Mouse {
 
+    objectsCaptured = {};
+
     constructor(game){
         this.game = game;
-        this.objectsCaptured = {};
     }
 
     listenTo(container) {

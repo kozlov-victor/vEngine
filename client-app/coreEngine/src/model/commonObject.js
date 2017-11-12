@@ -1,12 +1,12 @@
 
 const isPropNotFit = (key,val,opts)=>{
-    if (key && !opts.preserveNull) return true;
+    if (!key) return true;
     if (key.indexOf('_')==0) return true;
     if (val && val.call) return true;
     if (typeof val === 'string') return false;
     if (typeof val === 'number') return false;
     if (typeof val === 'boolean') return false;
-    if (!val) return true;
+    return (val==null && !opts.preserveNull);
 };
 
 
@@ -93,12 +93,12 @@ export default class CommonObject {
             if (this.constructor.transient && this.constructor.transient[key]) {
                 continue;
             }
-            if (this[key].type && this[key].id) { // is model
+            if (this[key]!=null && this[key].type && this[key].id) { // is model
                 res[key] = {
                     id:this[key].id,
                     type: this[key].type
                 }
-            } else if (this[key] && this[key].splice) { // is arr
+            } else if (this[key]!=null && this[key].splice) { // is arr
                 let col = this[key];
                 let arr = [];
                 col.forEach(function(el){
@@ -112,8 +112,8 @@ export default class CommonObject {
             }
             else {
                 let possiblePrimitive = deepCopy(this[key]);
-                if (possiblePrimitive.splice && !possiblePrimitive.length) continue;
-                else if (typeof possiblePrimitive === 'object' && !Object.keys(possiblePrimitive).length) continue;
+                if (possiblePrimitive && possiblePrimitive.splice && !possiblePrimitive.length) continue;
+                else if (possiblePrimitive!=null && typeof possiblePrimitive === 'object' && !Object.keys(possiblePrimitive).length) continue;
                 res[key] = possiblePrimitive;
             }
         }

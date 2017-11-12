@@ -1,4 +1,5 @@
 
+
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -26,7 +27,8 @@ let config = {
                     presets: ['es2015-loose'],
                     plugins: [
                         "transform-async-to-generator",
-                        "transform-decorators-legacy"
+                        "transform-decorators-legacy",
+                        "transform-class-properties"
                     ]
                 }
             },
@@ -35,8 +37,8 @@ let config = {
                 exclude: /node_modules|vendor/,
                 loader: "eslint-loader",
                 options: {
-                    failOnWarning: false,
-                    failOnError: false
+                    failOnWarning: true,
+                    failOnError: true
                 }
             },
             {
@@ -45,6 +47,10 @@ let config = {
                 options: {
                     minimize: true
                 }
+            },
+            {
+                test: /\.(frag|vert)$/,
+                loader: 'text-loader'
             },
             {
                 test: /\.(html)$/,

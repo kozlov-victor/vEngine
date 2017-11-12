@@ -31,6 +31,40 @@ export default class Utils {
 
     }
 
+    static tileFrameWidth(){
+        if (!editData.currSceneInEdit.tileMap) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
+        return editData.currSceneInEdit.tileMap.spriteSheet._frameWidth;
+    }
+    static tileFrameHeight(){
+        if (!editData.currSceneInEdit.tileMap) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
+        return editData.currSceneInEdit.tileMap.spriteSheet._frameHeight;
+    }
+    static tileFramePosX(i){
+        if (!editData.currSceneInEdit.tileMap) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
+        if (!editData.currTileIndexInEdit) return null;
+        return editData.currSceneInEdit.tileMap.spriteSheet.getFramePosX(i);
+    }
+    static tileFramePosY(i){
+        if (!editData.currSceneInEdit.tileMap) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
+        if (!editData.currTileIndexInEdit) return null;
+        return editData.currSceneInEdit.tileMap.spriteSheet.getFramePosY(i);
+    }
+    static tileResourcePath(){
+        if (!editData.currSceneInEdit.tileMap) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet.resourcePath) return null;
+        return `url(${editData.projectName}/${editData.currSceneInEdit.tileMap.spriteSheet.resourcePath})`;
+    }
+    static tileNumOfFramesH(){
+        if (!editData.currSceneInEdit.tileMap) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
+        return editData.currSceneInEdit.tileMap.spriteSheet.numOfFramesH;
+    }
+
     static calcZoom(gameObject) {
         const sampleSize = 30;
         if (!gameObject) gameObject = {width:sampleSize,height:sampleSize};
@@ -225,7 +259,6 @@ export default class Utils {
         } else {
             return x===y;
         }
-
     }
 
 }

@@ -3,14 +3,15 @@ import mathEx from './mathEx'
 
 export default class Tween {
 
+    propsToChange = [];
+    startedTime = null;
+    completed = false;
+
     constructor(tweenDesc,obj){
         this.obj = tweenDesc.target || obj;
-        this.propsToChange = [];
-        this.startedTime = null;
         this.progressFn = tweenDesc.progress;
         this.completeFn = tweenDesc.complete;
         this.easeFnName = tweenDesc.ease || 'linear';
-        this.completed = false;
         this.tweenTime = tweenDesc.time || 1000;
         this.desc = this.normalizeDesc(tweenDesc);
     }
@@ -37,8 +38,8 @@ export default class Tween {
     update(time){
         if (!this.startedTime) this.startedTime = time;
         if (this.completed) return;
-        let delta = time - this.startedTime;
-        if (delta>this.tweenTime) {
+        let curTweenTime = time - this.startedTime;
+        if (curTweenTime>this.tweenTime) {
             this._complete();
             return;
         }
@@ -46,7 +47,7 @@ export default class Tween {
         while(l--){
             let prp = this.propsToChange[l];
             this.obj[prp] = mathEx.ease[this.easeFnName](
-                delta,
+                curTweenTime,
                 this.desc.from[prp],
                 this.desc.to[prp] - this.desc.from[prp],
                 this.tweenTime);

@@ -96,13 +96,13 @@
                                 hoverOutline:1
                             }"
                             data-style="{
-                                width:frameWidth+'px',
+                                width:utils.tileFrameWidth()+'px',
                                 verticalAlign:'middle',
-                                height:frameHeight+'px',
-                                backgroundImage:      'url('+editData.projectName+'/'+resourcePath+')',
-                                backgroundPositionX:  -framePosX+'px',
-                                backgroundPositionY:  -framePosY+'px',
-                                backgroundRepeat:     'no-repeat',
+                                height:utils.tileFrameHeight()+'px',
+                                backgroundImage:      utils.tileResourcePath(),
+                                backgroundPositionX:  -utils.tileFramePosX(editData.currTileIndexInEdit)+'px',
+                                backgroundPositionY:  -utils.tileFramePosY(editData.currTileIndexInEdit)+'px',
+                                backgroundRepeat:     'no-repeat'
                             }"
                         ></div>
                     </div>
@@ -114,13 +114,13 @@
                     </div>
                     <div class="cell">
                         <select
-                                data-model="editData.currSceneInEdit.tileMap.spriteSheetId"
-                                data-change="setTileMapSpriteSheet()"
+                                data-model="editData.currSceneInEdit.tileMap.spriteSheet"
                                 >
                             <option value="">--</option>
                             <option
-                                    data-for="item in editData.spriteSheetList.rs"
-                                    data-value="item.id"
+                                    data-for="item in editData.game.repository.getArray('SpriteSheet')
+                                    track by id"
+                                    data-value="item"
                                     >{{item.name}}</option>
                         </select>
                     </div>
@@ -129,8 +129,9 @@
 
             <div
                 data-style="{
-                    width: frameWidth*numOfFramesH+'px',
-                    overflowX: 'auto'
+                    width: utils.tileFrameWidth()*utils.tileNumOfFramesH()+'px',
+                    overflowX: 'auto',
+                    padding: '2px'
                 }"
                 >
                 <div data-class="{
@@ -139,17 +140,17 @@
                         hoverOutline:1
                      }"
                      data-style="{
-                        width:frameWidth+'px',
+                        width:utils.tileFrameWidth()+'px',
                         verticalAlign:'middle',
-                        height:frameHeight+'px',
-                        backgroundImage:'url('+resourcePath+')',
-                        backgroundPositionX:   -framePosX+'px',
-                        backgroundPositionY:   -framePosY+'px',
+                        height:utils.tileFrameHeight()+'px',
+                        backgroundImage: utils.tileResourcePath(),
+                        backgroundPositionX:   -utils.tileFramePosX(i)+'px',
+                        backgroundPositionY:   -utils.tileFramePosY(i)+'px',
                         backgroundRepeat:     'no-repeat'
                      }"
                      data-title="i"
                      data-click="setCurrSelectedTile(i)"
-                     data-for="v,i in numOfFramesForSceneSpriteSheet"
+                     data-for="v,i in utils.getArray(numOfFramesForSceneSpriteSheet())"
                      ></div>
             </div>
 

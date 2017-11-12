@@ -2,17 +2,18 @@ import BaseModel from '../baseModel'
 
 export default class SpriteSheet extends BaseModel {
 
+    type = 'SpriteSheet';
+    width = 0;
+    height = 0;
+    numOfFramesH = 1;
+    numOfFramesV = 1;
+    _frameWidth = 0;
+    _frameHeight = 0;
+    _numOfFrames = 0;
+    resourcePath = '';
+
     constructor(game) {
         super(game);
-        this.type = 'SpriteSheet';
-        this.width = 0;
-        this.height = 0;
-        this.numOfFramesH = 1;
-        this.numOfFramesV = 1;
-        this._frameWidth = 0;
-        this._frameHeight = 0;
-        this._numOfFrames = 0;
-        this.resourcePath = '';
     }
 
     revalidate(){

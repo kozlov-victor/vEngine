@@ -6,10 +6,11 @@ const noop = ()=>{};
 
 export default class GameObject extends GameObjectProto {
 
+    type = 'GameObject';
+    gameObjectProto = null;
+
     constructor(game){
         super(game);
-        this.type = 'GameObject';
-        this.gameObjectProto = null;
     }
 
     revalidate(){
@@ -23,7 +24,7 @@ export default class GameObject extends GameObjectProto {
             this[key] = this.gameObjectProto[key];
         });
         Object.keys(ownProps).forEach(key=>{
-            if (ownProps[key]==undefined) return;
+            if (!ownProps[key]) return; // to avoid corrupt frameIndex val
             if (ownProps[key].splice && ownProps[key].length===0) return;
             this[key] = ownProps[key];
         });
@@ -41,11 +42,14 @@ export default class GameObject extends GameObjectProto {
     }
 
     setCommonBehaviour(){
+        let instances = [];
         this.commonBehaviour.forEach(cb=>{
             let CbClazz = commonBehaviours[cb.name];
             let instance = new CbClazz(this.game);
             instance.manage(this,cb.parameters);
+            instances.push(instance);
         });
+        this.commonBehaviour = instances;
     }
 
 };

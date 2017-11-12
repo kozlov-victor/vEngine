@@ -20,7 +20,6 @@ export default class FrameAnimationDialog extends BaseComponent {
     }
 
 
-
     open(){
         this.isStopped = true;
         this.frames = this.editData.currFrameAnimationInEdit.frames.join(',');

@@ -1,10 +1,11 @@
 
 export default class AbstractRenderer {
 
+    renderableCache = {};
+    container = null;
+
     constructor(game){
         this.game = game;
-        this.renderableCache = {};
-        this.container = null;
     }
 
     onResize(){

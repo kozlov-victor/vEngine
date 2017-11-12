@@ -82,7 +82,7 @@ export default class SpriteSheetDialog extends BaseComponent {
                     g.spriteSheet = model;
                     g.revalidate();
                 }
-            })
+            });
 
         }
         RF.getComponentById('spriteSheetModal').close();

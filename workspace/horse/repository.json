@@ -1,0 +1,96 @@
+{
+    "Scene": [
+        {
+            "id": 2,
+            "name": "mainScene",
+            "type": "Scene",
+            "layers": [
+                {
+                    "type": "Layer",
+                    "id": 2
+                }
+            ]
+        }
+    ],
+    "Layer": [
+        {
+            "id": 2,
+            "name": "layer1",
+            "type": "Layer"
+        }
+    ],
+    "SpriteSheet": [
+        {
+            "id": 3,
+            "name": "horse",
+            "width": 733,
+            "height": 489,
+            "type": "SpriteSheet",
+            "numOfFramesH": 4,
+            "numOfFramesV": 4,
+            "resourcePath": "resources/horse.gif"
+        }
+    ],
+    "GameObjectProto": [
+        {
+            "id": 4,
+            "name": "horse",
+            "width": 183,
+            "height": 122,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 3,
+                "type": "SpriteSheet"
+            },
+            "frameAnimations": [
+                {
+                    "type": "FrameAnimation",
+                    "id": 5
+                },
+                {
+                    "type": "FrameAnimation",
+                    "id": 6
+                },
+                {
+                    "type": "FrameAnimation",
+                    "id": 7
+                },
+                {
+                    "type": "FrameAnimation",
+                    "id": 8
+                }
+            ]
+        }
+    ],
+    "FrameAnimation": [
+        {
+            "id": 5,
+            "name": "a",
+            "type": "FrameAnimation",
+            "frames": [
+                1
+            ]
+        },
+        {
+            "name": "b",
+            "type": "FrameAnimation",
+            "frames": [
+                2
+            ],
+            "id": 6
+        },
+        {
+            "name": "q1",
+            "type": "FrameAnimation",
+            "frames": [
+                1
+            ],
+            "id": 7
+        },
+        {
+            "name": "q2",
+            "type": "FrameAnimation",
+            "id": 8
+        }
+    ]
+}

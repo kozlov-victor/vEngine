@@ -2,10 +2,11 @@ import BaseModel from '../baseModel'
 
 export default class Layer extends BaseModel {
 
+    type = 'Layer';
+    gameObjects = [];
+
     constructor(game) {
         super(game);
-        this.type = 'Layer';
-        this.gameObjects = [];
     }
     addGameObject(go){
         go._layer = this;

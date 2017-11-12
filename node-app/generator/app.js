@@ -1,3 +1,6 @@
+/*global DEBUG:true*/
+/*global GAME_PROPS_DATA:true*/
+/*global REPOSITORY_DATA:true*/
 
 import Game from 'coreEngine/src/engine/game'
 //import Compressor from 'coreEngine/src/utils/compressor'

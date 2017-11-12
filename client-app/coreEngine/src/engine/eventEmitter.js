@@ -1,8 +1,10 @@
 
 export default class EventEmitter{
 
+    events = {};
+
     constructor(){
-        this.events = {};
+
     }
 
     _on(name,callBack){

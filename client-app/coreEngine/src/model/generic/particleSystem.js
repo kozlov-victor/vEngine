@@ -8,16 +8,17 @@ let r = obj=>{
 
 export default class ParticleSystem extends BaseModel {
 
+    type = 'ParticleSystem';
+    gameObjectProto = null;
+    _particles = [];
+    numOfParticlesToEmit = {from:1,to:10};
+    particleAngle = {from:0,to:0};
+    particleVelocity = {from:1,to:100};
+    particleLiveTime = {from:100,to:1000};
+    emissionRadius = 0;
+
     constructor(game){
         super(game);
-        this.type = 'ParticleSystem';
-        this.gameObjectProto = null;
-        this._particles = [];
-        this.numOfParticlesToEmit = {from:1,to:10};
-        this.particleAngle = {from:0,to:0};
-        this.particleVelocity = {from:1,to:100};
-        this.particleLiveTime = {from:100,to:1000};
-        this.emissionRadius = 0;
     }
 
     revalidate(){
