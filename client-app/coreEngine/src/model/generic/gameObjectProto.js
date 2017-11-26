@@ -1,4 +1,5 @@
 /*global IN_EDITOR:true*/
+/*global DEBUG:true*/
 /*global window:true*/
 import BaseModel from '../baseModel'
 

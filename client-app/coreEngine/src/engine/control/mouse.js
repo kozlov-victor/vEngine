@@ -1,8 +1,6 @@
 /*global DEBUG:true*/
 import mathEx from '../mathEx'
 
-let isTouch = 'ontouchstart' in window;
-
 
 export default class Mouse {
 
@@ -13,47 +11,46 @@ export default class Mouse {
     }
 
     listenTo(container) {
-        if (isTouch) {
-            container.ontouchstart = e=>{
-                let l = e.touches.length;
-                while (l--){
-                    this.resolveClick(e.touches[l]);
-                }
-            };
-            container.ontouchend = container.ontouchcancel = e=>{
-                let l = e.changedTouches.length;
-                while (l--){
-                    this.resolveMouseUp(e.changedTouches[l]);
-                }
-            };
-            container.ontouchmove = e=>{
-                let l = e.touches.length;
-                while (l--){
-                    this.resolveMouseMove(e.touches[l]);
-                }
+        // mouseDown
+        container.ontouchstart = e=>{
+            let l = e.touches.length;
+            while (l--){
+                this.resolveClick(e.touches[l]);
             }
-        } else {
-            container.onmousedown = e=>{
-                (e.button === 0) && this.resolveClick(e);
-            };
-            container.onmouseup = e=>{
-                this.resolveMouseUp(e);
-            };
-            container.onmousemove = e=>{
-                this.resolveMouseMove(e);
-            };
-            container.ondblclick = e=>{
-                this.resolveDoubleClick(e);
+        };
+        container.onmousedown = e=>{
+            (e.button === 0) && this.resolveClick(e);
+        };
+        // mouseUp
+        container.ontouchend = container.ontouchcancel = e=>{
+            let l = e.changedTouches.length;
+            while (l--){
+                this.resolveMouseUp(e.changedTouches[l]);
             }
+        };
+        container.onmouseup = e=>{
+            this.resolveMouseUp(e);
+        };
+        // mouseMove
+        container.ontouchmove = e=>{
+            let l = e.touches.length;
+            while (l--){
+                this.resolveMouseMove(e.touches[l]);
+            }
+        };
+        container.onmousemove = e=>{
+            this.resolveMouseMove(e);
+        };
+        // other
+        container.ondblclick = e=>{
+            this.resolveDoubleClick(e);
         }
     }
 
     resolveScreenPoint(e){
         return {
-            //x: (e.clientX * device.scale - gameProps.left) / globalScale.x ,
-            //y: (e.clientY * device.scale - gameProps.top) / globalScale.y ,
-            x: ~~((e.clientX - this.game.pos.x) / this.game.scale.x) ,
-            y: ~~((e.clientY - this.game.pos.y) / this.game.scale.y) ,
+            x: ~~((e.clientX - this.game.pos.x ) / this.game.scale.x) + this.game.camera.pos.x,
+            y: ~~((e.clientY - this.game.pos.y ) / this.game.scale.y) + this.game.camera.pos.y,
             id: e.identifier || 0
         };
     }
@@ -104,11 +101,11 @@ exit:   for (let i=0;i<scene.layers.length;i++){
         let point = this.triggerEvent(e,'mouseMove');
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
-        if (lastMouseDownObject && lastMouseDownObject!=point.object) {
+        if (lastMouseDownObject && lastMouseDownObject!==point.object) {
             lastMouseDownObject.trigger('mouseLeave');
             delete this.objectsCaptured[point.id];
         }
-        if (point.object && lastMouseDownObject!=point.object) {
+        if (point.object && lastMouseDownObject!==point.object) {
             point.object.trigger('mouseEnter');
             this.objectsCaptured[point.id] = point.object;
         }

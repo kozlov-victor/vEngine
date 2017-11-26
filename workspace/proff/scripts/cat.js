@@ -3,11 +3,11 @@
 export class CatBehaviour {
 
     onCreate(){
-        this.object.vel.x = -100;
+        this.gameObject.vel.x = -100;
     }
 
     onUpdate(){
-        if (this.object.pos.x<-100) this.object.pos.x = 700;
+        if (this.gameObject.pos.x<-100) this.gameObject.pos.x = 700;
     }
 
     onDestroy(){

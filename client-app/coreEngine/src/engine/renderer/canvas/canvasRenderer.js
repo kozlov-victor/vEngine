@@ -82,6 +82,38 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.fillRect(0,0,this.game.width,this.game.height,`rgb(${color.r},${color.g},${color.b})`)
     }
 
+
+    save() {
+        this.ctx.save();
+    }
+
+    scale(x,y) {
+        this.ctx.scale(x,y);
+    }
+
+    rotateZ(angleInRadians) {
+        this.ctx.rotateZ(angleInRadians);
+    }
+
+    rotateY(angleInRadians) {
+        throw 'rotateY not supported by canvasRenderer'
+    }
+
+    translate(x,y){
+        this.ctx.translate(x,y);
+    }
+
+    restore(){
+        this.ctx.restore();
+    }
+
+    beginFrameBuffer(){
+        this.save();
+    }
+    flipFrameBuffer(){
+        this.restore();
+    }
+
     loadTextureInfo(resourcePath,onLoad){
         let img = new Image();
         img.src = resourcePath;

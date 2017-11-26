@@ -29,7 +29,10 @@ export default class AbstractRenderer {
         this.container.style.width = width + 'px';
         this.container.style.height = height + 'px';
 
-    };
+    }
+
+    beginFrameBuffer(){}
+    flipFrameBuffer(){}
 
     registerResize(){
         this.onResize();

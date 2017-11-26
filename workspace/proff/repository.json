@@ -12,8 +12,7 @@
             ],
             "useBG": true,
             "tileMap": {
-                "spriteSheet": null,
-                "width": 6,
+                "width": 22,
                 "height": 2,
                 "data": []
             }
@@ -1520,6 +1519,12 @@
                 "id": 37,
                 "type": "SpriteSheet"
             },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 54
+                }
+            ],
             "frameAnimations": [
                 {
                     "type": "FrameAnimation",
@@ -1534,8 +1539,8 @@
             "id": 28,
             "name": "professor",
             "pos": {
-                "x": -2,
-                "y": 2
+                "x": 10,
+                "y": 1
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1548,8 +1553,8 @@
             "id": 30,
             "name": "cat",
             "pos": {
-                "x": 156,
-                "y": 37
+                "x": 214,
+                "y": 47
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1686,8 +1691,8 @@
             "id": 49,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 154,
-                "y": 164
+                "x": 169,
+                "y": 102
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1741,11 +1746,11 @@
                 "idleUpAnimation": "idleUp",
                 "idleDownAnimation": "idleDown"
             }
-        }
-    ],
-    "undefined": [
+        },
         {
-            "id": 52
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 54
         }
     ]
 }

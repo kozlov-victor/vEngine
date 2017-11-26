@@ -3,7 +3,7 @@
 export class MulticolorTanksBehaviour {
 
     onCreate(){
-        this.object.vel.x = 10;
+        //this.gameObject.vel.x = 10;
     }
 
     onUpdate(){

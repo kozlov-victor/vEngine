@@ -20,7 +20,7 @@ export default class BaseModel extends CommonObject {
     angle = 0;
     alpha = 1;
     layerId =  null;
-
+    fixedToCamera = false;
     rigid = false;
     _tweens = [];
 

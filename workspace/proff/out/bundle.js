@@ -40,7 +40,7 @@
         return Object.prototype.hasOwnProperty.call(t, e);
     };
     r.p = "";
-    return r(r.s = 53);
+    return r(r.s = 54);
 })([ function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -48,9 +48,9 @@
     var i, n;
     var o = r(12);
     var a = l(o);
-    var s = r(37);
+    var s = r(38);
     var u = l(s);
-    var f = r(22);
+    var f = r(23);
     var h = l(f);
     var c = r(8);
     function l(t) {
@@ -58,12 +58,12 @@
             default: t
         };
     }
-    function d(t, e) {
+    function p(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function p(t, e) {
+    function d(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -88,8 +88,8 @@
     }), i(n = function(t) {
         y(e, t);
         function e(r) {
-            d(this, e);
-            var i = p(this, t.call(this));
+            p(this, e);
+            var i = d(this, t.call(this));
             i.id = null;
             i.name = null;
             i.width = 0;
@@ -109,6 +109,7 @@
             i.angle = 0;
             i.alpha = 1;
             i.layerId = null;
+            i.fixedToCamera = false;
             i.rigid = false;
             i._tweens = [];
             if (1 && !r) throw "can not create model '" + i.type + "': game instance not passed to model constructor";
@@ -612,48 +613,65 @@
             return this.buffer[e] > u;
         };
         t.prototype.isJustPressed = function t(e) {
-            return this.buffer[e] == s;
+            return this.buffer[e] === s;
         };
         t.prototype.isReleased = function t(e) {
             return this.buffer[e] <= u || !this.buffer[e];
         };
         t.prototype.isJustReleased = function t(e) {
-            return this.buffer[e] == f;
+            return this.buffer[e] === f;
         };
         t.prototype.update = function e() {
             var r = this;
             if (1 && window.canceled) return;
-            [ t.KEY_UP, t.KEY_DOWN, t.KEY_LEFT, t.KEY_RIGHT ].forEach(function(t) {
-                if (r.buffer[t] == s) r.buffer[t] = a; else if (r.buffer[t] == f) r.buffer[t] = u;
+            [ t.KEY.UP, t.KEY.DOWN, t.KEY.LEFT, t.KEY.RIGHT ].forEach(function(t) {
+                if (r.buffer[t] === s) r.buffer[t] = a; else if (r.buffer[t] === f) r.buffer[t] = u;
             });
         };
-        t.prototype.listenTo = function e() {
-            var r = this;
-            window.addEventListener("keydown", function(e) {
-                var i = e.keyCode;
-                switch (i) {
-                  case t.KEY_UP:
-                  case t.KEY_DOWN:
-                  case t.KEY_LEFT:
-                  case t.KEY_RIGHT:
-                    r.buffer[i] = a;
-                    break;
-                }
+        t.prototype.listenTo = function t() {
+            var e = this;
+            window.addEventListener("keydown", function(t) {
+                var r = t.keyCode;
+                e.buffer[r] = a;
             });
-            window.addEventListener("keyup", function(e) {
-                var i = e.keyCode;
-                switch (i) {
-                  case t.KEY_UP:
-                  case t.KEY_DOWN:
-                  case t.KEY_LEFT:
-                  case t.KEY_RIGHT:
-                    r.buffer[i] = f;
-                    break;
-                }
+            window.addEventListener("keyup", function(t) {
+                var r = t.keyCode;
+                e.buffer[r] = f;
             });
         };
         return t;
-    }(), i.KEY_UP = 38, i.KEY_DOWN = 40, i.KEY_LEFT = 37, i.KEY_RIGHT = 39, n);
+    }(), i.KEY = {
+        A: 65,
+        B: 66,
+        C: 67,
+        D: 68,
+        E: 69,
+        F: 70,
+        G: 71,
+        H: 72,
+        I: 73,
+        J: 74,
+        K: 75,
+        L: 76,
+        M: 77,
+        N: 78,
+        O: 79,
+        P: 80,
+        Q: 81,
+        R: 82,
+        S: 83,
+        T: 84,
+        U: 85,
+        V: 86,
+        W: 87,
+        X: 88,
+        Y: 89,
+        Z: 80,
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40
+    }, n);
     e.default = h;
 }, function(t, e, r) {
     "use strict";
@@ -750,8 +768,8 @@
         var h = t[2 * 4 + 0];
         var c = t[2 * 4 + 1];
         var l = t[2 * 4 + 2];
-        var d = t[2 * 4 + 3];
-        var p = t[3 * 4 + 0];
+        var p = t[2 * 4 + 3];
+        var d = t[3 * 4 + 0];
         var y = t[3 * 4 + 1];
         var m = t[3 * 4 + 2];
         var g = t[3 * 4 + 3];
@@ -761,17 +779,17 @@
         var b = e[0 * 4 + 3];
         var x = e[1 * 4 + 0];
         var O = e[1 * 4 + 1];
-        var E = e[1 * 4 + 2];
-        var T = e[1 * 4 + 3];
+        var T = e[1 * 4 + 2];
+        var E = e[1 * 4 + 3];
         var j = e[2 * 4 + 0];
-        var R = e[2 * 4 + 1];
-        var F = e[2 * 4 + 2];
+        var F = e[2 * 4 + 1];
+        var R = e[2 * 4 + 2];
         var A = e[2 * 4 + 3];
-        var P = e[3 * 4 + 0];
-        var M = e[3 * 4 + 1];
+        var M = e[3 * 4 + 0];
+        var P = e[3 * 4 + 1];
         var S = e[3 * 4 + 2];
         var B = e[3 * 4 + 3];
-        return [ r * v + i * x + n * j + o * P, r * w + i * O + n * R + o * M, r * _ + i * E + n * F + o * S, r * b + i * T + n * A + o * B, a * v + s * x + u * j + f * P, a * w + s * O + u * R + f * M, a * _ + s * E + u * F + f * S, a * b + s * T + u * A + f * B, h * v + c * x + l * j + d * P, h * w + c * O + l * R + d * M, h * _ + c * E + l * F + d * S, h * b + c * T + l * A + d * B, p * v + y * x + m * j + g * P, p * w + y * O + m * R + g * M, p * _ + y * E + m * F + g * S, p * b + y * T + m * A + g * B ];
+        return [ r * v + i * x + n * j + o * M, r * w + i * O + n * F + o * P, r * _ + i * T + n * R + o * S, r * b + i * E + n * A + o * B, a * v + s * x + u * j + f * M, a * w + s * O + u * F + f * P, a * _ + s * T + u * R + f * S, a * b + s * E + u * A + f * B, h * v + c * x + l * j + p * M, h * w + c * O + l * F + p * P, h * _ + c * T + l * R + p * S, h * b + c * E + l * A + p * B, d * v + y * x + m * j + g * M, d * w + y * O + m * F + g * P, d * _ + y * T + m * R + g * S, d * b + y * E + m * A + g * B ];
     };
 }, function(t, e, r) {
     "use strict";
@@ -848,7 +866,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(30);
+    var i = r(31);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -1144,7 +1162,7 @@
     t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
 }, function(t, e, r) {
     "use strict";
-    var i = r(23);
+    var i = r(24);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -1189,7 +1207,12 @@
                 type: "Layer",
                 id: 2
             } ],
-            useBG: true
+            useBG: true,
+            tileMap: {
+                width: 22,
+                height: 2,
+                data: []
+            }
         } ],
         Layer: [ {
             id: 2,
@@ -2569,6 +2592,10 @@
                 id: 37,
                 type: "SpriteSheet"
             },
+            commonBehaviour: [ {
+                type: "CommonBehaviour",
+                id: 54
+            } ],
             frameAnimations: [ {
                 type: "FrameAnimation",
                 id: 39
@@ -2579,8 +2606,8 @@
             id: 28,
             name: "professor",
             pos: {
-                x: 6,
-                y: 13
+                x: 10,
+                y: 1
             },
             layerId: 2,
             type: "GameObject",
@@ -2592,8 +2619,8 @@
             id: 30,
             name: "cat",
             pos: {
-                x: 117,
-                y: 18
+                x: 214,
+                y: 47
             },
             layerId: 2,
             type: "GameObject",
@@ -2630,8 +2657,8 @@
             id: 42,
             name: "MulticolorTanks",
             pos: {
-                x: 2,
-                y: 117
+                x: 4,
+                y: 115
             },
             layerId: 2,
             type: "GameObject",
@@ -2643,8 +2670,8 @@
             id: 43,
             name: "MulticolorTanks",
             pos: {
-                x: 208,
-                y: 23
+                x: 258,
+                y: 9
             },
             layerId: 2,
             type: "GameObject",
@@ -2656,8 +2683,8 @@
             id: 44,
             name: "MulticolorTanks",
             pos: {
-                x: 63,
-                y: 92
+                x: 47,
+                y: 88
             },
             layerId: 2,
             type: "GameObject",
@@ -2682,8 +2709,8 @@
             id: 46,
             name: "MulticolorTanks",
             pos: {
-                x: 78,
-                y: 52
+                x: 93,
+                y: 55
             },
             layerId: 2,
             type: "GameObject",
@@ -2720,8 +2747,8 @@
             id: 49,
             name: "MulticolorTanks",
             pos: {
-                x: 154,
-                y: 164
+                x: 169,
+                y: 102
             },
             layerId: 2,
             type: "GameObject",
@@ -2746,8 +2773,8 @@
             id: 51,
             name: "MulticolorTanks",
             pos: {
-                x: 82,
-                y: 14
+                x: 88,
+                y: 8
             },
             layerId: 2,
             type: "GameObject",
@@ -2771,9 +2798,10 @@
                 idleUpAnimation: "idleUp",
                 idleDownAnimation: "idleDown"
             }
-        } ],
-        undefined: [ {
-            id: 52
+        }, {
+            name: "Draggable",
+            type: "CommonBehaviour",
+            id: 54
         } ]
     });
     var u = s.repository.getObject(a.startSceneId, "Scene");
@@ -2845,29 +2873,29 @@
             var e = this.game._keyboard;
             var r = this.parameters;
             var i = this.gameObject;
-            if (e.isPressed(a.default.KEY_UP)) {
+            if (e.isPressed(a.default.KEY.UP)) {
                 i.vel.y = -r.velocity;
                 this.go("Up");
             }
-            if (e.isPressed(a.default.KEY_DOWN)) {
+            if (e.isPressed(a.default.KEY.DOWN)) {
                 i.vel.y = r.velocity;
                 this.go("Down");
             }
-            if (e.isPressed(a.default.KEY_LEFT)) {
+            if (e.isPressed(a.default.KEY.LEFT)) {
                 i.vel.x = -r.velocity;
                 this.go("Left");
             }
-            if (e.isPressed(a.default.KEY_RIGHT)) {
+            if (e.isPressed(a.default.KEY.RIGHT)) {
                 i.vel.x = r.velocity;
                 this.go("Right");
             }
-            if (e.isJustReleased(a.default.KEY_LEFT)) {
+            if (e.isJustReleased(a.default.KEY.LEFT)) {
                 this.stop();
-            } else if (e.isJustReleased(a.default.KEY_RIGHT)) {
+            } else if (e.isJustReleased(a.default.KEY.RIGHT)) {
                 this.stop("Right");
-            } else if (e.isJustReleased(a.default.KEY_UP)) {
+            } else if (e.isJustReleased(a.default.KEY.UP)) {
                 this.stop("Up");
-            } else if (e.isJustReleased(a.default.KEY_DOWN)) {
+            } else if (e.isJustReleased(a.default.KEY.DOWN)) {
                 this.stop("Down");
             }
         };
@@ -3027,11 +3055,11 @@
             n.forEach(function(t) {
                 var e = "walk" + t + "Animation", n = "idle" + t + "Animation";
                 i.animations[e] = i.gameObject.frameAnimations.find(function(t) {
-                    return t.name == r[e];
+                    return t.name === r[e];
                 });
                 if (!i.animations[e]) throw "can not find animation " + r[e] + " at gameObject " + i.gameObject.name;
                 r[n] && (i.animations[n] = i.gameObject.frameAnimations.find(function(t) {
-                    return t.name == r[n];
+                    return t.name === r[n];
                 }));
             });
         };
@@ -3051,6 +3079,56 @@
         return e;
     }(n.default);
     e.default = f;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function() {
+        function t(e) {
+            i(this, t);
+            this.objFollowTo = null;
+            this.scene = null;
+            this.pos = {
+                x: 0,
+                y: 0
+            };
+            this.game = e;
+        }
+        t.prototype.followTo = function t(e) {
+            if (1 && !e) throw "Camera:followTo() - gameObject not provided";
+            this.objFollowTo = e;
+            this.scene = this.game._currentScene;
+            if (this.scene.tileMap.spriteSheet) {
+                this.sceneWidth = this.scene.tileMap.spriteSheet._frameWidth * this.scene.tileMap.width;
+                this.sceneHeight = this.scene.tileMap.spriteSheet._frameHeight * this.scene.tileMap.height;
+            } else {
+                this.sceneWidth = this.game.width;
+                this.sceneHeight = this.game.height;
+            }
+        };
+        t.prototype.update = function t() {
+            if (!this.objFollowTo) return;
+            var e = this.pos;
+            var r = 55;
+            var i = 55;
+            var n = this.game.width;
+            var o = this.game.height;
+            var a = n / 2;
+            var s = o / 2;
+            e.x = this.objFollowTo.pos.x - a;
+            e.y = this.objFollowTo.pos.y - s;
+            if (e.x < 0) e.x = 0;
+            if (e.y < 0) e.y = 0;
+            if (e.x > this.sceneWidth - n + r) e.x = this.sceneWidth - n + r;
+            if (e.y > this.sceneHeight - o + i) e.y = this.sceneHeight - o + i;
+        };
+        return t;
+    }();
+    e.default = n;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -3115,8 +3193,7 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var s = "ontouchstart" in window;
-    var u = function() {
+    var s = function() {
         function t(e) {
             a(this, t);
             this.objectsCaptured = {};
@@ -3124,44 +3201,41 @@
         }
         t.prototype.listenTo = function t(e) {
             var r = this;
-            if (s) {
-                e.ontouchstart = function(t) {
-                    var e = t.touches.length;
-                    while (e--) {
-                        r.resolveClick(t.touches[e]);
-                    }
-                };
-                e.ontouchend = e.ontouchcancel = function(t) {
-                    var e = t.changedTouches.length;
-                    while (e--) {
-                        r.resolveMouseUp(t.changedTouches[e]);
-                    }
-                };
-                e.ontouchmove = function(t) {
-                    var e = t.touches.length;
-                    while (e--) {
-                        r.resolveMouseMove(t.touches[e]);
-                    }
-                };
-            } else {
-                e.onmousedown = function(t) {
-                    t.button === 0 && r.resolveClick(t);
-                };
-                e.onmouseup = function(t) {
-                    r.resolveMouseUp(t);
-                };
-                e.onmousemove = function(t) {
-                    r.resolveMouseMove(t);
-                };
-                e.ondblclick = function(t) {
-                    r.resolveDoubleClick(t);
-                };
-            }
+            e.ontouchstart = function(t) {
+                var e = t.touches.length;
+                while (e--) {
+                    r.resolveClick(t.touches[e]);
+                }
+            };
+            e.onmousedown = function(t) {
+                t.button === 0 && r.resolveClick(t);
+            };
+            e.ontouchend = e.ontouchcancel = function(t) {
+                var e = t.changedTouches.length;
+                while (e--) {
+                    r.resolveMouseUp(t.changedTouches[e]);
+                }
+            };
+            e.onmouseup = function(t) {
+                r.resolveMouseUp(t);
+            };
+            e.ontouchmove = function(t) {
+                var e = t.touches.length;
+                while (e--) {
+                    r.resolveMouseMove(t.touches[e]);
+                }
+            };
+            e.onmousemove = function(t) {
+                r.resolveMouseMove(t);
+            };
+            e.ondblclick = function(t) {
+                r.resolveDoubleClick(t);
+            };
         };
         t.prototype.resolveScreenPoint = function t(e) {
             return {
-                x: ~~((e.clientX - this.game.pos.x) / this.game.scale.x),
-                y: ~~((e.clientY - this.game.pos.y) / this.game.scale.y),
+                x: ~~((e.clientX - this.game.pos.x) / this.game.scale.x) + this.game.camera.pos.x,
+                y: ~~((e.clientY - this.game.pos.y) / this.game.scale.y) + this.game.camera.pos.y,
                 id: e.identifier || 0
             };
         };
@@ -3204,11 +3278,11 @@
             var r = this.triggerEvent(e, "mouseMove");
             if (!r) return;
             var i = this.objectsCaptured[r.id];
-            if (i && i != r.object) {
+            if (i && i !== r.object) {
                 i.trigger("mouseLeave");
                 delete this.objectsCaptured[r.id];
             }
-            if (r.object && i != r.object) {
+            if (r.object && i !== r.object) {
                 r.object.trigger("mouseEnter");
                 this.objectsCaptured[r.id] = r.object;
             }
@@ -3230,7 +3304,7 @@
         };
         return t;
     }();
-    e.default = u;
+    e.default = s;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -3273,37 +3347,39 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    r(25);
-    var o = r(27);
-    var a = v(o);
-    var s = r(36);
-    var u = v(s);
-    var f = r(21);
-    var h = v(f);
+    r(26);
+    var o = r(28);
+    var a = _(o);
+    var s = r(37);
+    var u = _(s);
+    var f = r(22);
+    var h = _(f);
     var c = r(7);
-    var l = v(c);
-    var d = r(20);
-    var p = v(d);
+    var l = _(c);
+    var p = r(21);
+    var d = _(p);
     var y = r(8);
     var m = r(12);
-    var g = v(m);
-    function v(t) {
+    var g = _(m);
+    var v = r(20);
+    var w = _(v);
+    function _(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function w(t, e) {
+    function b(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function _(t, e) {
+    function x(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function b(t, e) {
+    function O(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -3317,13 +3393,14 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var x = (i = (0, y.Transient)({
-        repository: true
+    var T = (i = (0, y.Transient)({
+        repository: true,
+        camera: true
     }), i(n = function(t) {
-        b(e, t);
+        O(e, t);
         function e(r) {
-            w(this, e);
-            var i = _(this, t.call(this));
+            b(this, e);
+            var i = x(this, t.call(this));
             i._lastTime = null;
             i._currTime = null;
             i._currentScene = null;
@@ -3346,7 +3423,8 @@
             i._mouse = new h.default(i);
             i._keyboard = new l.default(i);
             i._keyboard.listenTo();
-            i._collider = new p.default(i);
+            i._collider = new d.default(i);
+            i.camera = new w.default(i);
             return i;
         }
         e.prototype.getTime = function t() {
@@ -3363,7 +3441,7 @@
             }
             this._currentScene = i;
             if (true) {
-                var o = r(49);
+                var o = r(50);
                 var s = "" + i.name[0].toUpperCase() + i.name.substr(1) + "Behaviour";
                 if (s) i.setIndividualBehaviour(o[s]);
                 i.layers.forEach(function(t) {
@@ -3402,7 +3480,7 @@
         };
         return e;
     }(g.default)) || n);
-    e.default = x;
+    e.default = T;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -3525,6 +3603,8 @@
             this.container.style.width = i + "px";
             this.container.style.height = n + "px";
         };
+        t.prototype.beginFrameBuffer = function t() {};
+        t.prototype.flipFrameBuffer = function t() {};
         t.prototype.registerResize = function t() {
             var e = this;
             this.onResize();
@@ -3541,7 +3621,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(35);
+    var i = r(36);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3709,8 +3789,8 @@
     var h = y(f);
     var c = r(5);
     var l = y(c);
-    var d = r(14);
-    var p = y(d);
+    var p = r(14);
+    var d = y(p);
     function y(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3726,7 +3806,7 @@
             m(this, t);
             this.gl = e;
             this.plane = new n.default();
-            this.program = new a.default(e, [ l.default, p.default ]);
+            this.program = new a.default(e, [ l.default, d.default ]);
             this.posVertexBuffer = new u.default(e);
             this.posIndexBuffer = new h.default(e);
         }
@@ -3754,28 +3834,28 @@
     e.__esModule = true;
     e.default = undefined;
     var i = r(2);
-    var n = d(i);
+    var n = p(i);
     var o = r(3);
-    var a = d(o);
+    var a = p(o);
     var s = r(4);
-    var u = d(s);
-    var f = r(50);
-    var h = d(f);
-    var c = r(52);
-    var l = d(c);
-    function d(t) {
+    var u = p(s);
+    var f = r(51);
+    var h = p(f);
+    var c = r(53);
+    var l = p(c);
+    function p(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function p(t, e) {
+    function d(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var y = function() {
         function t(e, r) {
-            p(this, t);
+            d(this, t);
             this.gl = e;
             this.program = new n.default(e, [ h.default, l.default ]);
             this.posVertexBuffer = new a.default(e);
@@ -3831,7 +3911,7 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var d = function() {
+    var p = function() {
         function t(e) {
             l(this, t);
             this.gl = e;
@@ -3852,7 +3932,7 @@
         };
         return t;
     }();
-    e.default = d;
+    e.default = p;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -3867,8 +3947,8 @@
     var h = y(f);
     var c = r(5);
     var l = y(c);
-    var d = r(51);
-    var p = y(d);
+    var p = r(52);
+    var d = y(p);
     function y(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3884,7 +3964,7 @@
             m(this, t);
             this.gl = e;
             this.plane = new n.default();
-            this.program = new a.default(e, [ l.default, p.default ]);
+            this.program = new a.default(e, [ l.default, d.default ]);
             this.posVertexBuffer = new u.default(e);
             this.posIndexBuffer = new h.default(e);
             this.texVertexBuffer = new u.default(e);
@@ -3917,19 +3997,19 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(26);
+    var i = r(27);
     var n = b(i);
-    var o = r(34);
+    var o = r(35);
     var a = b(o);
-    var s = r(31);
+    var s = r(32);
     var u = b(s);
-    var f = r(33);
+    var f = r(34);
     var h = b(f);
-    var c = r(32);
+    var c = r(33);
     var l = b(c);
-    var d = r(28);
-    var p = b(d);
-    var y = r(29);
+    var p = r(29);
+    var d = b(p);
+    var y = r(30);
     var m = b(y);
     var g = r(9);
     var v = b(g);
@@ -3951,7 +4031,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function E(t, e) {
+    function T(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -3965,7 +4045,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var T = function t(e) {
+    var E = function t(e) {
         return e.getContext("webgl", {
             alpha: false
         }) || e.getContext("experimental-webgl", {
@@ -3977,25 +4057,25 @@
         });
     };
     var j = 1e3;
-    var R = new m.default();
-    var F = function t(e, r, i, n, o, a, s, u) {
+    var F = new m.default();
+    var R = function t(e, r, i, n, o, a, s, u) {
         var f = v.default.makeZToWMatrix(1);
         var h = v.default.ortho(0, o, 0, a, -j, j);
         var c = v.default.makeScale(i * s, n * u, 1);
         var l = v.default.makeTranslation(e * s, r * u, 0);
-        var d = v.default.matrixMultiply(c, l);
-        d = v.default.matrixMultiply(d, R.getCurrentMatrix());
-        d = v.default.matrixMultiply(d, h);
-        d = v.default.matrixMultiply(d, f);
-        return d;
+        var p = v.default.matrixMultiply(c, l);
+        p = v.default.matrixMultiply(p, F.getCurrentMatrix());
+        p = v.default.matrixMultiply(p, h);
+        p = v.default.matrixMultiply(p, f);
+        return p;
     };
     var A = function t(e, r, i, n, o, a) {
         var s = v.default.makeScale(i / o, n / a, 1);
         var u = v.default.makeTranslation(e / o, r / a, 0);
         return v.default.matrixMultiply(s, u);
     };
-    var P = function(t) {
-        E(e, t);
+    var M = function(t) {
+        T(e, t);
         function e(r) {
             x(this, e);
             var i = O(this, t.call(this, r));
@@ -4004,20 +4084,20 @@
             n.setAttribute("width", r.width);
             n.setAttribute("height", r.height);
             i.container = n;
-            i.matrixStack = R;
+            i.matrixStack = F;
             i.registerResize();
             i.currTex = null;
             i._init();
             return i;
         }
         e.prototype._init = function t() {
-            var e = T(this.container);
+            var e = E(this.container);
             this.gl = e;
             this.spriteRectDrawer = new a.default(e);
             this.colorRectDrawer = new u.default(e);
             this.polyLineDrawer = new h.default(e);
             this.modelDrawer = new l.default(e);
-            this.frameBuffer = new p.default(e, this.game.width, this.game.height);
+            this.frameBuffer = new d.default(e, this.game.width, this.game.height);
             e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
             e.enable(e.BLEND);
             e.enable(e.BLEND);
@@ -4056,7 +4136,7 @@
             }
             this.spriteRectDrawer.bind();
             this.spriteRectDrawer.setUniform("u_textureMatrix", A(r, i, n, o, f, h));
-            this.spriteRectDrawer.setUniform("u_matrix", F(a, s, n, o, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_matrix", R(a, s, n, o, this.game.width, this.game.height, 1, 1));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.spriteRectDrawer.draw();
             this.spriteRectDrawer.unbind();
@@ -4107,7 +4187,7 @@
             this.gl.viewport(0, 0, this.game.width, this.game.height);
             this.frameBuffer.getTexture().bind();
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_matrix", F(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_matrix", R(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
             this.spriteRectDrawer.setUniform("u_textureMatrix", A(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -4131,12 +4211,12 @@
         };
         return e;
     }(n.default);
-    e.default = P;
+    e.default = M;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(38);
+    var i = r(39);
     var n = o(i);
     function o(t) {
         if (t && t.__esModule) {
@@ -4343,29 +4423,29 @@
     "use strict";
     e.__esModule = true;
     e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var i = r(41);
-    var n = T(i);
-    var o = r(47);
-    var a = T(o);
+    var i = r(42);
+    var n = E(i);
+    var o = r(48);
+    var a = E(o);
     var s = r(13);
-    var u = T(s);
-    var f = r(42);
-    var h = T(f);
-    var c = r(39);
-    var l = T(c);
-    var d = r(44);
-    var p = T(d);
-    var y = r(45);
-    var m = T(y);
-    var g = r(46);
-    var v = T(g);
-    var w = r(40);
-    var _ = T(w);
-    var b = r(43);
-    var x = T(b);
-    var O = r(48);
-    var E = T(O);
-    function T(t) {
+    var u = E(s);
+    var f = r(43);
+    var h = E(f);
+    var c = r(40);
+    var l = E(c);
+    var p = r(45);
+    var d = E(p);
+    var y = r(46);
+    var m = E(y);
+    var g = r(47);
+    var v = E(g);
+    var w = r(41);
+    var _ = E(w);
+    var b = r(44);
+    var x = E(b);
+    var O = r(49);
+    var T = E(O);
+    function E(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -4375,12 +4455,12 @@
     e.GameObjectProto = u.default;
     e.GameObject = h.default;
     e.CommonBehaviour = l.default;
-    e.ParticleSystem = p.default;
+    e.ParticleSystem = d.default;
     e.Scene = m.default;
     e.Sound = v.default;
     e.Font = _.default;
     e.Layer = x.default;
-    e.TextField = E.default;
+    e.TextField = T.default;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -4474,7 +4554,6 @@
             i.type = "Font";
             i.resourcePath = null;
             i.fontSize = 12;
-            i.fontColor = null;
             i.fontFamily = "Monospace";
             i.fontContext = null;
             i.fontColor = {
@@ -4634,7 +4713,7 @@
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
     var l = function t() {};
-    var d = function(t) {
+    var p = function(t) {
         c(e, t);
         function e(r) {
             f(this, e);
@@ -4664,7 +4743,7 @@
         e.prototype.setIndividualBehaviour = function t(e) {
             var r = new e(this.game);
             r.game = this.game;
-            r.object = this;
+            r.gameObject = this;
             if (!r.onCreate) r.onCreate = l;
             if (!r.onUpdate) r.onUpdate = l;
             if (!r.onDestroy) r.onDestroy = l;
@@ -4683,7 +4762,7 @@
         };
         return e;
     }(n.default);
-    e.default = d;
+    e.default = p;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -4819,7 +4898,7 @@
     var l = function t(e) {
         return a.random(e.from, e.to);
     };
-    var d = function(t) {
+    var p = function(t) {
         c(e, t);
         function e(r) {
             f(this, e);
@@ -4886,14 +4965,14 @@
         };
         return e;
     }(n.default);
-    e.default = d;
+    e.default = p;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var i = r(0);
     var n = s(i);
-    var o = r(24);
+    var o = r(25);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -4931,7 +5010,6 @@
             u(this, e);
             var i = f(this, t.call(this, r));
             i.type = "Scene";
-            i.alpha = 1;
             i.layers = [];
             i.useBG = false;
             i.colorBG = {
@@ -5004,6 +5082,8 @@
             var i = this.layers;
             var n = this.layers.length;
             var o = n - 1;
+            this.game.camera.update(e);
+            this.game._renderer.translate(-this.game.camera.pos.x, -this.game.camera.pos.y);
             if (this._individualBehaviour) this._individualBehaviour.onUpdate();
             while (n--) {
                 i[n - o].update(e, r);
@@ -5215,10 +5295,13 @@
             i._chars = null;
             i.text = "";
             i.font = null;
-            i.rigid = false;
             return i;
         }
         e.prototype.revalidate = function t() {
+            if (1 && !this.name) {
+                console.error(this);
+                throw "property 'name' not set at object of type " + this.type;
+            }
             this.setFont(this.font);
         };
         e.prototype.setText = function t(e) {
@@ -5233,7 +5316,7 @@
             for (var n = 0, o = e.length; n < o; n++) {
                 this._chars.push(e[n]);
                 var a = this.font.fontContext.symbols[e[n]] || this.font.fontContext.symbols[" "];
-                if (e[n] == "\n") {
+                if (e[n] === "\n") {
                     i++;
                     this.height += a.height;
                     r[i] = {
@@ -5261,7 +5344,7 @@
             var i = 0;
             this._chars.forEach(function(t) {
                 var n = e.font.fontContext.symbols[t] || e.font.fontContext.symbols["?"];
-                if (t == "\n") {
+                if (t === "\n") {
                     r = 0;
                     i += n.height;
                     return;
@@ -5286,10 +5369,10 @@
             i(this, t);
         }
         t.prototype.onCreate = function t() {
-            this.object.vel.x = -100;
+            this.gameObject.vel.x = -100;
         };
         t.prototype.onUpdate = function t() {
-            if (this.object.pos.x < -100) this.object.pos.x = 700;
+            if (this.gameObject.pos.x < -100) this.gameObject.pos.x = 700;
         };
         t.prototype.onDestroy = function t() {};
         return t;
@@ -5307,9 +5390,7 @@
         function t() {
             i(this, t);
         }
-        t.prototype.onCreate = function t() {
-            this.object.vel.x = 10;
-        };
+        t.prototype.onCreate = function t() {};
         t.prototype.onUpdate = function t() {};
         t.prototype.onDestroy = function t() {};
         return t;
@@ -5318,17 +5399,19 @@
         function t() {
             i(this, t);
         }
-        t.prototype.onCreate = function t() {};
+        t.prototype.onCreate = function t() {
+            this.game.camera.followTo(this.gameObject);
+        };
         t.prototype.onUpdate = function t() {};
         t.prototype.onDestroy = function t() {};
         return t;
     }();
 }, function(t, e) {
-    t.exports = "attribute vec4 a_position;\r\nattribute vec2 a_texcoord;\r\nattribute vec3 a_normal;\r\n\r\nuniform mat4 u_modelMatrix;\r\nuniform mat4 u_projectionMatrix;\r\n\r\nvarying vec2 v_texcoord;\r\nvarying vec3 v_normal;\r\n\r\nvoid main() {\r\n\r\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\r\n  v_texcoord = a_texcoord;\r\n  v_normal = a_normal;\r\n}";
+    t.exports = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
 }, function(t, e) {
     t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}";
 }, function(t, e) {
-    t.exports = "precision highp float;\r\n\r\nvarying vec2 v_texcoord;\r\nvarying vec3 v_normal;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform mat4 u_modelMatrix;\r\n\r\n\r\nvoid main() {\r\n\r\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\r\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\r\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\r\n    gl_FragColor = texture2D(texture, v_texcoord);\r\n    gl_FragColor.rgb *= lightFactor;\r\n    gl_FragColor.a *= u_alpha;\r\n}";
+    t.exports = "precision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
 }, function(t, e, r) {
     t.exports = r(15);
 } ]);

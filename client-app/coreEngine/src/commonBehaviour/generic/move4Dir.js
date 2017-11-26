@@ -36,9 +36,9 @@ export default class Move4DirBehaviour extends BaseAbstractBehaviour {
         const dirs = ['Left', 'Right', 'Up', 'Down'];
         dirs.forEach(dir => {
             let keyWalk = 'walk' + dir + 'Animation', keyIdle = 'idle' + dir + 'Animation';
-            this.animations[keyWalk] = this.gameObject.frameAnimations.find(it => it.name == parameters[keyWalk]);
+            this.animations[keyWalk] = this.gameObject.frameAnimations.find(it => it.name === parameters[keyWalk]);
             if (!this.animations[keyWalk]) throw `can not find animation ${parameters[keyWalk]} at gameObject ${this.gameObject.name}`;
-            parameters[keyIdle] && (this.animations[keyIdle] = this.gameObject.frameAnimations.find(it => it.name == parameters[keyIdle]));
+            parameters[keyIdle] && (this.animations[keyIdle] = this.gameObject.frameAnimations.find(it => it.name === parameters[keyIdle]));
         });
     }
 

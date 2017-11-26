@@ -34,7 +34,7 @@ export default class GameObject extends GameObjectProto {
     setIndividualBehaviour(Clazz){
         let instance = new Clazz(this.game);
         instance.game = this.game;
-        instance.object = this;
+        instance.gameObject = this;
         if (!instance.onCreate) instance.onCreate = noop;
         if (!instance.onUpdate) instance.onUpdate = noop;
         if (!instance.onDestroy) instance.onDestroy = noop;

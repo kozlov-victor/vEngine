@@ -95,6 +95,8 @@ export default class Scene extends BaseModel {
         let layers = this.layers;
         let i = this.layers.length;
         let l = i -1;
+        this.game.camera.update(currTime);
+        this.game._renderer.translate(-this.game.camera.pos.x,-this.game.camera.pos.y);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while(i--){
             layers[i-l].update(currTime,deltaTime);

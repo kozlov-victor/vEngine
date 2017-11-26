@@ -1,8 +1,8 @@
 
-//import HtmlRenderer from '../renderer/dom/htmlRenderer'
-//import CanvasRenderer from '../renderer/canvas/canvasRenderer'
-import WebGlRenderer from '../renderer/webGl/webGlRenderer'
-//import SvgRenderer from '../renderer/dom/svgRenderer'
+//import HtmlRenderer from './dom/htmlRenderer'
+//import CanvasRenderer from './canvas/canvasRenderer'
+import WebGlRenderer from './webGl/webGlRenderer'
+//import SvgRenderer from './dom/svgRenderer'
 
 export default class RendererFactory {
     static getRenderer(game){

@@ -1,4 +1,4 @@
-
+/*global DEBUG:true*/
 import BaseModel from '../../baseModel'
 
 export default class TextField extends BaseModel {
@@ -7,7 +7,6 @@ export default class TextField extends BaseModel {
     _chars = null;
     text = '';
     font = null;
-    rigid = false;
 
     constructor(game){
         super(game);
@@ -15,6 +14,10 @@ export default class TextField extends BaseModel {
 
 
     revalidate(){
+        if (DEBUG && !this.name) {
+            console.error(this);
+            throw `property 'name' not set at object of type ${this.type}`;
+        }
         this.setFont(this.font);
     }
 
@@ -28,7 +31,7 @@ export default class TextField extends BaseModel {
         for (let i=0,max=text.length;i<max;i++) {
             this._chars.push(text[i]);
             let currSymbolInFont = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
-            if (text[i]=='\n') {
+            if (text[i]==='\n') {
                 currRowIndex++;
                 this.height+=currSymbolInFont.height;
                 rows[currRowIndex] = {width:0};
@@ -51,7 +54,7 @@ export default class TextField extends BaseModel {
         let posY = 0;
         this._chars.forEach(ch=>{
             let charInCtx = this.font.fontContext.symbols[ch]||this.font.fontContext.symbols['?'];
-            if (ch=='\n') {
+            if (ch==='\n') {
                 posX = 0;
                 posY+= charInCtx.height;
                 return;
@@ -67,6 +70,7 @@ export default class TextField extends BaseModel {
             );
             posX+=charInCtx.width;
         });
+
     }
 
 }

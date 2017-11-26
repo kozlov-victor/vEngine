@@ -10,9 +10,11 @@ import Collider from '../engine/collider'
 import {Transient} from './decorators'
 
 import CommonObject from '../model/commonObject'
+import Camera from './camera'
 
 @Transient({
-    repository: true
+    repository: true,
+    camera: true
 })
 export default class Game extends CommonObject {
 
@@ -36,6 +38,7 @@ export default class Game extends CommonObject {
         this._keyboard = new Keyboard(this);
         this._keyboard.listenTo();
         this._collider = new Collider(this);
+        this.camera = new Camera(this);
     }
 
     getTime(){
