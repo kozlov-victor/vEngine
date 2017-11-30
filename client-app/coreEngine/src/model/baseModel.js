@@ -5,8 +5,11 @@ import Tween from '../engine/tween'
 import EventEmitter from '../engine/eventEmitter'
 import {Transient} from '../engine/decorators'
 
+import ArcadeRigidBody from '../engine/physics/arcadeRigidBody'
+
 @Transient({
-    game: true
+    game: true,
+    rigidBody: true
 })
 export default class BaseModel extends CommonObject {
 
@@ -14,7 +17,6 @@ export default class BaseModel extends CommonObject {
     name = null;
     width = 0;
     height = 0;
-    vel = {x:0,y:0};
     pos = {x:0,y:0};
     scale = {x:1,y:1};
     angle = 0;
@@ -31,6 +33,7 @@ export default class BaseModel extends CommonObject {
         );
         this.game = game;
         this._emitter = new EventEmitter();
+        this.rigidBody = new ArcadeRigidBody(this);
     }
 
     revalidate(){}

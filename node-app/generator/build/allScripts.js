@@ -1,13 +1,15 @@
 
         
-export class CatBehaviour {
+export class DudeBehaviour {
 
     onCreate(){
-        this.object.vel.x = -100;
+        this.gameObject.rigidBody.mass = 100;
     }
 
     onUpdate(){
-        if (this.object.pos.x<-100) this.object.pos.x = 700;
+        if (this.game._keyboard.isPressed(32)){
+            this.gameObject.rigidBody.vel.add(0,-2);
+        }
     }
 
     onDestroy(){
@@ -34,28 +36,11 @@ export class MainSceneBehaviour {
 }
 
         
-export class MulticolorTanksBehaviour {
+export class PlatformBehaviour {
 
     onCreate(){
-        this.object.vel.x = 10;
-    }
-
-    onUpdate(){
-        
-    }
-
-    onDestroy(){
-
-    }
-
-}
-    
-
-        
-export class ProfessorBehaviour {
-
-    onCreate(){
-
+        this.gameObject.rigidBody.mass = 200;
+        this.gameObject.rigidBody.static = true;
     }
 
     onUpdate(){

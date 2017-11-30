@@ -9,6 +9,7 @@ const KEY_JUST_RELEASED = -1;
 export default class Keyboard {
 
     static KEY = {
+        SPACE: 32,
         A: 65,
         B: 66,
         C: 67,
@@ -39,7 +40,7 @@ export default class Keyboard {
         UP: 38,
         RIGHT: 39,
         DOWN: 40
-    }
+    };
 
     buffer = {};
 
@@ -73,17 +74,11 @@ export default class Keyboard {
 
     update(){
         if (DEBUG && window.canceled) return;
-        [
-            Keyboard.KEY.UP,
-            Keyboard.KEY.DOWN,
-            Keyboard.KEY.LEFT,
-            Keyboard.KEY.RIGHT
-        ].forEach(key=>{
+        Object.keys(this.buffer).forEach(key=>{
             if (this.buffer[key]===KEY_JUST_PRESSED) this.buffer[key] = KEY_PRESSED;
             else if (this.buffer[key]===KEY_JUST_RELEASED) this.buffer[key] = KEY_RELEASED;
         });
-    };
-
+    }
 
     listenTo(){
         window.addEventListener('keydown',e=>{

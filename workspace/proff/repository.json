@@ -1539,8 +1539,8 @@
             "id": 28,
             "name": "professor",
             "pos": {
-                "x": 10,
-                "y": 1
+                "x": 8,
+                "y": -10
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1567,8 +1567,8 @@
             "id": 40,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 53,
-                "y": 148
+                "x": 87,
+                "y": 83
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1594,8 +1594,8 @@
             "id": 42,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 4,
-                "y": 115
+                "x": 85,
+                "y": 48
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1622,8 +1622,8 @@
             "id": 44,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 47,
-                "y": 88
+                "x": 133,
+                "y": 8
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1636,8 +1636,8 @@
             "id": 45,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 268,
-                "y": 106
+                "x": 265,
+                "y": 125
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1650,8 +1650,8 @@
             "id": 46,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 93,
-                "y": 55
+                "x": 184,
+                "y": 7
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1664,8 +1664,8 @@
             "id": 47,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 114,
-                "y": 129
+                "x": 89,
+                "y": 127
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1675,24 +1675,25 @@
             }
         },
         {
+            "id": 48,
+            "name": "MulticolorTanks",
             "pos": {
-                "x": 160,
-                "y": 160
+                "x": 180,
+                "y": 127
             },
             "layerId": 2,
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 38,
                 "type": "GameObjectProto"
-            },
-            "id": 48
+            }
         },
         {
             "id": 49,
             "name": "MulticolorTanks",
             "pos": {
-                "x": 169,
-                "y": 102
+                "x": 134,
+                "y": 128
             },
             "layerId": 2,
             "type": "GameObject",
@@ -1706,7 +1707,7 @@
             "name": "MulticolorTanks",
             "pos": {
                 "x": 225,
-                "y": 133
+                "y": 127
             },
             "layerId": 2,
             "type": "GameObject",

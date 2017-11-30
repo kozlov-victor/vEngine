@@ -1,8 +1,4 @@
-/**
- *
- exports.parameters =  {};
- exports.description = 'draggable behaviour with multitouch supporting';
- */
+
 import BaseAbstractBehaviour from '../abstract/baseAbstractBehaviour'
 
 export default class DraggableBehaviour extends BaseAbstractBehaviour {

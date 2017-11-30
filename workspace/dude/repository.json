@@ -1,0 +1,217 @@
+{
+    "Scene": [
+        {
+            "id": 2,
+            "name": "mainScene",
+            "type": "Scene",
+            "layers": [
+                {
+                    "type": "Layer",
+                    "id": 2
+                }
+            ]
+        }
+    ],
+    "Layer": [
+        {
+            "id": 2,
+            "name": "layer1",
+            "type": "Layer",
+            "gameObjects": [
+                {
+                    "type": "GameObject",
+                    "id": 7
+                },
+                {
+                    "type": "GameObject",
+                    "id": 8
+                },
+                {
+                    "type": "GameObject",
+                    "id": 18
+                },
+                {
+                    "type": "GameObject",
+                    "id": 19
+                }
+            ]
+        }
+    ],
+    "SpriteSheet": [
+        {
+            "name": "dude",
+            "width": 288,
+            "height": 48,
+            "type": "SpriteSheet",
+            "numOfFramesH": 9,
+            "resourcePath": "resources/dude.png",
+            "id": 3
+        },
+        {
+            "name": "platform",
+            "width": 500,
+            "height": 64,
+            "type": "SpriteSheet",
+            "resourcePath": "resources/platform.png",
+            "id": 5
+        }
+    ],
+    "GameObjectProto": [
+        {
+            "id": 4,
+            "name": "dude",
+            "width": 32,
+            "height": 48,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 3,
+                "type": "SpriteSheet"
+            },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 15
+                }
+            ],
+            "frameAnimations": [
+                {
+                    "type": "FrameAnimation",
+                    "id": 11
+                },
+                {
+                    "type": "FrameAnimation",
+                    "id": 12
+                },
+                {
+                    "type": "FrameAnimation",
+                    "id": 13
+                },
+                {
+                    "type": "FrameAnimation",
+                    "id": 14
+                }
+            ]
+        },
+        {
+            "name": "platform",
+            "width": 500,
+            "height": 64,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 5,
+                "type": "SpriteSheet"
+            },
+            "id": 6
+        }
+    ],
+    "GameObject": [
+        {
+            "id": 7,
+            "name": "dude",
+            "pos": {
+                "x": 72,
+                "y": 45
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 4,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 8,
+            "name": "platform",
+            "pos": {
+                "x": -325,
+                "y": 139
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 6,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "pos": {
+                "x": 221,
+                "y": 319
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 6,
+                "type": "GameObjectProto"
+            },
+            "id": 18
+        },
+        {
+            "pos": {
+                "x": 426,
+                "y": 24
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 6,
+                "type": "GameObjectProto"
+            },
+            "id": 19
+        }
+    ],
+    "FrameAnimation": [
+        {
+            "name": "left",
+            "type": "FrameAnimation",
+            "frames": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "id": 11
+        },
+        {
+            "name": "right",
+            "type": "FrameAnimation",
+            "frames": [
+                5,
+                6,
+                7,
+                8
+            ],
+            "id": 12
+        },
+        {
+            "name": "idleLeft",
+            "type": "FrameAnimation",
+            "frames": [
+                4
+            ],
+            "id": 13
+        },
+        {
+            "name": "idleRight",
+            "type": "FrameAnimation",
+            "frames": [
+                4
+            ],
+            "id": 14
+        }
+    ],
+    "CommonBehaviour": [
+        {
+            "id": 15,
+            "name": "Control2Dir",
+            "type": "CommonBehaviour",
+            "parameters": {
+                "velocity": "100",
+                "walkLeftAnimation": "left",
+                "walkRightAnimation": "right",
+                "idleLeftAnimation": "idleLeft",
+                "idleRightAnimation": "idleRight"
+            }
+        }
+    ]
+}

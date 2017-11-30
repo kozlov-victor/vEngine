@@ -3,7 +3,7 @@
 export class CatBehaviour {
 
     onCreate(){
-        this.gameObject.vel.x = -100;
+        this.gameObject.rigidBody.vel.x = -100;
     }
 
     onUpdate(){

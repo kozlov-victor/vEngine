@@ -1,29 +1,29 @@
 (function(t) {
     var e = {};
-    function r(i) {
-        if (e[i]) {
-            return e[i].exports;
+    function r(n) {
+        if (e[n]) {
+            return e[n].exports;
         }
-        var n = e[i] = {
-            i: i,
+        var i = e[n] = {
+            i: n,
             l: false,
             exports: {}
         };
-        t[i].call(n.exports, n, n.exports, r);
-        n.l = true;
-        return n.exports;
+        t[n].call(i.exports, i, i.exports, r);
+        i.l = true;
+        return i.exports;
     }
     r.m = t;
     r.c = e;
     r.i = function(t) {
         return t;
     };
-    r.d = function(t, e, i) {
+    r.d = function(t, e, n) {
         if (!r.o(t, e)) {
             Object.defineProperty(t, e, {
                 configurable: false,
                 enumerable: true,
-                get: i
+                get: n
             });
         }
     };
@@ -40,38 +40,36 @@
         return Object.prototype.hasOwnProperty.call(t, e);
     };
     r.p = "";
-    return r(r.s = 56);
+    return r(r.s = 54);
 })([ function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i, n;
+    var n, i;
     var o = r(12);
-    var a = p(o);
-    var s = r(39);
-    var u = p(s);
+    var a = h(o);
+    var s = r(38);
+    var u = h(s);
     var f = r(23);
-    var h = p(f);
-    var c = r(8);
-    var l = r(26);
-    var d = p(l);
-    function p(t) {
+    var c = h(f);
+    var l = r(8);
+    function h(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function y(t, e) {
+    function p(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function m(t, e) {
+    function d(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function g(t, e) {
+    function m(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -85,37 +83,39 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var v = (i = (0, c.Transient)({
-        game: true,
-        rigidBody: true
-    }), i(n = function(t) {
-        g(e, t);
+    var v = (n = (0, l.Transient)({
+        game: true
+    }), n(i = function(t) {
+        m(e, t);
         function e(r) {
-            y(this, e);
-            var i = m(this, t.call(this));
-            i.id = null;
-            i.name = null;
-            i.width = 0;
-            i.height = 0;
-            i.pos = {
+            p(this, e);
+            var n = d(this, t.call(this));
+            n.id = null;
+            n.name = null;
+            n.width = 0;
+            n.height = 0;
+            n.vel = {
                 x: 0,
                 y: 0
             };
-            i.scale = {
+            n.pos = {
+                x: 0,
+                y: 0
+            };
+            n.scale = {
                 x: 1,
                 y: 1
             };
-            i.angle = 0;
-            i.alpha = 1;
-            i.layerId = null;
-            i.fixedToCamera = false;
-            i.rigid = false;
-            i._tweens = [];
-            if (1 && !r) throw "can not create model '" + i.type + "': game instance not passed to model constructor";
-            i.game = r;
-            i._emitter = new h.default();
-            i.rigidBody = new d.default(i);
-            return i;
+            n.angle = 0;
+            n.alpha = 1;
+            n.layerId = null;
+            n.fixedToCamera = false;
+            n.rigid = false;
+            n._tweens = [];
+            if (1 && !r) throw "can not create model '" + n.type + "': game instance not passed to model constructor";
+            n.game = r;
+            n._emitter = new c.default();
+            return n;
         }
         e.prototype.revalidate = function t() {};
         e.prototype.setIndividualBehaviour = function t(e) {};
@@ -135,16 +135,16 @@
         };
         e.prototype.update = function t(e) {
             var r = this;
-            this._tweens.forEach(function(t, i) {
+            this._tweens.forEach(function(t, n) {
                 t.update(e);
-                if (t.completed) r._tweens.splice(i, 1);
+                if (t.completed) r._tweens.splice(n, 1);
             });
         };
         e.prototype.clone = function t(e) {
             var r = this.constructor;
-            var i = new r(this.game);
-            i._cloner = this;
-            return i.fromJSON(this.toJSON(e), true);
+            var n = new r(this.game);
+            n._cloner = this;
+            return n.fromJSON(this.toJSON(e), true);
         };
         e.prototype.on = function t(e, r) {
             this._emitter.on(e, r);
@@ -162,7 +162,7 @@
             delete this._cloner;
         };
         return e;
-    }(a.default)) || n);
+    }(a.default)) || i);
     e.default = v;
 }, function(t, e, r) {
     "use strict";
@@ -184,67 +184,67 @@
             t = e;
             e = r;
         }
-        var i = Math.random() * (e - t) + t;
-        if (i > e) i = e; else if (i < t) i = t;
-        return i;
+        var n = Math.random() * (e - t) + t;
+        if (n > e) n = e; else if (n < t) n = t;
+        return n;
     };
-    var i = {};
-    i.linear = function(t, e, r, i) {
-        return r * t / i + e;
+    var n = {};
+    n.linear = function(t, e, r, n) {
+        return r * t / n + e;
     };
-    i.easeInQuad = function(t, e, r, i) {
-        t /= i;
+    n.easeInQuad = function(t, e, r, n) {
+        t /= n;
         return r * t * t + e;
     };
-    i.easeOutQuad = function(t, e, r, i) {
-        t /= i;
+    n.easeOutQuad = function(t, e, r, n) {
+        t /= n;
         return -r * t * (t - 2) + e;
     };
-    i.easeInOutQuad = function(t, e, r, i) {
-        t /= i / 2;
+    n.easeInOutQuad = function(t, e, r, n) {
+        t /= n / 2;
         if (t < 1) return r / 2 * t * t + e;
         t--;
         return -r / 2 * (t * (t - 2) - 1) + e;
     };
-    e.ease = i;
+    e.ease = n;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function t(e, r, i) {
-        if (!r) throw "can not compile shader: shader source not specified for type " + i;
-        var n = e.createShader(i);
-        e.shaderSource(n, r);
-        e.compileShader(n);
-        var o = e.getShaderParameter(n, e.COMPILE_STATUS);
+    var i = function t(e, r, n) {
+        if (!r) throw "can not compile shader: shader source not specified for type " + n;
+        var i = e.createShader(n);
+        e.shaderSource(i, r);
+        e.compileShader(i);
+        var o = e.getShaderParameter(i, e.COMPILE_STATUS);
         if (!o) {
-            var a = e.getShaderInfoLog(n);
-            e.deleteShader(n);
-            throw "Error compiling shader " + n + ":" + a;
-        }
-        return n;
-    };
-    var o = function t(e, r) {
-        var i = e.createProgram();
-        r.forEach(function(t) {
-            e.attachShader(i, t);
-        });
-        e.linkProgram(i);
-        var n = e.getProgramParameter(i, e.LINK_STATUS);
-        if (!n) {
-            var o = e.getProgramInfoLog(i);
-            e.deleteProgram(i);
-            throw "Error in program linking:" + o;
+            var a = e.getShaderInfoLog(i);
+            e.deleteShader(i);
+            throw "Error compiling shader " + i + ":" + a;
         }
         return i;
     };
+    var o = function t(e, r) {
+        var n = e.createProgram();
+        r.forEach(function(t) {
+            e.attachShader(n, t);
+        });
+        e.linkProgram(n);
+        var i = e.getProgramParameter(n, e.LINK_STATUS);
+        if (!i) {
+            var o = e.getProgramInfoLog(n);
+            e.deleteProgram(n);
+            throw "Error in program linking:" + o;
+        }
+        return n;
+    };
     var a = function t(e, r) {
-        var i = null;
-        var n = {
+        var n = null;
+        var i = {
             FLOAT: "float",
             FLOAT_VEC2: "vec2",
             FLOAT_VEC3: "vec3",
@@ -262,32 +262,32 @@
             FLOAT_MAT4: "mat4",
             SAMPLER_2D: "sampler2D"
         };
-        if (!i) {
-            var o = Object.keys(n);
-            i = {};
+        if (!n) {
+            var o = Object.keys(i);
+            n = {};
             for (var a = 0; a < o.length; ++a) {
                 var s = o[a];
-                i[e[s]] = n[s];
+                n[e[s]] = i[s];
             }
         }
-        return i[r];
+        return n[r];
     };
     var s = function t(e, r) {
-        var i = {};
-        var n = e.getProgramParameter(r, e.ACTIVE_UNIFORMS);
-        for (var o = 0; o < n; o++) {
+        var n = {};
+        var i = e.getProgramParameter(r, e.ACTIVE_UNIFORMS);
+        for (var o = 0; o < i; o++) {
             var s = e.getActiveUniform(r, o);
             var f = s.name.replace(/\[.*?]/, "");
-            var h = a(e, s.type);
-            i[f] = {
-                type: h,
+            var c = a(e, s.type);
+            n[f] = {
+                type: c,
                 size: s.size,
                 name: f,
                 location: e.getUniformLocation(r, f),
-                setter: u(s.size, h)
+                setter: u(s.size, c)
             };
         }
-        return i;
+        return n;
     };
     var u = function t(e, r) {
         if (e == 1) {
@@ -443,9 +443,9 @@
     };
     var f = function() {
         function t(e, r) {
-            i(this, t);
-            var a = n(e, r[0], e.VERTEX_SHADER);
-            var u = n(e, r[1], e.FRAGMENT_SHADER);
+            n(this, t);
+            var a = i(e, r[0], e.VERTEX_SHADER);
+            var u = i(e, r[1], e.FRAGMENT_SHADER);
             this.program = o(e, [ a, u ]);
             this.uniforms = s(e, this.program);
             this.gl = e;
@@ -458,17 +458,17 @@
             t.currentProgram = this;
         };
         t.prototype.setUniform = function t(e, r) {
-            var i = this.uniforms[e];
-            if (!i) throw "no uniform with name " + e + " found!";
-            i.setter(this.gl, i.location, r);
+            var n = this.uniforms[e];
+            if (!n) throw "no uniform with name " + e + " found!";
+            n.setter(this.gl, n.location, r);
         };
         t.prototype.bindBuffer = function t(e, r) {
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, e.getGlBuffer());
-            var i = this.gl.getAttribLocation(this.program, r);
+            var n = this.gl.getAttribLocation(this.program, r);
             if (!r) throw "can not found uniform location: uniformLocationName not defined";
-            if (i < 0) throw "can not found uniform location for " + r;
-            this.gl.enableVertexAttribArray(i);
-            this.gl.vertexAttribPointer(i, e.getItemSize(), e.getItemType(), false, 0, 0);
+            if (n < 0) throw "can not found uniform location for " + r;
+            this.gl.enableVertexAttribArray(n);
+            this.gl.vertexAttribPointer(n, e.getItemSize(), e.getItemType(), false, 0, 0);
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
         };
         return t;
@@ -477,14 +477,14 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            n(this, t);
             if (1 && !e) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
             this.gl = e;
             this.buffer = e.createBuffer();
@@ -492,17 +492,17 @@
             this.bufferItemType = null;
             this.dataLength = null;
         }
-        t.prototype.setData = function t(e, r, i) {
+        t.prototype.setData = function t(e, r, n) {
             if (true) {
                 if (!e) throw "can not set data to buffer: bufferData not specified";
                 if (!r) throw "can not set data to buffer: itemType not specified";
-                if (!i) throw "can not set data to buffer: itemSize not specified";
+                if (!n) throw "can not set data to buffer: itemSize not specified";
             }
-            var n = this.gl;
-            n.bindBuffer(n.ARRAY_BUFFER, this.buffer);
-            n.bufferData(n.ARRAY_BUFFER, new Float32Array(e), n.STATIC_DRAW);
-            n.bindBuffer(n.ARRAY_BUFFER, null);
-            this.bufferItemSize = i;
+            var i = this.gl;
+            i.bindBuffer(i.ARRAY_BUFFER, this.buffer);
+            i.bufferData(i.ARRAY_BUFFER, new Float32Array(e), i.STATIC_DRAW);
+            i.bindBuffer(i.ARRAY_BUFFER, null);
+            this.bufferItemSize = n;
             this.bufferItemType = r;
             this.dataLength = e.length;
         };
@@ -520,18 +520,18 @@
         };
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            n(this, t);
             if (1 && !e) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
             this.gl = e;
             this.buffer = e.createBuffer();
@@ -561,20 +561,20 @@
         };
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e) {
     t.exports = "attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t() {
-            i(this, t);
+            n(this, t);
         }
         t.prototype.manage = function t() {
             console.error(this);
@@ -583,11 +583,11 @@
         t.prototype.onUpdate = function t() {};
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    var i, n;
+    var n, i;
     function o(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -597,7 +597,7 @@
     var s = 2;
     var u = 0;
     var f = -1;
-    var h = (n = i = function() {
+    var c = (i = n = function() {
         function t(e) {
             o(this, t);
             this.buffer = {};
@@ -640,7 +640,7 @@
             });
         };
         return t;
-    }(), i.KEY = {
+    }(), n.KEY = {
         A: 65,
         B: 66,
         C: 67,
@@ -671,13 +671,13 @@
         UP: 38,
         RIGHT: 39,
         DOWN: 40
-    }, n);
-    e.default = h;
+    }, i);
+    e.default = c;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    e.Transient = i;
-    function i(t) {
+    e.Transient = n;
+    function n(t) {
         return function(e) {
             e.transient = t;
         };
@@ -693,8 +693,8 @@
     e.make2DProjection = function(t, e, r) {
         return [ 2 / t, 0, 0, 0, 0, -2 / e, 0, 0, 0, 0, 2 / r, 0, -1, 1, 0, 1 ];
     };
-    e.ortho = function(t, e, r, i, n, o) {
-        var a = 1 / (t - e), s = 1 / (r - i), u = 1 / (n - o);
+    e.ortho = function(t, e, r, n, i, o) {
+        var a = 1 / (t - e), s = 1 / (r - n), u = 1 / (i - o);
         var f = [];
         f[0] = -2 * a;
         f[1] = 0;
@@ -709,29 +709,29 @@
         f[10] = 2 * u;
         f[11] = 0;
         f[12] = (t + e) * a;
-        f[13] = (i + r) * s;
-        f[14] = (o + n) * u;
+        f[13] = (n + r) * s;
+        f[14] = (o + i) * u;
         f[15] = 1;
         return f;
     };
-    e.perspective = function(t, e, r, i) {
-        var n = 1 / Math.tan(t / 2), o = 1 / (r - i);
+    e.perspective = function(t, e, r, n) {
+        var i = 1 / Math.tan(t / 2), o = 1 / (r - n);
         var a = [];
-        a[0] = n / e;
+        a[0] = i / e;
         a[1] = 0;
         a[2] = 0;
         a[3] = 0;
         a[4] = 0;
-        a[5] = n;
+        a[5] = i;
         a[6] = 0;
         a[7] = 0;
         a[8] = 0;
         a[9] = 0;
-        a[10] = (i + r) * o;
+        a[10] = (n + r) * o;
         a[11] = -1;
         a[12] = 0;
         a[13] = 0;
-        a[14] = 2 * i * r * o;
+        a[14] = 2 * n * r * o;
         a[15] = 0;
         return a;
     };
@@ -758,53 +758,53 @@
     };
     e.matrixMultiply = function(t, e) {
         var r = t[0 * 4 + 0];
-        var i = t[0 * 4 + 1];
-        var n = t[0 * 4 + 2];
+        var n = t[0 * 4 + 1];
+        var i = t[0 * 4 + 2];
         var o = t[0 * 4 + 3];
         var a = t[1 * 4 + 0];
         var s = t[1 * 4 + 1];
         var u = t[1 * 4 + 2];
         var f = t[1 * 4 + 3];
-        var h = t[2 * 4 + 0];
-        var c = t[2 * 4 + 1];
-        var l = t[2 * 4 + 2];
-        var d = t[2 * 4 + 3];
-        var p = t[3 * 4 + 0];
-        var y = t[3 * 4 + 1];
-        var m = t[3 * 4 + 2];
-        var g = t[3 * 4 + 3];
-        var v = e[0 * 4 + 0];
-        var w = e[0 * 4 + 1];
-        var _ = e[0 * 4 + 2];
-        var b = e[0 * 4 + 3];
+        var c = t[2 * 4 + 0];
+        var l = t[2 * 4 + 1];
+        var h = t[2 * 4 + 2];
+        var p = t[2 * 4 + 3];
+        var d = t[3 * 4 + 0];
+        var m = t[3 * 4 + 1];
+        var v = t[3 * 4 + 2];
+        var y = t[3 * 4 + 3];
+        var g = e[0 * 4 + 0];
+        var _ = e[0 * 4 + 1];
+        var b = e[0 * 4 + 2];
+        var w = e[0 * 4 + 3];
         var x = e[1 * 4 + 0];
-        var O = e[1 * 4 + 1];
+        var E = e[1 * 4 + 1];
         var T = e[1 * 4 + 2];
-        var E = e[1 * 4 + 3];
-        var j = e[2 * 4 + 0];
+        var O = e[1 * 4 + 3];
+        var R = e[2 * 4 + 0];
         var F = e[2 * 4 + 1];
-        var R = e[2 * 4 + 2];
-        var A = e[2 * 4 + 3];
-        var M = e[3 * 4 + 0];
-        var P = e[3 * 4 + 1];
-        var S = e[3 * 4 + 2];
-        var B = e[3 * 4 + 3];
-        return [ r * v + i * x + n * j + o * M, r * w + i * O + n * F + o * P, r * _ + i * T + n * R + o * S, r * b + i * E + n * A + o * B, a * v + s * x + u * j + f * M, a * w + s * O + u * F + f * P, a * _ + s * T + u * R + f * S, a * b + s * E + u * A + f * B, h * v + c * x + l * j + d * M, h * w + c * O + l * F + d * P, h * _ + c * T + l * R + d * S, h * b + c * E + l * A + d * B, p * v + y * x + m * j + g * M, p * w + y * O + m * F + g * P, p * _ + y * T + m * R + g * S, p * b + y * E + m * A + g * B ];
+        var j = e[2 * 4 + 2];
+        var S = e[2 * 4 + 3];
+        var A = e[3 * 4 + 0];
+        var M = e[3 * 4 + 1];
+        var B = e[3 * 4 + 2];
+        var P = e[3 * 4 + 3];
+        return [ r * g + n * x + i * R + o * A, r * _ + n * E + i * F + o * M, r * b + n * T + i * j + o * B, r * w + n * O + i * S + o * P, a * g + s * x + u * R + f * A, a * _ + s * E + u * F + f * M, a * b + s * T + u * j + f * B, a * w + s * O + u * S + f * P, c * g + l * x + h * R + p * A, c * _ + l * E + h * F + p * M, c * b + l * T + h * j + p * B, c * w + l * O + h * S + p * P, d * g + m * x + v * R + y * A, d * _ + m * E + v * F + y * M, d * b + m * T + v * j + y * B, d * w + m * O + v * S + y * P ];
     };
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function t(e) {
+    var i = function t(e) {
         return (e & e - 1) == 0;
     };
     var o = function() {
         function t(e) {
-            i(this, t);
+            n(this, t);
             if (1 && !e) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
             this.gl = e;
             this.tex = null;
@@ -815,9 +815,9 @@
             e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, 1, 1, 0, e.RGBA, e.UNSIGNED_BYTE, new Uint8Array([ 0, 0, 255, 255 ]));
             e.bindTexture(e.TEXTURE_2D, this.tex);
         }
-        t.prototype.setImage = function t(e, r, i) {
+        t.prototype.setImage = function t(e, r, n) {
             if (true) {
-                if (!(e || r || i)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+                if (!(e || r || n)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
             }
             var o = this.gl;
             if (e) this.size = {
@@ -825,16 +825,16 @@
                 height: e.height
             }; else this.size = {
                 width: r,
-                height: i
+                height: n
             };
             this.bind();
             o.pixelStorei(o.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
             if (e) {
                 o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, o.RGBA, o.UNSIGNED_BYTE, e);
             } else {
-                o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, r, i, 0, o.RGBA, o.UNSIGNED_BYTE, null);
+                o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, r, n, 0, o.RGBA, o.UNSIGNED_BYTE, null);
             }
-            this.isPowerOfTwo = e && n(e.width) && n(e.height);
+            this.isPowerOfTwo = e && i(e.width) && i(e.height);
             if (this.isPowerOfTwo) {
                 o.generateMipmap(o.TEXTURE_2D);
                 o.texParameteri(o.TEXTURE_2D, o.TEXTURE_WRAP_S, o.REPEAT);
@@ -866,8 +866,8 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(32);
-    var n = o(i);
+    var n = r(31);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -909,29 +909,29 @@
             return r;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    var i = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
+    var n = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
         return typeof t;
     } : function(t) {
         return t && typeof Symbol === "function" && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t;
     };
-    function n(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var o = function t(e, r, i) {
+    var o = function t(e, r, n) {
         if (!e) return true;
         if (e.indexOf("_") == 0) return true;
         if (r && r.call) return true;
         if (typeof r === "string") return false;
         if (typeof r === "number") return false;
         if (typeof r === "boolean") return false;
-        return r == null && !i.preserveNull;
+        return r == null && !n.preserveNull;
     };
     var a = function t(e) {
         return typeof e === "string" || typeof e === "number";
@@ -940,7 +940,7 @@
         var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
         if (e === undefined) return undefined; else if (e === null) return null; else if (typeof window !== "undefined" && e === window) return undefined; else if (r.indexOf(e) > -1) return e;
         if (Object.prototype.toString.call(e) === "[object Array]") {
-            var n = [], o = 0, a = e.length;
+            var i = [], o = 0, a = e.length;
             for (;o < a; o++) {
                 var s = void 0;
                 if (r.indexOf(e[o]) > -1) {
@@ -950,34 +950,34 @@
                     s = t(e[o], r);
                     r.push(e[o]);
                 }
-                n[o] = s;
+                i[o] = s;
             }
-            return n;
-        } else if ((typeof e === "undefined" ? "undefined" : i(e)) === "object") {
+            return i;
+        } else if ((typeof e === "undefined" ? "undefined" : n(e)) === "object") {
             var u = {};
             for (var f in e) {
                 if (!e.hasOwnProperty(f)) continue;
-                var h = void 0;
+                var c = void 0;
                 if (r.indexOf(e[f]) > -1) {
-                    h = e[f];
+                    c = e[f];
                 } else {
                     r.push(e);
-                    h = t(e[f], r);
+                    c = t(e[f], r);
                     r.push(e[f]);
                 }
-                u[f] = h;
+                u[f] = c;
             }
             return u;
         } else return e;
     };
     var u = function() {
         function t() {
-            n(this, t);
+            i(this, t);
         }
         t.prototype.fromJSON = function t() {
             var e = this;
             var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var i = arguments[1];
+            var n = arguments[1];
             Object.keys(r).forEach(function(t) {
                 if (t === "type") return;
                 if (t in e) e[t] = r[t]; else {
@@ -985,12 +985,12 @@
                     throw "::fromJSON(): class " + e.constructor.name + " has no property " + t;
                 }
                 if (!e[t]) return;
-                if (r[t].id && r[t].type) e[t] = e.game.repository.getObject(r[t].id, r[t].type, i); else if (r[t].splice) {
-                    var n = e[t];
+                if (r[t].id && r[t].type) e[t] = e.game.repository.getObject(r[t].id, r[t].type, n); else if (r[t].splice) {
+                    var i = e[t];
                     e[t] = [];
-                    n.forEach(function(r, n) {
+                    i.forEach(function(r, i) {
                         if (r && r.type && r.id) {
-                            e[t].push(e.game.repository.getObject(r.id, r.type, i));
+                            e[t].push(e.game.repository.getObject(r.id, r.type, n));
                         } else {
                             if (a(r)) e[t].push(r);
                         }
@@ -1005,7 +1005,7 @@
             var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
                 preserveNull: false
             };
-            var n = {};
+            var i = {};
             for (var u in this) {
                 if (o(u, this[u], r)) {
                     continue;
@@ -1014,7 +1014,7 @@
                     continue;
                 }
                 if (this[u] != null && this[u].type && this[u].id) {
-                    n[u] = {
+                    i[u] = {
                         id: this[u].id,
                         type: this[u].type
                     };
@@ -1032,15 +1032,15 @@
                                 if (a(t)) r.push(s(t));
                             }
                         });
-                        n[u] = r;
+                        i[u] = r;
                     })();
                 } else {
                     var f = s(this[u]);
-                    if (f && f.splice && !f.length) continue; else if (f != null && (typeof f === "undefined" ? "undefined" : i(f)) === "object" && !Object.keys(f).length) continue;
-                    n[u] = f;
+                    if (f && f.splice && !f.length) continue; else if (f != null && (typeof f === "undefined" ? "undefined" : n(f)) === "object" && !Object.keys(f).length) continue;
+                    i[u] = f;
                 }
             }
-            return n;
+            return i;
         };
         return t;
     }();
@@ -1049,8 +1049,8 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -1087,26 +1087,26 @@
         e.findAll = function t(e) {};
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "GameObjectProto";
-            i.spriteSheet = null;
-            i._behaviour = null;
-            i.commonBehaviour = [];
-            i.currFrameIndex = 0;
-            i._sprPosX = 0;
-            i._sprPosY = 0;
-            i.frameAnimations = [];
-            i._currFrameAnimation = 0;
-            i.startFrameAnimationName = null;
-            i._timeCreated = null;
-            i.tileOffset = {
+            var n = s(this, t.call(this, r));
+            n.type = "GameObjectProto";
+            n.spriteSheet = null;
+            n._behaviour = null;
+            n.commonBehaviour = [];
+            n.currFrameIndex = 0;
+            n._sprPosX = 0;
+            n._sprPosY = 0;
+            n.frameAnimations = [];
+            n._currFrameAnimation = 0;
+            n.startFrameAnimationName = null;
+            n._timeCreated = null;
+            n.tileOffset = {
                 x: 0,
                 y: 0
             };
-            i.tileRepeat = false;
-            i.groupName = "";
-            i._individualBehaviour = null;
-            return i;
+            n.tileRepeat = false;
+            n.groupName = "";
+            n._individualBehaviour = null;
+            return n;
         }
         e.prototype.revalidate = function t() {
             var e = this;
@@ -1121,31 +1121,33 @@
             });
         };
         e.prototype.playFrameAnimation = function t(e, r) {
-            var i = this.frameAnimations.find(function(t) {
+            var n = this.frameAnimations.find(function(t) {
                 return t.name === e;
             });
-            i._gameObject = this;
-            this._currFrameAnimation = i;
-            i.play(r);
+            n._gameObject = this;
+            this._currFrameAnimation = n;
+            n.play(r);
         };
         e.prototype.setFrameIndex = function t(e) {
             this.currFrameIndex = e;
             this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
         };
-        e.prototype.update = function e(r, i) {
+        e.prototype.update = function e(r, n) {
             t.prototype.update.call(this, r);
             this._currFrameAnimation && this._currFrameAnimation.update(r);
-            this.rigidBody.update(r, i);
+            var i = this.vel.x * n / 1e3;
+            var o = this.vel.y * n / 1e3;
+            this.game._collider.manage(this, this.pos.x + i, this.pos.y + o);
             this.game._renderer.draw(this);
-            if (this._individualBehaviour) this._individualBehaviour.onUpdate(r, i);
-            for (var n = 0, o = this.commonBehaviour.length; n < o; n++) {
-                this.commonBehaviour[n].onUpdate(r, i);
+            if (this._individualBehaviour) this._individualBehaviour.onUpdate();
+            for (var a = 0, s = this.commonBehaviour.length; a < s; a++) {
+                this.commonBehaviour[a].onUpdate();
             }
         };
         e.prototype.onShow = function t() {
             if (this._individualBehaviour) this._individualBehaviour.onCreate();
-            if (this.startFrameAnimationName !== null) this.playFrameAnimation(this.startFrameAnimationName);
+            if (this.startFrameAnimationName != null) this.playFrameAnimation(this.startFrameAnimationName);
         };
         e.prototype.stopFrAnimations = function t() {
             this._currFrameAnimation && this._currFrameAnimation.stop();
@@ -1154,47 +1156,31 @@
             this._layer.kill(this);
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e) {
     t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
 }, function(t, e, r) {
     "use strict";
-    var i = r(24);
-    var n = o(i);
+    var n = r(24);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
     var a = {
-        width: 300,
-        height: 200,
+        width: 800,
+        height: 600,
         scaleStrategy: 0,
-        startSceneId: 2,
-        scale: {
-            x: 1,
-            y: 1
-        },
-        pos: {
-            x: 0,
-            y: 0
-        }
+        startSceneId: 2
     };
     if (1 && a.startSceneId == null) throw "start scene not specified";
-    var s = new n.default({
-        width: 300,
-        height: 200,
+    var s = new i.default({
+        width: 800,
+        height: 600,
         scaleStrategy: 0,
-        startSceneId: 2,
-        scale: {
-            x: 1,
-            y: 1
-        },
-        pos: {
-            x: 0,
-            y: 0
-        }
+        startSceneId: 2
     });
     s.repository.setDescriptions({
         Scene: [ {
@@ -1204,13 +1190,7 @@
             layers: [ {
                 type: "Layer",
                 id: 2
-            } ],
-            useBG: true,
-            tileMap: {
-                width: 22,
-                height: 2,
-                data: []
-            }
+            } ]
         } ],
         Layer: [ {
             id: 2,
@@ -1218,1589 +1198,77 @@
             type: "Layer",
             gameObjects: [ {
                 type: "GameObject",
-                id: 28
-            }, {
-                type: "GameObject",
-                id: 30
-            }, {
-                type: "GameObject",
-                id: 40
-            }, {
-                type: "GameObject",
-                id: 41
-            }, {
-                type: "GameObject",
-                id: 42
-            }, {
-                type: "GameObject",
-                id: 43
-            }, {
-                type: "GameObject",
-                id: 44
-            }, {
-                type: "GameObject",
-                id: 45
-            }, {
-                type: "GameObject",
-                id: 46
-            }, {
-                type: "GameObject",
-                id: 47
-            }, {
-                type: "GameObject",
-                id: 48
-            }, {
-                type: "GameObject",
-                id: 49
-            }, {
-                type: "GameObject",
-                id: 50
-            }, {
-                type: "GameObject",
-                id: 51
+                id: 9
             } ]
         } ],
         SpriteSheet: [ {
-            name: "cat",
-            width: 236,
-            height: 511,
+            id: 3,
+            name: "horse",
+            width: 733,
+            height: 489,
             type: "SpriteSheet",
-            numOfFramesH: 3,
-            numOfFramesV: 13,
-            resourcePath: "resources/cat.jpg",
-            id: 13
-        }, {
-            name: "professor_walk_cycle_no_hat",
-            width: 576,
-            height: 256,
-            type: "SpriteSheet",
-            numOfFramesH: 9,
+            numOfFramesH: 4,
             numOfFramesV: 4,
-            resourcePath: "resources/professor_walk_cycle_no_hat.png",
-            id: 21
-        }, {
-            name: "MulticolorTanks",
-            width: 256,
-            height: 256,
-            type: "SpriteSheet",
-            numOfFramesH: 8,
-            numOfFramesV: 8,
-            resourcePath: "resources/MulticolorTanks.png",
-            id: 37
-        } ],
-        Font: [ {
-            name: "ff",
-            type: "Font",
-            resourcePath: "resources/ff.png",
-            fontFamily: "Algerian",
-            fontContext: {
-                symbols: {
-                    "0": {
-                        x: 214,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "1": {
-                        x: 229,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "2": {
-                        x: 244,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "3": {
-                        x: 259,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "4": {
-                        x: 274,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "5": {
-                        x: 290,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "6": {
-                        x: 305,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "7": {
-                        x: 4,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    "8": {
-                        x: 19,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    "9": {
-                        x: 34,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    " ": {
-                        x: 4,
-                        y: 4,
-                        width: 3,
-                        height: 13
-                    },
-                    "!": {
-                        x: 15,
-                        y: 4,
-                        width: 3,
-                        height: 13
-                    },
-                    '"': {
-                        x: 26,
-                        y: 4,
-                        width: 4,
-                        height: 13
-                    },
-                    "#": {
-                        x: 38,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    $: {
-                        x: 53,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "%": {
-                        x: 69,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    "&": {
-                        x: 84,
-                        y: 4,
-                        width: 9,
-                        height: 13
-                    },
-                    "'": {
-                        x: 102,
-                        y: 4,
-                        width: 2,
-                        height: 13
-                    },
-                    "(": {
-                        x: 112,
-                        y: 4,
-                        width: 5,
-                        height: 13
-                    },
-                    ")": {
-                        x: 125,
-                        y: 4,
-                        width: 5,
-                        height: 13
-                    },
-                    "*": {
-                        x: 139,
-                        y: 4,
-                        width: 4,
-                        height: 13
-                    },
-                    "+": {
-                        x: 151,
-                        y: 4,
-                        width: 7,
-                        height: 13
-                    },
-                    ",": {
-                        x: 166,
-                        y: 4,
-                        width: 3,
-                        height: 13
-                    },
-                    "-": {
-                        x: 177,
-                        y: 4,
-                        width: 3,
-                        height: 13
-                    },
-                    ".": {
-                        x: 189,
-                        y: 4,
-                        width: 3,
-                        height: 13
-                    },
-                    "/": {
-                        x: 200,
-                        y: 4,
-                        width: 5,
-                        height: 13
-                    },
-                    ":": {
-                        x: 49,
-                        y: 25,
-                        width: 3,
-                        height: 13
-                    },
-                    ";": {
-                        x: 60,
-                        y: 25,
-                        width: 3,
-                        height: 13
-                    },
-                    "<": {
-                        x: 71,
-                        y: 25,
-                        width: 6,
-                        height: 13
-                    },
-                    "=": {
-                        x: 85,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    ">": {
-                        x: 100,
-                        y: 25,
-                        width: 6,
-                        height: 13
-                    },
-                    "?": {
-                        x: 114,
-                        y: 25,
-                        width: 5,
-                        height: 13
-                    },
-                    "@": {
-                        x: 128,
-                        y: 25,
-                        width: 8,
-                        height: 13
-                    },
-                    A: {
-                        x: 144,
-                        y: 25,
-                        width: 9,
-                        height: 13
-                    },
-                    B: {
-                        x: 161,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    C: {
-                        x: 177,
-                        y: 25,
-                        width: 6,
-                        height: 13
-                    },
-                    D: {
-                        x: 192,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    E: {
-                        x: 207,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    F: {
-                        x: 223,
-                        y: 25,
-                        width: 6,
-                        height: 13
-                    },
-                    G: {
-                        x: 237,
-                        y: 25,
-                        width: 8,
-                        height: 13
-                    },
-                    H: {
-                        x: 254,
-                        y: 25,
-                        width: 7,
-                        height: 13
-                    },
-                    I: {
-                        x: 269,
-                        y: 25,
-                        width: 3,
-                        height: 13
-                    },
-                    J: {
-                        x: 281,
-                        y: 25,
-                        width: 6,
-                        height: 13
-                    },
-                    K: {
-                        x: 295,
-                        y: 25,
-                        width: 8,
-                        height: 13
-                    },
-                    L: {
-                        x: 4,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    M: {
-                        x: 18,
-                        y: 46,
-                        width: 8,
-                        height: 13
-                    },
-                    N: {
-                        x: 35,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    O: {
-                        x: 50,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    P: {
-                        x: 66,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    Q: {
-                        x: 81,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    R: {
-                        x: 96,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    S: {
-                        x: 112,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    T: {
-                        x: 127,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    U: {
-                        x: 142,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    V: {
-                        x: 157,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    W: {
-                        x: 172,
-                        y: 46,
-                        width: 9,
-                        height: 13
-                    },
-                    X: {
-                        x: 190,
-                        y: 46,
-                        width: 8,
-                        height: 13
-                    },
-                    Y: {
-                        x: 206,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    Z: {
-                        x: 222,
-                        y: 46,
-                        width: 7,
-                        height: 13
-                    },
-                    "[": {
-                        x: 238,
-                        y: 46,
-                        width: 5,
-                        height: 13
-                    },
-                    "\\": {
-                        x: 251,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    "]": {
-                        x: 265,
-                        y: 46,
-                        width: 5,
-                        height: 13
-                    },
-                    "^": {
-                        x: 278,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    _: {
-                        x: 292,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    "`": {
-                        x: 306,
-                        y: 46,
-                        width: 6,
-                        height: 13
-                    },
-                    a: {
-                        x: 4,
-                        y: 67,
-                        width: 9,
-                        height: 13
-                    },
-                    b: {
-                        x: 21,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    c: {
-                        x: 36,
-                        y: 67,
-                        width: 6,
-                        height: 13
-                    },
-                    d: {
-                        x: 51,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    e: {
-                        x: 67,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    f: {
-                        x: 82,
-                        y: 67,
-                        width: 6,
-                        height: 13
-                    },
-                    g: {
-                        x: 97,
-                        y: 67,
-                        width: 8,
-                        height: 13
-                    },
-                    h: {
-                        x: 113,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    i: {
-                        x: 128,
-                        y: 67,
-                        width: 3,
-                        height: 13
-                    },
-                    j: {
-                        x: 140,
-                        y: 67,
-                        width: 6,
-                        height: 13
-                    },
-                    k: {
-                        x: 154,
-                        y: 67,
-                        width: 8,
-                        height: 13
-                    },
-                    l: {
-                        x: 170,
-                        y: 67,
-                        width: 6,
-                        height: 13
-                    },
-                    m: {
-                        x: 185,
-                        y: 67,
-                        width: 8,
-                        height: 13
-                    },
-                    n: {
-                        x: 202,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    o: {
-                        x: 217,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    p: {
-                        x: 232,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    q: {
-                        x: 247,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    r: {
-                        x: 263,
-                        y: 67,
-                        width: 7,
-                        height: 13
-                    },
-                    s: {
-                        x: 279,
-                        y: 67,
-                        width: 6,
-                        height: 13
-                    },
-                    t: {
-                        x: 293,
-                        y: 67,
-                        width: 6,
-                        height: 13
-                    },
-                    u: {
-                        x: 4,
-                        y: 88,
-                        width: 7,
-                        height: 13
-                    },
-                    v: {
-                        x: 19,
-                        y: 88,
-                        width: 7,
-                        height: 13
-                    },
-                    w: {
-                        x: 34,
-                        y: 88,
-                        width: 9,
-                        height: 13
-                    },
-                    x: {
-                        x: 52,
-                        y: 88,
-                        width: 8,
-                        height: 13
-                    },
-                    y: {
-                        x: 68,
-                        y: 88,
-                        width: 7,
-                        height: 13
-                    },
-                    z: {
-                        x: 84,
-                        y: 88,
-                        width: 7,
-                        height: 13
-                    },
-                    "{": {
-                        x: 99,
-                        y: 88,
-                        width: 5,
-                        height: 13
-                    },
-                    "|": {
-                        x: 113,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "}": {
-                        x: 127,
-                        y: 88,
-                        width: 5,
-                        height: 13
-                    },
-                    "~": {
-                        x: 140,
-                        y: 88,
-                        width: 7,
-                        height: 13
-                    },
-                    "": {
-                        x: 156,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 170,
-                        y: 88,
-                        width: 0,
-                        height: 13
-                    },
-                    "": {
-                        x: 178,
-                        y: 88,
-                        width: 0,
-                        height: 13
-                    },
-                    "": {
-                        x: 186,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 200,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 214,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 228,
-                        y: 88,
-                        width: 9,
-                        height: 13
-                    },
-                    "": {
-                        x: 246,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 260,
-                        y: 88,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 274,
-                        y: 88,
-                        width: 4,
-                        height: 13
-                    },
-                    "": {
-                        x: 286,
-                        y: 88,
-                        width: 9,
-                        height: 13
-                    },
-                    "": {
-                        x: 303,
-                        y: 88,
-                        width: 5,
-                        height: 13
-                    },
-                    "": {
-                        x: 4,
-                        y: 109,
-                        width: 6,
-                        height: 13
-                    },
-                    "": {
-                        x: 18,
-                        y: 109,
-                        width: 11,
-                        height: 13
-                    },
-                    "": {
-                        x: 37,
-                        y: 109,
-                        width: 0,
-                        height: 13
-                    },
-                    "": {
-                        x: 45,
-                        y: 109,
-                        width: 0,
-                        height: 13
-                    },
-                    "": {
-                        x: 53,
-                        y: 109,
-                        width: 0,
-                        height: 13
-                    },
-                    "": {
-                        x: 61,
-                        y: 109,
-                        width: 0,
-                        height: 13
-                    },
-                    "": {
-                        x: 69,
-                        y: 109,
-                        width: 2,
-                        height: 13
-                    },
-                    "": {
-                        x: 80,
-                        y: 109,
-                        width: 2,
-                        height: 13
-                    },
-                    "": {
-                        x: 90,
-                        y: 109,
-                        width: 5,
-                        height: 13
-                    },
-                    "": {
-                        x: 103,
-                        y: 109,
-                        width: 5,
-                        height: 13
-                    },
-                    "": {
-                        x: 116,
-                        y: 109,
-                        width: 0,
-                        height: 13
-                    },
-                    "А": {
-                        x: 124,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "Б": {
-                        x: 141,
-                        y: 109,
-                        width: 6,
-                        height: 13
-                    },
-                    "В": {
-                        x: 156,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "Г": {
-                        x: 172,
-                        y: 109,
-                        width: 6,
-                        height: 13
-                    },
-                    "Д": {
-                        x: 187,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "Е": {
-                        x: 203,
-                        y: 109,
-                        width: 7,
-                        height: 13
-                    },
-                    "Ж": {
-                        x: 218,
-                        y: 109,
-                        width: 10,
-                        height: 13
-                    },
-                    "З": {
-                        x: 237,
-                        y: 109,
-                        width: 6,
-                        height: 13
-                    },
-                    "И": {
-                        x: 251,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "Й": {
-                        x: 268,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "К": {
-                        x: 284,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "Л": {
-                        x: 300,
-                        y: 109,
-                        width: 8,
-                        height: 13
-                    },
-                    "М": {
-                        x: 4,
-                        y: 130,
-                        width: 10,
-                        height: 13
-                    },
-                    "Н": {
-                        x: 22,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "О": {
-                        x: 39,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "П": {
-                        x: 56,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "Р": {
-                        x: 72,
-                        y: 130,
-                        width: 6,
-                        height: 13
-                    },
-                    "С": {
-                        x: 87,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "Т": {
-                        x: 103,
-                        y: 130,
-                        width: 7,
-                        height: 13
-                    },
-                    "У": {
-                        x: 118,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "Ф": {
-                        x: 135,
-                        y: 130,
-                        width: 9,
-                        height: 13
-                    },
-                    "Х": {
-                        x: 152,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "Ц": {
-                        x: 169,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "Ч": {
-                        x: 185,
-                        y: 130,
-                        width: 7,
-                        height: 13
-                    },
-                    "Ш": {
-                        x: 201,
-                        y: 130,
-                        width: 12,
-                        height: 13
-                    },
-                    "Щ": {
-                        x: 221,
-                        y: 130,
-                        width: 12,
-                        height: 13
-                    },
-                    "Ъ": {
-                        x: 241,
-                        y: 130,
-                        width: 8,
-                        height: 13
-                    },
-                    "Ы": {
-                        x: 258,
-                        y: 130,
-                        width: 10,
-                        height: 13
-                    },
-                    "Ь": {
-                        x: 276,
-                        y: 130,
-                        width: 6,
-                        height: 13
-                    },
-                    "Э": {
-                        x: 291,
-                        y: 130,
-                        width: 7,
-                        height: 13
-                    },
-                    "Ю": {
-                        x: 4,
-                        y: 151,
-                        width: 12,
-                        height: 13
-                    },
-                    "Я": {
-                        x: 24,
-                        y: 151,
-                        width: 8,
-                        height: 13
-                    },
-                    "а": {
-                        x: 40,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "б": {
-                        x: 53,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "в": {
-                        x: 67,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "г": {
-                        x: 81,
-                        y: 151,
-                        width: 4,
-                        height: 13
-                    },
-                    "д": {
-                        x: 94,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "е": {
-                        x: 108,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "ж": {
-                        x: 121,
-                        y: 151,
-                        width: 8,
-                        height: 13
-                    },
-                    "з": {
-                        x: 138,
-                        y: 151,
-                        width: 4,
-                        height: 13
-                    },
-                    "и": {
-                        x: 150,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "й": {
-                        x: 165,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "к": {
-                        x: 179,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "л": {
-                        x: 193,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "м": {
-                        x: 207,
-                        y: 151,
-                        width: 7,
-                        height: 13
-                    },
-                    "н": {
-                        x: 223,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "о": {
-                        x: 237,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "п": {
-                        x: 251,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "р": {
-                        x: 265,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "с": {
-                        x: 279,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "т": {
-                        x: 293,
-                        y: 151,
-                        width: 5,
-                        height: 13
-                    },
-                    "у": {
-                        x: 306,
-                        y: 151,
-                        width: 6,
-                        height: 13
-                    },
-                    "ф": {
-                        x: 4,
-                        y: 172,
-                        width: 7,
-                        height: 13
-                    },
-                    "х": {
-                        x: 19,
-                        y: 172,
-                        width: 6,
-                        height: 13
-                    },
-                    "ц": {
-                        x: 33,
-                        y: 172,
-                        width: 6,
-                        height: 13
-                    },
-                    "ч": {
-                        x: 48,
-                        y: 172,
-                        width: 6,
-                        height: 13
-                    },
-                    "ш": {
-                        x: 62,
-                        y: 172,
-                        width: 9,
-                        height: 13
-                    },
-                    "щ": {
-                        x: 79,
-                        y: 172,
-                        width: 9,
-                        height: 13
-                    },
-                    "ъ": {
-                        x: 96,
-                        y: 172,
-                        width: 6,
-                        height: 13
-                    },
-                    "ы": {
-                        x: 110,
-                        y: 172,
-                        width: 8,
-                        height: 13
-                    },
-                    "ь": {
-                        x: 126,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "э": {
-                        x: 140,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "ю": {
-                        x: 153,
-                        y: 172,
-                        width: 8,
-                        height: 13
-                    },
-                    "я": {
-                        x: 170,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "ѐ": {
-                        x: 184,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "ё": {
-                        x: 197,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "ђ": {
-                        x: 210,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "ѓ": {
-                        x: 224,
-                        y: 172,
-                        width: 4,
-                        height: 13
-                    },
-                    "є": {
-                        x: 237,
-                        y: 172,
-                        width: 5,
-                        height: 13
-                    },
-                    "ѕ": {
-                        x: 250,
-                        y: 172,
-                        width: 4,
-                        height: 13
-                    },
-                    "і": {
-                        x: 263,
-                        y: 172,
-                        width: 3,
-                        height: 13
-                    },
-                    "ї": {
-                        x: 274,
-                        y: 172,
-                        width: 3,
-                        height: 13
-                    },
-                    "ј": {
-                        x: 285,
-                        y: 172,
-                        width: 3,
-                        height: 13
-                    },
-                    "љ": {
-                        x: 297,
-                        y: 172,
-                        width: 8,
-                        height: 13
-                    },
-                    "њ": {
-                        x: 4,
-                        y: 193,
-                        width: 8,
-                        height: 13
-                    },
-                    "ћ": {
-                        x: 20,
-                        y: 193,
-                        width: 6,
-                        height: 13
-                    }
-                },
-                width: 320,
-                height: 210
-            },
-            id: 7
-        } ],
-        FrameAnimation: [ {
-            name: "walk",
-            type: "FrameAnimation",
-            frames: [ 8, 9, 10, 11 ],
-            id: 12
-        }, {
-            name: "run",
-            type: "FrameAnimation",
-            frames: [ 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38 ],
-            id: 15
-        }, {
-            id: 23,
-            name: "up",
-            type: "FrameAnimation",
-            frames: [ 1, 2, 3, 4, 5, 6, 7, 8 ]
-        }, {
-            id: 24,
-            name: "left",
-            type: "FrameAnimation",
-            frames: [ 10, 11, 12, 13, 14, 15, 16, 17 ]
-        }, {
-            id: 25,
-            name: "right",
-            type: "FrameAnimation",
-            frames: [ 28, 29, 30, 31, 32, 33, 34, 35 ]
-        }, {
-            id: 26,
-            name: "down",
-            type: "FrameAnimation",
-            frames: [ 19, 20, 21, 22, 23, 24, 25, 26 ]
-        }, {
-            name: "idleUp",
-            type: "FrameAnimation",
-            frames: [ 0 ],
-            id: 33
-        }, {
-            name: "idleDown",
-            type: "FrameAnimation",
-            frames: [ 18 ],
-            id: 34
-        }, {
-            id: 35,
-            name: "idleLeft",
-            type: "FrameAnimation",
-            frames: [ 9 ]
-        }, {
-            name: "idleRight",
-            type: "FrameAnimation",
-            frames: [ 27 ],
-            id: 36
-        }, {
-            name: "run",
-            type: "FrameAnimation",
-            frames: [ 0, 1, 2, 3, 4, 5, 6, 7 ],
-            id: 39
+            resourcePath: "resources/horse.gif"
         } ],
         GameObjectProto: [ {
-            id: 14,
-            name: "cat",
-            width: 78,
-            height: 39,
-            rigid: true,
+            id: 4,
+            name: "horse",
+            width: 183,
+            height: 122,
             type: "GameObjectProto",
             spriteSheet: {
-                id: 13,
+                id: 3,
                 type: "SpriteSheet"
             },
             frameAnimations: [ {
                 type: "FrameAnimation",
-                id: 15
+                id: 5
+            }, {
+                type: "FrameAnimation",
+                id: 6
+            }, {
+                type: "FrameAnimation",
+                id: 7
+            }, {
+                type: "FrameAnimation",
+                id: 8
             } ],
-            startFrameAnimationName: "run"
+            startFrameAnimationName: "q2"
+        } ],
+        FrameAnimation: [ {
+            id: 5,
+            name: "a",
+            type: "FrameAnimation",
+            frames: [ 1 ]
         }, {
-            id: 22,
-            name: "professor",
-            width: 64,
-            height: 64,
-            rigid: true,
-            type: "GameObjectProto",
-            spriteSheet: {
-                id: 21,
-                type: "SpriteSheet"
-            },
-            commonBehaviour: [ {
-                type: "CommonBehaviour",
-                id: 29
-            } ],
-            currFrameIndex: "",
-            frameAnimations: [ {
-                type: "FrameAnimation",
-                id: 23
-            }, {
-                type: "FrameAnimation",
-                id: 24
-            }, {
-                type: "FrameAnimation",
-                id: 25
-            }, {
-                type: "FrameAnimation",
-                id: 26
-            }, {
-                type: "FrameAnimation",
-                id: 33
-            }, {
-                type: "FrameAnimation",
-                id: 34
-            }, {
-                type: "FrameAnimation",
-                id: 35
-            }, {
-                type: "FrameAnimation",
-                id: 36
-            } ],
-            startFrameAnimationName: "idleDown"
+            name: "b",
+            type: "FrameAnimation",
+            frames: [ 2 ],
+            id: 6
         }, {
-            id: 38,
-            name: "MulticolorTanks",
-            width: 32,
-            height: 32,
-            rigid: true,
-            type: "GameObjectProto",
-            spriteSheet: {
-                id: 37,
-                type: "SpriteSheet"
-            },
-            commonBehaviour: [ {
-                type: "CommonBehaviour",
-                id: 54
-            } ],
-            frameAnimations: [ {
-                type: "FrameAnimation",
-                id: 39
-            } ],
-            startFrameAnimationName: "run"
+            name: "q1",
+            type: "FrameAnimation",
+            frames: [ 1 ],
+            id: 7
+        }, {
+            id: 8,
+            name: "q2",
+            type: "FrameAnimation",
+            frames: [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ]
         } ],
         GameObject: [ {
-            id: 28,
-            name: "professor",
             pos: {
-                x: 8,
-                y: -10
+                x: 306,
+                y: 234
             },
             layerId: 2,
             type: "GameObject",
             gameObjectProto: {
-                id: 22,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 30,
-            name: "cat",
-            pos: {
-                x: 214,
-                y: 47
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 14,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 40,
-            name: "MulticolorTanks",
-            pos: {
-                x: 87,
-                y: 83
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            pos: {
-                x: 43,
-                y: 200
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
+                id: 4,
                 type: "GameObjectProto"
             },
-            id: 41
-        }, {
-            id: 42,
-            name: "MulticolorTanks",
-            pos: {
-                x: 85,
-                y: 48
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 43,
-            name: "MulticolorTanks",
-            pos: {
-                x: 258,
-                y: 9
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 44,
-            name: "MulticolorTanks",
-            pos: {
-                x: 133,
-                y: 8
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 45,
-            name: "MulticolorTanks",
-            pos: {
-                x: 265,
-                y: 125
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 46,
-            name: "MulticolorTanks",
-            pos: {
-                x: 184,
-                y: 7
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 47,
-            name: "MulticolorTanks",
-            pos: {
-                x: 89,
-                y: 127
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 48,
-            name: "MulticolorTanks",
-            pos: {
-                x: 180,
-                y: 127
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 49,
-            name: "MulticolorTanks",
-            pos: {
-                x: 134,
-                y: 128
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 50,
-            name: "MulticolorTanks",
-            pos: {
-                x: 225,
-                y: 127
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 51,
-            name: "MulticolorTanks",
-            pos: {
-                x: 88,
-                y: 8
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 38,
-                type: "GameObjectProto"
-            }
-        } ],
-        CommonBehaviour: [ {
-            id: 29,
-            name: "Control4Dir",
-            type: "CommonBehaviour",
-            parameters: {
-                velocity: 100,
-                walkLeftAnimation: "left",
-                walkRightAnimation: "right",
-                walkUpAnimation: "up",
-                walkDownAnimation: "down",
-                idleLeftAnimation: "idleLeft",
-                idleRightAnimation: "idleRight",
-                idleUpAnimation: "idleUp",
-                idleDownAnimation: "idleDown"
-            }
-        }, {
-            name: "Draggable",
-            type: "CommonBehaviour",
-            id: 54
+            id: 9
         } ]
     });
     var u = s.repository.getObject(a.startSceneId, "Scene");
@@ -2810,8 +1278,8 @@
     "use strict";
     e.__esModule = true;
     e.Control4Dir = e.Draggable = undefined;
-    var i = r(18);
-    var n = s(i);
+    var n = r(18);
+    var i = s(n);
     var o = r(17);
     var a = s(o);
     function s(t) {
@@ -2819,14 +1287,14 @@
             default: t
         };
     }
-    e.Draggable = n.default;
+    e.Draggable = i.default;
     e.Control4Dir = a.default;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(19);
-    var n = s(i);
+    var n = r(19);
+    var i = s(n);
     var o = r(7);
     var a = s(o);
     function s(t) {
@@ -2845,7 +1313,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function c(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2859,54 +1327,54 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var c = function(t) {
-        h(e, t);
+    var l = function(t) {
+        c(e, t);
         function e(r) {
             u(this, e);
             return f(this, t.call(this, r));
         }
-        e.prototype.manage = function e(r, i) {
-            t.prototype.manage.call(this, r, i);
+        e.prototype.manage = function e(r, n) {
+            t.prototype.manage.call(this, r, n);
         };
         e.prototype.onUpdate = function t() {
             var e = this.game._keyboard;
             var r = this.parameters;
-            var i = this.gameObject;
+            var n = this.gameObject;
             if (e.isPressed(a.default.KEY.UP)) {
-                i.rigidBody.vel.y = -r.velocity;
+                n.vel.y = -r.velocity;
                 this.go("Up");
             }
             if (e.isPressed(a.default.KEY.DOWN)) {
-                i.rigidBody.vel.y = r.velocity;
+                n.vel.y = r.velocity;
                 this.go("Down");
             }
             if (e.isPressed(a.default.KEY.LEFT)) {
-                i.rigidBody.vel.x = -r.velocity;
+                n.vel.x = -r.velocity;
                 this.go("Left");
             }
             if (e.isPressed(a.default.KEY.RIGHT)) {
-                i.rigidBody.vel.x = r.velocity;
+                n.vel.x = r.velocity;
                 this.go("Right");
             }
             if (e.isJustReleased(a.default.KEY.LEFT)) {
                 this.stop();
             } else if (e.isJustReleased(a.default.KEY.RIGHT)) {
-                this.stop();
+                this.stop("Right");
             } else if (e.isJustReleased(a.default.KEY.UP)) {
-                this.stop();
+                this.stop("Up");
             } else if (e.isJustReleased(a.default.KEY.DOWN)) {
-                this.stop();
+                this.stop("Down");
             }
         };
         return e;
-    }(n.default);
-    e.default = c;
+    }(i.default);
+    e.default = l;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = o(i);
+    var n = r(6);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2944,15 +1412,15 @@
         };
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this));
-            i.game = r;
-            i.points = {};
-            return i;
+            var n = s(this, t.call(this));
+            n.game = r;
+            n.points = {};
+            return n;
         }
-        e.prototype.manage = function t(r, i) {
-            var n = this;
+        e.prototype.manage = function t(r, n) {
+            var i = this;
             r.on("click", function(t) {
-                n.points[e._getEventId(t)] = {
+                i.points[e._getEventId(t)] = {
                     mX: t.objectX,
                     mY: t.objectY,
                     target: r,
@@ -2964,20 +1432,20 @@
             var o = this.game.getCurrScene();
             o.on("mouseDown", function(t) {
                 var r = e._getEventId(t);
-                var i = n.points[r];
-                if (!i) return;
-                i.dragStartX = i.target.pos.x;
-                i.dragStartY = i.target.pos.y;
+                var n = i.points[r];
+                if (!n) return;
+                n.dragStartX = n.target.pos.x;
+                n.dragStartY = n.target.pos.y;
             });
             o.on("mouseMove", function(t) {
-                var i = e._getEventId(t);
-                var o = n.points[i];
+                var n = e._getEventId(t);
+                var o = i.points[n];
                 if (!o) return;
                 if (!o.dragStart) {
                     o.dragStart = true;
                     o.target.trigger("dragStart", o);
                     if (o.defaultPrevented) {
-                        delete n.points[i];
+                        delete i.points[n];
                         return;
                     }
                 }
@@ -2985,26 +1453,26 @@
                 r.pos.y = t.screenY - o.mY;
             });
             o.on("mouseUp", function(t) {
-                var i = e._getEventId(t);
-                var o = n.points[i];
+                var n = e._getEventId(t);
+                var o = i.points[n];
                 if (!o) return;
                 if (o.dragStart) {
                     o.x = r.pos.x;
                     o.y = r.pos.y;
                     o.target.trigger("dragStop", o);
                 }
-                delete n.points[i];
+                delete i.points[n];
             });
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = o(i);
+    var n = r(6);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3039,33 +1507,33 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this));
-            i.gameObject = null;
-            i.lastDirection = null;
-            i.game = r;
-            return i;
+            var n = s(this, t.call(this));
+            n.gameObject = null;
+            n.lastDirection = null;
+            n.game = r;
+            return n;
         }
         e.prototype.manage = function t(e, r) {
-            var i = this;
+            var n = this;
             this.gameObject = e;
             this.parameters = r;
             this.animations = {};
-            var n = [ "Left", "Right", "Up", "Down" ];
-            n.forEach(function(t) {
-                var e = "walk" + t + "Animation", n = "idle" + t + "Animation";
-                i.animations[e] = i.gameObject.frameAnimations.find(function(t) {
+            var i = [ "Left", "Right", "Up", "Down" ];
+            i.forEach(function(t) {
+                var e = "walk" + t + "Animation", i = "idle" + t + "Animation";
+                n.animations[e] = n.gameObject.frameAnimations.find(function(t) {
                     return t.name === r[e];
                 });
-                if (!i.animations[e]) throw "can not find animation " + r[e] + " at gameObject " + i.gameObject.name;
-                r[n] && (i.animations[n] = i.gameObject.frameAnimations.find(function(t) {
-                    return t.name === r[n];
+                if (!n.animations[e]) throw "can not find animation " + r[e] + " at gameObject " + n.gameObject.name;
+                r[i] && (n.animations[i] = n.gameObject.frameAnimations.find(function(t) {
+                    return t.name === r[i];
                 }));
             });
         };
         e.prototype.stop = function t() {
             this.gameObject.stopFrAnimations();
-            this.gameObject.rigidBody.vel.x = 0;
-            this.gameObject.rigidBody.vel.y = 0;
+            this.gameObject.vel.x = 0;
+            this.gameObject.vel.y = 0;
             var e = "idle" + this.lastDirection + "Animation";
             if (this.animations[e]) {
                 this.animations[e].play();
@@ -3076,19 +1544,19 @@
             this.animations["walk" + e + "Animation"].play();
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            n(this, t);
             this.objFollowTo = null;
             this.scene = null;
             this.pos = {
@@ -3113,52 +1581,52 @@
             if (!this.objFollowTo) return;
             var e = this.pos;
             var r = 55;
-            var i = 55;
-            var n = this.game.width;
+            var n = 55;
+            var i = this.game.width;
             var o = this.game.height;
-            var a = n / 2;
+            var a = i / 2;
             var s = o / 2;
             e.x = this.objFollowTo.pos.x - a;
             e.y = this.objFollowTo.pos.y - s;
             if (e.x < 0) e.x = 0;
             if (e.y < 0) e.y = 0;
-            if (e.x > this.sceneWidth - n + r) e.x = this.sceneWidth - n + r;
-            if (e.y > this.sceneHeight - o + i) e.y = this.sceneHeight - o + i;
+            if (e.x > this.sceneWidth - i + r) e.x = this.sceneWidth - i + r;
+            if (e.y > this.sceneHeight - o + n) e.y = this.sceneHeight - o + n;
         };
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
-    function n(t, e) {
+    var n = r(1);
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var o = function() {
         function t(e) {
-            n(this, t);
+            i(this, t);
             this.game = e;
         }
-        t.prototype.manage = function t(e, r, n) {
-            if (e.pos.x === r && e.pos.y === n) return;
+        t.prototype.manage = function t(e, r, i) {
+            if (e.pos.x == r && e.pos.y == i) return;
             if (!e.rigid) {
                 e.pos.x = r;
-                e.pos.y = n;
+                e.pos.y = i;
                 return;
             } else {}
             var o = false;
             var a = this.game.getCurrScene().getAllGameObjects();
             for (var s = 0, u = a.length; s < u; s++) {
                 var f = a[s];
-                if (e === f) continue;
-                var h = e.getRect();
-                h.x = r;
-                h.y = n;
-                if ((0, i.isRectIntersectRect)(h, f.getRect())) {
+                if (e == f) continue;
+                var c = e.getRect();
+                c.x = r;
+                c.y = i;
+                if ((0, n.isRectIntersectRect)(c, f.getRect())) {
                     if (e.rigid && f.rigid) {
                         o = true;
                         e.trigger("collide", f);
@@ -3169,7 +1637,7 @@
             }
             if (!o) {
                 e.pos.x = r;
-                e.pos.y = n;
+                e.pos.y = i;
             }
             return o;
         };
@@ -3180,8 +1648,8 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
-    var n = o(i);
+    var n = r(1);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3239,20 +1707,20 @@
             };
         };
         t.prototype.triggerEvent = function t(e, r) {
-            var i = this.game;
-            var o = i.getCurrScene();
+            var n = this.game;
+            var o = n.getCurrScene();
             if (!o) return;
             var a = this.resolveScreenPoint(e);
             t: for (var s = 0; s < o.layers.length; s++) {
                 var u = o.layers[o.layers.length - 1 - s];
                 for (var f = 0; f < u.gameObjects.length; f++) {
-                    var h = u.gameObjects[f];
-                    if (n.default.isPointInRect(a, h.getRect())) {
-                        h.trigger(r, {
+                    var c = u.gameObjects[f];
+                    if (i.default.isPointInRect(a, c.getRect())) {
+                        c.trigger(r, {
                             screenX: a.x,
                             screenY: a.y,
-                            objectX: a.x - h.pos.x,
-                            objectY: a.y - h.pos.y,
+                            objectX: a.x - c.pos.x,
+                            objectY: a.y - c.pos.y,
                             id: a.id
                         });
                         break t;
@@ -3276,12 +1744,12 @@
             if (1 && window.canceled) return;
             var r = this.triggerEvent(e, "mouseMove");
             if (!r) return;
-            var i = this.objectsCaptured[r.id];
-            if (i && i !== r.object) {
-                i.trigger("mouseLeave");
+            var n = this.objectsCaptured[r.id];
+            if (n && n !== r.object) {
+                n.trigger("mouseLeave");
                 delete this.objectsCaptured[r.id];
             }
-            if (r.object && i !== r.object) {
+            if (r.object && n !== r.object) {
                 r.object.trigger("mouseEnter");
                 this.objectsCaptured[r.id] = r.object;
             }
@@ -3290,9 +1758,9 @@
             if (1 && window.canceled) return;
             var r = this.triggerEvent(e, "mouseUp");
             if (!r) return;
-            var i = this.objectsCaptured[r.id];
-            if (!i) return;
-            i.trigger("mouseUp");
+            var n = this.objectsCaptured[r.id];
+            if (!n) return;
+            n.trigger("mouseUp");
             delete this.objectsCaptured[r.id];
         };
         t.prototype.resolveDoubleClick = function t(e) {
@@ -3307,14 +1775,14 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t() {
-            i(this, t);
+            n(this, t);
             this.events = {};
         }
         t.prototype._on = function t(e, r) {
@@ -3331,43 +1799,43 @@
             }
         };
         t.prototype.trigger = function t(e, r) {
-            var i = this.events[e];
-            if (!i) return;
-            var n = i.length;
-            while (n--) {
-                i[n](r);
+            var n = this.events[e];
+            if (!n) return;
+            var i = n.length;
+            while (i--) {
+                n[i](r);
             }
         };
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i, n;
-    r(27);
-    var o = r(29);
-    var a = _(o);
-    var s = r(38);
-    var u = _(s);
+    var n, i;
+    r(26);
+    var o = r(28);
+    var a = b(o);
+    var s = r(37);
+    var u = b(s);
     var f = r(22);
-    var h = _(f);
-    var c = r(7);
-    var l = _(c);
-    var d = r(21);
-    var p = _(d);
-    var y = r(8);
-    var m = r(12);
-    var g = _(m);
-    var v = r(20);
-    var w = _(v);
-    function _(t) {
+    var c = b(f);
+    var l = r(7);
+    var h = b(l);
+    var p = r(21);
+    var d = b(p);
+    var m = r(8);
+    var v = r(12);
+    var y = b(v);
+    var g = r(20);
+    var _ = b(g);
+    function b(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function b(t, e) {
+    function w(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -3378,7 +1846,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function O(t, e) {
+    function E(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -3392,39 +1860,39 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var T = (i = (0, y.Transient)({
+    var T = (n = (0, m.Transient)({
         repository: true,
         camera: true
-    }), i(n = function(t) {
-        O(e, t);
+    }), n(i = function(t) {
+        E(e, t);
         function e(r) {
-            b(this, e);
-            var i = x(this, t.call(this));
-            i._lastTime = null;
-            i._currTime = null;
-            i._currentScene = null;
-            i._running = false;
-            i.scale = {
+            w(this, e);
+            var n = x(this, t.call(this));
+            n._lastTime = null;
+            n._currTime = null;
+            n._currentScene = null;
+            n._running = false;
+            n.scale = {
                 x: 1,
                 y: 1
             };
-            i.pos = {
+            n.pos = {
                 x: 0,
                 y: 0
             };
             Object.keys(r).forEach(function(t) {
-                i[t] = r[t];
+                n[t] = r[t];
             });
-            var n = Date.now();
-            i._lastTime = i._currTime = n;
-            i._deltaTime = 0;
-            i.repository = new u.default(i);
-            i._mouse = new h.default(i);
-            i._keyboard = new l.default(i);
-            i._keyboard.listenTo();
-            i._collider = new p.default(i);
-            i.camera = new w.default(i);
-            return i;
+            var i = Date.now();
+            n._lastTime = n._currTime = i;
+            n._deltaTime = 0;
+            n.repository = new u.default(n);
+            n._mouse = new c.default(n);
+            n._keyboard = new h.default(n);
+            n._keyboard.listenTo();
+            n._collider = new d.default(n);
+            n.camera = new _.default(n);
+            return n;
         }
         e.prototype.getTime = function t() {
             return this._lastTime;
@@ -3432,18 +1900,18 @@
         e.prototype.getDeltaTime = function t() {
             return this._deltaTime;
         };
-        e.prototype.runScene = function t(i) {
-            var n = this;
+        e.prototype.runScene = function t(n) {
+            var i = this;
             if (!this._renderer) {
                 this._renderer = a.default.getRenderer(this);
                 this._mouse.listenTo(this._renderer.container);
             }
-            this._currentScene = i;
+            this._currentScene = n;
             if (true) {
-                var o = r(52);
-                var s = "" + i.name[0].toUpperCase() + i.name.substr(1) + "Behaviour";
-                if (s) i.setIndividualBehaviour(o[s]);
-                i.layers.forEach(function(t) {
+                var o = r(50);
+                var s = "" + n.name[0].toUpperCase() + n.name.substr(1) + "Behaviour";
+                if (s) n.setIndividualBehaviour(o[s]);
+                n.layers.forEach(function(t) {
                     t.gameObjects.forEach(function(t) {
                         t.setCommonBehaviour();
                         var e = "" + t.name[0].toUpperCase() + t.name.substr(1) + "Behaviour";
@@ -3452,11 +1920,11 @@
                     });
                 });
             }
-            i.preload(function() {
-                n._currentScene.onShow();
-                if (!n._running) {
-                    e.update(n);
-                    n._running = true;
+            n.preload(function() {
+                i._currentScene.onShow();
+                if (!i._running) {
+                    e.update(i);
+                    i._running = true;
                 }
             });
         };
@@ -3478,19 +1946,19 @@
             r._keyboard.update();
         };
         return e;
-    }(g.default)) || n);
+    }(y.default)) || i);
     e.default = T;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t() {
-            i(this, t);
+            n(this, t);
             this.tasksResolved = 0;
             this.tasks = [];
             this.tasksProgressById = {};
@@ -3533,38 +2001,7 @@
         };
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var i = r(40);
-    var n = o(i);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function a(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var s = function() {
-        function t(e) {
-            a(this, t);
-            this.vel = new n.default();
-            this.game = e.game;
-            this.gameObject = e;
-        }
-        t.prototype.update = function t(e, r) {
-            var i = this.vel.x * r / 1e3;
-            var n = this.vel.y * r / 1e3;
-            this.game._collider.manage(this.gameObject, this.gameObject.pos.x + i, this.gameObject.pos.y + n);
-        };
-        return t;
-    }();
-    e.default = s;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     Array.prototype.remove = function(t) {
@@ -3588,12 +2025,12 @@
             }
             var e = Object(this);
             var r = e.length >>> 0;
-            var i = arguments[1];
-            var n = void 0;
+            var n = arguments[1];
+            var i = void 0;
             for (var o = 0; o < r; o++) {
-                n = e[o];
-                if (t.call(i, n, o, e)) {
-                    return n;
+                i = e[o];
+                if (t.call(n, i, o, e)) {
+                    return i;
                 }
             }
             return undefined;
@@ -3602,14 +2039,14 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            n(this, t);
             this.renderableCache = {};
             this.container = null;
             this.game = e;
@@ -3617,21 +2054,21 @@
         t.prototype.onResize = function t() {
             var e = this.container.height / this.container.width;
             var r = window.innerHeight / window.innerWidth;
-            var i = void 0;
             var n = void 0;
+            var i = void 0;
             if (r < e) {
-                n = window.innerHeight;
-                i = n / e;
+                i = window.innerHeight;
+                n = i / e;
             } else {
-                i = window.innerWidth;
-                n = i * e;
+                n = window.innerWidth;
+                i = n * e;
             }
-            this.game.scale.x = i / this.game.width;
-            this.game.scale.y = n / this.game.height;
-            this.game.pos.x = (window.innerWidth - i) / 2;
-            this.game.pos.y = (window.innerHeight - n) / 2;
-            this.container.style.width = i + "px";
-            this.container.style.height = n + "px";
+            this.game.scale.x = n / this.game.width;
+            this.game.scale.y = i / this.game.height;
+            this.game.pos.x = (window.innerWidth - n) / 2;
+            this.game.pos.y = (window.innerHeight - i) / 2;
+            this.container.style.width = n + "px";
+            this.container.style.height = i + "px";
         };
         t.prototype.beginFrameBuffer = function t() {};
         t.prototype.flipFrameBuffer = function t() {};
@@ -3646,13 +2083,13 @@
         t.prototype.getTextureInfo = function t(e) {};
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(37);
-    var n = o(i);
+    var n = r(36);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3669,7 +2106,7 @@
         }
         t.getRenderer = function t(e) {
             if (!e) throw "RendererFactory::getRenderer: game param not specified";
-            return new n.default(e);
+            return new i.default(e);
         };
         return t;
     }();
@@ -3678,8 +2115,8 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(10);
-    var n = o(i);
+    var n = r(10);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3691,17 +2128,17 @@
         }
     }
     var s = function() {
-        function t(e, r, i) {
+        function t(e, r, n) {
             a(this, t);
             if (1 && !e) throw "can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
             this.gl = e;
             this.width = r;
-            this.height = i;
-            this.texture = new n.default(e);
-            this.texture.setImage(null, r, i);
+            this.height = n;
+            this.texture = new i.default(e);
+            this.texture.setImage(null, r, n);
             this.glRenderBuffer = e.createRenderbuffer();
             e.bindRenderbuffer(e.RENDERBUFFER, this.glRenderBuffer);
-            e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, r, i);
+            e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, r, n);
             this.glFrameBuffer = e.createFramebuffer();
             e.bindFramebuffer(e.FRAMEBUFFER, this.glFrameBuffer);
             e.framebufferTexture2D(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.TEXTURE_2D, this.texture.getGlTexture(), 0);
@@ -3727,8 +2164,8 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(9);
-    var n = o(i);
+    var n = r(9);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3748,7 +2185,7 @@
         t.prototype.restore = function t() {
             this.stack.pop();
             if (this.stack.length < 1) {
-                this.stack[0] = n.default.makeIdentity();
+                this.stack[0] = i.default.makeIdentity();
             }
         };
         t.prototype.save = function t() {
@@ -3760,31 +2197,31 @@
         t.prototype.setCurrentMatrix = function t(e) {
             return this.stack[this.stack.length - 1] = e;
         };
-        t.prototype.translate = function t(e, r, i) {
-            if (i === undefined) {
-                i = 0;
+        t.prototype.translate = function t(e, r, n) {
+            if (n === undefined) {
+                n = 0;
             }
-            var o = n.default.makeTranslation(e, r, i);
+            var o = i.default.makeTranslation(e, r, n);
             var a = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+            this.setCurrentMatrix(i.default.matrixMultiply(o, a));
         };
         t.prototype.rotateZ = function t(e) {
-            var r = n.default.makeZRotation(e);
-            var i = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+            var r = i.default.makeZRotation(e);
+            var n = this.getCurrentMatrix();
+            this.setCurrentMatrix(i.default.matrixMultiply(r, n));
         };
         t.prototype.rotateY = function t(e) {
-            var r = n.default.makeYRotation(e);
-            var i = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+            var r = i.default.makeYRotation(e);
+            var n = this.getCurrentMatrix();
+            this.setCurrentMatrix(i.default.matrixMultiply(r, n));
         };
-        t.prototype.scale = function t(e, r, i) {
-            if (i === undefined) {
-                i = 1;
+        t.prototype.scale = function t(e, r, n) {
+            if (n === undefined) {
+                n = 1;
             }
-            var o = n.default.makeScale(e, r, i);
+            var o = i.default.makeScale(e, r, n);
             var a = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+            this.setCurrentMatrix(i.default.matrixMultiply(o, a));
         };
         return t;
     }();
@@ -3792,53 +2229,53 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function t() {
-        i(this, t);
+    var i = function t() {
+        n(this, t);
         this.vertexArr = null;
         this.normalArr = null;
         this.texCoordArr = null;
         this.indexArr = null;
     };
-    e.default = n;
+    e.default = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(11);
-    var n = y(i);
+    var n = r(11);
+    var i = m(n);
     var o = r(2);
-    var a = y(o);
+    var a = m(o);
     var s = r(3);
-    var u = y(s);
+    var u = m(s);
     var f = r(4);
-    var h = y(f);
-    var c = r(5);
-    var l = y(c);
-    var d = r(14);
-    var p = y(d);
-    function y(t) {
+    var c = m(f);
+    var l = r(5);
+    var h = m(l);
+    var p = r(14);
+    var d = m(p);
+    function m(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function m(t, e) {
+    function v(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var g = function() {
+    var y = function() {
         function t(e, r) {
-            m(this, t);
+            v(this, t);
             this.gl = e;
-            this.plane = new n.default();
-            this.program = new a.default(e, [ l.default, p.default ]);
+            this.plane = new i.default();
+            this.program = new a.default(e, [ h.default, d.default ]);
             this.posVertexBuffer = new u.default(e);
-            this.posIndexBuffer = new h.default(e);
+            this.posIndexBuffer = new c.default(e);
         }
         t.prototype.bind = function t() {
             this.program.bind();
@@ -3858,36 +2295,36 @@
         };
         return t;
     }();
-    e.default = g;
+    e.default = y;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
-    var n = d(i);
+    var n = r(2);
+    var i = p(n);
     var o = r(3);
-    var a = d(o);
+    var a = p(o);
     var s = r(4);
-    var u = d(s);
-    var f = r(53);
-    var h = d(f);
-    var c = r(55);
-    var l = d(c);
-    function d(t) {
+    var u = p(s);
+    var f = r(51);
+    var c = p(f);
+    var l = r(53);
+    var h = p(l);
+    function p(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function p(t, e) {
+    function d(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var y = function() {
+    var m = function() {
         function t(e, r) {
-            p(this, t);
+            d(this, t);
             this.gl = e;
-            this.program = new n.default(e, [ h.default, l.default ]);
+            this.program = new i.default(e, [ c.default, h.default ]);
             this.posVertexBuffer = new a.default(e);
             this.texVertexBuffer = new a.default(e);
             this.normalBuffer = new a.default(e);
@@ -3897,13 +2334,13 @@
         t.prototype.bind = function t(e) {
             this.program.bind();
             var r = this.gl;
-            var i = this.program;
+            var n = this.program;
             this.posVertexBuffer.setData(e.vertexArr, r.FLOAT, 3);
-            i.bindBuffer(this.posVertexBuffer, "a_position");
+            n.bindBuffer(this.posVertexBuffer, "a_position");
             this.texVertexBuffer.setData(e.texCoordArr, r.FLOAT, 2);
-            i.bindBuffer(this.texVertexBuffer, "a_texcoord");
+            n.bindBuffer(this.texVertexBuffer, "a_texcoord");
             this.normalBuffer.setData(e.normalArr, r.FLOAT, 3);
-            i.bindBuffer(this.normalBuffer, "a_normal");
+            n.bindBuffer(this.normalBuffer, "a_normal");
             this.posIndexBuffer.setData(e.indexArr);
             this.posIndexBuffer.bind();
         };
@@ -3918,34 +2355,34 @@
         };
         return t;
     }();
-    e.default = y;
+    e.default = m;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
-    var n = c(i);
+    var n = r(2);
+    var i = l(n);
     var o = r(3);
-    var a = c(o);
+    var a = l(o);
     var s = r(5);
-    var u = c(s);
+    var u = l(s);
     var f = r(14);
-    var h = c(f);
-    function c(t) {
+    var c = l(f);
+    function l(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function l(t, e) {
+    function h(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var d = function() {
+    var p = function() {
         function t(e) {
-            l(this, t);
+            h(this, t);
             this.gl = e;
-            this.program = new n.default(e, [ u.default, h.default ]);
+            this.program = new i.default(e, [ u.default, c.default ]);
             this.posVertexBuffer = new a.default(e);
         }
         t.prototype.bind = function t(e) {
@@ -3962,41 +2399,41 @@
         };
         return t;
     }();
-    e.default = d;
+    e.default = p;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(11);
-    var n = y(i);
+    var n = r(11);
+    var i = m(n);
     var o = r(2);
-    var a = y(o);
+    var a = m(o);
     var s = r(3);
-    var u = y(s);
+    var u = m(s);
     var f = r(4);
-    var h = y(f);
-    var c = r(5);
-    var l = y(c);
-    var d = r(54);
-    var p = y(d);
-    function y(t) {
+    var c = m(f);
+    var l = r(5);
+    var h = m(l);
+    var p = r(52);
+    var d = m(p);
+    function m(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function m(t, e) {
+    function v(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var g = function() {
+    var y = function() {
         function t(e) {
-            m(this, t);
+            v(this, t);
             this.gl = e;
-            this.plane = new n.default();
-            this.program = new a.default(e, [ l.default, p.default ]);
+            this.plane = new i.default();
+            this.program = new a.default(e, [ h.default, d.default ]);
             this.posVertexBuffer = new u.default(e);
-            this.posIndexBuffer = new h.default(e);
+            this.posIndexBuffer = new c.default(e);
             this.texVertexBuffer = new u.default(e);
             this.bind();
             this.setUniform("u_alpha", 1);
@@ -4022,30 +2459,30 @@
         };
         return t;
     }();
-    e.default = g;
+    e.default = y;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(28);
-    var n = b(i);
-    var o = r(36);
-    var a = b(o);
-    var s = r(33);
-    var u = b(s);
-    var f = r(35);
-    var h = b(f);
-    var c = r(34);
-    var l = b(c);
-    var d = r(30);
-    var p = b(d);
-    var y = r(31);
-    var m = b(y);
-    var g = r(9);
-    var v = b(g);
-    var w = r(10);
-    var _ = b(w);
-    function b(t) {
+    var n = r(27);
+    var i = w(n);
+    var o = r(35);
+    var a = w(o);
+    var s = r(32);
+    var u = w(s);
+    var f = r(34);
+    var c = w(f);
+    var l = r(33);
+    var h = w(l);
+    var p = r(29);
+    var d = w(p);
+    var m = r(30);
+    var v = w(m);
+    var y = r(9);
+    var g = w(y);
+    var _ = r(10);
+    var b = w(_);
+    function w(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -4055,7 +2492,7 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function O(t, e) {
+    function E(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -4075,7 +2512,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var E = function t(e) {
+    var O = function t(e) {
         return e.getContext("webgl", {
             alpha: false
         }) || e.getContext("experimental-webgl", {
@@ -4086,48 +2523,48 @@
             alpha: false
         });
     };
-    var j = 1e3;
-    var F = new m.default();
-    var R = function t(e, r, i, n, o, a, s, u) {
-        var f = v.default.makeZToWMatrix(1);
-        var h = v.default.ortho(0, o, 0, a, -j, j);
-        var c = v.default.makeScale(i * s, n * u, 1);
-        var l = v.default.makeTranslation(e * s, r * u, 0);
-        var d = v.default.matrixMultiply(c, l);
-        d = v.default.matrixMultiply(d, F.getCurrentMatrix());
-        d = v.default.matrixMultiply(d, h);
-        d = v.default.matrixMultiply(d, f);
-        return d;
+    var R = 1e3;
+    var F = new v.default();
+    var j = function t(e, r, n, i, o, a, s, u) {
+        var f = g.default.makeZToWMatrix(1);
+        var c = g.default.ortho(0, o, 0, a, -R, R);
+        var l = g.default.makeScale(n * s, i * u, 1);
+        var h = g.default.makeTranslation(e * s, r * u, 0);
+        var p = g.default.matrixMultiply(l, h);
+        p = g.default.matrixMultiply(p, F.getCurrentMatrix());
+        p = g.default.matrixMultiply(p, c);
+        p = g.default.matrixMultiply(p, f);
+        return p;
     };
-    var A = function t(e, r, i, n, o, a) {
-        var s = v.default.makeScale(i / o, n / a, 1);
-        var u = v.default.makeTranslation(e / o, r / a, 0);
-        return v.default.matrixMultiply(s, u);
+    var S = function t(e, r, n, i, o, a) {
+        var s = g.default.makeScale(n / o, i / a, 1);
+        var u = g.default.makeTranslation(e / o, r / a, 0);
+        return g.default.matrixMultiply(s, u);
     };
-    var M = function(t) {
+    var A = function(t) {
         T(e, t);
         function e(r) {
             x(this, e);
-            var i = O(this, t.call(this, r));
-            var n = document.createElement("canvas");
-            document.body.appendChild(n);
-            n.setAttribute("width", r.width);
-            n.setAttribute("height", r.height);
-            i.container = n;
-            i.matrixStack = F;
-            i.registerResize();
-            i.currTex = null;
-            i._init();
-            return i;
+            var n = E(this, t.call(this, r));
+            var i = document.createElement("canvas");
+            document.body.appendChild(i);
+            i.setAttribute("width", r.width);
+            i.setAttribute("height", r.height);
+            n.container = i;
+            n.matrixStack = F;
+            n.registerResize();
+            n.currTex = null;
+            n._init();
+            return n;
         }
         e.prototype._init = function t() {
-            var e = E(this.container);
+            var e = O(this.container);
             this.gl = e;
             this.spriteRectDrawer = new a.default(e);
             this.colorRectDrawer = new u.default(e);
-            this.polyLineDrawer = new h.default(e);
-            this.modelDrawer = new l.default(e);
-            this.frameBuffer = new p.default(e, this.game.width, this.game.height);
+            this.polyLineDrawer = new c.default(e);
+            this.modelDrawer = new h.default(e);
+            this.frameBuffer = new d.default(e, this.game.width, this.game.height);
             e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
             e.enable(e.BLEND);
             e.enable(e.BLEND);
@@ -4135,43 +2572,43 @@
         e.prototype.draw = function t(e) {
             this.save();
             var r = e.width / 2;
-            var i = e.height / 2;
-            this.translate(e.pos.x + r, e.pos.y + i);
+            var n = e.height / 2;
+            this.translate(e.pos.x + r, e.pos.y + n);
             this.scale(e.scale.x, e.scale.y);
             this.rotateZ(e.angle);
-            this.translate(-r, -i);
+            this.translate(-r, -n);
             this.drawImage(e.spriteSheet.resourcePath, e._sprPosX, e._sprPosY, e.width, e.height, 0, 0, e.width, e.height);
             this.restore();
         };
-        e.prototype.drawImage = function t(e, r, i, n, o, a, s) {
+        e.prototype.drawImage = function t(e, r, n, i, o, a, s) {
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
             var u = this.renderableCache[e];
             var f = u.getSize().width;
-            var h = u.getSize().height;
+            var c = u.getSize().height;
             if (a === undefined) {
                 a = r;
             }
             if (s === undefined) {
-                s = i;
+                s = n;
             }
-            if (n === undefined) {
-                n = f;
+            if (i === undefined) {
+                i = f;
             }
             if (o === undefined) {
-                o = h;
+                o = c;
             }
             if (this.currTex != u) {
                 u.bind();
                 this.currTex = u;
             }
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_textureMatrix", A(r, i, n, o, f, h));
-            this.spriteRectDrawer.setUniform("u_matrix", R(a, s, n, o, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", S(r, n, i, o, f, c));
+            this.spriteRectDrawer.setUniform("u_matrix", j(a, s, i, o, this.game.width, this.game.height, 1, 1));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.spriteRectDrawer.draw();
             this.spriteRectDrawer.unbind();
         };
-        e.prototype.fillRect = function t(e, r, i, n, o) {};
+        e.prototype.fillRect = function t(e, r, n, i, o) {};
         e.prototype.setAlpha = function t(e) {};
         e.prototype.save = function t() {
             this.matrixStack.save();
@@ -4198,8 +2635,8 @@
             this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         };
         e.prototype.clearColor = function t(e) {
-            var r = e.r, i = e.g, n = e.b;
-            this.gl.clearColor(r / 255, i / 255, n / 255, 1);
+            var r = e.r, n = e.g, i = e.b;
+            this.gl.clearColor(r / 255, n / 255, i / 255, 1);
             this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         };
         e.prototype.beginFrameBuffer = function t() {
@@ -4217,8 +2654,8 @@
             this.gl.viewport(0, 0, this.game.width, this.game.height);
             this.frameBuffer.getTexture().bind();
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_matrix", R(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
-            this.spriteRectDrawer.setUniform("u_textureMatrix", A(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
+            this.spriteRectDrawer.setUniform("u_matrix", j(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", S(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
             this.spriteRectDrawer.draw();
@@ -4229,25 +2666,25 @@
             return e == this.gl.NO_ERROR ? 0 : e;
         };
         e.prototype.loadTextureInfo = function t(e, r) {
-            var i = this;
-            var n = new Image();
-            n.src = e;
-            n.onload = function() {
-                var t = new _.default(i.gl);
-                t.setImage(n);
-                i.renderableCache[e] = t;
+            var n = this;
+            var i = new Image();
+            i.src = e;
+            i.onload = function() {
+                var t = new b.default(n.gl);
+                t.setImage(i);
+                n.renderableCache[e] = t;
                 r();
             };
         };
         return e;
-    }(n.default);
-    e.default = M;
+    }(i.default);
+    e.default = A;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(41);
-    var n = o(i);
+    var n = r(39);
+    var i = o(n);
     function o(t) {
         if (t && t.__esModule) {
             return t;
@@ -4286,13 +2723,13 @@
             });
         };
         t.prototype.getObject = function t(e, r) {
-            var i = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
             if (1 && !r) throw "repository.getObject: type not specified";
             if (1 && e == null) {
                 console.trace("id is null");
                 throw "::getObject() id not specified for type " + r;
             }
-            var o = n[r];
+            var o = i[r];
             if (1 && !o) {
                 throw "::getObject() undeclared object type " + r;
             }
@@ -4303,7 +2740,7 @@
             if (!a) {
                 throw 'can not find object "' + r + '" with id ' + e;
             }
-            if (i || !this.cache[a[e]]) this.cache[e] = new o(this._game).fromJSON(a);
+            if (n || !this.cache[a[e]]) this.cache[e] = new o(this._game).fromJSON(a);
             return this.cache[e];
         };
         t.prototype.getFirst = function t(e) {
@@ -4322,13 +2759,13 @@
             this.descriptions[e.type].push(e.toJSON());
         };
         t.prototype.updateObject = function t(e, r) {
-            var i = e.toJSON(r);
-            var n = this.descriptions[e.type].findIndex(function(t) {
+            var n = e.toJSON(r);
+            var i = this.descriptions[e.type].findIndex(function(t) {
                 return t.id == e.id;
             });
-            this.descriptions[e.type][n] = i;
+            this.descriptions[e.type][i] = n;
             var o = this.getObject(e.id, e.type, true);
-            if (o) o.fromJSON(i);
+            if (o) o.fromJSON(n);
         };
         t.prototype.removeObject = function t(e) {
             if (1 && !this.arrays[e.type]) this.arrays[e.type] = [];
@@ -4345,18 +2782,18 @@
         };
         t.prototype.getArray = function t(e) {
             var r = this;
-            if (1 && !n[e]) throw 'getArray: unregistered type "' + e + '"';
+            if (1 && !i[e]) throw 'getArray: unregistered type "' + e + '"';
             if (this.arrays[e]) return this.arrays[e];
-            var i = [];
+            var n = [];
             if (!this.descriptions[e]) this.descriptions[e] = [];
             this.descriptions[e].forEach(function(t) {
                 if (1 && (t.id === null || t.id === undefined)) {
                     console.error(t);
                     throw "object id must me specified";
                 }
-                i.push(r.getObject(t.id, e));
+                n.push(r.getObject(t.id, e));
             });
-            return this.arrays[e] = i;
+            return this.arrays[e] = n;
         };
         t.prototype.reset = function t() {
             this.descriptions = {};
@@ -4370,8 +2807,8 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
-    var n = o(i);
+    var n = r(1);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4399,14 +2836,14 @@
             var r = this;
             e.from = e.from || {};
             e.to = e.to || {};
-            var i = {};
+            var n = {};
             Object.keys(e.from).forEach(function(t) {
-                i[t] = true;
+                n[t] = true;
             });
             Object.keys(e.to).forEach(function(t) {
-                i[t] = true;
+                n[t] = true;
             });
-            this.propsToChange = Object.keys(i);
+            this.propsToChange = Object.keys(n);
             this.propsToChange.forEach(function(t) {
                 if (e.from[t] === undefined) e.from[t] = r.obj[t];
                 if (e.to[t] === undefined) e.to[t] = r.obj[t];
@@ -4421,10 +2858,10 @@
                 this._complete();
                 return;
             }
-            var i = this.propsToChange.length;
-            while (i--) {
-                var o = this.propsToChange[i];
-                this.obj[o] = n.default.ease[this.easeFnName](r, this.desc.from[o], this.desc.to[o] - this.desc.from[o], this.tweenTime);
+            var n = this.propsToChange.length;
+            while (n--) {
+                var o = this.propsToChange[n];
+                this.obj[o] = i.default.ease[this.easeFnName](r, this.desc.from[o], this.desc.to[o] - this.desc.from[o], this.tweenTime);
             }
             this.progressFn && this.progressFn(this.obj);
         };
@@ -4451,126 +2888,52 @@
     e.default = s;
 }, function(t, e, r) {
     "use strict";
-    var i = function t(e, r) {
-        var i = e || 0;
-        var n = r || 0;
-        var o = 0;
-        var a = 0;
-        this.x = 0;
-        this.y = 0;
-        var s = function t() {
-            o = i === 0 ? 0 : Math.atan(n / i);
-            a = Math.sqrt(i * i + n * n);
-        };
-        var u = function t() {
-            n = Math.sin(o) * a;
-            i = Math.cos(o) * a;
-        };
-        var f = function t() {
-            n = Math.sin(o) * a;
-            i = Math.cos(o) * a;
-        };
-        this.setXY = function(t, e) {
-            i = t;
-            n = e;
-            s();
-        };
-        this.setX = function(t) {
-            i = t;
-            s();
-        };
-        this.setY = function(t) {
-            n = t;
-            s();
-        };
-        this.setAngle = function(t) {
-            o = t;
-            u();
-        };
-        this.setNorm = function(t) {
-            a = t;
-            f();
-        };
-        this.getXY = function() {
-            return {
-                x: i,
-                y: n
-            };
-        };
-        this.getX = function() {
-            return i;
-        };
-        this.getY = function() {
-            return n;
-        };
-        this.getAngle = function() {
-            return o;
-        };
-        this.addVec2 = function(e) {
-            return new t(i + e.getX(), n + e.getY);
-        };
-        this.multiplyByScalar = function(e) {
-            return new t(i * e, n * e);
-        };
-        this.dotProduct = function(t) {
-            return i * t.getX() + n * t.getY();
-        };
-        this.getNorm = function() {
-            return a;
-        };
-        (function() {
-            s();
-        })();
-    };
-    t.exports = i;
-}, function(t, e, r) {
-    "use strict";
     e.__esModule = true;
     e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var i = r(44);
-    var n = E(i);
-    var o = r(50);
-    var a = E(o);
+    var n = r(42);
+    var i = O(n);
+    var o = r(48);
+    var a = O(o);
     var s = r(13);
-    var u = E(s);
-    var f = r(45);
-    var h = E(f);
-    var c = r(42);
-    var l = E(c);
-    var d = r(47);
-    var p = E(d);
-    var y = r(48);
-    var m = E(y);
-    var g = r(49);
-    var v = E(g);
-    var w = r(43);
-    var _ = E(w);
-    var b = r(46);
-    var x = E(b);
-    var O = r(51);
-    var T = E(O);
-    function E(t) {
+    var u = O(s);
+    var f = r(43);
+    var c = O(f);
+    var l = r(40);
+    var h = O(l);
+    var p = r(45);
+    var d = O(p);
+    var m = r(46);
+    var v = O(m);
+    var y = r(47);
+    var g = O(y);
+    var _ = r(41);
+    var b = O(_);
+    var w = r(44);
+    var x = O(w);
+    var E = r(49);
+    var T = O(E);
+    function O(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    e.FrameAnimation = n.default;
+    e.FrameAnimation = i.default;
     e.SpriteSheet = a.default;
     e.GameObjectProto = u.default;
-    e.GameObject = h.default;
-    e.CommonBehaviour = l.default;
-    e.ParticleSystem = p.default;
-    e.Scene = m.default;
-    e.Sound = v.default;
-    e.Font = _.default;
+    e.GameObject = c.default;
+    e.CommonBehaviour = h.default;
+    e.ParticleSystem = d.default;
+    e.Scene = v.default;
+    e.Sound = g.default;
+    e.Font = b.default;
     e.Layer = x.default;
     e.TextField = T.default;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4605,21 +2968,21 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "CommonBehaviour";
-            i.parameters = [];
-            i.description = null;
-            return i;
+            var n = s(this, t.call(this, r));
+            n.type = "CommonBehaviour";
+            n.parameters = [];
+            n.description = null;
+            return n;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4654,28 +3017,28 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "Font";
-            i.resourcePath = null;
-            i.fontSize = 12;
-            i.fontFamily = "Monospace";
-            i.fontContext = null;
-            i.fontColor = {
+            var n = s(this, t.call(this, r));
+            n.type = "Font";
+            n.resourcePath = null;
+            n.fontSize = 12;
+            n.fontFamily = "Monospace";
+            n.fontContext = null;
+            n.fontColor = {
                 r: 0,
                 g: 0,
                 b: 0
             };
-            return i;
+            return n;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4710,15 +3073,15 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "FrameAnimation";
-            i._currFrame = 0;
-            i.frames = [];
-            i.duration = 1e3;
-            i._gameObject = null;
-            i._startTime = null;
-            i.stop();
-            return i;
+            var n = s(this, t.call(this, r));
+            n.type = "FrameAnimation";
+            n._currFrame = 0;
+            n.frames = [];
+            n.duration = 1e3;
+            n._gameObject = null;
+            n._startTime = null;
+            n.stop();
+            return n;
         }
         e.prototype.revalidate = function t() {
             this._timeForOneFrame = ~~(this.duration / this.frames.length);
@@ -4742,8 +3105,8 @@
             if (this._isRepeat == false && this._currFrame >= this.frames.length - 1) {
                 this.stop();
             }
-            var i = this._gameObject.currFrameIndex;
-            if (i != this.frames[this._currFrame]) {
+            var n = this._gameObject.currFrameIndex;
+            if (n != this.frames[this._currFrame]) {
                 this._gameObject.setFrameIndex(this.frames[this._currFrame]);
             }
         };
@@ -4762,14 +3125,14 @@
             this._currFrame = e;
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(13);
-    var n = u(i);
+    var n = r(13);
+    var i = u(n);
     var o = r(16);
     var a = s(o);
     function s(t) {
@@ -4796,13 +3159,13 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function h(t, e) {
+    function c(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function c(t, e) {
+    function l(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4816,31 +3179,31 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var l = function t() {};
-    var d = function(t) {
-        c(e, t);
+    var h = function t() {};
+    var p = function(t) {
+        l(e, t);
         function e(r) {
             f(this, e);
-            var i = h(this, t.call(this, r));
-            i.type = "GameObject";
-            i.gameObjectProto = null;
-            return i;
+            var n = c(this, t.call(this, r));
+            n.type = "GameObject";
+            n.gameObjectProto = null;
+            return n;
         }
         e.prototype.revalidate = function e() {
             var r = this;
-            var i = {};
-            for (var n in this) {
-                if (!this.hasOwnProperty(n)) continue;
-                i[n] = this[n];
+            var n = {};
+            for (var i in this) {
+                if (!this.hasOwnProperty(i)) continue;
+                n[i] = this[i];
             }
             Object.keys(this.gameObjectProto).forEach(function(t) {
                 if (r.gameObjectProto[t] == undefined) return;
                 r[t] = r.gameObjectProto[t];
             });
-            Object.keys(i).forEach(function(t) {
-                if (!i[t]) return;
-                if (i[t].splice && i[t].length === 0) return;
-                r[t] = i[t];
+            Object.keys(n).forEach(function(t) {
+                if (!n[t]) return;
+                if (n[t].splice && n[t].length === 0) return;
+                r[t] = n[t];
             });
             t.prototype.revalidate.call(this);
         };
@@ -4848,31 +3211,31 @@
             var r = new e(this.game);
             r.game = this.game;
             r.gameObject = this;
-            if (!r.onCreate) r.onCreate = l;
-            if (!r.onUpdate) r.onUpdate = l;
-            if (!r.onDestroy) r.onDestroy = l;
+            if (!r.onCreate) r.onCreate = h;
+            if (!r.onUpdate) r.onUpdate = h;
+            if (!r.onDestroy) r.onDestroy = h;
             this._individualBehaviour = r;
         };
         e.prototype.setCommonBehaviour = function t() {
             var e = this;
             var r = [];
             this.commonBehaviour.forEach(function(t) {
-                var i = a[t.name];
-                var n = new i(e.game);
-                n.manage(e, t.parameters);
-                r.push(n);
+                var n = a[t.name];
+                var i = new n(e.game);
+                i.manage(e, t.parameters);
+                r.push(i);
             });
             this.commonBehaviour = r;
         };
         return e;
-    }(n.default);
-    e.default = d;
+    }(i.default);
+    e.default = p;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4907,10 +3270,10 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "Layer";
-            i.gameObjects = [];
-            return i;
+            var n = s(this, t.call(this, r));
+            n.type = "Layer";
+            n.gameObjects = [];
+            return n;
         }
         e.prototype.addGameObject = function t(e) {
             e._layer = this;
@@ -4936,23 +3299,23 @@
             });
         };
         e.prototype.update = function t(e, r) {
-            var i = this.gameObjects;
-            var n = i.length;
-            var o = n - 1;
-            while (n--) {
-                var a = i[o - n];
+            var n = this.gameObjects;
+            var i = n.length;
+            var o = i - 1;
+            while (i--) {
+                var a = n[o - i];
                 a && a.update(e, r);
             }
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = u(i);
+    var n = r(0);
+    var i = u(n);
     var o = r(1);
     var a = s(o);
     function s(t) {
@@ -4979,7 +3342,116 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function h(t, e) {
+    function c(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function l(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var h = function t(e) {
+        return a.random(e.from, e.to);
+    };
+    var p = function(t) {
+        l(e, t);
+        function e(r) {
+            f(this, e);
+            var n = c(this, t.call(this, r));
+            n.type = "ParticleSystem";
+            n.gameObjectProto = null;
+            n._particles = [];
+            n.numOfParticlesToEmit = {
+                from: 1,
+                to: 10
+            };
+            n.particleAngle = {
+                from: 0,
+                to: 0
+            };
+            n.particleVelocity = {
+                from: 1,
+                to: 100
+            };
+            n.particleLiveTime = {
+                from: 100,
+                to: 1e3
+            };
+            n.emissionRadius = 0;
+            return n;
+        }
+        e.prototype.revalidate = function t() {
+            if (this.particleAngle.to < this.particleAngle.from) this.particleAngle.to += 2 * Math.PI;
+        };
+        e.find = function t(e) {};
+        e.findAll = function t(e) {};
+        e.prototype.emit = function t(e, r) {
+            for (var n = 0; n < h(this.numOfParticlesToEmit); n++) {
+                var i = this.gameObjectProto.clone();
+                var o = h(this.particleAngle);
+                var a = h(this.particleVelocity);
+                i.vel.x = a * Math.cos(o);
+                i.vel.y = a * Math.sin(o);
+                i.pos.x = h({
+                    from: e - this.emissionRadius,
+                    to: e + this.emissionRadius
+                });
+                i.pos.y = h({
+                    from: r - this.emissionRadius,
+                    to: r + this.emissionRadius
+                });
+                i.liveTime = h(this.particleLiveTime);
+                this._particles.push(i);
+            }
+        };
+        e.prototype.update = function t(e, r) {
+            var n = this._particles;
+            var i = n.length;
+            var o = i - 1;
+            while (i--) {
+                var a = n[o - i];
+                if (!a) continue;
+                if (!a._timeCreated) a._timeCreated = e;
+                if (e - a._timeCreated > a.liveTime) {
+                    this._particles.splice(this._particles.indexOf(a), 1);
+                }
+                a.update(e, r);
+            }
+        };
+        return e;
+    }(i.default);
+    e.default = p;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var n = r(0);
+    var i = s(n);
+    var o = r(25);
+    var a = s(o);
+    function s(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function u(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function f(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -4999,137 +3471,28 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var l = function t(e) {
-        return a.random(e.from, e.to);
-    };
-    var d = function(t) {
+    var l = function(t) {
         c(e, t);
         function e(r) {
-            f(this, e);
-            var i = h(this, t.call(this, r));
-            i.type = "ParticleSystem";
-            i.gameObjectProto = null;
-            i._particles = [];
-            i.numOfParticlesToEmit = {
-                from: 1,
-                to: 10
-            };
-            i.particleAngle = {
-                from: 0,
-                to: 0
-            };
-            i.particleVelocity = {
-                from: 1,
-                to: 100
-            };
-            i.particleLiveTime = {
-                from: 100,
-                to: 1e3
-            };
-            i.emissionRadius = 0;
-            return i;
-        }
-        e.prototype.revalidate = function t() {
-            if (this.particleAngle.to < this.particleAngle.from) this.particleAngle.to += 2 * Math.PI;
-        };
-        e.find = function t(e) {};
-        e.findAll = function t(e) {};
-        e.prototype.emit = function t(e, r) {
-            for (var i = 0; i < l(this.numOfParticlesToEmit); i++) {
-                var n = this.gameObjectProto.clone();
-                var o = l(this.particleAngle);
-                var a = l(this.particleVelocity);
-                n.vel.x = a * Math.cos(o);
-                n.vel.y = a * Math.sin(o);
-                n.pos.x = l({
-                    from: e - this.emissionRadius,
-                    to: e + this.emissionRadius
-                });
-                n.pos.y = l({
-                    from: r - this.emissionRadius,
-                    to: r + this.emissionRadius
-                });
-                n.liveTime = l(this.particleLiveTime);
-                this._particles.push(n);
-            }
-        };
-        e.prototype.update = function t(e, r) {
-            var i = this._particles;
-            var n = i.length;
-            var o = n - 1;
-            while (n--) {
-                var a = i[o - n];
-                if (!a) continue;
-                if (!a._timeCreated) a._timeCreated = e;
-                if (e - a._timeCreated > a.liveTime) {
-                    this._particles.splice(this._particles.indexOf(a), 1);
-                }
-                a.update(e, r);
-            }
-        };
-        return e;
-    }(n.default);
-    e.default = d;
-}, function(t, e, r) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var i = r(0);
-    var n = s(i);
-    var o = r(25);
-    var a = s(o);
-    function s(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function u(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    function f(t, e) {
-        if (!t) {
-            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }
-        return e && (typeof e === "object" || typeof e === "function") ? e : t;
-    }
-    function h(t, e) {
-        if (typeof e !== "function" && e !== null) {
-            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
-        }
-        t.prototype = Object.create(e && e.prototype, {
-            constructor: {
-                value: t,
-                enumerable: false,
-                writable: true,
-                configurable: true
-            }
-        });
-        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
-    }
-    var c = function(t) {
-        h(e, t);
-        function e(r) {
             u(this, e);
-            var i = f(this, t.call(this, r));
-            i.type = "Scene";
-            i.layers = [];
-            i.useBG = false;
-            i.colorBG = {
+            var n = f(this, t.call(this, r));
+            n.type = "Scene";
+            n.layers = [];
+            n.useBG = false;
+            n.colorBG = {
                 r: 255,
                 g: 255,
                 b: 255
             };
-            i._tweenMovies = [];
-            i._individualBehaviour = null;
-            i.tileMap = {
+            n._tweenMovies = [];
+            n._individualBehaviour = null;
+            n.tileMap = {
                 spriteSheet: null,
                 width: 0,
                 height: 0,
                 data: []
             };
-            return i;
+            return n;
         }
         e.prototype.addTweenMovie = function t(e) {
             this._tweenMovies.push(e);
@@ -5154,19 +3517,19 @@
         };
         e.prototype.preload = function t(e) {
             var r = this;
-            var i = this.getAllSpriteSheets().concat(this.game.repository.getArray("Font"));
-            var n = new a.default();
-            n.onResolved = function() {
+            var n = this.getAllSpriteSheets().concat(this.game.repository.getArray("Font"));
+            var i = new a.default();
+            i.onResolved = function() {
                 e && e();
             };
-            i.forEach(function(t) {
-                n.addTask(function() {
+            n.forEach(function(t) {
+                i.addTask(function() {
                     r.game._renderer.loadTextureInfo(t.resourcePath, function() {
-                        return n.resolveTask(t.id);
+                        return i.resolveTask(t.id);
                     });
                 }, t.id);
             });
-            n.start();
+            i.start();
         };
         e.prototype.onShow = function t() {
             if (this._individualBehaviour) this._individualBehaviour.onCreate();
@@ -5183,14 +3546,14 @@
         e.prototype.update = function t(e, r) {
             this.game._renderer.beginFrameBuffer();
             if (this.useBG) this.game._renderer.clearColor(this.colorBG); else this.game._renderer.clear();
-            var i = this.layers;
-            var n = this.layers.length;
-            var o = n - 1;
+            var n = this.layers;
+            var i = this.layers.length;
+            var o = i - 1;
             this.game.camera.update(e);
             this.game._renderer.translate(-this.game.camera.pos.x, -this.game.camera.pos.y);
             if (this._individualBehaviour) this._individualBehaviour.onUpdate();
-            while (n--) {
-                i[n - o].update(e, r);
+            while (i--) {
+                n[i - o].update(e, r);
             }
             this.game.repository.getArray("ParticleSystem").forEach(function(t) {
                 t.update(e, r);
@@ -5211,31 +3574,31 @@
                 }
             }, e, r);
         };
-        e.prototype.tween = function t(e, r, i, n) {};
+        e.prototype.tween = function t(e, r, n, i) {};
         e.prototype._render = function t() {};
         e.prototype.getTileAt = function t(e, r) {
             if (!this.tileMap._spriteSheet) return null;
-            var i = ~~(e / this.tileMap._spriteSheet._frameWidth);
-            var n = ~~(r / this.tileMap._spriteSheet._frameHeight);
-            return this.tileMap.data[n] && this.tileMap.data[n][i];
+            var n = ~~(e / this.tileMap._spriteSheet._frameWidth);
+            var i = ~~(r / this.tileMap._spriteSheet._frameHeight);
+            return this.tileMap.data[i] && this.tileMap.data[i][n];
         };
-        e.prototype.printText = function t(e, r, i, n) {
-            if (!i) return;
-            if (!i.substring) i = JSON.stringify(i, null, 4);
-            this.game.renderer.printText(e, r, i, n);
+        e.prototype.printText = function t(e, r, n, i) {
+            if (!n) return;
+            if (!n.substring) n = JSON.stringify(n, null, 4);
+            this.game.renderer.printText(e, r, n, i);
         };
         e.prototype.log = function t(e) {
             this.printText(0, 0, e);
         };
         return e;
-    }(n.default);
-    e.default = c;
+    }(i.default);
+    e.default = l;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5270,12 +3633,12 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "Sound";
-            i.resourcePath = "";
-            i._gain = 1;
-            i._loop = false;
-            return i;
+            var n = s(this, t.call(this, r));
+            n.type = "Sound";
+            n.resourcePath = "";
+            n._gain = 1;
+            n._loop = false;
+            return n;
         }
         e.find = function t(e) {};
         e.prototype.play = function t() {};
@@ -5283,16 +3646,16 @@
         e.prototype.pause = function t() {
             throw "not implemented";
         };
-        e.prototype.setGain = function t(e, r, i) {};
+        e.prototype.setGain = function t(e, r, n) {};
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5327,17 +3690,17 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "SpriteSheet";
-            i.width = 0;
-            i.height = 0;
-            i.numOfFramesH = 1;
-            i.numOfFramesV = 1;
-            i._frameWidth = 0;
-            i._frameHeight = 0;
-            i._numOfFrames = 0;
-            i.resourcePath = "";
-            return i;
+            var n = s(this, t.call(this, r));
+            n.type = "SpriteSheet";
+            n.width = 0;
+            n.height = 0;
+            n.numOfFramesH = 1;
+            n.numOfFramesV = 1;
+            n._frameWidth = 0;
+            n._frameHeight = 0;
+            n._numOfFrames = 0;
+            n.resourcePath = "";
+            return n;
         }
         e.prototype.revalidate = function t() {
             if (!(this.numOfFramesH && this.numOfFramesV)) return;
@@ -5352,14 +3715,14 @@
             return ~~(e / this.numOfFramesH) * this._frameHeight;
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var n = r(0);
+    var i = o(n);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5394,12 +3757,12 @@
         u(e, t);
         function e(r) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "TextField";
-            i._chars = null;
-            i.text = "";
-            i.font = null;
-            return i;
+            var n = s(this, t.call(this, r));
+            n.type = "TextField";
+            n._chars = null;
+            n.text = "";
+            n.font = null;
+            return n;
         }
         e.prototype.revalidate = function t() {
             if (1 && !this.name) {
@@ -5415,19 +3778,19 @@
             var r = [ {
                 width: 0
             } ];
-            var i = 0;
+            var n = 0;
             this.height = this.font.fontContext.symbols[" "].height;
-            for (var n = 0, o = e.length; n < o; n++) {
-                this._chars.push(e[n]);
-                var a = this.font.fontContext.symbols[e[n]] || this.font.fontContext.symbols[" "];
-                if (e[n] === "\n") {
-                    i++;
+            for (var i = 0, o = e.length; i < o; i++) {
+                this._chars.push(e[i]);
+                var a = this.font.fontContext.symbols[e[i]] || this.font.fontContext.symbols[" "];
+                if (e[i] === "\n") {
+                    n++;
                     this.height += a.height;
-                    r[i] = {
+                    r[n] = {
                         width: 0
                     };
                 } else {
-                    r[i].width += a.width;
+                    r[n].width += a.width;
                 }
             }
             this.width = Math.max.apply(Math, r.map(function(t) {
@@ -5445,69 +3808,43 @@
         e.prototype._render = function t() {
             var e = this;
             var r = 0;
-            var i = 0;
+            var n = 0;
             this._chars.forEach(function(t) {
-                var n = e.font.fontContext.symbols[t] || e.font.fontContext.symbols["?"];
+                var i = e.font.fontContext.symbols[t] || e.font.fontContext.symbols["?"];
                 if (t === "\n") {
                     r = 0;
-                    i += n.height;
+                    n += i.height;
                     return;
                 }
-                e.game._renderer.drawImage(e.font.resourcePath, n.x, n.y, n.width, n.height, e.pos.x + r, e.pos.y + i);
-                r += n.width;
+                e.game._renderer.drawImage(e.font.resourcePath, i.x, i.y, i.width, i.height, e.pos.x + r, e.pos.y + n);
+                r += i.width;
             });
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = e.CatBehaviour = function() {
+    var i = e.HorseBehaviour = function() {
         function t() {
-            i(this, t);
-        }
-        t.prototype.onCreate = function t() {
-            this.gameObject.rigidBody.vel.x = -100;
-        };
-        t.prototype.onUpdate = function t() {
-            if (this.gameObject.pos.x < -100) this.gameObject.pos.x = 700;
-        };
-        t.prototype.onDestroy = function t() {};
-        return t;
-    }();
-    var o = e.MainSceneBehaviour = function() {
-        function t() {
-            i(this, t);
+            n(this, t);
         }
         t.prototype.onCreate = function t() {};
         t.prototype.onUpdate = function t() {};
         t.prototype.onDestroy = function t() {};
         return t;
     }();
-    var a = e.MulticolorTanksBehaviour = function() {
+    var o = e.MainSceneBehaviour = function() {
         function t() {
-            i(this, t);
+            n(this, t);
         }
-        t.prototype.onCreate = function t() {
-            this.gameObject.rigidBody.vel.x = 10;
-        };
-        t.prototype.onUpdate = function t() {};
-        t.prototype.onDestroy = function t() {};
-        return t;
-    }();
-    var s = e.ProfessorBehaviour = function() {
-        function t() {
-            i(this, t);
-        }
-        t.prototype.onCreate = function t() {
-            this.game.camera.followTo(this.gameObject);
-        };
+        t.prototype.onCreate = function t() {};
         t.prototype.onUpdate = function t() {};
         t.prototype.onDestroy = function t() {};
         return t;

@@ -62,21 +62,19 @@ export default class GameObjectProto extends BaseModel {
         super.update(time);
         this._currFrameAnimation && this._currFrameAnimation.update(time);
 
-        let deltaX = this.vel.x * delta / 1000;
-        let deltaY = this.vel.y * delta / 1000;
-        this.game._collider.manage(this,this.pos.x+deltaX,this.pos.y+deltaY);
+        this.rigidBody.update(time,delta);
         //if (_gameObject.angleVel) _gameObject.angle += _gameObject.angleVel * delta / 1000;
 
         this.game._renderer.draw(this);
-        if (this._individualBehaviour) this._individualBehaviour.onUpdate();
+        if (this._individualBehaviour) this._individualBehaviour.onUpdate(time,delta);
         for (let i=0,max = this.commonBehaviour.length;i<max;i++){
-            this.commonBehaviour[i].onUpdate();
+            this.commonBehaviour[i].onUpdate(time,delta);
         }
     }
 
     onShow(){
         if (this._individualBehaviour) this._individualBehaviour.onCreate();
-        if (this.startFrameAnimationName!=null) this.playFrameAnimation(this.startFrameAnimationName);
+        if (this.startFrameAnimationName!==null) this.playFrameAnimation(this.startFrameAnimationName);
     }
 
     stopFrAnimations(){

@@ -6,8 +6,11 @@ const Vec2 = function(_x,_y){
     let angle = 0;
     let norm = 0;
 
+    this.x = 0;
+    this.y = 0;
+
     let onXY_Changed = function(){
-        angle = x==0?0:Math.atan(y/x);
+        angle = x===0?0:Math.atan(y/x);
         norm = Math.sqrt(x*x+y*y);
     };
 
@@ -63,8 +66,23 @@ const Vec2 = function(_x,_y){
         return angle;
     };
 
+    this.reset = ()=>{
+       x = 0;
+       y = 0;
+    };
+
     this.addVec2 = function(v){
         return new Vec2(x + v.getX(),y + v.getY);
+    };
+
+    this.add = function(x1,y1){
+        this.x+=x1;
+        this.y+=y1;
+    };
+
+    this.set = function(x,y){
+        this.x=x;
+        this.y=y;
     };
 
     this.multiplyByScalar = function(sc){

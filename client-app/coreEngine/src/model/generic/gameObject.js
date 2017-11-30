@@ -1,4 +1,4 @@
-
+/*global DEBUG:true*/
 import GameObjectProto from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
 
@@ -20,7 +20,7 @@ export default class GameObject extends GameObjectProto {
             ownProps[key] = this[key];
         }
         Object.keys(this.gameObjectProto).forEach(key=>{
-            if (this.gameObjectProto[key]==undefined) return;
+            if (this.gameObjectProto[key]===undefined) return;
             this[key] = this.gameObjectProto[key];
         });
         Object.keys(ownProps).forEach(key=>{
@@ -45,6 +45,13 @@ export default class GameObject extends GameObjectProto {
         let instances = [];
         this.commonBehaviour.forEach(cb=>{
             let CbClazz = commonBehaviours[cb.name];
+            if (DEBUG) {
+                if (!CbClazz) {
+                    console.error(cb);
+                    console.error(commonBehaviours);
+                    throw `can not find common behaviour with name ${cb.name}`
+                }
+            }
             let instance = new CbClazz(this.game);
             instance.manage(this,cb.parameters);
             instances.push(instance);
