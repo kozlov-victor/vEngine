@@ -102,7 +102,10 @@ _i18n.bundle = {
         projects: 'projects',
         objectAlreadyAdded: 'object is already added',
         popupBlocked: 'popup window is blocked by browser',
-        tryAgain: 'try again'
+        tryAgain: 'try again',
+        unset: 'unset',
+        gravityConstant: 'gravity constant',
+        gravityConstantTitle: 'acceleration in pixels per second'
     }
 };
 

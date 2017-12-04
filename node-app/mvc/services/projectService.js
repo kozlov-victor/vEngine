@@ -43,7 +43,8 @@ module.exports.createProject = function(projectName){
             width           :         800,
             height          :         600,
             scaleStrategy   :         0,
-            startSceneId    :         mainSceneId
+            startSceneId    :         mainSceneId,
+            gravityConstant :         0
         }
     );
     dataSourceHelper.saveModel(`workspace/${projectName}/meta.json`,{idSeq:mainLayerId});

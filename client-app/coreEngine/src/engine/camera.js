@@ -19,16 +19,16 @@ export default class Camera {
             this.sceneWidth = this.scene.tileMap.spriteSheet._frameWidth*this.scene.tileMap.width;
             this.sceneHeight = this.scene.tileMap.spriteSheet._frameHeight*this.scene.tileMap.height;
         } else {
-            this.sceneWidth = this.game.width;
-            this.sceneHeight = this.game.height;
+            this.sceneWidth = this.game.getCurrScene().width || this.game.width;
+            this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
     }
 
     update() {
         if (!this.objFollowTo) return;
         let pos = this.pos;
-        let tileWidth = 55;//this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0;
-        let tileHeight = 55;//this.scene.tileMap.spriteSheet? this.scene.tileMap.spriteSheet._frameHeight:0;
+        let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
+        let tileHeight = this.scene.tileMap.spriteSheet? this.scene.tileMap.spriteSheet._frameHeight:0;
         let w = this.game.width;
         let h = this.game.height;
         let wDiv2 = w/2;

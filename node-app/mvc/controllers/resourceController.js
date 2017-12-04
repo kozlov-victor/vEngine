@@ -94,6 +94,14 @@ class ResourceController {
         return callback;
     }
 
+    /**
+     * @Method("saveTile");
+     * @Request({"type":"post"});
+     */
+    saveTile(params,callback){
+       return resourceService.saveTile(params.projectName,params.model);
+    }
+
 }
 
 module.exports.controller = ResourceController;

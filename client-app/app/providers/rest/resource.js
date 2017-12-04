@@ -10,6 +10,8 @@ export default class Resource{
     static save(model,callback,opts){
 
         let allModels = require('coreEngine/src/model/all');
+        if (!allModels[model.type])
+            throw `Unregistered type ${model.type}, export this type in 'coreEngine/src/model/all'!`;
         let Class = allModels[model.type];
 
         let modelSample = new Class(editData.game);
@@ -30,5 +32,14 @@ export default class Resource{
             id: model.id,
             type:model.type
         }},callback);
+    }
+    static saveTile(model,callback) {
+        return http.post(
+            '/resource/saveTile',
+            {
+                projectName:editData.projectName,
+                model
+            },
+            callback);
     }
 }

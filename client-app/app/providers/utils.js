@@ -31,6 +31,22 @@ export default class Utils {
 
     }
 
+    static getCoords(elSelector,event){
+        let el = document.querySelector(elSelector);
+        let clientRect = el.getBoundingClientRect();
+        let x = event.clientX - clientRect.left;
+        let y = event.clientY - clientRect.top;
+        return {x,y};
+    }
+
+    static tileMapWidth(){
+        if (!editData.currSceneInEdit.tileMap) return 0;
+        return editData.currSceneInEdit.tileMap.width || 0;
+    }
+    static tileMapHeight(){
+        if (!editData.currSceneInEdit.tileMap) return 0;
+        return editData.currSceneInEdit.tileMap.height || 0;
+    }
     static tileFrameWidth(){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
@@ -44,19 +60,18 @@ export default class Utils {
     static tileFramePosX(i){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
-        if (!editData.currTileIndexInEdit) return null;
         return editData.currSceneInEdit.tileMap.spriteSheet.getFramePosX(i);
     }
     static tileFramePosY(i){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
-        if (!editData.currTileIndexInEdit) return null;
         return editData.currSceneInEdit.tileMap.spriteSheet.getFramePosY(i);
     }
-    static tileResourcePath(){
+    static tileResourcePath(opts = {strict:false}){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet.resourcePath) return null;
+        if (opts.strict && editData.currTileIndexInEdit==null) return;
         return `url(${editData.projectName}/${editData.currSceneInEdit.tileMap.spriteSheet.resourcePath})`;
     }
     static tileNumOfFramesH(){

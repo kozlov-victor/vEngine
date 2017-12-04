@@ -17,33 +17,33 @@ export default class Control4DirBehaviour extends Move4DirBehaviour{
 
 
     onUpdate(){
-        const keyboard = this.game._keyboard;
+        const keyboard = this.game.keyboard;
         const parameters  = this.parameters;
         const go = this.gameObject;
-        if (keyboard.isPressed(Keyboard.KEY.UP)) {
+        if (keyboard.isPressed(keyboard.KEY.UP)) {
             go.rigidBody.vel.y = -parameters.velocity;
             this.go('Up');
         }
-        if (keyboard.isPressed(Keyboard.KEY.DOWN)) {
+        if (keyboard.isPressed(keyboard.KEY.DOWN)) {
             go.rigidBody.vel.y = parameters.velocity;
             this.go('Down');
         }
-        if (keyboard.isPressed(Keyboard.KEY.LEFT)) {
+        if (keyboard.isPressed(keyboard.KEY.LEFT)) {
             go.rigidBody.vel.x = -parameters.velocity;
             this.go('Left');
         }
-        if (keyboard.isPressed(Keyboard.KEY.RIGHT)) {
+        if (keyboard.isPressed(keyboard.KEY.RIGHT)) {
             go.rigidBody.vel.x = parameters.velocity;
             this.go('Right');
         }
 
-        if (keyboard.isJustReleased(Keyboard.KEY.LEFT)) {
+        if (keyboard.isJustReleased(keyboard.KEY.LEFT)) {
             this.stop();
-        } else if (keyboard.isJustReleased(Keyboard.KEY.RIGHT)) {
+        } else if (keyboard.isJustReleased(keyboard.KEY.RIGHT)) {
             this.stop();
-        } else if (keyboard.isJustReleased(Keyboard.KEY.UP)) {
+        } else if (keyboard.isJustReleased(keyboard.KEY.UP)) {
             this.stop();
-        } else if (keyboard.isJustReleased(Keyboard.KEY.DOWN)) {
+        } else if (keyboard.isJustReleased(keyboard.KEY.DOWN)) {
             this.stop();
         }
     }

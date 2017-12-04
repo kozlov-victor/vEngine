@@ -33,6 +33,21 @@
 
 
             <div class="row">
+                <div class="cell" tille="{{i18n.get('gravityConstantTitle')}}">
+                    {{i18n.get('gravityConstant')}}
+                </div>
+                <div class="cell">
+                    <input
+                            class="narrow"
+                            data-model="editData.game.gravityConstant"
+                            type="number"
+                            min="0"
+                            max="20000"
+                            data-change="form.valid() && saveGameProps()"/>
+                </div>
+            </div>
+
+            <div class="row">
                 <div class="cell">
                     {{i18n.get('scaleStrategy')}}
                 </div>

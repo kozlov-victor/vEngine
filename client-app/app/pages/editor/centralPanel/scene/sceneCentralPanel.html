@@ -1,32 +1,33 @@
+
+<!--width: editData.currSceneInEdit.width + 'px',-->
+<!--height: editData.currSceneInEdit.height + 'px',-->
+
 <div
     class="height100 relative noOverFlow"
     data-droppable="onDropFromLeftPanel"
+    data-click="onCentralSceneClick($event)"
     data-style="{
         backgroundColor: editData.currSceneInEdit.useBG?utils.rgbToCss(editData.currSceneInEdit.colorBG):'white'
     }"
     data-draggable-container
     id="sceneDiv">
 
-    <div data-for="j in utils.getArray(editData.currSceneInEdit.tileMap.width)">
-        <div data-for="i in utils.getArray(editData.currSceneInEdit.tileMap.height)">
-            <div
+    <div data-for="j in utils.getArray(utils.tileMapHeight())">
+        <div data-for="i in utils.getArray(utils.tileMapWidth())"
                 data-class="{
                     inlineBlock:1
                 }"
                 data-style="{
+                    visibility:            showThisTile(j,i)?'visible':'hidden',
                     width:                 utils.tileFrameWidth()+'px',
                     verticalAlign:         'middle',
                     height:                utils.tileFrameHeight()+'px',
                     backgroundImage:       utils.tileResourcePath(),
-                    backgroundPositionX:  -utils.tileFramePosX(1)+'px',
-                    backgroundPositionY:  -utils.tileFramePosY(1)+'px',
+                    backgroundPositionX:  -getTilePos(j,i).x+'px',
+                    backgroundPositionY:  -getTilePos(j,i).y+'px',
                     backgroundRepeat:     'no-repeat'
                 }"
-            >
-
-            </div>
-        </div>
-
+            ></div>
     </div>
 
 
@@ -46,13 +47,13 @@
                         left:
                              item.fixedToCamera?(item.pos.x+'px'):
                              item.pos.x -
-                             frameWidth() *
+                             utils.tileFrameWidth() *
                              editData.tileMapPosX +
                              'px',
                         top:
                              item.fixedToCamera?(item.pos.y+'px'):
                              item.pos.y -
-                             frameHeight() *
+                             utils.tileFrameHeight() *
                              editData.tileMapPosY +
                              'px',
                     }

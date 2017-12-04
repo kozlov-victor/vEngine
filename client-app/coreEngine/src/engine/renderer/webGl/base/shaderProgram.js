@@ -1,7 +1,9 @@
+/*global DEBUG:true*/
+
 const compileShader = (gl, shaderSource, shaderType)=> {
-    //<code>{{#if opts.minify}}
-    if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
-    //<code>{{/if}}
+    if (DEBUG) {
+        if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
+    }
     // Create the shader object
     let shader = gl.createShader(shaderType);
 
@@ -17,7 +19,12 @@ const compileShader = (gl, shaderSource, shaderType)=> {
         // Something went wrong during compilation; get the error
         let lastError = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
-        throw 'Error compiling shader ' + shader + ':' + lastError;
+        if (DEBUG) {
+            throw 'Error compiling shader ' + shader + ':' + lastError;
+        } else {
+            throw lastError;
+        }
+
     }
 
     return shader;
@@ -37,7 +44,12 @@ const createProgram = (gl, shaders)=> {
         // something went wrong with the link
         let lastError = gl.getProgramInfoLog(program);
         gl.deleteProgram(program);
-        throw "Error in program linking:" + lastError;
+        if (DEBUG) {
+            throw "Error in program linking:" + lastError;
+        } else {
+            throw lastError;
+        }
+
     }
     return program;
 };
@@ -108,7 +120,7 @@ const extractUniforms = (gl, program)=> {
 
 
 const getUniformSetter = function(size,type){
-    if (size==1) {
+    if (size===1) {
         switch (type) {
             case 'float':       return  function(gl,location,value) {gl.uniform1f(location, value)};
             case 'vec2':        return  function(gl,location,value) {gl.uniform2f(location, value[0], value[1])};
@@ -148,6 +160,8 @@ const getUniformSetter = function(size,type){
 
 export default class ShaderProgram {
 
+    static currentProgram = null;
+
     constructor(gl,sources) {
         let vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
         let fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
@@ -167,8 +181,9 @@ export default class ShaderProgram {
 
     setUniform(name, value) {
         let uniform = this.uniforms[name];
-        if (!uniform) throw 'no uniform with name ' + name + ' found!';
+        if (DEBUG && !uniform) throw 'no uniform with name ' + name + ' found!';
         //if (uniformValuesCache[name]===value) return;
+        //this.gl.enableVertexAttribArray(uniform.location);
         uniform.setter(this.gl, uniform.location, value);
         //uniformValuesCache[name] = value;
     }
@@ -186,7 +201,7 @@ export default class ShaderProgram {
         this.gl.vertexAttribPointer(
             uniformLocation,
             buffer.getItemSize(),
-            buffer.getItemType(),
+            buffer.getItemType(), // type of data
             false,  // if the content is normalized vectors
             0,      // number of bytes to skip in between elements
             0       // offsets to the first element

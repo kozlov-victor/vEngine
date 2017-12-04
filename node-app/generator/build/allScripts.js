@@ -3,12 +3,14 @@
 export class DudeBehaviour {
 
     onCreate(){
-        this.gameObject.rigidBody.mass = 100;
+        this.game.camera.followTo(this.gameObject);
     }
 
     onUpdate(){
-        if (this.game._keyboard.isPressed(32)){
-            this.gameObject.rigidBody.vel.add(0,-2);
+        //console.log('on floor',this.gameObject.rigidBody.onFloor);
+        if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP)){
+            //console.log('just pressed',this.gameObject.rigidBody.onFloor);
+            if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.add(0,-340);
         }
     }
 
@@ -22,7 +24,7 @@ export class DudeBehaviour {
 export class MainSceneBehaviour {
 
     onCreate(){
-
+        
     }
 
     onUpdate(){
@@ -39,7 +41,6 @@ export class MainSceneBehaviour {
 export class PlatformBehaviour {
 
     onCreate(){
-        this.gameObject.rigidBody.mass = 200;
         this.gameObject.rigidBody.static = true;
     }
 

@@ -1,5 +1,5 @@
 
-import utils from 'app/providers/utils'
+import Utils from 'app/providers/utils'
 import editData from 'app/providers/editData'
 import restProject from 'app/providers/rest/project'
 import restFileSystem from 'app/providers/rest/fileSystem'
@@ -19,7 +19,7 @@ export default class BaseComponent {
         this.i18n = i18n;
         this.http = http;
         this.form ={valid: ()=>{return true;}};
-        this.utils = utils;
+        this.utils = Utils;
     }
 
 }

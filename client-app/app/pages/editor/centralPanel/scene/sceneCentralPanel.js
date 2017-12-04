@@ -14,19 +14,30 @@ export default class SceneCentralPanel extends BaseComponent {
     constructor(){
         super();
     }
-    frameWidth(){
+
+    showThisTile(j,i){
         let editData = this.editData;
-        if (!editData.currSceneInEdit) return 0;
-        if (!editData.currSceneInEdit.tileMap) return 0;
-        if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
-        return  editData.currSceneInEdit.tileMap._spriteSheet._frameWidth || 0;
+        if (!editData.currSceneInEdit.tileMap) return false;
+        if (!editData.currSceneInEdit.tileMap.data) return false;
+        let data = editData.currSceneInEdit.tileMap.data;
+        let res = data[j]!==undefined && data[j][i]!==undefined;
+        if (j===undefined || i===undefined) return false;
+        return res;
     }
-    frameHeight(){
+
+    getTilePos(j,i){
+        let res = {x:0,y:0};
+        if (!this.editData.currSceneInEdit.tileMap) return res;
+        let tileMapData = this.editData.currSceneInEdit.tileMap.data;
+        let currCell = tileMapData[j] && tileMapData[j][i] && tileMapData[j][i];
+        if (!currCell) return res;
+        let index = currCell.index;
+
         let editData = this.editData;
-        if (!editData.currSceneInEdit) return 0;
-        if (!editData.currSceneInEdit.tileMap) return 0;
-        if (!editData.currSceneInEdit.tileMap._spriteSheet) return 0;
-        return  editData.currSceneInEdit.tileMap._spriteSheet._frameHeight || 0;
+        return {
+            x: editData.currSceneInEdit.tileMap.spriteSheet.getFramePosX(index),
+            y: editData.currSceneInEdit.tileMap.spriteSheet.getFramePosY(index)
+        };
     }
 
     getCharCss(item,ch){
@@ -35,7 +46,7 @@ export default class SceneCentralPanel extends BaseComponent {
         return {
             left:item.pos.x+'px',
             top: item.pos.y+'px',
-            display:ch=='\n'?'block':'inline-block',
+            display:ch==='\n'?'block':'inline-block',
             width:symbol.width+'px',
             height:symbol.height+'px',
             backgroundImage:'url('+this.editData.projectName+'/'+item.font.resourcePath+')',
@@ -49,8 +60,8 @@ export default class SceneCentralPanel extends BaseComponent {
 
         go.pos = {x,y};
         let json = go.toJSON();
-        Object.keys(json).forEach(key=>{
-            if (!['id','name','pos','scale','angle','alpha','type','layerId', 'gameObjectProto'].includes(key))
+        json.type==='GameObject' && Object.keys(json).forEach(key=>{
+            if (!['id','name','pos','font','scale','angle','alpha','type','layerId', 'gameObjectProto'].includes(key))
                 delete json[key];
         });
         await this.restResource.save(json,null);
@@ -73,7 +84,10 @@ export default class SceneCentralPanel extends BaseComponent {
                 return null;
             }
             objInScene.setFont(firstFont);
-            objInScene.setText("testField");
+            let allTextFields = editData.game.repository.getArray('TextField');
+            let size = (allTextFields && allTextFields.length) || 1;
+            objInScene.name = `textField${size}`;
+            objInScene.setText(objInScene.name);
         }
         objInScene.pos =  {x,y};
         objInScene.layerId = editData.currLayerInEdit.id;
@@ -88,5 +102,25 @@ export default class SceneCentralPanel extends BaseComponent {
         editData.game.repository.updateObject(l);
         this.restResource.save(l);
         objInScene.revalidate();
+    }
+
+    async onCentralSceneClick(e){
+        if (!this.editData.editTileMapModeOn) return;
+        if (this.editData.currTileIndexInEdit===null) return;
+        let tileMap = this.editData.currSceneInEdit.tileMap;
+        if (!tileMap) return;
+        let coords = this.utils.getCoords('#sceneDiv',e);
+        let x = ~~(coords.x / this.editData.currSceneInEdit.tileMap.spriteSheet._frameWidth);
+        let y = ~~(coords.y / this.editData.currSceneInEdit.tileMap.spriteSheet._frameHeight);
+        let index = +this.editData.currTileIndexInEdit;
+        let tile = {
+            meta: {tileMapId:this.editData.currSceneInEdit.tileMap.id},
+            x,y,
+            index
+        };
+        tileMap.data = tileMap.data || {};
+        tileMap.data[y] = tileMap.data[y] || {};
+        tileMap.data[y][x] = {index};
+        await this.restResource.saveTile(tile);
     }
 }

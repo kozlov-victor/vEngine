@@ -40,6 +40,7 @@ import TopPanel from 'app/pages/editor/topPanel/topPanel'
 import PopupBlocked from 'app/pages/editor/topPanel/popupBlocked'
 import ScriptEditor from 'app/pages/editor/centralPanel/scriptEditor/scriptEditor'
 import SceneCentralPanel from 'app/pages/editor/centralPanel/scene/sceneCentralPanel'
+import SceneCursor from 'app/pages/editor/centralPanel/sceneCursor/sceneCursor'
 import SceneRightPanel from 'app/pages/editor/rightPanel/scene/sceneRightPanel'
 import GameObjectRightPanel from 'app/pages/editor/rightPanel/gameObject/gameObjectRightPanel'
 import GameObjectRow from 'app/pages/editor/leftPanel/_gameObjectRow/gameObjectRow'
@@ -75,7 +76,7 @@ RF.registerComponents([
     Dialogs, ParticleSystemDialog, GameObjectRow,
     SoundDialog, FontDialog, SpriteSheetDialog,
     GameObjectDialog, SceneDialog, LayerDialog,
-    BuildDialog,
+    BuildDialog, SceneCursor,
     ParticleSystemPreviewDialog, FrameAnimationDialog, CommonBehaviourDialog
 ]);
 

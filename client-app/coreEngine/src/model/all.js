@@ -10,6 +10,7 @@ import Sound from './generic/sound'
 import Font from './generic/font'
 import Layer from './generic/layer'
 import TextField from './generic/ui/textField'
+import TileMap from './generic/tileMap'
 
 export {
     FrameAnimation,
@@ -22,7 +23,8 @@ export {
     Sound,
     Font,
     Layer,
-    TextField
+    TextField,
+    TileMap
 }
 
 

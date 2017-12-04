@@ -1,7 +1,7 @@
-
+/*global IN_EDITOR:true*/
 import BaseModel from '../baseModel'
 import LoadingQueue from 'coreEngine/src/engine/loadingQueue'
-
+import TileMap from './tileMap'
 
 export default class Scene extends BaseModel {
 
@@ -11,16 +11,11 @@ export default class Scene extends BaseModel {
     colorBG = {r: 255, g: 255, b: 255};
     _tweenMovies = [];
     _individualBehaviour = null;
-    tileMap = {
-        spriteSheet: null,
-        width: 0,
-        height: 0,
-        data: []
-    };
 
     constructor(game) {
         super(game);
-
+        this.tileMap = null;
+        if (IN_EDITOR) this.tileMap = new TileMap(game);
         // if (!this.tileMap) {
         //     if (this.tileMap.spriteSheetId) {
         //         this.tileMap._spriteSheet = bundle.spriteSheetList.find({id: this.tileMap.spriteSheetId});
@@ -95,7 +90,7 @@ export default class Scene extends BaseModel {
         let layers = this.layers;
         let i = this.layers.length;
         let l = i -1;
-        this.game.camera.update(currTime);
+        this.game.camera.update(currTime); // todo move to game update fn
         this.game._renderer.translate(-this.game.camera.pos.x,-this.game.camera.pos.y);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while(i--){

@@ -1,7 +1,9 @@
 /*global RF:true*/
 import BaseComponent from 'app/baseComponent'
 import './sceneRightPanel.less'
-import Scene from 'coreEngine/src/model/generic/scene';
+
+import Scene from 'coreEngine/src/model/generic/scene'
+import TileMap from 'coreEngine/src/model/generic/tileMap'
 
 @RF.decorateComponent({
     name: 'app-scene-right-panel',
@@ -11,6 +13,22 @@ export default class SceneRightPanel extends BaseComponent {
 
     constructor(){
         super();
+        let keyPressed = false;
+        document.addEventListener('keydown',e=>{
+            if (keyPressed) return;
+            keyPressed = true;
+            if (e.keyCode===16) { // shift
+                this.toggleEditMode();
+                RF.digest();
+            }
+        });
+        document.addEventListener('keyup',e=>{
+            keyPressed = false;
+            if (e.keyCode==16) { // shift
+                this.toggleEditMode();
+                RF.digest();
+            }
+        });
     }
 
     numOfFramesForSceneSpriteSheet(){
@@ -24,14 +42,29 @@ export default class SceneRightPanel extends BaseComponent {
             ) || 0;
     }
 
+    async createTileMap(){
+        let currScene = this.editData.currSceneInEdit;
+        let t = new TileMap(this.editData.game);
+        let res = await this.restResource.save(t);
+        t.id = res.id;
+        this.editData.game.repository.addObject(t);
+        currScene.tileMap = t;
+        await this.restResource.save(currScene);
+    }
+
     setCurrSelectedTile(i){
         this.editData.currTileIndexInEdit = i;
     }
-    setTileMapSpriteSheet(){
-        // ??
-        // editData.currSceneInEdit = new Scene(editData.currSceneInEdit.toJSON())
-    }
     editScene(){
         this.restResource.save(this.editData.currSceneInEdit);
+    }
+    toggleEditMode(){
+        this.editData.editTileMapModeOn = !this.editData.editTileMapModeOn;
+    }
+    async editTileMap(){
+        let currScene = this.editData.currSceneInEdit;
+        let tileMap = currScene.tileMap;
+        await this.restResource.save(tileMap);
+        this.editData.game.repository.updateObject(tileMap);
     }
 }

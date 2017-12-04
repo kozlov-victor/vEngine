@@ -1,14 +1,14 @@
 
 /*global DEBUG:true*/
 
-const KEY_PRESSED = 1;
 const KEY_JUST_PRESSED = 2;
-const KEY_RELEASED = 0;
-const KEY_JUST_RELEASED = -1;
+const KEY_PRESSED = 1;
+const KEY_JUST_RELEASED = 0;
+const KEY_RELEASED = -1;
 
 export default class Keyboard {
 
-    static KEY = {
+    KEY = {
         SPACE: 32,
         A: 65,
         B: 66,
@@ -49,7 +49,7 @@ export default class Keyboard {
     }
 
     emulatePress(code){
-        this.buffer[code] = KEY_PRESSED;
+        this.buffer[code] = KEY_JUST_PRESSED;
     }
 
     emulateRelease(code){
@@ -65,7 +65,7 @@ export default class Keyboard {
     }
 
     isReleased(key) {
-        return  this.buffer[key]<=KEY_RELEASED || !this.buffer[key];
+        return  this.buffer[key]<=KEY_JUST_RELEASED;
     }
 
     isJustReleased(key) {
@@ -75,15 +75,18 @@ export default class Keyboard {
     update(){
         if (DEBUG && window.canceled) return;
         Object.keys(this.buffer).forEach(key=>{
-            if (this.buffer[key]===KEY_JUST_PRESSED) this.buffer[key] = KEY_PRESSED;
+            if (this.buffer[key]===KEY_RELEASED) delete this.buffer[key];
             else if (this.buffer[key]===KEY_JUST_RELEASED) this.buffer[key] = KEY_RELEASED;
+            if (this.buffer[key]===KEY_JUST_PRESSED) {
+                this.buffer[key] = KEY_PRESSED;
+            }
         });
     }
 
     listenTo(){
         window.addEventListener('keydown',e=>{
             let code = e.keyCode;
-            this.buffer[code] = KEY_PRESSED;
+            this.buffer[code] = KEY_JUST_PRESSED;
         });
         window.addEventListener('keyup',e=>{
             let code = e.keyCode;

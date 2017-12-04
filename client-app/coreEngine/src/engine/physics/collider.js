@@ -1,6 +1,6 @@
 
 
-import {isRectIntersectRect} from './mathEx'
+import {isRectIntersectRect} from '../mathEx'
 
 export default class Collider {
 
@@ -58,24 +58,19 @@ export default class Collider {
         let all = this.game.getCurrScene().getAllGameObjects();
         // Move rectangle along y axis
         for (let i = 0,l = all.length;i<l;i++) {
-            let c = { x: player.pos.x + newX, y: player.pos.y, width: player.width, height: player.height };
+            let possibleRectX = { x: player.pos.x + newX, y: player.pos.y, width: player.width, height: player.height };
+            let possibleRectY = { x: player.pos.x, y: player.pos.y + newY, width: player.width, height: player.height };
             let goRect = all[i].getRect();
-            if (player!==all[i] && this.overlapTest(c, goRect)) {
+            if (player!==all[i] && this.overlapTest(possibleRectX, goRect)) {
                 if (newX < 0) newX = goRect.x + goRect.width - player.pos.x;
                 else if (newX > 0) newX = goRect.x - player.pos.x - player.width;
             }
-        }
-        player.pos.x += newX;
-
-        // Move rectangle along y axis
-        for (let i = 0,l = all.length;i<l;i++) {
-            let c = { x: player.pos.x, y: player.pos.y + newY, width: player.width, height: player.height };
-            let goRect = all[i].getRect();
-            if (player!==all[i] && this.overlapTest(c, goRect)) {
+            if (player!==all[i] && this.overlapTest(possibleRectY, goRect)) {
                 if (newY < 0) newY = goRect.y + goRect.height - player.pos.y;
                 else if (newY > 0) newY = goRect.y - player.pos.y - player.height;
             }
         }
+        player.pos.x += newX;
         player.pos.y += newY;
 
     }

@@ -86,6 +86,7 @@ export default class CommonObject {
     }
     toJSON(opts = {preserveNull: false}) {
         let res = {};
+
         for (let key in this) {
             if (isPropNotFit(key,this[key],opts)) {
                 continue;

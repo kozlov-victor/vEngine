@@ -16,6 +16,7 @@ res.reset = function(gameProps){
 
     let g = new Game(gameProps||{});
     res.game = g;
+    res.editTileMapModeOn = false;
 
     res.commonBehaviourList = [];
     res.currGameObjectInEdit = new GameObjectProto(g);
@@ -32,7 +33,7 @@ res.reset = function(gameProps){
     res.currSoundInEdit = new Sound(g);
     res.currParticleSystemInEdit = new ParticleSystem(g);
     res.currProjectInEdit = {};
-    res.currTileIndexInEdit = {};
+    res.currTileIndexInEdit = null;
     res.commonBehaviourProto =  [];
 
 

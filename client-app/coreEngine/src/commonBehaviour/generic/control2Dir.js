@@ -14,21 +14,21 @@ export default class Control2DirBehaviour extends Move4DirBehaviour{
     }
 
     onUpdate(){
-        const keyboard = this.game._keyboard;
+        const keyboard = this.game.keyboard;
         const parameters  = this.parameters;
         const go = this.gameObject;
-        if (keyboard.isPressed(Keyboard.KEY.LEFT)) {
+        if (keyboard.isPressed(keyboard.KEY.LEFT)) {
             go.rigidBody.vel.x = -parameters.velocity;
             this.go('Left');
         }
-        if (keyboard.isPressed(Keyboard.KEY.RIGHT)) {
+        if (keyboard.isPressed(keyboard.KEY.RIGHT)) {
             go.rigidBody.vel.x = parameters.velocity;
             this.go('Right');
         }
 
-        if (keyboard.isJustReleased(Keyboard.KEY.LEFT)) {
+        if (keyboard.isJustReleased(keyboard.KEY.LEFT)) {
             this.stop();
-        } else if (keyboard.isJustReleased(Keyboard.KEY.RIGHT)) {
+        } else if (keyboard.isJustReleased(keyboard.KEY.RIGHT)) {
             this.stop();
         }
     }

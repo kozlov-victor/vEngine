@@ -1,5 +1,5 @@
 {
-    "width": 600,
+    "width": 800,
     "height": 400,
     "scaleStrategy": 0,
     "startSceneId": 2,
@@ -10,5 +10,6 @@
     "pos": {
         "x": 0,
         "y": 0
-    }
+    },
+    "gravityConstant": 800
 }

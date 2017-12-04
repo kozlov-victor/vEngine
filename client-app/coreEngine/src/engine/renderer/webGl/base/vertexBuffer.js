@@ -23,7 +23,7 @@ export default class VertexBuffer {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         this.bufferItemSize = itemSize;
-        this.bufferItemType = itemType;
+        this.bufferItemType = itemType; // BYTE, FLOAT, INT, UNSIGNED_SHORT ...
         this.dataLength = bufferData.length;
     }
 
