@@ -9,11 +9,12 @@ export default class BaseAbstractBehaviour {
 
     manage(){
         console.error(this);
-        if (DEBUG) throw `method manage not implemented`;
+        if (DEBUG) throw `BaseAbstractBehaviour: method 'manage' not implemented`;
     }
 
     onUpdate(){
-
+        console.error(this);
+        if (DEBUG) throw `BaseAbstractBehaviour: method 'onUpdate' not implemented`;
     }
 
 }

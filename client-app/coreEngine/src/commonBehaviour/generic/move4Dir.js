@@ -1,43 +1,23 @@
 
 
-import BaseAbstractBehaviour from '../abstract/baseAbstractBehaviour'
+import Moveable from '../abstract/moveable'
 
-export default class Move4DirBehaviour extends BaseAbstractBehaviour {
+export default class Move4Dir extends Moveable {
 
-    gameObject = null;
-    lastDirection = null;
+    static DIRS = ['Left', 'Right', 'Up','Down'];
 
-    constructor(game) {
-        super();
-        this.game = game;
+    constructor(game){
+        super(game);
     }
 
     manage(gameObject, parameters) {
-        this.gameObject = gameObject;
-        this.parameters = parameters;
-        this.animations = {};
-        const dirs = ['Left', 'Right', 'Up', 'Down'];
-        dirs.forEach(dir => {
-            let keyWalk = 'walk' + dir + 'Animation', keyIdle = 'idle' + dir + 'Animation';
-            this.animations[keyWalk] = this.gameObject.frameAnimations.find(it => it.name === parameters[keyWalk]);
-            //if (!this.animations[keyWalk]) throw `can not find animation ${parameters[keyWalk]} at gameObject ${this.gameObject.name}`;
-            parameters[keyIdle] && (this.animations[keyIdle] = this.gameObject.frameAnimations.find(it => it.name === parameters[keyIdle]));
-        });
+        super.manage(gameObject, parameters, Move4Dir.DIRS);
     }
 
     stop() {
-        this.gameObject.stopFrAnimations();
+        super.stop();
         this.gameObject.rigidBody.vel.x = 0;
         this.gameObject.rigidBody.vel.y = 0;
-        let keyIdle = 'idle' + this.lastDirection + 'Animation';
-        if (this.animations[keyIdle]) {
-            this.animations[keyIdle].play();
-        }
-    }
-
-    go(direction) {
-        this.lastDirection = direction;
-        this.animations['walk' + direction + 'Animation'].play();
     }
 
 }

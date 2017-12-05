@@ -1,9 +1,8 @@
 
-import Move4DirBehaviour from './move4Dir'
-import Keyboard from '../../engine/control/keyboard'
+import Move2Dir from './move2Dir'
 
 
-export default class Control2DirBehaviour extends Move4DirBehaviour{
+export default class Control2Dir extends Move2Dir{
 
     constructor(game){
         super(game);
