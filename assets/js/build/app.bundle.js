@@ -13355,7 +13355,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 //import HtmlRenderer from './dom/htmlRenderer'
-//import CanvasRenderer from './canvas/canvasRenderer'
+//import Renderer from './canvas/canvasRenderer'
 
 
 //import SvgRenderer from './dom/svgRenderer'
@@ -14117,7 +14117,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
     WebGlRenderer.prototype.getError = function getError() {
         var err = this.gl.getError();
-        return err == this.gl.NO_ERROR ? 0 : err;
+        return err === this.gl.NO_ERROR ? 0 : err;
     };
 
     WebGlRenderer.prototype.loadTextureInfo = function loadTextureInfo(resourcePath, onLoad) {

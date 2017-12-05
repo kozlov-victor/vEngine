@@ -4519,7 +4519,7 @@
         };
         e.prototype.getError = function t() {
             var e = this.gl.getError();
-            return e == this.gl.NO_ERROR ? 0 : e;
+            return e === this.gl.NO_ERROR ? 0 : e;
         };
         e.prototype.loadTextureInfo = function t(e, r) {
             var i = this;
@@ -5789,7 +5789,6 @@
             this.game.camera.followTo(this.gameObject);
         };
         t.prototype.onUpdate = function t() {
-            console.log("on floor", this.gameObject.rigidBody.onFloor);
             if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP)) {
                 if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.add(0, -340);
             }

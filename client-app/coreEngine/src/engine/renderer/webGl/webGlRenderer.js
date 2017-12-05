@@ -251,7 +251,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     getError(){
         let err = this.gl.getError();
-        return err==this.gl.NO_ERROR?0:err;
+        return err===this.gl.NO_ERROR?0:err;
     }
 
     loadTextureInfo(resourcePath,onLoad){
