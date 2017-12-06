@@ -3,7 +3,7 @@
 
 import BaseComponent from 'app/baseComponent'
 
-import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto';
+import GameObjectProto from 'engine/model/generic/gameObjectProto';
 
 @RF.decorateComponent({
     name: 'app-game-objects',

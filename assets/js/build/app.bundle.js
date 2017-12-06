@@ -1729,7 +1729,7 @@ var Resource = function () {
     Resource.save = function save(model, callback, opts) {
 
         var allModels = __webpack_require__(34);
-        if (!allModels[model.type]) throw 'Unregistered type ' + model.type + ', export this type in \'coreEngine/src/model/all\'!';
+        if (!allModels[model.type]) throw 'Unregistered type ' + model.type + ', export this type in \'engine/model/all\'!';
         var Class = allModels[model.type];
 
         var modelSample = new Class(_editData2.default.game);

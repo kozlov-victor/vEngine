@@ -1,15 +1,14 @@
 /*global localStorage:true*/
 
-import CommonBehaviour from 'coreEngine/src/model/generic/commonBehaviour'
-import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
-import SpriteSheet from 'coreEngine/src/model/generic/spriteSheet'
-import FrameAnimation from 'coreEngine/src/model/generic/frameAnimation'
-import Scene from 'coreEngine/src/model/generic/scene'
-import Layer from 'coreEngine/src/model/generic/layer'
-import Font from 'coreEngine/src/model/generic/font'
-import Sound from 'coreEngine/src/model/generic/sound'
-import ParticleSystem from 'coreEngine/src/model/generic/particleSystem'
-import Game from 'coreEngine/src/engine/game';
+import GameObjectProto from 'engine/model/generic/gameObjectProto'
+import SpriteSheet from 'engine/model/generic/spriteSheet'
+import FrameAnimation from 'engine/model/generic/frameAnimation'
+import Scene from 'engine/model/generic/scene'
+import Layer from 'engine/model/generic/layer'
+import Font from 'engine/model/generic/font'
+import Sound from 'engine/model/generic/sound'
+import ParticleSystem from 'engine/model/generic/particleSystem'
+import Game from 'engine/game';
 const res = {};
 
 res.reset = function(gameProps){

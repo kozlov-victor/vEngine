@@ -1,8 +1,8 @@
 /*global RF:true*/
 import BaseComponent from 'app/baseComponent'
 
-import GameObject from 'coreEngine/src/model/generic/gameObject'
-import SpriteSheet from 'coreEngine/src/model/generic/spriteSheet'
+import GameObject from 'engine/model/generic/gameObject'
+import SpriteSheet from 'engine/model/generic/spriteSheet'
 
 @RF.decorateComponent({
     name: 'app-frame-animation-dialog',

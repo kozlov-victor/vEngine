@@ -1,11 +1,7 @@
 const fs = require.main.require('./node-app/base/fs');
-const hbs = require('handlebars');
-const Compressor = require.main.require('./client-app/coreEngine/src/utils/compressor');
 const webpack = require('webpack');
-const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const configFn = require.main.require('./node-app/generator/webpack.config');
-const minify = require('html-minifier').minify;
 
 function stringify(obj_from_json){
     if(typeof obj_from_json !== "object" || Array.isArray(obj_from_json)){
@@ -27,7 +23,7 @@ class GeneratorService {
         this.cnt=0;
     }
 
-    _createError(params,e){
+    static _createError(params,e){
         if (!e) e = '';
         let error = e.toString().split('"').join("'");
         fs.createFileSync  (`workspace/${params.projectName}/out/bundle.js`,
@@ -42,10 +38,23 @@ class GeneratorService {
             let config = configFn(params);
 
             fs.createFolderSync(`workspace/${params.projectName}/out/`);
+            fs.createFolderSync(`workspace/${params.projectName}/generated/src/engine`);
+            fs.createFolderSync(`workspace/${params.projectName}/generated/src/app`);
 
-            let allScripts = fs.readDirSync(`workspace/${params.projectName}/scripts`).
-            map((s)=>{return s.content}).join('\n');
-            fs.createFileSync (`./node-app/generator/build/allScripts.js`,allScripts);
+            fs.copyFolderSync(`client-app/engine`,`workspace/${params.projectName}/generated/src/`);
+            fs.copyFolderSync(`workspace/${params.projectName}/scripts`,`workspace/${params.projectName}/generated/src/app/`);
+            let allScripts = fs.readDirSync(`workspace/${params.projectName}/scripts`).map(it=>it.name.split('.')[0]);
+            let allScriptCode = '';
+            allScripts.forEach(scriptName=>{
+                allScriptCode+=`import {${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour} from './${scriptName}'\n`
+            });
+            allScriptCode+=`
+                export {
+                    \t${allScripts.map(scriptName=>`${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour`).join(',')}
+                }            
+            `;
+            allScriptCode = allScriptCode.split('  ').join('');
+            fs.createFileSync(`workspace/${params.projectName}/generated/src/app/scripts/allScripts.js`,allScriptCode);
 
             fs.copyFolderSync(`workspace/${params.projectName}/resources/`,`workspace/${params.projectName}/out/`);
             let embeddedResources = [];
@@ -63,24 +72,16 @@ class GeneratorService {
             let debugJs = params.debug?fs.readFileSync('./assets/js/debug.js'):'';
             indexHtml = indexHtml.replace('${debug}',params.debug?`<script>${debugJs}</script>`:'');
             indexHtml = indexHtml.replace('${hash}',this.cnt++);
-            // if (params.minify) {
-            //     indexHtml = minify(indexHtml,{ // https://www.npmjs.com/package/html-minifier
-            //         removeAttributeQuotes: true,
-            //         removeTagWhitespace: true,
-            //         minifyCSS: true
-            //     });
-            //     indexHtml = indexHtml.split('\n').map(it=>it.trim()).join('');
-            // }
-            let repositoryData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/repository.json`));
-            //repositoryData = Compressor.compressJSON(repositoryData);
-            let gamePropsData = JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/gameProps.json`));
 
-            fs.createFileSync  (`workspace/${params.projectName}/out/index.html`,indexHtml);
+            fs.copyFileSync(`./workspace/${params.projectName}/repository.json`,`./workspace/${params.projectName}/generated/src/app/repository.json`);
+            fs.copyFileSync(`./workspace/${params.projectName}/gameProps.json`,`./workspace/${params.projectName}/generated/src/app/gameProps.json`);
+            fs.copyFileSync('node-app/generator/index.js',`workspace/${params.projectName}/generated/src/index.js`);
+            fs.createFileSync(`workspace/${params.projectName}/out/index.html`,indexHtml);
 
             config.plugins.push(
                 new webpack.DefinePlugin({
-                    REPOSITORY_DATA: stringify(repositoryData),
-                    GAME_PROPS_DATA: stringify(gamePropsData),
+                    // REPOSITORY_DATA: stringify(repositoryData),
+                    // GAME_PROPS_DATA: stringify(gamePropsData),
                     DEBUG: !!params.debug
                 })
             );
@@ -108,7 +109,7 @@ class GeneratorService {
             compiler.run((err, data) => {
                 if (err) {
                     console.error('compiler run error: ',err);
-                    this._createError(params,e);
+                    GeneratorService._createError(params,e);
                     callback({success:false,error:error})
                 }
                 else {
@@ -118,7 +119,7 @@ class GeneratorService {
                         console.log(data.compilation.errors);
                         let errorMsg = data.compilation.errors[0].details || data.compilation.errors[0].toString();
                         console.error(errorMsg);
-                        this._createError(params,JSON.stringify(errorMsg));
+                        GeneratorService._createError(params,JSON.stringify(errorMsg));
                         callback({success:false});
                     } else {
 
@@ -130,7 +131,7 @@ class GeneratorService {
                 }
             });
         } catch (e){
-            this._createError(params,e);
+            GeneratorService._createError(params,e);
             callback({success:false});
         }
 

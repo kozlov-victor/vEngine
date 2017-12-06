@@ -7,7 +7,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports =  (params)=>{
     let config = {
-        entry: ['./node-app/generator/app.js'],
+        entry: [`./workspace/${params.projectName}/generated/src/index.js`],
         output: {
             path: path.resolve('./node-app/generator/build'),
             filename:'bundle.js'
@@ -37,7 +37,7 @@ module.exports =  (params)=>{
                     }
                 },
                 {
-                    test: /\.(html|css|frag|vert)$/,
+                    test: /\.(html|css|frag|vert|json)$/,
                     loader: 'text-loader',
                     options: {
                         minimize: true
@@ -51,7 +51,7 @@ module.exports =  (params)=>{
             ]
         },
         resolve: {
-            extensions: ['.js','.ts'],
+            extensions: ['.js','.ts','.json'],
             modules: [
                 path.resolve('node_modules'),
                 path.resolve('./client-app'),
@@ -64,7 +64,8 @@ module.exports =  (params)=>{
         new webpack.DefinePlugin({
             BUILD_AT: new Date().getTime(),
             IN_EDITOR: false,
-            DEBUG: params.debug || false
+            DEBUG: params.debug || false,
+            PROJECT_NAME: params.projectName
         }),
         new UglifyJSPlugin({
             output: { // http://lisperator.net/uglifyjs/codegen

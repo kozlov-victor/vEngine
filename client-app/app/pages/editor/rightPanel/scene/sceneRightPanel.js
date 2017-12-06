@@ -2,8 +2,7 @@
 import BaseComponent from 'app/baseComponent'
 import './sceneRightPanel.less'
 
-import Scene from 'coreEngine/src/model/generic/scene'
-import TileMap from 'coreEngine/src/model/generic/tileMap'
+import TileMap from 'engine/model/generic/tileMap'
 
 @RF.decorateComponent({
     name: 'app-scene-right-panel',
@@ -24,7 +23,7 @@ export default class SceneRightPanel extends BaseComponent {
         });
         document.addEventListener('keyup',e=>{
             keyPressed = false;
-            if (e.keyCode==16) { // shift
+            if (e.keyCode===16) { // shift
                 this.toggleEditMode();
                 RF.digest();
             }

@@ -1,7 +1,7 @@
 /*global RF:true*/
 import BaseComponent from 'app/baseComponent'
 
-import Font from 'coreEngine/src/model/generic/font';
+import Font from 'engine/model/generic/font';
 
 @RF.decorateComponent({
     name: 'app-fonts',

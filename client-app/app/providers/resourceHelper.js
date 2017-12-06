@@ -4,8 +4,8 @@ import editData from 'app/providers/editData';
 import resourceRest from 'app/providers/rest/resource';
 import projectRest from 'app/providers/rest/project';
 
-import CommonBehaviour from 'coreEngine/src/model/generic/commonBehaviour';
-import TextField from 'coreEngine/src/model/generic/ui/textField'
+import CommonBehaviour from 'engine/model/generic/commonBehaviour';
+import TextField from 'engine/model/generic/ui/textField'
 
 export default class ResourceHelper {
 

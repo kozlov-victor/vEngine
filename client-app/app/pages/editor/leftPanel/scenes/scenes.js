@@ -1,8 +1,8 @@
 /*global RF:true*/
 /*global alertEx:true*/
 import BaseComponent from 'app/baseComponent'
-import Layer from 'coreEngine/src/model/generic/layer';
-import Scene from 'coreEngine/src/model/generic/scene';
+import Layer from 'engine/model/generic/layer';
+import Scene from 'engine/model/generic/scene';
 
 import './scenes.less'
 

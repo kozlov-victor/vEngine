@@ -1,14 +1,14 @@
 /*global Blob:true*/
 /*global atob:true*/
 
-import mathEx from 'coreEngine/src/engine/mathEx';
+import mathEx from 'engine/core/mathEx';
 
 import editData from 'app/providers/editData';
 import restResource from 'app/providers/rest/resource';
 import restFileSystem from 'app/providers/rest/fileSystem';
 import i18n from 'app/providers/i18n';
 
-import GameObjectProto from 'coreEngine/src/model/generic/gameObjectProto'
+import GameObjectProto from 'engine/model/generic/gameObjectProto'
 
 export default class Utils {
     static getGameObjectCss(gameObj){

@@ -1,59 +1,59 @@
 (function(t) {
     var e = {};
-    function r(i) {
-        if (e[i]) {
-            return e[i].exports;
+    function n(r) {
+        if (e[r]) {
+            return e[r].exports;
         }
-        var n = e[i] = {
-            i: i,
+        var i = e[r] = {
+            i: r,
             l: false,
             exports: {}
         };
-        t[i].call(n.exports, n, n.exports, r);
-        n.l = true;
-        return n.exports;
+        t[r].call(i.exports, i, i.exports, n);
+        i.l = true;
+        return i.exports;
     }
-    r.m = t;
-    r.c = e;
-    r.i = function(t) {
+    n.m = t;
+    n.c = e;
+    n.i = function(t) {
         return t;
     };
-    r.d = function(t, e, i) {
-        if (!r.o(t, e)) {
+    n.d = function(t, e, r) {
+        if (!n.o(t, e)) {
             Object.defineProperty(t, e, {
                 configurable: false,
                 enumerable: true,
-                get: i
+                get: r
             });
         }
     };
-    r.n = function(t) {
+    n.n = function(t) {
         var e = t && t.__esModule ? function e() {
             return t["default"];
         } : function e() {
             return t;
         };
-        r.d(e, "a", e);
+        n.d(e, "a", e);
         return e;
     };
-    r.o = function(t, e) {
+    n.o = function(t, e) {
         return Object.prototype.hasOwnProperty.call(t, e);
     };
-    r.p = "";
-    return r(r.s = 60);
-})([ function(t, e, r) {
+    n.p = "";
+    return n(n.s = 65);
+})([ function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i, n;
-    var o = r(12);
+    var r, i;
+    var o = n(12);
     var a = d(o);
-    var s = r(43);
+    var s = n(47);
     var u = d(s);
-    var f = r(26);
+    var f = n(30);
     var h = d(f);
-    var c = r(8);
-    var l = r(29);
+    var c = n(8);
+    var l = n(33);
     var p = d(l);
     function d(t) {
         return t && t.__esModule ? t : {
@@ -85,37 +85,37 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var v = (i = (0, c.Transient)({
+    var v = (r = (0, c.Transient)({
         game: true,
         rigidBody: true
-    }), i(n = function(t) {
+    }), r(i = function(t) {
         g(e, t);
-        function e(r) {
+        function e(n) {
             y(this, e);
-            var i = m(this, t.call(this));
-            i.id = null;
-            i.name = null;
-            i.width = 0;
-            i.height = 0;
-            i.pos = {
+            var r = m(this, t.call(this));
+            r.id = null;
+            r.name = null;
+            r.width = 0;
+            r.height = 0;
+            r.pos = {
                 x: 0,
                 y: 0
             };
-            i.scale = {
+            r.scale = {
                 x: 1,
                 y: 1
             };
-            i.angle = 0;
-            i.alpha = 1;
-            i.layerId = null;
-            i.fixedToCamera = false;
-            i.rigid = false;
-            i._tweens = [];
-            if (1 && !r) throw "can not create model '" + i.type + "': game instance not passed to model constructor";
-            i.game = r;
-            i._emitter = new h.default();
-            i.rigidBody = new p.default(i);
-            return i;
+            r.angle = 0;
+            r.alpha = 1;
+            r.layerId = null;
+            r.fixedToCamera = false;
+            r.rigid = false;
+            r._tweens = [];
+            if (1 && !n) throw "can not create model '" + r.type + "': game instance not passed to model constructor";
+            r.game = n;
+            r._emitter = new h.default();
+            r.rigidBody = new p.default(r);
+            return r;
         }
         e.prototype.revalidate = function t() {};
         e.prototype.setIndividualBehaviour = function t(e) {};
@@ -130,51 +130,51 @@
             };
         };
         e.prototype.tween = function t(e) {
-            var r = new u.default(e, this);
-            this._tweens.push(r);
+            var n = new u.default(e, this);
+            this._tweens.push(n);
         };
         e.prototype.update = function t(e) {
-            var r = this;
-            this._tweens.forEach(function(t, i) {
+            var n = this;
+            this._tweens.forEach(function(t, r) {
                 t.update(e);
-                if (t.completed) r._tweens.splice(i, 1);
+                if (t.completed) n._tweens.splice(r, 1);
             });
         };
         e.prototype.clone = function t(e) {
-            var r = this.constructor;
-            var i = new r(this.game);
-            i._cloner = this;
-            return i.fromJSON(this.toJSON(e), true);
+            var n = this.constructor;
+            var r = new n(this.game);
+            r._cloner = this;
+            return r.fromJSON(this.toJSON(e), true);
         };
-        e.prototype.on = function t(e, r) {
-            this._emitter.on(e, r);
+        e.prototype.on = function t(e, n) {
+            this._emitter.on(e, n);
             return this;
         };
-        e.prototype.trigger = function t(e, r) {
-            this._emitter.trigger(e, r);
+        e.prototype.trigger = function t(e, n) {
+            this._emitter.trigger(e, n);
         };
         e.prototype.updateCloner = function t(e) {
             if (false) return;
-            var r = this._cloner;
-            if (!r) return;
-            r.fromJSON(this.toJSON(e));
-            r.updateCloner(e);
+            var n = this._cloner;
+            if (!n) return;
+            n.fromJSON(this.toJSON(e));
+            n.updateCloner(e);
             delete this._cloner;
         };
         return e;
-    }(a.default)) || n);
+    }(a.default)) || i);
     e.default = v;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
-    e.isPointInRect = function(t, e, r) {
+    e.isPointInRect = function(t, e, n) {
         return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
     };
-    var i = function t(e, r, i) {
-        return e >= r && e <= i;
+    var r = function t(e, n, r) {
+        return e >= n && e <= r;
     };
     e.isRectIntersectRect = function(t, e) {
-        var r = i(t.x, e.x, e.x + e.width), n = i(e.x, t.x, t.x + t.width), o = i(t.y, e.y, e.y + e.height), a = i(e.y, t.y, t.y + t.height);
-        var s = r || n;
+        var n = r(t.x, e.x, e.x + e.width), i = r(e.x, t.x, t.x + t.width), o = r(t.y, e.y, e.y + e.height), a = r(e.y, t.y, t.y + t.height);
+        var s = n || i;
         var u = o || a;
         return s && u;
     };
@@ -186,82 +186,82 @@
     };
     e.random = function(t, e) {
         if (t > e) {
-            var r = t;
+            var n = t;
             t = e;
-            e = r;
+            e = n;
         }
-        var i = Math.random() * (e - t) + t;
-        if (i > e) i = e; else if (i < t) i = t;
-        return i;
+        var r = Math.random() * (e - t) + t;
+        if (r > e) r = e; else if (r < t) r = t;
+        return r;
     };
-    var n = {};
-    n.linear = function(t, e, r, i) {
-        return r * t / i + e;
+    var i = {};
+    i.linear = function(t, e, n, r) {
+        return n * t / r + e;
     };
-    n.easeInQuad = function(t, e, r, i) {
-        t /= i;
-        return r * t * t + e;
+    i.easeInQuad = function(t, e, n, r) {
+        t /= r;
+        return n * t * t + e;
     };
-    n.easeOutQuad = function(t, e, r, i) {
-        t /= i;
-        return -r * t * (t - 2) + e;
+    i.easeOutQuad = function(t, e, n, r) {
+        t /= r;
+        return -n * t * (t - 2) + e;
     };
-    n.easeInOutQuad = function(t, e, r, i) {
-        t /= i / 2;
-        if (t < 1) return r / 2 * t * t + e;
+    i.easeInOutQuad = function(t, e, n, r) {
+        t /= r / 2;
+        if (t < 1) return n / 2 * t * t + e;
         t--;
-        return -r / 2 * (t * (t - 2) - 1) + e;
+        return -n / 2 * (t * (t - 2) - 1) + e;
     };
-    e.ease = n;
-}, function(t, e, r) {
+    e.ease = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    var i, n;
+    var r, i;
     function o(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var a = function t(e, r, i) {
+    var a = function t(e, n, r) {
         if (true) {
-            if (!r) throw "can not compile shader: shader source not specified for type " + i;
+            if (!n) throw "can not compile shader: shader source not specified for type " + r;
         }
-        var n = e.createShader(i);
-        e.shaderSource(n, r);
-        e.compileShader(n);
-        var o = e.getShaderParameter(n, e.COMPILE_STATUS);
+        var i = e.createShader(r);
+        e.shaderSource(i, n);
+        e.compileShader(i);
+        var o = e.getShaderParameter(i, e.COMPILE_STATUS);
         if (!o) {
-            var a = e.getShaderInfoLog(n);
-            e.deleteShader(n);
+            var a = e.getShaderInfoLog(i);
+            e.deleteShader(i);
             if (true) {
-                throw "Error compiling shader " + n + ":" + a;
+                throw "Error compiling shader " + i + ":" + a;
             } else {
                 throw a;
             }
         }
-        return n;
+        return i;
     };
-    var s = function t(e, r) {
-        var i = e.createProgram();
-        r.forEach(function(t) {
-            e.attachShader(i, t);
+    var s = function t(e, n) {
+        var r = e.createProgram();
+        n.forEach(function(t) {
+            e.attachShader(r, t);
         });
-        e.linkProgram(i);
-        var n = e.getProgramParameter(i, e.LINK_STATUS);
-        if (!n) {
-            var o = e.getProgramInfoLog(i);
-            e.deleteProgram(i);
+        e.linkProgram(r);
+        var i = e.getProgramParameter(r, e.LINK_STATUS);
+        if (!i) {
+            var o = e.getProgramInfoLog(r);
+            e.deleteProgram(r);
             if (true) {
                 throw "Error in program linking:" + o;
             } else {
                 throw o;
             }
         }
-        return i;
+        return r;
     };
-    var u = function t(e, r) {
-        var i = null;
-        var n = {
+    var u = function t(e, n) {
+        var r = null;
+        var i = {
             FLOAT: "float",
             FLOAT_VEC2: "vec2",
             FLOAT_VEC3: "vec3",
@@ -279,191 +279,191 @@
             FLOAT_MAT4: "mat4",
             SAMPLER_2D: "sampler2D"
         };
-        if (!i) {
-            var o = Object.keys(n);
-            i = {};
+        if (!r) {
+            var o = Object.keys(i);
+            r = {};
             for (var a = 0; a < o.length; ++a) {
                 var s = o[a];
-                i[e[s]] = n[s];
+                r[e[s]] = i[s];
             }
         }
-        return i[r];
+        return r[n];
     };
-    var f = function t(e, r) {
-        var i = {};
-        var n = e.getProgramParameter(r, e.ACTIVE_UNIFORMS);
-        for (var o = 0; o < n; o++) {
-            var a = e.getActiveUniform(r, o);
+    var f = function t(e, n) {
+        var r = {};
+        var i = e.getProgramParameter(n, e.ACTIVE_UNIFORMS);
+        for (var o = 0; o < i; o++) {
+            var a = e.getActiveUniform(n, o);
             var s = a.name.replace(/\[.*?]/, "");
             var f = u(e, a.type);
-            i[s] = {
+            r[s] = {
                 type: f,
                 size: a.size,
                 name: s,
-                location: e.getUniformLocation(r, s),
+                location: e.getUniformLocation(n, s),
                 setter: h(a.size, f)
             };
         }
-        return i;
+        return r;
     };
-    var h = function t(e, r) {
+    var h = function t(e, n) {
         if (e === 1) {
-            switch (r) {
+            switch (n) {
               case "float":
-                return function(t, e, r) {
-                    t.uniform1f(e, r);
+                return function(t, e, n) {
+                    t.uniform1f(e, n);
                 };
 
               case "vec2":
-                return function(t, e, r) {
-                    t.uniform2f(e, r[0], r[1]);
+                return function(t, e, n) {
+                    t.uniform2f(e, n[0], n[1]);
                 };
 
               case "vec3":
-                return function(t, e, r) {
-                    t.uniform3f(e, r[0], r[1], r[2]);
+                return function(t, e, n) {
+                    t.uniform3f(e, n[0], n[1], n[2]);
                 };
 
               case "vec4":
-                return function(t, e, r) {
-                    t.uniform4f(e, r[0], r[1], r[2], r[3]);
+                return function(t, e, n) {
+                    t.uniform4f(e, n[0], n[1], n[2], n[3]);
                 };
 
               case "int":
-                return function(t, e, r) {
-                    t.uniform1i(e, r);
+                return function(t, e, n) {
+                    t.uniform1i(e, n);
                 };
 
               case "ivec2":
-                return function(t, e, r) {
-                    t.uniform2i(e, r[0], r[1]);
+                return function(t, e, n) {
+                    t.uniform2i(e, n[0], n[1]);
                 };
 
               case "ivec3":
-                return function(t, e, r) {
-                    t.uniform3i(e, r[0], r[1], r[2]);
+                return function(t, e, n) {
+                    t.uniform3i(e, n[0], n[1], n[2]);
                 };
 
               case "ivec4":
-                return function(t, e, r) {
-                    t.uniform4i(e, r[0], r[1], r[2], r[3]);
+                return function(t, e, n) {
+                    t.uniform4i(e, n[0], n[1], n[2], n[3]);
                 };
 
               case "bool":
-                return function(t, e, r) {
-                    t.uniform1i(e, r);
+                return function(t, e, n) {
+                    t.uniform1i(e, n);
                 };
 
               case "bvec2":
-                return function(t, e, r) {
-                    t.uniform2i(e, r[0], r[1]);
+                return function(t, e, n) {
+                    t.uniform2i(e, n[0], n[1]);
                 };
 
               case "bvec3":
-                return function(t, e, r) {
-                    t.uniform3i(e, r[0], r[1], r[2]);
+                return function(t, e, n) {
+                    t.uniform3i(e, n[0], n[1], n[2]);
                 };
 
               case "bvec4":
-                return function(t, e, r) {
-                    t.uniform4i(e, r[0], r[1], r[2], r[3]);
+                return function(t, e, n) {
+                    t.uniform4i(e, n[0], n[1], n[2], n[3]);
                 };
 
               case "mat2":
-                return function(t, e, r) {
-                    t.uniformMatrix2fv(e, false, r);
+                return function(t, e, n) {
+                    t.uniformMatrix2fv(e, false, n);
                 };
 
               case "mat3":
-                return function(t, e, r) {
-                    t.uniformMatrix3fv(e, false, r);
+                return function(t, e, n) {
+                    t.uniformMatrix3fv(e, false, n);
                 };
 
               case "mat4":
-                return function(t, e, r) {
-                    t.uniformMatrix4fv(e, false, r);
+                return function(t, e, n) {
+                    t.uniformMatrix4fv(e, false, n);
                 };
 
               case "sampler2D":
-                return function(t, e, r) {
-                    t.uniform1i(e, r);
+                return function(t, e, n) {
+                    t.uniform1i(e, n);
                 };
             }
         } else {
-            switch (r) {
+            switch (n) {
               case "float":
-                return function(t, e, r) {
-                    t.uniform1fv(e, r);
+                return function(t, e, n) {
+                    t.uniform1fv(e, n);
                 };
 
               case "vec2":
-                return function(t, e, r) {
-                    t.uniform2fv(e, r);
+                return function(t, e, n) {
+                    t.uniform2fv(e, n);
                 };
 
               case "vec3":
-                return function(t, e, r) {
-                    t.uniform3fv(e, r);
+                return function(t, e, n) {
+                    t.uniform3fv(e, n);
                 };
 
               case "vec4":
-                return function(t, e, r) {
-                    t.uniform4fv(e, r);
+                return function(t, e, n) {
+                    t.uniform4fv(e, n);
                 };
 
               case "int":
-                return function(t, e, r) {
-                    t.uniform1iv(e, r);
+                return function(t, e, n) {
+                    t.uniform1iv(e, n);
                 };
 
               case "ivec2":
-                return function(t, e, r) {
-                    t.uniform2iv(e, r);
+                return function(t, e, n) {
+                    t.uniform2iv(e, n);
                 };
 
               case "ivec3":
-                return function(t, e, r) {
-                    t.uniform3iv(e, r);
+                return function(t, e, n) {
+                    t.uniform3iv(e, n);
                 };
 
               case "ivec4":
-                return function(t, e, r) {
-                    t.uniform4iv(e, r);
+                return function(t, e, n) {
+                    t.uniform4iv(e, n);
                 };
 
               case "bool":
-                return function(t, e, r) {
-                    t.uniform1iv(e, r);
+                return function(t, e, n) {
+                    t.uniform1iv(e, n);
                 };
 
               case "bvec2":
-                return function(t, e, r) {
-                    t.uniform2iv(e, r);
+                return function(t, e, n) {
+                    t.uniform2iv(e, n);
                 };
 
               case "bvec3":
-                return function(t, e, r) {
-                    t.uniform3iv(e, r);
+                return function(t, e, n) {
+                    t.uniform3iv(e, n);
                 };
 
               case "bvec4":
-                return function(t, e, r) {
-                    t.uniform4iv(e, r);
+                return function(t, e, n) {
+                    t.uniform4iv(e, n);
                 };
 
               case "sampler2D":
-                return function(t, e, r) {
-                    t.uniform1iv(e, r);
+                return function(t, e, n) {
+                    t.uniform1iv(e, n);
                 };
             }
         }
     };
-    var c = (n = i = function() {
-        function t(e, r) {
+    var c = (i = r = function() {
+        function t(e, n) {
             o(this, t);
-            var i = a(e, r[0], e.VERTEX_SHADER);
-            var n = a(e, r[1], e.FRAGMENT_SHADER);
-            this.program = s(e, [ i, n ]);
+            var r = a(e, n[0], e.VERTEX_SHADER);
+            var i = a(e, n[1], e.FRAGMENT_SHADER);
+            this.program = s(e, [ r, i ]);
             this.uniforms = f(e, this.program);
             this.gl = e;
         }
@@ -474,34 +474,34 @@
             this.gl.useProgram(this.program);
             t.currentProgram = this;
         };
-        t.prototype.setUniform = function t(e, r) {
-            var i = this.uniforms[e];
-            if (1 && !i) throw "no uniform with name " + e + " found!";
-            i.setter(this.gl, i.location, r);
+        t.prototype.setUniform = function t(e, n) {
+            var r = this.uniforms[e];
+            if (1 && !r) throw "no uniform with name " + e + " found!";
+            r.setter(this.gl, r.location, n);
         };
-        t.prototype.bindBuffer = function t(e, r) {
+        t.prototype.bindBuffer = function t(e, n) {
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, e.getGlBuffer());
-            var i = this.gl.getAttribLocation(this.program, r);
-            if (!r) throw "can not found uniform location: uniformLocationName not defined";
-            if (i < 0) throw "can not found uniform location for " + r;
-            this.gl.enableVertexAttribArray(i);
-            this.gl.vertexAttribPointer(i, e.getItemSize(), e.getItemType(), false, 0, 0);
+            var r = this.gl.getAttribLocation(this.program, n);
+            if (!n) throw "can not found uniform location: uniformLocationName not defined";
+            if (r < 0) throw "can not found uniform location for " + n;
+            this.gl.enableVertexAttribArray(r);
+            this.gl.vertexAttribPointer(r, e.getItemSize(), e.getItemType(), false, 0, 0);
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
         };
         return t;
-    }(), i.currentProgram = null, n);
+    }(), r.currentProgram = null, i);
     e.default = c;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            r(this, t);
             if (1 && !e) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
             this.gl = e;
             this.buffer = e.createBuffer();
@@ -509,18 +509,18 @@
             this.bufferItemType = null;
             this.dataLength = null;
         }
-        t.prototype.setData = function t(e, r, i) {
+        t.prototype.setData = function t(e, n, r) {
             if (true) {
                 if (!e) throw "can not set data to buffer: bufferData not specified";
-                if (!r) throw "can not set data to buffer: itemType not specified";
-                if (!i) throw "can not set data to buffer: itemSize not specified";
+                if (!n) throw "can not set data to buffer: itemType not specified";
+                if (!r) throw "can not set data to buffer: itemSize not specified";
             }
-            var n = this.gl;
-            n.bindBuffer(n.ARRAY_BUFFER, this.buffer);
-            n.bufferData(n.ARRAY_BUFFER, new Float32Array(e), n.STATIC_DRAW);
-            n.bindBuffer(n.ARRAY_BUFFER, null);
-            this.bufferItemSize = i;
-            this.bufferItemType = r;
+            var i = this.gl;
+            i.bindBuffer(i.ARRAY_BUFFER, this.buffer);
+            i.bufferData(i.ARRAY_BUFFER, new Float32Array(e), i.STATIC_DRAW);
+            i.bindBuffer(i.ARRAY_BUFFER, null);
+            this.bufferItemSize = r;
+            this.bufferItemType = n;
             this.dataLength = e.length;
         };
         t.prototype.getGlBuffer = function t() {
@@ -537,18 +537,18 @@
         };
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            r(this, t);
             if (1 && !e) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
             this.gl = e;
             this.buffer = e.createBuffer();
@@ -558,11 +558,11 @@
             if (true) {
                 if (!e) throw "can not set data to buffer: bufferData not specified";
             }
-            var r = this.gl;
+            var n = this.gl;
             this.dataLength = e.length;
-            r.bindBuffer(r.ELEMENT_ARRAY_BUFFER, this.buffer);
-            r.bufferData(r.ELEMENT_ARRAY_BUFFER, new Uint16Array(e), r.STATIC_DRAW);
-            r.bindBuffer(r.ELEMENT_ARRAY_BUFFER, null);
+            n.bindBuffer(n.ELEMENT_ARRAY_BUFFER, this.buffer);
+            n.bufferData(n.ELEMENT_ARRAY_BUFFER, new Uint16Array(e), n.STATIC_DRAW);
+            n.bindBuffer(n.ELEMENT_ARRAY_BUFFER, null);
         };
         t.prototype.getGlBuffer = function t() {
             return this.buffer;
@@ -578,20 +578,20 @@
         };
         return t;
     }();
-    e.default = n;
+    e.default = i;
 }, function(t, e) {
     t.exports = "attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t() {
-            i(this, t);
+            r(this, t);
         }
         t.prototype.manage = function t() {
             console.error(this);
@@ -603,13 +603,13 @@
         };
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = o(i);
+    var r = n(6);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -642,26 +642,26 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this));
-            i.gameObject = null;
-            i.lastDirection = null;
-            i.game = r;
-            return i;
+            var r = s(this, t.call(this));
+            r.gameObject = null;
+            r.lastDirection = null;
+            r.game = n;
+            return r;
         }
-        e.prototype.manage = function t(e, r, i) {
-            var n = this;
+        e.prototype.manage = function t(e, n, r) {
+            var i = this;
             this.gameObject = e;
-            this.parameters = r;
+            this.parameters = n;
             this.animations = {};
-            i.forEach(function(t) {
-                var e = "walk" + t + "Animation", i = "idle" + t + "Animation";
-                n.animations[e] = n.gameObject.frameAnimations.find(function(t) {
-                    return t.name === r[e];
+            r.forEach(function(t) {
+                var e = "walk" + t + "Animation", r = "idle" + t + "Animation";
+                i.animations[e] = i.gameObject.frameAnimations.find(function(t) {
+                    return t.name === n[e];
                 });
-                r[i] && (n.animations[i] = n.gameObject.frameAnimations.find(function(t) {
-                    return t.name === r[i];
+                n[r] && (i.animations[r] = i.gameObject.frameAnimations.find(function(t) {
+                    return t.name === n[r];
                 }));
             });
         };
@@ -677,18 +677,18 @@
             this.animations["walk" + e + "Animation"].play();
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    e.Transient = i;
-    function i(t) {
+    e.Transient = r;
+    function r(t) {
         return function(e) {
             e.transient = t;
         };
     }
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.makeIdentity = function() {
         return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
@@ -696,11 +696,11 @@
     e.makeZToWMatrix = function(t) {
         return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, t, 0, 0, 0, 1 ];
     };
-    e.make2DProjection = function(t, e, r) {
-        return [ 2 / t, 0, 0, 0, 0, -2 / e, 0, 0, 0, 0, 2 / r, 0, -1, 1, 0, 1 ];
+    e.make2DProjection = function(t, e, n) {
+        return [ 2 / t, 0, 0, 0, 0, -2 / e, 0, 0, 0, 0, 2 / n, 0, -1, 1, 0, 1 ];
     };
-    e.ortho = function(t, e, r, i, n, o) {
-        var a = 1 / (t - e), s = 1 / (r - i), u = 1 / (n - o);
+    e.ortho = function(t, e, n, r, i, o) {
+        var a = 1 / (t - e), s = 1 / (n - r), u = 1 / (i - o);
         var f = [];
         f[0] = -2 * a;
         f[1] = 0;
@@ -715,57 +715,57 @@
         f[10] = 2 * u;
         f[11] = 0;
         f[12] = (t + e) * a;
-        f[13] = (i + r) * s;
-        f[14] = (o + n) * u;
+        f[13] = (r + n) * s;
+        f[14] = (o + i) * u;
         f[15] = 1;
         return f;
     };
-    e.perspective = function(t, e, r, i) {
-        var n = 1 / Math.tan(t / 2), o = 1 / (r - i);
+    e.perspective = function(t, e, n, r) {
+        var i = 1 / Math.tan(t / 2), o = 1 / (n - r);
         var a = [];
-        a[0] = n / e;
+        a[0] = i / e;
         a[1] = 0;
         a[2] = 0;
         a[3] = 0;
         a[4] = 0;
-        a[5] = n;
+        a[5] = i;
         a[6] = 0;
         a[7] = 0;
         a[8] = 0;
         a[9] = 0;
-        a[10] = (i + r) * o;
+        a[10] = (r + n) * o;
         a[11] = -1;
         a[12] = 0;
         a[13] = 0;
-        a[14] = 2 * i * r * o;
+        a[14] = 2 * r * n * o;
         a[15] = 0;
         return a;
     };
-    e.makeTranslation = function(t, e, r) {
-        return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, t, e, r, 1 ];
+    e.makeTranslation = function(t, e, n) {
+        return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, t, e, n, 1 ];
     };
     e.makeXRotation = function(t) {
         var e = Math.cos(t);
-        var r = Math.sin(t);
-        return [ 1, 0, 0, 0, 0, e, r, 0, 0, -r, e, 0, 0, 0, 0, 1 ];
+        var n = Math.sin(t);
+        return [ 1, 0, 0, 0, 0, e, n, 0, 0, -n, e, 0, 0, 0, 0, 1 ];
     };
     e.makeYRotation = function(t) {
         var e = Math.cos(t);
-        var r = Math.sin(t);
-        return [ e, 0, -r, 0, 0, 1, 0, 0, r, 0, e, 0, 0, 0, 0, 1 ];
+        var n = Math.sin(t);
+        return [ e, 0, -n, 0, 0, 1, 0, 0, n, 0, e, 0, 0, 0, 0, 1 ];
     };
     e.makeZRotation = function(t) {
         var e = Math.cos(t);
-        var r = Math.sin(t);
-        return [ e, r, 0, 0, -r, e, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
+        var n = Math.sin(t);
+        return [ e, n, 0, 0, -n, e, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
     };
-    e.makeScale = function(t, e, r) {
-        return [ t, 0, 0, 0, 0, e, 0, 0, 0, 0, r, 0, 0, 0, 0, 1 ];
+    e.makeScale = function(t, e, n) {
+        return [ t, 0, 0, 0, 0, e, 0, 0, 0, 0, n, 0, 0, 0, 0, 1 ];
     };
     e.matrixMultiply = function(t, e) {
-        var r = t[0 * 4 + 0];
-        var i = t[0 * 4 + 1];
-        var n = t[0 * 4 + 2];
+        var n = t[0 * 4 + 0];
+        var r = t[0 * 4 + 1];
+        var i = t[0 * 4 + 2];
         var o = t[0 * 4 + 3];
         var a = t[1 * 4 + 0];
         var s = t[1 * 4 + 1];
@@ -790,27 +790,27 @@
         var j = e[2 * 4 + 0];
         var R = e[2 * 4 + 1];
         var P = e[2 * 4 + 2];
-        var F = e[2 * 4 + 3];
-        var M = e[3 * 4 + 0];
+        var M = e[2 * 4 + 3];
+        var F = e[3 * 4 + 0];
         var S = e[3 * 4 + 1];
         var B = e[3 * 4 + 2];
         var A = e[3 * 4 + 3];
-        return [ r * v + i * x + n * j + o * M, r * w + i * O + n * R + o * S, r * b + i * E + n * P + o * B, r * _ + i * T + n * F + o * A, a * v + s * x + u * j + f * M, a * w + s * O + u * R + f * S, a * b + s * E + u * P + f * B, a * _ + s * T + u * F + f * A, h * v + c * x + l * j + p * M, h * w + c * O + l * R + p * S, h * b + c * E + l * P + p * B, h * _ + c * T + l * F + p * A, d * v + y * x + m * j + g * M, d * w + y * O + m * R + g * S, d * b + y * E + m * P + g * B, d * _ + y * T + m * F + g * A ];
+        return [ n * v + r * x + i * j + o * F, n * w + r * O + i * R + o * S, n * b + r * E + i * P + o * B, n * _ + r * T + i * M + o * A, a * v + s * x + u * j + f * F, a * w + s * O + u * R + f * S, a * b + s * E + u * P + f * B, a * _ + s * T + u * M + f * A, h * v + c * x + l * j + p * F, h * w + c * O + l * R + p * S, h * b + c * E + l * P + p * B, h * _ + c * T + l * M + p * A, d * v + y * x + m * j + g * F, d * w + y * O + m * R + g * S, d * b + y * E + m * P + g * B, d * _ + y * T + m * M + g * A ];
     };
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function t(e) {
+    var i = function t(e) {
         return (e & e - 1) == 0;
     };
     var o = function() {
         function t(e) {
-            i(this, t);
+            r(this, t);
             if (1 && !e) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
             this.gl = e;
             this.tex = null;
@@ -821,26 +821,26 @@
             e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, 1, 1, 0, e.RGBA, e.UNSIGNED_BYTE, new Uint8Array([ 0, 0, 255, 255 ]));
             e.bindTexture(e.TEXTURE_2D, this.tex);
         }
-        t.prototype.setImage = function t(e, r, i) {
+        t.prototype.setImage = function t(e, n, r) {
             if (true) {
-                if (!(e || r || i)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+                if (!(e || n || r)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
             }
             var o = this.gl;
             if (e) this.size = {
                 width: e.width,
                 height: e.height
             }; else this.size = {
-                width: r,
-                height: i
+                width: n,
+                height: r
             };
             this.bind();
             o.pixelStorei(o.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
             if (e) {
                 o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, o.RGBA, o.UNSIGNED_BYTE, e);
             } else {
-                o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, r, i, 0, o.RGBA, o.UNSIGNED_BYTE, null);
+                o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, n, r, 0, o.RGBA, o.UNSIGNED_BYTE, null);
             }
-            this.isPowerOfTwo = e && n(e.width) && n(e.height);
+            this.isPowerOfTwo = e && i(e.width) && i(e.height);
             if (this.isPowerOfTwo) {
                 o.generateMipmap(o.TEXTURE_2D);
                 o.texParameteri(o.TEXTURE_2D, o.TEXTURE_WRAP_S, o.REPEAT);
@@ -868,12 +868,12 @@
         return t;
     }();
     e.default = o;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(36);
-    var n = o(i);
+    var r = n(40);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -908,68 +908,68 @@
         u(e, t);
         function e() {
             a(this, e);
-            var r = s(this, t.call(this));
-            r.vertexArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
-            r.indexArr = [ 0, 1, 2, 3 ];
-            r.texCoordArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
-            return r;
+            var n = s(this, t.call(this));
+            n.vertexArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
+            n.indexArr = [ 0, 1, 2, 3 ];
+            n.texCoordArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
+            return n;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    var i = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
+    var r = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
         return typeof t;
     } : function(t) {
         return t && typeof Symbol === "function" && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t;
     };
-    function n(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var o = function t(e, r, i) {
+    var o = function t(e, n, r) {
         if (!e) return true;
-        if (e.indexOf("_") == 0) return true;
-        if (r && r.call) return true;
-        if (typeof r === "string") return false;
-        if (typeof r === "number") return false;
-        if (typeof r === "boolean") return false;
-        return r == null && !i.preserveNull;
+        if (e.indexOf("_") === 0) return true;
+        if (n && n.call) return true;
+        if (typeof n === "string") return false;
+        if (typeof n === "number") return false;
+        if (typeof n === "boolean") return false;
+        return n == null && !r.preserveNull;
     };
     var a = function t(e) {
         return typeof e === "string" || typeof e === "number";
     };
     var s = function t(e) {
-        var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-        if (e === undefined) return undefined; else if (e === null) return null; else if (typeof window !== "undefined" && e === window) return undefined; else if (r.indexOf(e) > -1) return e;
+        var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+        if (e === undefined) return undefined; else if (e === null) return null; else if (typeof window !== "undefined" && e === window) return undefined; else if (n.indexOf(e) > -1) return e;
         if (Object.prototype.toString.call(e) === "[object Array]") {
-            var n = [], o = 0, a = e.length;
+            var i = [], o = 0, a = e.length;
             for (;o < a; o++) {
                 var s = void 0;
-                if (r.indexOf(e[o]) > -1) {
+                if (n.indexOf(e[o]) > -1) {
                     s = e[o];
                 } else {
-                    r.push(e);
-                    s = t(e[o], r);
-                    r.push(e[o]);
+                    n.push(e);
+                    s = t(e[o], n);
+                    n.push(e[o]);
                 }
-                n[o] = s;
+                i[o] = s;
             }
-            return n;
-        } else if ((typeof e === "undefined" ? "undefined" : i(e)) === "object") {
+            return i;
+        } else if ((typeof e === "undefined" ? "undefined" : r(e)) === "object") {
             var u = {};
             for (var f in e) {
                 if (!e.hasOwnProperty(f)) continue;
                 var h = void 0;
-                if (r.indexOf(e[f]) > -1) {
+                if (n.indexOf(e[f]) > -1) {
                     h = e[f];
                 } else {
-                    r.push(e);
-                    h = t(e[f], r);
-                    r.push(e[f]);
+                    n.push(e);
+                    h = t(e[f], n);
+                    n.push(e[f]);
                 }
                 u[f] = h;
             }
@@ -978,27 +978,27 @@
     };
     var u = function() {
         function t() {
-            n(this, t);
+            i(this, t);
         }
         t.prototype.fromJSON = function t() {
             var e = this;
-            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var i = arguments[1];
-            Object.keys(r).forEach(function(t) {
+            var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+            var r = arguments[1];
+            Object.keys(n).forEach(function(t) {
                 if (t === "type") return;
-                if (t in e) e[t] = r[t]; else {
+                if (t in e) e[t] = n[t]; else {
                     console.error(e);
                     throw "::fromJSON(): class " + e.constructor.name + " has no property " + t;
                 }
                 if (!e[t]) return;
-                if (r[t].id && r[t].type) e[t] = e.game.repository.getObject(r[t].id, r[t].type, i); else if (r[t].splice) {
-                    var n = e[t];
+                if (n[t].id && n[t].type) e[t] = e.game.repository.getObject(n[t].id, n[t].type, r); else if (n[t].splice) {
+                    var i = e[t];
                     e[t] = [];
-                    n.forEach(function(r, n) {
-                        if (r && r.type && r.id) {
-                            e[t].push(e.game.repository.getObject(r.id, r.type, i));
+                    i.forEach(function(n, i) {
+                        if (n && n.type && n.id) {
+                            e[t].push(e.game.repository.getObject(n.id, n.type, r));
                         } else {
-                            if (a(r)) e[t].push(r);
+                            if (a(n)) e[t].push(n);
                         }
                     });
                 }
@@ -1008,55 +1008,55 @@
         };
         t.prototype.toJSON = function t() {
             var e = this;
-            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+            var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
                 preserveNull: false
             };
-            var n = {};
+            var i = {};
             for (var u in this) {
-                if (o(u, this[u], r)) {
+                if (o(u, this[u], n)) {
                     continue;
                 }
                 if (this.constructor.transient && this.constructor.transient[u]) {
                     continue;
                 }
                 if (this[u] != null && this[u].type && this[u].id) {
-                    n[u] = {
+                    i[u] = {
                         id: this[u].id,
                         type: this[u].type
                     };
                 } else if (this[u] != null && this[u].splice) {
                     (function() {
                         var t = e[u];
-                        var r = [];
+                        var n = [];
                         t.forEach(function(t) {
                             if (t && t.type && t.id) {
-                                r.push({
+                                n.push({
                                     type: t.type,
                                     id: t.id
                                 });
                             } else {
-                                if (a(t)) r.push(s(t));
+                                if (a(t)) n.push(s(t));
                             }
                         });
-                        n[u] = r;
+                        i[u] = n;
                     })();
                 } else {
                     var f = s(this[u]);
-                    if (f && f.splice && !f.length) continue; else if (f != null && (typeof f === "undefined" ? "undefined" : i(f)) === "object" && !Object.keys(f).length) continue;
-                    n[u] = f;
+                    if (f && f.splice && !f.length) continue; else if (f != null && (typeof f === "undefined" ? "undefined" : r(f)) === "object" && !Object.keys(f).length) continue;
+                    i[u] = f;
                 }
             }
-            return n;
+            return i;
         };
         return t;
     }();
     e.default = u;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -1091,28 +1091,28 @@
         u(e, t);
         e.find = function t(e) {};
         e.findAll = function t(e) {};
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "GameObjectProto";
-            i.spriteSheet = null;
-            i._behaviour = null;
-            i.commonBehaviour = [];
-            i.currFrameIndex = 0;
-            i._sprPosX = 0;
-            i._sprPosY = 0;
-            i.frameAnimations = [];
-            i._currFrameAnimation = 0;
-            i.startFrameAnimationName = null;
-            i._timeCreated = null;
-            i.tileOffset = {
+            var r = s(this, t.call(this, n));
+            r.type = "GameObjectProto";
+            r.spriteSheet = null;
+            r._behaviour = null;
+            r.commonBehaviour = [];
+            r.currFrameIndex = 0;
+            r._sprPosX = 0;
+            r._sprPosY = 0;
+            r.frameAnimations = [];
+            r._currFrameAnimation = 0;
+            r.startFrameAnimationName = null;
+            r._timeCreated = null;
+            r.tileOffset = {
                 x: 0,
                 y: 0
             };
-            i.tileRepeat = false;
-            i.groupName = "";
-            i._individualBehaviour = null;
-            return i;
+            r.tileRepeat = false;
+            r.groupName = "";
+            r._individualBehaviour = null;
+            return r;
         }
         e.prototype.revalidate = function t() {
             var e = this;
@@ -1121,32 +1121,32 @@
                 this.width = this.spriteSheet._frameWidth;
                 this.height = this.spriteSheet._frameHeight;
             }
-            this.frameAnimations.forEach(function(t, r) {
-                e.frameAnimations[r] = e.frameAnimations[r].clone();
-                e.frameAnimations[r]._gameObject = e;
+            this.frameAnimations.forEach(function(t, n) {
+                e.frameAnimations[n] = e.frameAnimations[n].clone();
+                e.frameAnimations[n]._gameObject = e;
             });
         };
-        e.prototype.playFrameAnimation = function t(e, r) {
-            var i = this.frameAnimations.find(function(t) {
+        e.prototype.playFrameAnimation = function t(e, n) {
+            var r = this.frameAnimations.find(function(t) {
                 return t.name === e;
             });
-            i._gameObject = this;
-            this._currFrameAnimation = i;
-            i.play(r);
+            r._gameObject = this;
+            this._currFrameAnimation = r;
+            r.play(n);
         };
         e.prototype.setFrameIndex = function t(e) {
             this.currFrameIndex = e;
             this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
         };
-        e.prototype.update = function e(r, i) {
-            t.prototype.update.call(this, r);
-            this._currFrameAnimation && this._currFrameAnimation.update(r);
-            this.rigidBody.update(r, i);
+        e.prototype.update = function e(n, r) {
+            t.prototype.update.call(this, n);
+            this._currFrameAnimation && this._currFrameAnimation.update(n);
+            this.rigidBody.update(n, r);
             this.game._renderer.draw(this);
-            if (this._individualBehaviour) this._individualBehaviour.onUpdate(r, i);
-            for (var n = 0, o = this.commonBehaviour.length; n < o; n++) {
-                this.commonBehaviour[n].onUpdate(r, i);
+            if (this._individualBehaviour) this._individualBehaviour.onUpdate(n, r);
+            for (var i = 0, o = this.commonBehaviour.length; i < o; i++) {
+                this.commonBehaviour[i].onUpdate(n, r);
             }
         };
         e.prototype.onShow = function t() {
@@ -1160,14 +1160,14 @@
             this._layer.kill(this);
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -1200,1701 +1200,133 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "TileMap";
-            i.spriteSheet = null;
-            i.data = [];
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "TileMap";
+            r.spriteSheet = null;
+            r.data = [];
+            return r;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
 }, function(t, e) {
     t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
-    var i = r(27);
-    var n = o(i);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    var a = {
-        width: 800,
-        height: 400,
-        scaleStrategy: 0,
-        startSceneId: 2,
-        scale: {
-            x: 1,
-            y: 1
-        },
-        pos: {
-            x: 0,
-            y: 0
-        },
-        gravityConstant: 800
-    };
-    if (1 && a.startSceneId == null) throw "start scene not specified";
-    var s = new n.default({
-        width: 800,
-        height: 400,
-        scaleStrategy: 0,
-        startSceneId: 2,
-        scale: {
-            x: 1,
-            y: 1
-        },
-        pos: {
-            x: 0,
-            y: 0
-        },
-        gravityConstant: 800
-    });
-    s.repository.setDescriptions({
-        Scene: [ {
-            id: 2,
-            name: "mainScene",
-            width: 5e3,
-            height: 800,
-            type: "Scene",
-            layers: [ {
-                type: "Layer",
-                id: 2
-            } ],
-            tileMap: {
-                id: 52,
-                type: "TileMap"
-            }
-        } ],
-        Layer: [ {
-            id: 2,
-            name: "layer1",
-            type: "Layer",
-            gameObjects: [ {
-                type: "GameObject",
-                id: 7
-            }, {
-                type: "GameObject",
-                id: 8
-            }, {
-                type: "GameObject",
-                id: 18
-            }, {
-                type: "GameObject",
-                id: 19
-            }, {
-                type: "GameObject",
-                id: 20
-            }, {
-                type: "GameObject",
-                id: 21
-            }, {
-                type: "GameObject",
-                id: 39
-            }, {
-                type: "GameObject",
-                id: 40
-            }, {
-                type: "GameObject",
-                id: 41
-            }, {
-                type: "GameObject",
-                id: 42
-            }, {
-                type: "GameObject",
-                id: 43
-            }, {
-                type: "GameObject",
-                id: 44
-            }, {
-                type: "GameObject",
-                id: 45
-            }, {
-                type: "GameObject",
-                id: 46
-            }, {
-                type: "GameObject",
-                id: 47
-            }, {
-                type: "GameObject",
-                id: 48
-            }, {
-                type: "GameObject",
-                id: 49
-            }, {
-                type: "GameObject",
-                id: 50
-            }, {
-                type: "GameObject",
-                id: 51
-            }, {
-                type: "TextField",
-                id: 56
-            } ]
-        } ],
-        SpriteSheet: [ {
-            name: "dude",
-            width: 288,
-            height: 48,
-            type: "SpriteSheet",
-            numOfFramesH: 9,
-            resourcePath: "resources/dude.png",
-            id: 3
-        }, {
-            name: "platform",
-            width: 500,
-            height: 64,
-            type: "SpriteSheet",
-            resourcePath: "resources/platform.png",
-            id: 5
-        } ],
-        GameObjectProto: [ {
-            id: 4,
-            name: "dude",
-            width: 32,
-            height: 48,
-            type: "GameObjectProto",
-            spriteSheet: {
-                id: 3,
-                type: "SpriteSheet"
-            },
-            commonBehaviour: [ {
-                type: "CommonBehaviour",
-                id: 15
-            } ],
-            frameAnimations: [ {
-                type: "FrameAnimation",
-                id: 11
-            }, {
-                type: "FrameAnimation",
-                id: 12
-            }, {
-                type: "FrameAnimation",
-                id: 13
-            }, {
-                type: "FrameAnimation",
-                id: 14
-            } ]
-        }, {
-            name: "platform",
-            width: 500,
-            height: 64,
-            type: "GameObjectProto",
-            spriteSheet: {
-                id: 5,
-                type: "SpriteSheet"
-            },
-            id: 6
-        } ],
-        GameObject: [ {
-            id: 7,
-            name: "dude",
-            pos: {
-                x: 256,
-                y: 40
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 4,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 8,
-            name: "platform",
-            pos: {
-                x: -261,
-                y: 130
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 18,
-            name: "platform",
-            pos: {
-                x: 112,
-                y: 323
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 19,
-            name: "platform",
-            pos: {
-                x: 395,
-                y: 47
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 20,
-            name: "platform",
-            pos: {
-                x: 677,
-                y: 303
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 21,
-            name: "platform",
-            pos: {
-                x: 228,
-                y: 162
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 39,
-            name: "platform",
-            pos: {
-                x: 1040,
-                y: 176
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 40,
-            name: "platform",
-            pos: {
-                x: 1578,
-                y: 221
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            pos: {
-                x: 0,
-                y: 538
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            },
-            id: 41
-        }, {
-            id: 42,
-            name: "platform",
-            pos: {
-                x: 588,
-                y: 536
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 43,
-            name: "platform",
-            pos: {
-                x: 1165,
-                y: 535
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 44,
-            name: "platform",
-            pos: {
-                x: 1676,
-                y: 481
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 45,
-            name: "platform",
-            pos: {
-                x: 2129,
-                y: 428
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 46,
-            name: "platform",
-            pos: {
-                x: 2571,
-                y: 535
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 47,
-            name: "platform",
-            pos: {
-                x: 3118,
-                y: 507
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 48,
-            name: "platform",
-            pos: {
-                x: 3015,
-                y: 353
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 49,
-            name: "platform",
-            pos: {
-                x: 3648,
-                y: 544
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            id: 50,
-            name: "platform",
-            pos: {
-                x: 4168,
-                y: 508
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            }
-        }, {
-            pos: {
-                x: 4748,
-                y: 612
-            },
-            layerId: 2,
-            type: "GameObject",
-            gameObjectProto: {
-                id: 6,
-                type: "GameObjectProto"
-            },
-            id: 51
-        } ],
-        FrameAnimation: [ {
-            name: "left",
-            type: "FrameAnimation",
-            frames: [ 0, 1, 2, 3 ],
-            id: 11
-        }, {
-            name: "right",
-            type: "FrameAnimation",
-            frames: [ 5, 6, 7, 8 ],
-            id: 12
-        }, {
-            name: "idleLeft",
-            type: "FrameAnimation",
-            frames: [ 4 ],
-            id: 13
-        }, {
-            name: "idleRight",
-            type: "FrameAnimation",
-            frames: [ 4 ],
-            id: 14
-        } ],
-        CommonBehaviour: [ {
-            id: 15,
-            name: "Control2Dir",
-            type: "CommonBehaviour",
-            parameters: {
-                velocity: "130",
-                walkLeftAnimation: "left",
-                walkRightAnimation: "right",
-                idleLeftAnimation: "idleLeft",
-                idleRightAnimation: "idleRight"
-            }
-        } ],
-        Font: [ {
-            name: "font1",
-            type: "Font",
-            resourcePath: "resources/font1.png",
-            fontSize: 21,
-            fontFamily: "Berlin Sans FB",
-            fontContext: {
-                symbols: {
-                    "0": {
-                        x: 258,
-                        y: 4,
-                        width: 12,
-                        height: 23
-                    },
-                    "1": {
-                        x: 279,
-                        y: 4,
-                        width: 5,
-                        height: 23
-                    },
-                    "2": {
-                        x: 293,
-                        y: 4,
-                        width: 10,
-                        height: 23
-                    },
-                    "3": {
-                        x: 4,
-                        y: 35,
-                        width: 9,
-                        height: 23
-                    },
-                    "4": {
-                        x: 21,
-                        y: 35,
-                        width: 10,
-                        height: 23
-                    },
-                    "5": {
-                        x: 40,
-                        y: 35,
-                        width: 9,
-                        height: 23
-                    },
-                    "6": {
-                        x: 58,
-                        y: 35,
-                        width: 10,
-                        height: 23
-                    },
-                    "7": {
-                        x: 77,
-                        y: 35,
-                        width: 9,
-                        height: 23
-                    },
-                    "8": {
-                        x: 94,
-                        y: 35,
-                        width: 9,
-                        height: 23
-                    },
-                    "9": {
-                        x: 112,
-                        y: 35,
-                        width: 10,
-                        height: 23
-                    },
-                    " ": {
-                        x: 4,
-                        y: 4,
-                        width: 5,
-                        height: 23
-                    },
-                    "!": {
-                        x: 17,
-                        y: 4,
-                        width: 4,
-                        height: 23
-                    },
-                    '"': {
-                        x: 30,
-                        y: 4,
-                        width: 6,
-                        height: 23
-                    },
-                    "#": {
-                        x: 44,
-                        y: 4,
-                        width: 13,
-                        height: 23
-                    },
-                    $: {
-                        x: 66,
-                        y: 4,
-                        width: 9,
-                        height: 23
-                    },
-                    "%": {
-                        x: 83,
-                        y: 4,
-                        width: 15,
-                        height: 23
-                    },
-                    "&": {
-                        x: 106,
-                        y: 4,
-                        width: 14,
-                        height: 23
-                    },
-                    "'": {
-                        x: 129,
-                        y: 4,
-                        width: 3,
-                        height: 23
-                    },
-                    "(": {
-                        x: 140,
-                        y: 4,
-                        width: 7,
-                        height: 23
-                    },
-                    ")": {
-                        x: 156,
-                        y: 4,
-                        width: 7,
-                        height: 23
-                    },
-                    "*": {
-                        x: 171,
-                        y: 4,
-                        width: 7,
-                        height: 23
-                    },
-                    "+": {
-                        x: 187,
-                        y: 4,
-                        width: 8,
-                        height: 23
-                    },
-                    ",": {
-                        x: 203,
-                        y: 4,
-                        width: 4,
-                        height: 23
-                    },
-                    "-": {
-                        x: 216,
-                        y: 4,
-                        width: 8,
-                        height: 23
-                    },
-                    ".": {
-                        x: 232,
-                        y: 4,
-                        width: 4,
-                        height: 23
-                    },
-                    "/": {
-                        x: 244,
-                        y: 4,
-                        width: 6,
-                        height: 23
-                    },
-                    ":": {
-                        x: 130,
-                        y: 35,
-                        width: 4,
-                        height: 23
-                    },
-                    ";": {
-                        x: 143,
-                        y: 35,
-                        width: 4,
-                        height: 23
-                    },
-                    "<": {
-                        x: 155,
-                        y: 35,
-                        width: 7,
-                        height: 23
-                    },
-                    "=": {
-                        x: 170,
-                        y: 35,
-                        width: 9,
-                        height: 23
-                    },
-                    ">": {
-                        x: 187,
-                        y: 35,
-                        width: 7,
-                        height: 23
-                    },
-                    "?": {
-                        x: 203,
-                        y: 35,
-                        width: 8,
-                        height: 23
-                    },
-                    "@": {
-                        x: 219,
-                        y: 35,
-                        width: 13,
-                        height: 23
-                    },
-                    A: {
-                        x: 240,
-                        y: 35,
-                        width: 13,
-                        height: 23
-                    },
-                    B: {
-                        x: 262,
-                        y: 35,
-                        width: 12,
-                        height: 23
-                    },
-                    C: {
-                        x: 283,
-                        y: 35,
-                        width: 12,
-                        height: 23
-                    },
-                    D: {
-                        x: 4,
-                        y: 66,
-                        width: 14,
-                        height: 23
-                    },
-                    E: {
-                        x: 26,
-                        y: 66,
-                        width: 11,
-                        height: 23
-                    },
-                    F: {
-                        x: 45,
-                        y: 66,
-                        width: 11,
-                        height: 23
-                    },
-                    G: {
-                        x: 64,
-                        y: 66,
-                        width: 14,
-                        height: 23
-                    },
-                    H: {
-                        x: 86,
-                        y: 66,
-                        width: 15,
-                        height: 23
-                    },
-                    I: {
-                        x: 109,
-                        y: 66,
-                        width: 4,
-                        height: 23
-                    },
-                    J: {
-                        x: 122,
-                        y: 66,
-                        width: 5,
-                        height: 23
-                    },
-                    K: {
-                        x: 136,
-                        y: 66,
-                        width: 12,
-                        height: 23
-                    },
-                    L: {
-                        x: 157,
-                        y: 66,
-                        width: 10,
-                        height: 23
-                    },
-                    M: {
-                        x: 175,
-                        y: 66,
-                        width: 16,
-                        height: 23
-                    },
-                    N: {
-                        x: 200,
-                        y: 66,
-                        width: 15,
-                        height: 23
-                    },
-                    O: {
-                        x: 223,
-                        y: 66,
-                        width: 15,
-                        height: 23
-                    },
-                    P: {
-                        x: 246,
-                        y: 66,
-                        width: 13,
-                        height: 23
-                    },
-                    Q: {
-                        x: 267,
-                        y: 66,
-                        width: 15,
-                        height: 23
-                    },
-                    R: {
-                        x: 291,
-                        y: 66,
-                        width: 12,
-                        height: 23
-                    },
-                    S: {
-                        x: 4,
-                        y: 97,
-                        width: 9,
-                        height: 23
-                    },
-                    T: {
-                        x: 21,
-                        y: 97,
-                        width: 10,
-                        height: 23
-                    },
-                    U: {
-                        x: 40,
-                        y: 97,
-                        width: 13,
-                        height: 23
-                    },
-                    V: {
-                        x: 62,
-                        y: 97,
-                        width: 13,
-                        height: 23
-                    },
-                    W: {
-                        x: 83,
-                        y: 97,
-                        width: 18,
-                        height: 23
-                    },
-                    X: {
-                        x: 110,
-                        y: 97,
-                        width: 12,
-                        height: 23
-                    },
-                    Y: {
-                        x: 130,
-                        y: 97,
-                        width: 12,
-                        height: 23
-                    },
-                    Z: {
-                        x: 150,
-                        y: 97,
-                        width: 10,
-                        height: 23
-                    },
-                    "[": {
-                        x: 169,
-                        y: 97,
-                        width: 7,
-                        height: 23
-                    },
-                    "\\": {
-                        x: 184,
-                        y: 97,
-                        width: 6,
-                        height: 23
-                    },
-                    "]": {
-                        x: 198,
-                        y: 97,
-                        width: 7,
-                        height: 23
-                    },
-                    "^": {
-                        x: 214,
-                        y: 97,
-                        width: 9,
-                        height: 23
-                    },
-                    _: {
-                        x: 232,
-                        y: 97,
-                        width: 9,
-                        height: 23
-                    },
-                    "`": {
-                        x: 249,
-                        y: 97,
-                        width: 7,
-                        height: 23
-                    },
-                    a: {
-                        x: 264,
-                        y: 97,
-                        width: 11,
-                        height: 23
-                    },
-                    b: {
-                        x: 284,
-                        y: 97,
-                        width: 11,
-                        height: 23
-                    },
-                    c: {
-                        x: 303,
-                        y: 97,
-                        width: 8,
-                        height: 23
-                    },
-                    d: {
-                        x: 4,
-                        y: 128,
-                        width: 11,
-                        height: 23
-                    },
-                    e: {
-                        x: 23,
-                        y: 128,
-                        width: 10,
-                        height: 23
-                    },
-                    f: {
-                        x: 41,
-                        y: 128,
-                        width: 6,
-                        height: 23
-                    },
-                    g: {
-                        x: 55,
-                        y: 128,
-                        width: 10,
-                        height: 23
-                    },
-                    h: {
-                        x: 74,
-                        y: 128,
-                        width: 10,
-                        height: 23
-                    },
-                    i: {
-                        x: 93,
-                        y: 128,
-                        width: 4,
-                        height: 23
-                    },
-                    j: {
-                        x: 106,
-                        y: 128,
-                        width: 4,
-                        height: 23
-                    },
-                    k: {
-                        x: 119,
-                        y: 128,
-                        width: 11,
-                        height: 23
-                    },
-                    l: {
-                        x: 138,
-                        y: 128,
-                        width: 4,
-                        height: 23
-                    },
-                    m: {
-                        x: 151,
-                        y: 128,
-                        width: 17,
-                        height: 23
-                    },
-                    n: {
-                        x: 176,
-                        y: 128,
-                        width: 10,
-                        height: 23
-                    },
-                    o: {
-                        x: 195,
-                        y: 128,
-                        width: 10,
-                        height: 23
-                    },
-                    p: {
-                        x: 214,
-                        y: 128,
-                        width: 11,
-                        height: 23
-                    },
-                    q: {
-                        x: 234,
-                        y: 128,
-                        width: 11,
-                        height: 23
-                    },
-                    r: {
-                        x: 254,
-                        y: 128,
-                        width: 6,
-                        height: 23
-                    },
-                    s: {
-                        x: 269,
-                        y: 128,
-                        width: 6,
-                        height: 23
-                    },
-                    t: {
-                        x: 283,
-                        y: 128,
-                        width: 7,
-                        height: 23
-                    },
-                    u: {
-                        x: 298,
-                        y: 128,
-                        width: 11,
-                        height: 23
-                    },
-                    v: {
-                        x: 4,
-                        y: 159,
-                        width: 10,
-                        height: 23
-                    },
-                    w: {
-                        x: 22,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    x: {
-                        x: 45,
-                        y: 159,
-                        width: 9,
-                        height: 23
-                    },
-                    y: {
-                        x: 63,
-                        y: 159,
-                        width: 9,
-                        height: 23
-                    },
-                    z: {
-                        x: 81,
-                        y: 159,
-                        width: 8,
-                        height: 23
-                    },
-                    "{": {
-                        x: 97,
-                        y: 159,
-                        width: 7,
-                        height: 23
-                    },
-                    "|": {
-                        x: 113,
-                        y: 159,
-                        width: 5,
-                        height: 23
-                    },
-                    "}": {
-                        x: 126,
-                        y: 159,
-                        width: 7,
-                        height: 23
-                    },
-                    "~": {
-                        x: 141,
-                        y: 159,
-                        width: 10,
-                        height: 23
-                    },
-                    "": {
-                        x: 159,
-                        y: 159,
-                        width: 10,
-                        height: 23
-                    },
-                    "": {
-                        x: 178,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 201,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 225,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 249,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 273,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 296,
-                        y: 159,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 4,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 27,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 51,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 75,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 99,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 122,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 146,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 170,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 194,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 217,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 241,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 265,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 289,
-                        y: 190,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 4,
-                        y: 221,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 27,
-                        y: 221,
-                        width: 15,
-                        height: 23
-                    },
-                    "": {
-                        x: 51,
-                        y: 221,
-                        width: 15,
-                        height: 23
-                    },
-                    "А": {
-                        x: 75,
-                        y: 221,
-                        width: 15,
-                        height: 23
-                    },
-                    "Б": {
-                        x: 98,
-                        y: 221,
-                        width: 12,
-                        height: 23
-                    },
-                    "В": {
-                        x: 118,
-                        y: 221,
-                        width: 14,
-                        height: 23
-                    },
-                    "Г": {
-                        x: 140,
-                        y: 221,
-                        width: 12,
-                        height: 23
-                    },
-                    "Д": {
-                        x: 160,
-                        y: 221,
-                        width: 14,
-                        height: 23
-                    },
-                    "Е": {
-                        x: 182,
-                        y: 221,
-                        width: 12,
-                        height: 23
-                    },
-                    "Ж": {
-                        x: 203,
-                        y: 221,
-                        width: 18,
-                        height: 23
-                    },
-                    "З": {
-                        x: 230,
-                        y: 221,
-                        width: 10,
-                        height: 23
-                    },
-                    "И": {
-                        x: 249,
-                        y: 221,
-                        width: 15,
-                        height: 23
-                    },
-                    "Й": {
-                        x: 272,
-                        y: 221,
-                        width: 15,
-                        height: 23
-                    },
-                    "К": {
-                        x: 295,
-                        y: 221,
-                        width: 14,
-                        height: 23
-                    },
-                    "Л": {
-                        x: 4,
-                        y: 252,
-                        width: 14,
-                        height: 23
-                    },
-                    "М": {
-                        x: 26,
-                        y: 252,
-                        width: 18,
-                        height: 23
-                    },
-                    "Н": {
-                        x: 52,
-                        y: 252,
-                        width: 15,
-                        height: 23
-                    },
-                    "О": {
-                        x: 76,
-                        y: 252,
-                        width: 15,
-                        height: 23
-                    },
-                    "П": {
-                        x: 99,
-                        y: 252,
-                        width: 15,
-                        height: 23
-                    },
-                    "Р": {
-                        x: 122,
-                        y: 252,
-                        width: 11,
-                        height: 23
-                    },
-                    "С": {
-                        x: 142,
-                        y: 252,
-                        width: 14,
-                        height: 23
-                    },
-                    "Т": {
-                        x: 164,
-                        y: 252,
-                        width: 12,
-                        height: 23
-                    },
-                    "У": {
-                        x: 184,
-                        y: 252,
-                        width: 14,
-                        height: 23
-                    },
-                    "Ф": {
-                        x: 207,
-                        y: 252,
-                        width: 16,
-                        height: 23
-                    },
-                    "Х": {
-                        x: 232,
-                        y: 252,
-                        width: 15,
-                        height: 23
-                    },
-                    "Ц": {
-                        x: 255,
-                        y: 252,
-                        width: 15,
-                        height: 23
-                    },
-                    "Ч": {
-                        x: 278,
-                        y: 252,
-                        width: 13,
-                        height: 23
-                    },
-                    "Ш": {
-                        x: 4,
-                        y: 283,
-                        width: 21,
-                        height: 23
-                    },
-                    "Щ": {
-                        x: 33,
-                        y: 283,
-                        width: 21,
-                        height: 23
-                    },
-                    "Ъ": {
-                        x: 62,
-                        y: 283,
-                        width: 14,
-                        height: 23
-                    },
-                    "Ы": {
-                        x: 85,
-                        y: 283,
-                        width: 18,
-                        height: 23
-                    },
-                    "Ь": {
-                        x: 111,
-                        y: 283,
-                        width: 12,
-                        height: 23
-                    },
-                    "Э": {
-                        x: 131,
-                        y: 283,
-                        width: 13,
-                        height: 23
-                    },
-                    "Ю": {
-                        x: 153,
-                        y: 283,
-                        width: 21,
-                        height: 23
-                    },
-                    "Я": {
-                        x: 183,
-                        y: 283,
-                        width: 14,
-                        height: 23
-                    },
-                    "а": {
-                        x: 205,
-                        y: 283,
-                        width: 9,
-                        height: 23
-                    },
-                    "б": {
-                        x: 222,
-                        y: 283,
-                        width: 10,
-                        height: 23
-                    },
-                    "в": {
-                        x: 241,
-                        y: 283,
-                        width: 9,
-                        height: 23
-                    },
-                    "г": {
-                        x: 258,
-                        y: 283,
-                        width: 8,
-                        height: 23
-                    },
-                    "д": {
-                        x: 275,
-                        y: 283,
-                        width: 10,
-                        height: 23
-                    },
-                    "е": {
-                        x: 294,
-                        y: 283,
-                        width: 9,
-                        height: 23
-                    },
-                    "ж": {
-                        x: 4,
-                        y: 314,
-                        width: 14,
-                        height: 23
-                    },
-                    "з": {
-                        x: 26,
-                        y: 314,
-                        width: 8,
-                        height: 23
-                    },
-                    "и": {
-                        x: 42,
-                        y: 314,
-                        width: 11,
-                        height: 23
-                    },
-                    "й": {
-                        x: 62,
-                        y: 314,
-                        width: 11,
-                        height: 23
-                    },
-                    "к": {
-                        x: 81,
-                        y: 314,
-                        width: 10,
-                        height: 23
-                    },
-                    "л": {
-                        x: 99,
-                        y: 314,
-                        width: 10,
-                        height: 23
-                    },
-                    "м": {
-                        x: 117,
-                        y: 314,
-                        width: 13,
-                        height: 23
-                    },
-                    "н": {
-                        x: 139,
-                        y: 314,
-                        width: 11,
-                        height: 23
-                    },
-                    "о": {
-                        x: 158,
-                        y: 314,
-                        width: 10,
-                        height: 23
-                    },
-                    "п": {
-                        x: 176,
-                        y: 314,
-                        width: 11,
-                        height: 23
-                    },
-                    "р": {
-                        x: 196,
-                        y: 314,
-                        width: 10,
-                        height: 23
-                    },
-                    "с": {
-                        x: 214,
-                        y: 314,
-                        width: 9,
-                        height: 23
-                    },
-                    "т": {
-                        x: 232,
-                        y: 314,
-                        width: 9,
-                        height: 23
-                    },
-                    "у": {
-                        x: 249,
-                        y: 314,
-                        width: 10,
-                        height: 23
-                    },
-                    "ф": {
-                        x: 267,
-                        y: 314,
-                        width: 13,
-                        height: 23
-                    },
-                    "х": {
-                        x: 289,
-                        y: 314,
-                        width: 10,
-                        height: 23
-                    },
-                    "ц": {
-                        x: 4,
-                        y: 345,
-                        width: 11,
-                        height: 23
-                    },
-                    "ч": {
-                        x: 23,
-                        y: 345,
-                        width: 10,
-                        height: 23
-                    },
-                    "ш": {
-                        x: 41,
-                        y: 345,
-                        width: 16,
-                        height: 23
-                    },
-                    "щ": {
-                        x: 65,
-                        y: 345,
-                        width: 16,
-                        height: 23
-                    },
-                    "ъ": {
-                        x: 90,
-                        y: 345,
-                        width: 10,
-                        height: 23
-                    },
-                    "ы": {
-                        x: 108,
-                        y: 345,
-                        width: 14,
-                        height: 23
-                    },
-                    "ь": {
-                        x: 131,
-                        y: 345,
-                        width: 9,
-                        height: 23
-                    },
-                    "э": {
-                        x: 148,
-                        y: 345,
-                        width: 9,
-                        height: 23
-                    },
-                    "ю": {
-                        x: 165,
-                        y: 345,
-                        width: 15,
-                        height: 23
-                    },
-                    "я": {
-                        x: 189,
-                        y: 345,
-                        width: 9,
-                        height: 23
-                    },
-                    "ѐ": {
-                        x: 207,
-                        y: 345,
-                        width: 9,
-                        height: 23
-                    },
-                    "ё": {
-                        x: 224,
-                        y: 345,
-                        width: 9,
-                        height: 23
-                    },
-                    "ђ": {
-                        x: 241,
-                        y: 345,
-                        width: 10,
-                        height: 23
-                    },
-                    "ѓ": {
-                        x: 259,
-                        y: 345,
-                        width: 8,
-                        height: 23
-                    },
-                    "є": {
-                        x: 276,
-                        y: 345,
-                        width: 9,
-                        height: 23
-                    },
-                    "ѕ": {
-                        x: 293,
-                        y: 345,
-                        width: 8,
-                        height: 23
-                    },
-                    "і": {
-                        x: 309,
-                        y: 345,
-                        width: 5,
-                        height: 23
-                    },
-                    "ї": {
-                        x: 4,
-                        y: 376,
-                        width: 5,
-                        height: 23
-                    },
-                    "ј": {
-                        x: 17,
-                        y: 376,
-                        width: 5,
-                        height: 23
-                    },
-                    "љ": {
-                        x: 31,
-                        y: 376,
-                        width: 15,
-                        height: 23
-                    },
-                    "њ": {
-                        x: 54,
-                        y: 376,
-                        width: 15,
-                        height: 23
-                    },
-                    "ћ": {
-                        x: 78,
-                        y: 376,
-                        width: 10,
-                        height: 23
-                    }
-                },
-                width: 320,
-                height: 403
-            },
-            id: 22
-        } ],
-        TileMap: [ {
-            type: "TileMap",
-            id: 52
-        } ],
-        TextField: [ {
-            id: 56,
-            name: "textField1",
-            width: 78,
-            height: 23,
-            pos: {
-                x: 453,
-                y: 302
-            },
-            layerId: 2,
-            type: "TextField",
-            text: "test string",
-            font: {
-                id: 22,
-                type: "Font"
-            }
-        } ]
-    });
-    var u = s.repository.getObject(a.startSceneId, "Scene");
-    s.runScene(u);
-    if (true) window.repository = s.repository;
-}, function(t, e, r) {
-    "use strict";
-    e.__esModule = true;
-    e.Control2Dir = e.Control4Dir = e.Draggable = undefined;
-    var i = r(20);
-    var n = f(i);
-    var o = r(19);
+    var r = n(31);
+    var i = f(r);
+    var o = n(60);
     var a = f(o);
-    var s = r(18);
+    var s = n(61);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    e.Draggable = n.default;
+    var h = JSON.parse(a.default);
+    var c = JSON.parse(u.default);
+    if (1 && h.startSceneId === undefined) throw "start scene not specified";
+    var l = new i.default(h);
+    l.repository.setDescriptions(c);
+    var p = l.repository.getObject(h.startSceneId, "Scene");
+    l.runScene(p);
+    if (true) window.repository = l.repository;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.PlatformBehaviour = e.MainSceneBehaviour = e.DudeBehaviour = undefined;
+    var r = n(18);
+    var i = n(19);
+    var o = n(20);
+    e.DudeBehaviour = r.DudeBehaviour;
+    e.MainSceneBehaviour = i.MainSceneBehaviour;
+    e.PlatformBehaviour = o.PlatformBehaviour;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    function r(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var i = e.DudeBehaviour = function() {
+        function t() {
+            r(this, t);
+        }
+        t.prototype.onCreate = function t() {
+            this.game.camera.followTo(this.gameObject);
+        };
+        t.prototype.onUpdate = function t() {
+            if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP)) {
+                if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.add(0, -340);
+            }
+        };
+        t.prototype.onDestroy = function t() {};
+        return t;
+    }();
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    function r(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var i = e.MainSceneBehaviour = function() {
+        function t() {
+            r(this, t);
+        }
+        t.prototype.onCreate = function t() {};
+        t.prototype.onUpdate = function t() {};
+        t.prototype.onDestroy = function t() {};
+        return t;
+    }();
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    function r(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var i = e.PlatformBehaviour = function() {
+        function t() {
+            r(this, t);
+        }
+        t.prototype.onCreate = function t() {
+            this.gameObject.rigidBody.static = true;
+        };
+        t.prototype.onUpdate = function t() {};
+        t.prototype.onDestroy = function t() {};
+        return t;
+    }();
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.Control2Dir = e.Control4Dir = e.Draggable = undefined;
+    var r = n(24);
+    var i = f(r);
+    var o = n(23);
+    var a = f(o);
+    var s = n(22);
+    var u = f(s);
+    function f(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    e.Draggable = i.default;
     e.Control4Dir = a.default;
     e.Control2Dir = u.default;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(21);
-    var n = o(i);
+    var r = n(25);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2927,23 +1359,23 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            return s(this, t.call(this, r));
+            return s(this, t.call(this, n));
         }
-        e.prototype.manage = function e(r, i) {
-            t.prototype.manage.call(this, r, i);
+        e.prototype.manage = function e(n, r) {
+            t.prototype.manage.call(this, n, r);
         };
         e.prototype.onUpdate = function t() {
             var e = this.game.keyboard;
-            var r = this.parameters;
-            var i = this.gameObject;
+            var n = this.parameters;
+            var r = this.gameObject;
             if (e.isPressed(e.KEY.LEFT)) {
-                i.rigidBody.vel.x = -r.velocity;
+                r.rigidBody.vel.x = -n.velocity;
                 this.go("Left");
             }
             if (e.isPressed(e.KEY.RIGHT)) {
-                i.rigidBody.vel.x = r.velocity;
+                r.rigidBody.vel.x = n.velocity;
                 this.go("Right");
             }
             if (e.isJustReleased(e.KEY.LEFT)) {
@@ -2953,14 +1385,14 @@
             }
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(22);
-    var n = o(i);
+    var r = n(26);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2993,31 +1425,31 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            return s(this, t.call(this, r));
+            return s(this, t.call(this, n));
         }
-        e.prototype.manage = function e(r, i) {
-            t.prototype.manage.call(this, r, i);
+        e.prototype.manage = function e(n, r) {
+            t.prototype.manage.call(this, n, r);
         };
         e.prototype.onUpdate = function t() {
             var e = this.game.keyboard;
-            var r = this.parameters;
-            var i = this.gameObject;
+            var n = this.parameters;
+            var r = this.gameObject;
             if (e.isPressed(e.KEY.UP)) {
-                i.rigidBody.vel.y = -r.velocity;
+                r.rigidBody.vel.y = -n.velocity;
                 this.go("Up");
             }
             if (e.isPressed(e.KEY.DOWN)) {
-                i.rigidBody.vel.y = r.velocity;
+                r.rigidBody.vel.y = n.velocity;
                 this.go("Down");
             }
             if (e.isPressed(e.KEY.LEFT)) {
-                i.rigidBody.vel.x = -r.velocity;
+                r.rigidBody.vel.x = -n.velocity;
                 this.go("Left");
             }
             if (e.isPressed(e.KEY.RIGHT)) {
-                i.rigidBody.vel.x = r.velocity;
+                r.rigidBody.vel.x = n.velocity;
                 this.go("Right");
             }
             if (e.isJustReleased(e.KEY.LEFT)) {
@@ -3031,14 +1463,14 @@
             }
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = o(i);
+    var r = n(6);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3074,20 +1506,20 @@
         e._getEventId = function t(e) {
             return e.id || 1;
         };
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this));
-            i.game = r;
-            i.points = {};
-            return i;
+            var r = s(this, t.call(this));
+            r.game = n;
+            r.points = {};
+            return r;
         }
-        e.prototype.manage = function t(r, i) {
-            var n = this;
-            r.on("click", function(t) {
-                n.points[e._getEventId(t)] = {
+        e.prototype.manage = function t(n, r) {
+            var i = this;
+            n.on("click", function(t) {
+                i.points[e._getEventId(t)] = {
                     mX: t.objectX,
                     mY: t.objectY,
-                    target: r,
+                    target: n,
                     preventDefault: function t() {
                         this.defaultPrevented = true;
                     }
@@ -3095,48 +1527,48 @@
             });
             var o = this.game.getCurrScene();
             o.on("mouseDown", function(t) {
-                var r = e._getEventId(t);
-                var i = n.points[r];
-                if (!i) return;
-                i.dragStartX = i.target.pos.x;
-                i.dragStartY = i.target.pos.y;
+                var n = e._getEventId(t);
+                var r = i.points[n];
+                if (!r) return;
+                r.dragStartX = r.target.pos.x;
+                r.dragStartY = r.target.pos.y;
             });
             o.on("mouseMove", function(t) {
-                var i = e._getEventId(t);
-                var o = n.points[i];
+                var r = e._getEventId(t);
+                var o = i.points[r];
                 if (!o) return;
                 if (!o.dragStart) {
                     o.dragStart = true;
                     o.target.trigger("dragStart", o);
                     if (o.defaultPrevented) {
-                        delete n.points[i];
+                        delete i.points[r];
                         return;
                     }
                 }
-                r.pos.x = t.screenX - o.mX;
-                r.pos.y = t.screenY - o.mY;
+                n.pos.x = t.screenX - o.mX;
+                n.pos.y = t.screenY - o.mY;
             });
             o.on("mouseUp", function(t) {
-                var i = e._getEventId(t);
-                var o = n.points[i];
+                var r = e._getEventId(t);
+                var o = i.points[r];
                 if (!o) return;
                 if (o.dragStart) {
-                    o.x = r.pos.x;
-                    o.y = r.pos.y;
+                    o.x = n.pos.x;
+                    o.y = n.pos.y;
                     o.target.trigger("dragStop", o);
                 }
-                delete n.points[i];
+                delete i.points[r];
             });
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i, n;
-    var o = r(7);
+    var r, i;
+    var o = n(7);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3168,28 +1600,28 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var c = (n = i = function(t) {
+    var c = (i = r = function(t) {
         h(e, t);
-        function e(r) {
+        function e(n) {
             u(this, e);
-            return f(this, t.call(this, r));
+            return f(this, t.call(this, n));
         }
-        e.prototype.manage = function r(i, n) {
-            t.prototype.manage.call(this, i, n, e.DIRS);
+        e.prototype.manage = function n(r, i) {
+            t.prototype.manage.call(this, r, i, e.DIRS);
         };
         e.prototype.stop = function e() {
             t.prototype.stop.call(this);
             this.gameObject.rigidBody.vel.x = 0;
         };
         return e;
-    }(a.default), i.DIRS = [ "Left", "Right" ], n);
+    }(a.default), r.DIRS = [ "Left", "Right" ], i);
     e.default = c;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i, n;
-    var o = r(7);
+    var r, i;
+    var o = n(7);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3221,14 +1653,14 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var c = (n = i = function(t) {
+    var c = (i = r = function(t) {
         h(e, t);
-        function e(r) {
+        function e(n) {
             u(this, e);
-            return f(this, t.call(this, r));
+            return f(this, t.call(this, n));
         }
-        e.prototype.manage = function r(i, n) {
-            t.prototype.manage.call(this, i, n, e.DIRS);
+        e.prototype.manage = function n(r, i) {
+            t.prototype.manage.call(this, r, i, e.DIRS);
         };
         e.prototype.stop = function e() {
             t.prototype.stop.call(this);
@@ -3236,19 +1668,19 @@
             this.gameObject.rigidBody.vel.y = 0;
         };
         return e;
-    }(a.default), i.DIRS = [ "Left", "Right", "Up", "Down" ], n);
+    }(a.default), r.DIRS = [ "Left", "Right", "Up", "Down" ], i);
     e.default = c;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            r(this, t);
             this.objFollowTo = null;
             this.scene = null;
             this.pos = {
@@ -3272,37 +1704,37 @@
         t.prototype.update = function t() {
             if (!this.objFollowTo) return;
             var e = this.pos;
-            var r = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0;
-            var i = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
-            var n = this.game.width;
+            var n = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0;
+            var r = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
+            var i = this.game.width;
             var o = this.game.height;
-            var a = n / 2;
+            var a = i / 2;
             var s = o / 2;
             e.x = this.objFollowTo.pos.x - a;
             e.y = this.objFollowTo.pos.y - s;
             if (e.x < 0) e.x = 0;
             if (e.y < 0) e.y = 0;
-            if (e.x > this.sceneWidth - n + r) e.x = this.sceneWidth - n + r;
-            if (e.y > this.sceneHeight - o + i) e.y = this.sceneHeight - o + i;
+            if (e.x > this.sceneWidth - i + n) e.x = this.sceneWidth - i + n;
+            if (e.y > this.sceneHeight - o + r) e.y = this.sceneHeight - o + r;
         };
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = 2;
+    var i = 2;
     var o = 1;
     var a = 0;
     var s = -1;
     var u = function() {
         function t(e) {
-            i(this, t);
+            r(this, t);
             this.KEY = {
                 SPACE: 32,
                 A: 65,
@@ -3340,7 +1772,7 @@
             this.game = e;
         }
         t.prototype.emulatePress = function t(e) {
-            this.buffer[e] = n;
+            this.buffer[e] = i;
         };
         t.prototype.emulateRelease = function t(e) {
             this.buffer[e] = a;
@@ -3349,7 +1781,7 @@
             return this.buffer[e] > s;
         };
         t.prototype.isJustPressed = function t(e) {
-            return this.buffer[e] === n;
+            return this.buffer[e] === i;
         };
         t.prototype.isReleased = function t(e) {
             return this.buffer[e] <= a;
@@ -3362,7 +1794,7 @@
             if (1 && window.canceled) return;
             Object.keys(this.buffer).forEach(function(t) {
                 if (e.buffer[t] === s) delete e.buffer[t]; else if (e.buffer[t] === a) e.buffer[t] = s;
-                if (e.buffer[t] === n) {
+                if (e.buffer[t] === i) {
                     e.buffer[t] = o;
                 }
             });
@@ -3370,23 +1802,23 @@
         t.prototype.listenTo = function t() {
             var e = this;
             window.addEventListener("keydown", function(t) {
-                var r = t.keyCode;
-                e.buffer[r] = n;
+                var n = t.keyCode;
+                e.buffer[n] = i;
             });
             window.addEventListener("keyup", function(t) {
-                var r = t.keyCode;
-                e.buffer[r] = a;
+                var n = t.keyCode;
+                e.buffer[n] = a;
             });
         };
         return t;
     }();
     e.default = u;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
-    var n = o(i);
+    var r = n(1);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3404,36 +1836,36 @@
             this.game = e;
         }
         t.prototype.listenTo = function t(e) {
-            var r = this;
+            var n = this;
             e.ontouchstart = function(t) {
                 var e = t.touches.length;
                 while (e--) {
-                    r.resolveClick(t.touches[e]);
+                    n.resolveClick(t.touches[e]);
                 }
             };
             e.onmousedown = function(t) {
-                t.button === 0 && r.resolveClick(t);
+                t.button === 0 && n.resolveClick(t);
             };
             e.ontouchend = e.ontouchcancel = function(t) {
                 var e = t.changedTouches.length;
                 while (e--) {
-                    r.resolveMouseUp(t.changedTouches[e]);
+                    n.resolveMouseUp(t.changedTouches[e]);
                 }
             };
             e.onmouseup = function(t) {
-                r.resolveMouseUp(t);
+                n.resolveMouseUp(t);
             };
             e.ontouchmove = function(t) {
                 var e = t.touches.length;
                 while (e--) {
-                    r.resolveMouseMove(t.touches[e]);
+                    n.resolveMouseMove(t.touches[e]);
                 }
             };
             e.onmousemove = function(t) {
-                r.resolveMouseMove(t);
+                n.resolveMouseMove(t);
             };
             e.ondblclick = function(t) {
-                r.resolveDoubleClick(t);
+                n.resolveDoubleClick(t);
             };
         };
         t.prototype.resolveScreenPoint = function t(e) {
@@ -3443,17 +1875,17 @@
                 id: e.identifier || 0
             };
         };
-        t.prototype.triggerEvent = function t(e, r) {
-            var i = this.game;
-            var o = i.getCurrScene();
+        t.prototype.triggerEvent = function t(e, n) {
+            var r = this.game;
+            var o = r.getCurrScene();
             if (!o) return;
             var a = this.resolveScreenPoint(e);
             t: for (var s = 0; s < o.layers.length; s++) {
                 var u = o.layers[o.layers.length - 1 - s];
                 for (var f = 0; f < u.gameObjects.length; f++) {
                     var h = u.gameObjects[f];
-                    if (n.default.isPointInRect(a, h.getRect())) {
-                        h.trigger(r, {
+                    if (i.default.isPointInRect(a, h.getRect())) {
+                        h.trigger(n, {
                             screenX: a.x,
                             screenY: a.y,
                             objectX: a.x - h.pos.x,
@@ -3464,7 +1896,7 @@
                     }
                 }
             }
-            o.trigger(r, {
+            o.trigger(n, {
                 screenX: a.x,
                 screenY: a.y,
                 id: a.id,
@@ -3479,93 +1911,93 @@
         };
         t.prototype.resolveMouseMove = function t(e) {
             if (1 && window.canceled) return;
-            var r = this.triggerEvent(e, "mouseMove");
-            if (!r) return;
-            var i = this.objectsCaptured[r.id];
-            if (i && i !== r.object) {
-                i.trigger("mouseLeave");
-                delete this.objectsCaptured[r.id];
+            var n = this.triggerEvent(e, "mouseMove");
+            if (!n) return;
+            var r = this.objectsCaptured[n.id];
+            if (r && r !== n.object) {
+                r.trigger("mouseLeave");
+                delete this.objectsCaptured[n.id];
             }
-            if (r.object && i !== r.object) {
-                r.object.trigger("mouseEnter");
-                this.objectsCaptured[r.id] = r.object;
+            if (n.object && r !== n.object) {
+                n.object.trigger("mouseEnter");
+                this.objectsCaptured[n.id] = n.object;
             }
         };
         t.prototype.resolveMouseUp = function t(e) {
             if (1 && window.canceled) return;
-            var r = this.triggerEvent(e, "mouseUp");
+            var n = this.triggerEvent(e, "mouseUp");
+            if (!n) return;
+            var r = this.objectsCaptured[n.id];
             if (!r) return;
-            var i = this.objectsCaptured[r.id];
-            if (!i) return;
-            i.trigger("mouseUp");
-            delete this.objectsCaptured[r.id];
+            r.trigger("mouseUp");
+            delete this.objectsCaptured[n.id];
         };
         t.prototype.resolveDoubleClick = function t(e) {
             if (1 && window.canceled) return;
-            var r = this.triggerEvent(e, "doubleClick");
-            if (!r) return;
-            delete this.objectsCaptured[r.id];
+            var n = this.triggerEvent(e, "doubleClick");
+            if (!n) return;
+            delete this.objectsCaptured[n.id];
         };
         return t;
     }();
     e.default = s;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t() {
-            i(this, t);
+            r(this, t);
             this.events = {};
         }
-        t.prototype._on = function t(e, r) {
+        t.prototype._on = function t(e, n) {
             this.events[e] = this.events[e] || [];
-            this.events[e].push(r);
+            this.events[e].push(n);
         };
-        t.prototype.on = function t(e, r) {
-            if (typeof e == "string") {
-                this._on(e, r);
+        t.prototype.on = function t(e, n) {
+            if (typeof e === "string") {
+                this._on(e, n);
             } else if (e.splice) {
                 e.forEach(function(t) {
-                    this._on(t, r);
+                    this._on(t, n);
                 });
             }
         };
-        t.prototype.trigger = function t(e, r) {
-            var i = this.events[e];
-            if (!i) return;
-            var n = i.length;
-            while (n--) {
-                i[n](r);
+        t.prototype.trigger = function t(e, n) {
+            var r = this.events[e];
+            if (!r) return;
+            var i = r.length;
+            while (i--) {
+                r[i](n);
             }
         };
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i, n;
-    r(31);
-    var o = r(33);
+    var r, i;
+    n(35);
+    var o = n(37);
     var a = b(o);
-    var s = r(42);
+    var s = n(46);
     var u = b(s);
-    var f = r(25);
+    var f = n(29);
     var h = b(f);
-    var c = r(24);
+    var c = n(28);
     var l = b(c);
-    var p = r(30);
+    var p = n(34);
     var d = b(p);
-    var y = r(8);
-    var m = r(12);
+    var y = n(8);
+    var m = n(12);
     var g = b(m);
-    var v = r(23);
+    var v = n(27);
     var w = b(v);
     function b(t) {
         return t && t.__esModule ? t : {
@@ -3597,41 +2029,41 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var E = (i = (0, y.Transient)({
+    var E = (r = (0, y.Transient)({
         repository: true,
         camera: true,
         keyboard: true
-    }), i(n = function(t) {
+    }), r(i = function(t) {
         O(e, t);
-        function e(r) {
+        function e(n) {
             _(this, e);
-            var i = x(this, t.call(this));
-            i._lastTime = null;
-            i._currTime = null;
-            i._currentScene = null;
-            i._running = false;
-            i.scale = {
+            var r = x(this, t.call(this));
+            r._lastTime = null;
+            r._currTime = null;
+            r._currentScene = null;
+            r._running = false;
+            r.scale = {
                 x: 1,
                 y: 1
             };
-            i.pos = {
+            r.pos = {
                 x: 0,
                 y: 0
             };
-            i.gravityConstant = null;
-            Object.keys(r).forEach(function(t) {
-                i[t] = r[t];
+            r.gravityConstant = null;
+            Object.keys(n).forEach(function(t) {
+                r[t] = n[t];
             });
-            var n = Date.now();
-            i._lastTime = i._currTime = n;
-            i._deltaTime = 0;
-            i.repository = new u.default(i);
-            i._mouse = new h.default(i);
-            i.keyboard = new l.default(i);
-            i.keyboard.listenTo();
-            i._collider = new d.default(i);
-            i.camera = new w.default(i);
-            return i;
+            var i = Date.now();
+            r._lastTime = r._currTime = i;
+            r._deltaTime = 0;
+            r.repository = new u.default(r);
+            r._mouse = new h.default(r);
+            r.keyboard = new l.default(r);
+            r.keyboard.listenTo();
+            r._collider = new d.default(r);
+            r.camera = new w.default(r);
+            return r;
         }
         e.prototype.getTime = function t() {
             return this._lastTime;
@@ -3639,31 +2071,31 @@
         e.prototype.getDeltaTime = function t() {
             return this._deltaTime;
         };
-        e.prototype.runScene = function t(i) {
-            var n = this;
+        e.prototype.runScene = function t(r) {
+            var i = this;
             if (!this._renderer) {
                 this._renderer = a.default.getRenderer(this);
                 this._mouse.listenTo(this._renderer.container);
             }
-            this._currentScene = i;
+            this._currentScene = r;
             if (true) {
-                var o = r(56);
-                var s = "" + i.name[0].toUpperCase() + i.name.substr(1) + "Behaviour";
-                if (s) i.setIndividualBehaviour(o[s]);
-                i.layers.forEach(function(t) {
+                var o = n(17);
+                var s = "" + r.name[0].toUpperCase() + r.name.substr(1) + "Behaviour";
+                if (s) r.setIndividualBehaviour(o[s]);
+                r.layers.forEach(function(t) {
                     t.gameObjects.forEach(function(t) {
                         t.setCommonBehaviour();
                         var e = "" + t.name[0].toUpperCase() + t.name.substr(1) + "Behaviour";
-                        var r = o[e];
-                        if (r) t.setIndividualBehaviour(r);
+                        var n = o[e];
+                        if (n) t.setIndividualBehaviour(n);
                     });
                 });
             }
-            i.preload(function() {
-                n._currentScene.onShow();
-                if (!n._running) {
-                    e.update(n);
-                    n._running = true;
+            r.preload(function() {
+                i._currentScene.onShow();
+                if (!i._running) {
+                    e.update(i);
+                    i._running = true;
                 }
             });
         };
@@ -3673,31 +2105,31 @@
         e.prototype.setCurrScene = function t(e) {
             this._currentScene = e;
         };
-        e.update = function t(r) {
+        e.update = function t(n) {
             if (1 && window.canceled) return;
             requestAnimationFrame(function() {
-                e.update(r);
+                e.update(n);
             });
-            r._lastTime = r._currTime;
-            r._currTime = Date.now();
-            r._deltaTime = r._currTime - r._lastTime;
-            r._currentScene && r._currentScene.update(r._currTime, r._deltaTime);
-            r.keyboard.update();
+            n._lastTime = n._currTime;
+            n._currTime = Date.now();
+            n._deltaTime = n._currTime - n._lastTime;
+            n._currentScene && n._currentScene.update(n._currTime, n._deltaTime);
+            n.keyboard.update();
         };
         return e;
-    }(g.default)) || n);
+    }(g.default)) || i);
     e.default = E;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t() {
-            i(this, t);
+            r(this, t);
             this.tasksResolved = 0;
             this.tasks = [];
             this.tasksProgressById = {};
@@ -3714,12 +2146,12 @@
             });
             return e / this.tasks.length;
         };
-        t.prototype.addTask = function t(e, r) {
+        t.prototype.addTask = function t(e, n) {
             this.tasks.push(e);
-            this.tasksProgressById[r] = 0;
+            this.tasksProgressById[n] = 0;
         };
-        t.prototype.progressTask = function t(e, r) {
-            this.tasksProgressById[e] = r;
+        t.prototype.progressTask = function t(e, n) {
+            this.tasksProgressById[e] = n;
             this.onProgress && this.onProgress(this.calcProgress());
         };
         t.prototype.resolveTask = function t(e) {
@@ -3740,14 +2172,14 @@
         };
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(44);
-    var n = s(i);
-    var o = r(1);
+    var r = n(48);
+    var i = s(r);
+    var o = n(1);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3762,45 +2194,45 @@
     var f = function() {
         function t(e) {
             u(this, t);
-            this.vel = new n.default();
+            this.vel = new i.default();
             this.game = e.game;
             this.gameObject = e;
         }
-        t.prototype.update = function t(e, r) {
-            if (r > 20) r = 20;
+        t.prototype.update = function t(e, n) {
+            if (n > 20) n = 20;
             if (!this.gameObject.rigidBody.static) {
-                var i = this.vel.x * r / 1e3;
-                var n = this.vel.y * r / 1e3;
-                var o = this.gameObject.pos.y + n;
-                this.game._collider.move(this.gameObject, i, n);
+                var r = this.vel.x * n / 1e3;
+                var i = this.vel.y * n / 1e3;
+                var o = this.gameObject.pos.y + i;
+                this.game._collider.move(this.gameObject, r, i);
                 this.gameObject.rigidBody.onFloor = o > this.gameObject.pos.y;
                 if (o !== this.gameObject.pos.y) this.vel.y = 0;
-                this.vel.y += this.game.gravityConstant * r / 1e3;
+                this.vel.y += this.game.gravityConstant * n / 1e3;
             }
         };
         return t;
     }();
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
-    function n(t, e) {
+    var r = n(1);
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var o = function() {
         function t(e) {
-            n(this, t);
+            i(this, t);
             this.game = e;
         }
-        t.prototype.manage = function t(e, r, n) {
-            if (e.pos.x === r && e.pos.y === n) return;
+        t.prototype.manage = function t(e, n, i) {
+            if (e.pos.x === n && e.pos.y === i) return;
             if (!e.rigid) {
-                e.pos.x = r;
-                e.pos.y = n;
+                e.pos.x = n;
+                e.pos.y = i;
                 return;
             } else {}
             var o = false;
@@ -3809,9 +2241,9 @@
                 var f = a[s];
                 if (e === f) continue;
                 var h = e.getRect();
-                h.x = r;
-                h.y = n;
-                if ((0, i.isRectIntersectRect)(h, f.getRect())) {
+                h.x = n;
+                h.y = i;
+                if ((0, r.isRectIntersectRect)(h, f.getRect())) {
                     if (e.rigid && f.rigid) {
                         o = true;
                         e.trigger("collide", f);
@@ -3821,44 +2253,44 @@
                 }
             }
             if (!o) {
-                e.pos.x = r;
-                e.pos.y = n;
+                e.pos.x = n;
+                e.pos.y = i;
             }
             return o;
         };
-        t.prototype.overlapTest = function t(e, r) {
-            return e.x < r.x + r.width && e.x + e.width > r.x && e.y < r.y + r.height && e.y + e.height > r.y;
+        t.prototype.overlapTest = function t(e, n) {
+            return e.x < n.x + n.width && e.x + e.width > n.x && e.y < n.y + n.height && e.y + e.height > n.y;
         };
-        t.prototype.move = function t(e, r, i) {
-            var n = this.game.getCurrScene().getAllGameObjects();
-            for (var o = 0, a = n.length; o < a; o++) {
+        t.prototype.move = function t(e, n, r) {
+            var i = this.game.getCurrScene().getAllGameObjects();
+            for (var o = 0, a = i.length; o < a; o++) {
                 var s = {
-                    x: e.pos.x + r,
+                    x: e.pos.x + n,
                     y: e.pos.y,
                     width: e.width,
                     height: e.height
                 };
                 var u = {
                     x: e.pos.x,
-                    y: e.pos.y + i,
+                    y: e.pos.y + r,
                     width: e.width,
                     height: e.height
                 };
-                var f = n[o].getRect();
-                if (e !== n[o] && this.overlapTest(s, f)) {
-                    if (r < 0) r = f.x + f.width - e.pos.x; else if (r > 0) r = f.x - e.pos.x - e.width;
+                var f = i[o].getRect();
+                if (e !== i[o] && this.overlapTest(s, f)) {
+                    if (n < 0) n = f.x + f.width - e.pos.x; else if (n > 0) n = f.x - e.pos.x - e.width;
                 }
-                if (e !== n[o] && this.overlapTest(u, f)) {
-                    if (i < 0) i = f.y + f.height - e.pos.y; else if (i > 0) i = f.y - e.pos.y - e.height;
+                if (e !== i[o] && this.overlapTest(u, f)) {
+                    if (r < 0) r = f.y + f.height - e.pos.y; else if (r > 0) r = f.y - e.pos.y - e.height;
                 }
             }
-            e.pos.x += r;
-            e.pos.y += i;
+            e.pos.x += n;
+            e.pos.y += r;
         };
         return t;
     }();
     e.default = o;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     Array.prototype.remove = function(t) {
         var e = this.length;
@@ -3880,51 +2312,51 @@
                 throw new TypeError("predicate must be a function");
             }
             var e = Object(this);
-            var r = e.length >>> 0;
-            var i = arguments[1];
-            var n = void 0;
-            for (var o = 0; o < r; o++) {
-                n = e[o];
-                if (t.call(i, n, o, e)) {
-                    return n;
+            var n = e.length >>> 0;
+            var r = arguments[1];
+            var i = void 0;
+            for (var o = 0; o < n; o++) {
+                i = e[o];
+                if (t.call(r, i, o, e)) {
+                    return i;
                 }
             }
             return undefined;
         };
     }
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function() {
+    var i = function() {
         function t(e) {
-            i(this, t);
+            r(this, t);
             this.renderableCache = {};
             this.container = null;
             this.game = e;
         }
         t.prototype.onResize = function t() {
             var e = this.container.height / this.container.width;
-            var r = window.innerHeight / window.innerWidth;
+            var n = window.innerHeight / window.innerWidth;
+            var r = void 0;
             var i = void 0;
-            var n = void 0;
-            if (r < e) {
-                n = window.innerHeight;
-                i = n / e;
+            if (n < e) {
+                i = window.innerHeight;
+                r = i / e;
             } else {
-                i = window.innerWidth;
-                n = i * e;
+                r = window.innerWidth;
+                i = r * e;
             }
-            this.game.scale.x = i / this.game.width;
-            this.game.scale.y = n / this.game.height;
-            this.game.pos.x = (window.innerWidth - i) / 2;
-            this.game.pos.y = (window.innerHeight - n) / 2;
-            this.container.style.width = i + "px";
-            this.container.style.height = n + "px";
+            this.game.scale.x = r / this.game.width;
+            this.game.scale.y = i / this.game.height;
+            this.game.pos.x = (window.innerWidth - r) / 2;
+            this.game.pos.y = (window.innerHeight - i) / 2;
+            this.container.style.width = r + "px";
+            this.container.style.height = i + "px";
         };
         t.prototype.beginFrameBuffer = function t() {};
         t.prototype.flipFrameBuffer = function t() {};
@@ -3935,17 +2367,17 @@
                 e.onResize();
             });
         };
-        t.prototype.loadTextureInfo = function t(e, r) {};
+        t.prototype.loadTextureInfo = function t(e, n) {};
         t.prototype.getTextureInfo = function t(e) {};
         return t;
     }();
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(41);
-    var n = o(i);
+    var r = n(45);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3962,17 +2394,17 @@
         }
         t.getRenderer = function t(e) {
             if (!e) throw "RendererFactory::getRenderer: game param not specified";
-            return new n.default(e);
+            return new i.default(e);
         };
         return t;
     }();
     e.default = s;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(10);
-    var n = o(i);
+    var r = n(10);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3984,17 +2416,17 @@
         }
     }
     var s = function() {
-        function t(e, r, i) {
+        function t(e, n, r) {
             a(this, t);
             if (1 && !e) throw "can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
             this.gl = e;
-            this.width = r;
-            this.height = i;
-            this.texture = new n.default(e);
-            this.texture.setImage(null, r, i);
+            this.width = n;
+            this.height = r;
+            this.texture = new i.default(e);
+            this.texture.setImage(null, n, r);
             this.glRenderBuffer = e.createRenderbuffer();
             e.bindRenderbuffer(e.RENDERBUFFER, this.glRenderBuffer);
-            e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, r, i);
+            e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, n, r);
             this.glFrameBuffer = e.createFramebuffer();
             e.bindFramebuffer(e.FRAMEBUFFER, this.glFrameBuffer);
             e.framebufferTexture2D(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.TEXTURE_2D, this.texture.getGlTexture(), 0);
@@ -4016,12 +2448,12 @@
         return t;
     }();
     e.default = s;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(9);
-    var n = o(i);
+    var r = n(9);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4041,7 +2473,7 @@
         t.prototype.restore = function t() {
             this.stack.pop();
             if (this.stack.length < 1) {
-                this.stack[0] = n.default.makeIdentity();
+                this.stack[0] = i.default.makeIdentity();
             }
         };
         t.prototype.save = function t() {
@@ -4053,66 +2485,66 @@
         t.prototype.setCurrentMatrix = function t(e) {
             return this.stack[this.stack.length - 1] = e;
         };
-        t.prototype.translate = function t(e, r, i) {
-            if (i === undefined) {
-                i = 0;
+        t.prototype.translate = function t(e, n, r) {
+            if (r === undefined) {
+                r = 0;
             }
-            var o = n.default.makeTranslation(e, r, i);
+            var o = i.default.makeTranslation(e, n, r);
             var a = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+            this.setCurrentMatrix(i.default.matrixMultiply(o, a));
         };
         t.prototype.rotateZ = function t(e) {
-            var r = n.default.makeZRotation(e);
-            var i = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+            var n = i.default.makeZRotation(e);
+            var r = this.getCurrentMatrix();
+            this.setCurrentMatrix(i.default.matrixMultiply(n, r));
         };
         t.prototype.rotateY = function t(e) {
-            var r = n.default.makeYRotation(e);
-            var i = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+            var n = i.default.makeYRotation(e);
+            var r = this.getCurrentMatrix();
+            this.setCurrentMatrix(i.default.matrixMultiply(n, r));
         };
-        t.prototype.scale = function t(e, r, i) {
-            if (i === undefined) {
-                i = 1;
+        t.prototype.scale = function t(e, n, r) {
+            if (r === undefined) {
+                r = 1;
             }
-            var o = n.default.makeScale(e, r, i);
+            var o = i.default.makeScale(e, n, r);
             var a = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+            this.setCurrentMatrix(i.default.matrixMultiply(o, a));
         };
         return t;
     }();
     e.default = s;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
+    function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var n = function t() {
-        i(this, t);
+    var i = function t() {
+        r(this, t);
         this.vertexArr = null;
         this.normalArr = null;
         this.texCoordArr = null;
         this.indexArr = null;
     };
-    e.default = n;
-}, function(t, e, r) {
+    e.default = i;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(11);
-    var n = y(i);
-    var o = r(2);
+    var r = n(11);
+    var i = y(r);
+    var o = n(2);
     var a = y(o);
-    var s = r(3);
+    var s = n(3);
     var u = y(s);
-    var f = r(4);
+    var f = n(4);
     var h = y(f);
-    var c = r(5);
+    var c = n(5);
     var l = y(c);
-    var p = r(15);
+    var p = n(15);
     var d = y(p);
     function y(t) {
         return t && t.__esModule ? t : {
@@ -4125,10 +2557,10 @@
         }
     }
     var g = function() {
-        function t(e, r) {
+        function t(e, n) {
             m(this, t);
             this.gl = e;
-            this.plane = new n.default();
+            this.plane = new i.default();
             this.program = new a.default(e, [ l.default, d.default ]);
             this.posVertexBuffer = new u.default(e);
             this.posIndexBuffer = new h.default(e);
@@ -4143,8 +2575,8 @@
         t.prototype.unbind = function t() {
             this.posIndexBuffer.unbind();
         };
-        t.prototype.setUniform = function t(e, r) {
-            this.program.setUniform(e, r);
+        t.prototype.setUniform = function t(e, n) {
+            this.program.setUniform(e, n);
         };
         t.prototype.draw = function t() {
             this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
@@ -4152,19 +2584,19 @@
         return t;
     }();
     e.default = g;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
-    var n = p(i);
-    var o = r(3);
+    var r = n(2);
+    var i = p(r);
+    var o = n(3);
     var a = p(o);
-    var s = r(4);
+    var s = n(4);
     var u = p(s);
-    var f = r(57);
+    var f = n(62);
     var h = p(f);
-    var c = r(59);
+    var c = n(64);
     var l = p(c);
     function p(t) {
         return t && t.__esModule ? t : {
@@ -4177,10 +2609,10 @@
         }
     }
     var y = function() {
-        function t(e, r) {
+        function t(e, n) {
             d(this, t);
             this.gl = e;
-            this.program = new n.default(e, [ h.default, l.default ]);
+            this.program = new i.default(e, [ h.default, l.default ]);
             this.posVertexBuffer = new a.default(e);
             this.texVertexBuffer = new a.default(e);
             this.normalBuffer = new a.default(e);
@@ -4189,22 +2621,22 @@
         }
         t.prototype.bind = function t(e) {
             this.program.bind();
-            var r = this.gl;
-            var i = this.program;
-            this.posVertexBuffer.setData(e.vertexArr, r.FLOAT, 3);
-            i.bindBuffer(this.posVertexBuffer, "a_position");
-            this.texVertexBuffer.setData(e.texCoordArr, r.FLOAT, 2);
-            i.bindBuffer(this.texVertexBuffer, "a_texcoord");
-            this.normalBuffer.setData(e.normalArr, r.FLOAT, 3);
-            i.bindBuffer(this.normalBuffer, "a_normal");
+            var n = this.gl;
+            var r = this.program;
+            this.posVertexBuffer.setData(e.vertexArr, n.FLOAT, 3);
+            r.bindBuffer(this.posVertexBuffer, "a_position");
+            this.texVertexBuffer.setData(e.texCoordArr, n.FLOAT, 2);
+            r.bindBuffer(this.texVertexBuffer, "a_texcoord");
+            this.normalBuffer.setData(e.normalArr, n.FLOAT, 3);
+            r.bindBuffer(this.normalBuffer, "a_normal");
             this.posIndexBuffer.setData(e.indexArr);
             this.posIndexBuffer.bind();
         };
         t.prototype.unbind = function t() {
             this.posIndexBuffer.unbind();
         };
-        t.prototype.setUniform = function t(e, r) {
-            this.program.setUniform(e, r);
+        t.prototype.setUniform = function t(e, n) {
+            this.program.setUniform(e, n);
         };
         t.prototype.draw = function t() {
             this.gl.drawElements(this.gl.TRIANGLES, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
@@ -4212,17 +2644,17 @@
         return t;
     }();
     e.default = y;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
-    var n = c(i);
-    var o = r(3);
+    var r = n(2);
+    var i = c(r);
+    var o = n(3);
     var a = c(o);
-    var s = r(5);
+    var s = n(5);
     var u = c(s);
-    var f = r(15);
+    var f = n(15);
     var h = c(f);
     function c(t) {
         return t && t.__esModule ? t : {
@@ -4238,7 +2670,7 @@
         function t(e) {
             l(this, t);
             this.gl = e;
-            this.program = new n.default(e, [ u.default, h.default ]);
+            this.program = new i.default(e, [ u.default, h.default ]);
             this.posVertexBuffer = new a.default(e);
         }
         t.prototype.bind = function t(e) {
@@ -4247,8 +2679,8 @@
             this.program.bindBuffer(this.posVertexBuffer, "a_position");
         };
         t.prototype.unbind = function t() {};
-        t.prototype.setUniform = function t(e, r) {
-            this.program.setUniform(e, r);
+        t.prototype.setUniform = function t(e, n) {
+            this.program.setUniform(e, n);
         };
         t.prototype.draw = function t() {
             this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
@@ -4256,21 +2688,21 @@
         return t;
     }();
     e.default = p;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(11);
-    var n = y(i);
-    var o = r(2);
+    var r = n(11);
+    var i = y(r);
+    var o = n(2);
     var a = y(o);
-    var s = r(3);
+    var s = n(3);
     var u = y(s);
-    var f = r(4);
+    var f = n(4);
     var h = y(f);
-    var c = r(5);
+    var c = n(5);
     var l = y(c);
-    var p = r(58);
+    var p = n(63);
     var d = y(p);
     function y(t) {
         return t && t.__esModule ? t : {
@@ -4286,7 +2718,7 @@
         function t(e) {
             m(this, t);
             this.gl = e;
-            this.plane = new n.default();
+            this.plane = new i.default();
             this.program = new a.default(e, [ l.default, d.default ]);
             this.posVertexBuffer = new u.default(e);
             this.posIndexBuffer = new h.default(e);
@@ -4307,8 +2739,8 @@
         t.prototype.unbind = function t() {
             this.posIndexBuffer.unbind();
         };
-        t.prototype.setUniform = function t(e, r) {
-            this.program.setUniform(e, r);
+        t.prototype.setUniform = function t(e, n) {
+            this.program.setUniform(e, n);
         };
         t.prototype.draw = function t() {
             this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
@@ -4316,27 +2748,27 @@
         return t;
     }();
     e.default = g;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(32);
-    var n = _(i);
-    var o = r(40);
+    var r = n(36);
+    var i = _(r);
+    var o = n(44);
     var a = _(o);
-    var s = r(37);
+    var s = n(41);
     var u = _(s);
-    var f = r(39);
+    var f = n(43);
     var h = _(f);
-    var c = r(38);
+    var c = n(42);
     var l = _(c);
-    var p = r(34);
+    var p = n(38);
     var d = _(p);
-    var y = r(35);
+    var y = n(39);
     var m = _(y);
-    var g = r(9);
+    var g = n(9);
     var v = _(g);
-    var w = r(10);
+    var w = n(10);
     var b = _(w);
     function _(t) {
         return t && t.__esModule ? t : {
@@ -4381,37 +2813,37 @@
     };
     var j = 1e3;
     var R = new m.default();
-    var P = function t(e, r, i, n, o, a, s, u) {
+    var P = function t(e, n, r, i, o, a, s, u) {
         var f = v.default.makeZToWMatrix(1);
         var h = v.default.ortho(0, o, 0, a, -j, j);
-        var c = v.default.makeScale(i * s, n * u, 1);
-        var l = v.default.makeTranslation(e * s, r * u, 0);
+        var c = v.default.makeScale(r * s, i * u, 1);
+        var l = v.default.makeTranslation(e * s, n * u, 0);
         var p = v.default.matrixMultiply(c, l);
         p = v.default.matrixMultiply(p, R.getCurrentMatrix());
         p = v.default.matrixMultiply(p, h);
         p = v.default.matrixMultiply(p, f);
         return p;
     };
-    var F = function t(e, r, i, n, o, a) {
-        var s = v.default.makeScale(i / o, n / a, 1);
-        var u = v.default.makeTranslation(e / o, r / a, 0);
+    var M = function t(e, n, r, i, o, a) {
+        var s = v.default.makeScale(r / o, i / a, 1);
+        var u = v.default.makeTranslation(e / o, n / a, 0);
         return v.default.matrixMultiply(s, u);
     };
-    var M = function(t) {
+    var F = function(t) {
         E(e, t);
-        function e(r) {
+        function e(n) {
             x(this, e);
-            var i = O(this, t.call(this, r));
-            var n = document.createElement("canvas");
-            document.body.appendChild(n);
-            n.setAttribute("width", r.width);
-            n.setAttribute("height", r.height);
-            i.container = n;
-            i.matrixStack = R;
-            i.registerResize();
-            i.currTex = null;
-            i._init();
-            return i;
+            var r = O(this, t.call(this, n));
+            var i = document.createElement("canvas");
+            document.body.appendChild(i);
+            i.setAttribute("width", n.width);
+            i.setAttribute("height", n.height);
+            r.container = i;
+            r.matrixStack = R;
+            r.registerResize();
+            r.currTex = null;
+            r._init();
+            return r;
         }
         e.prototype._init = function t() {
             var e = T(this.container);
@@ -4427,28 +2859,28 @@
         };
         e.prototype.draw = function t(e) {
             this.save();
-            var r = e.width / 2;
-            var i = e.height / 2;
-            this.translate(e.pos.x + r, e.pos.y + i);
+            var n = e.width / 2;
+            var r = e.height / 2;
+            this.translate(e.pos.x + n, e.pos.y + r);
             this.scale(e.scale.x, e.scale.y);
             this.rotateZ(e.angle);
-            this.translate(-r, -i);
+            this.translate(-n, -r);
             this.drawImage(e.spriteSheet.resourcePath, e._sprPosX, e._sprPosY, e.width, e.height, 0, 0, e.width, e.height);
             this.restore();
         };
-        e.prototype.drawImage = function t(e, r, i, n, o, a, s) {
+        e.prototype.drawImage = function t(e, n, r, i, o, a, s) {
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
             var u = this.renderableCache[e];
             var f = u.getSize().width;
             var h = u.getSize().height;
             if (a === undefined) {
-                a = r;
+                a = n;
             }
             if (s === undefined) {
-                s = i;
+                s = r;
             }
-            if (n === undefined) {
-                n = f;
+            if (i === undefined) {
+                i = f;
             }
             if (o === undefined) {
                 o = h;
@@ -4458,19 +2890,19 @@
                 this.currTex = u;
             }
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_textureMatrix", F(r, i, n, o, f, h));
-            this.spriteRectDrawer.setUniform("u_matrix", P(a, s, n, o, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", M(n, r, i, o, f, h));
+            this.spriteRectDrawer.setUniform("u_matrix", P(a, s, i, o, this.game.width, this.game.height, 1, 1));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.spriteRectDrawer.draw();
             this.spriteRectDrawer.unbind();
         };
-        e.prototype.fillRect = function t(e, r, i, n, o) {};
+        e.prototype.fillRect = function t(e, n, r, i, o) {};
         e.prototype.setAlpha = function t(e) {};
         e.prototype.save = function t() {
             this.matrixStack.save();
         };
-        e.prototype.scale = function t(e, r) {
-            this.matrixStack.scale(e, r);
+        e.prototype.scale = function t(e, n) {
+            this.matrixStack.scale(e, n);
         };
         e.prototype.rotateZ = function t(e) {
             this.matrixStack.rotateZ(e);
@@ -4478,8 +2910,8 @@
         e.prototype.rotateY = function t(e) {
             this.matrixStack.rotateY(e);
         };
-        e.prototype.translate = function t(e, r) {
-            this.matrixStack.translate(e, r);
+        e.prototype.translate = function t(e, n) {
+            this.matrixStack.translate(e, n);
         };
         e.prototype.restore = function t() {
             this.matrixStack.restore();
@@ -4491,8 +2923,8 @@
             this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         };
         e.prototype.clearColor = function t(e) {
-            var r = e.r, i = e.g, n = e.b;
-            this.gl.clearColor(r / 255, i / 255, n / 255, 1);
+            var n = e.r, r = e.g, i = e.b;
+            this.gl.clearColor(n / 255, r / 255, i / 255, 1);
             this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
         };
         e.prototype.beginFrameBuffer = function t() {
@@ -4511,7 +2943,7 @@
             this.frameBuffer.getTexture().bind();
             this.spriteRectDrawer.bind();
             this.spriteRectDrawer.setUniform("u_matrix", P(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
-            this.spriteRectDrawer.setUniform("u_textureMatrix", F(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", M(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
             this.spriteRectDrawer.draw();
@@ -4521,34 +2953,34 @@
             var e = this.gl.getError();
             return e === this.gl.NO_ERROR ? 0 : e;
         };
-        e.prototype.loadTextureInfo = function t(e, r) {
-            var i = this;
-            var n = new Image();
-            n.src = e;
-            n.onload = function() {
-                var t = new b.default(i.gl);
-                t.setImage(n);
-                i.renderableCache[e] = t;
-                r();
+        e.prototype.loadTextureInfo = function t(e, n) {
+            var r = this;
+            var i = new Image();
+            i.src = e;
+            i.onload = function() {
+                var t = new b.default(r.gl);
+                t.setImage(i);
+                r.renderableCache[e] = t;
+                n();
             };
         };
         return e;
-    }(n.default);
-    e.default = M;
-}, function(t, e, r) {
+    }(i.default);
+    e.default = F;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(45);
-    var n = o(i);
+    var r = n(49);
+    var i = o(r);
     function o(t) {
         if (t && t.__esModule) {
             return t;
         } else {
             var e = {};
             if (t != null) {
-                for (var r in t) {
-                    if (Object.prototype.hasOwnProperty.call(t, r)) e[r] = t[r];
+                for (var n in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, n)) e[n] = t[n];
                 }
             }
             e.default = t;
@@ -4566,43 +2998,43 @@
             this._game = e;
             this.reset();
         }
-        t.prototype.addDescription = function t(e, r) {
-            if (!this.descriptions[r]) this.descriptions[r] = [];
-            this.descriptions[r].push(e);
+        t.prototype.addDescription = function t(e, n) {
+            if (!this.descriptions[n]) this.descriptions[n] = [];
+            this.descriptions[n].push(e);
         };
         t.prototype.setDescriptions = function t(e) {
-            var r = this;
+            var n = this;
             Object.keys(e).forEach(function(t) {
                 e[t].forEach(function(e) {
-                    r.addDescription(e, t);
+                    n.addDescription(e, t);
                 });
             });
         };
-        t.prototype.getObject = function t(e, r) {
-            var i = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            if (1 && !r) throw "repository.getObject: type not specified";
+        t.prototype.getObject = function t(e, n) {
+            var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            if (1 && !n) throw "repository.getObject: type not specified";
             if (1 && e == null) {
                 console.trace("id is null");
-                throw "::getObject() id not specified for type " + r;
+                throw "::getObject() id not specified for type " + n;
             }
-            var o = n[r];
+            var o = i[n];
             if (1 && !o) {
-                throw "::getObject() undeclared object type " + r;
+                throw "::getObject() undeclared object type " + n;
             }
-            if (1 && !this.descriptions[r]) throw "not found description for type: " + r;
-            var a = this.descriptions[r].find(function(t) {
+            if (1 && !this.descriptions[n]) throw "not found description for type: " + n;
+            var a = this.descriptions[n].find(function(t) {
                 return t.id == e;
             });
             if (!a) {
-                throw 'can not find object "' + r + '" with id ' + e;
+                throw 'can not find object "' + n + '" with id ' + e;
             }
-            if (i || !this.cache[a[e]]) this.cache[e] = new o(this._game).fromJSON(a);
+            if (r || !this.cache[a[e]]) this.cache[e] = new o(this._game).fromJSON(a);
             return this.cache[e];
         };
         t.prototype.getFirst = function t(e) {
-            var r = this.getArray(e);
-            if (!r.length) return null;
-            return r[0];
+            var n = this.getArray(e);
+            if (!n.length) return null;
+            return n[0];
         };
         t.prototype.addObject = function t(e) {
             if (1 && !e.id) {
@@ -4614,42 +3046,42 @@
             if (!this.descriptions[e.type]) this.descriptions[e.type] = [];
             this.descriptions[e.type].push(e.toJSON());
         };
-        t.prototype.updateObject = function t(e, r) {
-            var i = e.toJSON(r);
-            var n = this.descriptions[e.type].findIndex(function(t) {
+        t.prototype.updateObject = function t(e, n) {
+            var r = e.toJSON(n);
+            var i = this.descriptions[e.type].findIndex(function(t) {
                 return t.id == e.id;
             });
-            this.descriptions[e.type][n] = i;
+            this.descriptions[e.type][i] = r;
             var o = this.getObject(e.id, e.type, true);
-            if (o) o.fromJSON(i);
+            if (o) o.fromJSON(r);
         };
         t.prototype.removeObject = function t(e) {
             if (1 && !this.arrays[e.type]) this.arrays[e.type] = [];
-            var r = this.arrays[e.type].findIndex(function(t) {
+            var n = this.arrays[e.type].findIndex(function(t) {
                 return t.id === e.id;
             });
-            this.arrays[e.type].splice(r, 1);
+            this.arrays[e.type].splice(n, 1);
             if (!this.descriptions[e.type]) this.descriptions[e.type] = [];
-            r = this.descriptions[e.type].findIndex(function(t) {
+            n = this.descriptions[e.type].findIndex(function(t) {
                 return t.id === e.id;
             });
-            this.descriptions[e.type].splice(r, 1);
+            this.descriptions[e.type].splice(n, 1);
             delete this.cache[e.id];
         };
         t.prototype.getArray = function t(e) {
-            var r = this;
-            if (1 && !n[e]) throw 'getArray: unregistered type "' + e + '"';
+            var n = this;
+            if (1 && !i[e]) throw 'getArray: unregistered type "' + e + '"';
             if (this.arrays[e]) return this.arrays[e];
-            var i = [];
+            var r = [];
             if (!this.descriptions[e]) this.descriptions[e] = [];
             this.descriptions[e].forEach(function(t) {
                 if (1 && (t.id === null || t.id === undefined)) {
                     console.error(t);
                     throw "object id must me specified";
                 }
-                i.push(r.getObject(t.id, e));
+                r.push(n.getObject(t.id, e));
             });
-            return this.arrays[e] = i;
+            return this.arrays[e] = r;
         };
         t.prototype.reset = function t() {
             this.descriptions = {};
@@ -4659,12 +3091,12 @@
         return t;
     }();
     e.default = s;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
-    var n = o(i);
+    var r = n(1);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4676,12 +3108,12 @@
         }
     }
     var s = function() {
-        function t(e, r) {
+        function t(e, n) {
             a(this, t);
             this.propsToChange = [];
             this.startedTime = null;
             this.completed = false;
-            this.obj = e.target || r;
+            this.obj = e.target || n;
             this.progressFn = e.progress;
             this.completeFn = e.complete;
             this.easeFnName = e.ease || "linear";
@@ -4689,35 +3121,35 @@
             this.desc = this.normalizeDesc(e);
         }
         t.prototype.normalizeDesc = function t(e) {
-            var r = this;
+            var n = this;
             e.from = e.from || {};
             e.to = e.to || {};
-            var i = {};
+            var r = {};
             Object.keys(e.from).forEach(function(t) {
-                i[t] = true;
+                r[t] = true;
             });
             Object.keys(e.to).forEach(function(t) {
-                i[t] = true;
+                r[t] = true;
             });
-            this.propsToChange = Object.keys(i);
+            this.propsToChange = Object.keys(r);
             this.propsToChange.forEach(function(t) {
-                if (e.from[t] === undefined) e.from[t] = r.obj[t];
-                if (e.to[t] === undefined) e.to[t] = r.obj[t];
+                if (e.from[t] === undefined) e.from[t] = n.obj[t];
+                if (e.to[t] === undefined) e.to[t] = n.obj[t];
             });
             return e;
         };
         t.prototype.update = function t(e) {
             if (!this.startedTime) this.startedTime = e;
             if (this.completed) return;
-            var r = e - this.startedTime;
-            if (r > this.tweenTime) {
+            var n = e - this.startedTime;
+            if (n > this.tweenTime) {
                 this._complete();
                 return;
             }
-            var i = this.propsToChange.length;
-            while (i--) {
-                var o = this.propsToChange[i];
-                this.obj[o] = n.default.ease[this.easeFnName](r, this.desc.from[o], this.desc.to[o] - this.desc.from[o], this.tweenTime);
+            var r = this.propsToChange.length;
+            while (r--) {
+                var o = this.propsToChange[r];
+                this.obj[o] = i.default.ease[this.easeFnName](n, this.desc.from[o], this.desc.to[o] - this.desc.from[o], this.tweenTime);
             }
             this.progressFn && this.progressFn(this.obj);
         };
@@ -4732,8 +3164,8 @@
             if (this.completed) return;
             var e = this.propsToChange.length;
             while (e--) {
-                var r = this.propsToChange[e];
-                this.obj[r] = this.desc.to[r];
+                var n = this.propsToChange[e];
+                this.obj[n] = this.desc.to[n];
             }
             this.progressFn && this.progressFn(this.obj);
             this.completeFn && this.completeFn(this.obj);
@@ -4742,38 +3174,38 @@
         return t;
     }();
     e.default = s;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
-    var i = function t(e, r) {
-        var i = e || 0;
-        var n = r || 0;
+    var r = function t(e, n) {
+        var r = e || 0;
+        var i = n || 0;
         var o = 0;
         var a = 0;
         this.x = 0;
         this.y = 0;
         var s = function t() {
-            o = i === 0 ? 0 : Math.atan(n / i);
-            a = Math.sqrt(i * i + n * n);
+            o = r === 0 ? 0 : Math.atan(i / r);
+            a = Math.sqrt(r * r + i * i);
         };
         var u = function t() {
-            n = Math.sin(o) * a;
-            i = Math.cos(o) * a;
+            i = Math.sin(o) * a;
+            r = Math.cos(o) * a;
         };
         var f = function t() {
-            n = Math.sin(o) * a;
-            i = Math.cos(o) * a;
+            i = Math.sin(o) * a;
+            r = Math.cos(o) * a;
         };
         this.setXY = function(t, e) {
-            i = t;
-            n = e;
+            r = t;
+            i = e;
             s();
         };
         this.setX = function(t) {
-            i = t;
+            r = t;
             s();
         };
         this.setY = function(t) {
-            n = t;
+            i = t;
             s();
         };
         this.setAngle = function(t) {
@@ -4786,25 +3218,25 @@
         };
         this.getXY = function() {
             return {
-                x: i,
-                y: n
+                x: r,
+                y: i
             };
         };
         this.getX = function() {
-            return i;
+            return r;
         };
         this.getY = function() {
-            return n;
+            return i;
         };
         this.getAngle = function() {
             return o;
         };
         this.reset = function() {
+            r = 0;
             i = 0;
-            n = 0;
         };
         this.addVec2 = function(e) {
-            return new t(i + e.getX(), n + e.getY);
+            return new t(r + e.getX(), i + e.getY);
         };
         this.add = function(t, e) {
             this.x += t;
@@ -4815,10 +3247,10 @@
             this.y = e;
         };
         this.multiplyByScalar = function(e) {
-            return new t(i * e, n * e);
+            return new t(r * e, i * e);
         };
         this.dotProduct = function(t) {
-            return i * t.getX() + n * t.getY();
+            return r * t.getX() + i * t.getY();
         };
         this.getNorm = function() {
             return a;
@@ -4827,41 +3259,41 @@
             s();
         })();
     };
-    t.exports = i;
-}, function(t, e, r) {
+    t.exports = r;
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var i = r(48);
-    var n = R(i);
-    var o = r(54);
+    var r = n(52);
+    var i = R(r);
+    var o = n(58);
     var a = R(o);
-    var s = r(13);
+    var s = n(13);
     var u = R(s);
-    var f = r(49);
+    var f = n(53);
     var h = R(f);
-    var c = r(46);
+    var c = n(50);
     var l = R(c);
-    var p = r(51);
+    var p = n(55);
     var d = R(p);
-    var y = r(52);
+    var y = n(56);
     var m = R(y);
-    var g = r(53);
+    var g = n(57);
     var v = R(g);
-    var w = r(47);
+    var w = n(51);
     var b = R(w);
-    var _ = r(50);
+    var _ = n(54);
     var x = R(_);
-    var O = r(55);
+    var O = n(59);
     var E = R(O);
-    var T = r(14);
+    var T = n(14);
     var j = R(T);
     function R(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    e.FrameAnimation = n.default;
+    e.FrameAnimation = i.default;
     e.SpriteSheet = a.default;
     e.GameObjectProto = u.default;
     e.GameObject = h.default;
@@ -4873,12 +3305,12 @@
     e.Layer = x.default;
     e.TextField = E.default;
     e.TileMap = j.default;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4911,23 +3343,23 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "CommonBehaviour";
-            i.parameters = [];
-            i.description = null;
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "CommonBehaviour";
+            r.parameters = [];
+            r.description = null;
+            return r;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4960,30 +3392,30 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "Font";
-            i.resourcePath = null;
-            i.fontSize = 12;
-            i.fontFamily = "Monospace";
-            i.fontContext = null;
-            i.fontColor = {
+            var r = s(this, t.call(this, n));
+            r.type = "Font";
+            r.resourcePath = null;
+            r.fontSize = 12;
+            r.fontFamily = "Monospace";
+            r.fontContext = null;
+            r.fontColor = {
                 r: 0,
                 g: 0,
                 b: 0
             };
-            return i;
+            return r;
         }
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5016,17 +3448,17 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "FrameAnimation";
-            i._currFrame = 0;
-            i.frames = [];
-            i.duration = 1e3;
-            i._gameObject = null;
-            i._startTime = null;
-            i.stop();
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "FrameAnimation";
+            r._currFrame = 0;
+            r.frames = [];
+            r.duration = 1e3;
+            r._gameObject = null;
+            r._startTime = null;
+            r.stop();
+            return r;
         }
         e.prototype.revalidate = function t() {
             this._timeForOneFrame = ~~(this.duration / this.frames.length);
@@ -5045,13 +3477,13 @@
         };
         e.prototype.update = function t(e) {
             if (!this._startTime) this._startTime = e;
-            var r = (e - this._startTime) % this.duration;
-            this._currFrame = ~~(this.frames.length * r / this.duration);
+            var n = (e - this._startTime) % this.duration;
+            this._currFrame = ~~(this.frames.length * n / this.duration);
             if (this._isRepeat == false && this._currFrame >= this.frames.length - 1) {
                 this.stop();
             }
-            var i = this._gameObject.currFrameIndex;
-            if (i != this.frames[this._currFrame]) {
+            var r = this._gameObject.currFrameIndex;
+            if (r != this.frames[this._currFrame]) {
                 this._gameObject.setFrameIndex(this.frames[this._currFrame]);
             }
         };
@@ -5070,15 +3502,15 @@
             this._currFrame = e;
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(13);
-    var n = u(i);
-    var o = r(17);
+    var r = n(13);
+    var i = u(r);
+    var o = n(21);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -5086,8 +3518,8 @@
         } else {
             var e = {};
             if (t != null) {
-                for (var r in t) {
-                    if (Object.prototype.hasOwnProperty.call(t, r)) e[r] = t[r];
+                for (var n in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, n)) e[n] = t[n];
                 }
             }
             e.default = t;
@@ -5127,67 +3559,67 @@
     var l = function t() {};
     var p = function(t) {
         c(e, t);
-        function e(r) {
+        function e(n) {
             f(this, e);
-            var i = h(this, t.call(this, r));
-            i.type = "GameObject";
-            i.gameObjectProto = null;
-            return i;
+            var r = h(this, t.call(this, n));
+            r.type = "GameObject";
+            r.gameObjectProto = null;
+            return r;
         }
         e.prototype.revalidate = function e() {
-            var r = this;
-            var i = {};
-            for (var n in this) {
-                if (!this.hasOwnProperty(n)) continue;
-                i[n] = this[n];
+            var n = this;
+            var r = {};
+            for (var i in this) {
+                if (!this.hasOwnProperty(i)) continue;
+                r[i] = this[i];
             }
             Object.keys(this.gameObjectProto).forEach(function(t) {
-                if (r.gameObjectProto[t] === undefined) return;
-                r[t] = r.gameObjectProto[t];
+                if (n.gameObjectProto[t] === undefined) return;
+                n[t] = n.gameObjectProto[t];
             });
-            Object.keys(i).forEach(function(t) {
-                if (!i[t]) return;
-                if (i[t].splice && i[t].length === 0) return;
-                r[t] = i[t];
+            Object.keys(r).forEach(function(t) {
+                if (!r[t]) return;
+                if (r[t].splice && r[t].length === 0) return;
+                n[t] = r[t];
             });
             t.prototype.revalidate.call(this);
         };
         e.prototype.setIndividualBehaviour = function t(e) {
-            var r = new e(this.game);
-            r.game = this.game;
-            r.gameObject = this;
-            if (!r.onCreate) r.onCreate = l;
-            if (!r.onUpdate) r.onUpdate = l;
-            if (!r.onDestroy) r.onDestroy = l;
-            this._individualBehaviour = r;
+            var n = new e(this.game);
+            n.game = this.game;
+            n.gameObject = this;
+            if (!n.onCreate) n.onCreate = l;
+            if (!n.onUpdate) n.onUpdate = l;
+            if (!n.onDestroy) n.onDestroy = l;
+            this._individualBehaviour = n;
         };
         e.prototype.setCommonBehaviour = function t() {
             var e = this;
-            var r = [];
+            var n = [];
             this.commonBehaviour.forEach(function(t) {
-                var i = a[t.name];
+                var r = a[t.name];
                 if (true) {
-                    if (!i) {
+                    if (!r) {
                         console.error(t);
                         console.error(a);
                         throw "can not find common behaviour with name " + t.name;
                     }
                 }
-                var n = new i(e.game);
-                n.manage(e, t.parameters);
-                r.push(n);
+                var i = new r(e.game);
+                i.manage(e, t.parameters);
+                n.push(i);
             });
-            this.commonBehaviour = r;
+            this.commonBehaviour = n;
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = p;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5220,12 +3652,12 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "Layer";
-            i.gameObjects = [];
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "Layer";
+            r.gameObjects = [];
+            return r;
         }
         e.prototype.addGameObject = function t(e) {
             e._layer = this;
@@ -5250,25 +3682,25 @@
                 return t.id === e.id;
             });
         };
-        e.prototype.update = function t(e, r) {
-            var i = this.gameObjects;
-            var n = i.length;
-            var o = n - 1;
-            while (n--) {
-                var a = i[o - n];
-                a && a.update(e, r);
+        e.prototype.update = function t(e, n) {
+            var r = this.gameObjects;
+            var i = r.length;
+            var o = i - 1;
+            while (i--) {
+                var a = r[o - i];
+                a && a.update(e, n);
             }
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = u(i);
-    var o = r(1);
+    var r = n(0);
+    var i = u(r);
+    var o = n(1);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -5276,8 +3708,8 @@
         } else {
             var e = {};
             if (t != null) {
-                for (var r in t) {
-                    if (Object.prototype.hasOwnProperty.call(t, r)) e[r] = t[r];
+                for (var n in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, n)) e[n] = t[n];
                 }
             }
             e.default = t;
@@ -5319,81 +3751,81 @@
     };
     var p = function(t) {
         c(e, t);
-        function e(r) {
+        function e(n) {
             f(this, e);
-            var i = h(this, t.call(this, r));
-            i.type = "ParticleSystem";
-            i.gameObjectProto = null;
-            i._particles = [];
-            i.numOfParticlesToEmit = {
+            var r = h(this, t.call(this, n));
+            r.type = "ParticleSystem";
+            r.gameObjectProto = null;
+            r._particles = [];
+            r.numOfParticlesToEmit = {
                 from: 1,
                 to: 10
             };
-            i.particleAngle = {
+            r.particleAngle = {
                 from: 0,
                 to: 0
             };
-            i.particleVelocity = {
+            r.particleVelocity = {
                 from: 1,
                 to: 100
             };
-            i.particleLiveTime = {
+            r.particleLiveTime = {
                 from: 100,
                 to: 1e3
             };
-            i.emissionRadius = 0;
-            return i;
+            r.emissionRadius = 0;
+            return r;
         }
         e.prototype.revalidate = function t() {
             if (this.particleAngle.to < this.particleAngle.from) this.particleAngle.to += 2 * Math.PI;
         };
         e.find = function t(e) {};
         e.findAll = function t(e) {};
-        e.prototype.emit = function t(e, r) {
-            for (var i = 0; i < l(this.numOfParticlesToEmit); i++) {
-                var n = this.gameObjectProto.clone();
+        e.prototype.emit = function t(e, n) {
+            for (var r = 0; r < l(this.numOfParticlesToEmit); r++) {
+                var i = this.gameObjectProto.clone();
                 var o = l(this.particleAngle);
                 var a = l(this.particleVelocity);
-                n.vel.x = a * Math.cos(o);
-                n.vel.y = a * Math.sin(o);
-                n.pos.x = l({
+                i.vel.x = a * Math.cos(o);
+                i.vel.y = a * Math.sin(o);
+                i.pos.x = l({
                     from: e - this.emissionRadius,
                     to: e + this.emissionRadius
                 });
-                n.pos.y = l({
-                    from: r - this.emissionRadius,
-                    to: r + this.emissionRadius
+                i.pos.y = l({
+                    from: n - this.emissionRadius,
+                    to: n + this.emissionRadius
                 });
-                n.liveTime = l(this.particleLiveTime);
-                this._particles.push(n);
+                i.liveTime = l(this.particleLiveTime);
+                this._particles.push(i);
             }
         };
-        e.prototype.update = function t(e, r) {
-            var i = this._particles;
-            var n = i.length;
-            var o = n - 1;
-            while (n--) {
-                var a = i[o - n];
+        e.prototype.update = function t(e, n) {
+            var r = this._particles;
+            var i = r.length;
+            var o = i - 1;
+            while (i--) {
+                var a = r[o - i];
                 if (!a) continue;
                 if (!a._timeCreated) a._timeCreated = e;
                 if (e - a._timeCreated > a.liveTime) {
                     this._particles.splice(this._particles.indexOf(a), 1);
                 }
-                a.update(e, r);
+                a.update(e, n);
             }
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = p;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = f(i);
-    var o = r(28);
+    var r = n(0);
+    var i = f(r);
+    var o = n(32);
     var a = f(o);
-    var s = r(14);
+    var s = n(14);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -5427,22 +3859,22 @@
     }
     var p = function(t) {
         l(e, t);
-        function e(r) {
+        function e(n) {
             h(this, e);
-            var i = c(this, t.call(this, r));
-            i.type = "Scene";
-            i.layers = [];
-            i.useBG = false;
-            i.colorBG = {
+            var r = c(this, t.call(this, n));
+            r.type = "Scene";
+            r.layers = [];
+            r.useBG = false;
+            r.colorBG = {
                 r: 255,
                 g: 255,
                 b: 255
             };
-            i._tweenMovies = [];
-            i._individualBehaviour = null;
-            i.tileMap = null;
-            if (false) i.tileMap = new u.default(r);
-            return i;
+            r._tweenMovies = [];
+            r._individualBehaviour = null;
+            r.tileMap = null;
+            if (false) r.tileMap = new u.default(n);
+            return r;
         }
         e.prototype.addTweenMovie = function t(e) {
             this._tweenMovies.push(e);
@@ -5466,20 +3898,20 @@
             });
         };
         e.prototype.preload = function t(e) {
-            var r = this;
-            var i = this.getAllSpriteSheets().concat(this.game.repository.getArray("Font"));
-            var n = new a.default();
-            n.onResolved = function() {
+            var n = this;
+            var r = this.getAllSpriteSheets().concat(this.game.repository.getArray("Font"));
+            var i = new a.default();
+            i.onResolved = function() {
                 e && e();
             };
-            i.forEach(function(t) {
-                n.addTask(function() {
-                    r.game._renderer.loadTextureInfo(t.resourcePath, function() {
-                        return n.resolveTask(t.id);
+            r.forEach(function(t) {
+                i.addTask(function() {
+                    n.game._renderer.loadTextureInfo(t.resourcePath, function() {
+                        return i.resolveTask(t.id);
                     });
                 }, t.id);
             });
-            n.start();
+            i.start();
         };
         e.prototype.onShow = function t() {
             if (this._individualBehaviour) this._individualBehaviour.onCreate();
@@ -5488,67 +3920,67 @@
             });
         };
         e.prototype.setIndividualBehaviour = function t(e) {
-            var r = new e(this.game);
-            r.game = this.game;
-            r.scene = this;
-            this._individualBehaviour = r;
+            var n = new e(this.game);
+            n.game = this.game;
+            n.scene = this;
+            this._individualBehaviour = n;
         };
-        e.prototype.update = function t(e, r) {
+        e.prototype.update = function t(e, n) {
             this.game._renderer.beginFrameBuffer();
             if (this.useBG) this.game._renderer.clearColor(this.colorBG); else this.game._renderer.clear();
-            var i = this.layers;
-            var n = this.layers.length;
-            var o = n - 1;
+            var r = this.layers;
+            var i = this.layers.length;
+            var o = i - 1;
             this.game.camera.update(e);
             this.game._renderer.translate(-this.game.camera.pos.x, -this.game.camera.pos.y);
             if (this._individualBehaviour) this._individualBehaviour.onUpdate();
-            while (n--) {
-                i[n - o].update(e, r);
+            while (i--) {
+                r[i - o].update(e, n);
             }
             this.game.repository.getArray("ParticleSystem").forEach(function(t) {
-                t.update(e, r);
+                t.update(e, n);
             });
             this.game._renderer.flipFrameBuffer();
         };
-        e.prototype.fadeIn = function t(e, r) {
+        e.prototype.fadeIn = function t(e, n) {
             return this.tween(this, {
                 to: {
                     alpha: 1
                 }
-            }, e, r);
+            }, e, n);
         };
-        e.prototype.fadeOut = function t(e, r) {
+        e.prototype.fadeOut = function t(e, n) {
             return this.tween(this, {
                 to: {
                     alpha: 0
                 }
-            }, e, r);
+            }, e, n);
         };
-        e.prototype.tween = function t(e, r, i, n) {};
+        e.prototype.tween = function t(e, n, r, i) {};
         e.prototype._render = function t() {};
-        e.prototype.getTileAt = function t(e, r) {
+        e.prototype.getTileAt = function t(e, n) {
             if (!this.tileMap._spriteSheet) return null;
-            var i = ~~(e / this.tileMap._spriteSheet._frameWidth);
-            var n = ~~(r / this.tileMap._spriteSheet._frameHeight);
-            return this.tileMap.data[n] && this.tileMap.data[n][i];
+            var r = ~~(e / this.tileMap._spriteSheet._frameWidth);
+            var i = ~~(n / this.tileMap._spriteSheet._frameHeight);
+            return this.tileMap.data[i] && this.tileMap.data[i][r];
         };
-        e.prototype.printText = function t(e, r, i, n) {
-            if (!i) return;
-            if (!i.substring) i = JSON.stringify(i, null, 4);
-            this.game.renderer.printText(e, r, i, n);
+        e.prototype.printText = function t(e, n, r, i) {
+            if (!r) return;
+            if (!r.substring) r = JSON.stringify(r, null, 4);
+            this.game.renderer.printText(e, n, r, i);
         };
         e.prototype.log = function t(e) {
             this.printText(0, 0, e);
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = p;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5581,14 +4013,14 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "Sound";
-            i.resourcePath = "";
-            i._gain = 1;
-            i._loop = false;
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "Sound";
+            r.resourcePath = "";
+            r._gain = 1;
+            r._loop = false;
+            return r;
         }
         e.find = function t(e) {};
         e.prototype.play = function t() {};
@@ -5596,16 +4028,16 @@
         e.prototype.pause = function t() {
             throw "not implemented";
         };
-        e.prototype.setGain = function t(e, r, i) {};
+        e.prototype.setGain = function t(e, n, r) {};
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5638,19 +4070,19 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "SpriteSheet";
-            i.width = 0;
-            i.height = 0;
-            i.numOfFramesH = 1;
-            i.numOfFramesV = 1;
-            i._frameWidth = 0;
-            i._frameHeight = 0;
-            i._numOfFrames = 0;
-            i.resourcePath = "";
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "SpriteSheet";
+            r.width = 0;
+            r.height = 0;
+            r.numOfFramesH = 1;
+            r.numOfFramesV = 1;
+            r._frameWidth = 0;
+            r._frameHeight = 0;
+            r._numOfFrames = 0;
+            r.resourcePath = "";
+            return r;
         }
         e.prototype.revalidate = function t() {
             if (!(this.numOfFramesH && this.numOfFramesV)) return;
@@ -5665,14 +4097,14 @@
             return ~~(e / this.numOfFramesH) * this._frameHeight;
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
+}, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(0);
-    var n = o(i);
+    var r = n(0);
+    var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -5705,14 +4137,14 @@
     }
     var f = function(t) {
         u(e, t);
-        function e(r) {
+        function e(n) {
             a(this, e);
-            var i = s(this, t.call(this, r));
-            i.type = "TextField";
-            i._chars = null;
-            i.text = "";
-            i.font = null;
-            return i;
+            var r = s(this, t.call(this, n));
+            r.type = "TextField";
+            r._chars = null;
+            r.text = "";
+            r.font = null;
+            return r;
         }
         e.prototype.revalidate = function t() {
             if (1 && !this.name) {
@@ -5725,25 +4157,25 @@
             e += "";
             this._chars = [];
             this.text = e;
-            var r = [ {
+            var n = [ {
                 width: 0
             } ];
-            var i = 0;
+            var r = 0;
             this.height = this.font.fontContext.symbols[" "].height;
-            for (var n = 0, o = e.length; n < o; n++) {
-                this._chars.push(e[n]);
-                var a = this.font.fontContext.symbols[e[n]] || this.font.fontContext.symbols[" "];
-                if (e[n] === "\n") {
-                    i++;
+            for (var i = 0, o = e.length; i < o; i++) {
+                this._chars.push(e[i]);
+                var a = this.font.fontContext.symbols[e[i]] || this.font.fontContext.symbols[" "];
+                if (e[i] === "\n") {
+                    r++;
                     this.height += a.height;
-                    r[i] = {
+                    n[r] = {
                         width: 0
                     };
                 } else {
-                    r[i].width += a.width;
+                    n[r].width += a.width;
                 }
             }
-            this.width = Math.max.apply(Math, r.map(function(t) {
+            this.width = Math.max.apply(Math, n.map(function(t) {
                 return t.width;
             }));
         };
@@ -5751,77 +4183,38 @@
             this.font = e;
             this.setText(this.text);
         };
-        e.prototype.update = function e(r) {
-            t.prototype.update.call(this, r);
+        e.prototype.update = function e(n) {
+            t.prototype.update.call(this, n);
             this._render();
         };
         e.prototype._render = function t() {
             var e = this;
+            var n = 0;
             var r = 0;
-            var i = 0;
             this._chars.forEach(function(t) {
-                var n = e.font.fontContext.symbols[t] || e.font.fontContext.symbols["?"];
+                var i = e.font.fontContext.symbols[t] || e.font.fontContext.symbols["?"];
                 if (t === "\n") {
-                    r = 0;
-                    i += n.height;
+                    n = 0;
+                    r += i.height;
                     return;
                 }
-                e.game._renderer.drawImage(e.font.resourcePath, n.x, n.y, n.width, n.height, e.pos.x + r, e.pos.y + i);
-                r += n.width;
+                e.game._renderer.drawImage(e.font.resourcePath, i.x, i.y, i.width, i.height, e.pos.x + n, e.pos.y + r);
+                n += i.width;
             });
         };
         return e;
-    }(n.default);
+    }(i.default);
     e.default = f;
-}, function(t, e, r) {
-    "use strict";
-    e.__esModule = true;
-    function i(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var n = e.DudeBehaviour = function() {
-        function t() {
-            i(this, t);
-        }
-        t.prototype.onCreate = function t() {
-            this.game.camera.followTo(this.gameObject);
-        };
-        t.prototype.onUpdate = function t() {
-            if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP)) {
-                if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.add(0, -340);
-            }
-        };
-        t.prototype.onDestroy = function t() {};
-        return t;
-    }();
-    var o = e.MainSceneBehaviour = function() {
-        function t() {
-            i(this, t);
-        }
-        t.prototype.onCreate = function t() {};
-        t.prototype.onUpdate = function t() {};
-        t.prototype.onDestroy = function t() {};
-        return t;
-    }();
-    var a = e.PlatformBehaviour = function() {
-        function t() {
-            i(this, t);
-        }
-        t.prototype.onCreate = function t() {
-            this.gameObject.rigidBody.static = true;
-        };
-        t.prototype.onUpdate = function t() {};
-        t.prototype.onDestroy = function t() {};
-        return t;
-    }();
+}, function(t, e) {
+    t.exports = '{\n    "width": 800,\n    "height": 400,\n    "scaleStrategy": 0,\n    "startSceneId": 2,\n    "scale": {\n        "x": 1,\n        "y": 1\n    },\n    "pos": {\n        "x": 0,\n        "y": 0\n    },\n    "gravityConstant": 800\n}';
+}, function(t, e) {
+    t.exports = '{\n    "Scene": [\n        {\n            "id": 2,\n            "name": "mainScene",\n            "width": 5000,\n            "height": 800,\n            "type": "Scene",\n            "layers": [\n                {\n                    "type": "Layer",\n                    "id": 2\n                }\n            ],\n            "tileMap": {\n                "id": 52,\n                "type": "TileMap"\n            }\n        }\n    ],\n    "Layer": [\n        {\n            "id": 2,\n            "name": "layer1",\n            "type": "Layer",\n            "gameObjects": [\n                {\n                    "type": "GameObject",\n                    "id": 7\n                },\n                {\n                    "type": "GameObject",\n                    "id": 8\n                },\n                {\n                    "type": "GameObject",\n                    "id": 18\n                },\n                {\n                    "type": "GameObject",\n                    "id": 19\n                },\n                {\n                    "type": "GameObject",\n                    "id": 20\n                },\n                {\n                    "type": "GameObject",\n                    "id": 21\n                },\n                {\n                    "type": "GameObject",\n                    "id": 39\n                },\n                {\n                    "type": "GameObject",\n                    "id": 40\n                },\n                {\n                    "type": "GameObject",\n                    "id": 41\n                },\n                {\n                    "type": "GameObject",\n                    "id": 42\n                },\n                {\n                    "type": "GameObject",\n                    "id": 43\n                },\n                {\n                    "type": "GameObject",\n                    "id": 44\n                },\n                {\n                    "type": "GameObject",\n                    "id": 45\n                },\n                {\n                    "type": "GameObject",\n                    "id": 46\n                },\n                {\n                    "type": "GameObject",\n                    "id": 47\n                },\n                {\n                    "type": "GameObject",\n                    "id": 48\n                },\n                {\n                    "type": "GameObject",\n                    "id": 49\n                },\n                {\n                    "type": "GameObject",\n                    "id": 50\n                },\n                {\n                    "type": "GameObject",\n                    "id": 51\n                },\n                {\n                    "type": "TextField",\n                    "id": 56\n                }\n            ]\n        }\n    ],\n    "SpriteSheet": [\n        {\n            "name": "dude",\n            "width": 288,\n            "height": 48,\n            "type": "SpriteSheet",\n            "numOfFramesH": 9,\n            "resourcePath": "resources/dude.png",\n            "id": 3\n        },\n        {\n            "name": "platform",\n            "width": 500,\n            "height": 64,\n            "type": "SpriteSheet",\n            "resourcePath": "resources/platform.png",\n            "id": 5\n        }\n    ],\n    "GameObjectProto": [\n        {\n            "id": 4,\n            "name": "dude",\n            "width": 32,\n            "height": 48,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 3,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 15\n                }\n            ],\n            "frameAnimations": [\n                {\n                    "type": "FrameAnimation",\n                    "id": 11\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 12\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 13\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 14\n                }\n            ]\n        },\n        {\n            "name": "platform",\n            "width": 500,\n            "height": 64,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 5,\n                "type": "SpriteSheet"\n            },\n            "id": 6\n        }\n    ],\n    "GameObject": [\n        {\n            "id": 7,\n            "name": "dude",\n            "pos": {\n                "x": 256,\n                "y": 40\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 4,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 8,\n            "name": "platform",\n            "pos": {\n                "x": -261,\n                "y": 130\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 18,\n            "name": "platform",\n            "pos": {\n                "x": 112,\n                "y": 323\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 19,\n            "name": "platform",\n            "pos": {\n                "x": 395,\n                "y": 47\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 20,\n            "name": "platform",\n            "pos": {\n                "x": 677,\n                "y": 303\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 21,\n            "name": "platform",\n            "pos": {\n                "x": 228,\n                "y": 162\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 39,\n            "name": "platform",\n            "pos": {\n                "x": 1040,\n                "y": 176\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 40,\n            "name": "platform",\n            "pos": {\n                "x": 1578,\n                "y": 221\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "pos": {\n                "x": 0,\n                "y": 538\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            },\n            "id": 41\n        },\n        {\n            "id": 42,\n            "name": "platform",\n            "pos": {\n                "x": 588,\n                "y": 536\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 43,\n            "name": "platform",\n            "pos": {\n                "x": 1165,\n                "y": 535\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 44,\n            "name": "platform",\n            "pos": {\n                "x": 1676,\n                "y": 481\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 45,\n            "name": "platform",\n            "pos": {\n                "x": 2129,\n                "y": 428\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 46,\n            "name": "platform",\n            "pos": {\n                "x": 2571,\n                "y": 535\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 47,\n            "name": "platform",\n            "pos": {\n                "x": 3118,\n                "y": 507\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 48,\n            "name": "platform",\n            "pos": {\n                "x": 3015,\n                "y": 353\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 49,\n            "name": "platform",\n            "pos": {\n                "x": 3648,\n                "y": 544\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 50,\n            "name": "platform",\n            "pos": {\n                "x": 4168,\n                "y": 508\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "pos": {\n                "x": 4748,\n                "y": 612\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            },\n            "id": 51\n        }\n    ],\n    "FrameAnimation": [\n        {\n            "name": "left",\n            "type": "FrameAnimation",\n            "frames": [\n                0,\n                1,\n                2,\n                3\n            ],\n            "id": 11\n        },\n        {\n            "name": "right",\n            "type": "FrameAnimation",\n            "frames": [\n                5,\n                6,\n                7,\n                8\n            ],\n            "id": 12\n        },\n        {\n            "name": "idleLeft",\n            "type": "FrameAnimation",\n            "frames": [\n                4\n            ],\n            "id": 13\n        },\n        {\n            "name": "idleRight",\n            "type": "FrameAnimation",\n            "frames": [\n                4\n            ],\n            "id": 14\n        }\n    ],\n    "CommonBehaviour": [\n        {\n            "id": 15,\n            "name": "Control2Dir",\n            "type": "CommonBehaviour",\n            "parameters": {\n                "velocity": "130",\n                "walkLeftAnimation": "left",\n                "walkRightAnimation": "right",\n                "idleLeftAnimation": "idleLeft",\n                "idleRightAnimation": "idleRight"\n            }\n        }\n    ],\n    "Font": [\n        {\n            "name": "font1",\n            "type": "Font",\n            "resourcePath": "resources/font1.png",\n            "fontSize": 21,\n            "fontFamily": "Berlin Sans FB",\n            "fontContext": {\n                "symbols": {\n                    "0": {\n                        "x": 258,\n                        "y": 4,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "1": {\n                        "x": 279,\n                        "y": 4,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "2": {\n                        "x": 293,\n                        "y": 4,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "3": {\n                        "x": 4,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "4": {\n                        "x": 21,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "5": {\n                        "x": 40,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "6": {\n                        "x": 58,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "7": {\n                        "x": 77,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "8": {\n                        "x": 94,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "9": {\n                        "x": 112,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    " ": {\n                        "x": 4,\n                        "y": 4,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "!": {\n                        "x": 17,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "\\"": {\n                        "x": 30,\n                        "y": 4,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "#": {\n                        "x": 44,\n                        "y": 4,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "$": {\n                        "x": 66,\n                        "y": 4,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "%": {\n                        "x": 83,\n                        "y": 4,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "&": {\n                        "x": 106,\n                        "y": 4,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "\'": {\n                        "x": 129,\n                        "y": 4,\n                        "width": 3,\n                        "height": 23\n                    },\n                    "(": {\n                        "x": 140,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    ")": {\n                        "x": 156,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "*": {\n                        "x": 171,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "+": {\n                        "x": 187,\n                        "y": 4,\n                        "width": 8,\n                        "height": 23\n                    },\n                    ",": {\n                        "x": 203,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "-": {\n                        "x": 216,\n                        "y": 4,\n                        "width": 8,\n                        "height": 23\n                    },\n                    ".": {\n                        "x": 232,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "/": {\n                        "x": 244,\n                        "y": 4,\n                        "width": 6,\n                        "height": 23\n                    },\n                    ":": {\n                        "x": 130,\n                        "y": 35,\n                        "width": 4,\n                        "height": 23\n                    },\n                    ";": {\n                        "x": 143,\n                        "y": 35,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "<": {\n                        "x": 155,\n                        "y": 35,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "=": {\n                        "x": 170,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    ">": {\n                        "x": 187,\n                        "y": 35,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "?": {\n                        "x": 203,\n                        "y": 35,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "@": {\n                        "x": 219,\n                        "y": 35,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "A": {\n                        "x": 240,\n                        "y": 35,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "B": {\n                        "x": 262,\n                        "y": 35,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "C": {\n                        "x": 283,\n                        "y": 35,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "D": {\n                        "x": 4,\n                        "y": 66,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "E": {\n                        "x": 26,\n                        "y": 66,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "F": {\n                        "x": 45,\n                        "y": 66,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "G": {\n                        "x": 64,\n                        "y": 66,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "H": {\n                        "x": 86,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "I": {\n                        "x": 109,\n                        "y": 66,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "J": {\n                        "x": 122,\n                        "y": 66,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "K": {\n                        "x": 136,\n                        "y": 66,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "L": {\n                        "x": 157,\n                        "y": 66,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "M": {\n                        "x": 175,\n                        "y": 66,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "N": {\n                        "x": 200,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "O": {\n                        "x": 223,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "P": {\n                        "x": 246,\n                        "y": 66,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Q": {\n                        "x": 267,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "R": {\n                        "x": 291,\n                        "y": 66,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "S": {\n                        "x": 4,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "T": {\n                        "x": 21,\n                        "y": 97,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "U": {\n                        "x": 40,\n                        "y": 97,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "V": {\n                        "x": 62,\n                        "y": 97,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "W": {\n                        "x": 83,\n                        "y": 97,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "X": {\n                        "x": 110,\n                        "y": 97,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Y": {\n                        "x": 130,\n                        "y": 97,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Z": {\n                        "x": 150,\n                        "y": 97,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "[": {\n                        "x": 169,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "\\\\": {\n                        "x": 184,\n                        "y": 97,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "]": {\n                        "x": 198,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "^": {\n                        "x": 214,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "_": {\n                        "x": 232,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "`": {\n                        "x": 249,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "a": {\n                        "x": 264,\n                        "y": 97,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "b": {\n                        "x": 284,\n                        "y": 97,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "c": {\n                        "x": 303,\n                        "y": 97,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "d": {\n                        "x": 4,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "e": {\n                        "x": 23,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "f": {\n                        "x": 41,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "g": {\n                        "x": 55,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "h": {\n                        "x": 74,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "i": {\n                        "x": 93,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "j": {\n                        "x": 106,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "k": {\n                        "x": 119,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "l": {\n                        "x": 138,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "m": {\n                        "x": 151,\n                        "y": 128,\n                        "width": 17,\n                        "height": 23\n                    },\n                    "n": {\n                        "x": 176,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "o": {\n                        "x": 195,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "p": {\n                        "x": 214,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "q": {\n                        "x": 234,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "r": {\n                        "x": 254,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "s": {\n                        "x": 269,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "t": {\n                        "x": 283,\n                        "y": 128,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "u": {\n                        "x": 298,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "v": {\n                        "x": 4,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "w": {\n                        "x": 22,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "x": {\n                        "x": 45,\n                        "y": 159,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "y": {\n                        "x": 63,\n                        "y": 159,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "z": {\n                        "x": 81,\n                        "y": 159,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "{": {\n                        "x": 97,\n                        "y": 159,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "|": {\n                        "x": 113,\n                        "y": 159,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "}": {\n                        "x": 126,\n                        "y": 159,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "~": {\n                        "x": 141,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 159,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 178,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 201,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 225,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 249,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 273,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 296,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 4,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 27,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 51,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 75,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 99,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 122,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 146,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 170,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 194,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 217,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 241,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 265,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 289,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 4,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 27,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 51,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "А": {\n                        "x": 75,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Б": {\n                        "x": 98,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "В": {\n                        "x": 118,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Г": {\n                        "x": 140,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Д": {\n                        "x": 160,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Е": {\n                        "x": 182,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Ж": {\n                        "x": 203,\n                        "y": 221,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "З": {\n                        "x": 230,\n                        "y": 221,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "И": {\n                        "x": 249,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Й": {\n                        "x": 272,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "К": {\n                        "x": 295,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Л": {\n                        "x": 4,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "М": {\n                        "x": 26,\n                        "y": 252,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "Н": {\n                        "x": 52,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "О": {\n                        "x": 76,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "П": {\n                        "x": 99,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Р": {\n                        "x": 122,\n                        "y": 252,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "С": {\n                        "x": 142,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Т": {\n                        "x": 164,\n                        "y": 252,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "У": {\n                        "x": 184,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Ф": {\n                        "x": 207,\n                        "y": 252,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "Х": {\n                        "x": 232,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Ц": {\n                        "x": 255,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Ч": {\n                        "x": 278,\n                        "y": 252,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Ш": {\n                        "x": 4,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Щ": {\n                        "x": 33,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Ъ": {\n                        "x": 62,\n                        "y": 283,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Ы": {\n                        "x": 85,\n                        "y": 283,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "Ь": {\n                        "x": 111,\n                        "y": 283,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Э": {\n                        "x": 131,\n                        "y": 283,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Ю": {\n                        "x": 153,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Я": {\n                        "x": 183,\n                        "y": 283,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "а": {\n                        "x": 205,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "б": {\n                        "x": 222,\n                        "y": 283,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "в": {\n                        "x": 241,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "г": {\n                        "x": 258,\n                        "y": 283,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "д": {\n                        "x": 275,\n                        "y": 283,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "е": {\n                        "x": 294,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ж": {\n                        "x": 4,\n                        "y": 314,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "з": {\n                        "x": 26,\n                        "y": 314,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "и": {\n                        "x": 42,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "й": {\n                        "x": 62,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "к": {\n                        "x": 81,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "л": {\n                        "x": 99,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "м": {\n                        "x": 117,\n                        "y": 314,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "н": {\n                        "x": 139,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "о": {\n                        "x": 158,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "п": {\n                        "x": 176,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "р": {\n                        "x": 196,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "с": {\n                        "x": 214,\n                        "y": 314,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "т": {\n                        "x": 232,\n                        "y": 314,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "у": {\n                        "x": 249,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ф": {\n                        "x": 267,\n                        "y": 314,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "х": {\n                        "x": 289,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ц": {\n                        "x": 4,\n                        "y": 345,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "ч": {\n                        "x": 23,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ш": {\n                        "x": 41,\n                        "y": 345,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "щ": {\n                        "x": 65,\n                        "y": 345,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "ъ": {\n                        "x": 90,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ы": {\n                        "x": 108,\n                        "y": 345,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "ь": {\n                        "x": 131,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "э": {\n                        "x": 148,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ю": {\n                        "x": 165,\n                        "y": 345,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "я": {\n                        "x": 189,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ѐ": {\n                        "x": 207,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ё": {\n                        "x": 224,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ђ": {\n                        "x": 241,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ѓ": {\n                        "x": 259,\n                        "y": 345,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "є": {\n                        "x": 276,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ѕ": {\n                        "x": 293,\n                        "y": 345,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "і": {\n                        "x": 309,\n                        "y": 345,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "ї": {\n                        "x": 4,\n                        "y": 376,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "ј": {\n                        "x": 17,\n                        "y": 376,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "љ": {\n                        "x": 31,\n                        "y": 376,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "њ": {\n                        "x": 54,\n                        "y": 376,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "ћ": {\n                        "x": 78,\n                        "y": 376,\n                        "width": 10,\n                        "height": 23\n                    }\n                },\n                "width": 320,\n                "height": 403\n            },\n            "id": 22\n        }\n    ],\n    "TileMap": [\n        {\n            "type": "TileMap",\n            "id": 52\n        }\n    ],\n    "TextField": [\n        {\n            "id": 56,\n            "name": "textField1",\n            "width": 78,\n            "height": 23,\n            "pos": {\n                "x": 453,\n                "y": 302\n            },\n            "layerId": 2,\n            "type": "TextField",\n            "text": "test string",\n            "font": {\n                "id": 22,\n                "type": "Font"\n            }\n        }\n    ]\n}';
 }, function(t, e) {
     t.exports = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
 }, function(t, e) {
     t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}";
 }, function(t, e) {
     t.exports = "precision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
-}, function(t, e, r) {
-    t.exports = r(16);
+}, function(t, e, n) {
+    t.exports = n(16);
 } ]);

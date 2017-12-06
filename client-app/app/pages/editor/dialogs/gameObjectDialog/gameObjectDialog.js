@@ -3,7 +3,7 @@
 
 import BaseComponent from 'app/baseComponent'
 
-import FrameAnimation from  'coreEngine/src/model/generic/frameAnimation';
+import FrameAnimation from  'engine/model/generic/frameAnimation';
 
 @RF.decorateComponent({
     name: 'app-game-object-dialog',

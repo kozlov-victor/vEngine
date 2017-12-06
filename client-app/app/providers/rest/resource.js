@@ -9,9 +9,9 @@ export default class Resource{
     }
     static save(model,callback,opts){
 
-        let allModels = require('coreEngine/src/model/all');
+        let allModels = require('engine/model/all');
         if (!allModels[model.type])
-            throw `Unregistered type ${model.type}, export this type in 'coreEngine/src/model/all'!`;
+            throw `Unregistered type ${model.type}, export this type in 'engine/model/all'!`;
         let Class = allModels[model.type];
 
         let modelSample = new Class(editData.game);

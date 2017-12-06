@@ -1,7 +1,7 @@
 /*global RF:true*/
 import BaseComponent from 'app/baseComponent'
 
-import SpriteSheet from 'coreEngine/src/model/generic/spriteSheet'
+import SpriteSheet from 'engine/model/generic/spriteSheet'
 
 import './spriteSheets.scss'
 

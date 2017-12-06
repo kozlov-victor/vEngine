@@ -3,7 +3,7 @@
 
 import BaseComponent from 'app/baseComponent'
 
-import ParticleSystem from 'coreEngine/src/model/generic/particleSystem';
+import ParticleSystem from 'engine/model/generic/particleSystem';
 
 @RF.decorateComponent({
     name: 'app-particle-systems',

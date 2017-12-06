@@ -2,7 +2,7 @@
 
 import BaseComponent from 'app/baseComponent'
 
-import Sound from 'coreEngine/src/model/generic/sound';
+import Sound from 'engine/model/generic/sound';
 
 @RF.decorateComponent({
     name: 'app-sounds',

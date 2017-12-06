@@ -3,8 +3,8 @@
 import BaseComponent from 'app/baseComponent'
 import './sceneCentralPanel.less'
 
-import GameObject  from  'coreEngine/src/model/generic/gameObject'
-import GameObjectProto  from  'coreEngine/src/model/generic/gameObjectProto';
+import GameObject  from  'engine/model/generic/gameObject'
+import GameObjectProto  from  'engine/model/generic/gameObjectProto';
 
 @RF.decorateComponent({
     name: 'app-scene-central-panel',
