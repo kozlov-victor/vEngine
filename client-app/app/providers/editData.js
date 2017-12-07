@@ -8,7 +8,7 @@ import Layer from 'engine/model/generic/layer'
 import Font from 'engine/model/generic/font'
 import Sound from 'engine/model/generic/sound'
 import ParticleSystem from 'engine/model/generic/particleSystem'
-import Game from 'engine/game';
+import Game from 'engine/core/game';
 const res = {};
 
 res.reset = function(gameProps){

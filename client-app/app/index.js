@@ -4,7 +4,7 @@
 /*global sessionStorage:true*/
 /*global regeneratorRuntime:true*/
 
-import 'engine/polyfills'
+import 'engine/core/polyfills'
 import 'app/vendor/polyfills';
 
 import 'app/vendor/split'

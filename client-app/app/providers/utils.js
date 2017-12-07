@@ -145,7 +145,7 @@ export default class Utils {
     static range(rFr,rTo,step) {
         if (!step) step = 1;
         let arr = [], i;
-        if (rTo==undefined) {
+        if (rTo===undefined) {
             rTo = rFr;
             rFr = 0;
         }
@@ -169,7 +169,7 @@ export default class Utils {
             let GObjClass = GameObjectProto;
             let goObj = new GObjClass(editData.game);
             for (let key in goObj) {
-                if (key.indexOf('_')==0) continue;
+                if (key.indexOf('_')===0) continue;
                 res[key] = {
                     name:key,
                     value:key,

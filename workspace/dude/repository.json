@@ -179,7 +179,7 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 256,
+                "x": 260,
                 "y": 40
             },
             "layerId": 2,
@@ -1687,8 +1687,8 @@
             "width": 78,
             "height": 23,
             "pos": {
-                "x": 453,
-                "y": 302
+                "x": 450,
+                "y": 291
             },
             "layerId": 2,
             "type": "TextField",

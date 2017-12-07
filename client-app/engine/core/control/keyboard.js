@@ -86,6 +86,7 @@ export default class Keyboard {
     listenTo(){
         window.addEventListener('keydown',e=>{
             let code = e.keyCode;
+            if (this.buffer[code] >= KEY_PRESSED) return;
             this.buffer[code] = KEY_JUST_PRESSED;
         });
         window.addEventListener('keyup',e=>{
