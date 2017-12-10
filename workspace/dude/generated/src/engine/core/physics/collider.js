@@ -8,71 +8,81 @@ export default class Collider {
         this.game = game;
     }
 
-    manage(obj,newX,newY){
-        if (obj.pos.x===newX && obj.pos.y===newY) return;
-        if (!obj.rigid) {
-            obj.pos.x = newX;
-            obj.pos.y = newY;
-            return;
-        } else {
-            // let tileOn = scene.getTileAt(
-            //     newX + obj.getRect().width / 2,
-            //     newY + obj.getRect().height / 2
-            // );
-            // if (tileOn==16 || tileOn==17) return;
-        }
-        let hasCollision = false;
-        let all = this.game.getCurrScene().getAllGameObjects();
-        for (let i = 0,l = all.length;i<l;i++) {
-            let go = all[i];
-            if (obj===go) continue;
+    static overlapTest(a, b) {
+        return  (a.x < b.x + b.width) &&
+                (a.x + a.width > b.x) &&
+                (a.y < b.y + b.height) &&
+                (a.y + a.height > b.y);
+    }
 
-            let objRect = obj.getRect();
-            objRect.x = newX;
-            objRect.y = newY;
+    moveBy(player, dX, dY) {
 
-            if (isRectIntersectRect(objRect,go.getRect())) {
-                if (obj.rigid && go.rigid) {
-                    hasCollision = true;
-                    obj.trigger('collide',go);
-                    //console.log('collided',obj.name,go.name,go.rigid);
-                } else {
-                    obj.trigger('overlap',go);
+        let rigidObjects =
+            this.game.getCurrScene().getAllGameObjects().
+            concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
+
+        let playerRect = player.getRect();
+        playerRect.x+=dX;
+        playerRect.y+=dY;
+        let collidedByX = false, collidedByY = false;
+
+        for (let i = 0,len = rigidObjects.length;i<len;i++) {
+            let obstacle = rigidObjects[i];
+            let obstacleRect = obstacle.getRect();
+            if (player!==rigidObjects[i] && Collider.overlapTest(playerRect, obstacleRect)) {
+
+                let pathToTop = playerRect.bottom - obstacleRect.y;
+                let pathToBottom = obstacleRect.bottom - playerRect.y;
+                let pathToLeft = playerRect.x + playerRect.width - obstacleRect.x;
+                let pathToRight = obstacleRect.right - playerRect.x;
+
+                let minPath = Math.min(pathToTop,pathToBottom,pathToLeft,pathToRight);
+
+                if (pathToTop===minPath) { // closest path to move player to resolve collision is path to top
+                    //console.log('top');
+                    player.pos.y = obstacleRect.y - playerRect.height;
+                    collidedByY = true;
                 }
+                else if (pathToBottom===minPath) { // closest path to move player to resolve collision is path to top
+                    //console.log('bottom');
+                    player.pos.y = obstacleRect.bottom;
+                    collidedByY = true;
+                }
+                else if (pathToLeft===minPath) { // closest path to move player to resolve collision is path to top
+                    //console.log('left');
+                    player.pos.x = obstacleRect.x - playerRect.width;
+                    collidedByX = true;
+                }
+                else if (pathToRight===minPath) { // closest path to move player to resolve collision is path to top
+                    //console.log('right');
+                    player.pos.x = obstacleRect.x + obstacleRect.width;
+                    collidedByX = true;
+                }
+
             }
         }
-        if (!hasCollision) {
-            obj.pos.x = newX;
-            obj.pos.y = newY;
-        }
-        return hasCollision;
+        if (!collidedByX) player.pos.x+=dX;
+        if (!collidedByY) player.pos.y+=dY;
     }
 
-    overlapTest(a, b) {
-        return a.x < b.x + b.width && a.x + a.width > b.x &&
-            a.y < b.y + b.height && a.y + a.height > b.y
-    }
 
-    move(player, newX, newY) {
 
-        let all = this.game.getCurrScene().getAllGameObjects();
-        // Move rectangle along y axis
-        for (let i = 0,l = all.length;i<l;i++) {
-            let possibleRectX = { x: player.pos.x + newX, y: player.pos.y, width: player.width, height: player.height };
-            let possibleRectY = { x: player.pos.x, y: player.pos.y + newY, width: player.width, height: player.height };
-            let goRect = all[i].getRect();
-            if (player!==all[i] && this.overlapTest(possibleRectX, goRect)) {
-                if (newX < 0) newX = goRect.x + goRect.width - player.pos.x;
-                else if (newX > 0) newX = goRect.x - player.pos.x - player.width;
-            }
-            if (player!==all[i] && this.overlapTest(possibleRectY, goRect)) {
-                if (newY < 0) newY = goRect.y + goRect.height - player.pos.y;
-                else if (newY > 0) newY = goRect.y - player.pos.y - player.height;
-            }
+    moveTo(player,newX,newY){ // todo not works!
+        let pRect = player.getRect();
+        let collided = false;
+        if (player.rigidBody) {
+            this.game.getCurrScene().getAllGameObjects().
+            concat(this.game._currentScene.tileMap.getTilesAtRect(pRect)).
+            some(g=>{
+                if (Collider.overlapTest(pRect,g.getRect())) {
+                    collided = true;
+                    return true;
+                }
+            });
         }
-        player.pos.x += newX;
-        player.pos.y += newY;
-
+        if (collided) return;
+        player.pos.x = newX;
+        player.pos.y = newY;
     }
 
 

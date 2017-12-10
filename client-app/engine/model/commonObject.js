@@ -76,7 +76,8 @@ export default class CommonObject {
                     if (item && item.type && item.id) {
                         this[key].push(this.game.repository.getObject(item.id,item.type,forceNew));
                     } else {
-                        if (isPrimitive(item)) this[key].push(item);
+                        //if (isPrimitive(item))
+                        this[key].push(item);
                     }
                 });
             }

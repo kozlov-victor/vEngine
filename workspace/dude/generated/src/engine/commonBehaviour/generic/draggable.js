@@ -44,13 +44,13 @@ export default class DraggableBehaviour extends BaseAbstractBehaviour {
                     return;
                 }
             }
-            // collider.manage(
-            //     self,
+            gameObject.pos.x = e.screenX - point.mX;
+            gameObject.pos.y = e.screenY - point.mY;
+            // this.game._collider.moveTo(
+            //     gameObject,
             //     e.screenX - point.mX,
             //     e.screenY - point.mY
             // );
-            gameObject.pos.x = e.screenX - point.mX;
-            gameObject.pos.y = e.screenY - point.mY;
         });
         scene.on('mouseUp',e=>{
             let pointId = DraggableBehaviour._getEventId(e);

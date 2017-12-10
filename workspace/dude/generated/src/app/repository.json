@@ -12,6 +12,12 @@
                     "id": 2
                 }
             ],
+            "useBG": true,
+            "colorBG": {
+                "r": 230,
+                "g": 254,
+                "b": 255
+            },
             "tileMap": {
                 "id": 52,
                 "type": "TileMap"
@@ -30,79 +36,15 @@
                 },
                 {
                     "type": "GameObject",
-                    "id": 8
+                    "id": 63
                 },
                 {
                     "type": "GameObject",
-                    "id": 18
+                    "id": 64
                 },
                 {
                     "type": "GameObject",
-                    "id": 19
-                },
-                {
-                    "type": "GameObject",
-                    "id": 20
-                },
-                {
-                    "type": "GameObject",
-                    "id": 21
-                },
-                {
-                    "type": "GameObject",
-                    "id": 39
-                },
-                {
-                    "type": "GameObject",
-                    "id": 40
-                },
-                {
-                    "type": "GameObject",
-                    "id": 41
-                },
-                {
-                    "type": "GameObject",
-                    "id": 42
-                },
-                {
-                    "type": "GameObject",
-                    "id": 43
-                },
-                {
-                    "type": "GameObject",
-                    "id": 44
-                },
-                {
-                    "type": "GameObject",
-                    "id": 45
-                },
-                {
-                    "type": "GameObject",
-                    "id": 46
-                },
-                {
-                    "type": "GameObject",
-                    "id": 47
-                },
-                {
-                    "type": "GameObject",
-                    "id": 48
-                },
-                {
-                    "type": "GameObject",
-                    "id": 49
-                },
-                {
-                    "type": "GameObject",
-                    "id": 50
-                },
-                {
-                    "type": "GameObject",
-                    "id": 51
-                },
-                {
-                    "type": "TextField",
-                    "id": 56
+                    "id": 65
                 }
             ]
         }
@@ -124,6 +66,15 @@
             "type": "SpriteSheet",
             "resourcePath": "resources/platform.png",
             "id": 5
+        },
+        {
+            "name": "ground",
+            "width": 800,
+            "height": 32,
+            "type": "SpriteSheet",
+            "numOfFramesH": 25,
+            "resourcePath": "resources/ground.png",
+            "id": 57
         }
     ],
     "GameObjectProto": [
@@ -141,6 +92,10 @@
                 {
                     "type": "CommonBehaviour",
                     "id": 15
+                },
+                {
+                    "type": "CommonBehaviour",
+                    "id": 60
                 }
             ],
             "frameAnimations": [
@@ -163,6 +118,7 @@
             ]
         },
         {
+            "id": 6,
             "name": "platform",
             "width": 500,
             "height": 64,
@@ -171,7 +127,30 @@
                 "id": 5,
                 "type": "SpriteSheet"
             },
-            "id": 6
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 61
+                }
+            ]
+        },
+        {
+            "id": 58,
+            "name": "ground1",
+            "width": 32,
+            "height": 32,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 57,
+                "type": "SpriteSheet"
+            },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 62
+                }
+            ],
+            "currFrameIndex": 9
         }
     ],
     "GameObject": [
@@ -179,8 +158,8 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 260,
-                "y": 40
+                "x": 298,
+                "y": 60
             },
             "layerId": 2,
             "type": "GameObject",
@@ -190,11 +169,25 @@
             }
         },
         {
-            "id": 8,
+            "id": 63,
+            "name": "ground1",
+            "pos": {
+                "x": 409,
+                "y": 68
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 58,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 64,
             "name": "platform",
             "pos": {
-                "x": -261,
-                "y": 130
+                "x": 14,
+                "y": 298
             },
             "layerId": 2,
             "type": "GameObject",
@@ -204,11 +197,11 @@
             }
         },
         {
-            "id": 18,
+            "id": 65,
             "name": "platform",
             "pos": {
-                "x": 112,
-                "y": 323
+                "x": 533,
+                "y": 242
             },
             "layerId": 2,
             "type": "GameObject",
@@ -216,228 +209,6 @@
                 "id": 6,
                 "type": "GameObjectProto"
             }
-        },
-        {
-            "id": 19,
-            "name": "platform",
-            "pos": {
-                "x": 395,
-                "y": 47
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 20,
-            "name": "platform",
-            "pos": {
-                "x": 677,
-                "y": 303
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 21,
-            "name": "platform",
-            "pos": {
-                "x": 228,
-                "y": 162
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 39,
-            "name": "platform",
-            "pos": {
-                "x": 1040,
-                "y": 176
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 40,
-            "name": "platform",
-            "pos": {
-                "x": 1578,
-                "y": 221
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "pos": {
-                "x": 0,
-                "y": 538
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            },
-            "id": 41
-        },
-        {
-            "id": 42,
-            "name": "platform",
-            "pos": {
-                "x": 588,
-                "y": 536
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 43,
-            "name": "platform",
-            "pos": {
-                "x": 1165,
-                "y": 535
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 44,
-            "name": "platform",
-            "pos": {
-                "x": 1676,
-                "y": 481
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 45,
-            "name": "platform",
-            "pos": {
-                "x": 2129,
-                "y": 428
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 46,
-            "name": "platform",
-            "pos": {
-                "x": 2571,
-                "y": 535
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 47,
-            "name": "platform",
-            "pos": {
-                "x": 3118,
-                "y": 507
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 48,
-            "name": "platform",
-            "pos": {
-                "x": 3015,
-                "y": 353
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 49,
-            "name": "platform",
-            "pos": {
-                "x": 3648,
-                "y": 544
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "id": 50,
-            "name": "platform",
-            "pos": {
-                "x": 4168,
-                "y": 508
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            }
-        },
-        {
-            "pos": {
-                "x": 4748,
-                "y": 612
-            },
-            "layerId": 2,
-            "type": "GameObject",
-            "gameObjectProto": {
-                "id": 6,
-                "type": "GameObjectProto"
-            },
-            "id": 51
         }
     ],
     "FrameAnimation": [
@@ -492,6 +263,21 @@
                 "idleLeftAnimation": "idleLeft",
                 "idleRightAnimation": "idleRight"
             }
+        },
+        {
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 60
+        },
+        {
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 61
+        },
+        {
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 62
         }
     ],
     "Font": [
@@ -1676,27 +1462,55 @@
     ],
     "TileMap": [
         {
+            "id": 52,
+            "width": 50,
+            "height": 50,
             "type": "TileMap",
-            "id": 52
-        }
-    ],
-    "TextField": [
-        {
-            "id": 56,
-            "name": "textField1",
-            "width": 78,
-            "height": 23,
-            "pos": {
-                "x": 450,
-                "y": 291
+            "spriteSheet": {
+                "id": 57,
+                "type": "SpriteSheet"
             },
-            "layerId": 2,
-            "type": "TextField",
-            "text": "test string",
-            "font": {
-                "id": 22,
-                "type": "Font"
-            }
+            "data": [
+                [],
+                null,
+                null,
+                [
+                    null,
+                    null,
+                    null,
+                    null,
+                    2,
+                    null,
+                    null
+                ],
+                [
+                    null,
+                    null
+                ],
+                [
+                    1,
+                    null,
+                    3,
+                    null,
+                    null,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    1
+                ],
+                null,
+                [
+                    null,
+                    1,
+                    null,
+                    1
+                ]
+            ]
         }
     ]
 }

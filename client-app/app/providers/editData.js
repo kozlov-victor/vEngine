@@ -50,7 +50,8 @@ res.reset = function(gameProps){
         res.buildOpts = {
             debug: false,
             minify:false,
-            windowed: false
+            windowed: false,
+            embedResources: false
         };
     }
 };

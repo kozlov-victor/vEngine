@@ -24,14 +24,14 @@
 
     var _prepareMessage = function(e,lineNum){
         var msg;
-        if (typeof e == 'string') {
+        if (typeof e === 'string') {
             msg = e;
         }
         else msg = e.message;
         if (!msg) {
             if (e.target) {
                 ['img','audio','link'].some(function(it){
-                    if (e.target.tagName.toLowerCase()==it) {
+                    if (e.target.tagName.toLowerCase()===it) {
                         msg = 'can not load ' +it + ' with location '+ (e.target.src||e.target.href);
                         return true;
                     }
@@ -39,7 +39,7 @@
             }
         }
         if (!msg) msg = '';
-        if (msg.indexOf('Uncaught')==0) msg = msg.replace('Uncaught','').trim();
+        if (msg.indexOf('Uncaught')===0) msg = msg.replace('Uncaught','').trim();
         if (!msg) {
             console.error(e);
             msg = 'Unknown error: ' + e.toString();
@@ -85,6 +85,7 @@
                 'border:1px solid red;';
             var leftBox = document.createElement('div');
             leftBox.style.cssText = 'width:90%;display:inline-block;';
+            leftBox.style.cssText = 'width:90%;display:inline-block;';
             var rightBox = document.createElement('div');
             rightBox.style.cssText = 'width:10%;display:inline-block;cursor:pointer;text-align:right;vertical-align:top;';
             rightBox.textContent = 'x';
@@ -125,6 +126,36 @@
     }
 
 })();
+
+(function(){
+    var devConsole = document.createElement('div');
+    var css = {
+        position: 'absolute',
+        right: 0,
+        top: 0,
+        'background-color': 'black',
+        'min-width': '20px',
+        'min-height': '20px',
+        opacity: 0.5
+    };
+    Object.keys(css).forEach(key=>devConsole.style.setProperty(key,css[key]));
+
+    var label = document.createElement('span');
+    label.style.color = 'white';
+    devConsole.appendChild(label);
+
+    window.addEventListener('load',function(){
+        document.body.appendChild(devConsole);
+
+        setInterval(function(){
+            label.textContent = 'fps:'+window.fps;
+        },1000);
+
+    });
+
+
+
+})();
 </script>
     <meta name ="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
     <style>
@@ -145,8 +176,7 @@
 </head>
 
 <body>
-
-<script src="bundle.js?12"></script>
+<script src="bundle.js?123"></script>
 </body>
 
 </html>

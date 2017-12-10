@@ -57,7 +57,7 @@ export default class Keyboard {
     }
 
     isPressed(key){
-        return this.buffer[key]>KEY_RELEASED;
+        return this.buffer[key]>=KEY_PRESSED;
     }
 
     isJustPressed(key){

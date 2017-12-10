@@ -61,15 +61,14 @@ export default class GameObjectProto extends BaseModel {
     update(time,delta) {
         super.update(time);
         this._currFrameAnimation && this._currFrameAnimation.update(time);
-
-        this.rigidBody.update(time,delta);
         //if (_gameObject.angleVel) _gameObject.angle += _gameObject.angleVel * delta / 1000;
 
-        this.game._renderer.draw(this);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate(time,delta);
         for (let i=0,max = this.commonBehaviour.length;i<max;i++){
-            this.commonBehaviour[i].onUpdate(time,delta);
+            this.commonBehaviour[i].onUpdate(time,delta); // todo "update"?
         }
+        this.rigidBody.update(time,delta);
+        this.game._renderer.draw(this);
     }
 
     onShow(){

@@ -1,107 +1,114 @@
 
-const Vec2 = function(_x,_y){
+export default class Vec2 {
 
-    let x = _x||0;
-    let y = _y||0;
-    let angle = 0;
-    let norm = 0;
+    constructor(x=0,y=0){
+        this.x = x;
+        this.y = y;
+    }
 
-    this.x = 0;
-    this.y = 0;
+    // скалярное произведение
+    dotProduct(another){
+        return this.x*another.x + this.y*another.y;
+    }
 
-    let onXY_Changed = function(){
-        angle = x===0?0:Math.atan(y/x);
-        norm = Math.sqrt(x*x+y*y);
+    crossProduct(another) {
+        return this.x * another.y - this.y * another.x;
+    }
+
+    setXY(x,y){
+        this.x = x;
+        this.y = y;
+    }
+
+    addXY(x,y){
+        this.x += x;
+        this.y += y;
+    }
+
+    multToScalar(scalar,mutateOrigin = true){
+        if (mutateOrigin) return new Vec2(this.x*scalar,this.y*scalar);
+        this.x*=scalar;
+        this.y*=scalar;
+        return this;
+    }
+
+    divByScalar(scalar,mutateOrigin = true){
+        return this.multToScalar(1/scalar,mutateOrigin);
+    }
+
+    plus(another,mutateOrigin = false){
+        if (!mutateOrigin) return new Vec2(this.x+another.x,this.y+another.y);
+        this.x+=another.x;
+        this.y+=another.y;
+        return this;
+    }
+
+    minus(another,mutateOrigin = false){
+        if (!mutateOrigin) return new Vec2(this.x-another.x,this.y-another.y);
+        this.x-=another.x;
+        this.y-=another.y;
+        return this;
+    }
+
+    getLength() {
+        return Math.sqrt(this.lengthSquared());
+    }
+
+    lengthSquared() {
+        return (this.x * this.x) + (this.y * this.y);
+    }
+
+    normalize() {
+        let length = this.getLength();
+        this.x = this.x / length;
+        this.y = this.y / length;
+        return this;
+    }
+
+    setLength(value) {
+        let _angle = this.getAngle();
+        this.x = Math.cos(_angle) * value;
+        this.y = Math.sin(_angle) * value;
     };
 
-    let onAngleChanged = function(){
-        y = Math.sin(angle)*norm;
-        x = Math.cos(angle)*norm;
+    getAngle() {
+        return Math.atan2(this.y, this.x);
     };
 
-    let onNormChanged = function(){
-        y = Math.sin(angle)*norm;
-        x = Math.cos(angle)*norm;
+    getAngleBetween(that){
+        return Math.acos(
+            (this.x*that.x + this.y*that.y)/
+            this.getLength()*that.getLength()
+        )
+    }
+
+    setAngle(value) {
+        let len = this.getLength();
+        this.x = Math.cos(value) * len;
+        this.y = Math.sin(value) * len;
     };
 
-    this.setXY = function(_x,_y){
-        x = _x;
-        y = _y;
-        onXY_Changed();
+    clone() {
+        return new Vec2(this.x, this.y);
+    }
+
+    static angleBetween(v1, v2) {
+        v1 = v1.clone().normalize();
+        v2 = v2.clone().normalize();
+        return Math.acos(v1.dotProduct(v2));
     };
 
-    this.setX = function(_x){
-        x = _x;
-        onXY_Changed();
-    };
+    static normalBetween(v1,v2){
+        let v = v1.minus(v2);
+        return v.normalize();
+    }
 
-    this.setY = function(_y){
-        y = _y;
-        onXY_Changed();
-    };
+    static distance(a,b) {
+        return Math.sqrt(Vec2.distanceSquared(a,b));
+    }
 
-    this.setAngle = function(a){
-        angle = a;
-        onAngleChanged();
-    };
+    static distanceSquared(a, b) {
+        return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*((a.y - b.y));
+    }
 
-    this.setNorm = function(l){ // length
-        norm = l;
-        onNormChanged();
-    };
-
-    this.getXY = function(){
-        return {x:x,y:y};
-    };
-
-    this.getX = function(){
-        return x;
-    };
-
-    this.getY = function(){
-        return y;
-    };
-
-    this.getAngle = function(){
-        return angle;
-    };
-
-    this.reset = ()=>{
-       x = 0;
-       y = 0;
-    };
-
-    this.addVec2 = function(v){
-        return new Vec2(x + v.getX(),y + v.getY);
-    };
-
-    this.add = function(x1,y1){
-        this.x+=x1;
-        this.y+=y1;
-    };
-
-    this.set = function(x,y){
-        this.x=x;
-        this.y=y;
-    };
-
-    this.multiplyByScalar = function(sc){
-        return new Vec2(x * sc,y * sc);
-    };
-
-    this.dotProduct = function(v){ // inner product, скалярное произведение
-        return x* v.getX()+y* v.getY();
-    };
-
-    this.getNorm = function(){
-        return norm;
-    };
-
-    (function(){
-        onXY_Changed();
-    })();
-
-};
-
-
-module.exports = Vec2;
+}

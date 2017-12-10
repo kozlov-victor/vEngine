@@ -4,6 +4,7 @@ import CommonObject from './commonObject'
 import Tween from '../core/tween'
 import EventEmitter from '../core/eventEmitter'
 import {Transient} from '../core/decorators'
+//import Vec2 from '../core/vec2'
 
 import ArcadeRigidBody from '../core/physics/arcadeRigidBody'
 
@@ -17,7 +18,7 @@ export default class BaseModel extends CommonObject {
     name = null;
     width = 0;
     height = 0;
-    pos = {x:0,y:0};
+    pos = {x:0,y:0}; // todo vec2?
     scale = {x:1,y:1};
     angle = 0;
     alpha = 1;
@@ -45,11 +46,14 @@ export default class BaseModel extends CommonObject {
     onShow(){}
 
     getRect(){
+        let x      = this.pos.x,
+            y      = this.pos.y,
+            width  = this.width,
+            height = this.height;
         return {
-            x:      this.pos.x,
-            y:      this.pos.y,
-            width:  this.width,
-            height: this.height
+            x,y,width,height,
+            right: x + width,
+            bottom: y + height
         };
     }
 

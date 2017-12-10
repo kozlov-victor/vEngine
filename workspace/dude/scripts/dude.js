@@ -7,16 +7,18 @@ export class DudeBehaviour {
     }
 
     onUpdate(){
-        //console.log('on floor',this.gameObject.rigidBody.onFloor);
         if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP)){
-            //console.log('just pressed',this.gameObject.rigidBody.onFloor);
-            if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.add(0,-340);
+            if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.addXY(0,-340);
         }
         
-        if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.A)){
+        if (this.game.keyboard.isPressed(this.game.keyboard.KEY.A)){
             console.log('pr');
-            this.gameObject.rigidBody.vel.add(0,-50);
+            this.gameObject.rigidBody.vel.addXY(0,-50);
         }    
+        
+        //let tilesInfo = this.game.getCurrScene().tileMap.getTilesAtRect(this.gameObject.getRect());
+        //if (tilesInfo.length) console.log(tilesInfo,this.gameObject.pos);
+        
     }
 
     onDestroy(){

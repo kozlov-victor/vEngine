@@ -127,7 +127,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             srcHeight = texHeight;
         }
 
-        if (this.currTex!=texture){
+        if (this.currTex!==texture){
             texture.bind();
             this.currTex = texture;
         }
@@ -146,7 +146,11 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     fillRect(x,y,w,h,color){
-       
+        throw 'not yet implemented'
+    }
+
+    drawRect(x,y,w,h,color){
+        throw 'not yet implemented'
     }
 
     setAlpha(a){

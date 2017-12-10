@@ -59,6 +59,10 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.ctx.fillRect(x,y,w,h);
     }
 
+    drawRect(x,y,w,h,color){
+        throw 'not yet implemented';
+    }
+
     setAlpha(a){
         this.ctx.globalAlpha = a;
     }

@@ -16,15 +16,17 @@ export default class Scene extends BaseModel {
         super(game);
         this.tileMap = null;
         if (IN_EDITOR) this.tileMap = new TileMap(game);
-        // if (!this.tileMap) {
-        //     if (this.tileMap.spriteSheetId) {
-        //         this.tileMap._spriteSheet = bundle.spriteSheetList.find({id: this.tileMap.spriteSheetId});
-        //         if (!this.tileMap._spriteSheet) return;
-        //         this.tileMap._tilesInScreenX = ~~(bundle.gameProps.width / this.tileMap._spriteSheet._frameWidth);
-        //         this.tileMap._tilesInScreenY = ~~(bundle.gameProps.height / this.tileMap._spriteSheet._frameHeight);
-        //     }
-        // }
+
     }
+
+    revalidate(){
+        super.revalidate();
+        if (!IN_EDITOR && this.tileMap) {
+            this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
+            this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
+        }
+    }
+
     addTweenMovie(tm){
         this._tweenMovies.push(tm);
     }
@@ -42,9 +44,9 @@ export default class Scene extends BaseModel {
                 dataSet[s.id] = s;
             })
         });
-        // if (this.tileMap && this.tileMap.spriteSheet) {
-        //     dataSet.add(this.tileMap._spriteSheet);
-        // }
+        if (this.tileMap && this.tileMap.spriteSheet) {
+            dataSet[this.tileMap.spriteSheet.id] = this.tileMap.spriteSheet;
+        }
         return Object.keys(dataSet).map(key=>dataSet[key]);
     }
 
@@ -106,6 +108,7 @@ export default class Scene extends BaseModel {
         //     tweenMovie._update(currTime);
         // });
         // this.__updateIndividualBehaviour__(currTime);
+        this._updateTileMap();
         this.game._renderer.flipFrameBuffer();
     }
     fadeIn(time,easeFnName){
@@ -120,37 +123,32 @@ export default class Scene extends BaseModel {
         // movie.tween(0,tween);
         // movie.play();
     }
-    _render(){
-        // let spriteSheet = this.tileMap._spriteSheet;
-        // if (!spriteSheet) return;
-        // let ctx = renderer.getContext();
-        // let tilePosX = ~~(camera.pos.x / this.tileMap._spriteSheet._frameWidth);
-        // let tilePosY = ~~(camera.pos.y / this.tileMap._spriteSheet._frameHeight);
-        // let w = tilePosX + this.tileMap._tilesInScreenX + 2;
-        // let h = tilePosY + this.tileMap._tilesInScreenY + 2;
-        // for (let y=tilePosY;y<h;y++) {
-        //     for (let x=tilePosX;x<w;x++) {
-        //         let index = this.tileMap.data[y] && this.tileMap.data[y][x];
-        //         if (index==undefined) continue;
-        //         ctx.drawImage(
-        //             resourceCache.get(spriteSheet.resourcePath),
-        //             spriteSheet.getFramePosX(index),
-        //             spriteSheet.getFramePosY(index),
-        //             spriteSheet._frameWidth,
-        //             spriteSheet._frameHeight,
-        //             x*spriteSheet._frameWidth,
-        //             y*spriteSheet._frameHeight
-        //         );
-        //     }
-        // }
+    _updateTileMap(){
+        let spriteSheet = this.tileMap.spriteSheet;
+        if (!spriteSheet) return;
+        let ctx = this.game._renderer;
+        let tilePosX = ~~(this.game.camera.pos.x / this.tileMap.spriteSheet._frameWidth);
+        let tilePosY = ~~(this.game.camera.pos.y / this.tileMap.spriteSheet._frameHeight);
+        let w = tilePosX + this.tileMap._tilesInScreenX + 2;
+        let h = tilePosY + this.tileMap._tilesInScreenY + 2;
+        for (let y=tilePosY;y<h;y++) {
+            for (let x=tilePosX;x<w;x++) {
+                let index = this.tileMap.data[y] && this.tileMap.data[y][x];
+                if (index==null) continue; // todo
+                ctx.drawImage(
+                    spriteSheet.resourcePath,
+                    spriteSheet.getFramePosX(index),
+                    spriteSheet.getFramePosY(index),
+                    spriteSheet._frameWidth,
+                    spriteSheet._frameHeight,
+                    x*spriteSheet._frameWidth,
+                    y*spriteSheet._frameHeight
+                );
+            }
+        }
     }
-    getTileAt(x,y){
-        if (!this.tileMap._spriteSheet) return null;
-        let tilePosX = ~~(x / this.tileMap._spriteSheet._frameWidth);
-        let tilePosY = ~~(y / this.tileMap._spriteSheet._frameHeight);
-        return this.tileMap.data[tilePosY] && this.tileMap.data[tilePosY][tilePosX];
-    }
-    printText(x,y,text,font){
+
+    printText(x,y,text,font){ // todo
         if (!text) return;
         if (!text.substring) text = JSON.stringify(text,null,4);
         this.game.renderer.printText(x,y,text,font);

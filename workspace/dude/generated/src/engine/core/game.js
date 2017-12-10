@@ -1,4 +1,5 @@
 /*global requestAnimationFrame:true*/
+/*global window:true*/
 /*global DEBUG:true*/
 /*global IN_EDITOR:true*/
 /*global PROJECT_NAME:true*/
@@ -24,9 +25,11 @@ export default class Game extends CommonObject {
     _currTime = null;
     _currentScene = null;
     _running = false;
+    _renderer = null;
     scale = {x:1,y:1};
     pos = {x:0,y:0};
     gravityConstant = null;
+    fps = null;
 
     constructor(gameProps){
         super();
@@ -53,7 +56,7 @@ export default class Game extends CommonObject {
     }
 
     runScene(scene){
-        if (!this._renderer) {
+        if (!this._renderer) { // move to constructor?
             this._renderer = RendererFactory.getRenderer(this);
             this._mouse.listenTo(this._renderer.container);
         }
@@ -88,15 +91,19 @@ export default class Game extends CommonObject {
         this._currentScene = scene;
     }
 
-    static update(self){
+    static update(game){
         if (DEBUG && window.canceled) return;
-        requestAnimationFrame(()=>{Game.update(self)});
-        self._lastTime = self._currTime;
-        self._currTime = Date.now();
-        self._deltaTime = self._currTime - self._lastTime;
+        requestAnimationFrame(()=>{Game.update(game)});
+        game._lastTime = game._currTime;
+        game._currTime = Date.now();
+        game._deltaTime = game._currTime - game._lastTime;
+        if (DEBUG) {
+            game.fps = ~~(1000 / game._deltaTime);
+            window.fps = game.fps;
+        }
 
-        self._currentScene && self._currentScene.update(self._currTime,self._deltaTime);
-        self.keyboard.update();
+        game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
+        game.keyboard.update();
     }
 
 }

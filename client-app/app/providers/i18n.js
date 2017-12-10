@@ -58,6 +58,7 @@ _i18n.bundle = {
         debug: 'debug',
         minify:'minify',
         windowed:'windowed',
+        embedResources: 'embed resources',
         stop: 'stop',
         addGameObject:'add game object',
         nothingToAdd:'nothing to add',
