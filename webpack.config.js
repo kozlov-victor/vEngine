@@ -9,10 +9,13 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const debug = true;
 
 let config = {
-    entry: ['regenerator-runtime/runtime','./client-app/app/index.js'],
+    entry: {
+        'app.bundle':['regenerator-runtime/runtime','./client-app/app/index.js'],
+        'debug':'./client-app/debug/debug.js'
+    },
     output: {
         path: path.resolve('./assets/'),
-        filename:'js/build/app.bundle.js'
+        filename:'js/build/[name].js'
     },
     resolveLoader: {
         modules: ['node_modules', path.resolve(__dirname, 'node_tools/loaders')]

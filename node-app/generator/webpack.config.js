@@ -7,10 +7,13 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports =  (params)=>{
     let config = {
-        entry: [`./workspace/${params.projectName}/generated/src/index.js`],
+        entry: {
+            bundle:`./workspace/${params.projectName}/generated/src/index.js`,
+            debug: ['./client-app/debug/debug.js','./client-app/debug/devConsole.js']
+        },
         output: {
-            path: path.resolve('./node-app/generator/build'),
-            filename:'bundle.js'
+            path: path.resolve(`./workspace/${params.projectName}/generated/tmp`),
+            filename:'[name].js'
         },
         module: {
             rules: [

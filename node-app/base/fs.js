@@ -8,7 +8,7 @@ class FS {
         let pathArr = target.split('/');
         pathArr.pop();
         let targetPath = pathArr.join('/');
-        if (!module.exports.existsSync(targetPath)) this.createFolderSync(targetPath);
+        if (!this.existsSync(targetPath)) this.createFolderSync(targetPath);
         fs.createReadStream(source).pipe(fs.createWriteStream(target));
     }
 
@@ -108,8 +108,8 @@ class FS {
     };
 
     createFolderSync(path) {
-        this.deleteFolderSync(path);
         try {
+            this.deleteFolderSync(path);
             let pathSeq = '';
             path.split('/').forEach((fldr)=>{
                 if (!fldr) return;
@@ -119,7 +119,7 @@ class FS {
             });
             if (path) fs.mkdirSync(path);
         } catch (e) {
-            if (e.code != 'EEXIST') throw e;
+            if (e.code !== 'EEXIST') throw e;
         }
     }
 

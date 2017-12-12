@@ -12,23 +12,23 @@
     data-draggable-container
     id="sceneDiv">
 
-    <div data-for="j in utils.getArray(utils.tileMapHeight())">
-        <div data-for="i in utils.getArray(utils.tileMapWidth())"
-                data-class="{
-                    inlineBlock:1
-                }"
-                data-style="{
-                    visibility:            showThisTile(j,i)?'visible':'hidden',
-                    width:                 utils.tileFrameWidth()+'px',
-                    verticalAlign:         'middle',
-                    height:                utils.tileFrameHeight()+'px',
-                    backgroundImage:       utils.tileResourcePath(),
-                    backgroundPositionX:  -getTilePos(j,i).x+'px',
-                    backgroundPositionY:  -getTilePos(j,i).y+'px',
-                    backgroundRepeat:     'no-repeat'
-                }"
-            ></div>
-    </div>
+    <!--<div data-for="j in utils.getArray(utils.tileMapHeight())">-->
+        <!--<div data-for="i in utils.getArray(utils.tileMapWidth())"-->
+                <!--data-class="{-->
+                    <!--inlineBlock:1-->
+                <!--}"-->
+                <!--data-style="{-->
+                    <!--visibility:            showThisTile(j,i)?'visible':'hidden',-->
+                    <!--width:                 utils.tileFrameWidth()+'px',-->
+                    <!--verticalAlign:         'middle',-->
+                    <!--height:                utils.tileFrameHeight()+'px',-->
+                    <!--backgroundImage:       utils.tileResourcePath(),-->
+                    <!--backgroundPositionX:  -getTilePos(j,i).x+'px',-->
+                    <!--backgroundPositionY:  -getTilePos(j,i).y+'px',-->
+                    <!--backgroundRepeat:     'no-repeat'-->
+                <!--}"-->
+            <!--&gt;</div>-->
+    <!--</div>-->
 
 
     <div data-for="item in editData.currLayerInEdit.gameObjects">

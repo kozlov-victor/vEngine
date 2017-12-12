@@ -16,12 +16,12 @@ export default class SceneCentralPanel extends BaseComponent {
     }
 
     showThisTile(j,i){
+        if (j===undefined || i===undefined) return false;
         let editData = this.editData;
         if (!editData.currSceneInEdit.tileMap) return false;
         if (!editData.currSceneInEdit.tileMap.data) return false;
         let data = editData.currSceneInEdit.tileMap.data;
-        let res = data[j]!==undefined && data[j][i]!==undefined;
-        if (j===undefined || i===undefined) return false;
+        let res = data[j]!=null && data[j][i]!=null;
         return res;
     }
 

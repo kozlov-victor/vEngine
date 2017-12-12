@@ -12,7 +12,6 @@ export class DudeBehaviour {
         }
         
         if (this.game.keyboard.isPressed(this.game.keyboard.KEY.A)){
-            console.log('pr');
             this.gameObject.rigidBody.vel.addXY(0,-50);
         }    
         

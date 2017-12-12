@@ -33,13 +33,15 @@ export default class Mouse {
         };
         // mouseMove
         container.ontouchmove = e=>{
+            console.log(11)
             let l = e.touches.length;
             while (l--){
-                this.resolveMouseMove(e.touches[l]);
+                this.resolveMouseMove(e.touches[l],true);
             }
         };
         container.onmousemove = e=>{
-            this.resolveMouseMove(e);
+            let isMouseDown = e.buttons === 1;
+            this.resolveMouseMove(e,isMouseDown);
         };
         // other
         container.ondblclick = e=>{
@@ -55,7 +57,7 @@ export default class Mouse {
         };
     }
 
-    triggerEvent(e,eventName){
+    triggerEvent(e,eventName,isMouseDown){
         let g = this.game;
         let scene = g.getCurrScene();
         if (!scene) return;
@@ -73,7 +75,8 @@ exit:   for (let i=0;i<scene.layers.length;i++){
                         screenY:point.y,
                         objectX:point.x - go.pos.x,
                         objectY:point.y - go.pos.y,
-                        id:point.id
+                        id:point.id,
+                        isMouseDown
                     });
                     break exit;
                 }
@@ -84,7 +87,8 @@ exit:   for (let i=0;i<scene.layers.length;i++){
             screenX:point.x,
             screenY:point.y,
             id:point.id,
-            target:scene
+            target:scene,
+            isMouseDown
         });
 
         return point;
@@ -96,9 +100,9 @@ exit:   for (let i=0;i<scene.layers.length;i++){
         this.triggerEvent(e,'mouseDown');
     }
 
-    resolveMouseMove(e){
+    resolveMouseMove(e,isMouseDown){
         if (DEBUG && window.canceled) return;
-        let point = this.triggerEvent(e,'mouseMove');
+        let point = this.triggerEvent(e,'mouseMove',isMouseDown);
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject!==point.object) {

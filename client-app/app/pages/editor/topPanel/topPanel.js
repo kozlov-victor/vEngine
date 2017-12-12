@@ -34,6 +34,9 @@ export default class TopPanel extends BaseComponent {
 
     async run(){
         let buildOpts = this.editData.buildOpts;
+        if (w) {
+            w.document.title = w.document.body.innerHTML='loading...'
+        }
         await this.http.get(
             '/resource/generate',
             {
@@ -46,7 +49,7 @@ export default class TopPanel extends BaseComponent {
 
         if (!w || w.closed) {
             this.openWindow();
-            if (w==null) {
+            if (!w) {
                 RF.getComponentById('popupBlockedModal').open();
             }
         }
