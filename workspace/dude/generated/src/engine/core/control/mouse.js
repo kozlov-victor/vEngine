@@ -33,7 +33,6 @@ export default class Mouse {
         };
         // mouseMove
         container.ontouchmove = e=>{
-            console.log(11)
             let l = e.touches.length;
             while (l--){
                 this.resolveMouseMove(e.touches[l],true);
@@ -44,15 +43,15 @@ export default class Mouse {
             this.resolveMouseMove(e,isMouseDown);
         };
         // other
-        container.ondblclick = e=>{
+        container.ondblclick = e=>{ // todo now only on pc
             this.resolveDoubleClick(e);
         }
     }
 
-    resolveScreenPoint(e){
+    resolveScreenPoint(e){ // todo this is world point
         return {
-            x: ~~((e.clientX - this.game.pos.x ) / this.game.scale.x) + this.game.camera.pos.x,
-            y: ~~((e.clientY - this.game.pos.y ) / this.game.scale.y) + this.game.camera.pos.y,
+            x: ~~((e.clientX - this.game.pos.x ) / this.game.scale.x / this.game.camera.scale.x) + this.game.camera.pos.x,
+            y: ~~((e.clientY - this.game.pos.y ) / this.game.scale.y / this.game.camera.scale.y) + this.game.camera.pos.y,
             id: e.identifier || 0
         };
     }

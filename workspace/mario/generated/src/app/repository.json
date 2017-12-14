@@ -1,0 +1,87 @@
+{
+    "Scene": [
+        {
+            "id": 2,
+            "name": "mainScene",
+            "type": "Scene",
+            "layers": [
+                {
+                    "type": "Layer",
+                    "id": 2
+                }
+            ]
+        }
+    ],
+    "Layer": [
+        {
+            "id": 2,
+            "name": "layer1",
+            "type": "Layer",
+            "gameObjects": [
+                {
+                    "type": "GameObject",
+                    "id": 6
+                }
+            ]
+        }
+    ],
+    "SpriteSheet": [
+        {
+            "name": "mariosheet",
+            "width": 480,
+            "height": 32,
+            "type": "SpriteSheet",
+            "numOfFramesH": 15,
+            "resourcePath": "resources/mariosheet.png",
+            "id": 3
+        }
+    ],
+    "GameObjectProto": [
+        {
+            "id": 4,
+            "name": "mariosheet",
+            "width": 32,
+            "height": 32,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 3,
+                "type": "SpriteSheet"
+            },
+            "frameAnimations": [
+                {
+                    "type": "FrameAnimation",
+                    "id": 5
+                }
+            ],
+            "startFrameAnimationName": "walk"
+        }
+    ],
+    "FrameAnimation": [
+        {
+            "id": 5,
+            "name": "walk",
+            "type": "FrameAnimation",
+            "frames": [
+                10,
+                11,
+                12
+            ],
+            "duration": 500
+        }
+    ],
+    "GameObject": [
+        {
+            "pos": {
+                "x": 80,
+                "y": 89
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 4,
+                "type": "GameObjectProto"
+            },
+            "id": 6
+        }
+    ]
+}

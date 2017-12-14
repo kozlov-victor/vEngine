@@ -37,6 +37,7 @@ export default class TileMap extends BaseModel {
 
     getTilesAtRect(rect){
         let result = [];
+        if (!this.spriteSheet) return result;
         let alreadyCheckedTiles = {};
 
         let x = rect.x,y;

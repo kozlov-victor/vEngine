@@ -8,6 +8,7 @@ import RendererFactory from './renderer/rendererFactory'
 import Repository from './repository';
 import Mouse from './control/mouse'
 import Keyboard from './control/keyboard'
+import GamePad from './control/gamePad'
 import Collider from './physics/collider'
 import {Transient} from './decorators'
 
@@ -17,7 +18,8 @@ import Camera from './camera'
 @Transient({
     repository: true,
     camera: true,
-    keyboard: true
+    keyboard: true,
+    gamePad: true
 })
 export default class Game extends CommonObject {
 
@@ -30,6 +32,7 @@ export default class Game extends CommonObject {
     pos = {x:0,y:0};
     gravityConstant = null;
     fps = null;
+    gamePad = null;
 
     constructor(gameProps){
         super();
@@ -43,6 +46,7 @@ export default class Game extends CommonObject {
         this._mouse = new Mouse(this); //todo mouse not _mouse
         this.keyboard = new Keyboard(this);
         this.keyboard.listenTo();
+        this.gamePad = new GamePad(this);
         this._collider = new Collider(this);
         this.camera = new Camera(this);
     }
@@ -104,6 +108,7 @@ export default class Game extends CommonObject {
 
         game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
         game.keyboard.update();
+        game.gamePad.update();
     }
 
 }

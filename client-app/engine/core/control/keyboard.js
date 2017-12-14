@@ -39,7 +39,21 @@ export default class Keyboard {
         LEFT: 37,
         UP: 38,
         RIGHT: 39,
-        DOWN: 40
+        DOWN: 40,
+
+        GAME_PAD_1: 0,
+        GAME_PAD_2: 1,
+        GAME_PAD_3: 2,
+        GAME_PAD_4: 3,
+        GAME_PAD_5: 4,
+        GAME_PAD_6: 5,
+        GAME_PAD_7: 6,
+        GAME_PAD_8: 7,
+        GAME_PAD_AXIS_LEFT: 8,
+        GAME_PAD_AXIS_RIGHT: 9,
+        GAME_PAD_AXIS_UP: 10,
+        GAME_PAD_AXIS_DOWN: 11
+
     };
 
     buffer = {};
@@ -48,12 +62,14 @@ export default class Keyboard {
         this.game = game;
     }
 
-    emulatePress(code){
-        this.buffer[code] = KEY_JUST_PRESSED;
+    press(key){
+        if (this.isPressed(key)) return;
+        this.buffer[key] = KEY_JUST_PRESSED;
     }
 
-    emulateRelease(code){
-        this.buffer[code] = KEY_JUST_RELEASED;
+    release(key){
+        if (this.isReleased(key)) return;
+        this.buffer[key] = KEY_JUST_RELEASED;
     }
 
     isPressed(key){
@@ -65,6 +81,7 @@ export default class Keyboard {
     }
 
     isReleased(key) {
+        if (this.buffer[key]===undefined) return true;
         return  this.buffer[key]<=KEY_JUST_RELEASED;
     }
 
@@ -73,6 +90,7 @@ export default class Keyboard {
     }
 
     update(){
+        //if (Object.keys(this.buffer).length) console.log(this.buffer);
         if (DEBUG && window.canceled) return;
         Object.keys(this.buffer).forEach(key=>{
             if (this.buffer[key]===KEY_RELEASED) delete this.buffer[key];
@@ -86,12 +104,11 @@ export default class Keyboard {
     listenTo(){
         window.addEventListener('keydown',e=>{
             let code = e.keyCode;
-            if (this.buffer[code] >= KEY_PRESSED) return;
-            this.buffer[code] = KEY_JUST_PRESSED;
+            this.press(code);
         });
         window.addEventListener('keyup',e=>{
             let code = e.keyCode;
-            this.buffer[code] = KEY_JUST_RELEASED;
+            this.release(code);
         });
     }
 

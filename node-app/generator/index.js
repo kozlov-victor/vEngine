@@ -14,5 +14,5 @@ game.repository.setDescriptions(repository);
 
 let startScene = game.repository.getObject(gameProps.startSceneId,'Scene');
 game.runScene(startScene);
-if (DEBUG) window.repository = game.repository;
+if (DEBUG) window.game = game;
 

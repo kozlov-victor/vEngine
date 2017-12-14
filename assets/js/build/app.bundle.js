@@ -1972,9 +1972,7 @@ var Scene = function (_BaseModel) {
         _this._tweenMovies = [];
         _this._individualBehaviour = null;
 
-        _this.tileMap = null;
-        if (true) _this.tileMap = new _tileMap2.default(game);
-
+        _this.tileMap = new _tileMap2.default(game);
         return _this;
     }
 
@@ -2250,6 +2248,7 @@ var TileMap = function (_BaseModel) {
 
     TileMap.prototype.getTilesAtRect = function getTilesAtRect(rect) {
         var result = [];
+        if (!this.spriteSheet) return result;
         var alreadyCheckedTiles = {};
 
         var x = rect.x,
@@ -12033,19 +12032,31 @@ var Keyboard = function () {
             LEFT: 37,
             UP: 38,
             RIGHT: 39,
-            DOWN: 40
+            DOWN: 40,
+
+            GAME_PAD_1: 0,
+            GAME_PAD_2: 1,
+            GAME_PAD_3: 2,
+            GAME_PAD_4: 3,
+            GAME_PAD_5: 4,
+            GAME_PAD_6: 5,
+            GAME_PAD_7: 6,
+            GAME_PAD_8: 7
+
         };
         this.buffer = {};
 
         this.game = game;
     }
 
-    Keyboard.prototype.emulatePress = function emulatePress(code) {
-        this.buffer[code] = KEY_JUST_PRESSED;
+    Keyboard.prototype.press = function press(key) {
+        if (this.isPressed(key)) return;
+        this.buffer[key] = KEY_JUST_PRESSED;
     };
 
-    Keyboard.prototype.emulateRelease = function emulateRelease(code) {
-        this.buffer[code] = KEY_JUST_RELEASED;
+    Keyboard.prototype.release = function release(key) {
+        if (this.isReleased(key)) return;
+        this.buffer[key] = KEY_JUST_RELEASED;
     };
 
     Keyboard.prototype.isPressed = function isPressed(key) {
@@ -12057,6 +12068,7 @@ var Keyboard = function () {
     };
 
     Keyboard.prototype.isReleased = function isReleased(key) {
+        if (this.buffer[key] === undefined) return true;
         return this.buffer[key] <= KEY_JUST_RELEASED;
     };
 
@@ -12067,6 +12079,7 @@ var Keyboard = function () {
     Keyboard.prototype.update = function update() {
         var _this = this;
 
+        //if (Object.keys(this.buffer).length) console.log(this.buffer);
         if (true && window.canceled) return;
         Object.keys(this.buffer).forEach(function (key) {
             if (_this.buffer[key] === KEY_RELEASED) delete _this.buffer[key];else if (_this.buffer[key] === KEY_JUST_RELEASED) _this.buffer[key] = KEY_RELEASED;
@@ -12081,12 +12094,11 @@ var Keyboard = function () {
 
         window.addEventListener('keydown', function (e) {
             var code = e.keyCode;
-            if (_this2.buffer[code] >= KEY_PRESSED) return;
-            _this2.buffer[code] = KEY_JUST_PRESSED;
+            _this2.press(code);
         });
         window.addEventListener('keyup', function (e) {
             var code = e.keyCode;
-            _this2.buffer[code] = KEY_JUST_RELEASED;
+            _this2.release(code);
         });
     };
 
@@ -12333,6 +12345,10 @@ var _keyboard = __webpack_require__(86);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
+var _gamePad = __webpack_require__(152);
+
+var _gamePad2 = _interopRequireDefault(_gamePad);
+
 var _collider = __webpack_require__(92);
 
 var _collider2 = _interopRequireDefault(_collider);
@@ -12358,7 +12374,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Game = (_dec = (0, _decorators.Transient)({
     repository: true,
     camera: true,
-    keyboard: true
+    keyboard: true,
+    gamePad: true
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
 
@@ -12376,6 +12393,7 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this.pos = { x: 0, y: 0 };
         _this.gravityConstant = null;
         _this.fps = null;
+        _this.gamePad = null;
 
         Object.keys(gameProps).forEach(function (key) {
             _this[key] = gameProps[key];
@@ -12387,6 +12405,7 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this._mouse = new _mouse2.default(_this); //todo mouse not _mouse
         _this.keyboard = new _keyboard2.default(_this);
         _this.keyboard.listenTo();
+        _this.gamePad = new _gamePad2.default(_this);
         _this._collider = new _collider2.default(_this);
         _this.camera = new _camera2.default(_this);
         return _this;
@@ -12454,6 +12473,7 @@ var Game = (_dec = (0, _decorators.Transient)({
 
         game._currentScene && game._currentScene.update(game._currTime, game._deltaTime);
         game.keyboard.update();
+        game.gamePad.update();
     };
 
     return Game;
@@ -13631,6 +13651,84 @@ module.exports = "<div><div class=\"width50 marginAuto\"><h3 class=\"centerText\
 __webpack_require__(31);
 module.exports = __webpack_require__(30);
 
+
+/***/ }),
+/* 151 */,
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _class, _temp;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var gamepads = {};
+
+var gamepadHandler = function gamepadHandler(event, connecting) {
+    var gamepad = event.gamepad;
+    // Note:
+    // gamepad === navigator.getGamepads()[gamepad.index]
+
+    if (connecting) {
+        gamepads[gamepad.index] = gamepad;
+    } else {
+        delete gamepads[gamepad.index];
+    }
+};
+
+window.addEventListener("gamepadconnected", function (e) {
+    if (true) console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.", e.gamepad.index, e.gamepad.id, e.gamepad.buttons.length, e.gamepad.axes.length);
+    //gamepadHandler(e, true);
+});
+window.addEventListener("gamepaddisconnected", function (e) {
+    if (true) console.log("Gamepad disconnected from index %d: %s", e.gamepad.index, e.gamepad.id);
+    //gamepadHandler(e, false);
+});
+
+var GamePad = (_temp = _class = function () {
+    function GamePad(game) {
+        _classCallCheck(this, GamePad);
+
+        this.game = game;
+        //this.gamepads = gamepads;
+    }
+
+    GamePad.prototype.update = function update() {
+
+        this.gamepads = navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || navigator.getGamepads && navigator.getGamepads();
+
+        for (var i = 0, max = this.gamepads.length; i < max; i++) {
+            var gp = this.gamepads[i];
+            if (!gp) continue;
+            var maxButtons = gp.buttons.length;
+            if (maxButtons > 7) maxButtons = 7; // only 8-buttons gamePad is supported for now
+            for (var j = 0; j < maxButtons; j++) {
+                var btn = gp.buttons[j];
+                if (btn.pressed) {
+                    this.game.keyboard.press(j);
+                } else {
+                    this.game.keyboard.release(j);
+                }
+            }
+            if (gp.axes[0] > GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.RIGHT);else this.game.keyboard.release(this.game.keyboard.KEY.RIGHT);
+
+            if (gp.axes[0] < -GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.LEFT);else this.game.keyboard.release(this.game.keyboard.KEY.LEFT);
+
+            if (gp.axes[1] > GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.DOWN);else this.game.keyboard.release(this.game.keyboard.KEY.DOWN);
+
+            if (gp.axes[1] < -GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.UP);else this.game.keyboard.release(this.game.keyboard.KEY.UP);
+        }
+    };
+
+    return GamePad;
+}(), _class.AXIS_TOLERANCE = 0.9, _temp);
+exports.default = GamePad;
 
 /***/ })
 /******/ ]);

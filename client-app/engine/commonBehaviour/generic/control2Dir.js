@@ -16,18 +16,18 @@ export default class Control2Dir extends Move2Dir{
         const keyboard = this.game.keyboard;
         const parameters  = this.parameters;
         const go = this.gameObject;
-        if (keyboard.isPressed(keyboard.KEY.LEFT)) {
+        if (keyboard.isPressed(keyboard.KEY.LEFT) || keyboard.isPressed(keyboard.KEY.GAME_PAD_AXIS_LEFT)) {
             go.rigidBody.vel.x = -parameters.velocity;
             this.go('Left');
         }
-        if (keyboard.isPressed(keyboard.KEY.RIGHT)) {
+        if (keyboard.isPressed(keyboard.KEY.RIGHT) || keyboard.isPressed(keyboard.KEY.GAME_PAD_AXIS_RIGHT)) {
             go.rigidBody.vel.x = parameters.velocity;
             this.go('Right');
         }
 
-        if (keyboard.isJustReleased(keyboard.KEY.LEFT)) {
+        if (keyboard.isJustReleased(keyboard.KEY.LEFT) || keyboard.isJustReleased(keyboard.KEY.GAME_PAD_AXIS_LEFT)) {
             this.stop();
-        } else if (keyboard.isJustReleased(keyboard.KEY.RIGHT)) {
+        } else if (keyboard.isJustReleased(keyboard.KEY.RIGHT) || keyboard.isJustReleased(keyboard.KEY.GAME_PAD_AXIS_RIGHT)) {
             this.stop();
         }
     }

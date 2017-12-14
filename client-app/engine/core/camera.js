@@ -6,6 +6,7 @@ export default class Camera {
     sceneWidth;
     sceneHeight;
     pos = {x:0, y:0};
+    scale = {x:1,y:1};
 
     constructor(game){
         this.game = game;

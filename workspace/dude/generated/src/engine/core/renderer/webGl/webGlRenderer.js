@@ -146,12 +146,28 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     fillRect(x,y,w,h,color){
-        throw 'not yet implemented'
+        
+        let colorRectDrawer = this.colorRectDrawer;
+        let gl = this.gl;
+        colorRectDrawer.bind();
+        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
+                x,y,w,h,
+                this.game.width,this.game.height,1,1
+            )
+        );
+        colorRectDrawer.setUniform("u_rgba",color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        colorRectDrawer.draw();
+        colorRectDrawer.unbind();
     }
 
     drawRect(x,y,w,h,color){
-        throw 'not yet implemented'
+        this.fillRect(x, y, w, 1, color);
+        this.fillRect(x, y + h, w, 1, color);
+        this.fillRect(x, y, 1, h, color);
+        this.fillRect(x + w, y, 1, h, color);
     }
+
 
     setAlpha(a){
         

@@ -1,7 +1,7 @@
 
 //import HtmlRenderer from './dom/htmlRenderer'
-import Renderer from './canvas/canvasRenderer'
-//import Renderer from './webGl/webGlRenderer'
+//import Renderer from './canvas/canvasRenderer'
+import Renderer from './webGl/webGlRenderer'
 //import SvgRenderer from './dom/svgRenderer'
 
 export default class RendererFactory {

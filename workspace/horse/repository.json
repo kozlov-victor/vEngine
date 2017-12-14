@@ -52,21 +52,9 @@
                 {
                     "type": "FrameAnimation",
                     "id": 5
-                },
-                {
-                    "type": "FrameAnimation",
-                    "id": 6
-                },
-                {
-                    "type": "FrameAnimation",
-                    "id": 7
-                },
-                {
-                    "type": "FrameAnimation",
-                    "id": 8
                 }
             ],
-            "startFrameAnimationName": "q2"
+            "startFrameAnimationName": "a"
         }
     ],
     "FrameAnimation": [
@@ -75,7 +63,21 @@
             "name": "a",
             "type": "FrameAnimation",
             "frames": [
-                1
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12,
+                13,
+                14
             ]
         },
         {
@@ -119,17 +121,18 @@
     ],
     "GameObject": [
         {
+            "id": 9,
+            "name": "horse",
             "pos": {
-                "x": 306,
-                "y": 234
+                "x": 318,
+                "y": 128
             },
             "layerId": 2,
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 4,
                 "type": "GameObjectProto"
-            },
-            "id": 9
+            }
         }
     ]
 }

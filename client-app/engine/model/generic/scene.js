@@ -14,14 +14,12 @@ export default class Scene extends BaseModel {
 
     constructor(game) {
         super(game);
-        this.tileMap = null;
-        if (IN_EDITOR) this.tileMap = new TileMap(game);
-
+        this.tileMap = new TileMap(game);
     }
 
     revalidate(){
         super.revalidate();
-        if (!IN_EDITOR && this.tileMap) {
+        if (!IN_EDITOR && this.tileMap && this.tileMap.spriteSheet) {
             this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
             this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
         }
@@ -85,15 +83,18 @@ export default class Scene extends BaseModel {
     }
 
     update(currTime,deltaTime){
-        this.game._renderer.beginFrameBuffer();
-        if (this.useBG) this.game._renderer.clearColor(this.colorBG);
-        else this.game._renderer.clear();
+        let renderer = this.game._renderer;
+        renderer.beginFrameBuffer();
+        if (this.useBG) renderer.clearColor(this.colorBG);
+        else renderer.clear();
 
         let layers = this.layers;
         let i = this.layers.length;
         let l = i -1;
-        this.game.camera.update(currTime); // todo move to game update fn
-        this.game._renderer.translate(-this.game.camera.pos.x,-this.game.camera.pos.y);
+
+        renderer.scale(this.game.camera.scale.x,this.game.camera.scale.y);
+        this.game.camera.update(currTime);
+        renderer.translate(-this.game.camera.pos.x,-this.game.camera.pos.y);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while(i--){
             layers[i-l].update(currTime,deltaTime);
@@ -109,7 +110,7 @@ export default class Scene extends BaseModel {
         // });
         // this.__updateIndividualBehaviour__(currTime);
         this._updateTileMap();
-        this.game._renderer.flipFrameBuffer();
+        renderer.flipFrameBuffer();
     }
     fadeIn(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);

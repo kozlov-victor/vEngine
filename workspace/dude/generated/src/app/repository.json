@@ -158,8 +158,8 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 294,
-                "y": 189
+                "x": 537,
+                "y": 127
             },
             "layerId": 2,
             "type": "GameObject",
@@ -172,8 +172,8 @@
             "id": 63,
             "name": "ground1",
             "pos": {
-                "x": 402,
-                "y": 44
+                "x": 436,
+                "y": 52
             },
             "layerId": 2,
             "type": "GameObject",
@@ -200,8 +200,8 @@
             "id": 65,
             "name": "platform",
             "pos": {
-                "x": 421,
-                "y": 193
+                "x": 383,
+                "y": 196
             },
             "layerId": 2,
             "type": "GameObject",
