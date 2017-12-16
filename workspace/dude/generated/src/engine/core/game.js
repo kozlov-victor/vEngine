@@ -112,6 +112,9 @@ export default class Game extends CommonObject {
         }
         if (game._deltaTime>20) game._deltaTime = 20;
         game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
+        if (DEBUG) {
+            if (game._renderer.debugTextField) game._renderer.debugTextField._render();
+        }
         game.keyboard.update();
         game.gamePad.update();
     }

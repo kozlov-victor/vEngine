@@ -18,6 +18,9 @@ export default class TextField extends BaseModel {
             console.error(this);
             throw `property 'name' not set at object of type ${this.type}`;
         }
+        if (this.font===null)
+            this.font = this.game.repository.getArray('Font')[0];
+        if (DEBUG && !this.font) throw `at least one Font must be created`;
         this.setFont(this.font);
     }
 

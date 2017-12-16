@@ -1,12 +1,14 @@
 
+import Line from '../primitives/line'
 import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
+import IndexBuffer from '../base/indexBuffer'
 
 import basicVertexShader from '../shaders/basic/vertex.vert'
 import colorShader from '../shaders/color/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
 
-export default class PolyLineDrawer extends AbstractDrawer {
+export default class LineDrawer extends AbstractDrawer {
 
     constructor(gl,game){
         super(gl,game);
@@ -14,14 +16,18 @@ export default class PolyLineDrawer extends AbstractDrawer {
             basicVertexShader,
             colorShader
         ]);
+        this.line = new Line();
 
         this.posVertexBuffer = new VertexBuffer(gl);
+        this.posIndexBuffer = new IndexBuffer(gl);
+
+        this.posVertexBuffer.setData(this.line.vertexArr,this.gl.FLOAT,2);
+        this.posIndexBuffer.setData(this.line.indexArr);
     }
 
-    bind(vertexData){
+    bind(){
         super.bind();
         this.program.bind();
-        this.posVertexBuffer.setData(vertexData,this.gl.FLOAT,2);
         this.program.bindBuffer(this.posVertexBuffer,'a_position');
     }
 

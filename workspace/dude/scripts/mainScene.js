@@ -21,7 +21,7 @@ export class MainSceneBehaviour {
     onUpdate(){
         this.game._renderer.fillRect(this.x,this.y,10,10,this.color);
         this.points.forEach(p=>{
-            this.game._renderer.fillRect(p.x,p.y,10,10,this.color);
+            //this.game._renderer.drawLine(p.x,p.y,p.x+10,p.y+10,this.color);
         });
     }
 

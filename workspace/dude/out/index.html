@@ -45,9 +45,38 @@
         return Object.prototype.hasOwnProperty.call(e, t);
     };
     n.p = "";
-    return n(n.s = 70);
+    return n(n.s = 51);
 })({
-    17: function(e, t, n) {
+    10: function(e, t, n) {
+        "use strict";
+        var o = document.createElement("div");
+        var r = {
+            position: "absolute",
+            right: 0,
+            top: 0,
+            "background-color": "black",
+            "min-width": "20px",
+            "min-height": "20px",
+            opacity: .5
+        };
+        Object.keys(r).forEach(function(e) {
+            return o.style.setProperty(e, r[e]);
+        });
+        var i = document.createElement("span");
+        i.style.color = "white";
+        o.appendChild(i);
+        window.addEventListener("load", function() {
+            document.body.appendChild(o);
+            setInterval(function() {
+                i.textContent = "fps:" + window.fps;
+            }, 1e3);
+        });
+    },
+    51: function(e, t, n) {
+        n(9);
+        e.exports = n(10);
+    },
+    9: function(e, t, n) {
         "use strict";
         var o = function e() {
             if (!(document && document.getElementById)) return null;
@@ -133,35 +162,6 @@
             console.error(e);
             window.showError(e, n);
         }, true);
-    },
-    18: function(e, t, n) {
-        "use strict";
-        var o = document.createElement("div");
-        var r = {
-            position: "absolute",
-            right: 0,
-            top: 0,
-            "background-color": "black",
-            "min-width": "20px",
-            "min-height": "20px",
-            opacity: .5
-        };
-        Object.keys(r).forEach(function(e) {
-            return o.style.setProperty(e, r[e]);
-        });
-        var i = document.createElement("span");
-        i.style.color = "white";
-        o.appendChild(i);
-        window.addEventListener("load", function() {
-            document.body.appendChild(o);
-            setInterval(function() {
-                i.textContent = "fps:" + window.fps;
-            }, 1e3);
-        });
-    },
-    70: function(e, t, n) {
-        n(17);
-        e.exports = n(18);
     }
 });</script>
     <meta name ="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
@@ -183,7 +183,7 @@
 </head>
 
 <body>
-<script src="bundle.js?134"></script>
+<script src="bundle.js?165"></script>
 </body>
 
 </html>

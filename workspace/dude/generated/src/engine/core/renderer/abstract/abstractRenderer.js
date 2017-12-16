@@ -1,8 +1,12 @@
+/*global DEBUG:true*/
+
+import TextField from '../../../model/generic/ui/textField'
 
 export default class AbstractRenderer {
 
     renderableCache = {};
     container = null;
+    debugTextField = null;
 
     constructor(game){
         this.game = game;
@@ -32,7 +36,12 @@ export default class AbstractRenderer {
     }
 
     beginFrameBuffer(){}
-    flipFrameBuffer(){}
+
+    flipFrameBuffer(){
+        if (DEBUG) {
+            if (this.debugTextField) this.debugTextField._render();
+        }
+    }
 
     registerResize(){
         this.onResize();
@@ -41,6 +50,31 @@ export default class AbstractRenderer {
 
     getError(){
         return 0;
+    }
+
+    log(txt){
+        if (!DEBUG) return;
+        let textField = this.debugTextField;
+        if (txt===undefined) txt = 'undefined';
+        if (txt===null) txt = 'null';
+        if (txt.toJSON) {
+            txt = JSON.stringify(txt.toJSON(),null,4);
+        }
+        else {
+            try{
+                txt = JSON.stringify(txt);
+            } catch (e){}
+        }
+        txt = txt.toString();
+        if (!textField) {
+            textField = new TextField(this.game);
+            textField.name = 'defaultName';
+            textField.revalidate();
+            this.debugTextField = textField;
+        }
+        textField.pos.x = 10;
+        textField.pos.y = 10;
+        textField.setText(txt);
     }
 
     loadTextureInfo(textureId,info){}

@@ -4,7 +4,7 @@
 import AbstractRenderer from '../abstract/abstractRenderer'
 import SpriteRectDrawer from './renderProgram/spriteRectDrawer'
 import ColorRectDrawer from './renderProgram/colorRectDrawer'
-import PolyLineDrawer from './renderProgram/polyLineDrawer'
+import LineDrawer from './renderProgram/lineDrawer'
 import ModelDrawer from './renderProgram/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
@@ -70,7 +70,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.spriteRectDrawer = new SpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
-        this.polyLineDrawer = new PolyLineDrawer(gl);
+        this.lineDrawer = new LineDrawer(gl);
         this.modelDrawer = new ModelDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
@@ -175,22 +175,23 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.fillRect(x + w, y, 1, h, color);
     }
 
-
-    drawLine(vertexArr,color){
+    drawLine(x1,y1,x2,y2,color){
+        let dx = x2-x1,dy = y2-y1;
+        if (!matEx.overlapTest(this.game.camera.getRect(),{x:x1,y:y1,width:dx,height:dy})) return;
         let gl = this.gl;
-
-        this.polyLineDrawer.bind(vertexArr);
-        this.polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
-            0,0,1,1,
-            this.game.width,this.game.height.height,1,1)
+        let line = this.lineDrawer;
+        line.bind();
+        line.setUniform("u_matrix",makePositionMatrix(
+            x1,y1,dx,dy,
+            this.game.width,this.game.height,1,1)
         );
-        this.polyLineDrawer.setUniform("u_rgba",color);
+        line.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        this.polyLineDrawer.draw();
+        line.draw();
     }
 
     setAlpha(a){
-
+        throw 'not implemented';
     }
 
     save() {

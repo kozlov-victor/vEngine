@@ -20,7 +20,9 @@ export class DudeBehaviour {
             this.game.keyboard.isPressed(this.game.keyboard.KEY.GAME_PAD_5)
         ){
             this.gameObject.rigidBody.vel.addXY(0,-50);
-        }    
+        }
+        
+        this.game._renderer.log(this.game.keyboard.KEY);
         
         
     }
