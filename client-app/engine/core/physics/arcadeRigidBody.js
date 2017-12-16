@@ -14,9 +14,6 @@ export default class ArcadeRigidBody {
     }
 
     update(time,delta){
-
-        if (delta>20) delta = 20;
-
         if (!this.gameObject.rigidBody.static) {
             let deltaX = this.vel.x * delta / 1000;
             let deltaY = this.vel.y * delta / 1000;

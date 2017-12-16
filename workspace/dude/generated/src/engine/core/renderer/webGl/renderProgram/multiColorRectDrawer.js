@@ -7,11 +7,12 @@ import IndexBuffer from '../base/indexBuffer'
 
 import basicVertexShader from '../shaders/basic/vertex.vert'
 import colorShader from '../shaders/multiColor/fragment.frag'
+import AbstractDrawer from "./abstractDrawer";
 
-export default class MultiColorRectDrawer {
+export default class MultiColorRectDrawer extends AbstractDrawer {
 
-    constructor(){
-        this.gl = gl;
+    constructor(gl,game){
+        super(gl,game);
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
@@ -24,6 +25,7 @@ export default class MultiColorRectDrawer {
     }
 
     bind(colors){
+        super.bind();
         this.program.bind();
         let gl = this.gl;
 
@@ -37,13 +39,7 @@ export default class MultiColorRectDrawer {
         this.posIndexBuffer.bind();
     }
 
-    unbind(){
-        this.posIndexBuffer.unbind();
-    }
 
-    setUniform(name,value){
-        this.program.setUniform(name,value);
-    }
 
     draw(){
         this.gl.drawElements(

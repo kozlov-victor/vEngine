@@ -4,11 +4,12 @@ import VertexBuffer from '../base/vertexBuffer'
 
 import basicVertexShader from '../shaders/basic/vertex.vert'
 import colorShader from '../shaders/color/fragment.frag'
+import AbstractDrawer from "./abstractDrawer";
 
-export default class PolyLineDrawer {
+export default class PolyLineDrawer extends AbstractDrawer {
 
-    constructor(gl){
-        this.gl = gl;
+    constructor(gl,game){
+        super(gl,game);
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
             colorShader
@@ -18,17 +19,10 @@ export default class PolyLineDrawer {
     }
 
     bind(vertexData){
+        super.bind();
         this.program.bind();
         this.posVertexBuffer.setData(vertexData,this.gl.FLOAT,2);
         this.program.bindBuffer(this.posVertexBuffer,'a_position');
-    }
-
-    unbind(){
-
-    }
-
-    setUniform(name,value){
-        this.program.setUniform(name,value);
     }
 
     draw(){

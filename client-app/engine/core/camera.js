@@ -13,7 +13,7 @@ export default class Camera {
     }
 
     followTo(gameObject) {
-        if (DEBUG && !gameObject) throw `Camera:followTo() - gameObject not provided`;
+        if (DEBUG && !gameObject) throw `Camera:followTo(gameObject) - gameObject not provided`;
         this.objFollowTo = gameObject;
         this.scene = this.game._currentScene;
         if (this.scene.tileMap.spriteSheet) {
@@ -40,6 +40,15 @@ export default class Camera {
         if (pos.y<0) pos.y = 0;
         if (pos.x>this.sceneWidth - w + tileWidth) pos.x = this.sceneWidth -w + tileWidth;
         if (pos.y>this.sceneHeight -h + tileHeight) pos.y = this.sceneHeight -h + tileHeight;
+    }
+
+    getRect(){
+        return {
+            x:this.pos.x,
+            y:this.pos.y,
+            width: this.game.width,
+            height: this.game.height
+        }
     }
 
 }

@@ -40,22 +40,22 @@
         return Object.prototype.hasOwnProperty.call(t, e);
     };
     n.p = "";
-    return n(n.s = 65);
+    return n(n.s = 66);
 })([ function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var r, i;
-    var o = n(12);
-    var a = p(o);
-    var s = n(52);
-    var u = p(s);
-    var h = n(36);
-    var f = p(h);
-    var c = n(8);
-    var l = n(38);
-    var d = p(l);
-    function p(t) {
+    var o = n(13);
+    var a = d(o);
+    var s = n(53);
+    var u = d(s);
+    var f = n(37);
+    var h = d(f);
+    var c = n(9);
+    var l = n(39);
+    var p = d(l);
+    function d(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -113,8 +113,8 @@
             r._tweens = [];
             if (1 && !n) throw "can not create model '" + r.type + "': game instance not passed to model constructor";
             r.game = n;
-            r._emitter = new f.default();
-            r.rigidBody = new d.default(r);
+            r._emitter = new h.default();
+            r.rigidBody = new p.default(r);
             return r;
         }
         e.prototype.revalidate = function t() {};
@@ -172,14 +172,8 @@
     e.isPointInRect = function(t, e, n) {
         return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
     };
-    var r = function t(e, n, r) {
-        return e >= n && e <= r;
-    };
-    e.isRectIntersectRect = function(t, e) {
-        var n = r(t.x, e.x, e.x + e.width), i = r(e.x, t.x, t.x + t.width), o = r(t.y, e.y, e.y + e.height), a = r(e.y, t.y, t.y + t.height);
-        var s = n || i;
-        var u = o || a;
-        return s && u;
+    e.overlapTest = function(t, e) {
+        return t.x < e.x + e.width && t.x + t.width > e.x && t.y < e.y + e.height && t.y + t.height > e.y;
     };
     e.radToDeg = function(t) {
         return t * 180 / Math.PI;
@@ -197,25 +191,25 @@
         if (r > e) r = e; else if (r < t) r = t;
         return r;
     };
-    var i = {};
-    i.linear = function(t, e, n, r) {
+    var r = {};
+    r.linear = function(t, e, n, r) {
         return n * t / r + e;
     };
-    i.easeInQuad = function(t, e, n, r) {
+    r.easeInQuad = function(t, e, n, r) {
         t /= r;
         return n * t * t + e;
     };
-    i.easeOutQuad = function(t, e, n, r) {
+    r.easeOutQuad = function(t, e, n, r) {
         t /= r;
         return -n * t * (t - 2) + e;
     };
-    i.easeInOutQuad = function(t, e, n, r) {
+    r.easeInOutQuad = function(t, e, n, r) {
         t /= r / 2;
         if (t < 1) return n / 2 * t * t + e;
         t--;
         return -n / 2 * (t * (t - 2) - 1) + e;
     };
-    e.ease = i;
+    e.ease = r;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -292,24 +286,24 @@
         }
         return r[n];
     };
-    var h = function t(e, n) {
+    var f = function t(e, n) {
         var r = {};
         var i = e.getProgramParameter(n, e.ACTIVE_UNIFORMS);
         for (var o = 0; o < i; o++) {
             var a = e.getActiveUniform(n, o);
             var s = a.name.replace(/\[.*?]/, "");
-            var h = u(e, a.type);
+            var f = u(e, a.type);
             r[s] = {
-                type: h,
+                type: f,
                 size: a.size,
                 name: s,
                 location: e.getUniformLocation(n, s),
-                setter: f(a.size, h)
+                setter: h(a.size, f)
             };
         }
         return r;
     };
-    var f = function t(e, n) {
+    var h = function t(e, n) {
         if (e === 1) {
             switch (n) {
               case "float":
@@ -467,7 +461,7 @@
             var r = a(e, n[0], e.VERTEX_SHADER);
             var i = a(e, n[1], e.FRAGMENT_SHADER);
             this.program = s(e, [ r, i ]);
-            this.uniforms = h(e, this.program);
+            this.uniforms = f(e, this.program);
             this.gl = e;
         }
         t.prototype.getProgram = function t() {
@@ -544,6 +538,37 @@
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
+    var r, i;
+    function o(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var a = (i = r = function() {
+        function t(e, n) {
+            o(this, t);
+            this.program = null;
+            this.gl = e;
+            this.game = n;
+        }
+        t.prototype.bind = function e() {
+            if (t.currentDrawer !== null && t.currentDrawer !== this) {
+                t.currentDrawer.unbind();
+            }
+            t.currentDrawer = this;
+        };
+        t.prototype.unbind = function t() {
+            if (this.posIndexBuffer) this.posIndexBuffer.unbind();
+        };
+        t.prototype.setUniform = function t(e, n) {
+            this.program.setUniform(e, n);
+        };
+        return t;
+    }(), r.currentDrawer = null, i);
+    e.default = a;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
     function r(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -608,7 +633,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(6);
+    var r = n(7);
     var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -640,7 +665,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -678,7 +703,7 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -701,24 +726,24 @@
     };
     e.ortho = function(t, e, n, r, i, o) {
         var a = 1 / (t - e), s = 1 / (n - r), u = 1 / (i - o);
-        var h = [];
-        h[0] = -2 * a;
-        h[1] = 0;
-        h[2] = 0;
-        h[3] = 0;
-        h[4] = 0;
-        h[5] = -2 * s;
-        h[6] = 0;
-        h[7] = 0;
-        h[8] = 0;
-        h[9] = 0;
-        h[10] = 2 * u;
-        h[11] = 0;
-        h[12] = (t + e) * a;
-        h[13] = (r + n) * s;
-        h[14] = (o + i) * u;
-        h[15] = 1;
-        return h;
+        var f = [];
+        f[0] = -2 * a;
+        f[1] = 0;
+        f[2] = 0;
+        f[3] = 0;
+        f[4] = 0;
+        f[5] = -2 * s;
+        f[6] = 0;
+        f[7] = 0;
+        f[8] = 0;
+        f[9] = 0;
+        f[10] = 2 * u;
+        f[11] = 0;
+        f[12] = (t + e) * a;
+        f[13] = (r + n) * s;
+        f[14] = (o + i) * u;
+        f[15] = 1;
+        return f;
     };
     e.perspective = function(t, e, n, r) {
         var i = 1 / Math.tan(t / 2), o = 1 / (n - r);
@@ -770,12 +795,12 @@
         var a = t[1 * 4 + 0];
         var s = t[1 * 4 + 1];
         var u = t[1 * 4 + 2];
-        var h = t[1 * 4 + 3];
-        var f = t[2 * 4 + 0];
+        var f = t[1 * 4 + 3];
+        var h = t[2 * 4 + 0];
         var c = t[2 * 4 + 1];
         var l = t[2 * 4 + 2];
-        var d = t[2 * 4 + 3];
-        var p = t[3 * 4 + 0];
+        var p = t[2 * 4 + 3];
+        var d = t[3 * 4 + 0];
         var y = t[3 * 4 + 1];
         var g = t[3 * 4 + 2];
         var m = t[3 * 4 + 3];
@@ -790,12 +815,12 @@
         var A = e[2 * 4 + 0];
         var S = e[2 * 4 + 1];
         var M = e[2 * 4 + 2];
-        var R = e[2 * 4 + 3];
-        var P = e[3 * 4 + 0];
+        var P = e[2 * 4 + 3];
+        var R = e[3 * 4 + 0];
         var j = e[3 * 4 + 1];
         var B = e[3 * 4 + 2];
         var F = e[3 * 4 + 3];
-        return [ n * v + r * x + i * A + o * P, n * w + r * E + i * S + o * j, n * _ + r * T + i * M + o * B, n * b + r * O + i * R + o * F, a * v + s * x + u * A + h * P, a * w + s * E + u * S + h * j, a * _ + s * T + u * M + h * B, a * b + s * O + u * R + h * F, f * v + c * x + l * A + d * P, f * w + c * E + l * S + d * j, f * _ + c * T + l * M + d * B, f * b + c * O + l * R + d * F, p * v + y * x + g * A + m * P, p * w + y * E + g * S + m * j, p * _ + y * T + g * M + m * B, p * b + y * O + g * R + m * F ];
+        return [ n * v + r * x + i * A + o * R, n * w + r * E + i * S + o * j, n * _ + r * T + i * M + o * B, n * b + r * O + i * P + o * F, a * v + s * x + u * A + f * R, a * w + s * E + u * S + f * j, a * _ + s * T + u * M + f * B, a * b + s * O + u * P + f * F, h * v + c * x + l * A + p * R, h * w + c * E + l * S + p * j, h * _ + c * T + l * M + p * B, h * b + c * O + l * P + p * F, d * v + y * x + g * A + m * R, d * w + y * E + g * S + m * j, d * _ + y * T + g * M + m * B, d * b + y * O + g * P + m * F ];
     };
 }, function(t, e, n) {
     "use strict";
@@ -872,7 +897,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(45);
+    var r = n(46);
     var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -904,7 +929,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e() {
             a(this, e);
@@ -916,7 +941,7 @@
         }
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -961,17 +986,17 @@
             return i;
         } else if ((typeof e === "undefined" ? "undefined" : r(e)) === "object") {
             var u = {};
-            for (var h in e) {
-                if (!e.hasOwnProperty(h)) continue;
-                var f = void 0;
-                if (n.indexOf(e[h]) > -1) {
-                    f = e[h];
+            for (var f in e) {
+                if (!e.hasOwnProperty(f)) continue;
+                var h = void 0;
+                if (n.indexOf(e[f]) > -1) {
+                    h = e[f];
                 } else {
                     n.push(e);
-                    f = t(e[h], n);
-                    n.push(e[h]);
+                    h = t(e[f], n);
+                    n.push(e[f]);
                 }
-                u[h] = f;
+                u[f] = h;
             }
             return u;
         } else return e;
@@ -1041,9 +1066,9 @@
                         i[u] = n;
                     })();
                 } else {
-                    var h = s(this[u]);
-                    if (h && h.splice && !h.length) continue; else if (h != null && (typeof h === "undefined" ? "undefined" : r(h)) === "object" && !Object.keys(h).length) continue;
-                    i[u] = h;
+                    var f = s(this[u]);
+                    if (f && f.splice && !f.length) continue; else if (f != null && (typeof f === "undefined" ? "undefined" : r(f)) === "object" && !Object.keys(f).length) continue;
+                    i[u] = f;
                 }
             }
             return i;
@@ -1087,7 +1112,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         e.find = function t(e) {};
         e.findAll = function t(e) {};
@@ -1161,7 +1186,7 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -1198,7 +1223,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -1260,7 +1285,7 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e) {
     t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
 }, , , function(t, e, n) {
@@ -1268,23 +1293,23 @@
     e.__esModule = true;
     e.default = undefined;
     var r, i;
-    n(40);
-    var o = n(42);
+    n(41);
+    var o = n(43);
     var a = x(o);
-    var s = n(51);
+    var s = n(52);
     var u = x(s);
-    var h = n(35);
-    var f = x(h);
-    var c = n(34);
+    var f = n(36);
+    var h = x(f);
+    var c = n(35);
     var l = x(c);
-    var d = n(33);
-    var p = x(d);
-    var y = n(39);
+    var p = n(34);
+    var d = x(p);
+    var y = n(40);
     var g = x(y);
-    var m = n(8);
-    var v = n(12);
+    var m = n(9);
+    var v = n(13);
     var w = x(v);
-    var _ = n(32);
+    var _ = n(33);
     var b = x(_);
     function x(t) {
         return t && t.__esModule ? t : {
@@ -1349,10 +1374,10 @@
             r._lastTime = r._currTime = i;
             r._deltaTime = 0;
             r.repository = new u.default(r);
-            r._mouse = new f.default(r);
+            r._mouse = new h.default(r);
             r.keyboard = new l.default(r);
             r.keyboard.listenTo();
-            r.gamePad = new p.default(r);
+            r.gamePad = new d.default(r);
             r._collider = new g.default(r);
             r.camera = new b.default(r);
             return r;
@@ -1371,7 +1396,7 @@
             }
             this._currentScene = r;
             if (true) {
-                var o = n(21);
+                var o = n(22);
                 var s = "" + r.name[0].toUpperCase() + r.name.substr(1) + "Behaviour";
                 if (s) r.setIndividualBehaviour(o[s]);
                 r.layers.forEach(function(t) {
@@ -1398,6 +1423,7 @@
             this._currentScene = e;
         };
         e.update = function t(n) {
+            console.warn = function() {};
             if (1 && window.canceled) return;
             requestAnimationFrame(function() {
                 e.update(n);
@@ -1408,7 +1434,10 @@
             if (true) {
                 n.fps = ~~(1e3 / n._deltaTime);
                 window.fps = n.fps;
+                var r = n._renderer.getError();
+                if (r) throw "render error with code " + r;
             }
+            if (n._deltaTime > 20) n._deltaTime = 20;
             n._currentScene && n._currentScene.update(n._currTime, n._deltaTime);
             n.keyboard.update();
             n.gamePad.update();
@@ -1419,15 +1448,15 @@
 }, function(t, e) {
     t.exports = '{\n    "width": 900,\n    "height": 500,\n    "scaleStrategy": 0,\n    "startSceneId": 2,\n    "scale": {\n        "x": 1,\n        "y": 1\n    },\n    "pos": {\n        "x": 0,\n        "y": 0\n    },\n    "gravityConstant": 800\n}';
 }, function(t, e) {
-    t.exports = '{\n    "Scene": [\n        {\n            "id": 2,\n            "name": "mainScene",\n            "width": 5000,\n            "height": 800,\n            "type": "Scene",\n            "layers": [\n                {\n                    "type": "Layer",\n                    "id": 2\n                }\n            ],\n            "useBG": true,\n            "colorBG": {\n                "r": 230,\n                "g": 254,\n                "b": 255\n            },\n            "tileMap": {\n                "id": 52,\n                "type": "TileMap"\n            }\n        }\n    ],\n    "Layer": [\n        {\n            "id": 2,\n            "name": "layer1",\n            "type": "Layer",\n            "gameObjects": [\n                {\n                    "type": "GameObject",\n                    "id": 7\n                },\n                {\n                    "type": "GameObject",\n                    "id": 63\n                },\n                {\n                    "type": "GameObject",\n                    "id": 64\n                },\n                {\n                    "type": "GameObject",\n                    "id": 65\n                }\n            ]\n        }\n    ],\n    "SpriteSheet": [\n        {\n            "name": "dude",\n            "width": 288,\n            "height": 48,\n            "type": "SpriteSheet",\n            "numOfFramesH": 9,\n            "resourcePath": "resources/dude.png",\n            "id": 3\n        },\n        {\n            "name": "platform",\n            "width": 500,\n            "height": 64,\n            "type": "SpriteSheet",\n            "resourcePath": "resources/platform.png",\n            "id": 5\n        },\n        {\n            "name": "ground",\n            "width": 800,\n            "height": 32,\n            "type": "SpriteSheet",\n            "numOfFramesH": 25,\n            "resourcePath": "resources/ground.png",\n            "id": 57\n        }\n    ],\n    "GameObjectProto": [\n        {\n            "id": 4,\n            "name": "dude",\n            "width": 32,\n            "height": 48,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 3,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 15\n                },\n                {\n                    "type": "CommonBehaviour",\n                    "id": 60\n                }\n            ],\n            "frameAnimations": [\n                {\n                    "type": "FrameAnimation",\n                    "id": 11\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 12\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 13\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 14\n                }\n            ]\n        },\n        {\n            "id": 6,\n            "name": "platform",\n            "width": 500,\n            "height": 64,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 5,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 61\n                }\n            ]\n        },\n        {\n            "id": 58,\n            "name": "ground1",\n            "width": 32,\n            "height": 32,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 57,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 62\n                }\n            ],\n            "currFrameIndex": 9\n        }\n    ],\n    "GameObject": [\n        {\n            "id": 7,\n            "name": "dude",\n            "pos": {\n                "x": 537,\n                "y": 127\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 4,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 63,\n            "name": "ground1",\n            "pos": {\n                "x": 436,\n                "y": 52\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 58,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 64,\n            "name": "platform",\n            "pos": {\n                "x": 12,\n                "y": 411\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 65,\n            "name": "platform",\n            "pos": {\n                "x": 383,\n                "y": 196\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        }\n    ],\n    "FrameAnimation": [\n        {\n            "name": "left",\n            "type": "FrameAnimation",\n            "frames": [\n                0,\n                1,\n                2,\n                3\n            ],\n            "id": 11\n        },\n        {\n            "name": "right",\n            "type": "FrameAnimation",\n            "frames": [\n                5,\n                6,\n                7,\n                8\n            ],\n            "id": 12\n        },\n        {\n            "name": "idleLeft",\n            "type": "FrameAnimation",\n            "frames": [\n                4\n            ],\n            "id": 13\n        },\n        {\n            "name": "idleRight",\n            "type": "FrameAnimation",\n            "frames": [\n                4\n            ],\n            "id": 14\n        }\n    ],\n    "CommonBehaviour": [\n        {\n            "id": 15,\n            "name": "Control2Dir",\n            "type": "CommonBehaviour",\n            "parameters": {\n                "velocity": "130",\n                "walkLeftAnimation": "left",\n                "walkRightAnimation": "right",\n                "idleLeftAnimation": "idleLeft",\n                "idleRightAnimation": "idleRight"\n            }\n        },\n        {\n            "name": "Draggable",\n            "type": "CommonBehaviour",\n            "id": 60\n        },\n        {\n            "name": "Draggable",\n            "type": "CommonBehaviour",\n            "id": 61\n        },\n        {\n            "name": "Draggable",\n            "type": "CommonBehaviour",\n            "id": 62\n        }\n    ],\n    "Font": [\n        {\n            "name": "font1",\n            "type": "Font",\n            "resourcePath": "resources/font1.png",\n            "fontSize": 21,\n            "fontFamily": "Berlin Sans FB",\n            "fontContext": {\n                "symbols": {\n                    "0": {\n                        "x": 258,\n                        "y": 4,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "1": {\n                        "x": 279,\n                        "y": 4,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "2": {\n                        "x": 293,\n                        "y": 4,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "3": {\n                        "x": 4,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "4": {\n                        "x": 21,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "5": {\n                        "x": 40,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "6": {\n                        "x": 58,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "7": {\n                        "x": 77,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "8": {\n                        "x": 94,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "9": {\n                        "x": 112,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    " ": {\n                        "x": 4,\n                        "y": 4,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "!": {\n                        "x": 17,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "\\"": {\n                        "x": 30,\n                        "y": 4,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "#": {\n                        "x": 44,\n                        "y": 4,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "$": {\n                        "x": 66,\n                        "y": 4,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "%": {\n                        "x": 83,\n                        "y": 4,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "&": {\n                        "x": 106,\n                        "y": 4,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "\'": {\n                        "x": 129,\n                        "y": 4,\n                        "width": 3,\n                        "height": 23\n                    },\n                    "(": {\n                        "x": 140,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    ")": {\n                        "x": 156,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "*": {\n                        "x": 171,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "+": {\n                        "x": 187,\n                        "y": 4,\n                        "width": 8,\n                        "height": 23\n                    },\n                    ",": {\n                        "x": 203,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "-": {\n                        "x": 216,\n                        "y": 4,\n                        "width": 8,\n                        "height": 23\n                    },\n                    ".": {\n                        "x": 232,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "/": {\n                        "x": 244,\n                        "y": 4,\n                        "width": 6,\n                        "height": 23\n                    },\n                    ":": {\n                        "x": 130,\n                        "y": 35,\n                        "width": 4,\n                        "height": 23\n                    },\n                    ";": {\n                        "x": 143,\n                        "y": 35,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "<": {\n                        "x": 155,\n                        "y": 35,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "=": {\n                        "x": 170,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    ">": {\n                        "x": 187,\n                        "y": 35,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "?": {\n                        "x": 203,\n                        "y": 35,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "@": {\n                        "x": 219,\n                        "y": 35,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "A": {\n                        "x": 240,\n                        "y": 35,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "B": {\n                        "x": 262,\n                        "y": 35,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "C": {\n                        "x": 283,\n                        "y": 35,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "D": {\n                        "x": 4,\n                        "y": 66,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "E": {\n                        "x": 26,\n                        "y": 66,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "F": {\n                        "x": 45,\n                        "y": 66,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "G": {\n                        "x": 64,\n                        "y": 66,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "H": {\n                        "x": 86,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "I": {\n                        "x": 109,\n                        "y": 66,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "J": {\n                        "x": 122,\n                        "y": 66,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "K": {\n                        "x": 136,\n                        "y": 66,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "L": {\n                        "x": 157,\n                        "y": 66,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "M": {\n                        "x": 175,\n                        "y": 66,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "N": {\n                        "x": 200,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "O": {\n                        "x": 223,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "P": {\n                        "x": 246,\n                        "y": 66,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Q": {\n                        "x": 267,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "R": {\n                        "x": 291,\n                        "y": 66,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "S": {\n                        "x": 4,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "T": {\n                        "x": 21,\n                        "y": 97,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "U": {\n                        "x": 40,\n                        "y": 97,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "V": {\n                        "x": 62,\n                        "y": 97,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "W": {\n                        "x": 83,\n                        "y": 97,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "X": {\n                        "x": 110,\n                        "y": 97,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Y": {\n                        "x": 130,\n                        "y": 97,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Z": {\n                        "x": 150,\n                        "y": 97,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "[": {\n                        "x": 169,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "\\\\": {\n                        "x": 184,\n                        "y": 97,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "]": {\n                        "x": 198,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "^": {\n                        "x": 214,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "_": {\n                        "x": 232,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "`": {\n                        "x": 249,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "a": {\n                        "x": 264,\n                        "y": 97,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "b": {\n                        "x": 284,\n                        "y": 97,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "c": {\n                        "x": 303,\n                        "y": 97,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "d": {\n                        "x": 4,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "e": {\n                        "x": 23,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "f": {\n                        "x": 41,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "g": {\n                        "x": 55,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "h": {\n                        "x": 74,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "i": {\n                        "x": 93,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "j": {\n                        "x": 106,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "k": {\n                        "x": 119,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "l": {\n                        "x": 138,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "m": {\n                        "x": 151,\n                        "y": 128,\n                        "width": 17,\n                        "height": 23\n                    },\n                    "n": {\n                        "x": 176,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "o": {\n                        "x": 195,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "p": {\n                        "x": 214,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "q": {\n                        "x": 234,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "r": {\n                        "x": 254,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "s": {\n                        "x": 269,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "t": {\n                        "x": 283,\n                        "y": 128,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "u": {\n                        "x": 298,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "v": {\n                        "x": 4,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "w": {\n                        "x": 22,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "x": {\n                        "x": 45,\n                        "y": 159,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "y": {\n                        "x": 63,\n                        "y": 159,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "z": {\n                        "x": 81,\n                        "y": 159,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "{": {\n                        "x": 97,\n                        "y": 159,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "|": {\n                        "x": 113,\n                        "y": 159,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "}": {\n                        "x": 126,\n                        "y": 159,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "~": {\n                        "x": 141,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 159,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 178,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 201,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 225,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 249,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 273,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 296,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 4,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 27,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 51,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 75,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 99,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 122,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 146,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 170,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 194,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 217,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 241,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 265,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 289,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 4,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 27,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 51,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "А": {\n                        "x": 75,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Б": {\n                        "x": 98,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "В": {\n                        "x": 118,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Г": {\n                        "x": 140,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Д": {\n                        "x": 160,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Е": {\n                        "x": 182,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Ж": {\n                        "x": 203,\n                        "y": 221,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "З": {\n                        "x": 230,\n                        "y": 221,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "И": {\n                        "x": 249,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Й": {\n                        "x": 272,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "К": {\n                        "x": 295,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Л": {\n                        "x": 4,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "М": {\n                        "x": 26,\n                        "y": 252,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "Н": {\n                        "x": 52,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "О": {\n                        "x": 76,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "П": {\n                        "x": 99,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Р": {\n                        "x": 122,\n                        "y": 252,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "С": {\n                        "x": 142,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Т": {\n                        "x": 164,\n                        "y": 252,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "У": {\n                        "x": 184,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Ф": {\n                        "x": 207,\n                        "y": 252,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "Х": {\n                        "x": 232,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Ц": {\n                        "x": 255,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Ч": {\n                        "x": 278,\n                        "y": 252,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Ш": {\n                        "x": 4,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Щ": {\n                        "x": 33,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Ъ": {\n                        "x": 62,\n                        "y": 283,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Ы": {\n                        "x": 85,\n                        "y": 283,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "Ь": {\n                        "x": 111,\n                        "y": 283,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Э": {\n                        "x": 131,\n                        "y": 283,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Ю": {\n                        "x": 153,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Я": {\n                        "x": 183,\n                        "y": 283,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "а": {\n                        "x": 205,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "б": {\n                        "x": 222,\n                        "y": 283,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "в": {\n                        "x": 241,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "г": {\n                        "x": 258,\n                        "y": 283,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "д": {\n                        "x": 275,\n                        "y": 283,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "е": {\n                        "x": 294,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ж": {\n                        "x": 4,\n                        "y": 314,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "з": {\n                        "x": 26,\n                        "y": 314,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "и": {\n                        "x": 42,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "й": {\n                        "x": 62,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "к": {\n                        "x": 81,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "л": {\n                        "x": 99,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "м": {\n                        "x": 117,\n                        "y": 314,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "н": {\n                        "x": 139,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "о": {\n                        "x": 158,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "п": {\n                        "x": 176,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "р": {\n                        "x": 196,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "с": {\n                        "x": 214,\n                        "y": 314,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "т": {\n                        "x": 232,\n                        "y": 314,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "у": {\n                        "x": 249,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ф": {\n                        "x": 267,\n                        "y": 314,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "х": {\n                        "x": 289,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ц": {\n                        "x": 4,\n                        "y": 345,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "ч": {\n                        "x": 23,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ш": {\n                        "x": 41,\n                        "y": 345,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "щ": {\n                        "x": 65,\n                        "y": 345,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "ъ": {\n                        "x": 90,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ы": {\n                        "x": 108,\n                        "y": 345,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "ь": {\n                        "x": 131,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "э": {\n                        "x": 148,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ю": {\n                        "x": 165,\n                        "y": 345,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "я": {\n                        "x": 189,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ѐ": {\n                        "x": 207,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ё": {\n                        "x": 224,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ђ": {\n                        "x": 241,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ѓ": {\n                        "x": 259,\n                        "y": 345,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "є": {\n                        "x": 276,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ѕ": {\n                        "x": 293,\n                        "y": 345,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "і": {\n                        "x": 309,\n                        "y": 345,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "ї": {\n                        "x": 4,\n                        "y": 376,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "ј": {\n                        "x": 17,\n                        "y": 376,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "љ": {\n                        "x": 31,\n                        "y": 376,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "њ": {\n                        "x": 54,\n                        "y": 376,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "ћ": {\n                        "x": 78,\n                        "y": 376,\n                        "width": 10,\n                        "height": 23\n                    }\n                },\n                "width": 320,\n                "height": 403\n            },\n            "id": 22\n        }\n    ],\n    "TileMap": [\n        {\n            "id": 52,\n            "width": 50,\n            "height": 50,\n            "type": "TileMap",\n            "spriteSheet": {\n                "id": 57,\n                "type": "SpriteSheet"\n            },\n            "data": [\n                [],\n                null,\n                null,\n                [\n                    null,\n                    null,\n                    null,\n                    null,\n                    2,\n                    null,\n                    null\n                ],\n                [\n                    null,\n                    null\n                ],\n                [\n                    1,\n                    null,\n                    3,\n                    null,\n                    null,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1\n                ],\n                null,\n                [\n                    null,\n                    1,\n                    null,\n                    1\n                ]\n            ]\n        }\n    ]\n}';
+    t.exports = '{\n    "Scene": [\n        {\n            "id": 2,\n            "name": "mainScene",\n            "width": 5000,\n            "height": 800,\n            "type": "Scene",\n            "layers": [\n                {\n                    "type": "Layer",\n                    "id": 2\n                }\n            ],\n            "useBG": true,\n            "colorBG": {\n                "r": 230,\n                "g": 254,\n                "b": 255\n            },\n            "tileMap": {\n                "id": 52,\n                "type": "TileMap"\n            }\n        }\n    ],\n    "Layer": [\n        {\n            "id": 2,\n            "name": "layer1",\n            "type": "Layer",\n            "gameObjects": [\n                {\n                    "type": "GameObject",\n                    "id": 7\n                },\n                {\n                    "type": "GameObject",\n                    "id": 63\n                },\n                {\n                    "type": "GameObject",\n                    "id": 64\n                },\n                {\n                    "type": "GameObject",\n                    "id": 65\n                },\n                {\n                    "type": "GameObject",\n                    "id": 67\n                },\n                {\n                    "type": "GameObject",\n                    "id": 68\n                }\n            ]\n        }\n    ],\n    "SpriteSheet": [\n        {\n            "name": "dude",\n            "width": 288,\n            "height": 48,\n            "type": "SpriteSheet",\n            "numOfFramesH": 9,\n            "resourcePath": "resources/dude.png",\n            "id": 3\n        },\n        {\n            "name": "platform",\n            "width": 500,\n            "height": 64,\n            "type": "SpriteSheet",\n            "resourcePath": "resources/platform.png",\n            "id": 5\n        },\n        {\n            "name": "ground",\n            "width": 800,\n            "height": 32,\n            "type": "SpriteSheet",\n            "numOfFramesH": 25,\n            "resourcePath": "resources/ground.png",\n            "id": 57\n        }\n    ],\n    "GameObjectProto": [\n        {\n            "id": 4,\n            "name": "dude",\n            "width": 32,\n            "height": 48,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 3,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 15\n                },\n                {\n                    "type": "CommonBehaviour",\n                    "id": 60\n                }\n            ],\n            "frameAnimations": [\n                {\n                    "type": "FrameAnimation",\n                    "id": 11\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 12\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 13\n                },\n                {\n                    "type": "FrameAnimation",\n                    "id": 14\n                }\n            ]\n        },\n        {\n            "id": 6,\n            "name": "platform",\n            "width": 500,\n            "height": 64,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 5,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 61\n                }\n            ]\n        },\n        {\n            "id": 58,\n            "name": "ground1",\n            "width": 32,\n            "height": 32,\n            "type": "GameObjectProto",\n            "spriteSheet": {\n                "id": 57,\n                "type": "SpriteSheet"\n            },\n            "commonBehaviour": [\n                {\n                    "type": "CommonBehaviour",\n                    "id": 62\n                }\n            ],\n            "currFrameIndex": 9\n        }\n    ],\n    "GameObject": [\n        {\n            "id": 7,\n            "name": "dude",\n            "pos": {\n                "x": 537,\n                "y": 127\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 4,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 63,\n            "name": "ground1",\n            "pos": {\n                "x": 432,\n                "y": 156\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 58,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 64,\n            "name": "platform",\n            "pos": {\n                "x": 12,\n                "y": 411\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 65,\n            "name": "platform",\n            "pos": {\n                "x": 383,\n                "y": 196\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 6,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "id": 67,\n            "name": "ground1",\n            "pos": {\n                "x": 482,\n                "y": 119\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 58,\n                "type": "GameObjectProto"\n            }\n        },\n        {\n            "pos": {\n                "x": 388,\n                "y": 140\n            },\n            "layerId": 2,\n            "type": "GameObject",\n            "gameObjectProto": {\n                "id": 58,\n                "type": "GameObjectProto"\n            },\n            "id": 68\n        }\n    ],\n    "FrameAnimation": [\n        {\n            "name": "left",\n            "type": "FrameAnimation",\n            "frames": [\n                0,\n                1,\n                2,\n                3\n            ],\n            "id": 11\n        },\n        {\n            "name": "right",\n            "type": "FrameAnimation",\n            "frames": [\n                5,\n                6,\n                7,\n                8\n            ],\n            "id": 12\n        },\n        {\n            "name": "idleLeft",\n            "type": "FrameAnimation",\n            "frames": [\n                4\n            ],\n            "id": 13\n        },\n        {\n            "name": "idleRight",\n            "type": "FrameAnimation",\n            "frames": [\n                4\n            ],\n            "id": 14\n        }\n    ],\n    "CommonBehaviour": [\n        {\n            "id": 15,\n            "name": "Control2Dir",\n            "type": "CommonBehaviour",\n            "parameters": {\n                "velocity": "130",\n                "walkLeftAnimation": "left",\n                "walkRightAnimation": "right",\n                "idleLeftAnimation": "idleLeft",\n                "idleRightAnimation": "idleRight"\n            }\n        },\n        {\n            "name": "Draggable",\n            "type": "CommonBehaviour",\n            "id": 60\n        },\n        {\n            "name": "Draggable",\n            "type": "CommonBehaviour",\n            "id": 61\n        },\n        {\n            "name": "Draggable",\n            "type": "CommonBehaviour",\n            "id": 62\n        }\n    ],\n    "Font": [\n        {\n            "name": "font1",\n            "type": "Font",\n            "resourcePath": "resources/font1.png",\n            "fontSize": 21,\n            "fontFamily": "Berlin Sans FB",\n            "fontContext": {\n                "symbols": {\n                    "0": {\n                        "x": 258,\n                        "y": 4,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "1": {\n                        "x": 279,\n                        "y": 4,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "2": {\n                        "x": 293,\n                        "y": 4,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "3": {\n                        "x": 4,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "4": {\n                        "x": 21,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "5": {\n                        "x": 40,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "6": {\n                        "x": 58,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "7": {\n                        "x": 77,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "8": {\n                        "x": 94,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "9": {\n                        "x": 112,\n                        "y": 35,\n                        "width": 10,\n                        "height": 23\n                    },\n                    " ": {\n                        "x": 4,\n                        "y": 4,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "!": {\n                        "x": 17,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "\\"": {\n                        "x": 30,\n                        "y": 4,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "#": {\n                        "x": 44,\n                        "y": 4,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "$": {\n                        "x": 66,\n                        "y": 4,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "%": {\n                        "x": 83,\n                        "y": 4,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "&": {\n                        "x": 106,\n                        "y": 4,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "\'": {\n                        "x": 129,\n                        "y": 4,\n                        "width": 3,\n                        "height": 23\n                    },\n                    "(": {\n                        "x": 140,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    ")": {\n                        "x": 156,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "*": {\n                        "x": 171,\n                        "y": 4,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "+": {\n                        "x": 187,\n                        "y": 4,\n                        "width": 8,\n                        "height": 23\n                    },\n                    ",": {\n                        "x": 203,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "-": {\n                        "x": 216,\n                        "y": 4,\n                        "width": 8,\n                        "height": 23\n                    },\n                    ".": {\n                        "x": 232,\n                        "y": 4,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "/": {\n                        "x": 244,\n                        "y": 4,\n                        "width": 6,\n                        "height": 23\n                    },\n                    ":": {\n                        "x": 130,\n                        "y": 35,\n                        "width": 4,\n                        "height": 23\n                    },\n                    ";": {\n                        "x": 143,\n                        "y": 35,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "<": {\n                        "x": 155,\n                        "y": 35,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "=": {\n                        "x": 170,\n                        "y": 35,\n                        "width": 9,\n                        "height": 23\n                    },\n                    ">": {\n                        "x": 187,\n                        "y": 35,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "?": {\n                        "x": 203,\n                        "y": 35,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "@": {\n                        "x": 219,\n                        "y": 35,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "A": {\n                        "x": 240,\n                        "y": 35,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "B": {\n                        "x": 262,\n                        "y": 35,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "C": {\n                        "x": 283,\n                        "y": 35,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "D": {\n                        "x": 4,\n                        "y": 66,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "E": {\n                        "x": 26,\n                        "y": 66,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "F": {\n                        "x": 45,\n                        "y": 66,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "G": {\n                        "x": 64,\n                        "y": 66,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "H": {\n                        "x": 86,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "I": {\n                        "x": 109,\n                        "y": 66,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "J": {\n                        "x": 122,\n                        "y": 66,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "K": {\n                        "x": 136,\n                        "y": 66,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "L": {\n                        "x": 157,\n                        "y": 66,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "M": {\n                        "x": 175,\n                        "y": 66,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "N": {\n                        "x": 200,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "O": {\n                        "x": 223,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "P": {\n                        "x": 246,\n                        "y": 66,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Q": {\n                        "x": 267,\n                        "y": 66,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "R": {\n                        "x": 291,\n                        "y": 66,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "S": {\n                        "x": 4,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "T": {\n                        "x": 21,\n                        "y": 97,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "U": {\n                        "x": 40,\n                        "y": 97,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "V": {\n                        "x": 62,\n                        "y": 97,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "W": {\n                        "x": 83,\n                        "y": 97,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "X": {\n                        "x": 110,\n                        "y": 97,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Y": {\n                        "x": 130,\n                        "y": 97,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Z": {\n                        "x": 150,\n                        "y": 97,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "[": {\n                        "x": 169,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "\\\\": {\n                        "x": 184,\n                        "y": 97,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "]": {\n                        "x": 198,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "^": {\n                        "x": 214,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "_": {\n                        "x": 232,\n                        "y": 97,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "`": {\n                        "x": 249,\n                        "y": 97,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "a": {\n                        "x": 264,\n                        "y": 97,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "b": {\n                        "x": 284,\n                        "y": 97,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "c": {\n                        "x": 303,\n                        "y": 97,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "d": {\n                        "x": 4,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "e": {\n                        "x": 23,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "f": {\n                        "x": 41,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "g": {\n                        "x": 55,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "h": {\n                        "x": 74,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "i": {\n                        "x": 93,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "j": {\n                        "x": 106,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "k": {\n                        "x": 119,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "l": {\n                        "x": 138,\n                        "y": 128,\n                        "width": 4,\n                        "height": 23\n                    },\n                    "m": {\n                        "x": 151,\n                        "y": 128,\n                        "width": 17,\n                        "height": 23\n                    },\n                    "n": {\n                        "x": 176,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "o": {\n                        "x": 195,\n                        "y": 128,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "p": {\n                        "x": 214,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "q": {\n                        "x": 234,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "r": {\n                        "x": 254,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "s": {\n                        "x": 269,\n                        "y": 128,\n                        "width": 6,\n                        "height": 23\n                    },\n                    "t": {\n                        "x": 283,\n                        "y": 128,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "u": {\n                        "x": 298,\n                        "y": 128,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "v": {\n                        "x": 4,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "w": {\n                        "x": 22,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "x": {\n                        "x": 45,\n                        "y": 159,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "y": {\n                        "x": 63,\n                        "y": 159,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "z": {\n                        "x": 81,\n                        "y": 159,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "{": {\n                        "x": 97,\n                        "y": 159,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "|": {\n                        "x": 113,\n                        "y": 159,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "}": {\n                        "x": 126,\n                        "y": 159,\n                        "width": 7,\n                        "height": 23\n                    },\n                    "~": {\n                        "x": 141,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 159,\n                        "y": 159,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 178,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 201,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 225,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 249,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 273,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 296,\n                        "y": 159,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 4,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 27,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 51,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 75,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 99,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 122,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 146,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 170,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 194,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 217,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 241,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 265,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 289,\n                        "y": 190,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 4,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 27,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "": {\n                        "x": 51,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "А": {\n                        "x": 75,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Б": {\n                        "x": 98,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "В": {\n                        "x": 118,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Г": {\n                        "x": 140,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Д": {\n                        "x": 160,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Е": {\n                        "x": 182,\n                        "y": 221,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Ж": {\n                        "x": 203,\n                        "y": 221,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "З": {\n                        "x": 230,\n                        "y": 221,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "И": {\n                        "x": 249,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Й": {\n                        "x": 272,\n                        "y": 221,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "К": {\n                        "x": 295,\n                        "y": 221,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Л": {\n                        "x": 4,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "М": {\n                        "x": 26,\n                        "y": 252,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "Н": {\n                        "x": 52,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "О": {\n                        "x": 76,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "П": {\n                        "x": 99,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Р": {\n                        "x": 122,\n                        "y": 252,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "С": {\n                        "x": 142,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Т": {\n                        "x": 164,\n                        "y": 252,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "У": {\n                        "x": 184,\n                        "y": 252,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Ф": {\n                        "x": 207,\n                        "y": 252,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "Х": {\n                        "x": 232,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Ц": {\n                        "x": 255,\n                        "y": 252,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "Ч": {\n                        "x": 278,\n                        "y": 252,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Ш": {\n                        "x": 4,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Щ": {\n                        "x": 33,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Ъ": {\n                        "x": 62,\n                        "y": 283,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "Ы": {\n                        "x": 85,\n                        "y": 283,\n                        "width": 18,\n                        "height": 23\n                    },\n                    "Ь": {\n                        "x": 111,\n                        "y": 283,\n                        "width": 12,\n                        "height": 23\n                    },\n                    "Э": {\n                        "x": 131,\n                        "y": 283,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "Ю": {\n                        "x": 153,\n                        "y": 283,\n                        "width": 21,\n                        "height": 23\n                    },\n                    "Я": {\n                        "x": 183,\n                        "y": 283,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "а": {\n                        "x": 205,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "б": {\n                        "x": 222,\n                        "y": 283,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "в": {\n                        "x": 241,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "г": {\n                        "x": 258,\n                        "y": 283,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "д": {\n                        "x": 275,\n                        "y": 283,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "е": {\n                        "x": 294,\n                        "y": 283,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ж": {\n                        "x": 4,\n                        "y": 314,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "з": {\n                        "x": 26,\n                        "y": 314,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "и": {\n                        "x": 42,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "й": {\n                        "x": 62,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "к": {\n                        "x": 81,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "л": {\n                        "x": 99,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "м": {\n                        "x": 117,\n                        "y": 314,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "н": {\n                        "x": 139,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "о": {\n                        "x": 158,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "п": {\n                        "x": 176,\n                        "y": 314,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "р": {\n                        "x": 196,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "с": {\n                        "x": 214,\n                        "y": 314,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "т": {\n                        "x": 232,\n                        "y": 314,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "у": {\n                        "x": 249,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ф": {\n                        "x": 267,\n                        "y": 314,\n                        "width": 13,\n                        "height": 23\n                    },\n                    "х": {\n                        "x": 289,\n                        "y": 314,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ц": {\n                        "x": 4,\n                        "y": 345,\n                        "width": 11,\n                        "height": 23\n                    },\n                    "ч": {\n                        "x": 23,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ш": {\n                        "x": 41,\n                        "y": 345,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "щ": {\n                        "x": 65,\n                        "y": 345,\n                        "width": 16,\n                        "height": 23\n                    },\n                    "ъ": {\n                        "x": 90,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ы": {\n                        "x": 108,\n                        "y": 345,\n                        "width": 14,\n                        "height": 23\n                    },\n                    "ь": {\n                        "x": 131,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "э": {\n                        "x": 148,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ю": {\n                        "x": 165,\n                        "y": 345,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "я": {\n                        "x": 189,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ѐ": {\n                        "x": 207,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ё": {\n                        "x": 224,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ђ": {\n                        "x": 241,\n                        "y": 345,\n                        "width": 10,\n                        "height": 23\n                    },\n                    "ѓ": {\n                        "x": 259,\n                        "y": 345,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "є": {\n                        "x": 276,\n                        "y": 345,\n                        "width": 9,\n                        "height": 23\n                    },\n                    "ѕ": {\n                        "x": 293,\n                        "y": 345,\n                        "width": 8,\n                        "height": 23\n                    },\n                    "і": {\n                        "x": 309,\n                        "y": 345,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "ї": {\n                        "x": 4,\n                        "y": 376,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "ј": {\n                        "x": 17,\n                        "y": 376,\n                        "width": 5,\n                        "height": 23\n                    },\n                    "љ": {\n                        "x": 31,\n                        "y": 376,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "њ": {\n                        "x": 54,\n                        "y": 376,\n                        "width": 15,\n                        "height": 23\n                    },\n                    "ћ": {\n                        "x": 78,\n                        "y": 376,\n                        "width": 10,\n                        "height": 23\n                    }\n                },\n                "width": 320,\n                "height": 403\n            },\n            "id": 22\n        }\n    ],\n    "TileMap": [\n        {\n            "id": 52,\n            "width": 50,\n            "height": 50,\n            "type": "TileMap",\n            "spriteSheet": {\n                "id": 57,\n                "type": "SpriteSheet"\n            },\n            "data": [\n                [],\n                null,\n                null,\n                [\n                    null,\n                    null,\n                    null,\n                    null,\n                    2,\n                    null,\n                    null\n                ],\n                [\n                    null,\n                    null\n                ],\n                [\n                    1,\n                    null,\n                    3,\n                    null,\n                    null,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1,\n                    1\n                ],\n                null,\n                [\n                    null,\n                    1,\n                    null,\n                    1\n                ]\n            ]\n        }\n    ]\n}';
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.PlatformBehaviour = e.MainSceneBehaviour = e.Ground1Behaviour = e.DudeBehaviour = undefined;
-    var r = n(22);
-    var i = n(23);
-    var o = n(24);
-    var a = n(25);
+    var r = n(23);
+    var i = n(24);
+    var o = n(25);
+    var a = n(26);
     e.DudeBehaviour = r.DudeBehaviour;
     e.Ground1Behaviour = i.Ground1Behaviour;
     e.MainSceneBehaviour = o.MainSceneBehaviour;
@@ -1488,13 +1517,28 @@
             r(this, t);
         }
         t.prototype.onCreate = function t() {
+            var e = this;
             this.x = 0;
             this.y = 0;
+            this.color = [ 1, 0, 0, 1 ];
             this.points = [];
             this.scene.on("mouseMove", function(t) {});
-            this.scene.on("mouseMove", function(t) {});
+            this.scene.on("mouseMove", function(t) {
+                e.x = t.screenX;
+                e.y = t.screenY;
+                e.points.push({
+                    x: t.screenX,
+                    y: t.screenY
+                });
+            });
         };
-        t.prototype.onUpdate = function t() {};
+        t.prototype.onUpdate = function t() {
+            var e = this;
+            this.game._renderer.fillRect(this.x, this.y, 10, 10, this.color);
+            this.points.forEach(function(t) {
+                e.game._renderer.fillRect(t.x, t.y, 10, 10, e.color);
+            });
+        };
         t.prototype.onDestroy = function t() {};
         return t;
     }();
@@ -1521,13 +1565,13 @@
     "use strict";
     e.__esModule = true;
     e.Control2Dir = e.Control4Dir = e.Draggable = undefined;
-    var r = n(29);
-    var i = h(r);
-    var o = n(28);
-    var a = h(o);
-    var s = n(27);
-    var u = h(s);
-    function h(t) {
+    var r = n(30);
+    var i = f(r);
+    var o = n(29);
+    var a = f(o);
+    var s = n(28);
+    var u = f(s);
+    function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -1535,72 +1579,6 @@
     e.Draggable = i.default;
     e.Control4Dir = a.default;
     e.Control2Dir = u.default;
-}, function(t, e, n) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var r = n(30);
-    var i = o(r);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function a(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    function s(t, e) {
-        if (!t) {
-            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }
-        return e && (typeof e === "object" || typeof e === "function") ? e : t;
-    }
-    function u(t, e) {
-        if (typeof e !== "function" && e !== null) {
-            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
-        }
-        t.prototype = Object.create(e && e.prototype, {
-            constructor: {
-                value: t,
-                enumerable: false,
-                writable: true,
-                configurable: true
-            }
-        });
-        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
-    }
-    var h = function(t) {
-        u(e, t);
-        function e(n) {
-            a(this, e);
-            return s(this, t.call(this, n));
-        }
-        e.prototype.manage = function e(n, r) {
-            t.prototype.manage.call(this, n, r);
-        };
-        e.prototype.onUpdate = function t() {
-            var e = this.game.keyboard;
-            var n = this.parameters;
-            var r = this.gameObject;
-            if (e.isPressed(e.KEY.LEFT) || e.isPressed(e.KEY.GAME_PAD_AXIS_LEFT)) {
-                r.rigidBody.vel.x = -n.velocity;
-                this.go("Left");
-            }
-            if (e.isPressed(e.KEY.RIGHT) || e.isPressed(e.KEY.GAME_PAD_AXIS_RIGHT)) {
-                r.rigidBody.vel.x = n.velocity;
-                this.go("Right");
-            }
-            if (e.isJustReleased(e.KEY.LEFT) || e.isJustReleased(e.KEY.GAME_PAD_AXIS_LEFT)) {
-                this.stop();
-            } else if (e.isJustReleased(e.KEY.RIGHT) || e.isJustReleased(e.KEY.GAME_PAD_AXIS_RIGHT)) {
-                this.stop();
-            }
-        };
-        return e;
-    }(i.default);
-    e.default = h;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -1637,7 +1615,73 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
+        u(e, t);
+        function e(n) {
+            a(this, e);
+            return s(this, t.call(this, n));
+        }
+        e.prototype.manage = function e(n, r) {
+            t.prototype.manage.call(this, n, r);
+        };
+        e.prototype.onUpdate = function t() {
+            var e = this.game.keyboard;
+            var n = this.parameters;
+            var r = this.gameObject;
+            if (e.isPressed(e.KEY.LEFT) || e.isPressed(e.KEY.GAME_PAD_AXIS_LEFT)) {
+                r.rigidBody.vel.x = -n.velocity;
+                this.go("Left");
+            }
+            if (e.isPressed(e.KEY.RIGHT) || e.isPressed(e.KEY.GAME_PAD_AXIS_RIGHT)) {
+                r.rigidBody.vel.x = n.velocity;
+                this.go("Right");
+            }
+            if (e.isJustReleased(e.KEY.LEFT) || e.isJustReleased(e.KEY.GAME_PAD_AXIS_LEFT)) {
+                this.stop();
+            } else if (e.isJustReleased(e.KEY.RIGHT) || e.isJustReleased(e.KEY.GAME_PAD_AXIS_RIGHT)) {
+                this.stop();
+            }
+        };
+        return e;
+    }(i.default);
+    e.default = f;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var r = n(32);
+    var i = o(r);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function s(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function u(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -1678,12 +1722,12 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(6);
+    var r = n(7);
     var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -1715,7 +1759,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         e._getEventId = function t(e) {
             return e.id || 1;
@@ -1776,13 +1820,13 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var r, i;
-    var o = n(7);
+    var o = n(8);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -1794,13 +1838,13 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function h(t, e) {
+    function f(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function f(t, e) {
+    function h(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -1815,10 +1859,10 @@
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
     var c = (i = r = function(t) {
-        f(e, t);
+        h(e, t);
         function e(n) {
             u(this, e);
-            return h(this, t.call(this, n));
+            return f(this, t.call(this, n));
         }
         e.prototype.manage = function n(r, i) {
             t.prototype.manage.call(this, r, i, e.DIRS);
@@ -1835,7 +1879,7 @@
     e.__esModule = true;
     e.default = undefined;
     var r, i;
-    var o = n(7);
+    var o = n(8);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -1847,13 +1891,13 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function h(t, e) {
+    function f(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function f(t, e) {
+    function h(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -1868,10 +1912,10 @@
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
     var c = (i = r = function(t) {
-        f(e, t);
+        h(e, t);
         function e(n) {
             u(this, e);
-            return h(this, t.call(this, n));
+            return f(this, t.call(this, n));
         }
         e.prototype.manage = function n(r, i) {
             t.prototype.manage.call(this, r, i, e.DIRS);
@@ -1908,7 +1952,7 @@
             this.game = e;
         }
         t.prototype.followTo = function t(e) {
-            if (1 && !e) throw "Camera:followTo() - gameObject not provided";
+            if (1 && !e) throw "Camera:followTo(gameObject) - gameObject not provided";
             this.objFollowTo = e;
             this.scene = this.game._currentScene;
             if (this.scene.tileMap.spriteSheet) {
@@ -1935,6 +1979,14 @@
             if (e.x > this.sceneWidth - i + n) e.x = this.sceneWidth - i + n;
             if (e.y > this.sceneHeight - o + r) e.y = this.sceneHeight - o + r;
         };
+        t.prototype.getRect = function t() {
+            return {
+                x: this.pos.x,
+                y: this.pos.y,
+                width: this.game.width,
+                height: this.game.height
+            };
+        };
         return t;
     }();
     e.default = i;
@@ -1947,50 +1999,63 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var a = {};
-    var s = function t(e, n) {
-        var r = e.gamepad;
-        if (n) {
-            a[r.index] = r;
-        } else {
-            delete a[r.index];
-        }
-    };
-    window.addEventListener("gamepadconnected", function(t) {
-        if (true) console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.", t.gamepad.index, t.gamepad.id, t.gamepad.buttons.length, t.gamepad.axes.length);
-    });
-    window.addEventListener("gamepaddisconnected", function(t) {
-        if (true) console.log("Gamepad disconnected from index %d: %s", t.gamepad.index, t.gamepad.id);
-    });
-    var u = (i = r = function() {
+    if (true) {
+        window.addEventListener("gamepadconnected", function(t) {
+            console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.", t.gamepad.index, t.gamepad.id, t.gamepad.buttons.length, t.gamepad.axes.length);
+        });
+        window.addEventListener("gamepaddisconnected", function(t) {
+            console.log("Gamepad disconnected from index %d: %s", t.gamepad.index, t.gamepad.id);
+        });
+    }
+    var a = (i = r = function() {
         function t(e) {
             o(this, t);
             this.game = e;
         }
-        t.prototype.update = function e() {
+        t.prototype.update = function t() {
             this.gamepads = navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || navigator.getGamepads && navigator.getGamepads();
-            for (var n = 0, r = this.gamepads.length; n < r; n++) {
-                var i = this.gamepads[n];
-                if (!i) continue;
-                var o = i.buttons.length;
-                if (o > 7) o = 7;
-                for (var a = 0; a < o; a++) {
-                    var s = i.buttons[a];
-                    if (s.pressed) {
-                        this.game.keyboard.press(a);
+            for (var e = 0, n = this.gamepads.length; e < n; e++) {
+                var r = this.gamepads[e];
+                if (!r) continue;
+                var i = r.buttons.length;
+                if (i > 7) i = 7;
+                for (var o = 0; o < i; o++) {
+                    var a = r.buttons[o];
+                    if (a.pressed) {
+                        this.game.keyboard.press(o);
                     } else {
-                        this.game.keyboard.release(a);
+                        this.game.keyboard.release(o);
                     }
                 }
-                if (i.axes[0] > t.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT); else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-                if (i.axes[0] < -t.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT); else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-                if (i.axes[1] > t.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN); else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-                if (i.axes[1] < -t.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP); else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+                if (r.axes[0] === 0) return;
+                if (r.axes[1] === 0) return;
+                var s = ~~r.axes[0];
+                var u = ~~r.axes[1];
+                if (s === 1) {
+                    this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+                } else {
+                    this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+                }
+                if (s === -1) {
+                    this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+                } else {
+                    this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+                }
+                if (u === 1) {
+                    this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+                } else {
+                    this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+                }
+                if (u === -1) {
+                    this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+                } else {
+                    this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+                }
             }
         };
         return t;
     }(), r.AXIS_TOLERANCE = .9, i);
-    e.default = u;
+    e.default = a;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -2168,9 +2233,9 @@
             if (!a) return;
             var s = this.resolveScreenPoint(e);
             t: for (var u = 0; u < a.layers.length; u++) {
-                var h = a.layers[a.layers.length - 1 - u];
-                for (var f = 0; f < h.gameObjects.length; f++) {
-                    var c = h.gameObjects[f];
+                var f = a.layers[a.layers.length - 1 - u];
+                for (var h = 0; h < f.gameObjects.length; h++) {
+                    var c = f.gameObjects[h];
                     if (i.default.isPointInRect(s, c.getRect())) {
                         c.trigger(n, {
                             screenX: s.x,
@@ -2325,7 +2390,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(53);
+    var r = n(54);
     var i = s(r);
     var o = n(1);
     var a = s(o);
@@ -2339,7 +2404,7 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var h = function() {
+    var f = function() {
         function t(e) {
             u(this, t);
             this.vel = new i.default();
@@ -2347,7 +2412,6 @@
             this.gameObject = e;
         }
         t.prototype.update = function t(e, n) {
-            if (n > 20) n = 20;
             if (!this.gameObject.rigidBody.static) {
                 var r = this.vel.x * n / 1e3;
                 var i = this.vel.y * n / 1e3;
@@ -2360,7 +2424,7 @@
         };
         return t;
     }();
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -2376,56 +2440,53 @@
             i(this, t);
             this.game = e;
         }
-        t.overlapTest = function t(e, n) {
-            return e.x < n.x + n.width && e.x + e.width > n.x && e.y < n.y + n.height && e.y + e.height > n.y;
-        };
-        t.prototype.moveBy = function e(n, r, i) {
-            var o = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(n.getRect()));
-            var a = n.getRect();
-            a.x += r;
+        t.prototype.moveBy = function t(e, n, i) {
+            var o = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(e.getRect()));
+            var a = e.getRect();
+            a.x += n;
             a.y += i;
             var s = false, u = false;
-            for (var h = 0, f = o.length; h < f; h++) {
-                var c = o[h];
+            for (var f = 0, h = o.length; f < h; f++) {
+                var c = o[f];
                 var l = c.getRect();
-                if (n !== o[h] && t.overlapTest(a, l)) {
-                    var d = a.bottom - l.y;
-                    var p = l.bottom - a.y;
+                if (e !== o[f] && (0, r.overlapTest)(a, l)) {
+                    var p = a.bottom - l.y;
+                    var d = l.bottom - a.y;
                     var y = a.x + a.width - l.x;
                     var g = l.right - a.x;
-                    var m = Math.min(d, p, y, g);
-                    if (d === m) {
-                        n.pos.y = l.y - a.height;
+                    var m = Math.min(p, d, y, g);
+                    if (p === m) {
+                        e.pos.y = l.y - a.height;
                         u = true;
-                    } else if (p === m) {
-                        n.pos.y = l.bottom;
+                    } else if (d === m) {
+                        e.pos.y = l.bottom;
                         u = true;
                     } else if (y === m) {
-                        n.pos.x = l.x - a.width;
+                        e.pos.x = l.x - a.width;
                         s = true;
                     } else if (g === m) {
-                        n.pos.x = l.x + l.width;
+                        e.pos.x = l.x + l.width;
                         s = true;
                     }
                 }
             }
-            if (!s) n.pos.x += r;
-            if (!u) n.pos.y += i;
+            if (!s) e.pos.x += n;
+            if (!u) e.pos.y += i;
         };
-        t.prototype.moveTo = function e(n, r, i) {
-            var o = n.getRect();
+        t.prototype.moveTo = function t(e, n, i) {
+            var o = e.getRect();
             var a = false;
-            if (n.rigidBody) {
-                this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(o)).some(function(e) {
-                    if (t.overlapTest(o, e.getRect())) {
+            if (e.rigidBody) {
+                this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(o)).some(function(t) {
+                    if ((0, r.overlapTest)(o, t.getRect())) {
                         a = true;
                         return true;
                     }
                 });
             }
             if (a) return;
-            n.pos.x = r;
-            n.pos.y = i;
+            e.pos.x = n;
+            e.pos.y = i;
         };
         return t;
     }();
@@ -2507,6 +2568,9 @@
                 e.onResize();
             });
         };
+        t.prototype.getError = function t() {
+            return 0;
+        };
         t.prototype.loadTextureInfo = function t(e, n) {};
         t.prototype.getTextureInfo = function t(e) {};
         return t;
@@ -2516,7 +2580,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(50);
+    var r = n(51);
     var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -2543,7 +2607,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(10);
+    var r = n(11);
     var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -2592,7 +2656,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(9);
+    var r = n(10);
     var i = o(r);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -2674,259 +2738,37 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(11);
-    var i = y(r);
+    var r = n(12);
+    var i = m(r);
     var o = n(2);
-    var a = y(o);
+    var a = m(o);
     var s = n(3);
-    var u = y(s);
-    var h = n(4);
-    var f = y(h);
-    var c = n(5);
-    var l = y(c);
-    var d = n(15);
-    var p = y(d);
-    function y(t) {
+    var u = m(s);
+    var f = n(5);
+    var h = m(f);
+    var c = n(6);
+    var l = m(c);
+    var p = n(16);
+    var d = m(p);
+    var y = n(4);
+    var g = m(y);
+    function m(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function g(t, e) {
+    function v(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var m = function() {
-        function t(e, n) {
-            g(this, t);
-            this.gl = e;
-            this.plane = new i.default();
-            this.program = new a.default(e, [ l.default, p.default ]);
-            this.posVertexBuffer = new u.default(e);
-            this.posIndexBuffer = new f.default(e);
-        }
-        t.prototype.bind = function t() {
-            this.program.bind();
-            this.posVertexBuffer.setData(this.plane.vertexArr, this.gl.FLOAT, 2);
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
-            this.posIndexBuffer.setData(this.plane.indexArr);
-            this.posIndexBuffer.bind();
-        };
-        t.prototype.unbind = function t() {
-            this.posIndexBuffer.unbind();
-        };
-        t.prototype.setUniform = function t(e, n) {
-            this.program.setUniform(e, n);
-        };
-        t.prototype.draw = function t() {
-            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
-        };
-        return t;
-    }();
-    e.default = m;
-}, function(t, e, n) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var r = n(2);
-    var i = d(r);
-    var o = n(3);
-    var a = d(o);
-    var s = n(4);
-    var u = d(s);
-    var h = n(66);
-    var f = d(h);
-    var c = n(68);
-    var l = d(c);
-    function d(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function p(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var y = function() {
-        function t(e, n) {
-            p(this, t);
-            this.gl = e;
-            this.program = new i.default(e, [ f.default, l.default ]);
-            this.posVertexBuffer = new a.default(e);
-            this.texVertexBuffer = new a.default(e);
-            this.normalBuffer = new a.default(e);
-            this.posIndexBuffer = new u.default(e);
-            this.program.bind();
-        }
-        t.prototype.bind = function t(e) {
-            this.program.bind();
-            var n = this.gl;
-            var r = this.program;
-            this.posVertexBuffer.setData(e.vertexArr, n.FLOAT, 3);
-            r.bindBuffer(this.posVertexBuffer, "a_position");
-            this.texVertexBuffer.setData(e.texCoordArr, n.FLOAT, 2);
-            r.bindBuffer(this.texVertexBuffer, "a_texcoord");
-            this.normalBuffer.setData(e.normalArr, n.FLOAT, 3);
-            r.bindBuffer(this.normalBuffer, "a_normal");
-            this.posIndexBuffer.setData(e.indexArr);
-            this.posIndexBuffer.bind();
-        };
-        t.prototype.unbind = function t() {
-            this.posIndexBuffer.unbind();
-        };
-        t.prototype.setUniform = function t(e, n) {
-            this.program.setUniform(e, n);
-        };
-        t.prototype.draw = function t() {
-            this.gl.drawElements(this.gl.TRIANGLES, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
-        };
-        return t;
-    }();
-    e.default = y;
-}, function(t, e, n) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var r = n(2);
-    var i = c(r);
-    var o = n(3);
-    var a = c(o);
-    var s = n(5);
-    var u = c(s);
-    var h = n(15);
-    var f = c(h);
-    function c(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function l(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var d = function() {
-        function t(e) {
-            l(this, t);
-            this.gl = e;
-            this.program = new i.default(e, [ u.default, f.default ]);
-            this.posVertexBuffer = new a.default(e);
-        }
-        t.prototype.bind = function t(e) {
-            this.program.bind();
-            this.posVertexBuffer.setData(e, this.gl.FLOAT, 2);
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
-        };
-        t.prototype.unbind = function t() {};
-        t.prototype.setUniform = function t(e, n) {
-            this.program.setUniform(e, n);
-        };
-        t.prototype.draw = function t() {
-            this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
-        };
-        return t;
-    }();
-    e.default = d;
-}, function(t, e, n) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var r = n(11);
-    var i = y(r);
-    var o = n(2);
-    var a = y(o);
-    var s = n(3);
-    var u = y(s);
-    var h = n(4);
-    var f = y(h);
-    var c = n(5);
-    var l = y(c);
-    var d = n(67);
-    var p = y(d);
-    function y(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function g(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var m = function() {
-        function t(e) {
-            g(this, t);
-            this.gl = e;
-            this.plane = new i.default();
-            this.program = new a.default(e, [ l.default, p.default ]);
-            this.posVertexBuffer = new u.default(e);
-            this.posIndexBuffer = new f.default(e);
-            this.texVertexBuffer = new u.default(e);
-            this.bind();
-            this.setUniform("u_alpha", 1);
-        }
-        t.prototype.bind = function t() {
-            var e = this.gl;
-            this.program.bind();
-            this.posIndexBuffer.setData(this.plane.indexArr);
-            this.posIndexBuffer.bind();
-            this.posVertexBuffer.setData(this.plane.vertexArr, e.FLOAT, 2);
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
-            this.texVertexBuffer.setData(this.plane.texCoordArr, e.FLOAT, 2);
-            this.program.bindBuffer(this.texVertexBuffer, "a_texcoord");
-        };
-        t.prototype.unbind = function t() {
-            this.posIndexBuffer.unbind();
-        };
-        t.prototype.setUniform = function t(e, n) {
-            this.program.setUniform(e, n);
-        };
-        t.prototype.draw = function t() {
-            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
-        };
-        return t;
-    }();
-    e.default = m;
-}, function(t, e, n) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var r = n(41);
-    var i = b(r);
-    var o = n(49);
-    var a = b(o);
-    var s = n(46);
-    var u = b(s);
-    var h = n(48);
-    var f = b(h);
-    var c = n(47);
-    var l = b(c);
-    var d = n(43);
-    var p = b(d);
-    var y = n(44);
-    var g = b(y);
-    var m = n(9);
-    var v = b(m);
-    var w = n(10);
-    var _ = b(w);
-    function b(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function x(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    function E(t, e) {
+    function w(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function T(t, e) {
+    function _(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2940,7 +2782,312 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var O = function t(e) {
+    var b = function(t) {
+        _(e, t);
+        function e(n, r) {
+            v(this, e);
+            var o = w(this, t.call(this, n, r));
+            o.id = 1;
+            o.plane = new i.default();
+            o.program = new a.default(n, [ l.default, d.default ]);
+            o.posVertexBuffer = new u.default(n);
+            o.posIndexBuffer = new h.default(n);
+            o.posVertexBuffer.setData(o.plane.vertexArr, o.gl.FLOAT, 2);
+            o.posIndexBuffer.setData(o.plane.indexArr);
+            return o;
+        }
+        e.prototype.bind = function e() {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.posIndexBuffer.bind();
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+        };
+        return e;
+    }(g.default);
+    e.default = b;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var r = n(2);
+    var i = y(r);
+    var o = n(3);
+    var a = y(o);
+    var s = n(5);
+    var u = y(s);
+    var f = n(67);
+    var h = y(f);
+    var c = n(69);
+    var l = y(c);
+    var p = n(4);
+    var d = y(p);
+    function y(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function g(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function m(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function v(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var w = function(t) {
+        v(e, t);
+        function e(n, r) {
+            g(this, e);
+            var o = m(this, t.call(this, n, r));
+            o.program = new i.default(n, [ h.default, l.default ]);
+            o.posVertexBuffer = new a.default(n);
+            o.texVertexBuffer = new a.default(n);
+            o.normalBuffer = new a.default(n);
+            o.posIndexBuffer = new u.default(n);
+            o.program.bind();
+            return o;
+        }
+        e.prototype.bind = function e(n) {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            var r = this.gl;
+            var i = this.program;
+            this.posVertexBuffer.setData(n.vertexArr, r.FLOAT, 3);
+            i.bindBuffer(this.posVertexBuffer, "a_position");
+            this.texVertexBuffer.setData(n.texCoordArr, r.FLOAT, 2);
+            i.bindBuffer(this.texVertexBuffer, "a_texcoord");
+            this.normalBuffer.setData(n.normalArr, r.FLOAT, 3);
+            i.bindBuffer(this.normalBuffer, "a_normal");
+            this.posIndexBuffer.setData(n.indexArr);
+            this.posIndexBuffer.bind();
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawElements(this.gl.TRIANGLES, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+        };
+        return e;
+    }(d.default);
+    e.default = w;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var r = n(2);
+    var i = p(r);
+    var o = n(3);
+    var a = p(o);
+    var s = n(6);
+    var u = p(s);
+    var f = n(16);
+    var h = p(f);
+    var c = n(4);
+    var l = p(c);
+    function p(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function d(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function y(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function g(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var m = function(t) {
+        g(e, t);
+        function e(n, r) {
+            d(this, e);
+            var o = y(this, t.call(this, n, r));
+            o.program = new i.default(n, [ u.default, h.default ]);
+            o.posVertexBuffer = new a.default(n);
+            return o;
+        }
+        e.prototype.bind = function e(n) {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            this.posVertexBuffer.setData(n, this.gl.FLOAT, 2);
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
+        };
+        return e;
+    }(l.default);
+    e.default = m;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var r = n(12);
+    var i = m(r);
+    var o = n(2);
+    var a = m(o);
+    var s = n(3);
+    var u = m(s);
+    var f = n(5);
+    var h = m(f);
+    var c = n(6);
+    var l = m(c);
+    var p = n(68);
+    var d = m(p);
+    var y = n(4);
+    var g = m(y);
+    function m(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function v(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function w(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function _(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var b = function(t) {
+        _(e, t);
+        function e(n, r) {
+            v(this, e);
+            var o = w(this, t.call(this, n, r));
+            o.id = 2;
+            o.plane = new i.default();
+            o.program = new a.default(n, [ l.default, d.default ]);
+            o.posVertexBuffer = new u.default(n);
+            o.posIndexBuffer = new h.default(n);
+            o.texVertexBuffer = new u.default(n);
+            o.posIndexBuffer.setData(o.plane.indexArr);
+            o.posVertexBuffer.setData(o.plane.vertexArr, n.FLOAT, 2);
+            o.texVertexBuffer.setData(o.plane.texCoordArr, n.FLOAT, 2);
+            o.bind();
+            o.setUniform("u_alpha", 1);
+            return o;
+        }
+        e.prototype.bind = function e() {
+            t.prototype.bind.call(this);
+            var n = this.gl;
+            this.program.bind();
+            this.posIndexBuffer.bind();
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.program.bindBuffer(this.texVertexBuffer, "a_texcoord");
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+        };
+        return e;
+    }(g.default);
+    e.default = b;
+}, function(t, e, n) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var r = n(42);
+    var i = E(r);
+    var o = n(50);
+    var a = E(o);
+    var s = n(47);
+    var u = E(s);
+    var f = n(49);
+    var h = E(f);
+    var c = n(48);
+    var l = E(c);
+    var p = n(44);
+    var d = E(p);
+    var y = n(45);
+    var g = E(y);
+    var m = n(10);
+    var v = E(m);
+    var w = n(1);
+    var _ = E(w);
+    var b = n(11);
+    var x = E(b);
+    function E(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function T(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function O(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function A(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var S = 0;
+    var M = function t(e) {
         return e.getContext("webgl", {
             alpha: false
         }) || e.getContext("experimental-webgl", {
@@ -2951,53 +3098,55 @@
             alpha: false
         });
     };
-    var A = 1e3;
-    var S = new g.default();
-    var M = function t(e, n, r, i, o, a, s, u) {
-        var h = v.default.makeZToWMatrix(1);
-        var f = v.default.ortho(0, o, 0, a, -A, A);
+    var P = 1e3;
+    var R = new g.default();
+    var j = function t(e, n, r, i, o, a, s, u) {
+        var f = v.default.makeZToWMatrix(1);
+        var h = v.default.ortho(0, o, 0, a, -P, P);
         var c = v.default.makeScale(r * s, i * u, 1);
         var l = v.default.makeTranslation(e * s, n * u, 0);
-        var d = v.default.matrixMultiply(c, l);
-        d = v.default.matrixMultiply(d, S.getCurrentMatrix());
-        d = v.default.matrixMultiply(d, f);
-        d = v.default.matrixMultiply(d, h);
-        return d;
+        var p = v.default.matrixMultiply(c, l);
+        p = v.default.matrixMultiply(p, R.getCurrentMatrix());
+        p = v.default.matrixMultiply(p, h);
+        p = v.default.matrixMultiply(p, f);
+        return p;
     };
-    var R = function t(e, n, r, i, o, a) {
+    var B = function t(e, n, r, i, o, a) {
         var s = v.default.makeScale(r / o, i / a, 1);
         var u = v.default.makeTranslation(e / o, n / a, 0);
         return v.default.matrixMultiply(s, u);
     };
-    var P = function(t) {
-        T(e, t);
+    var F = function(t) {
+        A(e, t);
         function e(n) {
-            x(this, e);
-            var r = E(this, t.call(this, n));
+            T(this, e);
+            var r = O(this, t.call(this, n));
             var i = document.createElement("canvas");
             document.body.appendChild(i);
             i.setAttribute("width", n.width);
             i.setAttribute("height", n.height);
             r.container = i;
-            r.matrixStack = S;
+            r.matrixStack = R;
             r.registerResize();
             r.currTex = null;
             r._init();
             return r;
         }
         e.prototype._init = function t() {
-            var e = O(this.container);
+            var e = M(this.container);
             this.gl = e;
             this.spriteRectDrawer = new a.default(e);
             this.colorRectDrawer = new u.default(e);
-            this.polyLineDrawer = new f.default(e);
+            this.polyLineDrawer = new h.default(e);
             this.modelDrawer = new l.default(e);
-            this.frameBuffer = new p.default(e, this.game.width, this.game.height);
+            this.frameBuffer = new d.default(e, this.game.width, this.game.height);
             e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
             e.enable(e.BLEND);
             e.enable(e.BLEND);
         };
         e.prototype.draw = function t(e) {
+            if (S) return;
+            if (!_.default.overlapTest(this.game.camera.getRect(), e.getRect())) return;
             this.save();
             var n = e.width / 2;
             var r = e.height / 2;
@@ -3009,10 +3158,11 @@
             this.restore();
         };
         e.prototype.drawImage = function t(e, n, r, i, o, a, s) {
+            if (S) return;
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
             var u = this.renderableCache[e];
-            var h = u.getSize().width;
-            var f = u.getSize().height;
+            var f = u.getSize().width;
+            var h = u.getSize().height;
             if (a === undefined) {
                 a = n;
             }
@@ -3020,37 +3170,49 @@
                 s = r;
             }
             if (i === undefined) {
-                i = h;
+                i = f;
             }
             if (o === undefined) {
-                o = f;
+                o = h;
             }
             if (this.currTex !== u) {
                 u.bind();
                 this.currTex = u;
             }
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_textureMatrix", R(n, r, i, o, h, f));
-            this.spriteRectDrawer.setUniform("u_matrix", M(a, s, i, o, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", B(n, r, i, o, f, h));
+            this.spriteRectDrawer.setUniform("u_matrix", j(a, s, i, o, this.game.width, this.game.height, 1, 1));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.spriteRectDrawer.draw();
-            this.spriteRectDrawer.unbind();
         };
         e.prototype.fillRect = function t(e, n, r, i, o) {
+            if (!_.default.overlapTest(this.game.camera.getRect(), {
+                x: e,
+                y: n,
+                width: r,
+                height: i
+            })) return;
             var a = this.colorRectDrawer;
             var s = this.gl;
             a.bind();
-            a.setUniform("u_matrix", M(e, n, r, i, this.game.width, this.game.height, 1, 1));
+            a.setUniform("u_matrix", j(e, n, r, i, this.game.width, this.game.height, 1, 1));
             a.setUniform("u_rgba", o);
             s.blendFunc(s.SRC_ALPHA, s.ONE_MINUS_SRC_ALPHA);
             a.draw();
-            a.unbind();
         };
         e.prototype.drawRect = function t(e, n, r, i, o) {
             this.fillRect(e, n, r, 1, o);
             this.fillRect(e, n + i, r, 1, o);
             this.fillRect(e, n, 1, i, o);
             this.fillRect(e + r, n, 1, i, o);
+        };
+        e.prototype.drawLine = function t(e, n) {
+            var r = this.gl;
+            this.polyLineDrawer.bind(e);
+            this.polyLineDrawer.setUniform("u_matrix", j(0, 0, 1, 1, this.game.width, this.game.height.height, 1, 1));
+            this.polyLineDrawer.setUniform("u_rgba", n);
+            r.blendFunc(r.SRC_ALPHA, r.ONE_MINUS_SRC_ALPHA);
+            this.polyLineDrawer.draw();
         };
         e.prototype.setAlpha = function t(e) {};
         e.prototype.save = function t() {
@@ -3097,8 +3259,8 @@
             this.gl.viewport(0, 0, this.game.width, this.game.height);
             this.frameBuffer.getTexture().bind();
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_matrix", M(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
-            this.spriteRectDrawer.setUniform("u_textureMatrix", R(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
+            this.spriteRectDrawer.setUniform("u_matrix", j(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", B(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
             this.spriteRectDrawer.draw();
@@ -3113,7 +3275,7 @@
             var i = new Image();
             i.src = e;
             i.onload = function() {
-                var t = new _.default(r.gl);
+                var t = new x.default(r.gl);
                 t.setImage(i);
                 r.renderableCache[e] = t;
                 n();
@@ -3121,12 +3283,12 @@
         };
         return e;
     }(i.default);
-    e.default = P;
+    e.default = F;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(54);
+    var r = n(55);
     var i = o(r);
     function o(t) {
         if (t && t.__esModule) {
@@ -3437,29 +3599,29 @@
     "use strict";
     e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var r = n(57);
+    var r = n(58);
     var i = S(r);
-    var o = n(63);
+    var o = n(64);
     var a = S(o);
-    var s = n(13);
+    var s = n(14);
     var u = S(s);
-    var h = n(58);
-    var f = S(h);
-    var c = n(55);
+    var f = n(59);
+    var h = S(f);
+    var c = n(56);
     var l = S(c);
-    var d = n(60);
-    var p = S(d);
-    var y = n(61);
+    var p = n(61);
+    var d = S(p);
+    var y = n(62);
     var g = S(y);
-    var m = n(62);
+    var m = n(63);
     var v = S(m);
-    var w = n(56);
+    var w = n(57);
     var _ = S(w);
-    var b = n(59);
+    var b = n(60);
     var x = S(b);
-    var E = n(64);
+    var E = n(65);
     var T = S(E);
-    var O = n(14);
+    var O = n(15);
     var A = S(O);
     function S(t) {
         return t && t.__esModule ? t : {
@@ -3469,9 +3631,9 @@
     e.FrameAnimation = i.default;
     e.SpriteSheet = a.default;
     e.GameObjectProto = u.default;
-    e.GameObject = f.default;
+    e.GameObject = h.default;
     e.CommonBehaviour = l.default;
-    e.ParticleSystem = p.default;
+    e.ParticleSystem = d.default;
     e.Scene = g.default;
     e.Sound = v.default;
     e.Font = _.default;
@@ -3514,7 +3676,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -3526,7 +3688,7 @@
         }
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -3563,7 +3725,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -3582,7 +3744,7 @@
         }
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -3619,7 +3781,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -3676,14 +3838,14 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = n(13);
+    var r = n(14);
     var i = u(r);
-    var o = n(26);
+    var o = n(27);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -3704,12 +3866,12 @@
             default: t
         };
     }
-    function h(t, e) {
+    function f(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function f(t, e) {
+    function h(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -3730,11 +3892,11 @@
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
     var l = function t() {};
-    var d = function(t) {
+    var p = function(t) {
         c(e, t);
         function e(n) {
-            h(this, e);
-            var r = f(this, t.call(this, n));
+            f(this, e);
+            var r = h(this, t.call(this, n));
             r.type = "GameObject";
             r.gameObjectProto = null;
             return r;
@@ -3786,7 +3948,7 @@
         };
         return e;
     }(i.default);
-    e.default = d;
+    e.default = p;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -3823,7 +3985,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -3866,7 +4028,7 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -3894,12 +4056,12 @@
             default: t
         };
     }
-    function h(t, e) {
+    function f(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function f(t, e) {
+    function h(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -3922,11 +4084,11 @@
     var l = function t(e) {
         return a.random(e.from, e.to);
     };
-    var d = function(t) {
+    var p = function(t) {
         c(e, t);
         function e(n) {
-            h(this, e);
-            var r = f(this, t.call(this, n));
+            f(this, e);
+            var r = h(this, t.call(this, n));
             r.type = "ParticleSystem";
             r.gameObjectProto = null;
             r._particles = [];
@@ -3989,23 +4151,23 @@
         };
         return e;
     }(i.default);
-    e.default = d;
+    e.default = p;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var r = n(0);
-    var i = h(r);
-    var o = n(37);
-    var a = h(o);
-    var s = n(14);
-    var u = h(s);
-    function h(t) {
+    var i = f(r);
+    var o = n(38);
+    var a = f(o);
+    var s = n(15);
+    var u = f(s);
+    function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function f(t, e) {
+    function h(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -4030,10 +4192,10 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var d = function(t) {
+    var p = function(t) {
         l(e, t);
         function e(n) {
-            f(this, e);
+            h(this, e);
             var r = c(this, t.call(this, n));
             r.type = "Scene";
             r.layers = [];
@@ -4152,9 +4314,9 @@
             var a = i + this.tileMap._tilesInScreenY + 2;
             for (var s = i; s < a; s++) {
                 for (var u = r; u < o; u++) {
-                    var h = this.tileMap.data[s] && this.tileMap.data[s][u];
-                    if (h == null) continue;
-                    n.drawImage(e.resourcePath, e.getFramePosX(h), e.getFramePosY(h), e._frameWidth, e._frameHeight, u * e._frameWidth, s * e._frameHeight);
+                    var f = this.tileMap.data[s] && this.tileMap.data[s][u];
+                    if (f == null) continue;
+                    n.drawImage(e.resourcePath, e.getFramePosX(f), e.getFramePosY(f), e._frameWidth, e._frameHeight, u * e._frameWidth, s * e._frameHeight);
                 }
             }
         };
@@ -4168,7 +4330,7 @@
         };
         return e;
     }(i.default);
-    e.default = d;
+    e.default = p;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -4205,7 +4367,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -4225,7 +4387,7 @@
         e.prototype.setGain = function t(e, n, r) {};
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -4262,7 +4424,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -4292,7 +4454,7 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
     e.__esModule = true;
@@ -4329,7 +4491,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var h = function(t) {
+    var f = function(t) {
         u(e, t);
         function e(n) {
             a(this, e);
@@ -4398,27 +4560,27 @@
         };
         return e;
     }(i.default);
-    e.default = h;
+    e.default = f;
 }, function(t, e, n) {
     "use strict";
-    var r = n(18);
-    var i = h(r);
-    var o = n(19);
-    var a = h(o);
-    var s = n(20);
-    var u = h(s);
-    function h(t) {
+    var r = n(19);
+    var i = f(r);
+    var o = n(20);
+    var a = f(o);
+    var s = n(21);
+    var u = f(s);
+    function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    var f = JSON.parse(a.default);
+    var h = JSON.parse(a.default);
     var c = JSON.parse(u.default);
-    if (1 && f.startSceneId === undefined) throw "start scene not specified";
-    var l = new i.default(f);
+    if (1 && h.startSceneId === undefined) throw "start scene not specified";
+    var l = new i.default(h);
     l.repository.setDescriptions(c);
-    var d = l.repository.getObject(f.startSceneId, "Scene");
-    l.runScene(d);
+    var p = l.repository.getObject(h.startSceneId, "Scene");
+    l.runScene(p);
     if (true) window.game = l;
 }, function(t, e) {
     t.exports = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";

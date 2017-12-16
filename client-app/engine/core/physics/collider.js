@@ -1,18 +1,11 @@
 
 
-import {isRectIntersectRect} from '../mathEx'
+import {overlapTest} from '../mathEx'
 
 export default class Collider {
 
     constructor(game){
         this.game = game;
-    }
-
-    static overlapTest(a, b) {
-        return  (a.x < b.x + b.width) &&
-                (a.x + a.width > b.x) &&
-                (a.y < b.y + b.height) &&
-                (a.y + a.height > b.y);
     }
 
     moveBy(player, dX, dY) {
@@ -29,7 +22,7 @@ export default class Collider {
         for (let i = 0,len = rigidObjects.length;i<len;i++) {
             let obstacle = rigidObjects[i];
             let obstacleRect = obstacle.getRect();
-            if (player!==rigidObjects[i] && Collider.overlapTest(playerRect, obstacleRect)) {
+            if (player!==rigidObjects[i] && overlapTest(playerRect, obstacleRect)) {
 
                 let pathToTop = playerRect.bottom - obstacleRect.y;
                 let pathToBottom = obstacleRect.bottom - playerRect.y;
@@ -74,7 +67,7 @@ export default class Collider {
             this.game.getCurrScene().getAllGameObjects().
             concat(this.game._currentScene.tileMap.getTilesAtRect(pRect)).
             some(g=>{
-                if (Collider.overlapTest(pRect,g.getRect())) {
+                if (overlapTest(pRect,g.getRect())) {
                     collided = true;
                     return true;
                 }

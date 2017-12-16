@@ -13,22 +13,11 @@ exports.isPointInRect = (point,rect,angle)=> {
         point.y<(rect.y+rect.height);
 };
 
-let valueInRange = (value,min, max)=> {
-    return (value >= min) && (value <= max);
-};
-
-exports.isRectIntersectRect = function(A,B) {
-
-
-    let left = valueInRange(A.x, B.x, B.x + B.width),
-        right = valueInRange(B.x, A.x, A.x + A.width),
-        top = valueInRange(A.y, B.y, B.y + B.height),
-        bottom = valueInRange(B.y, A.y, A.y + A.height);
-
-    let xOverlap = left || right;
-    let yOverlap = top || bottom;
-
-    return xOverlap && yOverlap;
+exports.overlapTest = (a, b)=> {
+    return  (a.x < b.x + b.width) &&
+        (a.x + a.width > b.x) &&
+        (a.y < b.y + b.height) &&
+        (a.y + a.height > b.y);
 };
 
 exports.radToDeg = function(rad){

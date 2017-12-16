@@ -7,11 +7,13 @@ import IndexBuffer from '../base/indexBuffer'
 
 import basicVertexShader from '../shaders/basic/vertex.vert'
 import textureShader from '../shaders/texture/fragment.frag'
+import AbstractDrawer from "./abstractDrawer";
 
-export default class SpriteRectDrawer {
+export default class SpriteRectDrawer extends AbstractDrawer {
 
-    constructor(gl){
-        this.gl = gl;
+    constructor(gl,game){
+        super(gl,game);
+        this.id = 2;
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
@@ -22,32 +24,30 @@ export default class SpriteRectDrawer {
         this.posIndexBuffer = new IndexBuffer(gl);
         this.texVertexBuffer = new VertexBuffer(gl);
 
+        this.posIndexBuffer.setData(this.plane.indexArr);
+        this.posVertexBuffer.setData(this.plane.vertexArr,gl.FLOAT,2);
+        this.texVertexBuffer.setData(this.plane.texCoordArr,gl.FLOAT,2);
+
         this.bind();
         this.setUniform('u_alpha',1);
     }
 
 
     bind(){
+        super.bind();
         let gl = this.gl;
         this.program.bind();
 
-        this.posIndexBuffer.setData(this.plane.indexArr);
+        //this.posIndexBuffer.setData(this.plane.indexArr);
         this.posIndexBuffer.bind();
 
-        this.posVertexBuffer.setData(this.plane.vertexArr,gl.FLOAT,2);
+        //this.posVertexBuffer.setData(this.plane.vertexArr,gl.FLOAT,2);
         this.program.bindBuffer(this.posVertexBuffer,'a_position');
 
-        this.texVertexBuffer.setData(this.plane.texCoordArr,gl.FLOAT,2);
+        //this.texVertexBuffer.setData(this.plane.texCoordArr,gl.FLOAT,2);
         this.program.bindBuffer(this.texVertexBuffer,'a_texcoord');
     }
 
-    unbind(){
-        this.posIndexBuffer.unbind();
-    }
-
-    setUniform(name,value){
-        this.program.setUniform(name,value);
-    }
 
     draw(){
         this.gl.drawElements(

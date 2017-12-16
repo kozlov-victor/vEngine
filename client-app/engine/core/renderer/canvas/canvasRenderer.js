@@ -60,7 +60,16 @@ export default class CanvasRenderer extends AbstractRenderer {
     }
 
     drawRect(x,y,w,h,color){
-        throw 'not yet implemented';
+        this.ctx.fillStyle = color;
+        this.ctx.strokeRect(x,y,w,h);
+    }
+
+    drawLine(x1,y1,x2,y2,color){
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+        this.ctx.moveTo(x1,y1);
+        this.ctx.lineTo(x2,y2);
+        this.ctx.stroke();
     }
 
     setAlpha(a){

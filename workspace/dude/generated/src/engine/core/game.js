@@ -96,6 +96,9 @@ export default class Game extends CommonObject {
     }
 
     static update(game){
+        console.warn = function(){
+
+        };
         if (DEBUG && window.canceled) return;
         requestAnimationFrame(()=>{Game.update(game)});
         game._lastTime = game._currTime;
@@ -104,8 +107,10 @@ export default class Game extends CommonObject {
         if (DEBUG) {
             game.fps = ~~(1000 / game._deltaTime);
             window.fps = game.fps;
+            let renderError = game._renderer.getError();
+            if (renderError) throw `render error with code ${renderError}`;
         }
-
+        if (game._deltaTime>20) game._deltaTime = 20;
         game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
         game.keyboard.update();
         game.gamePad.update();

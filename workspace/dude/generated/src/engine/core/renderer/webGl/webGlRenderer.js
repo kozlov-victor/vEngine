@@ -9,7 +9,10 @@ import ModelDrawer from './renderProgram/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import mat4 from '../../mat4'
+import matEx from '../../mathEx'
 import Texture from './base/texture'
+
+let stop = 0;
 
 const getCtx = el=>{
     return (
@@ -79,6 +82,9 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     draw(renderable){
 
+        if (stop) return;
+
+        if (!matEx.overlapTest(this.game.camera.getRect(),renderable.getRect())) return;
         this.save();
         // todo check if angle neq 0
         let halfV = renderable.width /2;
@@ -107,6 +113,9 @@ export default class WebGlRenderer extends AbstractRenderer {
               srcX, srcY, srcWidth, srcHeight,
               dstX, dstY){
 
+        if (stop) return;
+
+        //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
         this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
@@ -141,24 +150,22 @@ export default class WebGlRenderer extends AbstractRenderer {
         );
         this.spriteRectDrawer.setUniform('u_alpha',1); // alpha
         this.spriteRectDrawer.draw();
-        this.spriteRectDrawer.unbind();
 
     }
 
-    fillRect(x,y,w,h,color){
-        
+    fillRect(x, y, width, height, color){
+        if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return;
         let colorRectDrawer = this.colorRectDrawer;
         let gl = this.gl;
         colorRectDrawer.bind();
         colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
-                x,y,w,h,
+                x,y,width,height,
                 this.game.width,this.game.height,1,1
             )
         );
         colorRectDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         colorRectDrawer.draw();
-        colorRectDrawer.unbind();
     }
 
     drawRect(x,y,w,h,color){
@@ -169,8 +176,21 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
 
+    drawLine(vertexArr,color){
+        let gl = this.gl;
+
+        this.polyLineDrawer.bind(vertexArr);
+        this.polyLineDrawer.setUniform("u_matrix",makePositionMatrix(
+            0,0,1,1,
+            this.game.width,this.game.height.height,1,1)
+        );
+        this.polyLineDrawer.setUniform("u_rgba",color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        this.polyLineDrawer.draw();
+    }
+
     setAlpha(a){
-        
+
     }
 
     save() {
@@ -198,11 +218,11 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     lockRect(rect) {
-        
+
     }
 
     unlockRect(){
-        
+
     }
 
     clear(){

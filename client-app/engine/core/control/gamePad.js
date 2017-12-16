@@ -1,30 +1,15 @@
 /*global DEBUG:true*/
-
-const gamepads = {};
-
-let gamepadHandler = (event, connecting)=> {
-    let gamepad = event.gamepad;
-    // Note:
-    // gamepad === navigator.getGamepads()[gamepad.index]
-
-    if (connecting) {
-        gamepads[gamepad.index] = gamepad;
-    } else {
-        delete gamepads[gamepad.index];
-    }
-};
-
-window.addEventListener("gamepadconnected",e=> {
-    if (DEBUG) console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
-        e.gamepad.index, e.gamepad.id,
-        e.gamepad.buttons.length, e.gamepad.axes.length);
-    //gamepadHandler(e, true);
-});
-window.addEventListener("gamepaddisconnected", e=> {
-    if (DEBUG) console.log("Gamepad disconnected from index %d: %s",
-        e.gamepad.index, e.gamepad.id);
-    //gamepadHandler(e, false);
-});
+if (DEBUG) {
+    window.addEventListener("gamepadconnected", e => {
+        console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+            e.gamepad.index, e.gamepad.id,
+            e.gamepad.buttons.length, e.gamepad.axes.length);
+    });
+    window.addEventListener("gamepaddisconnected", e => {
+        console.log("Gamepad disconnected from index %d: %s",
+            e.gamepad.index, e.gamepad.id);
+    });
+}
 
 export default class GamePad {
 
@@ -43,7 +28,6 @@ export default class GamePad {
             navigator.msGamepads || navigator.gamepads ||
             (navigator.getGamepads && navigator.getGamepads());
 
-
         for (let i=0,max=this.gamepads.length;i<max;i++) {
             let gp = this.gamepads[i];
             if (!gp) continue;
@@ -57,17 +41,33 @@ export default class GamePad {
                     this.game.keyboard.release(j);
                 }
             }
-            if (gp.axes[0]>GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-            else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+            if (gp.axes[0]===0) return; // to avoid oscillations
+            if (gp.axes[1]===0) return;
 
-            if (gp.axes[0]<-GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-            else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+            let axis0 = ~~(gp.axes[0]);
+            let axis1 = ~~(gp.axes[1]);
 
-            if (gp.axes[1]>GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-            else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+            if (axis0===1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+            }
+            if (axis0===-1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+            }
 
-            if (gp.axes[1]<-GamePad.AXIS_TOLERANCE) this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-            else this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+            if (axis1===1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+            }
+            if (axis1===-1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+            }
         }
     }
 

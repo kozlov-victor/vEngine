@@ -45,6 +45,14 @@
                 {
                     "type": "GameObject",
                     "id": 65
+                },
+                {
+                    "type": "GameObject",
+                    "id": 67
+                },
+                {
+                    "type": "GameObject",
+                    "id": 68
                 }
             ]
         }
@@ -172,8 +180,8 @@
             "id": 63,
             "name": "ground1",
             "pos": {
-                "x": 436,
-                "y": 52
+                "x": 432,
+                "y": 156
             },
             "layerId": 2,
             "type": "GameObject",
@@ -209,6 +217,33 @@
                 "id": 6,
                 "type": "GameObjectProto"
             }
+        },
+        {
+            "id": 67,
+            "name": "ground1",
+            "pos": {
+                "x": 482,
+                "y": 119
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 58,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "pos": {
+                "x": 388,
+                "y": 140
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 58,
+                "type": "GameObjectProto"
+            },
+            "id": 68
         }
     ],
     "FrameAnimation": [

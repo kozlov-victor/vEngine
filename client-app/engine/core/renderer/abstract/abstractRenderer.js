@@ -39,6 +39,10 @@ export default class AbstractRenderer {
         window.addEventListener('resize',()=>{this.onResize()});
     }
 
+    getError(){
+        return 0;
+    }
+
     loadTextureInfo(textureId,info){}
 
     getTextureInfo(textureId){}

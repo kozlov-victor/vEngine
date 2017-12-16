@@ -6,11 +6,12 @@ import IndexBuffer from '../base/indexBuffer'
 
 import basicVertexShader from '../shaders/basic/vertex2.vert'
 import textureShader from '../shaders/texture/fragment2.frag'
+import AbstractDrawer from "./abstractDrawer";
 
-export default class ModelDrawer {
+export default class ModelDrawer extends AbstractDrawer {
 
     constructor(gl,game){
-        this.gl = gl;
+        super(gl,game);
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
             textureShader
@@ -25,6 +26,7 @@ export default class ModelDrawer {
     }
 
     bind(model){
+        super.bind();
         this.program.bind();
         let gl = this.gl;
         let program = this.program;
@@ -42,13 +44,7 @@ export default class ModelDrawer {
         this.posIndexBuffer.bind();
     }
 
-    unbind(){
-        this.posIndexBuffer.unbind();
-    }
 
-    setUniform(name,value){
-        this.program.setUniform(name,value);
-    }
 
     draw(){
         this.gl.drawElements(
