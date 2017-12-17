@@ -72,6 +72,17 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.ctx.stroke();
     }
 
+    fillCircle(x,y,r,color){
+        let ctx = this.ctx;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+    }
+
     setAlpha(a){
         this.ctx.globalAlpha = a;
     }

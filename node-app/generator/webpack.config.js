@@ -6,6 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports =  (params)=>{
+
     let config = {
         entry: {
             bundle:`./workspace/${params.projectName}/generated/src/index.js`,
@@ -14,6 +15,9 @@ module.exports =  (params)=>{
         output: {
             path: path.resolve(`./workspace/${params.projectName}/generated/tmp`),
             filename:'[name].js'
+        },
+        resolveLoader: {
+            modules: ['node_modules', 'node_tools/loaders']
         },
         module: {
             rules: [
@@ -40,11 +44,15 @@ module.exports =  (params)=>{
                     }
                 },
                 {
-                    test: /\.(html|css|frag|vert|json)$/,
+                    test: /\.(html|css|frag|vert)$/,
                     loader: 'text-loader',
                     options: {
                         minimize: true
                     }
+                },
+                {
+                    test: /\.(json)$/,
+                    loader: 'json-to-object-loader'
                 },
                 { test: /\.scss$/, use: ExtractTextPlugin.extract(['css-loader', 'sass-loader']) },
                 {

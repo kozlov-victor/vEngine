@@ -15,7 +15,6 @@ let getPopupContainer = ()=>{
     document.body.appendChild(container);
     return container;
 };
-
 let _prepareMessage = function(e,lineNum){
     let msg;
     if (typeof e === 'string') {
@@ -38,7 +37,6 @@ let _prepareMessage = function(e,lineNum){
         console.error(e);
         msg = 'Unknown error: ' + e.toString();
     }
-    if (lineNum) msg+=' in line ' + lineNum;
     if (lineNum) msg+=' in line ' + lineNum;
     return msg;
 };
@@ -101,5 +99,6 @@ window.canceled = false;
 
 window.addEventListener('error',function(e,url,lineNum){
     console.error(e);
+    if (!lineNum) lineNum = e.lineno;
     window.showError(e,lineNum);
 },true);

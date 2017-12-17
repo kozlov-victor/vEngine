@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 86);
+/******/ 	return __webpack_require__(__webpack_require__.s = 77);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 86:
+/***/ 77:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84,7 +84,6 @@ var getPopupContainer = function getPopupContainer() {
     document.body.appendChild(container);
     return container;
 };
-
 var _prepareMessage = function _prepareMessage(e, lineNum) {
     var msg = void 0;
     if (typeof e === 'string') {
@@ -106,7 +105,6 @@ var _prepareMessage = function _prepareMessage(e, lineNum) {
         console.error(e);
         msg = 'Unknown error: ' + e.toString();
     }
-    if (lineNum) msg += ' in line ' + lineNum;
     if (lineNum) msg += ' in line ' + lineNum;
     return msg;
 };
@@ -162,6 +160,7 @@ window.canceled = false;
 
 window.addEventListener('error', function (e, url, lineNum) {
     console.error(e);
+    if (!lineNum) lineNum = e.lineno;
     window.showError(e, lineNum);
 }, true);
 

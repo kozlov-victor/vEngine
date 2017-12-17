@@ -47,9 +47,9 @@ export default class TextField extends BaseModel {
     }
     update(time){
         super.update(time);
-        this._render();
+        this.render();
     }
-    _render(){
+    render(){
         let posX = 0;
         let posY = 0;
         this._chars.forEach(ch=>{

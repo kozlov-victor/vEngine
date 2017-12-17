@@ -53,9 +53,9 @@ const TextField = BaseGameObject.extend({
         font && self.setFont(font);
     },
     update: function(){
-        this._render();
+        this.render();
     },
-    _render: function(){
+    render: function(){
         let self = this;
         let ctx = renderer.getContext();
         this._super();

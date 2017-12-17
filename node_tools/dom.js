@@ -22,10 +22,10 @@ SimpleHtmlParser.prototype = {
         while (s.length > 0)
         {
             // Comment
-            if (s.substring(0, 4) == "<!--")
+            if (s.substring(0, 4) === "<!--")
             {
                 index = s.indexOf("-->");
-                if (index != -1)
+                if (index !== -1)
                 {
                     this.contentHandler.comment(s.substring(4, index));
                     s = s.substring(index + 3);
@@ -38,7 +38,7 @@ SimpleHtmlParser.prototype = {
             }
 
             // end tag
-            else if (s.substring(0, 2) == "</")
+            else if (s.substring(0, 2) === "</")
             {
                 if (this.endTagRe.test(s))
                 {
@@ -60,7 +60,7 @@ SimpleHtmlParser.prototype = {
                 }
             }
             // start tag
-            else if (s.charAt(0) == "<")
+            else if (s.charAt(0) === "<")
             {
                 if (this.startTagRe.test(s))
                 {
@@ -85,7 +85,7 @@ SimpleHtmlParser.prototype = {
             if (treatAsChars)
             {
                 index = s.indexOf("<");
-                if (index == -1)
+                if (index === -1)
                 {
                     this.contentHandler.characters(s);
                     s = "";
@@ -177,7 +177,7 @@ class Element {
                 return res;
             }).join(' '):'';
         let openedTag = root.tagName?`<${root.tagName}${attrs?` ${attrs}`:''}>`:'';
-        let closedTag = (root.tagName && emptyTags.indexOf(root.tagName)==-1)?`</${root.tagName}>`:'';
+        let closedTag = (root.tagName && emptyTags.indexOf(root.tagName)===-1)?`</${root.tagName}>`:'';
         return `${openedTag}${root.children.map(c=>c.innerHTML).join('')}${closedTag}`;
     }
 
@@ -191,7 +191,7 @@ class Element {
     }
 
     setAttribute(name,value){
-        let attrIndex = this.attributes.findIndex(attr=>attr.name==name);
+        let attrIndex = this.attributes.findIndex(attr=>attr.name===name);
         if (attrIndex>-1) this.attributes[attrIndex] = {name,value};
         else this.attributes.push({name,value});
     }
@@ -199,6 +199,7 @@ class Element {
     cloneNode(deep){
         let el = new Element();
         el.id=this.id;
+        // noinspection JSAnnotator
         el.tagName = this.tagName;
         el.attributes = this.attributes;
         if (deep) {
@@ -236,7 +237,7 @@ class Document extends Element {
     getElementById(id){
         let res = null;
         Element.__iterateAll(this,(el)=>{
-            if (el.id==id) {
+            if (el.id===id) {
                 res = el;
                 return true;
             }
@@ -261,6 +262,7 @@ class Document extends Element {
 
     createElement(tagName){
         let el = new Element();
+        // noinspection JSAnnotator
         el.tagName = tagName;
         return el;
     }
@@ -285,7 +287,7 @@ let HTMLtoXML = html=> {
             lastTag = tag;
         },
         endElement: function( tag ) {
-            if (tag!==lastTag && emptyTags.indexOf(lastTag)==-1) this.endElement(lastTag);
+            if (tag!==lastTag && emptyTags.indexOf(lastTag)===-1) this.endElement(lastTag);
             results += "</" + tag + ">";
         },
         characters: function( text ) {
@@ -312,6 +314,7 @@ let HTMLtoDOM = html=> {
             }
             hasClosed = false;
             currElement = new Element();
+            // noinspection JSAnnotator
             currElement.tagName = tag;
             attrs.forEach(attr=>{
                 if (attr.name==='id') currElement.id = attr.value;

@@ -18,7 +18,7 @@ export default class ArcadeRigidBody {
             let deltaX = this.vel.x * delta / 1000;
             let deltaY = this.vel.y * delta / 1000;
             let expectedY = this.gameObject.pos.y + deltaY;
-            this.game._collider.moveBy(this.gameObject,deltaX,deltaY);
+            this.game.collider.moveBy(this.gameObject,deltaX,deltaY);
             this.gameObject.rigidBody.onFloor = expectedY > this.gameObject.pos.y;
             if (expectedY !== this.gameObject.pos.y) this.vel.y = 0;
             this.vel.y+=this.game.gravityConstant * delta / 1000;

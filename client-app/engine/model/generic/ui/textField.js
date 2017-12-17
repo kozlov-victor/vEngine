@@ -50,9 +50,9 @@ export default class TextField extends BaseModel {
     }
     update(time){
         super.update(time);
-        this._render();
+        this.render();
     }
-    _render(){
+    render(){
         let posX = 0;
         let posY = 0;
         this._chars.forEach(ch=>{
@@ -62,7 +62,7 @@ export default class TextField extends BaseModel {
                 posY+= charInCtx.height;
                 return;
             }
-            this.game._renderer.drawImage(
+            this.game.renderer.drawImage(
                 this.font.resourcePath,
                 charInCtx.x,
                 charInCtx.y,

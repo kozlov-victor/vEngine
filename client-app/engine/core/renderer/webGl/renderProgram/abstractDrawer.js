@@ -3,7 +3,7 @@ export default class AbstractDrawer {
 
     static currentDrawer = null;
     program = null;
-    //uniformCache = {};
+    uniformCache = {};
 
     constructor(gl,game){
         this.gl = gl;
@@ -21,13 +21,13 @@ export default class AbstractDrawer {
     }
 
     unbind(){
-        if (this.posIndexBuffer) this.posIndexBuffer.unbind();
+        this.posIndexBuffer.unbind();
     }
 
     setUniform(name,value){
-        //if (this.uniformCache[name]===value) return;
+        if (this.uniformCache[name]===value) return;
         this.program.setUniform(name,value);
-        //this.uniformCache[name]=value;
+        this.uniformCache[name]=value;
     }
 
 

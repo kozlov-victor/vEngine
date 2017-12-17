@@ -68,7 +68,7 @@ export default class GameObjectProto extends BaseModel {
             this.commonBehaviour[i].onUpdate(time,delta); // todo "update"?
         }
         this.rigidBody.update(time,delta);
-        this.game._renderer.draw(this);
+        this.game.renderer.draw(this);
     }
 
     onShow(){

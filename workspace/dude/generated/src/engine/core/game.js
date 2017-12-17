@@ -27,7 +27,7 @@ export default class Game extends CommonObject {
     _currTime = null;
     _currentScene = null;
     _running = false;
-    _renderer = null;
+    renderer = null;
     scale = {x:1,y:1};
     pos = {x:0,y:0};
     gravityConstant = null;
@@ -43,11 +43,11 @@ export default class Game extends CommonObject {
         this._lastTime = this._currTime = time;
         this._deltaTime = 0;
         this.repository = new Repository(this);
-        this._mouse = new Mouse(this); //todo mouse not _mouse
+        this.mouse = new Mouse(this);
         this.keyboard = new Keyboard(this);
         this.keyboard.listenTo();
         this.gamePad = new GamePad(this);
-        this._collider = new Collider(this);
+        this.collider = new Collider(this);
         this.camera = new Camera(this);
     }
 
@@ -60,9 +60,9 @@ export default class Game extends CommonObject {
     }
 
     runScene(scene){
-        if (!this._renderer) { // move to constructor?
-            this._renderer = RendererFactory.getRenderer(this);
-            this._mouse.listenTo(this._renderer.container);
+        if (!this.renderer) { // move to constructor?
+            this.renderer = RendererFactory.getRenderer(this);
+            this.mouse.listenTo(this.renderer.container);
         }
         this._currentScene = scene;
         if (!IN_EDITOR) {
@@ -107,14 +107,11 @@ export default class Game extends CommonObject {
         if (DEBUG) {
             game.fps = ~~(1000 / game._deltaTime);
             window.fps = game.fps;
-            let renderError = game._renderer.getError();
+            let renderError = game.renderer.getError();
             if (renderError) throw `render error with code ${renderError}`;
         }
         if (game._deltaTime>20) game._deltaTime = 20;
         game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
-        if (DEBUG) {
-            if (game._renderer.debugTextField) game._renderer.debugTextField._render();
-        }
         game.keyboard.update();
         game.gamePad.update();
     }

@@ -550,7 +550,7 @@
                 this.commonBehaviour[i].onUpdate(n, r);
             }
             this.rigidBody.update(n, r);
-            this.game._renderer.draw(this);
+            this.game.renderer.draw(this);
         };
         e.prototype.onShow = function t() {
             if (this._individualBehaviour) this._individualBehaviour.onCreate();
@@ -728,7 +728,7 @@
             r._currTime = null;
             r._currentScene = null;
             r._running = false;
-            r._renderer = null;
+            r.renderer = null;
             r.scale = {
                 x: 1,
                 y: 1

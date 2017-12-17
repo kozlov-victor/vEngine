@@ -1,4 +1,5 @@
 /*global IN_EDITOR:true*/
+/*global DEBUG:true*/
 import BaseModel from '../baseModel'
 import LoadingQueue from '../../core/loadingQueue'
 import TileMap from './tileMap'
@@ -58,7 +59,7 @@ export default class Scene extends BaseModel {
         };
         resources.forEach(res=>{
             q.addTask(()=>{
-                this.game._renderer.loadTextureInfo(
+                this.game.renderer.loadTextureInfo(
                     res.resourcePath,
                     ()=>q.resolveTask(res.id)
                 );
@@ -83,7 +84,7 @@ export default class Scene extends BaseModel {
     }
 
     update(currTime,deltaTime){
-        let renderer = this.game._renderer;
+        let renderer = this.game.renderer;
         renderer.beginFrameBuffer();
         if (this.useBG) renderer.clearColor(this.colorBG);
         else renderer.clear();
@@ -110,6 +111,9 @@ export default class Scene extends BaseModel {
         // });
         // this.__updateIndividualBehaviour__(currTime);
         this._updateTileMap();
+        if (DEBUG) {
+            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.render();
+        }
         renderer.flipFrameBuffer();
     }
     fadeIn(time,easeFnName){
@@ -127,7 +131,7 @@ export default class Scene extends BaseModel {
     _updateTileMap(){
         let spriteSheet = this.tileMap.spriteSheet;
         if (!spriteSheet) return;
-        let ctx = this.game._renderer;
+        let ctx = this.game.renderer;
         let tilePosX = ~~(this.game.camera.pos.x / this.tileMap.spriteSheet._frameWidth);
         let tilePosY = ~~(this.game.camera.pos.y / this.tileMap.spriteSheet._frameHeight);
         let w = tilePosX + this.tileMap._tilesInScreenX + 2;

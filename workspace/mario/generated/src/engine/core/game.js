@@ -25,7 +25,7 @@ export default class Game extends CommonObject {
     _currTime = null;
     _currentScene = null;
     _running = false;
-    _renderer = null;
+    renderer = null;
     scale = {x:1,y:1};
     pos = {x:0,y:0};
     gravityConstant = null;

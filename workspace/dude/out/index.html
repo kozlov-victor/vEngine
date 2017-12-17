@@ -45,38 +45,9 @@
         return Object.prototype.hasOwnProperty.call(e, t);
     };
     n.p = "";
-    return n(n.s = 51);
+    return n(n.s = 71);
 })({
-    10: function(e, t, n) {
-        "use strict";
-        var o = document.createElement("div");
-        var r = {
-            position: "absolute",
-            right: 0,
-            top: 0,
-            "background-color": "black",
-            "min-width": "20px",
-            "min-height": "20px",
-            opacity: .5
-        };
-        Object.keys(r).forEach(function(e) {
-            return o.style.setProperty(e, r[e]);
-        });
-        var i = document.createElement("span");
-        i.style.color = "white";
-        o.appendChild(i);
-        window.addEventListener("load", function() {
-            document.body.appendChild(o);
-            setInterval(function() {
-                i.textContent = "fps:" + window.fps;
-            }, 1e3);
-        });
-    },
-    51: function(e, t, n) {
-        n(9);
-        e.exports = n(10);
-    },
-    9: function(e, t, n) {
+    19: function(e, t, n) {
         "use strict";
         var o = function e() {
             if (!(document && document.getElementById)) return null;
@@ -109,7 +80,6 @@
                 console.error(t);
                 o = "Unknown error: " + t.toString();
             }
-            if (n) o += " in line " + n;
             if (n) o += " in line " + n;
             return o;
         };
@@ -160,8 +130,38 @@
         window.canceled = false;
         window.addEventListener("error", function(e, t, n) {
             console.error(e);
+            if (!n) n = e.lineno;
             window.showError(e, n);
         }, true);
+    },
+    20: function(e, t, n) {
+        "use strict";
+        var o = document.createElement("div");
+        var r = {
+            position: "absolute",
+            right: 0,
+            top: 0,
+            "background-color": "black",
+            "min-width": "20px",
+            "min-height": "20px",
+            opacity: .5
+        };
+        Object.keys(r).forEach(function(e) {
+            return o.style.setProperty(e, r[e]);
+        });
+        var i = document.createElement("span");
+        i.style.color = "white";
+        o.appendChild(i);
+        window.addEventListener("load", function() {
+            document.body.appendChild(o);
+            setInterval(function() {
+                i.textContent = "fps:" + window.fps;
+            }, 1e3);
+        });
+    },
+    71: function(e, t, n) {
+        n(19);
+        e.exports = n(20);
     }
 });</script>
     <meta name ="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
@@ -183,7 +183,7 @@
 </head>
 
 <body>
-<script src="bundle.js?165"></script>
+<script src="bundle.js?1"></script>
 </body>
 
 </html>

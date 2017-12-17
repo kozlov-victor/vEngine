@@ -56,9 +56,9 @@ export default class Game extends CommonObject {
     }
 
     runScene(scene){
-        if (!this._renderer) { // move to constructor?
-            this._renderer = RendererFactory.getRenderer(this);
-            this._mouse.listenTo(this._renderer.container);
+        if (!this.renderer) { // move to constructor?
+            this.renderer = RendererFactory.getRenderer(this);
+            this._mouse.listenTo(this.renderer.container);
         }
         this._currentScene = scene;
         if (!IN_EDITOR) {

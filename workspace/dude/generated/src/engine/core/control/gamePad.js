@@ -26,7 +26,7 @@ export default class GamePad {
             (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
             navigator.webkitGamepads || navigator.mozGamepads ||
             navigator.msGamepads || navigator.gamepads ||
-            (navigator.getGamepads && navigator.getGamepads());
+            (navigator.getGamepads && navigator.getGamepads()) || [];
 
         for (let i=0,max=this.gamepads.length;i<max;i++) {
             let gp = this.gamepads[i];

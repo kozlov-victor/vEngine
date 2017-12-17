@@ -1,11 +1,8 @@
 /*global DEBUG:true*/
 
 import Game from './engine/core/game'
-import gamePropsData from './app/gameProps.json'
-import repositoryData from './app/repository.json'
-
-let gameProps = JSON.parse(gamePropsData);
-let repository = JSON.parse(repositoryData);
+import gameProps from './app/gameProps.json'
+import repository from './app/repository.json'
 
 if (DEBUG && gameProps.startSceneId===undefined) throw 'start scene not specified';
 

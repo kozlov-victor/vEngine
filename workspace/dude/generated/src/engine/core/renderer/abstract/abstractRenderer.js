@@ -72,8 +72,8 @@ export default class AbstractRenderer {
             textField.revalidate();
             this.debugTextField = textField;
         }
-        textField.pos.x = 10;
-        textField.pos.y = 10;
+        textField.pos.x = 10 + this.game.camera.pos.x;
+        textField.pos.y = 10 + this.game.camera.pos.y;
         textField.setText(txt);
     }
 

@@ -179,15 +179,37 @@ export default class WebGlRenderer extends AbstractRenderer {
         let dx = x2-x1,dy = y2-y1;
         if (!matEx.overlapTest(this.game.camera.getRect(),{x:x1,y:y1,width:dx,height:dy})) return;
         let gl = this.gl;
-        let line = this.lineDrawer;
-        line.bind();
-        line.setUniform("u_matrix",makePositionMatrix(
+        let lineDrawer = this.lineDrawer;
+        lineDrawer.bind();
+        lineDrawer.setUniform("u_matrix",makePositionMatrix(
             x1,y1,dx,dy,
             this.game.width,this.game.height,1,1)
         );
-        line.setUniform("u_rgba",color);
+        lineDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        line.draw();
+        lineDrawer.draw();
+    }
+
+    fillCircle(x,y,r,color){ // todo very slow and incorrect!
+        let i = 0;
+        let j = r;
+        let counter = 3 - (r + r);
+        this.drawLine(x - r, y, x + r, y, color);
+        while (j > i) {
+            if (counter < 0) {
+                counter = counter + 6 + i + i + i + i;
+                i = i + 1;
+            } else {
+                if ((counter > 0) && (j > i)) {
+                    j = j - 1;
+                    counter = (counter + 4) - (j + j + j + j);
+                }
+            }
+            this.drawLine(x - i, y + j, x + i, y + j, color);
+            this.drawLine(x - i, y - j, x,  i, y - j, color);
+            this.drawLine(x - j, y + i, x + j, y + i, color);
+            this.drawLine(x - j, y - i, x + j, y - i, color);
+        }
     }
 
     setAlpha(a){
