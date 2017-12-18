@@ -4,7 +4,9 @@
 import AbstractRenderer from '../abstract/abstractRenderer'
 import SpriteRectDrawer from './renderProgram/spriteRectDrawer'
 import ColorRectDrawer from './renderProgram/colorRectDrawer'
+import AbstractDrawer from './renderProgram/abstractDrawer'
 import LineDrawer from './renderProgram/lineDrawer'
+import CircleDrawer from './renderProgram/circleDrawer'
 import ModelDrawer from './renderProgram/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
@@ -71,6 +73,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.spriteRectDrawer = new SpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
+        this.circleDrawer = new CircleDrawer(gl);
         this.modelDrawer = new ModelDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
@@ -154,6 +157,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     fillRect(x, y, width, height, color){
+        if (stop) return;
         if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return;
         let colorRectDrawer = this.colorRectDrawer;
         let gl = this.gl;
@@ -190,26 +194,19 @@ export default class WebGlRenderer extends AbstractRenderer {
         lineDrawer.draw();
     }
 
-    fillCircle(x,y,r,color){ // todo very slow and incorrect!
-        let i = 0;
-        let j = r;
-        let counter = 3 - (r + r);
-        this.drawLine(x - r, y, x + r, y, color);
-        while (j > i) {
-            if (counter < 0) {
-                counter = counter + 6 + i + i + i + i;
-                i = i + 1;
-            } else {
-                if ((counter > 0) && (j > i)) {
-                    j = j - 1;
-                    counter = (counter + 4) - (j + j + j + j);
-                }
-            }
-            this.drawLine(x - i, y + j, x + i, y + j, color);
-            this.drawLine(x - i, y - j, x,  i, y - j, color);
-            this.drawLine(x - j, y + i, x + j, y + i, color);
-            this.drawLine(x - j, y - i, x + j, y - i, color);
-        }
+    fillCircle(x,y,r,color){
+        let r2 = r*2;
+        if (!matEx.overlapTest(this.game.camera.getRect(),{x:x-r,y:y-r,width:r2,height:r2})) return;
+        let circleDrawer = this.circleDrawer;
+        let gl = this.gl;
+        circleDrawer.bind();
+        circleDrawer.setUniform("u_matrix",makePositionMatrix(
+            x-r,y-r,r2,r2,
+            this.game.width,this.game.height,1,1)
+        );
+        circleDrawer.setUniform("u_rgba",color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        circleDrawer.draw();
     }
 
     setAlpha(a){
@@ -314,7 +311,11 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     getError(){
         let err = this.gl.getError();
-        return err===this.gl.NO_ERROR?0:err;
+        err=err===this.gl.NO_ERROR?0:err;
+        if (err) {
+            console.log(this);
+        }
+        return err;
     }
 
     loadTextureInfo(resourcePath,onLoad){

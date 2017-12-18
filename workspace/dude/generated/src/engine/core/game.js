@@ -96,9 +96,6 @@ export default class Game extends CommonObject {
     }
 
     static update(game){
-        console.warn = function(){
-
-        };
         if (DEBUG && window.canceled) return;
         requestAnimationFrame(()=>{Game.update(game)});
         game._lastTime = game._currTime;

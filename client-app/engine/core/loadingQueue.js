@@ -33,7 +33,7 @@ export default class Queue{
     resolveTask(taskId){
         this.tasksResolved++;
         this.tasksProgressById[taskId] = 1;
-        if (this.tasks.length==this.tasksResolved) {
+        if (this.tasks.length===this.tasksResolved) {
             this.onProgress && this.onProgress(1);
             if (this.onResolved) this.onResolved();
         } else {
@@ -41,7 +41,7 @@ export default class Queue{
         }
     };
     start() {
-        if (this.size()==0) this.onResolved();
+        if (this.size()===0) this.onResolved();
         this.tasks.forEach(t=>{
             t && t();
         });

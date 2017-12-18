@@ -21,7 +21,7 @@ export default class AbstractDrawer {
     }
 
     unbind(){
-        this.posIndexBuffer.unbind();
+        if (this.posIndexBuffer) this.posIndexBuffer.unbind();
     }
 
     setUniform(name,value){

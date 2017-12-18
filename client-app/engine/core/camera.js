@@ -1,4 +1,6 @@
 /*global DEBUG:true*/
+import Tween from "./tween";
+
 export default class Camera {
 
     objFollowTo = null;
@@ -23,23 +25,39 @@ export default class Camera {
             this.sceneWidth = this.game.getCurrScene().width || this.game.width;
             this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
+        this.cameraTween = new Tween({
+            target: this.pos,
+            ease: 'easeInQuad',
+            to: {x:this.pos.x,y:this.pos.y},
+            time: 2500,
+            progress: e=>{
+                //console.log(e);
+            }
+        });
     }
 
-    update() {
+    update(currTime) {
         if (!this.objFollowTo) return;
         let pos = this.pos;
+        let oldPos = this.oldPos;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
         let tileHeight = this.scene.tileMap.spriteSheet? this.scene.tileMap.spriteSheet._frameHeight:0;
         let w = this.game.width;
         let h = this.game.height;
         let wDiv2 = w/2;
         let hDiv2 = h/2;
-        pos.x = this.objFollowTo.pos.x - wDiv2;
-        pos.y = this.objFollowTo.pos.y - hDiv2;
-        if (pos.x<0) pos.x = 0;
-        if (pos.y<0) pos.y = 0;
-        if (pos.x>this.sceneWidth - w + tileWidth) pos.x = this.sceneWidth -w + tileWidth;
-        if (pos.y>this.sceneHeight -h + tileHeight) pos.y = this.sceneHeight -h + tileHeight;
+        let x = this.objFollowTo.pos.x - wDiv2;
+        let y = this.objFollowTo.pos.y - hDiv2;
+        if (x<0) x = 0;
+        if (y<0) y = 0;
+        if (x>this.sceneWidth - w + tileWidth)  x = this.sceneWidth -w + tileWidth;
+        if (y>this.sceneHeight -h + tileHeight) y = this.sceneHeight -h + tileHeight;
+        this.cameraTween.reuse({
+            to: {x,y}
+        });
+        // pos.x = x;
+        // pos.y = y;
+        this.cameraTween.update(currTime);
     }
 
     getRect(){

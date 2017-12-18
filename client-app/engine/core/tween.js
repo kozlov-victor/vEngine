@@ -5,15 +5,36 @@ export default class Tween {
 
     propsToChange = [];
     startedTime = null;
+    currTime = null;
     completed = false;
 
-    constructor(tweenDesc,obj){
-        this.obj = tweenDesc.target || obj;
+    /**
+     * @param tweenDesc
+     * target: obj,
+     * from: object with props,
+     * to: object with props,
+     * progress: fn,
+     * complete: fn,
+     * ease: str ease fn name,
+     * time: tween time
+     */
+    constructor(tweenDesc){
+        this.obj = tweenDesc.target;
         this.progressFn = tweenDesc.progress;
         this.completeFn = tweenDesc.complete;
         this.easeFnName = tweenDesc.ease || 'linear';
         this.tweenTime = tweenDesc.time || 1000;
         this.desc = this.normalizeDesc(tweenDesc);
+    }
+
+    reuse(newTweenDesc){
+        this.completed = false;
+        if ((this.currTime - this.startedTime)>this.tweenTime)
+            this.startedTime = null;
+        Object.keys(newTweenDesc).forEach(key=>{
+            this.desc[key] = newTweenDesc[key];
+        });
+        this.desc = this.normalizeDesc(newTweenDesc);
     }
 
     normalizeDesc(tweenDesc){
@@ -36,8 +57,9 @@ export default class Tween {
 
 
     update(time){
-        if (!this.startedTime) this.startedTime = time;
         if (this.completed) return;
+        this.currTime = time;
+        if (!this.startedTime) this.startedTime = time;
         let curTweenTime = time - this.startedTime;
         if (curTweenTime>this.tweenTime) {
             this._complete();

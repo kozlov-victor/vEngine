@@ -19,11 +19,11 @@ export class MainSceneBehaviour {
     }
 
     onUpdate(){
-        this.game.renderer.fillRect(this.x,this.y,10,10,this.color);
+        //this.game.renderer.fillRect(this.x,this.y,10,10,this.color);
         this.points.forEach(p=>{
-            this.game.renderer.fillCircle(p.x,p.y,50,this.color);
+            //this.game.renderer.fillCircle(p.x,p.y,10,this.color);
         });
-        this.game.renderer.log(this.points.length);
+        //this.game.renderer.log(this.points.length);
     }
 
     onDestroy(){
