@@ -9,6 +9,9 @@ export default class Camera {
     sceneHeight;
     pos = {x:0, y:0};
     scale = {x:1,y:1};
+    lastToleranceTime = 0;
+
+    TOLERANCE_TIME = 2000;
 
     constructor(game){
         this.game = game;
@@ -29,34 +32,41 @@ export default class Camera {
             target: this.pos,
             ease: 'easeInQuad',
             to: {x:this.pos.x,y:this.pos.y},
-            time: 2500,
+            time: this.TOLERANCE_TIME,
             progress: e=>{
                 //console.log(e);
             }
         });
     }
 
-    update(currTime) {
-        if (!this.objFollowTo) return;
-        let pos = this.pos;
-        let oldPos = this.oldPos;
+    update(currTime,delta) {
+        let gameObject = this.objFollowTo;
+        if (!gameObject) return;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
         let tileHeight = this.scene.tileMap.spriteSheet? this.scene.tileMap.spriteSheet._frameHeight:0;
         let w = this.game.width;
         let h = this.game.height;
         let wDiv2 = w/2;
         let hDiv2 = h/2;
-        let x = this.objFollowTo.pos.x - wDiv2;
-        let y = this.objFollowTo.pos.y - hDiv2;
+        let x = gameObject.pos.x - wDiv2;
+        let y = gameObject.pos.y - hDiv2;
+        if (gameObject._lastDirection==='Right') x+=400;
+        if (gameObject._lastDirection==='Left') x-=400;
         if (x<0) x = 0;
         if (y<0) y = 0;
         if (x>this.sceneWidth - w + tileWidth)  x = this.sceneWidth -w + tileWidth;
         if (y>this.sceneHeight -h + tileHeight) y = this.sceneHeight -h + tileHeight;
-        this.cameraTween.reuse({
-            to: {x,y}
-        });
-        // pos.x = x;
-        // pos.y = y;
+        if (this.TOLERANCE_TIME===0) {
+            this.pos.x = x;
+            this.pos.y = y;
+        }
+        else if (currTime-this.lastToleranceTime>this.TOLERANCE_TIME) {
+            this.lastToleranceTime = currTime;
+            this.cameraTween.reuse({
+                to: {x,y}
+            });
+        }
+
         this.cameraTween.update(currTime);
     }
 

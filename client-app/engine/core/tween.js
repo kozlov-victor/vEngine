@@ -25,12 +25,14 @@ export default class Tween {
         this.easeFnName = tweenDesc.ease || 'linear';
         this.tweenTime = tweenDesc.time || 1000;
         this.desc = this.normalizeDesc(tweenDesc);
+        this.justReused = false;
     }
 
     reuse(newTweenDesc){
-        this.completed = false;
-        if ((this.currTime - this.startedTime)>this.tweenTime)
-            this.startedTime = null;
+        //if ((this.currTime - this.startedTime)>this.tweenTime) {
+            this.startedTime = this.currTime;
+            this.completed = false;
+        //}
         Object.keys(newTweenDesc).forEach(key=>{
             this.desc[key] = newTweenDesc[key];
         });
@@ -61,6 +63,8 @@ export default class Tween {
         this.currTime = time;
         if (!this.startedTime) this.startedTime = time;
         let curTweenTime = time - this.startedTime;
+        window.game.renderer.log(`updated ${curTweenTime}`);
+        window.game.renderer.log(`test log1`);
         if (curTweenTime>this.tweenTime) {
             this._complete();
             return;

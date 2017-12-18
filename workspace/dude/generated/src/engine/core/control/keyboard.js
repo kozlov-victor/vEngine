@@ -64,13 +64,12 @@ export default class Keyboard {
 
     press(key){
         if (this.isPressed(key)) return;
-        //console.log('pressed',key);
+        console.log('pressed',key);
         this.buffer[key] = KEY_JUST_PRESSED;
     }
 
     release(key){
         if (this.isReleased(key)) return;
-        //console.log('released',key);
         this.buffer[key] = KEY_JUST_RELEASED;
     }
 

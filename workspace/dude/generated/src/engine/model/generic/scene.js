@@ -94,7 +94,7 @@ export default class Scene extends BaseModel {
         let l = i -1;
 
         renderer.scale(this.game.camera.scale.x,this.game.camera.scale.y);
-        this.game.camera.update(currTime);
+        this.game.camera.update(currTime,deltaTime);
         renderer.translate(-this.game.camera.pos.x,-this.game.camera.pos.y);
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while(i--){

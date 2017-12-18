@@ -13,20 +13,17 @@ if (DEBUG) {
 
 export default class GamePad {
 
-    static AXIS_TOLERANCE = 0.9;
-
     constructor(game){
         this.game = game;
-        //this.gamepads = gamepads;
     }
 
     update(){
 
         this.gamepads =
+            (navigator.getGamepads && navigator.getGamepads()) ||
             (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
             navigator.webkitGamepads || navigator.mozGamepads ||
-            navigator.msGamepads || navigator.gamepads ||
-            (navigator.getGamepads && navigator.getGamepads()) || [];
+            navigator.msGamepads || navigator.gamepads || [];
 
         for (let i=0,max=this.gamepads.length;i<max;i++) {
             let gp = this.gamepads[i];
@@ -41,8 +38,8 @@ export default class GamePad {
                     this.game.keyboard.release(j);
                 }
             }
-            if (gp.axes[0]===0) return; // to avoid oscillations
-            if (gp.axes[1]===0) return;
+            if (gp.axes[0]===0) continue; // to avoid oscillations
+            if (gp.axes[1]===0) continue;
 
             let axis0 = ~~(gp.axes[0]);
             let axis1 = ~~(gp.axes[1]);

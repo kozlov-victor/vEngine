@@ -4,7 +4,6 @@ import BaseAbstractBehaviour from './baseAbstractBehaviour'
 export default class Moveable extends BaseAbstractBehaviour {
 
     gameObject = null;
-    lastDirection = null;
 
     constructor(game) {
         super();
@@ -25,14 +24,14 @@ export default class Moveable extends BaseAbstractBehaviour {
 
     stop() {
         this.gameObject.stopFrAnimations();
-        let keyIdle = 'idle' + this.lastDirection + 'Animation';
+        let keyIdle = 'idle' + this.gameObject._lastDirection + 'Animation';
         if (this.animations[keyIdle]) {
             this.animations[keyIdle].play();
         }
     }
 
     go(direction) {
-        this.lastDirection = direction;
+        this.gameObject._lastDirection = direction;
         this.animations['walk' + direction + 'Animation'].play();
     }
 
