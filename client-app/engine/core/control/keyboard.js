@@ -64,7 +64,7 @@ export default class Keyboard {
 
     press(key){
         if (this.isPressed(key)) return;
-        console.log('pressed',key);
+        //console.log('pressed',key);
         this.buffer[key] = KEY_JUST_PRESSED;
     }
 

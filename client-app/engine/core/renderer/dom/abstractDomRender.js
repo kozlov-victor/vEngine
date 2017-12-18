@@ -8,7 +8,7 @@ export default class AbstractDomRenderer extends AbstractRenderer{
     }
 
     setPropertyIfChanged(el,p1 = {},p2 = {},field,fn) {
-        if (field && p1[field]==p2[field]) return;
+        if (field && p1[field]===p2[field]) return;
         if (field) {
             p1[field] = p2[field];
         }
@@ -19,7 +19,7 @@ export default class AbstractDomRenderer extends AbstractRenderer{
         });
         if (!field) {
             field = _k;
-            if (p1[field] && p1[field]==p2[field]) return;
+            if (p1[field] && p1[field]===p2[field]) return;
             p1[field] = p2[field] = newProps[_k];
         }
         this.setNodeAttribute(el,_k,newProps[_k]);

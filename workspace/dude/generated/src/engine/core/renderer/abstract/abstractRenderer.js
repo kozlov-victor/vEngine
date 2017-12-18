@@ -52,29 +52,33 @@ export default class AbstractRenderer {
         return 0;
     }
 
-    log(txt){
+    log(){
         if (!DEBUG) return;
         let textField = this.debugTextField;
-        if (txt===undefined) txt = 'undefined';
-        if (txt===null) txt = 'null';
-        if (txt.toJSON) {
-            txt = JSON.stringify(txt.toJSON(),null,4);
-        }
-        else {
-            try{
-                txt = JSON.stringify(txt);
-            } catch (e){}
-        }
-        txt = txt.toString();
+        let res = '';
+        Array.prototype.slice.call(arguments).forEach(txt=>{
+            if (txt===undefined) txt = 'undefined';
+            if (txt===null) txt = 'null';
+            if (txt.toJSON) {
+                txt = JSON.stringify(txt.toJSON(),null,4);
+            }
+            else {
+                try{
+                    txt = JSON.stringify(txt);
+                } catch (e){}
+            }
+            if (typeof txt!=='string') txt = txt.toString();
+            res+=`${txt}\n`;
+        });
         if (!textField) {
             textField = new TextField(this.game);
             textField.name = 'defaultName';
             textField.revalidate();
             this.debugTextField = textField;
         }
-        textField.pos.x = 10 + this.game.camera.pos.x;
-        textField.pos.y = 10 + this.game.camera.pos.y;
-        textField.setText(txt);
+        textField.pos.x = 10;
+        textField.pos.y = 10;
+        textField.setText(textField.getText()+res);
     }
 
     loadTextureInfo(textureId,info){}

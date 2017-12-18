@@ -1,6 +1,26 @@
 
 import mathEx from './mathEx'
 
+let accessByPath = (obj,path)=>{
+    let pathArr = path.split('.');
+    if (pathArr.length===1) return {targetObj:obj,targetKey:path};
+    let lastPath = pathArr.pop();
+    pathArr.forEach(p=>{
+        obj = obj[p];
+    });
+    return {targetObj:obj,targetKey:lastPath};
+};
+
+let setValByPath = (obj,path,val)=>{
+    let {targetObj,targetKey} = accessByPath(obj,path);
+    targetObj[targetKey] = val;
+};
+
+let getValByPath = (obj,path,val)=>{
+    let {targetObj,targetKey} = accessByPath(obj,path);
+    return targetObj[targetKey];
+};
+
 export default class Tween {
 
     propsToChange = [];
@@ -51,8 +71,8 @@ export default class Tween {
         });
         this.propsToChange = Object.keys(allPropsMap);
         this.propsToChange.forEach(prp=>{
-            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = this.obj[prp];
-            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = this.obj[prp];
+            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = getValByPath(this.obj,prp);
+            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = getValByPath(this.obj,prp);
         });
         return tweenDesc;
     };
@@ -63,8 +83,6 @@ export default class Tween {
         this.currTime = time;
         if (!this.startedTime) this.startedTime = time;
         let curTweenTime = time - this.startedTime;
-        window.game.renderer.log(`updated ${curTweenTime}`);
-        window.game.renderer.log(`test log1`);
         if (curTweenTime>this.tweenTime) {
             this._complete();
             return;
@@ -72,11 +90,14 @@ export default class Tween {
         let l = this.propsToChange.length;
         while(l--){
             let prp = this.propsToChange[l];
-            this.obj[prp] = mathEx.ease[this.easeFnName](
+            let valFrom = this.desc.from[prp];
+            let valTo = this.desc.to[prp];
+            let valCurr = mathEx.ease[this.easeFnName](
                 curTweenTime,
-                this.desc.from[prp],
-                this.desc.to[prp] - this.desc.from[prp],
+                valFrom,
+                valTo - valFrom,
                 this.tweenTime);
+            setValByPath(this.obj,prp,valCurr);
         }
         this.progressFn && this.progressFn(this.obj);
 
@@ -96,7 +117,8 @@ export default class Tween {
         let l = this.propsToChange.length;
         while(l--){
             let prp = this.propsToChange[l];
-            this.obj[prp] = this.desc.to[prp];
+            let valCurr = this.desc.to[prp];
+            setValByPath(this.obj,prp,valCurr);
         }
         this.progressFn && this.progressFn(this.obj);
         this.completeFn && this.completeFn(this.obj);

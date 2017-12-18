@@ -1,59 +1,59 @@
 (function(t) {
     var e = {};
-    function i(r) {
-        if (e[r]) {
-            return e[r].exports;
+    function r(i) {
+        if (e[i]) {
+            return e[i].exports;
         }
-        var n = e[r] = {
-            i: r,
+        var n = e[i] = {
+            i: i,
             l: false,
             exports: {}
         };
-        t[r].call(n.exports, n, n.exports, i);
+        t[i].call(n.exports, n, n.exports, r);
         n.l = true;
         return n.exports;
     }
-    i.m = t;
-    i.c = e;
-    i.i = function(t) {
+    r.m = t;
+    r.c = e;
+    r.i = function(t) {
         return t;
     };
-    i.d = function(t, e, r) {
-        if (!i.o(t, e)) {
+    r.d = function(t, e, i) {
+        if (!r.o(t, e)) {
             Object.defineProperty(t, e, {
                 configurable: false,
                 enumerable: true,
-                get: r
+                get: i
             });
         }
     };
-    i.n = function(t) {
+    r.n = function(t) {
         var e = t && t.__esModule ? function e() {
             return t["default"];
         } : function e() {
             return t;
         };
-        i.d(e, "a", e);
+        r.d(e, "a", e);
         return e;
     };
-    i.o = function(t, e) {
+    r.o = function(t, e) {
         return Object.prototype.hasOwnProperty.call(t, e);
     };
-    i.p = "";
-    return i(i.s = 50);
-})([ function(t, e, i) {
+    r.p = "";
+    return r(r.s = 69);
+})([ function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r, n;
-    var o = i(6);
+    var i, n;
+    var o = r(16);
     var a = p(o);
-    var s = i(5);
-    var h = p(s);
-    var u = i(30);
-    var f = p(u);
-    var c = i(4);
-    var l = i(32);
+    var s = r(15);
+    var u = p(s);
+    var f = r(40);
+    var h = p(f);
+    var c = r(12);
+    var l = r(42);
     var d = p(l);
     function p(t) {
         return t && t.__esModule ? t : {
@@ -85,91 +85,91 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var v = (r = (0, c.Transient)({
+    var v = (i = (0, c.Transient)({
         game: true,
         rigidBody: true
-    }), r(n = function(t) {
+    }), i(n = function(t) {
         m(e, t);
-        function e(i) {
+        function e(r) {
             y(this, e);
-            var r = g(this, t.call(this));
-            r.id = null;
-            r.name = null;
-            r.width = 0;
-            r.height = 0;
-            r.pos = {
+            var i = g(this, t.call(this));
+            i.id = null;
+            i.name = null;
+            i.width = 0;
+            i.height = 0;
+            i.pos = {
                 x: 0,
                 y: 0
             };
-            r.scale = {
+            i.scale = {
                 x: 1,
                 y: 1
             };
-            r.angle = 0;
-            r.alpha = 1;
-            r.layerId = null;
-            r.fixedToCamera = false;
-            r.rigid = false;
-            r._tweens = [];
-            if (1 && !i) throw "can not create model '" + r.type + "': game instance not passed to model constructor";
-            r.game = i;
-            r._emitter = new f.default();
-            r.rigidBody = new d.default(r);
-            return r;
+            i.angle = 0;
+            i.alpha = 1;
+            i.layerId = null;
+            i.fixedToCamera = false;
+            i.rigid = false;
+            i._tweens = [];
+            if (1 && !r) throw "can not create model '" + i.type + "': game instance not passed to model constructor";
+            i.game = r;
+            i._emitter = new h.default();
+            i.rigidBody = new d.default(i);
+            return i;
         }
         e.prototype.revalidate = function t() {};
         e.prototype.setIndividualBehaviour = function t(e) {};
         e.prototype.setCommonBehaviour = function t() {};
         e.prototype.onShow = function t() {};
         e.prototype.getRect = function t() {
-            var e = this.pos.x, i = this.pos.y, r = this.width, n = this.height;
+            var e = this.pos.x, r = this.pos.y, i = this.width, n = this.height;
             return {
                 x: e,
-                y: i,
-                width: r,
+                y: r,
+                width: i,
                 height: n,
-                right: e + r,
-                bottom: i + n
+                right: e + i,
+                bottom: r + n
             };
         };
         e.prototype.tween = function t(e) {
-            var i = new h.default(e, this);
-            this._tweens.push(i);
+            var r = new u.default(e, this);
+            this._tweens.push(r);
         };
         e.prototype.update = function t(e) {
-            var i = this;
-            this._tweens.forEach(function(t, r) {
+            var r = this;
+            this._tweens.forEach(function(t, i) {
                 t.update(e);
-                if (t.completed) i._tweens.splice(r, 1);
+                if (t.completed) r._tweens.splice(i, 1);
             });
         };
         e.prototype.clone = function t(e) {
-            var i = this.constructor;
-            var r = new i(this.game);
-            r._cloner = this;
-            return r.fromJSON(this.toJSON(e), true);
+            var r = this.constructor;
+            var i = new r(this.game);
+            i._cloner = this;
+            return i.fromJSON(this.toJSON(e), true);
         };
-        e.prototype.on = function t(e, i) {
-            this._emitter.on(e, i);
+        e.prototype.on = function t(e, r) {
+            this._emitter.on(e, r);
             return this;
         };
-        e.prototype.trigger = function t(e, i) {
-            this._emitter.trigger(e, i);
+        e.prototype.trigger = function t(e, r) {
+            this._emitter.trigger(e, r);
         };
         e.prototype.updateCloner = function t(e) {
             if (false) return;
-            var i = this._cloner;
-            if (!i) return;
-            i.fromJSON(this.toJSON(e));
-            i.updateCloner(e);
+            var r = this._cloner;
+            if (!r) return;
+            r.fromJSON(this.toJSON(e));
+            r.updateCloner(e);
             delete this._cloner;
         };
         return e;
     }(a.default)) || n);
     e.default = v;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
-    e.isPointInRect = function(t, e, i) {
+    e.isPointInRect = function(t, e, r) {
         return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
     };
     e.overlapTest = function(t, e) {
@@ -183,59 +183,457 @@
     };
     e.random = function(t, e) {
         if (t > e) {
-            var i = t;
+            var r = t;
             t = e;
-            e = i;
+            e = r;
         }
-        var r = Math.random() * (e - t) + t;
-        if (r > e) r = e; else if (r < t) r = t;
-        return r;
+        var i = Math.random() * (e - t) + t;
+        if (i > e) i = e; else if (i < t) i = t;
+        return i;
     };
-    var r = {};
-    r.linear = function(t, e, i, r) {
-        return i * t / r + e;
+    var i = {};
+    i.linear = function(t, e, r, i) {
+        return r * t / i + e;
     };
-    r.easeInQuad = function(t, e, i, r) {
-        t /= r;
-        return i * t * t + e;
+    i.easeInQuad = function(t, e, r, i) {
+        t /= i;
+        return r * t * t + e;
     };
-    r.easeOutQuad = function(t, e, i, r) {
-        t /= r;
-        return -i * t * (t - 2) + e;
+    i.easeOutQuad = function(t, e, r, i) {
+        t /= i;
+        return -r * t * (t - 2) + e;
     };
-    r.easeInOutQuad = function(t, e, i, r) {
-        t /= r / 2;
-        if (t < 1) return i / 2 * t * t + e;
+    i.easeInOutQuad = function(t, e, r, i) {
+        t /= i / 2;
+        if (t < 1) return r / 2 * t * t + e;
         t--;
-        return -i / 2 * (t * (t - 2) - 1) + e;
+        return -r / 2 * (t * (t - 2) - 1) + e;
     };
-    e.ease = r;
-}, function(t, e, i) {
+    e.ease = i;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    var i, n;
+    function o(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var a = (n = i = function() {
+        function t(e, r) {
+            o(this, t);
+            this.program = null;
+            this.uniformCache = {};
+            this.gl = e;
+            this.game = r;
+        }
+        t.prototype.bind = function e() {
+            if (t.currentDrawer !== null && t.currentDrawer !== this) {
+                t.currentDrawer.unbind();
+            }
+            t.currentDrawer = this;
+        };
+        t.prototype.unbind = function t() {
+            if (this.posIndexBuffer) this.posIndexBuffer.unbind();
+        };
+        t.prototype.setUniform = function t(e, r) {
+            if (this.uniformCache[e] === r) return;
+            this.program.setUniform(e, r);
+            this.uniformCache[e] = r;
+        };
+        return t;
+    }(), i.currentDrawer = null, n);
+    e.default = a;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = function() {
-        function t() {
-            r(this, t);
+        function t(e) {
+            i(this, t);
+            if (1 && !e) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
+            this.gl = e;
+            this.buffer = e.createBuffer();
+            this.dataLength = null;
         }
-        t.prototype.manage = function t() {
-            console.error(this);
-            if (true) throw "BaseAbstractBehaviour: method 'manage' not implemented";
+        t.prototype.setData = function t(e) {
+            if (true) {
+                if (!e) throw "can not set data to buffer: bufferData not specified";
+            }
+            var r = this.gl;
+            this.dataLength = e.length;
+            r.bindBuffer(r.ELEMENT_ARRAY_BUFFER, this.buffer);
+            r.bufferData(r.ELEMENT_ARRAY_BUFFER, new Uint16Array(e), r.STATIC_DRAW);
+            r.bindBuffer(r.ELEMENT_ARRAY_BUFFER, null);
         };
-        t.prototype.onUpdate = function t() {};
+        t.prototype.getGlBuffer = function t() {
+            return this.buffer;
+        };
+        t.prototype.bind = function t() {
+            this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+        };
+        t.prototype.unbind = function t() {
+            this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
+        };
+        t.prototype.getBufferLength = function t() {
+            return this.dataLength;
+        };
         return t;
     }();
     e.default = n;
-}, function(t, e, i) {
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    var i, n;
+    function o(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var a = function t(e, r, i) {
+        if (true) {
+            if (!r) throw "can not compile shader: shader source not specified for type " + i;
+        }
+        var n = e.createShader(i);
+        e.shaderSource(n, r);
+        e.compileShader(n);
+        var o = e.getShaderParameter(n, e.COMPILE_STATUS);
+        if (!o) {
+            var a = e.getShaderInfoLog(n);
+            e.deleteShader(n);
+            if (true) {
+                throw "Error compiling shader " + n + ":" + a;
+            } else {
+                throw a;
+            }
+        }
+        return n;
+    };
+    var s = function t(e, r) {
+        var i = e.createProgram();
+        r.forEach(function(t) {
+            e.attachShader(i, t);
+        });
+        e.linkProgram(i);
+        var n = e.getProgramParameter(i, e.LINK_STATUS);
+        if (!n) {
+            var o = e.getProgramInfoLog(i);
+            e.deleteProgram(i);
+            if (true) {
+                throw "Error in program linking:" + o;
+            } else {
+                throw o;
+            }
+        }
+        return i;
+    };
+    var u = function t(e, r) {
+        var i = null;
+        var n = {
+            FLOAT: "float",
+            FLOAT_VEC2: "vec2",
+            FLOAT_VEC3: "vec3",
+            FLOAT_VEC4: "vec4",
+            INT: "int",
+            INT_VEC2: "ivec2",
+            INT_VEC3: "ivec3",
+            INT_VEC4: "ivec4",
+            BOOL: "bool",
+            BOOL_VEC2: "bvec2",
+            BOOL_VEC3: "bvec3",
+            BOOL_VEC4: "bvec4",
+            FLOAT_MAT2: "mat2",
+            FLOAT_MAT3: "mat3",
+            FLOAT_MAT4: "mat4",
+            SAMPLER_2D: "sampler2D"
+        };
+        if (!i) {
+            var o = Object.keys(n);
+            i = {};
+            for (var a = 0; a < o.length; ++a) {
+                var s = o[a];
+                i[e[s]] = n[s];
+            }
+        }
+        return i[r];
+    };
+    var f = function t(e, r) {
+        var i = {};
+        var n = e.getProgramParameter(r, e.ACTIVE_UNIFORMS);
+        for (var o = 0; o < n; o++) {
+            var a = e.getActiveUniform(r, o);
+            var s = a.name.replace(/\[.*?]/, "");
+            var f = u(e, a.type);
+            i[s] = {
+                type: f,
+                size: a.size,
+                name: s,
+                location: e.getUniformLocation(r, s),
+                setter: h(a.size, f)
+            };
+        }
+        return i;
+    };
+    var h = function t(e, r) {
+        if (e === 1) {
+            switch (r) {
+              case "float":
+                return function(t, e, r) {
+                    t.uniform1f(e, r);
+                };
+
+              case "vec2":
+                return function(t, e, r) {
+                    t.uniform2f(e, r[0], r[1]);
+                };
+
+              case "vec3":
+                return function(t, e, r) {
+                    t.uniform3f(e, r[0], r[1], r[2]);
+                };
+
+              case "vec4":
+                return function(t, e, r) {
+                    t.uniform4f(e, r[0], r[1], r[2], r[3]);
+                };
+
+              case "int":
+                return function(t, e, r) {
+                    t.uniform1i(e, r);
+                };
+
+              case "ivec2":
+                return function(t, e, r) {
+                    t.uniform2i(e, r[0], r[1]);
+                };
+
+              case "ivec3":
+                return function(t, e, r) {
+                    t.uniform3i(e, r[0], r[1], r[2]);
+                };
+
+              case "ivec4":
+                return function(t, e, r) {
+                    t.uniform4i(e, r[0], r[1], r[2], r[3]);
+                };
+
+              case "bool":
+                return function(t, e, r) {
+                    t.uniform1i(e, r);
+                };
+
+              case "bvec2":
+                return function(t, e, r) {
+                    t.uniform2i(e, r[0], r[1]);
+                };
+
+              case "bvec3":
+                return function(t, e, r) {
+                    t.uniform3i(e, r[0], r[1], r[2]);
+                };
+
+              case "bvec4":
+                return function(t, e, r) {
+                    t.uniform4i(e, r[0], r[1], r[2], r[3]);
+                };
+
+              case "mat2":
+                return function(t, e, r) {
+                    t.uniformMatrix2fv(e, false, r);
+                };
+
+              case "mat3":
+                return function(t, e, r) {
+                    t.uniformMatrix3fv(e, false, r);
+                };
+
+              case "mat4":
+                return function(t, e, r) {
+                    t.uniformMatrix4fv(e, false, r);
+                };
+
+              case "sampler2D":
+                return function(t, e, r) {
+                    t.uniform1i(e, r);
+                };
+            }
+        } else {
+            switch (r) {
+              case "float":
+                return function(t, e, r) {
+                    t.uniform1fv(e, r);
+                };
+
+              case "vec2":
+                return function(t, e, r) {
+                    t.uniform2fv(e, r);
+                };
+
+              case "vec3":
+                return function(t, e, r) {
+                    t.uniform3fv(e, r);
+                };
+
+              case "vec4":
+                return function(t, e, r) {
+                    t.uniform4fv(e, r);
+                };
+
+              case "int":
+                return function(t, e, r) {
+                    t.uniform1iv(e, r);
+                };
+
+              case "ivec2":
+                return function(t, e, r) {
+                    t.uniform2iv(e, r);
+                };
+
+              case "ivec3":
+                return function(t, e, r) {
+                    t.uniform3iv(e, r);
+                };
+
+              case "ivec4":
+                return function(t, e, r) {
+                    t.uniform4iv(e, r);
+                };
+
+              case "bool":
+                return function(t, e, r) {
+                    t.uniform1iv(e, r);
+                };
+
+              case "bvec2":
+                return function(t, e, r) {
+                    t.uniform2iv(e, r);
+                };
+
+              case "bvec3":
+                return function(t, e, r) {
+                    t.uniform3iv(e, r);
+                };
+
+              case "bvec4":
+                return function(t, e, r) {
+                    t.uniform4iv(e, r);
+                };
+
+              case "sampler2D":
+                return function(t, e, r) {
+                    t.uniform1iv(e, r);
+                };
+            }
+        }
+    };
+    var c = (n = i = function() {
+        function t(e, r) {
+            o(this, t);
+            var i = a(e, r[0], e.VERTEX_SHADER);
+            var n = a(e, r[1], e.FRAGMENT_SHADER);
+            this.program = s(e, [ i, n ]);
+            this.uniforms = f(e, this.program);
+            this.gl = e;
+        }
+        t.prototype.getProgram = function t() {
+            return this.program;
+        };
+        t.prototype.bind = function e() {
+            this.gl.useProgram(this.program);
+            t.currentProgram = this;
+        };
+        t.prototype.setUniform = function t(e, r) {
+            var i = this.uniforms[e];
+            if (1 && !i) throw "no uniform with name " + e + " found!";
+            i.setter(this.gl, i.location, r);
+        };
+        t.prototype.bindBuffer = function t(e, r) {
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, e.getGlBuffer());
+            var i = this.gl.getAttribLocation(this.program, r);
+            if (!r) throw "can not found uniform location: uniformLocationName not defined";
+            if (i < 0) throw "can not found uniform location for " + r;
+            this.gl.enableVertexAttribArray(i);
+            this.gl.vertexAttribPointer(i, e.getItemSize(), e.getItemType(), false, 0, 0);
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+        };
+        return t;
+    }(), i.currentProgram = null, n);
+    e.default = c;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function() {
+        function t(e) {
+            i(this, t);
+            if (1 && !e) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
+            this.gl = e;
+            this.buffer = e.createBuffer();
+            this.bufferItemSize = null;
+            this.bufferItemType = null;
+            this.dataLength = null;
+        }
+        t.prototype.setData = function t(e, r, i) {
+            if (true) {
+                if (!e) throw "can not set data to buffer: bufferData not specified";
+                if (!r) throw "can not set data to buffer: itemType not specified";
+                if (!i) throw "can not set data to buffer: itemSize not specified";
+            }
+            var n = this.gl;
+            n.bindBuffer(n.ARRAY_BUFFER, this.buffer);
+            n.bufferData(n.ARRAY_BUFFER, new Float32Array(e), n.STATIC_DRAW);
+            n.bindBuffer(n.ARRAY_BUFFER, null);
+            this.bufferItemSize = i;
+            this.bufferItemType = r;
+            this.dataLength = e.length;
+        };
+        t.prototype.getGlBuffer = function t() {
+            return this.buffer;
+        };
+        t.prototype.getItemSize = function t() {
+            return this.bufferItemSize;
+        };
+        t.prototype.getItemType = function t() {
+            return this.bufferItemType;
+        };
+        t.prototype.getBufferLength = function t() {
+            return this.dataLength;
+        };
+        return t;
+    }();
+    e.default = n;
+}, function(t, e) {
+    t.exports = "attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function t() {
+        i(this, t);
+        this.vertexArr = null;
+        this.normalArr = null;
+        this.texCoordArr = null;
+        this.indexArr = null;
+    };
+    e.default = n;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(2);
-    var n = o(r);
+    var i = r(7);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -252,7 +650,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -266,27 +664,98 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e() {
             a(this, e);
             var r = s(this, t.call(this));
-            r.gameObject = null;
-            r.game = i;
+            r.vertexArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
+            r.indexArr = [ 0, 1, 2, 3 ];
+            r.texCoordArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
             return r;
         }
-        e.prototype.manage = function t(e, i, r) {
+        return e;
+    }(n.default);
+    e.default = f;
+}, function(t, e) {
+    t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function() {
+        function t() {
+            i(this, t);
+        }
+        t.prototype.manage = function t() {
+            console.error(this);
+            if (true) throw "BaseAbstractBehaviour: method 'manage' not implemented";
+        };
+        t.prototype.onUpdate = function t() {};
+        return t;
+    }();
+    e.default = n;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(10);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function s(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function u(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
+            a(this, e);
+            var i = s(this, t.call(this));
+            i.gameObject = null;
+            i.game = r;
+            return i;
+        }
+        e.prototype.manage = function t(e, r, i) {
             var n = this;
             this.gameObject = e;
-            this.parameters = i;
+            this.parameters = r;
             this.animations = {};
-            r.forEach(function(t) {
-                var e = "walk" + t + "Animation", r = "idle" + t + "Animation";
+            i.forEach(function(t) {
+                var e = "walk" + t + "Animation", i = "idle" + t + "Animation";
                 n.animations[e] = n.gameObject.frameAnimations.find(function(t) {
-                    return t.name === i[e];
+                    return t.name === r[e];
                 });
-                i[r] && (n.animations[r] = n.gameObject.frameAnimations.find(function(t) {
-                    return t.name === i[r];
+                r[i] && (n.animations[i] = n.gameObject.frameAnimations.find(function(t) {
+                    return t.name === r[i];
                 }));
             });
         };
@@ -303,22 +772,202 @@
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    e.Transient = r;
-    function r(t) {
+    e.Transient = i;
+    function i(t) {
         return function(e) {
             e.transient = t;
         };
     }
-}, function(t, e, i) {
+}, function(t, e, r) {
+    "use strict";
+    e.makeIdentity = function() {
+        return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
+    };
+    e.makeZToWMatrix = function(t) {
+        return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, t, 0, 0, 0, 1 ];
+    };
+    e.make2DProjection = function(t, e, r) {
+        return [ 2 / t, 0, 0, 0, 0, -2 / e, 0, 0, 0, 0, 2 / r, 0, -1, 1, 0, 1 ];
+    };
+    e.ortho = function(t, e, r, i, n, o) {
+        var a = 1 / (t - e), s = 1 / (r - i), u = 1 / (n - o);
+        var f = [];
+        f[0] = -2 * a;
+        f[1] = 0;
+        f[2] = 0;
+        f[3] = 0;
+        f[4] = 0;
+        f[5] = -2 * s;
+        f[6] = 0;
+        f[7] = 0;
+        f[8] = 0;
+        f[9] = 0;
+        f[10] = 2 * u;
+        f[11] = 0;
+        f[12] = (t + e) * a;
+        f[13] = (i + r) * s;
+        f[14] = (o + n) * u;
+        f[15] = 1;
+        return f;
+    };
+    e.perspective = function(t, e, r, i) {
+        var n = 1 / Math.tan(t / 2), o = 1 / (r - i);
+        var a = [];
+        a[0] = n / e;
+        a[1] = 0;
+        a[2] = 0;
+        a[3] = 0;
+        a[4] = 0;
+        a[5] = n;
+        a[6] = 0;
+        a[7] = 0;
+        a[8] = 0;
+        a[9] = 0;
+        a[10] = (i + r) * o;
+        a[11] = -1;
+        a[12] = 0;
+        a[13] = 0;
+        a[14] = 2 * i * r * o;
+        a[15] = 0;
+        return a;
+    };
+    e.makeTranslation = function(t, e, r) {
+        return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, t, e, r, 1 ];
+    };
+    e.makeXRotation = function(t) {
+        var e = Math.cos(t);
+        var r = Math.sin(t);
+        return [ 1, 0, 0, 0, 0, e, r, 0, 0, -r, e, 0, 0, 0, 0, 1 ];
+    };
+    e.makeYRotation = function(t) {
+        var e = Math.cos(t);
+        var r = Math.sin(t);
+        return [ e, 0, -r, 0, 0, 1, 0, 0, r, 0, e, 0, 0, 0, 0, 1 ];
+    };
+    e.makeZRotation = function(t) {
+        var e = Math.cos(t);
+        var r = Math.sin(t);
+        return [ e, r, 0, 0, -r, e, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
+    };
+    e.makeScale = function(t, e, r) {
+        return [ t, 0, 0, 0, 0, e, 0, 0, 0, 0, r, 0, 0, 0, 0, 1 ];
+    };
+    e.matrixMultiply = function(t, e) {
+        var r = t[0 * 4 + 0];
+        var i = t[0 * 4 + 1];
+        var n = t[0 * 4 + 2];
+        var o = t[0 * 4 + 3];
+        var a = t[1 * 4 + 0];
+        var s = t[1 * 4 + 1];
+        var u = t[1 * 4 + 2];
+        var f = t[1 * 4 + 3];
+        var h = t[2 * 4 + 0];
+        var c = t[2 * 4 + 1];
+        var l = t[2 * 4 + 2];
+        var d = t[2 * 4 + 3];
+        var p = t[3 * 4 + 0];
+        var y = t[3 * 4 + 1];
+        var g = t[3 * 4 + 2];
+        var m = t[3 * 4 + 3];
+        var v = e[0 * 4 + 0];
+        var w = e[0 * 4 + 1];
+        var _ = e[0 * 4 + 2];
+        var b = e[0 * 4 + 3];
+        var x = e[1 * 4 + 0];
+        var E = e[1 * 4 + 1];
+        var T = e[1 * 4 + 2];
+        var O = e[1 * 4 + 3];
+        var A = e[2 * 4 + 0];
+        var M = e[2 * 4 + 1];
+        var S = e[2 * 4 + 2];
+        var j = e[2 * 4 + 3];
+        var P = e[3 * 4 + 0];
+        var R = e[3 * 4 + 1];
+        var B = e[3 * 4 + 2];
+        var F = e[3 * 4 + 3];
+        return [ r * v + i * x + n * A + o * P, r * w + i * E + n * M + o * R, r * _ + i * T + n * S + o * B, r * b + i * O + n * j + o * F, a * v + s * x + u * A + f * P, a * w + s * E + u * M + f * R, a * _ + s * T + u * S + f * B, a * b + s * O + u * j + f * F, h * v + c * x + l * A + d * P, h * w + c * E + l * M + d * R, h * _ + c * T + l * S + d * B, h * b + c * O + l * j + d * F, p * v + y * x + g * A + m * P, p * w + y * E + g * M + m * R, p * _ + y * T + g * S + m * B, p * b + y * O + g * j + m * F ];
+    };
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function t(e) {
+        return (e & e - 1) == 0;
+    };
+    var o = function() {
+        function t(e) {
+            i(this, t);
+            if (1 && !e) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
+            this.gl = e;
+            this.tex = null;
+            this.size = null;
+            this.isPowerOfTwo = false;
+            this.tex = e.createTexture();
+            e.bindTexture(e.TEXTURE_2D, this.tex);
+            e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, 1, 1, 0, e.RGBA, e.UNSIGNED_BYTE, new Uint8Array([ 0, 0, 255, 255 ]));
+            e.bindTexture(e.TEXTURE_2D, this.tex);
+        }
+        t.prototype.setImage = function t(e, r, i) {
+            if (true) {
+                if (!(e || r || i)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+            }
+            var o = this.gl;
+            if (e) this.size = {
+                width: e.width,
+                height: e.height
+            }; else this.size = {
+                width: r,
+                height: i
+            };
+            this.bind();
+            o.pixelStorei(o.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+            if (e) {
+                o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, o.RGBA, o.UNSIGNED_BYTE, e);
+            } else {
+                o.texImage2D(o.TEXTURE_2D, 0, o.RGBA, r, i, 0, o.RGBA, o.UNSIGNED_BYTE, null);
+            }
+            this.isPowerOfTwo = e && n(e.width) && n(e.height);
+            if (this.isPowerOfTwo) {
+                o.generateMipmap(o.TEXTURE_2D);
+                o.texParameteri(o.TEXTURE_2D, o.TEXTURE_WRAP_S, o.REPEAT);
+                o.texParameteri(o.TEXTURE_2D, o.TEXTURE_WRAP_T, o.REPEAT);
+            } else {
+                o.texParameteri(o.TEXTURE_2D, o.TEXTURE_WRAP_S, o.CLAMP_TO_EDGE);
+                o.texParameteri(o.TEXTURE_2D, o.TEXTURE_WRAP_T, o.CLAMP_TO_EDGE);
+                o.texParameteri(o.TEXTURE_2D, o.TEXTURE_MIN_FILTER, o.LINEAR);
+                o.texParameteri(o.TEXTURE_2D, o.TEXTURE_MAG_FILTER, o.LINEAR);
+            }
+            o.bindTexture(o.TEXTURE_2D, null);
+        };
+        t.prototype.bind = function t(e) {
+            this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
+        };
+        t.prototype.unbind = function t(e) {
+            this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        };
+        t.prototype.getSize = function t() {
+            return this.size;
+        };
+        t.prototype.getGlTexture = function t() {
+            return this.tex;
+        };
+        return t;
+    }();
+    e.default = o;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(1);
-    var n = o(r);
+    var i = r(1);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -329,7 +978,30 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var s = function() {
+    var s = function t(e, r) {
+        var i = r.split(".");
+        if (i.length === 1) return {
+            targetObj: e,
+            targetKey: r
+        };
+        var n = i.pop();
+        i.forEach(function(t) {
+            e = e[t];
+        });
+        return {
+            targetObj: e,
+            targetKey: n
+        };
+    };
+    var u = function t(e, r, i) {
+        var n = s(e, r), o = n.targetObj, a = n.targetKey;
+        o[a] = i;
+    };
+    var f = function t(e, r, i) {
+        var n = s(e, r), o = n.targetObj, a = n.targetKey;
+        return o[a];
+    };
+    var h = function() {
         function t(e) {
             a(this, t);
             this.propsToChange = [];
@@ -345,29 +1017,29 @@
             this.justReused = false;
         }
         t.prototype.reuse = function t(e) {
-            var i = this;
+            var r = this;
             this.startedTime = this.currTime;
             this.completed = false;
             Object.keys(e).forEach(function(t) {
-                i.desc[t] = e[t];
+                r.desc[t] = e[t];
             });
             this.desc = this.normalizeDesc(e);
         };
         t.prototype.normalizeDesc = function t(e) {
-            var i = this;
+            var r = this;
             e.from = e.from || {};
             e.to = e.to || {};
-            var r = {};
+            var i = {};
             Object.keys(e.from).forEach(function(t) {
-                r[t] = true;
+                i[t] = true;
             });
             Object.keys(e.to).forEach(function(t) {
-                r[t] = true;
+                i[t] = true;
             });
-            this.propsToChange = Object.keys(r);
+            this.propsToChange = Object.keys(i);
             this.propsToChange.forEach(function(t) {
-                if (e.from[t] === undefined) e.from[t] = i.obj[t];
-                if (e.to[t] === undefined) e.to[t] = i.obj[t];
+                if (e.from[t] === undefined) e.from[t] = f(r.obj, t);
+                if (e.to[t] === undefined) e.to[t] = f(r.obj, t);
             });
             return e;
         };
@@ -375,17 +1047,18 @@
             if (this.completed) return;
             this.currTime = e;
             if (!this.startedTime) this.startedTime = e;
-            var i = e - this.startedTime;
-            window.game.renderer.log("updated " + i);
-            window.game.renderer.log("test log1");
-            if (i > this.tweenTime) {
+            var r = e - this.startedTime;
+            if (r > this.tweenTime) {
                 this._complete();
                 return;
             }
-            var r = this.propsToChange.length;
-            while (r--) {
-                var o = this.propsToChange[r];
-                this.obj[o] = n.default.ease[this.easeFnName](i, this.desc.from[o], this.desc.to[o] - this.desc.from[o], this.tweenTime);
+            var i = this.propsToChange.length;
+            while (i--) {
+                var o = this.propsToChange[i];
+                var a = this.desc.from[o];
+                var s = this.desc.to[o];
+                var f = n.default.ease[this.easeFnName](r, a, s - a, this.tweenTime);
+                u(this.obj, o, f);
             }
             this.progressFn && this.progressFn(this.obj);
         };
@@ -400,8 +1073,9 @@
             if (this.completed) return;
             var e = this.propsToChange.length;
             while (e--) {
-                var i = this.propsToChange[e];
-                this.obj[i] = this.desc.to[i];
+                var r = this.propsToChange[e];
+                var i = this.desc.to[r];
+                u(this.obj, r, i);
             }
             this.progressFn && this.progressFn(this.obj);
             this.completeFn && this.completeFn(this.obj);
@@ -409,11 +1083,11 @@
         };
         return t;
     }();
-    e.default = s;
-}, function(t, e, i) {
+    e.default = h;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    var r = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
+    var i = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
         return typeof t;
     } : function(t) {
         return t && typeof Symbol === "function" && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t;
@@ -423,75 +1097,75 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var o = function t(e, i, r) {
+    var o = function t(e, r, i) {
         if (!e) return true;
         if (e.indexOf("_") === 0) return true;
-        if (i && i.call) return true;
-        if (typeof i === "string") return false;
-        if (typeof i === "number") return false;
-        if (typeof i === "boolean") return false;
-        return i == null && !r.preserveNull;
+        if (r && r.call) return true;
+        if (typeof r === "string") return false;
+        if (typeof r === "number") return false;
+        if (typeof r === "boolean") return false;
+        return r == null && !i.preserveNull;
     };
     var a = function t(e) {
         return typeof e === "string" || typeof e === "number";
     };
     var s = function t(e) {
-        var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
-        if (e === undefined) return undefined; else if (e === null) return null; else if (typeof window !== "undefined" && e === window) return undefined; else if (i.indexOf(e) > -1) return e;
+        var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+        if (e === undefined) return undefined; else if (e === null) return null; else if (typeof window !== "undefined" && e === window) return undefined; else if (r.indexOf(e) > -1) return e;
         if (Object.prototype.toString.call(e) === "[object Array]") {
             var n = [], o = 0, a = e.length;
             for (;o < a; o++) {
                 var s = void 0;
-                if (i.indexOf(e[o]) > -1) {
+                if (r.indexOf(e[o]) > -1) {
                     s = e[o];
                 } else {
-                    i.push(e);
-                    s = t(e[o], i);
-                    i.push(e[o]);
+                    r.push(e);
+                    s = t(e[o], r);
+                    r.push(e[o]);
                 }
                 n[o] = s;
             }
             return n;
-        } else if ((typeof e === "undefined" ? "undefined" : r(e)) === "object") {
-            var h = {};
-            for (var u in e) {
-                if (!e.hasOwnProperty(u)) continue;
-                var f = void 0;
-                if (i.indexOf(e[u]) > -1) {
-                    f = e[u];
+        } else if ((typeof e === "undefined" ? "undefined" : i(e)) === "object") {
+            var u = {};
+            for (var f in e) {
+                if (!e.hasOwnProperty(f)) continue;
+                var h = void 0;
+                if (r.indexOf(e[f]) > -1) {
+                    h = e[f];
                 } else {
-                    i.push(e);
-                    f = t(e[u], i);
-                    i.push(e[u]);
+                    r.push(e);
+                    h = t(e[f], r);
+                    r.push(e[f]);
                 }
-                h[u] = f;
+                u[f] = h;
             }
-            return h;
+            return u;
         } else return e;
     };
-    var h = function() {
+    var u = function() {
         function t() {
             n(this, t);
         }
         t.prototype.fromJSON = function t() {
             var e = this;
-            var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-            var r = arguments[1];
-            Object.keys(i).forEach(function(t) {
+            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+            var i = arguments[1];
+            Object.keys(r).forEach(function(t) {
                 if (t === "type") return;
-                if (t in e) e[t] = i[t]; else {
+                if (t in e) e[t] = r[t]; else {
                     console.error(e);
                     throw "::fromJSON(): class " + e.constructor.name + " has no property " + t;
                 }
                 if (!e[t]) return;
-                if (i[t].id && i[t].type) e[t] = e.game.repository.getObject(i[t].id, i[t].type, r); else if (i[t].splice) {
+                if (r[t].id && r[t].type) e[t] = e.game.repository.getObject(r[t].id, r[t].type, i); else if (r[t].splice) {
                     var n = e[t];
                     e[t] = [];
-                    n.forEach(function(i, n) {
-                        if (i && i.type && i.id) {
-                            e[t].push(e.game.repository.getObject(i.id, i.type, r));
+                    n.forEach(function(r, n) {
+                        if (r && r.type && r.id) {
+                            e[t].push(e.game.repository.getObject(r.id, r.type, i));
                         } else {
-                            e[t].push(i);
+                            e[t].push(r);
                         }
                     });
                 }
@@ -501,55 +1175,55 @@
         };
         t.prototype.toJSON = function t() {
             var e = this;
-            var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
+            var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
                 preserveNull: false
             };
             var n = {};
-            for (var h in this) {
-                if (o(h, this[h], i)) {
+            for (var u in this) {
+                if (o(u, this[u], r)) {
                     continue;
                 }
-                if (this.constructor.transient && this.constructor.transient[h]) {
+                if (this.constructor.transient && this.constructor.transient[u]) {
                     continue;
                 }
-                if (this[h] != null && this[h].type && this[h].id) {
-                    n[h] = {
-                        id: this[h].id,
-                        type: this[h].type
+                if (this[u] != null && this[u].type && this[u].id) {
+                    n[u] = {
+                        id: this[u].id,
+                        type: this[u].type
                     };
-                } else if (this[h] != null && this[h].splice) {
+                } else if (this[u] != null && this[u].splice) {
                     (function() {
-                        var t = e[h];
-                        var i = [];
+                        var t = e[u];
+                        var r = [];
                         t.forEach(function(t) {
                             if (t && t.type && t.id) {
-                                i.push({
+                                r.push({
                                     type: t.type,
                                     id: t.id
                                 });
                             } else {
-                                if (a(t)) i.push(s(t));
+                                if (a(t)) r.push(s(t));
                             }
                         });
-                        n[h] = i;
+                        n[u] = r;
                     })();
                 } else {
-                    var u = s(this[h]);
-                    if (u && u.splice && !u.length) continue; else if (u != null && (typeof u === "undefined" ? "undefined" : r(u)) === "object" && !Object.keys(u).length) continue;
-                    n[h] = u;
+                    var f = s(this[u]);
+                    if (f && f.splice && !f.length) continue; else if (f != null && (typeof f === "undefined" ? "undefined" : i(f)) === "object" && !Object.keys(f).length) continue;
+                    n[u] = f;
                 }
             }
             return n;
         };
         return t;
     }();
-    e.default = h;
-}, function(t, e, i) {
+    e.default = u;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -566,7 +1240,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -580,32 +1254,32 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
+    var f = function(t) {
+        u(e, t);
         e.find = function t(e) {};
         e.findAll = function t(e) {};
-        function e(i) {
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "GameObjectProto";
-            r.spriteSheet = null;
-            r._behaviour = null;
-            r.commonBehaviour = [];
-            r.currFrameIndex = 0;
-            r._sprPosX = 0;
-            r._sprPosY = 0;
-            r.frameAnimations = [];
-            r._currFrameAnimation = 0;
-            r.startFrameAnimationName = null;
-            r._timeCreated = null;
-            r.tileOffset = {
+            var i = s(this, t.call(this, r));
+            i.type = "GameObjectProto";
+            i.spriteSheet = null;
+            i._behaviour = null;
+            i.commonBehaviour = [];
+            i.currFrameIndex = 0;
+            i._sprPosX = 0;
+            i._sprPosY = 0;
+            i.frameAnimations = [];
+            i._currFrameAnimation = 0;
+            i.startFrameAnimationName = null;
+            i._timeCreated = null;
+            i.tileOffset = {
                 x: 0,
                 y: 0
             };
-            r.tileRepeat = false;
-            r.groupName = "";
-            r._individualBehaviour = null;
-            return r;
+            i.tileRepeat = false;
+            i.groupName = "";
+            i._individualBehaviour = null;
+            return i;
         }
         e.prototype.revalidate = function t() {
             var e = this;
@@ -614,32 +1288,32 @@
                 this.width = this.spriteSheet._frameWidth;
                 this.height = this.spriteSheet._frameHeight;
             }
-            this.frameAnimations.forEach(function(t, i) {
-                e.frameAnimations[i] = e.frameAnimations[i].clone();
-                e.frameAnimations[i]._gameObject = e;
+            this.frameAnimations.forEach(function(t, r) {
+                e.frameAnimations[r] = e.frameAnimations[r].clone();
+                e.frameAnimations[r]._gameObject = e;
             });
         };
-        e.prototype.playFrameAnimation = function t(e, i) {
-            var r = this.frameAnimations.find(function(t) {
+        e.prototype.playFrameAnimation = function t(e, r) {
+            var i = this.frameAnimations.find(function(t) {
                 return t.name === e;
             });
-            r._gameObject = this;
-            this._currFrameAnimation = r;
-            r.play(i);
+            i._gameObject = this;
+            this._currFrameAnimation = i;
+            i.play(r);
         };
         e.prototype.setFrameIndex = function t(e) {
             this.currFrameIndex = e;
             this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
             this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
         };
-        e.prototype.update = function e(i, r) {
-            t.prototype.update.call(this, i);
-            this._currFrameAnimation && this._currFrameAnimation.update(i);
-            if (this._individualBehaviour) this._individualBehaviour.onUpdate(i, r);
+        e.prototype.update = function e(r, i) {
+            t.prototype.update.call(this, r);
+            this._currFrameAnimation && this._currFrameAnimation.update(r);
+            if (this._individualBehaviour) this._individualBehaviour.onUpdate(r, i);
             for (var n = 0, o = this.commonBehaviour.length; n < o; n++) {
-                this.commonBehaviour[n].onUpdate(i, r);
+                this.commonBehaviour[n].onUpdate(r, i);
             }
-            this.rigidBody.update(i, r);
+            this.rigidBody.update(r, i);
             this.game.renderer.draw(this);
         };
         e.prototype.onShow = function t() {
@@ -654,13 +1328,13 @@
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -677,7 +1351,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -691,34 +1365,34 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "TileMap";
-            r.spriteSheet = null;
-            r.data = [];
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "TileMap";
+            i.spriteSheet = null;
+            i.data = [];
+            return i;
         }
-        e.prototype.getTileAt = function t(e, i) {
-            var r = this;
+        e.prototype.getTileAt = function t(e, r) {
+            var i = this;
             if (!this.spriteSheet) return;
             var n = ~~(e / this.spriteSheet._frameWidth);
-            var o = ~~(i / this.spriteSheet._frameHeight);
+            var o = ~~(r / this.spriteSheet._frameHeight);
             if (!this.data[o]) return;
             var a = this.data[o][n];
             if (a == null) return;
             return {
                 getRect: function t() {
-                    var e = n * r.spriteSheet._frameWidth + 1, i = o * r.spriteSheet._frameHeight + 1, a = r.spriteSheet._frameWidth - 2, s = r.spriteSheet._frameHeight - 2;
+                    var e = n * i.spriteSheet._frameWidth + 1, r = o * i.spriteSheet._frameHeight + 1, a = i.spriteSheet._frameWidth - 2, s = i.spriteSheet._frameHeight - 2;
                     return {
                         x: e,
-                        y: i,
+                        y: r,
                         width: a,
                         height: s,
                         right: e + a,
-                        bottom: i + s
+                        bottom: r + s
                     };
                 },
                 tileIndex: this.spriteSheet.numOfFramesH * o + n + 1,
@@ -726,19 +1400,19 @@
             };
         };
         e.prototype.getTilesAtRect = function t(e) {
-            var i = [];
-            if (!this.spriteSheet) return i;
-            var r = {};
+            var r = [];
+            if (!this.spriteSheet) return r;
+            var i = {};
             var n = e.x, o = void 0;
             var a = e.x + e.width, s = e.y + e.height;
             while (true) {
                 o = e.y;
                 while (true) {
-                    var h = this.getTileAt(n, o);
-                    if (h) {
-                        if (!r[h.tileIndex]) {
-                            i.push(h);
-                            r[h.tileIndex] = true;
+                    var u = this.getTileAt(n, o);
+                    if (u) {
+                        if (!i[u.tileIndex]) {
+                            r.push(u);
+                            i[u.tileIndex] = true;
                         }
                     }
                     if (o === s) break;
@@ -749,17 +1423,17 @@
                 n += this.spriteSheet._frameWidth;
                 if (n > a) n = a;
             }
-            return i;
+            return r;
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -776,7 +1450,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -790,16 +1464,16 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "TextField";
-            r._chars = null;
-            r.text = "";
-            r.font = null;
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "TextField";
+            i._chars = null;
+            i.text = "";
+            i.font = null;
+            return i;
         }
         e.prototype.revalidate = function t() {
             if (1 && !this.name) {
@@ -814,94 +1488,97 @@
             e += "";
             this._chars = [];
             this.text = e;
-            var i = [ {
+            var r = [ {
                 width: 0
             } ];
-            var r = 0;
+            var i = 0;
             this.height = this.font.fontContext.symbols[" "].height;
             for (var n = 0, o = e.length; n < o; n++) {
                 this._chars.push(e[n]);
                 var a = this.font.fontContext.symbols[e[n]] || this.font.fontContext.symbols[" "];
                 if (e[n] === "\n") {
-                    r++;
+                    i++;
                     this.height += a.height;
-                    i[r] = {
+                    r[i] = {
                         width: 0
                     };
                 } else {
-                    i[r].width += a.width;
+                    r[i].width += a.width;
                 }
             }
-            this.width = Math.max.apply(Math, i.map(function(t) {
+            this.width = Math.max.apply(Math, r.map(function(t) {
                 return t.width;
             }));
+        };
+        e.prototype.getText = function t() {
+            return this.text;
         };
         e.prototype.setFont = function t(e) {
             this.font = e;
             this.setText(this.text);
         };
-        e.prototype.update = function e(i) {
-            t.prototype.update.call(this, i);
+        e.prototype.update = function e(r) {
+            t.prototype.update.call(this, r);
             this.render();
         };
         e.prototype.render = function t() {
             var e = this;
-            var i = 0;
             var r = 0;
+            var i = 0;
             this._chars.forEach(function(t) {
                 var n = e.font.fontContext.symbols[t] || e.font.fontContext.symbols["?"];
                 if (t === "\n") {
-                    i = 0;
-                    r += n.height;
+                    r = 0;
+                    i += n.height;
                     return;
                 }
-                e.game.renderer.drawImage(e.font.resourcePath, n.x, n.y, n.width, n.height, e.pos.x + i, e.pos.y + r);
-                i += n.width;
+                e.game.renderer.drawImage(e.font.resourcePath, n.x, n.y, n.width, n.height, e.pos.x + r, e.pos.y + i);
+                r += n.width;
             });
         };
         return e;
     }(n.default);
-    e.default = u;
-}, , , function(t, e, i) {
+    e.default = f;
+}, , , function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r, n;
-    i(34);
-    var o = i(37);
+    var i, n;
+    r(44);
+    var o = r(46);
     var a = x(o);
-    var s = i(38);
-    var h = x(s);
-    var u = i(29);
-    var f = x(u);
-    var c = i(28);
+    var s = r(57);
+    var u = x(s);
+    var f = r(39);
+    var h = x(f);
+    var c = r(38);
     var l = x(c);
-    var d = i(27);
+    var d = r(37);
     var p = x(d);
-    var y = i(33);
+    var y = r(43);
     var g = x(y);
-    var m = i(4);
-    var v = i(6);
+    var m = r(12);
+    var v = r(16);
     var w = x(v);
-    var _ = i(26);
+    var _ = r(36);
     var b = x(_);
     function x(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function O(t, e) {
+    function E(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function j(t, e) {
+    function T(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function E(t, e) {
+    function O(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -915,46 +1592,46 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var S = (r = (0, m.Transient)({
+    var A = (i = (0, m.Transient)({
         repository: true,
         camera: true,
         keyboard: true,
         gamePad: true
-    }), r(n = function(t) {
-        E(e, t);
-        function e(i) {
-            O(this, e);
-            var r = j(this, t.call(this));
-            r._lastTime = null;
-            r._currTime = null;
-            r._currentScene = null;
-            r._running = false;
-            r.renderer = null;
-            r.scale = {
+    }), i(n = function(t) {
+        O(e, t);
+        function e(r) {
+            E(this, e);
+            var i = T(this, t.call(this));
+            i._lastTime = null;
+            i._currTime = null;
+            i._currentScene = null;
+            i._running = false;
+            i.renderer = null;
+            i.scale = {
                 x: 1,
                 y: 1
             };
-            r.pos = {
+            i.pos = {
                 x: 0,
                 y: 0
             };
-            r.gravityConstant = null;
-            r.fps = null;
-            r.gamePad = null;
-            Object.keys(i).forEach(function(t) {
-                r[t] = i[t];
+            i.gravityConstant = null;
+            i.fps = null;
+            i.gamePad = null;
+            Object.keys(r).forEach(function(t) {
+                i[t] = r[t];
             });
             var n = Date.now();
-            r._lastTime = r._currTime = n;
-            r._deltaTime = 0;
-            r.repository = new h.default(r);
-            r.mouse = new f.default(r);
-            r.keyboard = new l.default(r);
-            r.keyboard.listenTo();
-            r.gamePad = new p.default(r);
-            r.collider = new g.default(r);
-            r.camera = new b.default(r);
-            return r;
+            i._lastTime = i._currTime = n;
+            i._deltaTime = 0;
+            i.repository = new u.default(i);
+            i.mouse = new h.default(i);
+            i.keyboard = new l.default(i);
+            i.keyboard.listenTo();
+            i.gamePad = new p.default(i);
+            i.collider = new g.default(i);
+            i.camera = new b.default(i);
+            return i;
         }
         e.prototype.getTime = function t() {
             return this._lastTime;
@@ -962,27 +1639,27 @@
         e.prototype.getDeltaTime = function t() {
             return this._deltaTime;
         };
-        e.prototype.runScene = function t(r) {
+        e.prototype.runScene = function t(i) {
             var n = this;
             if (!this.renderer) {
                 this.renderer = a.default.getRenderer(this);
                 this.mouse.listenTo(this.renderer.container);
             }
-            this._currentScene = r;
+            this._currentScene = i;
             if (true) {
-                var o = i(15);
-                var s = "" + r.name[0].toUpperCase() + r.name.substr(1) + "Behaviour";
-                if (s) r.setIndividualBehaviour(o[s]);
-                r.layers.forEach(function(t) {
+                var o = r(25);
+                var s = "" + i.name[0].toUpperCase() + i.name.substr(1) + "Behaviour";
+                if (s) i.setIndividualBehaviour(o[s]);
+                i.layers.forEach(function(t) {
                     t.gameObjects.forEach(function(t) {
                         t.setCommonBehaviour();
                         var e = "" + t.name[0].toUpperCase() + t.name.substr(1) + "Behaviour";
-                        var i = o[e];
-                        if (i) t.setIndividualBehaviour(i);
+                        var r = o[e];
+                        if (r) t.setIndividualBehaviour(r);
                     });
                 });
             }
-            r.preload(function() {
+            i.preload(function() {
                 n._currentScene.onShow();
                 if (!n._running) {
                     e.update(n);
@@ -996,28 +1673,28 @@
         e.prototype.setCurrScene = function t(e) {
             this._currentScene = e;
         };
-        e.update = function t(i) {
+        e.update = function t(r) {
             if (1 && window.canceled) return;
             requestAnimationFrame(function() {
-                e.update(i);
+                e.update(r);
             });
-            i._lastTime = i._currTime;
-            i._currTime = Date.now();
-            i._deltaTime = i._currTime - i._lastTime;
+            r._lastTime = r._currTime;
+            r._currTime = Date.now();
+            r._deltaTime = r._currTime - r._lastTime;
             if (true) {
-                i.fps = ~~(1e3 / i._deltaTime);
-                window.fps = i.fps;
-                var r = i.renderer.getError();
-                if (r) throw "render error with code " + r;
+                r.fps = ~~(1e3 / r._deltaTime);
+                window.fps = r.fps;
+                var i = r.renderer.getError();
+                if (i) throw "render error with code " + i;
             }
-            if (i._deltaTime > 20) i._deltaTime = 20;
-            i._currentScene && i._currentScene.update(i._currTime, i._deltaTime);
-            i.keyboard.update();
-            i.gamePad.update();
+            if (r._deltaTime > 20) r._deltaTime = 20;
+            r._currentScene && r._currentScene.update(r._currTime, r._deltaTime);
+            r.keyboard.update();
+            r.gamePad.update();
         };
         return e;
     }(w.default)) || n);
-    e.default = S;
+    e.default = A;
 }, function(t, e) {
     t.exports = {
         width: 900,
@@ -2478,29 +3155,29 @@
             data: [ [], null, null, [ null, null, null, null, 2, null, null ], [ null, null ], [ 1, null, 3, null, null, 1, 1, 1, 1, 1, 1, 1, 1, 1 ], null, [ null, 1, null, 1 ] ]
         } ]
     };
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.PlatformBehaviour = e.MainSceneBehaviour = e.Ground1Behaviour = e.DudeBehaviour = undefined;
-    var r = i(16);
-    var n = i(17);
-    var o = i(18);
-    var a = i(19);
-    e.DudeBehaviour = r.DudeBehaviour;
+    var i = r(26);
+    var n = r(27);
+    var o = r(28);
+    var a = r(29);
+    e.DudeBehaviour = i.DudeBehaviour;
     e.Ground1Behaviour = n.Ground1Behaviour;
     e.MainSceneBehaviour = o.MainSceneBehaviour;
     e.PlatformBehaviour = a.PlatformBehaviour;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = e.DudeBehaviour = function() {
         function t() {
-            r(this, t);
+            i(this, t);
         }
         t.prototype.onCreate = function t() {
             this.game.camera.followTo(this.gameObject);
@@ -2516,34 +3193,34 @@
         t.prototype.onDestroy = function t() {};
         return t;
     }();
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = e.Ground1Behaviour = function() {
         function t() {
-            r(this, t);
+            i(this, t);
         }
         t.prototype.onCreate = function t() {};
         t.prototype.onUpdate = function t() {};
         t.prototype.onDestroy = function t() {};
         return t;
     }();
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = e.MainSceneBehaviour = function() {
         function t() {
-            r(this, t);
+            i(this, t);
         }
         t.prototype.onCreate = function t() {
             var e = this;
@@ -2567,17 +3244,17 @@
         t.prototype.onDestroy = function t() {};
         return t;
     }();
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = e.PlatformBehaviour = function() {
         function t() {
-            r(this, t);
+            i(this, t);
         }
         t.prototype.onCreate = function t() {
             this.gameObject.rigidBody.static = true;
@@ -2586,30 +3263,30 @@
         t.prototype.onDestroy = function t() {};
         return t;
     }();
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.Control2Dir = e.Control4Dir = e.Draggable = undefined;
-    var r = i(23);
-    var n = u(r);
-    var o = i(22);
-    var a = u(o);
-    var s = i(21);
-    var h = u(s);
-    function u(t) {
+    var i = r(33);
+    var n = f(i);
+    var o = r(32);
+    var a = f(o);
+    var s = r(31);
+    var u = f(s);
+    function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
     e.Draggable = n.default;
     e.Control4Dir = a.default;
-    e.Control2Dir = h.default;
-}, function(t, e, i) {
+    e.Control2Dir = u.default;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(24);
-    var n = o(r);
+    var i = r(34);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2626,7 +3303,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2640,25 +3317,25 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            return s(this, t.call(this, i));
+            return s(this, t.call(this, r));
         }
-        e.prototype.manage = function e(i, r) {
-            t.prototype.manage.call(this, i, r);
+        e.prototype.manage = function e(r, i) {
+            t.prototype.manage.call(this, r, i);
         };
         e.prototype.onUpdate = function t() {
             var e = this.game.keyboard;
-            var i = this.parameters;
-            var r = this.gameObject;
+            var r = this.parameters;
+            var i = this.gameObject;
             if (e.isPressed(e.KEY.LEFT) || e.isPressed(e.KEY.GAME_PAD_AXIS_LEFT)) {
-                r.rigidBody.vel.x = -i.velocity;
+                i.rigidBody.vel.x = -r.velocity;
                 this.go("Left");
             }
             if (e.isPressed(e.KEY.RIGHT) || e.isPressed(e.KEY.GAME_PAD_AXIS_RIGHT)) {
-                r.rigidBody.vel.x = i.velocity;
+                i.rigidBody.vel.x = r.velocity;
                 this.go("Right");
             }
             if (e.isJustReleased(e.KEY.LEFT) || e.isJustReleased(e.KEY.GAME_PAD_AXIS_LEFT)) {
@@ -2669,13 +3346,13 @@
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(25);
-    var n = o(r);
+    var i = r(35);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2692,7 +3369,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2706,33 +3383,33 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            return s(this, t.call(this, i));
+            return s(this, t.call(this, r));
         }
-        e.prototype.manage = function e(i, r) {
-            t.prototype.manage.call(this, i, r);
+        e.prototype.manage = function e(r, i) {
+            t.prototype.manage.call(this, r, i);
         };
         e.prototype.onUpdate = function t() {
             var e = this.game.keyboard;
-            var i = this.parameters;
-            var r = this.gameObject;
+            var r = this.parameters;
+            var i = this.gameObject;
             if (e.isPressed(e.KEY.UP) || e.isPressed(e.KEY.GAME_PAD_AXIS_UP)) {
-                r.rigidBody.vel.y = -i.velocity;
+                i.rigidBody.vel.y = -r.velocity;
                 this.go("Up");
             }
             if (e.isPressed(e.KEY.DOWN) || e.isPressed(e.KEY.GAME_PAD_AXIS_DOWN)) {
-                r.rigidBody.vel.y = i.velocity;
+                i.rigidBody.vel.y = r.velocity;
                 this.go("Down");
             }
             if (e.isPressed(e.KEY.LEFT) || e.isPressed(e.KEY.GAME_PAD_AXIS_LEFT)) {
-                r.rigidBody.vel.x = -i.velocity;
+                i.rigidBody.vel.x = -r.velocity;
                 this.go("Left");
             }
             if (e.isPressed(e.KEY.RIGHT) || e.isPressed(e.KEY.GAME_PAD_AXIS_RIGHT)) {
-                r.rigidBody.vel.x = i.velocity;
+                i.rigidBody.vel.x = r.velocity;
                 this.go("Right");
             }
             if (e.isJustReleased(e.KEY.LEFT) || e.isPressed(e.KEY.GAME_PAD_AXIS_LEFT)) {
@@ -2747,13 +3424,13 @@
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(2);
-    var n = o(r);
+    var i = r(10);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2770,7 +3447,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2784,25 +3461,25 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
+    var f = function(t) {
+        u(e, t);
         e._getEventId = function t(e) {
             return e.id || 1;
         };
-        function e(i) {
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this));
-            r.game = i;
-            r.points = {};
-            return r;
+            var i = s(this, t.call(this));
+            i.game = r;
+            i.points = {};
+            return i;
         }
-        e.prototype.manage = function t(i, r) {
+        e.prototype.manage = function t(r, i) {
             var n = this;
-            i.on("click", function(t) {
+            r.on("click", function(t) {
                 n.points[e._getEventId(t)] = {
                     mX: t.objectX,
                     mY: t.objectY,
-                    target: i,
+                    target: r,
                     preventDefault: function t() {
                         this.defaultPrevented = true;
                     }
@@ -2810,66 +3487,66 @@
             });
             var o = this.game.getCurrScene();
             o.on("mouseDown", function(t) {
-                var i = e._getEventId(t);
-                var r = n.points[i];
-                if (!r) return;
-                r.dragStartX = r.target.pos.x;
-                r.dragStartY = r.target.pos.y;
+                var r = e._getEventId(t);
+                var i = n.points[r];
+                if (!i) return;
+                i.dragStartX = i.target.pos.x;
+                i.dragStartY = i.target.pos.y;
             });
             o.on("mouseMove", function(t) {
-                var r = e._getEventId(t);
-                var o = n.points[r];
+                var i = e._getEventId(t);
+                var o = n.points[i];
                 if (!o) return;
                 if (!o.dragStart) {
                     o.dragStart = true;
                     o.target.trigger("dragStart", o);
                     if (o.defaultPrevented) {
-                        delete n.points[r];
+                        delete n.points[i];
                         return;
                     }
                 }
-                i.pos.x = t.screenX - o.mX;
-                i.pos.y = t.screenY - o.mY;
+                r.pos.x = t.screenX - o.mX;
+                r.pos.y = t.screenY - o.mY;
             });
             o.on("mouseUp", function(t) {
-                var r = e._getEventId(t);
-                var o = n.points[r];
+                var i = e._getEventId(t);
+                var o = n.points[i];
                 if (!o) return;
                 if (o.dragStart) {
-                    o.x = i.pos.x;
-                    o.y = i.pos.y;
+                    o.x = r.pos.x;
+                    o.y = r.pos.y;
                     o.target.trigger("dragStop", o);
                 }
-                delete n.points[r];
+                delete n.points[i];
             });
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r, n;
-    var o = i(3);
+    var i, n;
+    var o = r(11);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function h(t, e) {
+    function u(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function u(t, e) {
+    function f(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function f(t, e) {
+    function h(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2883,46 +3560,46 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var c = (n = r = function(t) {
-        f(e, t);
-        function e(i) {
-            h(this, e);
-            return u(this, t.call(this, i));
+    var c = (n = i = function(t) {
+        h(e, t);
+        function e(r) {
+            u(this, e);
+            return f(this, t.call(this, r));
         }
-        e.prototype.manage = function i(r, n) {
-            t.prototype.manage.call(this, r, n, e.DIRS);
+        e.prototype.manage = function r(i, n) {
+            t.prototype.manage.call(this, i, n, e.DIRS);
         };
         e.prototype.stop = function e() {
             t.prototype.stop.call(this);
             this.gameObject.rigidBody.vel.x = 0;
         };
         return e;
-    }(a.default), r.DIRS = [ "Left", "Right" ], n);
+    }(a.default), i.DIRS = [ "Left", "Right" ], n);
     e.default = c;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r, n;
-    var o = i(3);
+    var i, n;
+    var o = r(11);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function h(t, e) {
+    function u(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function u(t, e) {
+    function f(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function f(t, e) {
+    function h(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -2936,14 +3613,14 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var c = (n = r = function(t) {
-        f(e, t);
-        function e(i) {
-            h(this, e);
-            return u(this, t.call(this, i));
+    var c = (n = i = function(t) {
+        h(e, t);
+        function e(r) {
+            u(this, e);
+            return f(this, t.call(this, r));
         }
-        e.prototype.manage = function i(r, n) {
-            t.prototype.manage.call(this, r, n, e.DIRS);
+        e.prototype.manage = function r(i, n) {
+            t.prototype.manage.call(this, i, n, e.DIRS);
         };
         e.prototype.stop = function e() {
             t.prototype.stop.call(this);
@@ -2951,14 +3628,14 @@
             this.gameObject.rigidBody.vel.y = 0;
         };
         return e;
-    }(a.default), r.DIRS = [ "Left", "Right", "Up", "Down" ], n);
+    }(a.default), i.DIRS = [ "Left", "Right", "Up", "Down" ], n);
     e.default = c;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(5);
-    var n = o(r);
+    var i = r(15);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -2998,46 +3675,55 @@
                 this.sceneHeight = this.game.getCurrScene().height || this.game.height;
             }
             this.cameraTween = new n.default({
-                target: this.pos,
+                target: this,
                 ease: "easeInQuad",
                 to: {
                     x: this.pos.x,
                     y: this.pos.y
                 },
-                time: this.TOLERANCE_TIME,
-                progress: function t(e) {}
+                time: this.TOLERANCE_TIME
             });
         };
-        t.prototype.update = function t(e, i) {
-            var r = this.objFollowTo;
-            if (!r) return;
+        t.prototype.update = function t(e, r) {
+            var i = this.objFollowTo;
+            if (!i) return;
             var n = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0;
             var o = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
             var a = this.game.width;
             var s = this.game.height;
-            var h = a / 2;
-            var u = s / 2;
-            var f = r.pos.x - h;
-            var c = r.pos.y - u;
-            if (r._lastDirection === "Right") f += 400;
-            if (r._lastDirection === "Left") f -= 400;
-            if (f < 0) f = 0;
+            var u = a / 2;
+            var f = s / 2;
+            var h = i.pos.x - u;
+            var c = i.pos.y - f;
+            if (i._lastDirection === "Right") h += 400;
+            if (i._lastDirection === "Left") h -= 400;
+            if (h < 0) h = 0;
             if (c < 0) c = 0;
-            if (f > this.sceneWidth - a + n) f = this.sceneWidth - a + n;
+            if (h > this.sceneWidth - a + n) h = this.sceneWidth - a + n;
             if (c > this.sceneHeight - s + o) c = this.sceneHeight - s + o;
+            var l = Math.abs(i.rigidBody.vel.x) > 0 ? .95 : 1;
             if (this.TOLERANCE_TIME === 0) {
-                this.pos.x = f;
+                this.pos.x = h;
                 this.pos.y = c;
             } else if (e - this.lastToleranceTime > this.TOLERANCE_TIME) {
                 this.lastToleranceTime = e;
                 this.cameraTween.reuse({
                     to: {
-                        x: f,
-                        y: c
+                        "pos.x": h,
+                        "pos.y": c,
+                        "scale.x": l,
+                        "scale.y": l
                     }
                 });
             }
             this.cameraTween.update(e);
+            this.render();
+        };
+        t.prototype.render = function t() {
+            this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
+            this.game.renderer.scale(this.scale.x, this.scale.y);
+            this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
+            this.game.renderer.translate(-this.pos.x, -this.pos.y);
         };
         t.prototype.getRect = function t() {
             return {
@@ -3050,10 +3736,10 @@
         return t;
     }();
     e.default = s;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -3068,28 +3754,28 @@
     }
     var n = function() {
         function t(e) {
-            r(this, t);
+            i(this, t);
             this.game = e;
         }
         t.prototype.update = function t() {
             this.gamepads = navigator.getGamepads && navigator.getGamepads() || navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || [];
-            for (var e = 0, i = this.gamepads.length; e < i; e++) {
-                var r = this.gamepads[e];
-                if (!r) continue;
-                var n = r.buttons.length;
+            for (var e = 0, r = this.gamepads.length; e < r; e++) {
+                var i = this.gamepads[e];
+                if (!i) continue;
+                var n = i.buttons.length;
                 if (n > 7) n = 7;
                 for (var o = 0; o < n; o++) {
-                    var a = r.buttons[o];
+                    var a = i.buttons[o];
                     if (a.pressed) {
                         this.game.keyboard.press(o);
                     } else {
                         this.game.keyboard.release(o);
                     }
                 }
-                if (r.axes[0] === 0) continue;
-                if (r.axes[1] === 0) continue;
-                var s = ~~r.axes[0];
-                var h = ~~r.axes[1];
+                if (i.axes[0] === 0) continue;
+                if (i.axes[1] === 0) continue;
+                var s = ~~i.axes[0];
+                var u = ~~i.axes[1];
                 if (s === 1) {
                     this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
                 } else {
@@ -3100,12 +3786,12 @@
                 } else {
                     this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
                 }
-                if (h === 1) {
+                if (u === 1) {
                     this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
                 } else {
                     this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
                 }
-                if (h === -1) {
+                if (u === -1) {
                     this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
                 } else {
                     this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
@@ -3115,10 +3801,10 @@
         return t;
     }();
     e.default = n;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -3127,9 +3813,9 @@
     var o = 1;
     var a = 0;
     var s = -1;
-    var h = function() {
+    var u = function() {
         function t(e) {
-            r(this, t);
+            i(this, t);
             this.KEY = {
                 SPACE: 32,
                 A: 65,
@@ -3180,7 +3866,6 @@
         }
         t.prototype.press = function t(e) {
             if (this.isPressed(e)) return;
-            console.log("pressed", e);
             this.buffer[e] = n;
         };
         t.prototype.release = function t(e) {
@@ -3213,23 +3898,23 @@
         t.prototype.listenTo = function t() {
             var e = this;
             window.addEventListener("keydown", function(t) {
-                var i = t.keyCode;
-                e.press(i);
+                var r = t.keyCode;
+                e.press(r);
             });
             window.addEventListener("keyup", function(t) {
-                var i = t.keyCode;
-                e.release(i);
+                var r = t.keyCode;
+                e.release(r);
             });
         };
         return t;
     }();
-    e.default = h;
-}, function(t, e, i) {
+    e.default = u;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(1);
-    var n = o(r);
+    var i = r(1);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3247,37 +3932,37 @@
             this.game = e;
         }
         t.prototype.listenTo = function t(e) {
-            var i = this;
+            var r = this;
             e.ontouchstart = function(t) {
                 var e = t.touches.length;
                 while (e--) {
-                    i.resolveClick(t.touches[e]);
+                    r.resolveClick(t.touches[e]);
                 }
             };
             e.onmousedown = function(t) {
-                t.button === 0 && i.resolveClick(t);
+                t.button === 0 && r.resolveClick(t);
             };
             e.ontouchend = e.ontouchcancel = function(t) {
                 var e = t.changedTouches.length;
                 while (e--) {
-                    i.resolveMouseUp(t.changedTouches[e]);
+                    r.resolveMouseUp(t.changedTouches[e]);
                 }
             };
             e.onmouseup = function(t) {
-                i.resolveMouseUp(t);
+                r.resolveMouseUp(t);
             };
             e.ontouchmove = function(t) {
                 var e = t.touches.length;
                 while (e--) {
-                    i.resolveMouseMove(t.touches[e], true);
+                    r.resolveMouseMove(t.touches[e], true);
                 }
             };
             e.onmousemove = function(t) {
                 var e = t.buttons === 1;
-                i.resolveMouseMove(t, e);
+                r.resolveMouseMove(t, e);
             };
             e.ondblclick = function(t) {
-                i.resolveDoubleClick(t);
+                r.resolveDoubleClick(t);
             };
         };
         t.prototype.resolveScreenPoint = function t(e) {
@@ -3287,34 +3972,34 @@
                 id: e.identifier || 0
             };
         };
-        t.prototype.triggerEvent = function t(e, i, r) {
+        t.prototype.triggerEvent = function t(e, r, i) {
             var o = this.game;
             var a = o.getCurrScene();
             if (!a) return;
             var s = this.resolveScreenPoint(e);
-            t: for (var h = 0; h < a.layers.length; h++) {
-                var u = a.layers[a.layers.length - 1 - h];
-                for (var f = 0; f < u.gameObjects.length; f++) {
-                    var c = u.gameObjects[f];
+            t: for (var u = 0; u < a.layers.length; u++) {
+                var f = a.layers[a.layers.length - 1 - u];
+                for (var h = 0; h < f.gameObjects.length; h++) {
+                    var c = f.gameObjects[h];
                     if (n.default.isPointInRect(s, c.getRect())) {
-                        c.trigger(i, {
+                        c.trigger(r, {
                             screenX: s.x,
                             screenY: s.y,
                             objectX: s.x - c.pos.x,
                             objectY: s.y - c.pos.y,
                             id: s.id,
-                            isMouseDown: r
+                            isMouseDown: i
                         });
                         break t;
                     }
                 }
             }
-            a.trigger(i, {
+            a.trigger(r, {
                 screenX: s.x,
                 screenY: s.y,
                 id: s.id,
                 target: a,
-                isMouseDown: r
+                isMouseDown: i
             });
             return s;
         };
@@ -3323,86 +4008,86 @@
             this.triggerEvent(e, "click");
             this.triggerEvent(e, "mouseDown");
         };
-        t.prototype.resolveMouseMove = function t(e, i) {
+        t.prototype.resolveMouseMove = function t(e, r) {
             if (1 && window.canceled) return;
-            var r = this.triggerEvent(e, "mouseMove", i);
-            if (!r) return;
-            var n = this.objectsCaptured[r.id];
-            if (n && n !== r.object) {
+            var i = this.triggerEvent(e, "mouseMove", r);
+            if (!i) return;
+            var n = this.objectsCaptured[i.id];
+            if (n && n !== i.object) {
                 n.trigger("mouseLeave");
-                delete this.objectsCaptured[r.id];
+                delete this.objectsCaptured[i.id];
             }
-            if (r.object && n !== r.object) {
-                r.object.trigger("mouseEnter");
-                this.objectsCaptured[r.id] = r.object;
+            if (i.object && n !== i.object) {
+                i.object.trigger("mouseEnter");
+                this.objectsCaptured[i.id] = i.object;
             }
         };
         t.prototype.resolveMouseUp = function t(e) {
             if (1 && window.canceled) return;
-            var i = this.triggerEvent(e, "mouseUp");
-            if (!i) return;
-            var r = this.objectsCaptured[i.id];
+            var r = this.triggerEvent(e, "mouseUp");
             if (!r) return;
-            r.trigger("mouseUp");
-            delete this.objectsCaptured[i.id];
+            var i = this.objectsCaptured[r.id];
+            if (!i) return;
+            i.trigger("mouseUp");
+            delete this.objectsCaptured[r.id];
         };
         t.prototype.resolveDoubleClick = function t(e) {
             if (1 && window.canceled) return;
-            var i = this.triggerEvent(e, "doubleClick");
-            if (!i) return;
-            delete this.objectsCaptured[i.id];
+            var r = this.triggerEvent(e, "doubleClick");
+            if (!r) return;
+            delete this.objectsCaptured[r.id];
         };
         return t;
     }();
     e.default = s;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = function() {
         function t() {
-            r(this, t);
+            i(this, t);
             this.events = {};
         }
-        t.prototype._on = function t(e, i) {
+        t.prototype._on = function t(e, r) {
             this.events[e] = this.events[e] || [];
-            this.events[e].push(i);
+            this.events[e].push(r);
         };
-        t.prototype.on = function t(e, i) {
+        t.prototype.on = function t(e, r) {
             if (typeof e === "string") {
-                this._on(e, i);
+                this._on(e, r);
             } else if (e.splice) {
                 e.forEach(function(t) {
-                    this._on(t, i);
+                    this._on(t, r);
                 });
             }
         };
-        t.prototype.trigger = function t(e, i) {
-            var r = this.events[e];
-            if (!r) return;
-            var n = r.length;
+        t.prototype.trigger = function t(e, r) {
+            var i = this.events[e];
+            if (!i) return;
+            var n = i.length;
             while (n--) {
-                r[n](i);
+                i[n](r);
             }
         };
         return t;
     }();
     e.default = n;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
     var n = function() {
         function t() {
-            r(this, t);
+            i(this, t);
             this.tasksResolved = 0;
             this.tasks = [];
             this.tasksProgressById = {};
@@ -3419,12 +4104,12 @@
             });
             return e / this.tasks.length;
         };
-        t.prototype.addTask = function t(e, i) {
+        t.prototype.addTask = function t(e, r) {
             this.tasks.push(e);
-            this.tasksProgressById[i] = 0;
+            this.tasksProgressById[r] = 0;
         };
-        t.prototype.progressTask = function t(e, i) {
-            this.tasksProgressById[e] = i;
+        t.prototype.progressTask = function t(e, r) {
+            this.tasksProgressById[e] = r;
             this.onProgress && this.onProgress(this.calcProgress());
         };
         t.prototype.resolveTask = function t(e) {
@@ -3446,50 +4131,50 @@
         return t;
     }();
     e.default = n;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(39);
-    var n = s(r);
-    var o = i(1);
+    var i = r(58);
+    var n = s(i);
+    var o = r(1);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function h(t, e) {
+    function u(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var u = function() {
+    var f = function() {
         function t(e) {
-            h(this, t);
+            u(this, t);
             this.vel = new n.default();
             this.game = e.game;
             this.gameObject = e;
         }
-        t.prototype.update = function t(e, i) {
+        t.prototype.update = function t(e, r) {
             if (!this.gameObject.rigidBody.static) {
-                var r = this.vel.x * i / 1e3;
-                var n = this.vel.y * i / 1e3;
+                var i = this.vel.x * r / 1e3;
+                var n = this.vel.y * r / 1e3;
                 var o = this.gameObject.pos.y + n;
-                this.game.collider.moveBy(this.gameObject, r, n);
+                this.game.collider.moveBy(this.gameObject, i, n);
                 this.gameObject.rigidBody.onFloor = o > this.gameObject.pos.y;
                 if (o !== this.gameObject.pos.y) this.vel.y = 0;
-                this.vel.y += this.game.gravityConstant * i / 1e3;
+                this.vel.y += this.game.gravityConstant * r / 1e3;
             }
         };
         return t;
     }();
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(1);
+    var i = r(1);
     function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -3500,16 +4185,16 @@
             n(this, t);
             this.game = e;
         }
-        t.prototype.moveBy = function t(e, i, n) {
+        t.prototype.moveBy = function t(e, r, n) {
             var o = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(e.getRect()));
             var a = e.getRect();
-            a.x += i;
+            a.x += r;
             a.y += n;
-            var s = false, h = false;
-            for (var u = 0, f = o.length; u < f; u++) {
-                var c = o[u];
+            var s = false, u = false;
+            for (var f = 0, h = o.length; f < h; f++) {
+                var c = o[f];
                 var l = c.getRect();
-                if (e !== o[u] && (0, r.overlapTest)(a, l)) {
+                if (e !== o[f] && (0, i.overlapTest)(a, l)) {
                     var d = a.bottom - l.y;
                     var p = l.bottom - a.y;
                     var y = a.x + a.width - l.x;
@@ -3517,10 +4202,10 @@
                     var m = Math.min(d, p, y, g);
                     if (d === m) {
                         e.pos.y = l.y - a.height;
-                        h = true;
+                        u = true;
                     } else if (p === m) {
                         e.pos.y = l.bottom;
-                        h = true;
+                        u = true;
                     } else if (y === m) {
                         e.pos.x = l.x - a.width;
                         s = true;
@@ -3530,28 +4215,28 @@
                     }
                 }
             }
-            if (!s) e.pos.x += i;
-            if (!h) e.pos.y += n;
+            if (!s) e.pos.x += r;
+            if (!u) e.pos.y += n;
         };
-        t.prototype.moveTo = function t(e, i, n) {
+        t.prototype.moveTo = function t(e, r, n) {
             var o = e.getRect();
             var a = false;
             if (e.rigidBody) {
                 this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(o)).some(function(t) {
-                    if ((0, r.overlapTest)(o, t.getRect())) {
+                    if ((0, i.overlapTest)(o, t.getRect())) {
                         a = true;
                         return true;
                     }
                 });
             }
             if (a) return;
-            e.pos.x = i;
+            e.pos.x = r;
             e.pos.y = n;
         };
         return t;
     }();
     e.default = o;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     Array.prototype.remove = function(t) {
         var e = this.length;
@@ -3573,24 +4258,24 @@
                 throw new TypeError("predicate must be a function");
             }
             var e = Object(this);
-            var i = e.length >>> 0;
-            var r = arguments[1];
+            var r = e.length >>> 0;
+            var i = arguments[1];
             var n = void 0;
-            for (var o = 0; o < i; o++) {
+            for (var o = 0; o < r; o++) {
                 n = e[o];
-                if (t.call(r, n, o, e)) {
+                if (t.call(i, n, o, e)) {
                     return n;
                 }
             }
             return undefined;
         };
     }
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(9);
-    var n = o(r);
+    var i = r(19);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3611,21 +4296,21 @@
         }
         t.prototype.onResize = function t() {
             var e = this.container.height / this.container.width;
-            var i = window.innerHeight / window.innerWidth;
-            var r = void 0;
+            var r = window.innerHeight / window.innerWidth;
+            var i = void 0;
             var n = void 0;
-            if (i < e) {
+            if (r < e) {
                 n = window.innerHeight;
-                r = n / e;
+                i = n / e;
             } else {
-                r = window.innerWidth;
-                n = r * e;
+                i = window.innerWidth;
+                n = i * e;
             }
-            this.game.scale.x = r / this.game.width;
+            this.game.scale.x = i / this.game.width;
             this.game.scale.y = n / this.game.height;
-            this.game.pos.x = (window.innerWidth - r) / 2;
+            this.game.pos.x = (window.innerWidth - i) / 2;
             this.game.pos.y = (window.innerHeight - n) / 2;
-            this.container.style.width = r + "px";
+            this.container.style.width = i + "px";
             this.container.style.height = n + "px";
         };
         t.prototype.beginFrameBuffer = function t() {};
@@ -3644,189 +4329,44 @@
         t.prototype.getError = function t() {
             return 0;
         };
-        t.prototype.log = function t(e) {
+        t.prototype.log = function t() {
             if (false) return;
-            var i = this.debugTextField;
-            if (e === undefined) e = "undefined";
-            if (e === null) e = "null";
-            if (e.toJSON) {
-                e = JSON.stringify(e.toJSON(), null, 4);
-            } else {
-                try {
-                    e = JSON.stringify(e);
-                } catch (t) {}
+            var e = this.debugTextField;
+            var r = "";
+            Array.prototype.slice.call(arguments).forEach(function(t) {
+                if (t === undefined) t = "undefined";
+                if (t === null) t = "null";
+                if (t.toJSON) {
+                    t = JSON.stringify(t.toJSON(), null, 4);
+                } else {
+                    try {
+                        t = JSON.stringify(t);
+                    } catch (t) {}
+                }
+                if (typeof t !== "string") t = t.toString();
+                r += t + "\n";
+            });
+            if (!e) {
+                e = new n.default(this.game);
+                e.name = "defaultName";
+                e.revalidate();
+                this.debugTextField = e;
             }
-            e = e.toString();
-            if (!i) {
-                i = new n.default(this.game);
-                i.name = "defaultName";
-                i.revalidate();
-                this.debugTextField = i;
-            }
-            i.pos.x = 10 + this.game.camera.pos.x;
-            i.pos.y = 10 + this.game.camera.pos.y;
-            i.setText(e);
+            e.pos.x = 10;
+            e.pos.y = 10;
+            e.setText(e.getText() + r);
         };
-        t.prototype.loadTextureInfo = function t(e, i) {};
+        t.prototype.loadTextureInfo = function t(e, r) {};
         t.prototype.getTextureInfo = function t(e) {};
         return t;
     }();
     e.default = s;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(35);
-    var n = o(r);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function a(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    function s(t, e) {
-        if (!t) {
-            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }
-        return e && (typeof e === "object" || typeof e === "function") ? e : t;
-    }
-    function h(t, e) {
-        if (typeof e !== "function" && e !== null) {
-            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
-        }
-        t.prototype = Object.create(e && e.prototype, {
-            constructor: {
-                value: t,
-                enumerable: false,
-                writable: true,
-                configurable: true
-            }
-        });
-        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
-    }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
-            a(this, e);
-            var r = s(this, t.call(this, i));
-            var n = document.createElement("canvas");
-            r.ctx = n.getContext("2d");
-            document.body.appendChild(n);
-            n.setAttribute("width", i.width);
-            n.setAttribute("height", i.height);
-            r.container = n;
-            r.registerResize();
-            return r;
-        }
-        e.prototype.draw = function t(e) {
-            var i = this.ctx;
-            i.save();
-            i.translate(e.pos.x + e.width / 2, e.pos.y + e.height / 2);
-            i.scale(e.scale.x, e.scale.y);
-            i.rotate(e.angle);
-            i.translate(-e.width / 2, -e.height / 2);
-            i.globalAlpha = e.alpha;
-            i.globalCompositeOperation = e.blendMode || "source-over";
-            i.drawImage(this.renderableCache[e.spriteSheet.resourcePath], e._sprPosX, e._sprPosY, e.width, e.height, 0, 0, e.width, e.height);
-            i.restore();
-        };
-        e.prototype.drawImage = function t(e, i, r, n, o, a, s) {
-            this.ctx.drawImage(this.renderableCache[e], i, r, n, o, a, s, n, o);
-        };
-        e.prototype.fillRect = function t(e, i, r, n, o) {
-            this.ctx.fillStyle = o;
-            this.ctx.fillRect(e, i, r, n);
-        };
-        e.prototype.drawRect = function t(e, i, r, n, o) {
-            this.ctx.fillStyle = o;
-            this.ctx.strokeRect(e, i, r, n);
-        };
-        e.prototype.drawLine = function t(e, i, r, n, o) {
-            this.ctx.fillStyle = o;
-            this.ctx.beginPath();
-            this.ctx.moveTo(e, i);
-            this.ctx.lineTo(r, n);
-            this.ctx.stroke();
-        };
-        e.prototype.fillCircle = function t(e, i, r, n) {
-            var o = this.ctx;
-            o.beginPath();
-            o.arc(e, i, r, 0, 2 * Math.PI, false);
-            o.fillStyle = n;
-            o.strokeStyle = n;
-            o.fill();
-            o.stroke();
-            o.closePath();
-        };
-        e.prototype.setAlpha = function t(e) {
-            this.ctx.globalAlpha = e;
-        };
-        e.prototype.lockRect = function t(e) {
-            this.ctx.save();
-            this.ctx.beginPath();
-            this.ctx.rect(e.x, e.y, e.width, e.height);
-            this.ctx.clip();
-        };
-        e.prototype.unlockRect = function t() {
-            this.ctx.restore();
-        };
-        e.prototype.clear = function t() {
-            this.ctx.clearRect(0, 0, this.game.width, this.game.height);
-        };
-        e.prototype.clearColor = function t(e) {
-            this.fillRect(0, 0, this.game.width, this.game.height, "rgb(" + e.r + "," + e.g + "," + e.b + ")");
-        };
-        e.prototype.save = function t() {
-            this.ctx.save();
-        };
-        e.prototype.scale = function t(e, i) {
-            this.ctx.scale(e, i);
-        };
-        e.prototype.rotateZ = function t(e) {
-            this.ctx.rotateZ(e);
-        };
-        e.prototype.rotateY = function t(e) {
-            throw "rotateY not supported by canvasRenderer";
-        };
-        e.prototype.translate = function t(e, i) {
-            this.ctx.translate(e, i);
-        };
-        e.prototype.restore = function t() {
-            this.ctx.restore();
-        };
-        e.prototype.beginFrameBuffer = function t() {
-            this.save();
-        };
-        e.prototype.flipFrameBuffer = function t() {
-            this.restore();
-        };
-        e.prototype.loadTextureInfo = function t(e, i) {
-            var r = this;
-            var n = new Image();
-            n.src = e;
-            n.onload = function() {
-                var t = document.createElement("canvas");
-                t.setAttribute("width", n.width);
-                t.setAttribute("height", n.height);
-                var o = t.getContext("2d");
-                o.drawImage(n, 0, 0);
-                r.renderableCache[e] = t;
-                i();
-            };
-        };
-        return e;
-    }(n.default);
-    e.default = u;
-}, function(t, e, i) {
-    "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var r = i(36);
-    var n = o(r);
+    var i = r(56);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -3848,20 +4388,903 @@
         return t;
     }();
     e.default = s;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(40);
-    var n = o(r);
+    var i = r(14);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var s = function() {
+        function t(e, r, i) {
+            a(this, t);
+            if (1 && !e) throw "can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
+            this.gl = e;
+            this.width = r;
+            this.height = i;
+            this.texture = new n.default(e);
+            this.texture.setImage(null, r, i);
+            this.glRenderBuffer = e.createRenderbuffer();
+            e.bindRenderbuffer(e.RENDERBUFFER, this.glRenderBuffer);
+            e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, r, i);
+            this.glFrameBuffer = e.createFramebuffer();
+            e.bindFramebuffer(e.FRAMEBUFFER, this.glFrameBuffer);
+            e.framebufferTexture2D(e.FRAMEBUFFER, e.COLOR_ATTACHMENT0, e.TEXTURE_2D, this.texture.getGlTexture(), 0);
+            e.framebufferRenderbuffer(e.FRAMEBUFFER, e.DEPTH_ATTACHMENT, e.RENDERBUFFER, this.glRenderBuffer);
+            this.texture.unbind();
+            e.bindRenderbuffer(e.RENDERBUFFER, null);
+            e.bindFramebuffer(e.FRAMEBUFFER, null);
+        }
+        t.prototype.bind = function t() {
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer);
+            this.gl.viewport(0, 0, this.width, this.height);
+        };
+        t.prototype.unbind = function t() {
+            this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        };
+        t.prototype.getTexture = function t() {
+            return this.texture;
+        };
+        return t;
+    }();
+    e.default = s;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(13);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var s = function() {
+        function t() {
+            a(this, t);
+            this.stack = [];
+            this.restore();
+        }
+        t.prototype.restore = function t() {
+            this.stack.pop();
+            if (this.stack.length < 1) {
+                this.stack[0] = n.default.makeIdentity();
+            }
+        };
+        t.prototype.save = function t() {
+            this.stack.push(this.getCurrentMatrix());
+        };
+        t.prototype.getCurrentMatrix = function t() {
+            return this.stack[this.stack.length - 1].slice();
+        };
+        t.prototype.setCurrentMatrix = function t(e) {
+            return this.stack[this.stack.length - 1] = e;
+        };
+        t.prototype.translate = function t(e, r, i) {
+            if (i === undefined) {
+                i = 0;
+            }
+            var o = n.default.makeTranslation(e, r, i);
+            var a = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+        };
+        t.prototype.rotateZ = function t(e) {
+            var r = n.default.makeZRotation(e);
+            var i = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+        };
+        t.prototype.rotateY = function t(e) {
+            var r = n.default.makeYRotation(e);
+            var i = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+        };
+        t.prototype.scale = function t(e, r, i) {
+            if (i === undefined) {
+                i = 1;
+            }
+            var o = n.default.makeScale(e, r, i);
+            var a = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+        };
+        return t;
+    }();
+    e.default = s;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(7);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function s(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function u(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var f = function(t) {
+        u(e, t);
+        function e() {
+            a(this, e);
+            var r = s(this, t.call(this));
+            r.vertexArr = [];
+            var i = 0;
+            r.vertexArr.push(.5);
+            r.vertexArr.push(.5);
+            for (var n = 0, o = Math.PI * 2; n < o; n += .1) {
+                r.vertexArr.push(Math.cos(n) / 2 + .5);
+                r.vertexArr.push(Math.sin(n) / 2 + .5);
+            }
+            r.vertexArr = [ 0, 0, 0, 1, 1, 1, 1, .5, .2, .2, .5, .2 ];
+            return r;
+        }
+        return e;
+    }(n.default);
+    e.default = f;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(7);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function s(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function u(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var f = function(t) {
+        u(e, t);
+        function e() {
+            a(this, e);
+            var r = s(this, t.call(this));
+            r.vertexArr = [ 0, 0, 1, 1 ];
+            r.indexArr = [ 0, 1 ];
+            return r;
+        }
+        return e;
+    }(n.default);
+    e.default = f;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(49);
+    var n = w(i);
+    var o = r(8);
+    var a = w(o);
+    var s = r(4);
+    var u = w(s);
+    var f = r(5);
+    var h = w(f);
+    var c = r(3);
+    var l = w(c);
+    var d = r(6);
+    var p = w(d);
+    var y = r(9);
+    var g = w(y);
+    var m = r(2);
+    var v = w(m);
+    function w(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function _(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function b(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function x(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var E = function(t) {
+        x(e, t);
+        function e(r, i) {
+            _(this, e);
+            var o = b(this, t.call(this, r, i));
+            o.program = new u.default(r, [ p.default, g.default ]);
+            o.circle = new n.default();
+            o.posVertexBuffer = new h.default(r);
+            o.posVertexBuffer.setData(o.circle.vertexArr, o.gl.FLOAT, 2);
+            return o;
+        }
+        e.prototype.bind = function e() {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.posVertexBuffer.getBufferLength() / 2);
+        };
+        return e;
+    }(v.default);
+    e.default = E;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(8);
+    var n = m(i);
+    var o = r(4);
+    var a = m(o);
+    var s = r(5);
+    var u = m(s);
+    var f = r(3);
+    var h = m(f);
+    var c = r(6);
+    var l = m(c);
+    var d = r(9);
+    var p = m(d);
+    var y = r(2);
+    var g = m(y);
+    function m(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function v(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function w(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function _(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var b = function(t) {
+        _(e, t);
+        function e(r, i) {
+            v(this, e);
+            var o = w(this, t.call(this, r, i));
+            o.id = 1;
+            o.plane = new n.default();
+            o.program = new a.default(r, [ l.default, p.default ]);
+            o.posVertexBuffer = new u.default(r);
+            o.posIndexBuffer = new h.default(r);
+            o.posVertexBuffer.setData(o.plane.vertexArr, o.gl.FLOAT, 2);
+            o.posIndexBuffer.setData(o.plane.indexArr);
+            return o;
+        }
+        e.prototype.bind = function e() {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.posIndexBuffer.bind();
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+        };
+        return e;
+    }(g.default);
+    e.default = b;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(50);
+    var n = m(i);
+    var o = r(4);
+    var a = m(o);
+    var s = r(5);
+    var u = m(s);
+    var f = r(3);
+    var h = m(f);
+    var c = r(6);
+    var l = m(c);
+    var d = r(9);
+    var p = m(d);
+    var y = r(2);
+    var g = m(y);
+    function m(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function v(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function w(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function _(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var b = function(t) {
+        _(e, t);
+        function e(r, i) {
+            v(this, e);
+            var o = w(this, t.call(this, r, i));
+            o.program = new a.default(r, [ l.default, p.default ]);
+            o.line = new n.default();
+            o.posVertexBuffer = new u.default(r);
+            o.posIndexBuffer = new h.default(r);
+            o.posVertexBuffer.setData(o.line.vertexArr, o.gl.FLOAT, 2);
+            o.posIndexBuffer.setData(o.line.indexArr);
+            return o;
+        }
+        e.prototype.bind = function e() {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
+        };
+        return e;
+    }(g.default);
+    e.default = b;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(4);
+    var n = y(i);
+    var o = r(5);
+    var a = y(o);
+    var s = r(3);
+    var u = y(s);
+    var f = r(70);
+    var h = y(f);
+    var c = r(72);
+    var l = y(c);
+    var d = r(2);
+    var p = y(d);
+    function y(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function g(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function m(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function v(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var w = function(t) {
+        v(e, t);
+        function e(r, i) {
+            g(this, e);
+            var o = m(this, t.call(this, r, i));
+            o.program = new n.default(r, [ h.default, l.default ]);
+            o.posVertexBuffer = new a.default(r);
+            o.texVertexBuffer = new a.default(r);
+            o.normalBuffer = new a.default(r);
+            o.posIndexBuffer = new u.default(r);
+            o.program.bind();
+            return o;
+        }
+        e.prototype.bind = function e(r) {
+            t.prototype.bind.call(this);
+            this.program.bind();
+            var i = this.gl;
+            var n = this.program;
+            this.posVertexBuffer.setData(r.vertexArr, i.FLOAT, 3);
+            n.bindBuffer(this.posVertexBuffer, "a_position");
+            this.texVertexBuffer.setData(r.texCoordArr, i.FLOAT, 2);
+            n.bindBuffer(this.texVertexBuffer, "a_texcoord");
+            this.normalBuffer.setData(r.normalArr, i.FLOAT, 3);
+            n.bindBuffer(this.normalBuffer, "a_normal");
+            this.posIndexBuffer.setData(r.indexArr);
+            this.posIndexBuffer.bind();
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawElements(this.gl.TRIANGLES, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+        };
+        return e;
+    }(p.default);
+    e.default = w;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(8);
+    var n = m(i);
+    var o = r(4);
+    var a = m(o);
+    var s = r(5);
+    var u = m(s);
+    var f = r(3);
+    var h = m(f);
+    var c = r(6);
+    var l = m(c);
+    var d = r(71);
+    var p = m(d);
+    var y = r(2);
+    var g = m(y);
+    function m(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function v(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function w(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function _(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var b = function(t) {
+        _(e, t);
+        function e(r, i) {
+            v(this, e);
+            var o = w(this, t.call(this, r, i));
+            o.id = 2;
+            o.plane = new n.default();
+            o.program = new a.default(r, [ l.default, p.default ]);
+            o.posVertexBuffer = new u.default(r);
+            o.posIndexBuffer = new h.default(r);
+            o.texVertexBuffer = new u.default(r);
+            o.posIndexBuffer.setData(o.plane.indexArr);
+            o.posVertexBuffer.setData(o.plane.vertexArr, r.FLOAT, 2);
+            o.texVertexBuffer.setData(o.plane.texCoordArr, r.FLOAT, 2);
+            o.bind();
+            o.setUniform("u_alpha", 1);
+            return o;
+        }
+        e.prototype.bind = function e() {
+            t.prototype.bind.call(this);
+            var r = this.gl;
+            this.program.bind();
+            this.posIndexBuffer.bind();
+            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.program.bindBuffer(this.texVertexBuffer, "a_texcoord");
+        };
+        e.prototype.draw = function t() {
+            this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+        };
+        return e;
+    }(g.default);
+    e.default = b;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(45);
+    var n = M(i);
+    var o = r(55);
+    var a = M(o);
+    var s = r(52);
+    var u = M(s);
+    var f = r(2);
+    var h = M(f);
+    var c = r(53);
+    var l = M(c);
+    var d = r(51);
+    var p = M(d);
+    var y = r(54);
+    var g = M(y);
+    var m = r(47);
+    var v = M(m);
+    var w = r(48);
+    var _ = M(w);
+    var b = r(13);
+    var x = M(b);
+    var E = r(1);
+    var T = M(E);
+    var O = r(14);
+    var A = M(O);
+    function M(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function S(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function j(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function P(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var R = 0;
+    var B = function t(e) {
+        return e.getContext("webgl", {
+            alpha: false
+        }) || e.getContext("experimental-webgl", {
+            alpha: false
+        }) || e.getContext("webkit-3d", {
+            alpha: false
+        }) || e.getContext("moz-webgl", {
+            alpha: false
+        });
+    };
+    var F = 1e3;
+    var C = new _.default();
+    var I = function t(e, r, i, n, o, a, s, u) {
+        var f = x.default.makeZToWMatrix(1);
+        var h = x.default.ortho(0, o, 0, a, -F, F);
+        var c = x.default.makeScale(i * s, n * u, 1);
+        var l = x.default.makeTranslation(e * s, r * u, 0);
+        var d = x.default.matrixMultiply(c, l);
+        d = x.default.matrixMultiply(d, C.getCurrentMatrix());
+        d = x.default.matrixMultiply(d, h);
+        d = x.default.matrixMultiply(d, f);
+        return d;
+    };
+    var D = function t(e, r, i, n, o, a) {
+        var s = x.default.makeScale(i / o, n / a, 1);
+        var u = x.default.makeTranslation(e / o, r / a, 0);
+        return x.default.matrixMultiply(s, u);
+    };
+    var k = function(t) {
+        P(e, t);
+        function e(r) {
+            S(this, e);
+            var i = j(this, t.call(this, r));
+            var n = document.createElement("canvas");
+            document.body.appendChild(n);
+            n.setAttribute("width", r.width);
+            n.setAttribute("height", r.height);
+            i.container = n;
+            i.matrixStack = C;
+            i.registerResize();
+            i.currTex = null;
+            i._init();
+            return i;
+        }
+        e.prototype._init = function t() {
+            var e = B(this.container);
+            this.gl = e;
+            this.spriteRectDrawer = new a.default(e);
+            this.colorRectDrawer = new u.default(e);
+            this.lineDrawer = new l.default(e);
+            this.circleDrawer = new p.default(e);
+            this.modelDrawer = new g.default(e);
+            this.frameBuffer = new v.default(e, this.game.width, this.game.height);
+            e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
+            e.enable(e.BLEND);
+            e.enable(e.BLEND);
+        };
+        e.prototype.draw = function t(e) {
+            if (R) return;
+            if (!T.default.overlapTest(this.game.camera.getRect(), e.getRect())) return;
+            this.save();
+            var r = e.width / 2;
+            var i = e.height / 2;
+            this.translate(e.pos.x + r, e.pos.y + i);
+            this.scale(e.scale.x, e.scale.y);
+            this.rotateZ(e.angle);
+            this.translate(-r, -i);
+            this.drawImage(e.spriteSheet.resourcePath, e._sprPosX, e._sprPosY, e.width, e.height, 0, 0, e.width, e.height);
+            this.restore();
+        };
+        e.prototype.drawImage = function t(e, r, i, n, o, a, s) {
+            if (R) return;
+            this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+            var u = this.renderableCache[e];
+            var f = u.getSize().width;
+            var h = u.getSize().height;
+            if (a === undefined) {
+                a = r;
+            }
+            if (s === undefined) {
+                s = i;
+            }
+            if (n === undefined) {
+                n = f;
+            }
+            if (o === undefined) {
+                o = h;
+            }
+            if (this.currTex !== u) {
+                u.bind();
+                this.currTex = u;
+            }
+            this.spriteRectDrawer.bind();
+            this.spriteRectDrawer.setUniform("u_textureMatrix", D(r, i, n, o, f, h));
+            this.spriteRectDrawer.setUniform("u_matrix", I(a, s, n, o, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_alpha", 1);
+            this.spriteRectDrawer.draw();
+        };
+        e.prototype.fillRect = function t(e, r, i, n, o) {
+            if (R) return;
+            if (!T.default.overlapTest(this.game.camera.getRect(), {
+                x: e,
+                y: r,
+                width: i,
+                height: n
+            })) return;
+            var a = this.colorRectDrawer;
+            var s = this.gl;
+            a.bind();
+            a.setUniform("u_matrix", I(e, r, i, n, this.game.width, this.game.height, 1, 1));
+            a.setUniform("u_rgba", o);
+            s.blendFunc(s.SRC_ALPHA, s.ONE_MINUS_SRC_ALPHA);
+            a.draw();
+        };
+        e.prototype.drawRect = function t(e, r, i, n, o) {
+            this.fillRect(e, r, i, 1, o);
+            this.fillRect(e, r + n, i, 1, o);
+            this.fillRect(e, r, 1, n, o);
+            this.fillRect(e + i, r, 1, n, o);
+        };
+        e.prototype.drawLine = function t(e, r, i, n, o) {
+            var a = i - e, s = n - r;
+            if (!T.default.overlapTest(this.game.camera.getRect(), {
+                x: e,
+                y: r,
+                width: a,
+                height: s
+            })) return;
+            var u = this.gl;
+            var f = this.lineDrawer;
+            f.bind();
+            f.setUniform("u_matrix", I(e, r, a, s, this.game.width, this.game.height, 1, 1));
+            f.setUniform("u_rgba", o);
+            u.blendFunc(u.SRC_ALPHA, u.ONE_MINUS_SRC_ALPHA);
+            f.draw();
+        };
+        e.prototype.fillCircle = function t(e, r, i, n) {
+            var o = i * 2;
+            if (!T.default.overlapTest(this.game.camera.getRect(), {
+                x: e - i,
+                y: r - i,
+                width: o,
+                height: o
+            })) return;
+            var a = this.circleDrawer;
+            var s = this.gl;
+            a.bind();
+            a.setUniform("u_matrix", I(e - i, r - i, o, o, this.game.width, this.game.height, 1, 1));
+            a.setUniform("u_rgba", n);
+            s.blendFunc(s.SRC_ALPHA, s.ONE_MINUS_SRC_ALPHA);
+            a.draw();
+        };
+        e.prototype.setAlpha = function t(e) {
+            throw "not implemented";
+        };
+        e.prototype.save = function t() {
+            this.matrixStack.save();
+        };
+        e.prototype.scale = function t(e, r) {
+            this.matrixStack.scale(e, r);
+        };
+        e.prototype.rotateZ = function t(e) {
+            this.matrixStack.rotateZ(e);
+        };
+        e.prototype.rotateY = function t(e) {
+            this.matrixStack.rotateY(e);
+        };
+        e.prototype.translate = function t(e, r) {
+            this.matrixStack.translate(e, r);
+        };
+        e.prototype.restore = function t() {
+            this.matrixStack.restore();
+        };
+        e.prototype.lockRect = function t(e) {};
+        e.prototype.unlockRect = function t() {};
+        e.prototype.clear = function t() {
+            this.gl.clearColor(1, 1, 1, 1);
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        };
+        e.prototype.clearColor = function t(e) {
+            var r = e.r, i = e.g, n = e.b;
+            this.gl.clearColor(r / 255, i / 255, n / 255, 1);
+            this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        };
+        e.prototype.beginFrameBuffer = function t() {
+            this.save();
+            this.gl.viewport(0, 0, this.game.width, this.game.height);
+            this.frameBuffer.bind();
+        };
+        e.prototype.flipFrameBuffer = function t() {
+            this.currTex = null;
+            this.restore();
+            this.save();
+            this.translate(0, this.game.height);
+            this.scale(1, -1);
+            this.frameBuffer.unbind();
+            this.gl.viewport(0, 0, this.game.width, this.game.height);
+            this.frameBuffer.getTexture().bind();
+            this.spriteRectDrawer.bind();
+            this.spriteRectDrawer.setUniform("u_matrix", I(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", D(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
+            this.spriteRectDrawer.setUniform("u_alpha", 1);
+            this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+            this.spriteRectDrawer.draw();
+            this.restore();
+        };
+        e.prototype.getError = function t() {
+            var e = this.gl.getError();
+            e = e === this.gl.NO_ERROR ? 0 : e;
+            if (e) {
+                console.log(this);
+            }
+            return e;
+        };
+        e.prototype.loadTextureInfo = function t(e, r) {
+            var i = this;
+            var n = new Image();
+            n.src = e;
+            n.onload = function() {
+                var t = new A.default(i.gl);
+                t.setImage(n);
+                i.renderableCache[e] = t;
+                r();
+            };
+        };
+        return e;
+    }(n.default);
+    e.default = k;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(59);
+    var n = o(i);
     function o(t) {
         if (t && t.__esModule) {
             return t;
         } else {
             var e = {};
             if (t != null) {
-                for (var i in t) {
-                    if (Object.prototype.hasOwnProperty.call(t, i)) e[i] = t[i];
+                for (var r in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, r)) e[r] = t[r];
                 }
             }
             e.default = t;
@@ -3879,43 +5302,43 @@
             this._game = e;
             this.reset();
         }
-        t.prototype.addDescription = function t(e, i) {
-            if (!this.descriptions[i]) this.descriptions[i] = [];
-            this.descriptions[i].push(e);
+        t.prototype.addDescription = function t(e, r) {
+            if (!this.descriptions[r]) this.descriptions[r] = [];
+            this.descriptions[r].push(e);
         };
         t.prototype.setDescriptions = function t(e) {
-            var i = this;
+            var r = this;
             Object.keys(e).forEach(function(t) {
                 e[t].forEach(function(e) {
-                    i.addDescription(e, t);
+                    r.addDescription(e, t);
                 });
             });
         };
-        t.prototype.getObject = function t(e, i) {
-            var r = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-            if (1 && !i) throw "repository.getObject: type not specified";
+        t.prototype.getObject = function t(e, r) {
+            var i = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+            if (1 && !r) throw "repository.getObject: type not specified";
             if (1 && e == null) {
                 console.trace("id is null");
-                throw "::getObject() id not specified for type " + i;
+                throw "::getObject() id not specified for type " + r;
             }
-            var o = n[i];
+            var o = n[r];
             if (1 && !o) {
-                throw "::getObject() undeclared object type " + i;
+                throw "::getObject() undeclared object type " + r;
             }
-            if (1 && !this.descriptions[i]) throw "not found description for type: " + i;
-            var a = this.descriptions[i].find(function(t) {
+            if (1 && !this.descriptions[r]) throw "not found description for type: " + r;
+            var a = this.descriptions[r].find(function(t) {
                 return t.id == e;
             });
             if (!a) {
-                throw 'can not find object "' + i + '" with id ' + e;
+                throw 'can not find object "' + r + '" with id ' + e;
             }
-            if (r || !this.cache[a[e]]) this.cache[e] = new o(this._game).fromJSON(a);
+            if (i || !this.cache[a[e]]) this.cache[e] = new o(this._game).fromJSON(a);
             return this.cache[e];
         };
         t.prototype.getFirst = function t(e) {
-            var i = this.getArray(e);
-            if (!i.length) return null;
-            return i[0];
+            var r = this.getArray(e);
+            if (!r.length) return null;
+            return r[0];
         };
         t.prototype.addObject = function t(e) {
             if (1 && !e.id) {
@@ -3927,42 +5350,42 @@
             if (!this.descriptions[e.type]) this.descriptions[e.type] = [];
             this.descriptions[e.type].push(e.toJSON());
         };
-        t.prototype.updateObject = function t(e, i) {
-            var r = e.toJSON(i);
+        t.prototype.updateObject = function t(e, r) {
+            var i = e.toJSON(r);
             var n = this.descriptions[e.type].findIndex(function(t) {
                 return t.id == e.id;
             });
-            this.descriptions[e.type][n] = r;
+            this.descriptions[e.type][n] = i;
             var o = this.getObject(e.id, e.type, true);
-            if (o) o.fromJSON(r);
+            if (o) o.fromJSON(i);
         };
         t.prototype.removeObject = function t(e) {
             if (1 && !this.arrays[e.type]) this.arrays[e.type] = [];
-            var i = this.arrays[e.type].findIndex(function(t) {
+            var r = this.arrays[e.type].findIndex(function(t) {
                 return t.id === e.id;
             });
-            this.arrays[e.type].splice(i, 1);
+            this.arrays[e.type].splice(r, 1);
             if (!this.descriptions[e.type]) this.descriptions[e.type] = [];
-            i = this.descriptions[e.type].findIndex(function(t) {
+            r = this.descriptions[e.type].findIndex(function(t) {
                 return t.id === e.id;
             });
-            this.descriptions[e.type].splice(i, 1);
+            this.descriptions[e.type].splice(r, 1);
             delete this.cache[e.id];
         };
         t.prototype.getArray = function t(e) {
-            var i = this;
+            var r = this;
             if (1 && !n[e]) throw 'getArray: unregistered type "' + e + '"';
             if (this.arrays[e]) return this.arrays[e];
-            var r = [];
+            var i = [];
             if (!this.descriptions[e]) this.descriptions[e] = [];
             this.descriptions[e].forEach(function(t) {
                 if (1 && (t.id === null || t.id === undefined)) {
                     console.error(t);
                     throw "object id must me specified";
                 }
-                r.push(i.getObject(t.id, e));
+                i.push(r.getObject(t.id, e));
             });
-            return this.arrays[e] = r;
+            return this.arrays[e] = i;
         };
         t.prototype.reset = function t() {
             this.descriptions = {};
@@ -3972,10 +5395,10 @@
         return t;
     }();
     e.default = s;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function r(t, e) {
+    function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -3983,10 +5406,10 @@
     var n = function() {
         function t() {
             var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-            r(this, t);
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            i(this, t);
             this.x = e;
-            this.y = i;
+            this.y = r;
         }
         t.prototype.dotProduct = function t(e) {
             return this.x * e.x + this.y * e.y;
@@ -3994,37 +5417,37 @@
         t.prototype.crossProduct = function t(e) {
             return this.x * e.y - this.y * e.x;
         };
-        t.prototype.setXY = function t(e, i) {
+        t.prototype.setXY = function t(e, r) {
             this.x = e;
-            this.y = i;
+            this.y = r;
         };
-        t.prototype.addXY = function t(e, i) {
+        t.prototype.addXY = function t(e, r) {
             this.x += e;
-            this.y += i;
+            this.y += r;
         };
-        t.prototype.multToScalar = function e(i) {
-            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-            if (r) return new t(this.x * i, this.y * i);
-            this.x *= i;
-            this.y *= i;
+        t.prototype.multToScalar = function e(r) {
+            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            if (i) return new t(this.x * r, this.y * r);
+            this.x *= r;
+            this.y *= r;
             return this;
         };
         t.prototype.divByScalar = function t(e) {
-            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-            return this.multToScalar(1 / e, i);
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            return this.multToScalar(1 / e, r);
         };
-        t.prototype.plus = function e(i) {
-            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-            if (!r) return new t(this.x + i.x, this.y + i.y);
-            this.x += i.x;
-            this.y += i.y;
+        t.prototype.plus = function e(r) {
+            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            if (!i) return new t(this.x + r.x, this.y + r.y);
+            this.x += r.x;
+            this.y += r.y;
             return this;
         };
-        t.prototype.minus = function e(i) {
-            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-            if (!r) return new t(this.x - i.x, this.y - i.y);
-            this.x -= i.x;
-            this.y -= i.y;
+        t.prototype.minus = function e(r) {
+            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            if (!i) return new t(this.x - r.x, this.y - r.y);
+            this.x -= r.x;
+            this.y -= r.y;
             return this;
         };
         t.prototype.getLength = function t() {
@@ -4040,9 +5463,9 @@
             return this;
         };
         t.prototype.setLength = function t(e) {
-            var i = this.getAngle();
-            this.x = Math.cos(i) * e;
-            this.y = Math.sin(i) * e;
+            var r = this.getAngle();
+            this.x = Math.cos(r) * e;
+            this.y = Math.sin(r) * e;
         };
         t.prototype.getAngle = function t() {
             return Math.atan2(this.y, this.x);
@@ -4051,82 +5474,82 @@
             return Math.acos((this.x * e.x + this.y * e.y) / this.getLength() * e.getLength());
         };
         t.prototype.setAngle = function t(e) {
-            var i = this.getLength();
-            this.x = Math.cos(e) * i;
-            this.y = Math.sin(e) * i;
+            var r = this.getLength();
+            this.x = Math.cos(e) * r;
+            this.y = Math.sin(e) * r;
         };
         t.prototype.clone = function e() {
             return new t(this.x, this.y);
         };
-        t.angleBetween = function t(e, i) {
+        t.angleBetween = function t(e, r) {
             e = e.clone().normalize();
-            i = i.clone().normalize();
-            return Math.acos(e.dotProduct(i));
+            r = r.clone().normalize();
+            return Math.acos(e.dotProduct(r));
         };
-        t.normalBetween = function t(e, i) {
-            var r = e.minus(i);
-            return r.normalize();
+        t.normalBetween = function t(e, r) {
+            var i = e.minus(r);
+            return i.normalize();
         };
-        t.distance = function e(i, r) {
-            return Math.sqrt(t.distanceSquared(i, r));
+        t.distance = function e(r, i) {
+            return Math.sqrt(t.distanceSquared(r, i));
         };
-        t.distanceSquared = function t(e, i) {
-            return (e.x - i.x) * (e.x - i.x) + (e.y - i.y) * (e.y - i.y);
+        t.distanceSquared = function t(e, r) {
+            return (e.x - r.x) * (e.x - r.x) + (e.y - r.y) * (e.y - r.y);
         };
         return t;
     }();
     e.default = n;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var r = i(43);
-    var n = T(r);
-    var o = i(49);
-    var a = T(o);
-    var s = i(7);
-    var h = T(s);
-    var u = i(44);
-    var f = T(u);
-    var c = i(41);
-    var l = T(c);
-    var d = i(46);
-    var p = T(d);
-    var y = i(47);
-    var g = T(y);
-    var m = i(48);
-    var v = T(m);
-    var w = i(42);
-    var _ = T(w);
-    var b = i(45);
-    var x = T(b);
-    var O = i(9);
-    var j = T(O);
-    var E = i(8);
-    var S = T(E);
-    function T(t) {
+    var i = r(62);
+    var n = M(i);
+    var o = r(68);
+    var a = M(o);
+    var s = r(17);
+    var u = M(s);
+    var f = r(63);
+    var h = M(f);
+    var c = r(60);
+    var l = M(c);
+    var d = r(65);
+    var p = M(d);
+    var y = r(66);
+    var g = M(y);
+    var m = r(67);
+    var v = M(m);
+    var w = r(61);
+    var _ = M(w);
+    var b = r(64);
+    var x = M(b);
+    var E = r(19);
+    var T = M(E);
+    var O = r(18);
+    var A = M(O);
+    function M(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
     e.FrameAnimation = n.default;
     e.SpriteSheet = a.default;
-    e.GameObjectProto = h.default;
-    e.GameObject = f.default;
+    e.GameObjectProto = u.default;
+    e.GameObject = h.default;
     e.CommonBehaviour = l.default;
     e.ParticleSystem = p.default;
     e.Scene = g.default;
     e.Sound = v.default;
     e.Font = _.default;
     e.Layer = x.default;
-    e.TextField = j.default;
-    e.TileMap = S.default;
-}, function(t, e, i) {
+    e.TextField = T.default;
+    e.TileMap = A.default;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4143,7 +5566,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4157,25 +5580,25 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "CommonBehaviour";
-            r.parameters = [];
-            r.description = null;
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "CommonBehaviour";
+            i.parameters = [];
+            i.description = null;
+            return i;
         }
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4192,7 +5615,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4206,32 +5629,32 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "Font";
-            r.resourcePath = null;
-            r.fontSize = 12;
-            r.fontFamily = "Monospace";
-            r.fontContext = null;
-            r.fontColor = {
+            var i = s(this, t.call(this, r));
+            i.type = "Font";
+            i.resourcePath = null;
+            i.fontSize = 12;
+            i.fontFamily = "Monospace";
+            i.fontContext = null;
+            i.fontColor = {
                 r: 0,
                 g: 0,
                 b: 0
             };
-            return r;
+            return i;
         }
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4248,7 +5671,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4262,19 +5685,19 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "FrameAnimation";
-            r._currFrame = 0;
-            r.frames = [];
-            r.duration = 1e3;
-            r._gameObject = null;
-            r._startTime = null;
-            r.stop();
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "FrameAnimation";
+            i._currFrame = 0;
+            i.frames = [];
+            i.duration = 1e3;
+            i._gameObject = null;
+            i._startTime = null;
+            i.stop();
+            return i;
         }
         e.prototype.revalidate = function t() {
             this._timeForOneFrame = ~~(this.duration / this.frames.length);
@@ -4293,13 +5716,13 @@
         };
         e.prototype.update = function t(e) {
             if (!this._startTime) this._startTime = e;
-            var i = (e - this._startTime) % this.duration;
-            this._currFrame = ~~(this.frames.length * i / this.duration);
+            var r = (e - this._startTime) % this.duration;
+            this._currFrame = ~~(this.frames.length * r / this.duration);
             if (this._isRepeat == false && this._currFrame >= this.frames.length - 1) {
                 this.stop();
             }
-            var r = this._gameObject.currFrameIndex;
-            if (r != this.frames[this._currFrame]) {
+            var i = this._gameObject.currFrameIndex;
+            if (i != this.frames[this._currFrame]) {
                 this._gameObject.setFrameIndex(this.frames[this._currFrame]);
             }
         };
@@ -4319,14 +5742,14 @@
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(7);
-    var n = h(r);
-    var o = i(20);
+    var i = r(17);
+    var n = u(i);
+    var o = r(30);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -4334,25 +5757,25 @@
         } else {
             var e = {};
             if (t != null) {
-                for (var i in t) {
-                    if (Object.prototype.hasOwnProperty.call(t, i)) e[i] = t[i];
+                for (var r in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, r)) e[r] = t[r];
                 }
             }
             e.default = t;
             return e;
         }
     }
-    function h(t) {
+    function u(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function u(t, e) {
+    function f(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function f(t, e) {
+    function h(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -4375,67 +5798,67 @@
     var l = function t() {};
     var d = function(t) {
         c(e, t);
-        function e(i) {
-            u(this, e);
-            var r = f(this, t.call(this, i));
-            r.type = "GameObject";
-            r.gameObjectProto = null;
-            return r;
+        function e(r) {
+            f(this, e);
+            var i = h(this, t.call(this, r));
+            i.type = "GameObject";
+            i.gameObjectProto = null;
+            return i;
         }
         e.prototype.revalidate = function e() {
-            var i = this;
-            var r = {};
+            var r = this;
+            var i = {};
             for (var n in this) {
                 if (!this.hasOwnProperty(n)) continue;
-                r[n] = this[n];
+                i[n] = this[n];
             }
             Object.keys(this.gameObjectProto).forEach(function(t) {
-                if (i.gameObjectProto[t] === undefined) return;
-                i[t] = i.gameObjectProto[t];
+                if (r.gameObjectProto[t] === undefined) return;
+                r[t] = r.gameObjectProto[t];
             });
-            Object.keys(r).forEach(function(t) {
-                if (!r[t]) return;
-                if (r[t].splice && r[t].length === 0) return;
-                i[t] = r[t];
+            Object.keys(i).forEach(function(t) {
+                if (!i[t]) return;
+                if (i[t].splice && i[t].length === 0) return;
+                r[t] = i[t];
             });
             t.prototype.revalidate.call(this);
         };
         e.prototype.setIndividualBehaviour = function t(e) {
-            var i = new e(this.game);
-            i.game = this.game;
-            i.gameObject = this;
-            if (!i.onCreate) i.onCreate = l;
-            if (!i.onUpdate) i.onUpdate = l;
-            if (!i.onDestroy) i.onDestroy = l;
-            this._individualBehaviour = i;
+            var r = new e(this.game);
+            r.game = this.game;
+            r.gameObject = this;
+            if (!r.onCreate) r.onCreate = l;
+            if (!r.onUpdate) r.onUpdate = l;
+            if (!r.onDestroy) r.onDestroy = l;
+            this._individualBehaviour = r;
         };
         e.prototype.setCommonBehaviour = function t() {
             var e = this;
-            var i = [];
+            var r = [];
             this.commonBehaviour.forEach(function(t) {
-                var r = a[t.name];
+                var i = a[t.name];
                 if (true) {
-                    if (!r) {
+                    if (!i) {
                         console.error(t);
                         console.error(a);
                         throw "can not find common behaviour with name " + t.name;
                     }
                 }
-                var n = new r(e.game);
+                var n = new i(e.game);
                 n.manage(e, t.parameters);
-                i.push(n);
+                r.push(n);
             });
-            this.commonBehaviour = i;
+            this.commonBehaviour = r;
         };
         return e;
     }(n.default);
     e.default = d;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4452,7 +5875,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4466,14 +5889,14 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "Layer";
-            r.gameObjects = [];
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "Layer";
+            i.gameObjects = [];
+            return i;
         }
         e.prototype.addGameObject = function t(e) {
             e._layer = this;
@@ -4498,25 +5921,25 @@
                 return t.id === e.id;
             });
         };
-        e.prototype.update = function t(e, i) {
-            var r = this.gameObjects;
-            var n = r.length;
+        e.prototype.update = function t(e, r) {
+            var i = this.gameObjects;
+            var n = i.length;
             var o = n - 1;
             while (n--) {
-                var a = r[o - n];
-                a && a.update(e, i);
+                var a = i[o - n];
+                a && a.update(e, r);
             }
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = h(r);
-    var o = i(1);
+    var i = r(0);
+    var n = u(i);
+    var o = r(1);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -4524,25 +5947,25 @@
         } else {
             var e = {};
             if (t != null) {
-                for (var i in t) {
-                    if (Object.prototype.hasOwnProperty.call(t, i)) e[i] = t[i];
+                for (var r in t) {
+                    if (Object.prototype.hasOwnProperty.call(t, r)) e[r] = t[r];
                 }
             }
             e.default = t;
             return e;
         }
     }
-    function h(t) {
+    function u(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function u(t, e) {
+    function f(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function f(t, e) {
+    function h(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -4567,38 +5990,38 @@
     };
     var d = function(t) {
         c(e, t);
-        function e(i) {
-            u(this, e);
-            var r = f(this, t.call(this, i));
-            r.type = "ParticleSystem";
-            r.gameObjectProto = null;
-            r._particles = [];
-            r.numOfParticlesToEmit = {
+        function e(r) {
+            f(this, e);
+            var i = h(this, t.call(this, r));
+            i.type = "ParticleSystem";
+            i.gameObjectProto = null;
+            i._particles = [];
+            i.numOfParticlesToEmit = {
                 from: 1,
                 to: 10
             };
-            r.particleAngle = {
+            i.particleAngle = {
                 from: 0,
                 to: 0
             };
-            r.particleVelocity = {
+            i.particleVelocity = {
                 from: 1,
                 to: 100
             };
-            r.particleLiveTime = {
+            i.particleLiveTime = {
                 from: 100,
                 to: 1e3
             };
-            r.emissionRadius = 0;
-            return r;
+            i.emissionRadius = 0;
+            return i;
         }
         e.prototype.revalidate = function t() {
             if (this.particleAngle.to < this.particleAngle.from) this.particleAngle.to += 2 * Math.PI;
         };
         e.find = function t(e) {};
         e.findAll = function t(e) {};
-        e.prototype.emit = function t(e, i) {
-            for (var r = 0; r < l(this.numOfParticlesToEmit); r++) {
+        e.prototype.emit = function t(e, r) {
+            for (var i = 0; i < l(this.numOfParticlesToEmit); i++) {
                 var n = this.gameObjectProto.clone();
                 var o = l(this.particleAngle);
                 var a = l(this.particleVelocity);
@@ -4609,46 +6032,46 @@
                     to: e + this.emissionRadius
                 });
                 n.pos.y = l({
-                    from: i - this.emissionRadius,
-                    to: i + this.emissionRadius
+                    from: r - this.emissionRadius,
+                    to: r + this.emissionRadius
                 });
                 n.liveTime = l(this.particleLiveTime);
                 this._particles.push(n);
             }
         };
-        e.prototype.update = function t(e, i) {
-            var r = this._particles;
-            var n = r.length;
+        e.prototype.update = function t(e, r) {
+            var i = this._particles;
+            var n = i.length;
             var o = n - 1;
             while (n--) {
-                var a = r[o - n];
+                var a = i[o - n];
                 if (!a) continue;
                 if (!a._timeCreated) a._timeCreated = e;
                 if (e - a._timeCreated > a.liveTime) {
                     this._particles.splice(this._particles.indexOf(a), 1);
                 }
-                a.update(e, i);
+                a.update(e, r);
             }
         };
         return e;
     }(n.default);
     e.default = d;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = u(r);
-    var o = i(31);
-    var a = u(o);
-    var s = i(8);
-    var h = u(s);
-    function u(t) {
+    var i = r(0);
+    var n = f(i);
+    var o = r(41);
+    var a = f(o);
+    var s = r(18);
+    var u = f(s);
+    function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function f(t, e) {
+    function h(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -4675,21 +6098,21 @@
     }
     var d = function(t) {
         l(e, t);
-        function e(i) {
-            f(this, e);
-            var r = c(this, t.call(this, i));
-            r.type = "Scene";
-            r.layers = [];
-            r.useBG = false;
-            r.colorBG = {
+        function e(r) {
+            h(this, e);
+            var i = c(this, t.call(this, r));
+            i.type = "Scene";
+            i.layers = [];
+            i.useBG = false;
+            i.colorBG = {
                 r: 255,
                 g: 255,
                 b: 255
             };
-            r._tweenMovies = [];
-            r._individualBehaviour = null;
-            r.tileMap = new h.default(i);
-            return r;
+            i._tweenMovies = [];
+            i._individualBehaviour = null;
+            i.tileMap = new u.default(r);
+            return i;
         }
         e.prototype.revalidate = function e() {
             t.prototype.revalidate.call(this);
@@ -4723,15 +6146,15 @@
             });
         };
         e.prototype.preload = function t(e) {
-            var i = this;
-            var r = this.getAllSpriteSheets().concat(this.game.repository.getArray("Font"));
+            var r = this;
+            var i = this.getAllSpriteSheets().concat(this.game.repository.getArray("Font"));
             var n = new a.default();
             n.onResolved = function() {
                 e && e();
             };
-            r.forEach(function(t) {
+            i.forEach(function(t) {
                 n.addTask(function() {
-                    i.game.renderer.loadTextureInfo(t.resourcePath, function() {
+                    r.game.renderer.loadTextureInfo(t.resourcePath, function() {
                         return n.resolveTask(t.id);
                     });
                 }, t.id);
@@ -4745,69 +6168,72 @@
             });
         };
         e.prototype.setIndividualBehaviour = function t(e) {
-            var i = new e(this.game);
-            i.game = this.game;
-            i.scene = this;
-            this._individualBehaviour = i;
+            var r = new e(this.game);
+            r.game = this.game;
+            r.scene = this;
+            this._individualBehaviour = r;
         };
-        e.prototype.update = function t(e, i) {
-            var r = this.game.renderer;
-            r.beginFrameBuffer();
-            if (this.useBG) r.clearColor(this.colorBG); else r.clear();
+        e.prototype.update = function t(e, r) {
+            if (true) {
+                if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.setText("");
+            }
+            var i = this.game.renderer;
+            i.beginFrameBuffer();
+            if (this.useBG) i.clearColor(this.colorBG); else i.clear();
             var n = this.layers;
             var o = this.layers.length;
             var a = o - 1;
-            r.scale(this.game.camera.scale.x, this.game.camera.scale.y);
-            this.game.camera.update(e, i);
-            r.translate(-this.game.camera.pos.x, -this.game.camera.pos.y);
+            this.game.camera.update(e, r);
             if (this._individualBehaviour) this._individualBehaviour.onUpdate();
             while (o--) {
-                n[o - a].update(e, i);
+                n[o - a].update(e, r);
             }
             this.game.repository.getArray("ParticleSystem").forEach(function(t) {
-                t.update(e, i);
+                t.update(e, r);
             });
             this._updateTileMap();
             if (true) {
-                if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.render();
+                this.game.renderer.restore();
+                if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
+                this.game.renderer.restore();
             }
-            r.flipFrameBuffer();
+            i.flipFrameBuffer();
         };
-        e.prototype.fadeIn = function t(e, i) {
+        e.prototype.fadeIn = function t(e, r) {
             return this.tween(this, {
                 to: {
                     alpha: 1
                 }
-            }, e, i);
+            }, e, r);
         };
-        e.prototype.fadeOut = function t(e, i) {
+        e.prototype.fadeOut = function t(e, r) {
             return this.tween(this, {
                 to: {
                     alpha: 0
                 }
-            }, e, i);
+            }, e, r);
         };
-        e.prototype.tween = function t(e, i, r, n) {};
+        e.prototype.tween = function t(e, r, i, n) {};
         e.prototype._updateTileMap = function t() {
             var e = this.tileMap.spriteSheet;
             if (!e) return;
-            var i = this.game.renderer;
-            var r = ~~(this.game.camera.pos.x / this.tileMap.spriteSheet._frameWidth);
+            var r = this.game.renderer;
+            var i = ~~(this.game.camera.pos.x / this.tileMap.spriteSheet._frameWidth);
             var n = ~~(this.game.camera.pos.y / this.tileMap.spriteSheet._frameHeight);
-            var o = r + this.tileMap._tilesInScreenX + 2;
+            var o = i + this.tileMap._tilesInScreenX + 2;
             var a = n + this.tileMap._tilesInScreenY + 2;
             for (var s = n; s < a; s++) {
-                for (var h = r; h < o; h++) {
-                    var u = this.tileMap.data[s] && this.tileMap.data[s][h];
-                    if (u == null) continue;
-                    i.drawImage(e.resourcePath, e.getFramePosX(u), e.getFramePosY(u), e._frameWidth, e._frameHeight, h * e._frameWidth, s * e._frameHeight);
+                for (var u = i; u < o; u++) {
+                    var f = this.tileMap.data[s] && this.tileMap.data[s][u];
+                    if (f == null) continue;
+                    r.drawImage(e.resourcePath, e.getFramePosX(f), e.getFramePosY(f), e._frameWidth, e._frameHeight, u * e._frameWidth, s * e._frameHeight);
                 }
             }
         };
-        e.prototype.printText = function t(e, i, r, n) {
-            if (!r) return;
-            if (!r.substring) r = JSON.stringify(r, null, 4);
-            this.game.renderer.printText(e, i, r, n);
+        e.prototype.printText = function t(e, r, i, n) {
+            if (!i) return;
+            if (!i.substring) i = JSON.stringify(i, null, 4);
+            this.game.renderer.printText(e, r, i, n);
         };
         e.prototype.log = function t(e) {
             this.printText(0, 0, e);
@@ -4815,12 +6241,12 @@
         return e;
     }(n.default);
     e.default = d;
-}, function(t, e, i) {
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4837,7 +6263,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4851,16 +6277,16 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "Sound";
-            r.resourcePath = "";
-            r._gain = 1;
-            r._loop = false;
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "Sound";
+            i.resourcePath = "";
+            i._gain = 1;
+            i._loop = false;
+            return i;
         }
         e.find = function t(e) {};
         e.prototype.play = function t() {};
@@ -4868,16 +6294,16 @@
         e.prototype.pause = function t() {
             throw "not implemented";
         };
-        e.prototype.setGain = function t(e, i, r) {};
+        e.prototype.setGain = function t(e, r, i) {};
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var r = i(0);
-    var n = o(r);
+    var i = r(0);
+    var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4894,7 +6320,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function h(t, e) {
+    function u(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -4908,21 +6334,21 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var u = function(t) {
-        h(e, t);
-        function e(i) {
+    var f = function(t) {
+        u(e, t);
+        function e(r) {
             a(this, e);
-            var r = s(this, t.call(this, i));
-            r.type = "SpriteSheet";
-            r.width = 0;
-            r.height = 0;
-            r.numOfFramesH = 1;
-            r.numOfFramesV = 1;
-            r._frameWidth = 0;
-            r._frameHeight = 0;
-            r._numOfFrames = 0;
-            r.resourcePath = "";
-            return r;
+            var i = s(this, t.call(this, r));
+            i.type = "SpriteSheet";
+            i.width = 0;
+            i.height = 0;
+            i.numOfFramesH = 1;
+            i.numOfFramesV = 1;
+            i._frameWidth = 0;
+            i._frameHeight = 0;
+            i._numOfFrames = 0;
+            i.resourcePath = "";
+            return i;
         }
         e.prototype.revalidate = function t() {
             if (!(this.numOfFramesH && this.numOfFramesV)) return;
@@ -4938,24 +6364,30 @@
         };
         return e;
     }(n.default);
-    e.default = u;
-}, function(t, e, i) {
+    e.default = f;
+}, function(t, e, r) {
     "use strict";
-    var r = i(12);
-    var n = u(r);
-    var o = i(13);
-    var a = u(o);
-    var s = i(14);
-    var h = u(s);
-    function u(t) {
+    var i = r(22);
+    var n = f(i);
+    var o = r(23);
+    var a = f(o);
+    var s = r(24);
+    var u = f(s);
+    function f(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
     if (1 && a.default.startSceneId === undefined) throw "start scene not specified";
-    var f = new n.default(a.default);
-    f.repository.setDescriptions(h.default);
-    var c = f.repository.getObject(a.default.startSceneId, "Scene");
-    f.runScene(c);
-    if (true) window.game = f;
+    var h = new n.default(a.default);
+    h.repository.setDescriptions(u.default);
+    var c = h.repository.getObject(a.default.startSceneId, "Scene");
+    h.runScene(c);
+    if (true) window.game = h;
+}, function(t, e) {
+    t.exports = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
+}, function(t, e) {
+    t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}";
+}, function(t, e) {
+    t.exports = "precision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
 } ]);

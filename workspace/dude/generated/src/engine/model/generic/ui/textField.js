@@ -44,6 +44,7 @@ export default class TextField extends BaseModel {
         }
         this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
     }
+    getText(){return this.text}
     setFont(font){
         this.font = font;
         this.setText(this.text);

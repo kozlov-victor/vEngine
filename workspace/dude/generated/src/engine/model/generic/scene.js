@@ -84,6 +84,11 @@ export default class Scene extends BaseModel {
     }
 
     update(currTime,deltaTime){
+
+        if (DEBUG) {
+            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.setText('');
+        }
+
         let renderer = this.game.renderer;
         renderer.beginFrameBuffer();
         if (this.useBG) renderer.clearColor(this.colorBG);
@@ -93,9 +98,8 @@ export default class Scene extends BaseModel {
         let i = this.layers.length;
         let l = i -1;
 
-        renderer.scale(this.game.camera.scale.x,this.game.camera.scale.y);
         this.game.camera.update(currTime,deltaTime);
-        renderer.translate(-this.game.camera.pos.x,-this.game.camera.pos.y);
+
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while(i--){
             layers[i-l].update(currTime,deltaTime);
@@ -112,7 +116,9 @@ export default class Scene extends BaseModel {
         // this.__updateIndividualBehaviour__(currTime);
         this._updateTileMap();
         if (DEBUG) {
-            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.render();
+            this.game.renderer.restore();
+            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
+            this.game.renderer.restore();
         }
         renderer.flipFrameBuffer();
     }
