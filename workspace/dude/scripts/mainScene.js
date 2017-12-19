@@ -19,9 +19,10 @@ export class MainSceneBehaviour {
     }
 
     onUpdate(){
-        //this.game.renderer.fillRect(this.x,this.y,10,10,this.color);
+        this.game.renderer.fillRect(this.x,this.y,10,10,this.color);
         this.points.forEach(p=>{
-            //this.game.renderer.fillCircle(p.x,p.y,10,this.color);
+            //this.game.renderer.fillCircle(p.x,p.y,50,this.color);
+            this.game.renderer.drawLine(p.x,p.y,p.x+20,p.y+30,this.color);
         });
         //this.game.renderer.log(this.points.length);
     }

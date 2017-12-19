@@ -40,20 +40,20 @@
         return Object.prototype.hasOwnProperty.call(t, e);
     };
     r.p = "";
-    return r(r.s = 69);
+    return r(r.s = 70);
 })([ function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(16);
+    var o = r(15);
     var a = p(o);
-    var s = r(15);
+    var s = r(14);
     var u = p(s);
-    var f = r(40);
+    var f = r(41);
     var h = p(f);
-    var c = r(12);
-    var l = r(42);
+    var c = r(11);
+    var l = r(43);
     var d = p(l);
     function p(t) {
         return t && t.__esModule ? t : {
@@ -224,6 +224,9 @@
             o(this, t);
             this.program = null;
             this.uniformCache = {};
+            this.posVertexBuffer = null;
+            this.posIndexBuffer = null;
+            this.texVertexBuffer = null;
             this.gl = e;
             this.game = r;
         }
@@ -234,7 +237,9 @@
             t.currentDrawer = this;
         };
         t.prototype.unbind = function t() {
+            this.posVertexBuffer.unbind();
             if (this.posIndexBuffer) this.posIndexBuffer.unbind();
+            if (this.texVertexBuffer) this.texVertexBuffer.unbind();
         };
         t.prototype.setUniform = function t(e, r) {
             if (this.uniformCache[e] === r) return;
@@ -538,6 +543,7 @@
             this.program = s(e, [ i, n ]);
             this.uniforms = f(e, this.program);
             this.gl = e;
+            this.name = "";
         }
         t.prototype.getProgram = function t() {
             return this.program;
@@ -554,8 +560,10 @@
         t.prototype.bindBuffer = function t(e, r) {
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, e.getGlBuffer());
             var i = this.gl.getAttribLocation(this.program, r);
-            if (!r) throw "can not found uniform location: uniformLocationName not defined";
-            if (i < 0) throw "can not found uniform location for " + r;
+            if (true) {
+                if (!r) throw "can not found uniform location: uniformLocationName not defined";
+                if (i < 0) throw "can not found uniform location for " + r;
+            }
             this.gl.enableVertexAttribArray(i);
             this.gl.vertexAttribPointer(i, e.getItemSize(), e.getItemType(), false, 0, 0);
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
@@ -595,6 +603,15 @@
             this.bufferItemType = r;
             this.dataLength = e.length;
         };
+        t.prototype.bind = function t(e, r) {
+            if (1 && !e) throw "can not bind VertexBuffer, program not specified";
+            if (1 && !r) throw "can not bind VertexBuffer, attribute name not specified";
+            e.bindBuffer(this, r);
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.getGlBuffer());
+        };
+        t.prototype.unbind = function t() {
+            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+        };
         t.prototype.getGlBuffer = function t() {
             return this.buffer;
         };
@@ -610,8 +627,6 @@
         return t;
     }();
     e.default = n;
-}, function(t, e) {
-    t.exports = "attribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -632,7 +647,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(7);
+    var i = r(6);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -678,7 +693,7 @@
     }(n.default);
     e.default = f;
 }, function(t, e) {
-    t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
+    t.exports = "precision mediump float;\n\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -703,7 +718,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(10);
+    var i = r(9);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -884,12 +899,12 @@
         var A = e[2 * 4 + 0];
         var M = e[2 * 4 + 1];
         var S = e[2 * 4 + 2];
-        var j = e[2 * 4 + 3];
-        var P = e[3 * 4 + 0];
-        var R = e[3 * 4 + 1];
+        var R = e[2 * 4 + 3];
+        var j = e[3 * 4 + 0];
+        var P = e[3 * 4 + 1];
         var B = e[3 * 4 + 2];
         var F = e[3 * 4 + 3];
-        return [ r * v + i * x + n * A + o * P, r * w + i * E + n * M + o * R, r * _ + i * T + n * S + o * B, r * b + i * O + n * j + o * F, a * v + s * x + u * A + f * P, a * w + s * E + u * M + f * R, a * _ + s * T + u * S + f * B, a * b + s * O + u * j + f * F, h * v + c * x + l * A + d * P, h * w + c * E + l * M + d * R, h * _ + c * T + l * S + d * B, h * b + c * O + l * j + d * F, p * v + y * x + g * A + m * P, p * w + y * E + g * M + m * R, p * _ + y * T + g * S + m * B, p * b + y * O + g * j + m * F ];
+        return [ r * v + i * x + n * A + o * j, r * w + i * E + n * M + o * P, r * _ + i * T + n * S + o * B, r * b + i * O + n * R + o * F, a * v + s * x + u * A + f * j, a * w + s * E + u * M + f * P, a * _ + s * T + u * S + f * B, a * b + s * O + u * R + f * F, h * v + c * x + l * A + d * j, h * w + c * E + l * M + d * P, h * _ + c * T + l * S + d * B, h * b + c * O + l * R + d * F, p * v + y * x + g * A + m * j, p * w + y * E + g * M + m * P, p * _ + y * T + g * S + m * B, p * b + y * O + g * R + m * F ];
     };
 }, function(t, e, r) {
     "use strict";
@@ -1539,28 +1554,32 @@
         return e;
     }(n.default);
     e.default = f;
+}, function(t, e) {
+    t.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
+}, function(t, e) {
+    t.exports = "//position and color\r\n\r\nattribute vec4 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_matrix;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main() {\r\n   gl_Position = u_matrix * a_position;\r\n   v_color = a_color;\r\n}";
 }, , , function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    r(44);
-    var o = r(46);
+    r(45);
+    var o = r(47);
     var a = x(o);
-    var s = r(57);
+    var s = r(58);
     var u = x(s);
-    var f = r(39);
+    var f = r(40);
     var h = x(f);
-    var c = r(38);
+    var c = r(39);
     var l = x(c);
-    var d = r(37);
+    var d = r(38);
     var p = x(d);
-    var y = r(43);
+    var y = r(44);
     var g = x(y);
-    var m = r(12);
-    var v = r(16);
+    var m = r(11);
+    var v = r(15);
     var w = x(v);
-    var _ = r(36);
+    var _ = r(37);
     var b = x(_);
     function x(t) {
         return t && t.__esModule ? t : {
@@ -1647,7 +1666,7 @@
             }
             this._currentScene = i;
             if (true) {
-                var o = r(25);
+                var o = r(26);
                 var s = "" + i.name[0].toUpperCase() + i.name.substr(1) + "Behaviour";
                 if (s) i.setIndividualBehaviour(o[s]);
                 i.layers.forEach(function(t) {
@@ -3159,10 +3178,10 @@
     "use strict";
     e.__esModule = true;
     e.PlatformBehaviour = e.MainSceneBehaviour = e.Ground1Behaviour = e.DudeBehaviour = undefined;
-    var i = r(26);
-    var n = r(27);
-    var o = r(28);
-    var a = r(29);
+    var i = r(27);
+    var n = r(28);
+    var o = r(29);
+    var a = r(30);
     e.DudeBehaviour = i.DudeBehaviour;
     e.Ground1Behaviour = n.Ground1Behaviour;
     e.MainSceneBehaviour = o.MainSceneBehaviour;
@@ -3239,7 +3258,11 @@
             });
         };
         t.prototype.onUpdate = function t() {
-            this.points.forEach(function(t) {});
+            var e = this;
+            this.game.renderer.fillRect(this.x, this.y, 10, 10, this.color);
+            this.points.forEach(function(t) {
+                e.game.renderer.drawLine(t.x, t.y, t.x + 20, t.y + 30, e.color);
+            });
         };
         t.prototype.onDestroy = function t() {};
         return t;
@@ -3267,11 +3290,11 @@
     "use strict";
     e.__esModule = true;
     e.Control2Dir = e.Control4Dir = e.Draggable = undefined;
-    var i = r(33);
+    var i = r(34);
     var n = f(i);
-    var o = r(32);
+    var o = r(33);
     var a = f(o);
-    var s = r(31);
+    var s = r(32);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -3285,7 +3308,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(34);
+    var i = r(35);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3351,7 +3374,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(35);
+    var i = r(36);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3429,7 +3452,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(10);
+    var i = r(9);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3528,7 +3551,7 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(11);
+    var o = r(10);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3581,7 +3604,7 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(11);
+    var o = r(10);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3634,7 +3657,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(15);
+    var i = r(14);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4135,7 +4158,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(58);
+    var i = r(59);
     var n = s(i);
     var o = r(1);
     var a = s(o);
@@ -4274,7 +4297,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(19);
+    var i = r(18);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4365,7 +4388,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(56);
+    var i = r(57);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4392,7 +4415,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(14);
+    var i = r(13);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4441,7 +4464,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(13);
+    var i = r(12);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4507,7 +4530,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(7);
+    var i = r(6);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4545,14 +4568,15 @@
             a(this, e);
             var r = s(this, t.call(this));
             r.vertexArr = [];
-            var i = 0;
+            var i = Math.PI * 2;
             r.vertexArr.push(.5);
             r.vertexArr.push(.5);
-            for (var n = 0, o = Math.PI * 2; n < o; n += .1) {
+            for (var n = 0, o = i; n < o; n += .1) {
                 r.vertexArr.push(Math.cos(n) / 2 + .5);
                 r.vertexArr.push(Math.sin(n) / 2 + .5);
             }
-            r.vertexArr = [ 0, 0, 0, 1, 1, 1, 1, .5, .2, .2, .5, .2 ];
+            r.vertexArr.push(Math.cos(i) / 2 + .5);
+            r.vertexArr.push(Math.sin(i) / 2 + .5);
             return r;
         }
         return e;
@@ -4562,7 +4586,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(7);
+    var i = r(6);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4610,9 +4634,9 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(49);
+    var i = r(50);
     var n = w(i);
-    var o = r(8);
+    var o = r(7);
     var a = w(o);
     var s = r(4);
     var u = w(s);
@@ -4620,9 +4644,9 @@
     var h = w(f);
     var c = r(3);
     var l = w(c);
-    var d = r(6);
+    var d = r(20);
     var p = w(d);
-    var y = r(9);
+    var y = r(8);
     var g = w(y);
     var m = r(2);
     var v = w(m);
@@ -4670,7 +4694,7 @@
         e.prototype.bind = function e() {
             t.prototype.bind.call(this);
             this.program.bind();
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.posVertexBuffer.bind(this.program, "a_position");
         };
         e.prototype.draw = function t() {
             this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.posVertexBuffer.getBufferLength() / 2);
@@ -4682,7 +4706,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(8);
+    var i = r(7);
     var n = m(i);
     var o = r(4);
     var a = m(o);
@@ -4690,9 +4714,9 @@
     var u = m(s);
     var f = r(3);
     var h = m(f);
-    var c = r(6);
+    var c = r(19);
     var l = m(c);
-    var d = r(9);
+    var d = r(8);
     var p = m(d);
     var y = r(2);
     var g = m(y);
@@ -4743,7 +4767,7 @@
         e.prototype.bind = function e() {
             t.prototype.bind.call(this);
             this.program.bind();
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.posVertexBuffer.bind(this.program, "a_position");
             this.posIndexBuffer.bind();
         };
         e.prototype.draw = function t() {
@@ -4756,7 +4780,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(50);
+    var i = r(51);
     var n = m(i);
     var o = r(4);
     var a = m(o);
@@ -4764,9 +4788,9 @@
     var u = m(s);
     var f = r(3);
     var h = m(f);
-    var c = r(6);
+    var c = r(20);
     var l = m(c);
-    var d = r(9);
+    var d = r(8);
     var p = m(d);
     var y = r(2);
     var g = m(y);
@@ -4810,13 +4834,12 @@
             o.posVertexBuffer = new u.default(r);
             o.posIndexBuffer = new h.default(r);
             o.posVertexBuffer.setData(o.line.vertexArr, o.gl.FLOAT, 2);
-            o.posIndexBuffer.setData(o.line.indexArr);
             return o;
         }
         e.prototype.bind = function e() {
             t.prototype.bind.call(this);
             this.program.bind();
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
+            this.posVertexBuffer.bind(this.program, "a_position");
         };
         e.prototype.draw = function t() {
             this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
@@ -4834,9 +4857,9 @@
     var a = y(o);
     var s = r(3);
     var u = y(s);
-    var f = r(70);
+    var f = r(71);
     var h = y(f);
-    var c = r(72);
+    var c = r(73);
     var l = y(c);
     var d = r(2);
     var p = y(d);
@@ -4907,7 +4930,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(8);
+    var i = r(7);
     var n = m(i);
     var o = r(4);
     var a = m(o);
@@ -4915,9 +4938,9 @@
     var u = m(s);
     var f = r(3);
     var h = m(f);
-    var c = r(6);
+    var c = r(19);
     var l = m(c);
-    var d = r(71);
+    var d = r(72);
     var p = m(d);
     var y = r(2);
     var g = m(y);
@@ -4956,7 +4979,6 @@
         function e(r, i) {
             v(this, e);
             var o = w(this, t.call(this, r, i));
-            o.id = 2;
             o.plane = new n.default();
             o.program = new a.default(r, [ l.default, p.default ]);
             o.posVertexBuffer = new u.default(r);
@@ -4965,8 +4987,6 @@
             o.posIndexBuffer.setData(o.plane.indexArr);
             o.posVertexBuffer.setData(o.plane.vertexArr, r.FLOAT, 2);
             o.texVertexBuffer.setData(o.plane.texCoordArr, r.FLOAT, 2);
-            o.bind();
-            o.setUniform("u_alpha", 1);
             return o;
         }
         e.prototype.bind = function e() {
@@ -4974,8 +4994,8 @@
             var r = this.gl;
             this.program.bind();
             this.posIndexBuffer.bind();
-            this.program.bindBuffer(this.posVertexBuffer, "a_position");
-            this.program.bindBuffer(this.texVertexBuffer, "a_texcoord");
+            this.posVertexBuffer.bind(this.program, "a_position");
+            this.texVertexBuffer.bind(this.program, "a_texcoord");
         };
         e.prototype.draw = function t() {
             this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
@@ -4987,29 +5007,29 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(45);
+    var i = r(46);
     var n = M(i);
-    var o = r(55);
+    var o = r(56);
     var a = M(o);
-    var s = r(52);
+    var s = r(53);
     var u = M(s);
     var f = r(2);
     var h = M(f);
-    var c = r(53);
+    var c = r(54);
     var l = M(c);
-    var d = r(51);
+    var d = r(52);
     var p = M(d);
-    var y = r(54);
+    var y = r(55);
     var g = M(y);
-    var m = r(47);
+    var m = r(48);
     var v = M(m);
-    var w = r(48);
+    var w = r(49);
     var _ = M(w);
-    var b = r(13);
+    var b = r(12);
     var x = M(b);
     var E = r(1);
     var T = M(E);
-    var O = r(14);
+    var O = r(13);
     var A = M(O);
     function M(t) {
         return t && t.__esModule ? t : {
@@ -5021,13 +5041,13 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function j(t, e) {
+    function R(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function P(t, e) {
+    function j(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -5041,7 +5061,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var R = 0;
+    var P = 0;
     var B = function t(e) {
         return e.getContext("webgl", {
             alpha: false
@@ -5072,10 +5092,10 @@
         return x.default.matrixMultiply(s, u);
     };
     var k = function(t) {
-        P(e, t);
+        j(e, t);
         function e(r) {
             S(this, e);
-            var i = j(this, t.call(this, r));
+            var i = R(this, t.call(this, r));
             var n = document.createElement("canvas");
             document.body.appendChild(n);
             n.setAttribute("width", r.width);
@@ -5090,10 +5110,10 @@
         e.prototype._init = function t() {
             var e = B(this.container);
             this.gl = e;
+            this.circleDrawer = new p.default(e);
             this.spriteRectDrawer = new a.default(e);
             this.colorRectDrawer = new u.default(e);
             this.lineDrawer = new l.default(e);
-            this.circleDrawer = new p.default(e);
             this.modelDrawer = new g.default(e);
             this.frameBuffer = new v.default(e, this.game.width, this.game.height);
             e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
@@ -5101,7 +5121,7 @@
             e.enable(e.BLEND);
         };
         e.prototype.draw = function t(e) {
-            if (R) return;
+            if (P) return;
             if (!T.default.overlapTest(this.game.camera.getRect(), e.getRect())) return;
             this.save();
             var r = e.width / 2;
@@ -5114,7 +5134,7 @@
             this.restore();
         };
         e.prototype.drawImage = function t(e, r, i, n, o, a, s) {
-            if (R) return;
+            if (P) return;
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
             var u = this.renderableCache[e];
             var f = u.getSize().width;
@@ -5142,7 +5162,7 @@
             this.spriteRectDrawer.draw();
         };
         e.prototype.fillRect = function t(e, r, i, n, o) {
-            if (R) return;
+            if (P) return;
             if (!T.default.overlapTest(this.game.camera.getRect(), {
                 x: e,
                 y: r,
@@ -5164,6 +5184,7 @@
             this.fillRect(e + i, r, 1, n, o);
         };
         e.prototype.drawLine = function t(e, r, i, n, o) {
+            if (P) return;
             var a = i - e, s = n - r;
             if (!T.default.overlapTest(this.game.camera.getRect(), {
                 x: e,
@@ -5240,8 +5261,8 @@
             this.scale(1, -1);
             this.frameBuffer.unbind();
             this.gl.viewport(0, 0, this.game.width, this.game.height);
-            this.frameBuffer.getTexture().bind();
             this.spriteRectDrawer.bind();
+            this.frameBuffer.getTexture().bind();
             this.spriteRectDrawer.setUniform("u_matrix", I(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
             this.spriteRectDrawer.setUniform("u_textureMatrix", D(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
@@ -5253,7 +5274,7 @@
             var e = this.gl.getError();
             e = e === this.gl.NO_ERROR ? 0 : e;
             if (e) {
-                console.log(this);
+                console.log(h.default.currentDrawer);
             }
             return e;
         };
@@ -5275,7 +5296,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(59);
+    var i = r(60);
     var n = o(i);
     function o(t) {
         if (t && t.__esModule) {
@@ -5503,29 +5524,29 @@
     "use strict";
     e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var i = r(62);
+    var i = r(63);
     var n = M(i);
-    var o = r(68);
+    var o = r(69);
     var a = M(o);
-    var s = r(17);
+    var s = r(16);
     var u = M(s);
-    var f = r(63);
+    var f = r(64);
     var h = M(f);
-    var c = r(60);
+    var c = r(61);
     var l = M(c);
-    var d = r(65);
+    var d = r(66);
     var p = M(d);
-    var y = r(66);
+    var y = r(67);
     var g = M(y);
-    var m = r(67);
+    var m = r(68);
     var v = M(m);
-    var w = r(61);
+    var w = r(62);
     var _ = M(w);
-    var b = r(64);
+    var b = r(65);
     var x = M(b);
-    var E = r(19);
+    var E = r(18);
     var T = M(E);
-    var O = r(18);
+    var O = r(17);
     var A = M(O);
     function M(t) {
         return t && t.__esModule ? t : {
@@ -5747,9 +5768,9 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(17);
+    var i = r(16);
     var n = u(i);
-    var o = r(30);
+    var o = r(31);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -6062,9 +6083,9 @@
     e.default = undefined;
     var i = r(0);
     var n = f(i);
-    var o = r(41);
+    var o = r(42);
     var a = f(o);
-    var s = r(18);
+    var s = r(17);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -6367,11 +6388,11 @@
     e.default = f;
 }, function(t, e, r) {
     "use strict";
-    var i = r(22);
+    var i = r(23);
     var n = f(i);
-    var o = r(23);
+    var o = r(24);
     var a = f(o);
-    var s = r(24);
+    var s = r(25);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -6385,9 +6406,9 @@
     h.runScene(c);
     if (true) window.game = h;
 }, function(t, e) {
-    t.exports = "attribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
+    t.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
 }, function(t, e) {
-    t.exports = "precision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}";
+    t.exports = "// texture and color\n\nprecision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}";
 }, function(t, e) {
-    t.exports = "precision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
+    t.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
 } ]);

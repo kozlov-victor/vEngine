@@ -13,7 +13,6 @@ export default class SpriteRectDrawer extends AbstractDrawer {
 
     constructor(gl,game){
         super(gl,game);
-        this.id = 2;
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
@@ -28,8 +27,6 @@ export default class SpriteRectDrawer extends AbstractDrawer {
         this.posVertexBuffer.setData(this.plane.vertexArr,gl.FLOAT,2);
         this.texVertexBuffer.setData(this.plane.texCoordArr,gl.FLOAT,2);
 
-        this.bind();
-        this.setUniform('u_alpha',1);
     }
 
 
@@ -42,17 +39,17 @@ export default class SpriteRectDrawer extends AbstractDrawer {
         this.posIndexBuffer.bind();
 
         //this.posVertexBuffer.setData(this.plane.vertexArr,gl.FLOAT,2);
-        this.program.bindBuffer(this.posVertexBuffer,'a_position');
+        this.posVertexBuffer.bind(this.program,'a_position');
 
         //this.texVertexBuffer.setData(this.plane.texCoordArr,gl.FLOAT,2);
-        this.program.bindBuffer(this.texVertexBuffer,'a_texcoord');
+        this.texVertexBuffer.bind(this.program,'a_texcoord');
     }
 
 
     draw(){
         this.gl.drawElements(
-            this.gl.TRIANGLE_STRIP, 
-            this.posIndexBuffer.getBufferLength(), 
+            this.gl.TRIANGLE_STRIP,
+            this.posIndexBuffer.getBufferLength(),
             this.gl.UNSIGNED_SHORT,0
         );
     }

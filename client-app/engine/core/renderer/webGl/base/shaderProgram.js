@@ -168,6 +168,7 @@ export default class ShaderProgram {
         this.program = createProgram(gl, [vShader, fShader]);
         this.uniforms = extractUniforms(gl, this.program);
         this.gl = gl;
+        this.name = '';
     }
 
     getProgram () {
@@ -192,10 +193,10 @@ export default class ShaderProgram {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
         let uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName);
 
-        //<code>{{#if opts.minify}}
-        if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
-        if (uniformLocation < 0) throw "can not found uniform location for " + uniformLocationName;
-        //<code>{{/if}}
+        if (DEBUG) {
+            if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
+            if (uniformLocation < 0) throw "can not found uniform location for " + uniformLocationName;
+        }
 
         this.gl.enableVertexAttribArray(uniformLocation);
         this.gl.vertexAttribPointer(

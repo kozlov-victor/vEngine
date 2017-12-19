@@ -4,7 +4,7 @@ import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 
-import basicVertexShader from '../shaders/basic/vertex.vert'
+import basicVertexShader from '../shaders/basic/vertex3.vert'
 import colorShader from '../shaders/color/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
 
@@ -12,7 +12,6 @@ export default class ColorRectDrawer extends AbstractDrawer{
 
     constructor(gl,game){
         super(gl,game);
-        this.id = 1;
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
@@ -31,9 +30,10 @@ export default class ColorRectDrawer extends AbstractDrawer{
         super.bind();
         this.program.bind();
 
-        this.program.bindBuffer(this.posVertexBuffer,'a_position');
-        // this.posVertexBuffer.setData(this.plane.vertexArr,this.gl.FLOAT,2);
-        // this.posIndexBuffer.setData(this.plane.indexArr);
+        //this.posVertexBuffer.setData(this.plane.vertexArr,this.gl.FLOAT,2);
+        this.posVertexBuffer.bind(this.program,'a_position');
+
+        //this.posIndexBuffer.setData(this.plane.indexArr);
         this.posIndexBuffer.bind();
     }
 

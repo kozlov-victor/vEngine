@@ -27,6 +27,17 @@ export default class VertexBuffer {
         this.dataLength = bufferData.length;
     }
 
+    bind(program,attrName){
+        if (DEBUG && !program) throw "can not bind VertexBuffer, program not specified";
+        if (DEBUG && !attrName) throw "can not bind VertexBuffer, attribute name not specified";
+        program.bindBuffer(this,attrName);
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.getGlBuffer());
+    }
+
+    unbind(){
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+    }
+
     getGlBuffer(){
         return this.buffer;
     }

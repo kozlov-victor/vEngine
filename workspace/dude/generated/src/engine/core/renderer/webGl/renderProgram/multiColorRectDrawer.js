@@ -30,12 +30,12 @@ export default class MultiColorRectDrawer extends AbstractDrawer {
         let gl = this.gl;
 
         this.vertexColorBuffer.setData(colors,gl.FLOAT,4);
-        this.program.bindBuffer(this.vertexColorBuffer,'a_color');
+        this.vertexColorBuffer.bind(this.program,'a_color');
 
-        this.posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
-        program.bindBuffer(this.posVertexBuffer,'a_position');
+        //this.posVertexBuffer.setData(plane.vertexArr,gl.FLOAT,2);
+        this.posVertexBuffer.bind(this.program,'a_position');
 
-        this.posIndexBuffer.setData(this.plane.indexArr);
+        //this.posIndexBuffer.setData(this.plane.indexArr);
         this.posIndexBuffer.bind();
     }
 

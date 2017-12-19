@@ -1,3 +1,5 @@
+//position, color and texture
+
 attribute vec4 a_position;
 attribute vec4 a_color;
 attribute vec2 a_texcoord;

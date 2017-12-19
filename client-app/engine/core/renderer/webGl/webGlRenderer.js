@@ -70,10 +70,10 @@ export default class WebGlRenderer extends AbstractRenderer {
     	let gl = getCtx(this.container);
     	this.gl = gl;
 
+        this.circleDrawer = new CircleDrawer(gl);
         this.spriteRectDrawer = new SpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
-        this.circleDrawer = new CircleDrawer(gl);
         this.modelDrawer = new ModelDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
@@ -117,8 +117,8 @@ export default class WebGlRenderer extends AbstractRenderer {
               dstX, dstY){
 
         if (stop) return;
-
         //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
+
         this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
@@ -180,6 +180,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     drawLine(x1,y1,x2,y2,color){
+        if (stop) return;
         let dx = x2-x1,dy = y2-y1;
         if (!matEx.overlapTest(this.game.camera.getRect(),{x:x1,y:y1,width:dx,height:dy})) return;
         let gl = this.gl;
@@ -257,7 +258,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     beginFrameBuffer(){
         this.save();
-        this.gl.viewport(0, 0, this.game.width, this.game.height); // gameProps.width, gameProps.height
+        this.gl.viewport(0, 0, this.game.width, this.game.height);
         this.frameBuffer.bind();
     }
 
@@ -270,22 +271,9 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.scale(1,-1);
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, this.game.width, this.game.height); // gameProps.canvasWidth,gameProps.canvasHeight
-        this.frameBuffer.getTexture().bind();
 
         this.spriteRectDrawer.bind();
-
-        // if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
-        //     spriteRectDrawer.setUniform('u_matrix',
-        //         makePositionMatrix(
-        //             gameProps.globalScale.left,gameProps.globalScale.top,
-        //             gameProps.width, gameProps.height,
-        //             gameProps.canvasWidth,gameProps.canvasHeight,
-        //             mScaleX,mScaleY
-        //         )
-        //     );
-        // } else {
-        //
-        // }
+        this.frameBuffer.getTexture().bind();
 
         this.spriteRectDrawer.setUniform('u_matrix',
             makePositionMatrix(
@@ -313,7 +301,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let err = this.gl.getError();
         err=err===this.gl.NO_ERROR?0:err;
         if (err) {
-            console.log(this);
+            console.log(AbstractDrawer.currentDrawer);
         }
         return err;
     }

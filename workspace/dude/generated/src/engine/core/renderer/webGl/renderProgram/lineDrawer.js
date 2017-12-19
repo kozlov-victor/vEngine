@@ -4,7 +4,7 @@ import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 
-import basicVertexShader from '../shaders/basic/vertex.vert'
+import basicVertexShader from '../shaders/basic/vertex3.vert'
 import colorShader from '../shaders/color/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
 
@@ -22,13 +22,15 @@ export default class LineDrawer extends AbstractDrawer {
         this.posIndexBuffer = new IndexBuffer(gl);
 
         this.posVertexBuffer.setData(this.line.vertexArr,this.gl.FLOAT,2);
-        this.posIndexBuffer.setData(this.line.indexArr);
+        //this.posIndexBuffer.setData(this.line.indexArr);
     }
 
     bind(){
         super.bind();
         this.program.bind();
-        this.program.bindBuffer(this.posVertexBuffer,'a_position');
+
+        //this.posVertexBuffer.setData(this.line.vertexArr,this.gl.FLOAT,2);
+        this.posVertexBuffer.bind(this.program,'a_position');
     }
 
     draw(){

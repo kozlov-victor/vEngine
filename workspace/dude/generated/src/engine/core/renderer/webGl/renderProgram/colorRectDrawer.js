@@ -31,9 +31,10 @@ export default class ColorRectDrawer extends AbstractDrawer{
         super.bind();
         this.program.bind();
 
-        this.program.bindBuffer(this.posVertexBuffer,'a_position');
-        // this.posVertexBuffer.setData(this.plane.vertexArr,this.gl.FLOAT,2);
-        // this.posIndexBuffer.setData(this.plane.indexArr);
+        //this.posVertexBuffer.setData(this.plane.vertexArr,this.gl.FLOAT,2);
+        this.posVertexBuffer.bind(this.program,'a_position');
+
+        //this.posIndexBuffer.setData(this.plane.indexArr);
         this.posIndexBuffer.bind();
     }
 

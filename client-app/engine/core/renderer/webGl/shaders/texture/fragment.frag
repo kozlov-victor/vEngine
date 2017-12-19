@@ -1,3 +1,5 @@
+// texture and color
+
 precision mediump float;
 
 varying vec2 v_texcoord;

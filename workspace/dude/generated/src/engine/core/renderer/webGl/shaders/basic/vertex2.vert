@@ -1,3 +1,5 @@
+//position, texture and normal
+
 attribute vec4 a_position;
 attribute vec2 a_texcoord;
 attribute vec3 a_normal;

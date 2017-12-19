@@ -1,3 +1,5 @@
+// texture color and normal
+
 precision highp float;
 
 varying vec2 v_texcoord;

@@ -4,6 +4,9 @@ export default class AbstractDrawer {
     static currentDrawer = null;
     program = null;
     uniformCache = {};
+    posVertexBuffer = null;
+    posIndexBuffer = null;
+    texVertexBuffer = null;
 
     constructor(gl,game){
         this.gl = gl;
@@ -21,7 +24,9 @@ export default class AbstractDrawer {
     }
 
     unbind(){
+        this.posVertexBuffer.unbind();
         if (this.posIndexBuffer) this.posIndexBuffer.unbind();
+        if (this.texVertexBuffer) this.texVertexBuffer.unbind();
     }
 
     setUniform(name,value){
