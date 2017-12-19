@@ -46,13 +46,13 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(15);
+    var o = r(16);
     var a = p(o);
-    var s = r(14);
+    var s = r(15);
     var u = p(s);
     var f = r(41);
     var h = p(f);
-    var c = r(11);
+    var c = r(12);
     var l = r(43);
     var d = p(l);
     function p(t) {
@@ -693,6 +693,8 @@
     }(n.default);
     e.default = f;
 }, function(t, e) {
+    t.exports = "//position and color\r\n\r\nattribute vec4 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_matrix;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main() {\r\n   gl_Position = u_matrix * a_position;\r\n   v_color = a_color;\r\n}";
+}, function(t, e) {
     t.exports = "precision mediump float;\n\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
 }, function(t, e, r) {
     "use strict";
@@ -718,7 +720,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(9);
+    var i = r(10);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -897,14 +899,14 @@
         var T = e[1 * 4 + 2];
         var O = e[1 * 4 + 3];
         var A = e[2 * 4 + 0];
-        var M = e[2 * 4 + 1];
-        var S = e[2 * 4 + 2];
+        var S = e[2 * 4 + 1];
+        var M = e[2 * 4 + 2];
         var R = e[2 * 4 + 3];
-        var j = e[3 * 4 + 0];
-        var P = e[3 * 4 + 1];
-        var B = e[3 * 4 + 2];
-        var F = e[3 * 4 + 3];
-        return [ r * v + i * x + n * A + o * j, r * w + i * E + n * M + o * P, r * _ + i * T + n * S + o * B, r * b + i * O + n * R + o * F, a * v + s * x + u * A + f * j, a * w + s * E + u * M + f * P, a * _ + s * T + u * S + f * B, a * b + s * O + u * R + f * F, h * v + c * x + l * A + d * j, h * w + c * E + l * M + d * P, h * _ + c * T + l * S + d * B, h * b + c * O + l * R + d * F, p * v + y * x + g * A + m * j, p * w + y * E + g * M + m * P, p * _ + y * T + g * S + m * B, p * b + y * O + g * R + m * F ];
+        var P = e[3 * 4 + 0];
+        var j = e[3 * 4 + 1];
+        var F = e[3 * 4 + 2];
+        var B = e[3 * 4 + 3];
+        return [ r * v + i * x + n * A + o * P, r * w + i * E + n * S + o * j, r * _ + i * T + n * M + o * F, r * b + i * O + n * R + o * B, a * v + s * x + u * A + f * P, a * w + s * E + u * S + f * j, a * _ + s * T + u * M + f * F, a * b + s * O + u * R + f * B, h * v + c * x + l * A + d * P, h * w + c * E + l * S + d * j, h * _ + c * T + l * M + d * F, h * b + c * O + l * R + d * B, p * v + y * x + g * A + m * P, p * w + y * E + g * S + m * j, p * _ + y * T + g * M + m * F, p * b + y * O + g * R + m * B ];
     };
 }, function(t, e, r) {
     "use strict";
@@ -1554,10 +1556,6 @@
         return e;
     }(n.default);
     e.default = f;
-}, function(t, e) {
-    t.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
-}, function(t, e) {
-    t.exports = "//position and color\r\n\r\nattribute vec4 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_matrix;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main() {\r\n   gl_Position = u_matrix * a_position;\r\n   v_color = a_color;\r\n}";
 }, , , function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -1568,18 +1566,18 @@
     var a = x(o);
     var s = r(58);
     var u = x(s);
-    var f = r(40);
+    var f = r(39);
     var h = x(f);
-    var c = r(39);
+    var c = r(38);
     var l = x(c);
-    var d = r(38);
+    var d = r(37);
     var p = x(d);
     var y = r(44);
     var g = x(y);
-    var m = r(11);
-    var v = r(15);
+    var m = r(12);
+    var v = r(16);
     var w = x(v);
-    var _ = r(37);
+    var _ = r(36);
     var b = x(_);
     function x(t) {
         return t && t.__esModule ? t : {
@@ -1666,7 +1664,7 @@
             }
             this._currentScene = i;
             if (true) {
-                var o = r(26);
+                var o = r(25);
                 var s = "" + i.name[0].toUpperCase() + i.name.substr(1) + "Behaviour";
                 if (s) i.setIndividualBehaviour(o[s]);
                 i.layers.forEach(function(t) {
@@ -3178,10 +3176,10 @@
     "use strict";
     e.__esModule = true;
     e.PlatformBehaviour = e.MainSceneBehaviour = e.Ground1Behaviour = e.DudeBehaviour = undefined;
-    var i = r(27);
-    var n = r(28);
-    var o = r(29);
-    var a = r(30);
+    var i = r(26);
+    var n = r(27);
+    var o = r(28);
+    var a = r(29);
     e.DudeBehaviour = i.DudeBehaviour;
     e.Ground1Behaviour = n.Ground1Behaviour;
     e.MainSceneBehaviour = o.MainSceneBehaviour;
@@ -3261,7 +3259,10 @@
             var e = this;
             this.game.renderer.fillRect(this.x, this.y, 10, 10, this.color);
             this.points.forEach(function(t) {
-                e.game.renderer.drawLine(t.x, t.y, t.x + 20, t.y + 30, e.color);
+                e.game.renderer.fillCircle(t.x, t.y, 50, e.color);
+            });
+            this.game.renderer.log({
+                a: 2
             });
         };
         t.prototype.onDestroy = function t() {};
@@ -3290,11 +3291,11 @@
     "use strict";
     e.__esModule = true;
     e.Control2Dir = e.Control4Dir = e.Draggable = undefined;
-    var i = r(34);
+    var i = r(33);
     var n = f(i);
-    var o = r(33);
+    var o = r(32);
     var a = f(o);
-    var s = r(32);
+    var s = r(31);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -3308,7 +3309,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(35);
+    var i = r(34);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3374,7 +3375,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(36);
+    var i = r(35);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3452,7 +3453,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(9);
+    var i = r(10);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -3551,7 +3552,7 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(10);
+    var o = r(11);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3604,7 +3605,7 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(10);
+    var o = r(11);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -3657,7 +3658,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(14);
+    var i = r(15);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4066,6 +4067,21 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
+    var i, n;
+    function o(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var a = !!navigator.isCocoonJS;
+    var s = (n = i = function t(e) {
+        o(this, t);
+    }, i.isCocoonJS = a, i.scale = a ? window.devicePixelRatio || 1 : 1, i.isTouch = typeof window !== "undefined" && "ontouchstart" in window, 
+    n);
+    e.default = s;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
     function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -4297,25 +4313,40 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(18);
-    var n = o(i);
-    function o(t) {
+    var i = r(19);
+    var n = s(i);
+    var o = r(40);
+    var a = s(o);
+    function s(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function a(t, e) {
+    function u(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var s = function() {
+    var f = function() {
         function t(e) {
-            a(this, t);
+            u(this, t);
             this.renderableCache = {};
             this.container = null;
             this.debugTextField = null;
+            this.fullScreenSize = {
+                w: 0,
+                h: 0,
+                scaleFactor: 1
+            };
             this.game = e;
+            if (a.default.isCocoonJS) {
+                this.fullScreenSize.w = window.innerWidth * a.default.scale;
+                this.fullScreenSize.h = window.innerHeight * a.default.scale;
+                this.fullScreenSize.scaleFactor = Math.min(this.fullScreenSize.w / this.game.width, this.fullScreenSize.h / this.game.height);
+            } else {
+                this.fullScreenSize.w = e.width;
+                this.fullScreenSize.h = e.height;
+            }
         }
         t.prototype.onResize = function t() {
             var e = this.container.height / this.container.width;
@@ -4383,7 +4414,7 @@
         t.prototype.getTextureInfo = function t(e) {};
         return t;
     }();
-    e.default = s;
+    e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -4415,7 +4446,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(13);
+    var i = r(14);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4464,7 +4495,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(12);
+    var i = r(13);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4644,9 +4675,9 @@
     var h = w(f);
     var c = r(3);
     var l = w(c);
-    var d = r(20);
+    var d = r(8);
     var p = w(d);
-    var y = r(8);
+    var y = r(9);
     var g = w(y);
     var m = r(2);
     var v = w(m);
@@ -4714,9 +4745,9 @@
     var u = m(s);
     var f = r(3);
     var h = m(f);
-    var c = r(19);
+    var c = r(8);
     var l = m(c);
-    var d = r(8);
+    var d = r(9);
     var p = m(d);
     var y = r(2);
     var g = m(y);
@@ -4755,7 +4786,6 @@
         function e(r, i) {
             v(this, e);
             var o = w(this, t.call(this, r, i));
-            o.id = 1;
             o.plane = new n.default();
             o.program = new a.default(r, [ l.default, p.default ]);
             o.posVertexBuffer = new u.default(r);
@@ -4788,9 +4818,9 @@
     var u = m(s);
     var f = r(3);
     var h = m(f);
-    var c = r(20);
+    var c = r(8);
     var l = m(c);
-    var d = r(8);
+    var d = r(9);
     var p = m(d);
     var y = r(2);
     var g = m(y);
@@ -4857,9 +4887,9 @@
     var a = y(o);
     var s = r(3);
     var u = y(s);
-    var f = r(71);
+    var f = r(72);
     var h = y(f);
-    var c = r(73);
+    var c = r(74);
     var l = y(c);
     var d = r(2);
     var p = y(d);
@@ -4938,9 +4968,9 @@
     var u = m(s);
     var f = r(3);
     var h = m(f);
-    var c = r(19);
+    var c = r(71);
     var l = m(c);
-    var d = r(72);
+    var d = r(73);
     var p = m(d);
     var y = r(2);
     var g = m(y);
@@ -4991,7 +5021,6 @@
         }
         e.prototype.bind = function e() {
             t.prototype.bind.call(this);
-            var r = this.gl;
             this.program.bind();
             this.posIndexBuffer.bind();
             this.posVertexBuffer.bind(this.program, "a_position");
@@ -5008,35 +5037,35 @@
     e.__esModule = true;
     e.default = undefined;
     var i = r(46);
-    var n = M(i);
+    var n = S(i);
     var o = r(56);
-    var a = M(o);
+    var a = S(o);
     var s = r(53);
-    var u = M(s);
+    var u = S(s);
     var f = r(2);
-    var h = M(f);
+    var h = S(f);
     var c = r(54);
-    var l = M(c);
+    var l = S(c);
     var d = r(52);
-    var p = M(d);
+    var p = S(d);
     var y = r(55);
-    var g = M(y);
+    var g = S(y);
     var m = r(48);
-    var v = M(m);
+    var v = S(m);
     var w = r(49);
-    var _ = M(w);
-    var b = r(12);
-    var x = M(b);
+    var _ = S(w);
+    var b = r(13);
+    var x = S(b);
     var E = r(1);
-    var T = M(E);
-    var O = r(13);
-    var A = M(O);
-    function M(t) {
+    var T = S(E);
+    var O = r(14);
+    var A = S(O);
+    function S(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function S(t, e) {
+    function M(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
@@ -5047,7 +5076,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function j(t, e) {
+    function P(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -5061,8 +5090,8 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var P = 0;
-    var B = function t(e) {
+    var j = 0;
+    var F = function t(e) {
         return e.getContext("webgl", {
             alpha: false
         }) || e.getContext("experimental-webgl", {
@@ -5073,11 +5102,11 @@
             alpha: false
         });
     };
-    var F = 1e3;
+    var B = 1e3;
     var C = new _.default();
     var I = function t(e, r, i, n, o, a, s, u) {
         var f = x.default.makeZToWMatrix(1);
-        var h = x.default.ortho(0, o, 0, a, -F, F);
+        var h = x.default.ortho(0, o, 0, a, -B, B);
         var c = x.default.makeScale(i * s, n * u, 1);
         var l = x.default.makeTranslation(e * s, r * u, 0);
         var d = x.default.matrixMultiply(c, l);
@@ -5092,9 +5121,9 @@
         return x.default.matrixMultiply(s, u);
     };
     var k = function(t) {
-        j(e, t);
+        P(e, t);
         function e(r) {
-            S(this, e);
+            M(this, e);
             var i = R(this, t.call(this, r));
             var n = document.createElement("canvas");
             document.body.appendChild(n);
@@ -5108,7 +5137,7 @@
             return i;
         }
         e.prototype._init = function t() {
-            var e = B(this.container);
+            var e = F(this.container);
             this.gl = e;
             this.circleDrawer = new p.default(e);
             this.spriteRectDrawer = new a.default(e);
@@ -5118,10 +5147,9 @@
             this.frameBuffer = new v.default(e, this.game.width, this.game.height);
             e.blendFunc(e.SRC_ALPHA, e.ONE_MINUS_SRC_ALPHA);
             e.enable(e.BLEND);
-            e.enable(e.BLEND);
         };
         e.prototype.draw = function t(e) {
-            if (P) return;
+            if (j) return;
             if (!T.default.overlapTest(this.game.camera.getRect(), e.getRect())) return;
             this.save();
             var r = e.width / 2;
@@ -5134,7 +5162,7 @@
             this.restore();
         };
         e.prototype.drawImage = function t(e, r, i, n, o, a, s) {
-            if (P) return;
+            if (j) return;
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
             var u = this.renderableCache[e];
             var f = u.getSize().width;
@@ -5162,7 +5190,7 @@
             this.spriteRectDrawer.draw();
         };
         e.prototype.fillRect = function t(e, r, i, n, o) {
-            if (P) return;
+            if (j) return;
             if (!T.default.overlapTest(this.game.camera.getRect(), {
                 x: e,
                 y: r,
@@ -5184,7 +5212,7 @@
             this.fillRect(e + i, r, 1, n, o);
         };
         e.prototype.drawLine = function t(e, r, i, n, o) {
-            if (P) return;
+            if (j) return;
             var a = i - e, s = n - r;
             if (!T.default.overlapTest(this.game.camera.getRect(), {
                 x: e,
@@ -5254,17 +5282,18 @@
             this.frameBuffer.bind();
         };
         e.prototype.flipFrameBuffer = function t() {
+            var e = this.fullScreenSize;
             this.currTex = null;
             this.restore();
             this.save();
-            this.translate(0, this.game.height);
+            this.translate(0, e.h);
             this.scale(1, -1);
             this.frameBuffer.unbind();
-            this.gl.viewport(0, 0, this.game.width, this.game.height);
+            this.gl.viewport(0, 0, e.w, e.h);
             this.spriteRectDrawer.bind();
             this.frameBuffer.getTexture().bind();
-            this.spriteRectDrawer.setUniform("u_matrix", I(0, 0, this.game.width, this.game.height, this.game.width, this.game.height, 1, 1));
-            this.spriteRectDrawer.setUniform("u_textureMatrix", D(0, 0, this.game.width, this.game.height, this.game.width, this.game.height));
+            this.spriteRectDrawer.setUniform("u_matrix", I(0, 0, this.game.width, this.game.height, e.w, e.h, e.scaleFactor, e.scaleFactor));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", D(0, 0, e.w, e.h, e.w, e.h));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
             this.spriteRectDrawer.draw();
@@ -5525,30 +5554,30 @@
     e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
     var i = r(63);
-    var n = M(i);
+    var n = S(i);
     var o = r(69);
-    var a = M(o);
-    var s = r(16);
-    var u = M(s);
+    var a = S(o);
+    var s = r(17);
+    var u = S(s);
     var f = r(64);
-    var h = M(f);
+    var h = S(f);
     var c = r(61);
-    var l = M(c);
+    var l = S(c);
     var d = r(66);
-    var p = M(d);
+    var p = S(d);
     var y = r(67);
-    var g = M(y);
+    var g = S(y);
     var m = r(68);
-    var v = M(m);
+    var v = S(m);
     var w = r(62);
-    var _ = M(w);
+    var _ = S(w);
     var b = r(65);
-    var x = M(b);
-    var E = r(18);
-    var T = M(E);
-    var O = r(17);
-    var A = M(O);
-    function M(t) {
+    var x = S(b);
+    var E = r(19);
+    var T = S(E);
+    var O = r(18);
+    var A = S(O);
+    function S(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -5768,9 +5797,9 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(16);
+    var i = r(17);
     var n = u(i);
-    var o = r(31);
+    var o = r(30);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -6085,7 +6114,7 @@
     var n = f(i);
     var o = r(42);
     var a = f(o);
-    var s = r(17);
+    var s = r(18);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -6388,11 +6417,11 @@
     e.default = f;
 }, function(t, e, r) {
     "use strict";
-    var i = r(23);
+    var i = r(22);
     var n = f(i);
-    var o = r(24);
+    var o = r(23);
     var a = f(o);
-    var s = r(25);
+    var s = r(24);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -6405,6 +6434,8 @@
     var c = h.repository.getObject(a.default.startSceneId, "Scene");
     h.runScene(c);
     if (true) window.game = h;
+}, function(t, e) {
+    t.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n   //gl_PointSize = 10.0;\n}";
 }, function(t, e) {
     t.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
 }, function(t, e) {

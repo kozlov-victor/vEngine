@@ -80,7 +80,6 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
-        gl.enable(gl.BLEND);
     }
 
     draw(renderable){
@@ -264,13 +263,16 @@ export default class WebGlRenderer extends AbstractRenderer {
 
 
     flipFrameBuffer(){
+
+        let fullScreen = this.fullScreenSize;
         this.currTex = null;
         this.restore();
         this.save();
-        this.translate(0,this.game.height); // gameProps.canvasHeight
+        this.translate(0,fullScreen.h);
         this.scale(1,-1);
         this.frameBuffer.unbind();
-        this.gl.viewport(0, 0, this.game.width, this.game.height); // gameProps.canvasWidth,gameProps.canvasHeight
+
+        this.gl.viewport(0, 0, fullScreen.w,fullScreen.h); // gameProps.canvasWidth,gameProps.canvasHeight
 
         this.spriteRectDrawer.bind();
         this.frameBuffer.getTexture().bind();
@@ -278,16 +280,16 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.spriteRectDrawer.setUniform('u_matrix',
             makePositionMatrix(
                 0,0,
-                this.game.width, this.game.height, // gameProps.width, gameProps.height
-                this.game.width, this.game.height, // gameProps.canvasWidth,gameProps.canvasHeight,
-                1,1 // mScaleX,mScaleY
+                this.game.width, this.game.height,// gameProps.width, gameProps.height
+                fullScreen.w,fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
+                fullScreen.scaleFactor,fullScreen.scaleFactor // mScaleX,mScaleY
             )
         );
 
         this.spriteRectDrawer.setUniform('u_textureMatrix',
             makeTextureMatrix(
-                0,0,this.game.width, this.game.height, // gameProps.canvasWidth,gameProps.canvasHeight,
-                this.game.width, this.game.height // gameProps.canvasWidth,gameProps.canvasHeight
+                0,0,fullScreen.w,fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
+                fullScreen.w,fullScreen.h// gameProps.canvasWidth,gameProps.canvasHeight
             )
         );
         this.spriteRectDrawer.setUniform('u_alpha',1);

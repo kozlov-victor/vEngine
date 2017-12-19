@@ -1,15 +1,26 @@
 /*global DEBUG:true*/
 
 import TextField from '../../../model/generic/ui/textField'
+import Device from '../../device'
 
 export default class AbstractRenderer {
 
     renderableCache = {};
     container = null;
     debugTextField = null;
+    fullScreenSize = {w:0,h:0,scaleFactor:1};
 
     constructor(game){
         this.game = game;
+        if (Device.isCocoonJS) {
+            this.fullScreenSize.w = window.innerWidth*Device.scale;
+            this.fullScreenSize.h = window.innerHeight*Device.scale;
+            this.fullScreenSize.scaleFactor =
+                Math.min(this.fullScreenSize.w / this.game.width, this.fullScreenSize.h / this.game.height);
+        } else {
+            this.fullScreenSize.w = game.width;
+            this.fullScreenSize.h = game.height;
+        }
     }
 
     onResize(){

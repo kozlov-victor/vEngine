@@ -32,7 +32,6 @@ export default class SpriteRectDrawer extends AbstractDrawer {
 
     bind(){
         super.bind();
-        let gl = this.gl;
         this.program.bind();
 
         //this.posIndexBuffer.setData(this.plane.indexArr);

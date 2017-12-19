@@ -4,7 +4,7 @@ import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 
-import basicVertexShader from '../shaders/basic/vertex.vert'
+import basicVertexShader from '../shaders/basic/vertex3.vert'
 import colorShader from '../shaders/color/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
 
@@ -12,7 +12,6 @@ export default class ColorRectDrawer extends AbstractDrawer{
 
     constructor(gl,game){
         super(gl,game);
-        this.id = 1;
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
             basicVertexShader,
