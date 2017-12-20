@@ -114,7 +114,7 @@ export default class Scene extends BaseModel {
         //     tweenMovie._update(currTime);
         // });
         // this.__updateIndividualBehaviour__(currTime);
-        this._updateTileMap();
+        this.tileMap.update();
         if (DEBUG) {
             this.game.renderer.restore();
             if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
@@ -133,30 +133,6 @@ export default class Scene extends BaseModel {
         // let tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
         // movie.tween(0,tween);
         // movie.play();
-    }
-    _updateTileMap(){
-        let spriteSheet = this.tileMap.spriteSheet;
-        if (!spriteSheet) return;
-        let ctx = this.game.renderer;
-        let tilePosX = ~~(this.game.camera.pos.x / this.tileMap.spriteSheet._frameWidth);
-        let tilePosY = ~~(this.game.camera.pos.y / this.tileMap.spriteSheet._frameHeight);
-        let w = tilePosX + this.tileMap._tilesInScreenX + 2;
-        let h = tilePosY + this.tileMap._tilesInScreenY + 2;
-        for (let y=tilePosY;y<h;y++) {
-            for (let x=tilePosX;x<w;x++) {
-                let index = this.tileMap.data[y] && this.tileMap.data[y][x];
-                if (index==null) continue; // todo
-                ctx.drawImage(
-                    spriteSheet.resourcePath,
-                    spriteSheet.getFramePosX(index),
-                    spriteSheet.getFramePosY(index),
-                    spriteSheet._frameWidth,
-                    spriteSheet._frameHeight,
-                    x*spriteSheet._frameWidth,
-                    y*spriteSheet._frameHeight
-                );
-            }
-        }
     }
 
     printText(x,y,text,font){ // todo

@@ -1,8 +1,10 @@
 
 /*global Image:true*/
+/*global DEBUG:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
 import SpriteRectDrawer from './renderProgram/spriteRectDrawer'
+import TiledSpriteRectDrawer from './renderProgram/tiledSpriteRectDrawer'
 import ColorRectDrawer from './renderProgram/colorRectDrawer'
 import AbstractDrawer from './renderProgram/abstractDrawer'
 import LineDrawer from './renderProgram/lineDrawer'
@@ -27,13 +29,12 @@ const getCtx = el=>{
 const SCENE_DEPTH = 1000;
 const matrixStack = new MatrixStack();
 
-const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight,scaleX,scaleY){
+const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight){
 
     let zToWMatrix = mat4.makeZToWMatrix(1);
     let projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
-
-    let scaleMatrix = mat4.makeScale(dstWidth*scaleX, dstHeight*scaleY, 1);
-    let translationMatrix = mat4.makeTranslation(dstX*scaleX, dstY*scaleY, 0);
+    let scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
+    let translationMatrix = mat4.makeTranslation(dstX, dstY, 0);
 
     let matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
     matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
@@ -46,7 +47,6 @@ const makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeig
 
     let texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
     let texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
-
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
 
@@ -72,6 +72,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.circleDrawer = new CircleDrawer(gl);
         this.spriteRectDrawer = new SpriteRectDrawer(gl);
+        this.tiledSpriteRectDrawer = new TiledSpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
         this.modelDrawer = new ModelDrawer(gl);
@@ -86,7 +87,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         if (stop) return;
 
-        if (!matEx.overlapTest(this.game.camera.getRect(),renderable.getRect())) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
         this.save();
         // todo check if angle neq 0
         let halfV = renderable.width /2;
@@ -122,6 +123,10 @@ export default class WebGlRenderer extends AbstractRenderer {
         //gl.blendColor(0, 0.5, 1, 1);
 
         let texture = this.renderableCache[texturePath];
+        if (DEBUG && !texture) {
+            if (!texturePath) throw `no texture path provided`;
+            else throw `can not find texture with path ${texturePath}`;
+        }
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
@@ -147,24 +152,59 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
         this.spriteRectDrawer.setUniform("u_matrix",makePositionMatrix(
             dstX,dstY,srcWidth,srcHeight,
-            this.game.width,this.game.height,1,1 // gameProps.width,gameProps.height
-            )
+            this.game.width,this.game.height)
         );
         this.spriteRectDrawer.setUniform('u_alpha',1); // alpha
         this.spriteRectDrawer.draw();
 
     }
 
+    drawTiledImage(texturePath,
+                   dstX, dstY, dstWidth, dstHeight,
+                   offsetX,offsetY){
+
+        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendColor(0, 0.5, 1, 1);
+
+        let texture = this.renderableCache[texturePath];
+        if (DEBUG && !texture) {
+            if (!texturePath) throw `no texture path provided`;
+            else throw `can not find texture with path ${texturePath}`;
+        }
+        let texWidth = texture.getSize().width;
+        let texHeight = texture.getSize().height;
+
+
+        if (this.currTex!==texture){
+            texture.bind();
+            this.currTex = texture;
+        }
+
+        this.tiledSpriteRectDrawer.bind();
+        let textureMatrix =
+        this.tiledSpriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(
+            0,0,dstWidth, dstHeight,
+            texWidth,texHeight)
+        );
+        this.tiledSpriteRectDrawer.setUniform("u_matrix",makePositionMatrix( // todo u_posMatrix
+            dstX,dstY,dstWidth, dstHeight,
+            this.game.width,this.game.height)
+        );
+        this.tiledSpriteRectDrawer.setUniform('u_offsetCoords',[offsetX,offsetY]);
+        this.tiledSpriteRectDrawer.setUniform('u_alpha',1); // alpha
+        this.tiledSpriteRectDrawer.draw();
+
+    }
+
     fillRect(x, y, width, height, color){
         if (stop) return;
-        if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x,y,width,height})) return;
         let colorRectDrawer = this.colorRectDrawer;
         let gl = this.gl;
         colorRectDrawer.bind();
         colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
                 x,y,width,height,
-                this.game.width,this.game.height,1,1
-            )
+                this.game.width,this.game.height)
         );
         colorRectDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -181,13 +221,13 @@ export default class WebGlRenderer extends AbstractRenderer {
     drawLine(x1,y1,x2,y2,color){
         if (stop) return;
         let dx = x2-x1,dy = y2-y1;
-        if (!matEx.overlapTest(this.game.camera.getRect(),{x:x1,y:y1,width:dx,height:dy})) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x1,y:y1,width:dx,height:dy})) return;
         let gl = this.gl;
         let lineDrawer = this.lineDrawer;
         lineDrawer.bind();
         lineDrawer.setUniform("u_matrix",makePositionMatrix(
             x1,y1,dx,dy,
-            this.game.width,this.game.height,1,1)
+            this.game.width,this.game.height)
         );
         lineDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -196,13 +236,13 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     fillCircle(x,y,r,color){
         let r2 = r*2;
-        if (!matEx.overlapTest(this.game.camera.getRect(),{x:x-r,y:y-r,width:r2,height:r2})) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x-r,y:y-r,width:r2,height:r2})) return;
         let circleDrawer = this.circleDrawer;
         let gl = this.gl;
         circleDrawer.bind();
         circleDrawer.setUniform("u_matrix",makePositionMatrix(
             x-r,y-r,r2,r2,
-            this.game.width,this.game.height,1,1)
+            this.game.width,this.game.height)
         );
         circleDrawer.setUniform("u_rgba",color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -280,9 +320,8 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.spriteRectDrawer.setUniform('u_matrix',
             makePositionMatrix(
                 0,0,
-                this.game.width, this.game.height,// gameProps.width, gameProps.height
-                fullScreen.w,fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
-                fullScreen.scaleFactor,fullScreen.scaleFactor // mScaleX,mScaleY
+                this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor,
+                fullScreen.w,fullScreen.h
             )
         );
 

@@ -19,7 +19,8 @@ import Camera from './camera'
     repository: true,
     camera: true,
     keyboard: true,
-    gamePad: true
+    gamePad: true,
+    mouse: true
 })
 export default class Game extends CommonObject {
 

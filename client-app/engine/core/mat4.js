@@ -1,4 +1,5 @@
 
+// todo convert to plain good oop style
 
 exports.makeIdentity = function () {
     return [
@@ -132,6 +133,17 @@ exports.makeScale = function(sx, sy, sz) {
         0,  0, sz,  0,
         0,  0,  0,  1
     ];
+};
+
+exports.transformVector = (v,m)=>{
+    return (
+        [
+            v[0]*m[0] + v[1]*m[1] + v[2]*m[2] + v[3]*m[3],
+            v[0]*m[4] + v[1]*m[5] + v[2]*m[6] + v[3]*m[7],
+            v[0]*m[8] + v[1]*m[9] + v[2]*m[10] + v[3]*m[11],
+            v[0]*m[12] + v[1]*m[13] + v[2]*m[14] + v[3]*m[15]
+        ]
+    );
 };
 
 exports.matrixMultiply = function(a, b) {

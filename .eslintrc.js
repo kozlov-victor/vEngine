@@ -69,6 +69,7 @@ module.exports = {
         'handle-callback-err':0,
         'comma-dangle':0,
         'no-trailing-spaces':0,
-        'no-mixed-spaces-and-tabs':0
+        'no-mixed-spaces-and-tabs':0,
+        'space-unary-ops':0
     }
 };

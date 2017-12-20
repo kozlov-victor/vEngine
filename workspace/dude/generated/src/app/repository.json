@@ -53,6 +53,14 @@
                 {
                     "type": "GameObject",
                     "id": 68
+                },
+                {
+                    "type": "GameObject",
+                    "id": 71
+                },
+                {
+                    "type": "GameObject",
+                    "id": 74
                 }
             ]
         }
@@ -83,6 +91,22 @@
             "numOfFramesH": 25,
             "resourcePath": "resources/ground.png",
             "id": 57
+        },
+        {
+            "name": "clamp",
+            "width": 64,
+            "height": 64,
+            "type": "SpriteSheet",
+            "resourcePath": "resources/clamp.png",
+            "id": 69
+        },
+        {
+            "name": "tile",
+            "width": 262,
+            "height": 192,
+            "type": "SpriteSheet",
+            "resourcePath": "resources/tile.jpg",
+            "id": 72
         }
     ],
     "GameObjectProto": [
@@ -159,6 +183,28 @@
                 }
             ],
             "currFrameIndex": 9
+        },
+        {
+            "name": "clamp",
+            "width": 64,
+            "height": 64,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 69,
+                "type": "SpriteSheet"
+            },
+            "id": 70
+        },
+        {
+            "name": "tile",
+            "width": 262,
+            "height": 192,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 72,
+                "type": "SpriteSheet"
+            },
+            "id": 73
         }
     ],
     "GameObject": [
@@ -194,8 +240,8 @@
             "id": 64,
             "name": "platform",
             "pos": {
-                "x": 12,
-                "y": 411
+                "x": 471,
+                "y": 478
             },
             "layerId": 2,
             "type": "GameObject",
@@ -244,6 +290,34 @@
                 "type": "GameObjectProto"
             },
             "id": 68
+        },
+        {
+            "id": 71,
+            "name": "clamp",
+            "pos": {
+                "x": 739,
+                "y": 325
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 70,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 74,
+            "name": "tile",
+            "pos": {
+                "x": 369,
+                "y": 271
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 73,
+                "type": "GameObjectProto"
+            }
         }
     ],
     "FrameAnimation": [

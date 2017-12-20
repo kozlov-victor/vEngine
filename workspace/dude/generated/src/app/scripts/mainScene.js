@@ -16,16 +16,21 @@ export class MainSceneBehaviour {
           this.y = e.screenY;
           this.points.push({x:e.screenX,y:e.screenY});
         });
+        this.offsetX = 0;
     }
 
     onUpdate(){
         this.game.renderer.fillRect(this.x,this.y,10,10,this.color);
         this.points.forEach(p=>{
-            this.game.renderer.fillCircle(p.x,p.y,50,this.color);
+            //this.game.renderer.fillCircle(p.x,p.y,50,this.color);
             //this.game.renderer.drawLine(p.x,p.y,p.x+20,p.y+30,this.color);
         });
         //this.game.renderer.log(this.points.length);
-        this.game.renderer.log({a:2});
+        //this.game.renderer.log({a:2});
+        // this.game.renderer.drawTiledImage('resources/tile.jpg',
+        //           0, 0, this.game.width, this.game.height,
+        //           this.offsetX,0);
+        //this.offsetX+=0.1;
     }
 
     onDestroy(){

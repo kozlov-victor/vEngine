@@ -1,13 +1,13 @@
 /*global DEBUG:true*/
 import mathEx from '../mathEx'
 
-
 export default class Mouse {
 
     objectsCaptured = {};
 
     constructor(game){
         this.game = game;
+        this.lastPoint = {};
     }
 
     listenTo(container) {
@@ -49,11 +49,30 @@ export default class Mouse {
     }
 
     resolveScreenPoint(e){ // todo this is world point
-        return {
-            x: ~~((e.clientX - this.game.pos.x ) / this.game.scale.x / this.game.camera.scale.x) + this.game.camera.pos.x,
-            y: ~~((e.clientY - this.game.pos.y ) / this.game.scale.y / this.game.camera.scale.y) + this.game.camera.pos.y,
+        let game = this.game;
+        let camera = this.game.camera;
+        let rectScaled = camera.getRectScaled();
+        let res = {
+            x: ~~((((e.clientX - game.pos.x ) / game.scale.x ) + camera.pos.x)),
+            y: ~~((((e.clientY - game.pos.y ) / game.scale.y ) + camera.pos.y)),
             id: e.identifier || 0
         };
+        let fi = Math.atan2(res.y,res.x);
+        let r = Math.sqrt(res.x*res.x+res.y*res.y);
+
+        // todo avoid calculation if scale eq 1
+        let oldPosX = r*Math.cos(fi); // todo DRY in camera
+        let oldPosY = r*Math.sin(fi);
+        let newPosX = r/camera.scale.x*Math.cos(fi); // delta screen offset due to camera view scaling
+        let newPosY = r/camera.scale.y*Math.sin(fi);
+        let scaleOffsetX = newPosX - oldPosX;
+        let scaleOffsetY = newPosY - oldPosY;
+
+        res.x+=scaleOffsetX;
+        res.y+=scaleOffsetY;
+
+        this.lastPoint = res;
+        return res;
     }
 
     triggerEvent(e,eventName,isMouseDown){

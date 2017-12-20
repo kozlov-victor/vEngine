@@ -64,5 +64,34 @@ export default class TileMap extends BaseModel {
         //if (result.length) console.log('collided with',result.length);
         return result;
     }
+
+    update(){
+        let spriteSheet = this.spriteSheet;
+        if (!spriteSheet) return;
+        let camera = this.game.camera;
+        let renderer = this.game.renderer;
+        let cameraRect = camera.getRectScaled();
+        let tilePosX = ~~((camera.pos.x - cameraRect.scaleOffsetX) / this.spriteSheet._frameWidth);
+        let tilePosY = ~~((camera.pos.y - cameraRect.scaleOffsetY) / this.spriteSheet._frameHeight);
+        if (tilePosX<0) tilePosX = 0;
+        if (tilePosY<0) tilePosY = 0;
+        let w = tilePosX + this._tilesInScreenX + 1;
+        let h = tilePosY + this._tilesInScreenY + 1;
+        for (let y=tilePosY;y<h;y++) {
+            for (let x=tilePosX;x<w;x++) {
+                let index = this.data[y] && this.data[y][x];
+                if (index===null || index===undefined) continue;
+                renderer.drawImage(
+                    spriteSheet.resourcePath,
+                    spriteSheet.getFramePosX(index),
+                    spriteSheet.getFramePosY(index),
+                    spriteSheet._frameWidth,
+                    spriteSheet._frameHeight,
+                    x*spriteSheet._frameWidth,
+                    y*spriteSheet._frameHeight
+                );
+            }
+        }
+    }
     
 }

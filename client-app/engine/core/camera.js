@@ -1,5 +1,7 @@
 /*global DEBUG:true*/
 import Tween from "./tween";
+import mat4 from './mat4'
+import MatrixStack from './renderer/webGl/base/matrixStack'
 
 export default class Camera {
 
@@ -61,7 +63,10 @@ export default class Camera {
         else if (currTime-this.lastToleranceTime>this.TOLERANCE_TIME) {
             this.lastToleranceTime = currTime;
             this.cameraTween.reuse({
-                to: {'pos.x':x,'pos.y':y,'scale.x':scaleVal,'scale.y':scaleVal}
+                to: {
+                    'pos.x':x,'pos.y':y,
+                    //'scale.x':scaleVal,'scale.y':scaleVal
+                }
             });
         }
 
@@ -84,6 +89,32 @@ export default class Camera {
             width: this.game.width,
             height: this.game.height
         }
+    }
+
+    getRectScaled(){ // todo cache this method
+        let game = this.game;
+        let camera = this.game.camera;
+        let scale = camera.scale;
+        let w = this.game.width;
+        let h = this.game.height;
+        let fi = Math.atan2(w,h); // todo const
+        let r = Math.sqrt(w*w+h*h);
+        let oldPosX = r*Math.cos(fi);
+        let oldPosY = r*Math.sin(fi);
+        let newPosX = r/scale.x*Math.cos(fi); // delta screen offset due to camera view scaling
+        let newPosY = r/scale.y*Math.sin(fi);
+        let scaleOffsetX = newPosX - oldPosX;
+        let scaleOffsetY = newPosY - oldPosY;
+        let x = this.pos.x - scaleOffsetX;
+        let y = this.pos.y - scaleOffsetY;
+        //game.renderer.log(game.mouse.lastPoint);
+        return  {
+            scaleOffsetX,
+            scaleOffsetY,
+            x, y,
+            width: w + scaleOffsetX*2,
+            height: h + scaleOffsetY*2
+        };
     }
 
 }
