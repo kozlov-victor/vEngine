@@ -27,10 +27,11 @@ export class MainSceneBehaviour {
         });
         //this.game.renderer.log(this.points.length);
         //this.game.renderer.log({a:2});
-        // this.game.renderer.drawTiledImage('resources/tile.jpg',
-        //           0, 0, this.game.width, this.game.height,
-        //           this.offsetX,0);
-        //this.offsetX+=0.1;
+        this.game.renderer.drawTiledImage('resources/tile.jpg',
+                  130,0,130,61,
+                  0, 0, this.game.width, this.game.height,
+                  this.offsetX,this.offsetX);
+        this.offsetX+=0.1;
     }
 
     onDestroy(){

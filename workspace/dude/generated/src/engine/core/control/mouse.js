@@ -53,23 +53,25 @@ export default class Mouse {
         let camera = this.game.camera;
         let rectScaled = camera.getRectScaled();
         let res = {
-            x: ~~((((e.clientX - game.pos.x ) / game.scale.x ) + rectScaled.x)),
+            x: ~~((((e.clientX - game.pos.x ) / game.scale.x ) + camera.pos.x)),
             y: ~~((((e.clientY - game.pos.y ) / game.scale.y ) + camera.pos.y)),
             id: e.identifier || 0
         };
-        let fi = Math.atan2(res.y,res.x);
-        let r = Math.sqrt(res.x*res.x+res.y*res.y);
-
-        // todo avoid calculation if scale eq 1
-        let oldPosX = r*Math.cos(fi); // todo DRY in camera
-        let oldPosY = r*Math.sin(fi);
-        let newPosX = r/camera.scale.x*Math.cos(fi); // delta screen offset due to camera view scaling
-        let newPosY = r/camera.scale.y*Math.sin(fi);
-        let scaleOffsetX = newPosX - oldPosX;
-        let scaleOffsetY = newPosY - oldPosY;
-
-        res.x+=scaleOffsetX;
-        res.y+=scaleOffsetY;
+        // let fi = Math.atan2(game.height-res.y,game.width - res.x);
+        // let r = Math.sqrt(res.x*res.x+res.y*res.y);
+        //
+        // // todo avoid calculation if scale eq 1
+        // let oldPosX = r*Math.cos(fi); // todo DRY in camera
+        // let oldPosY = r*Math.sin(fi);
+        // let newPosX = r/camera.scale.x*Math.cos(fi); // delta screen offset due to camera view scaling
+        // let newPosY = r/camera.scale.y*Math.sin(fi);
+        // let scaleOffsetX = newPosX - oldPosX;
+        // let scaleOffsetY = newPosY - oldPosY;
+        //
+        // res.x+=scaleOffsetX;
+        // res.y+=scaleOffsetY;
+        // res.x = res.x-game.width/2;
+        // res.y = res.y-game.height/2;
 
         this.lastPoint = res;
         return res;

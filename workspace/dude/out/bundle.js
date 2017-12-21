@@ -3438,6 +3438,8 @@
         t.prototype.onUpdate = function t() {
             this.game.renderer.fillRect(this.x, this.y, 10, 10, this.color);
             this.points.forEach(function(t) {});
+            this.game.renderer.drawTiledImage("resources/tile.jpg", 130, 0, 130, 61, 0, 0, this.game.width, this.game.height, this.offsetX, this.offsetX);
+            this.offsetX += .1;
         };
         t.prototype.onDestroy = function t() {};
         return t;
@@ -4213,20 +4215,10 @@
             var i = this.game.camera;
             var n = i.getRectScaled();
             var o = {
-                x: ~~((e.clientX - r.pos.x) / r.scale.x + n.x),
+                x: ~~((e.clientX - r.pos.x) / r.scale.x + i.pos.x),
                 y: ~~((e.clientY - r.pos.y) / r.scale.y + i.pos.y),
                 id: e.identifier || 0
             };
-            var a = Math.atan2(o.y, o.x);
-            var s = Math.sqrt(o.x * o.x + o.y * o.y);
-            var u = s * Math.cos(a);
-            var f = s * Math.sin(a);
-            var h = s / i.scale.x * Math.cos(a);
-            var c = s / i.scale.y * Math.sin(a);
-            var l = h - u;
-            var d = c - f;
-            o.x += l;
-            o.y += d;
             this.lastPoint = o;
             return o;
         };
@@ -5439,22 +5431,23 @@
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.spriteRectDrawer.draw();
         };
-        e.prototype.drawTiledImage = function t(e, r, i, n, o, a, s) {
+        e.prototype.drawTiledImage = function t(e, r, i, n, o, a, s, u, f, h, c) {
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-            var u = this.renderableCache[e];
-            if (1 && !u) {
+            var l = this.renderableCache[e];
+            if (1 && !l) {
                 if (!e) throw "no texture path provided"; else throw "can not find texture with path " + e;
             }
-            var f = u.getSize().width;
-            var h = u.getSize().height;
-            if (this.currTex !== u) {
-                u.bind();
-                this.currTex = u;
+            var d = l.getSize().width;
+            var p = l.getSize().height;
+            if (this.currTex !== l) {
+                l.bind();
+                this.currTex = l;
             }
             this.tiledSpriteRectDrawer.bind();
-            var c = this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", k(0, 0, n, o, f, h));
-            this.tiledSpriteRectDrawer.setUniform("u_matrix", G(r, i, n, o, this.game.width, this.game.height));
-            this.tiledSpriteRectDrawer.setUniform("u_offsetCoords", [ a, s ]);
+            this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", k(0, 0, u, f, d, p));
+            this.tiledSpriteRectDrawer.setUniform("u_matrix", G(a, s, u, f, this.game.width, this.game.height));
+            this.tiledSpriteRectDrawer.setUniform("u_frameCoords", [ r / d, i / p, n / d, o / p ]);
+            this.tiledSpriteRectDrawer.setUniform("u_offsetCoords", [ h / n, c / o ]);
             this.tiledSpriteRectDrawer.setUniform("u_alpha", 1);
             this.tiledSpriteRectDrawer.draw();
         };
@@ -6694,5 +6687,5 @@
 }, function(t, e) {
     t.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
 }, function(t, e) {
-    t.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(v_texcoord + fract(u_offsetCoords),vec2(1,1));\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n\r\n\r\n\r\n}\r\n\r\n\r\n// vec2 localTextCoord = mod(v_texcoord + fract(u_offsetCoords),vec2(1,1));";
+    t.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\nuniform vec4 u_frameCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(\r\n        v_texcoord + fract(u_offsetCoords),\r\n        u_frameCoords.zw\r\n    ) + u_frameCoords.xy;\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n}\r\n\r\n\r\n// vec2 localTextCoord = mod(v_texcoord + fract(u_offsetCoords),vec2(1,1));";
 } ]);

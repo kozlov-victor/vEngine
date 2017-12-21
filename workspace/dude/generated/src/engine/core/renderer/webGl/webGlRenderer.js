@@ -160,6 +160,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     drawTiledImage(texturePath,
+                   srcX,srcY,srcWidth,srcHeight,
                    dstX, dstY, dstWidth, dstHeight,
                    offsetX,offsetY){
 
@@ -181,7 +182,6 @@ export default class WebGlRenderer extends AbstractRenderer {
         }
 
         this.tiledSpriteRectDrawer.bind();
-        let textureMatrix =
         this.tiledSpriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(
             0,0,dstWidth, dstHeight,
             texWidth,texHeight)
@@ -190,7 +190,9 @@ export default class WebGlRenderer extends AbstractRenderer {
             dstX,dstY,dstWidth, dstHeight,
             this.game.width,this.game.height)
         );
-        this.tiledSpriteRectDrawer.setUniform('u_offsetCoords',[offsetX,offsetY]);
+        this.tiledSpriteRectDrawer.setUniform('u_frameCoords',
+            [srcX/texWidth,srcY/texHeight,srcWidth/texWidth,srcHeight/texHeight]);
+        this.tiledSpriteRectDrawer.setUniform('u_offsetCoords',[offsetX/srcWidth,offsetY/srcHeight]);
         this.tiledSpriteRectDrawer.setUniform('u_alpha',1); // alpha
         this.tiledSpriteRectDrawer.draw();
 
