@@ -12,6 +12,9 @@ export default class Mouse {
 
     listenTo(container) {
         // mouseDown
+        
+        
+        //MouseEvent|TouchEvent|PointerEvent
         container.ontouchstart = e=>{
             let l = e.touches.length;
             while (l--){
