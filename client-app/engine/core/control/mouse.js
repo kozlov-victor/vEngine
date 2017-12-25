@@ -12,6 +12,7 @@ export default class Mouse {
     }
 
 
+    //MouseEvent|TouchEvent|PointerEvent
     resolveScreenPoint(e){ // todo this is world point
         let game = this.game;
         let camera = this.game.camera;

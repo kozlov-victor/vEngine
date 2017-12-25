@@ -13,6 +13,11 @@ window.requestAnimationFrame =
     window.webkitRequestAnimationFrame||
     function(f){setTimeout(f,17)};
 
+
+if (!window.cancelAnimationFrame) {
+    global.cancelAnimationFrame = (id) => clearTimeout(id);
+}
+
 if (!Array.prototype.find) {
     Array.prototype.find = function(predicate) {
         if (this == null) {
