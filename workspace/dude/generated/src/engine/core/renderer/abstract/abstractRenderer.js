@@ -21,6 +21,7 @@ export default class AbstractRenderer {
             this.fullScreenSize.w = game.width;
             this.fullScreenSize.h = game.height;
         }
+        //document.body.addEventListener('click',()=>this.requestFullScreen());
     }
 
     onResize(){
@@ -43,7 +44,29 @@ export default class AbstractRenderer {
 
         this.container.style.width = width + 'px';
         this.container.style.height = height + 'px';
+        this.container.style.marginTop = `${this.game.pos.y}px`;
 
+    }
+
+    requestFullScreen(){
+        let element = this.container;
+        if(element.requestFullScreen) {
+            element.requestFullScreen();
+        } else if(element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        }
+    }
+
+    cancelFullScreen(){
+        if(document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if(document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if(document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
     }
 
     beginFrameBuffer(){}
@@ -56,7 +79,11 @@ export default class AbstractRenderer {
 
     registerResize(){
         this.onResize();
-        window.addEventListener('resize',()=>{this.onResize()});
+        window.addEventListener('resize',()=>this.onResize());
+    }
+
+    destroy(){
+        window.removeEventListener('resize',this.onResize);
     }
 
     getError(){

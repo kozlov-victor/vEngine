@@ -11,19 +11,22 @@ export default class FrameBuffer {
         this.width = width;
         this.height = height;
 
-        //1. Init Color Texture
         this.texture = new Texture(gl);
         this.texture.setImage(null,width,height);
-        //2. Init Render Buffer
+        this._init(gl,width,height);
+    }
+
+    _init(gl,width,height){
+        // Init Render Buffer
         this.glRenderBuffer = gl.createRenderbuffer();
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.glRenderBuffer);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
-        //3. Init Frame Buffer
+        // Init Frame Buffer
         this.glFrameBuffer = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.glFrameBuffer);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getGlTexture(), 0);
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.glRenderBuffer);
-        //4. Clean up
+        // Clean up
         this.texture.unbind();
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);

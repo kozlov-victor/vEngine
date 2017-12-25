@@ -1,4 +1,6 @@
-//const Vec2 = require('./vec2');
+/*global DEBUG:true*/
+
+import mat4 from './mat4'
 
 exports.isPointInRect = (point,rect,angle)=> {
     // if (angle) {
@@ -39,6 +41,23 @@ exports.random = function(min, max){
     else if (res<min) res = min;
     return res;
 };
+
+/**
+ * analog of glu unproject function
+ * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
+ */
+exports.unProject = (winX,winY, width, height, viewProjectionMatrix)=>{
+    let x = 2.0 * winX / width - 1;
+    let y = 2.0 * winY / height - 1;
+    let viewProjectionInverse = mat4.inverse(viewProjectionMatrix);
+
+    let point3D = [x, y, 0, 1];
+    let res = mat4.multMatrixVec(viewProjectionInverse,point3D);
+    res[0] = (res[0]/2+0.5)*width;
+    res[1] = (res[1]/2+0.5)*height;
+    return res;
+};
+
 //
 // exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
 //     let angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);

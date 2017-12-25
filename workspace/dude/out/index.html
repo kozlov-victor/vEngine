@@ -5,30 +5,30 @@
     <title>dude</title>
     <script>(function(e) {
     var t = {};
-    function n(o) {
-        if (t[o]) {
-            return t[o].exports;
+    function n(r) {
+        if (t[r]) {
+            return t[r].exports;
         }
-        var r = t[o] = {
-            i: o,
+        var o = t[r] = {
+            i: r,
             l: false,
             exports: {}
         };
-        e[o].call(r.exports, r, r.exports, n);
-        r.l = true;
-        return r.exports;
+        e[r].call(o.exports, o, o.exports, n);
+        o.l = true;
+        return o.exports;
     }
     n.m = e;
     n.c = t;
     n.i = function(e) {
         return e;
     };
-    n.d = function(e, t, o) {
+    n.d = function(e, t, r) {
         if (!n.o(e, t)) {
             Object.defineProperty(e, t, {
                 configurable: false,
                 enumerable: true,
-                get: o
+                get: r
             });
         }
     };
@@ -45,11 +45,11 @@
         return Object.prototype.hasOwnProperty.call(e, t);
     };
     n.p = "";
-    return n(n.s = 79);
+    return n(n.s = 80);
 })({
-    22: function(e, t, n) {
+    21: function(e, t, n) {
         "use strict";
-        var o = function e() {
+        var r = function e() {
             if (!(document && document.getElementById)) return null;
             var t = document.getElementById("popupContainer");
             if (t) return t;
@@ -59,65 +59,65 @@
             document.body.appendChild(t);
             return t;
         };
-        var r = function e(t, n) {
-            var o = void 0;
+        var o = function e(t, n) {
+            var r = void 0;
             if (typeof t === "string") {
-                o = t;
-            } else o = t.message;
-            if (!o) {
+                r = t;
+            } else r = t.message;
+            if (!r) {
                 if (t.target) {
                     [ "img", "audio", "link" ].some(function(e) {
                         if (t.target.tagName.toLowerCase() === e) {
-                            o = "can not load " + e + " with location " + (t.target.src || t.target.href);
+                            r = "can not load " + e + " with location " + (t.target.src || t.target.href);
                             return true;
                         }
                     });
                 }
             }
-            if (!o) o = "";
-            if (o.indexOf("Uncaught") === 0) o = o.replace("Uncaught", "").trim();
-            if (!o) {
+            if (!r) r = "";
+            if (r.indexOf("Uncaught") === 0) r = r.replace("Uncaught", "").trim();
+            if (!r) {
                 console.error(t);
-                o = "Unknown error: " + t.toString();
+                r = "Unknown error: " + t.toString();
             }
-            if (n) o += " in line " + n;
-            return o;
+            if (n) r += " in line " + n;
+            return r;
         };
         var i = function e(t, n) {
-            console.log(r(t, n));
+            console.log(o(t, n));
         };
-        var c = function e(t, n, o) {
-            t.textContent = r(n, o);
+        var a = function e(t, n, r) {
+            t.textContent = o(n, r);
         };
-        var a = "";
+        var s = "";
         window.showError = function e(t, n) {
-            window.canceled = true;
+            window.game && window.game.destroy();
             if (navigator.isCocoonJS) {
                 i(t, n);
                 return;
             }
             if (document.body) {
-                if (a.toString() === (t && t.toString())) {
+                if (s.toString() === (t && t.toString())) {
                     return;
                 }
-                a = t;
-                var r = document.createElement("div");
-                r.style.cssText = "background-color:rgba(255,255,255,0.95);" + "color:red;" + "margin-bottom:5px;" + "border:1px solid red;";
+                s = t;
+                var o = document.createElement("div");
+                o.style.cssText = "background-color:rgba(255,255,255,0.95);" + "color:red;" + "margin-bottom:5px;" + "border:1px solid red;";
                 var u = document.createElement("div");
                 u.style.cssText = "width:90%;display:inline-block;";
                 u.style.cssText = "width:90%;display:inline-block;";
-                var l = document.createElement("div");
-                l.style.cssText = "width:10%;display:inline-block;cursor:pointer;text-align:right;vertical-align:top;";
-                l.textContent = "x";
-                l.ontouchstart = l.onclick = function() {
-                    r.remove();
+                var c = document.createElement("div");
+                c.style.cssText = "width:10%;display:inline-block;cursor:pointer;text-align:right;vertical-align:top;";
+                c.textContent = "x";
+                c.ontouchstart = c.onclick = function() {
+                    o.remove();
                 };
-                c(u, t, n);
-                r.appendChild(u);
-                r.appendChild(l);
-                var d = o();
+                a(u, t, n);
+                o.appendChild(u);
+                o.appendChild(c);
+                var d = r();
                 if (d) {
-                    d.appendChild(r);
+                    d.appendChild(o);
                 } else {
                     i(t, n);
                 }
@@ -127,17 +127,23 @@
                 }, 100);
             }
         };
-        window.canceled = false;
         window.addEventListener("error", function(e, t, n) {
             console.error(e);
             if (!n) n = e.lineno;
             window.showError(e, n);
         }, true);
     },
-    23: function(e, t, n) {
+    22: function(e, t, n) {
         "use strict";
-        var o = document.createElement("div");
-        var r = {
+        var r = n(26);
+        var o = i(r);
+        function i(e) {
+            return e && e.__esModule ? e : {
+                default: e
+            };
+        }
+        var a = document.createElement("div");
+        var s = {
             position: "absolute",
             right: 0,
             top: 0,
@@ -146,22 +152,160 @@
             "min-height": "20px",
             opacity: .5
         };
-        Object.keys(r).forEach(function(e) {
-            return o.style.setProperty(e, r[e]);
+        Object.keys(s).forEach(function(e) {
+            return a.style.setProperty(e, s[e]);
         });
-        var i = document.createElement("span");
-        i.style.color = "white";
-        o.appendChild(i);
+        var u = document.createElement("span");
+        u.style.color = "white";
+        a.appendChild(u);
         window.addEventListener("load", function() {
-            document.body.appendChild(o);
+            document.body.appendChild(a);
             setInterval(function() {
-                i.textContent = "fps:" + window.fps;
+                u.textContent = "fps:" + window.fps;
             }, 1e3);
         });
+        window.addEventListener("error", function(e) {
+            try {
+                var t = e.lineno;
+                var n = e.colno;
+                var r = e.filename;
+                var i = '\n\n  <div class="errorBlock"> \n        <style>\n            .errorCol {color: #f30000;text-decoration: underline;}\n            .errorRow {\n                color: #bf1313;\n                font-weight: bold;\n            }\n            .errorBlock {\n                position: absolute;\n                left: 0;top:0;right:0;\n                border: 1px solid grey;\n                background-color: rgba(255,215,200,0.99);\n                font-family: monospace;\n                padding: 10px;\n            }\n            .errorClose {\n                position: absolute;\n                top: 5px;\n                right: 5px;\n                content: \'x\';\n                width: 20px;\n                height: 20px;\n                cursor: pointer;\n                color: black;\n            }    \n       </style>\n       <div class="errorClose" onclick="this.closest(\'.errorBlockHolder\').remove();">x</div>\n       <div>Runtime error!</div>\n       <div>' + r + "</div>\n       <div>-------------------</div>\n       <pre>$_content</pre>\n  </div> \n  \n";
+                o.default.get(r, {
+                    r: Math.random()
+                }, function(e) {
+                    var r = "";
+                    var o = e.split("\n");
+                    var a = 5;
+                    var s = o[t - 1];
+                    s = s.substr(0, n - 1) + '<span class="errorCol">' + s[n - 1] + "</span>" + s.substr(n);
+                    r += '<span class="errorRow">' + s + "</span>\n";
+                    for (var u = 0; u < a; u++) {
+                        var c = t + u;
+                        var d = o[c];
+                        if (d) r += d + "\n";
+                    }
+                    var l = document.createElement("div");
+                    l.className = "errorBlockHolder";
+                    l.innerHTML = i.replace("$_content", r);
+                    document.body.appendChild(l);
+                    document.title = "runtime error!";
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }, true);
     },
-    79: function(e, t, n) {
-        n(22);
-        e.exports = n(23);
+    26: function(e, t, n) {
+        "use strict";
+        t.__esModule = true;
+        var r = function e() {};
+        var o = function e(t) {
+            if (!t) return "";
+            if (t instanceof window.FormData) return t;
+            var n = [];
+            if (t === null || t === undefined || typeof t === "string" || typeof t === "number") return t;
+            for (var r in t) {
+                n.push([ r, encodeURIComponent(t[r]) ]);
+            }
+            return n.map(function(e) {
+                return [ e[0] + "=" + e[1] ];
+            }).join("&");
+        };
+        var i = function e(t) {
+            var n = null;
+            var i = false;
+            t.method = t.method || "get";
+            if (t.data && t.method === "get") t.url += "?" + o(t.data);
+            var a = new XMLHttpRequest();
+            var s = r, u = r;
+            var c = new Promise(function(e, t) {
+                s = e;
+                u = t;
+            });
+            a.onreadystatechange = function() {
+                if (a.readyState === 4) {
+                    if (a.status === 200 || a.status === 0) {
+                        var e = a.responseText;
+                        var r = a.getResponseHeader("Content-Type") || "";
+                        if (r.toLowerCase().indexOf("json") > -1) e = JSON.parse(e);
+                        if (t.success) {
+                            t.success(e);
+                            if (window.RF) RF.digest();
+                        }
+                        s(e);
+                    } else {
+                        if (t.error) t.error({
+                            status: a.status,
+                            error: a.statusText
+                        });
+                        u(a.statusText);
+                    }
+                    clearTimeout(n);
+                    i = true;
+                }
+            };
+            a.open(t.method, t.url, true);
+            if (t.requestType) {
+                if (t.requestType !== "multipart/form-data") a.setRequestHeader("Content-Type", t.requestType);
+            } else {
+                a.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            }
+            if (t.requestType === "application/json") t.data = t.data && JSON.stringify(t.data);
+            a.send(t.data);
+            if (t.timeout) {
+                n = setTimeout(function() {
+                    if (i) return;
+                    a.abort();
+                    if (t.ontimeout) t.ontimeout();
+                    u("timeout");
+                }, t.timeout);
+            }
+            return c;
+        };
+        var a = function e(t, n, r, o) {
+            return i({
+                method: "get",
+                url: t,
+                data: n,
+                success: r,
+                error: o
+            });
+        };
+        var s = function e(t, n, r, o) {
+            return i({
+                method: "post",
+                url: t,
+                data: n,
+                requestType: "application/json",
+                success: r,
+                error: o
+            });
+        };
+        var u = function e(t, n, r, o, a) {
+            var s = new FormData();
+            Object.keys(r).forEach(function(e) {
+                s.append(e, r[e]);
+            });
+            s.append("file", n);
+            s.append("fileName", n.name);
+            return i({
+                method: "post",
+                url: t,
+                data: s,
+                requestType: "multipart/form-data",
+                success: o,
+                error: a
+            });
+        };
+        t.default = {
+            get: a,
+            post: s,
+            postMultiPart: u
+        };
+    },
+    80: function(e, t, n) {
+        n(21);
+        e.exports = n(22);
     }
 });</script>
     <meta name ="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
@@ -182,8 +326,8 @@
     </style>
 </head>
 
-<body>
-<script src="bundle.js?489"></script>
+<body ontouchstart="">
+<script src="bundle.js?731"></script>
 </body>
 
 </html>

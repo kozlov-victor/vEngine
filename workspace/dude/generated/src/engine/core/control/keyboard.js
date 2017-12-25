@@ -8,6 +8,9 @@ const KEY_RELEASED = -1;
 
 export default class Keyboard {
 
+    keyDownListener = null;
+    keyUpListener = null;
+
     KEY = {
         SPACE: 32,
         A: 65,
@@ -103,15 +106,24 @@ export default class Keyboard {
     }
 
     listenTo(){
-        window.addEventListener('keydown',e=>{
+
+        this.keyDownListener = e=>{
             let code = e.keyCode;
             this.press(code);
-        });
-        window.addEventListener('keyup',e=>{
+        };
+
+        this.keyUpListener  = e=>{
             let code = e.keyCode;
             this.release(code);
-        });
+        };
+
+        window.addEventListener('keydown',this.keyDownListener);
+        window.addEventListener('keyup',this.keyUpListener);
     }
 
+    destroy(){
+        window.removeEventListener('keydown',this.keyDownListener);
+        window.removeEventListener('keyup',this.keyUpListener);
+    }
 
 }

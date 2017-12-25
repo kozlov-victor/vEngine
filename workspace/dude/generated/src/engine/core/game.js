@@ -28,6 +28,7 @@ export default class Game extends CommonObject {
     _currTime = null;
     _currentScene = null;
     _running = false;
+    destroyed = false;
     renderer = null;
     scale = {x:1,y:1};
     pos = {x:0,y:0};
@@ -97,7 +98,7 @@ export default class Game extends CommonObject {
     }
 
     static update(game){
-        if (DEBUG && window.canceled) return;
+        if (DEBUG && game.destroyed) return;
         requestAnimationFrame(()=>{Game.update(game)});
         game._lastTime = game._currTime;
         game._currTime = Date.now();
@@ -112,6 +113,14 @@ export default class Game extends CommonObject {
         game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
         game.keyboard.update();
         game.gamePad.update();
+    }
+
+    destroy(){
+        this.destroyed = true;
+        this.keyboard.destroy();
+        this.mouse.destroy();
+        this.renderer.destroy();
+        this.renderer.cancelFullScreen();
     }
 
 }

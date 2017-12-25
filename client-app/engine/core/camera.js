@@ -1,8 +1,9 @@
 /*global DEBUG:true*/
 import Tween from "./tween";
 import mat4 from './mat4'
-import MatrixStack from './renderer/webGl/base/matrixStack'
+import mathEx from './mathEx'
 
+// https://stackoverflow.com/questions/7692988/opengl-math-projecting-screen-space-to-world-space-coords
 export default class Camera {
 
     objFollowTo = null;
@@ -39,6 +40,7 @@ export default class Camera {
     }
 
     update(currTime,delta) {
+        let cameraRect = this.getRectScaled(); // todo cache this value
         let gameObject = this.objFollowTo;
         if (!gameObject) return;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
@@ -49,8 +51,8 @@ export default class Camera {
         let hDiv2 = h/2;
         let x = gameObject.pos.x - wDiv2;
         let y = gameObject.pos.y - hDiv2;
-        if (gameObject._lastDirection==='Right') x+=400; // todo remove hardcoded value, set camera follow mode
-        if (gameObject._lastDirection==='Left') x-=400;
+        if (gameObject._lastDirection==='Right') x+=cameraRect.width/2; // todo set camera follow mode
+        if (gameObject._lastDirection==='Left') x-=cameraRect.height/2;
         if (x<0) x = 0;
         if (y<0) y = 0;
         if (x>this.sceneWidth - w + tileWidth)  x = this.sceneWidth -w + tileWidth;
@@ -65,7 +67,7 @@ export default class Camera {
             this.cameraTween.reuse({
                 to: {
                     'pos.x':x,'pos.y':y,
-                    //'scale.x':scaleVal,'scale.y':scaleVal
+                    'scale.x':scaleVal,'scale.y':scaleVal
                 }
             });
         }
@@ -91,29 +93,28 @@ export default class Camera {
         }
     }
 
+    screenToWorld(screenX,screenY){ // todo need huge optimisation!
+        let mScale = mat4.makeScale(this.scale.x,this.scale.y,1);
+        let mTr = mat4.makeTranslation(this.pos.x,this.pos.y,0);
+        let xy = mathEx.unProject(
+            screenX,screenY,
+            this.game.width,this.game.height,mScale);
+        let res = [
+            xy[0],
+            xy[1]
+        ];
+        return res;
+    }
+
     getRectScaled(){ // todo cache this method
-        let game = this.game;
-        let camera = this.game.camera;
-        let scale = camera.scale;
-        let w = this.game.width;
-        let h = this.game.height;
-        let fi = Math.atan2(w,h); // todo const
-        let r = Math.sqrt(w*w+h*h);
-        let oldPosX = r*Math.cos(fi);
-        let oldPosY = r*Math.sin(fi);
-        let newPosX = r/scale.x*Math.cos(fi); // delta screen offset due to camera view scaling
-        let newPosY = r/scale.y*Math.sin(fi);
-        let scaleOffsetX = newPosX - oldPosX;
-        let scaleOffsetY = newPosY - oldPosY;
-        let x = this.pos.x - scaleOffsetX;
-        let y = this.pos.y - scaleOffsetY;
-        //game.renderer.log(game.mouse.lastPoint);
+
+        let point00 = this.screenToWorld(0,0);
+        let pointRightBottom = this.screenToWorld(this.game.width,this.game.height);
+
         return  {
-            scaleOffsetX,
-            scaleOffsetY,
-            x, y,
-            width: w + scaleOffsetX*2,
-            height: h + scaleOffsetY*2
+            x:this.pos.x + point00[0], y:this.pos.y + point00[1],
+            width: pointRightBottom[0] - point00[0],
+            height: pointRightBottom[1] - point00[1]
         };
     }
 

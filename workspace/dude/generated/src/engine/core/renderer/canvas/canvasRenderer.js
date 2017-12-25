@@ -54,6 +54,13 @@ export default class CanvasRenderer extends AbstractRenderer {
         );
     }
 
+    drawTiledImage(texturePath,
+                   srcX,srcY,srcWidth,srcHeight,
+                   dstX, dstY, dstWidth, dstHeight,
+                   offsetX,offsetY){
+
+    }
+
     fillRect(x,y,w,h,color){
         this.ctx.fillStyle = color;
         this.ctx.fillRect(x,y,w,h);

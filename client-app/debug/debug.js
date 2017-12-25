@@ -52,7 +52,7 @@ let _showErrorToDom = function(el,e,lineNum) {
 
 let lastErr = '';
 window.showError = function _err(e,lineNum){
-    window.canceled = true;
+    window.game && window.game.destroy();
     if (navigator.isCocoonJS) {
         _showErrToConsole(e,lineNum);
         return;
@@ -94,8 +94,6 @@ window.showError = function _err(e,lineNum){
 
 };
 
-
-window.canceled = false;
 
 window.addEventListener('error',function(e,url,lineNum){
     console.error(e);

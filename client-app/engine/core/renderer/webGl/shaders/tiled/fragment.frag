@@ -18,6 +18,3 @@ void main() {
     gl_FragColor.a *= u_alpha;
 
 }
-
-
-// vec2 localTextCoord = mod(v_texcoord + fract(u_offsetCoords),vec2(1,1));

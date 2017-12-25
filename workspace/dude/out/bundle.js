@@ -40,15 +40,15 @@
         return Object.prototype.hasOwnProperty.call(t, e);
     };
     r.p = "";
-    return r(r.s = 74);
+    return r(r.s = 75);
 })([ function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    var o = r(17);
+    var o = r(16);
     var a = p(o);
-    var s = r(16);
+    var s = r(15);
     var u = p(s);
     var f = r(45);
     var h = p(f);
@@ -65,13 +65,13 @@
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function g(t, e) {
+    function m(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function m(t, e) {
+    function g(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -89,10 +89,10 @@
         game: true,
         rigidBody: true
     }), i(n = function(t) {
-        m(e, t);
+        g(e, t);
         function e(r) {
             y(this, e);
-            var i = g(this, t.call(this));
+            var i = m(this, t.call(this));
             i.id = null;
             i.name = null;
             i.width = 0;
@@ -169,6 +169,66 @@
     e.default = v;
 }, function(t, e, r) {
     "use strict";
+    var i = r(6);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    e.isPointInRect = function(t, e, r) {
+        return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
+    };
+    e.overlapTest = function(t, e) {
+        return t.x < e.x + e.width && t.x + t.width > e.x && t.y < e.y + e.height && t.y + t.height > e.y;
+    };
+    e.radToDeg = function(t) {
+        return t * 180 / Math.PI;
+    };
+    e.degToRad = function(t) {
+        return t * Math.PI / 180;
+    };
+    e.random = function(t, e) {
+        if (t > e) {
+            var r = t;
+            t = e;
+            e = r;
+        }
+        var i = Math.random() * (e - t) + t;
+        if (i > e) i = e; else if (i < t) i = t;
+        return i;
+    };
+    e.unProject = function(t, e, r, i, o) {
+        var a = 2 * t / r - 1;
+        var s = 2 * e / i - 1;
+        var u = n.default.inverse(o);
+        var f = [ a, s, 0, 1 ];
+        var h = n.default.multMatrixVec(u, f);
+        h[0] = (h[0] / 2 + .5) * r;
+        h[1] = (h[1] / 2 + .5) * i;
+        return h;
+    };
+    var a = {};
+    a.linear = function(t, e, r, i) {
+        return r * t / i + e;
+    };
+    a.easeInQuad = function(t, e, r, i) {
+        t /= i;
+        return r * t * t + e;
+    };
+    a.easeOutQuad = function(t, e, r, i) {
+        t /= i;
+        return -r * t * (t - 2) + e;
+    };
+    a.easeInOutQuad = function(t, e, r, i) {
+        t /= i / 2;
+        if (t < 1) return r / 2 * t * t + e;
+        t--;
+        return -r / 2 * (t * (t - 2) - 1) + e;
+    };
+    e.ease = a;
+}, function(t, e, r) {
+    "use strict";
     e.__esModule = true;
     var i, n;
     function o(t, e) {
@@ -206,49 +266,6 @@
         return t;
     }(), i.currentDrawer = null, n);
     e.default = a;
-}, function(t, e, r) {
-    "use strict";
-    e.isPointInRect = function(t, e, r) {
-        return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
-    };
-    e.overlapTest = function(t, e) {
-        return t.x < e.x + e.width && t.x + t.width > e.x && t.y < e.y + e.height && t.y + t.height > e.y;
-    };
-    e.radToDeg = function(t) {
-        return t * 180 / Math.PI;
-    };
-    e.degToRad = function(t) {
-        return t * Math.PI / 180;
-    };
-    e.random = function(t, e) {
-        if (t > e) {
-            var r = t;
-            t = e;
-            e = r;
-        }
-        var i = Math.random() * (e - t) + t;
-        if (i > e) i = e; else if (i < t) i = t;
-        return i;
-    };
-    var i = {};
-    i.linear = function(t, e, r, i) {
-        return r * t / i + e;
-    };
-    i.easeInQuad = function(t, e, r, i) {
-        t /= i;
-        return r * t * t + e;
-    };
-    i.easeOutQuad = function(t, e, r, i) {
-        t /= i;
-        return -r * t * (t - 2) + e;
-    };
-    i.easeInOutQuad = function(t, e, r, i) {
-        t /= i / 2;
-        if (t < 1) return r / 2 * t * t + e;
-        t--;
-        return -r / 2 * (t * (t - 2) - 1) + e;
-    };
-    e.ease = i;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -629,55 +646,6 @@
     e.default = n;
 }, function(t, e, r) {
     "use strict";
-    e.__esModule = true;
-    e.default = undefined;
-    var i = r(8);
-    var n = o(i);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function a(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    function s(t, e) {
-        if (!t) {
-            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-        }
-        return e && (typeof e === "object" || typeof e === "function") ? e : t;
-    }
-    function u(t, e) {
-        if (typeof e !== "function" && e !== null) {
-            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
-        }
-        t.prototype = Object.create(e && e.prototype, {
-            constructor: {
-                value: t,
-                enumerable: false,
-                writable: true,
-                configurable: true
-            }
-        });
-        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
-    }
-    var f = function(t) {
-        u(e, t);
-        function e() {
-            a(this, e);
-            var r = s(this, t.call(this));
-            r.vertexArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
-            r.indexArr = [ 0, 1, 2, 3 ];
-            r.texCoordArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
-            return r;
-        }
-        return e;
-    }(n.default);
-    e.default = f;
-}, function(t, e, r) {
-    "use strict";
     e.makeIdentity = function() {
         return [ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 ];
     };
@@ -750,44 +718,110 @@
     e.makeScale = function(t, e, r) {
         return [ t, 0, 0, 0, 0, e, 0, 0, 0, 0, r, 0, 0, 0, 0, 1 ];
     };
-    e.transformVector = function(t, e) {
-        return [ t[0] * e[0] + t[1] * e[1] + t[2] * e[2] + t[3] * e[3], t[0] * e[4] + t[1] * e[5] + t[2] * e[6] + t[3] * e[7], t[0] * e[8] + t[1] * e[9] + t[2] * e[10] + t[3] * e[11], t[0] * e[12] + t[1] * e[13] + t[2] * e[14] + t[3] * e[15] ];
-    };
     e.matrixMultiply = function(t, e) {
-        var r = t[0 * 4 + 0];
-        var i = t[0 * 4 + 1];
-        var n = t[0 * 4 + 2];
-        var o = t[0 * 4 + 3];
-        var a = t[1 * 4 + 0];
-        var s = t[1 * 4 + 1];
-        var u = t[1 * 4 + 2];
-        var f = t[1 * 4 + 3];
-        var h = t[2 * 4 + 0];
-        var c = t[2 * 4 + 1];
-        var l = t[2 * 4 + 2];
-        var d = t[2 * 4 + 3];
-        var p = t[3 * 4 + 0];
-        var y = t[3 * 4 + 1];
-        var g = t[3 * 4 + 2];
-        var m = t[3 * 4 + 3];
-        var v = e[0 * 4 + 0];
-        var w = e[0 * 4 + 1];
-        var _ = e[0 * 4 + 2];
-        var b = e[0 * 4 + 3];
-        var x = e[1 * 4 + 0];
-        var E = e[1 * 4 + 1];
-        var T = e[1 * 4 + 2];
-        var O = e[1 * 4 + 3];
-        var S = e[2 * 4 + 0];
-        var A = e[2 * 4 + 1];
-        var M = e[2 * 4 + 2];
-        var R = e[2 * 4 + 3];
-        var j = e[3 * 4 + 0];
-        var P = e[3 * 4 + 1];
-        var B = e[3 * 4 + 2];
-        var F = e[3 * 4 + 3];
-        return [ r * v + i * x + n * S + o * j, r * w + i * E + n * A + o * P, r * _ + i * T + n * M + o * B, r * b + i * O + n * R + o * F, a * v + s * x + u * S + f * j, a * w + s * E + u * A + f * P, a * _ + s * T + u * M + f * B, a * b + s * O + u * R + f * F, h * v + c * x + l * S + d * j, h * w + c * E + l * A + d * P, h * _ + c * T + l * M + d * B, h * b + c * O + l * R + d * F, p * v + y * x + g * S + m * j, p * w + y * E + g * A + m * P, p * _ + y * T + g * M + m * B, p * b + y * O + g * R + m * F ];
+        var r = new Array(16);
+        r[0] = t[0] * e[0] + t[1] * e[4] + t[2] * e[8] + t[3] * e[12];
+        r[1] = t[0] * e[1] + t[1] * e[5] + t[2] * e[9] + t[3] * e[13];
+        r[2] = t[0] * e[2] + t[1] * e[6] + t[2] * e[10] + t[3] * e[14];
+        r[3] = t[0] * e[3] + t[1] * e[7] + t[2] * e[11] + t[3] * e[15];
+        r[4] = t[4] * e[0] + t[5] * e[4] + t[6] * e[8] + t[7] * e[12];
+        r[5] = t[4] * e[1] + t[5] * e[5] + t[6] * e[9] + t[7] * e[13];
+        r[6] = t[4] * e[2] + t[5] * e[6] + t[6] * e[10] + t[7] * e[14];
+        r[7] = t[4] * e[3] + t[5] * e[7] + t[6] * e[11] + t[7] * e[15];
+        r[8] = t[8] * e[0] + t[9] * e[4] + t[10] * e[8] + t[11] * e[12];
+        r[9] = t[8] * e[1] + t[9] * e[5] + t[10] * e[9] + t[11] * e[13];
+        r[10] = t[8] * e[2] + t[9] * e[6] + t[10] * e[10] + t[11] * e[14];
+        r[11] = t[8] * e[3] + t[9] * e[7] + t[10] * e[11] + t[11] * e[15];
+        r[12] = t[12] * e[0] + t[13] * e[4] + t[14] * e[8] + t[15] * e[12];
+        r[13] = t[12] * e[1] + t[13] * e[5] + t[14] * e[9] + t[15] * e[13];
+        r[14] = t[12] * e[2] + t[13] * e[6] + t[14] * e[10] + t[15] * e[14];
+        r[15] = t[12] * e[3] + t[13] * e[7] + t[14] * e[11] + t[15] * e[15];
+        return r;
     };
+    e.multMatrixVec = function(t, e) {
+        var r = new Array(16);
+        for (var i = 0; i < 4; i++) {
+            r[i] = e[0] * t[0 * 4 + i] + e[1] * t[1 * 4 + i] + e[2] * t[2 * 4 + i] + e[3] * t[3 * 4 + i];
+        }
+        return r;
+    };
+    e.inverse = function(t) {
+        var e = new Array(16);
+        e[0] = t[5] * t[10] * t[15] - t[5] * t[14] * t[11] - t[6] * t[9] * t[15] + t[6] * t[13] * t[11] + t[7] * t[9] * t[14] - t[7] * t[13] * t[10];
+        e[1] = -t[1] * t[10] * t[15] + t[1] * t[14] * t[11] + t[2] * t[9] * t[15] - t[2] * t[13] * t[11] - t[3] * t[9] * t[14] + t[3] * t[13] * t[10];
+        e[2] = t[1] * t[6] * t[15] - t[1] * t[14] * t[7] - t[2] * t[5] * t[15] + t[2] * t[13] * t[7] + t[3] * t[5] * t[14] - t[3] * t[13] * t[6];
+        e[3] = -t[1] * t[6] * t[11] + t[1] * t[10] * t[7] + t[2] * t[5] * t[11] - t[2] * t[9] * t[7] - t[3] * t[5] * t[10] + t[3] * t[9] * t[6];
+        e[4] = -t[4] * t[10] * t[15] + t[4] * t[14] * t[11] + t[6] * t[8] * t[15] - t[6] * t[12] * t[11] - t[7] * t[8] * t[14] + t[7] * t[12] * t[10];
+        e[5] = t[0] * t[10] * t[15] - t[0] * t[14] * t[11] - t[2] * t[8] * t[15] + t[2] * t[12] * t[11] + t[3] * t[8] * t[14] - t[3] * t[12] * t[10];
+        e[6] = -t[0] * t[6] * t[15] + t[0] * t[14] * t[7] + t[2] * t[4] * t[15] - t[2] * t[12] * t[7] - t[3] * t[4] * t[14] + t[3] * t[12] * t[6];
+        e[7] = t[0] * t[6] * t[11] - t[0] * t[10] * t[7] - t[2] * t[4] * t[11] + t[2] * t[8] * t[7] + t[3] * t[4] * t[10] - t[3] * t[8] * t[6];
+        e[8] = t[4] * t[9] * t[15] - t[4] * t[13] * t[11] - t[5] * t[8] * t[15] + t[5] * t[12] * t[11] + t[7] * t[8] * t[13] - t[7] * t[12] * t[9];
+        e[9] = -t[0] * t[9] * t[15] + t[0] * t[13] * t[11] + t[1] * t[8] * t[15] - t[1] * t[12] * t[11] - t[3] * t[8] * t[13] + t[3] * t[12] * t[9];
+        e[10] = t[0] * t[5] * t[15] - t[0] * t[13] * t[7] - t[1] * t[4] * t[15] + t[1] * t[12] * t[7] + t[3] * t[4] * t[13] - t[3] * t[12] * t[5];
+        e[11] = -t[0] * t[5] * t[11] + t[0] * t[9] * t[7] + t[1] * t[4] * t[11] - t[1] * t[8] * t[7] - t[3] * t[4] * t[9] + t[3] * t[8] * t[5];
+        e[12] = -t[4] * t[9] * t[14] + t[4] * t[13] * t[10] + t[5] * t[8] * t[14] - t[5] * t[12] * t[10] - t[6] * t[8] * t[13] + t[6] * t[12] * t[9];
+        e[13] = t[0] * t[9] * t[14] - t[0] * t[13] * t[10] - t[1] * t[8] * t[14] + t[1] * t[12] * t[10] + t[2] * t[8] * t[13] - t[2] * t[12] * t[9];
+        e[14] = -t[0] * t[5] * t[14] + t[0] * t[13] * t[6] + t[1] * t[4] * t[14] - t[1] * t[12] * t[6] - t[2] * t[4] * t[13] + t[2] * t[12] * t[5];
+        e[15] = t[0] * t[5] * t[10] - t[0] * t[9] * t[6] - t[1] * t[4] * t[10] + t[1] * t[8] * t[6] + t[2] * t[4] * t[9] - t[2] * t[8] * t[5];
+        var r = t[0] * e[0] + t[1] * e[4] + t[2] * e[8] + t[3] * e[12];
+        if (1 && r === 0) {
+            console.error(t);
+            throw new Error("can not invert matrix");
+        }
+        for (var i = 0; i < 16; i++) {
+            e[i] /= r;
+        }
+        return e;
+    };
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(8);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    function s(t, e) {
+        if (!t) {
+            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+        }
+        return e && (typeof e === "object" || typeof e === "function") ? e : t;
+    }
+    function u(t, e) {
+        if (typeof e !== "function" && e !== null) {
+            throw new TypeError("Super expression must either be null or a function, not " + typeof e);
+        }
+        t.prototype = Object.create(e && e.prototype, {
+            constructor: {
+                value: t,
+                enumerable: false,
+                writable: true,
+                configurable: true
+            }
+        });
+        if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
+    }
+    var f = function(t) {
+        u(e, t);
+        function e() {
+            a(this, e);
+            var r = s(this, t.call(this));
+            r.vertexArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
+            r.indexArr = [ 0, 1, 2, 3 ];
+            r.texCoordArr = [ 0, 0, 0, 1, 1, 0, 1, 1 ];
+            return r;
+        }
+        return e;
+    }(n.default);
+    e.default = f;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -805,7 +839,7 @@
     };
     e.default = n;
 }, function(t, e) {
-    t.exports = "//position and color\r\n\r\nattribute vec4 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_matrix;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main() {\r\n   gl_Position = u_matrix * a_position;\r\n   v_color = a_color;\r\n}";
+    t.exports = "//position and color\r\n\r\nattribute vec4 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_PositionMatrix;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main() {\r\n   gl_Position = u_PositionMatrix * a_position;\r\n   v_color = a_color;\r\n}";
 }, function(t, e) {
     t.exports = "precision mediump float; // lowp, mediump, highp\n\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}";
 }, function(t, e, r) {
@@ -914,72 +948,6 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    e.default = undefined;
-    var i = r(7);
-    var n = o(i);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    function a(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var s = function() {
-        function t() {
-            a(this, t);
-            this.stack = [];
-            this.restore();
-        }
-        t.prototype.restore = function t() {
-            this.stack.pop();
-            if (this.stack.length < 1) {
-                this.stack[0] = n.default.makeIdentity();
-            }
-        };
-        t.prototype.save = function t() {
-            this.stack.push(this.getCurrentMatrix());
-        };
-        t.prototype.getCurrentMatrix = function t() {
-            return this.stack[this.stack.length - 1].slice();
-        };
-        t.prototype.setCurrentMatrix = function t(e) {
-            return this.stack[this.stack.length - 1] = e;
-        };
-        t.prototype.translate = function t(e, r, i) {
-            if (i === undefined) {
-                i = 0;
-            }
-            var o = n.default.makeTranslation(e, r, i);
-            var a = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
-        };
-        t.prototype.rotateZ = function t(e) {
-            var r = n.default.makeZRotation(e);
-            var i = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
-        };
-        t.prototype.rotateY = function t(e) {
-            var r = n.default.makeYRotation(e);
-            var i = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
-        };
-        t.prototype.scale = function t(e, r, i) {
-            if (i === undefined) {
-                i = 1;
-            }
-            var o = n.default.makeScale(e, r, i);
-            var a = this.getCurrentMatrix();
-            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
-        };
-        return t;
-    }();
-    e.default = s;
-}, function(t, e, r) {
-    "use strict";
-    e.__esModule = true;
     function i(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -1052,7 +1020,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
+    var i = r(1);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -1517,8 +1485,8 @@
             var r = this.game.camera;
             var i = this.game.renderer;
             var n = r.getRectScaled();
-            var o = ~~((r.pos.x - n.scaleOffsetX) / this.spriteSheet._frameWidth);
-            var a = ~~((r.pos.y - n.scaleOffsetY) / this.spriteSheet._frameHeight);
+            var o = ~~(n.x / this.spriteSheet._frameWidth);
+            var a = ~~(n.y / this.spriteSheet._frameHeight);
             if (o < 0) o = 0;
             if (a < 0) a = 0;
             var s = o + this._tilesInScreenX + 1;
@@ -1646,7 +1614,7 @@
     }(n.default);
     e.default = f;
 }, function(t, e) {
-    t.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_matrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_matrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}";
+    t.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_PositionMatrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_PositionMatrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}";
 }, , , function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -1655,7 +1623,7 @@
     r(49);
     var o = r(51);
     var a = x(o);
-    var s = r(62);
+    var s = r(63);
     var u = x(s);
     var f = r(43);
     var h = x(f);
@@ -1664,9 +1632,9 @@
     var d = r(41);
     var p = x(d);
     var y = r(48);
-    var g = x(y);
-    var m = r(13);
-    var v = r(17);
+    var m = x(y);
+    var g = r(13);
+    var v = r(16);
     var w = x(v);
     var _ = r(40);
     var b = x(_);
@@ -1700,7 +1668,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var S = (i = (0, m.Transient)({
+    var S = (i = (0, g.Transient)({
         repository: true,
         camera: true,
         keyboard: true,
@@ -1715,6 +1683,7 @@
             i._currTime = null;
             i._currentScene = null;
             i._running = false;
+            i.destroyed = false;
             i.renderer = null;
             i.scale = {
                 x: 1,
@@ -1738,7 +1707,7 @@
             i.keyboard = new l.default(i);
             i.keyboard.listenTo();
             i.gamePad = new p.default(i);
-            i.collider = new g.default(i);
+            i.collider = new m.default(i);
             i.camera = new b.default(i);
             return i;
         }
@@ -1783,7 +1752,7 @@
             this._currentScene = e;
         };
         e.update = function t(r) {
-            if (1 && window.canceled) return;
+            if (1 && r.destroyed) return;
             requestAnimationFrame(function() {
                 e.update(r);
             });
@@ -1800,6 +1769,13 @@
             r._currentScene && r._currentScene.update(r._currTime, r._deltaTime);
             r.keyboard.update();
             r.gamePad.update();
+        };
+        e.prototype.destroy = function t() {
+            this.destroyed = true;
+            this.keyboard.destroy();
+            this.mouse.destroy();
+            this.renderer.destroy();
+            this.renderer.cancelFullScreen();
         };
         return e;
     }(w.default)) || n);
@@ -1971,6 +1947,7 @@
             } ],
             currFrameIndex: 9
         }, {
+            id: 70,
             name: "clamp",
             width: 64,
             height: 64,
@@ -1979,7 +1956,10 @@
                 id: 69,
                 type: "SpriteSheet"
             },
-            id: 70
+            commonBehaviour: [ {
+                type: "CommonBehaviour",
+                id: 75
+            } ]
         }, {
             name: "tile",
             width: 262,
@@ -2034,8 +2014,8 @@
             id: 65,
             name: "platform",
             pos: {
-                x: 383,
-                y: 196
+                x: 350,
+                y: 195
             },
             layerId: 2,
             type: "GameObject",
@@ -2139,1184 +2119,1188 @@
             name: "Draggable",
             type: "CommonBehaviour",
             id: 62
+        }, {
+            name: "Draggable",
+            type: "CommonBehaviour",
+            id: 75
         } ],
         Font: [ {
+            id: 22,
             name: "font1",
             type: "Font",
             resourcePath: "resources/font1.png",
             fontSize: 21,
-            fontFamily: "Berlin Sans FB",
+            fontFamily: "monospace",
             fontContext: {
                 symbols: {
                     "0": {
-                        x: 258,
-                        y: 4,
+                        x: 24,
+                        y: 36,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     "1": {
-                        x: 279,
-                        y: 4,
-                        width: 5,
-                        height: 23
+                        x: 45,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "2": {
-                        x: 293,
-                        y: 4,
-                        width: 10,
-                        height: 23
+                        x: 65,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "3": {
-                        x: 4,
-                        y: 35,
-                        width: 9,
-                        height: 23
+                        x: 86,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "4": {
-                        x: 21,
-                        y: 35,
-                        width: 10,
-                        height: 23
+                        x: 107,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "5": {
-                        x: 40,
-                        y: 35,
-                        width: 9,
-                        height: 23
+                        x: 127,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "6": {
-                        x: 58,
-                        y: 35,
-                        width: 10,
-                        height: 23
+                        x: 148,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "7": {
-                        x: 77,
-                        y: 35,
-                        width: 9,
-                        height: 23
+                        x: 168,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "8": {
-                        x: 94,
-                        y: 35,
-                        width: 9,
-                        height: 23
+                        x: 189,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "9": {
-                        x: 112,
-                        y: 35,
-                        width: 10,
-                        height: 23
+                        x: 210,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     " ": {
                         x: 4,
                         y: 4,
-                        width: 5,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "!": {
-                        x: 17,
+                        x: 24,
                         y: 4,
-                        width: 4,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     '"': {
-                        x: 30,
+                        x: 45,
                         y: 4,
-                        width: 6,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "#": {
-                        x: 44,
+                        x: 65,
                         y: 4,
-                        width: 13,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     $: {
-                        x: 66,
+                        x: 86,
                         y: 4,
-                        width: 9,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "%": {
-                        x: 83,
+                        x: 107,
                         y: 4,
-                        width: 15,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "&": {
-                        x: 106,
+                        x: 127,
                         y: 4,
-                        width: 14,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "'": {
-                        x: 129,
+                        x: 148,
                         y: 4,
-                        width: 3,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "(": {
-                        x: 140,
+                        x: 168,
                         y: 4,
-                        width: 7,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     ")": {
-                        x: 156,
+                        x: 189,
                         y: 4,
-                        width: 7,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "*": {
-                        x: 171,
+                        x: 210,
                         y: 4,
-                        width: 7,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "+": {
-                        x: 187,
+                        x: 230,
                         y: 4,
-                        width: 8,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     ",": {
-                        x: 203,
+                        x: 251,
                         y: 4,
-                        width: 4,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "-": {
-                        x: 216,
+                        x: 271,
                         y: 4,
-                        width: 8,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     ".": {
-                        x: 232,
+                        x: 292,
                         y: 4,
-                        width: 4,
-                        height: 23
+                        width: 12,
+                        height: 24
                     },
                     "/": {
-                        x: 244,
-                        y: 4,
-                        width: 6,
-                        height: 23
+                        x: 4,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     ":": {
-                        x: 130,
-                        y: 35,
-                        width: 4,
-                        height: 23
+                        x: 230,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     ";": {
-                        x: 143,
-                        y: 35,
-                        width: 4,
-                        height: 23
+                        x: 251,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "<": {
-                        x: 155,
-                        y: 35,
-                        width: 7,
-                        height: 23
+                        x: 271,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     "=": {
-                        x: 170,
-                        y: 35,
-                        width: 9,
-                        height: 23
+                        x: 292,
+                        y: 36,
+                        width: 12,
+                        height: 24
                     },
                     ">": {
-                        x: 187,
-                        y: 35,
-                        width: 7,
-                        height: 23
+                        x: 4,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     "?": {
-                        x: 203,
-                        y: 35,
-                        width: 8,
-                        height: 23
+                        x: 24,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     "@": {
-                        x: 219,
-                        y: 35,
-                        width: 13,
-                        height: 23
+                        x: 45,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     A: {
-                        x: 240,
-                        y: 35,
-                        width: 13,
-                        height: 23
+                        x: 65,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     B: {
-                        x: 262,
-                        y: 35,
+                        x: 86,
+                        y: 68,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     C: {
-                        x: 283,
-                        y: 35,
+                        x: 107,
+                        y: 68,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     D: {
-                        x: 4,
-                        y: 66,
-                        width: 14,
-                        height: 23
+                        x: 127,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     E: {
-                        x: 26,
-                        y: 66,
-                        width: 11,
-                        height: 23
+                        x: 148,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     F: {
-                        x: 45,
-                        y: 66,
-                        width: 11,
-                        height: 23
+                        x: 168,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     G: {
-                        x: 64,
-                        y: 66,
-                        width: 14,
-                        height: 23
+                        x: 189,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     H: {
-                        x: 86,
-                        y: 66,
-                        width: 15,
-                        height: 23
+                        x: 210,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     I: {
-                        x: 109,
-                        y: 66,
-                        width: 4,
-                        height: 23
+                        x: 230,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     J: {
-                        x: 122,
-                        y: 66,
-                        width: 5,
-                        height: 23
+                        x: 251,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     K: {
-                        x: 136,
-                        y: 66,
+                        x: 271,
+                        y: 68,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     L: {
-                        x: 157,
-                        y: 66,
-                        width: 10,
-                        height: 23
+                        x: 292,
+                        y: 68,
+                        width: 12,
+                        height: 24
                     },
                     M: {
-                        x: 175,
-                        y: 66,
-                        width: 16,
-                        height: 23
+                        x: 4,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     N: {
-                        x: 200,
-                        y: 66,
-                        width: 15,
-                        height: 23
+                        x: 24,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     O: {
-                        x: 223,
-                        y: 66,
-                        width: 15,
-                        height: 23
+                        x: 45,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     P: {
-                        x: 246,
-                        y: 66,
-                        width: 13,
-                        height: 23
+                        x: 65,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     Q: {
-                        x: 267,
-                        y: 66,
-                        width: 15,
-                        height: 23
+                        x: 86,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     R: {
-                        x: 291,
-                        y: 66,
+                        x: 107,
+                        y: 100,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     S: {
-                        x: 4,
-                        y: 97,
-                        width: 9,
-                        height: 23
+                        x: 127,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     T: {
-                        x: 21,
-                        y: 97,
-                        width: 10,
-                        height: 23
+                        x: 148,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     U: {
-                        x: 40,
-                        y: 97,
-                        width: 13,
-                        height: 23
+                        x: 168,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     V: {
-                        x: 62,
-                        y: 97,
-                        width: 13,
-                        height: 23
+                        x: 189,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     W: {
-                        x: 83,
-                        y: 97,
-                        width: 18,
-                        height: 23
+                        x: 210,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     X: {
-                        x: 110,
-                        y: 97,
+                        x: 230,
+                        y: 100,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     Y: {
-                        x: 130,
-                        y: 97,
+                        x: 251,
+                        y: 100,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     Z: {
-                        x: 150,
-                        y: 97,
-                        width: 10,
-                        height: 23
+                        x: 271,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     "[": {
-                        x: 169,
-                        y: 97,
-                        width: 7,
-                        height: 23
+                        x: 292,
+                        y: 100,
+                        width: 12,
+                        height: 24
                     },
                     "\\": {
-                        x: 184,
-                        y: 97,
-                        width: 6,
-                        height: 23
+                        x: 4,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     "]": {
-                        x: 198,
-                        y: 97,
-                        width: 7,
-                        height: 23
+                        x: 24,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     "^": {
-                        x: 214,
-                        y: 97,
-                        width: 9,
-                        height: 23
+                        x: 45,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     _: {
-                        x: 232,
-                        y: 97,
-                        width: 9,
-                        height: 23
+                        x: 65,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     "`": {
-                        x: 249,
-                        y: 97,
-                        width: 7,
-                        height: 23
+                        x: 86,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     a: {
-                        x: 264,
-                        y: 97,
-                        width: 11,
-                        height: 23
+                        x: 107,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     b: {
-                        x: 284,
-                        y: 97,
-                        width: 11,
-                        height: 23
+                        x: 127,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     c: {
-                        x: 303,
-                        y: 97,
-                        width: 8,
-                        height: 23
+                        x: 148,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     d: {
-                        x: 4,
-                        y: 128,
-                        width: 11,
-                        height: 23
+                        x: 168,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     e: {
-                        x: 23,
-                        y: 128,
-                        width: 10,
-                        height: 23
+                        x: 189,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     f: {
-                        x: 41,
-                        y: 128,
-                        width: 6,
-                        height: 23
+                        x: 210,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     g: {
-                        x: 55,
-                        y: 128,
-                        width: 10,
-                        height: 23
+                        x: 230,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     h: {
-                        x: 74,
-                        y: 128,
-                        width: 10,
-                        height: 23
+                        x: 251,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     i: {
-                        x: 93,
-                        y: 128,
-                        width: 4,
-                        height: 23
+                        x: 271,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     j: {
-                        x: 106,
-                        y: 128,
-                        width: 4,
-                        height: 23
+                        x: 292,
+                        y: 132,
+                        width: 12,
+                        height: 24
                     },
                     k: {
-                        x: 119,
-                        y: 128,
-                        width: 11,
-                        height: 23
+                        x: 4,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     l: {
-                        x: 138,
-                        y: 128,
-                        width: 4,
-                        height: 23
+                        x: 24,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     m: {
-                        x: 151,
-                        y: 128,
-                        width: 17,
-                        height: 23
+                        x: 45,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     n: {
-                        x: 176,
-                        y: 128,
-                        width: 10,
-                        height: 23
+                        x: 65,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     o: {
-                        x: 195,
-                        y: 128,
-                        width: 10,
-                        height: 23
+                        x: 86,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     p: {
-                        x: 214,
-                        y: 128,
-                        width: 11,
-                        height: 23
+                        x: 107,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     q: {
-                        x: 234,
-                        y: 128,
-                        width: 11,
-                        height: 23
+                        x: 127,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     r: {
-                        x: 254,
-                        y: 128,
-                        width: 6,
-                        height: 23
+                        x: 148,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     s: {
-                        x: 269,
-                        y: 128,
-                        width: 6,
-                        height: 23
+                        x: 168,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     t: {
-                        x: 283,
-                        y: 128,
-                        width: 7,
-                        height: 23
+                        x: 189,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     u: {
-                        x: 298,
-                        y: 128,
-                        width: 11,
-                        height: 23
+                        x: 210,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     v: {
-                        x: 4,
-                        y: 159,
-                        width: 10,
-                        height: 23
+                        x: 230,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     w: {
-                        x: 22,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 251,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     x: {
-                        x: 45,
-                        y: 159,
-                        width: 9,
-                        height: 23
+                        x: 271,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     y: {
-                        x: 63,
-                        y: 159,
-                        width: 9,
-                        height: 23
+                        x: 292,
+                        y: 164,
+                        width: 12,
+                        height: 24
                     },
                     z: {
-                        x: 81,
-                        y: 159,
-                        width: 8,
-                        height: 23
+                        x: 4,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "{": {
-                        x: 97,
-                        y: 159,
-                        width: 7,
-                        height: 23
+                        x: 24,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "|": {
-                        x: 113,
-                        y: 159,
-                        width: 5,
-                        height: 23
+                        x: 45,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "}": {
-                        x: 126,
-                        y: 159,
-                        width: 7,
-                        height: 23
+                        x: 65,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "~": {
-                        x: 141,
-                        y: 159,
-                        width: 10,
-                        height: 23
+                        x: 86,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 159,
-                        y: 159,
-                        width: 10,
-                        height: 23
+                        x: 107,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 178,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 127,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 201,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 148,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 225,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 168,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 249,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 189,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 273,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 210,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 296,
-                        y: 159,
-                        width: 15,
-                        height: 23
+                        x: 230,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 4,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 251,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 27,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 271,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 51,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 292,
+                        y: 196,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 75,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 4,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 99,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 24,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 122,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 45,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 146,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 65,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 170,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 86,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 194,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 107,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 217,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 127,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 241,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 148,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 265,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 168,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 289,
-                        y: 190,
-                        width: 15,
-                        height: 23
+                        x: 189,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 4,
-                        y: 221,
-                        width: 15,
-                        height: 23
+                        x: 210,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 27,
-                        y: 221,
-                        width: 15,
-                        height: 23
+                        x: 230,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "": {
-                        x: 51,
-                        y: 221,
-                        width: 15,
-                        height: 23
+                        x: 251,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "А": {
-                        x: 75,
-                        y: 221,
-                        width: 15,
-                        height: 23
+                        x: 271,
+                        y: 228,
+                        width: 12,
+                        height: 24
                     },
                     "Б": {
-                        x: 98,
-                        y: 221,
+                        x: 292,
+                        y: 228,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     "В": {
-                        x: 118,
-                        y: 221,
-                        width: 14,
-                        height: 23
+                        x: 4,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "Г": {
-                        x: 140,
-                        y: 221,
+                        x: 24,
+                        y: 260,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     "Д": {
-                        x: 160,
-                        y: 221,
-                        width: 14,
-                        height: 23
+                        x: 45,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "Е": {
-                        x: 182,
-                        y: 221,
+                        x: 65,
+                        y: 260,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     "Ж": {
-                        x: 203,
-                        y: 221,
-                        width: 18,
-                        height: 23
+                        x: 86,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "З": {
-                        x: 230,
-                        y: 221,
-                        width: 10,
-                        height: 23
+                        x: 107,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "И": {
-                        x: 249,
-                        y: 221,
-                        width: 15,
-                        height: 23
+                        x: 127,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "Й": {
-                        x: 272,
-                        y: 221,
-                        width: 15,
-                        height: 23
+                        x: 148,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "К": {
-                        x: 295,
-                        y: 221,
-                        width: 14,
-                        height: 23
+                        x: 168,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "Л": {
-                        x: 4,
-                        y: 252,
-                        width: 14,
-                        height: 23
+                        x: 189,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "М": {
-                        x: 26,
-                        y: 252,
-                        width: 18,
-                        height: 23
+                        x: 210,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "Н": {
-                        x: 52,
-                        y: 252,
-                        width: 15,
-                        height: 23
+                        x: 230,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "О": {
-                        x: 76,
-                        y: 252,
-                        width: 15,
-                        height: 23
+                        x: 251,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "П": {
-                        x: 99,
-                        y: 252,
-                        width: 15,
-                        height: 23
+                        x: 271,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "Р": {
-                        x: 122,
-                        y: 252,
-                        width: 11,
-                        height: 23
+                        x: 292,
+                        y: 260,
+                        width: 12,
+                        height: 24
                     },
                     "С": {
-                        x: 142,
-                        y: 252,
-                        width: 14,
-                        height: 23
+                        x: 4,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Т": {
-                        x: 164,
-                        y: 252,
+                        x: 24,
+                        y: 292,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     "У": {
-                        x: 184,
-                        y: 252,
-                        width: 14,
-                        height: 23
+                        x: 45,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ф": {
-                        x: 207,
-                        y: 252,
-                        width: 16,
-                        height: 23
+                        x: 65,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Х": {
-                        x: 232,
-                        y: 252,
-                        width: 15,
-                        height: 23
+                        x: 86,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ц": {
-                        x: 255,
-                        y: 252,
-                        width: 15,
-                        height: 23
+                        x: 107,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ч": {
-                        x: 278,
-                        y: 252,
-                        width: 13,
-                        height: 23
+                        x: 127,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ш": {
-                        x: 4,
-                        y: 283,
-                        width: 21,
-                        height: 23
+                        x: 148,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Щ": {
-                        x: 33,
-                        y: 283,
-                        width: 21,
-                        height: 23
+                        x: 168,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ъ": {
-                        x: 62,
-                        y: 283,
-                        width: 14,
-                        height: 23
+                        x: 189,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ы": {
-                        x: 85,
-                        y: 283,
-                        width: 18,
-                        height: 23
+                        x: 210,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ь": {
-                        x: 111,
-                        y: 283,
+                        x: 230,
+                        y: 292,
                         width: 12,
-                        height: 23
+                        height: 24
                     },
                     "Э": {
-                        x: 131,
-                        y: 283,
-                        width: 13,
-                        height: 23
+                        x: 251,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Ю": {
-                        x: 153,
-                        y: 283,
-                        width: 21,
-                        height: 23
+                        x: 271,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "Я": {
-                        x: 183,
-                        y: 283,
-                        width: 14,
-                        height: 23
+                        x: 292,
+                        y: 292,
+                        width: 12,
+                        height: 24
                     },
                     "а": {
-                        x: 205,
-                        y: 283,
-                        width: 9,
-                        height: 23
+                        x: 4,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "б": {
-                        x: 222,
-                        y: 283,
-                        width: 10,
-                        height: 23
+                        x: 24,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "в": {
-                        x: 241,
-                        y: 283,
-                        width: 9,
-                        height: 23
+                        x: 45,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "г": {
-                        x: 258,
-                        y: 283,
-                        width: 8,
-                        height: 23
+                        x: 65,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "д": {
-                        x: 275,
-                        y: 283,
-                        width: 10,
-                        height: 23
+                        x: 86,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "е": {
-                        x: 294,
-                        y: 283,
-                        width: 9,
-                        height: 23
+                        x: 107,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "ж": {
-                        x: 4,
-                        y: 314,
-                        width: 14,
-                        height: 23
+                        x: 127,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "з": {
-                        x: 26,
-                        y: 314,
-                        width: 8,
-                        height: 23
+                        x: 148,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "и": {
-                        x: 42,
-                        y: 314,
-                        width: 11,
-                        height: 23
+                        x: 168,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "й": {
-                        x: 62,
-                        y: 314,
-                        width: 11,
-                        height: 23
+                        x: 189,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "к": {
-                        x: 81,
-                        y: 314,
-                        width: 10,
-                        height: 23
+                        x: 210,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "л": {
-                        x: 99,
-                        y: 314,
-                        width: 10,
-                        height: 23
+                        x: 230,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "м": {
-                        x: 117,
-                        y: 314,
-                        width: 13,
-                        height: 23
+                        x: 251,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "н": {
-                        x: 139,
-                        y: 314,
-                        width: 11,
-                        height: 23
+                        x: 271,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "о": {
-                        x: 158,
-                        y: 314,
-                        width: 10,
-                        height: 23
+                        x: 292,
+                        y: 324,
+                        width: 12,
+                        height: 24
                     },
                     "п": {
-                        x: 176,
-                        y: 314,
-                        width: 11,
-                        height: 23
+                        x: 4,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "р": {
-                        x: 196,
-                        y: 314,
-                        width: 10,
-                        height: 23
+                        x: 24,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "с": {
-                        x: 214,
-                        y: 314,
-                        width: 9,
-                        height: 23
+                        x: 45,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "т": {
-                        x: 232,
-                        y: 314,
-                        width: 9,
-                        height: 23
+                        x: 65,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "у": {
-                        x: 249,
-                        y: 314,
-                        width: 10,
-                        height: 23
+                        x: 86,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ф": {
-                        x: 267,
-                        y: 314,
-                        width: 13,
-                        height: 23
+                        x: 107,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "х": {
-                        x: 289,
-                        y: 314,
-                        width: 10,
-                        height: 23
+                        x: 127,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ц": {
-                        x: 4,
-                        y: 345,
-                        width: 11,
-                        height: 23
+                        x: 148,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ч": {
-                        x: 23,
-                        y: 345,
-                        width: 10,
-                        height: 23
+                        x: 168,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ш": {
-                        x: 41,
-                        y: 345,
-                        width: 16,
-                        height: 23
+                        x: 189,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "щ": {
-                        x: 65,
-                        y: 345,
-                        width: 16,
-                        height: 23
+                        x: 210,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ъ": {
-                        x: 90,
-                        y: 345,
-                        width: 10,
-                        height: 23
+                        x: 230,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ы": {
-                        x: 108,
-                        y: 345,
-                        width: 14,
-                        height: 23
+                        x: 251,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ь": {
-                        x: 131,
-                        y: 345,
-                        width: 9,
-                        height: 23
+                        x: 271,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "э": {
-                        x: 148,
-                        y: 345,
-                        width: 9,
-                        height: 23
+                        x: 292,
+                        y: 356,
+                        width: 12,
+                        height: 24
                     },
                     "ю": {
-                        x: 165,
-                        y: 345,
-                        width: 15,
-                        height: 23
+                        x: 4,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "я": {
-                        x: 189,
-                        y: 345,
-                        width: 9,
-                        height: 23
+                        x: 24,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ѐ": {
-                        x: 207,
-                        y: 345,
-                        width: 9,
-                        height: 23
+                        x: 45,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ё": {
-                        x: 224,
-                        y: 345,
-                        width: 9,
-                        height: 23
+                        x: 65,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ђ": {
-                        x: 241,
-                        y: 345,
-                        width: 10,
-                        height: 23
+                        x: 86,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ѓ": {
-                        x: 259,
-                        y: 345,
-                        width: 8,
-                        height: 23
+                        x: 107,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "є": {
-                        x: 276,
-                        y: 345,
-                        width: 9,
-                        height: 23
+                        x: 127,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ѕ": {
-                        x: 293,
-                        y: 345,
-                        width: 8,
-                        height: 23
+                        x: 148,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "і": {
-                        x: 309,
-                        y: 345,
-                        width: 5,
-                        height: 23
+                        x: 168,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ї": {
-                        x: 4,
-                        y: 376,
-                        width: 5,
-                        height: 23
+                        x: 189,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ј": {
-                        x: 17,
-                        y: 376,
-                        width: 5,
-                        height: 23
+                        x: 210,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "љ": {
-                        x: 31,
-                        y: 376,
-                        width: 15,
-                        height: 23
+                        x: 230,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "њ": {
-                        x: 54,
-                        y: 376,
-                        width: 15,
-                        height: 23
+                        x: 251,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     },
                     "ћ": {
-                        x: 78,
-                        y: 376,
-                        width: 10,
-                        height: 23
+                        x: 271,
+                        y: 388,
+                        width: 12,
+                        height: 24
                     }
                 },
                 width: 320,
-                height: 403
-            },
-            id: 22
+                height: 416
+            }
         } ],
         TileMap: [ {
             id: 52,
@@ -3330,7 +3314,7 @@
             data: [ [], null, null, [ null, null, null, null, 2, null, null ], [ null, null ], [ 1, null, 3, null, null, 1, 1, 1, 1, 1, 1, 1, 1, 1 ], null, [ null, 1, null, 1 ] ]
         } ]
     };
-}, function(t, e, r) {
+}, , function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.TileBehaviour = e.PlatformBehaviour = e.MainSceneBehaviour = e.Ground1Behaviour = e.DudeBehaviour = e.ClampBehaviour = undefined;
@@ -3438,8 +3422,11 @@
         t.prototype.onUpdate = function t() {
             this.game.renderer.fillRect(this.x, this.y, 10, 10, this.color);
             this.points.forEach(function(t) {});
-            this.game.renderer.drawTiledImage("resources/tile.jpg", 130, 0, 130, 61, 0, 0, this.game.width, this.game.height, this.offsetX, this.offsetX);
-            this.offsetX += .1;
+            var e = this.game.camera;
+            var r = this.game.camera.getRectScaled();
+            this.game.renderer.log(r);
+            this.game.renderer.log(this.game.mouse.currPoint);
+            this.game.renderer.drawRect(r.x + 50, r.y + 50, r.width - 100, r.height - 100, [ 0, 1, 0, 1 ]);
         };
         t.prototype.onDestroy = function t() {};
         return t;
@@ -3851,11 +3838,11 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(16);
+    var i = r(15);
     var n = f(i);
-    var o = r(7);
+    var o = r(6);
     var a = f(o);
-    var s = r(14);
+    var s = r(1);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -3906,32 +3893,35 @@
             });
         };
         t.prototype.update = function t(e, r) {
-            var i = this.objFollowTo;
-            if (!i) return;
-            var n = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0;
-            var o = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
-            var a = this.game.width;
-            var s = this.game.height;
-            var u = a / 2;
+            var i = this.getRectScaled();
+            var n = this.objFollowTo;
+            if (!n) return;
+            var o = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0;
+            var a = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
+            var s = this.game.width;
+            var u = this.game.height;
             var f = s / 2;
-            var h = i.pos.x - u;
-            var c = i.pos.y - f;
-            if (i._lastDirection === "Right") h += 400;
-            if (i._lastDirection === "Left") h -= 400;
-            if (h < 0) h = 0;
+            var h = u / 2;
+            var c = n.pos.x - f;
+            var l = n.pos.y - h;
+            if (n._lastDirection === "Right") c += i.width / 2;
+            if (n._lastDirection === "Left") c -= i.height / 2;
             if (c < 0) c = 0;
-            if (h > this.sceneWidth - a + n) h = this.sceneWidth - a + n;
-            if (c > this.sceneHeight - s + o) c = this.sceneHeight - s + o;
-            var l = Math.abs(i.rigidBody.vel.x) > 0 ? .95 : 1;
+            if (l < 0) l = 0;
+            if (c > this.sceneWidth - s + o) c = this.sceneWidth - s + o;
+            if (l > this.sceneHeight - u + a) l = this.sceneHeight - u + a;
+            var d = Math.abs(n.rigidBody.vel.x) > 0 ? .95 : 1;
             if (this.TOLERANCE_TIME === 0) {
-                this.pos.x = h;
-                this.pos.y = c;
+                this.pos.x = c;
+                this.pos.y = l;
             } else if (e - this.lastToleranceTime > this.TOLERANCE_TIME) {
                 this.lastToleranceTime = e;
                 this.cameraTween.reuse({
                     to: {
-                        "pos.x": h,
-                        "pos.y": c
+                        "pos.x": c,
+                        "pos.y": l,
+                        "scale.x": d,
+                        "scale.y": d
                     }
                 });
             }
@@ -3952,29 +3942,21 @@
                 height: this.game.height
             };
         };
+        t.prototype.screenToWorld = function t(e, r) {
+            var i = a.default.makeScale(this.scale.x, this.scale.y, 1);
+            var n = a.default.makeTranslation(this.pos.x, this.pos.y, 0);
+            var o = u.default.unProject(e, r, this.game.width, this.game.height, i);
+            var s = [ o[0], o[1] ];
+            return s;
+        };
         t.prototype.getRectScaled = function t() {
-            var e = this.game;
-            var r = this.game.camera;
-            var i = r.scale;
-            var n = this.game.width;
-            var o = this.game.height;
-            var a = Math.atan2(n, o);
-            var s = Math.sqrt(n * n + o * o);
-            var u = s * Math.cos(a);
-            var f = s * Math.sin(a);
-            var h = s / i.x * Math.cos(a);
-            var c = s / i.y * Math.sin(a);
-            var l = h - u;
-            var d = c - f;
-            var p = this.pos.x - l;
-            var y = this.pos.y - d;
+            var e = this.screenToWorld(0, 0);
+            var r = this.screenToWorld(this.game.width, this.game.height);
             return {
-                scaleOffsetX: l,
-                scaleOffsetY: d,
-                x: p,
-                y: y,
-                width: n + l * 2,
-                height: o + d * 2
+                x: this.pos.x + e[0],
+                y: this.pos.y + e[1],
+                width: r[0] - e[0],
+                height: r[1] - e[1]
             };
         };
         return t;
@@ -4060,6 +4042,8 @@
     var u = function() {
         function t(e) {
             i(this, t);
+            this.keyDownListener = null;
+            this.keyUpListener = null;
             this.KEY = {
                 SPACE: 32,
                 A: 65,
@@ -4141,14 +4125,20 @@
         };
         t.prototype.listenTo = function t() {
             var e = this;
-            window.addEventListener("keydown", function(t) {
+            this.keyDownListener = function(t) {
                 var r = t.keyCode;
                 e.press(r);
-            });
-            window.addEventListener("keyup", function(t) {
+            };
+            this.keyUpListener = function(t) {
                 var r = t.keyCode;
                 e.release(r);
-            });
+            };
+            window.addEventListener("keydown", this.keyDownListener);
+            window.addEventListener("keyup", this.keyUpListener);
+        };
+        t.prototype.destroy = function t() {
+            window.removeEventListener("keydown", this.keyDownListener);
+            window.removeEventListener("keyup", this.keyUpListener);
         };
         return t;
     }();
@@ -4157,7 +4147,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
+    var i = r(1);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4173,54 +4163,24 @@
         function t(e) {
             a(this, t);
             this.objectsCaptured = {};
+            this.container = null;
             this.game = e;
-            this.lastPoint = {};
+            this.currPoint = null;
         }
-        t.prototype.listenTo = function t(e) {
-            var r = this;
-            e.ontouchstart = function(t) {
-                var e = t.touches.length;
-                while (e--) {
-                    r.resolveClick(t.touches[e]);
-                }
-            };
-            e.onmousedown = function(t) {
-                t.button === 0 && r.resolveClick(t);
-            };
-            e.ontouchend = e.ontouchcancel = function(t) {
-                var e = t.changedTouches.length;
-                while (e--) {
-                    r.resolveMouseUp(t.changedTouches[e]);
-                }
-            };
-            e.onmouseup = function(t) {
-                r.resolveMouseUp(t);
-            };
-            e.ontouchmove = function(t) {
-                var e = t.touches.length;
-                while (e--) {
-                    r.resolveMouseMove(t.touches[e], true);
-                }
-            };
-            e.onmousemove = function(t) {
-                var e = t.buttons === 1;
-                r.resolveMouseMove(t, e);
-            };
-            e.ondblclick = function(t) {
-                r.resolveDoubleClick(t);
-            };
-        };
         t.prototype.resolveScreenPoint = function t(e) {
             var r = this.game;
             var i = this.game.camera;
             var n = i.getRectScaled();
-            var o = {
-                x: ~~((e.clientX - r.pos.x) / r.scale.x + i.pos.x),
-                y: ~~((e.clientY - r.pos.y) / r.scale.y + i.pos.y),
-                id: e.identifier || 0
+            var o = (e.clientX - r.pos.x) / r.scale.x;
+            var a = (e.clientY - r.pos.y) / r.scale.y;
+            var s = r.camera.screenToWorld(o, a);
+            var u = {
+                x: i.pos.x + s[0],
+                y: i.pos.y + s[1],
+                id: 0
             };
-            this.lastPoint = o;
-            return o;
+            this.currPoint = u;
+            return u;
         };
         t.prototype.triggerEvent = function t(e, r, i) {
             var o = this.game;
@@ -4254,12 +4214,10 @@
             return s;
         };
         t.prototype.resolveClick = function t(e) {
-            if (window.canceled) return;
             this.triggerEvent(e, "click");
             this.triggerEvent(e, "mouseDown");
         };
         t.prototype.resolveMouseMove = function t(e, r) {
-            if (1 && window.canceled) return;
             var i = this.triggerEvent(e, "mouseMove", r);
             if (!i) return;
             var n = this.objectsCaptured[i.id];
@@ -4273,7 +4231,6 @@
             }
         };
         t.prototype.resolveMouseUp = function t(e) {
-            if (1 && window.canceled) return;
             var r = this.triggerEvent(e, "mouseUp");
             if (!r) return;
             var i = this.objectsCaptured[r.id];
@@ -4282,10 +4239,50 @@
             delete this.objectsCaptured[r.id];
         };
         t.prototype.resolveDoubleClick = function t(e) {
-            if (1 && window.canceled) return;
             var r = this.triggerEvent(e, "doubleClick");
             if (!r) return;
             delete this.objectsCaptured[r.id];
+        };
+        t.prototype.listenTo = function t(e) {
+            var r = this;
+            this.container = e;
+            e.ontouchstart = function(t) {
+                var e = t.touches.length;
+                while (e--) {
+                    r.resolveClick(t.touches[e]);
+                }
+            };
+            e.onmousedown = function(t) {
+                t.button === 0 && r.resolveClick(t);
+            };
+            e.ontouchend = e.ontouchcancel = function(t) {
+                var e = t.changedTouches.length;
+                while (e--) {
+                    r.resolveMouseUp(t.changedTouches[e]);
+                }
+            };
+            e.onmouseup = function(t) {
+                r.resolveMouseUp(t);
+            };
+            e.ontouchmove = function(t) {
+                var e = t.touches.length;
+                while (e--) {
+                    r.resolveMouseMove(t.touches[e], true);
+                }
+            };
+            e.onmousemove = function(t) {
+                var e = t.buttons === 1;
+                r.resolveMouseMove(t, e);
+            };
+            e.ondblclick = function(t) {
+                r.resolveDoubleClick(t);
+            };
+        };
+        t.prototype.destroy = function t() {
+            var e = this;
+            [ "mouseMove", "ontouchstart", "onmousedown", "ontouchend", "onmouseup", "ontouchmove", "onmousemove", "ondblclick" ].forEach(function(t) {
+                e.container[t] = null;
+            });
         };
         return t;
     }();
@@ -4400,9 +4397,9 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(63);
+    var i = r(64);
     var n = s(i);
-    var o = r(2);
+    var o = r(1);
     var a = s(o);
     function s(t) {
         return t && t.__esModule ? t : {
@@ -4439,7 +4436,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(2);
+    var i = r(1);
     function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -4463,18 +4460,18 @@
                     var d = a.bottom - l.y;
                     var p = l.bottom - a.y;
                     var y = a.x + a.width - l.x;
-                    var g = l.right - a.x;
-                    var m = Math.min(d, p, y, g);
-                    if (d === m) {
+                    var m = l.right - a.x;
+                    var g = Math.min(d, p, y, m);
+                    if (d === g) {
                         e.pos.y = l.y - a.height;
                         u = true;
-                    } else if (p === m) {
+                    } else if (p === g) {
                         e.pos.y = l.bottom;
                         u = true;
-                    } else if (y === m) {
+                    } else if (y === g) {
                         e.pos.x = l.x - a.width;
                         s = true;
-                    } else if (g === m) {
+                    } else if (m === g) {
                         e.pos.x = l.x + l.width;
                         s = true;
                     }
@@ -4539,7 +4536,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(20);
+    var i = r(19);
     var n = s(i);
     var o = r(44);
     var a = s(o);
@@ -4592,6 +4589,26 @@
             this.game.pos.y = (window.innerHeight - n) / 2;
             this.container.style.width = i + "px";
             this.container.style.height = n + "px";
+            this.container.style.marginTop = this.game.pos.y + "px";
+        };
+        t.prototype.requestFullScreen = function t() {
+            var e = this.container;
+            if (e.requestFullScreen) {
+                e.requestFullScreen();
+            } else if (e.mozRequestFullScreen) {
+                e.mozRequestFullScreen();
+            } else if (e.webkitRequestFullScreen) {
+                e.webkitRequestFullScreen();
+            }
+        };
+        t.prototype.cancelFullScreen = function t() {
+            if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
         };
         t.prototype.beginFrameBuffer = function t() {};
         t.prototype.flipFrameBuffer = function t() {
@@ -4603,8 +4620,11 @@
             var e = this;
             this.onResize();
             window.addEventListener("resize", function() {
-                e.onResize();
+                return e.onResize();
             });
+        };
+        t.prototype.destroy = function t() {
+            window.removeEventListener("resize", this.onResize);
         };
         t.prototype.getError = function t() {
             return 0;
@@ -4645,7 +4665,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(61);
+    var i = r(62);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4672,7 +4692,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(15);
+    var i = r(14);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4693,6 +4713,9 @@
             this.height = i;
             this.texture = new n.default(e);
             this.texture.setImage(null, r, i);
+            this._init(e, r, i);
+        }
+        t.prototype._init = function t(e, r, i) {
             this.glRenderBuffer = e.createRenderbuffer();
             e.bindRenderbuffer(e.RENDERBUFFER, this.glRenderBuffer);
             e.renderbufferStorage(e.RENDERBUFFER, e.DEPTH_COMPONENT16, r, i);
@@ -4703,7 +4726,7 @@
             this.texture.unbind();
             e.bindRenderbuffer(e.RENDERBUFFER, null);
             e.bindFramebuffer(e.FRAMEBUFFER, null);
-        }
+        };
         t.prototype.bind = function t() {
             this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer);
             this.gl.viewport(0, 0, this.width, this.height);
@@ -4713,6 +4736,72 @@
         };
         t.prototype.getTexture = function t() {
             return this.texture;
+        };
+        return t;
+    }();
+    e.default = s;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    e.default = undefined;
+    var i = r(6);
+    var n = o(i);
+    function o(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    function a(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var s = function() {
+        function t() {
+            a(this, t);
+            this.stack = [];
+            this.restore();
+        }
+        t.prototype.restore = function t() {
+            this.stack.pop();
+            if (this.stack.length < 1) {
+                this.stack[0] = n.default.makeIdentity();
+            }
+        };
+        t.prototype.save = function t() {
+            this.stack.push(this.getCurrentMatrix());
+        };
+        t.prototype.getCurrentMatrix = function t() {
+            return this.stack[this.stack.length - 1].slice();
+        };
+        t.prototype.setCurrentMatrix = function t(e) {
+            return this.stack[this.stack.length - 1] = e;
+        };
+        t.prototype.translate = function t(e, r, i) {
+            if (i === undefined) {
+                i = 0;
+            }
+            var o = n.default.makeTranslation(e, r, i);
+            var a = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
+        };
+        t.prototype.rotateZ = function t(e) {
+            var r = n.default.makeZRotation(e);
+            var i = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+        };
+        t.prototype.rotateY = function t(e) {
+            var r = n.default.makeYRotation(e);
+            var i = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(r, i));
+        };
+        t.prototype.scale = function t(e, r, i) {
+            if (i === undefined) {
+                i = 1;
+            }
+            var o = n.default.makeScale(e, r, i);
+            var a = this.getCurrentMatrix();
+            this.setCurrentMatrix(n.default.matrixMultiply(o, a));
         };
         return t;
     }();
@@ -4825,9 +4914,9 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(53);
+    var i = r(54);
     var n = w(i);
-    var o = r(6);
+    var o = r(7);
     var a = w(o);
     var s = r(4);
     var u = w(s);
@@ -4838,9 +4927,9 @@
     var d = r(9);
     var p = w(d);
     var y = r(10);
-    var g = w(y);
-    var m = r(1);
-    var v = w(m);
+    var m = w(y);
+    var g = r(2);
+    var v = w(g);
     function w(t) {
         return t && t.__esModule ? t : {
             default: t
@@ -4876,7 +4965,7 @@
         function e(r, i) {
             _(this, e);
             var o = b(this, t.call(this, r, i));
-            o.program = new u.default(r, [ p.default, g.default ]);
+            o.program = new u.default(r, [ p.default, m.default ]);
             o.circle = new n.default();
             o.posVertexBuffer = new h.default(r);
             o.posVertexBuffer.setData(o.circle.vertexArr, o.gl.FLOAT, 2);
@@ -4897,21 +4986,21 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = m(i);
+    var i = r(7);
+    var n = g(i);
     var o = r(4);
-    var a = m(o);
+    var a = g(o);
     var s = r(5);
-    var u = m(s);
+    var u = g(s);
     var f = r(3);
-    var h = m(f);
+    var h = g(f);
     var c = r(9);
-    var l = m(c);
+    var l = g(c);
     var d = r(10);
-    var p = m(d);
-    var y = r(1);
-    var g = m(y);
-    function m(t) {
+    var p = g(d);
+    var y = r(2);
+    var m = g(y);
+    function g(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -4964,27 +5053,27 @@
             this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
         };
         return e;
-    }(g.default);
+    }(m.default);
     e.default = b;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(54);
-    var n = m(i);
+    var i = r(55);
+    var n = g(i);
     var o = r(4);
-    var a = m(o);
+    var a = g(o);
     var s = r(5);
-    var u = m(s);
+    var u = g(s);
     var f = r(3);
-    var h = m(f);
+    var h = g(f);
     var c = r(9);
-    var l = m(c);
+    var l = g(c);
     var d = r(10);
-    var p = m(d);
-    var y = r(1);
-    var g = m(y);
-    function m(t) {
+    var p = g(d);
+    var y = r(2);
+    var m = g(y);
+    function g(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -5035,7 +5124,7 @@
             this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
         };
         return e;
-    }(g.default);
+    }(m.default);
     e.default = b;
 }, function(t, e, r) {
     "use strict";
@@ -5047,23 +5136,23 @@
     var a = y(o);
     var s = r(3);
     var u = y(s);
-    var f = r(75);
+    var f = r(76);
     var h = y(f);
-    var c = r(77);
+    var c = r(78);
     var l = y(c);
-    var d = r(1);
+    var d = r(2);
     var p = y(d);
     function y(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function g(t, e) {
+    function m(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function m(t, e) {
+    function g(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -5086,8 +5175,8 @@
     var w = function(t) {
         v(e, t);
         function e(r, i) {
-            g(this, e);
-            var o = m(this, t.call(this, r, i));
+            m(this, e);
+            var o = g(this, t.call(this, r, i));
             o.program = new n.default(r, [ h.default, l.default ]);
             o.posVertexBuffer = new a.default(r);
             o.texVertexBuffer = new a.default(r);
@@ -5120,21 +5209,21 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = m(i);
+    var i = r(7);
+    var n = g(i);
     var o = r(4);
-    var a = m(o);
+    var a = g(o);
     var s = r(5);
-    var u = m(s);
+    var u = g(s);
     var f = r(3);
-    var h = m(f);
-    var c = r(21);
-    var l = m(c);
-    var d = r(76);
-    var p = m(d);
-    var y = r(1);
-    var g = m(y);
-    function m(t) {
+    var h = g(f);
+    var c = r(20);
+    var l = g(c);
+    var d = r(77);
+    var p = g(d);
+    var y = r(2);
+    var m = g(y);
+    function g(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -5190,27 +5279,27 @@
             this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
         };
         return e;
-    }(g.default);
+    }(m.default);
     e.default = b;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(6);
-    var n = m(i);
+    var i = r(7);
+    var n = g(i);
     var o = r(4);
-    var a = m(o);
+    var a = g(o);
     var s = r(5);
-    var u = m(s);
+    var u = g(s);
     var f = r(3);
-    var h = m(f);
-    var c = r(21);
-    var l = m(c);
-    var d = r(78);
-    var p = m(d);
-    var y = r(1);
-    var g = m(y);
-    function m(t) {
+    var h = g(f);
+    var c = r(20);
+    var l = g(c);
+    var d = r(79);
+    var p = g(d);
+    var y = r(2);
+    var m = g(y);
+    function g(t) {
         return t && t.__esModule ? t : {
             default: t
         };
@@ -5266,7 +5355,7 @@
             this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
         };
         return e;
-    }(g.default);
+    }(m.default);
     e.default = b;
 }, function(t, e, r) {
     "use strict";
@@ -5274,41 +5363,41 @@
     e.default = undefined;
     var i = r(50);
     var n = R(i);
-    var o = r(59);
+    var o = r(60);
     var a = R(o);
-    var s = r(60);
+    var s = r(61);
     var u = R(s);
-    var f = r(56);
+    var f = r(57);
     var h = R(f);
-    var c = r(1);
+    var c = r(2);
     var l = R(c);
-    var d = r(57);
+    var d = r(58);
     var p = R(d);
-    var y = r(55);
-    var g = R(y);
-    var m = r(58);
-    var v = R(m);
+    var y = r(56);
+    var m = R(y);
+    var g = r(59);
+    var v = R(g);
     var w = r(52);
     var _ = R(w);
-    var b = r(14);
+    var b = r(53);
     var x = R(b);
-    var E = r(7);
+    var E = r(6);
     var T = R(E);
-    var O = r(2);
+    var O = r(1);
     var S = R(O);
-    var A = r(15);
+    var A = r(14);
     var M = R(A);
     function R(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function j(t, e) {
+    function P(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    function P(t, e) {
+    function j(t, e) {
         if (!t) {
             throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
         }
@@ -5340,20 +5429,20 @@
             alpha: false
         });
     };
-    var I = 1e3;
-    var D = new x.default();
-    var G = function t(e, r, i, n, o, a) {
+    var D = 1e3;
+    var I = new x.default();
+    var k = function t(e, r, i, n, o, a) {
         var s = T.default.makeZToWMatrix(1);
-        var u = T.default.ortho(0, o, 0, a, -I, I);
+        var u = T.default.ortho(0, o, 0, a, -D, D);
         var f = T.default.makeScale(i, n, 1);
         var h = T.default.makeTranslation(e, r, 0);
         var c = T.default.matrixMultiply(f, h);
-        c = T.default.matrixMultiply(c, D.getCurrentMatrix());
+        c = T.default.matrixMultiply(c, I.getCurrentMatrix());
         c = T.default.matrixMultiply(c, u);
         c = T.default.matrixMultiply(c, s);
         return c;
     };
-    var k = function t(e, r, i, n, o, a) {
+    var G = function t(e, r, i, n, o, a) {
         var s = T.default.makeScale(i / o, n / a, 1);
         var u = T.default.makeTranslation(e / o, r / a, 0);
         return T.default.matrixMultiply(s, u);
@@ -5361,14 +5450,14 @@
     var L = function(t) {
         B(e, t);
         function e(r) {
-            j(this, e);
-            var i = P(this, t.call(this, r));
+            P(this, e);
+            var i = j(this, t.call(this, r));
             var n = document.createElement("canvas");
             document.body.appendChild(n);
             n.setAttribute("width", r.width);
             n.setAttribute("height", r.height);
             i.container = n;
-            i.matrixStack = D;
+            i.matrixStack = I;
             i.registerResize();
             i.currTex = null;
             i._init();
@@ -5377,7 +5466,7 @@
         e.prototype._init = function t() {
             var e = C(this.container);
             this.gl = e;
-            this.circleDrawer = new g.default(e);
+            this.circleDrawer = new m.default(e);
             this.spriteRectDrawer = new a.default(e);
             this.tiledSpriteRectDrawer = new u.default(e);
             this.colorRectDrawer = new h.default(e);
@@ -5409,25 +5498,13 @@
             }
             var f = u.getSize().width;
             var h = u.getSize().height;
-            if (a === undefined) {
-                a = r;
-            }
-            if (s === undefined) {
-                s = i;
-            }
-            if (n === undefined) {
-                n = f;
-            }
-            if (o === undefined) {
-                o = h;
-            }
             if (this.currTex !== u) {
                 u.bind();
                 this.currTex = u;
             }
             this.spriteRectDrawer.bind();
-            this.spriteRectDrawer.setUniform("u_textureMatrix", k(r, i, n, o, f, h));
-            this.spriteRectDrawer.setUniform("u_matrix", G(a, s, n, o, this.game.width, this.game.height));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", G(r, i, n, o, f, h));
+            this.spriteRectDrawer.setUniform("u_PositionMatrix", k(a, s, n, o, this.game.width, this.game.height));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.spriteRectDrawer.draw();
         };
@@ -5444,8 +5521,8 @@
                 this.currTex = l;
             }
             this.tiledSpriteRectDrawer.bind();
-            this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", k(0, 0, u, f, d, p));
-            this.tiledSpriteRectDrawer.setUniform("u_matrix", G(a, s, u, f, this.game.width, this.game.height));
+            this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", G(0, 0, u, f, d, p));
+            this.tiledSpriteRectDrawer.setUniform("u_PositionMatrix", k(a, s, u, f, this.game.width, this.game.height));
             this.tiledSpriteRectDrawer.setUniform("u_frameCoords", [ r / d, i / p, n / d, o / p ]);
             this.tiledSpriteRectDrawer.setUniform("u_offsetCoords", [ h / n, c / o ]);
             this.tiledSpriteRectDrawer.setUniform("u_alpha", 1);
@@ -5462,7 +5539,7 @@
             var a = this.colorRectDrawer;
             var s = this.gl;
             a.bind();
-            a.setUniform("u_matrix", G(e, r, i, n, this.game.width, this.game.height));
+            a.setUniform("u_PositionMatrix", k(e, r, i, n, this.game.width, this.game.height));
             a.setUniform("u_rgba", o);
             s.blendFunc(s.SRC_ALPHA, s.ONE_MINUS_SRC_ALPHA);
             a.draw();
@@ -5485,7 +5562,7 @@
             var u = this.gl;
             var f = this.lineDrawer;
             f.bind();
-            f.setUniform("u_matrix", G(e, r, a, s, this.game.width, this.game.height));
+            f.setUniform("u_PositionMatrix", k(e, r, a, s, this.game.width, this.game.height));
             f.setUniform("u_rgba", o);
             u.blendFunc(u.SRC_ALPHA, u.ONE_MINUS_SRC_ALPHA);
             f.draw();
@@ -5501,7 +5578,7 @@
             var a = this.circleDrawer;
             var s = this.gl;
             a.bind();
-            a.setUniform("u_matrix", G(e - i, r - i, o, o, this.game.width, this.game.height));
+            a.setUniform("u_PositionMatrix", k(e - i, r - i, o, o, this.game.width, this.game.height));
             a.setUniform("u_rgba", n);
             s.blendFunc(s.SRC_ALPHA, s.ONE_MINUS_SRC_ALPHA);
             a.draw();
@@ -5540,7 +5617,6 @@
         };
         e.prototype.beginFrameBuffer = function t() {
             this.save();
-            this.gl.viewport(0, 0, this.game.width, this.game.height);
             this.frameBuffer.bind();
         };
         e.prototype.flipFrameBuffer = function t() {
@@ -5554,14 +5630,15 @@
             this.gl.viewport(0, 0, e.w, e.h);
             this.spriteRectDrawer.bind();
             this.frameBuffer.getTexture().bind();
-            this.spriteRectDrawer.setUniform("u_matrix", G(0, 0, this.game.width * e.scaleFactor, this.game.height * e.scaleFactor, e.w, e.h));
-            this.spriteRectDrawer.setUniform("u_textureMatrix", k(0, 0, e.w, e.h, e.w, e.h));
+            this.spriteRectDrawer.setUniform("u_PositionMatrix", k(0, 0, this.game.width * e.scaleFactor, this.game.height * e.scaleFactor, e.w, e.h));
+            this.spriteRectDrawer.setUniform("u_textureMatrix", G(0, 0, e.w, e.h, e.w, e.h));
             this.spriteRectDrawer.setUniform("u_alpha", 1);
             this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
             this.spriteRectDrawer.draw();
             this.restore();
         };
         e.prototype.getError = function t() {
+            if (false) return 0;
             var e = this.gl.getError();
             e = e === this.gl.NO_ERROR ? 0 : e;
             if (e) {
@@ -5587,7 +5664,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(64);
+    var i = r(65);
     var n = o(i);
     function o(t) {
         if (t && t.__esModule) {
@@ -5815,29 +5892,29 @@
     "use strict";
     e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var i = r(67);
+    var i = r(68);
     var n = A(i);
-    var o = r(73);
+    var o = r(74);
     var a = A(o);
-    var s = r(18);
+    var s = r(17);
     var u = A(s);
-    var f = r(68);
+    var f = r(69);
     var h = A(f);
-    var c = r(65);
+    var c = r(66);
     var l = A(c);
-    var d = r(70);
+    var d = r(71);
     var p = A(d);
-    var y = r(71);
-    var g = A(y);
-    var m = r(72);
-    var v = A(m);
-    var w = r(66);
+    var y = r(72);
+    var m = A(y);
+    var g = r(73);
+    var v = A(g);
+    var w = r(67);
     var _ = A(w);
-    var b = r(69);
+    var b = r(70);
     var x = A(b);
-    var E = r(20);
+    var E = r(19);
     var T = A(E);
-    var O = r(19);
+    var O = r(18);
     var S = A(O);
     function A(t) {
         return t && t.__esModule ? t : {
@@ -5850,7 +5927,7 @@
     e.GameObject = h.default;
     e.CommonBehaviour = l.default;
     e.ParticleSystem = p.default;
-    e.Scene = g.default;
+    e.Scene = m.default;
     e.Sound = v.default;
     e.Font = _.default;
     e.Layer = x.default;
@@ -6059,7 +6136,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(18);
+    var i = r(17);
     var n = u(i);
     var o = r(34);
     var a = s(o);
@@ -6251,7 +6328,7 @@
     e.default = undefined;
     var i = r(0);
     var n = u(i);
-    var o = r(2);
+    var o = r(1);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -6376,7 +6453,7 @@
     var n = f(i);
     var o = r(46);
     var a = f(o);
-    var s = r(19);
+    var s = r(18);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -6663,11 +6740,11 @@
     e.default = f;
 }, function(t, e, r) {
     "use strict";
-    var i = r(24);
+    var i = r(23);
     var n = f(i);
-    var o = r(25);
+    var o = r(24);
     var a = f(o);
-    var s = r(26);
+    var s = r(25);
     var u = f(s);
     function f(t) {
         return t && t.__esModule ? t : {
@@ -6687,5 +6764,5 @@
 }, function(t, e) {
     t.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}";
 }, function(t, e) {
-    t.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\nuniform vec4 u_frameCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(\r\n        v_texcoord + fract(u_offsetCoords),\r\n        u_frameCoords.zw\r\n    ) + u_frameCoords.xy;\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n}\r\n\r\n\r\n// vec2 localTextCoord = mod(v_texcoord + fract(u_offsetCoords),vec2(1,1));";
+    t.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\nuniform vec4 u_frameCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(\r\n        v_texcoord + fract(u_offsetCoords),\r\n        u_frameCoords.zw\r\n    ) + u_frameCoords.xy;\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n}";
 } ]);

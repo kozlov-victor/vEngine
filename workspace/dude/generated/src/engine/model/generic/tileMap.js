@@ -71,8 +71,8 @@ export default class TileMap extends BaseModel {
         let camera = this.game.camera;
         let renderer = this.game.renderer;
         let cameraRect = camera.getRectScaled();
-        let tilePosX = ~~((camera.pos.x - cameraRect.scaleOffsetX) / this.spriteSheet._frameWidth);
-        let tilePosY = ~~((camera.pos.y - cameraRect.scaleOffsetY) / this.spriteSheet._frameHeight);
+        let tilePosX = ~~((cameraRect.x) / this.spriteSheet._frameWidth);
+        let tilePosY = ~~((cameraRect.y) / this.spriteSheet._frameHeight);
         if (tilePosX<0) tilePosX = 0;
         if (tilePosY<0) tilePosY = 0;
         let w = tilePosX + this._tilesInScreenX + 1;

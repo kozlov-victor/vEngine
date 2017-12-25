@@ -130,18 +130,18 @@ export default class WebGlRenderer extends AbstractRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
-        if (dstX === undefined) {
-            dstX = srcX;
-        }
-        if (dstY === undefined) {
-            dstY = srcY;
-        }
-        if (srcWidth === undefined) {
-            srcWidth = texWidth;
-        }
-        if (srcHeight === undefined) {
-            srcHeight = texHeight;
-        }
+        // if (dstX === undefined) {
+        //     dstX = srcX;
+        // }
+        // if (dstY === undefined) {
+        //     dstY = srcY;
+        // }
+        // if (srcWidth === undefined) {
+        //     srcWidth = texWidth;
+        // }
+        // if (srcHeight === undefined) {
+        //     srcHeight = texHeight;
+        // }
 
         if (this.currTex!==texture){
             texture.bind();
@@ -150,10 +150,11 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.spriteRectDrawer.bind();
         this.spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-        this.spriteRectDrawer.setUniform("u_matrix",makePositionMatrix(
-            dstX,dstY,srcWidth,srcHeight,
-            this.game.width,this.game.height)
-        );
+        this.spriteRectDrawer.setUniform("u_PositionMatrix",
+            makePositionMatrix(
+                dstX,dstY,srcWidth,srcHeight,
+                this.game.width,this.game.height)
+            );
         this.spriteRectDrawer.setUniform('u_alpha',1); // alpha
         this.spriteRectDrawer.draw();
 
@@ -186,7 +187,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             0,0,dstWidth, dstHeight,
             texWidth,texHeight)
         );
-        this.tiledSpriteRectDrawer.setUniform("u_matrix",makePositionMatrix( // todo u_posMatrix
+        this.tiledSpriteRectDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
             dstX,dstY,dstWidth, dstHeight,
             this.game.width,this.game.height)
         );
@@ -204,7 +205,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let colorRectDrawer = this.colorRectDrawer;
         let gl = this.gl;
         colorRectDrawer.bind();
-        colorRectDrawer.setUniform("u_matrix",makePositionMatrix(
+        colorRectDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
                 x,y,width,height,
                 this.game.width,this.game.height)
         );
@@ -227,7 +228,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let gl = this.gl;
         let lineDrawer = this.lineDrawer;
         lineDrawer.bind();
-        lineDrawer.setUniform("u_matrix",makePositionMatrix(
+        lineDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
             x1,y1,dx,dy,
             this.game.width,this.game.height)
         );
@@ -242,7 +243,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let circleDrawer = this.circleDrawer;
         let gl = this.gl;
         circleDrawer.bind();
-        circleDrawer.setUniform("u_matrix",makePositionMatrix(
+        circleDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
             x-r,y-r,r2,r2,
             this.game.width,this.game.height)
         );
@@ -299,7 +300,6 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     beginFrameBuffer(){
         this.save();
-        this.gl.viewport(0, 0, this.game.width, this.game.height);
         this.frameBuffer.bind();
     }
 
@@ -319,7 +319,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.spriteRectDrawer.bind();
         this.frameBuffer.getTexture().bind();
 
-        this.spriteRectDrawer.setUniform('u_matrix',
+        this.spriteRectDrawer.setUniform('u_PositionMatrix',
             makePositionMatrix(
                 0,0,
                 this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor,
@@ -341,6 +341,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     };
 
     getError(){
+        if (!DEBUG) return 0;
         let err = this.gl.getError();
         err=err===this.gl.NO_ERROR?0:err;
         if (err) {

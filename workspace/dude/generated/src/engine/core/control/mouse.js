@@ -4,76 +4,38 @@ import mathEx from '../mathEx'
 export default class Mouse {
 
     objectsCaptured = {};
+    container = null;
 
     constructor(game){
         this.game = game;
-        this.lastPoint = {};
+        this.currPoint = null;
     }
 
-    listenTo(container) {
-        // mouseDown
-        container.ontouchstart = e=>{
-            let l = e.touches.length;
-            while (l--){
-                this.resolveClick(e.touches[l]);
-            }
-        };
-        container.onmousedown = e=>{
-            (e.button === 0) && this.resolveClick(e);
-        };
-        // mouseUp
-        container.ontouchend = container.ontouchcancel = e=>{
-            let l = e.changedTouches.length;
-            while (l--){
-                this.resolveMouseUp(e.changedTouches[l]);
-            }
-        };
-        container.onmouseup = e=>{
-            this.resolveMouseUp(e);
-        };
-        // mouseMove
-        container.ontouchmove = e=>{
-            let l = e.touches.length;
-            while (l--){
-                this.resolveMouseMove(e.touches[l],true);
-            }
-        };
-        container.onmousemove = e=>{
-            let isMouseDown = e.buttons === 1;
-            this.resolveMouseMove(e,isMouseDown);
-        };
-        // other
-        container.ondblclick = e=>{ // todo now only on pc
-            this.resolveDoubleClick(e);
-        }
-    }
 
     resolveScreenPoint(e){ // todo this is world point
         let game = this.game;
         let camera = this.game.camera;
         let rectScaled = camera.getRectScaled();
-        let res = {
-            x: ~~((((e.clientX - game.pos.x ) / game.scale.x ) + camera.pos.x)),
-            y: ~~((((e.clientY - game.pos.y ) / game.scale.y ) + camera.pos.y)),
-            id: e.identifier || 0
-        };
-        // let fi = Math.atan2(game.height-res.y,game.width - res.x);
-        // let r = Math.sqrt(res.x*res.x+res.y*res.y);
-        //
-        // // todo avoid calculation if scale eq 1
-        // let oldPosX = r*Math.cos(fi); // todo DRY in camera
-        // let oldPosY = r*Math.sin(fi);
-        // let newPosX = r/camera.scale.x*Math.cos(fi); // delta screen offset due to camera view scaling
-        // let newPosY = r/camera.scale.y*Math.sin(fi);
-        // let scaleOffsetX = newPosX - oldPosX;
-        // let scaleOffsetY = newPosY - oldPosY;
-        //
-        // res.x+=scaleOffsetX;
-        // res.y+=scaleOffsetY;
-        // res.x = res.x-game.width/2;
-        // res.y = res.y-game.height/2;
 
-        this.lastPoint = res;
+        let screenX = (e.clientX - game.pos.x ) / game.scale.x;
+        let screenY = (e.clientY - game.pos.y ) / game.scale.y;
+
+
+        let p = game.camera.screenToWorld(screenX,screenY);
+
+        // let res = {
+        //     x: ~~((((e.clientX - game.pos.x ) / game.scale.x ) + camera.pos.x)),
+        //     y: ~~((((e.clientY - game.pos.y ) / game.scale.y ) + camera.pos.y)),
+        //     id: e.identifier || 0
+        // };
+
+        let res = {
+            x:camera.pos.x+p[0],
+            y:camera.pos.y+p[1],
+            id:0
+        };
+        this.currPoint = res;
+
         return res;
     }
 
@@ -115,13 +77,11 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     }
 
     resolveClick(e){
-        if (window.canceled) return;
         this.triggerEvent(e,'click');
         this.triggerEvent(e,'mouseDown');
     }
 
     resolveMouseMove(e,isMouseDown){
-        if (DEBUG && window.canceled) return;
         let point = this.triggerEvent(e,'mouseMove',isMouseDown);
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
@@ -136,7 +96,6 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     }
 
     resolveMouseUp(e){
-        if (DEBUG && window.canceled) return;
         let point = this.triggerEvent(e,'mouseUp');
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
@@ -146,10 +105,57 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     }
 
     resolveDoubleClick(e){
-        if (DEBUG && window.canceled) return;
         let point = this.triggerEvent(e,'doubleClick');
         if (!point) return;
         delete this.objectsCaptured[point.id];
+    }
+
+    listenTo(container) {
+        this.container = container;
+        // mouseDown
+        container.ontouchstart = e=>{
+            let l = e.touches.length;
+            while (l--){
+                this.resolveClick(e.touches[l]);
+            }
+        };
+        container.onmousedown = e=>{
+            (e.button === 0) && this.resolveClick(e);
+        };
+        // mouseUp
+        container.ontouchend = container.ontouchcancel = e=>{
+            let l = e.changedTouches.length;
+            while (l--){
+                this.resolveMouseUp(e.changedTouches[l]);
+            }
+        };
+        container.onmouseup = e=>{
+            this.resolveMouseUp(e);
+        };
+        //
+        container.ontouchmove = e=>{
+            let l = e.touches.length;
+            while (l--){
+                this.resolveMouseMove(e.touches[l],true);
+            }
+        };
+        container.onmousemove = e=>{
+            let isMouseDown = e.buttons === 1;
+            this.resolveMouseMove(e,isMouseDown);
+        };
+        // other
+        container.ondblclick = e=>{ // todo now only on pc
+            this.resolveDoubleClick(e);
+        }
+    }
+
+    destroy(){
+        [
+            'mouseMove','ontouchstart','onmousedown',
+            'ontouchend','onmouseup','ontouchmove',
+            'onmousemove','ondblclick'].forEach(evtName=>{
+                this.container[evtName] = null;
+        })
     }
 
 }
