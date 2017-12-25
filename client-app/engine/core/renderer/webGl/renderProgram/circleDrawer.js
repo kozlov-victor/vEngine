@@ -36,7 +36,7 @@ export default class CircleDrawer extends AbstractDrawer {
 
     draw(){
         this.gl.drawArrays(
-            this.gl.TRIANGLE_FAN,0,
+            this.gl.TRIANGLE_FAN,0, // gl.STREAM_DRAW
             this.posVertexBuffer.getBufferLength()/2
         );
     }
