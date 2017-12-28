@@ -189,9 +189,9 @@ export default class ShaderProgram {
         //uniformValuesCache[name] = value;
     }
 
-    bindBuffer(buffer, uniformLocationName) {
+    bindBuffer(buffer, uniformLocationName) { // todo rename param to attrLocationName
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
-        let uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName);
+        let uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName); // todo cache
 
         if (DEBUG) {
             if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
@@ -207,7 +207,6 @@ export default class ShaderProgram {
             0,      // number of bytes to skip in between elements
             0       // offsets to the first element
         );
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     }
 
 }

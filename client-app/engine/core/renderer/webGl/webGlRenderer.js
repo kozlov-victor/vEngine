@@ -12,7 +12,7 @@ import CircleDrawer from './renderProgram/circleDrawer'
 import ModelDrawer from './renderProgram/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
-import mat4 from '../../mat4'
+import mat4 from '../../geometry/mat4'
 import matEx from '../../mathEx'
 import Texture from './base/texture'
 

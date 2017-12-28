@@ -31,7 +31,6 @@ export default class VertexBuffer {
         if (DEBUG && !program) throw "can not bind VertexBuffer, program not specified";
         if (DEBUG && !attrName) throw "can not bind VertexBuffer, attribute name not specified";
         program.bindBuffer(this,attrName);
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.getGlBuffer());
     }
 
     unbind(){

@@ -1,6 +1,7 @@
 /*global DEBUG:true*/
 
-import mat4 from './mat4'
+import mat4 from './geometry/mat4'
+import Point2d from "./geometry/point2d";
 
 exports.isPointInRect = (point,rect,angle)=> {
     // if (angle) {
@@ -55,7 +56,7 @@ exports.unProject = (winX,winY, width, height, viewProjectionMatrix)=>{
     let res = mat4.multMatrixVec(viewProjectionInverse,point3D);
     res[0] = (res[0]/2+0.5)*width;
     res[1] = (res[1]/2+0.5)*height;
-    return res;
+    return new Point2d(res[0],res[1]);
 };
 
 //

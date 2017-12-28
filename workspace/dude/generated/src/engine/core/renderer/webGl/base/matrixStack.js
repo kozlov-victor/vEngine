@@ -1,5 +1,5 @@
 
-import mat4 from '../../../mat4'
+import mat4 from '../../../geometry/mat4'
 
 export default class MatrixStack {
 

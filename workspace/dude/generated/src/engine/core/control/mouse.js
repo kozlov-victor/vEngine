@@ -12,6 +12,7 @@ export default class Mouse {
     }
 
 
+    //MouseEvent|TouchEvent|PointerEvent
     resolveScreenPoint(e){ // todo this is world point
         let game = this.game;
         let camera = this.game.camera;
@@ -23,20 +24,12 @@ export default class Mouse {
 
         let p = game.camera.screenToWorld(screenX,screenY);
 
-        // let res = {
-        //     x: ~~((((e.clientX - game.pos.x ) / game.scale.x ) + camera.pos.x)),
-        //     y: ~~((((e.clientY - game.pos.y ) / game.scale.y ) + camera.pos.y)),
-        //     id: e.identifier || 0
-        // };
-
-        let res = {
-            x:camera.pos.x+p[0],
-            y:camera.pos.y+p[1],
-            id:0
+        return {
+            x: p.x, // separate screen and world point
+            y: p.y,
+            id: e.identifier || 0
         };
-        this.currPoint = res;
 
-        return res;
     }
 
     triggerEvent(e,eventName,isMouseDown){

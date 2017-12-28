@@ -1,7 +1,7 @@
 /*global RF:true*/
 import BaseComponent from 'app/baseComponent'
 
-import {SCALE_STRATEGY} from 'engine/core/consts'
+import {SCALE_STRATEGY} from 'engine/core/misc/consts'
 
 @RF.decorateComponent({
     name: 'app-game-props',

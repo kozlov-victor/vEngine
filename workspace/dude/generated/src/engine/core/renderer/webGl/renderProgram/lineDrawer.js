@@ -22,14 +22,12 @@ export default class LineDrawer extends AbstractDrawer {
         this.posIndexBuffer = new IndexBuffer(gl);
 
         this.posVertexBuffer.setData(this.line.vertexArr,this.gl.FLOAT,2);
-        //this.posIndexBuffer.setData(this.line.indexArr);
     }
 
     bind(){
         super.bind();
         this.program.bind();
 
-        //this.posVertexBuffer.setData(this.line.vertexArr,this.gl.FLOAT,2);
         this.posVertexBuffer.bind(this.program,'a_position');
     }
 

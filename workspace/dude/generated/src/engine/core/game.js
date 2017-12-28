@@ -3,14 +3,14 @@
 /*global DEBUG:true*/
 /*global IN_EDITOR:true*/
 /*global PROJECT_NAME:true*/
-import './polyfills'
+import './misc/polyfills'
 import RendererFactory from './renderer/rendererFactory'
 import Repository from './repository';
 import Mouse from './control/mouse'
 import Keyboard from './control/keyboard'
 import GamePad from './control/gamePad'
 import Collider from './physics/collider'
-import {Transient} from './decorators'
+import {Transient} from './misc/decorators'
 
 import CommonObject from '../model/commonObject'
 import Camera from './camera'

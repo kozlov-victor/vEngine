@@ -1,7 +1,7 @@
 /*global IN_EDITOR:true*/
 /*global DEBUG:true*/
 import BaseModel from '../baseModel'
-import LoadingQueue from '../../core/loadingQueue'
+import LoadingQueue from '../../core/misc/loadingQueue'
 import TileMap from './tileMap'
 
 export default class Scene extends BaseModel {

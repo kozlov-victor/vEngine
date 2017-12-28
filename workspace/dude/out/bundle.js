@@ -40,7 +40,7 @@
         return Object.prototype.hasOwnProperty.call(t, e);
     };
     r.p = "";
-    return r(r.s = 75);
+    return r(r.s = 77);
 })([ function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -50,10 +50,10 @@
     var a = p(o);
     var s = r(15);
     var u = p(s);
-    var f = r(45);
+    var f = r(48);
     var h = p(f);
     var c = r(13);
-    var l = r(47);
+    var l = r(51);
     var d = p(l);
     function p(t) {
         return t && t.__esModule ? t : {
@@ -169,66 +169,6 @@
     e.default = v;
 }, function(t, e, r) {
     "use strict";
-    var i = r(6);
-    var n = o(i);
-    function o(t) {
-        return t && t.__esModule ? t : {
-            default: t
-        };
-    }
-    e.isPointInRect = function(t, e, r) {
-        return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
-    };
-    e.overlapTest = function(t, e) {
-        return t.x < e.x + e.width && t.x + t.width > e.x && t.y < e.y + e.height && t.y + t.height > e.y;
-    };
-    e.radToDeg = function(t) {
-        return t * 180 / Math.PI;
-    };
-    e.degToRad = function(t) {
-        return t * Math.PI / 180;
-    };
-    e.random = function(t, e) {
-        if (t > e) {
-            var r = t;
-            t = e;
-            e = r;
-        }
-        var i = Math.random() * (e - t) + t;
-        if (i > e) i = e; else if (i < t) i = t;
-        return i;
-    };
-    e.unProject = function(t, e, r, i, o) {
-        var a = 2 * t / r - 1;
-        var s = 2 * e / i - 1;
-        var u = n.default.inverse(o);
-        var f = [ a, s, 0, 1 ];
-        var h = n.default.multMatrixVec(u, f);
-        h[0] = (h[0] / 2 + .5) * r;
-        h[1] = (h[1] / 2 + .5) * i;
-        return h;
-    };
-    var a = {};
-    a.linear = function(t, e, r, i) {
-        return r * t / i + e;
-    };
-    a.easeInQuad = function(t, e, r, i) {
-        t /= i;
-        return r * t * t + e;
-    };
-    a.easeOutQuad = function(t, e, r, i) {
-        t /= i;
-        return -r * t * (t - 2) + e;
-    };
-    a.easeInOutQuad = function(t, e, r, i) {
-        t /= i / 2;
-        if (t < 1) return r / 2 * t * t + e;
-        t--;
-        return -r / 2 * (t * (t - 2) - 1) + e;
-    };
-    e.ease = a;
-}, function(t, e, r) {
-    "use strict";
     e.__esModule = true;
     var i, n;
     function o(t, e) {
@@ -266,6 +206,68 @@
         return t;
     }(), i.currentDrawer = null, n);
     e.default = a;
+}, function(t, e, r) {
+    "use strict";
+    var i = r(6);
+    var n = s(i);
+    var o = r(45);
+    var a = s(o);
+    function s(t) {
+        return t && t.__esModule ? t : {
+            default: t
+        };
+    }
+    e.isPointInRect = function(t, e, r) {
+        return t.x > e.x && t.x < e.x + e.width && t.y > e.y && t.y < e.y + e.height;
+    };
+    e.overlapTest = function(t, e) {
+        return t.x < e.x + e.width && t.x + t.width > e.x && t.y < e.y + e.height && t.y + t.height > e.y;
+    };
+    e.radToDeg = function(t) {
+        return t * 180 / Math.PI;
+    };
+    e.degToRad = function(t) {
+        return t * Math.PI / 180;
+    };
+    e.random = function(t, e) {
+        if (t > e) {
+            var r = t;
+            t = e;
+            e = r;
+        }
+        var i = Math.random() * (e - t) + t;
+        if (i > e) i = e; else if (i < t) i = t;
+        return i;
+    };
+    e.unProject = function(t, e, r, i, o) {
+        var s = 2 * t / r - 1;
+        var u = 2 * e / i - 1;
+        var f = n.default.inverse(o);
+        var h = [ s, u, 0, 1 ];
+        var c = n.default.multMatrixVec(f, h);
+        c[0] = (c[0] / 2 + .5) * r;
+        c[1] = (c[1] / 2 + .5) * i;
+        return new a.default(c[0], c[1]);
+    };
+    var u = {};
+    u.linear = function(t, e, r, i) {
+        return r * t / i + e;
+    };
+    u.easeInQuad = function(t, e, r, i) {
+        t /= i;
+        return r * t * t + e;
+    };
+    u.easeOutQuad = function(t, e, r, i) {
+        t /= i;
+        return -r * t * (t - 2) + e;
+    };
+    u.easeInOutQuad = function(t, e, r, i) {
+        t /= i / 2;
+        if (t < 1) return r / 2 * t * t + e;
+        t--;
+        return -r / 2 * (t * (t - 2) - 1) + e;
+    };
+    e.ease = u;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -583,7 +585,6 @@
             }
             this.gl.enableVertexAttribArray(i);
             this.gl.vertexAttribPointer(i, e.getItemSize(), e.getItemType(), false, 0, 0);
-            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
         };
         return t;
     }(), i.currentProgram = null, n);
@@ -624,7 +625,6 @@
             if (1 && !e) throw "can not bind VertexBuffer, program not specified";
             if (1 && !r) throw "can not bind VertexBuffer, attribute name not specified";
             e.bindBuffer(this, r);
-            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.getGlBuffer());
         };
         t.prototype.unbind = function t() {
             this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
@@ -1020,7 +1020,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
+    var i = r(2);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -1068,7 +1068,6 @@
             this.easeFnName = e.ease || "linear";
             this.tweenTime = e.time || 1e3;
             this.desc = this.normalizeDesc(e);
-            this.justReused = false;
         }
         t.prototype.reuse = function t(e) {
             var r = this;
@@ -1620,10 +1619,10 @@
     e.__esModule = true;
     e.default = undefined;
     var i, n;
-    r(49);
-    var o = r(51);
+    r(50);
+    var o = r(54);
     var a = x(o);
-    var s = r(63);
+    var s = r(66);
     var u = x(s);
     var f = r(43);
     var h = x(f);
@@ -1631,7 +1630,7 @@
     var l = x(c);
     var d = r(41);
     var p = x(d);
-    var y = r(48);
+    var y = r(52);
     var m = x(y);
     var g = r(13);
     var v = r(16);
@@ -3420,13 +3419,16 @@
             this.offsetX = 0;
         };
         t.prototype.onUpdate = function t() {
+            var e = this;
             this.game.renderer.fillRect(this.x, this.y, 10, 10, this.color);
-            this.points.forEach(function(t) {});
-            var e = this.game.camera;
-            var r = this.game.camera.getRectScaled();
-            this.game.renderer.log(r);
-            this.game.renderer.log(this.game.mouse.currPoint);
-            this.game.renderer.drawRect(r.x + 50, r.y + 50, r.width - 100, r.height - 100, [ 0, 1, 0, 1 ]);
+            this.points.forEach(function(t) {
+                e.game.renderer.fillRect(t.x, t.y, 50, 50, e.color);
+            });
+            var r = this.game.camera;
+            var i = this.game.camera.getRectScaled();
+            this.game.renderer.drawRect(i.x + 50, i.y + 50, i.width - 100, i.height - 100, [ 0, 1, 0, 1 ]);
+            this.game.renderer.drawTiledImage("resources/tile.jpg", 130, 0, 130, 61, i.x, i.y, 100, 100, this.offsetX, this.offsetX);
+            this.offsetX += .1;
         };
         t.prototype.onDestroy = function t() {};
         return t;
@@ -3839,24 +3841,26 @@
     e.__esModule = true;
     e.default = undefined;
     var i = r(15);
-    var n = f(i);
+    var n = c(i);
     var o = r(6);
-    var a = f(o);
-    var s = r(1);
-    var u = f(s);
-    function f(t) {
+    var a = c(o);
+    var s = r(2);
+    var u = c(s);
+    var f = r(46);
+    var h = c(f);
+    function c(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function h(t, e) {
+    function l(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var c = function() {
+    var d = function() {
         function t(e) {
-            h(this, t);
+            l(this, t);
             this.objFollowTo = null;
             this.scene = null;
             this.pos = {
@@ -3868,6 +3872,8 @@
                 y: 1
             };
             this.lastToleranceTime = 0;
+            this._rect = new h.default();
+            this._rectScaled = new h.default();
             this.TOLERANCE_TIME = 2e3;
             this.game = e;
         }
@@ -3926,7 +3932,13 @@
                 });
             }
             this.cameraTween.update(e);
+            this._updateRect();
             this.render();
+        };
+        t.prototype._updateRect = function t() {
+            var e = this.screenToWorld(0, 0);
+            var r = this.screenToWorld(this.game.width, this.game.height);
+            this._rectScaled.set(e.x, e.y, r.x - e.x, r.y - e.y);
         };
         t.prototype.render = function t() {
             this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
@@ -3934,34 +3946,22 @@
             this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
             this.game.renderer.translate(-this.pos.x, -this.pos.y);
         };
-        t.prototype.getRect = function t() {
-            return {
-                x: this.pos.x,
-                y: this.pos.y,
-                width: this.game.width,
-                height: this.game.height
-            };
-        };
         t.prototype.screenToWorld = function t(e, r) {
             var i = a.default.makeScale(this.scale.x, this.scale.y, 1);
-            var n = a.default.makeTranslation(this.pos.x, this.pos.y, 0);
-            var o = u.default.unProject(e, r, this.game.width, this.game.height, i);
-            var s = [ o[0], o[1] ];
-            return s;
+            var n = u.default.unProject(e, r, this.game.width, this.game.height, i);
+            n.add(this.pos);
+            return n;
+        };
+        t.prototype.getRect = function t() {
+            this._rect.set(this.pos.x, this.pos.y, this.game.width, this.game.height);
+            return this._rect;
         };
         t.prototype.getRectScaled = function t() {
-            var e = this.screenToWorld(0, 0);
-            var r = this.screenToWorld(this.game.width, this.game.height);
-            return {
-                x: this.pos.x + e[0],
-                y: this.pos.y + e[1],
-                width: r[0] - e[0],
-                height: r[1] - e[1]
-            };
+            return this._rectScaled;
         };
         return t;
     }();
-    e.default = c;
+    e.default = d;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -4147,7 +4147,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
+    var i = r(2);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4174,13 +4174,11 @@
             var o = (e.clientX - r.pos.x) / r.scale.x;
             var a = (e.clientY - r.pos.y) / r.scale.y;
             var s = r.camera.screenToWorld(o, a);
-            var u = {
-                x: i.pos.x + s[0],
-                y: i.pos.y + s[1],
-                id: 0
+            return {
+                x: s.x,
+                y: s.y,
+                id: e.identifier || 0
             };
-            this.currPoint = u;
-            return u;
         };
         t.prototype.triggerEvent = function t(e, r, i) {
             var o = this.game;
@@ -4312,6 +4310,162 @@
     }
     var n = function() {
         function t() {
+            var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            i(this, t);
+            this.set(e, r);
+        }
+        t.prototype.set = function t(e, r) {
+            this.x = e;
+            this.y = r;
+        };
+        t.prototype.add = function t(e) {
+            this.x += e.x;
+            this.y += e.y;
+        };
+        return t;
+    }();
+    e.default = n;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function() {
+        function t() {
+            var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+            var o = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+            i(this, t);
+            this.set(e, r, n, o);
+        }
+        t.prototype.set = function t(e, r, i, n) {
+            this.x = e;
+            this.y = r;
+            this.width = i;
+            this.height = n;
+        };
+        return t;
+    }();
+    e.default = n;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function() {
+        function t() {
+            var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+            i(this, t);
+            this.x = e;
+            this.y = r;
+        }
+        t.prototype.dotProduct = function t(e) {
+            return this.x * e.x + this.y * e.y;
+        };
+        t.prototype.crossProduct = function t(e) {
+            return this.x * e.y - this.y * e.x;
+        };
+        t.prototype.setXY = function t(e, r) {
+            this.x = e;
+            this.y = r;
+        };
+        t.prototype.addXY = function t(e, r) {
+            this.x += e;
+            this.y += r;
+        };
+        t.prototype.multToScalar = function e(r) {
+            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            if (i) return new t(this.x * r, this.y * r);
+            this.x *= r;
+            this.y *= r;
+            return this;
+        };
+        t.prototype.divByScalar = function t(e) {
+            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            return this.multToScalar(1 / e, r);
+        };
+        t.prototype.plus = function e(r) {
+            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            if (!i) return new t(this.x + r.x, this.y + r.y);
+            this.x += r.x;
+            this.y += r.y;
+            return this;
+        };
+        t.prototype.minus = function e(r) {
+            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            if (!i) return new t(this.x - r.x, this.y - r.y);
+            this.x -= r.x;
+            this.y -= r.y;
+            return this;
+        };
+        t.prototype.getLength = function t() {
+            return Math.sqrt(this.lengthSquared());
+        };
+        t.prototype.lengthSquared = function t() {
+            return this.x * this.x + this.y * this.y;
+        };
+        t.prototype.normalize = function t() {
+            var e = this.getLength();
+            this.x = this.x / e;
+            this.y = this.y / e;
+            return this;
+        };
+        t.prototype.setLength = function t(e) {
+            var r = this.getAngle();
+            this.x = Math.cos(r) * e;
+            this.y = Math.sin(r) * e;
+        };
+        t.prototype.getAngle = function t() {
+            return Math.atan2(this.y, this.x);
+        };
+        t.prototype.getAngleBetween = function t(e) {
+            return Math.acos((this.x * e.x + this.y * e.y) / this.getLength() * e.getLength());
+        };
+        t.prototype.setAngle = function t(e) {
+            var r = this.getLength();
+            this.x = Math.cos(e) * r;
+            this.y = Math.sin(e) * r;
+        };
+        t.prototype.clone = function e() {
+            return new t(this.x, this.y);
+        };
+        t.angleBetween = function t(e, r) {
+            e = e.clone().normalize();
+            r = r.clone().normalize();
+            return Math.acos(e.dotProduct(r));
+        };
+        t.normalBetween = function t(e, r) {
+            var i = e.minus(r);
+            return i.normalize();
+        };
+        t.distance = function e(r, i) {
+            return Math.sqrt(t.distanceSquared(r, i));
+        };
+        t.distanceSquared = function t(e, r) {
+            return (e.x - r.x) * (e.x - r.x) + (e.y - r.y) * (e.y - r.y);
+        };
+        return t;
+    }();
+    e.default = n;
+}, function(t, e, r) {
+    "use strict";
+    e.__esModule = true;
+    function i(t, e) {
+        if (!(t instanceof e)) {
+            throw new TypeError("Cannot call a class as a function");
+        }
+    }
+    var n = function() {
+        function t() {
             i(this, t);
             this.events = {};
         }
@@ -4395,25 +4549,64 @@
     e.default = n;
 }, function(t, e, r) {
     "use strict";
+    (function(t) {
+        Array.prototype.remove = function(t) {
+            var e = this.length;
+            while (e--) {
+                if (t(this[e], e)) {
+                    this.splice(e, 1);
+                }
+            }
+        };
+        window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(t) {
+            setTimeout(t, 17);
+        };
+        if (!window.cancelAnimationFrame) {
+            t.cancelAnimationFrame = function(t) {
+                return clearTimeout(t);
+            };
+        }
+        if (!Array.prototype.find) {
+            Array.prototype.find = function(t) {
+                if (this == null) {
+                    throw new TypeError("Array.prototype.find called on null or undefined");
+                }
+                if (typeof t !== "function") {
+                    throw new TypeError("predicate must be a function");
+                }
+                var e = Object(this);
+                var r = e.length >>> 0;
+                var i = arguments[1];
+                var n = void 0;
+                for (var o = 0; o < r; o++) {
+                    n = e[o];
+                    if (t.call(i, n, o, e)) {
+                        return n;
+                    }
+                }
+                return undefined;
+            };
+        }
+    }).call(e, r(78));
+}, function(t, e, r) {
+    "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(64);
-    var n = s(i);
-    var o = r(1);
-    var a = s(o);
-    function s(t) {
+    var i = r(47);
+    var n = o(i);
+    function o(t) {
         return t && t.__esModule ? t : {
             default: t
         };
     }
-    function u(t, e) {
+    function a(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
         }
     }
-    var f = function() {
+    var s = function() {
         function t(e) {
-            u(this, t);
+            a(this, t);
             this.vel = new n.default();
             this.game = e.game;
             this.gameObject = e;
@@ -4431,12 +4624,12 @@
         };
         return t;
     }();
-    e.default = f;
+    e.default = s;
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(1);
+    var i = r(2);
     function n(t, e) {
         if (!(t instanceof e)) {
             throw new TypeError("Cannot call a class as a function");
@@ -4498,40 +4691,6 @@
         return t;
     }();
     e.default = o;
-}, function(t, e, r) {
-    "use strict";
-    Array.prototype.remove = function(t) {
-        var e = this.length;
-        while (e--) {
-            if (t(this[e], e)) {
-                this.splice(e, 1);
-            }
-        }
-    };
-    window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function(t) {
-        setTimeout(t, 17);
-    };
-    if (!Array.prototype.find) {
-        Array.prototype.find = function(t) {
-            if (this == null) {
-                throw new TypeError("Array.prototype.find called on null or undefined");
-            }
-            if (typeof t !== "function") {
-                throw new TypeError("predicate must be a function");
-            }
-            var e = Object(this);
-            var r = e.length >>> 0;
-            var i = arguments[1];
-            var n = void 0;
-            for (var o = 0; o < r; o++) {
-                n = e[o];
-                if (t.call(i, n, o, e)) {
-                    return n;
-                }
-            }
-            return undefined;
-        };
-    }
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
@@ -4665,7 +4824,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(62);
+    var i = r(65);
     var n = o(i);
     function o(t) {
         return t && t.__esModule ? t : {
@@ -4914,7 +5073,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(54);
+    var i = r(57);
     var n = w(i);
     var o = r(7);
     var a = w(o);
@@ -4928,7 +5087,7 @@
     var p = w(d);
     var y = r(10);
     var m = w(y);
-    var g = r(2);
+    var g = r(1);
     var v = w(g);
     function w(t) {
         return t && t.__esModule ? t : {
@@ -4998,7 +5157,7 @@
     var l = g(c);
     var d = r(10);
     var p = g(d);
-    var y = r(2);
+    var y = r(1);
     var m = g(y);
     function g(t) {
         return t && t.__esModule ? t : {
@@ -5059,7 +5218,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(55);
+    var i = r(58);
     var n = g(i);
     var o = r(4);
     var a = g(o);
@@ -5071,7 +5230,7 @@
     var l = g(c);
     var d = r(10);
     var p = g(d);
-    var y = r(2);
+    var y = r(1);
     var m = g(y);
     function g(t) {
         return t && t.__esModule ? t : {
@@ -5136,11 +5295,11 @@
     var a = y(o);
     var s = r(3);
     var u = y(s);
-    var f = r(76);
+    var f = r(79);
     var h = y(f);
-    var c = r(78);
+    var c = r(81);
     var l = y(c);
-    var d = r(2);
+    var d = r(1);
     var p = y(d);
     function y(t) {
         return t && t.__esModule ? t : {
@@ -5219,9 +5378,9 @@
     var h = g(f);
     var c = r(20);
     var l = g(c);
-    var d = r(77);
+    var d = r(80);
     var p = g(d);
-    var y = r(2);
+    var y = r(1);
     var m = g(y);
     function g(t) {
         return t && t.__esModule ? t : {
@@ -5295,9 +5454,9 @@
     var h = g(f);
     var c = r(20);
     var l = g(c);
-    var d = r(79);
+    var d = r(82);
     var p = g(d);
-    var y = r(2);
+    var y = r(1);
     var m = g(y);
     function g(t) {
         return t && t.__esModule ? t : {
@@ -5361,29 +5520,29 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(50);
+    var i = r(53);
     var n = R(i);
-    var o = r(60);
+    var o = r(63);
     var a = R(o);
-    var s = r(61);
+    var s = r(64);
     var u = R(s);
-    var f = r(57);
+    var f = r(60);
     var h = R(f);
-    var c = r(2);
+    var c = r(1);
     var l = R(c);
-    var d = r(58);
+    var d = r(61);
     var p = R(d);
-    var y = r(56);
+    var y = r(59);
     var m = R(y);
-    var g = r(59);
+    var g = r(62);
     var v = R(g);
-    var w = r(52);
+    var w = r(55);
     var _ = R(w);
-    var b = r(53);
+    var b = r(56);
     var x = R(b);
     var E = r(6);
     var T = R(E);
-    var O = r(1);
+    var O = r(2);
     var S = R(O);
     var A = r(14);
     var M = R(A);
@@ -5403,7 +5562,7 @@
         }
         return e && (typeof e === "object" || typeof e === "function") ? e : t;
     }
-    function B(t, e) {
+    function F(t, e) {
         if (typeof e !== "function" && e !== null) {
             throw new TypeError("Super expression must either be null or a function, not " + typeof e);
         }
@@ -5417,7 +5576,7 @@
         });
         if (e) Object.setPrototypeOf ? Object.setPrototypeOf(t, e) : t.__proto__ = e;
     }
-    var F = 0;
+    var B = 0;
     var C = function t(e) {
         return e.getContext("webgl", {
             alpha: false
@@ -5448,7 +5607,7 @@
         return T.default.matrixMultiply(s, u);
     };
     var L = function(t) {
-        B(e, t);
+        F(e, t);
         function e(r) {
             P(this, e);
             var i = j(this, t.call(this, r));
@@ -5477,7 +5636,7 @@
             e.enable(e.BLEND);
         };
         e.prototype.draw = function t(e) {
-            if (F) return;
+            if (B) return;
             if (!S.default.overlapTest(this.game.camera.getRectScaled(), e.getRect())) return;
             this.save();
             var r = e.width / 2;
@@ -5490,7 +5649,7 @@
             this.restore();
         };
         e.prototype.drawImage = function t(e, r, i, n, o, a, s) {
-            if (F) return;
+            if (B) return;
             this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
             var u = this.renderableCache[e];
             if (1 && !u) {
@@ -5529,7 +5688,7 @@
             this.tiledSpriteRectDrawer.draw();
         };
         e.prototype.fillRect = function t(e, r, i, n, o) {
-            if (F) return;
+            if (B) return;
             if (!S.default.overlapTest(this.game.camera.getRectScaled(), {
                 x: e,
                 y: r,
@@ -5551,7 +5710,7 @@
             this.fillRect(e + i, r, 1, n, o);
         };
         e.prototype.drawLine = function t(e, r, i, n, o) {
-            if (F) return;
+            if (B) return;
             var a = i - e, s = n - r;
             if (!S.default.overlapTest(this.game.camera.getRectScaled(), {
                 x: e,
@@ -5664,7 +5823,7 @@
     "use strict";
     e.__esModule = true;
     e.default = undefined;
-    var i = r(65);
+    var i = r(67);
     var n = o(i);
     function o(t) {
         if (t && t.__esModule) {
@@ -5787,130 +5946,26 @@
 }, function(t, e, r) {
     "use strict";
     e.__esModule = true;
-    function i(t, e) {
-        if (!(t instanceof e)) {
-            throw new TypeError("Cannot call a class as a function");
-        }
-    }
-    var n = function() {
-        function t() {
-            var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-            i(this, t);
-            this.x = e;
-            this.y = r;
-        }
-        t.prototype.dotProduct = function t(e) {
-            return this.x * e.x + this.y * e.y;
-        };
-        t.prototype.crossProduct = function t(e) {
-            return this.x * e.y - this.y * e.x;
-        };
-        t.prototype.setXY = function t(e, r) {
-            this.x = e;
-            this.y = r;
-        };
-        t.prototype.addXY = function t(e, r) {
-            this.x += e;
-            this.y += r;
-        };
-        t.prototype.multToScalar = function e(r) {
-            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-            if (i) return new t(this.x * r, this.y * r);
-            this.x *= r;
-            this.y *= r;
-            return this;
-        };
-        t.prototype.divByScalar = function t(e) {
-            var r = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-            return this.multToScalar(1 / e, r);
-        };
-        t.prototype.plus = function e(r) {
-            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-            if (!i) return new t(this.x + r.x, this.y + r.y);
-            this.x += r.x;
-            this.y += r.y;
-            return this;
-        };
-        t.prototype.minus = function e(r) {
-            var i = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-            if (!i) return new t(this.x - r.x, this.y - r.y);
-            this.x -= r.x;
-            this.y -= r.y;
-            return this;
-        };
-        t.prototype.getLength = function t() {
-            return Math.sqrt(this.lengthSquared());
-        };
-        t.prototype.lengthSquared = function t() {
-            return this.x * this.x + this.y * this.y;
-        };
-        t.prototype.normalize = function t() {
-            var e = this.getLength();
-            this.x = this.x / e;
-            this.y = this.y / e;
-            return this;
-        };
-        t.prototype.setLength = function t(e) {
-            var r = this.getAngle();
-            this.x = Math.cos(r) * e;
-            this.y = Math.sin(r) * e;
-        };
-        t.prototype.getAngle = function t() {
-            return Math.atan2(this.y, this.x);
-        };
-        t.prototype.getAngleBetween = function t(e) {
-            return Math.acos((this.x * e.x + this.y * e.y) / this.getLength() * e.getLength());
-        };
-        t.prototype.setAngle = function t(e) {
-            var r = this.getLength();
-            this.x = Math.cos(e) * r;
-            this.y = Math.sin(e) * r;
-        };
-        t.prototype.clone = function e() {
-            return new t(this.x, this.y);
-        };
-        t.angleBetween = function t(e, r) {
-            e = e.clone().normalize();
-            r = r.clone().normalize();
-            return Math.acos(e.dotProduct(r));
-        };
-        t.normalBetween = function t(e, r) {
-            var i = e.minus(r);
-            return i.normalize();
-        };
-        t.distance = function e(r, i) {
-            return Math.sqrt(t.distanceSquared(r, i));
-        };
-        t.distanceSquared = function t(e, r) {
-            return (e.x - r.x) * (e.x - r.x) + (e.y - r.y) * (e.y - r.y);
-        };
-        return t;
-    }();
-    e.default = n;
-}, function(t, e, r) {
-    "use strict";
-    e.__esModule = true;
     e.TileMap = e.TextField = e.Layer = e.Font = e.Sound = e.Scene = e.ParticleSystem = e.CommonBehaviour = e.GameObject = e.GameObjectProto = e.SpriteSheet = e.FrameAnimation = undefined;
-    var i = r(68);
+    var i = r(70);
     var n = A(i);
-    var o = r(74);
+    var o = r(76);
     var a = A(o);
     var s = r(17);
     var u = A(s);
-    var f = r(69);
+    var f = r(71);
     var h = A(f);
-    var c = r(66);
+    var c = r(68);
     var l = A(c);
-    var d = r(71);
+    var d = r(73);
     var p = A(d);
-    var y = r(72);
+    var y = r(74);
     var m = A(y);
-    var g = r(73);
+    var g = r(75);
     var v = A(g);
-    var w = r(67);
+    var w = r(69);
     var _ = A(w);
-    var b = r(70);
+    var b = r(72);
     var x = A(b);
     var E = r(19);
     var T = A(E);
@@ -6328,7 +6383,7 @@
     e.default = undefined;
     var i = r(0);
     var n = u(i);
-    var o = r(1);
+    var o = r(2);
     var a = s(o);
     function s(t) {
         if (t && t.__esModule) {
@@ -6451,7 +6506,7 @@
     e.default = undefined;
     var i = r(0);
     var n = f(i);
-    var o = r(46);
+    var o = r(49);
     var a = f(o);
     var s = r(18);
     var u = f(s);
@@ -6757,6 +6812,23 @@
     var c = h.repository.getObject(a.default.startSceneId, "Scene");
     h.runScene(c);
     if (true) window.game = h;
+}, function(t, e, r) {
+    "use strict";
+    var i = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(t) {
+        return typeof t;
+    } : function(t) {
+        return t && typeof Symbol === "function" && t.constructor === Symbol && t !== Symbol.prototype ? "symbol" : typeof t;
+    };
+    var n;
+    n = function() {
+        return this;
+    }();
+    try {
+        n = n || Function("return this")() || (1, eval)("this");
+    } catch (t) {
+        if ((typeof window === "undefined" ? "undefined" : i(window)) === "object") n = window;
+    }
+    t.exports = n;
 }, function(t, e) {
     t.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}";
 }, function(t, e) {

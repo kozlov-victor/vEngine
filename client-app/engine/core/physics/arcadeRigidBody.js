@@ -1,8 +1,7 @@
 
 // http://madebyevan.com/gamedevclass/minimal-demo/
 
-import Vec2 from '../vec2'
-import MatchEx from '../mathEx'
+import Vec2 from '../geometry/vec2'
 
 export default class ArcadeRigidBody {
 

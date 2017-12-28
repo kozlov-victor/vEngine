@@ -31,14 +31,8 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
     bind(){
         super.bind();
         this.program.bind();
-
-        //this.posIndexBuffer.setData(this.plane.indexArr);
         this.posIndexBuffer.bind();
-
-        //this.posVertexBuffer.setData(this.plane.vertexArr,gl.FLOAT,2);
         this.posVertexBuffer.bind(this.program,'a_position');
-
-        //this.texVertexBuffer.setData(this.plane.texCoordArr,gl.FLOAT,2);
         this.texVertexBuffer.bind(this.program,'a_texcoord');
     }
 

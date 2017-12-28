@@ -2,8 +2,8 @@
 
 import CommonObject from './commonObject'
 import Tween from '../core/tween'
-import EventEmitter from '../core/eventEmitter'
-import {Transient} from '../core/decorators'
+import EventEmitter from '../core/misc/eventEmitter'
+import {Transient} from '../core/misc/decorators'
 //import Vec2 from '../core/vec2'
 
 import ArcadeRigidBody from '../core/physics/arcadeRigidBody'

@@ -1,7 +1,8 @@
 /*global DEBUG:true*/
 import Tween from "./tween";
-import mat4 from './mat4'
+import mat4 from './geometry/mat4'
 import mathEx from './mathEx'
+import Rect from "./geometry/rect";
 
 // https://stackoverflow.com/questions/7692988/opengl-math-projecting-screen-space-to-world-space-coords
 export default class Camera {
@@ -10,9 +11,12 @@ export default class Camera {
     scene = null;
     sceneWidth;
     sceneHeight;
-    pos = {x:0, y:0};
+    pos = {x:0, y:0}; // todo to point2d
     scale = {x:1,y:1};
     lastToleranceTime = 0;
+
+    _rect = new Rect();
+    _rectScaled = new Rect();
 
     TOLERANCE_TIME = 2000;
 
@@ -73,49 +77,43 @@ export default class Camera {
         }
 
         this.cameraTween.update(currTime);
+        this._updateRect();
         this.render();
+    }
+
+    _updateRect(){
+        let point00 = this.screenToWorld(0,0);
+        let pointWH = this.screenToWorld(this.game.width,this.game.height);
+        this._rectScaled.set(
+            point00.x,point00.y,
+            pointWH.x - point00.x,pointWH.y - point00.y
+        );
     }
 
     render(){
         this.game.renderer.translate(this.game.width/2,this.game.height/2);
         this.game.renderer.scale(this.scale.x,this.scale.y);
-        // camera rotation will be here id needs
+        // camera rotation will be here if needs
         this.game.renderer.translate(-this.game.width/2,-this.game.height/2);
         this.game.renderer.translate(-this.pos.x,-this.pos.y);
     }
 
-    getRect(){
-        return {
-            x:this.pos.x,
-            y:this.pos.y,
-            width: this.game.width,
-            height: this.game.height
-        }
-    }
-
-    screenToWorld(screenX,screenY){ // todo need huge optimisation!
+    screenToWorld(screenX,screenY){
         let mScale = mat4.makeScale(this.scale.x,this.scale.y,1);
-        let mTr = mat4.makeTranslation(this.pos.x,this.pos.y,0);
-        let xy = mathEx.unProject(
+        let point2d = mathEx.unProject(
             screenX,screenY,
             this.game.width,this.game.height,mScale);
-        let res = [
-            xy[0],
-            xy[1]
-        ];
-        return res;
+        point2d.add(this.pos);
+        return point2d;
     }
 
-    getRectScaled(){ // todo cache this method
+    getRect(){
+        this._rect.set(this.pos.x,this.pos.y,this.game.width,this.game.height);
+        return this._rect;
+    }
 
-        let point00 = this.screenToWorld(0,0);
-        let pointRightBottom = this.screenToWorld(this.game.width,this.game.height);
-
-        return  {
-            x:this.pos.x + point00[0], y:this.pos.y + point00[1],
-            width: pointRightBottom[0] - point00[0],
-            height: pointRightBottom[1] - point00[1]
-        };
+    getRectScaled(){
+        return this._rectScaled;
     }
 
 }

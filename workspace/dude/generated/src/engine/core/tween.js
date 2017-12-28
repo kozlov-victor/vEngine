@@ -45,14 +45,12 @@ export default class Tween {
         this.easeFnName = tweenDesc.ease || 'linear';
         this.tweenTime = tweenDesc.time || 1000;
         this.desc = this.normalizeDesc(tweenDesc);
-        this.justReused = false;
     }
 
     reuse(newTweenDesc){
-        //if ((this.currTime - this.startedTime)>this.tweenTime) {
-            this.startedTime = this.currTime;
-            this.completed = false;
-        //}
+        this.startedTime = this.currTime;
+        this.completed = false;
+
         Object.keys(newTweenDesc).forEach(key=>{
             this.desc[key] = newTweenDesc[key];
         });
