@@ -80,6 +80,8 @@ export default class CommonObject {
                         this[key].push(item);
                     }
                 });
+            } else if (this[key].fromJSON) {
+                this[key].fromJSON(params[key]);
             }
         });
         this.revalidate();
@@ -111,6 +113,8 @@ export default class CommonObject {
                     }
                 });
                 res[key] = arr;
+            } else if (this[key].toJSON) {
+                res[key] = this[key].toJSON();
             }
             else {
                 let possiblePrimitive = deepCopy(this[key]);

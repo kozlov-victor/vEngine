@@ -162,13 +162,14 @@ export default class ShaderProgram {
 
     static currentProgram = null;
 
+    _attrLocationCache = {};
+
     constructor(gl,sources) {
         let vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
         let fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
         this.program = createProgram(gl, [vShader, fShader]);
         this.uniforms = extractUniforms(gl, this.program);
         this.gl = gl;
-        this.name = '';
     }
 
     getProgram () {
@@ -189,24 +190,27 @@ export default class ShaderProgram {
         //uniformValuesCache[name] = value;
     }
 
-    bindBuffer(buffer, uniformLocationName) { // todo rename param to attrLocationName
+    bindBuffer(buffer, attrLocationName) { // todo rename param to attrLocationName
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
-        let uniformLocation = this.gl.getAttribLocation(this.program, uniformLocationName); // todo cache
+        let attrLocation =
+            this._attrLocationCache[attrLocationName] ||
+            this.gl.getAttribLocation(this.program, attrLocationName);
 
         if (DEBUG) {
-            if (!uniformLocationName) throw "can not found uniform location: uniformLocationName not defined";
-            if (uniformLocation < 0) throw "can not found uniform location for " + uniformLocationName;
+            if (!attrLocationName) throw "can not found uniform location: uniformLocationName not defined";
+            if (attrLocation < 0) throw "can not found uniform location for " + attrLocationName;
         }
 
-        this.gl.enableVertexAttribArray(uniformLocation);
+        this.gl.enableVertexAttribArray(attrLocation);
         this.gl.vertexAttribPointer(
-            uniformLocation,
+            attrLocation,
             buffer.getItemSize(),
             buffer.getItemType(), // type of data
             false,  // if the content is normalized vectors
             0,      // number of bytes to skip in between elements
             0       // offsets to the first element
         );
+        this._attrLocationCache[attrLocationName] = attrLocation;
     }
 
 }

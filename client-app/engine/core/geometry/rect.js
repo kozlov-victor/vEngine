@@ -5,6 +5,8 @@ export default class Rect {
     y;
     width;
     height;
+    right;
+    bottom;
 
     constructor(x = 0,y = 0,width = 0,height = 0){
         this.set(x,y,width,height);
@@ -15,6 +17,8 @@ export default class Rect {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.right = this.x+this.width;
+        this.bottom = this.y+this.height;
     }
 
 }

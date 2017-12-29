@@ -7,6 +7,8 @@ import {Transient} from '../core/misc/decorators'
 //import Vec2 from '../core/vec2'
 
 import ArcadeRigidBody from '../core/physics/arcadeRigidBody'
+import Rect from "../core/geometry/rect";
+import Point2d from "../core/geometry/point2d";
 
 @Transient({
     game: true,
@@ -18,14 +20,15 @@ export default class BaseModel extends CommonObject {
     name = null;
     width = 0;
     height = 0;
-    pos = {x:0,y:0}; // todo vec2?
-    scale = {x:1,y:1};
+    pos = new Point2d(0,0);
+    scale = new Point2d(1,1);
     angle = 0;
     alpha = 1;
     layerId =  null;
     fixedToCamera = false;
     rigid = false;
     _tweens = [];
+    _rect = new Rect(0,0);
 
     constructor(game){
         super();
@@ -46,15 +49,8 @@ export default class BaseModel extends CommonObject {
     onShow(){}
 
     getRect(){
-        let x      = this.pos.x,
-            y      = this.pos.y,
-            width  = this.width,
-            height = this.height;
-        return {
-            x,y,width,height,
-            right: x + width,
-            bottom: y + height
-        };
+        this._rect.set(this.pos.x,this.pos.y,this.width,this.height);
+        return this._rect;
     }
 
     /**

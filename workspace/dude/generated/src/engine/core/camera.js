@@ -3,16 +3,17 @@ import Tween from "./tween";
 import mat4 from './geometry/mat4'
 import mathEx from './mathEx'
 import Rect from "./geometry/rect";
+import Point2d from "./geometry/point2d";
 
-// https://stackoverflow.com/questions/7692988/opengl-math-projecting-screen-space-to-world-space-coords
+
 export default class Camera {
 
     objFollowTo = null;
     scene = null;
     sceneWidth;
     sceneHeight;
-    pos = {x:0, y:0}; // todo to point2d
-    scale = {x:1,y:1};
+    pos = new Point2d(0,0);
+    scale = new Point2d(1,1);
     lastToleranceTime = 0;
 
     _rect = new Rect();

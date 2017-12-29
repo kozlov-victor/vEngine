@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 77);
+/******/ 	return __webpack_require__(__webpack_require__.s = 91);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 77:
+/***/ 91:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -119,7 +119,7 @@ var _showErrorToDom = function _showErrorToDom(el, e, lineNum) {
 
 var lastErr = '';
 window.showError = function _err(e, lineNum) {
-    window.canceled = true;
+    window.game && window.game.destroy();
     if (navigator.isCocoonJS) {
         _showErrToConsole(e, lineNum);
         return;
@@ -155,8 +155,6 @@ window.showError = function _err(e, lineNum) {
         }, 100);
     }
 };
-
-window.canceled = false;
 
 window.addEventListener('error', function (e, url, lineNum) {
     console.error(e);

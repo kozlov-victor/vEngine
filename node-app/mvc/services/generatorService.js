@@ -129,7 +129,7 @@ class GeneratorService {
 
                         let appBundleJs = fs.readFileSync(`./workspace/${params.projectName}/generated/tmp/bundle.js`);
                         fs.createFileSync(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
-                        fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
+                        //fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
 
                         callback({success:true});
                     }

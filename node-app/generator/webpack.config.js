@@ -19,6 +19,7 @@ module.exports =  (params)=>{
         resolveLoader: {
             modules: ['node_modules', 'node_tools/loaders']
         },
+        //devtool: 'inline-source-map', // false // see https://www.thecssninja.com/demo/source_mapping/
         module: {
             rules: [
                 {
@@ -77,23 +78,35 @@ module.exports =  (params)=>{
             IN_EDITOR: false,
             DEBUG: params.debug || false,
             PROJECT_NAME: params.projectName
-        }),
-        new UglifyJSPlugin({
-            output: { // http://lisperator.net/uglifyjs/codegen
-                beautify: !params.minify,
-                comments: false
-            },
-            mangle: true,
-            compress: params.minify?{ // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
-                sequences: true,
-                booleans: true,
-                conditionals: true,
-                hoist_funs: true,
-                hoist_vars: true,
-                warnings: false
-            }:false,
         })
     ];
+
+    if (!params.debug) {
+        config.plugins.push(
+            new UglifyJSPlugin({
+                output: { // http://lisperator.net/uglifyjs/codegen
+                    beautify: false,
+                    comments: false
+                },
+                mangle: true,
+                compress: { // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
+                    sequences: true,
+                    booleans: true,
+                    conditionals: true,
+                    hoist_funs: true,
+                    hoist_vars: true,
+                    warnings: false
+                },
+            })
+        );
+    }
+    else {
+        // config.plugins.push(
+        //     new webpack.SourceMapDevToolPlugin({
+        //         filename: '[name].js.map'
+        //     })
+        // );
+    }
 
     return config;
 };

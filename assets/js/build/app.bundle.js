@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 151);
+/******/ 	return __webpack_require__(__webpack_require__.s = 181);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,35 +76,35 @@
 exports.__esModule = true;
 exports.default = undefined;
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(16);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _editData = __webpack_require__(4);
+var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _project = __webpack_require__(7);
+var _project = __webpack_require__(11);
 
 var _project2 = _interopRequireDefault(_project);
 
-var _fileSystem = __webpack_require__(22);
+var _fileSystem = __webpack_require__(32);
 
 var _fileSystem2 = _interopRequireDefault(_fileSystem);
 
-var _resource = __webpack_require__(9);
+var _resource = __webpack_require__(15);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _resourceHelper = __webpack_require__(21);
+var _resourceHelper = __webpack_require__(31);
 
 var _resourceHelper2 = _interopRequireDefault(_resourceHelper);
 
-var _i18n = __webpack_require__(5);
+var _i18n = __webpack_require__(9);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _httpClient = __webpack_require__(6);
+var _httpClient = __webpack_require__(10);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -144,23 +144,31 @@ var _dec, _class; /*global DEBUG:true*/
 
 //import Vec2 from '../core/vec2'
 
-var _commonObject = __webpack_require__(28);
+var _commonObject = __webpack_require__(41);
 
 var _commonObject2 = _interopRequireDefault(_commonObject);
 
-var _tween = __webpack_require__(98);
+var _tween = __webpack_require__(39);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _eventEmitter = __webpack_require__(89);
+var _eventEmitter = __webpack_require__(106);
 
 var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
 
-var _decorators = __webpack_require__(25);
+var _decorators = __webpack_require__(36);
 
-var _arcadeRigidBody = __webpack_require__(92);
+var _arcadeRigidBody = __webpack_require__(108);
 
 var _arcadeRigidBody2 = _interopRequireDefault(_arcadeRigidBody);
+
+var _rect = __webpack_require__(35);
+
+var _rect2 = _interopRequireDefault(_rect);
+
+var _point2d = __webpack_require__(17);
+
+var _point2d2 = _interopRequireDefault(_point2d);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -185,22 +193,22 @@ var BaseModel = (_dec = (0, _decorators.Transient)({
         _this.name = null;
         _this.width = 0;
         _this.height = 0;
-        _this.pos = { x: 0, y: 0 };
-        _this.scale = { x: 1, y: 1 };
+        _this.pos = new _point2d2.default(0, 0);
+        _this.scale = new _point2d2.default(1, 1);
         _this.angle = 0;
         _this.alpha = 1;
         _this.layerId = null;
         _this.fixedToCamera = false;
         _this.rigid = false;
         _this._tweens = [];
+        _this._rect = new _rect2.default(0, 0);
 
         if (true && !game) throw 'can not create model \'' + _this.type + '\': game instance not passed to model constructor';
         _this.game = game;
         _this._emitter = new _eventEmitter2.default();
         _this.rigidBody = new _arcadeRigidBody2.default(_this);
         return _this;
-    } // todo vec2?
-
+    }
 
     BaseModel.prototype.revalidate = function revalidate() {};
 
@@ -211,15 +219,8 @@ var BaseModel = (_dec = (0, _decorators.Transient)({
     BaseModel.prototype.onShow = function onShow() {};
 
     BaseModel.prototype.getRect = function getRect() {
-        var x = this.pos.x,
-            y = this.pos.y,
-            width = this.width,
-            height = this.height;
-        return {
-            x: x, y: y, width: width, height: height,
-            right: x + width,
-            bottom: y + height
-        };
+        this._rect.set(this.pos.x, this.pos.y, this.width, this.height);
+        return this._rect;
     };
 
     /**
@@ -278,7 +279,17 @@ exports.default = BaseModel;
 "use strict";
 
 
-//const Vec2 = require('./vec2');
+var _mat = __webpack_require__(12);
+
+var _mat2 = _interopRequireDefault(_mat);
+
+var _point2d = __webpack_require__(17);
+
+var _point2d2 = _interopRequireDefault(_point2d);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*global DEBUG:true*/
 
 exports.isPointInRect = function (point, rect, angle) {
     // if (angle) {
@@ -312,6 +323,23 @@ exports.random = function (min, max) {
     if (res > max) res = max;else if (res < min) res = min;
     return res;
 };
+
+/**
+ * analog of glu unproject function
+ * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
+ */
+exports.unProject = function (winX, winY, width, height, viewProjectionMatrix) {
+    var x = 2.0 * winX / width - 1;
+    var y = 2.0 * winY / height - 1;
+    var viewProjectionInverse = _mat2.default.inverse(viewProjectionMatrix);
+
+    var point3D = [x, y, 0, 1];
+    var res = _mat2.default.multMatrixVec(viewProjectionInverse, point3D);
+    res[0] = (res[0] / 2 + 0.5) * width;
+    res[1] = (res[1] / 2 + 0.5) * height;
+    return new _point2d2.default(res[0], res[1]);
+};
+
 //
 // exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
 //     let angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
@@ -544,6 +572,495 @@ exports.ease = ease;
 
 
 exports.__esModule = true;
+
+var _class, _temp;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AbstractDrawer = (_temp = _class = function () {
+    function AbstractDrawer(gl, game) {
+        _classCallCheck(this, AbstractDrawer);
+
+        this.program = null;
+        this.uniformCache = {};
+        this.posVertexBuffer = null;
+        this.posIndexBuffer = null;
+        this.texVertexBuffer = null;
+
+        this.gl = gl;
+        this.game = game;
+    }
+
+    AbstractDrawer.prototype.bind = function bind() {
+        if (AbstractDrawer.currentDrawer !== null && AbstractDrawer.currentDrawer !== this) {
+            AbstractDrawer.currentDrawer.unbind();
+        }
+        AbstractDrawer.currentDrawer = this;
+    };
+
+    AbstractDrawer.prototype.unbind = function unbind() {
+        this.posVertexBuffer.unbind();
+        if (this.posIndexBuffer) this.posIndexBuffer.unbind();
+        if (this.texVertexBuffer) this.texVertexBuffer.unbind();
+    };
+
+    AbstractDrawer.prototype.setUniform = function setUniform(name, value) {
+        if (this.uniformCache[name] === value) return;
+        this.program.setUniform(name, value);
+        this.uniformCache[name] = value;
+    };
+
+    return AbstractDrawer;
+}(), _class.currentDrawer = null, _temp);
+exports.default = AbstractDrawer;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var IndexBuffer = function () {
+    function IndexBuffer(gl) {
+        _classCallCheck(this, IndexBuffer);
+
+        if (true && !gl) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
+
+        this.gl = gl;
+        this.buffer = gl.createBuffer();
+        this.dataLength = null;
+    }
+
+    IndexBuffer.prototype.setData = function setData(bufferData) {
+        if (true) {
+            if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+        }
+
+        var gl = this.gl;
+
+        this.dataLength = bufferData.length;
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    };
+
+    IndexBuffer.prototype.getGlBuffer = function getGlBuffer() {
+        return this.buffer;
+    };
+
+    IndexBuffer.prototype.bind = function bind() {
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+    };
+
+    IndexBuffer.prototype.unbind = function unbind() {
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
+    };
+
+    IndexBuffer.prototype.getBufferLength = function getBufferLength() {
+        return this.dataLength;
+    };
+
+    return IndexBuffer;
+}();
+
+exports.default = IndexBuffer;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+var _class, _temp;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var compileShader = function compileShader(gl, shaderSource, shaderType) {
+    if (true) {
+        if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
+    }
+    // Create the shader object
+    var shader = gl.createShader(shaderType);
+
+    // Load the shader source
+    gl.shaderSource(shader, shaderSource);
+
+    // Compile the shader
+    gl.compileShader(shader);
+
+    // Check the compile status
+    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (!compiled) {
+        // Something went wrong during compilation; get the error
+        var lastError = gl.getShaderInfoLog(shader);
+        gl.deleteShader(shader);
+        if (true) {
+            throw 'Error compiling shader ' + shader + ':' + lastError;
+        } else {
+            throw lastError;
+        }
+    }
+
+    return shader;
+};
+
+var createProgram = function createProgram(gl, shaders) {
+    var program = gl.createProgram();
+    shaders.forEach(function (shader) {
+        gl.attachShader(program, shader);
+    });
+    gl.linkProgram(program);
+
+    // Check the link status
+    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+    if (!linked) {
+        // something went wrong with the link
+        var lastError = gl.getProgramInfoLog(program);
+        gl.deleteProgram(program);
+        if (true) {
+            throw "Error in program linking:" + lastError;
+        } else {
+            throw lastError;
+        }
+    }
+    return program;
+};
+
+var mapType = function mapType(gl, type) {
+
+    var GL_TABLE = null;
+
+    var GL_TO_GLSL_TYPES = {
+        'FLOAT': 'float',
+        'FLOAT_VEC2': 'vec2',
+        'FLOAT_VEC3': 'vec3',
+        'FLOAT_VEC4': 'vec4',
+
+        'INT': 'int',
+        'INT_VEC2': 'ivec2',
+        'INT_VEC3': 'ivec3',
+        'INT_VEC4': 'ivec4',
+
+        'BOOL': 'bool',
+        'BOOL_VEC2': 'bvec2',
+        'BOOL_VEC3': 'bvec3',
+        'BOOL_VEC4': 'bvec4',
+
+        'FLOAT_MAT2': 'mat2',
+        'FLOAT_MAT3': 'mat3',
+        'FLOAT_MAT4': 'mat4',
+
+        'SAMPLER_2D': 'sampler2D'
+    };
+
+    if (!GL_TABLE) {
+        var typeNames = Object.keys(GL_TO_GLSL_TYPES);
+
+        GL_TABLE = {};
+
+        for (var i = 0; i < typeNames.length; ++i) {
+            var tn = typeNames[i];
+            GL_TABLE[gl[tn]] = GL_TO_GLSL_TYPES[tn];
+        }
+    }
+
+    return GL_TABLE[type];
+};
+
+var extractUniforms = function extractUniforms(gl, program) {
+    var uniforms = {};
+
+    var totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
+    for (var i = 0; i < totalUniforms; i++) {
+        var uniformData = gl.getActiveUniform(program, i);
+        var name = uniformData.name.replace(/\[.*?]/, "");
+        var type = mapType(gl, uniformData.type);
+
+        uniforms[name] = {
+            type: type,
+            size: uniformData.size,
+            name: name,
+            location: gl.getUniformLocation(program, name),
+            setter: getUniformSetter(uniformData.size, type)
+        };
+    }
+
+    return uniforms;
+};
+
+var getUniformSetter = function getUniformSetter(size, type) {
+    if (size === 1) {
+        switch (type) {
+            case 'float':
+                return function (gl, location, value) {
+                    gl.uniform1f(location, value);
+                };
+            case 'vec2':
+                return function (gl, location, value) {
+                    gl.uniform2f(location, value[0], value[1]);
+                };
+            case 'vec3':
+                return function (gl, location, value) {
+                    gl.uniform3f(location, value[0], value[1], value[2]);
+                };
+            case 'vec4':
+                return function (gl, location, value) {
+                    gl.uniform4f(location, value[0], value[1], value[2], value[3]);
+                };
+            case 'int':
+                return function (gl, location, value) {
+                    gl.uniform1i(location, value);
+                };
+            case 'ivec2':
+                return function (gl, location, value) {
+                    gl.uniform2i(location, value[0], value[1]);
+                };
+            case 'ivec3':
+                return function (gl, location, value) {
+                    gl.uniform3i(location, value[0], value[1], value[2]);
+                };
+            case 'ivec4':
+                return function (gl, location, value) {
+                    gl.uniform4i(location, value[0], value[1], value[2], value[3]);
+                };
+            case 'bool':
+                return function (gl, location, value) {
+                    gl.uniform1i(location, value);
+                };
+            case 'bvec2':
+                return function (gl, location, value) {
+                    gl.uniform2i(location, value[0], value[1]);
+                };
+            case 'bvec3':
+                return function (gl, location, value) {
+                    gl.uniform3i(location, value[0], value[1], value[2]);
+                };
+            case 'bvec4':
+                return function (gl, location, value) {
+                    gl.uniform4i(location, value[0], value[1], value[2], value[3]);
+                };
+            case 'mat2':
+                return function (gl, location, value) {
+                    gl.uniformMatrix2fv(location, false, value);
+                };
+            case 'mat3':
+                return function (gl, location, value) {
+                    gl.uniformMatrix3fv(location, false, value);
+                };
+            case 'mat4':
+                return function (gl, location, value) {
+                    gl.uniformMatrix4fv(location, false, value);
+                };
+            case 'sampler2D':
+                return function (gl, location, value) {
+                    gl.uniform1i(location, value);
+                };
+        }
+    } else {
+        switch (type) {
+            case 'float':
+                return function (gl, location, value) {
+                    gl.uniform1fv(location, value);
+                };
+            case 'vec2':
+                return function (gl, location, value) {
+                    gl.uniform2fv(location, value);
+                };
+            case 'vec3':
+                return function (gl, location, value) {
+                    gl.uniform3fv(location, value);
+                };
+            case 'vec4':
+                return function (gl, location, value) {
+                    gl.uniform4fv(location, value);
+                };
+            case 'int':
+                return function (gl, location, value) {
+                    gl.uniform1iv(location, value);
+                };
+            case 'ivec2':
+                return function (gl, location, value) {
+                    gl.uniform2iv(location, value);
+                };
+            case 'ivec3':
+                return function (gl, location, value) {
+                    gl.uniform3iv(location, value);
+                };
+            case 'ivec4':
+                return function (gl, location, value) {
+                    gl.uniform4iv(location, value);
+                };
+            case 'bool':
+                return function (gl, location, value) {
+                    gl.uniform1iv(location, value);
+                };
+            case 'bvec2':
+                return function (gl, location, value) {
+                    gl.uniform2iv(location, value);
+                };
+            case 'bvec3':
+                return function (gl, location, value) {
+                    gl.uniform3iv(location, value);
+                };
+            case 'bvec4':
+                return function (gl, location, value) {
+                    gl.uniform4iv(location, value);
+                };
+            case 'sampler2D':
+                return function (gl, location, value) {
+                    gl.uniform1iv(location, value);
+                };
+        }
+    }
+};
+
+var ShaderProgram = (_temp = _class = function () {
+    function ShaderProgram(gl, sources) {
+        _classCallCheck(this, ShaderProgram);
+
+        this._attrLocationCache = {};
+
+        var vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
+        var fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
+        this.program = createProgram(gl, [vShader, fShader]);
+        this.uniforms = extractUniforms(gl, this.program);
+        this.gl = gl;
+    }
+
+    ShaderProgram.prototype.getProgram = function getProgram() {
+        return this.program;
+    };
+
+    ShaderProgram.prototype.bind = function bind() {
+        this.gl.useProgram(this.program);
+        ShaderProgram.currentProgram = this;
+    };
+
+    ShaderProgram.prototype.setUniform = function setUniform(name, value) {
+        var uniform = this.uniforms[name];
+        if (true && !uniform) throw 'no uniform with name ' + name + ' found!';
+        //if (uniformValuesCache[name]===value) return;
+        //this.gl.enableVertexAttribArray(uniform.location);
+        uniform.setter(this.gl, uniform.location, value);
+        //uniformValuesCache[name] = value;
+    };
+
+    ShaderProgram.prototype.bindBuffer = function bindBuffer(buffer, attrLocationName) {
+        // todo rename param to attrLocationName
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
+        var attrLocation = this._attrLocationCache[attrLocationName] || this.gl.getAttribLocation(this.program, attrLocationName);
+
+        if (true) {
+            if (!attrLocationName) throw "can not found uniform location: uniformLocationName not defined";
+            if (attrLocation < 0) throw "can not found uniform location for " + attrLocationName;
+        }
+
+        this.gl.enableVertexAttribArray(attrLocation);
+        this.gl.vertexAttribPointer(attrLocation, buffer.getItemSize(), buffer.getItemType(), // type of data
+        false, // if the content is normalized vectors
+        0, // number of bytes to skip in between elements
+        0 // offsets to the first element
+        );
+        this._attrLocationCache[attrLocationName] = attrLocation;
+    };
+
+    return ShaderProgram;
+}(), _class.currentProgram = null, _temp);
+exports.default = ShaderProgram;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var VertexBuffer = function () {
+    function VertexBuffer(gl) {
+        _classCallCheck(this, VertexBuffer);
+
+        if (true && !gl) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
+        this.gl = gl;
+        this.buffer = gl.createBuffer();
+        this.bufferItemSize = null;
+        this.bufferItemType = null;
+        this.dataLength = null;
+    }
+
+    VertexBuffer.prototype.setData = function setData(bufferData, itemType, itemSize) {
+        if (true) {
+            if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+            if (!itemType) throw 'can not set data to buffer: itemType not specified';
+            if (!itemSize) throw 'can not set data to buffer: itemSize not specified';
+        }
+        var gl = this.gl;
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW); // DYNAMIC
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        this.bufferItemSize = itemSize;
+        this.bufferItemType = itemType; // BYTE, FLOAT, INT, UNSIGNED_SHORT ...
+        this.dataLength = bufferData.length;
+    };
+
+    VertexBuffer.prototype.bind = function bind(program, attrName) {
+        if (true && !program) throw "can not bind VertexBuffer, program not specified";
+        if (true && !attrName) throw "can not bind VertexBuffer, attribute name not specified";
+        program.bindBuffer(this, attrName);
+    };
+
+    VertexBuffer.prototype.unbind = function unbind() {
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+    };
+
+    VertexBuffer.prototype.getGlBuffer = function getGlBuffer() {
+        return this.buffer;
+    };
+
+    VertexBuffer.prototype.getItemSize = function getItemSize() {
+        return this.bufferItemSize;
+    };
+
+    VertexBuffer.prototype.getItemType = function getItemType() {
+        return this.bufferItemType;
+    };
+
+    VertexBuffer.prototype.getBufferLength = function getBufferLength() {
+        return this.dataLength;
+    };
+
+    return VertexBuffer;
+}();
+
+exports.default = VertexBuffer;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
 exports.default = undefined;
 
 var _baseModel = __webpack_require__(1);
@@ -656,7 +1173,7 @@ var GameObjectProto = function (_BaseModel) {
 exports.default = GameObjectProto;
 
 /***/ }),
-/* 4 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -664,39 +1181,39 @@ exports.default = GameObjectProto;
 
 exports.__esModule = true;
 
-var _gameObjectProto = __webpack_require__(3);
+var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _spriteSheet = __webpack_require__(8);
+var _spriteSheet = __webpack_require__(14);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _frameAnimation = __webpack_require__(12);
+var _frameAnimation = __webpack_require__(20);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
-var _scene = __webpack_require__(16);
+var _scene = __webpack_require__(24);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-var _layer = __webpack_require__(14);
+var _layer = __webpack_require__(22);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _font = __webpack_require__(11);
+var _font = __webpack_require__(19);
 
 var _font2 = _interopRequireDefault(_font);
 
-var _sound = __webpack_require__(17);
+var _sound = __webpack_require__(25);
 
 var _sound2 = _interopRequireDefault(_sound);
 
-var _particleSystem = __webpack_require__(15);
+var _particleSystem = __webpack_require__(23);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
-var _game = __webpack_require__(90);
+var _game = __webpack_require__(103);
 
 var _game2 = _interopRequireDefault(_game);
 
@@ -753,7 +1270,7 @@ res.reset();
 exports.default = res;
 
 /***/ }),
-/* 5 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -887,7 +1404,7 @@ _i18n.getAll = function () {
 exports.default = _i18n;
 
 /***/ }),
-/* 6 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -903,7 +1420,7 @@ var objectToQuery = function objectToQuery(o) {
     if (!o) return '';
     if (o instanceof window.FormData) return o;
     var paramsArr = [];
-    if (o == null || o == undefined || typeof o == 'string' || typeof o == 'number') return o;
+    if (o === null || o === undefined || typeof o === 'string' || typeof o === 'number') return o;
     for (var key in o) {
         paramsArr.push([key, encodeURIComponent(o[key])]);
     }
@@ -916,7 +1433,7 @@ var request = function request(data) {
     var abortTmr = null;
     var resolved = false;
     data.method = data.method || 'get';
-    if (data.data && data.method == 'get') data.url += '?' + objectToQuery(data.data);
+    if (data.data && data.method === 'get') data.url += '?' + objectToQuery(data.data);
     var xhr = new XMLHttpRequest();
     var resolveFn = noop,
         rejectFn = noop;
@@ -925,14 +1442,14 @@ var request = function request(data) {
         rejectFn = reject;
     });
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4) {
-            if (xhr.status == 200 || xhr.status == 0) {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200 || xhr.status === 0) {
                 var resp = xhr.responseText;
                 var contentType = xhr.getResponseHeader("Content-Type") || '';
                 if (contentType.toLowerCase().indexOf('json') > -1) resp = JSON.parse(resp);
                 if (data.success) {
                     data.success(resp);
-                    RF.digest();
+                    if (window.RF) RF.digest(); // todo separate
                 }
                 resolveFn(resp);
             } else {
@@ -945,12 +1462,12 @@ var request = function request(data) {
     };
     xhr.open(data.method, data.url, true);
     if (data.requestType) {
-        if (data.requestType != 'multipart/form-data') // at this case header needs to be auto generated
+        if (data.requestType !== 'multipart/form-data') // at this case header needs to be auto generated
             xhr.setRequestHeader("Content-Type", data.requestType);
     } else {
         xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     }
-    if (data.requestType == 'application/json') data.data = data.data && JSON.stringify(data.data);
+    if (data.requestType === 'application/json') data.data = data.data && JSON.stringify(data.data);
     xhr.send(data.data);
     if (data.timeout) {
         abortTmr = setTimeout(function () {
@@ -1004,7 +1521,7 @@ var postMultiPart = function postMultiPart(url, file, data, success, error) {
 exports.default = { get: get, post: post, postMultiPart: postMultiPart };
 
 /***/ }),
-/* 7 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1013,7 +1530,7 @@ exports.default = { get: get, post: post, postMultiPart: postMultiPart };
 exports.__esModule = true;
 exports.default = undefined;
 
-var _httpClient = __webpack_require__(6);
+var _httpClient = __webpack_require__(10);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -1044,7 +1561,217 @@ var Project = function () {
 exports.default = Project;
 
 /***/ }),
-/* 8 */
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/*global DEBUG:true*/
+
+// todo convert to plain good oop style
+// https://evanw.github.io/lightgl.js/docs/matrix.html
+
+exports.makeIdentity = function () {
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+};
+
+exports.makeZToWMatrix = function (fudgeFactor) {
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, fudgeFactor, 0, 0, 0, 1];
+};
+
+exports.make2DProjection = function (width, height, depth) {
+    // Note: This matrix flips the Y axis so 0 is at the top.
+    return [2 / width, 0, 0, 0, 0, -2 / height, 0, 0, 0, 0, 2 / depth, 0, -1, 1, 0, 1];
+};
+
+exports.ortho = function (left, right, bottom, top, near, far) {
+    var lr = 1 / (left - right),
+        bt = 1 / (bottom - top),
+        nf = 1 / (near - far);
+    var out = [];
+    out[0] = -2 * lr;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = -2 * bt;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 2 * nf;
+    out[11] = 0;
+    out[12] = (left + right) * lr;
+    out[13] = (top + bottom) * bt;
+    out[14] = (far + near) * nf;
+    out[15] = 1;
+    return out;
+};
+
+exports.perspective = function (fovy, aspect, near, far) {
+    var f = 1.0 / Math.tan(fovy / 2),
+        nf = 1 / (near - far);
+    var out = [];
+
+    out[0] = f / aspect;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+
+    out[4] = 0;
+    out[5] = f;
+    out[6] = 0;
+    out[7] = 0;
+
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = (far + near) * nf;
+    out[11] = -1;
+
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 2 * far * near * nf;
+    out[15] = 0;
+    return out;
+};
+
+exports.makeTranslation = function (tx, ty, tz) {
+    return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, tx, ty, tz, 1];
+};
+
+exports.makeXRotation = function (angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+
+    return [1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1];
+};
+
+exports.makeYRotation = function (angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+
+    return [c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1];
+};
+
+exports.makeZRotation = function (angleInRadians) {
+    var c = Math.cos(angleInRadians);
+    var s = Math.sin(angleInRadians);
+    return [c, s, 0, 0, -s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+};
+
+exports.makeScale = function (sx, sy, sz) {
+    return [sx, 0, 0, 0, 0, sy, 0, 0, 0, 0, sz, 0, 0, 0, 0, 1];
+};
+
+exports.matrixMultiply = function (a, b) {
+    var r = new Array(16);
+    r[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
+    r[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
+    r[2] = a[0] * b[2] + a[1] * b[6] + a[2] * b[10] + a[3] * b[14];
+    r[3] = a[0] * b[3] + a[1] * b[7] + a[2] * b[11] + a[3] * b[15];
+
+    r[4] = a[4] * b[0] + a[5] * b[4] + a[6] * b[8] + a[7] * b[12];
+    r[5] = a[4] * b[1] + a[5] * b[5] + a[6] * b[9] + a[7] * b[13];
+    r[6] = a[4] * b[2] + a[5] * b[6] + a[6] * b[10] + a[7] * b[14];
+    r[7] = a[4] * b[3] + a[5] * b[7] + a[6] * b[11] + a[7] * b[15];
+
+    r[8] = a[8] * b[0] + a[9] * b[4] + a[10] * b[8] + a[11] * b[12];
+    r[9] = a[8] * b[1] + a[9] * b[5] + a[10] * b[9] + a[11] * b[13];
+    r[10] = a[8] * b[2] + a[9] * b[6] + a[10] * b[10] + a[11] * b[14];
+    r[11] = a[8] * b[3] + a[9] * b[7] + a[10] * b[11] + a[11] * b[15];
+
+    r[12] = a[12] * b[0] + a[13] * b[4] + a[14] * b[8] + a[15] * b[12];
+    r[13] = a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13];
+    r[14] = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
+    r[15] = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
+    return r;
+};
+
+exports.multMatrixVec = function (matrix, inp) {
+    var out = new Array(16);
+    for (var i = 0; i < 4; i++) {
+        out[i] = inp[0] * matrix[0 * 4 + i] + inp[1] * matrix[1 * 4 + i] + inp[2] * matrix[2 * 4 + i] + inp[3] * matrix[3 * 4 + i];
+    }
+    return out;
+};
+
+exports.inverse = function (m) {
+    var r = new Array(16);
+
+    r[0] = m[5] * m[10] * m[15] - m[5] * m[14] * m[11] - m[6] * m[9] * m[15] + m[6] * m[13] * m[11] + m[7] * m[9] * m[14] - m[7] * m[13] * m[10];
+    r[1] = -m[1] * m[10] * m[15] + m[1] * m[14] * m[11] + m[2] * m[9] * m[15] - m[2] * m[13] * m[11] - m[3] * m[9] * m[14] + m[3] * m[13] * m[10];
+    r[2] = m[1] * m[6] * m[15] - m[1] * m[14] * m[7] - m[2] * m[5] * m[15] + m[2] * m[13] * m[7] + m[3] * m[5] * m[14] - m[3] * m[13] * m[6];
+    r[3] = -m[1] * m[6] * m[11] + m[1] * m[10] * m[7] + m[2] * m[5] * m[11] - m[2] * m[9] * m[7] - m[3] * m[5] * m[10] + m[3] * m[9] * m[6];
+
+    r[4] = -m[4] * m[10] * m[15] + m[4] * m[14] * m[11] + m[6] * m[8] * m[15] - m[6] * m[12] * m[11] - m[7] * m[8] * m[14] + m[7] * m[12] * m[10];
+    r[5] = m[0] * m[10] * m[15] - m[0] * m[14] * m[11] - m[2] * m[8] * m[15] + m[2] * m[12] * m[11] + m[3] * m[8] * m[14] - m[3] * m[12] * m[10];
+    r[6] = -m[0] * m[6] * m[15] + m[0] * m[14] * m[7] + m[2] * m[4] * m[15] - m[2] * m[12] * m[7] - m[3] * m[4] * m[14] + m[3] * m[12] * m[6];
+    r[7] = m[0] * m[6] * m[11] - m[0] * m[10] * m[7] - m[2] * m[4] * m[11] + m[2] * m[8] * m[7] + m[3] * m[4] * m[10] - m[3] * m[8] * m[6];
+
+    r[8] = m[4] * m[9] * m[15] - m[4] * m[13] * m[11] - m[5] * m[8] * m[15] + m[5] * m[12] * m[11] + m[7] * m[8] * m[13] - m[7] * m[12] * m[9];
+    r[9] = -m[0] * m[9] * m[15] + m[0] * m[13] * m[11] + m[1] * m[8] * m[15] - m[1] * m[12] * m[11] - m[3] * m[8] * m[13] + m[3] * m[12] * m[9];
+    r[10] = m[0] * m[5] * m[15] - m[0] * m[13] * m[7] - m[1] * m[4] * m[15] + m[1] * m[12] * m[7] + m[3] * m[4] * m[13] - m[3] * m[12] * m[5];
+    r[11] = -m[0] * m[5] * m[11] + m[0] * m[9] * m[7] + m[1] * m[4] * m[11] - m[1] * m[8] * m[7] - m[3] * m[4] * m[9] + m[3] * m[8] * m[5];
+
+    r[12] = -m[4] * m[9] * m[14] + m[4] * m[13] * m[10] + m[5] * m[8] * m[14] - m[5] * m[12] * m[10] - m[6] * m[8] * m[13] + m[6] * m[12] * m[9];
+    r[13] = m[0] * m[9] * m[14] - m[0] * m[13] * m[10] - m[1] * m[8] * m[14] + m[1] * m[12] * m[10] + m[2] * m[8] * m[13] - m[2] * m[12] * m[9];
+    r[14] = -m[0] * m[5] * m[14] + m[0] * m[13] * m[6] + m[1] * m[4] * m[14] - m[1] * m[12] * m[6] - m[2] * m[4] * m[13] + m[2] * m[12] * m[5];
+    r[15] = m[0] * m[5] * m[10] - m[0] * m[9] * m[6] - m[1] * m[4] * m[10] + m[1] * m[8] * m[6] + m[2] * m[4] * m[9] - m[2] * m[8] * m[5];
+
+    var det = m[0] * r[0] + m[1] * r[4] + m[2] * r[8] + m[3] * r[12];
+    if (true && det === 0) {
+        console.error(m);
+        throw new Error("can not invert matrix");
+    }
+    for (var i = 0; i < 16; i++) {
+        r[i] /= det;
+    }return r;
+};
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractPrimitive = __webpack_require__(18);
+
+var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Plane = function (_AbstractPrimitive) {
+    _inherits(Plane, _AbstractPrimitive);
+
+    function Plane() {
+        _classCallCheck(this, Plane);
+
+        var _this = _possibleConstructorReturn(this, _AbstractPrimitive.call(this));
+
+        _this.vertexArr = [0, 0, 0, 1, 1, 0, 1, 1];
+        _this.indexArr = [0, 1, 2, 3];
+        _this.texCoordArr = [0, 0, 0, 1, 1, 0, 1, 1];
+        return _this;
+    }
+
+    return Plane;
+}(_abstractPrimitive2.default);
+
+exports.default = Plane;
+
+/***/ }),
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1106,7 +1833,7 @@ var SpriteSheet = function (_BaseModel) {
 exports.default = SpriteSheet;
 
 /***/ }),
-/* 9 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1115,15 +1842,15 @@ exports.default = SpriteSheet;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _httpClient = __webpack_require__(6);
+var _httpClient = __webpack_require__(10);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
-var _editData = __webpack_require__(4);
+var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(16);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -1142,7 +1869,7 @@ var Resource = function () {
 
     Resource.save = function save(model, callback, opts) {
 
-        var allModels = __webpack_require__(27);
+        var allModels = __webpack_require__(40);
         if (!allModels[model.type]) throw 'Unregistered type ' + model.type + ', export this type in \'engine/model/all\'!';
         var Class = allModels[model.type];
 
@@ -1181,7 +1908,7 @@ var Resource = function () {
 exports.default = Resource;
 
 /***/ }),
-/* 10 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1196,23 +1923,23 @@ var _mathEx = __webpack_require__(2);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
-var _editData = __webpack_require__(4);
+var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _resource = __webpack_require__(9);
+var _resource = __webpack_require__(15);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _fileSystem = __webpack_require__(22);
+var _fileSystem = __webpack_require__(32);
 
 var _fileSystem2 = _interopRequireDefault(_fileSystem);
 
-var _i18n = __webpack_require__(5);
+var _i18n = __webpack_require__(9);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _gameObjectProto = __webpack_require__(3);
+var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
@@ -1503,7 +2230,77 @@ var Utils = function () {
 exports.default = Utils;
 
 /***/ }),
-/* 11 */
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Point2d = function () {
+    function Point2d() {
+        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        _classCallCheck(this, Point2d);
+
+        this.setXY(x, y);
+    }
+
+    Point2d.prototype.setXY = function setXY(x, y) {
+        this.x = x;
+        this.y = y;
+    };
+
+    Point2d.prototype.set = function set(another) {
+        this.setXY(another.x, another.y);
+    };
+
+    Point2d.prototype.add = function add(another) {
+        this.x += another.x;
+        this.y += another.y;
+    };
+
+    Point2d.prototype.fromJSON = function fromJSON(json) {
+        this.set(json);
+    };
+
+    Point2d.prototype.toJSON = function toJSON() {
+        return { x: this.x, y: this.y };
+    };
+
+    return Point2d;
+}();
+
+exports.default = Point2d;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AbstractPrimitive = function AbstractPrimitive() {
+    _classCallCheck(this, AbstractPrimitive);
+
+    this.vertexArr = null;
+    this.normalArr = null;
+    this.texCoordArr = null;
+    this.indexArr = null;
+};
+
+exports.default = AbstractPrimitive;
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1547,7 +2344,7 @@ var Font = function (_BaseModel) {
 exports.default = Font;
 
 /***/ }),
-/* 12 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1639,7 +2436,7 @@ var FrameAnimation = function (_BaseModel) {
 exports.default = FrameAnimation;
 
 /***/ }),
-/* 13 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1648,11 +2445,11 @@ exports.default = FrameAnimation;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _gameObjectProto = __webpack_require__(3);
+var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _all = __webpack_require__(78);
+var _all = __webpack_require__(92);
 
 var commonBehaviours = _interopRequireWildcard(_all);
 
@@ -1739,7 +2536,7 @@ exports.default = GameObject;
 ;
 
 /***/ }),
-/* 14 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1816,7 +2613,7 @@ var Layer = function (_BaseModel) {
 exports.default = Layer;
 
 /***/ }),
-/* 15 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1914,7 +2711,7 @@ var ParticleSystem = function (_BaseModel) {
 exports.default = ParticleSystem;
 
 /***/ }),
-/* 16 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1927,11 +2724,11 @@ var _baseModel = __webpack_require__(1);
 
 var _baseModel2 = _interopRequireDefault(_baseModel);
 
-var _loadingQueue = __webpack_require__(91);
+var _loadingQueue = __webpack_require__(107);
 
 var _loadingQueue2 = _interopRequireDefault(_loadingQueue);
 
-var _tileMap = __webpack_require__(18);
+var _tileMap = __webpack_require__(26);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -1942,6 +2739,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*global IN_EDITOR:true*/
+/*global DEBUG:true*/
 
 
 var Scene = function (_BaseModel) {
@@ -2031,6 +2829,11 @@ var Scene = function (_BaseModel) {
     };
 
     Scene.prototype.update = function update(currTime, deltaTime) {
+
+        if (true) {
+            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.setText('');
+        }
+
         var renderer = this.game.renderer;
         renderer.beginFrameBuffer();
         if (this.useBG) renderer.clearColor(this.colorBG);else renderer.clear();
@@ -2039,9 +2842,8 @@ var Scene = function (_BaseModel) {
         var i = this.layers.length;
         var l = i - 1;
 
-        renderer.scale(this.game.camera.scale.x, this.game.camera.scale.y);
-        this.game.camera.update(currTime);
-        renderer.translate(-this.game.camera.pos.x, -this.game.camera.pos.y);
+        this.game.camera.update(currTime, deltaTime);
+
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
         while (i--) {
             layers[i - l].update(currTime, deltaTime);
@@ -2056,7 +2858,12 @@ var Scene = function (_BaseModel) {
         //     tweenMovie._update(currTime);
         // });
         // this.__updateIndividualBehaviour__(currTime);
-        this._updateTileMap();
+        this.tileMap.update();
+        if (true) {
+            this.game.renderer.restore();
+            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
+            this.game.renderer.restore();
+        }
         renderer.flipFrameBuffer();
     };
 
@@ -2073,23 +2880,6 @@ var Scene = function (_BaseModel) {
         // let tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
         // movie.tween(0,tween);
         // movie.play();
-    };
-
-    Scene.prototype._updateTileMap = function _updateTileMap() {
-        var spriteSheet = this.tileMap.spriteSheet;
-        if (!spriteSheet) return;
-        var ctx = this.game.renderer;
-        var tilePosX = ~~(this.game.camera.pos.x / this.tileMap.spriteSheet._frameWidth);
-        var tilePosY = ~~(this.game.camera.pos.y / this.tileMap.spriteSheet._frameHeight);
-        var w = tilePosX + this.tileMap._tilesInScreenX + 2;
-        var h = tilePosY + this.tileMap._tilesInScreenY + 2;
-        for (var y = tilePosY; y < h; y++) {
-            for (var x = tilePosX; x < w; x++) {
-                var index = this.tileMap.data[y] && this.tileMap.data[y][x];
-                if (index == null) continue; // todo
-                ctx.drawImage(spriteSheet.resourcePath, spriteSheet.getFramePosX(index), spriteSheet.getFramePosY(index), spriteSheet._frameWidth, spriteSheet._frameHeight, x * spriteSheet._frameWidth, y * spriteSheet._frameHeight);
-            }
-        }
     };
 
     Scene.prototype.printText = function printText(x, y, text, font) {
@@ -2109,7 +2899,7 @@ var Scene = function (_BaseModel) {
 exports.default = Scene;
 
 /***/ }),
-/* 17 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2175,7 +2965,7 @@ var Sound = function (_BaseModel) {
 exports.default = Sound;
 
 /***/ }),
-/* 18 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2268,13 +3058,34 @@ var TileMap = function (_BaseModel) {
         return result;
     };
 
+    TileMap.prototype.update = function update() {
+        var spriteSheet = this.spriteSheet;
+        if (!spriteSheet) return;
+        var camera = this.game.camera;
+        var renderer = this.game.renderer;
+        var cameraRect = camera.getRectScaled();
+        var tilePosX = ~~(cameraRect.x / this.spriteSheet._frameWidth);
+        var tilePosY = ~~(cameraRect.y / this.spriteSheet._frameHeight);
+        if (tilePosX < 0) tilePosX = 0;
+        if (tilePosY < 0) tilePosY = 0;
+        var w = tilePosX + this._tilesInScreenX + 1;
+        var h = tilePosY + this._tilesInScreenY + 1;
+        for (var y = tilePosY; y < h; y++) {
+            for (var x = tilePosX; x < w; x++) {
+                var index = this.data[y] && this.data[y][x];
+                if (index === null || index === undefined) continue;
+                renderer.drawImage(spriteSheet.resourcePath, spriteSheet.getFramePosX(index), spriteSheet.getFramePosY(index), spriteSheet._frameWidth, spriteSheet._frameHeight, x * spriteSheet._frameWidth, y * spriteSheet._frameHeight);
+            }
+        }
+    };
+
     return TileMap;
 }(_baseModel2.default);
 
 exports.default = TileMap;
 
 /***/ }),
-/* 19 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2344,6 +3155,10 @@ var TextField = function (_BaseModel) {
         }));
     };
 
+    TextField.prototype.getText = function getText() {
+        return this.text;
+    };
+
     TextField.prototype.setFont = function setFont(font) {
         this.font = font;
         this.setText(this.text);
@@ -2377,7 +3192,19 @@ var TextField = function (_BaseModel) {
 exports.default = TextField;
 
 /***/ }),
-/* 20 */
+/* 28 */
+/***/ (function(module, exports) {
+
+module.exports = "//position and color\r\n\r\nattribute vec4 a_position;\r\nattribute vec4 a_color;\r\n\r\nuniform mat4 u_PositionMatrix;\r\n\r\nvarying vec4 v_color;\r\n\r\nvoid main() {\r\n   gl_Position = u_PositionMatrix * a_position;\r\n   v_color = a_color;\r\n}"
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports) {
+
+module.exports = "precision mediump float; // lowp, mediump, highp\n\nuniform float u_alpha;\nuniform vec4 u_rgba;\n\nvoid main() {\n    gl_FragColor = u_rgba;\n}"
+
+/***/ }),
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2963,7 +3790,7 @@ exports.default = TextField;
 }).call(window);
 
 /***/ }),
-/* 21 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2972,23 +3799,23 @@ exports.default = TextField;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _editData = __webpack_require__(4);
+var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _resource = __webpack_require__(9);
+var _resource = __webpack_require__(15);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _project = __webpack_require__(7);
+var _project = __webpack_require__(11);
 
 var _project2 = _interopRequireDefault(_project);
 
-var _commonBehaviour = __webpack_require__(29);
+var _commonBehaviour = __webpack_require__(42);
 
 var _commonBehaviour2 = _interopRequireDefault(_commonBehaviour);
 
-var _textField = __webpack_require__(19);
+var _textField = __webpack_require__(27);
 
 var _textField2 = _interopRequireDefault(_textField);
 
@@ -3084,7 +3911,7 @@ exports.default = ResourceHelper;
 window.e = _editData2.default;
 
 /***/ }),
-/* 22 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3093,11 +3920,11 @@ window.e = _editData2.default;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _httpClient = __webpack_require__(6);
+var _httpClient = __webpack_require__(10);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
-var _editData = __webpack_require__(4);
+var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
@@ -3152,7 +3979,7 @@ var FileSystem = function () {
 exports.default = FileSystem;
 
 /***/ }),
-/* 23 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3182,7 +4009,7 @@ var BaseAbstractBehaviour = function () {
 exports.default = BaseAbstractBehaviour;
 
 /***/ }),
-/* 24 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3191,7 +4018,7 @@ exports.default = BaseAbstractBehaviour;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _baseAbstractBehaviour = __webpack_require__(23);
+var _baseAbstractBehaviour = __webpack_require__(33);
 
 var _baseAbstractBehaviour2 = _interopRequireDefault(_baseAbstractBehaviour);
 
@@ -3212,7 +4039,6 @@ var Moveable = function (_BaseAbstractBehaviou) {
         var _this = _possibleConstructorReturn(this, _BaseAbstractBehaviou.call(this));
 
         _this.gameObject = null;
-        _this.lastDirection = null;
 
         _this.game = game;
         return _this;
@@ -3239,14 +4065,14 @@ var Moveable = function (_BaseAbstractBehaviou) {
 
     Moveable.prototype.stop = function stop() {
         this.gameObject.stopFrAnimations();
-        var keyIdle = 'idle' + this.lastDirection + 'Animation';
+        var keyIdle = 'idle' + this.gameObject._lastDirection + 'Animation';
         if (this.animations[keyIdle]) {
             this.animations[keyIdle].play();
         }
     };
 
     Moveable.prototype.go = function go(direction) {
-        this.lastDirection = direction;
+        this.gameObject._lastDirection = direction;
         this.animations['walk' + direction + 'Animation'].play();
     };
 
@@ -3256,7 +4082,44 @@ var Moveable = function (_BaseAbstractBehaviou) {
 exports.default = Moveable;
 
 /***/ }),
-/* 25 */
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Rect = function () {
+    function Rect() {
+        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+        var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+        var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+        _classCallCheck(this, Rect);
+
+        this.set(x, y, width, height);
+    }
+
+    Rect.prototype.set = function set(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.right = this.x + this.width;
+        this.bottom = this.y + this.height;
+    };
+
+    return Rect;
+}();
+
+exports.default = Rect;
+
+/***/ }),
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3271,11 +4134,11 @@ function Transient(params) {
 }
 
 /***/ }),
-/* 26 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(global) {
 
 Array.prototype.remove = function (callback) {
     var i = this.length;
@@ -3289,6 +4152,12 @@ Array.prototype.remove = function (callback) {
 window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || function (f) {
     setTimeout(f, 17);
 };
+
+if (!window.cancelAnimationFrame) {
+    global.cancelAnimationFrame = function (id) {
+        return clearTimeout(id);
+    };
+}
 
 if (!Array.prototype.find) {
     Array.prototype.find = function (predicate) {
@@ -3312,9 +4181,254 @@ if (!Array.prototype.find) {
         return undefined;
     };
 }
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(125)))
 
 /***/ }),
-/* 27 */
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var isPowerOf2 = function isPowerOf2(value) {
+    return (value & value - 1) == 0;
+};
+
+var Texture = function () {
+    function Texture(gl) {
+        _classCallCheck(this, Texture);
+
+        if (true && !gl) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
+        this.gl = gl;
+        this.tex = null;
+        this.size = null;
+        this.isPowerOfTwo = false;
+
+        this.tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, this.tex);
+        // Fill the texture with a 1x1 blue pixel.
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 255, 255]));
+        gl.bindTexture(gl.TEXTURE_2D, this.tex);
+    }
+
+    /**
+     * @param img - if image is null, width and height must be specified
+     * @param width -unused if image specified
+     * @param height -unused if image specified
+     */
+
+
+    Texture.prototype.setImage = function setImage(img, width, height) {
+        if (true) {
+            if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
+        }
+
+        var gl = this.gl;
+        if (img) this.size = { width: img.width, height: img.height };else this.size = { width: width, height: height };
+        this.bind();
+        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+        if (img) {
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+        } else {
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        }
+        this.isPowerOfTwo = img && isPowerOf2(img.width) && isPowerOf2(img.height);
+        // Check if the image is a power of 2 in both dimensions.
+        if (this.isPowerOfTwo) {
+            gl.generateMipmap(gl.TEXTURE_2D);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+        } else {
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR); // NEAREST,LINEAR
+        }
+        gl.bindTexture(gl.TEXTURE_2D, null);
+    };
+
+    Texture.prototype.bind = function bind(i) {
+        //gl.activeTexture(gl.TEXTURE0+i);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
+        // gl.uniform1i(uName, i);
+    };
+
+    Texture.prototype.unbind = function unbind(i) {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+    };
+
+    Texture.prototype.getSize = function getSize() {
+        return this.size;
+    };
+
+    Texture.prototype.getGlTexture = function getGlTexture() {
+        return this.tex;
+    };
+
+    return Texture;
+}();
+
+exports.default = Texture;
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _mathEx = __webpack_require__(2);
+
+var _mathEx2 = _interopRequireDefault(_mathEx);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var accessByPath = function accessByPath(obj, path) {
+    var pathArr = path.split('.');
+    if (pathArr.length === 1) return { targetObj: obj, targetKey: path };
+    var lastPath = pathArr.pop();
+    pathArr.forEach(function (p) {
+        obj = obj[p];
+    });
+    return { targetObj: obj, targetKey: lastPath };
+};
+
+var setValByPath = function setValByPath(obj, path, val) {
+    var _accessByPath = accessByPath(obj, path),
+        targetObj = _accessByPath.targetObj,
+        targetKey = _accessByPath.targetKey;
+
+    targetObj[targetKey] = val;
+};
+
+var getValByPath = function getValByPath(obj, path, val) {
+    var _accessByPath2 = accessByPath(obj, path),
+        targetObj = _accessByPath2.targetObj,
+        targetKey = _accessByPath2.targetKey;
+
+    return targetObj[targetKey];
+};
+
+var Tween = function () {
+
+    /**
+     * @param tweenDesc
+     * target: obj,
+     * from: object with props,
+     * to: object with props,
+     * progress: fn,
+     * complete: fn,
+     * ease: str ease fn name,
+     * time: tween time
+     */
+    function Tween(tweenDesc) {
+        _classCallCheck(this, Tween);
+
+        this.propsToChange = [];
+        this.startedTime = null;
+        this.currTime = null;
+        this.completed = false;
+
+        this.obj = tweenDesc.target;
+        this.progressFn = tweenDesc.progress;
+        this.completeFn = tweenDesc.complete;
+        this.easeFnName = tweenDesc.ease || 'linear';
+        this.tweenTime = tweenDesc.time || 1000;
+        this.desc = this.normalizeDesc(tweenDesc);
+    }
+
+    Tween.prototype.reuse = function reuse(newTweenDesc) {
+        var _this = this;
+
+        this.startedTime = this.currTime;
+        this.completed = false;
+
+        Object.keys(newTweenDesc).forEach(function (key) {
+            _this.desc[key] = newTweenDesc[key];
+        });
+        this.desc = this.normalizeDesc(newTweenDesc);
+    };
+
+    Tween.prototype.normalizeDesc = function normalizeDesc(tweenDesc) {
+        var _this2 = this;
+
+        tweenDesc.from = tweenDesc.from || {};
+        tweenDesc.to = tweenDesc.to || {};
+        var allPropsMap = {};
+        Object.keys(tweenDesc.from).forEach(function (keyFrom) {
+            allPropsMap[keyFrom] = true;
+        });
+        Object.keys(tweenDesc.to).forEach(function (keyTo) {
+            allPropsMap[keyTo] = true;
+        });
+        this.propsToChange = Object.keys(allPropsMap);
+        this.propsToChange.forEach(function (prp) {
+            if (tweenDesc.from[prp] === undefined) tweenDesc.from[prp] = getValByPath(_this2.obj, prp);
+            if (tweenDesc.to[prp] === undefined) tweenDesc.to[prp] = getValByPath(_this2.obj, prp);
+        });
+        return tweenDesc;
+    };
+
+    Tween.prototype.update = function update(time) {
+        if (this.completed) return;
+        this.currTime = time;
+        if (!this.startedTime) this.startedTime = time;
+        var curTweenTime = time - this.startedTime;
+        if (curTweenTime > this.tweenTime) {
+            this._complete();
+            return;
+        }
+        var l = this.propsToChange.length;
+        while (l--) {
+            var prp = this.propsToChange[l];
+            var valFrom = this.desc.from[prp];
+            var valTo = this.desc.to[prp];
+            var valCurr = _mathEx2.default.ease[this.easeFnName](curTweenTime, valFrom, valTo - valFrom, this.tweenTime);
+            setValByPath(this.obj, prp, valCurr);
+        }
+        this.progressFn && this.progressFn(this.obj);
+    };
+
+    Tween.prototype.progress = function progress(_progressFn) {
+        this.progressFn = _progressFn;
+    };
+
+    Tween.prototype.reset = function reset() {
+        this.startedTime = null;
+        this.completed = false;
+    };
+
+    Tween.prototype._complete = function _complete() {
+        if (this.completed) return;
+        var l = this.propsToChange.length;
+        while (l--) {
+            var prp = this.propsToChange[l];
+            var valCurr = this.desc.to[prp];
+            setValByPath(this.obj, prp, valCurr);
+        }
+        this.progressFn && this.progressFn(this.obj);
+        this.completeFn && this.completeFn(this.obj);
+        this.completed = true;
+    };
+
+    return Tween;
+}();
+
+exports.default = Tween;
+
+/***/ }),
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3323,51 +4437,51 @@ if (!Array.prototype.find) {
 exports.__esModule = true;
 exports.TileMap = exports.TextField = exports.Layer = exports.Font = exports.Sound = exports.Scene = exports.ParticleSystem = exports.CommonBehaviour = exports.GameObject = exports.GameObjectProto = exports.SpriteSheet = exports.FrameAnimation = undefined;
 
-var _frameAnimation = __webpack_require__(12);
+var _frameAnimation = __webpack_require__(20);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
-var _spriteSheet = __webpack_require__(8);
+var _spriteSheet = __webpack_require__(14);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _gameObjectProto = __webpack_require__(3);
+var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _gameObject = __webpack_require__(13);
+var _gameObject = __webpack_require__(21);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
-var _commonBehaviour = __webpack_require__(29);
+var _commonBehaviour = __webpack_require__(42);
 
 var _commonBehaviour2 = _interopRequireDefault(_commonBehaviour);
 
-var _particleSystem = __webpack_require__(15);
+var _particleSystem = __webpack_require__(23);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
-var _scene = __webpack_require__(16);
+var _scene = __webpack_require__(24);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-var _sound = __webpack_require__(17);
+var _sound = __webpack_require__(25);
 
 var _sound2 = _interopRequireDefault(_sound);
 
-var _font = __webpack_require__(11);
+var _font = __webpack_require__(19);
 
 var _font2 = _interopRequireDefault(_font);
 
-var _layer = __webpack_require__(14);
+var _layer = __webpack_require__(22);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _textField = __webpack_require__(19);
+var _textField = __webpack_require__(27);
 
 var _textField2 = _interopRequireDefault(_textField);
 
-var _tileMap = __webpack_require__(18);
+var _tileMap = __webpack_require__(26);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -3387,7 +4501,7 @@ exports.TextField = _textField2.default;
 exports.TileMap = _tileMap2.default;
 
 /***/ }),
-/* 28 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3481,6 +4595,8 @@ var CommonObject = function () {
                         _this[key].push(item);
                     }
                 });
+            } else if (_this[key].fromJSON) {
+                _this[key].fromJSON(params[key]);
             }
         });
         this.revalidate();
@@ -3521,6 +4637,8 @@ var CommonObject = function () {
                     });
                     res[key] = arr;
                 })();
+            } else if (this[key].toJSON) {
+                res[key] = this[key].toJSON();
             } else {
                 var possiblePrimitive = deepCopy(this[key]);
                 if (possiblePrimitive && possiblePrimitive.splice && !possiblePrimitive.length) continue;else if (possiblePrimitive != null && (typeof possiblePrimitive === 'undefined' ? 'undefined' : _typeof(possiblePrimitive)) === 'object' && !Object.keys(possiblePrimitive).length) continue;
@@ -3536,7 +4654,7 @@ var CommonObject = function () {
 exports.default = CommonObject;
 
 /***/ }),
-/* 29 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3577,187 +4695,193 @@ var CommonBehaviour = function (_BaseModel) {
 exports.default = CommonBehaviour;
 
 /***/ }),
-/* 30 */
+/* 43 */
+/***/ (function(module, exports) {
+
+module.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_PositionMatrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_PositionMatrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(26);
+__webpack_require__(37);
 
-__webpack_require__(33);
+__webpack_require__(47);
 
-__webpack_require__(20);
+__webpack_require__(30);
 
-__webpack_require__(34);
+__webpack_require__(48);
 
-var _modal = __webpack_require__(42);
+var _modal = __webpack_require__(56);
 
 var _modal2 = _interopRequireDefault(_modal);
 
-var _collapsible = __webpack_require__(37);
+var _collapsible = __webpack_require__(51);
 
 var _collapsible2 = _interopRequireDefault(_collapsible);
 
-var _alertDialog = __webpack_require__(35);
+var _alertDialog = __webpack_require__(49);
 
 var _alertDialog2 = _interopRequireDefault(_alertDialog);
 
-var _confirmDialog = __webpack_require__(40);
+var _confirmDialog = __webpack_require__(54);
 
 var _confirmDialog2 = _interopRequireDefault(_confirmDialog);
 
-var _inputFile = __webpack_require__(41);
+var _inputFile = __webpack_require__(55);
 
 var _inputFile2 = _interopRequireDefault(_inputFile);
 
-var _colorPicker = __webpack_require__(38);
+var _colorPicker = __webpack_require__(52);
 
 var _colorPicker2 = _interopRequireDefault(_colorPicker);
 
-var _colorPickerDialog = __webpack_require__(39);
+var _colorPickerDialog = __webpack_require__(53);
 
 var _colorPickerDialog2 = _interopRequireDefault(_colorPickerDialog);
 
-var _anglePicker = __webpack_require__(36);
+var _anglePicker = __webpack_require__(50);
 
 var _anglePicker2 = _interopRequireDefault(_anglePicker);
 
-var _draggableDirective = __webpack_require__(43);
+var _draggableDirective = __webpack_require__(57);
 
 var _draggableDirective2 = _interopRequireDefault(_draggableDirective);
 
-__webpack_require__(76);
+__webpack_require__(90);
 
-var _resourceHelper = __webpack_require__(21);
+var _resourceHelper = __webpack_require__(31);
 
 var _resourceHelper2 = _interopRequireDefault(_resourceHelper);
 
-var _explorer = __webpack_require__(74);
+var _explorer = __webpack_require__(88);
 
 var _explorer2 = _interopRequireDefault(_explorer);
 
-var _editor = __webpack_require__(59);
+var _editor = __webpack_require__(73);
 
 var _editor2 = _interopRequireDefault(_editor);
 
-var _projectDialog = __webpack_require__(73);
+var _projectDialog = __webpack_require__(87);
 
 var _projectDialog2 = _interopRequireDefault(_projectDialog);
 
-var _gameProps = __webpack_require__(63);
+var _gameProps = __webpack_require__(77);
 
 var _gameProps2 = _interopRequireDefault(_gameProps);
 
-var _particleSystems = __webpack_require__(64);
+var _particleSystems = __webpack_require__(78);
 
 var _particleSystems2 = _interopRequireDefault(_particleSystems);
 
-var _sounds = __webpack_require__(66);
+var _sounds = __webpack_require__(80);
 
 var _sounds2 = _interopRequireDefault(_sounds);
 
-var _fonts = __webpack_require__(61);
+var _fonts = __webpack_require__(75);
 
 var _fonts2 = _interopRequireDefault(_fonts);
 
-var _spriteSheets = __webpack_require__(67);
+var _spriteSheets = __webpack_require__(81);
 
 var _spriteSheets2 = _interopRequireDefault(_spriteSheets);
 
-var _gameObjects = __webpack_require__(62);
+var _gameObjects = __webpack_require__(76);
 
 var _gameObjects2 = _interopRequireDefault(_gameObjects);
 
-var _scenes = __webpack_require__(65);
+var _scenes = __webpack_require__(79);
 
 var _scenes2 = _interopRequireDefault(_scenes);
 
-var _userInterface = __webpack_require__(68);
+var _userInterface = __webpack_require__(82);
 
 var _userInterface2 = _interopRequireDefault(_userInterface);
 
-var _topPanel = __webpack_require__(72);
+var _topPanel = __webpack_require__(86);
 
 var _topPanel2 = _interopRequireDefault(_topPanel);
 
-var _popupBlocked = __webpack_require__(71);
+var _popupBlocked = __webpack_require__(85);
 
 var _popupBlocked2 = _interopRequireDefault(_popupBlocked);
 
-var _scriptEditor = __webpack_require__(46);
+var _scriptEditor = __webpack_require__(60);
 
 var _scriptEditor2 = _interopRequireDefault(_scriptEditor);
 
-var _sceneCentralPanel = __webpack_require__(45);
+var _sceneCentralPanel = __webpack_require__(59);
 
 var _sceneCentralPanel2 = _interopRequireDefault(_sceneCentralPanel);
 
-var _sceneCursor = __webpack_require__(44);
+var _sceneCursor = __webpack_require__(58);
 
 var _sceneCursor2 = _interopRequireDefault(_sceneCursor);
 
-var _sceneRightPanel = __webpack_require__(70);
+var _sceneRightPanel = __webpack_require__(84);
 
 var _sceneRightPanel2 = _interopRequireDefault(_sceneRightPanel);
 
-var _gameObjectRightPanel = __webpack_require__(69);
+var _gameObjectRightPanel = __webpack_require__(83);
 
 var _gameObjectRightPanel2 = _interopRequireDefault(_gameObjectRightPanel);
 
-var _gameObjectRow = __webpack_require__(60);
+var _gameObjectRow = __webpack_require__(74);
 
 var _gameObjectRow2 = _interopRequireDefault(_gameObjectRow);
 
-var _dialogs = __webpack_require__(49);
+var _dialogs = __webpack_require__(63);
 
 var _dialogs2 = _interopRequireDefault(_dialogs);
 
-var _particleSystemDialog = __webpack_require__(54);
+var _particleSystemDialog = __webpack_require__(68);
 
 var _particleSystemDialog2 = _interopRequireDefault(_particleSystemDialog);
 
-var _soundDialog = __webpack_require__(57);
+var _soundDialog = __webpack_require__(71);
 
 var _soundDialog2 = _interopRequireDefault(_soundDialog);
 
-var _fontDialog = __webpack_require__(50);
+var _fontDialog = __webpack_require__(64);
 
 var _fontDialog2 = _interopRequireDefault(_fontDialog);
 
-var _spriteSheetDialog = __webpack_require__(58);
+var _spriteSheetDialog = __webpack_require__(72);
 
 var _spriteSheetDialog2 = _interopRequireDefault(_spriteSheetDialog);
 
-var _gameObjectDialog = __webpack_require__(52);
+var _gameObjectDialog = __webpack_require__(66);
 
 var _gameObjectDialog2 = _interopRequireDefault(_gameObjectDialog);
 
-var _sceneDialog = __webpack_require__(56);
+var _sceneDialog = __webpack_require__(70);
 
 var _sceneDialog2 = _interopRequireDefault(_sceneDialog);
 
-var _layerDialog = __webpack_require__(53);
+var _layerDialog = __webpack_require__(67);
 
 var _layerDialog2 = _interopRequireDefault(_layerDialog);
 
-var _particleSystemPreviewDialog = __webpack_require__(55);
+var _particleSystemPreviewDialog = __webpack_require__(69);
 
 var _particleSystemPreviewDialog2 = _interopRequireDefault(_particleSystemPreviewDialog);
 
-var _frameAnimationDialog = __webpack_require__(51);
+var _frameAnimationDialog = __webpack_require__(65);
 
 var _frameAnimationDialog2 = _interopRequireDefault(_frameAnimationDialog);
 
-var _commonBehaviourDialog = __webpack_require__(48);
+var _commonBehaviourDialog = __webpack_require__(62);
 
 var _commonBehaviourDialog2 = _interopRequireDefault(_commonBehaviourDialog);
 
-var _buildDialog = __webpack_require__(47);
+var _buildDialog = __webpack_require__(61);
 
 var _buildDialog2 = _interopRequireDefault(_buildDialog);
 
-__webpack_require__(106);
+__webpack_require__(132);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3779,10 +4903,10 @@ if (sessionStorage.projectName) {
     _resourceHelper2.default.loadProject(sessionStorage.projectName);
 } else RF.Router.navigateTo('explorer');
 
-console.log('built at: ' + new Date(+1513440435143));
+console.log('built at: ' + new Date(+1514583180406));
 
 /***/ }),
-/* 31 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4490,10 +5614,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 function () {
   return this;
 }() || Function("return this")());
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(100)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(126)(module)))
 
 /***/ }),
-/* 32 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4550,7 +5674,7 @@ var draggable = exports.draggable = function draggable(el, objVal) {
 };
 
 /***/ }),
-/* 33 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4569,7 +5693,7 @@ if (!Array.prototype.includes) {
 }
 
 /***/ }),
-/* 34 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7987,7 +9111,7 @@ var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbo
 /******/);
 
 /***/ }),
-/* 35 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7999,7 +9123,7 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-var _i18n = __webpack_require__(5);
+var _i18n = __webpack_require__(9);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
@@ -8009,7 +9133,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AlertDialog = (_dec = RF.decorateComponent({
     name: 'app-alert-dialog',
-    template: __webpack_require__(113)
+    template: __webpack_require__(143)
 }), _dec(_class = function () {
     function AlertDialog() {
         _classCallCheck(this, AlertDialog);
@@ -8033,7 +9157,7 @@ var AlertDialog = (_dec = RF.decorateComponent({
 exports.default = AlertDialog;
 
 /***/ }),
-/* 36 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8047,7 +9171,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AnglePicker = (_dec = RF.decorateComponent({
     name: 'app-angle-picker',
-    template: __webpack_require__(114)
+    template: __webpack_require__(144)
 }), _dec(_class = function () {
     function AnglePicker() {
         _classCallCheck(this, AnglePicker);
@@ -8088,7 +9212,7 @@ var AnglePicker = (_dec = RF.decorateComponent({
 exports.default = AnglePicker;
 
 /***/ }),
-/* 37 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8100,13 +9224,13 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(102);
+__webpack_require__(128);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Collapsible = (_dec = RF.decorateComponent({
     name: 'app-collapsible',
-    template: __webpack_require__(115)
+    template: __webpack_require__(145)
 }), _dec(_class = function () {
     function Collapsible() {
         _classCallCheck(this, Collapsible);
@@ -8128,7 +9252,7 @@ var Collapsible = (_dec = RF.decorateComponent({
 exports.default = Collapsible;
 
 /***/ }),
-/* 38 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8142,7 +9266,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var ColorPicker = (_dec = RF.decorateComponent({
     name: 'app-color-picker',
-    template: __webpack_require__(116)
+    template: __webpack_require__(146)
 }), _dec(_class = function () {
     function ColorPicker() {
         _classCallCheck(this, ColorPicker);
@@ -8161,7 +9285,7 @@ var ColorPicker = (_dec = RF.decorateComponent({
 exports.default = ColorPicker;
 
 /***/ }),
-/* 39 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8173,11 +9297,11 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-var _utils = __webpack_require__(10);
+var _utils = __webpack_require__(16);
 
 var _utils2 = _interopRequireDefault(_utils);
 
-var _i18n = __webpack_require__(5);
+var _i18n = __webpack_require__(9);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
@@ -8189,7 +9313,7 @@ var defaultColor = { r: 0, g: 0, b: 0 };
 
 var ColorPickerDialog = (_dec = RF.decorateComponent({
     name: 'app-color-picker-dialog',
-    template: __webpack_require__(117)
+    template: __webpack_require__(147)
 }), _dec(_class = function () {
     function ColorPickerDialog() {
         _classCallCheck(this, ColorPickerDialog);
@@ -8244,7 +9368,7 @@ var ColorPickerDialog = (_dec = RF.decorateComponent({
 exports.default = ColorPickerDialog;
 
 /***/ }),
-/* 40 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8256,9 +9380,9 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(103);
+__webpack_require__(129);
 
-var _i18n = __webpack_require__(5);
+var _i18n = __webpack_require__(9);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
@@ -8268,7 +9392,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var ConfirmDialog = (_dec = RF.decorateComponent({
     name: 'app-confirm-dialog',
-    template: __webpack_require__(118)
+    template: __webpack_require__(148)
 }), _dec(_class = function () {
     function ConfirmDialog() {
         _classCallCheck(this, ConfirmDialog);
@@ -8298,7 +9422,7 @@ var ConfirmDialog = (_dec = RF.decorateComponent({
 exports.default = ConfirmDialog;
 
 /***/ }),
-/* 41 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8310,13 +9434,13 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(104);
+__webpack_require__(130);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var InputFile = (_dec = RF.decorateComponent({
     name: 'app-input-file',
-    template: __webpack_require__(119)
+    template: __webpack_require__(149)
 }), _dec(_class = function () {
     function InputFile() {
         _classCallCheck(this, InputFile);
@@ -8351,7 +9475,7 @@ var InputFile = (_dec = RF.decorateComponent({
 exports.default = InputFile;
 
 /***/ }),
-/* 42 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8363,13 +9487,13 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(105);
+__webpack_require__(131);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var AppModal = (_dec = RF.decorateComponent({
     name: 'app-modal',
-    template: __webpack_require__(120)
+    template: __webpack_require__(150)
 }), _dec(_class = function () {
     function AppModal() {
         _classCallCheck(this, AppModal);
@@ -8391,7 +9515,7 @@ var AppModal = (_dec = RF.decorateComponent({
 exports.default = AppModal;
 
 /***/ }),
-/* 43 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8402,7 +9526,7 @@ exports.default = undefined;
 
 var _dec, _class;
 
-var _draggable = __webpack_require__(32);
+var _draggable = __webpack_require__(46);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8423,7 +9547,7 @@ var DraggableDirective = (_dec = RF.decorateComponent({
 exports.default = DraggableDirective;
 
 /***/ }),
-/* 44 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8450,7 +9574,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneCursor = (_dec = RF.decorateComponent({
     name: 'app-scene-cursor',
-    template: __webpack_require__(121)
+    template: __webpack_require__(151)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneCursor, _BaseComponent);
 
@@ -8481,7 +9605,7 @@ var SceneCursor = (_dec = RF.decorateComponent({
 exports.default = SceneCursor;
 
 /***/ }),
-/* 45 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8498,13 +9622,13 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(107);
+__webpack_require__(133);
 
-var _gameObject = __webpack_require__(13);
+var _gameObject = __webpack_require__(21);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
-var _gameObjectProto = __webpack_require__(3);
+var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
@@ -8520,7 +9644,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneCentralPanel = (_dec = RF.decorateComponent({
     name: 'app-scene-central-panel',
-    template: __webpack_require__(122)
+    template: __webpack_require__(152)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneCentralPanel, _BaseComponent);
 
@@ -8762,7 +9886,7 @@ var SceneCentralPanel = (_dec = RF.decorateComponent({
 exports.default = SceneCentralPanel;
 
 /***/ }),
-/* 46 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8778,7 +9902,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(108);
+__webpack_require__(134);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8790,7 +9914,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ScriptEditor = (_dec = RF.decorateComponent({
     name: 'app-script-editor',
-    template: __webpack_require__(123)
+    template: __webpack_require__(153)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ScriptEditor, _BaseComponent);
 
@@ -8809,7 +9933,7 @@ var ScriptEditor = (_dec = RF.decorateComponent({
 exports.default = ScriptEditor;
 
 /***/ }),
-/* 47 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8836,7 +9960,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var BuildDialog = (_dec = RF.decorateComponent({
     name: 'app-build-dialog',
-    template: __webpack_require__(124)
+    template: __webpack_require__(154)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(BuildDialog, _BaseComponent);
 
@@ -8859,7 +9983,7 @@ var BuildDialog = (_dec = RF.decorateComponent({
 exports.default = BuildDialog;
 
 /***/ }),
-/* 48 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8887,7 +10011,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var CommonBehaviourDialog = (_dec = RF.decorateComponent({
     name: 'app-common-behaviour-dialog',
-    template: __webpack_require__(125)
+    template: __webpack_require__(155)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(CommonBehaviourDialog, _BaseComponent);
 
@@ -8954,7 +10078,7 @@ var CommonBehaviourDialog = (_dec = RF.decorateComponent({
 exports.default = CommonBehaviourDialog;
 
 /***/ }),
-/* 49 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8980,7 +10104,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Dialogs = (_dec = RF.decorateComponent({
     name: 'app-dialogs',
-    template: __webpack_require__(126)
+    template: __webpack_require__(156)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Dialogs, _BaseComponent);
 
@@ -8995,7 +10119,7 @@ var Dialogs = (_dec = RF.decorateComponent({
 exports.default = Dialogs;
 
 /***/ }),
-/* 50 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9010,7 +10134,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _chrome = __webpack_require__(75);
+var _chrome = __webpack_require__(89);
 
 var _chrome2 = _interopRequireDefault(_chrome);
 
@@ -9090,7 +10214,7 @@ var getFontImage = function getFontImage(symbolsContext, strFont, color) {
 
 var FontDialog = (_dec = RF.decorateComponent({
     name: 'app-font-dialog',
-    template: __webpack_require__(127)
+    template: __webpack_require__(157)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(FontDialog, _BaseComponent);
 
@@ -9175,7 +10299,7 @@ var FontDialog = (_dec = RF.decorateComponent({
 exports.default = FontDialog;
 
 /***/ }),
-/* 51 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9191,11 +10315,11 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _gameObject = __webpack_require__(13);
+var _gameObject = __webpack_require__(21);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
-var _spriteSheet = __webpack_require__(8);
+var _spriteSheet = __webpack_require__(14);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
@@ -9211,7 +10335,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var FrameAnimationDialog = (_dec = RF.decorateComponent({
     name: 'app-frame-animation-dialog',
-    template: __webpack_require__(128)
+    template: __webpack_require__(158)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(FrameAnimationDialog, _BaseComponent);
 
@@ -9357,7 +10481,7 @@ var FrameAnimationDialog = (_dec = RF.decorateComponent({
 exports.default = FrameAnimationDialog;
 
 /***/ }),
-/* 52 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9373,7 +10497,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _frameAnimation = __webpack_require__(12);
+var _frameAnimation = __webpack_require__(20);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
@@ -9389,7 +10513,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var gameObjectDialog = (_dec = RF.decorateComponent({
     name: 'app-game-object-dialog',
-    template: __webpack_require__(129)
+    template: __webpack_require__(159)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(gameObjectDialog, _BaseComponent);
 
@@ -9558,7 +10682,7 @@ var gameObjectDialog = (_dec = RF.decorateComponent({
 exports.default = gameObjectDialog;
 
 /***/ }),
-/* 53 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9585,7 +10709,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var LayerDialog = (_dec = RF.decorateComponent({
     name: 'app-layer-dialog',
-    template: __webpack_require__(130)
+    template: __webpack_require__(160)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(LayerDialog, _BaseComponent);
 
@@ -9653,7 +10777,7 @@ var LayerDialog = (_dec = RF.decorateComponent({
 exports.default = LayerDialog;
 
 /***/ }),
-/* 54 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9681,7 +10805,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ParticleSystemDialog = (_dec = RF.decorateComponent({
     name: 'app-particle-system-dialog',
-    template: __webpack_require__(131)
+    template: __webpack_require__(161)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ParticleSystemDialog, _BaseComponent);
 
@@ -9741,7 +10865,7 @@ var ParticleSystemDialog = (_dec = RF.decorateComponent({
 exports.default = ParticleSystemDialog;
 
 /***/ }),
-/* 55 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9769,7 +10893,7 @@ var tid = void 0;
 
 var ParticleSystemPreviewDialog = (_dec = RF.decorateComponent({
     name: 'app-particle-system-preview-dialog',
-    template: __webpack_require__(132)
+    template: __webpack_require__(162)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ParticleSystemPreviewDialog, _BaseComponent);
 
@@ -9833,7 +10957,7 @@ var ParticleSystemPreviewDialog = (_dec = RF.decorateComponent({
 exports.default = ParticleSystemPreviewDialog;
 
 /***/ }),
-/* 56 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9860,7 +10984,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneDialog = (_dec = RF.decorateComponent({
     name: 'app-scene-dialog',
-    template: __webpack_require__(133)
+    template: __webpack_require__(163)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneDialog, _BaseComponent);
 
@@ -9924,7 +11048,7 @@ var SceneDialog = (_dec = RF.decorateComponent({
 exports.default = SceneDialog;
 
 /***/ }),
-/* 57 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9951,7 +11075,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SoundDialog = (_dec = RF.decorateComponent({
     name: 'app-sound-dialog',
-    template: __webpack_require__(134)
+    template: __webpack_require__(164)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SoundDialog, _BaseComponent);
 
@@ -10042,7 +11166,7 @@ var SoundDialog = (_dec = RF.decorateComponent({
 exports.default = SoundDialog;
 
 /***/ }),
-/* 58 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10070,7 +11194,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SpriteSheetDialog = (_dec = RF.decorateComponent({
     name: 'app-sprite-sheet-dialog',
-    template: __webpack_require__(135)
+    template: __webpack_require__(165)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SpriteSheetDialog, _BaseComponent);
 
@@ -10191,7 +11315,7 @@ var SpriteSheetDialog = (_dec = RF.decorateComponent({
 exports.default = SpriteSheetDialog;
 
 /***/ }),
-/* 59 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10207,9 +11331,9 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(109);
+__webpack_require__(135);
 
-var _split = __webpack_require__(20);
+var _split = __webpack_require__(30);
 
 var _split2 = _interopRequireDefault(_split);
 
@@ -10223,7 +11347,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Editor = (_dec = RF.decorateComponent({
     name: 'editor',
-    template: __webpack_require__(136)
+    template: __webpack_require__(166)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Editor, _BaseComponent);
 
@@ -10268,7 +11392,7 @@ var Editor = (_dec = RF.decorateComponent({
 exports.default = Editor;
 
 /***/ }),
-/* 60 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10294,7 +11418,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameObjectRow = (_dec = RF.decorateComponent({
     name: 'app-game-object-row',
-    template: __webpack_require__(137)
+    template: __webpack_require__(167)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameObjectRow, _BaseComponent);
 
@@ -10314,7 +11438,7 @@ var GameObjectRow = (_dec = RF.decorateComponent({
 exports.default = GameObjectRow;
 
 /***/ }),
-/* 61 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10330,7 +11454,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _font = __webpack_require__(11);
+var _font = __webpack_require__(19);
 
 var _font2 = _interopRequireDefault(_font);
 
@@ -10346,7 +11470,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Fonts = (_dec = RF.decorateComponent({
     name: 'app-fonts',
-    template: __webpack_require__(138)
+    template: __webpack_require__(168)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Fonts, _BaseComponent);
 
@@ -10398,7 +11522,7 @@ var Fonts = (_dec = RF.decorateComponent({
 exports.default = Fonts;
 
 /***/ }),
-/* 62 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10414,7 +11538,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _gameObjectProto = __webpack_require__(3);
+var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
@@ -10428,7 +11552,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameObject = (_dec = RF.decorateComponent({
     name: 'app-game-objects',
-    template: __webpack_require__(139)
+    template: __webpack_require__(169)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameObject, _BaseComponent);
 
@@ -10476,7 +11600,7 @@ var GameObject = (_dec = RF.decorateComponent({
 exports.default = GameObject;
 
 /***/ }),
-/* 63 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10492,7 +11616,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _consts = __webpack_require__(85);
+var _consts = __webpack_require__(105);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10504,7 +11628,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameProps = (_dec = RF.decorateComponent({
     name: 'app-game-props',
-    template: __webpack_require__(140)
+    template: __webpack_require__(170)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameProps, _BaseComponent);
 
@@ -10526,7 +11650,7 @@ var GameProps = (_dec = RF.decorateComponent({
 exports.default = GameProps;
 
 /***/ }),
-/* 64 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10542,7 +11666,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _particleSystem = __webpack_require__(15);
+var _particleSystem = __webpack_require__(23);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
@@ -10556,7 +11680,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ParticleSystems = (_dec = RF.decorateComponent({
     name: 'app-particle-systems',
-    template: __webpack_require__(141)
+    template: __webpack_require__(171)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ParticleSystems, _BaseComponent);
 
@@ -10592,7 +11716,7 @@ var ParticleSystems = (_dec = RF.decorateComponent({
 exports.default = ParticleSystems;
 
 /***/ }),
-/* 65 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10609,15 +11733,15 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _layer = __webpack_require__(14);
+var _layer = __webpack_require__(22);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _scene = __webpack_require__(16);
+var _scene = __webpack_require__(24);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-__webpack_require__(110);
+__webpack_require__(136);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10629,7 +11753,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Scenes = (_dec = RF.decorateComponent({
     name: 'app-scenes',
-    template: __webpack_require__(142)
+    template: __webpack_require__(172)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Scenes, _BaseComponent);
 
@@ -10730,7 +11854,7 @@ var Scenes = (_dec = RF.decorateComponent({
 exports.default = Scenes;
 
 /***/ }),
-/* 66 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10745,7 +11869,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _sound = __webpack_require__(17);
+var _sound = __webpack_require__(25);
 
 var _sound2 = _interopRequireDefault(_sound);
 
@@ -10759,7 +11883,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Sounds = (_dec = RF.decorateComponent({
     name: 'app-sounds',
-    template: __webpack_require__(143)
+    template: __webpack_require__(173)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Sounds, _BaseComponent);
 
@@ -10792,7 +11916,7 @@ var Sounds = (_dec = RF.decorateComponent({
 exports.default = Sounds;
 
 /***/ }),
-/* 67 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10808,11 +11932,11 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _spriteSheet = __webpack_require__(8);
+var _spriteSheet = __webpack_require__(14);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-__webpack_require__(101);
+__webpack_require__(127);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10824,7 +11948,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SpriteSheets = (_dec = RF.decorateComponent({
     name: 'app-sprite-sheets',
-    template: __webpack_require__(144)
+    template: __webpack_require__(174)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SpriteSheets, _BaseComponent);
 
@@ -10864,7 +11988,7 @@ var SpriteSheets = (_dec = RF.decorateComponent({
 exports.default = SpriteSheets;
 
 /***/ }),
-/* 68 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10890,7 +12014,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var userInterface = (_dec = RF.decorateComponent({
     name: 'app-user-interface',
-    template: __webpack_require__(145)
+    template: __webpack_require__(175)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(userInterface, _BaseComponent);
 
@@ -10905,7 +12029,7 @@ var userInterface = (_dec = RF.decorateComponent({
 exports.default = userInterface;
 
 /***/ }),
-/* 69 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10931,7 +12055,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameObjectRightPanel = (_dec = RF.decorateComponent({
     name: 'app-game-object-right-panel',
-    template: __webpack_require__(146)
+    template: __webpack_require__(176)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameObjectRightPanel, _BaseComponent);
 
@@ -10957,7 +12081,7 @@ var GameObjectRightPanel = (_dec = RF.decorateComponent({
 exports.default = GameObjectRightPanel;
 
 /***/ }),
-/* 70 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10973,9 +12097,9 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(111);
+__webpack_require__(137);
 
-var _tileMap = __webpack_require__(18);
+var _tileMap = __webpack_require__(26);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -10991,7 +12115,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneRightPanel = (_dec = RF.decorateComponent({
     name: 'app-scene-right-panel',
-    template: __webpack_require__(147)
+    template: __webpack_require__(177)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneRightPanel, _BaseComponent);
 
@@ -11112,7 +12236,7 @@ var SceneRightPanel = (_dec = RF.decorateComponent({
 exports.default = SceneRightPanel;
 
 /***/ }),
-/* 71 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11159,7 +12283,7 @@ var PopupBlocked = (_dec = RF.decorateComponent({
 exports.default = PopupBlocked;
 
 /***/ }),
-/* 72 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11190,7 +12314,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var w = void 0;
 var TopPanel = (_dec = RF.decorateComponent({
     name: 'app-top-panel',
-    template: __webpack_require__(148)
+    template: __webpack_require__(178)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(TopPanel, _BaseComponent);
 
@@ -11269,7 +12393,7 @@ var TopPanel = (_dec = RF.decorateComponent({
 exports.default = TopPanel;
 
 /***/ }),
-/* 73 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11284,7 +12408,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _project = __webpack_require__(7);
+var _project = __webpack_require__(11);
 
 var _project2 = _interopRequireDefault(_project);
 
@@ -11300,7 +12424,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ProjectDialog = (_dec = RF.decorateComponent({
     name: 'app-project-dialog',
-    template: __webpack_require__(149)
+    template: __webpack_require__(179)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ProjectDialog, _BaseComponent);
 
@@ -11373,7 +12497,7 @@ var ProjectDialog = (_dec = RF.decorateComponent({
 exports.default = ProjectDialog;
 
 /***/ }),
-/* 74 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11389,9 +12513,9 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(112);
+__webpack_require__(138);
 
-var _project = __webpack_require__(7);
+var _project = __webpack_require__(11);
 
 var _project2 = _interopRequireDefault(_project);
 
@@ -11407,7 +12531,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Explorer = (_dec = RF.decorateComponent({
     name: 'explorer',
-    template: __webpack_require__(150)
+    template: __webpack_require__(180)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Explorer, _BaseComponent);
 
@@ -11501,7 +12625,7 @@ var Explorer = (_dec = RF.decorateComponent({
 exports.default = Explorer;
 
 /***/ }),
-/* 75 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11530,7 +12654,7 @@ var requestToApi = function requestToApi(params, callBack) {
 exports.default = { requestToApi: requestToApi };
 
 /***/ }),
-/* 76 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11546,8 +12670,8 @@ window.confirmEx = function (message, callback) {
 };
 
 /***/ }),
-/* 77 */,
-/* 78 */
+/* 91 */,
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11556,15 +12680,15 @@ window.confirmEx = function (message, callback) {
 exports.__esModule = true;
 exports.Control2Dir = exports.Control4Dir = exports.Draggable = undefined;
 
-var _draggable = __webpack_require__(81);
+var _draggable = __webpack_require__(95);
 
 var _draggable2 = _interopRequireDefault(_draggable);
 
-var _control4Dir = __webpack_require__(80);
+var _control4Dir = __webpack_require__(94);
 
 var _control4Dir2 = _interopRequireDefault(_control4Dir);
 
-var _control2Dir = __webpack_require__(79);
+var _control2Dir = __webpack_require__(93);
 
 var _control2Dir2 = _interopRequireDefault(_control2Dir);
 
@@ -11575,7 +12699,7 @@ exports.Control4Dir = _control4Dir2.default;
 exports.Control2Dir = _control2Dir2.default;
 
 /***/ }),
-/* 79 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11584,7 +12708,7 @@ exports.Control2Dir = _control2Dir2.default;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _move2Dir = __webpack_require__(82);
+var _move2Dir = __webpack_require__(96);
 
 var _move2Dir2 = _interopRequireDefault(_move2Dir);
 
@@ -11635,7 +12759,7 @@ var Control2Dir = function (_Move2Dir) {
 exports.default = Control2Dir;
 
 /***/ }),
-/* 80 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11644,7 +12768,7 @@ exports.default = Control2Dir;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _move4Dir = __webpack_require__(83);
+var _move4Dir = __webpack_require__(97);
 
 var _move4Dir2 = _interopRequireDefault(_move4Dir);
 
@@ -11707,7 +12831,7 @@ var Control4Dir = function (_Move4Dir) {
 exports.default = Control4Dir;
 
 /***/ }),
-/* 81 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11716,7 +12840,7 @@ exports.default = Control4Dir;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _baseAbstractBehaviour = __webpack_require__(23);
+var _baseAbstractBehaviour = __webpack_require__(33);
 
 var _baseAbstractBehaviour2 = _interopRequireDefault(_baseAbstractBehaviour);
 
@@ -11805,7 +12929,7 @@ var DraggableBehaviour = function (_BaseAbstractBehaviou) {
 exports.default = DraggableBehaviour;
 
 /***/ }),
-/* 82 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11816,7 +12940,7 @@ exports.default = undefined;
 
 var _class, _temp;
 
-var _moveable = __webpack_require__(24);
+var _moveable = __webpack_require__(34);
 
 var _moveable2 = _interopRequireDefault(_moveable);
 
@@ -11851,7 +12975,7 @@ var Move2Dir = (_temp = _class = function (_Moveable) {
 exports.default = Move2Dir;
 
 /***/ }),
-/* 83 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11862,7 +12986,7 @@ exports.default = undefined;
 
 var _class, _temp;
 
-var _moveable = __webpack_require__(24);
+var _moveable = __webpack_require__(34);
 
 var _moveable2 = _interopRequireDefault(_moveable);
 
@@ -11898,31 +13022,58 @@ var Move4Dir = (_temp = _class = function (_Moveable) {
 exports.default = Move4Dir;
 
 /***/ }),
-/* 84 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 exports.__esModule = true;
+exports.default = undefined;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var _tween = __webpack_require__(39);
 
-/*global DEBUG:true*/
+var _tween2 = _interopRequireDefault(_tween);
+
+var _mat = __webpack_require__(12);
+
+var _mat2 = _interopRequireDefault(_mat);
+
+var _mathEx = __webpack_require__(2);
+
+var _mathEx2 = _interopRequireDefault(_mathEx);
+
+var _rect = __webpack_require__(35);
+
+var _rect2 = _interopRequireDefault(_rect);
+
+var _point2d = __webpack_require__(17);
+
+var _point2d2 = _interopRequireDefault(_point2d);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
+
+
 var Camera = function () {
     function Camera(game) {
         _classCallCheck(this, Camera);
 
         this.objFollowTo = null;
         this.scene = null;
-        this.pos = { x: 0, y: 0 };
-        this.scale = { x: 1, y: 1 };
+        this.pos = new _point2d2.default(0, 0);
+        this.scale = new _point2d2.default(1, 1);
+        this.lastToleranceTime = 0;
+        this._rect = new _rect2.default();
+        this._rectScaled = new _rect2.default();
+        this.TOLERANCE_TIME = 2000;
 
         this.game = game;
     }
 
     Camera.prototype.followTo = function followTo(gameObject) {
-        if (true && !gameObject) throw "Camera:followTo(gameObject) - gameObject not provided";
+        if (true && !gameObject) throw 'Camera:followTo(gameObject) - gameObject not provided';
         this.objFollowTo = gameObject;
         this.scene = this.game._currentScene;
         if (this.scene.tileMap.spriteSheet) {
@@ -11932,32 +13083,79 @@ var Camera = function () {
             this.sceneWidth = this.game.getCurrScene().width || this.game.width;
             this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
+        this.cameraTween = new _tween2.default({
+            target: this,
+            ease: 'easeInQuad',
+            to: { x: this.pos.x, y: this.pos.y },
+            time: this.TOLERANCE_TIME
+        });
     };
 
-    Camera.prototype.update = function update() {
-        if (!this.objFollowTo) return;
-        var pos = this.pos;
+    Camera.prototype.update = function update(currTime, delta) {
+        var cameraRect = this.getRectScaled(); // todo cache this value
+        var gameObject = this.objFollowTo;
+        if (!gameObject) return;
         var tileWidth = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0; // todo ?
         var tileHeight = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
         var w = this.game.width;
         var h = this.game.height;
         var wDiv2 = w / 2;
         var hDiv2 = h / 2;
-        pos.x = this.objFollowTo.pos.x - wDiv2;
-        pos.y = this.objFollowTo.pos.y - hDiv2;
-        if (pos.x < 0) pos.x = 0;
-        if (pos.y < 0) pos.y = 0;
-        if (pos.x > this.sceneWidth - w + tileWidth) pos.x = this.sceneWidth - w + tileWidth;
-        if (pos.y > this.sceneHeight - h + tileHeight) pos.y = this.sceneHeight - h + tileHeight;
+        var x = gameObject.pos.x - wDiv2;
+        var y = gameObject.pos.y - hDiv2;
+        if (gameObject._lastDirection === 'Right') x += cameraRect.width / 2; // todo set camera follow mode
+        if (gameObject._lastDirection === 'Left') x -= cameraRect.height / 2;
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (x > this.sceneWidth - w + tileWidth) x = this.sceneWidth - w + tileWidth;
+        if (y > this.sceneHeight - h + tileHeight) y = this.sceneHeight - h + tileHeight;
+        var scaleVal = Math.abs(gameObject.rigidBody.vel.x) > 0 ? 0.95 : 1;
+        if (this.TOLERANCE_TIME === 0) {
+            this.pos.x = x;
+            this.pos.y = y;
+        } else if (currTime - this.lastToleranceTime > this.TOLERANCE_TIME) {
+            this.lastToleranceTime = currTime;
+            this.cameraTween.reuse({
+                to: {
+                    'pos.x': x, 'pos.y': y,
+                    'scale.x': scaleVal, 'scale.y': scaleVal
+                }
+            });
+        }
+
+        this.cameraTween.update(currTime);
+        this._updateRect();
+        this.render();
+    };
+
+    Camera.prototype._updateRect = function _updateRect() {
+        var point00 = this.screenToWorld(0, 0);
+        var pointWH = this.screenToWorld(this.game.width, this.game.height);
+        this._rectScaled.set(point00.x, point00.y, pointWH.x - point00.x, pointWH.y - point00.y);
+    };
+
+    Camera.prototype.render = function render() {
+        this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
+        this.game.renderer.scale(this.scale.x, this.scale.y);
+        // camera rotation will be here if needs
+        this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
+        this.game.renderer.translate(-this.pos.x, -this.pos.y);
+    };
+
+    Camera.prototype.screenToWorld = function screenToWorld(screenX, screenY) {
+        var mScale = _mat2.default.makeScale(this.scale.x, this.scale.y, 1);
+        var point2d = _mathEx2.default.unProject(screenX, screenY, this.game.width, this.game.height, mScale);
+        point2d.add(this.pos);
+        return point2d;
     };
 
     Camera.prototype.getRect = function getRect() {
-        return {
-            x: this.pos.x,
-            y: this.pos.y,
-            width: this.game.width,
-            height: this.game.height
-        };
+        this._rect.set(this.pos.x, this.pos.y, this.game.width, this.game.height);
+        return this._rect;
+    };
+
+    Camera.prototype.getRectScaled = function getRectScaled() {
+        return this._rectScaled;
     };
 
     return Camera;
@@ -11966,31 +13164,13 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 85 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 exports.__esModule = true;
-var SCALE_STRATEGY = exports.SCALE_STRATEGY = {
-    NO_SCALE: 0,
-    CSS_PRESERVE_ASPECT_RATIO: 1,
-    HARDWARE_PRESERVE_ASPECT_RATIO: 2,
-    CSS_STRETCH: 3,
-    HARDWARE_STRETCH: 4
-};
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-var _class, _temp;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -12004,17 +13184,16 @@ if (true) {
     });
 }
 
-var GamePad = (_temp = _class = function () {
+var GamePad = function () {
     function GamePad(game) {
         _classCallCheck(this, GamePad);
 
         this.game = game;
-        //this.gamepads = gamepads;
     }
 
     GamePad.prototype.update = function update() {
 
-        this.gamepads = navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || navigator.getGamepads && navigator.getGamepads() || [];
+        this.gamepads = navigator.getGamepads && navigator.getGamepads() || navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || [];
 
         for (var i = 0, max = this.gamepads.length; i < max; i++) {
             var gp = this.gamepads[i];
@@ -12029,8 +13208,8 @@ var GamePad = (_temp = _class = function () {
                     this.game.keyboard.release(j);
                 }
             }
-            if (gp.axes[0] === 0) return; // to avoid oscillations
-            if (gp.axes[1] === 0) return;
+            if (gp.axes[0] === 0) continue; // to avoid oscillations
+            if (gp.axes[1] === 0) continue;
 
             var axis0 = ~~gp.axes[0];
             var axis1 = ~~gp.axes[1];
@@ -12060,11 +13239,12 @@ var GamePad = (_temp = _class = function () {
     };
 
     return GamePad;
-}(), _class.AXIS_TOLERANCE = 0.9, _temp);
+}();
+
 exports.default = GamePad;
 
 /***/ }),
-/* 87 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12085,6 +13265,8 @@ var Keyboard = function () {
     function Keyboard(game) {
         _classCallCheck(this, Keyboard);
 
+        this.keyDownListener = null;
+        this.keyUpListener = null;
         this.KEY = {
             SPACE: 32,
             A: 65,
@@ -12145,7 +13327,6 @@ var Keyboard = function () {
 
     Keyboard.prototype.release = function release(key) {
         if (this.isReleased(key)) return;
-        //console.log('released',key);
         this.buffer[key] = KEY_JUST_RELEASED;
     };
 
@@ -12182,14 +13363,23 @@ var Keyboard = function () {
     Keyboard.prototype.listenTo = function listenTo() {
         var _this2 = this;
 
-        window.addEventListener('keydown', function (e) {
+        this.keyDownListener = function (e) {
             var code = e.keyCode;
             _this2.press(code);
-        });
-        window.addEventListener('keyup', function (e) {
+        };
+
+        this.keyUpListener = function (e) {
             var code = e.keyCode;
             _this2.release(code);
-        });
+        };
+
+        window.addEventListener('keydown', this.keyDownListener);
+        window.addEventListener('keyup', this.keyUpListener);
+    };
+
+    Keyboard.prototype.destroy = function destroy() {
+        window.removeEventListener('keydown', this.keyDownListener);
+        window.removeEventListener('keyup', this.keyUpListener);
     };
 
     return Keyboard;
@@ -12198,7 +13388,7 @@ var Keyboard = function () {
 exports.default = Keyboard;
 
 /***/ }),
-/* 88 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12221,56 +13411,29 @@ var Mouse = function () {
         _classCallCheck(this, Mouse);
 
         this.objectsCaptured = {};
+        this.container = null;
 
         this.game = game;
+        this.currPoint = null;
     }
 
-    Mouse.prototype.listenTo = function listenTo(container) {
-        var _this = this;
+    //MouseEvent|TouchEvent|PointerEvent
 
-        // mouseDown
-        container.ontouchstart = function (e) {
-            var l = e.touches.length;
-            while (l--) {
-                _this.resolveClick(e.touches[l]);
-            }
-        };
-        container.onmousedown = function (e) {
-            e.button === 0 && _this.resolveClick(e);
-        };
-        // mouseUp
-        container.ontouchend = container.ontouchcancel = function (e) {
-            var l = e.changedTouches.length;
-            while (l--) {
-                _this.resolveMouseUp(e.changedTouches[l]);
-            }
-        };
-        container.onmouseup = function (e) {
-            _this.resolveMouseUp(e);
-        };
-        // mouseMove
-        container.ontouchmove = function (e) {
-            var l = e.touches.length;
-            while (l--) {
-                _this.resolveMouseMove(e.touches[l], true);
-            }
-        };
-        container.onmousemove = function (e) {
-            var isMouseDown = e.buttons === 1;
-            _this.resolveMouseMove(e, isMouseDown);
-        };
-        // other
-        container.ondblclick = function (e) {
-            // todo now only on pc
-            _this.resolveDoubleClick(e);
-        };
-    };
 
     Mouse.prototype.resolveScreenPoint = function resolveScreenPoint(e) {
         // todo this is world point
+        var game = this.game;
+        var camera = this.game.camera;
+        var rectScaled = camera.getRectScaled();
+
+        var screenX = (e.clientX - game.pos.x) / game.scale.x;
+        var screenY = (e.clientY - game.pos.y) / game.scale.y;
+
+        var p = game.camera.screenToWorld(screenX, screenY);
+
         return {
-            x: ~~((e.clientX - this.game.pos.x) / this.game.scale.x / this.game.camera.scale.x) + this.game.camera.pos.x,
-            y: ~~((e.clientY - this.game.pos.y) / this.game.scale.y / this.game.camera.scale.y) + this.game.camera.pos.y,
+            x: p.x, // separate screen and world point
+            y: p.y,
             id: e.identifier || 0
         };
     };
@@ -12311,13 +13474,11 @@ var Mouse = function () {
     };
 
     Mouse.prototype.resolveClick = function resolveClick(e) {
-        if (window.canceled) return;
         this.triggerEvent(e, 'click');
         this.triggerEvent(e, 'mouseDown');
     };
 
     Mouse.prototype.resolveMouseMove = function resolveMouseMove(e, isMouseDown) {
-        if (true && window.canceled) return;
         var point = this.triggerEvent(e, 'mouseMove', isMouseDown);
         if (!point) return;
         var lastMouseDownObject = this.objectsCaptured[point.id];
@@ -12332,7 +13493,6 @@ var Mouse = function () {
     };
 
     Mouse.prototype.resolveMouseUp = function resolveMouseUp(e) {
-        if (true && window.canceled) return;
         var point = this.triggerEvent(e, 'mouseUp');
         if (!point) return;
         var lastMouseDownObject = this.objectsCaptured[point.id];
@@ -12342,10 +13502,59 @@ var Mouse = function () {
     };
 
     Mouse.prototype.resolveDoubleClick = function resolveDoubleClick(e) {
-        if (true && window.canceled) return;
         var point = this.triggerEvent(e, 'doubleClick');
         if (!point) return;
         delete this.objectsCaptured[point.id];
+    };
+
+    Mouse.prototype.listenTo = function listenTo(container) {
+        var _this = this;
+
+        this.container = container;
+        // mouseDown
+        container.ontouchstart = function (e) {
+            var l = e.touches.length;
+            while (l--) {
+                _this.resolveClick(e.touches[l]);
+            }
+        };
+        container.onmousedown = function (e) {
+            e.button === 0 && _this.resolveClick(e);
+        };
+        // mouseUp
+        container.ontouchend = container.ontouchcancel = function (e) {
+            var l = e.changedTouches.length;
+            while (l--) {
+                _this.resolveMouseUp(e.changedTouches[l]);
+            }
+        };
+        container.onmouseup = function (e) {
+            _this.resolveMouseUp(e);
+        };
+        //
+        container.ontouchmove = function (e) {
+            var l = e.touches.length;
+            while (l--) {
+                _this.resolveMouseMove(e.touches[l], true);
+            }
+        };
+        container.onmousemove = function (e) {
+            var isMouseDown = e.buttons === 1;
+            _this.resolveMouseMove(e, isMouseDown);
+        };
+        // other
+        container.ondblclick = function (e) {
+            // todo now only on pc
+            _this.resolveDoubleClick(e);
+        };
+    };
+
+    Mouse.prototype.destroy = function destroy() {
+        var _this2 = this;
+
+        ['mouseMove', 'ontouchstart', 'onmousedown', 'ontouchend', 'onmouseup', 'ontouchmove', 'onmousemove', 'ondblclick'].forEach(function (evtName) {
+            _this2.container[evtName] = null;
+        });
     };
 
     return Mouse;
@@ -12354,7 +13563,7 @@ var Mouse = function () {
 exports.default = Mouse;
 
 /***/ }),
-/* 89 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12362,47 +13571,19 @@ exports.default = Mouse;
 
 exports.__esModule = true;
 
+var _class, _temp;
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var EventEmitter = function () {
-    function EventEmitter() {
-        _classCallCheck(this, EventEmitter);
+var isCocoonJS = !!navigator.isCocoonJS;
 
-        this.events = {};
-    }
-
-    EventEmitter.prototype._on = function _on(name, callBack) {
-        this.events[name] = this.events[name] || [];
-        this.events[name].push(callBack);
-    };
-
-    EventEmitter.prototype.on = function on(eventNameOrList, callBack) {
-        if (typeof eventNameOrList === 'string') {
-            this._on(eventNameOrList, callBack);
-        } else if (eventNameOrList.splice) {
-            eventNameOrList.forEach(function (eventName) {
-                this._on(eventName, callBack);
-            });
-        }
-    };
-
-    EventEmitter.prototype.trigger = function trigger(eventName, data) {
-        var es = this.events[eventName];
-        if (!es) return;
-        var l = es.length;
-        while (l--) {
-            es[l](data);
-        }
-    };
-
-    return EventEmitter;
-}();
-
-exports.default = EventEmitter;
-;
+var Device = (_temp = _class = function Device(game) {
+    _classCallCheck(this, Device);
+}, _class.isCocoonJS = isCocoonJS, _class.scale = isCocoonJS ? window.devicePixelRatio || 1 : 1, _class.isTouch = typeof window !== 'undefined' && 'ontouchstart' in window, _temp);
+exports.default = Device;
 
 /***/ }),
-/* 90 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12418,39 +13599,39 @@ var _dec, _class; /*global requestAnimationFrame:true*/
 /*global PROJECT_NAME:true*/
 
 
-__webpack_require__(26);
+__webpack_require__(37);
 
-var _rendererFactory = __webpack_require__(96);
+var _rendererFactory = __webpack_require__(111);
 
 var _rendererFactory2 = _interopRequireDefault(_rendererFactory);
 
-var _repository = __webpack_require__(97);
+var _repository = __webpack_require__(123);
 
 var _repository2 = _interopRequireDefault(_repository);
 
-var _mouse = __webpack_require__(88);
+var _mouse = __webpack_require__(101);
 
 var _mouse2 = _interopRequireDefault(_mouse);
 
-var _keyboard = __webpack_require__(87);
+var _keyboard = __webpack_require__(100);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _gamePad = __webpack_require__(86);
+var _gamePad = __webpack_require__(99);
 
 var _gamePad2 = _interopRequireDefault(_gamePad);
 
-var _collider = __webpack_require__(93);
+var _collider = __webpack_require__(109);
 
 var _collider2 = _interopRequireDefault(_collider);
 
-var _decorators = __webpack_require__(25);
+var _decorators = __webpack_require__(36);
 
-var _commonObject = __webpack_require__(28);
+var _commonObject = __webpack_require__(41);
 
 var _commonObject2 = _interopRequireDefault(_commonObject);
 
-var _camera = __webpack_require__(84);
+var _camera = __webpack_require__(98);
 
 var _camera2 = _interopRequireDefault(_camera);
 
@@ -12466,7 +13647,8 @@ var Game = (_dec = (0, _decorators.Transient)({
     repository: true,
     camera: true,
     keyboard: true,
-    gamePad: true
+    gamePad: true,
+    mouse: true
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
 
@@ -12479,6 +13661,7 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this._currTime = null;
         _this._currentScene = null;
         _this._running = false;
+        _this.destroyed = false;
         _this.renderer = null;
         _this.scale = { x: 1, y: 1 };
         _this.pos = { x: 0, y: 0 };
@@ -12550,8 +13733,7 @@ var Game = (_dec = (0, _decorators.Transient)({
     };
 
     Game.update = function update(game) {
-        console.warn = function () {};
-        if (true && window.canceled) return;
+        if (true && game.destroyed) return;
         requestAnimationFrame(function () {
             Game.update(game);
         });
@@ -12566,11 +13748,16 @@ var Game = (_dec = (0, _decorators.Transient)({
         }
         if (game._deltaTime > 20) game._deltaTime = 20;
         game._currentScene && game._currentScene.update(game._currTime, game._deltaTime);
-        if (true) {
-            if (game.renderer.debugTextField) game.renderer.debugTextField.render();
-        }
         game.keyboard.update();
         game.gamePad.update();
+    };
+
+    Game.prototype.destroy = function destroy() {
+        this.destroyed = true;
+        this.keyboard.destroy();
+        this.mouse.destroy();
+        this.renderer.destroy();
+        this.renderer.cancelFullScreen();
     };
 
     return Game;
@@ -12578,744 +13765,7 @@ var Game = (_dec = (0, _decorators.Transient)({
 exports.default = Game;
 
 /***/ }),
-/* 91 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Queue = function () {
-    function Queue() {
-        _classCallCheck(this, Queue);
-
-        this.tasksResolved = 0;
-        this.tasks = [];
-        this.tasksProgressById = {};
-        this.onResolved = null;
-        this.onProgress = null;
-    }
-
-    Queue.prototype.size = function size() {
-        return this.tasks.length;
-    };
-
-    Queue.prototype.calcProgress = function calcProgress() {
-        var sum = 0;
-        Object.keys(this.tasksProgressById).forEach(function (taskId) {
-            sum += this.tasksProgressById[taskId] || 0;
-        });
-        return sum / this.tasks.length;
-    };
-
-    Queue.prototype.addTask = function addTask(taskFn, taskId) {
-        this.tasks.push(taskFn);
-        this.tasksProgressById[taskId] = 0;
-    };
-
-    Queue.prototype.progressTask = function progressTask(taskId, progress) {
-        this.tasksProgressById[taskId] = progress;
-        this.onProgress && this.onProgress(this.calcProgress());
-    };
-
-    Queue.prototype.resolveTask = function resolveTask(taskId) {
-        this.tasksResolved++;
-        this.tasksProgressById[taskId] = 1;
-        if (this.tasks.length == this.tasksResolved) {
-            this.onProgress && this.onProgress(1);
-            if (this.onResolved) this.onResolved();
-        } else {
-            this.onProgress && this.onProgress(this.calcProgress());
-        }
-    };
-
-    Queue.prototype.start = function start() {
-        if (this.size() == 0) this.onResolved();
-        this.tasks.forEach(function (t) {
-            t && t();
-        });
-    };
-
-    return Queue;
-}();
-
-exports.default = Queue;
-;
-
-/***/ }),
-/* 92 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _vec = __webpack_require__(99);
-
-var _vec2 = _interopRequireDefault(_vec);
-
-var _mathEx = __webpack_require__(2);
-
-var _mathEx2 = _interopRequireDefault(_mathEx);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-// http://madebyevan.com/gamedevclass/minimal-demo/
-
-var ArcadeRigidBody = function () {
-    function ArcadeRigidBody(gameObject) {
-        _classCallCheck(this, ArcadeRigidBody);
-
-        this.vel = new _vec2.default();
-
-        this.game = gameObject.game;
-        this.gameObject = gameObject;
-    }
-
-    ArcadeRigidBody.prototype.update = function update(time, delta) {
-        if (!this.gameObject.rigidBody.static) {
-            var deltaX = this.vel.x * delta / 1000;
-            var deltaY = this.vel.y * delta / 1000;
-            var expectedY = this.gameObject.pos.y + deltaY;
-            this.game.collider.moveBy(this.gameObject, deltaX, deltaY);
-            this.gameObject.rigidBody.onFloor = expectedY > this.gameObject.pos.y;
-            if (expectedY !== this.gameObject.pos.y) this.vel.y = 0;
-            this.vel.y += this.game.gravityConstant * delta / 1000;
-        }
-    };
-
-    return ArcadeRigidBody;
-}();
-
-exports.default = ArcadeRigidBody;
-
-/***/ }),
-/* 93 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _mathEx = __webpack_require__(2);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Collider = function () {
-    function Collider(game) {
-        _classCallCheck(this, Collider);
-
-        this.game = game;
-    }
-
-    Collider.prototype.moveBy = function moveBy(player, dX, dY) {
-
-        var rigidObjects = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
-
-        var playerRect = player.getRect();
-        playerRect.x += dX;
-        playerRect.y += dY;
-        var collidedByX = false,
-            collidedByY = false;
-
-        for (var i = 0, len = rigidObjects.length; i < len; i++) {
-            var obstacle = rigidObjects[i];
-            var obstacleRect = obstacle.getRect();
-            if (player !== rigidObjects[i] && (0, _mathEx.overlapTest)(playerRect, obstacleRect)) {
-
-                var pathToTop = playerRect.bottom - obstacleRect.y;
-                var pathToBottom = obstacleRect.bottom - playerRect.y;
-                var pathToLeft = playerRect.x + playerRect.width - obstacleRect.x;
-                var pathToRight = obstacleRect.right - playerRect.x;
-
-                var minPath = Math.min(pathToTop, pathToBottom, pathToLeft, pathToRight);
-
-                if (pathToTop === minPath) {
-                    // closest path to move player to resolve collision is path to top
-                    //console.log('top');
-                    player.pos.y = obstacleRect.y - playerRect.height;
-                    collidedByY = true;
-                } else if (pathToBottom === minPath) {
-                    // closest path to move player to resolve collision is path to top
-                    //console.log('bottom');
-                    player.pos.y = obstacleRect.bottom;
-                    collidedByY = true;
-                } else if (pathToLeft === minPath) {
-                    // closest path to move player to resolve collision is path to top
-                    //console.log('left');
-                    player.pos.x = obstacleRect.x - playerRect.width;
-                    collidedByX = true;
-                } else if (pathToRight === minPath) {
-                    // closest path to move player to resolve collision is path to top
-                    //console.log('right');
-                    player.pos.x = obstacleRect.x + obstacleRect.width;
-                    collidedByX = true;
-                }
-            }
-        }
-        if (!collidedByX) player.pos.x += dX;
-        if (!collidedByY) player.pos.y += dY;
-    };
-
-    Collider.prototype.moveTo = function moveTo(player, newX, newY) {
-        // todo not works!
-        var pRect = player.getRect();
-        var collided = false;
-        if (player.rigidBody) {
-            this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(pRect)).some(function (g) {
-                if ((0, _mathEx.overlapTest)(pRect, g.getRect())) {
-                    collided = true;
-                    return true;
-                }
-            });
-        }
-        if (collided) return;
-        player.pos.x = newX;
-        player.pos.y = newY;
-    };
-
-    return Collider;
-}();
-
-exports.default = Collider;
-
-/***/ }),
-/* 94 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _textField = __webpack_require__(19);
-
-var _textField2 = _interopRequireDefault(_textField);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
-
-var AbstractRenderer = function () {
-    function AbstractRenderer(game) {
-        _classCallCheck(this, AbstractRenderer);
-
-        this.renderableCache = {};
-        this.container = null;
-        this.debugTextField = null;
-
-        this.game = game;
-    }
-
-    AbstractRenderer.prototype.onResize = function onResize() {
-        var canvasRatio = this.container.height / this.container.width;
-        var windowRatio = window.innerHeight / window.innerWidth;
-        var width = void 0;
-        var height = void 0;
-
-        if (windowRatio < canvasRatio) {
-            height = window.innerHeight;
-            width = height / canvasRatio;
-        } else {
-            width = window.innerWidth;
-            height = width * canvasRatio;
-        }
-        this.game.scale.x = width / this.game.width;
-        this.game.scale.y = height / this.game.height;
-        this.game.pos.x = (window.innerWidth - width) / 2;
-        this.game.pos.y = (window.innerHeight - height) / 2;
-
-        this.container.style.width = width + 'px';
-        this.container.style.height = height + 'px';
-    };
-
-    AbstractRenderer.prototype.beginFrameBuffer = function beginFrameBuffer() {};
-
-    AbstractRenderer.prototype.flipFrameBuffer = function flipFrameBuffer() {
-        if (true) {
-            if (this.debugTextField) this.debugTextField._render();
-        }
-    };
-
-    AbstractRenderer.prototype.registerResize = function registerResize() {
-        var _this = this;
-
-        this.onResize();
-        window.addEventListener('resize', function () {
-            _this.onResize();
-        });
-    };
-
-    AbstractRenderer.prototype.getError = function getError() {
-        return 0;
-    };
-
-    AbstractRenderer.prototype.log = function log(txt) {
-        if (false) return;
-        var textField = this.debugTextField;
-        if (txt === undefined) txt = 'undefined';
-        if (txt === null) txt = 'null';
-        if (txt.toJSON) {
-            txt = JSON.stringify(txt.toJSON(), null, 4);
-        } else {
-            try {
-                txt = JSON.stringify(txt);
-            } catch (e) {}
-        }
-        txt = txt.toString();
-        if (!textField) {
-            textField = new _textField2.default(this.game);
-            textField.name = 'defaultName';
-            textField.revalidate();
-            this.debugTextField = textField;
-        }
-        textField.pos.x = 10;
-        textField.pos.y = 10;
-        textField.setText(txt);
-    };
-
-    AbstractRenderer.prototype.loadTextureInfo = function loadTextureInfo(textureId, info) {};
-
-    AbstractRenderer.prototype.getTextureInfo = function getTextureInfo(textureId) {};
-
-    return AbstractRenderer;
-}();
-
-exports.default = AbstractRenderer;
-
-/***/ }),
-/* 95 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _abstractRenderer = __webpack_require__(94);
-
-var _abstractRenderer2 = _interopRequireDefault(_abstractRenderer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*global Image:true*/
-
-var CanvasRenderer = function (_AbstractRenderer) {
-    _inherits(CanvasRenderer, _AbstractRenderer);
-
-    function CanvasRenderer(game) {
-        _classCallCheck(this, CanvasRenderer);
-
-        var _this = _possibleConstructorReturn(this, _AbstractRenderer.call(this, game));
-
-        var container = document.createElement('canvas');
-        _this.ctx = container.getContext('2d');
-        document.body.appendChild(container);
-        container.setAttribute('width', game.width);
-        container.setAttribute('height', game.height);
-        _this.container = container;
-        _this.registerResize();
-        return _this;
-    }
-
-    CanvasRenderer.prototype.draw = function draw(renderable) {
-        var ctx = this.ctx;
-        ctx.save();
-        ctx.translate(renderable.pos.x + renderable.width / 2, renderable.pos.y + renderable.height / 2);
-        ctx.scale(renderable.scale.x, renderable.scale.y);
-        ctx.rotate(renderable.angle);
-        //ctx.rotateY(a);
-        ctx.translate(-renderable.width / 2, -renderable.height / 2);
-        ctx.globalAlpha = renderable.alpha;
-        ctx.globalCompositeOperation = renderable.blendMode || 'source-over';
-        ctx.drawImage(this.renderableCache[renderable.spriteSheet.resourcePath], renderable._sprPosX, renderable._sprPosY, renderable.width, renderable.height, 0, 0, renderable.width, renderable.height);
-        ctx.restore();
-    };
-
-    CanvasRenderer.prototype.drawImage = function drawImage(imgPath, srcPosX, srcPosY, srcWidth, srcHeight, destPosX, destPosY) {
-        this.ctx.drawImage(this.renderableCache[imgPath], srcPosX, srcPosY, srcWidth, srcHeight, destPosX, destPosY, srcWidth, srcHeight);
-    };
-
-    CanvasRenderer.prototype.fillRect = function fillRect(x, y, w, h, color) {
-        this.ctx.fillStyle = color;
-        this.ctx.fillRect(x, y, w, h);
-    };
-
-    CanvasRenderer.prototype.drawRect = function drawRect(x, y, w, h, color) {
-        this.ctx.fillStyle = color;
-        this.ctx.strokeRect(x, y, w, h);
-    };
-
-    CanvasRenderer.prototype.drawLine = function drawLine(x1, y1, x2, y2, color) {
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-        this.ctx.moveTo(x1, y1);
-        this.ctx.lineTo(x2, y2);
-        this.ctx.stroke();
-    };
-
-    CanvasRenderer.prototype.setAlpha = function setAlpha(a) {
-        this.ctx.globalAlpha = a;
-    };
-
-    CanvasRenderer.prototype.lockRect = function lockRect(rect) {
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.rect(rect.x, rect.y, rect.width, rect.height);
-        this.ctx.clip();
-    };
-
-    CanvasRenderer.prototype.unlockRect = function unlockRect() {
-        this.ctx.restore();
-    };
-
-    CanvasRenderer.prototype.clear = function clear() {
-        this.ctx.clearRect(0, 0, this.game.width, this.game.height);
-    };
-
-    CanvasRenderer.prototype.clearColor = function clearColor(color) {
-        this.fillRect(0, 0, this.game.width, this.game.height, 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')');
-    };
-
-    CanvasRenderer.prototype.save = function save() {
-        this.ctx.save();
-    };
-
-    CanvasRenderer.prototype.scale = function scale(x, y) {
-        this.ctx.scale(x, y);
-    };
-
-    CanvasRenderer.prototype.rotateZ = function rotateZ(angleInRadians) {
-        this.ctx.rotateZ(angleInRadians);
-    };
-
-    CanvasRenderer.prototype.rotateY = function rotateY(angleInRadians) {
-        throw 'rotateY not supported by canvasRenderer';
-    };
-
-    CanvasRenderer.prototype.translate = function translate(x, y) {
-        this.ctx.translate(x, y);
-    };
-
-    CanvasRenderer.prototype.restore = function restore() {
-        this.ctx.restore();
-    };
-
-    CanvasRenderer.prototype.beginFrameBuffer = function beginFrameBuffer() {
-        this.save();
-    };
-
-    CanvasRenderer.prototype.flipFrameBuffer = function flipFrameBuffer() {
-        this.restore();
-    };
-
-    CanvasRenderer.prototype.loadTextureInfo = function loadTextureInfo(resourcePath, onLoad) {
-        var _this2 = this;
-
-        var img = new Image();
-        img.src = resourcePath;
-        img.onload = function () {
-            var c = document.createElement('canvas');
-            c.setAttribute('width', img.width);
-            c.setAttribute('height', img.height);
-            var ctx = c.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            _this2.renderableCache[resourcePath] = c;
-            onLoad();
-        };
-    };
-
-    return CanvasRenderer;
-}(_abstractRenderer2.default);
-
-exports.default = CanvasRenderer;
-
-/***/ }),
-/* 96 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _canvasRenderer = __webpack_require__(95);
-
-var _canvasRenderer2 = _interopRequireDefault(_canvasRenderer);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-//import HtmlRenderer from './dom/htmlRenderer'
-
-
-//import Renderer from './webGl/webGlRenderer'
-//import SvgRenderer from './dom/svgRenderer'
-
-var RendererFactory = function () {
-    function RendererFactory() {
-        _classCallCheck(this, RendererFactory);
-    }
-
-    RendererFactory.getRenderer = function getRenderer(game) {
-        if (!game) throw 'RendererFactory::getRenderer: game param not specified';
-        return new _canvasRenderer2.default(game);
-    };
-
-    return RendererFactory;
-}();
-
-exports.default = RendererFactory;
-
-/***/ }),
-/* 97 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _all = __webpack_require__(27);
-
-var models = _interopRequireWildcard(_all);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
-
-var Repository = function () {
-    function Repository(game) {
-        _classCallCheck(this, Repository);
-
-        this._game = game;
-        this.reset();
-    }
-
-    Repository.prototype.addDescription = function addDescription(desc, type) {
-        if (!this.descriptions[type]) this.descriptions[type] = [];
-        this.descriptions[type].push(desc);
-    };
-
-    Repository.prototype.setDescriptions = function setDescriptions(descs) {
-        var _this = this;
-
-        Object.keys(descs).forEach(function (type) {
-            descs[type].forEach(function (desc) {
-                _this.addDescription(desc, type);
-            });
-        });
-    };
-
-    Repository.prototype.getObject = function getObject(id, type) {
-        var forceNew = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-        if (true && !type) throw 'repository.getObject: type not specified';
-        if (true && id == null) {
-            console.trace("id is null");
-            throw '::getObject() id not specified for type ' + type;
-        }
-        var Clazz = models[type];
-
-        if (true && !Clazz) {
-            throw '::getObject() undeclared object type ' + type;
-        }
-        if (true && !this.descriptions[type]) throw 'not found description for type: ' + type;
-        var desc = this.descriptions[type].find(function (it) {
-            return it.id == id;
-        });
-        if (!desc) {
-            throw 'can not find object "' + type + '" with id ' + id;
-        }
-        if (forceNew || !this.cache[desc[id]]) this.cache[id] = new Clazz(this._game).fromJSON(desc);
-        return this.cache[id];
-    };
-
-    Repository.prototype.getFirst = function getFirst(type) {
-        var all = this.getArray(type);
-        if (!all.length) return null;
-        return all[0];
-    };
-
-    Repository.prototype.addObject = function addObject(obj) {
-        if (true && !obj.id) {
-            console.error(obj);
-            throw 'addObject: id is not provided';
-        }
-        if (!this.arrays[obj.type]) this.arrays[obj.type] = [];
-        this.arrays[obj.type].push(obj);
-        if (!this.descriptions[obj.type]) this.descriptions[obj.type] = [];
-        this.descriptions[obj.type].push(obj.toJSON());
-    };
-
-    Repository.prototype.updateObject = function updateObject(obj, opts) {
-        var json = obj.toJSON(opts);
-        var index = this.descriptions[obj.type].findIndex(function (it) {
-            return it.id == obj.id;
-        });
-        this.descriptions[obj.type][index] = json;
-        var objInRepo = this.getObject(obj.id, obj.type, true);
-        if (objInRepo) objInRepo.fromJSON(json);
-    };
-
-    Repository.prototype.removeObject = function removeObject(obj) {
-        if (true && !this.arrays[obj.type]) this.arrays[obj.type] = [];
-        var index = this.arrays[obj.type].findIndex(function (it) {
-            return it.id === obj.id;
-        });
-        this.arrays[obj.type].splice(index, 1);
-
-        if (!this.descriptions[obj.type]) this.descriptions[obj.type] = [];
-        index = this.descriptions[obj.type].findIndex(function (it) {
-            return it.id === obj.id;
-        });
-        this.descriptions[obj.type].splice(index, 1);
-
-        delete this.cache[obj.id];
-    };
-
-    Repository.prototype.getArray = function getArray(type) {
-        var _this2 = this;
-
-        if (true && !models[type]) throw 'getArray: unregistered type "' + type + '"';
-        if (this.arrays[type]) return this.arrays[type];
-        var res = [];
-        if (!this.descriptions[type]) this.descriptions[type] = [];
-        this.descriptions[type].forEach(function (desc) {
-            if (true && (desc.id === null || desc.id === undefined)) {
-                console.error(desc);
-                throw 'object id must me specified';
-            }
-            res.push(_this2.getObject(desc.id, type));
-        });
-        return this.arrays[type] = res;
-    };
-
-    Repository.prototype.reset = function reset() {
-        this.descriptions = {};
-        this.arrays = {};
-        this.cache = {};
-    };
-
-    return Repository;
-}();
-
-exports.default = Repository;
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _mathEx = __webpack_require__(2);
-
-var _mathEx2 = _interopRequireDefault(_mathEx);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Tween = function () {
-    function Tween(tweenDesc, obj) {
-        _classCallCheck(this, Tween);
-
-        this.propsToChange = [];
-        this.startedTime = null;
-        this.completed = false;
-
-        this.obj = tweenDesc.target || obj;
-        this.progressFn = tweenDesc.progress;
-        this.completeFn = tweenDesc.complete;
-        this.easeFnName = tweenDesc.ease || 'linear';
-        this.tweenTime = tweenDesc.time || 1000;
-        this.desc = this.normalizeDesc(tweenDesc);
-    }
-
-    Tween.prototype.normalizeDesc = function normalizeDesc(tweenDesc) {
-        var _this = this;
-
-        tweenDesc.from = tweenDesc.from || {};
-        tweenDesc.to = tweenDesc.to || {};
-        var allPropsMap = {};
-        Object.keys(tweenDesc.from).forEach(function (keyFrom) {
-            allPropsMap[keyFrom] = true;
-        });
-        Object.keys(tweenDesc.to).forEach(function (keyTo) {
-            allPropsMap[keyTo] = true;
-        });
-        this.propsToChange = Object.keys(allPropsMap);
-        this.propsToChange.forEach(function (prp) {
-            if (tweenDesc.from[prp] === undefined) tweenDesc.from[prp] = _this.obj[prp];
-            if (tweenDesc.to[prp] === undefined) tweenDesc.to[prp] = _this.obj[prp];
-        });
-        return tweenDesc;
-    };
-
-    Tween.prototype.update = function update(time) {
-        if (!this.startedTime) this.startedTime = time;
-        if (this.completed) return;
-        var curTweenTime = time - this.startedTime;
-        if (curTweenTime > this.tweenTime) {
-            this._complete();
-            return;
-        }
-        var l = this.propsToChange.length;
-        while (l--) {
-            var prp = this.propsToChange[l];
-            this.obj[prp] = _mathEx2.default.ease[this.easeFnName](curTweenTime, this.desc.from[prp], this.desc.to[prp] - this.desc.from[prp], this.tweenTime);
-        }
-        this.progressFn && this.progressFn(this.obj);
-    };
-
-    Tween.prototype.progress = function progress(_progressFn) {
-        this.progressFn = _progressFn;
-    };
-
-    Tween.prototype.reset = function reset() {
-        this.startedTime = null;
-        this.completed = false;
-    };
-
-    Tween.prototype._complete = function _complete() {
-        if (this.completed) return;
-        var l = this.propsToChange.length;
-        while (l--) {
-            var prp = this.propsToChange[l];
-            this.obj[prp] = this.desc.to[prp];
-        }
-        this.progressFn && this.progressFn(this.obj);
-        this.completeFn && this.completeFn(this.obj);
-        this.completed = true;
-    };
-
-    return Tween;
-}();
-
-exports.default = Tween;
-
-/***/ }),
-/* 99 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13454,7 +13904,1754 @@ var Vec2 = function () {
 exports.default = Vec2;
 
 /***/ }),
-/* 100 */
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+var SCALE_STRATEGY = exports.SCALE_STRATEGY = {
+    NO_SCALE: 0,
+    CSS_PRESERVE_ASPECT_RATIO: 1,
+    HARDWARE_PRESERVE_ASPECT_RATIO: 2,
+    CSS_STRETCH: 3,
+    HARDWARE_STRETCH: 4
+};
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var EventEmitter = function () {
+    function EventEmitter() {
+        _classCallCheck(this, EventEmitter);
+
+        this.events = {};
+    }
+
+    EventEmitter.prototype._on = function _on(name, callBack) {
+        this.events[name] = this.events[name] || [];
+        this.events[name].push(callBack);
+    };
+
+    EventEmitter.prototype.on = function on(eventNameOrList, callBack) {
+        if (typeof eventNameOrList === 'string') {
+            this._on(eventNameOrList, callBack);
+        } else if (eventNameOrList.splice) {
+            eventNameOrList.forEach(function (eventName) {
+                this._on(eventName, callBack);
+            });
+        }
+    };
+
+    EventEmitter.prototype.trigger = function trigger(eventName, data) {
+        var es = this.events[eventName];
+        if (!es) return;
+        var l = es.length;
+        while (l--) {
+            es[l](data);
+        }
+    };
+
+    return EventEmitter;
+}();
+
+exports.default = EventEmitter;
+;
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Queue = function () {
+    function Queue() {
+        _classCallCheck(this, Queue);
+
+        this.tasksResolved = 0;
+        this.tasks = [];
+        this.tasksProgressById = {};
+        this.onResolved = null;
+        this.onProgress = null;
+    }
+
+    Queue.prototype.size = function size() {
+        return this.tasks.length;
+    };
+
+    Queue.prototype.calcProgress = function calcProgress() {
+        var sum = 0;
+        Object.keys(this.tasksProgressById).forEach(function (taskId) {
+            sum += this.tasksProgressById[taskId] || 0;
+        });
+        return sum / this.tasks.length;
+    };
+
+    Queue.prototype.addTask = function addTask(taskFn, taskId) {
+        this.tasks.push(taskFn);
+        this.tasksProgressById[taskId] = 0;
+    };
+
+    Queue.prototype.progressTask = function progressTask(taskId, progress) {
+        this.tasksProgressById[taskId] = progress;
+        this.onProgress && this.onProgress(this.calcProgress());
+    };
+
+    Queue.prototype.resolveTask = function resolveTask(taskId) {
+        this.tasksResolved++;
+        this.tasksProgressById[taskId] = 1;
+        if (this.tasks.length === this.tasksResolved) {
+            this.onProgress && this.onProgress(1);
+            if (this.onResolved) this.onResolved();
+        } else {
+            this.onProgress && this.onProgress(this.calcProgress());
+        }
+    };
+
+    Queue.prototype.start = function start() {
+        if (this.size() === 0) this.onResolved();
+        this.tasks.forEach(function (t) {
+            t && t();
+        });
+    };
+
+    return Queue;
+}();
+
+exports.default = Queue;
+;
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _vec = __webpack_require__(104);
+
+var _vec2 = _interopRequireDefault(_vec);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+// http://madebyevan.com/gamedevclass/minimal-demo/
+
+var ArcadeRigidBody = function () {
+    function ArcadeRigidBody(gameObject) {
+        _classCallCheck(this, ArcadeRigidBody);
+
+        this.vel = new _vec2.default();
+
+        this.game = gameObject.game;
+        this.gameObject = gameObject;
+    }
+
+    ArcadeRigidBody.prototype.update = function update(time, delta) {
+        if (!this.gameObject.rigidBody.static) {
+            var deltaX = this.vel.x * delta / 1000;
+            var deltaY = this.vel.y * delta / 1000;
+            var expectedY = this.gameObject.pos.y + deltaY;
+            this.game.collider.moveBy(this.gameObject, deltaX, deltaY);
+            this.gameObject.rigidBody.onFloor = expectedY > this.gameObject.pos.y;
+            if (expectedY !== this.gameObject.pos.y) this.vel.y = 0;
+            this.vel.y += this.game.gravityConstant * delta / 1000;
+        }
+    };
+
+    return ArcadeRigidBody;
+}();
+
+exports.default = ArcadeRigidBody;
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _mathEx = __webpack_require__(2);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Collider = function () {
+    function Collider(game) {
+        _classCallCheck(this, Collider);
+
+        this.game = game;
+    }
+
+    Collider.prototype.moveBy = function moveBy(player, dX, dY) {
+
+        var rigidObjects = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
+
+        var playerRect = player.getRect();
+        playerRect.x += dX;
+        playerRect.y += dY;
+        var collidedByX = false,
+            collidedByY = false;
+
+        for (var i = 0, len = rigidObjects.length; i < len; i++) {
+            var obstacle = rigidObjects[i];
+            var obstacleRect = obstacle.getRect();
+            if (player !== rigidObjects[i] && (0, _mathEx.overlapTest)(playerRect, obstacleRect)) {
+
+                var pathToTop = playerRect.bottom - obstacleRect.y;
+                var pathToBottom = obstacleRect.bottom - playerRect.y;
+                var pathToLeft = playerRect.x + playerRect.width - obstacleRect.x;
+                var pathToRight = obstacleRect.right - playerRect.x;
+
+                var minPath = Math.min(pathToTop, pathToBottom, pathToLeft, pathToRight);
+
+                if (pathToTop === minPath) {
+                    // closest path to move player to resolve collision is path to top
+                    //console.log('top');
+                    player.pos.y = obstacleRect.y - playerRect.height;
+                    collidedByY = true;
+                } else if (pathToBottom === minPath) {
+                    // closest path to move player to resolve collision is path to top
+                    //console.log('bottom');
+                    player.pos.y = obstacleRect.bottom;
+                    collidedByY = true;
+                } else if (pathToLeft === minPath) {
+                    // closest path to move player to resolve collision is path to top
+                    //console.log('left');
+                    player.pos.x = obstacleRect.x - playerRect.width;
+                    collidedByX = true;
+                } else if (pathToRight === minPath) {
+                    // closest path to move player to resolve collision is path to top
+                    //console.log('right');
+                    player.pos.x = obstacleRect.x + obstacleRect.width;
+                    collidedByX = true;
+                }
+            }
+        }
+        if (!collidedByX) player.pos.x += dX;
+        if (!collidedByY) player.pos.y += dY;
+    };
+
+    Collider.prototype.moveTo = function moveTo(player, newX, newY) {
+        // todo not works!
+        var pRect = player.getRect();
+        var collided = false;
+        if (player.rigidBody) {
+            this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(pRect)).some(function (g) {
+                if ((0, _mathEx.overlapTest)(pRect, g.getRect())) {
+                    collided = true;
+                    return true;
+                }
+            });
+        }
+        if (collided) return;
+        player.pos.x = newX;
+        player.pos.y = newY;
+    };
+
+    return Collider;
+}();
+
+exports.default = Collider;
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _textField = __webpack_require__(27);
+
+var _textField2 = _interopRequireDefault(_textField);
+
+var _device = __webpack_require__(102);
+
+var _device2 = _interopRequireDefault(_device);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
+
+var AbstractRenderer = function () {
+    function AbstractRenderer(game) {
+        _classCallCheck(this, AbstractRenderer);
+
+        this.renderableCache = {};
+        this.container = null;
+        this.debugTextField = null;
+        this.fullScreenSize = { w: 0, h: 0, scaleFactor: 1 };
+
+        this.game = game;
+        if (_device2.default.isCocoonJS) {
+            this.fullScreenSize.w = window.innerWidth * _device2.default.scale;
+            this.fullScreenSize.h = window.innerHeight * _device2.default.scale;
+            this.fullScreenSize.scaleFactor = Math.min(this.fullScreenSize.w / this.game.width, this.fullScreenSize.h / this.game.height);
+        } else {
+            this.fullScreenSize.w = game.width;
+            this.fullScreenSize.h = game.height;
+        }
+        //document.body.addEventListener('click',()=>this.requestFullScreen());
+    }
+
+    AbstractRenderer.prototype.onResize = function onResize() {
+        var canvasRatio = this.container.height / this.container.width;
+        var windowRatio = window.innerHeight / window.innerWidth;
+        var width = void 0;
+        var height = void 0;
+
+        if (windowRatio < canvasRatio) {
+            height = window.innerHeight;
+            width = height / canvasRatio;
+        } else {
+            width = window.innerWidth;
+            height = width * canvasRatio;
+        }
+        this.game.scale.x = width / this.game.width;
+        this.game.scale.y = height / this.game.height;
+        this.game.pos.x = (window.innerWidth - width) / 2;
+        this.game.pos.y = (window.innerHeight - height) / 2;
+
+        this.container.style.width = width + 'px';
+        this.container.style.height = height + 'px';
+        this.container.style.marginTop = this.game.pos.y + 'px';
+    };
+
+    AbstractRenderer.prototype.requestFullScreen = function requestFullScreen() {
+        var element = this.container;
+        if (element.requestFullScreen) {
+            element.requestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        }
+    };
+
+    AbstractRenderer.prototype.cancelFullScreen = function cancelFullScreen() {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    };
+
+    AbstractRenderer.prototype.beginFrameBuffer = function beginFrameBuffer() {};
+
+    AbstractRenderer.prototype.flipFrameBuffer = function flipFrameBuffer() {
+        if (true) {
+            if (this.debugTextField) this.debugTextField._render();
+        }
+    };
+
+    AbstractRenderer.prototype.registerResize = function registerResize() {
+        var _this = this;
+
+        this.onResize();
+        window.addEventListener('resize', function () {
+            return _this.onResize();
+        });
+    };
+
+    AbstractRenderer.prototype.destroy = function destroy() {
+        window.removeEventListener('resize', this.onResize);
+    };
+
+    AbstractRenderer.prototype.getError = function getError() {
+        return 0;
+    };
+
+    AbstractRenderer.prototype.log = function log() {
+        if (false) return;
+        var textField = this.debugTextField;
+        var res = '';
+        Array.prototype.slice.call(arguments).forEach(function (txt) {
+            if (txt === undefined) txt = 'undefined';
+            if (txt === null) txt = 'null';
+            if (txt.toJSON) {
+                txt = JSON.stringify(txt.toJSON(), null, 4);
+            } else {
+                try {
+                    txt = JSON.stringify(txt);
+                } catch (e) {}
+            }
+            if (typeof txt !== 'string') txt = txt.toString();
+            res += txt + '\n';
+        });
+        if (!textField) {
+            textField = new _textField2.default(this.game);
+            textField.name = 'defaultName';
+            textField.revalidate();
+            this.debugTextField = textField;
+        }
+        textField.pos.x = 10;
+        textField.pos.y = 10;
+        textField.setText(textField.getText() + res);
+    };
+
+    AbstractRenderer.prototype.loadTextureInfo = function loadTextureInfo(textureId, info) {};
+
+    AbstractRenderer.prototype.getTextureInfo = function getTextureInfo(textureId) {};
+
+    return AbstractRenderer;
+}();
+
+exports.default = AbstractRenderer;
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _webGlRenderer = __webpack_require__(122);
+
+var _webGlRenderer2 = _interopRequireDefault(_webGlRenderer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+//import HtmlRenderer from './dom/htmlRenderer'
+//import Renderer from './canvas/canvasRenderer'
+
+
+//import SvgRenderer from './dom/svgRenderer'
+
+var RendererFactory = function () {
+    function RendererFactory() {
+        _classCallCheck(this, RendererFactory);
+    }
+
+    RendererFactory.getRenderer = function getRenderer(game) {
+        if (!game) throw 'RendererFactory::getRenderer: game param not specified';
+        return new _webGlRenderer2.default(game);
+    };
+
+    return RendererFactory;
+}();
+
+exports.default = RendererFactory;
+
+/***/ }),
+/* 112 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _texture = __webpack_require__(38);
+
+var _texture2 = _interopRequireDefault(_texture);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
+
+var FrameBuffer = function () {
+    function FrameBuffer(gl, width, height) {
+        _classCallCheck(this, FrameBuffer);
+
+        if (true && !gl) throw "can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
+
+        this.gl = gl;
+        this.width = width;
+        this.height = height;
+
+        this.texture = new _texture2.default(gl);
+        this.texture.setImage(null, width, height);
+        this._init(gl, width, height);
+    }
+
+    FrameBuffer.prototype._init = function _init(gl, width, height) {
+        // Init Render Buffer
+        this.glRenderBuffer = gl.createRenderbuffer();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, this.glRenderBuffer);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+        // Init Frame Buffer
+        this.glFrameBuffer = gl.createFramebuffer();
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.glFrameBuffer);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getGlTexture(), 0);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.glRenderBuffer);
+        // Clean up
+        this.texture.unbind();
+        gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    };
+
+    FrameBuffer.prototype.bind = function bind() {
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer);
+        this.gl.viewport(0, 0, this.width, this.height);
+    };
+
+    FrameBuffer.prototype.unbind = function unbind() {
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    };
+
+    FrameBuffer.prototype.getTexture = function getTexture() {
+        return this.texture;
+    };
+
+    return FrameBuffer;
+}();
+
+exports.default = FrameBuffer;
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _mat = __webpack_require__(12);
+
+var _mat2 = _interopRequireDefault(_mat);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MatrixStack = function () {
+    function MatrixStack() {
+        _classCallCheck(this, MatrixStack);
+
+        this.stack = [];
+
+        this.restore();
+    }
+
+    MatrixStack.prototype.restore = function restore() {
+        this.stack.pop();
+        // Never let the stack be totally empty
+        if (this.stack.length < 1) {
+            this.stack[0] = _mat2.default.makeIdentity();
+        }
+    };
+
+    MatrixStack.prototype.save = function save() {
+        this.stack.push(this.getCurrentMatrix());
+    };
+
+    MatrixStack.prototype.getCurrentMatrix = function getCurrentMatrix() {
+        return this.stack[this.stack.length - 1].slice();
+    };
+
+    MatrixStack.prototype.setCurrentMatrix = function setCurrentMatrix(m) {
+        return this.stack[this.stack.length - 1] = m;
+    };
+
+    MatrixStack.prototype.translate = function translate(x, y, z) {
+        if (z === undefined) {
+            z = 0;
+        }
+        var t = _mat2.default.makeTranslation(x, y, z);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(_mat2.default.matrixMultiply(t, m));
+    };
+
+    MatrixStack.prototype.rotateZ = function rotateZ(angleInRadians) {
+        var t = _mat2.default.makeZRotation(angleInRadians);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(_mat2.default.matrixMultiply(t, m));
+    };
+
+    MatrixStack.prototype.rotateY = function rotateY(angleInRadians) {
+        var t = _mat2.default.makeYRotation(angleInRadians);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(_mat2.default.matrixMultiply(t, m));
+    };
+
+    MatrixStack.prototype.scale = function scale(x, y, z) {
+        if (z === undefined) {
+            z = 1;
+        }
+        var t = _mat2.default.makeScale(x, y, z);
+        var m = this.getCurrentMatrix();
+        this.setCurrentMatrix(_mat2.default.matrixMultiply(t, m));
+    };
+
+    return MatrixStack;
+}();
+
+exports.default = MatrixStack;
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractPrimitive = __webpack_require__(18);
+
+var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Circle = function (_AbstractPrimitive) {
+    _inherits(Circle, _AbstractPrimitive);
+
+    function Circle() {
+        _classCallCheck(this, Circle);
+
+        var _this = _possibleConstructorReturn(this, _AbstractPrimitive.call(this));
+
+        _this.vertexArr = [];
+        //this.indexArr = [];
+        //let i = 0;
+        var Pi2 = Math.PI * 2;
+        _this.vertexArr.push(0.5);
+        _this.vertexArr.push(0.5);
+        for (var a = 0, max = Pi2; a < max; a += 0.1) {
+            _this.vertexArr.push(Math.cos(a) / 2 + 0.5);
+            _this.vertexArr.push(Math.sin(a) / 2 + 0.5);
+            //this.indexArr.push(i++);
+        }
+        _this.vertexArr.push(Math.cos(Pi2) / 2 + 0.5);
+        _this.vertexArr.push(Math.sin(Pi2) / 2 + 0.5);
+        return _this;
+    }
+
+    return Circle;
+}(_abstractPrimitive2.default);
+
+exports.default = Circle;
+
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractPrimitive = __webpack_require__(18);
+
+var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Line = function (_AbstractPrimitive) {
+    _inherits(Line, _AbstractPrimitive);
+
+    function Line() {
+        _classCallCheck(this, Line);
+
+        var _this = _possibleConstructorReturn(this, _AbstractPrimitive.call(this));
+
+        _this.vertexArr = [0, 0, 1, 1];
+        _this.indexArr = [0, 1];
+        return _this;
+    }
+
+    return Line;
+}(_abstractPrimitive2.default);
+
+exports.default = Line;
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _circle = __webpack_require__(114);
+
+var _circle2 = _interopRequireDefault(_circle);
+
+var _plane = __webpack_require__(13);
+
+var _plane2 = _interopRequireDefault(_plane);
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(4);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _vertex = __webpack_require__(28);
+
+var _vertex2 = _interopRequireDefault(_vertex);
+
+var _fragment = __webpack_require__(29);
+
+var _fragment2 = _interopRequireDefault(_fragment);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CircleDrawer = function (_AbstractDrawer) {
+    _inherits(CircleDrawer, _AbstractDrawer);
+
+    function CircleDrawer(gl, game) {
+        _classCallCheck(this, CircleDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+        _this.circle = new _circle2.default();
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+
+        _this.posVertexBuffer.setData(_this.circle.vertexArr, _this.gl.FLOAT, 2);
+        return _this;
+    }
+
+    CircleDrawer.prototype.bind = function bind() {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+        this.posVertexBuffer.bind(this.program, 'a_position');
+    };
+
+    CircleDrawer.prototype.draw = function draw() {
+        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, // gl.STREAM_DRAW
+        this.posVertexBuffer.getBufferLength() / 2);
+    };
+
+    return CircleDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = CircleDrawer;
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _plane = __webpack_require__(13);
+
+var _plane2 = _interopRequireDefault(_plane);
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(4);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _vertex = __webpack_require__(28);
+
+var _vertex2 = _interopRequireDefault(_vertex);
+
+var _fragment = __webpack_require__(29);
+
+var _fragment2 = _interopRequireDefault(_fragment);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ColorRectDrawer = function (_AbstractDrawer) {
+    _inherits(ColorRectDrawer, _AbstractDrawer);
+
+    function ColorRectDrawer(gl, game) {
+        _classCallCheck(this, ColorRectDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.plane = new _plane2.default();
+        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+
+        _this.posVertexBuffer.setData(_this.plane.vertexArr, _this.gl.FLOAT, 2);
+        _this.posIndexBuffer.setData(_this.plane.indexArr);
+        return _this;
+    }
+
+    ColorRectDrawer.prototype.bind = function bind() {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+
+        this.posVertexBuffer.bind(this.program, 'a_position');
+
+        this.posIndexBuffer.bind();
+    };
+
+    ColorRectDrawer.prototype.draw = function draw() {
+        this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+    };
+
+    return ColorRectDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = ColorRectDrawer;
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _line = __webpack_require__(115);
+
+var _line2 = _interopRequireDefault(_line);
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(4);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _vertex = __webpack_require__(28);
+
+var _vertex2 = _interopRequireDefault(_vertex);
+
+var _fragment = __webpack_require__(29);
+
+var _fragment2 = _interopRequireDefault(_fragment);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var LineDrawer = function (_AbstractDrawer) {
+    _inherits(LineDrawer, _AbstractDrawer);
+
+    function LineDrawer(gl, game) {
+        _classCallCheck(this, LineDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+        _this.line = new _line2.default();
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+
+        _this.posVertexBuffer.setData(_this.line.vertexArr, _this.gl.FLOAT, 2);
+        return _this;
+    }
+
+    LineDrawer.prototype.bind = function bind() {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+
+        this.posVertexBuffer.bind(this.program, 'a_position');
+    };
+
+    LineDrawer.prototype.draw = function draw() {
+        this.gl.drawArrays(this.gl.LINE_STRIP, 0, this.posVertexBuffer.getBufferLength() / 2);
+    };
+
+    return LineDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = LineDrawer;
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(4);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _vertex = __webpack_require__(139);
+
+var _vertex2 = _interopRequireDefault(_vertex);
+
+var _fragment = __webpack_require__(141);
+
+var _fragment2 = _interopRequireDefault(_fragment);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ModelDrawer = function (_AbstractDrawer) {
+    _inherits(ModelDrawer, _AbstractDrawer);
+
+    function ModelDrawer(gl, game) {
+        _classCallCheck(this, ModelDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.texVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.normalBuffer = new _vertexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+
+        _this.program.bind();
+        return _this;
+    }
+
+    ModelDrawer.prototype.bind = function bind(model) {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+        var gl = this.gl;
+        var program = this.program;
+
+        this.posVertexBuffer.setData(model.vertexArr, gl.FLOAT, 3);
+        program.bindBuffer(this.posVertexBuffer, 'a_position');
+
+        this.texVertexBuffer.setData(model.texCoordArr, gl.FLOAT, 2);
+        program.bindBuffer(this.texVertexBuffer, 'a_texcoord');
+
+        this.normalBuffer.setData(model.normalArr, gl.FLOAT, 3);
+        program.bindBuffer(this.normalBuffer, 'a_normal');
+
+        this.posIndexBuffer.setData(model.indexArr);
+        this.posIndexBuffer.bind();
+    };
+
+    ModelDrawer.prototype.draw = function draw() {
+        this.gl.drawElements(this.gl.TRIANGLES, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+    };
+
+    return ModelDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = ModelDrawer;
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _plane = __webpack_require__(13);
+
+var _plane2 = _interopRequireDefault(_plane);
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(4);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _vertex = __webpack_require__(43);
+
+var _vertex2 = _interopRequireDefault(_vertex);
+
+var _fragment = __webpack_require__(140);
+
+var _fragment2 = _interopRequireDefault(_fragment);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SpriteRectDrawer = function (_AbstractDrawer) {
+    _inherits(SpriteRectDrawer, _AbstractDrawer);
+
+    function SpriteRectDrawer(gl, game) {
+        _classCallCheck(this, SpriteRectDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.plane = new _plane2.default();
+        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+        _this.texVertexBuffer = new _vertexBuffer2.default(gl);
+
+        _this.posIndexBuffer.setData(_this.plane.indexArr);
+        _this.posVertexBuffer.setData(_this.plane.vertexArr, gl.FLOAT, 2);
+        _this.texVertexBuffer.setData(_this.plane.texCoordArr, gl.FLOAT, 2);
+
+        return _this;
+    }
+
+    SpriteRectDrawer.prototype.bind = function bind() {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+
+        this.posIndexBuffer.bind();
+
+        this.posVertexBuffer.bind(this.program, 'a_position');
+
+        this.texVertexBuffer.bind(this.program, 'a_texcoord');
+    };
+
+    SpriteRectDrawer.prototype.draw = function draw() {
+        this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+    };
+
+    return SpriteRectDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = SpriteRectDrawer;
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _plane = __webpack_require__(13);
+
+var _plane2 = _interopRequireDefault(_plane);
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(4);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _vertex = __webpack_require__(43);
+
+var _vertex2 = _interopRequireDefault(_vertex);
+
+var _fragment = __webpack_require__(142);
+
+var _fragment2 = _interopRequireDefault(_fragment);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TiledSpriteRectDrawer = function (_AbstractDrawer) {
+    _inherits(TiledSpriteRectDrawer, _AbstractDrawer);
+
+    function TiledSpriteRectDrawer(gl, game) {
+        _classCallCheck(this, TiledSpriteRectDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.plane = new _plane2.default();
+        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+        _this.texVertexBuffer = new _vertexBuffer2.default(gl);
+
+        _this.posIndexBuffer.setData(_this.plane.indexArr);
+        _this.posVertexBuffer.setData(_this.plane.vertexArr, gl.FLOAT, 2);
+        _this.texVertexBuffer.setData(_this.plane.texCoordArr, gl.FLOAT, 2);
+
+        return _this;
+    }
+
+    TiledSpriteRectDrawer.prototype.bind = function bind() {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+        this.posIndexBuffer.bind();
+        this.posVertexBuffer.bind(this.program, 'a_position');
+        this.texVertexBuffer.bind(this.program, 'a_texcoord');
+    };
+
+    TiledSpriteRectDrawer.prototype.draw = function draw() {
+        this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+    };
+
+    return TiledSpriteRectDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = TiledSpriteRectDrawer;
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractRenderer = __webpack_require__(110);
+
+var _abstractRenderer2 = _interopRequireDefault(_abstractRenderer);
+
+var _spriteRectDrawer = __webpack_require__(120);
+
+var _spriteRectDrawer2 = _interopRequireDefault(_spriteRectDrawer);
+
+var _tiledSpriteRectDrawer = __webpack_require__(121);
+
+var _tiledSpriteRectDrawer2 = _interopRequireDefault(_tiledSpriteRectDrawer);
+
+var _colorRectDrawer = __webpack_require__(117);
+
+var _colorRectDrawer2 = _interopRequireDefault(_colorRectDrawer);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+var _lineDrawer = __webpack_require__(118);
+
+var _lineDrawer2 = _interopRequireDefault(_lineDrawer);
+
+var _circleDrawer = __webpack_require__(116);
+
+var _circleDrawer2 = _interopRequireDefault(_circleDrawer);
+
+var _modelDrawer = __webpack_require__(119);
+
+var _modelDrawer2 = _interopRequireDefault(_modelDrawer);
+
+var _frameBuffer = __webpack_require__(112);
+
+var _frameBuffer2 = _interopRequireDefault(_frameBuffer);
+
+var _matrixStack = __webpack_require__(113);
+
+var _matrixStack2 = _interopRequireDefault(_matrixStack);
+
+var _mat = __webpack_require__(12);
+
+var _mat2 = _interopRequireDefault(_mat);
+
+var _mathEx = __webpack_require__(2);
+
+var _mathEx2 = _interopRequireDefault(_mathEx);
+
+var _texture = __webpack_require__(38);
+
+var _texture2 = _interopRequireDefault(_texture);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+/*global Image:true*/
+/*global DEBUG:true*/
+
+var stop = 0;
+
+var getCtx = function getCtx(el) {
+    return el.getContext("webgl", { alpha: false }) || el.getContext('experimental-webgl', { alpha: false }) || el.getContext('webkit-3d', { alpha: false }) || el.getContext('moz-webgl', { alpha: false });
+};
+var SCENE_DEPTH = 1000;
+var matrixStack = new _matrixStack2.default();
+
+var makePositionMatrix = function makePositionMatrix(dstX, dstY, dstWidth, dstHeight, viewWidth, viewHeight) {
+
+    var zToWMatrix = _mat2.default.makeZToWMatrix(1);
+    var projectionMatrix = _mat2.default.ortho(0, viewWidth, 0, viewHeight, -SCENE_DEPTH, SCENE_DEPTH);
+    var scaleMatrix = _mat2.default.makeScale(dstWidth, dstHeight, 1);
+    var translationMatrix = _mat2.default.makeTranslation(dstX, dstY, 0);
+
+    var matrix = _mat2.default.matrixMultiply(scaleMatrix, translationMatrix);
+    matrix = _mat2.default.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
+    matrix = _mat2.default.matrixMultiply(matrix, projectionMatrix);
+    matrix = _mat2.default.matrixMultiply(matrix, zToWMatrix);
+    return matrix;
+};
+
+var makeTextureMatrix = function makeTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight) {
+
+    var texScaleMatrix = _mat2.default.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
+    var texTranslationMatrix = _mat2.default.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+    return _mat2.default.matrixMultiply(texScaleMatrix, texTranslationMatrix);
+};
+
+var WebGlRenderer = function (_AbstractRenderer) {
+    _inherits(WebGlRenderer, _AbstractRenderer);
+
+    function WebGlRenderer(game) {
+        _classCallCheck(this, WebGlRenderer);
+
+        // todo DRY
+        var _this = _possibleConstructorReturn(this, _AbstractRenderer.call(this, game));
+
+        var container = document.createElement('canvas');
+        document.body.appendChild(container);
+        container.setAttribute('width', game.width);
+        container.setAttribute('height', game.height);
+        _this.container = container;
+        _this.matrixStack = matrixStack;
+        _this.registerResize();
+        _this.currTex = null;
+        _this._init();
+        return _this;
+    }
+
+    WebGlRenderer.prototype._init = function _init() {
+        var gl = getCtx(this.container);
+        this.gl = gl;
+
+        this.circleDrawer = new _circleDrawer2.default(gl);
+        this.spriteRectDrawer = new _spriteRectDrawer2.default(gl);
+        this.tiledSpriteRectDrawer = new _tiledSpriteRectDrawer2.default(gl);
+        this.colorRectDrawer = new _colorRectDrawer2.default(gl);
+        this.lineDrawer = new _lineDrawer2.default(gl);
+        this.modelDrawer = new _modelDrawer2.default(gl);
+
+        this.frameBuffer = new _frameBuffer2.default(gl, this.game.width, this.game.height);
+
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.enable(gl.BLEND);
+    };
+
+    WebGlRenderer.prototype.draw = function draw(renderable) {
+
+        if (stop) return;
+
+        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), renderable.getRect())) return;
+        this.save();
+        // todo check if angle neq 0
+        var halfV = renderable.width / 2;
+        var halfH = renderable.height / 2;
+        this.translate(renderable.pos.x + halfV, renderable.pos.y + halfH);
+        this.scale(renderable.scale.x, renderable.scale.y);
+        this.rotateZ(renderable.angle);
+        //ctx.rotateY(a);
+        this.translate(-halfV, -halfH);
+
+        this.drawImage(renderable.spriteSheet.resourcePath, renderable._sprPosX, renderable._sprPosY, renderable.width, renderable.height, 0, 0, renderable.width, renderable.height);
+        this.restore();
+    };
+
+    WebGlRenderer.prototype.drawImage = function drawImage(texturePath, srcX, srcY, srcWidth, srcHeight, dstX, dstY) {
+
+        if (stop) return;
+        //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
+
+        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendColor(0, 0.5, 1, 1);
+
+        var texture = this.renderableCache[texturePath];
+        if (true && !texture) {
+            if (!texturePath) throw 'no texture path provided';else throw 'can not find texture with path ' + texturePath;
+        }
+        var texWidth = texture.getSize().width;
+        var texHeight = texture.getSize().height;
+
+        // if (dstX === undefined) {
+        //     dstX = srcX;
+        // }
+        // if (dstY === undefined) {
+        //     dstY = srcY;
+        // }
+        // if (srcWidth === undefined) {
+        //     srcWidth = texWidth;
+        // }
+        // if (srcHeight === undefined) {
+        //     srcHeight = texHeight;
+        // }
+
+        if (this.currTex !== texture) {
+            texture.bind();
+            this.currTex = texture;
+        }
+
+        this.spriteRectDrawer.bind();
+        this.spriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight));
+        this.spriteRectDrawer.setUniform("u_PositionMatrix", makePositionMatrix(dstX, dstY, srcWidth, srcHeight, this.game.width, this.game.height));
+        this.spriteRectDrawer.setUniform('u_alpha', 1); // alpha
+        this.spriteRectDrawer.draw();
+    };
+
+    WebGlRenderer.prototype.drawTiledImage = function drawTiledImage(texturePath, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, offsetX, offsetY) {
+
+        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendColor(0, 0.5, 1, 1);
+
+        var texture = this.renderableCache[texturePath];
+        if (true && !texture) {
+            if (!texturePath) throw 'no texture path provided';else throw 'can not find texture with path ' + texturePath;
+        }
+        var texWidth = texture.getSize().width;
+        var texHeight = texture.getSize().height;
+
+        if (this.currTex !== texture) {
+            texture.bind();
+            this.currTex = texture;
+        }
+
+        this.tiledSpriteRectDrawer.bind();
+        this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(0, 0, dstWidth, dstHeight, texWidth, texHeight));
+        this.tiledSpriteRectDrawer.setUniform("u_PositionMatrix", makePositionMatrix(dstX, dstY, dstWidth, dstHeight, this.game.width, this.game.height));
+        this.tiledSpriteRectDrawer.setUniform('u_frameCoords', [srcX / texWidth, srcY / texHeight, srcWidth / texWidth, srcHeight / texHeight]);
+        this.tiledSpriteRectDrawer.setUniform('u_offsetCoords', [offsetX / srcWidth, offsetY / srcHeight]);
+        this.tiledSpriteRectDrawer.setUniform('u_alpha', 1); // alpha
+        this.tiledSpriteRectDrawer.draw();
+    };
+
+    WebGlRenderer.prototype.fillRect = function fillRect(x, y, width, height, color) {
+        if (stop) return;
+        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x, y: y, width: width, height: height })) return;
+        var colorRectDrawer = this.colorRectDrawer;
+        var gl = this.gl;
+        colorRectDrawer.bind();
+        colorRectDrawer.setUniform("u_PositionMatrix", makePositionMatrix(x, y, width, height, this.game.width, this.game.height));
+        colorRectDrawer.setUniform("u_rgba", color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        colorRectDrawer.draw();
+    };
+
+    WebGlRenderer.prototype.drawRect = function drawRect(x, y, w, h, color) {
+        this.fillRect(x, y, w, 1, color);
+        this.fillRect(x, y + h, w, 1, color);
+        this.fillRect(x, y, 1, h, color);
+        this.fillRect(x + w, y, 1, h, color);
+    };
+
+    WebGlRenderer.prototype.drawLine = function drawLine(x1, y1, x2, y2, color) {
+        if (stop) return;
+        var dx = x2 - x1,
+            dy = y2 - y1;
+        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x1, y: y1, width: dx, height: dy })) return;
+        var gl = this.gl;
+        var lineDrawer = this.lineDrawer;
+        lineDrawer.bind();
+        lineDrawer.setUniform("u_PositionMatrix", makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height));
+        lineDrawer.setUniform("u_rgba", color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        lineDrawer.draw();
+    };
+
+    WebGlRenderer.prototype.fillCircle = function fillCircle(x, y, r, color) {
+        var r2 = r * 2;
+        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x - r, y: y - r, width: r2, height: r2 })) return;
+        var circleDrawer = this.circleDrawer;
+        var gl = this.gl;
+        circleDrawer.bind();
+        circleDrawer.setUniform("u_PositionMatrix", makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height));
+        circleDrawer.setUniform("u_rgba", color);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        circleDrawer.draw();
+    };
+
+    WebGlRenderer.prototype.setAlpha = function setAlpha(a) {
+        throw 'not implemented';
+    };
+
+    WebGlRenderer.prototype.save = function save() {
+        this.matrixStack.save();
+    };
+
+    WebGlRenderer.prototype.scale = function scale(x, y) {
+        this.matrixStack.scale(x, y);
+    };
+
+    WebGlRenderer.prototype.rotateZ = function rotateZ(angleInRadians) {
+        this.matrixStack.rotateZ(angleInRadians);
+    };
+
+    WebGlRenderer.prototype.rotateY = function rotateY(angleInRadians) {
+        this.matrixStack.rotateY(angleInRadians);
+    };
+
+    WebGlRenderer.prototype.translate = function translate(x, y) {
+        this.matrixStack.translate(x, y);
+    };
+
+    WebGlRenderer.prototype.restore = function restore() {
+        this.matrixStack.restore();
+    };
+
+    WebGlRenderer.prototype.lockRect = function lockRect(rect) {};
+
+    WebGlRenderer.prototype.unlockRect = function unlockRect() {};
+
+    WebGlRenderer.prototype.clear = function clear() {
+        this.gl.clearColor(1, 1, 1, 1);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    };
+
+    WebGlRenderer.prototype.clearColor = function clearColor(_ref) {
+        var r = _ref.r,
+            g = _ref.g,
+            b = _ref.b;
+
+        this.gl.clearColor(r / 255.0, g / 255.0, b / 255.0, 1.0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    };
+
+    WebGlRenderer.prototype.beginFrameBuffer = function beginFrameBuffer() {
+        this.save();
+        this.frameBuffer.bind();
+    };
+
+    WebGlRenderer.prototype.flipFrameBuffer = function flipFrameBuffer() {
+
+        var fullScreen = this.fullScreenSize;
+        this.currTex = null;
+        this.restore();
+        this.save();
+        this.translate(0, fullScreen.h);
+        this.scale(1, -1);
+        this.frameBuffer.unbind();
+
+        this.gl.viewport(0, 0, fullScreen.w, fullScreen.h); // gameProps.canvasWidth,gameProps.canvasHeight
+
+        this.spriteRectDrawer.bind();
+        this.frameBuffer.getTexture().bind();
+
+        this.spriteRectDrawer.setUniform('u_PositionMatrix', makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h));
+
+        this.spriteRectDrawer.setUniform('u_textureMatrix', makeTextureMatrix(0, 0, fullScreen.w, fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
+        fullScreen.w, fullScreen.h // gameProps.canvasWidth,gameProps.canvasHeight
+        ));
+        this.spriteRectDrawer.setUniform('u_alpha', 1);
+
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+        this.spriteRectDrawer.draw();
+        this.restore();
+    };
+
+    WebGlRenderer.prototype.getError = function getError() {
+        if (false) return 0;
+        var err = this.gl.getError();
+        err = err === this.gl.NO_ERROR ? 0 : err;
+        if (err) {
+            console.log(_abstractDrawer2.default.currentDrawer);
+        }
+        return err;
+    };
+
+    WebGlRenderer.prototype.loadTextureInfo = function loadTextureInfo(resourcePath, onLoad) {
+        var _this2 = this;
+
+        var img = new Image();
+        img.src = resourcePath;
+        img.onload = function () {
+            var texture = new _texture2.default(_this2.gl);
+            texture.setImage(img);
+            _this2.renderableCache[resourcePath] = texture;
+            onLoad();
+        };
+    };
+
+    return WebGlRenderer;
+}(_abstractRenderer2.default);
+
+exports.default = WebGlRenderer;
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _all = __webpack_require__(40);
+
+var models = _interopRequireWildcard(_all);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
+
+var Repository = function () {
+    function Repository(game) {
+        _classCallCheck(this, Repository);
+
+        this._game = game;
+        this.reset();
+    }
+
+    Repository.prototype.addDescription = function addDescription(desc, type) {
+        if (!this.descriptions[type]) this.descriptions[type] = [];
+        this.descriptions[type].push(desc);
+    };
+
+    Repository.prototype.setDescriptions = function setDescriptions(descs) {
+        var _this = this;
+
+        Object.keys(descs).forEach(function (type) {
+            descs[type].forEach(function (desc) {
+                _this.addDescription(desc, type);
+            });
+        });
+    };
+
+    Repository.prototype.getObject = function getObject(id, type) {
+        var forceNew = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+        if (true && !type) throw 'repository.getObject: type not specified';
+        if (true && id == null) {
+            console.trace("id is null");
+            throw '::getObject() id not specified for type ' + type;
+        }
+        var Clazz = models[type];
+
+        if (true && !Clazz) {
+            throw '::getObject() undeclared object type ' + type;
+        }
+        if (true && !this.descriptions[type]) throw 'not found description for type: ' + type;
+        var desc = this.descriptions[type].find(function (it) {
+            return it.id == id;
+        });
+        if (!desc) {
+            throw 'can not find object "' + type + '" with id ' + id;
+        }
+        if (forceNew || !this.cache[desc[id]]) this.cache[id] = new Clazz(this._game).fromJSON(desc);
+        return this.cache[id];
+    };
+
+    Repository.prototype.getFirst = function getFirst(type) {
+        var all = this.getArray(type);
+        if (!all.length) return null;
+        return all[0];
+    };
+
+    Repository.prototype.addObject = function addObject(obj) {
+        if (true && !obj.id) {
+            console.error(obj);
+            throw 'addObject: id is not provided';
+        }
+        if (!this.arrays[obj.type]) this.arrays[obj.type] = [];
+        this.arrays[obj.type].push(obj);
+        if (!this.descriptions[obj.type]) this.descriptions[obj.type] = [];
+        this.descriptions[obj.type].push(obj.toJSON());
+    };
+
+    Repository.prototype.updateObject = function updateObject(obj, opts) {
+        var json = obj.toJSON(opts);
+        var index = this.descriptions[obj.type].findIndex(function (it) {
+            return it.id == obj.id;
+        });
+        this.descriptions[obj.type][index] = json;
+        var objInRepo = this.getObject(obj.id, obj.type, true);
+        if (objInRepo) objInRepo.fromJSON(json);
+    };
+
+    Repository.prototype.removeObject = function removeObject(obj) {
+        if (true && !this.arrays[obj.type]) this.arrays[obj.type] = [];
+        var index = this.arrays[obj.type].findIndex(function (it) {
+            return it.id === obj.id;
+        });
+        this.arrays[obj.type].splice(index, 1);
+
+        if (!this.descriptions[obj.type]) this.descriptions[obj.type] = [];
+        index = this.descriptions[obj.type].findIndex(function (it) {
+            return it.id === obj.id;
+        });
+        this.descriptions[obj.type].splice(index, 1);
+
+        delete this.cache[obj.id];
+    };
+
+    Repository.prototype.getArray = function getArray(type) {
+        var _this2 = this;
+
+        if (true && !models[type]) throw 'getArray: unregistered type "' + type + '"';
+        if (this.arrays[type]) return this.arrays[type];
+        var res = [];
+        if (!this.descriptions[type]) this.descriptions[type] = [];
+        this.descriptions[type].forEach(function (desc) {
+            if (true && (desc.id === null || desc.id === undefined)) {
+                console.error(desc);
+                throw 'object id must me specified';
+            }
+            res.push(_this2.getObject(desc.id, type));
+        });
+        return this.arrays[type] = res;
+    };
+
+    Repository.prototype.reset = function reset() {
+        this.descriptions = {};
+        this.arrays = {};
+        this.cache = {};
+    };
+
+    return Repository;
+}();
+
+exports.default = Repository;
+
+/***/ }),
+/* 124 */,
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var g;
+
+// This works in non-strict mode
+g = function () {
+	return this;
+}();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if ((typeof window === "undefined" ? "undefined" : _typeof(window)) === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+/***/ }),
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13484,311 +15681,335 @@ module.exports = function (module) {
 };
 
 /***/ }),
-/* 101 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 102 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 103 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 104 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 105 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 107 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 109 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 111 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 112 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 113 */
-/***/ (function(module, exports) {
-
-module.exports = "<app-modal id=\"alertModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"close()\">{{i18n.get('ok')}}</button></div></div></div></app-modal>";
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"inlineBlock\" data-click=\"click($event)\" data-mousemove=\"mouseMove($event)\"><div data-container class=\"inlineBlock\"><svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle><line id=\"line\" x1=\"100\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"2\" data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"></line></svg></div><div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">{{angleInDeg()}}&deg;</div></div>";
-
-/***/ }),
-/* 115 */
-/***/ (function(module, exports) {
-
-module.exports = "<div><div class=\"collapsible_header bold noSelect\"><div class=\"table width100\"><div class=\"row\"><div class=\"cell width1\"><span class=\"collapsible_point noBrake\" data-click=\"toggle()\" data-class=\"{rotated:opened}\">▷</span></div><div class=\"cell\"><span data-click=\"toggle()\">&nbsp;{{title}}</span></div><div class=\"cell width1\"><div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div></div></div></div></div><div class=\"collapsible_content\" data-class=\"{opened:opened}\"><div data-transclusion=\"content\"></div></div></div>";
-
-/***/ }),
-/* 116 */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"inlineBlock\"><div data-style=\"{ cursor: 'pointer', width: 24 + 'px', height:24 + 'px', backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')') }\" data-click=\"click()\"></div></div>";
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports) {
-
-module.exports = "<app-modal id=\"colorPickerModal\" data-transclusion-id=\"colorPicker\"><div data-transclusion=\"content:#colorPicker\"><table><tr><td><input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"></td><td><input type=\"text\" data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"></td><td></td></tr><table class=\"width100\"><tr data-for=\"item in colorEnums\"><td data-style=\"{ color: item.left }\">{{item.left}}</td><td class=\"centerText\"><input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\"><br><input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\"><hr></td><td data-style=\"{ color: item.right }\">{{item.right}}</td><td><div data-style=\"{ width: '5px', height: '5px', backgroundColor: getRawColor(currentColor.RGB,item.key) }\"></div></td></tr></table></table><button data-click=\"applyColor()\">{{i18n.get('edit')}}</button></div></app-modal>";
-
-/***/ }),
-/* 118 */
-/***/ (function(module, exports) {
-
-module.exports = "<app-modal id=\"confirmModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"confirmAndClose()\">{{i18n.get('confirm')}}</button><button data-click=\"close()\">{{i18n.get('cancel')}}</button></div></div></div></app-modal>";
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports) {
-
-module.exports = "<div><button>{{title}}</button><input required accept=\"{{accept}}\" type=\"file\"></div>";
-
-/***/ }),
-/* 120 */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\"><div class=\"fullscreen shadow\"></div><div class=\"dialog\"><div class=\"dialogContent\"><div class=\"dialogClose\"><span data-click=\"close()\" class=\"pointer\">X</span></div><div class=\"withPadding\"><div data-transclusion=\"content\"></div></div></div></div></div>";
-
-/***/ }),
-/* 121 */
-/***/ (function(module, exports) {
-
-module.exports = "<table><tr><td></td><td><button data-click=\"onKeyUp()\">&uarr;</button></td><td></td></tr><tr><td><button data-click=\"onKeyLeft()\">&larr;</button></td><td></td><td><button data-click=\"onKeyRight()\">&rarr;</button></td></tr><tr><td></td><td><button data-click=\"onKeyDown()\">&darr;</button></td><td></td></tr></table>";
-
-/***/ }),
-/* 122 */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"height100 relative noOverFlow\" data-droppable=\"onDropFromLeftPanel\" data-click=\"onCentralSceneClick($event)\" data-style=\"{ backgroundColor: editData.currSceneInEdit.useBG?utils.rgbToCss(editData.currSceneInEdit.colorBG):'white' }\" data-draggable-container id=\"sceneDiv\"><div data-for=\"item in editData.currLayerInEdit.gameObjects\"><div data-if=\"item.type=='GameObject'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.fixedToCamera?(item.pos.x+'px'): item.pos.x - utils.tileFrameWidth() * editData.tileMapPosX + 'px', top: item.fixedToCamera?(item.pos.y+'px'): item.pos.y - utils.tileFrameHeight() * editData.tileMapPosY + 'px', } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"></div><div data-if=\"item.type=='TextField'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.pos.x - item.width * editData.tileMapPosX + 'px', top: item.pos.y - item.height * editData.tileMapPosY + 'px', backgroundColor:'rgb(0,222,0.1)', height:item.height+'px', width:item.width?item.width+'px':'10px', backgroundColor:item.width?'':'#ddd', backgroundImage:'none' } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"><div style=\"position: relative;left:0;top:0;z-index:10\"><span data-style=\"getCharCss(item,ch)\" data-for=\"ch in item._chars\"></span></div></div></div></div>";
-
-/***/ }),
-/* 123 */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"height100 relative\" data-if=\"editData.scriptEditorUrl\"><div class=\"scriptEditorClose\" data-click=\"close()\">X</div><div style=\"height:10px;font-size: 10px;\">{{editData.scriptEditorUrl}}</div><div id=\"scriptEditor\" style=\"height:calc(100% - 10px)\"><iframe id=\"scriptEditorFrame\" frameborder=\"0\" class=\"block width100 height100 noOverFlow\" src=\"/editor\"></div></div>";
-
-/***/ }),
-/* 124 */
-/***/ (function(module, exports) {
-
-module.exports = "<app-modal id=\"buildModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('minify')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.minify\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('debug')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.debug\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('windowed')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.windowed\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('embedResources')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.embedResources\" type=\"checkbox\"></td></tr></table><button data-click=\"close()\">ok</button></div></app-modal>";
-
-/***/ }),
-/* 125 */
-/***/ (function(module, exports) {
-
-module.exports = "<app-modal id=\"commonBehaviourModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td class=\"borderBottom\">{{i18n.get('name')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.name}}</td></tr><tr><td class=\"borderBottom\">{{i18n.get('description')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.description}}</td></tr><tr data-for=\"value,key in editData.currCommonBehaviourInEdit.parameters\"><td class=\"borderBottom\">{{key}}</td><td class=\"borderBottom\"><input type=\"text\" data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"></td></tr><tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\"><td colspan=\"2\" class=\"borderBottom\">{{i18n.get('noDataToEdit')}}</td></tr></table><button data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\" data-disabled=\"!form.valid()\">{{editData.currCommonBehaviourInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
-
-/***/ }),
-/* 126 */
-/***/ (function(module, exports) {
-
-module.exports = "<div><app-sound-dialog id=\"soundDialog\"></app-sound-dialog><app-particle-system-dialog></app-particle-system-dialog><app-font-dialog id=\"fontDialog\"></app-font-dialog><app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog><app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog><app-scene-dialog></app-scene-dialog><app-layer-dialog></app-layer-dialog><app-build-dialog></app-build-dialog></div><app-color-picker-dialog id=\"colorPickerDialog\"></app-color-picker-dialog>";
-
-/***/ }),
 /* 127 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"fontModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('selectFont')}}</td><td><select data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\"><option data-value=\"fnt.displayName\" data-for=\"fnt in systemFontList\">{{fnt.displayName}}</option></select></td></tr><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currFontInEdit.name\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontSize')}}</td><td><input type=\"number\" min=\"1\" max=\"1000\" data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontColor')}}</td><td><app-color-picker data-state=\"{ model:editData.currFontInEdit, field:'fontColor' }\"></app-color-picker></td></tr><tr><td colspan=\"2\"><input data-model=\"fontSample\" class=\"width100\"></td></tr><tr><td colspan=\"2\"><div data-style=\"{ fontFamily:editData.currFontInEdit.fontFamily, fontSize:editData.currFontInEdit.fontSize+'px', color:utils.rgbToHex(editData.currFontInEdit.fontColor) }\">{{fontSample}}</div></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditFont(editData.currFontInEdit)\">{{editData.currFontInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 128 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"frameAnimationModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currFrameAnimationInEdit.name\"></td><td rowspan=\"3\"><div style=\"max-height: 80vh;max-width:80vw;overflow: auto;padding: 5px;\">{{ editData.currFrameAnimationInEdit._gameObject && editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0 }}<div data-style=\"utils.merge( utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject), {outline:'1px solid blue'} )\"></div><div><button data-click=\"playAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('playAnim')}}</button><button data-click=\"stopAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('stopAnim')}}</button></div><div><button data-click=\"previousFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"><< </button><button data-click=\"nextFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">>></button></<><div class=\"relative\" data-style=\"{ 'background-image': 'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px' }\"><div data-for=\"v,i in getLoopArr()\" data-style=\"{ 'display': 'inline-block', 'left': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px', 'top': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px' }\">{{i}}</div></div></button></div></div><tr><td>{{i18n.get('duration')}}</td><td><input type=\"number\" min=\"1\" required data-model=\"editData.currFrameAnimationInEdit.duration\"></td></tr><tr><td><table><tr><td>{{i18n.get('frames')}}</td><td><button data-click=\"setAllIndexes()\">{{i18n.get('all')}}</button></td></tr><tr><td>{{i18n.get('from')}}</td><td><input type=\"number\" data-model=\"from\" min=\"0\" data-keyup=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('to')}}</td><td><input type=\"number\" min=\"0\" data-model=\"to\" data-change=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('step')}}</td><td><input type=\"number\" min=\"0\" data-model=\"step\" data-change=\"setRangeIndexes()\"></td></tr></table></td><td><textarea required data-model=\"frames\"></textarea></td></tr></td><button data-click=\"createOrEditFrameAnimation()\" data-disabled=\"!form.valid()\">{{editData.currFrameAnimationInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></tr></table></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 129 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"gameObjectModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currGameObjectInEdit.name\"></td><td></td><td rowspan=\"5\"><div class=\"relative\" style=\"display: inline-block; overflow: auto; max-width:60vw; max-height:60vh;\"><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currGameObjectInEdit), { 'border':'1px solid blue', 'opacity':editData.currGameObjectInEdit.alpha } )\"></div></div></td></tr><tr><td>{{i18n.get('spriteSheet')}}</td><td><select data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet)\" required data-model=\"editData.currGameObjectInEdit.spriteSheet\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\">{{item.name}}</option></select></td><td></td></tr><tr><td>{{i18n.get('groupName')}}</td><td><input data-model=\"editData.currGameObjectInEdit.groupName\"></td><td></td></tr><tr><td>{{i18n.get('rigid')}}</td><td><input type=\"checkbox\" data-model=\"editData.currGameObjectInEdit.rigid\"></td><td></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.width\"></td><td></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.height\"></td><td></td></tr><tr><td>{{i18n.get('angle')}}</td><td><input step=\"0.1\" type=\"number\" required data-model=\"editData.currGameObjectInEdit.angle\"></td><td align=\"left\"><div class=\"inlineBlock\"><app-angle-picker data-state=\"{ object: editData.currGameObjectInEdit, value: 'angle' }\"></app-angle-picker></div></td></tr><tr><td>alpha</td><td><input type=\"number\" min=\"0\" max=\"1\" step=\"0.1\" required data-model=\"editData.currGameObjectInEdit.alpha\"></td><td><input type=\"range\" min=\"0\" max=\"1\" step=\"0.1\" data-model=\"editData.currGameObjectInEdit.alpha\"></td></tr><tr><td>{{i18n.get('currFrameIndex')}}</td><td><input type=\"number\" min=\"0\" data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\" required data-model=\"editData.currGameObjectInEdit.currFrameIndex\"></td><td></td></tr></table><table class=\"width100 stripped\"><tr><th colspan=\"4\">{{i18n.get('frAnimations')}}<button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id\" data-click=\"createFrameAnimation()\">+</button></th></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th>{{i18n.get('name')}}</th><th>{{i18n.get('isDefault')}}<span class=\"small withPadding\">{{i18n.get('unselect')}}<button data-click=\"onStartFrameAnimNameChanged(null)\">*</button></span></th></tr><tr data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations\"><td class=\"pointer\" data-click=\"editFrameAnimation(animItm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteFrameAnimation(animItm)\"><span class=\"delete\"></span></td><td>{{animItm.name}}</td><td><input data-attribute=\"value: animItm.name\" data-change=\"onStartFrameAnimNameChanged(animItm.name)\" data-model=\"editData.currGameObjectInEdit.startFrameAnimationName\" type=\"radio\"></td></tr><tr><th colspan=\"4\">{{i18n.get('commonBehaviour')}}</th></tr><tr><td colspan=\"2\"><select class=\"width50\" data-model=\"selectedCb\"><option>-</option><option data-disabled=\"isCbItemDisabled(cb)\" data-value=\"cb\" data-for=\"cb in editData.commonBehaviourProtos\">{{cb.name}}</option></select></td><td colspan=\"2\"><button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id || !selectedCb\" data-click=\"createCommonBehaviour(selectedCb)\">+</button></td></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th colspan=\"2\">{{i18n.get('name')}}</th></tr><tr data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour\"><td class=\"pointer\" data-click=\"editCommonBehaviour(itm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteCommonBehaviour(itm)\"><span class=\"delete\"></span></td><td colspan=\"2\">{{itm.name}}</td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">{{editData.currGameObjectInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal><app-frame-animation-dialog id=\"frameAnimationDialog\"></app-frame-animation-dialog><app-common-behaviour-dialog id=\"commonBehaviourDialog\"></app-common-behaviour-dialog>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 130 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"layerModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\"><div class=\"withPadding\"><div>{{i18n.get('scene')}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}</div><b class=\"block centerText\">{{i18n.get('layer')}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input data-model=\"editData.currLayerInEdit.name\" required></div></div></div><div><button data-disabled=\"!form.valid()\">{{editData.currLayerInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></div></form></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 131 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"particleSystemModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td></td><td><input required data-model=\"editData.currParticleSystemInEdit.name\"></td></tr><tr><td rowspan=\"2\">numOfParticlesToEmit</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"></td></tr><tr><td rowspan=\"2\">particleVelocity</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"></td></tr><tr><td rowspan=\"2\">particleLiveTime</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"></td></tr><tr><td>emissionRadius</td><td></td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.emissionRadius\"></td></tr><tr><td>particleAngle</td><td>from / to</td><td><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'from' }\"></app-angle-picker><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'to' }\"></app-angle-picker></td></tr><tr><td></td><td>{{i18n.get('gameObject')}}</td><td><table><tr><td><select required data-change=\"onGameObjectSelected(editData.currParticleSystemInEdit.gameObjectProto)\" data-model=\"editData.currParticleSystemInEdit.gameObjectProto\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('GameObjectProto') track by id\">{{item.name}}</option></select></td><td><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObjectProto), { zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObjectProto) } )\"></div></td></tr></table></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">{{editData.currParticleSystemInEdit.id?i18n.get('edit'):i18n.get('create')}}</button><button data-disabled=\"!form.valid()\" data-click=\"showPreview()\">{{i18n.get('preview')}}</button></div></app-modal><app-particle-system-preview-dialog id=\"particleSystemPreviewDialog\"></app-particle-system-preview-dialog>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 132 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"particleSystemPreviewModal\"><div data-transclusion=\"content\"><div>{{i18n.get('preview')}} {{i18n.get('particleSystem')}}<span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span></div><div data-click=\"emit($event)\" data-mousemove=\"$event.buttons==1 && emit($event)\" class=\"subFullScreen relative noOverFlow\"><div data-for=\"item in editData.currParticleSystemInEdit._particles\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left:item.pos.x+'px', top: item.pos.y+'px', pointerEvents:'none' } )\"></div></div><div><button data-click=\"close()\">{{i18n.get('close')}}</button></div></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 133 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"sceneModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditScene(editData.currSceneInEdit)\"><div class=\"withPadding\"><div class=\"table\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input required data-model=\"editData.currSceneInEdit.name\"></div></div></div><button data-disabled=\"!form.valid()\">{{editData.currSceneInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></form></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 134 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"soundModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td></tr><tr><td><input required data-model=\"editData.currSoundInEdit.name\"></td></tr><tr><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadSound'), accept: 'audio/*' }\"></app-input-file></td></tr><tr><td><audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio></td></tr></table><button data-disabled=\"!(form.valid() && soundUrl)\" data-click=\"createOrEditSound(editData.currSoundInEdit)\">{{editData.currSoundInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 135 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"spriteSheetModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currSpriteSheetInEdit.name\"></td><td rowspan=\"6\"><div style=\"max-width:60vw;overflow: auto;padding:5px;\"><div class=\"relative\" data-style=\"{ 'background-image': 'url('+spriteSheetUrl+')', 'background-size': editData.currSpriteSheetInEdit.width+'px '+editData.currSpriteSheetInEdit.height+'px', 'width': editData.currSpriteSheetInEdit.width+'px', 'height': editData.currSpriteSheetInEdit.height+'px', }\"><div data-attributes=\"{title:i}\" data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\" data-style=\"{ 'display': 'inline-block', 'left': editData.currSpriteSheetInEdit.getFramePosX(i)+'px', 'top': editData.currSpriteSheetInEdit.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currSpriteSheetInEdit._frameWidth+'px', 'height': editData.currSpriteSheetInEdit._frameHeight+'px' }\">{{i}}</div></div></div></td></tr><tr><td>{{i18n.get('image')}}</td><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadImage'), accept: 'image/*' }\"></app-input-file></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.width\"></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.height\"></td></tr><tr><td>{{i18n.get('numOfFramesH')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"></td></tr><tr><td>{{i18n.get('numOfFramesV')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-input=\"refreshNumOfCells()\" data-keyup=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"></td></tr></table><button data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\" data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">{{editData.currSpriteSheetInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 136 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"template\"><div class=\"absolute\"><app-top-panel id=\"topPanel\"></app-top-panel></div><div id=\"c\" class=\"split\"><div id=\"a\" class=\"split split-horizontal content\"><app-game-props></app-game-props><app-scenes></app-scenes><app-game-objects></app-game-objects><app-sprite-sheets></app-sprite-sheets><app-user-interface></app-user-interface><app-fonts></app-fonts><app-sounds></app-sounds><app-particle-systems></app-particle-systems></div><div id=\"b\" class=\"split split-horizontal content relative\"><app-script-editor></app-script-editor><div data-if=\"!editData.scriptEditorUrl\" class=\"table width100 height100\"><div class=\"row\"><div class=\"cell height100 vAlign\"><div data-style=\"{ width: editData.game.width + 'px', height: editData.game.height + 'px', overflow: 'auto', border: '1px solid green', margin: '0 auto' }\"><app-scene-central-panel></app-scene-central-panel></div></div></div></div></div><div id=\"e\" class=\"split split-horizontal content\"><app-scene-right-panel></app-scene-right-panel><app-game-object-right-panel></app-game-object-right-panel></div></div><div id=\"d\" class=\"split content\"></div><app-dialogs></app-dialogs></div>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 137 */
 /***/ (function(module, exports) {
 
-module.exports = "<div><div class=\"cell width100\"><div data-style=\"utils.merge( utils.getGameObjectCss(gameObject), { zoom:utils.calcZoom(gameObject), transform: 'scale(1, 1) rotateZ(0deg)', opacity:1 } )\" data-draggable=\"draggable && {obj:gameObject,src: 'leftPanel'}\"></div></div><div class=\"cell\"><span class=\"inlineBlock withPaddingRight\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{gameObject.name}}</span></span></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div></div></div>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 138 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ crud: {create:createFont}, title:i18n.get('fonts') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"font in editData.game.repository.getArray('Font')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{font.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editFont(font)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteFont(font)\"></div></div></div></div></div></div></app-collapsible>";
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 139 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ title: i18n.get('gameObjects'), crud: { create:createGameObject } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"gameObject in editData.game.repository.getArray('GameObjectProto')\"><app-game-object-row data-state=\"{ crud: { edit: editGameObject, editScript: editGameObjectScript, delete: deleteGameObject }, gameObject: gameObject || {}, draggable: true }\"></app-game-object-row></div></div></div></div></app-collapsible>";
+module.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}"
 
 /***/ }),
 /* 140 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{title:i18n.get('game')}\"><div data-transclusion=\"content\"><form class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.width\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.height\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\" tille=\"{{i18n.get('gravityConstantTitle')}}\">{{i18n.get('gravityConstant')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.gravityConstant\" type=\"number\" min=\"0\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('scaleStrategy')}}</div><div class=\"cell\"><select data-model=\"editData.game.scaleStrategy\" data-change=\"form.valid() && saveGameProps()\"><option data-value=\"value\" data-for=\"(value,key) in scales\">{{key}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('preloadingScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.preloadingSceneId\" data-change=\"form.valid() && saveGameProps()\"><option value>--</option><option data-disabled=\"item.id==editData.gameProps.startSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('startScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.startSceneId\" data-change=\"form.valid() && saveGameProps()\"><option data-disabled=\"item.id==editData.gameProps.preloadingSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div></form></div></app-collapsible>";
+module.exports = "// texture and color\n\nprecision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"
 
 /***/ }),
 /* 141 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ crud:{ create:createParticleSystem }, title:i18n.get('particleSystems') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"ps in editData.game.repository.getArray('ParticleSystem')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ps.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div></div></div></div></div></div></app-collapsible>";
+module.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}"
 
 /***/ }),
 /* 142 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-transclusion-id=\"scenes\" data-state=\"{ crud: { create:createScene }, title: i18n.get('scenes') }\"><div data-transclusion=\"content:#scenes\"><div class=\"withPaddingLeft\" data-class=\"{ currScene:editData.currSceneInEdit==scene }\" data-for=\"scene in editData.game.repository.getArray('Scene')\" data-click=\"setCurrentScene(scene)\"><app-collapsible data-transclusion-id=\"currScene\" data-state=\"{ crud: { edit:editScene, delete:deleteScene, editScript: editScript }, object: scene, title: scene.name }\"><div data-transclusion=\"content:#currScene\"><div class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"layers\" data-state=\"{ title: i18n.get('layers'), meta: scene, crud: { create: createLayer } }\"><div data-transclusion=\"content:#layers\"><div data-click=\"setCurrLayer(layer)\" data-for=\"layer in scene.layers\" class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"currLayer\" data-state=\"{ object: layer, meta: scene, crud: { edit:editLayer, delete:deleteLayer }, title: layer.name }\"><div data-transclusion=\"content:#currLayer\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-class=\"{ currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject }\" data-click=\"setCurrSceneGameObjectInEdit(gameObject)\" data-for=\"gameObject in layer.gameObjects\"><app-game-object-row data-state=\"{ gameObject: gameObject, crud: { delete: deleteGameObject }, }\"></app-game-object-row></div></div></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible>";
+module.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\nuniform vec4 u_frameCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(\r\n        v_texcoord + fract(u_offsetCoords),\r\n        u_frameCoords.zw\r\n    ) + u_frameCoords.xy;\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n}"
 
 /***/ }),
 /* 143 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ crud:{ create:createSound }, title:i18n.get('sounds') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"sound in editData.game.repository.getArray('Sound')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{sound.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSound(sound)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSound(sound)\"></div></div></div></div></div></div></app-collapsible>";
+module.exports = "<app-modal id=\"alertModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"close()\">{{i18n.get('ok')}}</button></div></div></div></app-modal>";
 
 /***/ }),
 /* 144 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ title: i18n.get('spriteSheets'), crud: { create:createSpriteSheet } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"spriteSheet in editData.game.repository.getArray('SpriteSheet')\"><div class=\"cell\"><img class=\"spriteSheetThumb\" data-attributes=\"{ src: editData.projectName+'/'+spriteSheet.resourcePath, width: spriteSheet.width, height: spriteSheet.height }\"></div><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{spriteSheet.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div></div></div></div></div></div></app-collapsible>";
+module.exports = "<div class=\"inlineBlock\" data-click=\"click($event)\" data-mousemove=\"mouseMove($event)\"><div data-container class=\"inlineBlock\"><svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle><line id=\"line\" x1=\"100\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"2\" data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"></line></svg></div><div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">{{angleInDeg()}}&deg;</div></div>";
 
 /***/ }),
 /* 145 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ title: i18n.get('userInterface') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-draggable=\"{obj:uiObject,src: 'leftPanel'}\" class=\"row\" data-for=\"uiObject in editData.ui\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{uiObject.type}}</span></div></div></div></div></div></app-collapsible>";
+module.exports = "<div><div class=\"collapsible_header bold noSelect\"><div class=\"table width100\"><div class=\"row\"><div class=\"cell width1\"><span class=\"collapsible_point noBrake\" data-click=\"toggle()\" data-class=\"{rotated:opened}\">▷</span></div><div class=\"cell\"><span data-click=\"toggle()\">&nbsp;{{title}}</span></div><div class=\"cell width1\"><div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div></div></div></div></div><div class=\"collapsible_content\" data-class=\"{opened:opened}\"><div data-transclusion=\"content\"></div></div></div>";
 
 /***/ }),
 /* 146 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{ title: i18n.get('currGameObject') }\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneGameObjectInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneGameObjectInEdit.id\"><h3 class=\"centerText\">{{editData.currSceneGameObjectInEdit.type}}</h3><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">id</div><div class=\"cell\">{{editData.currSceneGameObjectInEdit.id}}</div></div><div class=\"row\"><div class=\"cell\">name</div><div class=\"cell\"><input required data-change=\"editGameObject()\" class=\"width100\" data-model=\"editData.currSceneGameObjectInEdit.name\"></div></div><div class=\"row\"><div class=\"cell\">pos.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.x\"></div></div><div class=\"row\"><div class=\"cell\">pos.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.y\"></div></div><div class=\"row\"><div class=\"cell\">scale.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.x\"></div></div><div class=\"row\"><div class=\"cell\">scale.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.y\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.width\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('angle')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required data-model=\"editData.currSceneGameObjectInEdit.angle\"></div></div><div class=\"row\"><div class=\"cell\">alpha</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required min=\"0\" max=\"1\" data-model=\"editData.currSceneGameObjectInEdit.alpha\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('fixedToCamera')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.fixedToCamera\" /></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('rigid')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.rigid\" /></div></div><div class=\"row\" data-if=\"editData.currSceneGameObjectInEdit.type=='TextField'\"><div class=\"cell\">{{i18n.get('text')}}</div><div class=\"cell\"><textarea data-model=\"editData.currSceneGameObjectInEdit.text\" data-change=\"setTextFieldText($event) || editGameObject()\"></textarea></div></div></div></div></div></app-collapsible>";
+module.exports = "<div class=\"inlineBlock\"><div data-style=\"{ cursor: 'pointer', width: 24 + 'px', height:24 + 'px', backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')') }\" data-click=\"click()\"></div></div>";
 
 /***/ }),
 /* 147 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-collapsible data-state=\"{title:i18n.get('currScene')}\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneInEdit.id\"><b class=\"centerText\">{{i18n.get('scene')}} : {{editData.currSceneInEdit.name}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\"><label for=\"editData.currSceneInEdit.useBG\">{{i18n.get('useBG')}}</label></div><div class=\"cell\"><input type=\"checkbox\" id=\"editData.currSceneInEdit.useBG\" data-model=\"editData.currSceneInEdit.useBG\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.width\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.height\" data-change=\"editScene()\"></div></div><div class=\"row\" data-if=\"editData.currSceneInEdit.useBG\"><div class=\"cell\">{{i18n.get('colorBG')}}</div><div class=\"cell\"><app-color-picker data-state=\"{ model:editData.currSceneInEdit, field: 'colorBG', onChange: editScene }\"></app-color-picker></div></div><div class=\"row\"><div class=\"cell\"><hr></div><div class=\"cell\"><hr></div></div><div class=\"row\"><div class=\"cell valign bold\">{{i18n.get('tileMap')}}</div><div class=\"cell\"><div data-click=\"createTileMap()\" data-if=\"!editData.currSceneInEdit.tileMap.id\" class=\"add\"></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"delete\"></div></div></div></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"table width100\"><div class=\"row\"><div class=\"cell valign\">tileMap.width</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.width\"></div></div><div class=\"row\"><div class=\"cell valign\">tileMap.height</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('selected')}}</div><div class=\"cell\"><div data-class=\"{ inlineBlock:1, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath({strict:true}), backgroundPositionX: -utils.tileFramePosX(editData.currTileIndexInEdit)+'px', backgroundPositionY: -utils.tileFramePosY(editData.currTileIndexInEdit)+'px', backgroundRepeat: 'no-repeat' }\"></div><button data-if=\"editData.currTileIndexInEdit!=null\" data-click=\"utils.assign(editData,'currTileIndexInEdit',null)\">{{i18n.get('unset')}}</button></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('spriteSheets')}}</div><div class=\"cell\"><select data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.spriteSheet\"><option value>--</option><option data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\" data-value=\"item\">{{item.name}}</option></select></div></div></div><div class=\"row\"><div data-click=\"toggleEditMode()\" data-class=\"{ editModeOn:editData.editTileMapModeOn, edit:1 }\"></div><span class=\"small\">(shift)</span></div><div data-style=\"{ width: utils.tileFrameWidth()*utils.tileNumOfFramesH()+'px', overflowX: 'auto', padding: '2px' }\"><div data-class=\"{ inlineBlock:true, selected:i==editData.currTileIndexInEdit, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath(), backgroundPositionX: -utils.tileFramePosX(i)+'px', backgroundPositionY: -utils.tileFramePosY(i)+'px', backgroundRepeat: 'no-repeat' }\" data-title=\"i\" data-click=\"setCurrSelectedTile(i)\" data-for=\"v,i in utils.getArray(numOfFramesForSceneSpriteSheet())\"></div></div></div></div></app-collapsible>";
+module.exports = "<app-modal id=\"colorPickerModal\" data-transclusion-id=\"colorPicker\"><div data-transclusion=\"content:#colorPicker\"><table><tr><td><input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"></td><td><input type=\"text\" data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"></td><td></td></tr><table class=\"width100\"><tr data-for=\"item in colorEnums\"><td data-style=\"{ color: item.left }\">{{item.left}}</td><td class=\"centerText\"><input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\"><br><input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\"><hr></td><td data-style=\"{ color: item.right }\">{{item.right}}</td><td><div data-style=\"{ width: '5px', height: '5px', backgroundColor: getRawColor(currentColor.RGB,item.key) }\"></div></td></tr></table></table><button data-click=\"applyColor()\">{{i18n.get('edit')}}</button></div></app-modal>";
 
 /***/ }),
 /* 148 */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"panel withPadding pointer\"><div class=\"inlineBlock withPadding\" data-click=\"showBuildDialog()\">{{i18n.get('build')}}</div><div class=\"inlineBlock withPadding\" data-click=\"run()\">{{i18n.get('run')}}</div><div class=\"inlineBlock withPadding\" data-click=\"toExplorer()\">{{i18n.get('explorer')}}</div></div><app-popup-blocked></app-popup-blocked>";
+module.exports = "<app-modal id=\"confirmModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"confirmAndClose()\">{{i18n.get('confirm')}}</button><button data-click=\"close()\">{{i18n.get('cancel')}}</button></div></div></div></app-modal>";
 
 /***/ }),
 /* 149 */
 /***/ (function(module, exports) {
 
-module.exports = "<app-modal id=\"projectDialog\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditProject(editData.currProjectInEdit)\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currProjectInEdit.name\"></td></tr></table><button>{{editData.currProjectInEdit.oldName?i18n.get('edit'):i18n.get('create')}}</button></form></div></app-modal>";
+module.exports = "<div><button>{{title}}</button><input required accept=\"{{accept}}\" type=\"file\"></div>";
 
 /***/ }),
 /* 150 */
 /***/ (function(module, exports) {
 
-module.exports = "<div><div class=\"width50 marginAuto\"><h3 class=\"centerText\">{{i18n.get('projects')}}</h3><div class=\"table width100\"><div data-for=\"p in editData.projects\" class=\"row hoverOnProjectRow\"><div class=\"cell width100\"><div data-click=\"openProject(p)\" class=\"withPadding pointer\">{{p.name}}</div></div><div class=\"cell rightAlign\"><div class=\"edit\" data-click=\"editProject(p)\"></div></div><div class=\"cell rightAlign\"><div data-click=\"deleteProject(p)\" class=\"delete\"></div></div></div><div class=\"row\"><div class=\"cell\"><div class=\"withPadding\"><div class=\"add\" data-click=\"createProject()\"></div></div></div></div></div></div><app-project-dialog></app-project-dialog></div>";
+module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\"><div class=\"fullscreen shadow\"></div><div class=\"dialog\"><div class=\"dialogContent\"><div class=\"dialogClose\"><span data-click=\"close()\" class=\"pointer\">X</span></div><div class=\"withPadding\"><div data-transclusion=\"content\"></div></div></div></div></div>";
 
 /***/ }),
 /* 151 */
+/***/ (function(module, exports) {
+
+module.exports = "<table><tr><td></td><td><button data-click=\"onKeyUp()\">&uarr;</button></td><td></td></tr><tr><td><button data-click=\"onKeyLeft()\">&larr;</button></td><td></td><td><button data-click=\"onKeyRight()\">&rarr;</button></td></tr><tr><td></td><td><button data-click=\"onKeyDown()\">&darr;</button></td><td></td></tr></table>";
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"height100 relative noOverFlow\" data-droppable=\"onDropFromLeftPanel\" data-click=\"onCentralSceneClick($event)\" data-style=\"{ backgroundColor: editData.currSceneInEdit.useBG?utils.rgbToCss(editData.currSceneInEdit.colorBG):'white' }\" data-draggable-container id=\"sceneDiv\"><div data-for=\"item in editData.currLayerInEdit.gameObjects\"><div data-if=\"item.type=='GameObject'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.fixedToCamera?(item.pos.x+'px'): item.pos.x - utils.tileFrameWidth() * editData.tileMapPosX + 'px', top: item.fixedToCamera?(item.pos.y+'px'): item.pos.y - utils.tileFrameHeight() * editData.tileMapPosY + 'px', } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"></div><div data-if=\"item.type=='TextField'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.pos.x - item.width * editData.tileMapPosX + 'px', top: item.pos.y - item.height * editData.tileMapPosY + 'px', backgroundColor:'rgb(0,222,0.1)', height:item.height+'px', width:item.width?item.width+'px':'10px', backgroundColor:item.width?'':'#ddd', backgroundImage:'none' } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"><div style=\"position: relative;left:0;top:0;z-index:10\"><span data-style=\"getCharCss(item,ch)\" data-for=\"ch in item._chars\"></span></div></div></div></div>";
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"height100 relative\" data-if=\"editData.scriptEditorUrl\"><div class=\"scriptEditorClose\" data-click=\"close()\">X</div><div style=\"height:10px;font-size: 10px;\">{{editData.scriptEditorUrl}}</div><div id=\"scriptEditor\" style=\"height:calc(100% - 10px)\"><iframe id=\"scriptEditorFrame\" frameborder=\"0\" class=\"block width100 height100 noOverFlow\" src=\"/editor\"></div></div>";
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"buildModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('minify')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.minify\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('debug')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.debug\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('windowed')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.windowed\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('embedResources')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.embedResources\" type=\"checkbox\"></td></tr></table><button data-click=\"close()\">ok</button></div></app-modal>";
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"commonBehaviourModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td class=\"borderBottom\">{{i18n.get('name')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.name}}</td></tr><tr><td class=\"borderBottom\">{{i18n.get('description')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.description}}</td></tr><tr data-for=\"value,key in editData.currCommonBehaviourInEdit.parameters\"><td class=\"borderBottom\">{{key}}</td><td class=\"borderBottom\"><input type=\"text\" data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"></td></tr><tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\"><td colspan=\"2\" class=\"borderBottom\">{{i18n.get('noDataToEdit')}}</td></tr></table><button data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\" data-disabled=\"!form.valid()\">{{editData.currCommonBehaviourInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports) {
+
+module.exports = "<div><app-sound-dialog id=\"soundDialog\"></app-sound-dialog><app-particle-system-dialog></app-particle-system-dialog><app-font-dialog id=\"fontDialog\"></app-font-dialog><app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog><app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog><app-scene-dialog></app-scene-dialog><app-layer-dialog></app-layer-dialog><app-build-dialog></app-build-dialog></div><app-color-picker-dialog id=\"colorPickerDialog\"></app-color-picker-dialog>";
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"fontModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('selectFont')}}</td><td><select data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\"><option data-value=\"fnt.displayName\" data-for=\"fnt in systemFontList\">{{fnt.displayName}}</option></select></td></tr><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currFontInEdit.name\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontSize')}}</td><td><input type=\"number\" min=\"1\" max=\"1000\" data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontColor')}}</td><td><app-color-picker data-state=\"{ model:editData.currFontInEdit, field:'fontColor' }\"></app-color-picker></td></tr><tr><td colspan=\"2\"><input data-model=\"fontSample\" class=\"width100\"></td></tr><tr><td colspan=\"2\"><div data-style=\"{ fontFamily:editData.currFontInEdit.fontFamily, fontSize:editData.currFontInEdit.fontSize+'px', color:utils.rgbToHex(editData.currFontInEdit.fontColor) }\">{{fontSample}}</div></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditFont(editData.currFontInEdit)\">{{editData.currFontInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"frameAnimationModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currFrameAnimationInEdit.name\"></td><td rowspan=\"3\"><div style=\"max-height: 80vh;max-width:80vw;overflow: auto;padding: 5px;\">{{ editData.currFrameAnimationInEdit._gameObject && editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0 }}<div data-style=\"utils.merge( utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject), {outline:'1px solid blue'} )\"></div><div><button data-click=\"playAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('playAnim')}}</button><button data-click=\"stopAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('stopAnim')}}</button></div><div><button data-click=\"previousFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"><< </button><button data-click=\"nextFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">>></button></<><div class=\"relative\" data-style=\"{ 'background-image': 'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px' }\"><div data-for=\"v,i in getLoopArr()\" data-style=\"{ 'display': 'inline-block', 'left': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px', 'top': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px' }\">{{i}}</div></div></button></div></div><tr><td>{{i18n.get('duration')}}</td><td><input type=\"number\" min=\"1\" required data-model=\"editData.currFrameAnimationInEdit.duration\"></td></tr><tr><td><table><tr><td>{{i18n.get('frames')}}</td><td><button data-click=\"setAllIndexes()\">{{i18n.get('all')}}</button></td></tr><tr><td>{{i18n.get('from')}}</td><td><input type=\"number\" data-model=\"from\" min=\"0\" data-keyup=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('to')}}</td><td><input type=\"number\" min=\"0\" data-model=\"to\" data-change=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('step')}}</td><td><input type=\"number\" min=\"0\" data-model=\"step\" data-change=\"setRangeIndexes()\"></td></tr></table></td><td><textarea required data-model=\"frames\"></textarea></td></tr></td><button data-click=\"createOrEditFrameAnimation()\" data-disabled=\"!form.valid()\">{{editData.currFrameAnimationInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></tr></table></div></app-modal>";
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"gameObjectModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currGameObjectInEdit.name\"></td><td></td><td rowspan=\"5\"><div class=\"relative\" style=\"display: inline-block; overflow: auto; max-width:60vw; max-height:60vh;\"><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currGameObjectInEdit), { 'border':'1px solid blue', 'opacity':editData.currGameObjectInEdit.alpha } )\"></div></div></td></tr><tr><td>{{i18n.get('spriteSheet')}}</td><td><select data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet)\" required data-model=\"editData.currGameObjectInEdit.spriteSheet\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\">{{item.name}}</option></select></td><td></td></tr><tr><td>{{i18n.get('groupName')}}</td><td><input data-model=\"editData.currGameObjectInEdit.groupName\"></td><td></td></tr><tr><td>{{i18n.get('rigid')}}</td><td><input type=\"checkbox\" data-model=\"editData.currGameObjectInEdit.rigid\"></td><td></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.width\"></td><td></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.height\"></td><td></td></tr><tr><td>{{i18n.get('angle')}}</td><td><input step=\"0.1\" type=\"number\" required data-model=\"editData.currGameObjectInEdit.angle\"></td><td align=\"left\"><div class=\"inlineBlock\"><app-angle-picker data-state=\"{ object: editData.currGameObjectInEdit, value: 'angle' }\"></app-angle-picker></div></td></tr><tr><td>alpha</td><td><input type=\"number\" min=\"0\" max=\"1\" step=\"0.1\" required data-model=\"editData.currGameObjectInEdit.alpha\"></td><td><input type=\"range\" min=\"0\" max=\"1\" step=\"0.1\" data-model=\"editData.currGameObjectInEdit.alpha\"></td></tr><tr><td>{{i18n.get('currFrameIndex')}}</td><td><input type=\"number\" min=\"0\" data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\" required data-model=\"editData.currGameObjectInEdit.currFrameIndex\"></td><td></td></tr></table><table class=\"width100 stripped\"><tr><th colspan=\"4\">{{i18n.get('frAnimations')}}<button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id\" data-click=\"createFrameAnimation()\">+</button></th></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th>{{i18n.get('name')}}</th><th>{{i18n.get('isDefault')}}<span class=\"small withPadding\">{{i18n.get('unselect')}}<button data-click=\"onStartFrameAnimNameChanged(null)\">*</button></span></th></tr><tr data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations\"><td class=\"pointer\" data-click=\"editFrameAnimation(animItm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteFrameAnimation(animItm)\"><span class=\"delete\"></span></td><td>{{animItm.name}}</td><td><input data-attribute=\"value: animItm.name\" data-change=\"onStartFrameAnimNameChanged(animItm.name)\" data-model=\"editData.currGameObjectInEdit.startFrameAnimationName\" type=\"radio\"></td></tr><tr><th colspan=\"4\">{{i18n.get('commonBehaviour')}}</th></tr><tr><td colspan=\"2\"><select class=\"width50\" data-model=\"selectedCb\"><option>-</option><option data-disabled=\"isCbItemDisabled(cb)\" data-value=\"cb\" data-for=\"cb in editData.commonBehaviourProtos\">{{cb.name}}</option></select></td><td colspan=\"2\"><button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id || !selectedCb\" data-click=\"createCommonBehaviour(selectedCb)\">+</button></td></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th colspan=\"2\">{{i18n.get('name')}}</th></tr><tr data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour\"><td class=\"pointer\" data-click=\"editCommonBehaviour(itm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteCommonBehaviour(itm)\"><span class=\"delete\"></span></td><td colspan=\"2\">{{itm.name}}</td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">{{editData.currGameObjectInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal><app-frame-animation-dialog id=\"frameAnimationDialog\"></app-frame-animation-dialog><app-common-behaviour-dialog id=\"commonBehaviourDialog\"></app-common-behaviour-dialog>";
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"layerModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\"><div class=\"withPadding\"><div>{{i18n.get('scene')}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}</div><b class=\"block centerText\">{{i18n.get('layer')}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input data-model=\"editData.currLayerInEdit.name\" required></div></div></div><div><button data-disabled=\"!form.valid()\">{{editData.currLayerInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></div></form></div></app-modal>";
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"particleSystemModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td></td><td><input required data-model=\"editData.currParticleSystemInEdit.name\"></td></tr><tr><td rowspan=\"2\">numOfParticlesToEmit</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"></td></tr><tr><td rowspan=\"2\">particleVelocity</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"></td></tr><tr><td rowspan=\"2\">particleLiveTime</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"></td></tr><tr><td>emissionRadius</td><td></td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.emissionRadius\"></td></tr><tr><td>particleAngle</td><td>from / to</td><td><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'from' }\"></app-angle-picker><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'to' }\"></app-angle-picker></td></tr><tr><td></td><td>{{i18n.get('gameObject')}}</td><td><table><tr><td><select required data-change=\"onGameObjectSelected(editData.currParticleSystemInEdit.gameObjectProto)\" data-model=\"editData.currParticleSystemInEdit.gameObjectProto\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('GameObjectProto') track by id\">{{item.name}}</option></select></td><td><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObjectProto), { zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObjectProto) } )\"></div></td></tr></table></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">{{editData.currParticleSystemInEdit.id?i18n.get('edit'):i18n.get('create')}}</button><button data-disabled=\"!form.valid()\" data-click=\"showPreview()\">{{i18n.get('preview')}}</button></div></app-modal><app-particle-system-preview-dialog id=\"particleSystemPreviewDialog\"></app-particle-system-preview-dialog>";
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"particleSystemPreviewModal\"><div data-transclusion=\"content\"><div>{{i18n.get('preview')}} {{i18n.get('particleSystem')}}<span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span></div><div data-click=\"emit($event)\" data-mousemove=\"$event.buttons==1 && emit($event)\" class=\"subFullScreen relative noOverFlow\"><div data-for=\"item in editData.currParticleSystemInEdit._particles\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left:item.pos.x+'px', top: item.pos.y+'px', pointerEvents:'none' } )\"></div></div><div><button data-click=\"close()\">{{i18n.get('close')}}</button></div></div></app-modal>";
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"sceneModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditScene(editData.currSceneInEdit)\"><div class=\"withPadding\"><div class=\"table\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input required data-model=\"editData.currSceneInEdit.name\"></div></div></div><button data-disabled=\"!form.valid()\">{{editData.currSceneInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></form></div></app-modal>";
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"soundModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td></tr><tr><td><input required data-model=\"editData.currSoundInEdit.name\"></td></tr><tr><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadSound'), accept: 'audio/*' }\"></app-input-file></td></tr><tr><td><audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio></td></tr></table><button data-disabled=\"!(form.valid() && soundUrl)\" data-click=\"createOrEditSound(editData.currSoundInEdit)\">{{editData.currSoundInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"spriteSheetModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currSpriteSheetInEdit.name\"></td><td rowspan=\"6\"><div style=\"max-width:60vw;overflow: auto;padding:5px;\"><div class=\"relative\" data-style=\"{ 'background-image': 'url('+spriteSheetUrl+')', 'background-size': editData.currSpriteSheetInEdit.width+'px '+editData.currSpriteSheetInEdit.height+'px', 'width': editData.currSpriteSheetInEdit.width+'px', 'height': editData.currSpriteSheetInEdit.height+'px', }\"><div data-attributes=\"{title:i}\" data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\" data-style=\"{ 'display': 'inline-block', 'left': editData.currSpriteSheetInEdit.getFramePosX(i)+'px', 'top': editData.currSpriteSheetInEdit.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currSpriteSheetInEdit._frameWidth+'px', 'height': editData.currSpriteSheetInEdit._frameHeight+'px' }\">{{i}}</div></div></div></td></tr><tr><td>{{i18n.get('image')}}</td><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadImage'), accept: 'image/*' }\"></app-input-file></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.width\"></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.height\"></td></tr><tr><td>{{i18n.get('numOfFramesH')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"></td></tr><tr><td>{{i18n.get('numOfFramesV')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-input=\"refreshNumOfCells()\" data-keyup=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"></td></tr></table><button data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\" data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">{{editData.currSpriteSheetInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"template\"><div class=\"absolute\"><app-top-panel id=\"topPanel\"></app-top-panel></div><div id=\"c\" class=\"split\"><div id=\"a\" class=\"split split-horizontal content\"><app-game-props></app-game-props><app-scenes></app-scenes><app-game-objects></app-game-objects><app-sprite-sheets></app-sprite-sheets><app-user-interface></app-user-interface><app-fonts></app-fonts><app-sounds></app-sounds><app-particle-systems></app-particle-systems></div><div id=\"b\" class=\"split split-horizontal content relative\"><app-script-editor></app-script-editor><div data-if=\"!editData.scriptEditorUrl\" class=\"table width100 height100\"><div class=\"row\"><div class=\"cell height100 vAlign\"><div data-style=\"{ width: editData.game.width + 'px', height: editData.game.height + 'px', overflow: 'auto', border: '1px solid green', margin: '0 auto' }\"><app-scene-central-panel></app-scene-central-panel></div></div></div></div></div><div id=\"e\" class=\"split split-horizontal content\"><app-scene-right-panel></app-scene-right-panel><app-game-object-right-panel></app-game-object-right-panel></div></div><div id=\"d\" class=\"split content\"></div><app-dialogs></app-dialogs></div>";
+
+/***/ }),
+/* 167 */
+/***/ (function(module, exports) {
+
+module.exports = "<div><div class=\"cell width100\"><div data-style=\"utils.merge( utils.getGameObjectCss(gameObject), { zoom:utils.calcZoom(gameObject), transform: 'scale(1, 1) rotateZ(0deg)', opacity:1 } )\" data-draggable=\"draggable && {obj:gameObject,src: 'leftPanel'}\"></div></div><div class=\"cell\"><span class=\"inlineBlock withPaddingRight\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{gameObject.name}}</span></span></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div></div></div>";
+
+/***/ }),
+/* 168 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ crud: {create:createFont}, title:i18n.get('fonts') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"font in editData.game.repository.getArray('Font')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{font.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editFont(font)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteFont(font)\"></div></div></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 169 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ title: i18n.get('gameObjects'), crud: { create:createGameObject } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"gameObject in editData.game.repository.getArray('GameObjectProto')\"><app-game-object-row data-state=\"{ crud: { edit: editGameObject, editScript: editGameObjectScript, delete: deleteGameObject }, gameObject: gameObject || {}, draggable: true }\"></app-game-object-row></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 170 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{title:i18n.get('game')}\"><div data-transclusion=\"content\"><form class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.width\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.height\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\" tille=\"{{i18n.get('gravityConstantTitle')}}\">{{i18n.get('gravityConstant')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.gravityConstant\" type=\"number\" min=\"0\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('scaleStrategy')}}</div><div class=\"cell\"><select data-model=\"editData.game.scaleStrategy\" data-change=\"form.valid() && saveGameProps()\"><option data-value=\"value\" data-for=\"(value,key) in scales\">{{key}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('preloadingScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.preloadingSceneId\" data-change=\"form.valid() && saveGameProps()\"><option value>--</option><option data-disabled=\"item.id==editData.gameProps.startSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('startScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.startSceneId\" data-change=\"form.valid() && saveGameProps()\"><option data-disabled=\"item.id==editData.gameProps.preloadingSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div></form></div></app-collapsible>";
+
+/***/ }),
+/* 171 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ crud:{ create:createParticleSystem }, title:i18n.get('particleSystems') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"ps in editData.game.repository.getArray('ParticleSystem')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ps.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div></div></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-transclusion-id=\"scenes\" data-state=\"{ crud: { create:createScene }, title: i18n.get('scenes') }\"><div data-transclusion=\"content:#scenes\"><div class=\"withPaddingLeft\" data-class=\"{ currScene:editData.currSceneInEdit==scene }\" data-for=\"scene in editData.game.repository.getArray('Scene')\" data-click=\"setCurrentScene(scene)\"><app-collapsible data-transclusion-id=\"currScene\" data-state=\"{ crud: { edit:editScene, delete:deleteScene, editScript: editScript }, object: scene, title: scene.name }\"><div data-transclusion=\"content:#currScene\"><div class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"layers\" data-state=\"{ title: i18n.get('layers'), meta: scene, crud: { create: createLayer } }\"><div data-transclusion=\"content:#layers\"><div data-click=\"setCurrLayer(layer)\" data-for=\"layer in scene.layers\" class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"currLayer\" data-state=\"{ object: layer, meta: scene, crud: { edit:editLayer, delete:deleteLayer }, title: layer.name }\"><div data-transclusion=\"content:#currLayer\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-class=\"{ currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject }\" data-click=\"setCurrSceneGameObjectInEdit(gameObject)\" data-for=\"gameObject in layer.gameObjects\"><app-game-object-row data-state=\"{ gameObject: gameObject, crud: { delete: deleteGameObject }, }\"></app-game-object-row></div></div></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible>";
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ crud:{ create:createSound }, title:i18n.get('sounds') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"sound in editData.game.repository.getArray('Sound')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{sound.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSound(sound)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSound(sound)\"></div></div></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ title: i18n.get('spriteSheets'), crud: { create:createSpriteSheet } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"spriteSheet in editData.game.repository.getArray('SpriteSheet')\"><div class=\"cell\"><img class=\"spriteSheetThumb\" data-attributes=\"{ src: editData.projectName+'/'+spriteSheet.resourcePath, width: spriteSheet.width, height: spriteSheet.height }\"></div><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{spriteSheet.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div></div></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ title: i18n.get('userInterface') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-draggable=\"{obj:uiObject,src: 'leftPanel'}\" class=\"row\" data-for=\"uiObject in editData.ui\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{uiObject.type}}</span></div></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{ title: i18n.get('currGameObject') }\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneGameObjectInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneGameObjectInEdit.id\"><h3 class=\"centerText\">{{editData.currSceneGameObjectInEdit.type}}</h3><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">id</div><div class=\"cell\">{{editData.currSceneGameObjectInEdit.id}}</div></div><div class=\"row\"><div class=\"cell\">name</div><div class=\"cell\"><input required data-change=\"editGameObject()\" class=\"width100\" data-model=\"editData.currSceneGameObjectInEdit.name\"></div></div><div class=\"row\"><div class=\"cell\">pos.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.x\"></div></div><div class=\"row\"><div class=\"cell\">pos.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.y\"></div></div><div class=\"row\"><div class=\"cell\">scale.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.x\"></div></div><div class=\"row\"><div class=\"cell\">scale.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.y\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.width\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('angle')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required data-model=\"editData.currSceneGameObjectInEdit.angle\"></div></div><div class=\"row\"><div class=\"cell\">alpha</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required min=\"0\" max=\"1\" data-model=\"editData.currSceneGameObjectInEdit.alpha\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('fixedToCamera')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.fixedToCamera\" /></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('rigid')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.rigid\" /></div></div><div class=\"row\" data-if=\"editData.currSceneGameObjectInEdit.type=='TextField'\"><div class=\"cell\">{{i18n.get('text')}}</div><div class=\"cell\"><textarea data-model=\"editData.currSceneGameObjectInEdit.text\" data-change=\"setTextFieldText($event) || editGameObject()\"></textarea></div></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-collapsible data-state=\"{title:i18n.get('currScene')}\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneInEdit.id\"><b class=\"centerText\">{{i18n.get('scene')}} : {{editData.currSceneInEdit.name}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\"><label for=\"editData.currSceneInEdit.useBG\">{{i18n.get('useBG')}}</label></div><div class=\"cell\"><input type=\"checkbox\" id=\"editData.currSceneInEdit.useBG\" data-model=\"editData.currSceneInEdit.useBG\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.width\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.height\" data-change=\"editScene()\"></div></div><div class=\"row\" data-if=\"editData.currSceneInEdit.useBG\"><div class=\"cell\">{{i18n.get('colorBG')}}</div><div class=\"cell\"><app-color-picker data-state=\"{ model:editData.currSceneInEdit, field: 'colorBG', onChange: editScene }\"></app-color-picker></div></div><div class=\"row\"><div class=\"cell\"><hr></div><div class=\"cell\"><hr></div></div><div class=\"row\"><div class=\"cell valign bold\">{{i18n.get('tileMap')}}</div><div class=\"cell\"><div data-click=\"createTileMap()\" data-if=\"!editData.currSceneInEdit.tileMap.id\" class=\"add\"></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"delete\"></div></div></div></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"table width100\"><div class=\"row\"><div class=\"cell valign\">tileMap.width</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.width\"></div></div><div class=\"row\"><div class=\"cell valign\">tileMap.height</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('selected')}}</div><div class=\"cell\"><div data-class=\"{ inlineBlock:1, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath({strict:true}), backgroundPositionX: -utils.tileFramePosX(editData.currTileIndexInEdit)+'px', backgroundPositionY: -utils.tileFramePosY(editData.currTileIndexInEdit)+'px', backgroundRepeat: 'no-repeat' }\"></div><button data-if=\"editData.currTileIndexInEdit!=null\" data-click=\"utils.assign(editData,'currTileIndexInEdit',null)\">{{i18n.get('unset')}}</button></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('spriteSheets')}}</div><div class=\"cell\"><select data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.spriteSheet\"><option value>--</option><option data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\" data-value=\"item\">{{item.name}}</option></select></div></div></div><div class=\"row\"><div data-click=\"toggleEditMode()\" data-class=\"{ editModeOn:editData.editTileMapModeOn, edit:1 }\"></div><span class=\"small\">(shift)</span></div><div data-style=\"{ width: utils.tileFrameWidth()*utils.tileNumOfFramesH()+'px', overflowX: 'auto', padding: '2px' }\"><div data-class=\"{ inlineBlock:true, selected:i==editData.currTileIndexInEdit, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath(), backgroundPositionX: -utils.tileFramePosX(i)+'px', backgroundPositionY: -utils.tileFramePosY(i)+'px', backgroundRepeat: 'no-repeat' }\" data-title=\"i\" data-click=\"setCurrSelectedTile(i)\" data-for=\"v,i in utils.getArray(numOfFramesForSceneSpriteSheet())\"></div></div></div></div></app-collapsible>";
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"panel withPadding pointer\"><div class=\"inlineBlock withPadding\" data-click=\"showBuildDialog()\">{{i18n.get('build')}}</div><div class=\"inlineBlock withPadding\" data-click=\"run()\">{{i18n.get('run')}}</div><div class=\"inlineBlock withPadding\" data-click=\"toExplorer()\">{{i18n.get('explorer')}}</div></div><app-popup-blocked></app-popup-blocked>";
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports) {
+
+module.exports = "<app-modal id=\"projectDialog\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditProject(editData.currProjectInEdit)\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currProjectInEdit.name\"></td></tr></table><button>{{editData.currProjectInEdit.oldName?i18n.get('edit'):i18n.get('create')}}</button></form></div></app-modal>";
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports) {
+
+module.exports = "<div><div class=\"width50 marginAuto\"><h3 class=\"centerText\">{{i18n.get('projects')}}</h3><div class=\"table width100\"><div data-for=\"p in editData.projects\" class=\"row hoverOnProjectRow\"><div class=\"cell width100\"><div data-click=\"openProject(p)\" class=\"withPadding pointer\">{{p.name}}</div></div><div class=\"cell rightAlign\"><div class=\"edit\" data-click=\"editProject(p)\"></div></div><div class=\"cell rightAlign\"><div data-click=\"deleteProject(p)\" class=\"delete\"></div></div></div><div class=\"row\"><div class=\"cell\"><div class=\"withPadding\"><div class=\"add\" data-click=\"createProject()\"></div></div></div></div></div></div><app-project-dialog></app-project-dialog></div>";
+
+/***/ }),
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(31);
-module.exports = __webpack_require__(30);
+__webpack_require__(45);
+module.exports = __webpack_require__(44);
 
 
 /***/ })
