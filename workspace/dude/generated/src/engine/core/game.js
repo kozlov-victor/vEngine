@@ -14,6 +14,7 @@ import {Transient} from './misc/decorators'
 
 import CommonObject from '../model/commonObject'
 import Camera from './camera'
+import {SCALE_STRATEGY} from "./misc/consts";
 
 @Transient({
     repository: true,
@@ -35,6 +36,7 @@ export default class Game extends CommonObject {
     gravityConstant = null;
     fps = null;
     gamePad = null;
+    scaleStrategy;// = SCALE_STRATEGY.FIT;
 
     constructor(gameProps){
         super();

@@ -13085,13 +13085,14 @@ var Camera = function () {
         this.lastToleranceTime = 0;
         this._rect = new _rect2.default();
         this._rectScaled = new _rect2.default();
-        this.TOLERANCE_TIME = 2000;
+        this.FOLLOWING_TOLERANCE_TIME = 2000;
 
         this.game = game;
     }
 
     Camera.prototype.followTo = function followTo(gameObject) {
-        if (true && !gameObject) throw 'Camera:followTo(gameObject) - gameObject not provided';
+        if (gameObject === null) return;
+        if (true && gameObject === undefined) throw 'Camera:followTo(gameObject) - gameObject not provided';
         this.objFollowTo = gameObject;
         this.scene = this.game._currentScene;
         if (this.scene.tileMap.spriteSheet) {
@@ -13105,7 +13106,7 @@ var Camera = function () {
             target: this,
             ease: 'easeInQuad',
             to: { x: this.pos.x, y: this.pos.y },
-            time: this.TOLERANCE_TIME
+            time: this.FOLLOWING_TOLERANCE_TIME
         });
     };
 
@@ -13128,10 +13129,10 @@ var Camera = function () {
         if (x > this.sceneWidth - w + tileWidth) x = this.sceneWidth - w + tileWidth;
         if (y > this.sceneHeight - h + tileHeight) y = this.sceneHeight - h + tileHeight;
         var scaleVal = Math.abs(gameObject.rigidBody.vel.x) > 0 ? 0.95 : 1;
-        if (this.TOLERANCE_TIME === 0) {
+        if (this.FOLLOWING_TOLERANCE_TIME === 0) {
             this.pos.x = x;
             this.pos.y = y;
-        } else if (currTime - this.lastToleranceTime > this.TOLERANCE_TIME) {
+        } else if (currTime - this.lastToleranceTime > this.FOLLOWING_TOLERANCE_TIME) {
             this.lastToleranceTime = currTime;
             this.cameraTween.reuse({
                 to: {
@@ -13155,7 +13156,8 @@ var Camera = function () {
     Camera.prototype.render = function render() {
         this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
         this.game.renderer.scale(this.scale.x, this.scale.y);
-        // camera rotation will be here if needs
+        // todo rotation does not work correctly yet
+        //this.game.renderer.rotateZ(this.angle);
         this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
         this.game.renderer.translate(-this.pos.x, -this.pos.y);
     };
@@ -13671,6 +13673,8 @@ var _camera = __webpack_require__(98);
 
 var _camera2 = _interopRequireDefault(_camera);
 
+var _consts = __webpack_require__(105);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -13687,6 +13691,8 @@ var Game = (_dec = (0, _decorators.Transient)({
     mouse: true
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
+
+    // = SCALE_STRATEGY.FIT;
 
     function Game(gameProps) {
         _classCallCheck(this, Game);
@@ -13958,10 +13964,7 @@ exports.default = Vec2;
 exports.__esModule = true;
 var SCALE_STRATEGY = exports.SCALE_STRATEGY = {
     NO_SCALE: 0,
-    CSS_PRESERVE_ASPECT_RATIO: 1,
-    HARDWARE_PRESERVE_ASPECT_RATIO: 2,
-    CSS_STRETCH: 3,
-    HARDWARE_STRETCH: 4
+    FIT: 1
 };
 
 /***/ }),
@@ -14240,6 +14243,8 @@ var _device = __webpack_require__(102);
 
 var _device2 = _interopRequireDefault(_device);
 
+var _consts = __webpack_require__(105);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
@@ -14266,6 +14271,7 @@ var AbstractRenderer = function () {
     }
 
     AbstractRenderer.prototype.onResize = function onResize() {
+        if (this.game.scaleStrategy === _consts.SCALE_STRATEGY.NO_SCALE) return;
         var canvasRatio = this.container.height / this.container.width;
         var windowRatio = window.innerHeight / window.innerWidth;
         var width = void 0;

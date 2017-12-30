@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 77);
+/******/ 	return __webpack_require__(__webpack_require__.s = 78);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -80,21 +80,21 @@ var _dec, _class; /*global DEBUG:true*/
 
 //import Vec2 from '../core/vec2'
 
-var _commonObject = __webpack_require__(18);
+var _commonObject = __webpack_require__(19);
 
 var _commonObject2 = _interopRequireDefault(_commonObject);
 
-var _tween = __webpack_require__(17);
+var _tween = __webpack_require__(18);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _eventEmitter = __webpack_require__(48);
+var _eventEmitter = __webpack_require__(49);
 
 var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
 
-var _decorators = __webpack_require__(15);
+var _decorators = __webpack_require__(16);
 
-var _arcadeRigidBody = __webpack_require__(51);
+var _arcadeRigidBody = __webpack_require__(52);
 
 var _arcadeRigidBody2 = _interopRequireDefault(_arcadeRigidBody);
 
@@ -1449,6 +1449,19 @@ exports.default = Rect;
 
 
 exports.__esModule = true;
+var SCALE_STRATEGY = exports.SCALE_STRATEGY = {
+    NO_SCALE: 0,
+    FIT: 1
+};
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
 exports.Transient = Transient;
 function Transient(params) {
     return function (target) {
@@ -1457,7 +1470,7 @@ function Transient(params) {
 }
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1550,7 +1563,7 @@ var Texture = function () {
 exports.default = Texture;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1701,7 +1714,7 @@ var Tween = function () {
 exports.default = Tween;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1852,7 +1865,7 @@ var CommonObject = function () {
 exports.default = CommonObject;
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1971,7 +1984,7 @@ var GameObjectProto = function (_BaseModel) {
 exports.default = GameObjectProto;
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2091,7 +2104,7 @@ var TileMap = function (_BaseModel) {
 exports.default = TileMap;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2198,15 +2211,15 @@ var TextField = function (_BaseModel) {
 exports.default = TextField;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_PositionMatrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_PositionMatrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"
 
 /***/ }),
-/* 23 */,
 /* 24 */,
-/* 25 */
+/* 25 */,
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2222,41 +2235,43 @@ var _dec, _class; /*global requestAnimationFrame:true*/
 /*global PROJECT_NAME:true*/
 
 
-__webpack_require__(50);
+__webpack_require__(51);
 
-var _rendererFactory = __webpack_require__(54);
+var _rendererFactory = __webpack_require__(55);
 
 var _rendererFactory2 = _interopRequireDefault(_rendererFactory);
 
-var _repository = __webpack_require__(66);
+var _repository = __webpack_require__(67);
 
 var _repository2 = _interopRequireDefault(_repository);
 
-var _mouse = __webpack_require__(45);
+var _mouse = __webpack_require__(46);
 
 var _mouse2 = _interopRequireDefault(_mouse);
 
-var _keyboard = __webpack_require__(44);
+var _keyboard = __webpack_require__(45);
 
 var _keyboard2 = _interopRequireDefault(_keyboard);
 
-var _gamePad = __webpack_require__(43);
+var _gamePad = __webpack_require__(44);
 
 var _gamePad2 = _interopRequireDefault(_gamePad);
 
-var _collider = __webpack_require__(52);
+var _collider = __webpack_require__(53);
 
 var _collider2 = _interopRequireDefault(_collider);
 
-var _decorators = __webpack_require__(15);
+var _decorators = __webpack_require__(16);
 
-var _commonObject = __webpack_require__(18);
+var _commonObject = __webpack_require__(19);
 
 var _commonObject2 = _interopRequireDefault(_commonObject);
 
-var _camera = __webpack_require__(42);
+var _camera = __webpack_require__(43);
 
 var _camera2 = _interopRequireDefault(_camera);
+
+var _consts = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2274,6 +2289,8 @@ var Game = (_dec = (0, _decorators.Transient)({
     mouse: true
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
+
+    // = SCALE_STRATEGY.FIT;
 
     function Game(gameProps) {
         _classCallCheck(this, Game);
@@ -2326,7 +2343,7 @@ var Game = (_dec = (0, _decorators.Transient)({
         }
         this._currentScene = scene;
         if (true) {
-            var allScripts = __webpack_require__(29);
+            var allScripts = __webpack_require__(30);
             var sceneBhScriptName = '' + scene.name[0].toUpperCase() + scene.name.substr(1) + 'Behaviour';
             if (sceneBhScriptName) scene.setIndividualBehaviour(allScripts[sceneBhScriptName]);
             scene.layers.forEach(function (l) {
@@ -2388,20 +2405,20 @@ var Game = (_dec = (0, _decorators.Transient)({
 exports.default = Game;
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports) {
 
-module.exports = {width:900,height:500,scaleStrategy:0,startSceneId:2,scale:{x:1,y:1},pos:{x:0,y:0},gravityConstant:800};
+module.exports = {width:900,height:500,scaleStrategy:1,startSceneId:2,scale:{x:1,y:1},pos:{x:0,y:0},gravityConstant:800};
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 module.exports = {Scene:[{"id":2,"name":"mainScene","width":5000,"height":800,"type":"Scene","layers":[{"type":"Layer","id":2}],"useBG":true,"colorBG":{"r":230,"g":254,"b":255},"tileMap":{"id":52,"type":"TileMap"}}],Layer:[{"id":2,"name":"layer1","type":"Layer","gameObjects":[{"type":"GameObject","id":7},{"type":"GameObject","id":63},{"type":"GameObject","id":64},{"type":"GameObject","id":65},{"type":"GameObject","id":67},{"type":"GameObject","id":68},{"type":"GameObject","id":71},{"type":"GameObject","id":74}]}],SpriteSheet:[{"name":"dude","width":288,"height":48,"type":"SpriteSheet","numOfFramesH":9,"resourcePath":"resources/dude.png","id":3},{"name":"platform","width":500,"height":64,"type":"SpriteSheet","resourcePath":"resources/platform.png","id":5},{"name":"ground","width":800,"height":32,"type":"SpriteSheet","numOfFramesH":25,"resourcePath":"resources/ground.png","id":57},{"name":"clamp","width":64,"height":64,"type":"SpriteSheet","resourcePath":"resources/clamp.png","id":69},{"name":"tile","width":262,"height":192,"type":"SpriteSheet","resourcePath":"resources/tile.jpg","id":72}],GameObjectProto:[{"id":4,"name":"dude","width":32,"height":48,"type":"GameObjectProto","spriteSheet":{"id":3,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":15},{"type":"CommonBehaviour","id":60}],"frameAnimations":[{"type":"FrameAnimation","id":11},{"type":"FrameAnimation","id":12},{"type":"FrameAnimation","id":13},{"type":"FrameAnimation","id":14}]},{"id":6,"name":"platform","width":500,"height":64,"type":"GameObjectProto","spriteSheet":{"id":5,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":61}]},{"id":58,"name":"ground1","width":32,"height":32,"type":"GameObjectProto","spriteSheet":{"id":57,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":62}],"currFrameIndex":9},{"id":70,"name":"clamp","width":64,"height":64,"type":"GameObjectProto","spriteSheet":{"id":69,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":75}]},{"name":"tile","width":262,"height":192,"type":"GameObjectProto","spriteSheet":{"id":72,"type":"SpriteSheet"},"id":73}],GameObject:[{"id":7,"name":"dude","pos":{"x":650,"y":52},"layerId":2,"type":"GameObject","gameObjectProto":{"id":4,"type":"GameObjectProto"}},{"id":63,"name":"ground1","pos":{"x":432,"y":156},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"}},{"id":64,"name":"platform","pos":{"x":471,"y":478},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":65,"name":"platform","pos":{"x":328,"y":199},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":67,"name":"ground1","pos":{"x":559,"y":116},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"}},{"pos":{"x":388,"y":140},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"},"id":68},{"id":71,"name":"clamp","pos":{"x":739,"y":325},"layerId":2,"type":"GameObject","gameObjectProto":{"id":70,"type":"GameObjectProto"}},{"id":74,"name":"tile","pos":{"x":369,"y":271},"layerId":2,"type":"GameObject","gameObjectProto":{"id":73,"type":"GameObjectProto"}}],FrameAnimation:[{"name":"left","type":"FrameAnimation","frames":[0,1,2,3],"id":11},{"name":"right","type":"FrameAnimation","frames":[5,6,7,8],"id":12},{"name":"idleLeft","type":"FrameAnimation","frames":[4],"id":13},{"name":"idleRight","type":"FrameAnimation","frames":[4],"id":14}],CommonBehaviour:[{"id":15,"name":"Control2Dir","type":"CommonBehaviour","parameters":{"velocity":"130","walkLeftAnimation":"left","walkRightAnimation":"right","idleLeftAnimation":"idleLeft","idleRightAnimation":"idleRight"}},{"name":"Draggable","type":"CommonBehaviour","id":60},{"name":"Draggable","type":"CommonBehaviour","id":61},{"name":"Draggable","type":"CommonBehaviour","id":62},{"name":"Draggable","type":"CommonBehaviour","id":75}],Font:[{"id":22,"name":"font1","type":"Font","resourcePath":"resources/font1.png","fontSize":21,"fontFamily":"monospace","fontContext":{"symbols":{"0":{"x":24,"y":36,"width":12,"height":24},"1":{"x":45,"y":36,"width":12,"height":24},"2":{"x":65,"y":36,"width":12,"height":24},"3":{"x":86,"y":36,"width":12,"height":24},"4":{"x":107,"y":36,"width":12,"height":24},"5":{"x":127,"y":36,"width":12,"height":24},"6":{"x":148,"y":36,"width":12,"height":24},"7":{"x":168,"y":36,"width":12,"height":24},"8":{"x":189,"y":36,"width":12,"height":24},"9":{"x":210,"y":36,"width":12,"height":24}," ":{"x":4,"y":4,"width":12,"height":24},"!":{"x":24,"y":4,"width":12,"height":24},"\"":{"x":45,"y":4,"width":12,"height":24},"#":{"x":65,"y":4,"width":12,"height":24},"$":{"x":86,"y":4,"width":12,"height":24},"%":{"x":107,"y":4,"width":12,"height":24},"&":{"x":127,"y":4,"width":12,"height":24},"'":{"x":148,"y":4,"width":12,"height":24},"(":{"x":168,"y":4,"width":12,"height":24},")":{"x":189,"y":4,"width":12,"height":24},"*":{"x":210,"y":4,"width":12,"height":24},"+":{"x":230,"y":4,"width":12,"height":24},",":{"x":251,"y":4,"width":12,"height":24},"-":{"x":271,"y":4,"width":12,"height":24},".":{"x":292,"y":4,"width":12,"height":24},"/":{"x":4,"y":36,"width":12,"height":24},":":{"x":230,"y":36,"width":12,"height":24},";":{"x":251,"y":36,"width":12,"height":24},"<":{"x":271,"y":36,"width":12,"height":24},"=":{"x":292,"y":36,"width":12,"height":24},">":{"x":4,"y":68,"width":12,"height":24},"?":{"x":24,"y":68,"width":12,"height":24},"@":{"x":45,"y":68,"width":12,"height":24},"A":{"x":65,"y":68,"width":12,"height":24},"B":{"x":86,"y":68,"width":12,"height":24},"C":{"x":107,"y":68,"width":12,"height":24},"D":{"x":127,"y":68,"width":12,"height":24},"E":{"x":148,"y":68,"width":12,"height":24},"F":{"x":168,"y":68,"width":12,"height":24},"G":{"x":189,"y":68,"width":12,"height":24},"H":{"x":210,"y":68,"width":12,"height":24},"I":{"x":230,"y":68,"width":12,"height":24},"J":{"x":251,"y":68,"width":12,"height":24},"K":{"x":271,"y":68,"width":12,"height":24},"L":{"x":292,"y":68,"width":12,"height":24},"M":{"x":4,"y":100,"width":12,"height":24},"N":{"x":24,"y":100,"width":12,"height":24},"O":{"x":45,"y":100,"width":12,"height":24},"P":{"x":65,"y":100,"width":12,"height":24},"Q":{"x":86,"y":100,"width":12,"height":24},"R":{"x":107,"y":100,"width":12,"height":24},"S":{"x":127,"y":100,"width":12,"height":24},"T":{"x":148,"y":100,"width":12,"height":24},"U":{"x":168,"y":100,"width":12,"height":24},"V":{"x":189,"y":100,"width":12,"height":24},"W":{"x":210,"y":100,"width":12,"height":24},"X":{"x":230,"y":100,"width":12,"height":24},"Y":{"x":251,"y":100,"width":12,"height":24},"Z":{"x":271,"y":100,"width":12,"height":24},"[":{"x":292,"y":100,"width":12,"height":24},"\\":{"x":4,"y":132,"width":12,"height":24},"]":{"x":24,"y":132,"width":12,"height":24},"^":{"x":45,"y":132,"width":12,"height":24},"_":{"x":65,"y":132,"width":12,"height":24},"`":{"x":86,"y":132,"width":12,"height":24},"a":{"x":107,"y":132,"width":12,"height":24},"b":{"x":127,"y":132,"width":12,"height":24},"c":{"x":148,"y":132,"width":12,"height":24},"d":{"x":168,"y":132,"width":12,"height":24},"e":{"x":189,"y":132,"width":12,"height":24},"f":{"x":210,"y":132,"width":12,"height":24},"g":{"x":230,"y":132,"width":12,"height":24},"h":{"x":251,"y":132,"width":12,"height":24},"i":{"x":271,"y":132,"width":12,"height":24},"j":{"x":292,"y":132,"width":12,"height":24},"k":{"x":4,"y":164,"width":12,"height":24},"l":{"x":24,"y":164,"width":12,"height":24},"m":{"x":45,"y":164,"width":12,"height":24},"n":{"x":65,"y":164,"width":12,"height":24},"o":{"x":86,"y":164,"width":12,"height":24},"p":{"x":107,"y":164,"width":12,"height":24},"q":{"x":127,"y":164,"width":12,"height":24},"r":{"x":148,"y":164,"width":12,"height":24},"s":{"x":168,"y":164,"width":12,"height":24},"t":{"x":189,"y":164,"width":12,"height":24},"u":{"x":210,"y":164,"width":12,"height":24},"v":{"x":230,"y":164,"width":12,"height":24},"w":{"x":251,"y":164,"width":12,"height":24},"x":{"x":271,"y":164,"width":12,"height":24},"y":{"x":292,"y":164,"width":12,"height":24},"z":{"x":4,"y":196,"width":12,"height":24},"{":{"x":24,"y":196,"width":12,"height":24},"|":{"x":45,"y":196,"width":12,"height":24},"}":{"x":65,"y":196,"width":12,"height":24},"~":{"x":86,"y":196,"width":12,"height":24},"":{"x":107,"y":196,"width":12,"height":24},"":{"x":127,"y":196,"width":12,"height":24},"":{"x":148,"y":196,"width":12,"height":24},"":{"x":168,"y":196,"width":12,"height":24},"":{"x":189,"y":196,"width":12,"height":24},"":{"x":210,"y":196,"width":12,"height":24},"":{"x":230,"y":196,"width":12,"height":24},"":{"x":251,"y":196,"width":12,"height":24},"":{"x":271,"y":196,"width":12,"height":24},"":{"x":292,"y":196,"width":12,"height":24},"":{"x":4,"y":228,"width":12,"height":24},"":{"x":24,"y":228,"width":12,"height":24},"":{"x":45,"y":228,"width":12,"height":24},"":{"x":65,"y":228,"width":12,"height":24},"":{"x":86,"y":228,"width":12,"height":24},"":{"x":107,"y":228,"width":12,"height":24},"":{"x":127,"y":228,"width":12,"height":24},"":{"x":148,"y":228,"width":12,"height":24},"":{"x":168,"y":228,"width":12,"height":24},"":{"x":189,"y":228,"width":12,"height":24},"":{"x":210,"y":228,"width":12,"height":24},"":{"x":230,"y":228,"width":12,"height":24},"":{"x":251,"y":228,"width":12,"height":24},"А":{"x":271,"y":228,"width":12,"height":24},"Б":{"x":292,"y":228,"width":12,"height":24},"В":{"x":4,"y":260,"width":12,"height":24},"Г":{"x":24,"y":260,"width":12,"height":24},"Д":{"x":45,"y":260,"width":12,"height":24},"Е":{"x":65,"y":260,"width":12,"height":24},"Ж":{"x":86,"y":260,"width":12,"height":24},"З":{"x":107,"y":260,"width":12,"height":24},"И":{"x":127,"y":260,"width":12,"height":24},"Й":{"x":148,"y":260,"width":12,"height":24},"К":{"x":168,"y":260,"width":12,"height":24},"Л":{"x":189,"y":260,"width":12,"height":24},"М":{"x":210,"y":260,"width":12,"height":24},"Н":{"x":230,"y":260,"width":12,"height":24},"О":{"x":251,"y":260,"width":12,"height":24},"П":{"x":271,"y":260,"width":12,"height":24},"Р":{"x":292,"y":260,"width":12,"height":24},"С":{"x":4,"y":292,"width":12,"height":24},"Т":{"x":24,"y":292,"width":12,"height":24},"У":{"x":45,"y":292,"width":12,"height":24},"Ф":{"x":65,"y":292,"width":12,"height":24},"Х":{"x":86,"y":292,"width":12,"height":24},"Ц":{"x":107,"y":292,"width":12,"height":24},"Ч":{"x":127,"y":292,"width":12,"height":24},"Ш":{"x":148,"y":292,"width":12,"height":24},"Щ":{"x":168,"y":292,"width":12,"height":24},"Ъ":{"x":189,"y":292,"width":12,"height":24},"Ы":{"x":210,"y":292,"width":12,"height":24},"Ь":{"x":230,"y":292,"width":12,"height":24},"Э":{"x":251,"y":292,"width":12,"height":24},"Ю":{"x":271,"y":292,"width":12,"height":24},"Я":{"x":292,"y":292,"width":12,"height":24},"а":{"x":4,"y":324,"width":12,"height":24},"б":{"x":24,"y":324,"width":12,"height":24},"в":{"x":45,"y":324,"width":12,"height":24},"г":{"x":65,"y":324,"width":12,"height":24},"д":{"x":86,"y":324,"width":12,"height":24},"е":{"x":107,"y":324,"width":12,"height":24},"ж":{"x":127,"y":324,"width":12,"height":24},"з":{"x":148,"y":324,"width":12,"height":24},"и":{"x":168,"y":324,"width":12,"height":24},"й":{"x":189,"y":324,"width":12,"height":24},"к":{"x":210,"y":324,"width":12,"height":24},"л":{"x":230,"y":324,"width":12,"height":24},"м":{"x":251,"y":324,"width":12,"height":24},"н":{"x":271,"y":324,"width":12,"height":24},"о":{"x":292,"y":324,"width":12,"height":24},"п":{"x":4,"y":356,"width":12,"height":24},"р":{"x":24,"y":356,"width":12,"height":24},"с":{"x":45,"y":356,"width":12,"height":24},"т":{"x":65,"y":356,"width":12,"height":24},"у":{"x":86,"y":356,"width":12,"height":24},"ф":{"x":107,"y":356,"width":12,"height":24},"х":{"x":127,"y":356,"width":12,"height":24},"ц":{"x":148,"y":356,"width":12,"height":24},"ч":{"x":168,"y":356,"width":12,"height":24},"ш":{"x":189,"y":356,"width":12,"height":24},"щ":{"x":210,"y":356,"width":12,"height":24},"ъ":{"x":230,"y":356,"width":12,"height":24},"ы":{"x":251,"y":356,"width":12,"height":24},"ь":{"x":271,"y":356,"width":12,"height":24},"э":{"x":292,"y":356,"width":12,"height":24},"ю":{"x":4,"y":388,"width":12,"height":24},"я":{"x":24,"y":388,"width":12,"height":24},"ѐ":{"x":45,"y":388,"width":12,"height":24},"ё":{"x":65,"y":388,"width":12,"height":24},"ђ":{"x":86,"y":388,"width":12,"height":24},"ѓ":{"x":107,"y":388,"width":12,"height":24},"є":{"x":127,"y":388,"width":12,"height":24},"ѕ":{"x":148,"y":388,"width":12,"height":24},"і":{"x":168,"y":388,"width":12,"height":24},"ї":{"x":189,"y":388,"width":12,"height":24},"ј":{"x":210,"y":388,"width":12,"height":24},"љ":{"x":230,"y":388,"width":12,"height":24},"њ":{"x":251,"y":388,"width":12,"height":24},"ћ":{"x":271,"y":388,"width":12,"height":24}},"width":320,"height":416}}],TileMap:[{"id":52,"width":50,"height":50,"type":"TileMap","spriteSheet":{"id":57,"type":"SpriteSheet"},"data":[[],null,null,[null,null,null,null,2,null,null],[null,null],[1,null,3,null,null,1,1,1,1,1,1,1,1,1],null,[null,1,null,1]]}]};
 
 /***/ }),
-/* 28 */,
-/* 29 */
+/* 29 */,
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2410,17 +2427,17 @@ module.exports = {Scene:[{"id":2,"name":"mainScene","width":5000,"height":800,"t
 exports.__esModule = true;
 exports.TileBehaviour = exports.PlatformBehaviour = exports.MainSceneBehaviour = exports.Ground1Behaviour = exports.DudeBehaviour = exports.ClampBehaviour = undefined;
 
-var _clamp = __webpack_require__(30);
+var _clamp = __webpack_require__(31);
 
-var _dude = __webpack_require__(31);
+var _dude = __webpack_require__(32);
 
-var _ground = __webpack_require__(32);
+var _ground = __webpack_require__(33);
 
-var _mainScene = __webpack_require__(33);
+var _mainScene = __webpack_require__(34);
 
-var _platform = __webpack_require__(34);
+var _platform = __webpack_require__(35);
 
-var _tile = __webpack_require__(35);
+var _tile = __webpack_require__(36);
 
 exports.ClampBehaviour = _clamp.ClampBehaviour;
 exports.DudeBehaviour = _dude.DudeBehaviour;
@@ -2430,7 +2447,7 @@ exports.PlatformBehaviour = _platform.PlatformBehaviour;
 exports.TileBehaviour = _tile.TileBehaviour;
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2455,7 +2472,7 @@ var ClampBehaviour = exports.ClampBehaviour = function () {
 }();
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2491,7 +2508,7 @@ var DudeBehaviour = exports.DudeBehaviour = function () {
 }();
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2518,7 +2535,7 @@ var Ground1Behaviour = exports.Ground1Behaviour = function () {
 }();
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2580,7 +2597,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
 }();
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2607,7 +2624,7 @@ var PlatformBehaviour = exports.PlatformBehaviour = function () {
 }();
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2632,7 +2649,7 @@ var TileBehaviour = exports.TileBehaviour = function () {
 }();
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2641,15 +2658,15 @@ var TileBehaviour = exports.TileBehaviour = function () {
 exports.__esModule = true;
 exports.Control2Dir = exports.Control4Dir = exports.Draggable = undefined;
 
-var _draggable = __webpack_require__(39);
+var _draggable = __webpack_require__(40);
 
 var _draggable2 = _interopRequireDefault(_draggable);
 
-var _control4Dir = __webpack_require__(38);
+var _control4Dir = __webpack_require__(39);
 
 var _control4Dir2 = _interopRequireDefault(_control4Dir);
 
-var _control2Dir = __webpack_require__(37);
+var _control2Dir = __webpack_require__(38);
 
 var _control2Dir2 = _interopRequireDefault(_control2Dir);
 
@@ -2660,7 +2677,7 @@ exports.Control4Dir = _control4Dir2.default;
 exports.Control2Dir = _control2Dir2.default;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2669,7 +2686,7 @@ exports.Control2Dir = _control2Dir2.default;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _move2Dir = __webpack_require__(40);
+var _move2Dir = __webpack_require__(41);
 
 var _move2Dir2 = _interopRequireDefault(_move2Dir);
 
@@ -2720,7 +2737,7 @@ var Control2Dir = function (_Move2Dir) {
 exports.default = Control2Dir;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2729,7 +2746,7 @@ exports.default = Control2Dir;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _move4Dir = __webpack_require__(41);
+var _move4Dir = __webpack_require__(42);
 
 var _move4Dir2 = _interopRequireDefault(_move4Dir);
 
@@ -2792,7 +2809,7 @@ var Control4Dir = function (_Move4Dir) {
 exports.default = Control4Dir;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2890,7 +2907,7 @@ var DraggableBehaviour = function (_BaseAbstractBehaviou) {
 exports.default = DraggableBehaviour;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2936,7 +2953,7 @@ var Move2Dir = (_temp = _class = function (_Moveable) {
 exports.default = Move2Dir;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2983,7 +3000,7 @@ var Move4Dir = (_temp = _class = function (_Moveable) {
 exports.default = Move4Dir;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2992,7 +3009,7 @@ exports.default = Move4Dir;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _tween = __webpack_require__(17);
+var _tween = __webpack_require__(18);
 
 var _tween2 = _interopRequireDefault(_tween);
 
@@ -3028,13 +3045,14 @@ var Camera = function () {
         this.lastToleranceTime = 0;
         this._rect = new _rect2.default();
         this._rectScaled = new _rect2.default();
-        this.TOLERANCE_TIME = 2000;
+        this.FOLLOWING_TOLERANCE_TIME = 2000;
 
         this.game = game;
     }
 
     Camera.prototype.followTo = function followTo(gameObject) {
-        if (1 && !gameObject) throw 'Camera:followTo(gameObject) - gameObject not provided';
+        if (gameObject === null) return;
+        if (1 && gameObject === undefined) throw 'Camera:followTo(gameObject) - gameObject not provided';
         this.objFollowTo = gameObject;
         this.scene = this.game._currentScene;
         if (this.scene.tileMap.spriteSheet) {
@@ -3048,7 +3066,7 @@ var Camera = function () {
             target: this,
             ease: 'easeInQuad',
             to: { x: this.pos.x, y: this.pos.y },
-            time: this.TOLERANCE_TIME
+            time: this.FOLLOWING_TOLERANCE_TIME
         });
     };
 
@@ -3071,10 +3089,10 @@ var Camera = function () {
         if (x > this.sceneWidth - w + tileWidth) x = this.sceneWidth - w + tileWidth;
         if (y > this.sceneHeight - h + tileHeight) y = this.sceneHeight - h + tileHeight;
         var scaleVal = Math.abs(gameObject.rigidBody.vel.x) > 0 ? 0.95 : 1;
-        if (this.TOLERANCE_TIME === 0) {
+        if (this.FOLLOWING_TOLERANCE_TIME === 0) {
             this.pos.x = x;
             this.pos.y = y;
-        } else if (currTime - this.lastToleranceTime > this.TOLERANCE_TIME) {
+        } else if (currTime - this.lastToleranceTime > this.FOLLOWING_TOLERANCE_TIME) {
             this.lastToleranceTime = currTime;
             this.cameraTween.reuse({
                 to: {
@@ -3098,7 +3116,8 @@ var Camera = function () {
     Camera.prototype.render = function render() {
         this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
         this.game.renderer.scale(this.scale.x, this.scale.y);
-        // camera rotation will be here if needs
+        // todo rotation does not work correctly yet
+        //this.game.renderer.rotateZ(this.angle);
         this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
         this.game.renderer.translate(-this.pos.x, -this.pos.y);
     };
@@ -3125,7 +3144,7 @@ var Camera = function () {
 exports.default = Camera;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3205,7 +3224,7 @@ var GamePad = function () {
 exports.default = GamePad;
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3349,7 +3368,7 @@ var Keyboard = function () {
 exports.default = Keyboard;
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3542,7 +3561,7 @@ var Mouse = function () {
 exports.default = Mouse;
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3562,7 +3581,7 @@ var Device = (_temp = _class = function Device(game) {
 exports.default = Device;
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3710,7 +3729,7 @@ var Vec2 = function (_Point2d) {
 exports.default = Vec2;
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3758,7 +3777,7 @@ exports.default = EventEmitter;
 ;
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3826,7 +3845,7 @@ exports.default = Queue;
 ;
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3873,10 +3892,10 @@ if (!Array.prototype.find) {
         return undefined;
     };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(78)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(79)))
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3885,7 +3904,7 @@ if (!Array.prototype.find) {
 exports.__esModule = true;
 exports.default = undefined;
 
-var _vec = __webpack_require__(47);
+var _vec = __webpack_require__(48);
 
 var _vec2 = _interopRequireDefault(_vec);
 
@@ -3922,7 +3941,7 @@ var ArcadeRigidBody = function () {
 exports.default = ArcadeRigidBody;
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4018,7 +4037,7 @@ var Collider = function () {
 exports.default = Collider;
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4027,13 +4046,15 @@ exports.default = Collider;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _textField = __webpack_require__(21);
+var _textField = __webpack_require__(22);
 
 var _textField2 = _interopRequireDefault(_textField);
 
-var _device = __webpack_require__(46);
+var _device = __webpack_require__(47);
 
 var _device2 = _interopRequireDefault(_device);
+
+var _consts = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4061,6 +4082,7 @@ var AbstractRenderer = function () {
     }
 
     AbstractRenderer.prototype.onResize = function onResize() {
+        if (this.game.scaleStrategy === _consts.SCALE_STRATEGY.NO_SCALE) return;
         var canvasRatio = this.container.height / this.container.width;
         var windowRatio = window.innerHeight / window.innerWidth;
         var width = void 0;
@@ -4167,7 +4189,7 @@ var AbstractRenderer = function () {
 exports.default = AbstractRenderer;
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4176,7 +4198,7 @@ exports.default = AbstractRenderer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _webGlRenderer = __webpack_require__(65);
+var _webGlRenderer = __webpack_require__(66);
 
 var _webGlRenderer2 = _interopRequireDefault(_webGlRenderer);
 
@@ -4205,7 +4227,7 @@ var RendererFactory = function () {
 exports.default = RendererFactory;
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4214,7 +4236,7 @@ exports.default = RendererFactory;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _texture = __webpack_require__(16);
+var _texture = __webpack_require__(17);
 
 var _texture2 = _interopRequireDefault(_texture);
 
@@ -4272,7 +4294,7 @@ var FrameBuffer = function () {
 exports.default = FrameBuffer;
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4354,7 +4376,7 @@ var MatrixStack = function () {
 exports.default = MatrixStack;
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4405,7 +4427,7 @@ var Circle = function (_AbstractPrimitive) {
 exports.default = Circle;
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4445,7 +4467,7 @@ var Line = function (_AbstractPrimitive) {
 exports.default = Line;
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4454,7 +4476,7 @@ exports.default = Line;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _circle = __webpack_require__(57);
+var _circle = __webpack_require__(58);
 
 var _circle2 = _interopRequireDefault(_circle);
 
@@ -4528,7 +4550,7 @@ var CircleDrawer = function (_AbstractDrawer) {
 exports.default = CircleDrawer;
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4611,7 +4633,7 @@ var ColorRectDrawer = function (_AbstractDrawer) {
 exports.default = ColorRectDrawer;
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4620,7 +4642,7 @@ exports.default = ColorRectDrawer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _line = __webpack_require__(58);
+var _line = __webpack_require__(59);
 
 var _line2 = _interopRequireDefault(_line);
 
@@ -4691,7 +4713,7 @@ var LineDrawer = function (_AbstractDrawer) {
 exports.default = LineDrawer;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4712,11 +4734,11 @@ var _indexBuffer = __webpack_require__(3);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
-var _vertex = __webpack_require__(79);
+var _vertex = __webpack_require__(80);
 
 var _vertex2 = _interopRequireDefault(_vertex);
 
-var _fragment = __webpack_require__(81);
+var _fragment = __webpack_require__(82);
 
 var _fragment2 = _interopRequireDefault(_fragment);
 
@@ -4780,7 +4802,7 @@ var ModelDrawer = function (_AbstractDrawer) {
 exports.default = ModelDrawer;
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4805,11 +4827,11 @@ var _indexBuffer = __webpack_require__(3);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
-var _vertex = __webpack_require__(22);
+var _vertex = __webpack_require__(23);
 
 var _vertex2 = _interopRequireDefault(_vertex);
 
-var _fragment = __webpack_require__(80);
+var _fragment = __webpack_require__(81);
 
 var _fragment2 = _interopRequireDefault(_fragment);
 
@@ -4868,7 +4890,7 @@ var SpriteRectDrawer = function (_AbstractDrawer) {
 exports.default = SpriteRectDrawer;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4893,11 +4915,11 @@ var _indexBuffer = __webpack_require__(3);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
-var _vertex = __webpack_require__(22);
+var _vertex = __webpack_require__(23);
 
 var _vertex2 = _interopRequireDefault(_vertex);
 
-var _fragment = __webpack_require__(82);
+var _fragment = __webpack_require__(83);
 
 var _fragment2 = _interopRequireDefault(_fragment);
 
@@ -4953,7 +4975,7 @@ var TiledSpriteRectDrawer = function (_AbstractDrawer) {
 exports.default = TiledSpriteRectDrawer;
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4962,19 +4984,19 @@ exports.default = TiledSpriteRectDrawer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractRenderer = __webpack_require__(53);
+var _abstractRenderer = __webpack_require__(54);
 
 var _abstractRenderer2 = _interopRequireDefault(_abstractRenderer);
 
-var _spriteRectDrawer = __webpack_require__(63);
+var _spriteRectDrawer = __webpack_require__(64);
 
 var _spriteRectDrawer2 = _interopRequireDefault(_spriteRectDrawer);
 
-var _tiledSpriteRectDrawer = __webpack_require__(64);
+var _tiledSpriteRectDrawer = __webpack_require__(65);
 
 var _tiledSpriteRectDrawer2 = _interopRequireDefault(_tiledSpriteRectDrawer);
 
-var _colorRectDrawer = __webpack_require__(60);
+var _colorRectDrawer = __webpack_require__(61);
 
 var _colorRectDrawer2 = _interopRequireDefault(_colorRectDrawer);
 
@@ -4982,23 +5004,23 @@ var _abstractDrawer = __webpack_require__(1);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _lineDrawer = __webpack_require__(61);
+var _lineDrawer = __webpack_require__(62);
 
 var _lineDrawer2 = _interopRequireDefault(_lineDrawer);
 
-var _circleDrawer = __webpack_require__(59);
+var _circleDrawer = __webpack_require__(60);
 
 var _circleDrawer2 = _interopRequireDefault(_circleDrawer);
 
-var _modelDrawer = __webpack_require__(62);
+var _modelDrawer = __webpack_require__(63);
 
 var _modelDrawer2 = _interopRequireDefault(_modelDrawer);
 
-var _frameBuffer = __webpack_require__(55);
+var _frameBuffer = __webpack_require__(56);
 
 var _frameBuffer2 = _interopRequireDefault(_frameBuffer);
 
-var _matrixStack = __webpack_require__(56);
+var _matrixStack = __webpack_require__(57);
 
 var _matrixStack2 = _interopRequireDefault(_matrixStack);
 
@@ -5010,7 +5032,7 @@ var _mathEx = __webpack_require__(2);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
-var _texture = __webpack_require__(16);
+var _texture = __webpack_require__(17);
 
 var _texture2 = _interopRequireDefault(_texture);
 
@@ -5328,7 +5350,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 exports.default = WebGlRenderer;
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5337,7 +5359,7 @@ exports.default = WebGlRenderer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _all = __webpack_require__(67);
+var _all = __webpack_require__(68);
 
 var models = _interopRequireWildcard(_all);
 
@@ -5464,7 +5486,7 @@ var Repository = function () {
 exports.default = Repository;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5473,51 +5495,51 @@ exports.default = Repository;
 exports.__esModule = true;
 exports.TileMap = exports.TextField = exports.Layer = exports.Font = exports.Sound = exports.Scene = exports.ParticleSystem = exports.CommonBehaviour = exports.GameObject = exports.GameObjectProto = exports.SpriteSheet = exports.FrameAnimation = undefined;
 
-var _frameAnimation = __webpack_require__(70);
+var _frameAnimation = __webpack_require__(71);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
-var _spriteSheet = __webpack_require__(76);
+var _spriteSheet = __webpack_require__(77);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _gameObjectProto = __webpack_require__(19);
+var _gameObjectProto = __webpack_require__(20);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _gameObject = __webpack_require__(71);
+var _gameObject = __webpack_require__(72);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
-var _commonBehaviour = __webpack_require__(68);
+var _commonBehaviour = __webpack_require__(69);
 
 var _commonBehaviour2 = _interopRequireDefault(_commonBehaviour);
 
-var _particleSystem = __webpack_require__(73);
+var _particleSystem = __webpack_require__(74);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
-var _scene = __webpack_require__(74);
+var _scene = __webpack_require__(75);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-var _sound = __webpack_require__(75);
+var _sound = __webpack_require__(76);
 
 var _sound2 = _interopRequireDefault(_sound);
 
-var _font = __webpack_require__(69);
+var _font = __webpack_require__(70);
 
 var _font2 = _interopRequireDefault(_font);
 
-var _layer = __webpack_require__(72);
+var _layer = __webpack_require__(73);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _textField = __webpack_require__(21);
+var _textField = __webpack_require__(22);
 
 var _textField2 = _interopRequireDefault(_textField);
 
-var _tileMap = __webpack_require__(20);
+var _tileMap = __webpack_require__(21);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -5537,7 +5559,7 @@ exports.TextField = _textField2.default;
 exports.TileMap = _tileMap2.default;
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5578,7 +5600,7 @@ var CommonBehaviour = function (_BaseModel) {
 exports.default = CommonBehaviour;
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5622,7 +5644,7 @@ var Font = function (_BaseModel) {
 exports.default = Font;
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5714,7 +5736,7 @@ var FrameAnimation = function (_BaseModel) {
 exports.default = FrameAnimation;
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5723,11 +5745,11 @@ exports.default = FrameAnimation;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _gameObjectProto = __webpack_require__(19);
+var _gameObjectProto = __webpack_require__(20);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _all = __webpack_require__(36);
+var _all = __webpack_require__(37);
 
 var commonBehaviours = _interopRequireWildcard(_all);
 
@@ -5814,7 +5836,7 @@ exports.default = GameObject;
 ;
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5891,7 +5913,7 @@ var Layer = function (_BaseModel) {
 exports.default = Layer;
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5989,7 +6011,7 @@ var ParticleSystem = function (_BaseModel) {
 exports.default = ParticleSystem;
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6002,11 +6024,11 @@ var _baseModel = __webpack_require__(0);
 
 var _baseModel2 = _interopRequireDefault(_baseModel);
 
-var _loadingQueue = __webpack_require__(49);
+var _loadingQueue = __webpack_require__(50);
 
 var _loadingQueue2 = _interopRequireDefault(_loadingQueue);
 
-var _tileMap = __webpack_require__(20);
+var _tileMap = __webpack_require__(21);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -6177,7 +6199,7 @@ var Scene = function (_BaseModel) {
 exports.default = Scene;
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6243,7 +6265,7 @@ var Sound = function (_BaseModel) {
 exports.default = Sound;
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6305,21 +6327,21 @@ var SpriteSheet = function (_BaseModel) {
 exports.default = SpriteSheet;
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _game = __webpack_require__(25);
+var _game = __webpack_require__(26);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _gameProps = __webpack_require__(26);
+var _gameProps = __webpack_require__(27);
 
 var _gameProps2 = _interopRequireDefault(_gameProps);
 
-var _repository = __webpack_require__(27);
+var _repository = __webpack_require__(28);
 
 var _repository2 = _interopRequireDefault(_repository);
 
@@ -6335,7 +6357,7 @@ game.runScene(startScene);
 if (true) window.game = game;
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6365,25 +6387,25 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports) {
 
 module.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}"
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports) {
 
 module.exports = "// texture and color\n\nprecision mediump float;\n\nvarying vec2 v_texcoord;\n\nuniform sampler2D texture;\nuniform float u_alpha;\n\n\nvoid main() {\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n}"
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports) {
 
 module.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}"
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports) {
 
 module.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\nuniform vec4 u_frameCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(\r\n        v_texcoord + fract(u_offsetCoords),\r\n        u_frameCoords.zw\r\n    ) + u_frameCoords.xy;\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n}"

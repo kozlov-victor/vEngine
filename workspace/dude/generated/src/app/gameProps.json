@@ -1,7 +1,7 @@
 {
     "width": 900,
     "height": 500,
-    "scaleStrategy": 0,
+    "scaleStrategy": 1,
     "startSceneId": 2,
     "scale": {
         "x": 1,

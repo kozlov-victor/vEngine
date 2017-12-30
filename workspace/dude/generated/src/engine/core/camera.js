@@ -19,14 +19,15 @@ export default class Camera {
     _rect = new Rect();
     _rectScaled = new Rect();
 
-    TOLERANCE_TIME = 2000;
+    FOLLOWING_TOLERANCE_TIME = 2000;
 
     constructor(game){
         this.game = game;
     }
 
     followTo(gameObject) {
-        if (DEBUG && !gameObject) throw `Camera:followTo(gameObject) - gameObject not provided`;
+        if (gameObject===null) return;
+        if (DEBUG && gameObject===undefined) throw `Camera:followTo(gameObject) - gameObject not provided`;
         this.objFollowTo = gameObject;
         this.scene = this.game._currentScene;
         if (this.scene.tileMap.spriteSheet) {
@@ -40,7 +41,7 @@ export default class Camera {
             target: this,
             ease: 'easeInQuad',
             to: {x:this.pos.x,y:this.pos.y},
-            time: this.TOLERANCE_TIME
+            time: this.FOLLOWING_TOLERANCE_TIME
         });
     }
 
@@ -63,11 +64,11 @@ export default class Camera {
         if (x>this.sceneWidth - w + tileWidth)  x = this.sceneWidth -w + tileWidth;
         if (y>this.sceneHeight -h + tileHeight) y = this.sceneHeight -h + tileHeight;
         let scaleVal = Math.abs(gameObject.rigidBody.vel.x)>0?0.95:1;
-        if (this.TOLERANCE_TIME===0) {
+        if (this.FOLLOWING_TOLERANCE_TIME===0) {
             this.pos.x = x;
             this.pos.y = y;
         }
-        else if (currTime-this.lastToleranceTime>this.TOLERANCE_TIME) {
+        else if (currTime-this.lastToleranceTime>this.FOLLOWING_TOLERANCE_TIME) {
             this.lastToleranceTime = currTime;
             this.cameraTween.reuse({
                 to: {
@@ -94,7 +95,8 @@ export default class Camera {
     render(){
         this.game.renderer.translate(this.game.width/2,this.game.height/2);
         this.game.renderer.scale(this.scale.x,this.scale.y);
-        // camera rotation will be here if needs
+        // todo rotation does not work correctly yet
+        //this.game.renderer.rotateZ(this.angle);
         this.game.renderer.translate(-this.game.width/2,-this.game.height/2);
         this.game.renderer.translate(-this.pos.x,-this.pos.y);
     }

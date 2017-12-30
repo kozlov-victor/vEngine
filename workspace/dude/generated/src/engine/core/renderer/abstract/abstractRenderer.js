@@ -2,6 +2,7 @@
 
 import TextField from '../../../model/generic/ui/textField'
 import Device from '../../device'
+import {SCALE_STRATEGY} from "../../misc/consts";
 
 export default class AbstractRenderer {
 
@@ -25,6 +26,7 @@ export default class AbstractRenderer {
     }
 
     onResize(){
+        if (this.game.scaleStrategy===SCALE_STRATEGY.NO_SCALE) return;
         let canvasRatio = this.container.height / this.container.width;
         let windowRatio = window.innerHeight / window.innerWidth;
         let width;
