@@ -19,8 +19,9 @@ const deepCopy = (obj, _clonedObjects = [])=> {
     if (obj===undefined) return undefined;
     else if (obj===null) return null;
     else if (typeof window !== 'undefined' && obj===window) return undefined;
-
     else if (_clonedObjects.indexOf(obj)>-1) return obj;
+    else if (obj.fromJSON) return obj.fromJSON(obj.toJSON());
+
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         let out = [], i = 0, len = obj.length;
         for (; i < len; i++) {
@@ -122,5 +123,7 @@ export default class CommonObject {
         }
         return res;
     }
+
+    revalidate(){}
 
 }

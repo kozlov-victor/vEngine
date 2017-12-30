@@ -1,8 +1,8 @@
 
 export default class Point2d {
 
-    x;
-    y;
+    x = 0;
+    y = 0;
 
     constructor(x = 0,y = 0){
         this.setXY(x,y);

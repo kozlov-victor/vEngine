@@ -15,13 +15,19 @@ import {Transient} from './misc/decorators'
 import CommonObject from '../model/commonObject'
 import Camera from './camera'
 import {SCALE_STRATEGY} from "./misc/consts";
+import Point2d from "./geometry/point2d";
 
 @Transient({
     repository: true,
-    camera: true,
+    renderer: true,
+    mouse: true,
     keyboard: true,
     gamePad: true,
-    mouse: true
+    collider: true,
+    camera: true,
+    scaleStrategy: true,
+    fps: true,
+    destroyed: true
 })
 export default class Game extends CommonObject {
 
@@ -31,18 +37,18 @@ export default class Game extends CommonObject {
     _running = false;
     destroyed = false;
     renderer = null;
-    scale = {x:1,y:1};
-    pos = {x:0,y:0};
+    scale = new Point2d(1,1);
+    pos = new Point2d(0,0);
+    width = null;
+    height = null;
     gravityConstant = null;
     fps = null;
     gamePad = null;
-    scaleStrategy;// = SCALE_STRATEGY.FIT;
+    scaleStrategy = null;// = SCALE_STRATEGY.FIT;
+    startSceneId = null;
 
-    constructor(gameProps){
+    constructor(){
         super();
-        Object.keys(gameProps).forEach(key=>{
-            this[key] = gameProps[key];
-        });
         let time = Date.now();
         this._lastTime = this._currTime = time;
         this._deltaTime = 0;

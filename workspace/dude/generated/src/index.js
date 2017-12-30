@@ -6,7 +6,8 @@ import repository from './app/repository.json'
 
 if (DEBUG && gameProps.startSceneId===undefined) throw 'start scene not specified';
 
-let game = new Game(gameProps);
+let game = new Game();
+game.fromJSON(gameProps);
 game.repository.setDescriptions(repository);
 
 let startScene = game.repository.getObject(gameProps.startSceneId,'Scene');

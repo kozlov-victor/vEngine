@@ -1,4 +1,5 @@
 /*global localStorage:true*/
+/*global window:true*/
 
 import GameObjectProto from 'engine/model/generic/gameObjectProto'
 import SpriteSheet from 'engine/model/generic/spriteSheet'
@@ -11,9 +12,10 @@ import ParticleSystem from 'engine/model/generic/particleSystem'
 import Game from 'engine/core/game';
 const res = {};
 
-res.reset = function(gameProps){
+res.reset = gameProps=>{
 
-    let g = new Game(gameProps||{});
+    let g = new Game();
+    g.fromJSON(gameProps||{});
     res.game = g;
     res.editTileMapModeOn = false;
 
@@ -57,5 +59,7 @@ res.reset = function(gameProps){
 };
 
 res.reset();
+
+window.editData = res;
 
 export default res;

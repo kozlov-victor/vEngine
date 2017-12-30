@@ -15,6 +15,6 @@ export default class GameProps extends BaseComponent {
     }
 
     saveGameProps(){
-        this.restResource.saveGameProps(this.editData.game);
+        this.restResource.saveGameProps(this.editData.game.toJSON());
     }
 }

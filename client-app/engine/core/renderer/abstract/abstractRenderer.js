@@ -39,10 +39,11 @@ export default class AbstractRenderer {
             width = window.innerWidth;
             height = width * canvasRatio;
         }
-        this.game.scale.x = width / this.game.width;
-        this.game.scale.y = height / this.game.height;
-        this.game.pos.x = (window.innerWidth - width) / 2;
-        this.game.pos.y = (window.innerHeight - height) / 2;
+        this.game.scale.setXY(width / this.game.width, height / this.game.height);
+        this.game.pos.setXY(
+            (window.innerWidth - width) / 2,
+            (window.innerHeight - height) / 2
+        );
 
         this.container.style.width = width + 'px';
         this.container.style.height = height + 'px';

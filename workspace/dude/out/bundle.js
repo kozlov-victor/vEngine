@@ -102,7 +102,7 @@ var _rect = __webpack_require__(14);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _point2d = __webpack_require__(6);
+var _point2d = __webpack_require__(2);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -265,11 +265,82 @@ exports.default = AbstractDrawer;
 "use strict";
 
 
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Point2d = function () {
+    function Point2d() {
+        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+
+        _classCallCheck(this, Point2d);
+
+        this.x = 0;
+        this.y = 0;
+
+        this.setXY(x, y);
+    }
+
+    Point2d.prototype.setXY = function setXY(x, y) {
+        this.x = x;
+        this.y = y;
+    };
+
+    Point2d.prototype.setX = function setX(x) {
+        this.x = x;
+    };
+
+    Point2d.prototype.setY = function setY(y) {
+        this.y = y;
+    };
+
+    Point2d.prototype.set = function set(another) {
+        this.setXY(another.x, another.y);
+    };
+
+    Point2d.prototype.add = function add(another) {
+        this.addXY(another.x, another.y);
+    };
+
+    Point2d.prototype.addXY = function addXY(x, y) {
+        this.x += x;
+        this.y += y;
+    };
+
+    Point2d.prototype.addX = function addX(x) {
+        this.x += x;
+    };
+
+    Point2d.prototype.addY = function addY(y) {
+        this.y += y;
+    };
+
+    Point2d.prototype.fromJSON = function fromJSON(json) {
+        this.set(json);
+    };
+
+    Point2d.prototype.toJSON = function toJSON() {
+        return { x: this.x, y: this.y };
+    };
+
+    return Point2d;
+}();
+
+exports.default = Point2d;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 var _mat = __webpack_require__(7);
 
 var _mat2 = _interopRequireDefault(_mat);
 
-var _point2d = __webpack_require__(6);
+var _point2d = __webpack_require__(2);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -551,7 +622,7 @@ ease.easeInOutQuad = function (t, b, c, d) {
 exports.ease = ease;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -609,7 +680,7 @@ var IndexBuffer = function () {
 exports.default = IndexBuffer;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -918,7 +989,7 @@ var ShaderProgram = (_temp = _class = function () {
 exports.default = ShaderProgram;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -988,74 +1059,6 @@ var VertexBuffer = function () {
 }();
 
 exports.default = VertexBuffer;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Point2d = function () {
-    function Point2d() {
-        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-        _classCallCheck(this, Point2d);
-
-        this.setXY(x, y);
-    }
-
-    Point2d.prototype.setXY = function setXY(x, y) {
-        this.x = x;
-        this.y = y;
-    };
-
-    Point2d.prototype.setX = function setX(x) {
-        this.x = x;
-    };
-
-    Point2d.prototype.setY = function setY(y) {
-        this.y = y;
-    };
-
-    Point2d.prototype.set = function set(another) {
-        this.setXY(another.x, another.y);
-    };
-
-    Point2d.prototype.add = function add(another) {
-        this.addXY(another.x, another.y);
-    };
-
-    Point2d.prototype.addXY = function addXY(x, y) {
-        this.x += x;
-        this.y += y;
-    };
-
-    Point2d.prototype.addX = function addX(x) {
-        this.x += x;
-    };
-
-    Point2d.prototype.addY = function addY(y) {
-        this.y += y;
-    };
-
-    Point2d.prototype.fromJSON = function fromJSON(json) {
-        this.set(json);
-    };
-
-    Point2d.prototype.toJSON = function toJSON() {
-        return { x: this.x, y: this.y };
-    };
-
-    return Point2d;
-}();
-
-exports.default = Point2d;
 
 /***/ }),
 /* 7 */
@@ -1572,7 +1575,7 @@ exports.default = Texture;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _mathEx = __webpack_require__(2);
+var _mathEx = __webpack_require__(3);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
@@ -1743,7 +1746,8 @@ var isPrimitive = function isPrimitive(val) {
 var deepCopy = function deepCopy(obj) {
     var _clonedObjects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-    if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;else if (_clonedObjects.indexOf(obj) > -1) return obj;
+    if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;else if (_clonedObjects.indexOf(obj) > -1) return obj;else if (obj.fromJSON) return obj.fromJSON(obj.toJSON());
+
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         var out = [],
             i = 0,
@@ -1858,6 +1862,8 @@ var CommonObject = function () {
         }
         return res;
     };
+
+    CommonObject.prototype.revalidate = function revalidate() {};
 
     return CommonObject;
 }();
@@ -2273,6 +2279,10 @@ var _camera2 = _interopRequireDefault(_camera);
 
 var _consts = __webpack_require__(15);
 
+var _point2d = __webpack_require__(2);
+
+var _point2d2 = _interopRequireDefault(_point2d);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2283,16 +2293,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Game = (_dec = (0, _decorators.Transient)({
     repository: true,
-    camera: true,
+    renderer: true,
+    mouse: true,
     keyboard: true,
     gamePad: true,
-    mouse: true
+    collider: true,
+    camera: true,
+    scaleStrategy: true,
+    fps: true,
+    destroyed: true
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
 
-    // = SCALE_STRATEGY.FIT;
-
-    function Game(gameProps) {
+    function Game() {
         _classCallCheck(this, Game);
 
         var _this = _possibleConstructorReturn(this, _CommonObject.call(this));
@@ -2303,15 +2316,16 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this._running = false;
         _this.destroyed = false;
         _this.renderer = null;
-        _this.scale = { x: 1, y: 1 };
-        _this.pos = { x: 0, y: 0 };
+        _this.scale = new _point2d2.default(1, 1);
+        _this.pos = new _point2d2.default(0, 0);
+        _this.width = null;
+        _this.height = null;
         _this.gravityConstant = null;
         _this.fps = null;
         _this.gamePad = null;
+        _this.scaleStrategy = null;
+        _this.startSceneId = null;
 
-        Object.keys(gameProps).forEach(function (key) {
-            _this[key] = gameProps[key];
-        });
         var time = Date.now();
         _this._lastTime = _this._currTime = time;
         _this._deltaTime = 0;
@@ -2323,7 +2337,8 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this.collider = new _collider2.default(_this);
         _this.camera = new _camera2.default(_this);
         return _this;
-    }
+    } // = SCALE_STRATEGY.FIT;
+
 
     Game.prototype.getTime = function getTime() {
         return this._lastTime;
@@ -2408,7 +2423,7 @@ exports.default = Game;
 /* 27 */
 /***/ (function(module, exports) {
 
-module.exports = {width:900,height:500,scaleStrategy:1,startSceneId:2,scale:{x:1,y:1},pos:{x:0,y:0},gravityConstant:800};
+module.exports = {width:800,height:500,scaleStrategy:1,startSceneId:2,scale:{x:1,y:1},pos:{x:0,y:0},gravityConstant:800};
 
 /***/ }),
 /* 28 */
@@ -3017,7 +3032,7 @@ var _mat = __webpack_require__(7);
 
 var _mat2 = _interopRequireDefault(_mat);
 
-var _mathEx = __webpack_require__(2);
+var _mathEx = __webpack_require__(3);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
@@ -3025,7 +3040,7 @@ var _rect = __webpack_require__(14);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _point2d = __webpack_require__(6);
+var _point2d = __webpack_require__(2);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -3377,11 +3392,11 @@ exports.default = Keyboard;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _mathEx = __webpack_require__(2);
+var _mathEx = __webpack_require__(3);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
-var _point2d = __webpack_require__(6);
+var _point2d = __webpack_require__(2);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -3590,7 +3605,7 @@ exports.default = Device;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _point2d = __webpack_require__(6);
+var _point2d = __webpack_require__(2);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -3950,7 +3965,7 @@ exports.default = ArcadeRigidBody;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _mathEx = __webpack_require__(2);
+var _mathEx = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global window:true*/
 
@@ -4095,10 +4110,8 @@ var AbstractRenderer = function () {
             width = window.innerWidth;
             height = width * canvasRatio;
         }
-        this.game.scale.x = width / this.game.width;
-        this.game.scale.y = height / this.game.height;
-        this.game.pos.x = (window.innerWidth - width) / 2;
-        this.game.pos.y = (window.innerHeight - height) / 2;
+        this.game.scale.setXY(width / this.game.width, height / this.game.height);
+        this.game.pos.setXY((window.innerWidth - width) / 2, (window.innerHeight - height) / 2);
 
         this.container.style.width = width + 'px';
         this.container.style.height = height + 'px';
@@ -4484,15 +4497,15 @@ var _plane = __webpack_require__(8);
 
 var _plane2 = _interopRequireDefault(_plane);
 
-var _shaderProgram = __webpack_require__(4);
+var _shaderProgram = __webpack_require__(5);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _vertexBuffer = __webpack_require__(5);
+var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(3);
+var _indexBuffer = __webpack_require__(4);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -4563,15 +4576,15 @@ var _plane = __webpack_require__(8);
 
 var _plane2 = _interopRequireDefault(_plane);
 
-var _shaderProgram = __webpack_require__(4);
+var _shaderProgram = __webpack_require__(5);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _vertexBuffer = __webpack_require__(5);
+var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(3);
+var _indexBuffer = __webpack_require__(4);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -4646,15 +4659,15 @@ var _line = __webpack_require__(59);
 
 var _line2 = _interopRequireDefault(_line);
 
-var _shaderProgram = __webpack_require__(4);
+var _shaderProgram = __webpack_require__(5);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _vertexBuffer = __webpack_require__(5);
+var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(3);
+var _indexBuffer = __webpack_require__(4);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -4722,15 +4735,15 @@ exports.default = LineDrawer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _shaderProgram = __webpack_require__(4);
+var _shaderProgram = __webpack_require__(5);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _vertexBuffer = __webpack_require__(5);
+var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(3);
+var _indexBuffer = __webpack_require__(4);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -4815,15 +4828,15 @@ var _plane = __webpack_require__(8);
 
 var _plane2 = _interopRequireDefault(_plane);
 
-var _shaderProgram = __webpack_require__(4);
+var _shaderProgram = __webpack_require__(5);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _vertexBuffer = __webpack_require__(5);
+var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(3);
+var _indexBuffer = __webpack_require__(4);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -4903,15 +4916,15 @@ var _plane = __webpack_require__(8);
 
 var _plane2 = _interopRequireDefault(_plane);
 
-var _shaderProgram = __webpack_require__(4);
+var _shaderProgram = __webpack_require__(5);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _vertexBuffer = __webpack_require__(5);
+var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(3);
+var _indexBuffer = __webpack_require__(4);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -5028,7 +5041,7 @@ var _mat = __webpack_require__(7);
 
 var _mat2 = _interopRequireDefault(_mat);
 
-var _mathEx = __webpack_require__(2);
+var _mathEx = __webpack_require__(3);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
@@ -5926,7 +5939,7 @@ var _baseModel = __webpack_require__(0);
 
 var _baseModel2 = _interopRequireDefault(_baseModel);
 
-var _mathEx = __webpack_require__(2);
+var _mathEx = __webpack_require__(3);
 
 var mathEx = _interopRequireWildcard(_mathEx);
 
@@ -6349,7 +6362,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 if (1 && _gameProps2.default.startSceneId === undefined) throw 'start scene not specified'; /*global DEBUG:true*/
 
-var game = new _game2.default(_gameProps2.default);
+var game = new _game2.default();
+game.fromJSON(_gameProps2.default);
 game.repository.setDescriptions(_repository2.default);
 
 var startScene = game.repository.getObject(_gameProps2.default.startSceneId, 'Scene');

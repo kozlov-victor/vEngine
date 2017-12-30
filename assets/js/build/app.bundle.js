@@ -1220,10 +1220,12 @@ var _game2 = _interopRequireDefault(_game);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var res = {}; /*global localStorage:true*/
+/*global window:true*/
 
 res.reset = function (gameProps) {
 
-    var g = new _game2.default(gameProps || {});
+    var g = new _game2.default();
+    g.fromJSON(gameProps || {});
     res.game = g;
     res.editTileMapModeOn = false;
 
@@ -1266,6 +1268,8 @@ res.reset = function (gameProps) {
 };
 
 res.reset();
+
+window.editData = res;
 
 exports.default = res;
 
@@ -2246,6 +2250,9 @@ var Point2d = function () {
         var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
         _classCallCheck(this, Point2d);
+
+        this.x = 0;
+        this.y = 0;
 
         this.setXY(x, y);
     }
@@ -4550,7 +4557,8 @@ var isPrimitive = function isPrimitive(val) {
 var deepCopy = function deepCopy(obj) {
     var _clonedObjects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
-    if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;else if (_clonedObjects.indexOf(obj) > -1) return obj;
+    if (obj === undefined) return undefined;else if (obj === null) return null;else if (typeof window !== 'undefined' && obj === window) return undefined;else if (_clonedObjects.indexOf(obj) > -1) return obj;else if (obj.fromJSON) return obj.fromJSON(obj.toJSON());
+
     if (Object.prototype.toString.call(obj) === '[object Array]') {
         var out = [],
             i = 0,
@@ -4665,6 +4673,8 @@ var CommonObject = function () {
         }
         return res;
     };
+
+    CommonObject.prototype.revalidate = function revalidate() {};
 
     return CommonObject;
 }();
@@ -11660,7 +11670,7 @@ var GameProps = (_dec = RF.decorateComponent({
     }
 
     GameProps.prototype.saveGameProps = function saveGameProps() {
-        this.restResource.saveGameProps(this.editData.game);
+        this.restResource.saveGameProps(this.editData.game.toJSON());
     };
 
     return GameProps;
@@ -13675,6 +13685,10 @@ var _camera2 = _interopRequireDefault(_camera);
 
 var _consts = __webpack_require__(105);
 
+var _point2d = __webpack_require__(17);
+
+var _point2d2 = _interopRequireDefault(_point2d);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -13685,16 +13699,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Game = (_dec = (0, _decorators.Transient)({
     repository: true,
-    camera: true,
+    renderer: true,
+    mouse: true,
     keyboard: true,
     gamePad: true,
-    mouse: true
+    collider: true,
+    camera: true,
+    scaleStrategy: true,
+    fps: true,
+    destroyed: true
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
 
-    // = SCALE_STRATEGY.FIT;
-
-    function Game(gameProps) {
+    function Game() {
         _classCallCheck(this, Game);
 
         var _this = _possibleConstructorReturn(this, _CommonObject.call(this));
@@ -13705,15 +13722,16 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this._running = false;
         _this.destroyed = false;
         _this.renderer = null;
-        _this.scale = { x: 1, y: 1 };
-        _this.pos = { x: 0, y: 0 };
+        _this.scale = new _point2d2.default(1, 1);
+        _this.pos = new _point2d2.default(0, 0);
+        _this.width = null;
+        _this.height = null;
         _this.gravityConstant = null;
         _this.fps = null;
         _this.gamePad = null;
+        _this.scaleStrategy = null;
+        _this.startSceneId = null;
 
-        Object.keys(gameProps).forEach(function (key) {
-            _this[key] = gameProps[key];
-        });
         var time = Date.now();
         _this._lastTime = _this._currTime = time;
         _this._deltaTime = 0;
@@ -13725,7 +13743,8 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this.collider = new _collider2.default(_this);
         _this.camera = new _camera2.default(_this);
         return _this;
-    }
+    } // = SCALE_STRATEGY.FIT;
+
 
     Game.prototype.getTime = function getTime() {
         return this._lastTime;
@@ -14284,10 +14303,8 @@ var AbstractRenderer = function () {
             width = window.innerWidth;
             height = width * canvasRatio;
         }
-        this.game.scale.x = width / this.game.width;
-        this.game.scale.y = height / this.game.height;
-        this.game.pos.x = (window.innerWidth - width) / 2;
-        this.game.pos.y = (window.innerHeight - height) / 2;
+        this.game.scale.setXY(width / this.game.width, height / this.game.height);
+        this.game.pos.setXY((window.innerWidth - width) / 2, (window.innerHeight - height) / 2);
 
         this.container.style.width = width + 'px';
         this.container.style.height = height + 'px';
