@@ -20,7 +20,8 @@ const compileShader = (gl, shaderSource, shaderType)=> {
         let lastError = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
         if (DEBUG) {
-            throw 'Error compiling shader ' + shader + ':' + lastError;
+            console.log(shaderSource);
+            throw `Error compiling shader: ${lastError}`;
         } else {
             throw lastError;
         }

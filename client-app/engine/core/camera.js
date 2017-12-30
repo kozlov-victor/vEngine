@@ -92,7 +92,7 @@ export default class Camera {
         );
     }
 
-    render(){
+    render(){ //TRS - (transform rotate scale) reverted
         this.game.renderer.translate(this.game.width/2,this.game.height/2);
         this.game.renderer.scale(this.scale.x,this.scale.y);
         // todo rotation does not work correctly yet

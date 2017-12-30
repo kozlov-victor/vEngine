@@ -4,17 +4,16 @@ import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 
-import basicVertexShader from '../shaders/basic/vertex3.vert'
-import colorShader from '../shaders/color/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
+import {simpleColorShaderGen as gen} from "../shaders/shaderGenerator"
 
 export default class LineDrawer extends AbstractDrawer {
 
     constructor(gl,game){
         super(gl,game);
         this.program = new ShaderProgram(gl, [
-            basicVertexShader,
-            colorShader
+            gen.getVertexSource(),
+            gen.getFragmentSource()
         ]);
         this.line = new Line();
 

@@ -4,10 +4,65 @@ import Plane from '../primitives/plane'
 import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
-
-import basicVertexShader from '../shaders/basic/vertex.vert'
-import textureShader from '../shaders/texture/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
+import ShaderGenerator from "../shaders/shaderGenerator";
+
+/*
+
+attribute vec4 a_position;
+attribute vec4 a_color;
+attribute vec2 a_texcoord;
+
+uniform mat4 u_PositionMatrix;
+uniform mat4 u_textureMatrix;
+
+varying vec2 v_texcoord;
+varying vec4 v_color;
+
+void main() {
+   gl_Position = u_PositionMatrix * a_position;
+   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
+   v_color = a_color;
+}
+
+---
+
+precision mediump float;
+
+varying vec2 v_texcoord;
+
+uniform sampler2D texture;
+uniform float u_alpha;
+
+
+void main() {
+    gl_FragColor = texture2D(texture, v_texcoord);
+    gl_FragColor.a *= u_alpha;
+}
+
+ */
+
+// position, color and texture
+let gen = new ShaderGenerator();
+gen.addAttribute('vec4','a_position');
+gen.addAttribute('vec4','a_color');
+gen.addAttribute('vec2','a_texcoord');
+gen.addVertexUniform('mat4','u_PositionMatrix'); // todo u_vertexMatrix
+gen.addVertexUniform('mat4','u_textureMatrix');
+gen.addVarying('vec2','v_texcoord');// todo v_texCoord
+gen.addVarying('vec4','v_color');
+gen.setVertexMainFn(`
+    gl_Position = u_PositionMatrix * a_position;
+    v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; 
+    v_color = a_color;
+`);
+gen.addFragmentUniform('sampler2D','texture');
+gen.addFragmentUniform('float','u_alpha');
+gen.setFragmentMainFn(`
+    gl_FragColor = texture2D(texture, v_texcoord);
+    gl_FragColor.a *= u_alpha;
+`);
+export let textureShaderGen = gen;
 
 export default class SpriteRectDrawer extends AbstractDrawer {
 
@@ -15,8 +70,8 @@ export default class SpriteRectDrawer extends AbstractDrawer {
         super(gl,game);
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
-            basicVertexShader,
-            textureShader
+            gen.getVertexSource(),
+            gen.getFragmentSource()
         ]);
 
         this.posVertexBuffer = new VertexBuffer(gl);

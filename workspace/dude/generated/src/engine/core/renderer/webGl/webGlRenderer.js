@@ -130,19 +130,6 @@ export default class WebGlRenderer extends AbstractRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
-        // if (dstX === undefined) {
-        //     dstX = srcX;
-        // }
-        // if (dstY === undefined) {
-        //     dstY = srcY;
-        // }
-        // if (srcWidth === undefined) {
-        //     srcWidth = texWidth;
-        // }
-        // if (srcHeight === undefined) {
-        //     srcHeight = texHeight;
-        // }
-
         if (this.currTex!==texture){
             texture.bind();
             this.currTex = texture;

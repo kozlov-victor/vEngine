@@ -11,7 +11,6 @@ varying vec2 v_texcoord;
 varying vec3 v_normal;
 
 void main() {
-
   gl_Position = u_projectionMatrix * u_modelMatrix * a_position;
   v_texcoord = a_texcoord;
   v_normal = a_normal;

@@ -7,6 +7,19 @@ import IndexBuffer from '../base/indexBuffer'
 import basicVertexShader from '../shaders/basic/vertex.vert'
 import textureShader from '../shaders/tiled/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
+import {textureShaderGen} from "./spriteRectDrawer";
+
+let gen = textureShaderGen.clone();
+gen.addFragmentUniform('vec2','u_offsetCoords');
+gen.addFragmentUniform('vec4','u_frameCoords');
+gen.setFragmentMainFn(`
+    vec2 localTextCoord = mod(
+        v_texcoord + fract(u_offsetCoords),
+        u_frameCoords.zw
+    ) + u_frameCoords.xy;
+    gl_FragColor = texture2D(texture, localTextCoord);
+    gl_FragColor.a *= u_alpha;
+`);
 
 export default class TiledSpriteRectDrawer extends AbstractDrawer {
 
