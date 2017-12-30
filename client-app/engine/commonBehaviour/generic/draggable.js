@@ -45,7 +45,7 @@ export default class DraggableBehaviour extends BaseAbstractBehaviour {
                 }
             }
             gameObject.pos.x = e.screenX - point.mX;
-            gameObject.pos.y = e.screenY - point.mY;
+            gameObject.pos.y = e.screenY - point.mY; // todo check collision ant then move
             // this.game._collider.moveTo(
             //     gameObject,
             //     e.screenX - point.mX,

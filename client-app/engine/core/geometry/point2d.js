@@ -17,9 +17,14 @@ export default class Point2d {
         this.setXY(another.x,another.y);
     }
 
+
     add(another){
-        this.x+=another.x;
-        this.y+=another.y;
+        this.addXY(another.x,another.y);
+    }
+
+    addXY(x,y){
+        this.x+=x;
+        this.y+=y;
     }
 
     fromJSON(json){

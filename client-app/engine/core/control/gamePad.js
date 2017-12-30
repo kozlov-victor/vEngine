@@ -19,53 +19,53 @@ export default class GamePad {
 
     update(){
 
-        this.gamepads =
-            (navigator.getGamepads && navigator.getGamepads()) ||
-            (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
-            navigator.webkitGamepads || navigator.mozGamepads ||
-            navigator.msGamepads || navigator.gamepads || [];
-
-        for (let i=0,max=this.gamepads.length;i<max;i++) {
-            let gp = this.gamepads[i];
-            if (!gp) continue;
-            let maxButtons = gp.buttons.length;
-            if (maxButtons>7) maxButtons = 7; // only 8-buttons gamePad is supported for now
-            for (let j=0;j<maxButtons;j++) {
-                let btn = gp.buttons[j];
-                if (btn.pressed) {
-                    this.game.keyboard.press(j);
-                } else {
-                    this.game.keyboard.release(j);
-                }
-            }
-            if (gp.axes[0]===0) continue; // to avoid oscillations
-            if (gp.axes[1]===0) continue;
-
-            let axis0 = ~~(gp.axes[0]);
-            let axis1 = ~~(gp.axes[1]);
-
-            if (axis0===1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-            }
-            if (axis0===-1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-            }
-
-            if (axis1===1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-            }
-            if (axis1===-1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-            }
-        }
+        // this.gamepads =
+        //     (navigator.getGamepads && navigator.getGamepads()) ||
+        //     (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
+        //     navigator.webkitGamepads || navigator.mozGamepads ||
+        //     navigator.msGamepads || navigator.gamepads || [];
+        //
+        // for (let i=0,max=this.gamepads.length;i<max;i++) {
+        //     let gp = this.gamepads[i];
+        //     if (!gp) continue;
+        //     let maxButtons = gp.buttons.length;
+        //     if (maxButtons>7) maxButtons = 7; // only 8-buttons gamePad is supported for now
+        //     for (let j=0;j<maxButtons;j++) {
+        //         let btn = gp.buttons[j];
+        //         if (btn.pressed) {
+        //             this.game.keyboard.press(j);
+        //         } else {
+        //             this.game.keyboard.release(j);
+        //         }
+        //     }
+        //     if (gp.axes[0]===0) continue; // to avoid oscillations
+        //     if (gp.axes[1]===0) continue;
+        //
+        //     let axis0 = ~~(gp.axes[0]);
+        //     let axis1 = ~~(gp.axes[1]);
+        //
+        //     if (axis0===1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+        //     }
+        //     if (axis0===-1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+        //     }
+        //
+        //     if (axis1===1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+        //     }
+        //     if (axis1===-1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+        //     }
+        // }
     }
 
 }

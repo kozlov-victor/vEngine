@@ -1,9 +1,10 @@
 
-export default class Vec2 {
+import Point2d from "./point2d";
 
-    constructor(x=0,y=0){
-        this.x = x;
-        this.y = y;
+export default class Vec2 extends Point2d {
+
+    constructor(x,y){
+        super(x,y);
     }
 
     // скалярное произведение
@@ -25,7 +26,7 @@ export default class Vec2 {
         this.y += y;
     }
 
-    multToScalar(scalar,mutateOrigin = true){
+    multByScalar(scalar,mutateOrigin = true){
         if (mutateOrigin) return new Vec2(this.x*scalar,this.y*scalar);
         this.x*=scalar;
         this.y*=scalar;
@@ -33,7 +34,7 @@ export default class Vec2 {
     }
 
     divByScalar(scalar,mutateOrigin = true){
-        return this.multToScalar(1/scalar,mutateOrigin);
+        return this.multByScalar(1/scalar,mutateOrigin);
     }
 
     plus(another,mutateOrigin = false){

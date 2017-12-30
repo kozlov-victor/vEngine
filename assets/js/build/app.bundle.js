@@ -2260,8 +2260,12 @@ var Point2d = function () {
     };
 
     Point2d.prototype.add = function add(another) {
-        this.x += another.x;
-        this.y += another.y;
+        this.addXY(another.x, another.y);
+    };
+
+    Point2d.prototype.addXY = function addXY(x, y) {
+        this.x += x;
+        this.y += y;
     };
 
     Point2d.prototype.fromJSON = function fromJSON(json) {
@@ -12903,7 +12907,7 @@ var DraggableBehaviour = function (_BaseAbstractBehaviou) {
                 }
             }
             gameObject.pos.x = e.screenX - point.mX;
-            gameObject.pos.y = e.screenY - point.mY;
+            gameObject.pos.y = e.screenY - point.mY; // todo check collision ant then move
             // this.game._collider.moveTo(
             //     gameObject,
             //     e.screenX - point.mX,
@@ -13193,49 +13197,53 @@ var GamePad = function () {
 
     GamePad.prototype.update = function update() {
 
-        this.gamepads = navigator.getGamepads && navigator.getGamepads() || navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || [];
-
-        for (var i = 0, max = this.gamepads.length; i < max; i++) {
-            var gp = this.gamepads[i];
-            if (!gp) continue;
-            var maxButtons = gp.buttons.length;
-            if (maxButtons > 7) maxButtons = 7; // only 8-buttons gamePad is supported for now
-            for (var j = 0; j < maxButtons; j++) {
-                var btn = gp.buttons[j];
-                if (btn.pressed) {
-                    this.game.keyboard.press(j);
-                } else {
-                    this.game.keyboard.release(j);
-                }
-            }
-            if (gp.axes[0] === 0) continue; // to avoid oscillations
-            if (gp.axes[1] === 0) continue;
-
-            var axis0 = ~~gp.axes[0];
-            var axis1 = ~~gp.axes[1];
-
-            if (axis0 === 1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-            }
-            if (axis0 === -1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-            }
-
-            if (axis1 === 1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-            }
-            if (axis1 === -1) {
-                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-            } else {
-                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-            }
-        }
+        // this.gamepads =
+        //     (navigator.getGamepads && navigator.getGamepads()) ||
+        //     (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
+        //     navigator.webkitGamepads || navigator.mozGamepads ||
+        //     navigator.msGamepads || navigator.gamepads || [];
+        //
+        // for (let i=0,max=this.gamepads.length;i<max;i++) {
+        //     let gp = this.gamepads[i];
+        //     if (!gp) continue;
+        //     let maxButtons = gp.buttons.length;
+        //     if (maxButtons>7) maxButtons = 7; // only 8-buttons gamePad is supported for now
+        //     for (let j=0;j<maxButtons;j++) {
+        //         let btn = gp.buttons[j];
+        //         if (btn.pressed) {
+        //             this.game.keyboard.press(j);
+        //         } else {
+        //             this.game.keyboard.release(j);
+        //         }
+        //     }
+        //     if (gp.axes[0]===0) continue; // to avoid oscillations
+        //     if (gp.axes[1]===0) continue;
+        //
+        //     let axis0 = ~~(gp.axes[0]);
+        //     let axis1 = ~~(gp.axes[1]);
+        //
+        //     if (axis0===1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+        //     }
+        //     if (axis0===-1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+        //     }
+        //
+        //     if (axis1===1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+        //     }
+        //     if (axis1===-1) {
+        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+        //     } else {
+        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+        //     }
+        // }
     };
 
     return GamePad;
@@ -13401,10 +13409,30 @@ var _mathEx = __webpack_require__(2);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
+var _point2d = __webpack_require__(17);
+
+var _point2d2 = _interopRequireDefault(_point2d);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*global DEBUG:true*/
+
+
+var MousePoint = function (_Point2d) {
+    _inherits(MousePoint, _Point2d);
+
+    function MousePoint() {
+        _classCallCheck(this, MousePoint);
+
+        return _possibleConstructorReturn(this, _Point2d.call(this));
+    }
+
+    return MousePoint;
+}(_point2d2.default);
 
 var Mouse = function () {
     function Mouse(game) {
@@ -13414,35 +13442,33 @@ var Mouse = function () {
         this.container = null;
 
         this.game = game;
-        this.currPoint = null;
     }
 
     //MouseEvent|TouchEvent|PointerEvent
 
 
-    Mouse.prototype.resolveScreenPoint = function resolveScreenPoint(e) {
-        // todo this is world point
+    Mouse.prototype.resolvePoint = function resolvePoint(e) {
         var game = this.game;
         var camera = this.game.camera;
-        var rectScaled = camera.getRectScaled();
 
         var screenX = (e.clientX - game.pos.x) / game.scale.x;
         var screenY = (e.clientY - game.pos.y) / game.scale.y;
 
         var p = game.camera.screenToWorld(screenX, screenY);
 
-        return {
-            x: p.x, // separate screen and world point
-            y: p.y,
-            id: e.identifier || 0
-        };
+        var mousePoint = new MousePoint();
+        mousePoint.set(p);
+        mousePoint.screenX = screenX;
+        mousePoint.screenY = screenY;
+        mousePoint.id = e.identifier || 0;
+        return mousePoint;
     };
 
     Mouse.prototype.triggerEvent = function triggerEvent(e, eventName, isMouseDown) {
         var g = this.game;
         var scene = g.getCurrScene();
         if (!scene) return;
-        var point = this.resolveScreenPoint(e);
+        var point = this.resolvePoint(e);
 
         exit: for (var i = 0; i < scene.layers.length; i++) {
             var layer = scene.layers[scene.layers.length - 1 - i];
@@ -13508,52 +13534,52 @@ var Mouse = function () {
     };
 
     Mouse.prototype.listenTo = function listenTo(container) {
-        var _this = this;
+        var _this2 = this;
 
         this.container = container;
         // mouseDown
         container.ontouchstart = function (e) {
             var l = e.touches.length;
             while (l--) {
-                _this.resolveClick(e.touches[l]);
+                _this2.resolveClick(e.touches[l]);
             }
         };
         container.onmousedown = function (e) {
-            e.button === 0 && _this.resolveClick(e);
+            e.button === 0 && _this2.resolveClick(e);
         };
         // mouseUp
         container.ontouchend = container.ontouchcancel = function (e) {
             var l = e.changedTouches.length;
             while (l--) {
-                _this.resolveMouseUp(e.changedTouches[l]);
+                _this2.resolveMouseUp(e.changedTouches[l]);
             }
         };
         container.onmouseup = function (e) {
-            _this.resolveMouseUp(e);
+            _this2.resolveMouseUp(e);
         };
-        //
+        // mouseMove
         container.ontouchmove = function (e) {
             var l = e.touches.length;
             while (l--) {
-                _this.resolveMouseMove(e.touches[l], true);
+                _this2.resolveMouseMove(e.touches[l], true);
             }
         };
         container.onmousemove = function (e) {
             var isMouseDown = e.buttons === 1;
-            _this.resolveMouseMove(e, isMouseDown);
+            _this2.resolveMouseMove(e, isMouseDown);
         };
         // other
         container.ondblclick = function (e) {
             // todo now only on pc
-            _this.resolveDoubleClick(e);
+            _this2.resolveDoubleClick(e);
         };
     };
 
     Mouse.prototype.destroy = function destroy() {
-        var _this2 = this;
+        var _this3 = this;
 
         ['mouseMove', 'ontouchstart', 'onmousedown', 'ontouchend', 'onmouseup', 'ontouchmove', 'onmousemove', 'ondblclick'].forEach(function (evtName) {
-            _this2.container[evtName] = null;
+            _this3.container[evtName] = null;
         });
     };
 
@@ -13772,18 +13798,27 @@ exports.default = Game;
 
 
 exports.__esModule = true;
+exports.default = undefined;
+
+var _point2d = __webpack_require__(17);
+
+var _point2d2 = _interopRequireDefault(_point2d);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Vec2 = function () {
-    function Vec2() {
-        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Vec2 = function (_Point2d) {
+    _inherits(Vec2, _Point2d);
+
+    function Vec2(x, y) {
         _classCallCheck(this, Vec2);
 
-        this.x = x;
-        this.y = y;
+        return _possibleConstructorReturn(this, _Point2d.call(this, x, y));
     }
 
     // скалярное произведение
@@ -13807,7 +13842,7 @@ var Vec2 = function () {
         this.y += y;
     };
 
-    Vec2.prototype.multToScalar = function multToScalar(scalar) {
+    Vec2.prototype.multByScalar = function multByScalar(scalar) {
         var mutateOrigin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
         if (mutateOrigin) return new Vec2(this.x * scalar, this.y * scalar);
@@ -13819,7 +13854,7 @@ var Vec2 = function () {
     Vec2.prototype.divByScalar = function divByScalar(scalar) {
         var mutateOrigin = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        return this.multToScalar(1 / scalar, mutateOrigin);
+        return this.multByScalar(1 / scalar, mutateOrigin);
     };
 
     Vec2.prototype.plus = function plus(another) {
@@ -13899,7 +13934,7 @@ var Vec2 = function () {
     };
 
     return Vec2;
-}();
+}(_point2d2.default);
 
 exports.default = Vec2;
 
@@ -14066,13 +14101,9 @@ var ArcadeRigidBody = function () {
 
     ArcadeRigidBody.prototype.update = function update(time, delta) {
         if (!this.gameObject.rigidBody.static) {
-            var deltaX = this.vel.x * delta / 1000;
-            var deltaY = this.vel.y * delta / 1000;
-            var expectedY = this.gameObject.pos.y + deltaY;
-            this.game.collider.moveBy(this.gameObject, deltaX, deltaY);
-            this.gameObject.rigidBody.onFloor = expectedY > this.gameObject.pos.y;
-            if (expectedY !== this.gameObject.pos.y) this.vel.y = 0;
+            var deltaPoint = this.vel.multByScalar(delta / 1000);
             this.vel.y += this.game.gravityConstant * delta / 1000;
+            this.game.collider.moveBy(this.gameObject, deltaPoint);
         }
     };
 
@@ -14102,15 +14133,17 @@ var Collider = function () {
         this.game = game;
     }
 
-    Collider.prototype.moveBy = function moveBy(player, dX, dY) {
+    Collider.prototype.moveBy = function moveBy(player, deltaPoint) {
 
         var rigidObjects = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
 
         var playerRect = player.getRect();
-        playerRect.x += dX;
-        playerRect.y += dY;
+        playerRect.x += deltaPoint.x;
+        playerRect.y += deltaPoint.y;
         var collidedByX = false,
             collidedByY = false;
+
+        var expectedY = player.pos.y + deltaPoint.y;
 
         for (var i = 0, len = rigidObjects.length; i < len; i++) {
             var obstacle = rigidObjects[i];
@@ -14130,28 +14163,32 @@ var Collider = function () {
                     player.pos.y = obstacleRect.y - playerRect.height;
                     collidedByY = true;
                 } else if (pathToBottom === minPath) {
-                    // closest path to move player to resolve collision is path to top
+                    // closest path to move player to resolve collision is path to bottom
                     //console.log('bottom');
                     player.pos.y = obstacleRect.bottom;
                     collidedByY = true;
                 } else if (pathToLeft === minPath) {
-                    // closest path to move player to resolve collision is path to top
+                    // closest path to move player to resolve collision is path to left
                     //console.log('left');
                     player.pos.x = obstacleRect.x - playerRect.width;
                     collidedByX = true;
                 } else if (pathToRight === minPath) {
-                    // closest path to move player to resolve collision is path to top
+                    // closest path to move player to resolve collision is path to right
                     //console.log('right');
                     player.pos.x = obstacleRect.x + obstacleRect.width;
                     collidedByX = true;
                 }
             }
         }
-        if (!collidedByX) player.pos.x += dX;
-        if (!collidedByY) player.pos.y += dY;
+        if (!collidedByX) player.pos.x += deltaPoint.x;
+        if (!collidedByY) player.pos.y += deltaPoint.y;
+
+        player.rigidBody.onFloor = expectedY > player.pos.y; // todo uncorrect onFloor detection
+        //if (player.id===7) this.game.renderer.log('onFloor',expectedY,player.pos.y,player.rigidBody.onFloor);
+        if (player.rigidBody.onFloor) player.rigidBody.vel.y = 0;
     };
 
-    Collider.prototype.moveTo = function moveTo(player, newX, newY) {
+    Collider.prototype.moveTo = function moveTo(player, point) {
         // todo not works!
         var pRect = player.getRect();
         var collided = false;
@@ -14164,8 +14201,8 @@ var Collider = function () {
             });
         }
         if (collided) return;
-        player.pos.x = newX;
-        player.pos.y = newY;
+        player.pos.x = point.x;
+        player.pos.y = point.y;
     };
 
     return Collider;

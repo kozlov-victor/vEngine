@@ -8,16 +8,18 @@ export default class Collider {
         this.game = game;
     }
 
-    moveBy(player, dX, dY) {
+    moveBy(player, deltaPoint) {
 
         let rigidObjects =
             this.game.getCurrScene().getAllGameObjects().
             concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
 
         let playerRect = player.getRect();
-        playerRect.x+=dX;
-        playerRect.y+=dY;
+        playerRect.x+=deltaPoint.x;
+        playerRect.y+=deltaPoint.y;
         let collidedByX = false, collidedByY = false;
+
+        let expectedY = player.pos.y + deltaPoint.y;
 
         for (let i = 0,len = rigidObjects.length;i<len;i++) {
             let obstacle = rigidObjects[i];
@@ -36,17 +38,17 @@ export default class Collider {
                     player.pos.y = obstacleRect.y - playerRect.height;
                     collidedByY = true;
                 }
-                else if (pathToBottom===minPath) { // closest path to move player to resolve collision is path to top
+                else if (pathToBottom===minPath) { // closest path to move player to resolve collision is path to bottom
                     //console.log('bottom');
                     player.pos.y = obstacleRect.bottom;
                     collidedByY = true;
                 }
-                else if (pathToLeft===minPath) { // closest path to move player to resolve collision is path to top
+                else if (pathToLeft===minPath) { // closest path to move player to resolve collision is path to left
                     //console.log('left');
                     player.pos.x = obstacleRect.x - playerRect.width;
                     collidedByX = true;
                 }
-                else if (pathToRight===minPath) { // closest path to move player to resolve collision is path to top
+                else if (pathToRight===minPath) { // closest path to move player to resolve collision is path to right
                     //console.log('right');
                     player.pos.x = obstacleRect.x + obstacleRect.width;
                     collidedByX = true;
@@ -54,13 +56,17 @@ export default class Collider {
 
             }
         }
-        if (!collidedByX) player.pos.x+=dX;
-        if (!collidedByY) player.pos.y+=dY;
+        if (!collidedByX) player.pos.x+=deltaPoint.x;
+        if (!collidedByY) player.pos.y+=deltaPoint.y;
+
+        player.rigidBody.onFloor = expectedY > player.pos.y; // todo uncorrect onFloor detection
+        //if (player.id===7) this.game.renderer.log('onFloor',expectedY,player.pos.y,player.rigidBody.onFloor);
+        if (player.rigidBody.onFloor) player.rigidBody.vel.y = 0;
     }
 
 
 
-    moveTo(player,newX,newY){ // todo not works!
+    moveTo(player,point){ // todo not works!
         let pRect = player.getRect();
         let collided = false;
         if (player.rigidBody) {
@@ -74,8 +80,8 @@ export default class Collider {
             });
         }
         if (collided) return;
-        player.pos.x = newX;
-        player.pos.y = newY;
+        player.pos.x = point.x;
+        player.pos.y = point.y;
     }
 
 

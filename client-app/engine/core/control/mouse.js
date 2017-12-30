@@ -1,5 +1,18 @@
 /*global DEBUG:true*/
 import mathEx from '../mathEx'
+import Point2d from "../geometry/point2d";
+
+class MousePoint extends Point2d{
+
+    screenX;
+    screenY;
+    id;
+
+    constructor(){
+        super();
+    }
+
+}
 
 export default class Mouse {
 
@@ -8,35 +21,32 @@ export default class Mouse {
 
     constructor(game){
         this.game = game;
-        this.currPoint = null;
     }
 
 
     //MouseEvent|TouchEvent|PointerEvent
-    resolveScreenPoint(e){ // todo this is world point
+    resolvePoint(e){
         let game = this.game;
         let camera = this.game.camera;
-        let rectScaled = camera.getRectScaled();
 
         let screenX = (e.clientX - game.pos.x ) / game.scale.x;
         let screenY = (e.clientY - game.pos.y ) / game.scale.y;
 
-
         let p = game.camera.screenToWorld(screenX,screenY);
 
-        return {
-            x: p.x, // separate screen and world point
-            y: p.y,
-            id: e.identifier || 0
-        };
-
+        let mousePoint = new MousePoint();
+        mousePoint.set(p);
+        mousePoint.screenX = screenX;
+        mousePoint.screenY = screenY;
+        mousePoint.id = e.identifier || 0;
+        return mousePoint;
     }
 
     triggerEvent(e,eventName,isMouseDown){
         let g = this.game;
         let scene = g.getCurrScene();
         if (!scene) return;
-        let point = this.resolveScreenPoint(e);
+        let point = this.resolvePoint(e);
 
 exit:   for (let i=0;i<scene.layers.length;i++){
             let layer = scene.layers[scene.layers.length - 1 - i];
@@ -125,7 +135,7 @@ exit:   for (let i=0;i<scene.layers.length;i++){
         container.onmouseup = e=>{
             this.resolveMouseUp(e);
         };
-        //
+        // mouseMove
         container.ontouchmove = e=>{
             let l = e.touches.length;
             while (l--){
