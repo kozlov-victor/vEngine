@@ -1,4 +1,4 @@
-
+/*global window:true*/
 
 import {overlapTest} from '../mathEx'
 
@@ -15,11 +15,13 @@ export default class Collider {
             concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
 
         let playerRect = player.getRect();
+        let playerRigidBody = player.rigidBody;
         playerRect.x+=deltaPoint.x;
         playerRect.y+=deltaPoint.y;
         let collidedByX = false, collidedByY = false;
 
         let expectedY = player.pos.y + deltaPoint.y;
+        playerRigidBody._onFloorInPrevFrame = playerRigidBody._onFloorInCurrFrame;
 
         for (let i = 0,len = rigidObjects.length;i<len;i++) {
             let obstacle = rigidObjects[i];
@@ -34,34 +36,32 @@ export default class Collider {
                 let minPath = Math.min(pathToTop,pathToBottom,pathToLeft,pathToRight);
 
                 if (pathToTop===minPath) { // closest path to move player to resolve collision is path to top
-                    //console.log('top');
-                    player.pos.y = obstacleRect.y - playerRect.height;
+                    player.pos.setY(obstacleRect.y - playerRect.height);
                     collidedByY = true;
                 }
                 else if (pathToBottom===minPath) { // closest path to move player to resolve collision is path to bottom
-                    //console.log('bottom');
-                    player.pos.y = obstacleRect.bottom;
+                    player.pos.setY(obstacleRect.bottom);
                     collidedByY = true;
                 }
                 else if (pathToLeft===minPath) { // closest path to move player to resolve collision is path to left
-                    //console.log('left');
-                    player.pos.x = obstacleRect.x - playerRect.width;
+                    player.pos.setX(obstacleRect.x - playerRect.width);
                     collidedByX = true;
                 }
                 else if (pathToRight===minPath) { // closest path to move player to resolve collision is path to right
-                    //console.log('right');
-                    player.pos.x = obstacleRect.x + obstacleRect.width;
+                    player.pos.setX(obstacleRect.x + obstacleRect.width);
                     collidedByX = true;
                 }
 
             }
         }
-        if (!collidedByX) player.pos.x+=deltaPoint.x;
-        if (!collidedByY) player.pos.y+=deltaPoint.y;
+        if (!collidedByX) player.pos.addX(deltaPoint.x);
+        if (!collidedByY) player.pos.addY(deltaPoint.y);
 
-        player.rigidBody.onFloor = expectedY > player.pos.y; // todo uncorrect onFloor detection
-        //if (player.id===7) this.game.renderer.log('onFloor',expectedY,player.pos.y,player.rigidBody.onFloor);
-        if (player.rigidBody.onFloor) player.rigidBody.vel.y = 0;
+        playerRigidBody._onFloorInCurrFrame = expectedY > player.pos.y;
+        playerRigidBody.onFloor =
+            playerRigidBody.vel.y>=0 &&
+            (playerRigidBody._onFloorInPrevFrame || playerRigidBody._onFloorInCurrFrame);
+        if (player.rigidBody.onFloor) player.rigidBody.vel.setY(0);
     }
 
 
@@ -80,8 +80,8 @@ export default class Collider {
             });
         }
         if (collided) return;
-        player.pos.x = point.x;
-        player.pos.y = point.y;
+        player.pos.setX(point.x);
+        player.pos.setY(point.y);
     }
 
 

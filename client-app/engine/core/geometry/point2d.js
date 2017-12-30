@@ -13,6 +13,14 @@ export default class Point2d {
         this.y = y;
     }
 
+    setX(x){
+        this.x = x;
+    }
+
+    setY(y){
+        this.y = y;
+    }
+
     set(another){
         this.setXY(another.x,another.y);
     }
@@ -24,6 +32,14 @@ export default class Point2d {
 
     addXY(x,y){
         this.x+=x;
+        this.y+=y;
+    }
+
+    addX(x){
+        this.x+=x;
+    }
+
+    addY(y){
         this.y+=y;
     }
 

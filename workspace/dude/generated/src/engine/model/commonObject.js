@@ -60,29 +60,26 @@ export default class CommonObject {
     fromJSON(params = {},forceNew){
         Object.keys(params).forEach(key=>{
             if (key==='type') return;
-            if (key in this) this[key] = params[key];
-            else {
+
+            if (!(key in this)) {
                 console.error(this);
                 throw `::fromJSON(): class ${this.constructor.name} has no property ${key}`;
             }
 
-            if (!this[key]) return;
             if (params[key].id && params[key].type)
                 this[key] = this.game.repository.getObject(params[key].id,params[key].type,forceNew);
-            else if (params[key].splice) {
-                let arr = this[key];
+            else if (params[key].forEach) {
                 this[key] = [];
-                arr.forEach((item,i)=>{
+                params[key].forEach(item=>{
                     if (item && item.type && item.id) {
                         this[key].push(this.game.repository.getObject(item.id,item.type,forceNew));
                     } else {
-                        //if (isPrimitive(item))
                         this[key].push(item);
                     }
                 });
-            } else if (this[key].fromJSON) {
+            } else if (this[key] && this[key].fromJSON) {
                 this[key].fromJSON(params[key]);
-            }
+            } else this[key] = params[key];
         });
         this.revalidate();
         return this;

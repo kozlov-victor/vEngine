@@ -1015,6 +1015,14 @@ var Point2d = function () {
         this.y = y;
     };
 
+    Point2d.prototype.setX = function setX(x) {
+        this.x = x;
+    };
+
+    Point2d.prototype.setY = function setY(y) {
+        this.y = y;
+    };
+
     Point2d.prototype.set = function set(another) {
         this.setXY(another.x, another.y);
     };
@@ -1025,6 +1033,14 @@ var Point2d = function () {
 
     Point2d.prototype.addXY = function addXY(x, y) {
         this.x += x;
+        this.y += y;
+    };
+
+    Point2d.prototype.addX = function addX(x) {
+        this.x += x;
+    };
+
+    Point2d.prototype.addY = function addY(y) {
         this.y += y;
     };
 
@@ -1762,26 +1778,24 @@ var CommonObject = function () {
 
         Object.keys(params).forEach(function (key) {
             if (key === 'type') return;
-            if (key in _this) _this[key] = params[key];else {
+
+            if (!(key in _this)) {
                 console.error(_this);
                 throw '::fromJSON(): class ' + _this.constructor.name + ' has no property ' + key;
             }
 
-            if (!_this[key]) return;
-            if (params[key].id && params[key].type) _this[key] = _this.game.repository.getObject(params[key].id, params[key].type, forceNew);else if (params[key].splice) {
-                var arr = _this[key];
+            if (params[key].id && params[key].type) _this[key] = _this.game.repository.getObject(params[key].id, params[key].type, forceNew);else if (params[key].forEach) {
                 _this[key] = [];
-                arr.forEach(function (item, i) {
+                params[key].forEach(function (item) {
                     if (item && item.type && item.id) {
                         _this[key].push(_this.game.repository.getObject(item.id, item.type, forceNew));
                     } else {
-                        //if (isPrimitive(item))
                         _this[key].push(item);
                     }
                 });
-            } else if (_this[key].fromJSON) {
+            } else if (_this[key] && _this[key].fromJSON) {
                 _this[key].fromJSON(params[key]);
-            }
+            } else _this[key] = params[key];
         });
         this.revalidate();
         return this;
@@ -3140,53 +3154,49 @@ var GamePad = function () {
 
     GamePad.prototype.update = function update() {
 
-        // this.gamepads =
-        //     (navigator.getGamepads && navigator.getGamepads()) ||
-        //     (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
-        //     navigator.webkitGamepads || navigator.mozGamepads ||
-        //     navigator.msGamepads || navigator.gamepads || [];
-        //
-        // for (let i=0,max=this.gamepads.length;i<max;i++) {
-        //     let gp = this.gamepads[i];
-        //     if (!gp) continue;
-        //     let maxButtons = gp.buttons.length;
-        //     if (maxButtons>7) maxButtons = 7; // only 8-buttons gamePad is supported for now
-        //     for (let j=0;j<maxButtons;j++) {
-        //         let btn = gp.buttons[j];
-        //         if (btn.pressed) {
-        //             this.game.keyboard.press(j);
-        //         } else {
-        //             this.game.keyboard.release(j);
-        //         }
-        //     }
-        //     if (gp.axes[0]===0) continue; // to avoid oscillations
-        //     if (gp.axes[1]===0) continue;
-        //
-        //     let axis0 = ~~(gp.axes[0]);
-        //     let axis1 = ~~(gp.axes[1]);
-        //
-        //     if (axis0===1) {
-        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-        //     } else {
-        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
-        //     }
-        //     if (axis0===-1) {
-        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-        //     } else {
-        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
-        //     }
-        //
-        //     if (axis1===1) {
-        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-        //     } else {
-        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
-        //     }
-        //     if (axis1===-1) {
-        //         this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-        //     } else {
-        //         this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
-        //     }
-        // }
+        this.gamepads = navigator.getGamepads && navigator.getGamepads() || navigator.webkitGetGamepads && navigator.webkitGetGamepads() || navigator.webkitGamepads || navigator.mozGamepads || navigator.msGamepads || navigator.gamepads || [];
+
+        for (var i = 0, max = this.gamepads.length; i < max; i++) {
+            var gp = this.gamepads[i];
+            if (!gp) continue;
+            var maxButtons = gp.buttons.length;
+            if (maxButtons > 7) maxButtons = 7; // only 8-buttons gamePad is supported for now
+            for (var j = 0; j < maxButtons; j++) {
+                var btn = gp.buttons[j];
+                if (btn.pressed) {
+                    this.game.keyboard.press(j);
+                } else {
+                    this.game.keyboard.release(j);
+                }
+            }
+            if (gp.axes[0] === 0) continue; // to avoid oscillations
+            if (gp.axes[1] === 0) continue;
+
+            var axis0 = ~~gp.axes[0];
+            var axis1 = ~~gp.axes[1];
+
+            if (axis0 === 1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_RIGHT);
+            }
+            if (axis0 === -1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_LEFT);
+            }
+
+            if (axis1 === 1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_DOWN);
+            }
+            if (axis1 === -1) {
+                this.game.keyboard.press(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+            } else {
+                this.game.keyboard.release(this.game.keyboard.KEY.GAME_PAD_AXIS_UP);
+            }
+        }
     };
 
     return GamePad;
@@ -3889,16 +3899,20 @@ var ArcadeRigidBody = function () {
         _classCallCheck(this, ArcadeRigidBody);
 
         this.vel = new _vec2.default();
+        this.onFloor = false;
+        this._onFloorInCurrFrame = false;
+        this._onFloorInPrevFrame = false;
 
         this.game = gameObject.game;
         this.gameObject = gameObject;
-    }
+    } // to avoid onFloor oscillation
+
 
     ArcadeRigidBody.prototype.update = function update(time, delta) {
         if (!this.gameObject.rigidBody.static) {
             var deltaPoint = this.vel.multByScalar(delta / 1000);
-            this.vel.y += this.game.gravityConstant * delta / 1000;
             this.game.collider.moveBy(this.gameObject, deltaPoint);
+            this.vel.addY(this.game.gravityConstant * delta / 1000);
         }
     };
 
@@ -3919,7 +3933,7 @@ exports.default = undefined;
 
 var _mathEx = __webpack_require__(2);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global window:true*/
 
 var Collider = function () {
     function Collider(game) {
@@ -3933,12 +3947,14 @@ var Collider = function () {
         var rigidObjects = this.game.getCurrScene().getAllGameObjects().concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
 
         var playerRect = player.getRect();
+        var playerRigidBody = player.rigidBody;
         playerRect.x += deltaPoint.x;
         playerRect.y += deltaPoint.y;
         var collidedByX = false,
             collidedByY = false;
 
         var expectedY = player.pos.y + deltaPoint.y;
+        playerRigidBody._onFloorInPrevFrame = playerRigidBody._onFloorInCurrFrame;
 
         for (var i = 0, len = rigidObjects.length; i < len; i++) {
             var obstacle = rigidObjects[i];
@@ -3954,33 +3970,29 @@ var Collider = function () {
 
                 if (pathToTop === minPath) {
                     // closest path to move player to resolve collision is path to top
-                    //console.log('top');
-                    player.pos.y = obstacleRect.y - playerRect.height;
+                    player.pos.setY(obstacleRect.y - playerRect.height);
                     collidedByY = true;
                 } else if (pathToBottom === minPath) {
                     // closest path to move player to resolve collision is path to bottom
-                    //console.log('bottom');
-                    player.pos.y = obstacleRect.bottom;
+                    player.pos.setY(obstacleRect.bottom);
                     collidedByY = true;
                 } else if (pathToLeft === minPath) {
                     // closest path to move player to resolve collision is path to left
-                    //console.log('left');
-                    player.pos.x = obstacleRect.x - playerRect.width;
+                    player.pos.setX(obstacleRect.x - playerRect.width);
                     collidedByX = true;
                 } else if (pathToRight === minPath) {
                     // closest path to move player to resolve collision is path to right
-                    //console.log('right');
-                    player.pos.x = obstacleRect.x + obstacleRect.width;
+                    player.pos.setX(obstacleRect.x + obstacleRect.width);
                     collidedByX = true;
                 }
             }
         }
-        if (!collidedByX) player.pos.x += deltaPoint.x;
-        if (!collidedByY) player.pos.y += deltaPoint.y;
+        if (!collidedByX) player.pos.addX(deltaPoint.x);
+        if (!collidedByY) player.pos.addY(deltaPoint.y);
 
-        player.rigidBody.onFloor = expectedY > player.pos.y;
-        if (player.id === 7) this.game.renderer.log('onFloor', expectedY, player.pos.y, player.rigidBody.onFloor);
-        //if (player.rigidBody.onFloor) player.rigidBody.vel.y = 0;
+        playerRigidBody._onFloorInCurrFrame = expectedY > player.pos.y;
+        playerRigidBody.onFloor = playerRigidBody.vel.y >= 0 && (playerRigidBody._onFloorInPrevFrame || playerRigidBody._onFloorInCurrFrame);
+        if (player.rigidBody.onFloor) player.rigidBody.vel.setY(0);
     };
 
     Collider.prototype.moveTo = function moveTo(player, point) {
@@ -3996,8 +4008,8 @@ var Collider = function () {
             });
         }
         if (collided) return;
-        player.pos.x = point.x;
-        player.pos.y = point.y;
+        player.pos.setX(point.x);
+        player.pos.setY(point.y);
     };
 
     return Collider;
