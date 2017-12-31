@@ -191,15 +191,21 @@ export default class ShaderProgram {
         //uniformValuesCache[name] = value;
     }
 
-    bindBuffer(buffer, attrLocationName) { // todo rename param to attrLocationName
+    bindBuffer(buffer, attrLocationName) {
+        if (DEBUG) {
+            if (!attrLocationName) throw `can not found attribute location: attrLocationName not defined`;
+        }
+
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
         let attrLocation =
             this._attrLocationCache[attrLocationName] ||
             this.gl.getAttribLocation(this.program, attrLocationName);
 
         if (DEBUG) {
-            if (!attrLocationName) throw "can not found uniform location: uniformLocationName not defined";
-            if (attrLocation < 0) throw "can not found uniform location for " + attrLocationName;
+            if (attrLocation < 0) {
+                console.log(this);
+                throw `can not found attribute location for  ${attrLocationName}`;
+            }
         }
 
         this.gl.enableVertexAttribArray(attrLocation);

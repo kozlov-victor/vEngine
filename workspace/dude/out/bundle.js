@@ -909,13 +909,18 @@ var ShaderProgram = (_temp = _class = function () {
     };
 
     ShaderProgram.prototype.bindBuffer = function bindBuffer(buffer, attrLocationName) {
-        // todo rename param to attrLocationName
+        if (true) {
+            if (!attrLocationName) throw 'can not found attribute location: attrLocationName not defined';
+        }
+
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
         var attrLocation = this._attrLocationCache[attrLocationName] || this.gl.getAttribLocation(this.program, attrLocationName);
 
         if (true) {
-            if (!attrLocationName) throw "can not found uniform location: uniformLocationName not defined";
-            if (attrLocation < 0) throw "can not found uniform location for " + attrLocationName;
+            if (attrLocation < 0) {
+                console.log(this);
+                throw 'can not found attribute location for  ' + attrLocationName;
+            }
         }
 
         this.gl.enableVertexAttribArray(attrLocation);
@@ -1296,7 +1301,7 @@ var ShaderGenerator = function () {
             return 'attribute ' + u.type + ' ' + u.name + ';';
         }).join('\n') + '\n            ' + this.varyings.map(function (u) {
             return 'varying   ' + u.type + ' ' + u.name + ';';
-        }).join('\n') + '\n            void main() {\n               ' + this.vertexMainFn + '\n            }\n            ').replace(/\t/, '');
+        }).join('\n') + '\n            void main() {\n               ' + this.vertexMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '');
     };
 
     ShaderGenerator.prototype.getFragmentSource = function getFragmentSource() {
@@ -1306,8 +1311,13 @@ var ShaderGenerator = function () {
                 return 'uniform ' + u.type + ' ' + u.name + ';';
             }).join('\n') + '\n            ' + this.varyings.map(function (u) {
                 return 'varying ' + u.type + ' ' + u.name + ';';
-            }).join('\n') + '\n            void main() {\n               ' + this.fragmentMainFn + '\n            }\n            ').replace(/\t/, '')
+            }).join('\n') + '\n            void main() {\n               ' + this.fragmentMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '')
         );
+    };
+
+    ShaderGenerator.prototype.debug = function debug() {
+        console.log(this.getVertexSource());
+        console.log(this.getFragmentSource());
     };
 
     ShaderGenerator.prototype.clone = function clone() {
@@ -1355,10 +1365,10 @@ void main() {
 exports.default = ShaderGenerator;
 var gen = new ShaderGenerator();
 gen.addAttribute('vec4', 'a_position');
-gen.addAttribute('vec4', 'a_color');
-gen.addVertexUniform('mat4', 'u_PositionMatrix'); // todo u_vertexMatrix
-gen.addVarying('vec4', 'v_color');
-gen.setVertexMainFn('\n    gl_Position = u_PositionMatrix * a_position;\n    v_color = a_color;\n');
+//gen.addAttribute('vec4','a_color');
+gen.addVertexUniform('mat4', 'u_vertexMatrix');
+//gen.addVarying('vec4','v_color');
+gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    //v_color = a_color;\n');
 gen.addFragmentUniform('float', 'u_alpha');
 gen.addFragmentUniform('vec4', 'u_rgba');
 gen.setFragmentMainFn('\n    gl_FragColor = u_rgba;\n');
@@ -1768,16 +1778,16 @@ void main() {
 // position, color and texture
 var gen = new _shaderGenerator2.default();
 gen.addAttribute('vec4', 'a_position');
-gen.addAttribute('vec4', 'a_color');
-gen.addAttribute('vec2', 'a_texcoord');
-gen.addVertexUniform('mat4', 'u_PositionMatrix'); // todo u_vertexMatrix
+//gen.addAttribute('vec4','a_color');
+gen.addAttribute('vec2', 'a_texCoord');
+gen.addVertexUniform('mat4', 'u_vertexMatrix');
 gen.addVertexUniform('mat4', 'u_textureMatrix');
-gen.addVarying('vec2', 'v_texcoord'); // todo v_texCoord
-gen.addVarying('vec4', 'v_color');
-gen.setVertexMainFn('\n    gl_Position = u_PositionMatrix * a_position;\n    v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; \n    v_color = a_color;\n');
+gen.addVarying('vec2', 'v_texCoord');
+//gen.addVarying('vec4','v_color');
+gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy; \n    //v_color = a_color;\n');
 gen.addFragmentUniform('sampler2D', 'texture');
 gen.addFragmentUniform('float', 'u_alpha');
-gen.setFragmentMainFn('\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.a *= u_alpha;\n');
+gen.setFragmentMainFn('\n    gl_FragColor = texture2D(texture, v_texCoord);\n    gl_FragColor.a *= u_alpha;\n');
 var textureShaderGen = exports.textureShaderGen = gen;
 
 var SpriteRectDrawer = function (_AbstractDrawer) {
@@ -1805,12 +1815,9 @@ var SpriteRectDrawer = function (_AbstractDrawer) {
     SpriteRectDrawer.prototype.bind = function bind() {
         _AbstractDrawer.prototype.bind.call(this);
         this.program.bind();
-
         this.posIndexBuffer.bind();
-
         this.posVertexBuffer.bind(this.program, 'a_position');
-
-        this.texVertexBuffer.bind(this.program, 'a_texcoord');
+        this.texVertexBuffer.bind(this.program, 'a_texCoord');
     };
 
     SpriteRectDrawer.prototype.draw = function draw() {
@@ -4786,7 +4793,6 @@ var CircleDrawer = function (_AbstractDrawer) {
         _this.circle = new _circle2.default();
 
         _this.posVertexBuffer = new _vertexBuffer2.default(gl);
-
         _this.posVertexBuffer.setData(_this.circle.vertexArr, _this.gl.FLOAT, 2);
         return _this;
     }
@@ -4869,9 +4875,7 @@ var ColorRectDrawer = function (_AbstractDrawer) {
     ColorRectDrawer.prototype.bind = function bind() {
         _AbstractDrawer.prototype.bind.call(this);
         this.program.bind();
-
         this.posVertexBuffer.bind(this.program, 'a_position');
-
         this.posIndexBuffer.bind();
     };
 
@@ -4936,7 +4940,7 @@ var LineDrawer = function (_AbstractDrawer) {
         _this.line = new _line2.default();
 
         _this.posVertexBuffer = new _vertexBuffer2.default(gl);
-        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl); // todo remove
 
         _this.posVertexBuffer.setData(_this.line.vertexArr, _this.gl.FLOAT, 2);
         return _this;
@@ -4945,7 +4949,6 @@ var LineDrawer = function (_AbstractDrawer) {
     LineDrawer.prototype.bind = function bind() {
         _AbstractDrawer.prototype.bind.call(this);
         this.program.bind();
-
         this.posVertexBuffer.bind(this.program, 'a_position');
     };
 
@@ -4980,11 +4983,11 @@ var _indexBuffer = __webpack_require__(6);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
-var _vertex = __webpack_require__(79);
+var _vertex = __webpack_require__(78);
 
 var _vertex2 = _interopRequireDefault(_vertex);
 
-var _fragment = __webpack_require__(80);
+var _fragment = __webpack_require__(79);
 
 var _fragment2 = _interopRequireDefault(_fragment);
 
@@ -5029,7 +5032,7 @@ var ModelDrawer = function (_AbstractDrawer) {
         program.bindBuffer(this.posVertexBuffer, 'a_position');
 
         this.texVertexBuffer.setData(model.texCoordArr, gl.FLOAT, 2);
-        program.bindBuffer(this.texVertexBuffer, 'a_texcoord');
+        program.bindBuffer(this.texVertexBuffer, 'a_texCoord');
 
         this.normalBuffer.setData(model.normalArr, gl.FLOAT, 3);
         program.bindBuffer(this.normalBuffer, 'a_normal');
@@ -5073,14 +5076,6 @@ var _indexBuffer = __webpack_require__(6);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
-var _vertex = __webpack_require__(78);
-
-var _vertex2 = _interopRequireDefault(_vertex);
-
-var _fragment = __webpack_require__(81);
-
-var _fragment2 = _interopRequireDefault(_fragment);
-
 var _abstractDrawer = __webpack_require__(1);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
@@ -5098,7 +5093,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var gen = _spriteRectDrawer.textureShaderGen.clone();
 gen.addFragmentUniform('vec2', 'u_offsetCoords');
 gen.addFragmentUniform('vec4', 'u_frameCoords');
-gen.setFragmentMainFn('\n    vec2 localTextCoord = mod(\n        v_texcoord + fract(u_offsetCoords),\n        u_frameCoords.zw\n    ) + u_frameCoords.xy;\n    gl_FragColor = texture2D(texture, localTextCoord);\n    gl_FragColor.a *= u_alpha;\n');
+gen.setFragmentMainFn('\n    vec2 localTextCoord = mod(\n        v_texCoord + fract(u_offsetCoords),\n        u_frameCoords.zw\n    ) + u_frameCoords.xy;\n    gl_FragColor = texture2D(texture, localTextCoord);\n    gl_FragColor.a *= u_alpha;\n');
 
 var TiledSpriteRectDrawer = function (_AbstractDrawer) {
     _inherits(TiledSpriteRectDrawer, _AbstractDrawer);
@@ -5109,7 +5104,7 @@ var TiledSpriteRectDrawer = function (_AbstractDrawer) {
         var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
 
         _this.plane = new _plane2.default();
-        _this.program = new _shaderProgram2.default(gl, [_vertex2.default, _fragment2.default]);
+        _this.program = new _shaderProgram2.default(gl, [gen.getVertexSource(), gen.getFragmentSource()]);
 
         _this.posVertexBuffer = new _vertexBuffer2.default(gl);
         _this.posIndexBuffer = new _indexBuffer2.default(gl);
@@ -5127,7 +5122,7 @@ var TiledSpriteRectDrawer = function (_AbstractDrawer) {
         this.program.bind();
         this.posIndexBuffer.bind();
         this.posVertexBuffer.bind(this.program, 'a_position');
-        this.texVertexBuffer.bind(this.program, 'a_texcoord');
+        this.texVertexBuffer.bind(this.program, 'a_texCoord');
     };
 
     TiledSpriteRectDrawer.prototype.draw = function draw() {
@@ -5319,7 +5314,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
         this.spriteRectDrawer.bind();
         this.spriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight));
-        this.spriteRectDrawer.setUniform("u_PositionMatrix", makePositionMatrix(dstX, dstY, srcWidth, srcHeight, this.game.width, this.game.height));
+        this.spriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(dstX, dstY, srcWidth, srcHeight, this.game.width, this.game.height));
         this.spriteRectDrawer.setUniform('u_alpha', 1); // alpha
         this.spriteRectDrawer.draw();
     };
@@ -5343,7 +5338,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
         this.tiledSpriteRectDrawer.bind();
         this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(0, 0, dstWidth, dstHeight, texWidth, texHeight));
-        this.tiledSpriteRectDrawer.setUniform("u_PositionMatrix", makePositionMatrix(dstX, dstY, dstWidth, dstHeight, this.game.width, this.game.height));
+        this.tiledSpriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(dstX, dstY, dstWidth, dstHeight, this.game.width, this.game.height));
         this.tiledSpriteRectDrawer.setUniform('u_frameCoords', [srcX / texWidth, srcY / texHeight, srcWidth / texWidth, srcHeight / texHeight]);
         this.tiledSpriteRectDrawer.setUniform('u_offsetCoords', [offsetX / srcWidth, offsetY / srcHeight]);
         this.tiledSpriteRectDrawer.setUniform('u_alpha', 1); // alpha
@@ -5356,7 +5351,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var colorRectDrawer = this.colorRectDrawer;
         var gl = this.gl;
         colorRectDrawer.bind();
-        colorRectDrawer.setUniform("u_PositionMatrix", makePositionMatrix(x, y, width, height, this.game.width, this.game.height));
+        colorRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(x, y, width, height, this.game.width, this.game.height));
         colorRectDrawer.setUniform("u_rgba", color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         colorRectDrawer.draw();
@@ -5377,7 +5372,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var gl = this.gl;
         var lineDrawer = this.lineDrawer;
         lineDrawer.bind();
-        lineDrawer.setUniform("u_PositionMatrix", makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height));
+        lineDrawer.setUniform("u_vertexMatrix", makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height));
         lineDrawer.setUniform("u_rgba", color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         lineDrawer.draw();
@@ -5389,7 +5384,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var circleDrawer = this.circleDrawer;
         var gl = this.gl;
         circleDrawer.bind();
-        circleDrawer.setUniform("u_PositionMatrix", makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height));
+        circleDrawer.setUniform("u_vertexMatrix", makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height));
         circleDrawer.setUniform("u_rgba", color);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         circleDrawer.draw();
@@ -5461,7 +5456,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         this.spriteRectDrawer.bind();
         this.frameBuffer.getTexture().bind();
 
-        this.spriteRectDrawer.setUniform('u_PositionMatrix', makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h));
+        this.spriteRectDrawer.setUniform('u_vertexMatrix', makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h));
 
         this.spriteRectDrawer.setUniform('u_textureMatrix', makeTextureMatrix(0, 0, fullScreen.w, fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
         fullScreen.w, fullScreen.h // gameProps.canvasWidth,gameProps.canvasHeight
@@ -6543,25 +6538,13 @@ module.exports = g;
 /* 78 */
 /***/ (function(module, exports) {
 
-module.exports = "//position, color and texture\n\nattribute vec4 a_position;\nattribute vec4 a_color;\nattribute vec2 a_texcoord;\n\nuniform mat4 u_PositionMatrix;\nuniform mat4 u_textureMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec4 v_color;\n\nvoid main() {\n   gl_Position = u_PositionMatrix * a_position;\n   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;\n   v_color = a_color;\n}"
+module.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}"
 
 /***/ }),
 /* 79 */
 /***/ (function(module, exports) {
 
-module.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}"
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports) {
-
 module.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}"
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports) {
-
-module.exports = "// texture and color\r\n\r\nprecision mediump float;\r\n\r\nvarying vec2 v_texcoord;\r\n\r\nuniform sampler2D texture;\r\nuniform float u_alpha;\r\nuniform vec2 u_offsetCoords;\r\nuniform vec4 u_frameCoords;\r\n\r\nvoid main() {\r\n    vec2 localTextCoord = mod(\r\n        v_texcoord + fract(u_offsetCoords),\r\n        u_frameCoords.zw\r\n    ) + u_frameCoords.xy;\r\n    gl_FragColor = texture2D(texture, localTextCoord);\r\n    gl_FragColor.a *= u_alpha;\r\n\r\n}"
 
 /***/ })
 /******/ ]);

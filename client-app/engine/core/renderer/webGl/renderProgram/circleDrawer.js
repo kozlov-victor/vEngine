@@ -16,7 +16,6 @@ export default class CircleDrawer extends AbstractDrawer {
         this.circle = new Circle();
 
         this.posVertexBuffer = new VertexBuffer(gl);
-
         this.posVertexBuffer.setData(this.circle.vertexArr,this.gl.FLOAT,2);
     }
 

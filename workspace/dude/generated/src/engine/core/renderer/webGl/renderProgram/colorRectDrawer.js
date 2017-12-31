@@ -28,9 +28,7 @@ export default class ColorRectDrawer extends AbstractDrawer{
     bind(){
         super.bind();
         this.program.bind();
-
         this.posVertexBuffer.bind(this.program,'a_position');
-
         this.posIndexBuffer.bind();
     }
 

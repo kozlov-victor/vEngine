@@ -3,9 +3,6 @@ import Plane from '../primitives/plane'
 import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
-
-import basicVertexShader from '../shaders/basic/vertex.vert'
-import textureShader from '../shaders/tiled/fragment.frag'
 import AbstractDrawer from "./abstractDrawer";
 import {textureShaderGen} from "./spriteRectDrawer";
 
@@ -14,7 +11,7 @@ gen.addFragmentUniform('vec2','u_offsetCoords');
 gen.addFragmentUniform('vec4','u_frameCoords');
 gen.setFragmentMainFn(`
     vec2 localTextCoord = mod(
-        v_texcoord + fract(u_offsetCoords),
+        v_texCoord + fract(u_offsetCoords),
         u_frameCoords.zw
     ) + u_frameCoords.xy;
     gl_FragColor = texture2D(texture, localTextCoord);
@@ -27,8 +24,8 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
         super(gl,game);
         this.plane = new Plane();
         this.program = new ShaderProgram(gl, [
-            basicVertexShader,
-            textureShader
+            gen.getVertexSource(),
+            gen.getFragmentSource()
         ]);
 
         this.posVertexBuffer = new VertexBuffer(gl);
@@ -46,7 +43,7 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
         this.program.bind();
         this.posIndexBuffer.bind();
         this.posVertexBuffer.bind(this.program,'a_position');
-        this.texVertexBuffer.bind(this.program,'a_texcoord');
+        this.texVertexBuffer.bind(this.program,'a_texCoord');
     }
 
 

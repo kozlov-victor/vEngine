@@ -137,7 +137,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.spriteRectDrawer.bind();
         this.spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-        this.spriteRectDrawer.setUniform("u_PositionMatrix",
+        this.spriteRectDrawer.setUniform("u_vertexMatrix",
             makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
                 this.game.width,this.game.height)
@@ -174,7 +174,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             0,0,dstWidth, dstHeight,
             texWidth,texHeight)
         );
-        this.tiledSpriteRectDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
+        this.tiledSpriteRectDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
             dstX,dstY,dstWidth, dstHeight,
             this.game.width,this.game.height)
         );
@@ -192,7 +192,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let colorRectDrawer = this.colorRectDrawer;
         let gl = this.gl;
         colorRectDrawer.bind();
-        colorRectDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
+        colorRectDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
                 x,y,width,height,
                 this.game.width,this.game.height)
         );
@@ -215,7 +215,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let gl = this.gl;
         let lineDrawer = this.lineDrawer;
         lineDrawer.bind();
-        lineDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
+        lineDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
             x1,y1,dx,dy,
             this.game.width,this.game.height)
         );
@@ -230,7 +230,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let circleDrawer = this.circleDrawer;
         let gl = this.gl;
         circleDrawer.bind();
-        circleDrawer.setUniform("u_PositionMatrix",makePositionMatrix(
+        circleDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
             x-r,y-r,r2,r2,
             this.game.width,this.game.height)
         );
@@ -306,7 +306,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.spriteRectDrawer.bind();
         this.frameBuffer.getTexture().bind();
 
-        this.spriteRectDrawer.setUniform('u_PositionMatrix',
+        this.spriteRectDrawer.setUniform('u_vertexMatrix',
             makePositionMatrix(
                 0,0,
                 this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor,

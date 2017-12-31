@@ -53,7 +53,7 @@ export default class ShaderGenerator {
             void main() {
                ${this.vertexMainFn}
             }
-            `.replace(/\t/,'')
+            `.replace(/\s{2,}/,' ').replace(/\t/,'')
         )
     }
 
@@ -67,8 +67,13 @@ export default class ShaderGenerator {
             void main() {
                ${this.fragmentMainFn}
             }
-            `.replace(/\t/,'')
+            `.replace(/\s{2,}/,' ').replace(/\t/,'')
         )
+    }
+
+    debug(){
+        console.log(this.getVertexSource());
+        console.log(this.getFragmentSource());
     }
 
     clone(){
@@ -114,12 +119,12 @@ void main() {
 
 let gen = new ShaderGenerator();
 gen.addAttribute('vec4','a_position');
-gen.addAttribute('vec4','a_color');
-gen.addVertexUniform('mat4','u_PositionMatrix'); // todo u_vertexMatrix
-gen.addVarying('vec4','v_color');
+//gen.addAttribute('vec4','a_color');
+gen.addVertexUniform('mat4','u_vertexMatrix');
+//gen.addVarying('vec4','v_color');
 gen.setVertexMainFn(`
-    gl_Position = u_PositionMatrix * a_position;
-    v_color = a_color;
+    gl_Position = u_vertexMatrix * a_position;
+    //v_color = a_color;
 `);
 gen.addFragmentUniform('float','u_alpha');
 gen.addFragmentUniform('vec4','u_rgba');

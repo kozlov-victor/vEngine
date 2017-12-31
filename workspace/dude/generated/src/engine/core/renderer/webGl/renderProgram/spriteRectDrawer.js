@@ -45,21 +45,21 @@ void main() {
 // position, color and texture
 let gen = new ShaderGenerator();
 gen.addAttribute('vec4','a_position');
-gen.addAttribute('vec4','a_color');
-gen.addAttribute('vec2','a_texcoord');
-gen.addVertexUniform('mat4','u_PositionMatrix'); // todo u_vertexMatrix
+//gen.addAttribute('vec4','a_color');
+gen.addAttribute('vec2','a_texCoord');
+gen.addVertexUniform('mat4','u_vertexMatrix');
 gen.addVertexUniform('mat4','u_textureMatrix');
-gen.addVarying('vec2','v_texcoord');// todo v_texCoord
-gen.addVarying('vec4','v_color');
+gen.addVarying('vec2','v_texCoord');
+//gen.addVarying('vec4','v_color');
 gen.setVertexMainFn(`
-    gl_Position = u_PositionMatrix * a_position;
-    v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy; 
-    v_color = a_color;
+    gl_Position = u_vertexMatrix * a_position;
+    v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy; 
+    //v_color = a_color;
 `);
 gen.addFragmentUniform('sampler2D','texture');
 gen.addFragmentUniform('float','u_alpha');
 gen.setFragmentMainFn(`
-    gl_FragColor = texture2D(texture, v_texcoord);
+    gl_FragColor = texture2D(texture, v_texCoord);
     gl_FragColor.a *= u_alpha;
 `);
 export let textureShaderGen = gen;
@@ -88,12 +88,9 @@ export default class SpriteRectDrawer extends AbstractDrawer {
     bind(){
         super.bind();
         this.program.bind();
-
         this.posIndexBuffer.bind();
-
         this.posVertexBuffer.bind(this.program,'a_position');
-
-        this.texVertexBuffer.bind(this.program,'a_texcoord');
+        this.texVertexBuffer.bind(this.program,'a_texCoord');
     }
 
 

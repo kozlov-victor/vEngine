@@ -35,7 +35,7 @@ export default class ModelDrawer extends AbstractDrawer {
         program.bindBuffer(this.posVertexBuffer,'a_position');
 
         this.texVertexBuffer.setData(model.texCoordArr,gl.FLOAT,2);
-        program.bindBuffer(this.texVertexBuffer,'a_texcoord');
+        program.bindBuffer(this.texVertexBuffer,'a_texCoord');
 
         this.normalBuffer.setData(model.normalArr,gl.FLOAT,3);
         program.bindBuffer(this.normalBuffer,'a_normal');
