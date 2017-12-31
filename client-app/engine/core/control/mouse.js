@@ -1,6 +1,7 @@
 /*global DEBUG:true*/
 import mathEx from '../mathEx'
 import Point2d from "../geometry/point2d";
+import ObjectPool from "../misc/objectPool";
 
 class MousePoint extends Point2d{
 
@@ -18,6 +19,7 @@ export default class Mouse {
 
     objectsCaptured = {};
     container = null;
+    mousePointsPool = new ObjectPool(MousePoint);
 
     constructor(game){
         this.game = game;
@@ -34,7 +36,7 @@ export default class Mouse {
 
         let p = game.camera.screenToWorld(screenX,screenY);
 
-        let mousePoint = new MousePoint();
+        let mousePoint = this.mousePointsPool.getNextObject();
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;

@@ -47,6 +47,8 @@ export default class Game extends CommonObject {
     scaleStrategy = null;// = SCALE_STRATEGY.FIT;
     startSceneId = null;
 
+    _revalidated = false;
+
     constructor(){
         super();
         let time = Date.now();
@@ -61,6 +63,12 @@ export default class Game extends CommonObject {
         this.camera = new Camera(this);
     }
 
+    revalidate(){
+        this.renderer = RendererFactory.getRenderer(this);
+        this.mouse.listenTo(this.renderer.container);
+        this._revalidated = true;
+    }
+
     getTime(){
         return this._lastTime;
     }
@@ -70,10 +78,8 @@ export default class Game extends CommonObject {
     }
 
     runScene(scene){
-        if (!this.renderer) { // move to constructor?
-            this.renderer = RendererFactory.getRenderer(this);
-            this.mouse.listenTo(this.renderer.container);
-        }
+        if (DEBUG && !this._revalidated)
+            throw `game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly`;
         this._currentScene = scene;
         if (!IN_EDITOR) {
             let allScripts = require(`../../app/scripts/allScripts`);
@@ -91,7 +97,7 @@ export default class Game extends CommonObject {
         scene.preload(()=>{
             this._currentScene.onShow();
             if (!this._running) {
-                Game.update(this);
+                this.update();
                 this._running = true;
             }
         });
@@ -105,22 +111,22 @@ export default class Game extends CommonObject {
         this._currentScene = scene;
     }
 
-    static update(game){
-        if (DEBUG && game.destroyed) return;
-        requestAnimationFrame(()=>{Game.update(game)});
-        game._lastTime = game._currTime;
-        game._currTime = Date.now();
-        game._deltaTime = game._currTime - game._lastTime;
+    update(){
+        if (DEBUG && this.destroyed) return;
+        this._lastTime = this._currTime;
+        this._currTime = Date.now();
+        this._deltaTime = this._currTime - this._lastTime;
         if (DEBUG) {
-            game.fps = ~~(1000 / game._deltaTime);
-            window.fps = game.fps;
-            let renderError = game.renderer.getError();
+            this.fps = ~~(1000 / this._deltaTime);
+            window.fps = this.fps;
+            let renderError = this.renderer.getError();
             if (renderError) throw `render error with code ${renderError}`;
         }
-        if (game._deltaTime>20) game._deltaTime = 20;
-        game._currentScene && game._currentScene.update(game._currTime,game._deltaTime);
-        game.keyboard.update();
-        game.gamePad.update();
+        if (this._deltaTime>20) this._deltaTime = 20;
+        this._currentScene && this._currentScene.update(this._currTime,this._deltaTime);
+        this.keyboard.update();
+        this.gamePad.update();
+        requestAnimationFrame(this.update.bind(this));
     }
 
     destroy(){

@@ -13427,6 +13427,10 @@ var _point2d = __webpack_require__(17);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
+var _objectPool = __webpack_require__(184);
+
+var _objectPool2 = _interopRequireDefault(_objectPool);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -13454,6 +13458,7 @@ var Mouse = function () {
 
         this.objectsCaptured = {};
         this.container = null;
+        this.mousePointsPool = new _objectPool2.default(MousePoint);
 
         this.game = game;
     }
@@ -13470,7 +13475,7 @@ var Mouse = function () {
 
         var p = game.camera.screenToWorld(screenX, screenY);
 
-        var mousePoint = new MousePoint();
+        var mousePoint = this.mousePointsPool.getNextObject();
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;
@@ -13703,6 +13708,7 @@ var Game = (_dec = (0, _decorators.Transient)({
 }), _dec(_class = function (_CommonObject) {
     _inherits(Game, _CommonObject);
 
+    // = SCALE_STRATEGY.FIT;
     function Game() {
         _classCallCheck(this, Game);
 
@@ -13723,6 +13729,7 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this.gamePad = null;
         _this.scaleStrategy = null;
         _this.startSceneId = null;
+        _this._revalidated = false;
 
         var time = Date.now();
         _this._lastTime = _this._currTime = time;
@@ -13735,8 +13742,13 @@ var Game = (_dec = (0, _decorators.Transient)({
         _this.collider = new _collider2.default(_this);
         _this.camera = new _camera2.default(_this);
         return _this;
-    } // = SCALE_STRATEGY.FIT;
+    }
 
+    Game.prototype.revalidate = function revalidate() {
+        this.renderer = _rendererFactory2.default.getRenderer(this);
+        this.mouse.listenTo(this.renderer.container);
+        this._revalidated = true;
+    };
 
     Game.prototype.getTime = function getTime() {
         return this._lastTime;
@@ -13749,11 +13761,7 @@ var Game = (_dec = (0, _decorators.Transient)({
     Game.prototype.runScene = function runScene(scene) {
         var _this2 = this;
 
-        if (!this.renderer) {
-            // move to constructor?
-            this.renderer = _rendererFactory2.default.getRenderer(this);
-            this.mouse.listenTo(this.renderer.container);
-        }
+        if (true && !this._revalidated) throw 'game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly';
         this._currentScene = scene;
         if (false) {
             var allScripts = require('../../app/scripts/allScripts');
@@ -13771,7 +13779,7 @@ var Game = (_dec = (0, _decorators.Transient)({
         scene.preload(function () {
             _this2._currentScene.onShow();
             if (!_this2._running) {
-                Game.update(_this2);
+                _this2.update();
                 _this2._running = true;
             }
         });
@@ -13785,24 +13793,22 @@ var Game = (_dec = (0, _decorators.Transient)({
         this._currentScene = scene;
     };
 
-    Game.update = function update(game) {
-        if (true && game.destroyed) return;
-        requestAnimationFrame(function () {
-            Game.update(game);
-        });
-        game._lastTime = game._currTime;
-        game._currTime = Date.now();
-        game._deltaTime = game._currTime - game._lastTime;
+    Game.prototype.update = function update() {
+        if (true && this.destroyed) return;
+        this._lastTime = this._currTime;
+        this._currTime = Date.now();
+        this._deltaTime = this._currTime - this._lastTime;
         if (true) {
-            game.fps = ~~(1000 / game._deltaTime);
-            window.fps = game.fps;
-            var renderError = game.renderer.getError();
+            this.fps = ~~(1000 / this._deltaTime);
+            window.fps = this.fps;
+            var renderError = this.renderer.getError();
             if (renderError) throw 'render error with code ' + renderError;
         }
-        if (game._deltaTime > 20) game._deltaTime = 20;
-        game._currentScene && game._currentScene.update(game._currTime, game._deltaTime);
-        game.keyboard.update();
-        game.gamePad.update();
+        if (this._deltaTime > 20) this._deltaTime = 20;
+        this._currentScene && this._currentScene.update(this._currTime, this._deltaTime);
+        this.keyboard.update();
+        this.gamePad.update();
+        requestAnimationFrame(this.update.bind(this));
     };
 
     Game.prototype.destroy = function destroy() {
@@ -16204,6 +16210,43 @@ gen.addFragmentUniform('float', 'u_alpha');
 gen.addFragmentUniform('vec4', 'u_rgba');
 gen.setFragmentMainFn('\n    gl_FragColor = u_rgba;\n');
 var simpleColorShaderGen = exports.simpleColorShaderGen = gen;
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var ObjectPool = function () {
+    function ObjectPool(Class) {
+        var numberOfInstances = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 16;
+
+        _classCallCheck(this, ObjectPool);
+
+        this._pool = [];
+        this._cnt = 0;
+
+        if (true && !Class) throw "can not instantiate ObjectPool: class not provided in constructor";
+        for (var i = 0; i < numberOfInstances; i++) {
+            this._pool.push(new Class());
+        }
+    }
+
+    ObjectPool.prototype.getNextObject = function getNextObject() {
+        return this._pool[this._cnt++ % this._pool.length];
+    };
+
+    return ObjectPool;
+}();
+
+exports.default = ObjectPool;
 
 /***/ })
 /******/ ]);
