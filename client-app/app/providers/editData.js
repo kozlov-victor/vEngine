@@ -15,7 +15,7 @@ const res = {};
 res.reset = gameProps=>{
 
     let g = new Game();
-    g.fromJSON(gameProps||{});
+    g.fromJSON(gameProps||{width:1,height:1});
     res.game = g;
     res.editTileMapModeOn = false;
 

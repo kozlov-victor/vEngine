@@ -30,7 +30,7 @@ const SCENE_DEPTH = 1000;
 const matrixStack = new MatrixStack();
 
 const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight){
-
+    // proj * modelView
     let zToWMatrix = mat4.makeZToWMatrix(1);
     let projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
     let scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);

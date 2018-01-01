@@ -35,6 +35,4 @@ export default class AbstractDrawer {
         this.uniformCache[name]=value;
     }
 
-
-
 }

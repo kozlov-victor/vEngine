@@ -6,6 +6,7 @@ import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 import AbstractDrawer from "./abstractDrawer";
 import ShaderGenerator from "../shaders/shaderGenerator";
+import {GL_TYPE} from "../base/shaderProgramUtils";
 
 /*
 
@@ -44,20 +45,20 @@ void main() {
 
 // position, color and texture
 let gen = new ShaderGenerator();
-gen.addAttribute('vec4','a_position');
+gen.addAttribute(GL_TYPE.FLOAT_VEC4,'a_position');
 //gen.addAttribute('vec4','a_color');
-gen.addAttribute('vec2','a_texCoord');
-gen.addVertexUniform('mat4','u_vertexMatrix');
-gen.addVertexUniform('mat4','u_textureMatrix');
-gen.addVarying('vec2','v_texCoord');
+gen.addAttribute(GL_TYPE.FLOAT_VEC2,'a_texCoord');
+gen.addVertexUniform(GL_TYPE.FLOAT_MAT4,'u_vertexMatrix');
+gen.addVertexUniform(GL_TYPE.FLOAT_MAT4,'u_textureMatrix');
+gen.addVarying(GL_TYPE.FLOAT_VEC2,'v_texCoord');
 //gen.addVarying('vec4','v_color');
 gen.setVertexMainFn(`
     gl_Position = u_vertexMatrix * a_position;
     v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy; 
     //v_color = a_color;
 `);
-gen.addFragmentUniform('sampler2D','texture');
-gen.addFragmentUniform('float','u_alpha');
+gen.addFragmentUniform(GL_TYPE.SAMPLER_2D,'texture');
+gen.addFragmentUniform(GL_TYPE.FLOAT,'u_alpha');
 gen.setFragmentMainFn(`
     gl_FragColor = texture2D(texture, v_texCoord);
     gl_FragColor.a *= u_alpha;

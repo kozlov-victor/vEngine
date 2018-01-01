@@ -1,4 +1,6 @@
 
+import {GL_TYPE} from '../base/shaderProgramUtils'
+
 let _cloneArray = arr=>{
     return arr.map(item=>item);
 };
@@ -118,16 +120,16 @@ void main() {
 //position and color
 
 let gen = new ShaderGenerator();
-gen.addAttribute('vec4','a_position');
+gen.addAttribute(GL_TYPE.FLOAT_VEC4,'a_position');
 //gen.addAttribute('vec4','a_color');
-gen.addVertexUniform('mat4','u_vertexMatrix');
+gen.addVertexUniform(GL_TYPE.FLOAT_MAT4,'u_vertexMatrix');
 //gen.addVarying('vec4','v_color');
 gen.setVertexMainFn(`
     gl_Position = u_vertexMatrix * a_position;
     //v_color = a_color;
 `);
-gen.addFragmentUniform('float','u_alpha');
-gen.addFragmentUniform('vec4','u_rgba');
+gen.addFragmentUniform(GL_TYPE.FLOAT,'u_alpha');
+gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_rgba');
 gen.setFragmentMainFn(`
     gl_FragColor = u_rgba;
 `);

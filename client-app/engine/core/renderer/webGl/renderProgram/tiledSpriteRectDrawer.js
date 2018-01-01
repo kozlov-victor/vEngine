@@ -5,10 +5,11 @@ import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 import AbstractDrawer from "./abstractDrawer";
 import {textureShaderGen} from "./spriteRectDrawer";
+import {GL_TYPE} from "../base/shaderProgramUtils";
 
 let gen = textureShaderGen.clone();
-gen.addFragmentUniform('vec2','u_offsetCoords');
-gen.addFragmentUniform('vec4','u_frameCoords');
+gen.addFragmentUniform(GL_TYPE.FLOAT_VEC2,'u_offsetCoords');
+gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_frameCoords');
 gen.setFragmentMainFn(`
     vec2 localTextCoord = mod(
         v_texCoord + fract(u_offsetCoords),

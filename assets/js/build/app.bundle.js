@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 181);
+/******/ 	return __webpack_require__(__webpack_require__.s = 177);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,7 +76,7 @@
 exports.__esModule = true;
 exports.default = undefined;
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(17);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -84,7 +84,7 @@ var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _project = __webpack_require__(11);
+var _project = __webpack_require__(12);
 
 var _project2 = _interopRequireDefault(_project);
 
@@ -92,7 +92,7 @@ var _fileSystem = __webpack_require__(32);
 
 var _fileSystem2 = _interopRequireDefault(_fileSystem);
 
-var _resource = __webpack_require__(15);
+var _resource = __webpack_require__(16);
 
 var _resource2 = _interopRequireDefault(_resource);
 
@@ -104,7 +104,7 @@ var _i18n = __webpack_require__(9);
 
 var _i18n2 = _interopRequireDefault(_i18n);
 
-var _httpClient = __webpack_require__(10);
+var _httpClient = __webpack_require__(11);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -144,15 +144,15 @@ var _dec, _class; /*global DEBUG:true*/
 
 //import Vec2 from '../core/vec2'
 
-var _commonObject = __webpack_require__(41);
+var _commonObject = __webpack_require__(42);
 
 var _commonObject2 = _interopRequireDefault(_commonObject);
 
-var _tween = __webpack_require__(39);
+var _tween = __webpack_require__(40);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _eventEmitter = __webpack_require__(106);
+var _eventEmitter = __webpack_require__(105);
 
 var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
 
@@ -166,7 +166,7 @@ var _rect = __webpack_require__(35);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _point2d = __webpack_require__(17);
+var _point2d = __webpack_require__(4);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -279,11 +279,11 @@ exports.default = BaseModel;
 "use strict";
 
 
-var _mat = __webpack_require__(12);
+var _mat = __webpack_require__(13);
 
 var _mat2 = _interopRequireDefault(_mat);
 
-var _point2d = __webpack_require__(17);
+var _point2d = __webpack_require__(4);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -625,52 +625,65 @@ exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/*global DEBUG:true*/
+var Point2d = function () {
+    function Point2d() {
+        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-var IndexBuffer = function () {
-    function IndexBuffer(gl) {
-        _classCallCheck(this, IndexBuffer);
+        _classCallCheck(this, Point2d);
 
-        if (true && !gl) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
+        this.x = 0;
+        this.y = 0;
 
-        this.gl = gl;
-        this.buffer = gl.createBuffer();
-        this.dataLength = null;
+        this.setXY(x, y);
     }
 
-    IndexBuffer.prototype.setData = function setData(bufferData) {
-        if (true) {
-            if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
-        }
-
-        var gl = this.gl;
-
-        this.dataLength = bufferData.length;
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    Point2d.prototype.setXY = function setXY(x, y) {
+        this.x = x;
+        this.y = y;
     };
 
-    IndexBuffer.prototype.getGlBuffer = function getGlBuffer() {
-        return this.buffer;
+    Point2d.prototype.setX = function setX(x) {
+        this.x = x;
     };
 
-    IndexBuffer.prototype.bind = function bind() {
-        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+    Point2d.prototype.setY = function setY(y) {
+        this.y = y;
     };
 
-    IndexBuffer.prototype.unbind = function unbind() {
-        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
+    Point2d.prototype.set = function set(another) {
+        this.setXY(another.x, another.y);
     };
 
-    IndexBuffer.prototype.getBufferLength = function getBufferLength() {
-        return this.dataLength;
+    Point2d.prototype.add = function add(another) {
+        this.addXY(another.x, another.y);
     };
 
-    return IndexBuffer;
+    Point2d.prototype.addXY = function addXY(x, y) {
+        this.x += x;
+        this.y += y;
+    };
+
+    Point2d.prototype.addX = function addX(x) {
+        this.x += x;
+    };
+
+    Point2d.prototype.addY = function addY(y) {
+        this.y += y;
+    };
+
+    Point2d.prototype.fromJSON = function fromJSON(json) {
+        this.set(json);
+    };
+
+    Point2d.prototype.toJSON = function toJSON() {
+        return { x: this.x, y: this.y };
+    };
+
+    return Point2d;
 }();
 
-exports.default = IndexBuffer;
+exports.default = Point2d;
 
 /***/ }),
 /* 5 */
@@ -680,253 +693,13 @@ exports.default = IndexBuffer;
 
 
 exports.__esModule = true;
+exports.default = undefined;
 
-var _class, _temp;
+var _class, _temp; /*global DEBUG:true*/
+
+var _shaderProgramUtils = __webpack_require__(179);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/*global DEBUG:true*/
-
-var compileShader = function compileShader(gl, shaderSource, shaderType) {
-    if (true) {
-        if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
-    }
-    // Create the shader object
-    var shader = gl.createShader(shaderType);
-
-    // Load the shader source
-    gl.shaderSource(shader, shaderSource);
-
-    // Compile the shader
-    gl.compileShader(shader);
-
-    // Check the compile status
-    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-    if (!compiled) {
-        // Something went wrong during compilation; get the error
-        var lastError = gl.getShaderInfoLog(shader);
-        gl.deleteShader(shader);
-        if (true) {
-            console.log(shaderSource);
-            throw 'Error compiling shader: ' + lastError;
-        } else {
-            throw lastError;
-        }
-    }
-
-    return shader;
-};
-
-var createProgram = function createProgram(gl, shaders) {
-    var program = gl.createProgram();
-    shaders.forEach(function (shader) {
-        gl.attachShader(program, shader);
-    });
-    gl.linkProgram(program);
-
-    // Check the link status
-    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-    if (!linked) {
-        // something went wrong with the link
-        var lastError = gl.getProgramInfoLog(program);
-        gl.deleteProgram(program);
-        if (true) {
-            throw "Error in program linking:" + lastError;
-        } else {
-            throw lastError;
-        }
-    }
-    return program;
-};
-
-var mapType = function mapType(gl, type) {
-
-    var GL_TABLE = null;
-
-    var GL_TO_GLSL_TYPES = {
-        'FLOAT': 'float',
-        'FLOAT_VEC2': 'vec2',
-        'FLOAT_VEC3': 'vec3',
-        'FLOAT_VEC4': 'vec4',
-
-        'INT': 'int',
-        'INT_VEC2': 'ivec2',
-        'INT_VEC3': 'ivec3',
-        'INT_VEC4': 'ivec4',
-
-        'BOOL': 'bool',
-        'BOOL_VEC2': 'bvec2',
-        'BOOL_VEC3': 'bvec3',
-        'BOOL_VEC4': 'bvec4',
-
-        'FLOAT_MAT2': 'mat2',
-        'FLOAT_MAT3': 'mat3',
-        'FLOAT_MAT4': 'mat4',
-
-        'SAMPLER_2D': 'sampler2D'
-    };
-
-    if (!GL_TABLE) {
-        var typeNames = Object.keys(GL_TO_GLSL_TYPES);
-
-        GL_TABLE = {};
-
-        for (var i = 0; i < typeNames.length; ++i) {
-            var tn = typeNames[i];
-            GL_TABLE[gl[tn]] = GL_TO_GLSL_TYPES[tn];
-        }
-    }
-
-    return GL_TABLE[type];
-};
-
-var extractUniforms = function extractUniforms(gl, program) {
-    var uniforms = {};
-
-    var totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-
-    for (var i = 0; i < totalUniforms; i++) {
-        var uniformData = gl.getActiveUniform(program, i);
-        var name = uniformData.name.replace(/\[.*?]/, "");
-        var type = mapType(gl, uniformData.type);
-
-        uniforms[name] = {
-            type: type,
-            size: uniformData.size,
-            name: name,
-            location: gl.getUniformLocation(program, name),
-            setter: getUniformSetter(uniformData.size, type)
-        };
-    }
-
-    return uniforms;
-};
-
-var getUniformSetter = function getUniformSetter(size, type) {
-    if (size === 1) {
-        switch (type) {
-            case 'float':
-                return function (gl, location, value) {
-                    gl.uniform1f(location, value);
-                };
-            case 'vec2':
-                return function (gl, location, value) {
-                    gl.uniform2f(location, value[0], value[1]);
-                };
-            case 'vec3':
-                return function (gl, location, value) {
-                    gl.uniform3f(location, value[0], value[1], value[2]);
-                };
-            case 'vec4':
-                return function (gl, location, value) {
-                    gl.uniform4f(location, value[0], value[1], value[2], value[3]);
-                };
-            case 'int':
-                return function (gl, location, value) {
-                    gl.uniform1i(location, value);
-                };
-            case 'ivec2':
-                return function (gl, location, value) {
-                    gl.uniform2i(location, value[0], value[1]);
-                };
-            case 'ivec3':
-                return function (gl, location, value) {
-                    gl.uniform3i(location, value[0], value[1], value[2]);
-                };
-            case 'ivec4':
-                return function (gl, location, value) {
-                    gl.uniform4i(location, value[0], value[1], value[2], value[3]);
-                };
-            case 'bool':
-                return function (gl, location, value) {
-                    gl.uniform1i(location, value);
-                };
-            case 'bvec2':
-                return function (gl, location, value) {
-                    gl.uniform2i(location, value[0], value[1]);
-                };
-            case 'bvec3':
-                return function (gl, location, value) {
-                    gl.uniform3i(location, value[0], value[1], value[2]);
-                };
-            case 'bvec4':
-                return function (gl, location, value) {
-                    gl.uniform4i(location, value[0], value[1], value[2], value[3]);
-                };
-            case 'mat2':
-                return function (gl, location, value) {
-                    gl.uniformMatrix2fv(location, false, value);
-                };
-            case 'mat3':
-                return function (gl, location, value) {
-                    gl.uniformMatrix3fv(location, false, value);
-                };
-            case 'mat4':
-                return function (gl, location, value) {
-                    gl.uniformMatrix4fv(location, false, value);
-                };
-            case 'sampler2D':
-                return function (gl, location, value) {
-                    gl.uniform1i(location, value);
-                };
-        }
-    } else {
-        switch (type) {
-            case 'float':
-                return function (gl, location, value) {
-                    gl.uniform1fv(location, value);
-                };
-            case 'vec2':
-                return function (gl, location, value) {
-                    gl.uniform2fv(location, value);
-                };
-            case 'vec3':
-                return function (gl, location, value) {
-                    gl.uniform3fv(location, value);
-                };
-            case 'vec4':
-                return function (gl, location, value) {
-                    gl.uniform4fv(location, value);
-                };
-            case 'int':
-                return function (gl, location, value) {
-                    gl.uniform1iv(location, value);
-                };
-            case 'ivec2':
-                return function (gl, location, value) {
-                    gl.uniform2iv(location, value);
-                };
-            case 'ivec3':
-                return function (gl, location, value) {
-                    gl.uniform3iv(location, value);
-                };
-            case 'ivec4':
-                return function (gl, location, value) {
-                    gl.uniform4iv(location, value);
-                };
-            case 'bool':
-                return function (gl, location, value) {
-                    gl.uniform1iv(location, value);
-                };
-            case 'bvec2':
-                return function (gl, location, value) {
-                    gl.uniform2iv(location, value);
-                };
-            case 'bvec3':
-                return function (gl, location, value) {
-                    gl.uniform3iv(location, value);
-                };
-            case 'bvec4':
-                return function (gl, location, value) {
-                    gl.uniform4iv(location, value);
-                };
-            case 'sampler2D':
-                return function (gl, location, value) {
-                    gl.uniform1iv(location, value);
-                };
-        }
-    }
-};
 
 var ShaderProgram = (_temp = _class = function () {
     function ShaderProgram(gl, sources) {
@@ -934,10 +707,10 @@ var ShaderProgram = (_temp = _class = function () {
 
         this._attrLocationCache = {};
 
-        var vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
-        var fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
-        this.program = createProgram(gl, [vShader, fShader]);
-        this.uniforms = extractUniforms(gl, this.program);
+        var vShader = (0, _shaderProgramUtils.compileShader)(gl, sources[0], gl.VERTEX_SHADER);
+        var fShader = (0, _shaderProgramUtils.compileShader)(gl, sources[1], gl.FRAGMENT_SHADER);
+        this.program = (0, _shaderProgramUtils.createProgram)(gl, [vShader, fShader]);
+        this.uniforms = (0, _shaderProgramUtils.extractUniforms)(gl, this.program);
         this.gl = gl;
     }
 
@@ -952,16 +725,13 @@ var ShaderProgram = (_temp = _class = function () {
 
     ShaderProgram.prototype.setUniform = function setUniform(name, value) {
         var uniform = this.uniforms[name];
-        if (true && !uniform) throw 'no uniform with name ' + name + ' found!';
-        //if (uniformValuesCache[name]===value) return;
-        //this.gl.enableVertexAttribArray(uniform.location);
+        if (true && !uniform) throw "no uniform with name " + name + " found!";
         uniform.setter(this.gl, uniform.location, value);
-        //uniformValuesCache[name] = value;
     };
 
     ShaderProgram.prototype.bindBuffer = function bindBuffer(buffer, attrLocationName) {
         if (true) {
-            if (!attrLocationName) throw 'can not found attribute location: attrLocationName not defined';
+            if (!attrLocationName) throw "can not found attribute location: attrLocationName not defined";
         }
 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
@@ -970,13 +740,13 @@ var ShaderProgram = (_temp = _class = function () {
         if (true) {
             if (attrLocation < 0) {
                 console.log(this);
-                throw 'can not found attribute location for  ' + attrLocationName;
+                throw "can not found attribute location for  " + attrLocationName;
             }
         }
 
         this.gl.enableVertexAttribArray(attrLocation);
         this.gl.vertexAttribPointer(attrLocation, buffer.getItemSize(), buffer.getItemType(), // type of data
-        false, // if the content is normalized vectors
+        false, // if the content is normalized [0..1] vectors
         0, // number of bytes to skip in between elements
         0 // offsets to the first element
         );
@@ -1021,7 +791,7 @@ var VertexBuffer = function () {
         var gl = this.gl;
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW); // DYNAMIC
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW); // DYNAMIC_DRAW, STREAM_DRAW
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         this.bufferItemSize = itemSize;
         this.bufferItemType = itemType; // BYTE, FLOAT, INT, UNSIGNED_SHORT ...
@@ -1191,31 +961,31 @@ var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _spriteSheet = __webpack_require__(14);
+var _spriteSheet = __webpack_require__(15);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-var _frameAnimation = __webpack_require__(20);
+var _frameAnimation = __webpack_require__(22);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
-var _scene = __webpack_require__(24);
+var _scene = __webpack_require__(26);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-var _layer = __webpack_require__(22);
+var _layer = __webpack_require__(24);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _font = __webpack_require__(19);
+var _font = __webpack_require__(21);
 
 var _font2 = _interopRequireDefault(_font);
 
-var _sound = __webpack_require__(25);
+var _sound = __webpack_require__(27);
 
 var _sound2 = _interopRequireDefault(_sound);
 
-var _particleSystem = __webpack_require__(23);
+var _particleSystem = __webpack_require__(25);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
@@ -1231,7 +1001,7 @@ var res = {}; /*global localStorage:true*/
 res.reset = function (gameProps) {
 
     var g = new _game2.default();
-    g.fromJSON(gameProps || {});
+    g.fromJSON(gameProps || { width: 1, height: 1 });
     res.game = g;
     res.editTileMapModeOn = false;
 
@@ -1421,6 +1191,64 @@ exports.default = _i18n;
 
 
 exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var IndexBuffer = function () {
+    function IndexBuffer(gl) {
+        _classCallCheck(this, IndexBuffer);
+
+        if (true && !gl) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
+
+        this.gl = gl;
+        this.buffer = gl.createBuffer();
+        this.dataLength = null;
+    }
+
+    IndexBuffer.prototype.setData = function setData(bufferData) {
+        if (true) {
+            if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
+        }
+
+        var gl = this.gl;
+
+        this.dataLength = bufferData.length;
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(bufferData), gl.STATIC_DRAW);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
+    };
+
+    IndexBuffer.prototype.getGlBuffer = function getGlBuffer() {
+        return this.buffer;
+    };
+
+    IndexBuffer.prototype.bind = function bind() {
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, this.buffer);
+    };
+
+    IndexBuffer.prototype.unbind = function unbind() {
+        this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
+    };
+
+    IndexBuffer.prototype.getBufferLength = function getBufferLength() {
+        return this.dataLength;
+    };
+
+    return IndexBuffer;
+}();
+
+exports.default = IndexBuffer;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
 /*global XMLHttpRequest:true*/
 /*global FormData:true*/
 /*global RF:true*/
@@ -1531,7 +1359,7 @@ var postMultiPart = function postMultiPart(url, file, data, success, error) {
 exports.default = { get: get, post: post, postMultiPart: postMultiPart };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1540,7 +1368,7 @@ exports.default = { get: get, post: post, postMultiPart: postMultiPart };
 exports.__esModule = true;
 exports.default = undefined;
 
-var _httpClient = __webpack_require__(10);
+var _httpClient = __webpack_require__(11);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -1571,7 +1399,7 @@ var Project = function () {
 exports.default = Project;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1740,48 +1568,149 @@ exports.inverse = function (m) {
 };
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 exports.__esModule = true;
-exports.default = undefined;
+exports.simpleColorShaderGen = exports.default = undefined;
 
-var _abstractPrimitive = __webpack_require__(18);
-
-var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _shaderProgramUtils = __webpack_require__(179);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+var _cloneArray = function _cloneArray(arr) {
+    return arr.map(function (item) {
+        return item;
+    });
+};
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var ShaderGenerator = function () {
+    function ShaderGenerator() {
+        _classCallCheck(this, ShaderGenerator);
 
-var Plane = function (_AbstractPrimitive) {
-    _inherits(Plane, _AbstractPrimitive);
-
-    function Plane() {
-        _classCallCheck(this, Plane);
-
-        var _this = _possibleConstructorReturn(this, _AbstractPrimitive.call(this));
-
-        _this.vertexArr = [0, 0, 0, 1, 1, 0, 1, 1];
-        _this.indexArr = [0, 1, 2, 3];
-        _this.texCoordArr = [0, 0, 0, 1, 1, 0, 1, 1];
-        return _this;
+        this.vertexUniforms = [];
+        this.fragmentUniforms = [];
+        this.attributes = [];
+        this.varyings = [];
+        this.vertexMainFn = '';
+        this.fragmentMainFn = '';
     }
 
-    return Plane;
-}(_abstractPrimitive2.default);
+    ShaderGenerator.prototype.addVertexUniform = function addVertexUniform(type, name) {
+        this.vertexUniforms.push({ type: type, name: name });
+        return this;
+    };
 
-exports.default = Plane;
+    ShaderGenerator.prototype.addFragmentUniform = function addFragmentUniform(type, name) {
+        this.fragmentUniforms.push({ type: type, name: name });
+        return this;
+    };
+
+    ShaderGenerator.prototype.addAttribute = function addAttribute(type, name) {
+        this.attributes.push({ type: type, name: name });
+        return this;
+    };
+
+    ShaderGenerator.prototype.addVarying = function addVarying(type, name) {
+        this.varyings.push({ type: type, name: name });
+        return this;
+    };
+
+    ShaderGenerator.prototype.setVertexMainFn = function setVertexMainFn(fnCode) {
+        this.vertexMainFn = fnCode;
+        return this;
+    };
+
+    ShaderGenerator.prototype.setFragmentMainFn = function setFragmentMainFn(fnCode) {
+        this.fragmentMainFn = fnCode;
+        return this;
+    };
+
+    ShaderGenerator.prototype.getVertexSource = function getVertexSource() {
+        return ('\n            ' + this.vertexUniforms.map(function (u) {
+            return 'uniform   ' + u.type + ' ' + u.name + ';';
+        }).join('\n') + '\n            ' + this.attributes.map(function (u) {
+            return 'attribute ' + u.type + ' ' + u.name + ';';
+        }).join('\n') + '\n            ' + this.varyings.map(function (u) {
+            return 'varying   ' + u.type + ' ' + u.name + ';';
+        }).join('\n') + '\n            void main() {\n               ' + this.vertexMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '');
+    };
+
+    ShaderGenerator.prototype.getFragmentSource = function getFragmentSource() {
+        return (
+            // lowp, mediump, highp
+            ('\n            precision mediump float;\n            ' + this.fragmentUniforms.map(function (u) {
+                return 'uniform ' + u.type + ' ' + u.name + ';';
+            }).join('\n') + '\n            ' + this.varyings.map(function (u) {
+                return 'varying ' + u.type + ' ' + u.name + ';';
+            }).join('\n') + '\n            void main() {\n               ' + this.fragmentMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '')
+        );
+    };
+
+    ShaderGenerator.prototype.debug = function debug() {
+        console.log(this.getVertexSource());
+        console.log(this.getFragmentSource());
+    };
+
+    ShaderGenerator.prototype.clone = function clone() {
+        var cloned = new ShaderGenerator();
+        cloned.vertexUniforms = _cloneArray(this.vertexUniforms);
+        cloned.fragmentUniforms = _cloneArray(this.fragmentUniforms);
+        cloned.attributes = _cloneArray(this.attributes);
+        cloned.varyings = _cloneArray(this.varyings);
+        cloned.vertexMainFn = this.vertexMainFn;
+        cloned.fragmentMainFn = this.fragmentMainFn;
+        return cloned;
+    };
+
+    return ShaderGenerator;
+}();
+
+/*
+
+attribute vec4 a_position;
+attribute vec4 a_color;
+
+uniform mat4 u_PositionMatrix;
+
+varying vec4 v_color;
+
+void main() {
+   gl_Position = u_PositionMatrix * a_position;
+   v_color = a_color;
+}
+
+----
+
+precision mediump float;
+
+uniform float u_alpha;
+uniform vec4 u_rgba;
+
+void main() {
+    gl_FragColor = u_rgba;
+}
+
+ */
+//position and color
+
+exports.default = ShaderGenerator;
+var gen = new ShaderGenerator();
+gen.addAttribute(_shaderProgramUtils.GL_TYPE.FLOAT_VEC4, 'a_position');
+//gen.addAttribute('vec4','a_color');
+gen.addVertexUniform(_shaderProgramUtils.GL_TYPE.FLOAT_MAT4, 'u_vertexMatrix');
+//gen.addVarying('vec4','v_color');
+gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    //v_color = a_color;\n');
+gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT, 'u_alpha');
+gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT_VEC4, 'u_rgba');
+gen.setFragmentMainFn('\n    gl_FragColor = u_rgba;\n');
+var simpleColorShaderGen = exports.simpleColorShaderGen = gen;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1843,7 +1772,7 @@ var SpriteSheet = function (_BaseModel) {
 exports.default = SpriteSheet;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1852,7 +1781,7 @@ exports.default = SpriteSheet;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _httpClient = __webpack_require__(10);
+var _httpClient = __webpack_require__(11);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -1860,7 +1789,7 @@ var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(17);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -1879,7 +1808,7 @@ var Resource = function () {
 
     Resource.save = function save(model, callback, opts) {
 
-        var allModels = __webpack_require__(40);
+        var allModels = __webpack_require__(41);
         if (!allModels[model.type]) throw 'Unregistered type ' + model.type + ', export this type in \'engine/model/all\'!';
         var Class = allModels[model.type];
 
@@ -1918,7 +1847,7 @@ var Resource = function () {
 exports.default = Resource;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1937,7 +1866,7 @@ var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _resource = __webpack_require__(15);
+var _resource = __webpack_require__(16);
 
 var _resource2 = _interopRequireDefault(_resource);
 
@@ -2240,78 +2169,20 @@ var Utils = function () {
 exports.default = Utils;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Point2d = function () {
-    function Point2d() {
-        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-        _classCallCheck(this, Point2d);
-
-        this.x = 0;
-        this.y = 0;
-
-        this.setXY(x, y);
-    }
-
-    Point2d.prototype.setXY = function setXY(x, y) {
-        this.x = x;
-        this.y = y;
-    };
-
-    Point2d.prototype.setX = function setX(x) {
-        this.x = x;
-    };
-
-    Point2d.prototype.setY = function setY(y) {
-        this.y = y;
-    };
-
-    Point2d.prototype.set = function set(another) {
-        this.setXY(another.x, another.y);
-    };
-
-    Point2d.prototype.add = function add(another) {
-        this.addXY(another.x, another.y);
-    };
-
-    Point2d.prototype.addXY = function addXY(x, y) {
-        this.x += x;
-        this.y += y;
-    };
-
-    Point2d.prototype.addX = function addX(x) {
-        this.x += x;
-    };
-
-    Point2d.prototype.addY = function addY(y) {
-        this.y += y;
-    };
-
-    Point2d.prototype.fromJSON = function fromJSON(json) {
-        this.set(json);
-    };
-
-    Point2d.prototype.toJSON = function toJSON() {
-        return { x: this.x, y: this.y };
-    };
-
-    return Point2d;
-}();
-
-exports.default = Point2d;
+var SCALE_STRATEGY = exports.SCALE_STRATEGY = {
+    NO_SCALE: 0,
+    FIT: 1
+};
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2333,7 +2204,48 @@ var AbstractPrimitive = function AbstractPrimitive() {
 exports.default = AbstractPrimitive;
 
 /***/ }),
-/* 19 */
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractPrimitive = __webpack_require__(19);
+
+var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Plane = function (_AbstractPrimitive) {
+    _inherits(Plane, _AbstractPrimitive);
+
+    function Plane() {
+        _classCallCheck(this, Plane);
+
+        var _this = _possibleConstructorReturn(this, _AbstractPrimitive.call(this));
+
+        _this.vertexArr = [0, 0, 0, 1, 1, 0, 1, 1];
+        _this.indexArr = [0, 1, 2, 3];
+        _this.texCoordArr = [0, 0, 0, 1, 1, 0, 1, 1];
+        return _this;
+    }
+
+    return Plane;
+}(_abstractPrimitive2.default);
+
+exports.default = Plane;
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2377,7 +2289,7 @@ var Font = function (_BaseModel) {
 exports.default = Font;
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2469,7 +2381,7 @@ var FrameAnimation = function (_BaseModel) {
 exports.default = FrameAnimation;
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2569,7 +2481,7 @@ exports.default = GameObject;
 ;
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2646,7 +2558,7 @@ var Layer = function (_BaseModel) {
 exports.default = Layer;
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2744,7 +2656,7 @@ var ParticleSystem = function (_BaseModel) {
 exports.default = ParticleSystem;
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2757,11 +2669,11 @@ var _baseModel = __webpack_require__(1);
 
 var _baseModel2 = _interopRequireDefault(_baseModel);
 
-var _loadingQueue = __webpack_require__(107);
+var _loadingQueue = __webpack_require__(106);
 
 var _loadingQueue2 = _interopRequireDefault(_loadingQueue);
 
-var _tileMap = __webpack_require__(26);
+var _tileMap = __webpack_require__(28);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -2932,7 +2844,7 @@ var Scene = function (_BaseModel) {
 exports.default = Scene;
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2998,7 +2910,7 @@ var Sound = function (_BaseModel) {
 exports.default = Sound;
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3118,7 +3030,7 @@ var TileMap = function (_BaseModel) {
 exports.default = TileMap;
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3225,8 +3137,6 @@ var TextField = function (_BaseModel) {
 exports.default = TextField;
 
 /***/ }),
-/* 28 */,
-/* 29 */,
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3826,19 +3736,19 @@ var _editData = __webpack_require__(8);
 
 var _editData2 = _interopRequireDefault(_editData);
 
-var _resource = __webpack_require__(15);
+var _resource = __webpack_require__(16);
 
 var _resource2 = _interopRequireDefault(_resource);
 
-var _project = __webpack_require__(11);
+var _project = __webpack_require__(12);
 
 var _project2 = _interopRequireDefault(_project);
 
-var _commonBehaviour = __webpack_require__(42);
+var _commonBehaviour = __webpack_require__(43);
 
 var _commonBehaviour2 = _interopRequireDefault(_commonBehaviour);
 
-var _textField = __webpack_require__(27);
+var _textField = __webpack_require__(29);
 
 var _textField2 = _interopRequireDefault(_textField);
 
@@ -3943,7 +3853,7 @@ window.e = _editData2.default;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _httpClient = __webpack_require__(10);
+var _httpClient = __webpack_require__(11);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -4204,7 +4114,7 @@ if (!Array.prototype.find) {
         return undefined;
     };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(125)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(123)))
 
 /***/ }),
 /* 38 */
@@ -4301,6 +4211,139 @@ exports.default = Texture;
 
 /***/ }),
 /* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = exports.textureShaderGen = undefined;
+
+var _plane = __webpack_require__(20);
+
+var _plane2 = _interopRequireDefault(_plane);
+
+var _shaderProgram = __webpack_require__(5);
+
+var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
+
+var _vertexBuffer = __webpack_require__(6);
+
+var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
+
+var _indexBuffer = __webpack_require__(10);
+
+var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
+
+var _abstractDrawer = __webpack_require__(3);
+
+var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
+
+var _shaderGenerator = __webpack_require__(14);
+
+var _shaderGenerator2 = _interopRequireDefault(_shaderGenerator);
+
+var _shaderProgramUtils = __webpack_require__(179);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/*
+
+attribute vec4 a_position;
+attribute vec4 a_color;
+attribute vec2 a_texcoord;
+
+uniform mat4 u_PositionMatrix;
+uniform mat4 u_textureMatrix;
+
+varying vec2 v_texcoord;
+varying vec4 v_color;
+
+void main() {
+   gl_Position = u_PositionMatrix * a_position;
+   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
+   v_color = a_color;
+}
+
+---
+
+precision mediump float;
+
+varying vec2 v_texcoord;
+
+uniform sampler2D texture;
+uniform float u_alpha;
+
+
+void main() {
+    gl_FragColor = texture2D(texture, v_texcoord);
+    gl_FragColor.a *= u_alpha;
+}
+
+ */
+
+// position, color and texture
+var gen = new _shaderGenerator2.default();
+gen.addAttribute(_shaderProgramUtils.GL_TYPE.FLOAT_VEC4, 'a_position');
+//gen.addAttribute('vec4','a_color');
+gen.addAttribute(_shaderProgramUtils.GL_TYPE.FLOAT_VEC2, 'a_texCoord');
+gen.addVertexUniform(_shaderProgramUtils.GL_TYPE.FLOAT_MAT4, 'u_vertexMatrix');
+gen.addVertexUniform(_shaderProgramUtils.GL_TYPE.FLOAT_MAT4, 'u_textureMatrix');
+gen.addVarying(_shaderProgramUtils.GL_TYPE.FLOAT_VEC2, 'v_texCoord');
+//gen.addVarying('vec4','v_color');
+gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy; \n    //v_color = a_color;\n');
+gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.SAMPLER_2D, 'texture');
+gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT, 'u_alpha');
+gen.setFragmentMainFn('\n    gl_FragColor = texture2D(texture, v_texCoord);\n    gl_FragColor.a *= u_alpha;\n');
+var textureShaderGen = exports.textureShaderGen = gen;
+
+var SpriteRectDrawer = function (_AbstractDrawer) {
+    _inherits(SpriteRectDrawer, _AbstractDrawer);
+
+    function SpriteRectDrawer(gl, game) {
+        _classCallCheck(this, SpriteRectDrawer);
+
+        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
+
+        _this.plane = new _plane2.default();
+        _this.program = new _shaderProgram2.default(gl, [gen.getVertexSource(), gen.getFragmentSource()]);
+
+        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        _this.posIndexBuffer = new _indexBuffer2.default(gl);
+        _this.texVertexBuffer = new _vertexBuffer2.default(gl);
+
+        _this.posIndexBuffer.setData(_this.plane.indexArr);
+        _this.posVertexBuffer.setData(_this.plane.vertexArr, gl.FLOAT, 2);
+        _this.texVertexBuffer.setData(_this.plane.texCoordArr, gl.FLOAT, 2);
+
+        return _this;
+    }
+
+    SpriteRectDrawer.prototype.bind = function bind() {
+        _AbstractDrawer.prototype.bind.call(this);
+        this.program.bind();
+        this.posIndexBuffer.bind();
+        this.posVertexBuffer.bind(this.program, 'a_position');
+        this.texVertexBuffer.bind(this.program, 'a_texCoord');
+    };
+
+    SpriteRectDrawer.prototype.draw = function draw() {
+        this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
+    };
+
+    return SpriteRectDrawer;
+}(_abstractDrawer2.default);
+
+exports.default = SpriteRectDrawer;
+
+/***/ }),
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4451,7 +4494,7 @@ var Tween = function () {
 exports.default = Tween;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4460,11 +4503,11 @@ exports.default = Tween;
 exports.__esModule = true;
 exports.TileMap = exports.TextField = exports.Layer = exports.Font = exports.Sound = exports.Scene = exports.ParticleSystem = exports.CommonBehaviour = exports.GameObject = exports.GameObjectProto = exports.SpriteSheet = exports.FrameAnimation = undefined;
 
-var _frameAnimation = __webpack_require__(20);
+var _frameAnimation = __webpack_require__(22);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
-var _spriteSheet = __webpack_require__(14);
+var _spriteSheet = __webpack_require__(15);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
@@ -4472,39 +4515,39 @@ var _gameObjectProto = __webpack_require__(7);
 
 var _gameObjectProto2 = _interopRequireDefault(_gameObjectProto);
 
-var _gameObject = __webpack_require__(21);
+var _gameObject = __webpack_require__(23);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
-var _commonBehaviour = __webpack_require__(42);
+var _commonBehaviour = __webpack_require__(43);
 
 var _commonBehaviour2 = _interopRequireDefault(_commonBehaviour);
 
-var _particleSystem = __webpack_require__(23);
+var _particleSystem = __webpack_require__(25);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
-var _scene = __webpack_require__(24);
+var _scene = __webpack_require__(26);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-var _sound = __webpack_require__(25);
+var _sound = __webpack_require__(27);
 
 var _sound2 = _interopRequireDefault(_sound);
 
-var _font = __webpack_require__(19);
+var _font = __webpack_require__(21);
 
 var _font2 = _interopRequireDefault(_font);
 
-var _layer = __webpack_require__(22);
+var _layer = __webpack_require__(24);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _textField = __webpack_require__(27);
+var _textField = __webpack_require__(29);
 
 var _textField2 = _interopRequireDefault(_textField);
 
-var _tileMap = __webpack_require__(26);
+var _tileMap = __webpack_require__(28);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -4524,7 +4567,7 @@ exports.TextField = _textField2.default;
 exports.TileMap = _tileMap2.default;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4678,7 +4721,7 @@ var CommonObject = function () {
 exports.default = CommonObject;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4719,7 +4762,6 @@ var CommonBehaviour = function (_BaseModel) {
 exports.default = CommonBehaviour;
 
 /***/ }),
-/* 43 */,
 /* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4900,7 +4942,7 @@ var _buildDialog = __webpack_require__(61);
 
 var _buildDialog2 = _interopRequireDefault(_buildDialog);
 
-__webpack_require__(132);
+__webpack_require__(130);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4922,7 +4964,7 @@ if (sessionStorage.projectName) {
     _resourceHelper2.default.loadProject(sessionStorage.projectName);
 } else RF.Router.navigateTo('explorer');
 
-console.log('built at: ' + new Date(+1514583180406));
+console.log('built at: ' + new Date(+1514804863429));
 
 /***/ }),
 /* 45 */
@@ -5633,7 +5675,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 function () {
   return this;
 }() || Function("return this")());
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(126)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(124)(module)))
 
 /***/ }),
 /* 46 */
@@ -9152,7 +9194,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AlertDialog = (_dec = RF.decorateComponent({
     name: 'app-alert-dialog',
-    template: __webpack_require__(143)
+    template: __webpack_require__(139)
 }), _dec(_class = function () {
     function AlertDialog() {
         _classCallCheck(this, AlertDialog);
@@ -9190,7 +9232,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var AnglePicker = (_dec = RF.decorateComponent({
     name: 'app-angle-picker',
-    template: __webpack_require__(144)
+    template: __webpack_require__(140)
 }), _dec(_class = function () {
     function AnglePicker() {
         _classCallCheck(this, AnglePicker);
@@ -9243,13 +9285,13 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(128);
+__webpack_require__(126);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Collapsible = (_dec = RF.decorateComponent({
     name: 'app-collapsible',
-    template: __webpack_require__(145)
+    template: __webpack_require__(141)
 }), _dec(_class = function () {
     function Collapsible() {
         _classCallCheck(this, Collapsible);
@@ -9285,7 +9327,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var ColorPicker = (_dec = RF.decorateComponent({
     name: 'app-color-picker',
-    template: __webpack_require__(146)
+    template: __webpack_require__(142)
 }), _dec(_class = function () {
     function ColorPicker() {
         _classCallCheck(this, ColorPicker);
@@ -9316,7 +9358,7 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-var _utils = __webpack_require__(16);
+var _utils = __webpack_require__(17);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -9332,7 +9374,7 @@ var defaultColor = { r: 0, g: 0, b: 0 };
 
 var ColorPickerDialog = (_dec = RF.decorateComponent({
     name: 'app-color-picker-dialog',
-    template: __webpack_require__(147)
+    template: __webpack_require__(143)
 }), _dec(_class = function () {
     function ColorPickerDialog() {
         _classCallCheck(this, ColorPickerDialog);
@@ -9399,7 +9441,7 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(129);
+__webpack_require__(127);
 
 var _i18n = __webpack_require__(9);
 
@@ -9411,7 +9453,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var ConfirmDialog = (_dec = RF.decorateComponent({
     name: 'app-confirm-dialog',
-    template: __webpack_require__(148)
+    template: __webpack_require__(144)
 }), _dec(_class = function () {
     function ConfirmDialog() {
         _classCallCheck(this, ConfirmDialog);
@@ -9453,13 +9495,13 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(130);
+__webpack_require__(128);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var InputFile = (_dec = RF.decorateComponent({
     name: 'app-input-file',
-    template: __webpack_require__(149)
+    template: __webpack_require__(145)
 }), _dec(_class = function () {
     function InputFile() {
         _classCallCheck(this, InputFile);
@@ -9506,13 +9548,13 @@ exports.default = undefined;
 var _dec, _class; /*global RF:true*/
 
 
-__webpack_require__(131);
+__webpack_require__(129);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var AppModal = (_dec = RF.decorateComponent({
     name: 'app-modal',
-    template: __webpack_require__(150)
+    template: __webpack_require__(146)
 }), _dec(_class = function () {
     function AppModal() {
         _classCallCheck(this, AppModal);
@@ -9593,7 +9635,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneCursor = (_dec = RF.decorateComponent({
     name: 'app-scene-cursor',
-    template: __webpack_require__(151)
+    template: __webpack_require__(147)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneCursor, _BaseComponent);
 
@@ -9641,9 +9683,9 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(133);
+__webpack_require__(131);
 
-var _gameObject = __webpack_require__(21);
+var _gameObject = __webpack_require__(23);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
@@ -9663,7 +9705,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneCentralPanel = (_dec = RF.decorateComponent({
     name: 'app-scene-central-panel',
-    template: __webpack_require__(152)
+    template: __webpack_require__(148)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneCentralPanel, _BaseComponent);
 
@@ -9921,7 +9963,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(134);
+__webpack_require__(132);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9933,7 +9975,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ScriptEditor = (_dec = RF.decorateComponent({
     name: 'app-script-editor',
-    template: __webpack_require__(153)
+    template: __webpack_require__(149)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ScriptEditor, _BaseComponent);
 
@@ -9979,7 +10021,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var BuildDialog = (_dec = RF.decorateComponent({
     name: 'app-build-dialog',
-    template: __webpack_require__(154)
+    template: __webpack_require__(150)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(BuildDialog, _BaseComponent);
 
@@ -10030,7 +10072,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var CommonBehaviourDialog = (_dec = RF.decorateComponent({
     name: 'app-common-behaviour-dialog',
-    template: __webpack_require__(155)
+    template: __webpack_require__(151)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(CommonBehaviourDialog, _BaseComponent);
 
@@ -10123,7 +10165,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Dialogs = (_dec = RF.decorateComponent({
     name: 'app-dialogs',
-    template: __webpack_require__(156)
+    template: __webpack_require__(152)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Dialogs, _BaseComponent);
 
@@ -10233,7 +10275,7 @@ var getFontImage = function getFontImage(symbolsContext, strFont, color) {
 
 var FontDialog = (_dec = RF.decorateComponent({
     name: 'app-font-dialog',
-    template: __webpack_require__(157)
+    template: __webpack_require__(153)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(FontDialog, _BaseComponent);
 
@@ -10334,11 +10376,11 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _gameObject = __webpack_require__(21);
+var _gameObject = __webpack_require__(23);
 
 var _gameObject2 = _interopRequireDefault(_gameObject);
 
-var _spriteSheet = __webpack_require__(14);
+var _spriteSheet = __webpack_require__(15);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
@@ -10354,7 +10396,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var FrameAnimationDialog = (_dec = RF.decorateComponent({
     name: 'app-frame-animation-dialog',
-    template: __webpack_require__(158)
+    template: __webpack_require__(154)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(FrameAnimationDialog, _BaseComponent);
 
@@ -10516,7 +10558,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _frameAnimation = __webpack_require__(20);
+var _frameAnimation = __webpack_require__(22);
 
 var _frameAnimation2 = _interopRequireDefault(_frameAnimation);
 
@@ -10532,7 +10574,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var gameObjectDialog = (_dec = RF.decorateComponent({
     name: 'app-game-object-dialog',
-    template: __webpack_require__(159)
+    template: __webpack_require__(155)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(gameObjectDialog, _BaseComponent);
 
@@ -10728,7 +10770,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var LayerDialog = (_dec = RF.decorateComponent({
     name: 'app-layer-dialog',
-    template: __webpack_require__(160)
+    template: __webpack_require__(156)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(LayerDialog, _BaseComponent);
 
@@ -10824,7 +10866,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ParticleSystemDialog = (_dec = RF.decorateComponent({
     name: 'app-particle-system-dialog',
-    template: __webpack_require__(161)
+    template: __webpack_require__(157)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ParticleSystemDialog, _BaseComponent);
 
@@ -10912,7 +10954,7 @@ var tid = void 0;
 
 var ParticleSystemPreviewDialog = (_dec = RF.decorateComponent({
     name: 'app-particle-system-preview-dialog',
-    template: __webpack_require__(162)
+    template: __webpack_require__(158)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ParticleSystemPreviewDialog, _BaseComponent);
 
@@ -11003,7 +11045,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneDialog = (_dec = RF.decorateComponent({
     name: 'app-scene-dialog',
-    template: __webpack_require__(163)
+    template: __webpack_require__(159)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneDialog, _BaseComponent);
 
@@ -11094,7 +11136,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SoundDialog = (_dec = RF.decorateComponent({
     name: 'app-sound-dialog',
-    template: __webpack_require__(164)
+    template: __webpack_require__(160)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SoundDialog, _BaseComponent);
 
@@ -11213,7 +11255,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SpriteSheetDialog = (_dec = RF.decorateComponent({
     name: 'app-sprite-sheet-dialog',
-    template: __webpack_require__(165)
+    template: __webpack_require__(161)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SpriteSheetDialog, _BaseComponent);
 
@@ -11350,7 +11392,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(135);
+__webpack_require__(133);
 
 var _split = __webpack_require__(30);
 
@@ -11366,7 +11408,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Editor = (_dec = RF.decorateComponent({
     name: 'editor',
-    template: __webpack_require__(166)
+    template: __webpack_require__(162)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Editor, _BaseComponent);
 
@@ -11437,7 +11479,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameObjectRow = (_dec = RF.decorateComponent({
     name: 'app-game-object-row',
-    template: __webpack_require__(167)
+    template: __webpack_require__(163)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameObjectRow, _BaseComponent);
 
@@ -11473,7 +11515,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _font = __webpack_require__(19);
+var _font = __webpack_require__(21);
 
 var _font2 = _interopRequireDefault(_font);
 
@@ -11489,7 +11531,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Fonts = (_dec = RF.decorateComponent({
     name: 'app-fonts',
-    template: __webpack_require__(168)
+    template: __webpack_require__(164)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Fonts, _BaseComponent);
 
@@ -11571,7 +11613,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameObject = (_dec = RF.decorateComponent({
     name: 'app-game-objects',
-    template: __webpack_require__(169)
+    template: __webpack_require__(165)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameObject, _BaseComponent);
 
@@ -11635,7 +11677,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _consts = __webpack_require__(105);
+var _consts = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11647,7 +11689,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameProps = (_dec = RF.decorateComponent({
     name: 'app-game-props',
-    template: __webpack_require__(170)
+    template: __webpack_require__(166)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameProps, _BaseComponent);
 
@@ -11685,7 +11727,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _particleSystem = __webpack_require__(23);
+var _particleSystem = __webpack_require__(25);
 
 var _particleSystem2 = _interopRequireDefault(_particleSystem);
 
@@ -11699,7 +11741,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ParticleSystems = (_dec = RF.decorateComponent({
     name: 'app-particle-systems',
-    template: __webpack_require__(171)
+    template: __webpack_require__(167)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ParticleSystems, _BaseComponent);
 
@@ -11752,15 +11794,15 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _layer = __webpack_require__(22);
+var _layer = __webpack_require__(24);
 
 var _layer2 = _interopRequireDefault(_layer);
 
-var _scene = __webpack_require__(24);
+var _scene = __webpack_require__(26);
 
 var _scene2 = _interopRequireDefault(_scene);
 
-__webpack_require__(136);
+__webpack_require__(134);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11772,7 +11814,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Scenes = (_dec = RF.decorateComponent({
     name: 'app-scenes',
-    template: __webpack_require__(172)
+    template: __webpack_require__(168)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Scenes, _BaseComponent);
 
@@ -11888,7 +11930,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _sound = __webpack_require__(25);
+var _sound = __webpack_require__(27);
 
 var _sound2 = _interopRequireDefault(_sound);
 
@@ -11902,7 +11944,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Sounds = (_dec = RF.decorateComponent({
     name: 'app-sounds',
-    template: __webpack_require__(173)
+    template: __webpack_require__(169)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Sounds, _BaseComponent);
 
@@ -11951,11 +11993,11 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _spriteSheet = __webpack_require__(14);
+var _spriteSheet = __webpack_require__(15);
 
 var _spriteSheet2 = _interopRequireDefault(_spriteSheet);
 
-__webpack_require__(127);
+__webpack_require__(125);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11967,7 +12009,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SpriteSheets = (_dec = RF.decorateComponent({
     name: 'app-sprite-sheets',
-    template: __webpack_require__(174)
+    template: __webpack_require__(170)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SpriteSheets, _BaseComponent);
 
@@ -12033,7 +12075,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var userInterface = (_dec = RF.decorateComponent({
     name: 'app-user-interface',
-    template: __webpack_require__(175)
+    template: __webpack_require__(171)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(userInterface, _BaseComponent);
 
@@ -12074,7 +12116,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var GameObjectRightPanel = (_dec = RF.decorateComponent({
     name: 'app-game-object-right-panel',
-    template: __webpack_require__(176)
+    template: __webpack_require__(172)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(GameObjectRightPanel, _BaseComponent);
 
@@ -12116,9 +12158,9 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(137);
+__webpack_require__(135);
 
-var _tileMap = __webpack_require__(26);
+var _tileMap = __webpack_require__(28);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
@@ -12134,7 +12176,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var SceneRightPanel = (_dec = RF.decorateComponent({
     name: 'app-scene-right-panel',
-    template: __webpack_require__(177)
+    template: __webpack_require__(173)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(SceneRightPanel, _BaseComponent);
 
@@ -12333,7 +12375,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var w = void 0;
 var TopPanel = (_dec = RF.decorateComponent({
     name: 'app-top-panel',
-    template: __webpack_require__(178)
+    template: __webpack_require__(174)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(TopPanel, _BaseComponent);
 
@@ -12427,7 +12469,7 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-var _project = __webpack_require__(11);
+var _project = __webpack_require__(12);
 
 var _project2 = _interopRequireDefault(_project);
 
@@ -12443,7 +12485,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var ProjectDialog = (_dec = RF.decorateComponent({
     name: 'app-project-dialog',
-    template: __webpack_require__(179)
+    template: __webpack_require__(175)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(ProjectDialog, _BaseComponent);
 
@@ -12532,9 +12574,9 @@ var _baseComponent = __webpack_require__(0);
 
 var _baseComponent2 = _interopRequireDefault(_baseComponent);
 
-__webpack_require__(138);
+__webpack_require__(136);
 
-var _project = __webpack_require__(11);
+var _project = __webpack_require__(12);
 
 var _project2 = _interopRequireDefault(_project);
 
@@ -12550,7 +12592,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var Explorer = (_dec = RF.decorateComponent({
     name: 'explorer',
-    template: __webpack_require__(180)
+    template: __webpack_require__(176)
 }), _dec(_class = function (_BaseComponent) {
     _inherits(Explorer, _BaseComponent);
 
@@ -13050,11 +13092,11 @@ exports.default = Move4Dir;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _tween = __webpack_require__(39);
+var _tween = __webpack_require__(40);
 
 var _tween2 = _interopRequireDefault(_tween);
 
-var _mat = __webpack_require__(12);
+var _mat = __webpack_require__(13);
 
 var _mat2 = _interopRequireDefault(_mat);
 
@@ -13066,7 +13108,7 @@ var _rect = __webpack_require__(35);
 
 var _rect2 = _interopRequireDefault(_rect);
 
-var _point2d = __webpack_require__(17);
+var _point2d = __webpack_require__(4);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -13423,11 +13465,11 @@ var _mathEx = __webpack_require__(2);
 
 var _mathEx2 = _interopRequireDefault(_mathEx);
 
-var _point2d = __webpack_require__(17);
+var _point2d = __webpack_require__(4);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
-var _objectPool = __webpack_require__(184);
+var _objectPool = __webpack_require__(107);
 
 var _objectPool2 = _interopRequireDefault(_objectPool);
 
@@ -13650,7 +13692,7 @@ var _rendererFactory = __webpack_require__(111);
 
 var _rendererFactory2 = _interopRequireDefault(_rendererFactory);
 
-var _repository = __webpack_require__(123);
+var _repository = __webpack_require__(122);
 
 var _repository2 = _interopRequireDefault(_repository);
 
@@ -13672,7 +13714,7 @@ var _collider2 = _interopRequireDefault(_collider);
 
 var _decorators = __webpack_require__(36);
 
-var _commonObject = __webpack_require__(41);
+var _commonObject = __webpack_require__(42);
 
 var _commonObject2 = _interopRequireDefault(_commonObject);
 
@@ -13680,9 +13722,9 @@ var _camera = __webpack_require__(98);
 
 var _camera2 = _interopRequireDefault(_camera);
 
-var _consts = __webpack_require__(105);
+var _consts = __webpack_require__(18);
 
-var _point2d = __webpack_require__(17);
+var _point2d = __webpack_require__(4);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -13833,7 +13875,7 @@ exports.default = Game;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _point2d = __webpack_require__(17);
+var _point2d = __webpack_require__(4);
 
 var _point2d2 = _interopRequireDefault(_point2d);
 
@@ -13979,19 +14021,6 @@ exports.default = Vec2;
 
 
 exports.__esModule = true;
-var SCALE_STRATEGY = exports.SCALE_STRATEGY = {
-    NO_SCALE: 0,
-    FIT: 1
-};
-
-/***/ }),
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -14033,7 +14062,7 @@ exports.default = EventEmitter;
 ;
 
 /***/ }),
-/* 107 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14099,6 +14128,43 @@ var Queue = function () {
 
 exports.default = Queue;
 ;
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/*global DEBUG:true*/
+
+var ObjectPool = function () {
+    function ObjectPool(Class) {
+        var numberOfInstances = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 16;
+
+        _classCallCheck(this, ObjectPool);
+
+        this._pool = [];
+        this._cnt = 0;
+
+        if (true && !Class) throw "can not instantiate ObjectPool: class not provided in constructor";
+        for (var i = 0; i < numberOfInstances; i++) {
+            this._pool.push(new Class());
+        }
+    }
+
+    ObjectPool.prototype.getNextObject = function getNextObject() {
+        return this._pool[this._cnt++ % this._pool.length];
+    };
+
+    return ObjectPool;
+}();
+
+exports.default = ObjectPool;
 
 /***/ }),
 /* 108 */
@@ -14252,7 +14318,7 @@ exports.default = Collider;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _textField = __webpack_require__(27);
+var _textField = __webpack_require__(29);
 
 var _textField2 = _interopRequireDefault(_textField);
 
@@ -14260,7 +14326,7 @@ var _device = __webpack_require__(102);
 
 var _device2 = _interopRequireDefault(_device);
 
-var _consts = __webpack_require__(105);
+var _consts = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14402,7 +14468,7 @@ exports.default = AbstractRenderer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _webGlRenderer = __webpack_require__(122);
+var _webGlRenderer = __webpack_require__(121);
 
 var _webGlRenderer2 = _interopRequireDefault(_webGlRenderer);
 
@@ -14507,7 +14573,7 @@ exports.default = FrameBuffer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _mat = __webpack_require__(12);
+var _mat = __webpack_require__(13);
 
 var _mat2 = _interopRequireDefault(_mat);
 
@@ -14589,7 +14655,7 @@ exports.default = MatrixStack;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractPrimitive = __webpack_require__(18);
+var _abstractPrimitive = __webpack_require__(19);
 
 var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
 
@@ -14640,7 +14706,7 @@ exports.default = Circle;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractPrimitive = __webpack_require__(18);
+var _abstractPrimitive = __webpack_require__(19);
 
 var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
 
@@ -14696,7 +14762,7 @@ var _abstractDrawer = __webpack_require__(3);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _shaderGenerator = __webpack_require__(183);
+var _shaderGenerator = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14729,8 +14795,7 @@ var CircleDrawer = function (_AbstractDrawer) {
     };
 
     CircleDrawer.prototype.draw = function draw() {
-        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, // gl.STREAM_DRAW
-        this.posVertexBuffer.getBufferLength() / 2);
+        this.gl.drawArrays(this.gl.TRIANGLE_FAN, 0, this.posVertexBuffer.getBufferLength() / 2);
     };
 
     return CircleDrawer;
@@ -14748,7 +14813,7 @@ exports.default = CircleDrawer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _plane = __webpack_require__(13);
+var _plane = __webpack_require__(20);
 
 var _plane2 = _interopRequireDefault(_plane);
 
@@ -14760,7 +14825,7 @@ var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(4);
+var _indexBuffer = __webpack_require__(10);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -14768,7 +14833,7 @@ var _abstractDrawer = __webpack_require__(3);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _shaderGenerator = __webpack_require__(183);
+var _shaderGenerator = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14835,7 +14900,7 @@ var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(4);
+var _indexBuffer = __webpack_require__(10);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -14843,7 +14908,7 @@ var _abstractDrawer = __webpack_require__(3);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _shaderGenerator = __webpack_require__(183);
+var _shaderGenerator = __webpack_require__(14);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -14904,15 +14969,15 @@ var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(4);
+var _indexBuffer = __webpack_require__(10);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
-var _vertex = __webpack_require__(139);
+var _vertex = __webpack_require__(137);
 
 var _vertex2 = _interopRequireDefault(_vertex);
 
-var _fragment = __webpack_require__(141);
+var _fragment = __webpack_require__(138);
 
 var _fragment2 = _interopRequireDefault(_fragment);
 
@@ -14983,140 +15048,9 @@ exports.default = ModelDrawer;
 
 
 exports.__esModule = true;
-exports.default = exports.textureShaderGen = undefined;
-
-var _plane = __webpack_require__(13);
-
-var _plane2 = _interopRequireDefault(_plane);
-
-var _shaderProgram = __webpack_require__(5);
-
-var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
-
-var _vertexBuffer = __webpack_require__(6);
-
-var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
-
-var _indexBuffer = __webpack_require__(4);
-
-var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
-
-var _abstractDrawer = __webpack_require__(3);
-
-var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
-
-var _shaderGenerator = __webpack_require__(183);
-
-var _shaderGenerator2 = _interopRequireDefault(_shaderGenerator);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/*
-
-attribute vec4 a_position;
-attribute vec4 a_color;
-attribute vec2 a_texcoord;
-
-uniform mat4 u_PositionMatrix;
-uniform mat4 u_textureMatrix;
-
-varying vec2 v_texcoord;
-varying vec4 v_color;
-
-void main() {
-   gl_Position = u_PositionMatrix * a_position;
-   v_texcoord = (u_textureMatrix * vec4(a_texcoord, 0, 1)).xy;
-   v_color = a_color;
-}
-
----
-
-precision mediump float;
-
-varying vec2 v_texcoord;
-
-uniform sampler2D texture;
-uniform float u_alpha;
-
-
-void main() {
-    gl_FragColor = texture2D(texture, v_texcoord);
-    gl_FragColor.a *= u_alpha;
-}
-
- */
-
-// position, color and texture
-var gen = new _shaderGenerator2.default();
-gen.addAttribute('vec4', 'a_position');
-//gen.addAttribute('vec4','a_color');
-gen.addAttribute('vec2', 'a_texCoord');
-gen.addVertexUniform('mat4', 'u_vertexMatrix');
-gen.addVertexUniform('mat4', 'u_textureMatrix');
-gen.addVarying('vec2', 'v_texCoord');
-//gen.addVarying('vec4','v_color');
-gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy; \n    //v_color = a_color;\n');
-gen.addFragmentUniform('sampler2D', 'texture');
-gen.addFragmentUniform('float', 'u_alpha');
-gen.setFragmentMainFn('\n    gl_FragColor = texture2D(texture, v_texCoord);\n    gl_FragColor.a *= u_alpha;\n');
-var textureShaderGen = exports.textureShaderGen = gen;
-
-var SpriteRectDrawer = function (_AbstractDrawer) {
-    _inherits(SpriteRectDrawer, _AbstractDrawer);
-
-    function SpriteRectDrawer(gl, game) {
-        _classCallCheck(this, SpriteRectDrawer);
-
-        var _this = _possibleConstructorReturn(this, _AbstractDrawer.call(this, gl, game));
-
-        _this.plane = new _plane2.default();
-        _this.program = new _shaderProgram2.default(gl, [gen.getVertexSource(), gen.getFragmentSource()]);
-
-        _this.posVertexBuffer = new _vertexBuffer2.default(gl);
-        _this.posIndexBuffer = new _indexBuffer2.default(gl);
-        _this.texVertexBuffer = new _vertexBuffer2.default(gl);
-
-        _this.posIndexBuffer.setData(_this.plane.indexArr);
-        _this.posVertexBuffer.setData(_this.plane.vertexArr, gl.FLOAT, 2);
-        _this.texVertexBuffer.setData(_this.plane.texCoordArr, gl.FLOAT, 2);
-
-        return _this;
-    }
-
-    SpriteRectDrawer.prototype.bind = function bind() {
-        _AbstractDrawer.prototype.bind.call(this);
-        this.program.bind();
-        this.posIndexBuffer.bind();
-        this.posVertexBuffer.bind(this.program, 'a_position');
-        this.texVertexBuffer.bind(this.program, 'a_texCoord');
-    };
-
-    SpriteRectDrawer.prototype.draw = function draw() {
-        this.gl.drawElements(this.gl.TRIANGLE_STRIP, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
-    };
-
-    return SpriteRectDrawer;
-}(_abstractDrawer2.default);
-
-exports.default = SpriteRectDrawer;
-
-/***/ }),
-/* 121 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
 exports.default = undefined;
 
-var _plane = __webpack_require__(13);
+var _plane = __webpack_require__(20);
 
 var _plane2 = _interopRequireDefault(_plane);
 
@@ -15128,7 +15062,7 @@ var _vertexBuffer = __webpack_require__(6);
 
 var _vertexBuffer2 = _interopRequireDefault(_vertexBuffer);
 
-var _indexBuffer = __webpack_require__(4);
+var _indexBuffer = __webpack_require__(10);
 
 var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
@@ -15136,7 +15070,9 @@ var _abstractDrawer = __webpack_require__(3);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _spriteRectDrawer = __webpack_require__(120);
+var _spriteRectDrawer = __webpack_require__(39);
+
+var _shaderProgramUtils = __webpack_require__(179);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15147,8 +15083,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var gen = _spriteRectDrawer.textureShaderGen.clone();
-gen.addFragmentUniform('vec2', 'u_offsetCoords');
-gen.addFragmentUniform('vec4', 'u_frameCoords');
+gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT_VEC2, 'u_offsetCoords');
+gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT_VEC4, 'u_frameCoords');
 gen.setFragmentMainFn('\n    vec2 localTextCoord = mod(\n        v_texCoord + fract(u_offsetCoords),\n        u_frameCoords.zw\n    ) + u_frameCoords.xy;\n    gl_FragColor = texture2D(texture, localTextCoord);\n    gl_FragColor.a *= u_alpha;\n');
 
 var TiledSpriteRectDrawer = function (_AbstractDrawer) {
@@ -15191,7 +15127,7 @@ var TiledSpriteRectDrawer = function (_AbstractDrawer) {
 exports.default = TiledSpriteRectDrawer;
 
 /***/ }),
-/* 122 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15204,11 +15140,11 @@ var _abstractRenderer = __webpack_require__(110);
 
 var _abstractRenderer2 = _interopRequireDefault(_abstractRenderer);
 
-var _spriteRectDrawer = __webpack_require__(120);
+var _spriteRectDrawer = __webpack_require__(39);
 
 var _spriteRectDrawer2 = _interopRequireDefault(_spriteRectDrawer);
 
-var _tiledSpriteRectDrawer = __webpack_require__(121);
+var _tiledSpriteRectDrawer = __webpack_require__(120);
 
 var _tiledSpriteRectDrawer2 = _interopRequireDefault(_tiledSpriteRectDrawer);
 
@@ -15240,7 +15176,7 @@ var _matrixStack = __webpack_require__(113);
 
 var _matrixStack2 = _interopRequireDefault(_matrixStack);
 
-var _mat = __webpack_require__(12);
+var _mat = __webpack_require__(13);
 
 var _mat2 = _interopRequireDefault(_mat);
 
@@ -15271,7 +15207,7 @@ var SCENE_DEPTH = 1000;
 var matrixStack = new _matrixStack2.default();
 
 var makePositionMatrix = function makePositionMatrix(dstX, dstY, dstWidth, dstHeight, viewWidth, viewHeight) {
-
+    // proj * modelView
     var zToWMatrix = _mat2.default.makeZToWMatrix(1);
     var projectionMatrix = _mat2.default.ortho(0, viewWidth, 0, viewHeight, -SCENE_DEPTH, SCENE_DEPTH);
     var scaleMatrix = _mat2.default.makeScale(dstWidth, dstHeight, 1);
@@ -15553,7 +15489,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 exports.default = WebGlRenderer;
 
 /***/ }),
-/* 123 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15562,7 +15498,7 @@ exports.default = WebGlRenderer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _all = __webpack_require__(40);
+var _all = __webpack_require__(41);
 
 var models = _interopRequireWildcard(_all);
 
@@ -15689,8 +15625,7 @@ var Repository = function () {
 exports.default = Repository;
 
 /***/ }),
-/* 124 */,
-/* 125 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15720,7 +15655,7 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 126 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15748,6 +15683,18 @@ module.exports = function (module) {
 	}
 	return module;
 };
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 127 */
@@ -15813,258 +15760,244 @@ module.exports = function (module) {
 /* 137 */
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+module.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}"
 
 /***/ }),
 /* 138 */
 /***/ (function(module, exports) {
 
-// removed by extract-text-webpack-plugin
+module.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}"
 
 /***/ }),
 /* 139 */
 /***/ (function(module, exports) {
 
-module.exports = "//position, texture and normal\n\nattribute vec4 a_position;\nattribute vec2 a_texcoord;\nattribute vec3 a_normal;\n\nuniform mat4 u_modelMatrix;\nuniform mat4 u_projectionMatrix;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nvoid main() {\n  gl_Position = u_projectionMatrix * u_modelMatrix * a_position;\n  v_texcoord = a_texcoord;\n  v_normal = a_normal;\n}"
-
-/***/ }),
-/* 140 */,
-/* 141 */
-/***/ (function(module, exports) {
-
-module.exports = "// texture color and normal\n\nprecision highp float;\n\nvarying vec2 v_texcoord;\nvarying vec3 v_normal;\n\nuniform sampler2D texture;\nuniform float u_alpha;\nuniform mat4 u_modelMatrix;\n\n\nvoid main() {\n\n    vec3 lightDirection = normalize(vec3(-1,-1,1));\n    vec3 normalized = normalize((u_modelMatrix * vec4(v_normal,0)).xyz);\n    float lightFactor = max(0.5,dot(lightDirection,normalized));\n    gl_FragColor = texture2D(texture, v_texcoord);\n    gl_FragColor.rgb *= lightFactor;\n    gl_FragColor.a *= u_alpha;\n}"
-
-/***/ }),
-/* 142 */,
-/* 143 */
-/***/ (function(module, exports) {
-
 module.exports = "<app-modal id=\"alertModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"close()\">{{i18n.get('ok')}}</button></div></div></div></app-modal>";
 
 /***/ }),
-/* 144 */
+/* 140 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"inlineBlock\" data-click=\"click($event)\" data-mousemove=\"mouseMove($event)\"><div data-container class=\"inlineBlock\"><svg viewBox=\"0 0 200 200\" width=\"30\" height=\"30\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"100\" cy=\"100\" r=\"100\" stroke=\"black\" stroke-width=\"1\" fill=\"white\"></circle><line id=\"line\" x1=\"100\" y1=\"100\" x2=\"200\" y2=\"100\" stroke=\"black\" stroke-width=\"2\" data-attributes=\"{transform:'rotate('+angleInDeg()+',100,100)'}\"></line></svg></div><div class=\"smallXX\" data-attributes=\"{title: object && (object[value]+' rad')}\">{{angleInDeg()}}&deg;</div></div>";
 
 /***/ }),
-/* 145 */
+/* 141 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"collapsible_header bold noSelect\"><div class=\"table width100\"><div class=\"row\"><div class=\"cell width1\"><span class=\"collapsible_point noBrake\" data-click=\"toggle()\" data-class=\"{rotated:opened}\">▷</span></div><div class=\"cell\"><span data-click=\"toggle()\">&nbsp;{{title}}</span></div><div class=\"cell width1\"><div data-if=\"crud && crud.create\" class=\"add\" data-click=\"crud.create(meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(object)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(object,meta)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" class=\"delete\" data-click=\"crud.delete(object,meta)\"></div></div></div></div></div><div class=\"collapsible_content\" data-class=\"{opened:opened}\"><div data-transclusion=\"content\"></div></div></div>";
 
 /***/ }),
-/* 146 */
+/* 142 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"inlineBlock\"><div data-style=\"{ cursor: 'pointer', width: 24 + 'px', height:24 + 'px', backgroundColor: model && model[field] && ('rgb('+model[field].r+','+model[field].g+','+model[field].b+')') }\" data-click=\"click()\"></div></div>";
 
 /***/ }),
-/* 147 */
+/* 143 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"colorPickerModal\" data-transclusion-id=\"colorPicker\"><div data-transclusion=\"content:#colorPicker\"><table><tr><td><input type=\"color\" data-model=\"currentColor.hex\" data-change=\"hexChanged()\"></td><td><input type=\"text\" data-model=\"currentColor.hex\" data-keyup=\"hexChanged()\"></td><td></td></tr><table class=\"width100\"><tr data-for=\"item in colorEnums\"><td data-style=\"{ color: item.left }\">{{item.left}}</td><td class=\"centerText\"><input class=\"vAlign\" type=\"range\" min=\"0\" max=\"255\" data-model=\"currentColor.RGB[item.key]\" data-input=\"rgbChanged()\" data-change=\"rgbChanged()\"><br><input class=\"small vAlign\" data-model=\"currentColor.RGB[item.key]\" data-change=\"rgbChanged()\"><hr></td><td data-style=\"{ color: item.right }\">{{item.right}}</td><td><div data-style=\"{ width: '5px', height: '5px', backgroundColor: getRawColor(currentColor.RGB,item.key) }\"></div></td></tr></table></table><button data-click=\"applyColor()\">{{i18n.get('edit')}}</button></div></app-modal>";
 
 /***/ }),
-/* 148 */
+/* 144 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"confirmModal\"><div data-transclusion=\"content\"><div class=\"withMargin\"><div class=\"alert_body\">{{message}}</div><div><button data-click=\"confirmAndClose()\">{{i18n.get('confirm')}}</button><button data-click=\"close()\">{{i18n.get('cancel')}}</button></div></div></div></app-modal>";
 
 /***/ }),
-/* 149 */
+/* 145 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><button>{{title}}</button><input required accept=\"{{accept}}\" type=\"file\"></div>";
 
 /***/ }),
-/* 150 */
+/* 146 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"dialogWrapper\" data-if=\"opened\"><div class=\"fullscreen shadow\"></div><div class=\"dialog\"><div class=\"dialogContent\"><div class=\"dialogClose\"><span data-click=\"close()\" class=\"pointer\">X</span></div><div class=\"withPadding\"><div data-transclusion=\"content\"></div></div></div></div></div>";
 
 /***/ }),
-/* 151 */
+/* 147 */
 /***/ (function(module, exports) {
 
 module.exports = "<table><tr><td></td><td><button data-click=\"onKeyUp()\">&uarr;</button></td><td></td></tr><tr><td><button data-click=\"onKeyLeft()\">&larr;</button></td><td></td><td><button data-click=\"onKeyRight()\">&rarr;</button></td></tr><tr><td></td><td><button data-click=\"onKeyDown()\">&darr;</button></td><td></td></tr></table>";
 
 /***/ }),
-/* 152 */
+/* 148 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"height100 relative noOverFlow\" data-droppable=\"onDropFromLeftPanel\" data-click=\"onCentralSceneClick($event)\" data-style=\"{ backgroundColor: editData.currSceneInEdit.useBG?utils.rgbToCss(editData.currSceneInEdit.colorBG):'white' }\" data-draggable-container id=\"sceneDiv\"><div data-for=\"item in editData.currLayerInEdit.gameObjects\"><div data-if=\"item.type=='GameObject'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.fixedToCamera?(item.pos.x+'px'): item.pos.x - utils.tileFrameWidth() * editData.tileMapPosX + 'px', top: item.fixedToCamera?(item.pos.y+'px'): item.pos.y - utils.tileFrameHeight() * editData.tileMapPosY + 'px', } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"></div><div data-if=\"item.type=='TextField'\" app-draggable=\"{ target: item, onDragEnd: onDropFromCentralPanel }\" data-click=\"utils.assign(editData,'currSceneGameObjectInEdit',item)\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left: item.pos.x - item.width * editData.tileMapPosX + 'px', top: item.pos.y - item.height * editData.tileMapPosY + 'px', backgroundColor:'rgb(0,222,0.1)', height:item.height+'px', width:item.width?item.width+'px':'10px', backgroundColor:item.width?'':'#ddd', backgroundImage:'none' } )\" data-class=\"{active:item==editData.currSceneGameObjectInEdit}\"><div style=\"position: relative;left:0;top:0;z-index:10\"><span data-style=\"getCharCss(item,ch)\" data-for=\"ch in item._chars\"></span></div></div></div></div>";
 
 /***/ }),
-/* 153 */
+/* 149 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"height100 relative\" data-if=\"editData.scriptEditorUrl\"><div class=\"scriptEditorClose\" data-click=\"close()\">X</div><div style=\"height:10px;font-size: 10px;\">{{editData.scriptEditorUrl}}</div><div id=\"scriptEditor\" style=\"height:calc(100% - 10px)\"><iframe id=\"scriptEditorFrame\" frameborder=\"0\" class=\"block width100 height100 noOverFlow\" src=\"/editor\"></div></div>";
 
 /***/ }),
-/* 154 */
+/* 150 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"buildModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('minify')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.minify\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('debug')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.debug\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('windowed')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.windowed\" type=\"checkbox\"></td></tr><tr><td>{{i18n.get('embedResources')}}</td><td><input data-change=\"onChanged()\" data-model=\"editData.buildOpts.embedResources\" type=\"checkbox\"></td></tr></table><button data-click=\"close()\">ok</button></div></app-modal>";
 
 /***/ }),
-/* 155 */
+/* 151 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"commonBehaviourModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td class=\"borderBottom\">{{i18n.get('name')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.name}}</td></tr><tr><td class=\"borderBottom\">{{i18n.get('description')}}</td><td class=\"borderBottom\">{{editData.currCommonBehaviourInEdit.description}}</td></tr><tr data-for=\"value,key in editData.currCommonBehaviourInEdit.parameters\"><td class=\"borderBottom\">{{key}}</td><td class=\"borderBottom\"><input type=\"text\" data-model=\"editData.currCommonBehaviourInEdit.parameters[key]\"></td></tr><tr data-if=\"utils.size(editData.currCommonBehaviourInEdit.parameters)==0\"><td colspan=\"2\" class=\"borderBottom\">{{i18n.get('noDataToEdit')}}</td></tr></table><button data-click=\"createOrEditCommonBehaviour(editData.currCommonBehaviourInEdit)\" data-disabled=\"!form.valid()\">{{editData.currCommonBehaviourInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 156 */
+/* 152 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><app-sound-dialog id=\"soundDialog\"></app-sound-dialog><app-particle-system-dialog></app-particle-system-dialog><app-font-dialog id=\"fontDialog\"></app-font-dialog><app-sprite-sheet-dialog id=\"spriteSheetDialog\"></app-sprite-sheet-dialog><app-game-object-dialog id=\"gameObjectDialog\"></app-game-object-dialog><app-scene-dialog></app-scene-dialog><app-layer-dialog></app-layer-dialog><app-build-dialog></app-build-dialog></div><app-color-picker-dialog id=\"colorPickerDialog\"></app-color-picker-dialog>";
 
 /***/ }),
-/* 157 */
+/* 153 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"fontModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('selectFont')}}</td><td><select data-model=\"editData.currFontInEdit.fontFamily\" class=\"width100\"><option data-value=\"fnt.displayName\" data-for=\"fnt in systemFontList\">{{fnt.displayName}}</option></select></td></tr><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currFontInEdit.name\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontSize')}}</td><td><input type=\"number\" min=\"1\" max=\"1000\" data-model=\"editData.currFontInEdit.fontSize\" class=\"width100\"></td></tr><tr><td>{{i18n.get('fontColor')}}</td><td><app-color-picker data-state=\"{ model:editData.currFontInEdit, field:'fontColor' }\"></app-color-picker></td></tr><tr><td colspan=\"2\"><input data-model=\"fontSample\" class=\"width100\"></td></tr><tr><td colspan=\"2\"><div data-style=\"{ fontFamily:editData.currFontInEdit.fontFamily, fontSize:editData.currFontInEdit.fontSize+'px', color:utils.rgbToHex(editData.currFontInEdit.fontColor) }\">{{fontSample}}</div></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditFont(editData.currFontInEdit)\">{{editData.currFontInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 158 */
+/* 154 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"frameAnimationModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currFrameAnimationInEdit.name\"></td><td rowspan=\"3\"><div style=\"max-height: 80vh;max-width:80vw;overflow: auto;padding: 5px;\">{{ editData.currFrameAnimationInEdit._gameObject && editData.currFrameAnimationInEdit._gameObject.currFrameIndex||0 }}<div data-style=\"utils.merge( utils.getGameObjectCss(editData.currFrameAnimationInEdit._gameObject), {outline:'1px solid blue'} )\"></div><div><button data-click=\"playAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('playAnim')}}</button><button data-click=\"stopAnimation()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">{{i18n.get('stopAnim')}}</button></div><div><button data-click=\"previousFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\"><< </button><button data-click=\"nextFrame()\" data-disabled=\"!form.valid()\" class=\"inlineBlock withMargin\">>></button></<><div class=\"relative\" data-style=\"{ 'background-image': 'url('+editData.projectName+'/'+editData.currFrameAnimationInEdit._gameObject.spriteSheet.resourcePath+')', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet.width+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet.height+'px' }\"><div data-for=\"v,i in getLoopArr()\" data-style=\"{ 'display': 'inline-block', 'left': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosX(i)+'px', 'top': editData.currFrameAnimationInEdit._gameObject.spriteSheet.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameWidth+'px', 'height': editData.currFrameAnimationInEdit._gameObject.spriteSheet._frameHeight+'px' }\">{{i}}</div></div></button></div></div><tr><td>{{i18n.get('duration')}}</td><td><input type=\"number\" min=\"1\" required data-model=\"editData.currFrameAnimationInEdit.duration\"></td></tr><tr><td><table><tr><td>{{i18n.get('frames')}}</td><td><button data-click=\"setAllIndexes()\">{{i18n.get('all')}}</button></td></tr><tr><td>{{i18n.get('from')}}</td><td><input type=\"number\" data-model=\"from\" min=\"0\" data-keyup=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('to')}}</td><td><input type=\"number\" min=\"0\" data-model=\"to\" data-change=\"setRangeIndexes()\"></td></tr><tr><td>{{i18n.get('step')}}</td><td><input type=\"number\" min=\"0\" data-model=\"step\" data-change=\"setRangeIndexes()\"></td></tr></table></td><td><textarea required data-model=\"frames\"></textarea></td></tr></td><button data-click=\"createOrEditFrameAnimation()\" data-disabled=\"!form.valid()\">{{editData.currFrameAnimationInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></tr></table></div></app-modal>";
 
 /***/ }),
-/* 159 */
+/* 155 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"gameObjectModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currGameObjectInEdit.name\"></td><td></td><td rowspan=\"5\"><div class=\"relative\" style=\"display: inline-block; overflow: auto; max-width:60vw; max-height:60vh;\"><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currGameObjectInEdit), { 'border':'1px solid blue', 'opacity':editData.currGameObjectInEdit.alpha } )\"></div></div></td></tr><tr><td>{{i18n.get('spriteSheet')}}</td><td><select data-change=\"onSpriteSheetSelected(editData.currGameObjectInEdit.spriteSheet)\" required data-model=\"editData.currGameObjectInEdit.spriteSheet\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\">{{item.name}}</option></select></td><td></td></tr><tr><td>{{i18n.get('groupName')}}</td><td><input data-model=\"editData.currGameObjectInEdit.groupName\"></td><td></td></tr><tr><td>{{i18n.get('rigid')}}</td><td><input type=\"checkbox\" data-model=\"editData.currGameObjectInEdit.rigid\"></td><td></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.width\"></td><td></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" required data-model=\"editData.currGameObjectInEdit.height\"></td><td></td></tr><tr><td>{{i18n.get('angle')}}</td><td><input step=\"0.1\" type=\"number\" required data-model=\"editData.currGameObjectInEdit.angle\"></td><td align=\"left\"><div class=\"inlineBlock\"><app-angle-picker data-state=\"{ object: editData.currGameObjectInEdit, value: 'angle' }\"></app-angle-picker></div></td></tr><tr><td>alpha</td><td><input type=\"number\" min=\"0\" max=\"1\" step=\"0.1\" required data-model=\"editData.currGameObjectInEdit.alpha\"></td><td><input type=\"range\" min=\"0\" max=\"1\" step=\"0.1\" data-model=\"editData.currGameObjectInEdit.alpha\"></td></tr><tr><td>{{i18n.get('currFrameIndex')}}</td><td><input type=\"number\" min=\"0\" data-change=\"refreshGameObjectFramePreview(editData.currGameObjectInEdit,editData.currGameObjectInEdit.currFrameIndex)\" required data-model=\"editData.currGameObjectInEdit.currFrameIndex\"></td><td></td></tr></table><table class=\"width100 stripped\"><tr><th colspan=\"4\">{{i18n.get('frAnimations')}}<button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id\" data-click=\"createFrameAnimation()\">+</button></th></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th>{{i18n.get('name')}}</th><th>{{i18n.get('isDefault')}}<span class=\"small withPadding\">{{i18n.get('unselect')}}<button data-click=\"onStartFrameAnimNameChanged(null)\">*</button></span></th></tr><tr data-for=\"animItm in editData.currGameObjectInEdit.frameAnimations\"><td class=\"pointer\" data-click=\"editFrameAnimation(animItm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteFrameAnimation(animItm)\"><span class=\"delete\"></span></td><td>{{animItm.name}}</td><td><input data-attribute=\"value: animItm.name\" data-change=\"onStartFrameAnimNameChanged(animItm.name)\" data-model=\"editData.currGameObjectInEdit.startFrameAnimationName\" type=\"radio\"></td></tr><tr><th colspan=\"4\">{{i18n.get('commonBehaviour')}}</th></tr><tr><td colspan=\"2\"><select class=\"width50\" data-model=\"selectedCb\"><option>-</option><option data-disabled=\"isCbItemDisabled(cb)\" data-value=\"cb\" data-for=\"cb in editData.commonBehaviourProtos\">{{cb.name}}</option></select></td><td colspan=\"2\"><button class=\"inlineBlock\" data-disabled=\"!editData.currGameObjectInEdit.id || !selectedCb\" data-click=\"createCommonBehaviour(selectedCb)\">+</button></td></tr><tr><th colspan=\"2\">{{i18n.get('actions')}}</th><th colspan=\"2\">{{i18n.get('name')}}</th></tr><tr data-for=\"itm in editData.currGameObjectInEdit.commonBehaviour\"><td class=\"pointer\" data-click=\"editCommonBehaviour(itm)\"><span class=\"edit\"></span></td><td class=\"pointer\" data-click=\"deleteCommonBehaviour(itm)\"><span class=\"delete\"></span></td><td colspan=\"2\">{{itm.name}}</td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditGameObject(editData.currGameObjectInEdit)\">{{editData.currGameObjectInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal><app-frame-animation-dialog id=\"frameAnimationDialog\"></app-frame-animation-dialog><app-common-behaviour-dialog id=\"commonBehaviourDialog\"></app-common-behaviour-dialog>";
 
 /***/ }),
-/* 160 */
+/* 156 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"layerModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditLayer(editData.currLayerInEdit,editData.currLayerInEdit._scene)\"><div class=\"withPadding\"><div>{{i18n.get('scene')}}: {{editData.currLayerInEdit._scene && editData.currLayerInEdit._scene.name}}</div><b class=\"block centerText\">{{i18n.get('layer')}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input data-model=\"editData.currLayerInEdit.name\" required></div></div></div><div><button data-disabled=\"!form.valid()\">{{editData.currLayerInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></div></form></div></app-modal>";
 
 /***/ }),
-/* 161 */
+/* 157 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"particleSystemModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td></td><td><input required data-model=\"editData.currParticleSystemInEdit.name\"></td></tr><tr><td rowspan=\"2\">numOfParticlesToEmit</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.numOfParticlesToEmit.to\"></td></tr><tr><td rowspan=\"2\">particleVelocity</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleVelocity.to\"></td></tr><tr><td rowspan=\"2\">particleLiveTime</td><td>from</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.from\"></td></tr><tr><td>to</td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.particleLiveTime.to\"></td></tr><tr><td>emissionRadius</td><td></td><td><input required type=\"number\" data-model=\"editData.currParticleSystemInEdit.emissionRadius\"></td></tr><tr><td>particleAngle</td><td>from / to</td><td><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'from' }\"></app-angle-picker><app-angle-picker data-state=\"{ object:editData.currParticleSystemInEdit.particleAngle, value:'to' }\"></app-angle-picker></td></tr><tr><td></td><td>{{i18n.get('gameObject')}}</td><td><table><tr><td><select required data-change=\"onGameObjectSelected(editData.currParticleSystemInEdit.gameObjectProto)\" data-model=\"editData.currParticleSystemInEdit.gameObjectProto\"><option>--</option><option data-value=\"item\" data-for=\"item in editData.game.repository.getArray('GameObjectProto') track by id\">{{item.name}}</option></select></td><td><div data-style=\"utils.merge( utils.getGameObjectCss(editData.currParticleSystemInEdit.gameObjectProto), { zoom:utils.calcZoom(editData.currParticleSystemInEdit.gameObjectProto) } )\"></div></td></tr></table></td></tr></table><button data-disabled=\"!form.valid()\" data-click=\"createOrEditPs(editData.currParticleSystemInEdit)\">{{editData.currParticleSystemInEdit.id?i18n.get('edit'):i18n.get('create')}}</button><button data-disabled=\"!form.valid()\" data-click=\"showPreview()\">{{i18n.get('preview')}}</button></div></app-modal><app-particle-system-preview-dialog id=\"particleSystemPreviewDialog\"></app-particle-system-preview-dialog>";
 
 /***/ }),
-/* 162 */
+/* 158 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"particleSystemPreviewModal\"><div data-transclusion=\"content\"><div>{{i18n.get('preview')}} {{i18n.get('particleSystem')}}<span class=\"underLine\">{{editData.currParticleSystemInEdit.name}}</span></div><div data-click=\"emit($event)\" data-mousemove=\"$event.buttons==1 && emit($event)\" class=\"subFullScreen relative noOverFlow\"><div data-for=\"item in editData.currParticleSystemInEdit._particles\" data-style=\"utils.merge( utils.getGameObjectCss(item), { position:'absolute', left:item.pos.x+'px', top: item.pos.y+'px', pointerEvents:'none' } )\"></div></div><div><button data-click=\"close()\">{{i18n.get('close')}}</button></div></div></app-modal>";
 
 /***/ }),
-/* 163 */
+/* 159 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"sceneModal\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditScene(editData.currSceneInEdit)\"><div class=\"withPadding\"><div class=\"table\"><div class=\"row\"><div class=\"cell\">{{i18n.get('name')}}</div><div class=\"cell\"><input required data-model=\"editData.currSceneInEdit.name\"></div></div></div><button data-disabled=\"!form.valid()\">{{editData.currSceneInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></form></div></app-modal>";
 
 /***/ }),
-/* 164 */
+/* 160 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"soundModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td></tr><tr><td><input required data-model=\"editData.currSoundInEdit.name\"></td></tr><tr><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadSound'), accept: 'audio/*' }\"></app-input-file></td></tr><tr><td><audio data-if=\"soundUrl\" controls=\"controls\" data-attributes=\"{src:soundUrl}\"></audio></td></tr></table><button data-disabled=\"!(form.valid() && soundUrl)\" data-click=\"createOrEditSound(editData.currSoundInEdit)\">{{editData.currSoundInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 165 */
+/* 161 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"spriteSheetModal\"><div data-transclusion=\"content\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input data-model=\"editData.currSpriteSheetInEdit.name\"></td><td rowspan=\"6\"><div style=\"max-width:60vw;overflow: auto;padding:5px;\"><div class=\"relative\" data-style=\"{ 'background-image': 'url('+spriteSheetUrl+')', 'background-size': editData.currSpriteSheetInEdit.width+'px '+editData.currSpriteSheetInEdit.height+'px', 'width': editData.currSpriteSheetInEdit.width+'px', 'height': editData.currSpriteSheetInEdit.height+'px', }\"><div data-attributes=\"{title:i}\" data-for=\"i in utils.range(0,numOfSpriteSheetCells-1)\" data-style=\"{ 'display': 'inline-block', 'left': editData.currSpriteSheetInEdit.getFramePosX(i)+'px', 'top': editData.currSpriteSheetInEdit.getFramePosY(i)+'px', 'position': 'absolute', 'text-align': 'left', 'outline': '1px solid red', 'width': editData.currSpriteSheetInEdit._frameWidth+'px', 'height': editData.currSpriteSheetInEdit._frameHeight+'px' }\">{{i}}</div></div></div></td></tr><tr><td>{{i18n.get('image')}}</td><td><app-input-file data-state=\"{ onFilePicked: onFilePicked, title: i18n.get('loadImage'), accept: 'image/*' }\"></app-input-file></td></tr><tr><td>{{i18n.get('width')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.width\"></td></tr><tr><td>{{i18n.get('height')}}</td><td><input type=\"number\" min=\"1\" data-change=\"revalidate()\" data-model=\"editData.currSpriteSheetInEdit.height\"></td></tr><tr><td>{{i18n.get('numOfFramesH')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesH\"></td></tr><tr><td>{{i18n.get('numOfFramesV')}}</td><td><input required min=\"1\" max=\"100\" type=\"number\" data-change=\"refreshNumOfCells()\" data-input=\"refreshNumOfCells()\" data-keyup=\"refreshNumOfCells()\" data-model=\"editData.currSpriteSheetInEdit.numOfFramesV\"></td></tr></table><button data-click=\"createOrEditSpriteSheet(editData.currSpriteSheetInEdit)\" data-disabled=\"!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)\">{{editData.currSpriteSheetInEdit.id?i18n.get('edit'):i18n.get('create')}}</button></div></app-modal>";
 
 /***/ }),
-/* 166 */
+/* 162 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"template\"><div class=\"absolute\"><app-top-panel id=\"topPanel\"></app-top-panel></div><div id=\"c\" class=\"split\"><div id=\"a\" class=\"split split-horizontal content\"><app-game-props></app-game-props><app-scenes></app-scenes><app-game-objects></app-game-objects><app-sprite-sheets></app-sprite-sheets><app-user-interface></app-user-interface><app-fonts></app-fonts><app-sounds></app-sounds><app-particle-systems></app-particle-systems></div><div id=\"b\" class=\"split split-horizontal content relative\"><app-script-editor></app-script-editor><div data-if=\"!editData.scriptEditorUrl\" class=\"table width100 height100\"><div class=\"row\"><div class=\"cell height100 vAlign\"><div data-style=\"{ width: editData.game.width + 'px', height: editData.game.height + 'px', overflow: 'auto', border: '1px solid green', margin: '0 auto' }\"><app-scene-central-panel></app-scene-central-panel></div></div></div></div></div><div id=\"e\" class=\"split split-horizontal content\"><app-scene-right-panel></app-scene-right-panel><app-game-object-right-panel></app-game-object-right-panel></div></div><div id=\"d\" class=\"split content\"></div><app-dialogs></app-dialogs></div>";
 
 /***/ }),
-/* 167 */
+/* 163 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"cell width100\"><div data-style=\"utils.merge( utils.getGameObjectCss(gameObject), { zoom:utils.calcZoom(gameObject), transform: 'scale(1, 1) rotateZ(0deg)', opacity:1 } )\" data-draggable=\"draggable && {obj:gameObject,src: 'leftPanel'}\"></div></div><div class=\"cell\"><span class=\"inlineBlock withPaddingRight\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{gameObject.name}}</span></span></div><div class=\"cell width1\"><div data-if=\"crud && crud.editScript\" class=\"script\" data-click=\"crud.editScript(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.edit\" class=\"edit\" data-click=\"crud.edit(gameObject)\"></div></div><div class=\"cell width1\"><div data-if=\"crud && crud.delete\" data-click=\"crud.delete(gameObject)\" class=\"delete\"></div></div></div>";
 
 /***/ }),
-/* 168 */
+/* 164 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud: {create:createFont}, title:i18n.get('fonts') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"font in editData.game.repository.getArray('Font')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{font.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editFont(font)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteFont(font)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 169 */
+/* 165 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('gameObjects'), crud: { create:createGameObject } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"gameObject in editData.game.repository.getArray('GameObjectProto')\"><app-game-object-row data-state=\"{ crud: { edit: editGameObject, editScript: editGameObjectScript, delete: deleteGameObject }, gameObject: gameObject || {}, draggable: true }\"></app-game-object-row></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 170 */
+/* 166 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{title:i18n.get('game')}\"><div data-transclusion=\"content\"><form class=\"table width100\"><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.width\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.height\" type=\"number\" min=\"1\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\" tille=\"{{i18n.get('gravityConstantTitle')}}\">{{i18n.get('gravityConstant')}}</div><div class=\"cell\"><input class=\"narrow\" data-model=\"editData.game.gravityConstant\" type=\"number\" min=\"0\" max=\"20000\" data-change=\"form.valid() && saveGameProps()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('scaleStrategy')}}</div><div class=\"cell\"><select data-model=\"editData.game.scaleStrategy\" data-change=\"form.valid() && saveGameProps()\"><option data-value=\"value\" data-for=\"(value,key) in scales\">{{key}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('preloadingScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.preloadingSceneId\" data-change=\"form.valid() && saveGameProps()\"><option value>--</option><option data-disabled=\"item.id==editData.gameProps.startSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('startScene')}}</div><div class=\"cell\"><select data-model=\"editData.game.startSceneId\" data-change=\"form.valid() && saveGameProps()\"><option data-disabled=\"item.id==editData.gameProps.preloadingSceneId\" data-value=\"item.id\" data-for=\"item in editData.game.repository.getArray('Scene')\">{{item.name}}</option></select></div></div></form></div></app-collapsible>";
 
 /***/ }),
-/* 171 */
+/* 167 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud:{ create:createParticleSystem }, title:i18n.get('particleSystems') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"ps in editData.game.repository.getArray('ParticleSystem')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{ps.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editParticleSystem(ps)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteParticleSystem(ps)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 172 */
+/* 168 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-transclusion-id=\"scenes\" data-state=\"{ crud: { create:createScene }, title: i18n.get('scenes') }\"><div data-transclusion=\"content:#scenes\"><div class=\"withPaddingLeft\" data-class=\"{ currScene:editData.currSceneInEdit==scene }\" data-for=\"scene in editData.game.repository.getArray('Scene')\" data-click=\"setCurrentScene(scene)\"><app-collapsible data-transclusion-id=\"currScene\" data-state=\"{ crud: { edit:editScene, delete:deleteScene, editScript: editScript }, object: scene, title: scene.name }\"><div data-transclusion=\"content:#currScene\"><div class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"layers\" data-state=\"{ title: i18n.get('layers'), meta: scene, crud: { create: createLayer } }\"><div data-transclusion=\"content:#layers\"><div data-click=\"setCurrLayer(layer)\" data-for=\"layer in scene.layers\" class=\"withPaddingLeft\"><app-collapsible data-transclusion-id=\"currLayer\" data-state=\"{ object: layer, meta: scene, crud: { edit:editLayer, delete:deleteLayer }, title: layer.name }\"><div data-transclusion=\"content:#currLayer\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-class=\"{ currSceneGameObject: editData.currSceneGameObjectInEdit==gameObject }\" data-click=\"setCurrSceneGameObjectInEdit(gameObject)\" data-for=\"gameObject in layer.gameObjects\"><app-game-object-row data-state=\"{ gameObject: gameObject, crud: { delete: deleteGameObject }, }\"></app-game-object-row></div></div></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible></div></div></app-collapsible>";
 
 /***/ }),
-/* 173 */
+/* 169 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ crud:{ create:createSound }, title:i18n.get('sounds') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"sound in editData.game.repository.getArray('Sound')\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{sound.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSound(sound)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSound(sound)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 174 */
+/* 170 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('spriteSheets'), crud: { create:createSpriteSheet } }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div class=\"row\" data-for=\"spriteSheet in editData.game.repository.getArray('SpriteSheet')\"><div class=\"cell\"><img class=\"spriteSheetThumb\" data-attributes=\"{ src: editData.projectName+'/'+spriteSheet.resourcePath, width: spriteSheet.width, height: spriteSheet.height }\"></div><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{spriteSheet.name}}</span></div><div class=\"cell width1\"><div class=\"edit\" data-click=\"editSpriteSheet(spriteSheet)\"></div></div><div class=\"cell width1\"><div class=\"delete\" data-click=\"deleteSpriteSheet(spriteSheet)\"></div></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 175 */
+/* 171 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('userInterface') }\"><div data-transclusion=\"content\"><div class=\"withPaddingLeft\"><div class=\"table width100\"><div data-draggable=\"{obj:uiObject,src: 'leftPanel'}\" class=\"row\" data-for=\"uiObject in editData.ui\"><div class=\"cell\"><span class=\"inlineBlock withPaddingTop withPaddingBottom\">{{uiObject.type}}</span></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 176 */
+/* 172 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{ title: i18n.get('currGameObject') }\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneGameObjectInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneGameObjectInEdit.id\"><h3 class=\"centerText\">{{editData.currSceneGameObjectInEdit.type}}</h3><div class=\"table width100\"><div class=\"row\"><div class=\"cell\">id</div><div class=\"cell\">{{editData.currSceneGameObjectInEdit.id}}</div></div><div class=\"row\"><div class=\"cell\">name</div><div class=\"cell\"><input required data-change=\"editGameObject()\" class=\"width100\" data-model=\"editData.currSceneGameObjectInEdit.name\"></div></div><div class=\"row\"><div class=\"cell\">pos.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.x\"></div></div><div class=\"row\"><div class=\"cell\">pos.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.pos.y\"></div></div><div class=\"row\"><div class=\"cell\">scale.x</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.x\"></div></div><div class=\"row\"><div class=\"cell\">scale.y</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" step=\"0.1\" class=\"width100\" required data-model=\"editData.currSceneGameObjectInEdit.scale.y\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.width\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"1\" required data-model=\"editData.currSceneGameObjectInEdit.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('angle')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required data-model=\"editData.currSceneGameObjectInEdit.angle\"></div></div><div class=\"row\"><div class=\"cell\">alpha</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"number\" class=\"width100\" step=\"0.1\" required min=\"0\" max=\"1\" data-model=\"editData.currSceneGameObjectInEdit.alpha\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('fixedToCamera')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.fixedToCamera\" /></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('rigid')}}</div><div class=\"cell\"><input data-change=\"editGameObject()\" type=\"checkbox\" data-model=\"editData.currSceneGameObjectInEdit.rigid\" /></div></div><div class=\"row\" data-if=\"editData.currSceneGameObjectInEdit.type=='TextField'\"><div class=\"cell\">{{i18n.get('text')}}</div><div class=\"cell\"><textarea data-model=\"editData.currSceneGameObjectInEdit.text\" data-change=\"setTextFieldText($event) || editGameObject()\"></textarea></div></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 177 */
+/* 173 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-collapsible data-state=\"{title:i18n.get('currScene')}\"><div data-transclusion=\"content\"><div data-if=\"!editData.currSceneInEdit.id\">{{i18n.get('notSelected')}}</div><div class=\"withPadding\" data-if=\"editData.currSceneInEdit.id\"><b class=\"centerText\">{{i18n.get('scene')}} : {{editData.currSceneInEdit.name}}</b><div class=\"table width100\"><div class=\"row\"><div class=\"cell\"><label for=\"editData.currSceneInEdit.useBG\">{{i18n.get('useBG')}}</label></div><div class=\"cell\"><input type=\"checkbox\" id=\"editData.currSceneInEdit.useBG\" data-model=\"editData.currSceneInEdit.useBG\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('width')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.width\" data-change=\"editScene()\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('height')}}</div><div class=\"cell\"><input type=\"number\" data-model=\"editData.currSceneInEdit.height\" data-change=\"editScene()\"></div></div><div class=\"row\" data-if=\"editData.currSceneInEdit.useBG\"><div class=\"cell\">{{i18n.get('colorBG')}}</div><div class=\"cell\"><app-color-picker data-state=\"{ model:editData.currSceneInEdit, field: 'colorBG', onChange: editScene }\"></app-color-picker></div></div><div class=\"row\"><div class=\"cell\"><hr></div><div class=\"cell\"><hr></div></div><div class=\"row\"><div class=\"cell valign bold\">{{i18n.get('tileMap')}}</div><div class=\"cell\"><div data-click=\"createTileMap()\" data-if=\"!editData.currSceneInEdit.tileMap.id\" class=\"add\"></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"delete\"></div></div></div></div><div data-if=\"editData.currSceneInEdit.tileMap.id\" class=\"table width100\"><div class=\"row\"><div class=\"cell valign\">tileMap.width</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.width\"></div></div><div class=\"row\"><div class=\"cell valign\">tileMap.height</div><div class=\"cell\"><input type=\"number\" min=\"0\" maxlength=\"3\" data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.height\"></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('selected')}}</div><div class=\"cell\"><div data-class=\"{ inlineBlock:1, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath({strict:true}), backgroundPositionX: -utils.tileFramePosX(editData.currTileIndexInEdit)+'px', backgroundPositionY: -utils.tileFramePosY(editData.currTileIndexInEdit)+'px', backgroundRepeat: 'no-repeat' }\"></div><button data-if=\"editData.currTileIndexInEdit!=null\" data-click=\"utils.assign(editData,'currTileIndexInEdit',null)\">{{i18n.get('unset')}}</button></div></div><div class=\"row\"><div class=\"cell\">{{i18n.get('spriteSheets')}}</div><div class=\"cell\"><select data-change=\"editTileMap()\" data-model=\"editData.currSceneInEdit.tileMap.spriteSheet\"><option value>--</option><option data-for=\"item in editData.game.repository.getArray('SpriteSheet') track by id\" data-value=\"item\">{{item.name}}</option></select></div></div></div><div class=\"row\"><div data-click=\"toggleEditMode()\" data-class=\"{ editModeOn:editData.editTileMapModeOn, edit:1 }\"></div><span class=\"small\">(shift)</span></div><div data-style=\"{ width: utils.tileFrameWidth()*utils.tileNumOfFramesH()+'px', overflowX: 'auto', padding: '2px' }\"><div data-class=\"{ inlineBlock:true, selected:i==editData.currTileIndexInEdit, hoverOutline:1 }\" data-style=\"{ width:utils.tileFrameWidth()+'px', verticalAlign:'middle', height:utils.tileFrameHeight()+'px', backgroundImage: utils.tileResourcePath(), backgroundPositionX: -utils.tileFramePosX(i)+'px', backgroundPositionY: -utils.tileFramePosY(i)+'px', backgroundRepeat: 'no-repeat' }\" data-title=\"i\" data-click=\"setCurrSelectedTile(i)\" data-for=\"v,i in utils.getArray(numOfFramesForSceneSpriteSheet())\"></div></div></div></div></app-collapsible>";
 
 /***/ }),
-/* 178 */
+/* 174 */
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"panel withPadding pointer\"><div class=\"inlineBlock withPadding\" data-click=\"showBuildDialog()\">{{i18n.get('build')}}</div><div class=\"inlineBlock withPadding\" data-click=\"run()\">{{i18n.get('run')}}</div><div class=\"inlineBlock withPadding\" data-click=\"toExplorer()\">{{i18n.get('explorer')}}</div></div><app-popup-blocked></app-popup-blocked>";
 
 /***/ }),
-/* 179 */
+/* 175 */
 /***/ (function(module, exports) {
 
 module.exports = "<app-modal id=\"projectDialog\"><div data-transclusion=\"content\"><form data-submit=\"createOrEditProject(editData.currProjectInEdit)\"><table class=\"width100\"><tr><td>{{i18n.get('name')}}</td><td><input required data-model=\"editData.currProjectInEdit.name\"></td></tr></table><button>{{editData.currProjectInEdit.oldName?i18n.get('edit'):i18n.get('create')}}</button></form></div></app-modal>";
 
 /***/ }),
-/* 180 */
+/* 176 */
 /***/ (function(module, exports) {
 
 module.exports = "<div><div class=\"width50 marginAuto\"><h3 class=\"centerText\">{{i18n.get('projects')}}</h3><div class=\"table width100\"><div data-for=\"p in editData.projects\" class=\"row hoverOnProjectRow\"><div class=\"cell width100\"><div data-click=\"openProject(p)\" class=\"withPadding pointer\">{{p.name}}</div></div><div class=\"cell rightAlign\"><div class=\"edit\" data-click=\"editProject(p)\"></div></div><div class=\"cell rightAlign\"><div data-click=\"deleteProject(p)\" class=\"delete\"></div></div></div><div class=\"row\"><div class=\"cell\"><div class=\"withPadding\"><div class=\"add\" data-click=\"createProject()\"></div></div></div></div></div></div><app-project-dialog></app-project-dialog></div>";
 
 /***/ }),
-/* 181 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(45);
@@ -16072,181 +16005,318 @@ module.exports = __webpack_require__(44);
 
 
 /***/ }),
-/* 182 */,
-/* 183 */
+/* 178 */,
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var _cloneArray = function _cloneArray(arr) {
-    return arr.map(function (item) {
-        return item;
-    });
-};
-
-var ShaderGenerator = function () {
-    function ShaderGenerator() {
-        _classCallCheck(this, ShaderGenerator);
-
-        this.vertexUniforms = [];
-        this.fragmentUniforms = [];
-        this.attributes = [];
-        this.varyings = [];
-        this.vertexMainFn = '';
-        this.fragmentMainFn = '';
-    }
-
-    ShaderGenerator.prototype.addVertexUniform = function addVertexUniform(type, name) {
-        this.vertexUniforms.push({ type: type, name: name });
-        return this;
-    };
-
-    ShaderGenerator.prototype.addFragmentUniform = function addFragmentUniform(type, name) {
-        this.fragmentUniforms.push({ type: type, name: name });
-        return this;
-    };
-
-    ShaderGenerator.prototype.addAttribute = function addAttribute(type, name) {
-        this.attributes.push({ type: type, name: name });
-        return this;
-    };
-
-    ShaderGenerator.prototype.addVarying = function addVarying(type, name) {
-        this.varyings.push({ type: type, name: name });
-        return this;
-    };
-
-    ShaderGenerator.prototype.setVertexMainFn = function setVertexMainFn(fnCode) {
-        this.vertexMainFn = fnCode;
-        return this;
-    };
-
-    ShaderGenerator.prototype.setFragmentMainFn = function setFragmentMainFn(fnCode) {
-        this.fragmentMainFn = fnCode;
-        return this;
-    };
-
-    ShaderGenerator.prototype.getVertexSource = function getVertexSource() {
-        return ('\n            ' + this.vertexUniforms.map(function (u) {
-            return 'uniform   ' + u.type + ' ' + u.name + ';';
-        }).join('\n') + '\n            ' + this.attributes.map(function (u) {
-            return 'attribute ' + u.type + ' ' + u.name + ';';
-        }).join('\n') + '\n            ' + this.varyings.map(function (u) {
-            return 'varying   ' + u.type + ' ' + u.name + ';';
-        }).join('\n') + '\n            void main() {\n               ' + this.vertexMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '');
-    };
-
-    ShaderGenerator.prototype.getFragmentSource = function getFragmentSource() {
-        return (
-            // lowp, mediump, highp
-            ('\n            precision mediump float;\n            ' + this.fragmentUniforms.map(function (u) {
-                return 'uniform ' + u.type + ' ' + u.name + ';';
-            }).join('\n') + '\n            ' + this.varyings.map(function (u) {
-                return 'varying ' + u.type + ' ' + u.name + ';';
-            }).join('\n') + '\n            void main() {\n               ' + this.fragmentMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '')
-        );
-    };
-
-    ShaderGenerator.prototype.debug = function debug() {
-        console.log(this.getVertexSource());
-        console.log(this.getFragmentSource());
-    };
-
-    ShaderGenerator.prototype.clone = function clone() {
-        var cloned = new ShaderGenerator();
-        cloned.vertexUniforms = _cloneArray(this.vertexUniforms);
-        cloned.fragmentUniforms = _cloneArray(this.fragmentUniforms);
-        cloned.attributes = _cloneArray(this.attributes);
-        cloned.varyings = _cloneArray(this.varyings);
-        cloned.vertexMainFn = this.vertexMainFn;
-        cloned.fragmentMainFn = this.fragmentMainFn;
-        return cloned;
-    };
-
-    return ShaderGenerator;
-}();
-
-/*
-
-attribute vec4 a_position;
-attribute vec4 a_color;
-
-uniform mat4 u_PositionMatrix;
-
-varying vec4 v_color;
-
-void main() {
-   gl_Position = u_PositionMatrix * a_position;
-   v_color = a_color;
-}
-
-----
-
-precision mediump float;
-
-uniform float u_alpha;
-uniform vec4 u_rgba;
-
-void main() {
-    gl_FragColor = u_rgba;
-}
-
- */
-//position and color
-
-exports.default = ShaderGenerator;
-var gen = new ShaderGenerator();
-gen.addAttribute('vec4', 'a_position');
-//gen.addAttribute('vec4','a_color');
-gen.addVertexUniform('mat4', 'u_vertexMatrix');
-//gen.addVarying('vec4','v_color');
-gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    //v_color = a_color;\n');
-gen.addFragmentUniform('float', 'u_alpha');
-gen.addFragmentUniform('vec4', 'u_rgba');
-gen.setFragmentMainFn('\n    gl_FragColor = u_rgba;\n');
-var simpleColorShaderGen = exports.simpleColorShaderGen = gen;
-
-/***/ }),
-/* 184 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /*global DEBUG:true*/
 
-var ObjectPool = function () {
-    function ObjectPool(Class) {
-        var numberOfInstances = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 16;
+var compileShader = exports.compileShader = function compileShader(gl, shaderSource, shaderType) {
+    if (true) {
+        if (!shaderSource) throw 'can not compile shader: shader source not specified for type ' + shaderType;
+    }
+    // Create the shader object
+    var shader = gl.createShader(shaderType);
 
-        _classCallCheck(this, ObjectPool);
+    // Load the shader source
+    gl.shaderSource(shader, shaderSource);
 
-        this._pool = [];
-        this._cnt = 0;
+    // Compile the shader
+    gl.compileShader(shader);
 
-        if (true && !Class) throw "can not instantiate ObjectPool: class not provided in constructor";
-        for (var i = 0; i < numberOfInstances; i++) {
-            this._pool.push(new Class());
+    // Check the compile status
+    var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+    if (!compiled) {
+        // Something went wrong during compilation; get the error
+        var lastError = gl.getShaderInfoLog(shader);
+        gl.deleteShader(shader);
+        if (true) {
+            console.log(shaderSource);
+            throw 'Error compiling shader: ' + lastError;
+        } else {
+            throw lastError;
         }
     }
 
-    ObjectPool.prototype.getNextObject = function getNextObject() {
-        return this._pool[this._cnt++ % this._pool.length];
+    return shader;
+};
+
+var createProgram = exports.createProgram = function createProgram(gl, shaders) {
+    var program = gl.createProgram();
+    shaders.forEach(function (shader) {
+        gl.attachShader(program, shader);
+    });
+    gl.linkProgram(program);
+
+    // Check the link status
+    var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+    if (!linked) {
+        // something went wrong with the link
+        var lastError = gl.getProgramInfoLog(program);
+        gl.deleteProgram(program);
+        if (true) {
+            throw "Error in program linking:" + lastError;
+        } else {
+            throw lastError;
+        }
+    }
+    return program;
+};
+
+var GL_TABLE = null;
+
+var GL_TYPE = exports.GL_TYPE = {
+    FLOAT: 'float',
+    FLOAT_VEC2: 'vec2',
+    FLOAT_VEC3: 'vec3',
+    FLOAT_VEC4: 'vec4',
+
+    INT: 'int',
+    INT_VEC2: 'ivec2',
+    INT_VEC3: 'ivec3',
+    INT_VEC4: 'ivec4',
+
+    BOOL: 'bool',
+    BOOL_VEC2: 'bvec2',
+    BOOL_VEC3: 'bvec3',
+    BOOL_VEC4: 'bvec4',
+
+    FLOAT_MAT2: 'mat2',
+    FLOAT_MAT3: 'mat3',
+    FLOAT_MAT4: 'mat4',
+
+    SAMPLER_2D: 'sampler2D'
+};
+
+var mapType = function mapType(gl, type) {
+
+    if (!GL_TABLE) {
+        var typeNames = Object.keys(GL_TYPE);
+
+        GL_TABLE = {};
+
+        for (var i = 0; i < typeNames.length; ++i) {
+            var tn = typeNames[i];
+            GL_TABLE[gl[tn]] = GL_TYPE[tn];
+        }
+    }
+
+    return GL_TABLE[type];
+};
+
+var extractUniforms = exports.extractUniforms = function extractUniforms(gl, program) {
+    var uniforms = {};
+
+    var totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+
+    for (var i = 0; i < totalUniforms; i++) {
+        var uniformData = gl.getActiveUniform(program, i);
+        var name = uniformData.name.replace(/\[.*?]/, "");
+        var type = mapType(gl, uniformData.type);
+
+        uniforms[name] = {
+            type: type,
+            size: uniformData.size,
+            name: name,
+            location: gl.getUniformLocation(program, name),
+            setter: getUniformSetter(uniformData.size, type)
+        };
+    }
+
+    return uniforms;
+};
+
+var TypeNumber = {
+    check: function check(val) {
+        if (isNaN(val)) throw 'can not set uniform with value ' + val + ': expected argument of type number';
+    }
+};
+
+var TypeInt = {
+    check: function check(val) {
+        TypeNumber.check(val);
+        if (val !== ~~val) throw 'can not set uniform with value ' + val + ': expected argument of integer type, but ' + val + ' found';
+    }
+};
+
+var TypeArray = function TypeArray(ElType, size) {
+    return {
+        check: function check(val) {
+            if (!val.splice) throw 'can not set uniform with value ' + val + ': expected argument of type Array';
+            if (val.length !== size) throw 'can not set uniform with value ' + val + ': expected array with size ' + size + ', but ' + val.length + ' found';
+            for (var i = 0; i < val.length; i++) {
+                try {
+                    ElType.check(val[i]);
+                } catch (e) {
+                    throw 'can not set uniform with value ' + val + ': unexpected array element type: ' + val[i];
+                }
+            }
+        }
     };
+};
 
-    return ObjectPool;
-}();
+var expect = function expect(value, typeChecker) {
+    typeChecker.check(value);
+};
 
-exports.default = ObjectPool;
+var getUniformSetter = exports.getUniformSetter = function getUniformSetter(size, type) {
+    if (size === 1) {
+        switch (type) {
+            case 'float':
+                return function (gl, location, value) {
+                    true && expect(value, TypeNumber);
+                    gl.uniform1f(location, value);
+                };
+            case 'vec2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 2));
+                    gl.uniform2f(location, value[0], value[1]);
+                };
+            case 'vec3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 3));
+                    gl.uniform3f(location, value[0], value[1], value[2]);
+                };
+            case 'vec4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 4));
+                    gl.uniform4f(location, value[0], value[1], value[2], value[3]);
+                };
+            case 'int':
+                return function (gl, location, value) {
+                    true && expect(value, TypeInt);
+                    gl.uniform1i(location, value);
+                };
+            case 'ivec2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 2));
+                    gl.uniform2i(location, value[0], value[1]);
+                };
+            case 'ivec3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 3));
+                    gl.uniform3i(location, value[0], value[1], value[2]);
+                };
+            case 'ivec4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 4));
+                    gl.uniform4i(location, value[0], value[1], value[2], value[3]);
+                };
+            case 'bool':
+                return function (gl, location, value) {
+                    true && expect(value, TypeInt);
+                    gl.uniform1i(location, value);
+                };
+            case 'bvec2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 2));
+                    gl.uniform2i(location, value[0], value[1]);
+                };
+            case 'bvec3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 3));
+                    gl.uniform3i(location, value[0], value[1], value[2]);
+                };
+            case 'bvec4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 4));
+                    gl.uniform4i(location, value[0], value[1], value[2], value[3]);
+                };
+            case 'mat2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 2 * 2));
+                    gl.uniformMatrix2fv(location, false, value); // location, transpose (Must be false), value
+                };
+            case 'mat3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 3 * 3));
+                    gl.uniformMatrix3fv(location, false, value);
+                };
+            case 'mat4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 4 * 4));
+                    gl.uniformMatrix4fv(location, false, value);
+                };
+            case 'sampler2D':
+                return function (gl, location, value) {
+                    true && expect(value, TypeInt);
+                    gl.uniform1i(location, value);
+                };
+        }
+    } else {
+        switch (type) {
+            case 'float':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 1));
+                    gl.uniform1fv(location, value);
+                };
+            case 'vec2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 2));
+                    gl.uniform2fv(location, value);
+                };
+            case 'vec3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 3));
+                    gl.uniform3fv(location, value);
+                };
+            case 'vec4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeNumber, 4));
+                    gl.uniform4fv(location, value);
+                };
+            case 'int':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 1));
+                    gl.uniform1iv(location, value);
+                };
+            case 'ivec2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 2));
+                    gl.uniform2iv(location, value);
+                };
+            case 'ivec3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 3));
+                    gl.uniform3iv(location, value);
+                };
+            case 'ivec4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 4));
+                    gl.uniform4iv(location, value);
+                };
+            case 'bool':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 1));
+                    gl.uniform1iv(location, value);
+                };
+            case 'bvec2':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 2));
+                    gl.uniform2iv(location, value);
+                };
+            case 'bvec3':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 3));
+                    gl.uniform3iv(location, value);
+                };
+            case 'bvec4':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 4));
+                    gl.uniform4iv(location, value);
+                };
+            case 'sampler2D':
+                return function (gl, location, value) {
+                    true && expect(value, TypeArray(TypeInt, 1));
+                    gl.uniform1iv(location, value);
+                };
+        }
+    }
+};
 
 /***/ })
 /******/ ]);

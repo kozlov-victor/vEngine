@@ -63,7 +63,7 @@ export default class Texture {
         // gl.uniform1i(uName, i);
     }
 
-    unbind (i) {
+    unbind(i) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
     }
 
