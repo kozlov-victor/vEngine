@@ -1,14 +1,14 @@
 
-import Circle from "../primitives/circle"
-import ShaderProgram from "../base/shaderProgram"
-import VertexBuffer from "../base/vertexBuffer"
-import AbstractDrawer from "./abstractDrawer"
-import {simpleColorShaderGen as gen} from "../shaders/shaderGenerator"
+import Circle from "../../primitives/circle"
+import ShaderProgram from "../../base/shaderProgram"
+import VertexBuffer from "../../base/vertexBuffer"
+import AbstractDrawer from "./../abstract/abstractDrawer"
+import {simpleColorShaderGen as gen} from "../../shaders/shaderGenerator"
 
 export default class CircleDrawer extends AbstractDrawer {
 
-    constructor(gl,game){
-        super(gl,game);
+    constructor(gl){
+        super(gl);
         this.program = new ShaderProgram(
             gl,
             gen.getVertexSource(),

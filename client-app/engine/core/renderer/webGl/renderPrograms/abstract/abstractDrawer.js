@@ -8,9 +8,8 @@ export default class AbstractDrawer {
     posIndexBuffer = null;
     texVertexBuffer = null;
 
-    constructor(gl,game){
+    constructor(gl){
         this.gl = gl;
-        this.game = game;
     }
 
     bind(){

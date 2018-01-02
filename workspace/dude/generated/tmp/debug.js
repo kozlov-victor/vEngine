@@ -63,12 +63,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 82);
+/******/ 	return __webpack_require__(__webpack_require__.s = 84);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 23:
+/***/ 25:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -164,13 +164,13 @@ window.addEventListener('error', function (e, url, lineNum) {
 
 /***/ }),
 
-/***/ 24:
+/***/ 26:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _httpClient = __webpack_require__(28);
+var _httpClient = __webpack_require__(30);
 
 var _httpClient2 = _interopRequireDefault(_httpClient);
 
@@ -233,7 +233,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 28:
+/***/ 30:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -351,11 +351,11 @@ exports.default = { get: get, post: post, postMultiPart: postMultiPart };
 
 /***/ }),
 
-/***/ 82:
+/***/ 84:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(23);
-module.exports = __webpack_require__(24);
+__webpack_require__(25);
+module.exports = __webpack_require__(26);
 
 
 /***/ })

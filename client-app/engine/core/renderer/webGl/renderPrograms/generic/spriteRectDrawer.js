@@ -1,19 +1,19 @@
 
 
-import Plane from '../primitives/plane'
-import ShaderProgram from '../base/shaderProgram'
-import VertexBuffer from '../base/vertexBuffer'
-import IndexBuffer from '../base/indexBuffer'
-import AbstractDrawer from "./abstractDrawer";
-import {textureShaderGen} from "../shaders/shaderGenerator";
+import Plane from '../../primitives/plane'
+import ShaderProgram from '../../base/shaderProgram'
+import VertexBuffer from '../../base/vertexBuffer'
+import IndexBuffer from '../../base/indexBuffer'
+import AbstractDrawer from "../abstract/abstractDrawer";
+import {textureShaderGen} from "../../shaders/shaderGenerator";
 
 export default class SpriteRectDrawer extends AbstractDrawer {
 
-    constructor(gl,game){
-        super(gl,game);
+    constructor(gl,program){
+        super(gl);
         let gen = textureShaderGen.clone();
         this.plane = new Plane();
-        this.program = new ShaderProgram(
+        this.program = program || new ShaderProgram(
             gl,
             gen.getVertexSource(),
             gen.getFragmentSource()

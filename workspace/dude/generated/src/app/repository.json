@@ -218,7 +218,7 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 591,
+                "x": 592,
                 "y": 43
             },
             "layerId": 2,
@@ -260,8 +260,8 @@
             "id": 65,
             "name": "platform",
             "pos": {
-                "x": 201,
-                "y": 196
+                "x": 171,
+                "y": 192
             },
             "layerId": 2,
             "type": "GameObject",

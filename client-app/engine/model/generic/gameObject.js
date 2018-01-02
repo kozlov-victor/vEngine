@@ -1,6 +1,7 @@
 /*global DEBUG:true*/
 import GameObjectProto from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
+import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilter/blackWhite";
 
 const noop = ()=>{};
 
@@ -29,6 +30,12 @@ export default class GameObject extends GameObjectProto {
             this[key] = ownProps[key];
         });
         super.revalidate();
+        if (this.id===71) {
+            let filter = new BlackWhiteFilter(this.game.renderer.gl);
+            filter.prepare(filter.programGen);
+            filter.afterPrepare();
+            this.filters.push(filter);
+        }
     }
 
     setIndividualBehaviour(Clazz){

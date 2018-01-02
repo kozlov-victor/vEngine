@@ -21,6 +21,7 @@ export default class GameObjectProto extends BaseModel {
     tileRepeat = false;
     groupName = '';
     _individualBehaviour = null;
+    filters = [];
 
     static find(name){
         //return game.getCurrScene()._allGameObjects.find({name:name});

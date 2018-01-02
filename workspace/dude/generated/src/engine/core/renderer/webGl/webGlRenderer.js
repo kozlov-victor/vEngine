@@ -3,13 +3,13 @@
 /*global DEBUG:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
-import SpriteRectDrawer from './renderPrograms/spriteRectDrawer'
-import TiledSpriteRectDrawer from './renderPrograms/tiledSpriteRectDrawer'
-import ColorRectDrawer from './renderPrograms/colorRectDrawer'
-import AbstractDrawer from './renderPrograms/abstractDrawer'
-import LineDrawer from './renderPrograms/lineDrawer'
-import CircleDrawer from './renderPrograms/circleDrawer'
-import ModelDrawer from './renderPrograms/modelDrawer'
+import SpriteRectDrawer from './renderPrograms/generic/spriteRectDrawer'
+import TiledSpriteRectDrawer from './renderPrograms/generic/tiledSpriteRectDrawer'
+import ColorRectDrawer from './renderPrograms/generic/colorRectDrawer'
+import AbstractDrawer from './renderPrograms/abstract/abstractDrawer'
+import LineDrawer from './renderPrograms/generic/lineDrawer'
+import CircleDrawer from './renderPrograms/generic/circleDrawer'
+import ModelDrawer from './renderPrograms/generic/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import mat4 from '../../geometry/mat4'
@@ -49,7 +49,8 @@ const makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeig
     let texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
-
+//  gl.enable(gl.CULL_FACE);
+//   gl.enable(gl.DEPTH_TEST);
 export default class WebGlRenderer extends AbstractRenderer {
 
     constructor(game){
@@ -88,6 +89,14 @@ export default class WebGlRenderer extends AbstractRenderer {
         if (stop) return;
 
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
+
+        let texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
+        if (renderable.filters.length) {
+            texToDraw.applyFilters(renderable.filters);
+            texToDraw = texToDraw._texFilterBuff.getSourceBuffer().texture;
+            this.frameBuffer.bind();
+        }
+
         this.save();
         // todo check if angle neq 0
         let halfV = renderable.width /2;
@@ -98,8 +107,8 @@ export default class WebGlRenderer extends AbstractRenderer {
         //ctx.rotateY(a);
         this.translate(-halfV, -halfH);
 
-        this.drawImage(
-            renderable.spriteSheet.resourcePath,
+        this.drawTexture(
+            texToDraw,
             renderable._sprPosX,
             renderable._sprPosY,
             renderable.width,
@@ -117,8 +126,6 @@ export default class WebGlRenderer extends AbstractRenderer {
               dstX, dstY){
 
         if (stop) return;
-        //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
-
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
@@ -127,6 +134,15 @@ export default class WebGlRenderer extends AbstractRenderer {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
         }
+        this.drawTexture(texture,srcX, srcY, srcWidth, srcHeight, dstX, dstY);
+    }
+
+    drawTexture(texture,
+                srcX, srcY, srcWidth, srcHeight,
+                dstX, dstY){
+
+        //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
+
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
@@ -141,10 +157,9 @@ export default class WebGlRenderer extends AbstractRenderer {
             makePositionMatrix(
                 dstX,dstY,srcWidth,srcHeight,
                 this.game.width,this.game.height)
-            );
+        );
         this.spriteRectDrawer.setUniform('u_alpha',1); // alpha
         this.spriteRectDrawer.draw();
-
     }
 
     drawTiledImage(texturePath,
@@ -301,7 +316,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.scale(1,-1);
         this.frameBuffer.unbind();
 
-        this.gl.viewport(0, 0, fullScreen.w,fullScreen.h); // gameProps.canvasWidth,gameProps.canvasHeight
+        this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 
         this.spriteRectDrawer.bind();
         this.frameBuffer.getTexture().bind();
@@ -316,8 +331,8 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.spriteRectDrawer.setUniform('u_textureMatrix',
             makeTextureMatrix(
-                0,0,fullScreen.w,fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
-                fullScreen.w,fullScreen.h// gameProps.canvasWidth,gameProps.canvasHeight
+                0,0,fullScreen.w,fullScreen.h,
+                fullScreen.w,fullScreen.h
             )
         );
         this.spriteRectDrawer.setUniform('u_alpha',1);

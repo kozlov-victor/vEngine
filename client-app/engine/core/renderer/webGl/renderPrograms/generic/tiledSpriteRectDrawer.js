@@ -1,11 +1,11 @@
 
-import Plane from '../primitives/plane'
-import ShaderProgram from '../base/shaderProgram'
-import VertexBuffer from '../base/vertexBuffer'
-import IndexBuffer from '../base/indexBuffer'
-import AbstractDrawer from "./abstractDrawer";
-import {GL_TYPE} from "../base/shaderProgramUtils";
-import {textureShaderGen} from "../shaders/shaderGenerator";
+import Plane from '../../primitives/plane'
+import ShaderProgram from '../../base/shaderProgram'
+import VertexBuffer from '../../base/vertexBuffer'
+import IndexBuffer from '../../base/indexBuffer'
+import AbstractDrawer from "../abstract/abstractDrawer";
+import {GL_TYPE} from "../../base/shaderProgramUtils";
+import {textureShaderGen} from "../../shaders/shaderGenerator";
 
 let gen = textureShaderGen.clone();
 gen.addFragmentUniform(GL_TYPE.FLOAT_VEC2,'u_offsetCoords');
@@ -21,8 +21,8 @@ gen.setFragmentMainFn(`
 
 export default class TiledSpriteRectDrawer extends AbstractDrawer {
 
-    constructor(gl,game){
-        super(gl,game);
+    constructor(gl){
+        super(gl);
         this.plane = new Plane();
         this.program = new ShaderProgram(
             gl,

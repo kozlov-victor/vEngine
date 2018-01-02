@@ -1,17 +1,58 @@
 /*global DEBUG:true*/
 
+import FrameBuffer from "./frameBuffer";
+
 const isPowerOf2 = function(value) {
-    return (value & (value - 1)) == 0;
+    return (value & (value - 1)) === 0;
 };
 
+// array of two frameBuffer for filters to apply
+class TextureFilterBuffer {
+
+    gl = null;
+    parent = null;
+    buffers = null; // lazy initialized
+
+    constructor(parent){
+        this.parent = parent;
+    }
+
+    instantiate(gl){
+        this.gl = gl;
+        this.buffers = [];
+        const buffSize = 2;
+        for (let i=0;i<buffSize;i++){
+            this.buffers.push(new FrameBuffer(gl,this.parent.size.width,this.parent.size.height));
+        }
+    }
+
+    flip(){
+        let tmp = this.buffers[0];
+        this.buffers[0] = this.buffers[1];
+        this.buffers[1] = tmp;
+    }
+
+    getSourceBuffer(){
+        return this.buffers[0];
+    }
+
+    getDestBuffer(){
+        return this.buffers[1];
+    }
+
+}
+
 export default class Texture {
+
+    gl;
+    tex = null;
+    size = null;
+    isPowerOfTwo = false;
+    _texFilterBuff = null;
 
     constructor(gl){
         if (DEBUG && !gl) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
         this.gl = gl;
-        this.tex = null;
-        this.size = null;
-        this.isPowerOfTwo = false;
 
         this.tex = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
@@ -19,6 +60,7 @@ export default class Texture {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
             new Uint8Array([0, 0, 255, 255]));
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
+        this._texFilterBuff = new TextureFilterBuffer(this);
     }
 
     /**
@@ -55,6 +97,23 @@ export default class Texture {
         }
         gl.bindTexture(gl.TEXTURE_2D, null);
 
+    }
+
+    applyFilters(filters){
+        let len = filters.length;
+        if (len===0) return;
+        if (this._texFilterBuff.buffers===null)
+            this._texFilterBuff.instantiate(this.gl);
+        let filter = filters[0];
+        filter.doFilter(this,this._texFilterBuff.getDestBuffer());
+        for (let i=0;i<len;i++){
+            this._texFilterBuff.flip();
+            filter.doFilter(
+                this._texFilterBuff.getSourceBuffer().texture,
+                this._texFilterBuff.getDestBuffer()
+            );
+        }
+        this._texFilterBuff.flip();
     }
 
     bind(i) { // uniform eq to 0 by default

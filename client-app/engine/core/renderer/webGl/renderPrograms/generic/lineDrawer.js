@@ -1,16 +1,16 @@
 
-import Line from '../primitives/line'
-import ShaderProgram from '../base/shaderProgram'
-import VertexBuffer from '../base/vertexBuffer'
-import IndexBuffer from '../base/indexBuffer'
+import Line from '../../primitives/line'
+import ShaderProgram from '../../base/shaderProgram'
+import VertexBuffer from '../../base/vertexBuffer'
+import IndexBuffer from '../../base/indexBuffer'
 
-import AbstractDrawer from "./abstractDrawer";
-import {simpleColorShaderGen as gen} from "../shaders/shaderGenerator"
+import AbstractDrawer from "../abstract/abstractDrawer";
+import {simpleColorShaderGen as gen} from "../../shaders/shaderGenerator"
 
 export default class LineDrawer extends AbstractDrawer {
 
-    constructor(gl,game){
-        super(gl,game);
+    constructor(gl){
+        super(gl);
         this.program = new ShaderProgram(
             gl,
             gen.getVertexSource(),
