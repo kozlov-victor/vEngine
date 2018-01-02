@@ -2,7 +2,7 @@
 import AbstractPrimitive from './abstractPrimitive'
 
 const prepareBuffers = size=>{
-    
+
     let vertices = [
         // Front face
         -size, -size,  size,
@@ -136,6 +136,8 @@ const prepareBuffers = size=>{
 };
 
 export default class Cube extends AbstractPrimitive {
+
+    // todo normalize to format: https://www.npmjs.com/package/wavefront-obj-parser
 
     constructor(){
         super();

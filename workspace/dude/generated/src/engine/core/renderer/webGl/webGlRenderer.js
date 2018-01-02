@@ -3,13 +3,13 @@
 /*global DEBUG:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
-import SpriteRectDrawer from './renderProgram/spriteRectDrawer'
-import TiledSpriteRectDrawer from './renderProgram/tiledSpriteRectDrawer'
-import ColorRectDrawer from './renderProgram/colorRectDrawer'
-import AbstractDrawer from './renderProgram/abstractDrawer'
-import LineDrawer from './renderProgram/lineDrawer'
-import CircleDrawer from './renderProgram/circleDrawer'
-import ModelDrawer from './renderProgram/modelDrawer'
+import SpriteRectDrawer from './renderPrograms/spriteRectDrawer'
+import TiledSpriteRectDrawer from './renderPrograms/tiledSpriteRectDrawer'
+import ColorRectDrawer from './renderPrograms/colorRectDrawer'
+import AbstractDrawer from './renderPrograms/abstractDrawer'
+import LineDrawer from './renderPrograms/lineDrawer'
+import CircleDrawer from './renderPrograms/circleDrawer'
+import ModelDrawer from './renderPrograms/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import mat4 from '../../geometry/mat4'
@@ -119,7 +119,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         if (stop) return;
         //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
 
-        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
         let texture = this.renderableCache[texturePath];
@@ -152,7 +152,7 @@ export default class WebGlRenderer extends AbstractRenderer {
                    dstX, dstY, dstWidth, dstHeight,
                    offsetX,offsetY){
 
-        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
         let texture = this.renderableCache[texturePath];
@@ -197,7 +197,7 @@ export default class WebGlRenderer extends AbstractRenderer {
                 this.game.width,this.game.height)
         );
         colorRectDrawer.setUniform("u_rgba",color);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         colorRectDrawer.draw();
     }
 
@@ -220,7 +220,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             this.game.width,this.game.height)
         );
         lineDrawer.setUniform("u_rgba",color);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         lineDrawer.draw();
     }
 
@@ -235,7 +235,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             this.game.width,this.game.height)
         );
         circleDrawer.setUniform("u_rgba",color);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         circleDrawer.draw();
     }
 
@@ -322,7 +322,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         );
         this.spriteRectDrawer.setUniform('u_alpha',1);
 
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+        //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.spriteRectDrawer.draw();
         this.restore();
     };

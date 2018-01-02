@@ -12,10 +12,11 @@ export default class ModelDrawer extends AbstractDrawer {
 
     constructor(gl,game){
         super(gl,game);
-        this.program = new ShaderProgram(gl, [
+        this.program = new ShaderProgram(
+            gl,
             basicVertexShader,
             textureShader
-        ]);
+        );
 
         this.posVertexBuffer = new VertexBuffer(gl);
         this.texVertexBuffer = new VertexBuffer(gl);

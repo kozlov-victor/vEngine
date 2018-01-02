@@ -8,10 +8,10 @@ export default class ShaderProgram {
 
     _attrLocationCache = {};
 
-    constructor(gl,sources) {
-        let vShader = compileShader(gl, sources[0], gl.VERTEX_SHADER);
-        let fShader = compileShader(gl, sources[1], gl.FRAGMENT_SHADER);
-        this.program = createProgram(gl, [vShader, fShader]);
+    constructor(gl,vertexSource,fragmentSource) {
+        let vShader = compileShader(gl, vertexSource, gl.VERTEX_SHADER);
+        let fShader = compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
+        this.program = createProgram(gl, vShader, fShader);
         this.uniforms = extractUniforms(gl, this.program);
         this.gl = gl;
     }

@@ -32,11 +32,10 @@ export const compileShader = (gl, shaderSource, shaderType)=> {
 };
 
 
-export const createProgram = (gl, shaders)=> {
+export const createProgram = (gl, vertexShader,fragmentShader)=> {
     let program = gl.createProgram();
-    shaders.forEach(function(shader) {
-        gl.attachShader(program, shader);
-    });
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
     // Check the link status

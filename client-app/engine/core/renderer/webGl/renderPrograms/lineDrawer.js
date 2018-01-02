@@ -1,5 +1,5 @@
 
-import Plane from '../primitives/plane'
+import Line from '../primitives/line'
 import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
@@ -7,36 +7,33 @@ import IndexBuffer from '../base/indexBuffer'
 import AbstractDrawer from "./abstractDrawer";
 import {simpleColorShaderGen as gen} from "../shaders/shaderGenerator"
 
-export default class ColorRectDrawer extends AbstractDrawer{
+export default class LineDrawer extends AbstractDrawer {
 
     constructor(gl,game){
         super(gl,game);
-        this.plane = new Plane();
-        this.program = new ShaderProgram(gl, [
+        this.program = new ShaderProgram(
+            gl,
             gen.getVertexSource(),
             gen.getFragmentSource()
-        ]);
+        );
+        this.line = new Line();
 
         this.posVertexBuffer = new VertexBuffer(gl);
-        this.posIndexBuffer = new IndexBuffer(gl);
+        this.posIndexBuffer = new IndexBuffer(gl); // todo remove
 
-        this.posVertexBuffer.setData(this.plane.vertexArr,this.gl.FLOAT,2);
-        this.posIndexBuffer.setData(this.plane.indexArr);
+        this.posVertexBuffer.setData(this.line.vertexArr,this.gl.FLOAT,2);
     }
-
 
     bind(){
         super.bind();
         this.program.bind();
         this.posVertexBuffer.bind(this.program,'a_position');
-        this.posIndexBuffer.bind();
     }
 
     draw(){
-        this.gl.drawElements(
-            this.gl.TRIANGLE_STRIP, 
-            this.posIndexBuffer.getBufferLength(), 
-            this.gl.UNSIGNED_SHORT,0
+        this.gl.drawArrays(
+            this.gl.LINE_STRIP, 0,
+            this.posVertexBuffer.getBufferLength()/2
         );
     }
 

@@ -3,13 +3,13 @@
 /*global DEBUG:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
-import SpriteRectDrawer from './renderProgram/spriteRectDrawer'
-import TiledSpriteRectDrawer from './renderProgram/tiledSpriteRectDrawer'
-import ColorRectDrawer from './renderProgram/colorRectDrawer'
-import AbstractDrawer from './renderProgram/abstractDrawer'
-import LineDrawer from './renderProgram/lineDrawer'
-import CircleDrawer from './renderProgram/circleDrawer'
-import ModelDrawer from './renderProgram/modelDrawer'
+import SpriteRectDrawer from './renderPrograms/spriteRectDrawer'
+import TiledSpriteRectDrawer from './renderPrograms/tiledSpriteRectDrawer'
+import ColorRectDrawer from './renderPrograms/colorRectDrawer'
+import AbstractDrawer from './renderPrograms/abstractDrawer'
+import LineDrawer from './renderPrograms/lineDrawer'
+import CircleDrawer from './renderPrograms/circleDrawer'
+import ModelDrawer from './renderPrograms/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import mat4 from '../../geometry/mat4'
@@ -301,7 +301,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.scale(1,-1);
         this.frameBuffer.unbind();
 
-        this.gl.viewport(0, 0, fullScreen.w,fullScreen.h); // gameProps.canvasWidth,gameProps.canvasHeight
+        this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 
         this.spriteRectDrawer.bind();
         this.frameBuffer.getTexture().bind();
@@ -316,8 +316,8 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.spriteRectDrawer.setUniform('u_textureMatrix',
             makeTextureMatrix(
-                0,0,fullScreen.w,fullScreen.h, // gameProps.canvasWidth,gameProps.canvasHeight,
-                fullScreen.w,fullScreen.h// gameProps.canvasWidth,gameProps.canvasHeight
+                0,0,fullScreen.w,fullScreen.h,
+                fullScreen.w,fullScreen.h
             )
         );
         this.spriteRectDrawer.setUniform('u_alpha',1);

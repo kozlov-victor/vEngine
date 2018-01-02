@@ -38,8 +38,8 @@ const prepareBuffers = (radius,bands)=>{
     }
 
     let indexArr = [];
-    for (latNumber=0; latNumber < latitudeBands; latNumber++) {
-        for (longNumber=0; longNumber < longitudeBands; longNumber++) {
+    for (let latNumber=0; latNumber < latitudeBands; latNumber++) {
+        for (let longNumber=0; longNumber < longitudeBands; longNumber++) {
             let first = (latNumber * (longitudeBands + 1)) + longNumber;
             let second = first + longitudeBands + 1;
             indexArr.push(first);
@@ -64,11 +64,9 @@ const prepareBuffers = (radius,bands)=>{
 
 export default class Sphere extends AbstractPrimitive {
 
-    constructor(){
+    constructor(radius = 10,bands = 30){
         super();
-        this.radius = 10;
-        this.bands = 30;
-        let bufferArrs = prepareBuffers(this.radius,this.bands);
+        let bufferArrs = prepareBuffers(radius,bands);
         this.vertexArr = bufferArrs.vertexArr;
         this.normalArr = bufferArrs.normalArr;
         this.texCoordArr = bufferArrs.texCoordArr;

@@ -4,8 +4,8 @@ import ShaderProgram from '../base/shaderProgram'
 import VertexBuffer from '../base/vertexBuffer'
 import IndexBuffer from '../base/indexBuffer'
 import AbstractDrawer from "./abstractDrawer";
-import {textureShaderGen} from "./spriteRectDrawer";
 import {GL_TYPE} from "../base/shaderProgramUtils";
+import {textureShaderGen} from "../shaders/shaderGenerator";
 
 let gen = textureShaderGen.clone();
 gen.addFragmentUniform(GL_TYPE.FLOAT_VEC2,'u_offsetCoords');
@@ -24,10 +24,11 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
     constructor(gl,game){
         super(gl,game);
         this.plane = new Plane();
-        this.program = new ShaderProgram(gl, [
+        this.program = new ShaderProgram(
+            gl,
             gen.getVertexSource(),
             gen.getFragmentSource()
-        ]);
+        );
 
         this.posVertexBuffer = new VertexBuffer(gl);
         this.posIndexBuffer = new IndexBuffer(gl);

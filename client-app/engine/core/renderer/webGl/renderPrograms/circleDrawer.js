@@ -9,10 +9,11 @@ export default class CircleDrawer extends AbstractDrawer {
 
     constructor(gl,game){
         super(gl,game);
-        this.program = new ShaderProgram(gl, [
+        this.program = new ShaderProgram(
+            gl,
             gen.getVertexSource(),
             gen.getFragmentSource()
-        ]);
+        );
         this.circle = new Circle();
 
         this.posVertexBuffer = new VertexBuffer(gl);
