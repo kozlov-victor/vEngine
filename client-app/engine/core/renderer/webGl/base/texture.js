@@ -57,7 +57,8 @@ export default class Texture {
 
     }
 
-    bind(i) {
+    bind(i) { // uniform eq to 0 by default
+        // to define max texture units supported gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         //gl.activeTexture(gl.TEXTURE0+i);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
         // gl.uniform1i(uName, i);
