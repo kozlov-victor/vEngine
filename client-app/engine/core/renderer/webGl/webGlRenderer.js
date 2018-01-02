@@ -119,7 +119,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         if (stop) return;
         //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
 
-        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
         let texture = this.renderableCache[texturePath];
@@ -152,7 +152,7 @@ export default class WebGlRenderer extends AbstractRenderer {
                    dstX, dstY, dstWidth, dstHeight,
                    offsetX,offsetY){
 
-        this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
+        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
         let texture = this.renderableCache[texturePath];
@@ -197,7 +197,7 @@ export default class WebGlRenderer extends AbstractRenderer {
                 this.game.width,this.game.height)
         );
         colorRectDrawer.setUniform("u_rgba",color);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         colorRectDrawer.draw();
     }
 
@@ -220,7 +220,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             this.game.width,this.game.height)
         );
         lineDrawer.setUniform("u_rgba",color);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         lineDrawer.draw();
     }
 
@@ -235,7 +235,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             this.game.width,this.game.height)
         );
         circleDrawer.setUniform("u_rgba",color);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         circleDrawer.draw();
     }
 
@@ -322,7 +322,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         );
         this.spriteRectDrawer.setUniform('u_alpha',1);
 
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+        //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.spriteRectDrawer.draw();
         this.restore();
     };

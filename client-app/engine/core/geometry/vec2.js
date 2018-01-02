@@ -4,6 +4,7 @@ import Point2d from "./point2d";
 export default class Vec2 extends Point2d {
 
     constructor(x,y){
+        // xyzw stpq rgba
         super(x,y);
     }
 

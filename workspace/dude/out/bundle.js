@@ -663,6 +663,16 @@ var ShaderProgram = (_temp = _class = function () {
         var uniform = this.uniforms[name];
         if (1 && !uniform) throw "no uniform with name " + name + " found!";
         uniform.setter(this.gl, uniform.location, value);
+        // if setter does not fit (ie uniform structure), invoke native gl setter,
+        // ie shader:
+        // struct SomeStruct {
+        //      bool active;
+        //      vec2 someVec2;
+        // }
+        // uniform SomeStruct u_someThing;
+        // js:
+        // gl.getUniformLocation(program,'u_someThing.active')
+        // gl.getUniformLocation(program,'u_someThing.someVec2')
     };
 
     ShaderProgram.prototype.bindBuffer = function bindBuffer(buffer, attrLocationName) {
@@ -1134,7 +1144,7 @@ var TypeArray = function TypeArray(ElType, size) {
     return {
         check: function check(val) {
             if (!val.splice) throw 'can not set uniform with value ' + val + ': expected argument of type Array';
-            if (val.length !== size) throw 'can not set uniform with value ' + val + ': expected array with size ' + size + ', but ' + val.length + ' found';
+            if (size !== undefined && val.length !== size) throw 'can not set uniform with value ' + val + ': expected array with size ' + size + ', but ' + val.length + ' found';
             for (var i = 0; i < val.length; i++) {
                 try {
                     ElType.check(val[i]);
@@ -1235,70 +1245,70 @@ var getUniformSetter = exports.getUniformSetter = function getUniformSetter(size
                 };
         }
     } else {
-        switch (type) {
+        switch (type) {// ie uniform vec2 u_someVec2[3]
             case 'float':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeNumber, 1));
+                    1 && expect(value, TypeArray(TypeNumber));
                     gl.uniform1fv(location, value);
                 };
             case 'vec2':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeNumber, 2));
+                    1 && expect(value, TypeArray(TypeNumber));
                     gl.uniform2fv(location, value);
                 };
             case 'vec3':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeNumber, 3));
+                    1 && expect(value, TypeArray(TypeNumber));
                     gl.uniform3fv(location, value);
                 };
             case 'vec4':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeNumber, 4));
+                    1 && expect(value, TypeArray(TypeNumber));
                     gl.uniform4fv(location, value);
                 };
             case 'int':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 1));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform1iv(location, value);
                 };
             case 'ivec2':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 2));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform2iv(location, value);
                 };
             case 'ivec3':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 3));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform3iv(location, value);
                 };
             case 'ivec4':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 4));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform4iv(location, value);
                 };
             case 'bool':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 1));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform1iv(location, value);
                 };
             case 'bvec2':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 2));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform2iv(location, value);
                 };
             case 'bvec3':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 3));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform3iv(location, value);
                 };
             case 'bvec4':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 4));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform4iv(location, value);
                 };
             case 'sampler2D':
                 return function (gl, location, value) {
-                    1 && expect(value, TypeArray(TypeInt, 1));
+                    1 && expect(value, TypeArray(TypeInt));
                     gl.uniform1iv(location, value);
                 };
         }
@@ -1441,7 +1451,7 @@ gen.addAttribute(_shaderProgramUtils.GL_TYPE.FLOAT_VEC4, 'a_position');
 //gen.addAttribute('vec4','a_color');
 gen.addVertexUniform(_shaderProgramUtils.GL_TYPE.FLOAT_MAT4, 'u_vertexMatrix');
 //gen.addVarying('vec4','v_color');
-gen.setVertexMainFn('\n    gl_Position = u_vertexMatrix * a_position;\n    //v_color = a_color;\n');
+gen.setVertexMainFn('\n    gl_PointSize = 12.0;\n    gl_Position = u_vertexMatrix * a_position;\n    //v_color = a_color;\n');
 gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT, 'u_alpha');
 gen.addFragmentUniform(_shaderProgramUtils.GL_TYPE.FLOAT_VEC4, 'u_rgba');
 gen.setFragmentMainFn('\n    gl_FragColor = u_rgba;\n');
@@ -3970,6 +3980,7 @@ var Vec2 = function (_Point2d) {
     function Vec2(x, y) {
         _classCallCheck(this, Vec2);
 
+        // xyzw stpq rgba
         return _possibleConstructorReturn(this, _Point2d.call(this, x, y));
     }
 

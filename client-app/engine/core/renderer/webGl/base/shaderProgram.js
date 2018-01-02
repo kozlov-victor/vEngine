@@ -29,6 +29,16 @@ export default class ShaderProgram {
         let uniform = this.uniforms[name];
         if (DEBUG && !uniform) throw `no uniform with name ${name} found!`;
         uniform.setter(this.gl, uniform.location, value);
+        // if setter does not fit (ie uniform structure), invoke native gl setter,
+        // ie shader:
+        // struct SomeStruct {
+        //      bool active;
+        //      vec2 someVec2;
+        // }
+        // uniform SomeStruct u_someThing;
+        // js:
+        // gl.getUniformLocation(program,'u_someThing.active')
+        // gl.getUniformLocation(program,'u_someThing.someVec2')
     }
 
     bindBuffer(buffer, attrLocationName) {
