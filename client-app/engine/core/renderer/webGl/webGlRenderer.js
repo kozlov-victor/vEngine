@@ -49,7 +49,8 @@ const makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeig
     let texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
-
+//  gl.enable(gl.CULL_FACE);
+//   gl.enable(gl.DEPTH_TEST);
 export default class WebGlRenderer extends AbstractRenderer {
 
     constructor(game){

@@ -315,6 +315,7 @@ const GlContext = Class.extend(function(it){
         }
 
         let img = new Image();
+        // img.crossOrigin = "";
         //<code>{{#if opts.minify}}
         img.onerror=function(e){throw 'can not load image with url '+ url};
         //<code>{{/if}}
