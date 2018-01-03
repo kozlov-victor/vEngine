@@ -11,6 +11,8 @@ export default class ShaderGenerator {
     fragmentUniforms = [];
     attributes = [];
     varyings = [];
+    fragCodeBlocks = [];
+    vertexCodeBlocks = [];
     vertexMainFn = '';
     fragmentMainFn = '';
 
@@ -36,6 +38,14 @@ export default class ShaderGenerator {
         return this;
     }
 
+    addVertexCodeBlock(code){
+        this.vertexCodeBlocks.push(code);
+    }
+
+    addFragmentCodeBlock(code){
+        this.fragCodeBlocks.push(code);
+    }
+
     setVertexMainFn(fnCode){
         this.vertexMainFn = fnCode;
         return this;
@@ -49,9 +59,10 @@ export default class ShaderGenerator {
     getVertexSource(){
         return (
             `
-            ${this.vertexUniforms.map(u=>`uniform   ${u.type} ${u.name};`).join('\n')}
-            ${this.attributes.map(    u=>`attribute ${u.type} ${u.name};`).join('\n')}
-            ${this.varyings.map(      u=>`varying   ${u.type} ${u.name};`).join('\n')}
+            ${this.vertexUniforms.map(  u=>`uniform   ${u.type} ${u.name};`).join('\n')}
+            ${this.attributes.map(      u=>`attribute ${u.type} ${u.name};`).join('\n')}
+            ${this.varyings.map(        u=>`varying   ${u.type} ${u.name};`).join('\n')}
+            ${this.vertexCodeBlocks.map(v=>`${v}`).join('\n')}
             void main() {
                ${this.vertexMainFn}
             }
@@ -66,6 +77,7 @@ export default class ShaderGenerator {
             precision mediump float;
             ${this.fragmentUniforms.map(u=>`uniform ${u.type} ${u.name};`).join('\n')}
             ${this.varyings.map(        u=>`varying ${u.type} ${u.name};`).join('\n')}
+            ${this.fragCodeBlocks.map(  v=>`${v}`).join('\n')}
             void main() {
                ${this.fragmentMainFn}
             }
@@ -84,6 +96,8 @@ export default class ShaderGenerator {
         cloned.fragmentUniforms = _cloneArray(this.fragmentUniforms);
         cloned.attributes = _cloneArray(this.attributes);
         cloned.varyings = _cloneArray(this.varyings);
+        cloned.fragCodeBlocks = _cloneArray(this.fragCodeBlocks);
+        cloned.vertexCodeBlocks = _cloneArray(this.vertexCodeBlocks);
         cloned.vertexMainFn = this.vertexMainFn;
         cloned.fragmentMainFn = this.fragmentMainFn;
         return cloned;

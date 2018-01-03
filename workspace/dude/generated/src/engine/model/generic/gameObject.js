@@ -2,6 +2,7 @@
 import GameObjectProto from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
 import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilter/blackWhite";
+import ColorizeFilter from "../../core/renderer/webGl/filters/textureFilter/colorizeFilter";
 
 const noop = ()=>{};
 
@@ -31,10 +32,10 @@ export default class GameObject extends GameObjectProto {
         });
         super.revalidate();
         if (this.id===71) {
-            let filter = new BlackWhiteFilter(this.game.renderer.gl);
-            filter.prepare(filter.programGen);
-            filter.afterPrepare();
-            this.filters.push(filter);
+            let filter1 = new BlackWhiteFilter(this.game.renderer.gl);
+            let filter2 = new ColorizeFilter(this.game.renderer.gl);
+            this.filters.push(filter1);
+            this.filters.push(filter2);
         }
     }
 

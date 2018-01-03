@@ -4,6 +4,8 @@ import Texture from './texture'
 
 export default class FrameBuffer {
 
+    static currInstance = null;
+
     constructor(gl,width,height){
         if (DEBUG && !gl) throw "can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
 
@@ -33,8 +35,10 @@ export default class FrameBuffer {
     }
 
     bind(){
+        if (FrameBuffer.currInstance===this) return;
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer);
         this.gl.viewport(0, 0, this.width,this.height);
+        FrameBuffer.currInstance = this;
     }
 
     unbind(){

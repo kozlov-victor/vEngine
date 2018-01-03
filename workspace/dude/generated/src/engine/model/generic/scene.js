@@ -3,6 +3,7 @@
 import BaseModel from '../baseModel'
 import LoadingQueue from '../../core/misc/loadingQueue'
 import TileMap from './tileMap'
+import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilter/blackWhite";
 
 export default class Scene extends BaseModel {
 
@@ -11,6 +12,7 @@ export default class Scene extends BaseModel {
     useBG = false;
     colorBG = {r: 255, g: 255, b: 255};
     _tweenMovies = [];
+    filters = [];
     _individualBehaviour = null;
 
     constructor(game) {
@@ -24,6 +26,7 @@ export default class Scene extends BaseModel {
             this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
             this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
         }
+        this.filters.push(new BlackWhiteFilter(this.game.renderer.gl));
     }
 
     addTweenMovie(tm){
@@ -120,7 +123,7 @@ export default class Scene extends BaseModel {
             if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
             this.game.renderer.restore();
         }
-        renderer.flipFrameBuffer();
+        renderer.flipFrameBuffer(this.filters);
     }
     fadeIn(time,easeFnName){
         return this.tween(this,{to:{alpha:1}},time,easeFnName);

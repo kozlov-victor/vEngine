@@ -61,6 +61,10 @@
                 {
                     "type": "GameObject",
                     "id": 74
+                },
+                {
+                    "type": "TextField",
+                    "id": 76
                 }
             ]
         }
@@ -1631,6 +1635,25 @@
                     1
                 ]
             ]
+        }
+    ],
+    "TextField": [
+        {
+            "name": "textField1",
+            "width": 120,
+            "height": 24,
+            "pos": {
+                "x": 16,
+                "y": 20
+            },
+            "layerId": 2,
+            "type": "TextField",
+            "text": "textField1",
+            "font": {
+                "id": 22,
+                "type": "Font"
+            },
+            "id": 76
         }
     ]
 }

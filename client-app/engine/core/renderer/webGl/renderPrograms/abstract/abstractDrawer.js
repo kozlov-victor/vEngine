@@ -1,7 +1,7 @@
 
 export default class AbstractDrawer {
 
-    static currentDrawer = null;
+    static currentInstance = null;
     program = null;
     uniformCache = {};
     posVertexBuffer = null;
@@ -14,12 +14,12 @@ export default class AbstractDrawer {
 
     bind(){
         if (
-            AbstractDrawer.currentDrawer!==null &&
-            AbstractDrawer.currentDrawer!==this)
+            AbstractDrawer.currentInstance!==null &&
+            AbstractDrawer.currentInstance!==this)
         {
-            AbstractDrawer.currentDrawer.unbind();
+            AbstractDrawer.currentInstance.unbind();
         }
-        AbstractDrawer.currentDrawer = this;
+        AbstractDrawer.currentInstance = this;
     }
 
     unbind(){

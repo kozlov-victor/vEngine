@@ -91,11 +91,8 @@ export default class WebGlRenderer extends AbstractRenderer {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
 
         let texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
-        if (renderable.filters.length) {
-            texToDraw.applyFilters(renderable.filters);
-            texToDraw = texToDraw._texFilterBuff.getSourceBuffer().texture;
-            this.frameBuffer.bind();
-        }
+        texToDraw = texToDraw.applyFilters(renderable.filters);
+        this.frameBuffer.bind();
 
         this.save();
         // todo check if angle neq 0
@@ -306,7 +303,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
 
-    flipFrameBuffer(){
+    flipFrameBuffer(filters){
 
         let fullScreen = this.fullScreenSize;
         this.currTex = null;
@@ -314,12 +311,13 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.save();
         this.translate(0,fullScreen.h);
         this.scale(1,-1);
-        this.frameBuffer.unbind();
 
+        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters);
+        this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 
         this.spriteRectDrawer.bind();
-        this.frameBuffer.getTexture().bind();
+        texToDraw.bind();
 
         this.spriteRectDrawer.setUniform('u_vertexMatrix',
             makePositionMatrix(
@@ -347,7 +345,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let err = this.gl.getError();
         err=err===this.gl.NO_ERROR?0:err;
         if (err) {
-            console.log(AbstractDrawer.currentDrawer);
+            console.log(AbstractDrawer.currentInstance);
         }
         return err;
     }

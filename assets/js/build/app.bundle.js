@@ -1946,6 +1946,10 @@ var _blackWhite = __webpack_require__(188);
 
 var _blackWhite2 = _interopRequireDefault(_blackWhite);
 
+var _colorizeFilter = __webpack_require__(189);
+
+var _colorizeFilter2 = _interopRequireDefault(_colorizeFilter);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -1991,10 +1995,10 @@ var GameObject = function (_GameObjectProto) {
         });
         _GameObjectProto.prototype.revalidate.call(this);
         if (this.id === 71) {
-            var filter = new _blackWhite2.default(this.game.renderer.gl);
-            filter.prepare(filter.programGen);
-            filter.afterPrepare();
-            this.filters.push(filter);
+            var filter1 = new _blackWhite2.default(this.game.renderer.gl);
+            var filter2 = new _colorizeFilter2.default(this.game.renderer.gl);
+            this.filters.push(filter1);
+            this.filters.push(filter2);
         }
     };
 
@@ -2231,6 +2235,10 @@ var _tileMap = __webpack_require__(21);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
+var _blackWhite = __webpack_require__(188);
+
+var _blackWhite2 = _interopRequireDefault(_blackWhite);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2254,6 +2262,7 @@ var Scene = function (_BaseModel) {
         _this.useBG = false;
         _this.colorBG = { r: 255, g: 255, b: 255 };
         _this._tweenMovies = [];
+        _this.filters = [];
         _this._individualBehaviour = null;
 
         _this.tileMap = new _tileMap2.default(game);
@@ -2266,6 +2275,7 @@ var Scene = function (_BaseModel) {
             this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
             this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
         }
+        this.filters.push(new _blackWhite2.default(this.game.renderer.gl));
     };
 
     Scene.prototype.addTweenMovie = function addTweenMovie(tm) {
@@ -2363,7 +2373,7 @@ var Scene = function (_BaseModel) {
             if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
             this.game.renderer.restore();
         }
-        renderer.flipFrameBuffer();
+        renderer.flipFrameBuffer(this.filters);
     };
 
     Scene.prototype.fadeIn = function fadeIn(time, easeFnName) {
@@ -3791,15 +3801,16 @@ var Texture = function () {
 
     Texture.prototype.applyFilters = function applyFilters(filters) {
         var len = filters.length;
-        if (len === 0) return;
+        if (len === 0) return this;
         if (this._texFilterBuff.buffers === null) this._texFilterBuff.instantiate(this.gl);
         var filter = filters[0];
         filter.doFilter(this, this._texFilterBuff.getDestBuffer());
-        for (var i = 0; i < len; i++) {
+        for (var i = 1; i < len; i++) {
             this._texFilterBuff.flip();
-            filter.doFilter(this._texFilterBuff.getSourceBuffer().texture, this._texFilterBuff.getDestBuffer());
+            filters[i].doFilter(this._texFilterBuff.getSourceBuffer().texture, this._texFilterBuff.getDestBuffer());
         }
         this._texFilterBuff.flip();
+        return this._texFilterBuff.getSourceBuffer().texture;
     };
 
     Texture.prototype.bind = function bind(i) {
@@ -13992,15 +14003,17 @@ exports.default = RendererFactory;
 exports.__esModule = true;
 exports.default = undefined;
 
+var _class, _temp; /*global DEBUG:true*/
+
 var _texture = __webpack_require__(31);
 
 var _texture2 = _interopRequireDefault(_texture);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var FrameBuffer = function () {
+var FrameBuffer = (_temp = _class = function () {
     function FrameBuffer(gl, width, height) {
         _classCallCheck(this, FrameBuffer);
 
@@ -14032,8 +14045,10 @@ var FrameBuffer = function () {
     };
 
     FrameBuffer.prototype.bind = function bind() {
+        if (FrameBuffer.currInstance === this) return;
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer);
         this.gl.viewport(0, 0, this.width, this.height);
+        FrameBuffer.currInstance = this;
     };
 
     FrameBuffer.prototype.unbind = function unbind() {
@@ -14045,8 +14060,7 @@ var FrameBuffer = function () {
     };
 
     return FrameBuffer;
-}();
-
+}(), _class.currInstance = null, _temp);
 exports.default = FrameBuffer;
 
 /***/ }),
@@ -14279,11 +14293,8 @@ var WebGlRenderer = function (_AbstractRenderer) {
         if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), renderable.getRect())) return;
 
         var texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
-        if (renderable.filters.length) {
-            texToDraw.applyFilters(renderable.filters);
-            texToDraw = texToDraw._texFilterBuff.getSourceBuffer().texture;
-            this.frameBuffer.bind();
-        }
+        texToDraw = texToDraw.applyFilters(renderable.filters);
+        this.frameBuffer.bind();
 
         this.save();
         // todo check if angle neq 0
@@ -14453,7 +14464,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         this.frameBuffer.bind();
     };
 
-    WebGlRenderer.prototype.flipFrameBuffer = function flipFrameBuffer() {
+    WebGlRenderer.prototype.flipFrameBuffer = function flipFrameBuffer(filters) {
 
         var fullScreen = this.fullScreenSize;
         this.currTex = null;
@@ -14461,12 +14472,13 @@ var WebGlRenderer = function (_AbstractRenderer) {
         this.save();
         this.translate(0, fullScreen.h);
         this.scale(1, -1);
-        this.frameBuffer.unbind();
 
+        var texToDraw = this.frameBuffer.getTexture().applyFilters(filters);
+        this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w, fullScreen.h);
 
         this.spriteRectDrawer.bind();
-        this.frameBuffer.getTexture().bind();
+        texToDraw.bind();
 
         this.spriteRectDrawer.setUniform('u_vertexMatrix', makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h));
 
@@ -14483,7 +14495,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var err = this.gl.getError();
         err = err === this.gl.NO_ERROR ? 0 : err;
         if (err) {
-            console.log(_abstractDrawer2.default.currentDrawer);
+            console.log(_abstractDrawer2.default.currentInstance);
         }
         return err;
     };
@@ -15564,6 +15576,8 @@ var ShaderGenerator = function () {
         this.fragmentUniforms = [];
         this.attributes = [];
         this.varyings = [];
+        this.fragCodeBlocks = [];
+        this.vertexCodeBlocks = [];
         this.vertexMainFn = '';
         this.fragmentMainFn = '';
     }
@@ -15588,6 +15602,14 @@ var ShaderGenerator = function () {
         return this;
     };
 
+    ShaderGenerator.prototype.addVertexCodeBlock = function addVertexCodeBlock(code) {
+        this.vertexCodeBlocks.push(code);
+    };
+
+    ShaderGenerator.prototype.addFragmentCodeBlock = function addFragmentCodeBlock(code) {
+        this.fragCodeBlocks.push(code);
+    };
+
     ShaderGenerator.prototype.setVertexMainFn = function setVertexMainFn(fnCode) {
         this.vertexMainFn = fnCode;
         return this;
@@ -15605,6 +15627,8 @@ var ShaderGenerator = function () {
             return 'attribute ' + u.type + ' ' + u.name + ';';
         }).join('\n') + '\n            ' + this.varyings.map(function (u) {
             return 'varying   ' + u.type + ' ' + u.name + ';';
+        }).join('\n') + '\n            ' + this.vertexCodeBlocks.map(function (v) {
+            return '' + v;
         }).join('\n') + '\n            void main() {\n               ' + this.vertexMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '');
     };
 
@@ -15615,6 +15639,8 @@ var ShaderGenerator = function () {
                 return 'uniform ' + u.type + ' ' + u.name + ';';
             }).join('\n') + '\n            ' + this.varyings.map(function (u) {
                 return 'varying ' + u.type + ' ' + u.name + ';';
+            }).join('\n') + '\n            ' + this.fragCodeBlocks.map(function (v) {
+                return '' + v;
             }).join('\n') + '\n            void main() {\n               ' + this.fragmentMainFn + '\n            }\n            ').replace(/\s{2,}/, ' ').replace(/\t/, '')
         );
     };
@@ -15630,6 +15656,8 @@ var ShaderGenerator = function () {
         cloned.fragmentUniforms = _cloneArray(this.fragmentUniforms);
         cloned.attributes = _cloneArray(this.attributes);
         cloned.varyings = _cloneArray(this.varyings);
+        cloned.fragCodeBlocks = _cloneArray(this.fragCodeBlocks);
+        cloned.vertexCodeBlocks = _cloneArray(this.vertexCodeBlocks);
         cloned.vertexMainFn = this.vertexMainFn;
         cloned.fragmentMainFn = this.fragmentMainFn;
         return cloned;
@@ -15864,10 +15892,10 @@ var AbstractDrawer = (_temp = _class = function () {
     }
 
     AbstractDrawer.prototype.bind = function bind() {
-        if (AbstractDrawer.currentDrawer !== null && AbstractDrawer.currentDrawer !== this) {
-            AbstractDrawer.currentDrawer.unbind();
+        if (AbstractDrawer.currentInstance !== null && AbstractDrawer.currentInstance !== this) {
+            AbstractDrawer.currentInstance.unbind();
         }
-        AbstractDrawer.currentDrawer = this;
+        AbstractDrawer.currentInstance = this;
     };
 
     AbstractDrawer.prototype.unbind = function unbind() {
@@ -15883,7 +15911,7 @@ var AbstractDrawer = (_temp = _class = function () {
     };
 
     return AbstractDrawer;
-}(), _class.currentDrawer = null, _temp);
+}(), _class.currentInstance = null, _temp);
 exports.default = AbstractDrawer;
 
 /***/ }),
@@ -16386,41 +16414,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
 
-var makePositionMatrix = function makePositionMatrix(dstX, dstY, dstWidth, dstHeight, viewWidth, viewHeight) {
-    // proj * modelView
-    var zToWMatrix = mat4.makeZToWMatrix(1);
-    var projectionMatrix = mat4.ortho(0, viewWidth, 0, viewHeight, -1000, 1000);
+var makePositionMatrix = function makePositionMatrix(dstX, dstY, dstWidth, dstHeight) {
+    var projectionMatrix = mat4.ortho(0, dstWidth, 0, dstHeight, -1, 1);
     var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
-    var translationMatrix = mat4.makeTranslation(dstX, dstY, 0);
-
-    var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
-    //matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
-    matrix = mat4.matrixMultiply(matrix, projectionMatrix);
-    matrix = mat4.matrixMultiply(matrix, zToWMatrix);
-    return matrix;
+    return mat4.matrixMultiply(scaleMatrix, projectionMatrix);
 };
 
-var makeTextureMatrix = function makeTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight) {
-
-    var texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-    var texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
-    return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
-};
+var identity = mat4.makeIdentity();
 
 var AbstractFilter = function () {
     function AbstractFilter(gl) {
         _classCallCheck(this, AbstractFilter);
 
         this.spriteRectDrawer = null;
+        this.uniformsToSet = {};
 
         if (true && !gl) throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
         this.gl = gl;
         this.programGen = _shaderGenerator.textureShaderGen.clone();
+        this.prepare(this.programGen);
+        this._afterPrepare();
     }
 
     AbstractFilter.prototype.prepare = function prepare() {};
 
-    AbstractFilter.prototype.afterPrepare = function afterPrepare() {
+    AbstractFilter.prototype._afterPrepare = function _afterPrepare() {
         var program = new _shaderProgram2.default(this.gl, this.programGen.getVertexSource(), this.programGen.getFragmentSource());
         this.spriteRectDrawer = new _spriteRectDrawer2.default(this.gl, program);
     };
@@ -16428,13 +16446,25 @@ var AbstractFilter = function () {
     AbstractFilter.prototype.doFilter = function doFilter(srcTexture, destFrameBuffer) {
         srcTexture.bind();
         destFrameBuffer.bind();
+        this.spriteRectDrawer.bind();
+        this.updateUniforms();
         var w = srcTexture.size.width;
         var h = srcTexture.size.height;
-        this.spriteRectDrawer.bind();
-        this.spriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(0, 0, w, h, w, h));
-        this.spriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(0, 0, w, h, w, h));
-        //this.spriteRectDrawer.setUniform('u_alpha',1); // alpha
+        this.spriteRectDrawer.setUniform("u_textureMatrix", identity);
+        this.spriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(0, 0, w, h));
         this.spriteRectDrawer.draw();
+    };
+
+    AbstractFilter.prototype.updateUniforms = function updateUniforms() {
+        var _this = this;
+
+        Object.keys(this.uniformsToSet).forEach(function (name) {
+            _this.spriteRectDrawer.setUniform(name, _this.uniformsToSet[name]);
+        });
+    };
+
+    AbstractFilter.prototype.setParam = function setParam(name, value) {
+        this.uniformsToSet[name] = value;
     };
 
     return AbstractFilter;
@@ -16474,13 +16504,55 @@ var BlackWhiteFilter = function (_AbstractFilter) {
     }
 
     BlackWhiteFilter.prototype.prepare = function prepare(programGen) {
-        programGen.setFragmentMainFn("\n            vec4 col = texture2D(texture, v_texCoord);\n            float avg = (col.r+col.g+col.b)/3.0;\n            gl_FragColor = vec4(vec3(avg),1.0);\n        ");
+        programGen.addFragmentUniform('float', 'u_mixFactor');
+        programGen.setFragmentMainFn('\n            vec4 col = texture2D(texture, v_texCoord);\n            float avg = (col.r+col.g+col.b)/3.0;\n            vec4 bw = vec4(avg);\n            vec4 result = mix(col,bw,vec4(u_mixFactor));\n            result.a = 1.0;\n            gl_FragColor = result; \n        ');
+        this.setParam('u_mixFactor', 0.8);
     };
 
     return BlackWhiteFilter;
 }(_abstractFilter2.default);
 
 exports.default = BlackWhiteFilter;
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractFilter = __webpack_require__(187);
+
+var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ColorizeFilter = function (_AbstractFilter) {
+    _inherits(ColorizeFilter, _AbstractFilter);
+
+    function ColorizeFilter(gl) {
+        _classCallCheck(this, ColorizeFilter);
+
+        return _possibleConstructorReturn(this, _AbstractFilter.call(this, gl));
+    }
+
+    ColorizeFilter.prototype.prepare = function prepare(programGen) {
+        programGen.setFragmentMainFn("\n            vec4 col = texture2D(texture, v_texCoord);\n            col.r = col.g = 0.8;\n            gl_FragColor = col;\n        ");
+    };
+
+    return ColorizeFilter;
+}(_abstractFilter2.default);
+
+exports.default = ColorizeFilter;
 
 /***/ })
 /******/ ]);

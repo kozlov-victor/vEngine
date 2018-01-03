@@ -101,19 +101,20 @@ export default class Texture {
 
     applyFilters(filters){
         let len = filters.length;
-        if (len===0) return;
+        if (len===0) return this;
         if (this._texFilterBuff.buffers===null)
             this._texFilterBuff.instantiate(this.gl);
         let filter = filters[0];
         filter.doFilter(this,this._texFilterBuff.getDestBuffer());
-        for (let i=0;i<len;i++){
+        for (let i=1;i<len;i++){
             this._texFilterBuff.flip();
-            filter.doFilter(
+            filters[i].doFilter(
                 this._texFilterBuff.getSourceBuffer().texture,
                 this._texFilterBuff.getDestBuffer()
             );
         }
         this._texFilterBuff.flip();
+        return this._texFilterBuff.getSourceBuffer().texture;
     }
 
     bind(i) { // uniform eq to 0 by default
