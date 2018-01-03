@@ -65,6 +65,7 @@ export default class Texture {
 
 
     // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true); for bitmap textures
+    // gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     /**
      * @param img - if image is null, width and height must be specified
      * @param width -unused if image specified
