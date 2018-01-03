@@ -63,6 +63,8 @@ export default class Texture {
         this._texFilterBuff = new TextureFilterBuffer(this);
     }
 
+
+    // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true); for bitmap textures
     /**
      * @param img - if image is null, width and height must be specified
      * @param width -unused if image specified
