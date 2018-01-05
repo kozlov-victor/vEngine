@@ -9,6 +9,7 @@ export default class VertexBuffer {
         this.bufferItemSize = null;
         this.bufferItemType = null;
         this.dataLength = null;
+        this.attrName = null;
     }
 
     setData(bufferData, itemType, itemSize){
@@ -27,7 +28,12 @@ export default class VertexBuffer {
         this.dataLength = bufferData.length;
     }
 
+    setAttrName(attrName){
+        this.attrName = attrName;
+    }
+
     bind(program,attrName){
+        if (!attrName) attrName = this.attrName;
         if (DEBUG && !program) throw "can not bind VertexBuffer, program not specified";
         if (DEBUG && !attrName) throw "can not bind VertexBuffer, attribute name not specified";
         program.bindBuffer(this,attrName);

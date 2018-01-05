@@ -1,8 +1,7 @@
 
 import Plane from '../../primitives/plane'
 import ShaderProgram from '../../base/shaderProgram'
-import VertexBuffer from '../../base/vertexBuffer'
-import IndexBuffer from '../../base/indexBuffer'
+import BufferInfo from "../../base/bufferInfo";
 
 import AbstractDrawer from "../abstract/abstractDrawer";
 import {simpleColorShaderGen as gen} from "../../shaders/shaderGenerator"
@@ -18,27 +17,11 @@ export default class ColorRectDrawer extends AbstractDrawer{
             gen.getFragmentSource()
         );
 
-        this.posVertexBuffer = new VertexBuffer(gl);
-        this.posIndexBuffer = new IndexBuffer(gl);
-
-        this.posVertexBuffer.setData(this.plane.vertexArr,this.gl.FLOAT,2);
-        this.posIndexBuffer.setData(this.plane.indexArr);
-    }
-
-
-    bind(){
-        super.bind();
-        this.program.bind();
-        this.posVertexBuffer.bind(this.program,'a_position');
-        this.posIndexBuffer.bind();
-    }
-
-    draw(){
-        this.gl.drawElements(
-            this.gl.TRIANGLE_STRIP, 
-            this.posIndexBuffer.getBufferLength(), 
-            this.gl.UNSIGNED_SHORT,0
-        );
+        this.bufferInfo = new BufferInfo(gl,{
+            posVertexInfo:{array: this.plane.vertexArr,type:gl.FLOAT,size:2,attrName:'a_position'},
+            posIndexInfo: {array: this.plane.indexArr},
+            drawMethod: this.gl.TRIANGLE_STRIP
+        });
     }
 
 }

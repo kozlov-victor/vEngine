@@ -23,6 +23,11 @@ module.exports =  (params)=>{
         module: {
             rules: [
                 {
+                    test: /\.ts$/,
+                    loader: "ts-loader",
+                    options: {}
+                },
+                {
                     test: /\.js$/,
                     //exclude: /node_modules/,
                     loader: "babel-loader",
