@@ -302,7 +302,9 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.frameBuffer.bind();
     }
 
+    
 
+    // gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     flipFrameBuffer(filters){
 
         let fullScreen = this.fullScreenSize;
