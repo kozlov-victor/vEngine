@@ -42,10 +42,12 @@ export const createProgram = (gl, vertexShader,fragmentShader)=> {
     let linked = gl.getProgramParameter(program, gl.LINK_STATUS);
     if (!linked) {
         // something went wrong with the link
-        let lastError = gl.getProgramInfoLog(program);
         gl.deleteProgram(program);
+        let lastError = gl.getProgramInfoLog(program);
         if (DEBUG) {
-            throw "Error in program linking:" + lastError;
+            let status = gl.getProgramParameter( program, gl.VALIDATE_STATUS);
+            console.error('VALIDATE_STATUS',status);
+            throw `Error in program linking ${lastError}`;
         } else {
             throw lastError;
         }
