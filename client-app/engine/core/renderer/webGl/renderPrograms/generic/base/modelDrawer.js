@@ -1,13 +1,13 @@
 
 
-import ShaderProgram from '../../base/shaderProgram'
-import VertexBuffer from '../../base/vertexBuffer'
-import IndexBuffer from '../../base/indexBuffer'
+import ShaderProgram from '../../../base/shaderProgram'
+import VertexBuffer from '../../../base/vertexBuffer'
+import IndexBuffer from '../../../base/indexBuffer'
 
-import basicVertexShader from '../../shaders/basic/vertex2.vert'
-import textureShader from '../../shaders/texture/fragment2.frag'
-import AbstractDrawer from "./../abstract/abstractDrawer";
-import BufferInfo from "../../base/bufferInfo";
+// import basicVertexShader from '../../../shaders/_unused/basic/vertex2.vert'
+// import textureShader from '../../../shaders/_unused/texture/fragment2.frag'
+import AbstractDrawer from "./../../abstract/abstractDrawer";
+import BufferInfo from "../../../base/bufferInfo";
 
 export default class ModelDrawer extends AbstractDrawer {
 
@@ -15,8 +15,8 @@ export default class ModelDrawer extends AbstractDrawer {
         super(gl);
         this.program = new ShaderProgram(
             gl,
-            basicVertexShader,
-            textureShader
+            //basicVertexShader,
+            //textureShader
         );
 
         this.posVertexBuffer = new VertexBuffer(gl);

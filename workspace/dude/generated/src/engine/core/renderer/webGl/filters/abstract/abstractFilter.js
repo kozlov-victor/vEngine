@@ -1,9 +1,9 @@
 /*global DEBUG:true*/
 
 import ShaderProgram from "../../base/shaderProgram";
-import {textureShaderGen} from "../../shaders/shaderGenerator";
-import SpriteRectDrawer from "../../renderPrograms/generic/spriteRectDrawer";
+import SpriteRectDrawer from "../../renderPrograms/generic/base/spriteRectDrawer";
 import * as mat4 from "../../../../geometry/mat4";
+import TexShaderGenerator from "../../shaders/generators/generic/texShaderGenerator";
 
 const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight){
     let projectionMatrix = mat4.ortho(0,dstWidth,0,dstHeight,-1,1);
@@ -22,7 +22,7 @@ export default class AbstractFilter {
     constructor(gl){
         if (DEBUG && !gl) throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
         this.gl = gl;
-        this.programGen = textureShaderGen.clone();
+        this.programGen = new TexShaderGenerator();
         this.prepare(this.programGen);
         this._afterPrepare();
     }

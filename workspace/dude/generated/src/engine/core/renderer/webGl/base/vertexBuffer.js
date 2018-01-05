@@ -6,6 +6,7 @@ export default class VertexBuffer {
         if (DEBUG && !gl) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
         this.gl = gl;
         this.buffer = gl.createBuffer();
+        if (DEBUG && !this.buffer) throw `can not allocate memory for vertex buffer`;
         this.bufferItemSize = null;
         this.bufferItemType = null;
         this.dataLength = null;

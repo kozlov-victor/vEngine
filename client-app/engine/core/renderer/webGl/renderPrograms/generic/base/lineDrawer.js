@@ -1,15 +1,16 @@
 
-import Line from '../../primitives/line'
-import ShaderProgram from '../../base/shaderProgram'
-import BufferInfo from "../../base/bufferInfo";
+import Line from '../../../primitives/line'
+import ShaderProgram from '../../../base/shaderProgram'
+import BufferInfo from "../../../base/bufferInfo";
 
-import AbstractDrawer from "../abstract/abstractDrawer";
-import {simpleColorShaderGen as gen} from "../../shaders/shaderGenerator"
+import AbstractDrawer from "../../abstract/abstractDrawer";
+import ColorShaderGenerator from "../../../shaders/generators/generic/colorShaderGenerator";
 
 export default class LineDrawer extends AbstractDrawer {
 
     constructor(gl){
         super(gl);
+        let gen = new ColorShaderGenerator();
         this.program = new ShaderProgram(
             gl,
             gen.getVertexSource(),

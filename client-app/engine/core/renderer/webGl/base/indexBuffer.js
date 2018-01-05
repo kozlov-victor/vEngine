@@ -7,6 +7,7 @@ export default class IndexBuffer {
 
         this.gl = gl;
         this.buffer = gl.createBuffer();
+        if (DEBUG && !this.buffer) throw `can not allocate memory for index buffer`;
         this.dataLength = null;
     }
 

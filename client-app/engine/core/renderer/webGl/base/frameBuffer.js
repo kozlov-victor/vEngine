@@ -21,10 +21,12 @@ export default class FrameBuffer {
     _init(gl,width,height){
         // Init Render Buffer
         this.glRenderBuffer = gl.createRenderbuffer();
+        if (DEBUG && !this.glRenderBuffer) throw `can not allocate memory for glRenderBuffer`;
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.glRenderBuffer);
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
         // Init Frame Buffer
         this.glFrameBuffer = gl.createFramebuffer();
+        if (DEBUG && !this.glRenderBuffer) throw `can not allocate memory for glFrameBuffer`;
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.glFrameBuffer);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getGlTexture(), 0);
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.glRenderBuffer);

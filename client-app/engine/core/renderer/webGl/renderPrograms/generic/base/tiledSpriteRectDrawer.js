@@ -1,12 +1,12 @@
 
-import Plane from '../../primitives/plane'
-import ShaderProgram from '../../base/shaderProgram'
-import BufferInfo from "../../base/bufferInfo";
-import AbstractDrawer from "../abstract/abstractDrawer";
-import {GL_TYPE} from "../../base/shaderProgramUtils";
-import {textureShaderGen} from "../../shaders/shaderGenerator";
+import Plane from '../../../primitives/plane'
+import ShaderProgram from '../../../base/shaderProgram'
+import BufferInfo from "../../../base/bufferInfo";
+import AbstractDrawer from "../../abstract/abstractDrawer";
+import {GL_TYPE} from "../../../base/shaderProgramUtils";
+import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGenerator";
 
-let gen = textureShaderGen.clone();
+let gen = new TexShaderGenerator();
 gen.addFragmentUniform(GL_TYPE.FLOAT_VEC2,'u_offsetCoords');
 gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_frameCoords');
 gen.setFragmentMainFn(`

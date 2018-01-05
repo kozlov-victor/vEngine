@@ -3,13 +3,13 @@
 /*global DEBUG:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
-import SpriteRectDrawer from './renderPrograms/generic/spriteRectDrawer'
-import TiledSpriteRectDrawer from './renderPrograms/generic/tiledSpriteRectDrawer'
-import ColorRectDrawer from './renderPrograms/generic/colorRectDrawer'
+import SpriteRectDrawer from './renderPrograms/generic/base/spriteRectDrawer'
+import TiledSpriteRectDrawer from './renderPrograms/generic/base/tiledSpriteRectDrawer'
+import ColorRectDrawer from './renderPrograms/generic/base/colorRectDrawer'
 import AbstractDrawer from './renderPrograms/abstract/abstractDrawer'
-import LineDrawer from './renderPrograms/generic/lineDrawer'
-import CircleDrawer from './renderPrograms/generic/circleDrawer'
-import ModelDrawer from './renderPrograms/generic/modelDrawer'
+import LineDrawer from './renderPrograms/generic/base/lineDrawer'
+import CircleDrawer from './renderPrograms/generic/base/circleDrawer'
+import ModelDrawer from './renderPrograms/generic/base/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import mat4 from '../../geometry/mat4'
@@ -76,7 +76,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.tiledSpriteRectDrawer = new TiledSpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
-        this.modelDrawer = new ModelDrawer(gl);
+        //this.modelDrawer = new ModelDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
 

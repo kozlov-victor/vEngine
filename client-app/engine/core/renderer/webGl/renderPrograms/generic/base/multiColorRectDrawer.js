@@ -1,13 +1,13 @@
 
 
-import Plane from '../../primitives/plane'
-import ShaderProgram from '../../base/shaderProgram'
-import VertexBuffer from '../../base/vertexBuffer'
-import IndexBuffer from '../../base/indexBuffer'
+import Plane from '../../../primitives/plane'
+import ShaderProgram from '../../../base/shaderProgram'
+import VertexBuffer from '../../../base/vertexBuffer'
+import IndexBuffer from '../../../base/indexBuffer'
 
-import basicVertexShader from '../../shaders/basic/vertex.vert'
-import colorShader from '../../shaders/multiColor/fragment.frag'
-import AbstractDrawer from "../abstract/abstractDrawer";
+// import basicVertexShader from '../../../shaders/_unused/basic/vertex.vert'
+// import colorShader from '../../../shaders/_unused/multiColor/fragment.frag'
+import AbstractDrawer from "../../abstract/abstractDrawer";
 
 export default class MultiColorRectDrawer extends AbstractDrawer {
 
@@ -16,8 +16,8 @@ export default class MultiColorRectDrawer extends AbstractDrawer {
         this.plane = new Plane();
         this.program = new ShaderProgram(
             gl,
-            basicVertexShader,
-            colorShader
+            //basicVertexShader,
+            //colorShader
         );
 
         this.posVertexBuffer = new VertexBuffer(gl);

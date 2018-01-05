@@ -57,6 +57,7 @@ export default class Texture {
         this.gl = gl;
 
         this.tex = gl.createTexture();
+        if (DEBUG && !this.tex) throw `can not allocate memory for texture`;
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
         // Fill the texture with a 1x1 blue pixel.
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,

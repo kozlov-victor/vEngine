@@ -57,6 +57,7 @@ export default class Texture {
         this.gl = gl;
 
         this.tex = gl.createTexture();
+        if (DEBUG && !this.tex) throw `can not allocate memory for texture`;
         gl.bindTexture(gl.TEXTURE_2D, this.tex);
         // Fill the texture with a 1x1 blue pixel.
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
@@ -94,6 +95,7 @@ export default class Texture {
             gl.generateMipmap(gl.TEXTURE_2D);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
+            // gl.generateMipmap( gl.TEXTURE_2D );
         } else {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);

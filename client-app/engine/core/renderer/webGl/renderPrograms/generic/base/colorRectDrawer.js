@@ -1,16 +1,16 @@
 
-import Plane from '../../primitives/plane'
-import ShaderProgram from '../../base/shaderProgram'
-import BufferInfo from "../../base/bufferInfo";
-
-import AbstractDrawer from "../abstract/abstractDrawer";
-import {simpleColorShaderGen as gen} from "../../shaders/shaderGenerator"
+import Plane from '../../../primitives/plane'
+import ShaderProgram from '../../../base/shaderProgram'
+import BufferInfo from "../../../base/bufferInfo";
+import AbstractDrawer from "../../abstract/abstractDrawer";
+import ColorShaderGenerator from "../../../shaders/generators/generic/colorShaderGenerator";
 
 export default class ColorRectDrawer extends AbstractDrawer{
 
     constructor(gl){
         super(gl);
         this.plane = new Plane();
+        let gen = new ColorShaderGenerator();
         this.program = new ShaderProgram(
             gl,
             gen.getVertexSource(),
