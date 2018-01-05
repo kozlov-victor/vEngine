@@ -32,11 +32,10 @@ export default class VertexBuffer {
         this.attrName = attrName;
     }
 
-    bind(program,attrName){
-        if (!attrName) attrName = this.attrName;
+    bind(program){
         if (DEBUG && !program) throw "can not bind VertexBuffer, program not specified";
-        if (DEBUG && !attrName) throw "can not bind VertexBuffer, attribute name not specified";
-        program.bindBuffer(this,attrName);
+        if (DEBUG && !this.attrName) throw "can not bind VertexBuffer, attribute name not specified";
+        program.bindBuffer(this,this.attrName);
     }
 
     unbind(){

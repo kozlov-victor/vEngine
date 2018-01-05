@@ -678,14 +678,11 @@ var AbstractDrawer = (_temp = _class = function () {
             AbstractDrawer.currentInstance.unbind();
         }
         AbstractDrawer.currentInstance = this;
-        if (this.bufferInfo) this.bufferInfo.bind(this.program);
+        this.bufferInfo.bind(this.program);
     };
 
     AbstractDrawer.prototype.unbind = function unbind() {
-        if (this.posVertexBuffer) this.posVertexBuffer.unbind();
-        if (this.posIndexBuffer) this.posIndexBuffer.unbind();
-        if (this.texVertexBuffer) this.texVertexBuffer.unbind();
-        if (this.bufferInfo) this.bufferInfo.unbind();
+        this.bufferInfo.unbind();
     };
 
     AbstractDrawer.prototype.setUniform = function setUniform(name, value) {
@@ -819,11 +816,10 @@ var VertexBuffer = function () {
         this.attrName = attrName;
     };
 
-    VertexBuffer.prototype.bind = function bind(program, attrName) {
-        if (!attrName) attrName = this.attrName;
+    VertexBuffer.prototype.bind = function bind(program) {
         if (true && !program) throw "can not bind VertexBuffer, program not specified";
-        if (true && !attrName) throw "can not bind VertexBuffer, attribute name not specified";
-        program.bindBuffer(this, attrName);
+        if (true && !this.attrName) throw "can not bind VertexBuffer, attribute name not specified";
+        program.bindBuffer(this, this.attrName);
     };
 
     VertexBuffer.prototype.unbind = function unbind() {
@@ -16517,7 +16513,7 @@ var _indexBuffer2 = _interopRequireDefault(_indexBuffer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*global DEBUG:true*/
 
 var ArrayInfo = exports.ArrayInfo = function ArrayInfo(_ref) {
     var array = _ref.array,
@@ -16554,19 +16550,23 @@ var BufferInfo = function () {
         this.posIndexBuffer = null;
         this.texVertexBuffer = null;
         this.drawMethod = null;
+        this.numOfElementsToDraw = 0;
 
-        // todo array info validation
         this.gl = gl;
+
+        if (this.drawMethod === undefined) throw "can not create BufferInfo: drawMethod not defined";
         this.drawMethod = drawMethod;
-        if (posVertexInfo) {
-            this.posVertexBuffer = new _vertexBuffer2.default(gl);
-            this.posVertexBuffer.setData(posVertexInfo.array, posVertexInfo.type, posVertexInfo.size);
-            this.posVertexBuffer.setAttrName(posVertexInfo.attrName);
-        }
+
+        if (true && !posVertexInfo) throw "can not create BufferInfo: posVertexInfo is mandatory";
+        this.posVertexBuffer = new _vertexBuffer2.default(gl);
+        this.posVertexBuffer.setData(posVertexInfo.array, posVertexInfo.type, posVertexInfo.size);
+        this.posVertexBuffer.setAttrName(posVertexInfo.attrName);
+
         if (posIndexInfo) {
             this.posIndexBuffer = new _indexBuffer2.default(gl);
             this.posIndexBuffer.setData(posIndexInfo.array);
-        }
+        } else this.numOfElementsToDraw = this._getNumOfElementsToDraw(this.drawMethod);
+
         if (texVertexInfo) {
             this.texVertexBuffer = new _vertexBuffer2.default(gl);
             this.texVertexBuffer.setData(texVertexInfo.array, texVertexInfo.type, texVertexInfo.size);
@@ -16587,14 +16587,14 @@ var BufferInfo = function () {
         if (this.texVertexBuffer) this.texVertexBuffer.unbind();
     };
 
-    BufferInfo.prototype._getBufferLength = function _getBufferLength(drawMethod) {
+    BufferInfo.prototype._getNumOfElementsToDraw = function _getNumOfElementsToDraw(drawMethod) {
         switch (drawMethod) {
             case this.gl.LINE_STRIP:
             case this.gl.TRIANGLE_FAN:
                 return this.posVertexBuffer.getBufferLength() / 2;
                 break;
             default:
-                throw "unknown draw method";
+                throw "unknown draw method: " + drawMethod;
         }
     };
 
@@ -16602,8 +16602,7 @@ var BufferInfo = function () {
         if (this.posIndexBuffer !== null) {
             this.gl.drawElements(this.drawMethod, this.posIndexBuffer.getBufferLength(), this.gl.UNSIGNED_SHORT, 0);
         } else {
-            this.gl.drawArrays(this.drawMethod, 0, this._getBufferLength(this.drawMethod) // todo precalculate
-            );
+            this.gl.drawArrays(this.drawMethod, 0, this.numOfElementsToDraw);
         }
     };
 

@@ -22,14 +22,11 @@ export default class AbstractDrawer {
             AbstractDrawer.currentInstance.unbind();
         }
         AbstractDrawer.currentInstance = this;
-        if (this.bufferInfo) this.bufferInfo.bind(this.program);
+        this.bufferInfo.bind(this.program);
     }
 
     unbind(){
-        if (this.posVertexBuffer) this.posVertexBuffer.unbind();
-        if (this.posIndexBuffer) this.posIndexBuffer.unbind();
-        if (this.texVertexBuffer) this.texVertexBuffer.unbind();
-        if (this.bufferInfo) this.bufferInfo.unbind();
+        this.bufferInfo.unbind();
     }
 
     setUniform(name,value){

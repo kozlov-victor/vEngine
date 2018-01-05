@@ -1,3 +1,4 @@
+/*global DEBUG:true*/
 
 import VertexBuffer from "./vertexBuffer";
 import IndexBuffer from "./indexBuffer";
@@ -26,20 +27,26 @@ export default class BufferInfo {
     posIndexBuffer = null;
     texVertexBuffer = null;
     drawMethod = null;
+    numOfElementsToDraw = 0;
 
     constructor(gl,{posVertexInfo = null,posIndexInfo = null,texVertexInfo = null,drawMethod}){
-        // todo array info validation
         this.gl = gl;
+
+        if (this.drawMethod===undefined)
+            throw `can not create BufferInfo: drawMethod not defined`;
         this.drawMethod = drawMethod;
-        if (posVertexInfo) {
-            this.posVertexBuffer = new VertexBuffer(gl);
-            this.posVertexBuffer.setData(posVertexInfo.array,posVertexInfo.type,posVertexInfo.size);
-            this.posVertexBuffer.setAttrName(posVertexInfo.attrName);
-        }
+
+        if (DEBUG && !posVertexInfo)
+            throw `can not create BufferInfo: posVertexInfo is mandatory`;
+        this.posVertexBuffer = new VertexBuffer(gl);
+        this.posVertexBuffer.setData(posVertexInfo.array,posVertexInfo.type,posVertexInfo.size);
+        this.posVertexBuffer.setAttrName(posVertexInfo.attrName);
+
         if (posIndexInfo) {
             this.posIndexBuffer = new IndexBuffer(gl);
             this.posIndexBuffer.setData(posIndexInfo.array);
-        }
+        } else this.numOfElementsToDraw = this._getNumOfElementsToDraw(this.drawMethod);
+
         if (texVertexInfo) {
             this.texVertexBuffer = new VertexBuffer(gl);
             this.texVertexBuffer.setData(texVertexInfo.array,texVertexInfo.type,texVertexInfo.size);
@@ -60,14 +67,14 @@ export default class BufferInfo {
         if (this.texVertexBuffer) this.texVertexBuffer.unbind();
     }
 
-    _getBufferLength(drawMethod){
+    _getNumOfElementsToDraw(drawMethod){
         switch (drawMethod) {
             case this.gl.LINE_STRIP:
             case this.gl.TRIANGLE_FAN:
                 return this.posVertexBuffer.getBufferLength() / 2;
                 break;
             default:
-                throw `unknown draw method`;
+                throw `unknown draw method: ${drawMethod}`;
         }
     }
 
@@ -81,7 +88,7 @@ export default class BufferInfo {
         } else {
             this.gl.drawArrays(
                 this.drawMethod,0,
-                this._getBufferLength(this.drawMethod) // todo precalculate
+                this.numOfElementsToDraw
             );
         }
     }
