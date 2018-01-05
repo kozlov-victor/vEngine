@@ -12,7 +12,7 @@ export default class ColorizeFilter extends AbstractFilter{
     prepare(programGen){
         programGen.setFragmentMainFn(`
             vec4 col = texture2D(texture, v_texCoord);
-            col.r = col.g = 0.8;
+            col.g = 0.9;
             gl_FragColor = col;
         `);
     }

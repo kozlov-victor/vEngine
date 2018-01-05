@@ -3,7 +3,7 @@
 import BaseModel from '../baseModel'
 import LoadingQueue from '../../core/misc/loadingQueue'
 import TileMap from './tileMap'
-import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilter/blackWhite";
+import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilters/blackWhite";
 
 export default class Scene extends BaseModel {
 

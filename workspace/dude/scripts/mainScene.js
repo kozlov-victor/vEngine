@@ -32,7 +32,7 @@ export class MainSceneBehaviour {
             this.game.renderer.fillRect(p.x,p.y,50,50,this.color);
             this.game.renderer.fillCircle(p.x,p.y,25,[0,1,0,1]);
             //this.game.renderer.log(p.x);
-            //this.game.renderer.drawLine(p.x,p.y,p.x+20,p.y+30,this.color);
+            this.game.renderer.drawLine(p.x,p.y,p.x+50,p.y+30,[0,1,1,1]);
         });
         //this.game.renderer.log(this.points.length);
         //this.game.renderer.log({a:2});

@@ -35,8 +35,14 @@ export default class AbstractDrawer {
         this.uniformCache[name]=value;
     }
 
-    draw(){
+    drawElements(){
         this.bufferInfo.draw();
+    }
+
+    draw(uniforms){
+        this.bind();
+        Object.keys(uniforms).forEach(name=>this.setUniform(name,uniforms[name]));
+        this.drawElements();
     }
 
 }

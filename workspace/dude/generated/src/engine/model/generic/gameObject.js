@@ -1,8 +1,8 @@
 /*global DEBUG:true*/
 import GameObjectProto from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
-import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilter/blackWhite";
-import ColorizeFilter from "../../core/renderer/webGl/filters/textureFilter/colorizeFilter";
+import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilters/blackWhite";
+import ColorizeFilter from "../../core/renderer/webGl/filters/textureFilters/colorizeFilter";
 
 const noop = ()=>{};
 

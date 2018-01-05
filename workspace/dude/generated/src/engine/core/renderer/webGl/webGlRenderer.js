@@ -143,20 +143,12 @@ export default class WebGlRenderer extends AbstractRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
-        if (this.currTex!==texture){
-            texture.bind();
-            this.currTex = texture;
-        }
-
-        this.spriteRectDrawer.bind();
-        this.spriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight));
-        this.spriteRectDrawer.setUniform("u_vertexMatrix",
-            makePositionMatrix(
-                dstX,dstY,srcWidth,srcHeight,
-                this.game.width,this.game.height)
-        );
-        this.spriteRectDrawer.setUniform('u_alpha',1); // alpha
-        this.spriteRectDrawer.draw();
+        let uniforms = {
+            u_textureMatrix: makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight),
+            u_vertexMatrix: makePositionMatrix(dstX,dstY,srcWidth,srcHeight, this.game.width,this.game.height),
+            u_alpha: 1
+        };
+        this.spriteRectDrawer.draw(texture,uniforms);
     }
 
     drawTiledImage(texturePath,
@@ -175,42 +167,33 @@ export default class WebGlRenderer extends AbstractRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
-
-        if (this.currTex!==texture){
-            texture.bind();
-            this.currTex = texture;
-        }
-
-        this.tiledSpriteRectDrawer.bind();
-        this.tiledSpriteRectDrawer.setUniform("u_textureMatrix",makeTextureMatrix(
+        let uniforms = {};
+        uniforms.u_textureMatrix = makeTextureMatrix(
             0,0,dstWidth, dstHeight,
-            texWidth,texHeight)
+            texWidth,texHeight
         );
-        this.tiledSpriteRectDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
+        uniforms.u_vertexMatrix = makePositionMatrix(
             dstX,dstY,dstWidth, dstHeight,
-            this.game.width,this.game.height)
+            this.game.width,this.game.height
         );
-        this.tiledSpriteRectDrawer.setUniform('u_frameCoords',
-            [srcX/texWidth,srcY/texHeight,srcWidth/texWidth,srcHeight/texHeight]);
-        this.tiledSpriteRectDrawer.setUniform('u_offsetCoords',[offsetX/srcWidth,offsetY/srcHeight]);
-        this.tiledSpriteRectDrawer.setUniform('u_alpha',1); // alpha
-        this.tiledSpriteRectDrawer.draw();
+        uniforms.u_frameCoords = [srcX/texWidth,srcY/texHeight,srcWidth/texWidth,srcHeight/texHeight];
+        uniforms.u_offsetCoords = [offsetX/srcWidth,offsetY/srcHeight];
+        uniforms.u_alpha = 1;
+        this.tiledSpriteRectDrawer.draw(texture,uniforms);
 
     }
 
     fillRect(x, y, width, height, color){
         if (stop) return;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x,y,width,height})) return;
-        let colorRectDrawer = this.colorRectDrawer;
-        let gl = this.gl;
-        colorRectDrawer.bind();
-        colorRectDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
+        let uniforms = {
+            u_vertexMatrix: makePositionMatrix(
                 x,y,width,height,
-                this.game.width,this.game.height)
-        );
-        colorRectDrawer.setUniform("u_rgba",color);
+                this.game.width,this.game.height),
+            u_rgba: color
+        };
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        colorRectDrawer.draw();
+        this.colorRectDrawer.draw(uniforms);
     }
 
     drawRect(x,y,w,h,color){
@@ -224,31 +207,27 @@ export default class WebGlRenderer extends AbstractRenderer {
         if (stop) return;
         let dx = x2-x1,dy = y2-y1;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x1,y:y1,width:dx,height:dy})) return;
-        let gl = this.gl;
-        let lineDrawer = this.lineDrawer;
-        lineDrawer.bind();
-        lineDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
+        let uniforms = {};
+        uniforms.u_vertexMatrix = makePositionMatrix(
             x1,y1,dx,dy,
-            this.game.width,this.game.height)
+            this.game.width,this.game.height
         );
-        lineDrawer.setUniform("u_rgba",color);
+        uniforms.u_rgba = color;
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        lineDrawer.draw();
+        this.lineDrawer.draw(uniforms);
     }
 
     fillCircle(x,y,r,color){
         let r2 = r*2;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x-r,y:y-r,width:r2,height:r2})) return;
-        let circleDrawer = this.circleDrawer;
-        let gl = this.gl;
-        circleDrawer.bind();
-        circleDrawer.setUniform("u_vertexMatrix",makePositionMatrix(
+        let uniforms = {};
+        uniforms.u_vertexMatrix = makePositionMatrix(
             x-r,y-r,r2,r2,
-            this.game.width,this.game.height)
+            this.game.width,this.game.height
         );
-        circleDrawer.setUniform("u_rgba",color);
+        uniforms.u_rgba = color;
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        circleDrawer.draw();
+        this.circleDrawer.draw(uniforms);
     }
 
     setAlpha(a){
@@ -316,27 +295,21 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 
-        this.spriteRectDrawer.bind();
-        texToDraw.bind();
-
-        this.spriteRectDrawer.setUniform('u_vertexMatrix',
-            makePositionMatrix(
+        let uniforms = {
+            u_vertexMatrix: makePositionMatrix(
                 0,0,
                 this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor,
                 fullScreen.w,fullScreen.h
-            )
-        );
-
-        this.spriteRectDrawer.setUniform('u_textureMatrix',
-            makeTextureMatrix(
+            ),
+            u_textureMatrix: makeTextureMatrix(
                 0,0,fullScreen.w,fullScreen.h,
                 fullScreen.w,fullScreen.h
-            )
-        );
-        this.spriteRectDrawer.setUniform('u_alpha',1);
-
+            ),
+            u_alpha: 1
+        };
+        this.spriteRectDrawer.draw(texToDraw,uniforms);
+        texToDraw.bind();
         //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-        this.spriteRectDrawer.draw();
         this.restore();
     };
 

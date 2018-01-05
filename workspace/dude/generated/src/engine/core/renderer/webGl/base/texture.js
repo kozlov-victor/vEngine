@@ -50,6 +50,8 @@ export default class Texture {
     isPowerOfTwo = false;
     _texFilterBuff = null;
 
+    static currInstances = {};
+
     constructor(gl){
         if (DEBUG && !gl) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
         this.gl = gl;
@@ -120,11 +122,13 @@ export default class Texture {
         return this._texFilterBuff.getSourceBuffer().texture;
     }
 
-    bind(i) { // uniform eq to 0 by default
+    bind(i = 0) { // uniform eq to 0 by default
         // to define max texture units supported gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        if (Texture.currInstances[i]===this) return;
         //gl.activeTexture(gl.TEXTURE0+i);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
         // gl.uniform1i(uLoc, i);
+        Texture.currInstances[i] = this;
     }
 
     unbind(i) {

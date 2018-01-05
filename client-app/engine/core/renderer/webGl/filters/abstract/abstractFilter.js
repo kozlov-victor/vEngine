@@ -39,23 +39,12 @@ export default class AbstractFilter {
     }
 
     doFilter(srcTexture,destFrameBuffer){
-        srcTexture.bind();
         destFrameBuffer.bind();
-        this.spriteRectDrawer.bind();
-        this.updateUniforms();
         let w = srcTexture.size.width;
         let h = srcTexture.size.height;
-        this.spriteRectDrawer.setUniform("u_textureMatrix",identity);
-        this.spriteRectDrawer.setUniform("u_vertexMatrix",
-            makePositionMatrix(0,0,w,h)
-        );
-        this.spriteRectDrawer.draw();
-    }
-
-    updateUniforms(){
-        Object.keys(this.uniformsToSet).forEach(name=>{
-            this.spriteRectDrawer.setUniform(name,this.uniformsToSet[name]);
-        });
+        this.uniformsToSet.u_textureMatrix = identity;
+        this.uniformsToSet.u_vertexMatrix = makePositionMatrix(0,0,w,h);
+        this.spriteRectDrawer.draw(srcTexture,this.uniformsToSet);
     }
 
     setParam(name,value){

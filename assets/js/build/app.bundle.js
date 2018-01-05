@@ -691,8 +691,18 @@ var AbstractDrawer = (_temp = _class = function () {
         this.uniformCache[name] = value;
     };
 
-    AbstractDrawer.prototype.draw = function draw() {
+    AbstractDrawer.prototype.drawElements = function drawElements() {
         this.bufferInfo.draw();
+    };
+
+    AbstractDrawer.prototype.draw = function draw(uniforms) {
+        var _this = this;
+
+        this.bind();
+        Object.keys(uniforms).forEach(function (name) {
+            return _this.setUniform(name, uniforms[name]);
+        });
+        this.drawElements();
     };
 
     return AbstractDrawer;
@@ -2732,11 +2742,11 @@ var _all = __webpack_require__(96);
 
 var commonBehaviours = _interopRequireWildcard(_all);
 
-var _blackWhite = __webpack_require__(42);
+var _blackWhite = __webpack_require__(184);
 
 var _blackWhite2 = _interopRequireDefault(_blackWhite);
 
-var _colorizeFilter = __webpack_require__(117);
+var _colorizeFilter = __webpack_require__(185);
 
 var _colorizeFilter2 = _interopRequireDefault(_colorizeFilter);
 
@@ -3025,7 +3035,7 @@ var _tileMap = __webpack_require__(29);
 
 var _tileMap2 = _interopRequireDefault(_tileMap);
 
-var _blackWhite = __webpack_require__(42);
+var _blackWhite = __webpack_require__(184);
 
 var _blackWhite2 = _interopRequireDefault(_blackWhite);
 
@@ -4550,6 +4560,8 @@ exports.default = FrameBuffer;
 exports.__esModule = true;
 exports.default = undefined;
 
+var _class2, _temp;
+
 var _frameBuffer = __webpack_require__(39);
 
 var _frameBuffer2 = _interopRequireDefault(_frameBuffer);
@@ -4603,7 +4615,7 @@ var TextureFilterBuffer = function () {
     return TextureFilterBuffer;
 }();
 
-var Texture = function () {
+var Texture = (_temp = _class2 = function () {
     function Texture(gl) {
         _classCallCheck(this, Texture);
 
@@ -4675,12 +4687,15 @@ var Texture = function () {
         return this._texFilterBuff.getSourceBuffer().texture;
     };
 
-    Texture.prototype.bind = function bind(i) {
+    Texture.prototype.bind = function bind() {
+        var i = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
         // uniform eq to 0 by default
         // to define max texture units supported gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        if (Texture.currInstances[i] === this) return;
         //gl.activeTexture(gl.TEXTURE0+i);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
         // gl.uniform1i(uLoc, i);
+        Texture.currInstances[i] = this;
     };
 
     Texture.prototype.unbind = function unbind(i) {
@@ -4696,8 +4711,7 @@ var Texture = function () {
     };
 
     return Texture;
-}();
-
+}(), _class2.currInstances = {}, _temp);
 exports.default = Texture;
 
 /***/ }),
@@ -4760,23 +4774,12 @@ var AbstractFilter = function () {
     };
 
     AbstractFilter.prototype.doFilter = function doFilter(srcTexture, destFrameBuffer) {
-        srcTexture.bind();
         destFrameBuffer.bind();
-        this.spriteRectDrawer.bind();
-        this.updateUniforms();
         var w = srcTexture.size.width;
         var h = srcTexture.size.height;
-        this.spriteRectDrawer.setUniform("u_textureMatrix", identity);
-        this.spriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(0, 0, w, h));
-        this.spriteRectDrawer.draw();
-    };
-
-    AbstractFilter.prototype.updateUniforms = function updateUniforms() {
-        var _this = this;
-
-        Object.keys(this.uniformsToSet).forEach(function (name) {
-            _this.spriteRectDrawer.setUniform(name, _this.uniformsToSet[name]);
-        });
+        this.uniformsToSet.u_textureMatrix = identity;
+        this.uniformsToSet.u_vertexMatrix = makePositionMatrix(0, 0, w, h);
+        this.spriteRectDrawer.draw(srcTexture, this.uniformsToSet);
     };
 
     AbstractFilter.prototype.setParam = function setParam(name, value) {
@@ -4789,48 +4792,7 @@ var AbstractFilter = function () {
 exports.default = AbstractFilter;
 
 /***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _abstractFilter = __webpack_require__(41);
-
-var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var BlackWhiteFilter = function (_AbstractFilter) {
-    _inherits(BlackWhiteFilter, _AbstractFilter);
-
-    function BlackWhiteFilter(gl) {
-        _classCallCheck(this, BlackWhiteFilter);
-
-        return _possibleConstructorReturn(this, _AbstractFilter.call(this, gl));
-    }
-
-    BlackWhiteFilter.prototype.prepare = function prepare(programGen) {
-        programGen.addFragmentUniform('float', 'u_mixFactor');
-        programGen.setFragmentMainFn('\n            vec4 col = texture2D(texture, v_texCoord);\n            float avg = (col.r+col.g+col.b)/3.0;\n            vec4 bw = vec4(avg);\n            vec4 result = mix(col,bw,vec4(u_mixFactor));\n            result.a = 1.0;\n            gl_FragColor = result; \n        ');
-        this.setParam('u_mixFactor', 0.8);
-    };
-
-    return BlackWhiteFilter;
-}(_abstractFilter2.default);
-
-exports.default = BlackWhiteFilter;
-
-/***/ }),
+/* 42 */,
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4885,6 +4847,11 @@ var SpriteRectDrawer = function (_AbstractDrawer) {
         });
         return _this;
     }
+
+    SpriteRectDrawer.prototype.draw = function draw(texture, uniforms) {
+        texture.bind();
+        _AbstractDrawer.prototype.draw.call(this, uniforms);
+    };
 
     return SpriteRectDrawer;
 }(_abstractDrawer2.default);
@@ -15129,46 +15096,7 @@ var MatrixStack = function () {
 exports.default = MatrixStack;
 
 /***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-exports.default = undefined;
-
-var _abstractFilter = __webpack_require__(41);
-
-var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ColorizeFilter = function (_AbstractFilter) {
-    _inherits(ColorizeFilter, _AbstractFilter);
-
-    function ColorizeFilter(gl) {
-        _classCallCheck(this, ColorizeFilter);
-
-        return _possibleConstructorReturn(this, _AbstractFilter.call(this, gl));
-    }
-
-    ColorizeFilter.prototype.prepare = function prepare(programGen) {
-        programGen.setFragmentMainFn("\n            vec4 col = texture2D(texture, v_texCoord);\n            col.r = col.g = 0.8;\n            gl_FragColor = col;\n        ");
-    };
-
-    return ColorizeFilter;
-}(_abstractFilter2.default);
-
-exports.default = ColorizeFilter;
-
-/***/ }),
+/* 117 */,
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15598,6 +15526,11 @@ var TiledSpriteRectDrawer = function (_AbstractDrawer) {
         return _this;
     }
 
+    TiledSpriteRectDrawer.prototype.draw = function draw(texture, uniforms) {
+        texture.bind();
+        _AbstractDrawer.prototype.draw.call(this, uniforms);
+    };
+
     return TiledSpriteRectDrawer;
 }(_abstractDrawer2.default);
 
@@ -15788,16 +15721,12 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
 
-        if (this.currTex !== texture) {
-            texture.bind();
-            this.currTex = texture;
-        }
-
-        this.spriteRectDrawer.bind();
-        this.spriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight));
-        this.spriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(dstX, dstY, srcWidth, srcHeight, this.game.width, this.game.height));
-        this.spriteRectDrawer.setUniform('u_alpha', 1); // alpha
-        this.spriteRectDrawer.draw();
+        var uniforms = {
+            u_textureMatrix: makeTextureMatrix(srcX, srcY, srcWidth, srcHeight, texWidth, texHeight),
+            u_vertexMatrix: makePositionMatrix(dstX, dstY, srcWidth, srcHeight, this.game.width, this.game.height),
+            u_alpha: 1
+        };
+        this.spriteRectDrawer.draw(texture, uniforms);
     };
 
     WebGlRenderer.prototype.drawTiledImage = function drawTiledImage(texturePath, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, offsetX, offsetY) {
@@ -15812,30 +15741,24 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
 
-        if (this.currTex !== texture) {
-            texture.bind();
-            this.currTex = texture;
-        }
-
-        this.tiledSpriteRectDrawer.bind();
-        this.tiledSpriteRectDrawer.setUniform("u_textureMatrix", makeTextureMatrix(0, 0, dstWidth, dstHeight, texWidth, texHeight));
-        this.tiledSpriteRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(dstX, dstY, dstWidth, dstHeight, this.game.width, this.game.height));
-        this.tiledSpriteRectDrawer.setUniform('u_frameCoords', [srcX / texWidth, srcY / texHeight, srcWidth / texWidth, srcHeight / texHeight]);
-        this.tiledSpriteRectDrawer.setUniform('u_offsetCoords', [offsetX / srcWidth, offsetY / srcHeight]);
-        this.tiledSpriteRectDrawer.setUniform('u_alpha', 1); // alpha
-        this.tiledSpriteRectDrawer.draw();
+        var uniforms = {};
+        uniforms.u_textureMatrix = makeTextureMatrix(0, 0, dstWidth, dstHeight, texWidth, texHeight);
+        uniforms.u_vertexMatrix = makePositionMatrix(dstX, dstY, dstWidth, dstHeight, this.game.width, this.game.height);
+        uniforms.u_frameCoords = [srcX / texWidth, srcY / texHeight, srcWidth / texWidth, srcHeight / texHeight];
+        uniforms.u_offsetCoords = [offsetX / srcWidth, offsetY / srcHeight];
+        uniforms.u_alpha = 1;
+        this.tiledSpriteRectDrawer.draw(texture, uniforms);
     };
 
     WebGlRenderer.prototype.fillRect = function fillRect(x, y, width, height, color) {
         if (stop) return;
         if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x, y: y, width: width, height: height })) return;
-        var colorRectDrawer = this.colorRectDrawer;
-        var gl = this.gl;
-        colorRectDrawer.bind();
-        colorRectDrawer.setUniform("u_vertexMatrix", makePositionMatrix(x, y, width, height, this.game.width, this.game.height));
-        colorRectDrawer.setUniform("u_rgba", color);
+        var uniforms = {
+            u_vertexMatrix: makePositionMatrix(x, y, width, height, this.game.width, this.game.height),
+            u_rgba: color
+        };
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        colorRectDrawer.draw();
+        this.colorRectDrawer.draw(uniforms);
     };
 
     WebGlRenderer.prototype.drawRect = function drawRect(x, y, w, h, color) {
@@ -15850,25 +15773,21 @@ var WebGlRenderer = function (_AbstractRenderer) {
         var dx = x2 - x1,
             dy = y2 - y1;
         if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x1, y: y1, width: dx, height: dy })) return;
-        var gl = this.gl;
-        var lineDrawer = this.lineDrawer;
-        lineDrawer.bind();
-        lineDrawer.setUniform("u_vertexMatrix", makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height));
-        lineDrawer.setUniform("u_rgba", color);
+        var uniforms = {};
+        uniforms.u_vertexMatrix = makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height);
+        uniforms.u_rgba = color;
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        lineDrawer.draw();
+        this.lineDrawer.draw(uniforms);
     };
 
     WebGlRenderer.prototype.fillCircle = function fillCircle(x, y, r, color) {
         var r2 = r * 2;
         if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x - r, y: y - r, width: r2, height: r2 })) return;
-        var circleDrawer = this.circleDrawer;
-        var gl = this.gl;
-        circleDrawer.bind();
-        circleDrawer.setUniform("u_vertexMatrix", makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height));
-        circleDrawer.setUniform("u_rgba", color);
+        var uniforms = {};
+        uniforms.u_vertexMatrix = makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height);
+        uniforms.u_rgba = color;
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        circleDrawer.draw();
+        this.circleDrawer.draw(uniforms);
     };
 
     WebGlRenderer.prototype.setAlpha = function setAlpha(a) {
@@ -15935,16 +15854,14 @@ var WebGlRenderer = function (_AbstractRenderer) {
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w, fullScreen.h);
 
-        this.spriteRectDrawer.bind();
+        var uniforms = {
+            u_vertexMatrix: makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h),
+            u_textureMatrix: makeTextureMatrix(0, 0, fullScreen.w, fullScreen.h, fullScreen.w, fullScreen.h),
+            u_alpha: 1
+        };
+        this.spriteRectDrawer.draw(texToDraw, uniforms);
         texToDraw.bind();
-
-        this.spriteRectDrawer.setUniform('u_vertexMatrix', makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h));
-
-        this.spriteRectDrawer.setUniform('u_textureMatrix', makeTextureMatrix(0, 0, fullScreen.w, fullScreen.h, fullScreen.w, fullScreen.h));
-        this.spriteRectDrawer.setUniform('u_alpha', 1);
-
         //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-        this.spriteRectDrawer.draw();
         this.restore();
     };
 
@@ -16610,6 +16527,88 @@ var BufferInfo = function () {
 }();
 
 exports.default = BufferInfo;
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractFilter = __webpack_require__(41);
+
+var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BlackWhiteFilter = function (_AbstractFilter) {
+    _inherits(BlackWhiteFilter, _AbstractFilter);
+
+    function BlackWhiteFilter(gl) {
+        _classCallCheck(this, BlackWhiteFilter);
+
+        return _possibleConstructorReturn(this, _AbstractFilter.call(this, gl));
+    }
+
+    BlackWhiteFilter.prototype.prepare = function prepare(programGen) {
+        programGen.addFragmentUniform('float', 'u_mixFactor');
+        programGen.setFragmentMainFn('\n            vec4 col = texture2D(texture, v_texCoord);\n            float avg = (col.r+col.g+col.b)/3.0;\n            vec4 bw = vec4(avg);\n            vec4 result = mix(col,bw,vec4(u_mixFactor));\n            result.a = 1.0;\n            gl_FragColor = result; \n        ');
+        this.setParam('u_mixFactor', 0.8);
+    };
+
+    return BlackWhiteFilter;
+}(_abstractFilter2.default);
+
+exports.default = BlackWhiteFilter;
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = undefined;
+
+var _abstractFilter = __webpack_require__(41);
+
+var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ColorizeFilter = function (_AbstractFilter) {
+    _inherits(ColorizeFilter, _AbstractFilter);
+
+    function ColorizeFilter(gl) {
+        _classCallCheck(this, ColorizeFilter);
+
+        return _possibleConstructorReturn(this, _AbstractFilter.call(this, gl));
+    }
+
+    ColorizeFilter.prototype.prepare = function prepare(programGen) {
+        programGen.setFragmentMainFn("\n            vec4 col = texture2D(texture, v_texCoord);\n            col.g = 0.9;\n            gl_FragColor = col;\n        ");
+    };
+
+    return ColorizeFilter;
+}(_abstractFilter2.default);
+
+exports.default = ColorizeFilter;
 
 /***/ })
 /******/ ]);

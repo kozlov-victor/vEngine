@@ -38,4 +38,9 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
 
     }
 
+    draw(texture,uniforms){
+        texture.bind();
+        super.draw(uniforms);
+    }
+
 }
