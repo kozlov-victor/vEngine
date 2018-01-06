@@ -22,18 +22,18 @@ export default class AbstractFilter {
     constructor(gl){
         if (DEBUG && !gl) throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
         this.gl = gl;
-        this.programGen = new TexShaderGenerator();
-        this.prepare(this.programGen);
-        this._afterPrepare();
+        let gen = new TexShaderGenerator();
+        this.prepare(gen);
+        this._afterPrepare(gen);
     }
 
-    prepare(){}
+    prepare(gen){}
 
-    _afterPrepare(){
+    _afterPrepare(gen){
         let program = new ShaderProgram(
             this.gl,
-            this.programGen.getVertexSource(),
-            this.programGen.getFragmentSource()
+            gen.getVertexSource(),
+            gen.getFragmentSource()
         );
         this.spriteRectDrawer = new SpriteRectDrawer(this.gl,program);
     }

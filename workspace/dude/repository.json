@@ -14,9 +14,9 @@
             ],
             "useBG": true,
             "colorBG": {
-                "r": 230,
-                "g": 254,
-                "b": 255
+                "r": 50,
+                "g": 68,
+                "b": 154
             },
             "tileMap": {
                 "id": 52,
@@ -65,6 +65,30 @@
                 {
                     "type": "TextField",
                     "id": 76
+                },
+                {
+                    "type": "GameObject",
+                    "id": 77
+                },
+                {
+                    "type": "GameObject",
+                    "id": 78
+                },
+                {
+                    "type": "GameObject",
+                    "id": 81
+                },
+                {
+                    "type": "GameObject",
+                    "id": 82
+                },
+                {
+                    "type": "GameObject",
+                    "id": 86
+                },
+                {
+                    "type": "GameObject",
+                    "id": 87
                 }
             ]
         }
@@ -111,6 +135,22 @@
             "type": "SpriteSheet",
             "resourcePath": "resources/tile.jpg",
             "id": 72
+        },
+        {
+            "name": "flare",
+            "width": 174,
+            "height": 173,
+            "type": "SpriteSheet",
+            "resourcePath": "resources/flare.png",
+            "id": 79
+        },
+        {
+            "name": "eso1611a",
+            "width": 120,
+            "height": 120,
+            "type": "SpriteSheet",
+            "resourcePath": "resources/eso1611a.png",
+            "id": 84
         }
     ],
     "GameObjectProto": [
@@ -215,6 +255,40 @@
                 "type": "SpriteSheet"
             },
             "id": 73
+        },
+        {
+            "id": 80,
+            "name": "flare",
+            "width": 174,
+            "height": 173,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 79,
+                "type": "SpriteSheet"
+            },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 83
+                }
+            ]
+        },
+        {
+            "id": 85,
+            "name": "eso1611a",
+            "width": 120,
+            "height": 120,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 84,
+                "type": "SpriteSheet"
+            },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 88
+                }
+            ]
         }
     ],
     "GameObject": [
@@ -222,8 +296,8 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 592,
-                "y": 43
+                "x": 108,
+                "y": 227
             },
             "layerId": 2,
             "type": "GameObject",
@@ -305,8 +379,8 @@
             "id": 71,
             "name": "clamp",
             "pos": {
-                "x": 739,
-                "y": 325
+                "x": 666,
+                "y": 328
             },
             "layerId": 2,
             "type": "GameObject",
@@ -326,6 +400,90 @@
             "type": "GameObject",
             "gameObjectProto": {
                 "id": 73,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 77,
+            "name": "platform",
+            "pos": {
+                "x": 54,
+                "y": 302
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 6,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 78,
+            "name": "platform",
+            "pos": {
+                "x": 43,
+                "y": 393
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 6,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 81,
+            "name": "flare",
+            "pos": {
+                "x": 194,
+                "y": 46
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 80,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 82,
+            "name": "flare",
+            "pos": {
+                "x": 255,
+                "y": 7
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 80,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 86,
+            "name": "eso1611a",
+            "pos": {
+                "x": 134,
+                "y": 14
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 85,
+                "type": "GameObjectProto"
+            }
+        },
+        {
+            "id": 87,
+            "name": "eso1611a",
+            "pos": {
+                "x": 93,
+                "y": 53
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 85,
                 "type": "GameObjectProto"
             }
         }
@@ -402,6 +560,16 @@
             "name": "Draggable",
             "type": "CommonBehaviour",
             "id": 75
+        },
+        {
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 83
+        },
+        {
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 88
         }
     ],
     "Font": [

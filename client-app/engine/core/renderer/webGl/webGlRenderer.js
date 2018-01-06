@@ -15,6 +15,7 @@ import MatrixStack from './base/matrixStack'
 import mat4 from '../../geometry/mat4'
 import matEx from '../../mathEx'
 import Texture from './base/texture'
+import MultBlendDrawer from "./renderPrograms/generic/blend/multBlendDrawer";
 
 let stop = 0;
 
@@ -63,7 +64,6 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.container = container;
         this.matrixStack = matrixStack;
         this.registerResize();
-        this.currTex = null;
         this._init();
     }
 
@@ -77,6 +77,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
         //this.modelDrawer = new ModelDrawer(gl);
+        this.multBlendDrawer = new MultBlendDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
 
@@ -92,7 +93,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         let texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
         texToDraw = texToDraw.applyFilters(renderable.filters);
-        this.frameBuffer.bind();
+        this.frameBuffer.bind(); // todo make it implicit
 
         this.save();
         // todo check if angle neq 0
@@ -148,7 +149,11 @@ export default class WebGlRenderer extends AbstractRenderer {
             u_vertexMatrix: makePositionMatrix(dstX,dstY,srcWidth,srcHeight, this.game.width,this.game.height),
             u_alpha: 1
         };
-        this.spriteRectDrawer.draw(texture,uniforms);
+
+        if (srcWidth===120 || srcWidth===174) {
+            this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
+        }
+        else this.spriteRectDrawer.draw(texture,uniforms);
     }
 
     drawTiledImage(texturePath,
@@ -287,7 +292,6 @@ export default class WebGlRenderer extends AbstractRenderer {
     flipFrameBuffer(filters){
 
         let fullScreen = this.fullScreenSize;
-        this.currTex = null;
         this.restore();
         this.save();
         this.translate(0,fullScreen.h);
@@ -310,7 +314,6 @@ export default class WebGlRenderer extends AbstractRenderer {
             u_alpha: 1
         };
         this.spriteRectDrawer.draw(texToDraw,uniforms);
-        texToDraw.bind();
         //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.restore();
     };

@@ -45,6 +45,7 @@ export default class FrameBuffer {
 
     unbind(){
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        FrameBuffer.currInstance = null;
     }
 
     getTexture(){

@@ -127,14 +127,15 @@ export default class Texture {
     bind(i = 0) { // uniform eq to 0 by default
         // to define max texture units supported gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         if (Texture.currInstances[i]===this) return;
-        //gl.activeTexture(gl.TEXTURE0+i);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.tex);
-        // gl.uniform1i(uLoc, i);
+        let gl = this.gl;
+        gl.activeTexture(gl.TEXTURE0+i);
+        gl.bindTexture(gl.TEXTURE_2D, this.tex);
         Texture.currInstances[i] = this;
     }
 
-    unbind(i) {
+    unbind(i = 0) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        Texture.currInstances[i] = null;
     }
 
     getSize (){
