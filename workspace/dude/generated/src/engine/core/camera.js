@@ -1,7 +1,7 @@
 /*global DEBUG:true*/
 import Tween from "./tween";
 import mat4 from './geometry/mat4'
-import mathEx from './mathEx'
+import * as mathEx from './mathEx'
 import Rect from "./geometry/rect";
 import Point2d from "./geometry/point2d";
 
@@ -46,7 +46,7 @@ export default class Camera {
     }
 
     update(currTime,delta) {
-        let cameraRect = this.getRectScaled(); // todo cache this value
+        let cameraRect = this.getRectScaled();
         let gameObject = this.objFollowTo;
         if (!gameObject) return;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?

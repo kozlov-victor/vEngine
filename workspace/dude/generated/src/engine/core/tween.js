@@ -1,5 +1,5 @@
 
-import mathEx from './mathEx'
+import * as mathEx from './mathEx'
 
 let accessByPath = (obj,path)=>{
     let pathArr = path.split('.');
@@ -90,7 +90,7 @@ export default class Tween {
             let prp = this.propsToChange[l];
             let valFrom = this.desc.from[prp];
             let valTo = this.desc.to[prp];
-            let valCurr = mathEx.ease[this.easeFnName](
+            let valCurr = mathEx[this.easeFnName](
                 curTweenTime,
                 valFrom,
                 valTo - valFrom,

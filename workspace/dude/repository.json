@@ -159,6 +159,7 @@
             "name": "dude",
             "width": 32,
             "height": 48,
+            "rigid": true,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 3,
@@ -198,6 +199,7 @@
             "name": "platform",
             "width": 500,
             "height": 64,
+            "rigid": true,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 5,
@@ -215,6 +217,7 @@
             "name": "ground1",
             "width": 32,
             "height": 32,
+            "rigid": true,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 57,
@@ -233,6 +236,7 @@
             "name": "clamp",
             "width": 64,
             "height": 64,
+            "rigid": true,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 69,
@@ -246,15 +250,16 @@
             ]
         },
         {
+            "id": 73,
             "name": "tile",
             "width": 262,
             "height": 192,
+            "rigid": true,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 72,
                 "type": "SpriteSheet"
-            },
-            "id": 73
+            }
         },
         {
             "id": 80,

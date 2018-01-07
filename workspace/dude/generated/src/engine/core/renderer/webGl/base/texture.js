@@ -106,7 +106,9 @@ export default class Texture {
 
     }
 
-    applyFilters(filters){
+    applyFilters(filters,frameBuffer){
+        if (DEBUG && frameBuffer===undefined)
+            throw `can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`;
         let len = filters.length;
         if (len===0) return this;
         if (this._texFilterBuff.buffers===null)
@@ -121,6 +123,7 @@ export default class Texture {
             );
         }
         this._texFilterBuff.flip();
+        if (frameBuffer!==null) frameBuffer.bind();
         return this._texFilterBuff.getSourceBuffer().texture;
     }
 

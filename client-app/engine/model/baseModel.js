@@ -37,10 +37,11 @@ export default class BaseModel extends CommonObject {
         );
         this.game = game;
         this._emitter = new EventEmitter();
-        this.rigidBody = new ArcadeRigidBody(this);
     }
 
-    revalidate(){}
+    revalidate(){
+        this.rigidBody = this.rigid?new ArcadeRigidBody(this):null;
+    }
 
     setIndividualBehaviour(Clazz){}
 

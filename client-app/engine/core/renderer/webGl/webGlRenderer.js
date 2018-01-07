@@ -13,9 +13,10 @@ import ModelDrawer from './renderPrograms/generic/base/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import mat4 from '../../geometry/mat4'
-import matEx from '../../mathEx'
+import * as matEx from '../../mathEx'
 import Texture from './base/texture'
 import MultBlendDrawer from "./renderPrograms/generic/blend/multBlendDrawer";
+import Rect from "../../geometry/rect";
 
 let stop = 0;
 
@@ -92,18 +93,19 @@ export default class WebGlRenderer extends AbstractRenderer {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
 
         let texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
-        texToDraw = texToDraw.applyFilters(renderable.filters);
-        this.frameBuffer.bind(); // todo make it implicit
+        texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer,this.frameBuffer);
 
         this.save();
-        // todo check if angle neq 0
-        let halfV = renderable.width /2;
-        let halfH = renderable.height/2;
-        this.translate(renderable.pos.x + halfV,renderable.pos.y + halfH);
-        this.scale(renderable.scale.x,renderable.scale.y);
-        this.rotateZ(renderable.angle);
-        //ctx.rotateY(a);
-        this.translate(-halfV, -halfH);
+        this.translate(renderable.pos.x,renderable.pos.y);
+        if (!(renderable.angle===0 && renderable.scale.equal(1))) {
+            let halfV = renderable.width /2;
+            let halfH = renderable.height/2;
+            this.translate(halfV,halfH);
+            this.scale(renderable.scale.x,renderable.scale.y);
+            this.rotateZ(renderable.angle);
+            //ctx.rotateY(a);
+            this.translate(-halfV, -halfH);
+        }
 
         this.drawTexture(
             texToDraw,
@@ -139,7 +141,11 @@ export default class WebGlRenderer extends AbstractRenderer {
                 srcX, srcY, srcWidth, srcHeight,
                 dstX, dstY){
 
-        //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
+        let camRectScaled = this.game.camera.getRectScaled();
+        if (!matEx.overlapTest(
+            camRectScaled,
+            new Rect(camRectScaled.x+srcX,camRectScaled.y+srcY,srcWidth,srcHeight))
+        ) return;
 
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
@@ -297,7 +303,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.translate(0,fullScreen.h);
         this.scale(1,-1);
 
-        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters);
+        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null);
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 

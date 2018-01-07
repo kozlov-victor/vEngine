@@ -70,6 +70,7 @@ module.exports = {
         'comma-dangle':0,
         'no-trailing-spaces':0,
         'no-mixed-spaces-and-tabs':0,
-        'space-unary-ops':0
+        'space-unary-ops':0,
+        'no-floating-decimal': 0
     }
 };

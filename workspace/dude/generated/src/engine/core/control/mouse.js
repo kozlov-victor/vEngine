@@ -1,5 +1,5 @@
 /*global DEBUG:true*/
-import mathEx from '../mathEx'
+import * as mathEx from '../mathEx'
 import Point2d from "../geometry/point2d";
 import ObjectPool from "../misc/objectPool";
 

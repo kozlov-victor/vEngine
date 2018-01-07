@@ -35,6 +35,7 @@ export default class GameObjectProto extends BaseModel {
     }
 
     revalidate(){
+        super.revalidate();
         this.setFrameIndex(this.currFrameIndex);
         if (this.spriteSheet) {
             this.width = this.spriteSheet._frameWidth;
@@ -66,9 +67,9 @@ export default class GameObjectProto extends BaseModel {
 
         if (this._individualBehaviour) this._individualBehaviour.onUpdate(time,delta);
         for (let i=0,max = this.commonBehaviour.length;i<max;i++){
-            this.commonBehaviour[i].onUpdate(time,delta); // todo "update"?
+            this.commonBehaviour[i].onUpdate(time,delta);
         }
-        this.rigidBody.update(time,delta);
+        if (this.rigidBody!==null) this.rigidBody.update(time,delta);
         this.game.renderer.draw(this);
     }
 

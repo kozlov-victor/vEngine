@@ -98,7 +98,7 @@ var _arcadeRigidBody = __webpack_require__(61);
 
 var _arcadeRigidBody2 = _interopRequireDefault(_arcadeRigidBody);
 
-var _rect = __webpack_require__(18);
+var _rect = __webpack_require__(9);
 
 var _rect2 = _interopRequireDefault(_rect);
 
@@ -142,11 +142,12 @@ var BaseModel = (_dec = (0, _decorators.Transient)({
         if (1 && !game) throw 'can not create model \'' + _this.type + '\': game instance not passed to model constructor';
         _this.game = game;
         _this._emitter = new _eventEmitter2.default();
-        _this.rigidBody = new _arcadeRigidBody2.default(_this);
         return _this;
     }
 
-    BaseModel.prototype.revalidate = function revalidate() {};
+    BaseModel.prototype.revalidate = function revalidate() {
+        this.rigidBody = this.rigid ? new _arcadeRigidBody2.default(this) : null;
+    };
 
     BaseModel.prototype.setIndividualBehaviour = function setIndividualBehaviour(Clazz) {};
 
@@ -411,6 +412,10 @@ var Point2d = function () {
         this.y += y;
     };
 
+    Point2d.prototype.equal = function equal(val) {
+        return this.x === val && this.y === val;
+    };
+
     Point2d.prototype.fromJSON = function fromJSON(json) {
         this.set(json);
     };
@@ -431,6 +436,9 @@ exports.default = Point2d;
 "use strict";
 
 
+exports.__esModule = true;
+exports.easeInOutBounce = exports.easeOutBounce = exports.easeInBounce = exports.easeInOutBack = exports.easeOutBack = exports.easeInBack = exports.easeInOutElastic = exports.easeOutElastic = exports.easeInElastic = exports.easeInOutCirc = exports.easeOutCirc = exports.easeInCirc = exports.easeInOutExpo = exports.easeOutExpo = exports.easeInExpo = exports.easeInOutSine = exports.easeOutSine = exports.easeInSine = exports.easeInOutQuint = exports.easeOutQuint = exports.easeInQuint = exports.easeInOutQuart = exports.easeOutQuart = exports.easeInQuart = exports.easeInOutCubic = exports.easeOutCubic = exports.easeInCubic = exports.easeInOutQuad = exports.easeOutQuad = exports.easeInQuad = exports.linear = exports.unProject = exports.random = exports.degToRad = exports.radToDeg = exports.overlapTest = exports.isPointInRect = undefined;
+
 var _mat = __webpack_require__(6);
 
 var _mat2 = _interopRequireDefault(_mat);
@@ -443,7 +451,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 /*global DEBUG:true*/
 
-exports.isPointInRect = function (point, rect, angle) {
+var isPointInRect = exports.isPointInRect = function isPointInRect(point, rect, angle) {
     // if (angle) {
     //     let vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
     //     vec2.setAngle(vec2.getAngle() - angle);
@@ -453,19 +461,19 @@ exports.isPointInRect = function (point, rect, angle) {
     return point.x > rect.x && point.x < rect.x + rect.width && point.y > rect.y && point.y < rect.y + rect.height;
 };
 
-exports.overlapTest = function (a, b) {
+var overlapTest = exports.overlapTest = function overlapTest(a, b) {
     return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 };
 
-exports.radToDeg = function (rad) {
+var radToDeg = exports.radToDeg = function radToDeg(rad) {
     return rad * 180 / Math.PI;
 };
 
-exports.degToRad = function (deg) {
+var degToRad = exports.degToRad = function degToRad(deg) {
     return deg * Math.PI / 180;
 };
 
-exports.random = function (min, max) {
+var random = exports.random = function random(min, max) {
     if (min > max) {
         var tmp = min;
         min = max;
@@ -480,7 +488,7 @@ exports.random = function (min, max) {
  * analog of glu unproject function
  * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
  */
-exports.unProject = function (winX, winY, width, height, viewProjectionMatrix) {
+var unProject = exports.unProject = function unProject(winX, winY, width, height, viewProjectionMatrix) {
     var x = 2.0 * winX / width - 1;
     var y = 2.0 * winY / height - 1;
     var viewProjectionInverse = _mat2.default.inverse(viewProjectionMatrix);
@@ -492,229 +500,211 @@ exports.unProject = function (winX, winY, width, height, viewProjectionMatrix) {
     return new _point2d2.default(res[0], res[1]);
 };
 
-//
-// exports.getNormalizedVectorFromPoints = function(pointA,pointB) {
-//     let angle = Math.atan2(pointB.y-pointA.y,pointB.x-pointA.x);
-//     return {
-//         x:Math.cos(angle),
-//         y:Math.sin(angle)
-//     }
-// };
-//
-var ease = {};
-
 // simple linear tweening - no easing, no acceleration
-ease.linear = function (t, b, c, d) {
+var linear = exports.linear = function linear(t, b, c, d) {
     return c * t / d + b;
 };
 
 // quadratic easing in - accelerating from zero velocity
-ease.easeInQuad = function (t, b, c, d) {
+var easeInQuad = exports.easeInQuad = function easeInQuad(t, b, c, d) {
     t /= d;
     return c * t * t + b;
 };
 
 // quadratic easing out - decelerating to zero velocity
-ease.easeOutQuad = function (t, b, c, d) {
+var easeOutQuad = exports.easeOutQuad = function easeOutQuad(t, b, c, d) {
     t /= d;
     return -c * t * (t - 2) + b;
 };
 
 // quadratic easing in/out - acceleration until halfway, then deceleration
-ease.easeInOutQuad = function (t, b, c, d) {
+var easeInOutQuad = exports.easeInOutQuad = function easeInOutQuad(t, b, c, d) {
     t /= d / 2;
     if (t < 1) return c / 2 * t * t + b;
     t--;
     return -c / 2 * (t * (t - 2) - 1) + b;
 };
 
-// // cubic easing in - accelerating from zero velocity
-// ease.easeInCubic = function (t, b, c, d) {
-//     t /= d;
-//     return c*t*t*t + b;
-// };
-//
-// // cubic easing out - decelerating to zero velocity
-// ease.easeOutCubic = function (t, b, c, d) {
-//     t /= d;
-//     t--;
-//     return c*(t*t*t + 1) + b;
-// };
-//
-// // cubic easing in/out - acceleration until halfway, then deceleration
-// ease.easeInOutCubic = function (t, b, c, d) {
-//     t /= d/2;
-//     if (t < 1) return c/2*t*t*t + b;
-//     t -= 2;
-//     return c/2*(t*t*t + 2) + b;
-// };
-//
-// // quartic easing in - accelerating from zero velocity
-// ease.easeInQuart = function (t, b, c, d) {
-//     t /= d;
-//     return c*t*t*t*t + b;
-// };
-//
-// // quartic easing out - decelerating to zero velocity
-// ease.easeOutQuart = function (t, b, c, d) {
-//     t /= d;
-//     t--;
-//     return -c * (t*t*t*t - 1) + b;
-// };
-//
-// // quartic easing in/out - acceleration until halfway, then deceleration
-// ease.easeInOutQuart = function (t, b, c, d) {
-//     t /= d/2;
-//     if (t < 1) return c/2*t*t*t*t + b;
-//     t -= 2;
-//     return -c/2 * (t*t*t*t - 2) + b;
-// };
-//
-// // quintic easing in - accelerating from zero velocity
-// ease.easeInQuint = function (t, b, c, d) {
-//     t /= d;
-//     return c*t*t*t*t*t + b;
-// };
-//
-// // quintic easing out - decelerating to zero velocity
-// ease.easeOutQuint = function (t, b, c, d) {
-//     t /= d;
-//     t--;
-//     return c*(t*t*t*t*t + 1) + b;
-// };
-//
-// // quintic easing in/out - acceleration until halfway, then deceleration
-// ease.easeInOutQuint = function (t, b, c, d) {
-//     t /= d/2;
-//     if (t < 1) return c/2*t*t*t*t*t + b;
-//     t -= 2;
-//     return c/2*(t*t*t*t*t + 2) + b;
-// };
-//
-//
-// // sinusoidal easing in - accelerating from zero velocity
-// ease.easeInSine = function (t, b, c, d) {
-//     return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
-// };
-//
-//
-//
-// // sinusoidal easing out - decelerating to zero velocity
-// ease.easeOutSine = function (t, b, c, d) {
-//     return c * Math.sin(t/d * (Math.PI/2)) + b;
-// };
-//
-//
-//
-// // sinusoidal easing in/out - accelerating until halfway, then decelerating
-// ease.easeInOutSine = function (t, b, c, d) {
-//     return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
-// };
-//
-// // exponential easing in - accelerating from zero velocity
-// ease.easeInExpo = function (t, b, c, d) {
-//     return c * Math.pow( 2, 10 * (t/d - 1) ) + b;
-// };
-//
-// // exponential easing out - decelerating to zero velocity
-// ease.easeOutExpo = function (t, b, c, d) {
-//     return c * ( -Math.pow( 2, -10 * t/d ) + 1 ) + b;
-// };
-//
-// // exponential easing in/out - accelerating until halfway, then decelerating
-// ease.easeInOutExpo = function (t, b, c, d) {
-//     t /= d/2;
-//     if (t < 1) return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
-//     t--;
-//     return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
-// };
-//
-// // circular easing in - accelerating from zero velocity
-// ease.easeInCirc = function (t, b, c, d) {
-//     t /= d;
-//     return -c * (Math.sqrt(1 - t*t) - 1) + b;
-// };
-//
-//
-//
-// // circular easing out - decelerating to zero velocity
-// ease.easeOutCirc = function (t, b, c, d) {
-//     t /= d;
-//     t--;
-//     return c * Math.sqrt(1 - t*t) + b;
-// };
-//
-// // circular easing in/out - acceleration until halfway, then deceleration
-// ease.easeInOutCirc = function (t, b, c, d) {
-//     t /= d/2;
-//     if (t < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
-//     t -= 2;
-//     return c/2 * (Math.sqrt(1 - t*t) + 1) + b;
-// };
-//
-// ease.easeInElastic = function (t, b, c, d) {
-//     let s=1.70158;let p=0;let a=c;
-//     if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
-//     if (a < Math.abs(c)) { a=c; s=p/4; }
-//     else s = p/(2*Math.PI) * Math.asin (c/a);
-//     return -(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
-// };
-//
-// ease.easeOutElastic = function (t, b, c, d) {
-//     let s=1.70158;let p=0;let a=c;
-//     if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
-//     if (a < Math.abs(c)) { a=c; s=p/4; }
-//     else s = p/(2*Math.PI) * Math.asin (c/a);
-//     return a*Math.pow(2,-10*t) * Math.sin( (t*d-s)*(2*Math.PI)/p ) + c + b;
-// };
-//
-// ease.easeInOutElastic = function (t, b, c, d) {
-//     let s=1.70158;let p=0;let a=c;
-//     if (t==0) return b;  if ((t/=d/2)==2) return b+c;  if (!p) p=d*(.3*1.5);
-//     if (a < Math.abs(c)) { a=c; s=p/4; }
-//     else s = p/(2*Math.PI) * Math.asin (c/a);
-//     if (t < 1) return -.5*(a*Math.pow(2,10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )) + b;
-//     return a*Math.pow(2,-10*(t-=1)) * Math.sin( (t*d-s)*(2*Math.PI)/p )*.5 + c + b;
-// };
-//
-// ease.easeInBack = function (t, b, c, d) {
-//     let s = 1.70158;
-//     return c*(t/=d)*t*((s+1)*t - s) + b;
-// };
-//
-// ease.easeOutBack = function (t, b, c, d) {
-//     let s = 1.70158;
-//     return c*((t=t/d-1)*t*((s+1)*t + s) + 1) + b;
-// };
-//
-// ease.easeInOutBack = function (t, b, c, d) {
-//     let s = 1.70158;
-//     if ((t/=d/2) < 1) return c/2*(t*t*(((s*=(1.525))+1)*t - s)) + b;
-//     return c/2*((t-=2)*t*(((s*=(1.525))+1)*t + s) + 2) + b;
-// };
-//
-// ease.easeInBounce = function(t, b, c, d) {
-//     return c - ease.easeOutBounce (d-t, 0, c, d) + b;
-// };
-//
-// ease.easeOutBounce  = function(t, b, c, d){
-//     if ((t/=d) < (1/2.75)) {
-//         return c*(7.5625*t*t) + b;
-//     } else if (t < (2/2.75)) {
-//         return c*(7.5625*(t-=(1.5/2.75))*t + .75) + b;
-//     } else if (t < (2.5/2.75)) {
-//         return c*(7.5625*(t-=(2.25/2.75))*t + .9375) + b;
-//     } else {
-//         return c*(7.5625*(t-=(2.625/2.75))*t + .984375) + b;
-//     }
-// };
-//
-// ease.easeInOutBounce = function(t, b, c, d) {
-//     if (t < d/2) return ease.easeInBounce(t*2, 0, c, d) * .5 + b;
-//     else return ease.easeOutBounce(t*2-d, 0, c, d) * .5 + c*.5 + b;
-// };
-//
-exports.ease = ease;
+// cubic easing in - accelerating from zero velocity
+var easeInCubic = exports.easeInCubic = function easeInCubic(t, b, c, d) {
+    t /= d;
+    return c * t * t * t + b;
+};
+
+// cubic easing out - decelerating to zero velocity
+var easeOutCubic = exports.easeOutCubic = function easeOutCubic(t, b, c, d) {
+    t /= d;
+    t--;
+    return c * (t * t * t + 1) + b;
+};
+
+// cubic easing in/out - acceleration until halfway, then deceleration
+var easeInOutCubic = exports.easeInOutCubic = function easeInOutCubic(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return c / 2 * t * t * t + b;
+    t -= 2;
+    return c / 2 * (t * t * t + 2) + b;
+};
+
+// quartic easing in - accelerating from zero velocity
+var easeInQuart = exports.easeInQuart = function easeInQuart(t, b, c, d) {
+    t /= d;
+    return c * t * t * t * t + b;
+};
+
+// quartic easing out - decelerating to zero velocity
+var easeOutQuart = exports.easeOutQuart = function easeOutQuart(t, b, c, d) {
+    t /= d;
+    t--;
+    return -c * (t * t * t * t - 1) + b;
+};
+
+// quartic easing in/out - acceleration until halfway, then deceleration
+var easeInOutQuart = exports.easeInOutQuart = function easeInOutQuart(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return c / 2 * t * t * t * t + b;
+    t -= 2;
+    return -c / 2 * (t * t * t * t - 2) + b;
+};
+
+// quintic easing in - accelerating from zero velocity
+var easeInQuint = exports.easeInQuint = function easeInQuint(t, b, c, d) {
+    t /= d;
+    return c * t * t * t * t * t + b;
+};
+
+// quintic easing out - decelerating to zero velocity
+var easeOutQuint = exports.easeOutQuint = function easeOutQuint(t, b, c, d) {
+    t /= d;
+    t--;
+    return c * (t * t * t * t * t + 1) + b;
+};
+
+// quintic easing in/out - acceleration until halfway, then deceleration
+var easeInOutQuint = exports.easeInOutQuint = function easeInOutQuint(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return c / 2 * t * t * t * t * t + b;
+    t -= 2;
+    return c / 2 * (t * t * t * t * t + 2) + b;
+};
+
+// sinusoidal easing in - accelerating from zero velocity
+var easeInSine = exports.easeInSine = function easeInSine(t, b, c, d) {
+    return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+};
+
+// sinusoidal easing out - decelerating to zero velocity
+var easeOutSine = exports.easeOutSine = function easeOutSine(t, b, c, d) {
+    return c * Math.sin(t / d * (Math.PI / 2)) + b;
+};
+
+// sinusoidal easing in/out - accelerating until halfway, then decelerating
+var easeInOutSine = exports.easeInOutSine = function easeInOutSine(t, b, c, d) {
+    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+};
+
+// exponential easing in - accelerating from zero velocity
+var easeInExpo = exports.easeInExpo = function easeInExpo(t, b, c, d) {
+    return c * Math.pow(2, 10 * (t / d - 1)) + b;
+};
+
+// exponential easing out - decelerating to zero velocity
+var easeOutExpo = exports.easeOutExpo = function easeOutExpo(t, b, c, d) {
+    return c * (-Math.pow(2, -10 * t / d) + 1) + b;
+};
+
+// exponential easing in/out - accelerating until halfway, then decelerating
+var easeInOutExpo = exports.easeInOutExpo = function easeInOutExpo(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+    t--;
+    return c / 2 * (-Math.pow(2, -10 * t) + 2) + b;
+};
+
+// circular easing in - accelerating from zero velocity
+var easeInCirc = exports.easeInCirc = function easeInCirc(t, b, c, d) {
+    t /= d;
+    return -c * (Math.sqrt(1 - t * t) - 1) + b;
+};
+
+// circular easing out - decelerating to zero velocity
+var easeOutCirc = exports.easeOutCirc = function easeOutCirc(t, b, c, d) {
+    t /= d;
+    t--;
+    return c * Math.sqrt(1 - t * t) + b;
+};
+
+// circular easing in/out - acceleration until halfway, then deceleration
+var easeInOutCirc = exports.easeInOutCirc = function easeInOutCirc(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+    t -= 2;
+    return c / 2 * (Math.sqrt(1 - t * t) + 1) + b;
+};
+
+var easeInElastic = exports.easeInElastic = function easeInElastic(t, b, c, d) {
+    var s = 1.70158;var p = 0;var a = c;
+    if (t === 0) return b;if ((t /= d) === 1) return b + c;if (!p) p = d * .3;
+    if (a < Math.abs(c)) {
+        a = c;s = p / 4;
+    } else s = p / (2 * Math.PI) * Math.asin(c / a);
+    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+};
+
+var easeOutElastic = exports.easeOutElastic = function easeOutElastic(t, b, c, d) {
+    var s = 1.70158;var p = 0;var a = c;
+    if (t === 0) return b;if ((t /= d) === 1) return b + c;if (!p) p = d * .3;
+    if (a < Math.abs(c)) {
+        a = c;s = p / 4;
+    } else s = p / (2 * Math.PI) * Math.asin(c / a);
+    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
+};
+
+var easeInOutElastic = exports.easeInOutElastic = function easeInOutElastic(t, b, c, d) {
+    var s = 1.70158;var p = 0;var a = c;
+    if (t === 0) return b;if ((t /= d / 2) === 2) return b + c;if (!p) p = d * (.3 * 1.5);
+    if (a < Math.abs(c)) {
+        a = c;s = p / 4;
+    } else s = p / (2 * Math.PI) * Math.asin(c / a);
+    if (t < 1) return -.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+    return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * .5 + c + b;
+};
+
+var easeInBack = exports.easeInBack = function easeInBack(t, b, c, d) {
+    var s = 1.70158;
+    return c * (t /= d) * t * ((s + 1) * t - s) + b;
+};
+
+var easeOutBack = exports.easeOutBack = function easeOutBack(t, b, c, d) {
+    var s = 1.70158;
+    return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
+};
+
+var easeInOutBack = exports.easeInOutBack = function easeInOutBack(t, b, c, d) {
+    var s = 1.70158;
+    if ((t /= d / 2) < 1) return c / 2 * (t * t * (((s *= 1.525) + 1) * t - s)) + b;
+    return c / 2 * ((t -= 2) * t * (((s *= 1.525) + 1) * t + s) + 2) + b;
+};
+
+var easeInBounce = exports.easeInBounce = function easeInBounce(t, b, c, d) {
+    return c - easeOutBounce(d - t, 0, c, d) + b;
+};
+
+var easeOutBounce = exports.easeOutBounce = function easeOutBounce(t, b, c, d) {
+    if ((t /= d) < 1 / 2.75) {
+        return c * (7.5625 * t * t) + b;
+    } else if (t < 2 / 2.75) {
+        return c * (7.5625 * (t -= 1.5 / 2.75) * t + .75) + b;
+    } else if (t < 2.5 / 2.75) {
+        return c * (7.5625 * (t -= 2.25 / 2.75) * t + .9375) + b;
+    } else {
+        return c * (7.5625 * (t -= 2.625 / 2.75) * t + .984375) + b;
+    }
+};
+
+var easeInOutBounce = exports.easeInOutBounce = function easeInOutBounce(t, b, c, d) {
+    if (t < d / 2) return easeInBounce(t * 2, 0, c, d) * .5 + b;else return easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
+};
 
 /***/ }),
 /* 5 */
@@ -1329,7 +1319,7 @@ exports.default = undefined;
 
 var _shaderProgramUtils = __webpack_require__(7);
 
-var _shaderGenerator = __webpack_require__(15);
+var _shaderGenerator = __webpack_require__(16);
 
 var _shaderGenerator2 = _interopRequireDefault(_shaderGenerator);
 
@@ -1369,6 +1359,43 @@ exports.default = TexShaderGenerator;
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Rect = function () {
+    function Rect() {
+        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+        var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+        var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+        _classCallCheck(this, Rect);
+
+        this.set(x, y, width, height);
+    }
+
+    Rect.prototype.set = function set(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.right = this.x + this.width;
+        this.bottom = this.y + this.height;
+    };
+
+    return Rect;
+}();
+
+exports.default = Rect;
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1441,7 +1468,7 @@ var FrameBuffer = (_temp = _class = function () {
 exports.default = FrameBuffer;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1454,7 +1481,7 @@ var _shaderProgram = __webpack_require__(1);
 
 var _shaderProgram2 = _interopRequireDefault(_shaderProgram);
 
-var _spriteRectDrawer = __webpack_require__(13);
+var _spriteRectDrawer = __webpack_require__(14);
 
 var _spriteRectDrawer2 = _interopRequireDefault(_spriteRectDrawer);
 
@@ -1520,7 +1547,7 @@ var AbstractFilter = function () {
 exports.default = AbstractFilter;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1542,7 +1569,7 @@ var AbstractPrimitive = function AbstractPrimitive() {
 exports.default = AbstractPrimitive;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1551,7 +1578,7 @@ exports.default = AbstractPrimitive;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractPrimitive = __webpack_require__(11);
+var _abstractPrimitive = __webpack_require__(12);
 
 var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
 
@@ -1583,7 +1610,7 @@ var Plane = function (_AbstractPrimitive) {
 exports.default = Plane;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1592,7 +1619,7 @@ exports.default = Plane;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _plane = __webpack_require__(12);
+var _plane = __webpack_require__(13);
 
 var _plane2 = _interopRequireDefault(_plane);
 
@@ -1651,7 +1678,7 @@ var SpriteRectDrawer = function (_AbstractDrawer) {
 exports.default = SpriteRectDrawer;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1662,7 +1689,7 @@ exports.default = undefined;
 
 var _shaderProgramUtils = __webpack_require__(7);
 
-var _shaderGenerator = __webpack_require__(15);
+var _shaderGenerator = __webpack_require__(16);
 
 var _shaderGenerator2 = _interopRequireDefault(_shaderGenerator);
 
@@ -1698,7 +1725,7 @@ var ColorShaderGenerator = function (_ShaderGenerator) {
 exports.default = ColorShaderGenerator;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1796,7 +1823,7 @@ var ShaderGenerator = function () {
 exports.default = ShaderGenerator;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1826,7 +1853,7 @@ var BaseAbstractBehaviour = function () {
 exports.default = BaseAbstractBehaviour;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1835,7 +1862,7 @@ exports.default = BaseAbstractBehaviour;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _baseAbstractBehaviour = __webpack_require__(16);
+var _baseAbstractBehaviour = __webpack_require__(17);
 
 var _baseAbstractBehaviour2 = _interopRequireDefault(_baseAbstractBehaviour);
 
@@ -1897,43 +1924,6 @@ var Moveable = function (_BaseAbstractBehaviou) {
 }(_baseAbstractBehaviour2.default);
 
 exports.default = Moveable;
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Rect = function () {
-    function Rect() {
-        var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-        var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-        var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
-        var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-
-        _classCallCheck(this, Rect);
-
-        this.set(x, y, width, height);
-    }
-
-    Rect.prototype.set = function set(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.right = this.x + this.width;
-        this.bottom = this.y + this.height;
-    };
-
-    return Rect;
-}();
-
-exports.default = Rect;
 
 /***/ }),
 /* 19 */
@@ -2034,7 +2024,7 @@ exports.default = undefined;
 
 var _class2, _temp;
 
-var _frameBuffer = __webpack_require__(9);
+var _frameBuffer = __webpack_require__(10);
 
 var _frameBuffer2 = _interopRequireDefault(_frameBuffer);
 
@@ -2147,7 +2137,8 @@ var Texture = (_temp = _class2 = function () {
         gl.bindTexture(gl.TEXTURE_2D, null);
     };
 
-    Texture.prototype.applyFilters = function applyFilters(filters) {
+    Texture.prototype.applyFilters = function applyFilters(filters, frameBuffer) {
+        if (1 && frameBuffer === undefined) throw "can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering";
         var len = filters.length;
         if (len === 0) return this;
         if (this._texFilterBuff.buffers === null) this._texFilterBuff.instantiate(this.gl);
@@ -2158,6 +2149,7 @@ var Texture = (_temp = _class2 = function () {
             filters[i].doFilter(this._texFilterBuff.getSourceBuffer().texture, this._texFilterBuff.getDestBuffer());
         }
         this._texFilterBuff.flip();
+        if (frameBuffer !== null) frameBuffer.bind();
         return this._texFilterBuff.getSourceBuffer().texture;
     };
 
@@ -2279,7 +2271,7 @@ exports.default = VertexBuffer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractFilter = __webpack_require__(10);
+var _abstractFilter = __webpack_require__(11);
 
 var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
 
@@ -2323,9 +2315,9 @@ exports.default = undefined;
 
 var _mathEx = __webpack_require__(4);
 
-var _mathEx2 = _interopRequireDefault(_mathEx);
+var mathEx = _interopRequireWildcard(_mathEx);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2429,7 +2421,7 @@ var Tween = function () {
             var prp = this.propsToChange[l];
             var valFrom = this.desc.from[prp];
             var valTo = this.desc.to[prp];
-            var valCurr = _mathEx2.default.ease[this.easeFnName](curTweenTime, valFrom, valTo - valFrom, this.tweenTime);
+            var valCurr = mathEx[this.easeFnName](curTweenTime, valFrom, valTo - valFrom, this.tweenTime);
             setValByPath(this.obj, prp, valCurr);
         }
         this.progressFn && this.progressFn(this.obj);
@@ -2679,6 +2671,7 @@ var GameObjectProto = function (_BaseModel) {
     GameObjectProto.prototype.revalidate = function revalidate() {
         var _this2 = this;
 
+        _BaseModel.prototype.revalidate.call(this);
         this.setFrameIndex(this.currFrameIndex);
         if (this.spriteSheet) {
             this.width = this.spriteSheet._frameWidth;
@@ -2712,9 +2705,9 @@ var GameObjectProto = function (_BaseModel) {
 
         if (this._individualBehaviour) this._individualBehaviour.onUpdate(time, delta);
         for (var i = 0, max = this.commonBehaviour.length; i < max; i++) {
-            this.commonBehaviour[i].onUpdate(time, delta); // todo "update"?
+            this.commonBehaviour[i].onUpdate(time, delta);
         }
-        this.rigidBody.update(time, delta);
+        if (this.rigidBody !== null) this.rigidBody.update(time, delta);
         this.game.renderer.draw(this);
     };
 
@@ -3171,7 +3164,7 @@ module.exports = {width:800,height:500,scaleStrategy:1,startSceneId:2,scale:{x:1
 /* 34 */
 /***/ (function(module, exports) {
 
-module.exports = {Scene:[{"id":2,"name":"mainScene","width":5000,"height":800,"type":"Scene","layers":[{"type":"Layer","id":2}],"useBG":true,"colorBG":{"r":50,"g":68,"b":154},"tileMap":{"id":52,"type":"TileMap"}}],Layer:[{"id":2,"name":"layer1","type":"Layer","gameObjects":[{"type":"GameObject","id":7},{"type":"GameObject","id":63},{"type":"GameObject","id":64},{"type":"GameObject","id":65},{"type":"GameObject","id":67},{"type":"GameObject","id":68},{"type":"GameObject","id":71},{"type":"GameObject","id":74},{"type":"TextField","id":76},{"type":"GameObject","id":77},{"type":"GameObject","id":78},{"type":"GameObject","id":81},{"type":"GameObject","id":82},{"type":"GameObject","id":86},{"type":"GameObject","id":87}]}],SpriteSheet:[{"name":"dude","width":288,"height":48,"type":"SpriteSheet","numOfFramesH":9,"resourcePath":"resources/dude.png","id":3},{"name":"platform","width":500,"height":64,"type":"SpriteSheet","resourcePath":"resources/platform.png","id":5},{"name":"ground","width":800,"height":32,"type":"SpriteSheet","numOfFramesH":25,"resourcePath":"resources/ground.png","id":57},{"name":"clamp","width":64,"height":64,"type":"SpriteSheet","resourcePath":"resources/clamp.png","id":69},{"name":"tile","width":262,"height":192,"type":"SpriteSheet","resourcePath":"resources/tile.jpg","id":72},{"name":"flare","width":174,"height":173,"type":"SpriteSheet","resourcePath":"resources/flare.png","id":79},{"name":"eso1611a","width":120,"height":120,"type":"SpriteSheet","resourcePath":"resources/eso1611a.png","id":84}],GameObjectProto:[{"id":4,"name":"dude","width":32,"height":48,"type":"GameObjectProto","spriteSheet":{"id":3,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":15},{"type":"CommonBehaviour","id":60}],"frameAnimations":[{"type":"FrameAnimation","id":11},{"type":"FrameAnimation","id":12},{"type":"FrameAnimation","id":13},{"type":"FrameAnimation","id":14}]},{"id":6,"name":"platform","width":500,"height":64,"type":"GameObjectProto","spriteSheet":{"id":5,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":61}]},{"id":58,"name":"ground1","width":32,"height":32,"type":"GameObjectProto","spriteSheet":{"id":57,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":62}],"currFrameIndex":9},{"id":70,"name":"clamp","width":64,"height":64,"type":"GameObjectProto","spriteSheet":{"id":69,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":75}]},{"name":"tile","width":262,"height":192,"type":"GameObjectProto","spriteSheet":{"id":72,"type":"SpriteSheet"},"id":73},{"id":80,"name":"flare","width":174,"height":173,"type":"GameObjectProto","spriteSheet":{"id":79,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":83}]},{"id":85,"name":"eso1611a","width":120,"height":120,"type":"GameObjectProto","spriteSheet":{"id":84,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":88}]}],GameObject:[{"id":7,"name":"dude","pos":{"x":108,"y":227},"layerId":2,"type":"GameObject","gameObjectProto":{"id":4,"type":"GameObjectProto"}},{"id":63,"name":"ground1","pos":{"x":437,"y":115},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"}},{"id":64,"name":"platform","pos":{"x":471,"y":478},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":65,"name":"platform","pos":{"x":171,"y":192},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":67,"name":"ground1","pos":{"x":559,"y":116},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"}},{"pos":{"x":388,"y":140},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"},"id":68},{"id":71,"name":"clamp","pos":{"x":666,"y":328},"layerId":2,"type":"GameObject","gameObjectProto":{"id":70,"type":"GameObjectProto"}},{"id":74,"name":"tile","pos":{"x":369,"y":271},"layerId":2,"type":"GameObject","gameObjectProto":{"id":73,"type":"GameObjectProto"}},{"id":77,"name":"platform","pos":{"x":54,"y":302},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":78,"name":"platform","pos":{"x":43,"y":393},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":81,"name":"flare","pos":{"x":194,"y":46},"layerId":2,"type":"GameObject","gameObjectProto":{"id":80,"type":"GameObjectProto"}},{"id":82,"name":"flare","pos":{"x":255,"y":7},"layerId":2,"type":"GameObject","gameObjectProto":{"id":80,"type":"GameObjectProto"}},{"id":86,"name":"eso1611a","pos":{"x":134,"y":14},"layerId":2,"type":"GameObject","gameObjectProto":{"id":85,"type":"GameObjectProto"}},{"id":87,"name":"eso1611a","pos":{"x":93,"y":53},"layerId":2,"type":"GameObject","gameObjectProto":{"id":85,"type":"GameObjectProto"}}],FrameAnimation:[{"name":"left","type":"FrameAnimation","frames":[0,1,2,3],"id":11},{"name":"right","type":"FrameAnimation","frames":[5,6,7,8],"id":12},{"name":"idleLeft","type":"FrameAnimation","frames":[4],"id":13},{"name":"idleRight","type":"FrameAnimation","frames":[4],"id":14}],CommonBehaviour:[{"id":15,"name":"Control2Dir","type":"CommonBehaviour","parameters":{"velocity":"130","walkLeftAnimation":"left","walkRightAnimation":"right","idleLeftAnimation":"idleLeft","idleRightAnimation":"idleRight"}},{"name":"Draggable","type":"CommonBehaviour","id":60},{"name":"Draggable","type":"CommonBehaviour","id":61},{"name":"Draggable","type":"CommonBehaviour","id":62},{"name":"Draggable","type":"CommonBehaviour","id":75},{"name":"Draggable","type":"CommonBehaviour","id":83},{"name":"Draggable","type":"CommonBehaviour","id":88}],Font:[{"id":22,"name":"font1","type":"Font","resourcePath":"resources/font1.png","fontSize":21,"fontFamily":"monospace","fontContext":{"symbols":{"0":{"x":24,"y":36,"width":12,"height":24},"1":{"x":45,"y":36,"width":12,"height":24},"2":{"x":65,"y":36,"width":12,"height":24},"3":{"x":86,"y":36,"width":12,"height":24},"4":{"x":107,"y":36,"width":12,"height":24},"5":{"x":127,"y":36,"width":12,"height":24},"6":{"x":148,"y":36,"width":12,"height":24},"7":{"x":168,"y":36,"width":12,"height":24},"8":{"x":189,"y":36,"width":12,"height":24},"9":{"x":210,"y":36,"width":12,"height":24}," ":{"x":4,"y":4,"width":12,"height":24},"!":{"x":24,"y":4,"width":12,"height":24},"\"":{"x":45,"y":4,"width":12,"height":24},"#":{"x":65,"y":4,"width":12,"height":24},"$":{"x":86,"y":4,"width":12,"height":24},"%":{"x":107,"y":4,"width":12,"height":24},"&":{"x":127,"y":4,"width":12,"height":24},"'":{"x":148,"y":4,"width":12,"height":24},"(":{"x":168,"y":4,"width":12,"height":24},")":{"x":189,"y":4,"width":12,"height":24},"*":{"x":210,"y":4,"width":12,"height":24},"+":{"x":230,"y":4,"width":12,"height":24},",":{"x":251,"y":4,"width":12,"height":24},"-":{"x":271,"y":4,"width":12,"height":24},".":{"x":292,"y":4,"width":12,"height":24},"/":{"x":4,"y":36,"width":12,"height":24},":":{"x":230,"y":36,"width":12,"height":24},";":{"x":251,"y":36,"width":12,"height":24},"<":{"x":271,"y":36,"width":12,"height":24},"=":{"x":292,"y":36,"width":12,"height":24},">":{"x":4,"y":68,"width":12,"height":24},"?":{"x":24,"y":68,"width":12,"height":24},"@":{"x":45,"y":68,"width":12,"height":24},"A":{"x":65,"y":68,"width":12,"height":24},"B":{"x":86,"y":68,"width":12,"height":24},"C":{"x":107,"y":68,"width":12,"height":24},"D":{"x":127,"y":68,"width":12,"height":24},"E":{"x":148,"y":68,"width":12,"height":24},"F":{"x":168,"y":68,"width":12,"height":24},"G":{"x":189,"y":68,"width":12,"height":24},"H":{"x":210,"y":68,"width":12,"height":24},"I":{"x":230,"y":68,"width":12,"height":24},"J":{"x":251,"y":68,"width":12,"height":24},"K":{"x":271,"y":68,"width":12,"height":24},"L":{"x":292,"y":68,"width":12,"height":24},"M":{"x":4,"y":100,"width":12,"height":24},"N":{"x":24,"y":100,"width":12,"height":24},"O":{"x":45,"y":100,"width":12,"height":24},"P":{"x":65,"y":100,"width":12,"height":24},"Q":{"x":86,"y":100,"width":12,"height":24},"R":{"x":107,"y":100,"width":12,"height":24},"S":{"x":127,"y":100,"width":12,"height":24},"T":{"x":148,"y":100,"width":12,"height":24},"U":{"x":168,"y":100,"width":12,"height":24},"V":{"x":189,"y":100,"width":12,"height":24},"W":{"x":210,"y":100,"width":12,"height":24},"X":{"x":230,"y":100,"width":12,"height":24},"Y":{"x":251,"y":100,"width":12,"height":24},"Z":{"x":271,"y":100,"width":12,"height":24},"[":{"x":292,"y":100,"width":12,"height":24},"\\":{"x":4,"y":132,"width":12,"height":24},"]":{"x":24,"y":132,"width":12,"height":24},"^":{"x":45,"y":132,"width":12,"height":24},"_":{"x":65,"y":132,"width":12,"height":24},"`":{"x":86,"y":132,"width":12,"height":24},"a":{"x":107,"y":132,"width":12,"height":24},"b":{"x":127,"y":132,"width":12,"height":24},"c":{"x":148,"y":132,"width":12,"height":24},"d":{"x":168,"y":132,"width":12,"height":24},"e":{"x":189,"y":132,"width":12,"height":24},"f":{"x":210,"y":132,"width":12,"height":24},"g":{"x":230,"y":132,"width":12,"height":24},"h":{"x":251,"y":132,"width":12,"height":24},"i":{"x":271,"y":132,"width":12,"height":24},"j":{"x":292,"y":132,"width":12,"height":24},"k":{"x":4,"y":164,"width":12,"height":24},"l":{"x":24,"y":164,"width":12,"height":24},"m":{"x":45,"y":164,"width":12,"height":24},"n":{"x":65,"y":164,"width":12,"height":24},"o":{"x":86,"y":164,"width":12,"height":24},"p":{"x":107,"y":164,"width":12,"height":24},"q":{"x":127,"y":164,"width":12,"height":24},"r":{"x":148,"y":164,"width":12,"height":24},"s":{"x":168,"y":164,"width":12,"height":24},"t":{"x":189,"y":164,"width":12,"height":24},"u":{"x":210,"y":164,"width":12,"height":24},"v":{"x":230,"y":164,"width":12,"height":24},"w":{"x":251,"y":164,"width":12,"height":24},"x":{"x":271,"y":164,"width":12,"height":24},"y":{"x":292,"y":164,"width":12,"height":24},"z":{"x":4,"y":196,"width":12,"height":24},"{":{"x":24,"y":196,"width":12,"height":24},"|":{"x":45,"y":196,"width":12,"height":24},"}":{"x":65,"y":196,"width":12,"height":24},"~":{"x":86,"y":196,"width":12,"height":24},"":{"x":107,"y":196,"width":12,"height":24},"":{"x":127,"y":196,"width":12,"height":24},"":{"x":148,"y":196,"width":12,"height":24},"":{"x":168,"y":196,"width":12,"height":24},"":{"x":189,"y":196,"width":12,"height":24},"":{"x":210,"y":196,"width":12,"height":24},"":{"x":230,"y":196,"width":12,"height":24},"":{"x":251,"y":196,"width":12,"height":24},"":{"x":271,"y":196,"width":12,"height":24},"":{"x":292,"y":196,"width":12,"height":24},"":{"x":4,"y":228,"width":12,"height":24},"":{"x":24,"y":228,"width":12,"height":24},"":{"x":45,"y":228,"width":12,"height":24},"":{"x":65,"y":228,"width":12,"height":24},"":{"x":86,"y":228,"width":12,"height":24},"":{"x":107,"y":228,"width":12,"height":24},"":{"x":127,"y":228,"width":12,"height":24},"":{"x":148,"y":228,"width":12,"height":24},"":{"x":168,"y":228,"width":12,"height":24},"":{"x":189,"y":228,"width":12,"height":24},"":{"x":210,"y":228,"width":12,"height":24},"":{"x":230,"y":228,"width":12,"height":24},"":{"x":251,"y":228,"width":12,"height":24},"А":{"x":271,"y":228,"width":12,"height":24},"Б":{"x":292,"y":228,"width":12,"height":24},"В":{"x":4,"y":260,"width":12,"height":24},"Г":{"x":24,"y":260,"width":12,"height":24},"Д":{"x":45,"y":260,"width":12,"height":24},"Е":{"x":65,"y":260,"width":12,"height":24},"Ж":{"x":86,"y":260,"width":12,"height":24},"З":{"x":107,"y":260,"width":12,"height":24},"И":{"x":127,"y":260,"width":12,"height":24},"Й":{"x":148,"y":260,"width":12,"height":24},"К":{"x":168,"y":260,"width":12,"height":24},"Л":{"x":189,"y":260,"width":12,"height":24},"М":{"x":210,"y":260,"width":12,"height":24},"Н":{"x":230,"y":260,"width":12,"height":24},"О":{"x":251,"y":260,"width":12,"height":24},"П":{"x":271,"y":260,"width":12,"height":24},"Р":{"x":292,"y":260,"width":12,"height":24},"С":{"x":4,"y":292,"width":12,"height":24},"Т":{"x":24,"y":292,"width":12,"height":24},"У":{"x":45,"y":292,"width":12,"height":24},"Ф":{"x":65,"y":292,"width":12,"height":24},"Х":{"x":86,"y":292,"width":12,"height":24},"Ц":{"x":107,"y":292,"width":12,"height":24},"Ч":{"x":127,"y":292,"width":12,"height":24},"Ш":{"x":148,"y":292,"width":12,"height":24},"Щ":{"x":168,"y":292,"width":12,"height":24},"Ъ":{"x":189,"y":292,"width":12,"height":24},"Ы":{"x":210,"y":292,"width":12,"height":24},"Ь":{"x":230,"y":292,"width":12,"height":24},"Э":{"x":251,"y":292,"width":12,"height":24},"Ю":{"x":271,"y":292,"width":12,"height":24},"Я":{"x":292,"y":292,"width":12,"height":24},"а":{"x":4,"y":324,"width":12,"height":24},"б":{"x":24,"y":324,"width":12,"height":24},"в":{"x":45,"y":324,"width":12,"height":24},"г":{"x":65,"y":324,"width":12,"height":24},"д":{"x":86,"y":324,"width":12,"height":24},"е":{"x":107,"y":324,"width":12,"height":24},"ж":{"x":127,"y":324,"width":12,"height":24},"з":{"x":148,"y":324,"width":12,"height":24},"и":{"x":168,"y":324,"width":12,"height":24},"й":{"x":189,"y":324,"width":12,"height":24},"к":{"x":210,"y":324,"width":12,"height":24},"л":{"x":230,"y":324,"width":12,"height":24},"м":{"x":251,"y":324,"width":12,"height":24},"н":{"x":271,"y":324,"width":12,"height":24},"о":{"x":292,"y":324,"width":12,"height":24},"п":{"x":4,"y":356,"width":12,"height":24},"р":{"x":24,"y":356,"width":12,"height":24},"с":{"x":45,"y":356,"width":12,"height":24},"т":{"x":65,"y":356,"width":12,"height":24},"у":{"x":86,"y":356,"width":12,"height":24},"ф":{"x":107,"y":356,"width":12,"height":24},"х":{"x":127,"y":356,"width":12,"height":24},"ц":{"x":148,"y":356,"width":12,"height":24},"ч":{"x":168,"y":356,"width":12,"height":24},"ш":{"x":189,"y":356,"width":12,"height":24},"щ":{"x":210,"y":356,"width":12,"height":24},"ъ":{"x":230,"y":356,"width":12,"height":24},"ы":{"x":251,"y":356,"width":12,"height":24},"ь":{"x":271,"y":356,"width":12,"height":24},"э":{"x":292,"y":356,"width":12,"height":24},"ю":{"x":4,"y":388,"width":12,"height":24},"я":{"x":24,"y":388,"width":12,"height":24},"ѐ":{"x":45,"y":388,"width":12,"height":24},"ё":{"x":65,"y":388,"width":12,"height":24},"ђ":{"x":86,"y":388,"width":12,"height":24},"ѓ":{"x":107,"y":388,"width":12,"height":24},"є":{"x":127,"y":388,"width":12,"height":24},"ѕ":{"x":148,"y":388,"width":12,"height":24},"і":{"x":168,"y":388,"width":12,"height":24},"ї":{"x":189,"y":388,"width":12,"height":24},"ј":{"x":210,"y":388,"width":12,"height":24},"љ":{"x":230,"y":388,"width":12,"height":24},"њ":{"x":251,"y":388,"width":12,"height":24},"ћ":{"x":271,"y":388,"width":12,"height":24}},"width":320,"height":416}}],TileMap:[{"id":52,"width":50,"height":50,"type":"TileMap","spriteSheet":{"id":57,"type":"SpriteSheet"},"data":[[],null,null,[null,null,null,null,2,null,null],[null,null],[1,null,3,null,null,1,1,1,1,1,1,1,1,1],null,[null,1,null,1]]}],TextField:[{"name":"textField1","width":120,"height":24,"pos":{"x":16,"y":20},"layerId":2,"type":"TextField","text":"textField1","font":{"id":22,"type":"Font"},"id":76}]};
+module.exports = {Scene:[{"id":2,"name":"mainScene","width":5000,"height":800,"type":"Scene","layers":[{"type":"Layer","id":2}],"useBG":true,"colorBG":{"r":50,"g":68,"b":154},"tileMap":{"id":52,"type":"TileMap"}}],Layer:[{"id":2,"name":"layer1","type":"Layer","gameObjects":[{"type":"GameObject","id":7},{"type":"GameObject","id":63},{"type":"GameObject","id":64},{"type":"GameObject","id":65},{"type":"GameObject","id":67},{"type":"GameObject","id":68},{"type":"GameObject","id":71},{"type":"GameObject","id":74},{"type":"TextField","id":76},{"type":"GameObject","id":77},{"type":"GameObject","id":78},{"type":"GameObject","id":81},{"type":"GameObject","id":82},{"type":"GameObject","id":86},{"type":"GameObject","id":87}]}],SpriteSheet:[{"name":"dude","width":288,"height":48,"type":"SpriteSheet","numOfFramesH":9,"resourcePath":"resources/dude.png","id":3},{"name":"platform","width":500,"height":64,"type":"SpriteSheet","resourcePath":"resources/platform.png","id":5},{"name":"ground","width":800,"height":32,"type":"SpriteSheet","numOfFramesH":25,"resourcePath":"resources/ground.png","id":57},{"name":"clamp","width":64,"height":64,"type":"SpriteSheet","resourcePath":"resources/clamp.png","id":69},{"name":"tile","width":262,"height":192,"type":"SpriteSheet","resourcePath":"resources/tile.jpg","id":72},{"name":"flare","width":174,"height":173,"type":"SpriteSheet","resourcePath":"resources/flare.png","id":79},{"name":"eso1611a","width":120,"height":120,"type":"SpriteSheet","resourcePath":"resources/eso1611a.png","id":84}],GameObjectProto:[{"id":4,"name":"dude","width":32,"height":48,"rigid":true,"type":"GameObjectProto","spriteSheet":{"id":3,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":15},{"type":"CommonBehaviour","id":60}],"frameAnimations":[{"type":"FrameAnimation","id":11},{"type":"FrameAnimation","id":12},{"type":"FrameAnimation","id":13},{"type":"FrameAnimation","id":14}]},{"id":6,"name":"platform","width":500,"height":64,"rigid":true,"type":"GameObjectProto","spriteSheet":{"id":5,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":61}]},{"id":58,"name":"ground1","width":32,"height":32,"rigid":true,"type":"GameObjectProto","spriteSheet":{"id":57,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":62}],"currFrameIndex":9},{"id":70,"name":"clamp","width":64,"height":64,"rigid":true,"type":"GameObjectProto","spriteSheet":{"id":69,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":75}]},{"id":73,"name":"tile","width":262,"height":192,"rigid":true,"type":"GameObjectProto","spriteSheet":{"id":72,"type":"SpriteSheet"}},{"id":80,"name":"flare","width":174,"height":173,"type":"GameObjectProto","spriteSheet":{"id":79,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":83}]},{"id":85,"name":"eso1611a","width":120,"height":120,"type":"GameObjectProto","spriteSheet":{"id":84,"type":"SpriteSheet"},"commonBehaviour":[{"type":"CommonBehaviour","id":88}]}],GameObject:[{"id":7,"name":"dude","pos":{"x":108,"y":227},"layerId":2,"type":"GameObject","gameObjectProto":{"id":4,"type":"GameObjectProto"}},{"id":63,"name":"ground1","pos":{"x":437,"y":115},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"}},{"id":64,"name":"platform","pos":{"x":471,"y":478},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":65,"name":"platform","pos":{"x":171,"y":192},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":67,"name":"ground1","pos":{"x":559,"y":116},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"}},{"pos":{"x":388,"y":140},"layerId":2,"type":"GameObject","gameObjectProto":{"id":58,"type":"GameObjectProto"},"id":68},{"id":71,"name":"clamp","pos":{"x":666,"y":328},"layerId":2,"type":"GameObject","gameObjectProto":{"id":70,"type":"GameObjectProto"}},{"id":74,"name":"tile","pos":{"x":369,"y":271},"layerId":2,"type":"GameObject","gameObjectProto":{"id":73,"type":"GameObjectProto"}},{"id":77,"name":"platform","pos":{"x":54,"y":302},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":78,"name":"platform","pos":{"x":43,"y":393},"layerId":2,"type":"GameObject","gameObjectProto":{"id":6,"type":"GameObjectProto"}},{"id":81,"name":"flare","pos":{"x":194,"y":46},"layerId":2,"type":"GameObject","gameObjectProto":{"id":80,"type":"GameObjectProto"}},{"id":82,"name":"flare","pos":{"x":255,"y":7},"layerId":2,"type":"GameObject","gameObjectProto":{"id":80,"type":"GameObjectProto"}},{"id":86,"name":"eso1611a","pos":{"x":134,"y":14},"layerId":2,"type":"GameObject","gameObjectProto":{"id":85,"type":"GameObjectProto"}},{"id":87,"name":"eso1611a","pos":{"x":93,"y":53},"layerId":2,"type":"GameObject","gameObjectProto":{"id":85,"type":"GameObjectProto"}}],FrameAnimation:[{"name":"left","type":"FrameAnimation","frames":[0,1,2,3],"id":11},{"name":"right","type":"FrameAnimation","frames":[5,6,7,8],"id":12},{"name":"idleLeft","type":"FrameAnimation","frames":[4],"id":13},{"name":"idleRight","type":"FrameAnimation","frames":[4],"id":14}],CommonBehaviour:[{"id":15,"name":"Control2Dir","type":"CommonBehaviour","parameters":{"velocity":"130","walkLeftAnimation":"left","walkRightAnimation":"right","idleLeftAnimation":"idleLeft","idleRightAnimation":"idleRight"}},{"name":"Draggable","type":"CommonBehaviour","id":60},{"name":"Draggable","type":"CommonBehaviour","id":61},{"name":"Draggable","type":"CommonBehaviour","id":62},{"name":"Draggable","type":"CommonBehaviour","id":75},{"name":"Draggable","type":"CommonBehaviour","id":83},{"name":"Draggable","type":"CommonBehaviour","id":88}],Font:[{"id":22,"name":"font1","type":"Font","resourcePath":"resources/font1.png","fontSize":21,"fontFamily":"monospace","fontContext":{"symbols":{"0":{"x":24,"y":36,"width":12,"height":24},"1":{"x":45,"y":36,"width":12,"height":24},"2":{"x":65,"y":36,"width":12,"height":24},"3":{"x":86,"y":36,"width":12,"height":24},"4":{"x":107,"y":36,"width":12,"height":24},"5":{"x":127,"y":36,"width":12,"height":24},"6":{"x":148,"y":36,"width":12,"height":24},"7":{"x":168,"y":36,"width":12,"height":24},"8":{"x":189,"y":36,"width":12,"height":24},"9":{"x":210,"y":36,"width":12,"height":24}," ":{"x":4,"y":4,"width":12,"height":24},"!":{"x":24,"y":4,"width":12,"height":24},"\"":{"x":45,"y":4,"width":12,"height":24},"#":{"x":65,"y":4,"width":12,"height":24},"$":{"x":86,"y":4,"width":12,"height":24},"%":{"x":107,"y":4,"width":12,"height":24},"&":{"x":127,"y":4,"width":12,"height":24},"'":{"x":148,"y":4,"width":12,"height":24},"(":{"x":168,"y":4,"width":12,"height":24},")":{"x":189,"y":4,"width":12,"height":24},"*":{"x":210,"y":4,"width":12,"height":24},"+":{"x":230,"y":4,"width":12,"height":24},",":{"x":251,"y":4,"width":12,"height":24},"-":{"x":271,"y":4,"width":12,"height":24},".":{"x":292,"y":4,"width":12,"height":24},"/":{"x":4,"y":36,"width":12,"height":24},":":{"x":230,"y":36,"width":12,"height":24},";":{"x":251,"y":36,"width":12,"height":24},"<":{"x":271,"y":36,"width":12,"height":24},"=":{"x":292,"y":36,"width":12,"height":24},">":{"x":4,"y":68,"width":12,"height":24},"?":{"x":24,"y":68,"width":12,"height":24},"@":{"x":45,"y":68,"width":12,"height":24},"A":{"x":65,"y":68,"width":12,"height":24},"B":{"x":86,"y":68,"width":12,"height":24},"C":{"x":107,"y":68,"width":12,"height":24},"D":{"x":127,"y":68,"width":12,"height":24},"E":{"x":148,"y":68,"width":12,"height":24},"F":{"x":168,"y":68,"width":12,"height":24},"G":{"x":189,"y":68,"width":12,"height":24},"H":{"x":210,"y":68,"width":12,"height":24},"I":{"x":230,"y":68,"width":12,"height":24},"J":{"x":251,"y":68,"width":12,"height":24},"K":{"x":271,"y":68,"width":12,"height":24},"L":{"x":292,"y":68,"width":12,"height":24},"M":{"x":4,"y":100,"width":12,"height":24},"N":{"x":24,"y":100,"width":12,"height":24},"O":{"x":45,"y":100,"width":12,"height":24},"P":{"x":65,"y":100,"width":12,"height":24},"Q":{"x":86,"y":100,"width":12,"height":24},"R":{"x":107,"y":100,"width":12,"height":24},"S":{"x":127,"y":100,"width":12,"height":24},"T":{"x":148,"y":100,"width":12,"height":24},"U":{"x":168,"y":100,"width":12,"height":24},"V":{"x":189,"y":100,"width":12,"height":24},"W":{"x":210,"y":100,"width":12,"height":24},"X":{"x":230,"y":100,"width":12,"height":24},"Y":{"x":251,"y":100,"width":12,"height":24},"Z":{"x":271,"y":100,"width":12,"height":24},"[":{"x":292,"y":100,"width":12,"height":24},"\\":{"x":4,"y":132,"width":12,"height":24},"]":{"x":24,"y":132,"width":12,"height":24},"^":{"x":45,"y":132,"width":12,"height":24},"_":{"x":65,"y":132,"width":12,"height":24},"`":{"x":86,"y":132,"width":12,"height":24},"a":{"x":107,"y":132,"width":12,"height":24},"b":{"x":127,"y":132,"width":12,"height":24},"c":{"x":148,"y":132,"width":12,"height":24},"d":{"x":168,"y":132,"width":12,"height":24},"e":{"x":189,"y":132,"width":12,"height":24},"f":{"x":210,"y":132,"width":12,"height":24},"g":{"x":230,"y":132,"width":12,"height":24},"h":{"x":251,"y":132,"width":12,"height":24},"i":{"x":271,"y":132,"width":12,"height":24},"j":{"x":292,"y":132,"width":12,"height":24},"k":{"x":4,"y":164,"width":12,"height":24},"l":{"x":24,"y":164,"width":12,"height":24},"m":{"x":45,"y":164,"width":12,"height":24},"n":{"x":65,"y":164,"width":12,"height":24},"o":{"x":86,"y":164,"width":12,"height":24},"p":{"x":107,"y":164,"width":12,"height":24},"q":{"x":127,"y":164,"width":12,"height":24},"r":{"x":148,"y":164,"width":12,"height":24},"s":{"x":168,"y":164,"width":12,"height":24},"t":{"x":189,"y":164,"width":12,"height":24},"u":{"x":210,"y":164,"width":12,"height":24},"v":{"x":230,"y":164,"width":12,"height":24},"w":{"x":251,"y":164,"width":12,"height":24},"x":{"x":271,"y":164,"width":12,"height":24},"y":{"x":292,"y":164,"width":12,"height":24},"z":{"x":4,"y":196,"width":12,"height":24},"{":{"x":24,"y":196,"width":12,"height":24},"|":{"x":45,"y":196,"width":12,"height":24},"}":{"x":65,"y":196,"width":12,"height":24},"~":{"x":86,"y":196,"width":12,"height":24},"":{"x":107,"y":196,"width":12,"height":24},"":{"x":127,"y":196,"width":12,"height":24},"":{"x":148,"y":196,"width":12,"height":24},"":{"x":168,"y":196,"width":12,"height":24},"":{"x":189,"y":196,"width":12,"height":24},"":{"x":210,"y":196,"width":12,"height":24},"":{"x":230,"y":196,"width":12,"height":24},"":{"x":251,"y":196,"width":12,"height":24},"":{"x":271,"y":196,"width":12,"height":24},"":{"x":292,"y":196,"width":12,"height":24},"":{"x":4,"y":228,"width":12,"height":24},"":{"x":24,"y":228,"width":12,"height":24},"":{"x":45,"y":228,"width":12,"height":24},"":{"x":65,"y":228,"width":12,"height":24},"":{"x":86,"y":228,"width":12,"height":24},"":{"x":107,"y":228,"width":12,"height":24},"":{"x":127,"y":228,"width":12,"height":24},"":{"x":148,"y":228,"width":12,"height":24},"":{"x":168,"y":228,"width":12,"height":24},"":{"x":189,"y":228,"width":12,"height":24},"":{"x":210,"y":228,"width":12,"height":24},"":{"x":230,"y":228,"width":12,"height":24},"":{"x":251,"y":228,"width":12,"height":24},"А":{"x":271,"y":228,"width":12,"height":24},"Б":{"x":292,"y":228,"width":12,"height":24},"В":{"x":4,"y":260,"width":12,"height":24},"Г":{"x":24,"y":260,"width":12,"height":24},"Д":{"x":45,"y":260,"width":12,"height":24},"Е":{"x":65,"y":260,"width":12,"height":24},"Ж":{"x":86,"y":260,"width":12,"height":24},"З":{"x":107,"y":260,"width":12,"height":24},"И":{"x":127,"y":260,"width":12,"height":24},"Й":{"x":148,"y":260,"width":12,"height":24},"К":{"x":168,"y":260,"width":12,"height":24},"Л":{"x":189,"y":260,"width":12,"height":24},"М":{"x":210,"y":260,"width":12,"height":24},"Н":{"x":230,"y":260,"width":12,"height":24},"О":{"x":251,"y":260,"width":12,"height":24},"П":{"x":271,"y":260,"width":12,"height":24},"Р":{"x":292,"y":260,"width":12,"height":24},"С":{"x":4,"y":292,"width":12,"height":24},"Т":{"x":24,"y":292,"width":12,"height":24},"У":{"x":45,"y":292,"width":12,"height":24},"Ф":{"x":65,"y":292,"width":12,"height":24},"Х":{"x":86,"y":292,"width":12,"height":24},"Ц":{"x":107,"y":292,"width":12,"height":24},"Ч":{"x":127,"y":292,"width":12,"height":24},"Ш":{"x":148,"y":292,"width":12,"height":24},"Щ":{"x":168,"y":292,"width":12,"height":24},"Ъ":{"x":189,"y":292,"width":12,"height":24},"Ы":{"x":210,"y":292,"width":12,"height":24},"Ь":{"x":230,"y":292,"width":12,"height":24},"Э":{"x":251,"y":292,"width":12,"height":24},"Ю":{"x":271,"y":292,"width":12,"height":24},"Я":{"x":292,"y":292,"width":12,"height":24},"а":{"x":4,"y":324,"width":12,"height":24},"б":{"x":24,"y":324,"width":12,"height":24},"в":{"x":45,"y":324,"width":12,"height":24},"г":{"x":65,"y":324,"width":12,"height":24},"д":{"x":86,"y":324,"width":12,"height":24},"е":{"x":107,"y":324,"width":12,"height":24},"ж":{"x":127,"y":324,"width":12,"height":24},"з":{"x":148,"y":324,"width":12,"height":24},"и":{"x":168,"y":324,"width":12,"height":24},"й":{"x":189,"y":324,"width":12,"height":24},"к":{"x":210,"y":324,"width":12,"height":24},"л":{"x":230,"y":324,"width":12,"height":24},"м":{"x":251,"y":324,"width":12,"height":24},"н":{"x":271,"y":324,"width":12,"height":24},"о":{"x":292,"y":324,"width":12,"height":24},"п":{"x":4,"y":356,"width":12,"height":24},"р":{"x":24,"y":356,"width":12,"height":24},"с":{"x":45,"y":356,"width":12,"height":24},"т":{"x":65,"y":356,"width":12,"height":24},"у":{"x":86,"y":356,"width":12,"height":24},"ф":{"x":107,"y":356,"width":12,"height":24},"х":{"x":127,"y":356,"width":12,"height":24},"ц":{"x":148,"y":356,"width":12,"height":24},"ч":{"x":168,"y":356,"width":12,"height":24},"ш":{"x":189,"y":356,"width":12,"height":24},"щ":{"x":210,"y":356,"width":12,"height":24},"ъ":{"x":230,"y":356,"width":12,"height":24},"ы":{"x":251,"y":356,"width":12,"height":24},"ь":{"x":271,"y":356,"width":12,"height":24},"э":{"x":292,"y":356,"width":12,"height":24},"ю":{"x":4,"y":388,"width":12,"height":24},"я":{"x":24,"y":388,"width":12,"height":24},"ѐ":{"x":45,"y":388,"width":12,"height":24},"ё":{"x":65,"y":388,"width":12,"height":24},"ђ":{"x":86,"y":388,"width":12,"height":24},"ѓ":{"x":107,"y":388,"width":12,"height":24},"є":{"x":127,"y":388,"width":12,"height":24},"ѕ":{"x":148,"y":388,"width":12,"height":24},"і":{"x":168,"y":388,"width":12,"height":24},"ї":{"x":189,"y":388,"width":12,"height":24},"ј":{"x":210,"y":388,"width":12,"height":24},"љ":{"x":230,"y":388,"width":12,"height":24},"њ":{"x":251,"y":388,"width":12,"height":24},"ћ":{"x":271,"y":388,"width":12,"height":24}},"width":320,"height":416}}],TileMap:[{"id":52,"width":50,"height":50,"type":"TileMap","spriteSheet":{"id":57,"type":"SpriteSheet"},"data":[[],null,null,[null,null,null,null,2,null,null],[null,null],[1,null,3,null,null,1,1,1,1,1,1,1,1,1],null,[null,1,null,1]]}],TextField:[{"name":"textField1","width":120,"height":24,"pos":{"x":16,"y":20},"layerId":2,"type":"TextField","text":"textField1","font":{"id":22,"type":"Font"},"id":76}]};
 
 /***/ }),
 /* 35 */,
@@ -3286,9 +3279,7 @@ var Eso1611aBehaviour = exports.Eso1611aBehaviour = function () {
         _classCallCheck(this, Eso1611aBehaviour);
     }
 
-    Eso1611aBehaviour.prototype.onCreate = function onCreate() {
-        this.gameObject.rigidBody.static = true;
-    };
+    Eso1611aBehaviour.prototype.onCreate = function onCreate() {};
 
     Eso1611aBehaviour.prototype.onUpdate = function onUpdate() {};
 
@@ -3313,9 +3304,7 @@ var FlareBehaviour = exports.FlareBehaviour = function () {
         _classCallCheck(this, FlareBehaviour);
     }
 
-    FlareBehaviour.prototype.onCreate = function onCreate() {
-        this.gameObject.rigidBody.static = true;
-    };
+    FlareBehaviour.prototype.onCreate = function onCreate() {};
 
     FlareBehaviour.prototype.onUpdate = function onUpdate() {};
 
@@ -3388,8 +3377,6 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
     };
 
     MainSceneBehaviour.prototype.onUpdate = function onUpdate() {
-        var _this2 = this;
-
         this.cnt++;
         if (this.cnt === 5) {
             this.points.shift();
@@ -3398,10 +3385,10 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         this.game.renderer.fillRect(this.x, this.y, 10, 10, this.color);
 
         this.points.forEach(function (p) {
-            _this2.game.renderer.fillRect(p.x, p.y, 50, 50, _this2.color);
-            _this2.game.renderer.fillCircle(p.x, p.y, 25, [0, 1, 0, 1]);
+            //this.game.renderer.fillRect(p.x,p.y,50,50,this.color);
+            //this.game.renderer.fillCircle(p.x,p.y,25,[0,1,0,1]);
             //this.game.renderer.log(p.x);
-            _this2.game.renderer.drawLine(p.x, p.y, p.x + 50, p.y + 30, [0, 1, 1, 1]);
+            //this.game.renderer.drawLine(p.x,p.y,p.x+50,p.y+30,[0,1,1,1]);
         });
         //this.game.renderer.log(this.points.length);
         //this.game.renderer.log({a:2});
@@ -3409,7 +3396,6 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         var camRect = this.game.camera.getRectScaled();
         // this.game.renderer.log(camRect);
         // this.game.renderer.log(this.game.mouse.currPoint);
-        this.game.renderer.drawRect(camRect.x + 50, camRect.y + 50, camRect.width - 100, camRect.height - 100, [0, 1, 0, 1]);
         //this.game.renderer.log(this.game.mouse.lastPoint);
         this.game.renderer.drawTiledImage('resources/tile.jpg', 130, 0, 130, 61, camRect.x, camRect.y, 100, 100, this.offsetX, this.offsetX);
         this.offsetX += 0.1;
@@ -3642,7 +3628,7 @@ exports.default = Control4Dir;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _baseAbstractBehaviour = __webpack_require__(16);
+var _baseAbstractBehaviour = __webpack_require__(17);
 
 var _baseAbstractBehaviour2 = _interopRequireDefault(_baseAbstractBehaviour);
 
@@ -3742,7 +3728,7 @@ exports.default = undefined;
 
 var _class, _temp;
 
-var _moveable = __webpack_require__(17);
+var _moveable = __webpack_require__(18);
 
 var _moveable2 = _interopRequireDefault(_moveable);
 
@@ -3788,7 +3774,7 @@ exports.default = undefined;
 
 var _class, _temp;
 
-var _moveable = __webpack_require__(17);
+var _moveable = __webpack_require__(18);
 
 var _moveable2 = _interopRequireDefault(_moveable);
 
@@ -3843,15 +3829,17 @@ var _mat2 = _interopRequireDefault(_mat);
 
 var _mathEx = __webpack_require__(4);
 
-var _mathEx2 = _interopRequireDefault(_mathEx);
+var mathEx = _interopRequireWildcard(_mathEx);
 
-var _rect = __webpack_require__(18);
+var _rect = __webpack_require__(9);
 
 var _rect2 = _interopRequireDefault(_rect);
 
 var _point2d = __webpack_require__(3);
 
 var _point2d2 = _interopRequireDefault(_point2d);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3895,7 +3883,7 @@ var Camera = function () {
     };
 
     Camera.prototype.update = function update(currTime, delta) {
-        var cameraRect = this.getRectScaled(); // todo cache this value
+        var cameraRect = this.getRectScaled();
         var gameObject = this.objFollowTo;
         if (!gameObject) return;
         var tileWidth = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0; // todo ?
@@ -3949,7 +3937,7 @@ var Camera = function () {
 
     Camera.prototype.screenToWorld = function screenToWorld(screenX, screenY) {
         var mScale = _mat2.default.makeScale(this.scale.x, this.scale.y, 1);
-        var point2d = _mathEx2.default.unProject(screenX, screenY, this.game.width, this.game.height, mScale);
+        var point2d = mathEx.unProject(screenX, screenY, this.game.width, this.game.height, mScale);
         point2d.add(this.pos);
         return point2d;
     };
@@ -4204,7 +4192,7 @@ exports.default = undefined;
 
 var _mathEx = __webpack_require__(4);
 
-var _mathEx2 = _interopRequireDefault(_mathEx);
+var mathEx = _interopRequireWildcard(_mathEx);
 
 var _point2d = __webpack_require__(3);
 
@@ -4215,6 +4203,8 @@ var _objectPool = __webpack_require__(59);
 var _objectPool2 = _interopRequireDefault(_objectPool);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -4276,7 +4266,7 @@ var Mouse = function () {
             var layer = scene.layers[scene.layers.length - 1 - i];
             for (var j = 0; j < layer.gameObjects.length; j++) {
                 var go = layer.gameObjects[j];
-                if (_mathEx2.default.isPointInRect(point, go.getRect())) {
+                if (mathEx.isPointInRect(point, go.getRect())) {
                     go.trigger(eventName, {
                         screenX: point.x,
                         screenY: point.y,
@@ -4845,6 +4835,7 @@ var Collider = function () {
 
         for (var i = 0, len = rigidObjects.length; i < len; i++) {
             var obstacle = rigidObjects[i];
+            if (obstacle.rigidBody === null) continue;
             var obstacleRect = obstacle.getRect();
             if (player !== rigidObjects[i] && (0, _mathEx.overlapTest)(playerRect, obstacleRect)) {
 
@@ -5184,7 +5175,7 @@ exports.default = MatrixStack;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractFilter = __webpack_require__(10);
+var _abstractFilter = __webpack_require__(11);
 
 var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
 
@@ -5224,7 +5215,7 @@ exports.default = ColorizeFilter;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractFilter = __webpack_require__(10);
+var _abstractFilter = __webpack_require__(11);
 
 var _abstractFilter2 = _interopRequireDefault(_abstractFilter);
 
@@ -5266,7 +5257,7 @@ exports.default = SimpleCopyFilter;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractPrimitive = __webpack_require__(11);
+var _abstractPrimitive = __webpack_require__(12);
 
 var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
 
@@ -5317,7 +5308,7 @@ exports.default = Circle;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _abstractPrimitive = __webpack_require__(11);
+var _abstractPrimitive = __webpack_require__(12);
 
 var _abstractPrimitive2 = _interopRequireDefault(_abstractPrimitive);
 
@@ -5357,11 +5348,11 @@ exports.default = Line;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _spriteRectDrawer = __webpack_require__(13);
+var _spriteRectDrawer = __webpack_require__(14);
 
 var _spriteRectDrawer2 = _interopRequireDefault(_spriteRectDrawer);
 
-var _shaderGenerator = __webpack_require__(15);
+var _shaderGenerator = __webpack_require__(16);
 
 var _shaderProgramUtils = __webpack_require__(7);
 
@@ -5377,7 +5368,7 @@ var _simpleCopyFilter = __webpack_require__(67);
 
 var _simpleCopyFilter2 = _interopRequireDefault(_simpleCopyFilter);
 
-var _frameBuffer = __webpack_require__(9);
+var _frameBuffer = __webpack_require__(10);
 
 var _frameBuffer2 = _interopRequireDefault(_frameBuffer);
 
@@ -5412,8 +5403,7 @@ var AbstractBlendDrawer = function () {
 
     AbstractBlendDrawer.prototype.draw = function draw(sourceTex, frameBuffer, uniforms) {
         var destTex = frameBuffer.texture;
-        destTex = destTex.applyFilters([this.simpleCopyFilter]);
-        frameBuffer.bind();
+        destTex = destTex.applyFilters([this.simpleCopyFilter], frameBuffer);
         destTex.bind(1);
         uniforms.texture = 0;
         uniforms.destTexture = 1;
@@ -5451,7 +5441,7 @@ var _bufferInfo = __webpack_require__(5);
 
 var _bufferInfo2 = _interopRequireDefault(_bufferInfo);
 
-var _colorShaderGenerator = __webpack_require__(14);
+var _colorShaderGenerator = __webpack_require__(15);
 
 var _colorShaderGenerator2 = _interopRequireDefault(_colorShaderGenerator);
 
@@ -5497,7 +5487,7 @@ exports.default = CircleDrawer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _plane = __webpack_require__(12);
+var _plane = __webpack_require__(13);
 
 var _plane2 = _interopRequireDefault(_plane);
 
@@ -5513,7 +5503,7 @@ var _abstractDrawer = __webpack_require__(2);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _colorShaderGenerator = __webpack_require__(14);
+var _colorShaderGenerator = __webpack_require__(15);
 
 var _colorShaderGenerator2 = _interopRequireDefault(_colorShaderGenerator);
 
@@ -5576,7 +5566,7 @@ var _abstractDrawer = __webpack_require__(2);
 
 var _abstractDrawer2 = _interopRequireDefault(_abstractDrawer);
 
-var _colorShaderGenerator = __webpack_require__(14);
+var _colorShaderGenerator = __webpack_require__(15);
 
 var _colorShaderGenerator2 = _interopRequireDefault(_colorShaderGenerator);
 
@@ -5711,7 +5701,7 @@ exports.default = ModelDrawer;
 exports.__esModule = true;
 exports.default = undefined;
 
-var _plane = __webpack_require__(12);
+var _plane = __webpack_require__(13);
 
 var _plane2 = _interopRequireDefault(_plane);
 
@@ -5831,7 +5821,7 @@ var _abstractRenderer = __webpack_require__(63);
 
 var _abstractRenderer2 = _interopRequireDefault(_abstractRenderer);
 
-var _spriteRectDrawer = __webpack_require__(13);
+var _spriteRectDrawer = __webpack_require__(14);
 
 var _spriteRectDrawer2 = _interopRequireDefault(_spriteRectDrawer);
 
@@ -5859,7 +5849,7 @@ var _modelDrawer = __webpack_require__(74);
 
 var _modelDrawer2 = _interopRequireDefault(_modelDrawer);
 
-var _frameBuffer = __webpack_require__(9);
+var _frameBuffer = __webpack_require__(10);
 
 var _frameBuffer2 = _interopRequireDefault(_frameBuffer);
 
@@ -5873,7 +5863,7 @@ var _mat2 = _interopRequireDefault(_mat);
 
 var _mathEx = __webpack_require__(4);
 
-var _mathEx2 = _interopRequireDefault(_mathEx);
+var matEx = _interopRequireWildcard(_mathEx);
 
 var _texture = __webpack_require__(22);
 
@@ -5882,6 +5872,12 @@ var _texture2 = _interopRequireDefault(_texture);
 var _multBlendDrawer = __webpack_require__(76);
 
 var _multBlendDrawer2 = _interopRequireDefault(_multBlendDrawer);
+
+var _rect = __webpack_require__(9);
+
+var _rect2 = _interopRequireDefault(_rect);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5966,21 +5962,22 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
         if (stop) return;
 
-        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), renderable.getRect())) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(), renderable.getRect())) return;
 
         var texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
-        texToDraw = texToDraw.applyFilters(renderable.filters);
-        this.frameBuffer.bind(); // todo make it implicit
+        texToDraw = texToDraw.applyFilters(renderable.filters, this.frameBuffer, this.frameBuffer);
 
         this.save();
-        // todo check if angle neq 0
-        var halfV = renderable.width / 2;
-        var halfH = renderable.height / 2;
-        this.translate(renderable.pos.x + halfV, renderable.pos.y + halfH);
-        this.scale(renderable.scale.x, renderable.scale.y);
-        this.rotateZ(renderable.angle);
-        //ctx.rotateY(a);
-        this.translate(-halfV, -halfH);
+        this.translate(renderable.pos.x, renderable.pos.y);
+        if (!(renderable.angle === 0 && renderable.scale.equal(1))) {
+            var halfV = renderable.width / 2;
+            var halfH = renderable.height / 2;
+            this.translate(halfV, halfH);
+            this.scale(renderable.scale.x, renderable.scale.y);
+            this.rotateZ(renderable.angle);
+            //ctx.rotateY(a);
+            this.translate(-halfV, -halfH);
+        }
 
         this.drawTexture(texToDraw, renderable._sprPosX, renderable._sprPosY, renderable.width, renderable.height, 0, 0, renderable.width, renderable.height);
         this.restore();
@@ -6001,7 +5998,8 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
     WebGlRenderer.prototype.drawTexture = function drawTexture(texture, srcX, srcY, srcWidth, srcHeight, dstX, dstY) {
 
-        //if (!matEx.overlapTest(this.game.camera.getRect(),{x,y,width,height})) return; todo
+        var camRectScaled = this.game.camera.getRectScaled();
+        if (!matEx.overlapTest(camRectScaled, new _rect2.default(camRectScaled.x + srcX, camRectScaled.y + srcY, srcWidth, srcHeight))) return;
 
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
@@ -6040,7 +6038,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
     WebGlRenderer.prototype.fillRect = function fillRect(x, y, width, height, color) {
         if (stop) return;
-        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x, y: y, width: width, height: height })) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(), { x: x, y: y, width: width, height: height })) return;
         var uniforms = {
             u_vertexMatrix: makePositionMatrix(x, y, width, height, this.game.width, this.game.height),
             u_rgba: color
@@ -6060,7 +6058,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         if (stop) return;
         var dx = x2 - x1,
             dy = y2 - y1;
-        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x1, y: y1, width: dx, height: dy })) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(), { x: x1, y: y1, width: dx, height: dy })) return;
         var uniforms = {};
         uniforms.u_vertexMatrix = makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height);
         uniforms.u_rgba = color;
@@ -6070,7 +6068,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
 
     WebGlRenderer.prototype.fillCircle = function fillCircle(x, y, r, color) {
         var r2 = r * 2;
-        if (!_mathEx2.default.overlapTest(this.game.camera.getRectScaled(), { x: x - r, y: y - r, width: r2, height: r2 })) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(), { x: x - r, y: y - r, width: r2, height: r2 })) return;
         var uniforms = {};
         uniforms.u_vertexMatrix = makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height);
         uniforms.u_rgba = color;
@@ -6140,7 +6138,7 @@ var WebGlRenderer = function (_AbstractRenderer) {
         this.translate(0, fullScreen.h);
         this.scale(1, -1);
 
-        var texToDraw = this.frameBuffer.getTexture().applyFilters(filters);
+        var texToDraw = this.frameBuffer.getTexture().applyFilters(filters, null);
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w, fullScreen.h);
 
@@ -7036,7 +7034,6 @@ var Scene = function (_BaseModel) {
     };
 
     Scene.prototype.printText = function printText(x, y, text, font) {
-        // todo
         if (!text) return;
         if (!text.substring) text = JSON.stringify(text, null, 4);
         this.game.renderer.printText(x, y, text, font);

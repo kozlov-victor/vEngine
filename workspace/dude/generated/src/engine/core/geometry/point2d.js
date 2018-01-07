@@ -43,6 +43,10 @@ export default class Point2d {
         this.y+=y;
     }
 
+    equal(val) {
+        return this.x===val && this.y===val;
+    }
+
     fromJSON(json){
         this.set(json);
     }

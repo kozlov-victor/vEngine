@@ -25,6 +25,7 @@ export default class Collider {
 
         for (let i = 0,len = rigidObjects.length;i<len;i++) {
             let obstacle = rigidObjects[i];
+            if (obstacle.rigidBody===null) continue;
             let obstacleRect = obstacle.getRect();
             if (player!==rigidObjects[i] && overlapTest(playerRect, obstacleRect)) {
 

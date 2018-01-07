@@ -138,7 +138,7 @@ export default class Scene extends BaseModel {
         // movie.play();
     }
 
-    printText(x,y,text,font){ // todo
+    printText(x,y,text,font){
         if (!text) return;
         if (!text.substring) text = JSON.stringify(text,null,4);
         this.game.renderer.printText(x,y,text,font);
