@@ -47,4 +47,13 @@ var activateTexture = function (textureName) {
  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
  };
 a. The retrieveAsse
+
+
+
+Shader.prototype.setTextureCoordinate = function(texCoord) {
+ var gl = gEngine.Core.getGL();
+ gl.bindBuffer(gl.ARRAY_BUFFER, this.mTexCoordBuffer);
+ gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(texCoord));
+
+
  
