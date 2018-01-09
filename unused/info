@@ -15,4 +15,45 @@ this.blendModes[CONST.BLEND_MODES.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+Add the following code to compute the color for each pixel:
+void main(void) {
+ // texel color look up based on interpolated UV value in vTexCoord
+ vec4 c = texture2D(uSampler, vec2(vTexCoord.s, vTexCoord.t));
+ 
+ // tint the textured area. Leave transparent area as defined by the texture
+ vec3 r = vec3(c) * (1.0-uPixelColor.a) + vec3(uPixelColor) * uPixelColor.a;
+ vec4 result = vec4(r, c.a);
+ gl_FragColor = result;
+ 
+ 
+ 
+ on to activate a WebGL texture for drawing.
+var activateTexture = function (textureName) {
+ var gl = gEngine.Core.getGL();
+ var texInfo = gEngine.ResourceMap.retrieveAsset(textureName);
+ // Binds our texture reference to the current webGL texture functionality
+ gl.bindTexture(gl.TEXTURE_2D, texInfo.mGLTexID);
+ 
+ // To prevent texture wrappings
+ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+ // Handles how magnification and minimization filters will work.
+ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, 
+ gl.LINEAR_MIPMAP_LINEAR);
+ // For pixel-graphics where you want the texture to look "sharp" 
+// do the following:
+ // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+ // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+ };
+a. The retrieveAsse
 
+
+
+Shader.prototype.setTextureCoordinate = function(texCoord) {
+ var gl = gEngine.Core.getGL();
+ gl.bindBuffer(gl.ARRAY_BUFFER, this.mTexCoordBuffer);
+ gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(texCoord));
+
+
+ 
