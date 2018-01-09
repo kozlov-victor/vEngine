@@ -56,4 +56,6 @@ Shader.prototype.setTextureCoordinate = function(texCoord) {
  gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(texCoord));
 
 
+gl.deleteBuffer
+
  

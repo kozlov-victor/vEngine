@@ -1,6 +1,14 @@
 {
-  "compilerOptions": {
-    "sourceMap": true,
-    "experimentalDecorators": true
-  }
+    "compilerOptions": {
+        "module": "es6",
+        "moduleResolution": "node",
+        "target": "es5",
+        "experimentalDecorators": true,
+        "lib": [
+            "dom",
+            "es5",
+            "es6",
+            "es7"
+        ]
+    }
 }
