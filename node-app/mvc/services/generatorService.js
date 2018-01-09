@@ -4,19 +4,6 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const configFn = require.main.require('./node-app/generator/webpack.config');
 const termToHtml = require('./termToHtml');
 
-function stringify(obj_from_json){
-    if(typeof obj_from_json !== "object" || Array.isArray(obj_from_json)){
-        // not an object, stringify using native function
-        return JSON.stringify(obj_from_json);
-    }
-    // Implements recursive object serialization according to JSON spec
-    // but without quotes around the keys.
-    let props = Object
-        .keys(obj_from_json)
-        .map(key => `${key}:${stringify(obj_from_json[key])}`)
-        .join(",");
-    return `{${props}}`;
-}
 
 class GeneratorService {
 
@@ -60,9 +47,18 @@ class GeneratorService {
 
             fs.copyFolderSync(`workspace/${params.projectName}/resources/`,`workspace/${params.projectName}/out/`);
 
-            fs.copyFileSync(`./workspace/${params.projectName}/repository.json`,`./workspace/${params.projectName}/generated/src/app/repository.json`);
-            fs.copyFileSync(`./workspace/${params.projectName}/gameProps.json`,`./workspace/${params.projectName}/generated/src/app/gameProps.json`);
-            fs.copyFileSync('node-app/generator/index.js',`workspace/${params.projectName}/generated/src/index.js`);
+            let repository =  JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/repository.json`));
+            let gameProps =  JSON.parse(fs.readFileSync(`./workspace/${params.projectName}/gameProps.json`));
+            fs.createFileSync(
+                `./workspace/${params.projectName}/generated/src/app/repository.ts`,
+                `export let repository:any = \n\t${JSON.stringify(repository,null,4)};`)
+            ;
+            fs.createFileSync(
+                `./workspace/${params.projectName}/generated/src/app/gameProps.ts`,
+                `export let gameProps:any = \n\t${JSON.stringify(gameProps,null,4)};`)
+            ;
+
+            fs.copyFileSync('node-app/generator/index.tpl',`workspace/${params.projectName}/generated/src/index.ts`);
 
             config.plugins.push(
                 new webpack.DefinePlugin({
@@ -99,16 +95,18 @@ class GeneratorService {
                 else {
 
                     if (data.compilation && data.compilation.errors && data.compilation.errors[0]) {
-                        console.error('compilation.errors:',data.compilation.errors);
+                        console.error('compiled with errors');
+                        //console.error(data.compilation.errors);
                         let errorMsg = data.compilation.errors.map(err=>{
-                            let msg = (err.details || err.toString())+'\n'
+                            let msg = (err.details || err.message || err.toString());
+                            if (err.file) msg+=`\n\t at file ${err.file}`;
+                            else if (err.module && err.module && err.module.resource)
+                                msg+=`\n\t at file ${err.module.resource}`;
                             return msg;
-                        });
-                        console.error('compilation error:',data.compilation.errors);
-                        GeneratorService._createError(params,errorMsg.toString());
+                        }).join('\n\t---------\t\n');
+                        GeneratorService._createError(params,errorMsg);
                         callback({success:false});
                     } else {
-
                         let embeddedResources = [];
                         // fs.readDirSync(`workspace/${params.projectName}/out/`).forEach(res=>{
                         //    let ext = res.fullName.split('.').pop();
@@ -130,7 +128,7 @@ class GeneratorService {
                         let appBundleJs = fs.readFileSync(`./workspace/${params.projectName}/generated/tmp/bundle.js`);
                         fs.createFileSync(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
                         //fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
-
+                        console.log('compiled with no errors');
                         callback({success:true});
                     }
                 }

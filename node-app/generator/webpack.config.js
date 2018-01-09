@@ -9,8 +9,8 @@ module.exports =  (params)=>{
 
     let config = {
         entry: {
-            bundle:`./workspace/${params.projectName}/generated/src/index.js`,
-            debug: ['./client-app/debug/debug.js','./client-app/debug/devConsole.js']
+            bundle:`./workspace/${params.projectName}/generated/src/index.ts`,
+            debug: ['./client-app/debug/debug.ts','./client-app/debug/devConsole.ts']
         },
         output: {
             path: path.resolve(`./workspace/${params.projectName}/generated/tmp`),

@@ -10,8 +10,8 @@ const debug = true;
 
 let config = {
     entry: {
-        'app.bundle':['regenerator-runtime/runtime','./client-app/app/index.js'],
-        'debug':'./client-app/debug/debug.js'
+        'app.bundle':['regenerator-runtime/runtime','./client-app/app/index.ts'],
+        'debug':'./client-app/debug/debug.ts'
     },
     output: {
         path: path.resolve('./assets/'),
