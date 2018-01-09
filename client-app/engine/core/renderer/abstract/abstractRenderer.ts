@@ -1,12 +1,14 @@
-/*global DEBUG:true*/
+
 
 import TextField from '../../../model/generic/ui/textField'
 import Device from '../../device'
 import {SCALE_STRATEGY} from "../../misc/consts";
+import {DEBUG} from "../../../declarations";
+import Game from "../../game";
+import GameObject from "../../../model/generic/gameObject";
+import GameObjectProto from '../../../model/generic/gameObjectProto';
 
-declare const document:any, DEBUG:boolean;
-
-declare const window:any;
+declare const document:any, window:any;
 
 export default class AbstractRenderer {
 
@@ -14,7 +16,7 @@ export default class AbstractRenderer {
     container = null;
     debugTextField = null;
     fullScreenSize = {w:0,h:0,scaleFactor:1};
-    game;
+    game:Game;
 
     constructor(game){
         this.game = game;
@@ -98,9 +100,30 @@ export default class AbstractRenderer {
         return 0;
     }
 
+    drawImage(texturePath:string,
+              srcX:number, srcY:number, srcWidth:number, srcHeight:number,
+              dstX:number, dstY:number){
+    }
+
+    clear(){
+
+    }
+
+    clearColor({r,g,b}){
+
+    }
+
+    restore(){
+
+    }
+
     translate(x,y,z?){}
 
     scale(x,y,z?){}
+
+    draw(renderable:GameObjectProto){
+
+    }
 
     log(){
         if (!DEBUG) return;

@@ -1,17 +1,19 @@
 import BaseModel from '../baseModel'
+import GameObject from "./gameObject";
+import Game from "../../core/game";
 
 export default class FrameAnimation extends BaseModel {
 
-    type = 'FrameAnimation';
-    _currFrame = 0;
+    type:string = 'FrameAnimation';
+    _currFrame:number = 0;
     frames = [];
-    duration = 1000;
-    _gameObject = null;
-    _startTime = null;
-    _timeForOneFrame;
+    duration:number = 1000;
+    _gameObject:GameObject = null;
+    _startTime:number = null;
+    _timeForOneFrame:number;
     _isRepeat:boolean;
 
-    constructor(game) {
+    constructor(game:Game) {
         super(game);
         this.stop();
     }

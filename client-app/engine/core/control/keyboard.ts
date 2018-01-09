@@ -1,18 +1,18 @@
 
-/*global DEBUG:true*/
+
+import Game from "../game";
 
 const KEY_JUST_PRESSED = 2;
 const KEY_PRESSED = 1;
 const KEY_JUST_RELEASED = 0;
 const KEY_RELEASED = -1;
 
-declare const DEBUG:boolean;
 declare const window:any;
 
 export default class Keyboard {
 
-    keyDownListener = null;
-    keyUpListener = null;
+    keyDownListener:Function = null;
+    keyUpListener:Function = null;
 
     KEY = {
         SPACE: 32,
@@ -63,9 +63,9 @@ export default class Keyboard {
     };
 
     buffer = {};
-    game;
+    game:Game;
 
-    constructor(game) {
+    constructor(game:Game) {
         this.game = game;
     }
 

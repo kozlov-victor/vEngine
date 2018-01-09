@@ -1,4 +1,4 @@
-/*global DEBUG:true*/
+
 import GameObjectProto from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
 import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilters/blackWhite";
@@ -9,8 +9,9 @@ declare const DEBUG:boolean;
 
 export default class GameObject extends GameObjectProto {
 
-    type = 'GameObject';
-    gameObjectProto = null;
+    type:string = 'GameObject';
+    blendMode:string;
+    gameObjectProto:GameObjectProto = null;
 
     constructor(game){
         super(game);
@@ -33,8 +34,8 @@ export default class GameObject extends GameObjectProto {
         });
         super.revalidate();
         if (this.id===71) {
-            let filter1 = new BlackWhiteFilter(this.game.renderer.gl);
-            let filter2 = new ColorizeFilter(this.game.renderer.gl);
+            let filter1 = new BlackWhiteFilter(this.game.renderer['gl']); // todo
+            let filter2 = new ColorizeFilter(this.game.renderer['gl']);
             this.filters.push(filter1);
             this.filters.push(filter2);
         }

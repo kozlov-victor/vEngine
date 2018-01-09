@@ -1,5 +1,7 @@
 
-const isPropNotFit = (key,val,opts)=>{
+import Game from "../core/game";
+
+const isPropNotFit = (key, val, opts)=>{
     if (!key) return true;
     if (key.indexOf('_')===0) return true;
     if (val && val.call) return true;
@@ -58,8 +60,8 @@ const deepCopy = (obj, _clonedObjects = [])=> {
 
 export default class CommonObject {
 
-    game;
-    type;
+    game:Game;
+    type:string;
 
     fromJSON(params = {},forceNew?){
         Object.keys(params).forEach(key=>{

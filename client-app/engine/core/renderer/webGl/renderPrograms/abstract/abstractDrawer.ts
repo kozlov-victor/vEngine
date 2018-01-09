@@ -1,17 +1,19 @@
 
 import ShaderProgram from "../../base/shaderProgram";
+import Texture from "../../base/texture";
+import BufferInfo from "../../base/bufferInfo";
 
 export default class AbstractDrawer {
 
     static currentInstance:AbstractDrawer = null;
 
-    gl;
+    gl:WebGLRenderingContext;
     program:ShaderProgram = null;
     uniformCache:any = {};
 
-    bufferInfo;
+    bufferInfo:BufferInfo;
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         this.gl = gl;
     }
 
@@ -40,7 +42,7 @@ export default class AbstractDrawer {
         this.bufferInfo.draw();
     }
 
-    draw(texture,uniforms){
+    draw(texture:Texture,uniforms){
         if (texture!==null) texture.bind();
         this.bind();
         Object.keys(uniforms).forEach(name=>this.setUniform(name,uniforms[name]));

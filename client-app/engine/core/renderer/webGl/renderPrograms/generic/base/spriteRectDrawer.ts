@@ -3,14 +3,14 @@
 import Plane from '../../../primitives/plane'
 import ShaderProgram from '../../../base/shaderProgram'
 import AbstractDrawer from "../../abstract/abstractDrawer";
-import BufferInfo from "../../../base/bufferInfo";
+import BufferInfo, {BufferInfoDescription} from "../../../base/bufferInfo";
 import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGenerator";
 
 export default class SpriteRectDrawer extends AbstractDrawer {
 
     private plane:Plane;
 
-    constructor(gl,program?:ShaderProgram) {
+    constructor(gl:WebGLRenderingContext,program?:ShaderProgram) {
         super(gl);
         let gen = new TexShaderGenerator();
         this.plane = new Plane();
@@ -24,7 +24,7 @@ export default class SpriteRectDrawer extends AbstractDrawer {
             posIndexInfo: {array: this.plane.indexArr},
             texVertexInfo: {array: this.plane.texCoordArr, type: gl.FLOAT, size: 2, attrName: 'a_texCoord'},
             drawMethod: this.gl.TRIANGLE_STRIP
-        });
+        } as BufferInfoDescription);
     }
 
     // draw(texture,uniforms){

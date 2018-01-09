@@ -1,16 +1,15 @@
 
 import BaseAbstractBehaviour from './baseAbstractBehaviour'
+import Game from "../../core/game";
 
 export default class Moveable extends BaseAbstractBehaviour {
 
     gameObject = null;
-    game;
     parameters;
     animations;
 
-    constructor(game) {
-        super();
-        this.game = game;
+    constructor(game:Game) {
+        super(game);
     }
 
     manage(gameObject, parameters,dirs) {

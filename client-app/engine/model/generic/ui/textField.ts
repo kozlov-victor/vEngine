@@ -1,14 +1,15 @@
 /*global DEBUG:true*/
 import BaseModel from '../../baseModel'
+import Font from "../font";
 
 declare const DEBUG:boolean;
 
 export default class TextField extends BaseModel {
 
     type ='TextField';
-    _chars = null;
-    text = '';
-    font = null;
+    _chars:Array<string> = null;
+    text:string = '';
+    font:Font = null;
 
     constructor(game){
         super(game);

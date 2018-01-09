@@ -1,5 +1,7 @@
 
 import {overlapTest} from '../mathEx'
+import GameObject from "../../model/generic/gameObject";
+import Point2d from "../geometry/point2d";
 
 export default class Collider {
 
@@ -9,7 +11,7 @@ export default class Collider {
         this.game = game;
     }
 
-    moveBy(player, deltaPoint) {
+    moveBy(player:GameObject, deltaPoint:Point2d) {
 
         let rigidObjects =
             this.game.getCurrScene().getAllGameObjects().

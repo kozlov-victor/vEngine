@@ -1,6 +1,4 @@
 
-/*global Image:true*/
-/*global DEBUG:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
 import SpriteRectDrawer from './renderPrograms/generic/base/spriteRectDrawer'
@@ -17,6 +15,8 @@ import * as matEx from '../../mathEx'
 import Texture from './base/texture'
 import MultBlendDrawer from "./renderPrograms/generic/blend/multBlendDrawer";
 import Rect from "../../geometry/rect";
+import Game from "../../game";
+import GameObjectProto from '../../../model/generic/gameObjectProto';
 
 declare const DEBUG:boolean;
 declare const Image:any;
@@ -56,7 +56,7 @@ const makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeig
 //   gl.enable(gl.DEPTH_TEST);
 export default class WebGlRenderer extends AbstractRenderer {
 
-    private gl;
+    private gl:WebGLRenderingContext;
     private matrixStack:MatrixStack;
     private circleDrawer:CircleDrawer;
     private spriteRectDrawer:SpriteRectDrawer;
@@ -66,13 +66,13 @@ export default class WebGlRenderer extends AbstractRenderer {
     private multBlendDrawer:MultBlendDrawer;
     private frameBuffer:FrameBuffer;
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
         // todo DRY
         let container = document.createElement('canvas');
         document.body.appendChild(container);
-        container.setAttribute('width',game.width);
-        container.setAttribute('height',game.height);
+        container.setAttribute('width',game.width.toString());
+        container.setAttribute('height',game.height.toString());
         this.container = container;
         this.matrixStack = matrixStack;
         this.registerResize();
@@ -97,7 +97,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         gl.enable(gl.BLEND);
     }
 
-    draw(renderable){
+    draw(renderable:GameObjectProto){
 
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
 
@@ -128,9 +128,9 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.restore();
     }
 
-    drawImage(texturePath,
-              srcX, srcY, srcWidth, srcHeight,
-              dstX, dstY){
+    drawImage(texturePath:string,
+              srcX:number, srcY:number, srcWidth:number, srcHeight:number,
+              dstX:number, dstY:number){
 
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
@@ -143,11 +143,11 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.drawTexture(texture,srcX, srcY, srcWidth, srcHeight, dstX, dstY);
     }
 
-    drawTexture(texture,
-                srcX, srcY, srcWidth, srcHeight,
-                dstX, dstY){
+    drawTexture(texture:Texture,
+                srcX:number, srcY:number, srcWidth:number, srcHeight:number,
+                dstX:number, dstY:number){
 
-        let camRectScaled = this.game.camera.getRectScaled();
+        let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
             camRectScaled,
             new Rect(camRectScaled.x+srcX,camRectScaled.y+srcY,srcWidth,srcHeight))
@@ -168,15 +168,15 @@ export default class WebGlRenderer extends AbstractRenderer {
         else this.spriteRectDrawer.draw(texture,uniforms);
     }
 
-    drawTiledImage(texturePath,
-                   srcX,srcY,srcWidth,srcHeight,
-                   dstX, dstY, dstWidth, dstHeight,
-                   offsetX,offsetY){
+    drawTiledImage(texturePath:string,
+                   srcX:number,srcY:number,srcWidth:number,srcHeight:number,
+                   dstX:number, dstY:number, dstWidth:number, dstHeight:number,
+                   offsetX:number,offsetY:number){
 
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
-        let texture = this.renderableCache[texturePath];
+        let texture:Texture = this.renderableCache[texturePath];
         if (DEBUG && !texture) {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
@@ -200,7 +200,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     }
 
-    fillRect(x, y, width, height, color){
+    fillRect(x:number, y:number, width:number, height:number, color){ // todo rect
 
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x,y,width,height})) return;
         let uniforms = {
@@ -213,14 +213,14 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.colorRectDrawer.draw(null,uniforms);
     }
 
-    drawRect(x,y,w,h,color){
+    drawRect(x:number,y:number,w:number,h:number,color){ // todo rect
         this.fillRect(x, y, w, 1, color);
         this.fillRect(x, y + h, w, 1, color);
         this.fillRect(x, y, 1, h, color);
         this.fillRect(x + w, y, 1, h, color);
     }
 
-    drawLine(x1,y1,x2,y2,color){
+    drawLine(x1:number,y1:number,x2:number,y2:number,color){
 
         let dx = x2-x1,dy = y2-y1;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x1,y:y1,width:dx,height:dy})) return;
@@ -234,7 +234,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.lineDrawer.draw(null,uniforms);
     }
 
-    fillCircle(x,y,r,color){
+    fillCircle(x:number,y:number,r:number,color){
         let r2 = r*2;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x-r,y:y-r,width:r2,height:r2})) return;
         let uniforms:any = {};
@@ -247,7 +247,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.circleDrawer.draw(null,uniforms);
     }
 
-    setAlpha(a){
+    setAlpha(a:number){
         throw 'not implemented';
     }
 
@@ -255,19 +255,19 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.matrixStack.save();
     }
 
-    scale(x,y) {
+    scale(x:number,y:number) {
         this.matrixStack.scale(x,y);
     }
 
-    rotateZ(angleInRadians) {
+    rotateZ(angleInRadians:number) {
         this.matrixStack.rotateZ(angleInRadians);
     }
 
-    rotateY(angleInRadians) {
+    rotateY(angleInRadians:number) {
         this.matrixStack.rotateY(angleInRadians);
     }
 
-    translate(x,y){
+    translate(x:number,y:number){
         this.matrixStack.translate(x,y);
     }
 
@@ -275,7 +275,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.matrixStack.restore();
     }
 
-    lockRect(rect) {
+    lockRect(rect:Rect) {
 
     }
 
@@ -339,7 +339,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         return err;
     }
 
-    loadTextureInfo(resourcePath,onLoad){
+    loadTextureInfo(resourcePath:string,onLoad:Function){
         let img = new Image();
         img.src = resourcePath;
         img.onload = ()=>{

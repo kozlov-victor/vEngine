@@ -5,14 +5,17 @@ import {GL_TYPE} from "../../base/shaderProgramUtils";
 import TexShaderGenerator from "../../shaders/generators/generic/texShaderGenerator";
 import ShaderProgram from "../../base/shaderProgram";
 import SimpleCopyFilter from "../../filters/textureFilters/simpleCopyFilter";
+import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import Texture from "../../base/texture";
+import FrameBuffer from "../../base/frameBuffer";
 
 export default class AbstractBlendDrawer {
 
-    spriteRectDrawer;
-    simpleCopyFilter;
-    gl;
+    spriteRectDrawer:SpriteRectDrawer;
+    simpleCopyFilter:SimpleCopyFilter;
+    gl:WebGLRenderingContext;
 
-    constructor(gl) {
+    constructor(gl:WebGLRenderingContext) {
         this.gl = gl;
         let gen = new TexShaderGenerator();
         gen.addVarying(GL_TYPE.FLOAT_VEC4, 'v_destTexCoord');
@@ -37,11 +40,11 @@ export default class AbstractBlendDrawer {
     }
 
 
-    prepare(programGen){}
+    prepare(programGen:ShaderGenerator){}
 
     // destTex is copy or current destination texture
     // to avoid "Source and destination textures of the draw are the same" error
-    draw(sourceTex,frameBuffer,uniforms){
+    draw(sourceTex:Texture,frameBuffer:FrameBuffer,uniforms){
         let destTex = frameBuffer.texture;
         destTex = destTex.applyFilters([this.simpleCopyFilter],frameBuffer);
         destTex.bind(1);

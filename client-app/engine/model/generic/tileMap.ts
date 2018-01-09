@@ -1,19 +1,21 @@
 
 import BaseModel from '../baseModel'
+import SpriteSheet from "./spriteSheet";
+import Game from "../../core/game";
 
 export default class TileMap extends BaseModel {
 
-    type = "TileMap";
-    spriteSheet = null;
-    data = [];
-    _tilesInScreenX;
-    _tilesInScreenY;
+    type:string = "TileMap";
+    spriteSheet:SpriteSheet = null;
+    data:Array<any> = [];
+    _tilesInScreenX:number;
+    _tilesInScreenY:number;
     
-    constructor(game){
+    constructor(game:Game){
         super(game);
     }
 
-    getTileAt(x,y){
+    getTileAt(x:number,y:number){
         if (!this.spriteSheet) return;
         let tilePosX = ~~(x / this.spriteSheet._frameWidth);
         let tilePosY = ~~(y / this.spriteSheet._frameHeight);

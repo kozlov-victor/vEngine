@@ -1,39 +1,40 @@
-/*global IN_EDITOR:true*/
-/*global DEBUG:true*/
-/*global window:true*/
+
 import BaseModel from '../baseModel'
 import FrameAnimation from "./frameAnimation";
 import {ArrayEx} from "../../core/misc/polyfills";
+import SpriteSheet from "./spriteSheet";
+import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
+import Game from "../../core/game";
 
 
 export default class GameObjectProto extends BaseModel {
 
-    type = 'GameObjectProto';
-    spriteSheet = null;
+    type:string = 'GameObjectProto';
+    spriteSheet:SpriteSheet = null;
     _behaviour = null;
     commonBehaviour = [];
-    currFrameIndex = 0;
-    _sprPosX = 0;
-    _sprPosY = 0;
+    currFrameIndex:number = 0;
+    _sprPosX:number = 0;
+    _sprPosY:number = 0;
     frameAnimations:ArrayEx = [] as ArrayEx;
     _currFrameAnimation:FrameAnimation;
-    startFrameAnimationName = null;
-    _timeCreated = null;
+    startFrameAnimationName:string = null;
+    _timeCreated:number = null;
     tileOffset =  {x:0,y:0};
-    tileRepeat = false;
-    groupName = '';
+    tileRepeat:boolean = false;
+    groupName:string = '';
     _individualBehaviour = null;
-    filters = [];
+    filters: Array<AbstractFilter> = [];
     _layer;
 
-    static find(name){
+    static find(name:string){
         //return game.getCurrScene()._allGameObjects.find({name:name});
     }
-    static findAll(name) {
+    static findAll(name:string) {
         //return game.getCurrScene()._allGameObjects.findAll({name: name});
     }
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
     }
 
@@ -50,14 +51,14 @@ export default class GameObjectProto extends BaseModel {
         });
     }
 
-    playFrameAnimation(animationName,opts?){
+    playFrameAnimation(animationName:string,opts?){
         let fr = this.frameAnimations.find(it=>it.name===animationName);
         fr._gameObject = this;
         this._currFrameAnimation = fr;
         fr.play(opts);
     }
 
-    setFrameIndex(index){
+    setFrameIndex(index:number){
         this.currFrameIndex = index;
         this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
         this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);

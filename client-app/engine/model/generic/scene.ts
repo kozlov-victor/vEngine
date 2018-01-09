@@ -1,24 +1,26 @@
-/*global IN_EDITOR:true*/
-/*global DEBUG:true*/
+
 import BaseModel from '../baseModel'
 import LoadingQueue from '../../core/misc/loadingQueue'
 import TileMap from './tileMap'
 import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilters/blackWhite";
+import Layer from "./layer";
+import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
+import Game from "../../core/game";
 
 declare const DEBUG:boolean, IN_EDITOR:boolean;
 
 export default class Scene extends BaseModel {
 
-    type = 'Scene';
-    layers = [];
-    useBG = false;
+    type:string = 'Scene';
+    layers:Array<Layer> = [];
+    useBG:boolean = false;
     colorBG = {r: 255, g: 255, b: 255};
     _tweenMovies = [];
-    filters = [];
+    filters:Array<AbstractFilter> = [];
     _individualBehaviour = null;
     tileMap:TileMap;
 
-    constructor(game) {
+    constructor(game:Game) {
         super(game);
         this.tileMap = new TileMap(game);
     }
@@ -140,13 +142,4 @@ export default class Scene extends BaseModel {
     //     // movie.tween(0,tween);
     //     // movie.play();
     // }
-
-    printText(x,y,text,font?){
-        if (!text) return;
-        if (!text.substring) text = JSON.stringify(text,null,4);
-        this.game.renderer.printText(x,y,text,font);
-    }
-    log(text) {
-        this.printText(0,0,text);
-    }
 }

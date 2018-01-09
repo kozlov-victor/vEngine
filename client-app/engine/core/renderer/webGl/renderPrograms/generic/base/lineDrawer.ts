@@ -10,7 +10,7 @@ export default class LineDrawer extends AbstractDrawer {
 
     private line:Line;
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         super(gl);
         let gen = new ColorShaderGenerator();
         this.program = new ShaderProgram(

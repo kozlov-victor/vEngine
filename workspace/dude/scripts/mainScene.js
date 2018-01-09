@@ -26,7 +26,7 @@ export class MainSceneBehaviour {
             this.points.shift();
             this.cnt=0;
         }    
-        this.game.renderer.fillRect(this.x,this.y,10,10,this.color);
+        this.game.renderer.fillRect({x:this.x,y:this.y,width:10,height:10},this.color);
        
         this.points.forEach(p=>{
             //this.game.renderer.fillRect(p.x,p.y,50,50,this.color);
@@ -42,9 +42,10 @@ export class MainSceneBehaviour {
         // this.game.renderer.log(this.game.mouse.currPoint);
         //this.game.renderer.log(this.game.mouse.lastPoint);
         this.game.renderer.drawTiledImage('resources/tile.jpg',
-                  130,0,130,61,
-                  camRect.x, camRect.y, 100, 100,
-                  this.offsetX,this.offsetX);
+            {x:130,y:0,width:130,height:61},
+            {x:camRect.x, y:camRect.y, width:100, height:100},
+            {x:this.offsetX,y:this.offsetX}
+        );
         this.offsetX+=0.1;
     }
 

@@ -1,7 +1,7 @@
-/*global DEBUG:true*/
-declare const DEBUG:boolean;
 
-export const compileShader = (gl, shaderSource, shaderType)=> {
+import {DEBUG} from "../../../../declarations";
+
+export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, shaderType:number):WebGLShader=> {
     if (DEBUG) {
         if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
     }
@@ -33,8 +33,8 @@ export const compileShader = (gl, shaderSource, shaderType)=> {
 };
 
 
-export const createProgram = (gl, vertexShader,fragmentShader)=> {
-    let program = gl.createProgram();
+export const createProgram = (gl:WebGLRenderingContext, vertexShader:WebGLShader,fragmentShader:WebGLShader):WebGLProgram=> {
+    let program:WebGLProgram = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);

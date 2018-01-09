@@ -2,15 +2,17 @@
 
 
 import Move4Dir from './move4Dir'
+import Game from "../../core/game";
+import GameObject from "../../model/generic/gameObject";
 
 export default class Control4Dir extends Move4Dir {
 
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
     }
 
-    manage(gameObject,parameters) {
+    manage(gameObject:GameObject,parameters) {
         super.manage(gameObject,parameters);
     }
 

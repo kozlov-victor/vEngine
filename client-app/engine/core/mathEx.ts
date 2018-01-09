@@ -1,5 +1,3 @@
-/*global DEBUG:true*/
-declare let GLOBAL:boolean;
 
 import * as mat4 from './geometry/mat4'
 import Point2d from "./geometry/point2d";

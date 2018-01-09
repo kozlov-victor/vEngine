@@ -1,16 +1,14 @@
-/*global DEBUG:true*/
 
 import CommonObject from './commonObject'
 import Tween from '../core/tween'
 import EventEmitter from '../core/misc/eventEmitter'
 import {Transient} from '../core/misc/decorators'
-//import Vec2 from '../core/vec2'
 
 import ArcadeRigidBody from '../core/physics/arcadeRigidBody'
 import Rect from "../core/geometry/rect";
 import Point2d from "../core/geometry/point2d";
-
-declare const DEBUG:boolean;
+import {DEBUG} from "../declarations";
+import Game from "../core/game";
 
 @Transient({
     game: true,
@@ -18,24 +16,24 @@ declare const DEBUG:boolean;
 })
 export default class BaseModel extends CommonObject {
 
-    id = null;
-    name = null;
-    width = 0;
-    height = 0;
-    pos = new Point2d(0,0);
-    scale = new Point2d(1,1);
-    angle = 0;
-    alpha = 1;
-    layerId =  null;
-    fixedToCamera = false;
-    rigid = false;
+    id:number = null;
+    name:string = null;
+    width:number = 0;
+    height:number = 0;
+    pos:Point2d = new Point2d(0,0);
+    scale:Point2d = new Point2d(1,1);
+    angle:number = 0;
+    alpha:number = 1;
+    layerId:number =  null;
+    fixedToCamera:boolean = false;
+    rigid:boolean = false;
     _tweens = [];
-    _rect = new Rect(0,0);
+    _rect:Rect = new Rect(0,0);
     _emitter:EventEmitter;
     _cloner:BaseModel;
     rigidBody:ArcadeRigidBody;
 
-    constructor(game){
+    constructor(game:Game){
         super();
         if (DEBUG && !game) throw (
             `can not create model '${this.type}': game instance not passed to model constructor`
@@ -54,7 +52,7 @@ export default class BaseModel extends CommonObject {
 
     onShow(){}
 
-    getRect(){
+    getRect():Rect{
         this._rect.set(this.pos.x,this.pos.y,this.width,this.height);
         return this._rect;
     }
@@ -75,7 +73,7 @@ export default class BaseModel extends CommonObject {
         });
     }
 
-    clone(opts){
+    clone(opts?){
         let Clazz:any = this.constructor;
         let obj = new Clazz(this.game);
         obj._cloner = this;

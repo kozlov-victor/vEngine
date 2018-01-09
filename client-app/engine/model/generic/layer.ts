@@ -1,12 +1,14 @@
 import BaseModel from '../baseModel'
 import {ArrayEx} from "../../core/misc/polyfills";
+import Game from "../../core/game";
+import GameObject from "./gameObject";
 
 export default class Layer extends BaseModel {
 
-    type = 'Layer';
+    type:string = 'Layer';
     gameObjects:ArrayEx = [] as ArrayEx;
 
-    constructor(game) {
+    constructor(game:Game) {
         super(game);
     }
     addGameObject(go){
@@ -27,7 +29,7 @@ export default class Layer extends BaseModel {
         })
     }
 
-    kill(gObj){
+    kill(gObj:GameObject){
         this.gameObjects.remove(it=>it.id===gObj.id); //todo
     }
 

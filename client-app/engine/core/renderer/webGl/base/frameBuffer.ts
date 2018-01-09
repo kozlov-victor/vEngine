@@ -1,21 +1,20 @@
-/*global DEBUG:true*/
 
 import Texture from './texture'
+import {DEBUG} from "../../../../declarations";
 
-declare const DEBUG:boolean;
 
 export default class FrameBuffer {
 
-    static currInstance = null;
+    static currInstance:FrameBuffer = null;
 
-    private gl;
+    private gl:WebGLRenderingContext;
     width:number;
     height:number;
     texture:Texture;
-    glRenderBuffer:number;
-    glFrameBuffer:number;
+    glRenderBuffer:WebGLRenderbuffer;
+    glFrameBuffer:WebGLRenderbuffer;
 
-    constructor(gl,width,height){
+    constructor(gl:WebGLRenderingContext,width:number,height:number){
         if (DEBUG && !gl) throw "can not create FrameBuffer, gl context not passed to constructor, expected: FrameBuffer(gl)";
 
         this.gl = gl;
@@ -27,7 +26,7 @@ export default class FrameBuffer {
         this._init(gl,width,height);
     }
 
-    _init(gl,width,height){
+    _init(gl:WebGLRenderingContext,width:number,height:number){
         // Init Render Buffer
         this.glRenderBuffer = gl.createRenderbuffer();
         if (DEBUG && !this.glRenderBuffer) throw `can not allocate memory for glRenderBuffer`;

@@ -1,11 +1,13 @@
-/*global DEBUG:true*/
 
 import ShaderProgram from "../../base/shaderProgram";
 import SpriteRectDrawer from "../../renderPrograms/generic/base/spriteRectDrawer";
 import * as mat4 from "../../../../geometry/mat4";
 import TexShaderGenerator from "../../shaders/generators/generic/texShaderGenerator";
+import {DEBUG} from "../../../../../declarations";
+import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import Texture from "../../base/texture";
+import FrameBuffer from "../../base/frameBuffer";
 
-declare const DEBUG:boolean;
 
 const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight){
     let projectionMatrix = mat4.ortho(0,dstWidth,0,dstHeight,-1,1);
@@ -17,12 +19,12 @@ const identity = mat4.makeIdentity();
 
 export default class AbstractFilter {
 
-    programGen;
-    gl;
-    spriteRectDrawer = null;
+    programGen:ShaderGenerator;
+    gl:WebGLRenderingContext;
+    spriteRectDrawer:SpriteRectDrawer = null;
     uniformsToSet:any = {};
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         if (DEBUG && !gl) throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
         this.gl = gl;
         let gen = new TexShaderGenerator();
@@ -30,9 +32,9 @@ export default class AbstractFilter {
         this._afterPrepare(gen);
     }
 
-    prepare(gen){}
+    prepare(gen:ShaderGenerator){}
 
-    _afterPrepare(gen){
+    _afterPrepare(gen:ShaderGenerator){
         let program = new ShaderProgram(
             this.gl,
             gen.getVertexSource(),
@@ -41,7 +43,7 @@ export default class AbstractFilter {
         this.spriteRectDrawer = new SpriteRectDrawer(this.gl,program);
     }
 
-    doFilter(srcTexture,destFrameBuffer){
+    doFilter(srcTexture:Texture,destFrameBuffer:FrameBuffer){
         destFrameBuffer.bind();
         let w = srcTexture.size.width;
         let h = srcTexture.size.height;
@@ -50,7 +52,7 @@ export default class AbstractFilter {
         this.spriteRectDrawer.draw(srcTexture,this.uniformsToSet);
     }
 
-    setParam(name,value){
+    setParam(name:string,value){
         this.uniformsToSet[name] = value;
     }
 }

@@ -1,44 +1,35 @@
-/*global DEBUG:true*/
 
 import VertexBuffer from "./vertexBuffer";
 import IndexBuffer from "./indexBuffer";
+import {DEBUG} from "../../../../declarations";
+import ShaderProgram from "./shaderProgram";
 
-declare const DEBUG:boolean;
-
-export class ArrayInfo {
-
-    array = null;
-    type = null;
-    size = 0;
-    attrName = null;
-
-    constructor({array,type,size,attrName}){
-        this.array = array;
-        this.type = type;
-        this.size = size;
-        this.attrName = attrName;
-    }
+export interface ArrayInfo {
+    array:Array<number>,
+    type:number,
+    size:number,
+    attrName:string
 
 }
 
-interface BufferDescription {
-    posVertexInfo, // todo strong interface
-    posIndexInfo?,
-    texVertexInfo?,
-    drawMethod
+export interface BufferInfoDescription {
+    posVertexInfo:ArrayInfo,
+    posIndexInfo?:ArrayInfo,
+    texVertexInfo?:ArrayInfo,
+    drawMethod:number
 }
 
 export default class BufferInfo {
 
-    gl;
+    gl:WebGLRenderingContext;
 
-    posVertexBuffer = null;
-    posIndexBuffer = null;
-    texVertexBuffer = null;
-    drawMethod = null;
-    numOfElementsToDraw = 0;
+    posVertexBuffer:VertexBuffer = null;
+    posIndexBuffer:IndexBuffer = null;
+    texVertexBuffer:VertexBuffer = null;
+    drawMethod:number = null;
+    numOfElementsToDraw:number = 0;
 
-    constructor(gl,description:BufferDescription){
+    constructor(gl:WebGLRenderingContext,description:BufferInfoDescription){
         this.gl = gl;
 
         if (this.drawMethod===undefined)
@@ -70,7 +61,7 @@ export default class BufferInfo {
         }
     }
 
-    bind(program){
+    bind(program:ShaderProgram){
         program.bind();
         if (this.posIndexBuffer) this.posIndexBuffer.bind();
         if (this.posVertexBuffer) this.posVertexBuffer.bind(program);
@@ -83,7 +74,7 @@ export default class BufferInfo {
         if (this.texVertexBuffer) this.texVertexBuffer.unbind();
     }
 
-    _getNumOfElementsToDraw(drawMethod){
+    _getNumOfElementsToDraw(drawMethod:number){
         switch (drawMethod) {
             case this.gl.LINE_STRIP:
             case this.gl.TRIANGLE_FAN:

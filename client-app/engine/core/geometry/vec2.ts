@@ -3,64 +3,65 @@ import Point2d from "./point2d";
 
 export default class Vec2 extends Point2d {
 
-    constructor(x?,y?){
+    constructor(x?:number,y?:number){
         // xyzw stpq rgba
         super(x,y);
     }
 
     // скалярное произведение
-    dotProduct(another){
+    dotProduct(another:Vec2):number{
         return this.x*another.x + this.y*another.y;
     }
 
-    crossProduct(another) {
+    crossProduct(another:Vec2):number {
         return this.x * another.y - this.y * another.x;
     }
 
-    setXY(x,y){
+    setXY(x:number,y:number){
         this.x = x;
         this.y = y;
     }
 
-    addXY(x,y){
+    addXY(x:number,y:number):Vec2{
         this.x += x;
         this.y += y;
+        return this;
     }
 
-    multByScalar(scalar,mutateOrigin = true){
+    multByScalar(scalar:number,mutateOrigin:boolean = true):Vec2{
         if (mutateOrigin) return new Vec2(this.x*scalar,this.y*scalar);
         this.x*=scalar;
         this.y*=scalar;
         return this;
     }
 
-    divByScalar(scalar,mutateOrigin = true){
+    divByScalar(scalar:number,mutateOrigin:boolean = true):Vec2{ // todo
         return this.multByScalar(1/scalar,mutateOrigin);
     }
 
-    plus(another,mutateOrigin = false){
+    plus(another:Vec2,mutateOrigin:boolean = false):Vec2{
         if (!mutateOrigin) return new Vec2(this.x+another.x,this.y+another.y);
         this.x+=another.x;
         this.y+=another.y;
         return this;
     }
 
-    minus(another,mutateOrigin = false){
+    minus(another:Vec2,mutateOrigin:boolean = false):Vec2{
         if (!mutateOrigin) return new Vec2(this.x-another.x,this.y-another.y);
         this.x-=another.x;
         this.y-=another.y;
         return this;
     }
 
-    getLength() {
+    getLength():number {
         return Math.sqrt(this.lengthSquared());
     }
 
-    lengthSquared() {
+    lengthSquared():number {
         return (this.x * this.x) + (this.y * this.y);
     }
 
-    normalize() {
+    normalize():Vec2 {
         let length = this.getLength();
         this.x = this.x / length;
         this.y = this.y / length;
@@ -73,7 +74,7 @@ export default class Vec2 extends Point2d {
         this.y = Math.sin(_angle) * value;
     };
 
-    getAngle() {
+    getAngle():number {
         return Math.atan2(this.y, this.x);
     };
 

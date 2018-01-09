@@ -1,12 +1,14 @@
 
-/*global DEBUG:true*/
 
-declare const DEBUG:boolean;
+import {DEBUG} from "../../declarations";
+import Game from "../../core/game";
 
 export default class BaseAbstractBehaviour {
 
-    constructor(){
+    protected game:Game;
 
+    constructor(game:Game){
+        this.game = game;
     }
 
     manage(gameObject,parameters,dirs){

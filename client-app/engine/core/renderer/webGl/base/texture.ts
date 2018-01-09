@@ -1,8 +1,7 @@
-/*global DEBUG:true*/
-
-declare const DEBUG:boolean;
 
 import FrameBuffer from "./frameBuffer";
+import {DEBUG, Image} from "../../../../declarations";
+import AbstractFilter from "../filters/abstract/abstractFilter";
 
 const isPowerOf2 = function(value) {
     return (value & (value - 1)) === 0;
@@ -11,15 +10,15 @@ const isPowerOf2 = function(value) {
 // array of two frameBuffer for filters to apply
 class TextureFilterBuffer {
 
-    gl = null;
-    parent = null;
-    buffers = null; // lazy initialized
+    gl:WebGLRenderingContext = null;
+    buffers:Array<FrameBuffer> = null; // lazy initialized
+    parent:Texture;
 
-    constructor(parent){
+    constructor(parent:Texture){
         this.parent = parent;
     }
 
-    instantiate(gl){
+    instantiate(gl:WebGLRenderingContext){
         this.gl = gl;
         this.buffers = [];
         const buffSize = 2;
@@ -34,11 +33,11 @@ class TextureFilterBuffer {
         this.buffers[1] = tmp;
     }
 
-    getSourceBuffer(){
+    getSourceBuffer():FrameBuffer{
         return this.buffers[0];
     }
 
-    getDestBuffer(){
+    getDestBuffer():FrameBuffer{
         return this.buffers[1];
     }
 
@@ -46,15 +45,15 @@ class TextureFilterBuffer {
 
 export default class Texture {
 
-    gl;
-    tex = null;
-    size = null;
-    isPowerOfTwo = false;
-    _texFilterBuff = null;
+    gl:WebGLRenderingContext;
+    tex:WebGLTexture = null;
+    size = null; // todo simple width height or structure
+    isPowerOfTwo:boolean = false;
+    _texFilterBuff:TextureFilterBuffer = null;
 
     static currInstances = {};
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         if (DEBUG && !gl) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
         this.gl = gl;
 
@@ -76,7 +75,7 @@ export default class Texture {
      * @param width -unused if image specified
      * @param height -unused if image specified
      */
-    setImage(img,width?,height?){
+    setImage(img:Image,width?:number,height?:number){
         if (DEBUG) {
             if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
         }
@@ -87,7 +86,7 @@ export default class Texture {
         this.bind();
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         if (img) {
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img as HTMLImageElement);
         } else {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         }
@@ -108,14 +107,14 @@ export default class Texture {
 
     }
 
-    applyFilters(filters,frameBuffer){
+    applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer){
         if (DEBUG && frameBuffer===undefined)
             throw `can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`;
         let len = filters.length;
         if (len===0) return this;
         if (this._texFilterBuff.buffers===null)
             this._texFilterBuff.instantiate(this.gl);
-        let filter = filters[0];
+        let filter:AbstractFilter = filters[0];
         filter.doFilter(this,this._texFilterBuff.getDestBuffer());
         for (let i=1;i<len;i++){
             this._texFilterBuff.flip();
@@ -129,7 +128,7 @@ export default class Texture {
         return this._texFilterBuff.getSourceBuffer().texture;
     }
 
-    bind(i = 0) { // uniform eq to 0 by default
+    bind(i:number = 0) { // uniform eq to 0 by default
         // to define max texture units supported gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
         if (Texture.currInstances[i]===this) return;
         let gl = this.gl;
@@ -138,7 +137,7 @@ export default class Texture {
         Texture.currInstances[i] = this;
     }
 
-    unbind(i = 0) {
+    unbind(i:number = 0) {
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
         Texture.currInstances[i] = null;
     }

@@ -1,18 +1,19 @@
 
 import Move2Dir from './move2Dir'
 import GameObject from "../../model/generic/gameObject";
+import Game from "../../core/game";
 
 
 export default class Control2Dir extends Move2Dir{
 
-    game;
+    game:Game;
     parameters;
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
     }
 
-    manage(gameObject,parameters) {
+    manage(gameObject:GameObject,parameters) {
         super.manage(gameObject,parameters);
     }
 

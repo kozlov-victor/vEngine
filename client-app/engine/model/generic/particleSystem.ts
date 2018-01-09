@@ -1,23 +1,30 @@
 
 import BaseModel from '../baseModel'
 import * as mathEx from '../../core/mathEx'
+import Game from "../../core/game";
+import GameObjectProto from './gameObjectProto';
 
 let r = obj=>{
     return mathEx.random(obj.from,obj.to);
 };
 
+interface ParticlePropertyDesc {
+    from:number,
+    to:number
+}
+
 export default class ParticleSystem extends BaseModel {
 
-    type = 'ParticleSystem';
-    gameObjectProto = null;
+    type:string = 'ParticleSystem';
+    gameObjectProto:GameObjectProto = null;
     _particles = [];
-    numOfParticlesToEmit = {from:1,to:10};
-    particleAngle = {from:0,to:0};
-    particleVelocity = {from:1,to:100};
-    particleLiveTime = {from:100,to:1000};
-    emissionRadius = 0;
+    numOfParticlesToEmit:ParticlePropertyDesc = {from:1,to:10};
+    particleAngle:ParticlePropertyDesc = {from:0,to:0};
+    particleVelocity:ParticlePropertyDesc = {from:1,to:100};
+    particleLiveTime:ParticlePropertyDesc = {from:100,to:1000};
+    emissionRadius:number = 0;
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
     }
 
@@ -25,14 +32,14 @@ export default class ParticleSystem extends BaseModel {
         if (this.particleAngle.to<this.particleAngle.from) this.particleAngle.to += 2*Math.PI;
     }
 
-    static find(name){
+    static find(name:string){
         //return bundle.particleSystemList.find({name:name});
     }
-    static findAll(name){
+    static findAll(name:string){
         //return bundle.particleSystemList.findAll({name:name});
     }
 
-    emit(x,y){
+    emit(x:number,y:number){
         for (let i = 0;i<r(this.numOfParticlesToEmit);i++) {
             let particle = this.gameObjectProto.clone();
             let angle = r(this.particleAngle);

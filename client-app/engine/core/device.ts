@@ -2,7 +2,7 @@ import Game from "./game";
 
 declare let navigator:any;
 
-const isCocoonJS = !!navigator.isCocoonJS;
+const isCocoonJS = navigator.isCocoonJS;
 
 
 export default class Device {

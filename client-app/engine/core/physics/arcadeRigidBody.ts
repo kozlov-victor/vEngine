@@ -2,15 +2,18 @@
 // http://madebyevan.com/gamedevclass/minimal-demo/
 
 import Vec2 from '../geometry/vec2'
+import GameObject from "../../model/generic/gameObject";
+import Game from '../game';
 
 export default class ArcadeRigidBody {
 
     vel:Vec2 = new Vec2();
-    onFloor = false;
-    _onFloorInCurrFrame = false; // to avoid onFloor oscillation
-    _onFloorInPrevFrame = false;
-    private game;
-    private gameObject;
+    onFloor:boolean = false;
+    _onFloorInCurrFrame:boolean = false; // to avoid onFloor oscillation
+    _onFloorInPrevFrame:boolean = false;
+    static:boolean=false; // todo reserved world
+    private game:Game;
+    private gameObject:GameObject;
 
     constructor(gameObject){
         this.game = gameObject.game;

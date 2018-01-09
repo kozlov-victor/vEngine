@@ -2,15 +2,17 @@
 
 
 import AbstractFilter from "../abstract/abstractFilter";
+import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import {GL_TYPE} from "../../base/shaderProgramUtils";
 
 export default class BlackWhiteFilter extends AbstractFilter{
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         super(gl);
     }
 
-    prepare(programGen){
-        programGen.addFragmentUniform('float','u_mixFactor');
+    prepare(programGen:ShaderGenerator){
+        programGen.addFragmentUniform(GL_TYPE.FLOAT,'u_mixFactor');
         programGen.setFragmentMainFn(`
             vec4 col = texture2D(texture, v_texCoord);
             float avg = (col.r+col.g+col.b)/3.0;

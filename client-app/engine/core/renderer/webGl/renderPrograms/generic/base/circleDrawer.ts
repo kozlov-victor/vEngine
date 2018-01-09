@@ -9,7 +9,7 @@ export default class CircleDrawer extends AbstractDrawer {
 
     private circle:Circle; // todo move to parent as abstract shape
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         super(gl);
         let gen = new ColorShaderGenerator();
         this.program = new ShaderProgram(

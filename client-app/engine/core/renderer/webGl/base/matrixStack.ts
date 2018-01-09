@@ -1,8 +1,6 @@
 
 import * as mat4 from '../../../geometry/mat4'
 
-declare const DEBUG:boolean;
-
 export default class MatrixStack {
 
     stack = [];

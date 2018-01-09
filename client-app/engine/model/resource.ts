@@ -1,11 +1,12 @@
 
 import BaseModel from './baseModel'
+import Game from "../core/game";
 
 export default class Resource extends BaseModel {
 
-    resourcePath = '';
+    resourcePath:string = '';
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
     }
 

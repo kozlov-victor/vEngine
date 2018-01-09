@@ -1,7 +1,7 @@
 
 import Plane from '../../../primitives/plane'
 import ShaderProgram from '../../../base/shaderProgram'
-import BufferInfo from "../../../base/bufferInfo";
+import BufferInfo, {BufferInfoDescription} from "../../../base/bufferInfo";
 import AbstractDrawer from "../../abstract/abstractDrawer";
 import {GL_TYPE} from "../../../base/shaderProgramUtils";
 import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGenerator";
@@ -22,7 +22,7 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
 
     private plane:Plane;
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         super(gl);
         this.plane = new Plane();
         this.program = new ShaderProgram(
@@ -36,7 +36,7 @@ export default class TiledSpriteRectDrawer extends AbstractDrawer {
             posIndexInfo: {array: this.plane.indexArr},
             texVertexInfo: {array: this.plane.texCoordArr, type: gl.FLOAT, size: 2, attrName: 'a_texCoord'},
             drawMethod: this.gl.TRIANGLE_STRIP
-        });
+        } as BufferInfoDescription);
 
     }
 

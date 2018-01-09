@@ -1,6 +1,7 @@
-/*global DEBUG:true*/
 
-declare const DEBUG:boolean;
+import {DEBUG} from "../../declarations";
+import Game from "../game";
+
 declare const window:any,navigator:any;
 
 
@@ -30,10 +31,10 @@ if (DEBUG) {
 
 export default class GamePad {
 
-    private game;
-    private gamepads:Array<any>;
+    private game:Game;
+    private gamepads:Array<GamePadInfo>;
 
-    constructor(game){
+    constructor(game:Game){
         this.game = game;
     }
 
@@ -43,10 +44,10 @@ export default class GamePad {
             (navigator.getGamepads && navigator.getGamepads()) ||
             (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
             navigator.webkitGamepads || navigator.mozGamepads ||
-            navigator.msGamepads || navigator.gamepads || [];
+            navigator.msGamepads || navigator.gamepads || [] as Array<GamePadInfo>;
 
         for (let i=0,max=this.gamepads.length;i<max;i++) {
-            let gp = this.gamepads[i];
+            let gp:GamePadInfo = this.gamepads[i];
             if (!gp) continue;
             let maxButtons = gp.buttons.length;
             if (maxButtons>7) maxButtons = 7; // only 8-buttons gamePad is supported for now

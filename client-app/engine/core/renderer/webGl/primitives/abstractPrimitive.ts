@@ -2,10 +2,10 @@
 
 export default class AbstractPrimitive {
 
-    vertexArr = null;
-    normalArr = null;
-    texCoordArr = null;
-    indexArr = null;
+    vertexArr:Array<number> = null;
+    normalArr:Array<number> = null;
+    texCoordArr:Array<number> = null;
+    indexArr:Array<Number> = null;
 
     constructor(){
 

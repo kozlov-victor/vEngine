@@ -1,11 +1,5 @@
-/*global requestAnimationFrame:true*/
-/*global window:true*/
-/*global DEBUG:true*/
-/*global IN_EDITOR:true*/
-/*global PROJECT_NAME:true*/
-import Scene from "../model/generic/scene";
 
-declare let DEBUG:boolean, IN_EDITOR:boolean;
+
 declare let window:any;
 declare let require:Function;
 
@@ -23,6 +17,8 @@ import Camera from './camera'
 import {SCALE_STRATEGY} from "./misc/consts";
 import Point2d from "./geometry/point2d";
 import AbstractRenderer from "./renderer/abstract/abstractRenderer";
+import {DEBUG, IN_EDITOR} from "../declarations";
+import Scene from '../model/generic/scene';
 
 @Transient({
     repository: true,
@@ -48,18 +44,18 @@ export default class Game extends CommonObject {
     renderer:AbstractRenderer = null;
     scale:Point2d = new Point2d(1,1);
     pos:Point2d = new Point2d(0,0);
-    width:number = null;
-    height:number = null;
-    gravityConstant:number = null;
-    fps:number = null;
+    width:number = 0;
+    height:number = 0;
+    gravityConstant:number = 0;
+    fps:number = 0;
     gamePad:GamePad = null;
     repository:Repository;
     mouse:Mouse;
     keyboard:Keyboard;
     collider:Collider;
     camera:Camera;
-    scaleStrategy:number = null;// = SCALE_STRATEGY.FIT; todo to enum
-    startSceneId:number = null;
+    scaleStrategy:number =SCALE_STRATEGY.FIT;
+    startSceneId:number = 0;
 
     _revalidated:boolean = false;
 

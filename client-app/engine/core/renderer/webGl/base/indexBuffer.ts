@@ -1,13 +1,13 @@
-/*global DEBUG:true*/
-declare const DEBUG:boolean;
+
+import {DEBUG} from "../../../../declarations";
 
 export default class IndexBuffer {
 
-    private gl;
-    private buffer:number;
+    private gl:WebGLRenderingContext;
+    private buffer:WebGLRenderbuffer;
     private dataLength:number;
     
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         if (DEBUG && !gl) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
 
         this.gl = gl;
@@ -16,7 +16,7 @@ export default class IndexBuffer {
         this.dataLength = null;
     }
 
-    setData(bufferData){
+    setData(bufferData:Array<number>){
         if (DEBUG) {
             if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
         }
@@ -29,7 +29,7 @@ export default class IndexBuffer {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     }
 
-    getGlBuffer(){
+    getGlBuffer():WebGLRenderbuffer{
         return this.buffer;
     }
 
@@ -41,7 +41,7 @@ export default class IndexBuffer {
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
     }
 
-    getBufferLength(){
+    getBufferLength():number{
         return this.dataLength;
     }
 

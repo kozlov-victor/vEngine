@@ -1,30 +1,26 @@
-/*global Image:true*/
 
 import AbstractRenderer from '../abstract/abstractRenderer'
-
-interface Image {
-    width:number,
-    height:number,
-    src:string,
-    onload:Function
-}
+import {Image} from "../../../declarations";
+import Game from "../../game";
+import GameObject from "../../../model/generic/gameObject";
+import Rect from "../../geometry/rect";
 
 export default class CanvasRenderer extends AbstractRenderer {
 
     private ctx;
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
         let container = document.createElement('canvas');
         this.ctx = container.getContext('2d');
         document.body.appendChild(container);
-        container.setAttribute('width',game.width);
-        container.setAttribute('height',game.height);
+        container.setAttribute('width',game.width.toString());
+        container.setAttribute('height',game.height.toString());
         this.container = container;
         this.registerResize();
     }
 
-    draw(renderable){
+    draw(renderable:GameObject){
         let ctx = this.ctx;
         ctx.save();
         ctx.translate(renderable.pos.x + renderable.width /2,renderable.pos.y + renderable.height/2);
@@ -48,7 +44,11 @@ export default class CanvasRenderer extends AbstractRenderer {
         ctx.restore();
     }
 
-    drawImage(imgPath,srcPosX,srcPosY,srcWidth,srcHeight,destPosX,destPosY){
+    drawImage(
+        imgPath:string,
+        srcPosX:number,srcPosY:number,
+        srcWidth:number,srcHeight:number,
+        destPosX:number,destPosY:number){
         this.ctx.drawImage(
             this.renderableCache[imgPath],
             srcPosX,
@@ -62,24 +62,24 @@ export default class CanvasRenderer extends AbstractRenderer {
         );
     }
 
-    drawTiledImage(texturePath,
-                   srcX,srcY,srcWidth,srcHeight,
-                   dstX, dstY, dstWidth, dstHeight,
-                   offsetX,offsetY){
+    drawTiledImage(texturePath:string,
+                   srcX:number,srcY:number,srcWidth:number,srcHeight:number,
+                   dstX:number, dstY:number, dstWidth:number, dstHeight:number,
+                   offsetX:number,offsetY:number){
 
     }
 
-    fillRect(x,y,w,h,color){
+    fillRect(x:number,y:number,w:number,h:number,color){
         this.ctx.fillStyle = color;
         this.ctx.fillRect(x,y,w,h);
     }
 
-    drawRect(x,y,w,h,color){
+    drawRect(x:number,y:number,w:number,h:number,color){
         this.ctx.fillStyle = color;
         this.ctx.strokeRect(x,y,w,h);
     }
 
-    drawLine(x1,y1,x2,y2,color){
+    drawLine(x1:number,y1:number,x2:number,y2:number,color){
         this.ctx.fillStyle = color;
         this.ctx.beginPath();
         this.ctx.moveTo(x1,y1);
@@ -87,7 +87,7 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.ctx.stroke();
     }
 
-    fillCircle(x,y,r,color){
+    fillCircle(x:number,y:number,r:number,color){
         let ctx = this.ctx;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, 2 * Math.PI, false);
@@ -98,11 +98,11 @@ export default class CanvasRenderer extends AbstractRenderer {
         ctx.closePath();
     }
 
-    setAlpha(a){
+    setAlpha(a:number){
         this.ctx.globalAlpha = a;
     }
 
-    lockRect(rect) {
+    lockRect(rect:Rect) {
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.rect(rect.x,rect.y,rect.width,rect.height);
@@ -126,19 +126,19 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.ctx.save();
     }
 
-    scale(x,y) {
+    scale(x:number,y:number) {
         this.ctx.scale(x,y);
     }
 
-    rotateZ(angleInRadians) {
+    rotateZ(angleInRadians:number) {
         this.ctx.rotateZ(angleInRadians);
     }
 
-    rotateY(angleInRadians) {
+    rotateY(angleInRadians:number) {
         throw 'rotateY not supported by canvasRenderer'
     }
 
-    translate(x,y){
+    translate(x:number,y:number){
         this.ctx.translate(x,y);
     }
 
@@ -153,7 +153,7 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.restore();
     }
 
-    loadTextureInfo(resourcePath,onLoad){
+    loadTextureInfo(resourcePath:string,onLoad:Function){
         let img:Image = new Image(); // todo created declarations
         img.src = resourcePath;
         img.onload = ()=>{

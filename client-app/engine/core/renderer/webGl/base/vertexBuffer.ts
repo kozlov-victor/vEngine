@@ -1,27 +1,28 @@
-/*global DEBUG:true*/
-declare const DEBUG:boolean;
+
+import {DEBUG} from "../../../../declarations";
+import ShaderProgram from "./shaderProgram";
 
 export default class VertexBuffer {
 
-    private gl;
-    private buffer;
-    private bufferItemSize = null;
-    private bufferItemType = null;
-    private dataLength = null;
-    private attrName = null;
+    private gl:WebGLRenderingContext;
+    private buffer:WebGLBuffer;
+    private bufferItemSize:number = null;
+    private bufferItemType:number = null;
+    private dataLength:number = null;
+    private attrName:string = null;
 
-    constructor(gl){
+    constructor(gl:WebGLRenderingContext){
         if (DEBUG && !gl) throw "can not create VertexBuffer, gl context not passed to constructor, expected: VertexBuffer(gl)";
         this.gl = gl;
         this.buffer = gl.createBuffer();
         if (DEBUG && !this.buffer) throw `can not allocate memory for vertex buffer`;
-        this.bufferItemSize = null;
-        this.bufferItemType = null;
-        this.dataLength = null;
+        this.bufferItemSize = 0;
+        this.bufferItemType = 0;
+        this.dataLength = 0;
         this.attrName = null;
     }
 
-    setData(bufferData, itemType, itemSize){
+    setData(bufferData:Array<number>, itemType:number, itemSize:number){
         if (DEBUG) {
             if (!bufferData) throw 'can not set data to buffer: bufferData not specified';
             if (!itemType) throw 'can not set data to buffer: itemType not specified';
@@ -37,11 +38,11 @@ export default class VertexBuffer {
         this.dataLength = bufferData.length;
     }
 
-    setAttrName(attrName){
+    setAttrName(attrName:string){
         this.attrName = attrName;
     }
 
-    bind(program){
+    bind(program:ShaderProgram){
         if (DEBUG && !program) throw "can not bind VertexBuffer, program not specified";
         if (DEBUG && !this.attrName) throw "can not bind VertexBuffer, attribute name not specified";
         program.bindBuffer(this,this.attrName);
@@ -51,19 +52,19 @@ export default class VertexBuffer {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
     }
 
-    getGlBuffer(){
+    getGlBuffer():WebGLBuffer{
         return this.buffer;
     }
 
-    getItemSize(){
+    getItemSize():number{
         return this.bufferItemSize;
     }
 
-    getItemType(){
+    getItemType():number{
         return this.bufferItemType;
     }
 
-    getBufferLength(){
+    getBufferLength():number{
         return this.dataLength;
     }
 

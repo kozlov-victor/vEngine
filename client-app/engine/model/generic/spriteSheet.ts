@@ -1,18 +1,19 @@
 import BaseModel from '../baseModel'
+import Game from "../../core/game";
 
 export default class SpriteSheet extends BaseModel {
 
-    type = 'SpriteSheet';
-    width = 0;
-    height = 0;
-    numOfFramesH = 1;
-    numOfFramesV = 1;
-    _frameWidth = 0;
-    _frameHeight = 0;
-    _numOfFrames = 0;
-    resourcePath = '';
+    type:string = 'SpriteSheet';
+    width:number = 0;
+    height:number = 0;
+    numOfFramesH:number = 1;
+    numOfFramesV:number = 1;
+    _frameWidth:number = 0;
+    _frameHeight:number = 0;
+    _numOfFrames:number = 0;
+    resourcePath:string = '';
 
-    constructor(game) {
+    constructor(game:Game) {
         super(game);
     }
 
@@ -23,11 +24,11 @@ export default class SpriteSheet extends BaseModel {
         this._numOfFrames = this.numOfFramesH * this.numOfFramesV;
     }
 
-    getFramePosX(frameIndex) {
+    getFramePosX(frameIndex:number) {
         return (frameIndex % this.numOfFramesH) * this._frameWidth;
     }
 
-    getFramePosY(frameIndex) {
+    getFramePosY(frameIndex:number) {
         return ~~(frameIndex / this.numOfFramesH) * this._frameHeight;
     }
 }

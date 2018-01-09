@@ -1,13 +1,19 @@
-/*global DEBUG:true*/
+
 import * as mathEx from '../mathEx'
 import Point2d from "../geometry/point2d";
 import ObjectPool from "../misc/objectPool";
+import Game from "../game";
+
+interface MouseEventEx extends MouseEvent {
+    identifier:number,
+    touches:Array<any>
+}
 
 class MousePoint extends Point2d{
 
-    screenX;
-    screenY;
-    id;
+    screenX:number;
+    screenY:number;
+    id:number;
 
     constructor(){
         super();
@@ -18,17 +24,17 @@ class MousePoint extends Point2d{
 export default class Mouse {
 
     objectsCaptured = {};
-    container = null;
-    mousePointsPool = new ObjectPool(MousePoint);
-    game;
+    container:HTMLElement = null;
+    mousePointsPool:ObjectPool = new ObjectPool(MousePoint);
+    game:Game;
 
-    constructor(game){
+    constructor(game:Game){
         this.game = game;
     }
 
 
     //MouseEvent|TouchEvent|PointerEvent
-    resolvePoint(e){
+    resolvePoint(e:MouseEventEx){
         let game = this.game;
         let camera = this.game.camera;
 
@@ -45,7 +51,7 @@ export default class Mouse {
         return mousePoint;
     }
 
-    triggerEvent(e,eventName,isMouseDown?){
+    triggerEvent(e:MouseEventEx,eventName:string,isMouseDown?:boolean){
         if (isMouseDown===undefined) isMouseDown = false;
         let g = this.game;
         let scene = g.getCurrScene();
@@ -83,12 +89,12 @@ exit:   for (let i=0;i<scene.layers.length;i++){
         return point;
     }
 
-    resolveClick(e){
+    resolveClick(e:MouseEventEx){
         this.triggerEvent(e,'click');
         this.triggerEvent(e,'mouseDown');
     }
 
-    resolveMouseMove(e,isMouseDown){
+    resolveMouseMove(e:MouseEventEx,isMouseDown:boolean){
         let point = this.triggerEvent(e,'mouseMove',isMouseDown);
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
@@ -102,7 +108,7 @@ exit:   for (let i=0;i<scene.layers.length;i++){
         }
     }
 
-    resolveMouseUp(e){
+    resolveMouseUp(e:MouseEventEx){
         let point = this.triggerEvent(e,'mouseUp');
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
@@ -111,7 +117,7 @@ exit:   for (let i=0;i<scene.layers.length;i++){
         delete this.objectsCaptured[point.id];
     }
 
-    resolveDoubleClick(e){
+    resolveDoubleClick(e:MouseEventEx){
         let point = this.triggerEvent(e,'doubleClick');
         if (!point) return;
         delete this.objectsCaptured[point.id];
@@ -120,7 +126,7 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     listenTo(container) {
         this.container = container;
         // mouseDown
-        container.ontouchstart = e=>{
+        container.ontouchstart = (e:MouseEventEx)=>{
             let l = e.touches.length;
             while (l--){
                 this.resolveClick(e.touches[l]);

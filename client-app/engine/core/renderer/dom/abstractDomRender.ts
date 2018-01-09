@@ -1,9 +1,10 @@
 
 import AbstractRenderer from '../abstract/abstractRenderer'
+import Game from "../../game";
 
 export default class AbstractDomRenderer extends AbstractRenderer{
 
-    constructor(game) {
+    constructor(game:Game) {
         super(game);
     }
 

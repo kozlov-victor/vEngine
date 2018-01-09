@@ -1,21 +1,21 @@
 /*global DEBUG:true*/
 
 import {compileShader, createProgram, extractUniforms} from "./shaderProgramUtils";
-
-declare const DEBUG:boolean;
+import {DEBUG} from "../../../../declarations";
+import VertexBuffer from "./vertexBuffer";
 
 export default class ShaderProgram {
 
-    static currentProgram = null;
+    static currentProgram:ShaderProgram = null;
 
     _attrLocationCache = {};
 
-    private program;
+    private program:WebGLProgram;
     private uniforms;
-    private gl;
+    private gl:WebGLRenderingContext;
 
 
-    constructor(gl,vertexSource,fragmentSource) {
+    constructor(gl:WebGLRenderingContext,vertexSource:string,fragmentSource:string) {
         let vShader = compileShader(gl, vertexSource, gl.VERTEX_SHADER);
         let fShader = compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
         this.program = createProgram(gl, vShader, fShader);
@@ -23,7 +23,7 @@ export default class ShaderProgram {
         this.gl = gl;
     }
 
-    getProgram () {
+    getProgram():WebGLProgram {
         return this.program;
     }
 
@@ -32,7 +32,7 @@ export default class ShaderProgram {
         ShaderProgram.currentProgram = this;
     }
 
-    setUniform(name, value) {
+    setUniform(name:string, value) {
         let uniform = this.uniforms[name];
         if (DEBUG && !uniform) throw `no uniform with name ${name} found!`;
         uniform.setter(this.gl, uniform.location, value);
@@ -48,7 +48,7 @@ export default class ShaderProgram {
         // gl.getUniformLocation(program,'u_someThing.someVec2')
     }
 
-    bindBuffer(buffer, attrLocationName) {
+    bindBuffer(buffer:VertexBuffer, attrLocationName:string) {
         if (DEBUG) {
             if (!attrLocationName) throw `can not found attribute location: attrLocationName not defined`;
         }

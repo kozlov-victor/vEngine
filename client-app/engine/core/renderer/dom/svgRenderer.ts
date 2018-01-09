@@ -1,14 +1,15 @@
 
 import AbstractDomRenderer from './abstractDomRender'
+import Game from "../../game";
 
 export default class SvgRenderer extends AbstractDomRenderer {
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
         let container = document.createElement('svg');
         document.body.appendChild(container);
-        container.setAttribute('width',game.width);
-        container.setAttribute('height',game.height);
+        container.setAttribute('width',game.width.toString());
+        container.setAttribute('height',game.height.toString());
         this.container = container;
     }
 

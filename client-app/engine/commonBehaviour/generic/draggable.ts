@@ -1,5 +1,7 @@
 
 import BaseAbstractBehaviour from '../abstract/baseAbstractBehaviour'
+import Game from "../../core/game";
+import GameObject from "../../model/generic/gameObject";
 
 export default class DraggableBehaviour extends BaseAbstractBehaviour {
 
@@ -8,15 +10,13 @@ export default class DraggableBehaviour extends BaseAbstractBehaviour {
     };
 
     private points;
-    private game;
 
-    constructor(game){
-        super();
-        this.game = game;
+    constructor(game:Game){
+        super(game);
         this.points = {};
     }
 
-    manage(gameObject,params) {
+    manage(gameObject:GameObject,params) {
         gameObject.on('click',e=>{
             this.points[DraggableBehaviour._getEventId(e)] = {
                 mX: e.objectX,

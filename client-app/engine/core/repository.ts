@@ -1,9 +1,8 @@
-/*global DEBUG:true*/
+
 import Game from "./game";
 
-declare let DEBUG:boolean;
-
 import * as models from '../model/all'
+import {DEBUG} from "../declarations";
 
 export default class Repository {
 

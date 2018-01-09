@@ -1,10 +1,12 @@
 
 import AbstractDomRenderer from './abstractDomRender'
 import * as mathEx from '../../../core/mathEx'
+import Game from "../../game";
+import GameObject from "../../../model/generic/gameObject";
 
 export default class HtmlRenderer extends AbstractDomRenderer {
 
-    constructor(game){
+    constructor(game:Game){
         super(game);
         let container = document.createElement('div');
         document.body.appendChild(container);
@@ -19,7 +21,7 @@ export default class HtmlRenderer extends AbstractDomRenderer {
         el.style[name] = value;
     }
 
-    draw(renderable){
+    draw(renderable:GameObject){
         let item;
         if (!this.renderableCache[renderable.id]) {
             item = {};
@@ -47,7 +49,7 @@ export default class HtmlRenderer extends AbstractDomRenderer {
         ]);
     }
 
-    loadTextureInfo(resourcePath,onLoad){
+    loadTextureInfo(resourcePath:string,onLoad:Function){
         let img = new Image();
         img.src = resourcePath;
         img.onload = ()=>{
