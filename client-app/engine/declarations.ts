@@ -8,4 +8,8 @@ export interface Image {
     onload:Function
 }
 
+export interface ArrayEx<T> extends Array<T>{
+    remove:Function
+}
+
 

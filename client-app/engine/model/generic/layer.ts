@@ -1,12 +1,12 @@
 import BaseModel from '../baseModel'
-import {ArrayEx} from "../../core/misc/polyfills";
 import Game from "../../core/game";
 import GameObject from "./gameObject";
+import {ArrayEx} from "../../declarations";
 
 export default class Layer extends BaseModel {
 
     type:string = 'Layer';
-    gameObjects:ArrayEx = [] as ArrayEx;
+    gameObjects:ArrayEx<any> = [] as ArrayEx<any>;
 
     constructor(game:Game) {
         super(game);
@@ -16,7 +16,7 @@ export default class Layer extends BaseModel {
         this.gameObjects.push(go);
     }
     getAllSpriteSheets() {
-        let dataSet:ArrayEx = [] as ArrayEx;
+        let dataSet:Array<any> = [];
         this.gameObjects.forEach(function(obj){
             obj.spriteSheet && !dataSet.find(it=>obj.id===it.id) && dataSet.push(obj.spriteSheet);
         });

@@ -4,6 +4,7 @@
 import Vec2 from '../geometry/vec2'
 import GameObject from "../../model/generic/gameObject";
 import Game from '../game';
+import Point2d from "../geometry/point2d";
 
 export default class ArcadeRigidBody {
 
@@ -22,7 +23,7 @@ export default class ArcadeRigidBody {
 
     update(time,delta){
         if (!this.gameObject.rigidBody.static) {
-            let deltaPoint = this.vel.multByScalar(delta/1000);
+            let deltaPoint:Point2d = this.vel.multByScalar(delta/1000);
             this.game.collider.moveBy(this.gameObject,deltaPoint);
             this.vel.addY(this.game.gravityConstant * delta / 1000);
         }

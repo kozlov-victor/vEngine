@@ -1,10 +1,11 @@
 
 import BaseModel from '../baseModel'
 import FrameAnimation from "./frameAnimation";
-import {ArrayEx} from "../../core/misc/polyfills";
 import SpriteSheet from "./spriteSheet";
 import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import Game from "../../core/game";
+import Rect from "../../core/geometry/rect";
+import {ArrayEx} from "../../declarations";
 
 
 export default class GameObjectProto extends BaseModel {
@@ -16,7 +17,7 @@ export default class GameObjectProto extends BaseModel {
     currFrameIndex:number = 0;
     _sprPosX:number = 0;
     _sprPosY:number = 0;
-    frameAnimations:ArrayEx = [] as ArrayEx;
+    frameAnimations:ArrayEx<any> = [] as ArrayEx<any>;
     _currFrameAnimation:FrameAnimation;
     startFrameAnimationName:string = null;
     _timeCreated:number = null;
@@ -26,6 +27,8 @@ export default class GameObjectProto extends BaseModel {
     _individualBehaviour = null;
     filters: Array<AbstractFilter> = [];
     _layer;
+
+    private _frameRect = new Rect();
 
     static find(name:string){
         //return game.getCurrScene()._allGameObjects.find({name:name});
@@ -62,6 +65,16 @@ export default class GameObjectProto extends BaseModel {
         this.currFrameIndex = index;
         this._sprPosX = this.spriteSheet.getFramePosX(this.currFrameIndex);
         this._sprPosY = this.spriteSheet.getFramePosY(this.currFrameIndex);
+    }
+
+    getFrameRect(){
+        this._frameRect.set(
+            this._sprPosX,
+            this._sprPosY,
+            this.width,
+            this.height
+        );
+        return this._frameRect;
     }
 
     update(time,delta) {

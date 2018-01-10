@@ -118,10 +118,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.drawTexture(
             texToDraw,
-            renderable._sprPosX,
-            renderable._sprPosY,
-            renderable.width,
-            renderable.height,
+            renderable.getFrameRect(),
             0,
             0
         );
@@ -140,29 +137,29 @@ export default class WebGlRenderer extends AbstractRenderer {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
         }
-        this.drawTexture(texture,srcX, srcY, srcWidth, srcHeight, dstX, dstY);
+        this.drawTexture(texture,new Rect(srcX, srcY, srcWidth, srcHeight), dstX, dstY);
     }
 
     drawTexture(texture:Texture,
-                srcX:number, srcY:number, srcWidth:number, srcHeight:number,
+                srcRect:Rect,
                 dstX:number, dstY:number){
 
         let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
             camRectScaled,
-            new Rect(camRectScaled.x+srcX,camRectScaled.y+srcY,srcWidth,srcHeight))
+            new Rect(camRectScaled.x+srcRect.x,camRectScaled.y+srcRect.y,srcRect.width,srcRect.height))
         ) return;
 
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
         let uniforms = {
-            u_textureMatrix: makeTextureMatrix(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight),
-            u_vertexMatrix: makePositionMatrix(dstX,dstY,srcWidth,srcHeight, this.game.width,this.game.height),
+            u_textureMatrix: makeTextureMatrix(srcRect.x,srcRect.y,srcRect.width,srcRect.height,texWidth,texHeight),
+            u_vertexMatrix: makePositionMatrix(dstX,dstY,srcRect.width,srcRect.height, this.game.width,this.game.height),
             u_alpha: 1
         };
 
-        if (srcWidth===120 || srcWidth===174) {
+        if (srcRect.width===120 || srcRect.width===174) {
             this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
         }
         else this.spriteRectDrawer.draw(texture,uniforms);
@@ -202,7 +199,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     fillRect(x:number, y:number, width:number, height:number, color){ // todo rect
 
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x,y,width,height})) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x,y,width,height))) return;
         let uniforms = {
             u_vertexMatrix: makePositionMatrix(
                 x,y,width,height,
@@ -223,7 +220,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     drawLine(x1:number,y1:number,x2:number,y2:number,color){
 
         let dx = x2-x1,dy = y2-y1;
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x1,y:y1,width:dx,height:dy})) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
         let uniforms:any = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
             x1,y1,dx,dy,
@@ -236,7 +233,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     fillCircle(x:number,y:number,r:number,color){
         let r2 = r*2;
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),{x:x-r,y:y-r,width:r2,height:r2})) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x-r,y-r,r2,r2))) return;
         let uniforms:any = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
             x-r,y-r,r2,r2,

@@ -28,7 +28,7 @@ export default class BaseModel extends CommonObject {
     fixedToCamera:boolean = false;
     rigid:boolean = false;
     _tweens = [];
-    _rect:Rect = new Rect(0,0);
+    private _rect:Rect = new Rect(0,0);
     _emitter:EventEmitter;
     _cloner:BaseModel;
     rigidBody:ArcadeRigidBody;

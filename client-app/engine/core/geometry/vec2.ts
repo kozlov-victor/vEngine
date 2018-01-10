@@ -17,9 +17,10 @@ export default class Vec2 extends Point2d {
         return this.x * another.y - this.y * another.x;
     }
 
-    setXY(x:number,y:number){
+    setXY(x:number,y:number):Vec2{
         this.x = x;
         this.y = y;
+        return this;
     }
 
     addXY(x:number,y:number):Vec2{

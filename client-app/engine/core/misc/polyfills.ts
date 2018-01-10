@@ -1,9 +1,4 @@
 
-export interface ArrayEx extends Array<any> {
-    remove:Function,
-    find:Function
-}
-
 Array.prototype['remove'] = function(callback) {
     let i = this.length;
     while (i--) {

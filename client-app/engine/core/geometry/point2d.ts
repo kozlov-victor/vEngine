@@ -5,42 +5,56 @@ export default class Point2d {
     y:number = 0;
 
     constructor(x:number = 0,y:number = 0){
-        this.setXY(x,y);
-    }
-
-    setXY(x:number,y:number){
         this.x = x;
         this.y = y;
     }
 
-    setX(x:number){
+    setXY(x:number,y:number):Point2d{
         this.x = x;
-    }
-
-    setY(y:number){
         this.y = y;
+        return this;
     }
 
-    set(another:Point2d){
+    setX(x:number):Point2d{
+        this.x = x;
+        return this;
+    }
+
+    setY(y:number):Point2d{
+        this.y = y;
+        return this;
+    }
+
+    set(another:Point2d):Point2d{
         this.setXY(another.x,another.y);
+        return this;
     }
 
 
-    add(another:Point2d){
+    add(another:Point2d):Point2d{
         this.addXY(another.x,another.y);
+        return this;
     }
 
-    addXY(x:number,y:number){
+    substract(another:Point2d):Point2d{
+        this.addXY(-another.x,-another.y);
+        return this;
+    }
+
+    addXY(x:number,y:number):Point2d{
         this.x+=x;
         this.y+=y;
+        return this;
     }
 
-    addX(x:number){
+    addX(x:number):Point2d{
         this.x+=x;
+        return this;
     }
 
-    addY(y:number){
+    addY(y:number):Point2d{
         this.y+=y;
+        return this;
     }
 
     equal(val:number) {

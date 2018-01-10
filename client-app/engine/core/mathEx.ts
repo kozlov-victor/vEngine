@@ -1,8 +1,9 @@
 
 import * as mat4 from './geometry/mat4'
 import Point2d from "./geometry/point2d";
+import Rect from "./geometry/rect";
 
-export let isPointInRect = (point,rect,angle?)=> {
+export let isPointInRect = (point:Point2d,rect:Rect,angle?:number)=> {
     // if (angle) {
     //     let vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
     //     vec2.setAngle(vec2.getAngle() - angle);
@@ -15,22 +16,22 @@ export let isPointInRect = (point,rect,angle?)=> {
         point.y<(rect.y+rect.height);
 };
 
-export let overlapTest = (a, b)=> {
+export let overlapTest = (a:Rect, b:Rect)=> {
     return  (a.x < b.x + b.width) &&
         (a.x + a.width > b.x) &&
         (a.y < b.y + b.height) &&
         (a.y + a.height > b.y);
 };
 
-export let radToDeg = function(rad){
+export let radToDeg = function(rad:number){
     return rad *  180 / Math.PI;
 };
 
-export let degToRad = function(deg) {
+export let degToRad = function(deg:number) {
     return deg *  Math.PI / 180;
 };
 
-export let random = function(min, max){
+export let random = function(min:number, max:number){
     if (min>max) {
         let tmp = min;
         min = max;
