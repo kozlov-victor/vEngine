@@ -58,4 +58,24 @@ Shader.prototype.setTextureCoordinate = function(texCoord) {
 
 gl.deleteBuffer
 
+
+
+
+var getColorArray = function (textureName) {
+
+ if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE) {
+ var pixels = new Uint8Array(texInfo.mWidth * texInfo.mHeight * 4);
+ gl.readPixels(0, 0, texInfo.mWidth, texInfo.mHeight, gl.RGBA,
+gl.UNSIGNED_BYTE, pixels);
+ texInfo.mColorArray = pixels;
+ } else {
+ alert("WARNING: Engine.Textures.GetColorArray() failed!");
+ }
+ gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+ gl.deleteFramebuffer(fb);
+ }
+ return texInfo.mColorArray;
+};
+
+
  
