@@ -82,8 +82,8 @@
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_misc_eventEmitter__ = __webpack_require__(54);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core_misc_decorators__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_physics_arcadeRigidBody__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__core_geometry_rect__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__core_geometry_point2d__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__core_geometry_rect__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__core_geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__declarations__);
 var __extends = (this && this.__extends) || (function () {
@@ -198,7 +198,76 @@ var BaseModel = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shaderProgramUtils__ = __webpack_require__(3);
+var Point2d = /** @class */ (function () {
+    function Point2d(x, y) {
+        if (x === void 0) { x = 0; }
+        if (y === void 0) { y = 0; }
+        this.x = 0;
+        this.y = 0;
+        this.x = x;
+        this.y = y;
+    }
+    Point2d.prototype.setXY = function (x, y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    };
+    Point2d.prototype.setX = function (x) {
+        this.x = x;
+        return this;
+    };
+    Point2d.prototype.setY = function (y) {
+        this.y = y;
+        return this;
+    };
+    Point2d.prototype.set = function (another) {
+        this.setXY(another.x, another.y);
+        return this;
+    };
+    Point2d.prototype.add = function (another) {
+        this.addXY(another.x, another.y);
+        return this;
+    };
+    Point2d.prototype.substract = function (another) {
+        this.addXY(-another.x, -another.y);
+        return this;
+    };
+    Point2d.prototype.addXY = function (x, y) {
+        this.x += x;
+        this.y += y;
+        return this;
+    };
+    Point2d.prototype.addX = function (x) {
+        this.x += x;
+        return this;
+    };
+    Point2d.prototype.addY = function (y) {
+        this.y += y;
+        return this;
+    };
+    Point2d.prototype.equal = function (val) {
+        return this.x === val && this.y === val;
+    };
+    Point2d.prototype.clone = function () {
+        return new Point2d(this.x, this.y);
+    };
+    Point2d.prototype.fromJSON = function (json) {
+        this.set(json);
+    };
+    Point2d.prototype.toJSON = function () {
+        return { x: this.x, y: this.y };
+    };
+    return Point2d;
+}());
+/* harmony default export */ __webpack_exports__["a"] = (Point2d);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shaderProgramUtils__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__declarations__);
 /*global DEBUG:true*/
@@ -265,7 +334,7 @@ var ShaderProgram = /** @class */ (function () {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -536,73 +605,56 @@ var getUniformSetter = function (size, type) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var Point2d = /** @class */ (function () {
-    function Point2d(x, y) {
+var Rect = /** @class */ (function () {
+    function Rect(x, y, width, height) {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
-        this.x = 0;
-        this.y = 0;
-        this.x = x;
-        this.y = y;
+        if (width === void 0) { width = 0; }
+        if (height === void 0) { height = 0; }
+        this.set(x, y, width, height);
     }
-    Point2d.prototype.setXY = function (x, y) {
+    Rect.prototype.onSet = function () {
+        this.right = this.x + this.width;
+        this.bottom = this.y + this.height;
+    };
+    Rect.prototype.set = function (x, y, width, height) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
+        this.onSet();
         return this;
     };
-    Point2d.prototype.setX = function (x) {
-        this.x = x;
+    Rect.prototype.addXY = function (x, y) {
+        this.x += x;
+        this.y += y;
+        this.onSet();
         return this;
     };
-    Point2d.prototype.setY = function (y) {
-        this.y = y;
-        return this;
-    };
-    Point2d.prototype.set = function (another) {
-        this.setXY(another.x, another.y);
-        return this;
-    };
-    Point2d.prototype.add = function (another) {
+    Rect.prototype.addPoint = function (another) {
         this.addXY(another.x, another.y);
         return this;
     };
-    Point2d.prototype.substract = function (another) {
-        this.addXY(-another.x, -another.y);
-        return this;
+    Rect.prototype.clone = function () {
+        return new Rect(this.x, this.y, this.width, this.height);
     };
-    Point2d.prototype.addXY = function (x, y) {
-        this.x += x;
-        this.y += y;
-        return this;
+    Rect.prototype.toJSON = function () {
+        return { x: this.x, y: this.y, width: this.width, height: this.height };
     };
-    Point2d.prototype.addX = function (x) {
-        this.x += x;
-        return this;
+    Rect.prototype.fromJSON = function (x, y, width, height) {
+        this.set(x, y, width, height);
     };
-    Point2d.prototype.addY = function (y) {
-        this.y += y;
-        return this;
-    };
-    Point2d.prototype.equal = function (val) {
-        return this.x === val && this.y === val;
-    };
-    Point2d.prototype.fromJSON = function (json) {
-        this.set(json);
-    };
-    Point2d.prototype.toJSON = function () {
-        return { x: this.x, y: this.y };
-    };
-    return Point2d;
+    return Rect;
 }());
-/* harmony default export */ __webpack_exports__["a"] = (Point2d);
+/* harmony default export */ __webpack_exports__["a"] = (Rect);
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -644,8 +696,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInBounce", function() { return easeInBounce; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutBounce", function() { return easeOutBounce; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutBounce", function() { return easeInOutBounce; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(2);
 
 
 var isPointInRect = function (point, rect, angle) {
@@ -919,7 +971,7 @@ var easeInOutBounce = function (t, b, c, d) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -964,7 +1016,7 @@ var AbstractDrawer = /** @class */ (function () {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1161,7 +1213,7 @@ var inverse = function (m) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1240,60 +1292,11 @@ var BufferInfo = /** @class */ (function () {
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var Rect = /** @class */ (function () {
-    function Rect(x, y, width, height) {
-        if (x === void 0) { x = 0; }
-        if (y === void 0) { y = 0; }
-        if (width === void 0) { width = 0; }
-        if (height === void 0) { height = 0; }
-        this.set(x, y, width, height);
-    }
-    Rect.prototype.onSet = function () {
-        this.right = this.x + this.width;
-        this.bottom = this.y + this.height;
-    };
-    Rect.prototype.set = function (x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.onSet();
-        return this;
-    };
-    Rect.prototype.addXY = function (x, y) {
-        this.x += x;
-        this.y += y;
-        this.onSet();
-        return this;
-    };
-    Rect.prototype.addPoint = function (another) {
-        this.addXY(another.x, another.y);
-        return this;
-    };
-    Rect.prototype.clone = function () {
-        return new Rect(this.x, this.y, this.width, this.height);
-    };
-    Rect.prototype.toJSON = function () {
-        return { x: this.x, y: this.y, width: this.width, height: this.height };
-    };
-    Rect.prototype.fromJSON = function (x, y, width, height) {
-        this.set(x, y, width, height);
-    };
-    return Rect;
-}());
-/* harmony default export */ __webpack_exports__["a"] = (Rect);
-
-
-/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_shaderProgramUtils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_shaderProgramUtils__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shaderGenerator__ = __webpack_require__(22);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1333,9 +1336,9 @@ var TexShaderGenerator = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_shaderProgram__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_shaderProgram__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__renderPrograms_generic_base_spriteRectDrawer__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geometry_mat4__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geometry_mat4__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shaders_generators_generic_texShaderGenerator__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__declarations__);
@@ -1446,9 +1449,9 @@ var Plane = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_plane__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_abstractDrawer__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_bufferInfo__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_abstractDrawer__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_bufferInfo__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shaders_generators_generic_texShaderGenerator__ = __webpack_require__(10);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1490,7 +1493,7 @@ var SpriteRectDrawer = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_shaderProgramUtils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_shaderProgramUtils__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shaderGenerator__ = __webpack_require__(22);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1897,7 +1900,7 @@ var ShaderGenerator = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(6);
 
 var accessByPath = function (obj, path) {
     var pathArr = path.split('.');
@@ -2187,7 +2190,7 @@ var CommonObject = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(5);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2292,6 +2295,7 @@ var GameObjectProto = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_point2d__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2302,6 +2306,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 var TileMap = /** @class */ (function (_super) {
     __extends(TileMap, _super);
@@ -2389,7 +2394,7 @@ var TileMap = /** @class */ (function (_super) {
                 var index = this.data[y] && this.data[y][x];
                 if (index === null || index === undefined)
                     continue;
-                renderer.drawImage(spriteSheet.resourcePath, spriteSheet.getFramePosX(index), spriteSheet.getFramePosY(index), spriteSheet._frameWidth, spriteSheet._frameHeight, x * spriteSheet._frameWidth, y * spriteSheet._frameHeight);
+                renderer.drawImage(spriteSheet.resourcePath, spriteSheet.getFrameRect(index), new __WEBPACK_IMPORTED_MODULE_1__core_geometry_point2d__["a" /* default */](x * spriteSheet._frameWidth, y * spriteSheet._frameHeight));
             }
         }
     };
@@ -2404,6 +2409,7 @@ var TileMap = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(5);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2415,6 +2421,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*global DEBUG:true*/
+
 
 var TextField = /** @class */ (function (_super) {
     __extends(TextField, _super);
@@ -2478,7 +2485,7 @@ var TextField = /** @class */ (function (_super) {
                 posY += charInCtx.height;
                 return;
             }
-            _this.game.renderer.drawImage(_this.font.resourcePath, charInCtx.x, charInCtx.y, charInCtx.width, charInCtx.height, _this.pos.x + posX, _this.pos.y + posY);
+            _this.game.renderer.drawImage(_this.font.resourcePath, new __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__["a" /* default */](charInCtx.x, charInCtx.y, charInCtx.width, charInCtx.height), _this.pos.clone().addXY(posX, posY));
             posX += charInCtx.width;
         });
     };
@@ -4369,7 +4376,7 @@ var repository = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__model_commonObject__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__camera__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__misc_consts__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__geometry_point2d__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12__declarations__);
 var __extends = (this && this.__extends) || (function () {
@@ -5111,10 +5118,10 @@ var Move4Dir = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tween__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_mat4__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mathEx__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geometry_rect__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geometry_point2d__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_mat4__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geometry_rect__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__declarations__);
 
@@ -5437,8 +5444,8 @@ var Keyboard = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__misc_objectPool__ = __webpack_require__(56);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -5625,7 +5632,7 @@ var Device = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__point2d__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__point2d__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5949,7 +5956,7 @@ var ArcadeRigidBody = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(6);
 
 var Collider = /** @class */ (function () {
     function Collider(game) {
@@ -6123,7 +6130,7 @@ var AbstractRenderer = /** @class */ (function () {
     AbstractRenderer.prototype.getError = function () {
         return 0;
     };
-    AbstractRenderer.prototype.drawImage = function (texturePath, srcX, srcY, srcWidth, srcHeight, dstX, dstY) {
+    AbstractRenderer.prototype.drawImage = function (texturePath, srcRect, dstPoint) {
     };
     AbstractRenderer.prototype.clear = function () {
     };
@@ -6250,7 +6257,7 @@ var IndexBuffer = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__ = __webpack_require__(8);
 
 var MatrixStack = /** @class */ (function () {
     function MatrixStack() {
@@ -6382,7 +6389,7 @@ var VertexBuffer = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_abstractFilter__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(4);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6446,7 +6453,7 @@ var ColorizeFilter = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_abstractFilter__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(4);
 // this filter needs to copy texture to framebuffer
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -6554,9 +6561,9 @@ var Line = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generic_base_spriteRectDrawer__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shaders_generators_generic_texShaderGenerator__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_shaderProgram__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_shaderProgram__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filters_textureFilters_simpleCopyFilter__ = __webpack_require__(67);
 
 
@@ -6600,9 +6607,9 @@ var AbstractBlendDrawer = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_circle__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_abstractDrawer__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_bufferInfo__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_abstractDrawer__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_bufferInfo__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shaders_generators_generic_colorShaderGenerator__ = __webpack_require__(15);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -6643,9 +6650,9 @@ var CircleDrawer = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_plane__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shaders_generators_generic_colorShaderGenerator__ = __webpack_require__(15);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -6687,9 +6694,9 @@ var ColorRectDrawer = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_line__ = __webpack_require__(69);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shaders_generators_generic_colorShaderGenerator__ = __webpack_require__(15);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -6730,10 +6737,10 @@ var LineDrawer = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_plane__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__base_shaderProgramUtils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__base_shaderProgramUtils__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__shaders_generators_generic_texShaderGenerator__ = __webpack_require__(10);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -6813,16 +6820,17 @@ var MultBlendDrawer = /** @class */ (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__renderPrograms_generic_base_spriteRectDrawer__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__renderPrograms_generic_base_tiledSpriteRectDrawer__ = __webpack_require__(74);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderPrograms_generic_base_colorRectDrawer__ = __webpack_require__(72);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderPrograms_abstract_abstractDrawer__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderPrograms_abstract_abstractDrawer__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__renderPrograms_generic_base_lineDrawer__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__renderPrograms_generic_base_circleDrawer__ = __webpack_require__(71);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__base_frameBuffer__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__base_matrixStack__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__geometry_mat4__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__mathEx__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__geometry_mat4__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__mathEx__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__base_texture__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__renderPrograms_generic_blend_multBlendDrawer__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__geometry_rect__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__geometry_rect__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__geometry_point2d__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6833,6 +6841,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -6919,10 +6928,10 @@ var WebGlRenderer = /** @class */ (function (_super) {
             //ctx.rotateY(a);
             this.translate(-halfV, -halfH);
         }
-        this.drawTexture(texToDraw, renderable.getFrameRect(), 0, 0);
+        this.drawTexture(texToDraw, renderable.getFrameRect(), new __WEBPACK_IMPORTED_MODULE_14__geometry_point2d__["a" /* default */](0, 0));
         this.restore();
     };
-    WebGlRenderer.prototype.drawImage = function (texturePath, srcX, srcY, srcWidth, srcHeight, dstX, dstY) {
+    WebGlRenderer.prototype.drawImage = function (texturePath, srcRect, dstPoint) {
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
         var texture = this.renderableCache[texturePath];
@@ -6932,9 +6941,9 @@ var WebGlRenderer = /** @class */ (function (_super) {
             else
                 throw "can not find texture with path " + texturePath;
         }
-        this.drawTexture(texture, new __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */](srcX, srcY, srcWidth, srcHeight), dstX, dstY);
+        this.drawTexture(texture, srcRect, dstPoint);
     };
-    WebGlRenderer.prototype.drawTexture = function (texture, srcRect, dstX, dstY) {
+    WebGlRenderer.prototype.drawTexture = function (texture, srcRect, dstPoint) {
         var camRectScaled = this.game.camera.getRectScaled();
         if (!__WEBPACK_IMPORTED_MODULE_10__mathEx__["overlapTest"](camRectScaled, new __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */](camRectScaled.x + srcRect.x, camRectScaled.y + srcRect.y, srcRect.width, srcRect.height)))
             return;
@@ -6942,7 +6951,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         var texHeight = texture.getSize().height;
         var uniforms = {
             u_textureMatrix: makeTextureMatrix(srcRect.x, srcRect.y, srcRect.width, srcRect.height, texWidth, texHeight),
-            u_vertexMatrix: makePositionMatrix(dstX, dstY, srcRect.width, srcRect.height, this.game.width, this.game.height),
+            u_vertexMatrix: makePositionMatrix(dstPoint.x, dstPoint.y, srcRect.width, srcRect.height, this.game.width, this.game.height),
             u_alpha: 1
         };
         if (srcRect.width === 120 || srcRect.width === 174) {
@@ -6951,7 +6960,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         else
             this.spriteRectDrawer.draw(texture, uniforms);
     };
-    WebGlRenderer.prototype.drawTiledImage = function (texturePath, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight, offsetX, offsetY) {
+    WebGlRenderer.prototype.drawTiledImage = function (texturePath, srcRect, dstRect, offset) {
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
         var texture = this.renderableCache[texturePath];
@@ -6964,10 +6973,10 @@ var WebGlRenderer = /** @class */ (function (_super) {
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
         var uniforms = {};
-        uniforms.u_textureMatrix = makeTextureMatrix(0, 0, dstWidth, dstHeight, texWidth, texHeight);
-        uniforms.u_vertexMatrix = makePositionMatrix(dstX, dstY, dstWidth, dstHeight, this.game.width, this.game.height);
-        uniforms.u_frameCoords = [srcX / texWidth, srcY / texHeight, srcWidth / texWidth, srcHeight / texHeight];
-        uniforms.u_offsetCoords = [offsetX / srcWidth, offsetY / srcHeight];
+        uniforms.u_textureMatrix = makeTextureMatrix(0, 0, dstRect.width, dstRect.height, texWidth, texHeight);
+        uniforms.u_vertexMatrix = makePositionMatrix(dstRect.x, dstRect.y, dstRect.width, dstRect.height, this.game.width, this.game.height);
+        uniforms.u_frameCoords = [srcRect.x / texWidth, srcRect.y / texHeight, srcRect.width / texWidth, srcRect.height / texHeight];
+        uniforms.u_offsetCoords = [offset.x / srcRect.width, offset.y / srcRect.height];
         uniforms.u_alpha = 1;
         this.tiledSpriteRectDrawer.draw(texture, uniforms);
     };
@@ -7559,7 +7568,7 @@ var Layer = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_mathEx__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_mathEx__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7828,6 +7837,7 @@ var Sound = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(5);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7838,6 +7848,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 var SpriteSheet = /** @class */ (function (_super) {
     __extends(SpriteSheet, _super);
@@ -7852,6 +7863,7 @@ var SpriteSheet = /** @class */ (function (_super) {
         _this._frameHeight = 0;
         _this._numOfFrames = 0;
         _this.resourcePath = '';
+        _this.frameRect = new __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__["a" /* default */]();
         return _this;
     }
     SpriteSheet.prototype.revalidate = function () {
@@ -7866,6 +7878,11 @@ var SpriteSheet = /** @class */ (function (_super) {
     };
     SpriteSheet.prototype.getFramePosY = function (frameIndex) {
         return ~~(frameIndex / this.numOfFramesH) * this._frameHeight;
+    };
+    SpriteSheet.prototype.getFrameRect = function (index) {
+        var fr = this.frameRect;
+        fr.set(this.getFramePosX(index), this.getFramePosY(index), this._frameWidth, this._frameHeight);
+        return fr;
     };
     return SpriteSheet;
 }(__WEBPACK_IMPORTED_MODULE_0__baseModel__["a" /* default */]));

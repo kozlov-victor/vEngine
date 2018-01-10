@@ -17,6 +17,7 @@ import MultBlendDrawer from "./renderPrograms/generic/blend/multBlendDrawer";
 import Rect from "../../geometry/rect";
 import Game from "../../game";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
+import Point2d from "../../geometry/point2d";
 
 declare const DEBUG:boolean;
 declare const Image:any;
@@ -119,15 +120,14 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.drawTexture(
             texToDraw,
             renderable.getFrameRect(),
-            0,
-            0
+            new Point2d(0,0)
         );
         this.restore();
     }
 
     drawImage(texturePath:string,
-              srcX:number, srcY:number, srcWidth:number, srcHeight:number,
-              dstX:number, dstY:number){
+              srcRect:Rect,
+              dstPoint:Point2d){
 
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
@@ -137,12 +137,12 @@ export default class WebGlRenderer extends AbstractRenderer {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
         }
-        this.drawTexture(texture,new Rect(srcX, srcY, srcWidth, srcHeight), dstX, dstY);
+        this.drawTexture(texture,srcRect, dstPoint);
     }
 
     drawTexture(texture:Texture,
                 srcRect:Rect,
-                dstX:number, dstY:number){
+                dstPoint:Point2d){
 
         let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
@@ -155,7 +155,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         let uniforms = {
             u_textureMatrix: makeTextureMatrix(srcRect.x,srcRect.y,srcRect.width,srcRect.height,texWidth,texHeight),
-            u_vertexMatrix: makePositionMatrix(dstX,dstY,srcRect.width,srcRect.height, this.game.width,this.game.height),
+            u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
             u_alpha: 1
         };
 
@@ -166,9 +166,9 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     drawTiledImage(texturePath:string,
-                   srcX:number,srcY:number,srcWidth:number,srcHeight:number,
-                   dstX:number, dstY:number, dstWidth:number, dstHeight:number,
-                   offsetX:number,offsetY:number){
+                   srcRect:Rect,
+                   dstRect:Rect,
+                   offset:Point2d){
 
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
@@ -183,15 +183,15 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         let uniforms:any = {};
         uniforms.u_textureMatrix = makeTextureMatrix(
-            0,0,dstWidth, dstHeight,
+            0,0,dstRect.width, dstRect.height,
             texWidth,texHeight
         );
         uniforms.u_vertexMatrix = makePositionMatrix(
-            dstX,dstY,dstWidth, dstHeight,
+            dstRect.x,dstRect.y,dstRect.width, dstRect.height,
             this.game.width,this.game.height
         );
-        uniforms.u_frameCoords = [srcX/texWidth,srcY/texHeight,srcWidth/texWidth,srcHeight/texHeight];
-        uniforms.u_offsetCoords = [offsetX/srcWidth,offsetY/srcHeight];
+        uniforms.u_frameCoords = [srcRect.x/texWidth,srcRect.y/texHeight,srcRect.width/texWidth,srcRect.height/texHeight];
+        uniforms.u_offsetCoords = [offset.x/srcRect.width,offset.y/srcRect.height];
         uniforms.u_alpha = 1;
         this.tiledSpriteRectDrawer.draw(texture,uniforms);
 

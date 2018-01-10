@@ -2,6 +2,8 @@
 import BaseModel from '../baseModel'
 import SpriteSheet from "./spriteSheet";
 import Game from "../../core/game";
+import Rect from "../../core/geometry/rect";
+import Point2d from "../../core/geometry/point2d";
 
 export default class TileMap extends BaseModel {
 
@@ -87,12 +89,8 @@ export default class TileMap extends BaseModel {
                 if (index===null || index===undefined) continue;
                 renderer.drawImage(
                     spriteSheet.resourcePath,
-                    spriteSheet.getFramePosX(index),
-                    spriteSheet.getFramePosY(index),
-                    spriteSheet._frameWidth,
-                    spriteSheet._frameHeight,
-                    x*spriteSheet._frameWidth,
-                    y*spriteSheet._frameHeight
+                    spriteSheet.getFrameRect(index),
+                    new Point2d(x*spriteSheet._frameWidth, y*spriteSheet._frameHeight)
                 );
             }
         }

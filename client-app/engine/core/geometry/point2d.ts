@@ -61,6 +61,10 @@ export default class Point2d {
         return this.x===val && this.y===val;
     }
 
+    clone():Point2d {
+        return new Point2d(this.x,this.y);
+    }
+
     fromJSON(json){
         this.set(json);
     }

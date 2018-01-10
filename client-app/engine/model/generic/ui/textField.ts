@@ -1,6 +1,8 @@
 /*global DEBUG:true*/
 import BaseModel from '../../baseModel'
 import Font from "../font";
+import Rect from "../../../core/geometry/rect";
+import Point2d from "../../../core/geometry/point2d";
 
 declare const DEBUG:boolean;
 
@@ -68,12 +70,11 @@ export default class TextField extends BaseModel {
             }
             this.game.renderer.drawImage(
                 this.font.resourcePath,
-                charInCtx.x,
-                charInCtx.y,
-                charInCtx.width,
-                charInCtx.height,
-                this.pos.x+posX,
-                this.pos.y+posY
+                new Rect(charInCtx.x,
+                    charInCtx.y,
+                    charInCtx.width,
+                    charInCtx.height),
+                this.pos.clone().addXY(posX,posY)
             );
             posX+=charInCtx.width;
         });

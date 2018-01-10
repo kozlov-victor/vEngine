@@ -7,6 +7,8 @@ import {DEBUG} from "../../../declarations";
 import Game from "../../game";
 import GameObject from "../../../model/generic/gameObject";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
+import Rect from "../../geometry/rect";
+import Point2d from "../../geometry/point2d";
 
 declare const document:any, window:any;
 
@@ -101,8 +103,8 @@ export default class AbstractRenderer {
     }
 
     drawImage(texturePath:string,
-              srcX:number, srcY:number, srcWidth:number, srcHeight:number,
-              dstX:number, dstY:number){
+              srcRect:Rect,
+              dstPoint:Point2d){
     }
 
     clear(){
