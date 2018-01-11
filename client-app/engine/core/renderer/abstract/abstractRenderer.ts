@@ -9,6 +9,7 @@ import GameObject from "../../../model/generic/gameObject";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
+import ObjectPool from "../../misc/objectPool";
 
 declare const document:any, window:any;
 
@@ -19,6 +20,7 @@ export default class AbstractRenderer {
     debugTextField = null;
     fullScreenSize = {w:0,h:0,scaleFactor:1};
     game:Game;
+    protected rectPool:ObjectPool<Rect> = new ObjectPool<Rect>(Rect);
 
     constructor(game){
         this.game = game;
@@ -127,7 +129,7 @@ export default class AbstractRenderer {
 
     }
 
-    log(){
+    log(args){
         if (!DEBUG) return;
         let textField = this.debugTextField;
         let res = '';

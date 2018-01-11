@@ -14,6 +14,7 @@ class MousePoint extends Point2d{
     screenX:number;
     screenY:number;
     id:number;
+    target;
 
     constructor(){
         super();
@@ -25,7 +26,7 @@ export default class Mouse {
 
     objectsCaptured = {};
     container:HTMLElement = null;
-    mousePointsPool:ObjectPool = new ObjectPool(MousePoint);
+    mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
     game:Game;
 
     constructor(game:Game){
@@ -34,7 +35,7 @@ export default class Mouse {
 
 
     //MouseEvent|TouchEvent|PointerEvent
-    resolvePoint(e:MouseEventEx){
+    resolvePoint(e:MouseEventEx):MousePoint{
         let game = this.game;
         let camera = this.game.camera;
 
@@ -71,6 +72,7 @@ exit:   for (let i=0;i<scene.layers.length;i++){
                         objectX:point.x - go.pos.x,
                         objectY:point.y - go.pos.y,
                         id:point.id,
+                        target:go,
                         isMouseDown
                     });
                     break exit;
@@ -95,16 +97,16 @@ exit:   for (let i=0;i<scene.layers.length;i++){
     }
 
     resolveMouseMove(e:MouseEventEx,isMouseDown:boolean){
-        let point = this.triggerEvent(e,'mouseMove',isMouseDown);
+        let point:MousePoint = this.triggerEvent(e,'mouseMove',isMouseDown);
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
-        if (lastMouseDownObject && lastMouseDownObject!==point.object) {
+        if (lastMouseDownObject && lastMouseDownObject!==point.target) {
             lastMouseDownObject.trigger('mouseLeave');
             delete this.objectsCaptured[point.id];
         }
-        if (point.object && lastMouseDownObject!==point.object) {
-            point.object.trigger('mouseEnter');
-            this.objectsCaptured[point.id] = point.object;
+        if (point.target && lastMouseDownObject!==point.target) {
+            point.target.trigger('mouseEnter');
+            this.objectsCaptured[point.id] = point.target;
         }
     }
 

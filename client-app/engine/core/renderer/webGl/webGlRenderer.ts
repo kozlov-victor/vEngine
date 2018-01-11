@@ -197,12 +197,12 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     }
 
-    fillRect(x:number, y:number, width:number, height:number, color){ // todo rect
+    fillRect(rect:Rect, color){
 
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x,y,width,height))) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),rect)) return;
         let uniforms = {
             u_vertexMatrix: makePositionMatrix(
-                x,y,width,height,
+                rect.x,rect.y,rect.width,rect.height,
                 this.game.width,this.game.height),
             u_rgba: color
         };
@@ -210,17 +210,19 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.colorRectDrawer.draw(null,uniforms);
     }
 
-    drawRect(x:number,y:number,w:number,h:number,color){ // todo rect
-        this.fillRect(x, y, w, 1, color);
-        this.fillRect(x, y + h, w, 1, color);
-        this.fillRect(x, y, 1, h, color);
-        this.fillRect(x + w, y, 1, h, color);
+    drawRect(rect:Rect,color){
+        let r:Rect = new Rect();
+        let [x,y,w,h] = [r.x,r.y,r.width,r.height];
+        this.fillRect(r.set(x, y, w, 1), color);
+        this.fillRect(r.set(x, y + h, w, 1), color);
+        this.fillRect(r.set(x, y, 1, h), color);
+        this.fillRect(r.set(x + w, y, 1, h), color);
     }
 
     drawLine(x1:number,y1:number,x2:number,y2:number,color){
 
         let dx = x2-x1,dy = y2-y1;
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
+        //if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
         let uniforms:any = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
             x1,y1,dx,dy,
