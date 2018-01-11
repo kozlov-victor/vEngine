@@ -20,7 +20,6 @@ export default class AbstractRenderer {
     debugTextField = null;
     fullScreenSize = {w:0,h:0,scaleFactor:1};
     game:Game;
-    protected rectPool:ObjectPool<Rect> = new ObjectPool<Rect>(Rect);
 
     constructor(game){
         this.game = game;

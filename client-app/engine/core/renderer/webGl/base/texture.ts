@@ -2,6 +2,8 @@
 import FrameBuffer from "./frameBuffer";
 import {DEBUG, Image} from "../../../../declarations";
 import AbstractFilter from "../filters/abstract/abstractFilter";
+import Rect from "../../../geometry/rect";
+import Size from "../../../geometry/size";
 
 const isPowerOf2 = function(value) {
     return (value & (value - 1)) === 0;
@@ -47,7 +49,7 @@ export default class Texture {
 
     gl:WebGLRenderingContext;
     tex:WebGLTexture = null;
-    size = null; // todo simple width height or structure
+    size:Size = new Size(0,0);
     isPowerOfTwo:boolean = false;
     _texFilterBuff:TextureFilterBuffer = null;
 
@@ -81,8 +83,8 @@ export default class Texture {
         }
 
         const gl = this.gl;
-        if (img) this.size = {width:img.width,height:img.height};
-        else this.size = {width,height};
+        if (img) this.size.setWH(img.width,img.height);
+        else this.size.setWH(width,height);
         this.bind();
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         if (img) {
@@ -107,7 +109,7 @@ export default class Texture {
 
     }
 
-    applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer){
+    applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer,dstRect:Rect){
         if (DEBUG && frameBuffer===undefined)
             throw `can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`;
         let len = filters.length;
@@ -115,12 +117,13 @@ export default class Texture {
         if (this._texFilterBuff.buffers===null)
             this._texFilterBuff.instantiate(this.gl);
         let filter:AbstractFilter = filters[0];
-        filter.doFilter(this,this._texFilterBuff.getDestBuffer());
+        filter.doFilter(this,this._texFilterBuff.getDestBuffer(),dstRect);
         for (let i=1;i<len;i++){
             this._texFilterBuff.flip();
             filters[i].doFilter(
                 this._texFilterBuff.getSourceBuffer().texture,
-                this._texFilterBuff.getDestBuffer()
+                this._texFilterBuff.getDestBuffer(),
+                dstRect
             );
         }
         this._texFilterBuff.flip();
@@ -138,7 +141,9 @@ export default class Texture {
     }
 
     unbind(i:number = 0) {
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        let gl:WebGLRenderingContext = this.gl;
+        gl.activeTexture(gl.TEXTURE0+i);
+        gl.bindTexture(gl.TEXTURE_2D, null);
         Texture.currInstances[i] = null;
     }
 

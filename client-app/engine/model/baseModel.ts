@@ -1,6 +1,6 @@
 
 import CommonObject from './commonObject'
-import Tween from '../core/tween'
+import Tween, {TweenDescription} from '../core/tween'
 import EventEmitter from '../core/misc/eventEmitter'
 import {Transient} from '../core/misc/decorators'
 
@@ -27,7 +27,7 @@ export default class BaseModel extends CommonObject {
     layerId:number =  null;
     fixedToCamera:boolean = false;
     rigid:boolean = false;
-    _tweens = [];
+    _tweens:Array<Tween> = [];
     private _rect:Rect = new Rect(0,0);
     _emitter:EventEmitter;
     _cloner:BaseModel;
@@ -61,15 +61,15 @@ export default class BaseModel extends CommonObject {
      * {target:obj,from:a,to:b,progress:fn,complete:fn,ease:str,time:t}}
      * @param desc
      */
-    tween(desc){
-        let t = new Tween(desc);
+    tween(desc:TweenDescription){
+        let t:Tween = new Tween(desc);
         this._tweens.push(t);
     }
 
     update(time,delta){
-        this._tweens.forEach((t, index)=>{
+        this._tweens.forEach((t:Tween, index:number)=>{
             t.update(time);
-            if (t.completed) this._tweens.splice(index,1);
+            if (t.isCompleted()) this._tweens.splice(index,1);
         });
     }
 

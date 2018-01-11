@@ -3,6 +3,7 @@ import * as mathEx from '../mathEx'
 import Point2d from "../geometry/point2d";
 import ObjectPool from "../misc/objectPool";
 import Game from "../game";
+import Camera from "../camera";
 
 interface MouseEventEx extends MouseEvent {
     identifier:number,
@@ -15,9 +16,14 @@ class MousePoint extends Point2d{
     screenY:number;
     id:number;
     target;
+    static mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
 
     constructor(){
         super();
+    }
+
+    static fromPool():MousePoint{
+        return MousePoint.mousePointsPool.getNextObject();
     }
 
 }
@@ -26,7 +32,6 @@ export default class Mouse {
 
     objectsCaptured = {};
     container:HTMLElement = null;
-    mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
     game:Game;
 
     constructor(game:Game){
@@ -36,15 +41,15 @@ export default class Mouse {
 
     //MouseEvent|TouchEvent|PointerEvent
     resolvePoint(e:MouseEventEx):MousePoint{
-        let game = this.game;
-        let camera = this.game.camera;
+        let game:Game = this.game;
+        let camera:Camera = this.game.camera;
 
-        let screenX = (e.clientX - game.pos.x ) / game.scale.x;
-        let screenY = (e.clientY - game.pos.y ) / game.scale.y;
+        let screenX:number = (e.clientX - game.pos.x ) / game.scale.x;
+        let screenY:number = (e.clientY - game.pos.y ) / game.scale.y;
 
-        let p = game.camera.screenToWorld(screenX,screenY);
+        let p:Point2d = game.camera.screenToWorld(screenX,screenY);
 
-        let mousePoint = this.mousePointsPool.getNextObject();
+        let mousePoint:MousePoint = MousePoint.fromPool();
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;
@@ -59,7 +64,8 @@ export default class Mouse {
         if (!scene) return;
         let point = this.resolvePoint(e);
 
-exit:   for (let i=0;i<scene.layers.length;i++){
+        exit:
+        for (let i=0;i<scene.layers.length;i++){
             let layer = scene.layers[scene.layers.length - 1 - i];
             for (let j=0;j<layer.gameObjects.length;j++){
                 let go = layer.gameObjects[j];

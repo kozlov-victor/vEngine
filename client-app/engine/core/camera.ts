@@ -8,7 +8,12 @@ import Game from "./game";
 import GameObject from "../model/generic/gameObject";
 import Scene from "../model/generic/scene";
 import {DEBUG} from "../declarations";
+import {random} from "./mathEx";
 
+interface CameraTweenTarget {
+    time:number,
+    point:Point2d
+}
 
 export default class Camera {
 
@@ -23,7 +28,8 @@ export default class Camera {
     private lastToleranceTime:number = 0;
     private _rect:Rect = new Rect();
     private _rectScaled:Rect = new Rect();
-    private cameraTween:Tween;
+    private cameraFollowTween:Tween;
+    private cameraShakeTween:Tween = null;
 
     FOLLOWING_TOLERANCE_TIME:number = 2000;
 
@@ -43,7 +49,7 @@ export default class Camera {
             this.sceneWidth = this.game.getCurrScene().width || this.game.width;
             this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
-        this.cameraTween = new Tween({
+        this.cameraFollowTween = new Tween({
             target: this,
             ease: 'easeInQuad',
             to: {x:this.pos.x,y:this.pos.y},
@@ -51,9 +57,9 @@ export default class Camera {
         });
     }
 
-    update(currTime,delta) {
-        let cameraRect = this.getRectScaled();
-        let gameObject = this.objFollowTo;
+    update(currTime:number,delta:number) {
+        let cameraRect:Rect = this.getRectScaled();
+        let gameObject:GameObject = this.objFollowTo;
         if (!gameObject) return;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
         let tileHeight = this.scene.tileMap.spriteSheet? this.scene.tileMap.spriteSheet._frameHeight:0;
@@ -76,7 +82,7 @@ export default class Camera {
         }
         else if (currTime-this.lastToleranceTime>this.FOLLOWING_TOLERANCE_TIME) {
             this.lastToleranceTime = currTime;
-            this.cameraTween.reuse({
+            this.cameraFollowTween.reuse({
                 to: {
                     'pos.x':x,'pos.y':y,
                     'scale.x':scaleVal,'scale.y':scaleVal
@@ -84,9 +90,25 @@ export default class Camera {
             });
         }
 
-        this.cameraTween.update(currTime);
+        this.cameraFollowTween.update(currTime);
+        if (this.cameraShakeTween) this.cameraShakeTween.update(currTime);
         this._updateRect();
         this.render();
+    }
+
+    shake(amplitude:number,time:number) {
+        let tweenTarget:CameraTweenTarget = {time:0,point:new Point2d(0,0)};
+        this.cameraShakeTween = new Tween({
+            target:tweenTarget,
+            time,
+            to:{time:time},
+            progress:()=>{
+                let r1 = random(-amplitude/2,amplitude/2);
+                let r2 = random(-amplitude/2,amplitude/2);
+                tweenTarget.point.setXY(r1,r2);
+            },
+            complete:()=>this.cameraShakeTween = null
+        });
     }
 
     _updateRect(){
@@ -105,6 +127,10 @@ export default class Camera {
         //this.game.renderer.rotateZ(this.angle);
         this.game.renderer.translate(-this.game.width/2,-this.game.height/2);
         this.game.renderer.translate(-this.pos.x,-this.pos.y);
+        if (this.cameraShakeTween!==null) this.game.renderer.translate(
+            this.cameraShakeTween.getTarget().point.x,
+            this.cameraShakeTween.getTarget().point.y
+        );
     }
 
     screenToWorld(screenX,screenY){

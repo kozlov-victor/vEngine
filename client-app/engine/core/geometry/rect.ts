@@ -1,6 +1,7 @@
 
 import Point2d from "./point2d";
 import Size from "./size";
+import ObjectPool from "../misc/objectPool";
 
 export default class Rect {
 
@@ -10,6 +11,8 @@ export default class Rect {
     height:number;
     right:number;
     bottom:number;
+
+    private static rectPool:ObjectPool<Rect> = new ObjectPool<Rect>(Rect);
 
     constructor(x:number = 0,y:number = 0,width:number = 0,height:number = 0){
         this.set(x,y,width,height);
@@ -52,6 +55,10 @@ export default class Rect {
 
     fromJSON(x,y,width,height){
         this.set(x,y,width,height);
+    }
+
+    static fromPool():Rect {
+        return Rect.rectPool.getNextObject();
     }
 
 }

@@ -147,7 +147,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
             camRectScaled,
-            new Rect(camRectScaled.x+srcRect.x,camRectScaled.y+srcRect.y,srcRect.width,srcRect.height))
+            Rect.fromPool().set(camRectScaled.x+srcRect.x,camRectScaled.y+srcRect.y,srcRect.width,srcRect.height))
         ) return;
 
         let texWidth = texture.getSize().width;
@@ -211,7 +211,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
     drawRect(rect:Rect,color){
-        let r:Rect = new Rect();
+        let r:Rect = Rect.fromPool();
         let [x,y,w,h] = [r.x,r.y,r.width,r.height];
         this.fillRect(r.set(x, y, w, 1), color);
         this.fillRect(r.set(x, y + h, w, 1), color);
@@ -235,7 +235,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     fillCircle(x:number,y:number,r:number,color){
         let r2 = r*2;
-        if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x-r,y-r,r2,r2))) return;
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().set(x-r,y-r,r2,r2))) return;
         let uniforms:any = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
             x-r,y-r,r2,r2,
@@ -307,7 +307,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.translate(0,fullScreen.h);
         this.scale(1,-1);
 
-        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null);
+        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null,null); // todo destRect
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 

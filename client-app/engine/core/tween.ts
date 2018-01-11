@@ -21,7 +21,7 @@ let getValByPath = (obj,path)=>{
     return targetObj[targetKey];
 };
 
-interface TweenDescription {
+export interface TweenDescription {
     target:any,
     progress?:Function,
     complete?:Function,
@@ -38,7 +38,7 @@ export default class Tween {
     private startedTime = null;
     private currTime = null;
     private completed = false;
-    private obj: any;
+    private target: any;
     private progressFn:Function;
     private completeFn: Function;
     private easeFnName:string;
@@ -56,7 +56,7 @@ export default class Tween {
      * time: tween time
      */
     constructor(tweenDesc:TweenDescription){
-        this.obj = tweenDesc.target;
+        this.target = tweenDesc.target;
         this.progressFn = tweenDesc.progress;
         this.completeFn = tweenDesc.complete;
         this.easeFnName = tweenDesc.ease || 'linear';
@@ -86,8 +86,8 @@ export default class Tween {
         });
         this.propsToChange = Object.keys(allPropsMap);
         this.propsToChange.forEach(prp=>{
-            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = getValByPath(this.obj,prp);
-            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = getValByPath(this.obj,prp);
+            if (tweenDesc.from[prp]===undefined) tweenDesc.from[prp] = getValByPath(this.target,prp);
+            if (tweenDesc.to[prp]===undefined) tweenDesc.to[prp] = getValByPath(this.target,prp);
         });
         return tweenDesc;
     };
@@ -112,32 +112,40 @@ export default class Tween {
                 valFrom,
                 valTo - valFrom,
                 this.tweenTime);
-            setValByPath(this.obj,prp,valCurr);
+            setValByPath(this.target,prp,valCurr);
         }
-        this.progressFn && this.progressFn(this.obj);
+        this.progressFn && this.progressFn(this.target);
 
     };
 
-    progress(_progressFn){
+    private progress(_progressFn){
         this.progressFn = _progressFn;
     };
 
-    reset() {
+    private reset() {
         this.startedTime = null;
         this.completed = false;
     };
 
-    _complete(){
+    private _complete(){
         if (this.completed) return;
         let l = this.propsToChange.length;
         while(l--){
             let prp = this.propsToChange[l];
             let valCurr = this.desc.to[prp];
-            setValByPath(this.obj,prp,valCurr);
+            setValByPath(this.target,prp,valCurr);
         }
-        this.progressFn && this.progressFn(this.obj);
-        this.completeFn && this.completeFn(this.obj);
+        this.progressFn && this.progressFn(this.target);
+        this.completeFn && this.completeFn(this.target);
         this.completed = true;
     };
+
+    public isCompleted(){
+        return this.completed;
+    }
+
+    public getTarget(){
+        return this.target;
+    }
 
 }

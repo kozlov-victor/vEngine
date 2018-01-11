@@ -23,7 +23,7 @@ export default class Font extends BaseModel {
         super(game);
     }
 
-    revalidate(){ // todo must be done in serializer
+    revalidate(){
         super.revalidate();
         let s = this.fontContext.symbols;
         this.fontContext.symbols = {};

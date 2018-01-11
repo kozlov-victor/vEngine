@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 88);
+/******/ 	return __webpack_require__(__webpack_require__.s = 89);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,10 +79,10 @@
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commonObject__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_tween__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_misc_eventEmitter__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_misc_eventEmitter__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core_misc_decorators__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_physics_arcadeRigidBody__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__core_geometry_rect__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__core_physics_arcadeRigidBody__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__core_geometry_rect__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__core_geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__declarations__);
@@ -155,7 +155,7 @@ var BaseModel = /** @class */ (function (_super) {
         var _this = this;
         this._tweens.forEach(function (t, index) {
             t.update(time);
-            if (t.completed)
+            if (t.isCompleted())
                 _this._tweens.splice(index, 1);
         });
     };
@@ -267,48 +267,316 @@ var Point2d = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var Rect = /** @class */ (function () {
-    function Rect(x, y, width, height) {
-        if (x === void 0) { x = 0; }
-        if (y === void 0) { y = 0; }
-        if (width === void 0) { width = 0; }
-        if (height === void 0) { height = 0; }
-        this.set(x, y, width, height);
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPointInRect", function() { return isPointInRect; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "overlapTest", function() { return overlapTest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "radToDeg", function() { return radToDeg; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "degToRad", function() { return degToRad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unProject", function() { return unProject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "linear", function() { return linear; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInQuad", function() { return easeInQuad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutQuad", function() { return easeOutQuad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutQuad", function() { return easeInOutQuad; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInCubic", function() { return easeInCubic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutCubic", function() { return easeOutCubic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutCubic", function() { return easeInOutCubic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInQuart", function() { return easeInQuart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutQuart", function() { return easeOutQuart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutQuart", function() { return easeInOutQuart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInQuint", function() { return easeInQuint; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutQuint", function() { return easeOutQuint; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutQuint", function() { return easeInOutQuint; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInSine", function() { return easeInSine; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutSine", function() { return easeOutSine; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutSine", function() { return easeInOutSine; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInExpo", function() { return easeInExpo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutExpo", function() { return easeOutExpo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutExpo", function() { return easeInOutExpo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInCirc", function() { return easeInCirc; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutCirc", function() { return easeOutCirc; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutCirc", function() { return easeInOutCirc; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInElastic", function() { return easeInElastic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutElastic", function() { return easeOutElastic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutElastic", function() { return easeInOutElastic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInBack", function() { return easeInBack; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutBack", function() { return easeOutBack; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutBack", function() { return easeInOutBack; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInBounce", function() { return easeInBounce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutBounce", function() { return easeOutBounce; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutBounce", function() { return easeInOutBounce; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(2);
+
+
+var isPointInRect = function (point, rect, angle) {
+    // if (angle) {
+    //     let vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
+    //     vec2.setAngle(vec2.getAngle() - angle);
+    //     point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
+    //
+    // }
+    return point.x > rect.x &&
+        point.x < (rect.x + rect.width) &&
+        point.y > rect.y &&
+        point.y < (rect.y + rect.height);
+};
+var overlapTest = function (a, b) {
+    return (a.x < b.x + b.width) &&
+        (a.x + a.width > b.x) &&
+        (a.y < b.y + b.height) &&
+        (a.y + a.height > b.y);
+};
+var radToDeg = function (rad) {
+    return rad * 180 / Math.PI;
+};
+var degToRad = function (deg) {
+    return deg * Math.PI / 180;
+};
+var random = function (min, max) {
+    if (min > max) {
+        var tmp = min;
+        min = max;
+        max = tmp;
     }
-    Rect.prototype.onSet = function () {
-        this.right = this.x + this.width;
-        this.bottom = this.y + this.height;
-    };
-    Rect.prototype.set = function (x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.onSet();
-        return this;
-    };
-    Rect.prototype.addXY = function (x, y) {
-        this.x += x;
-        this.y += y;
-        this.onSet();
-        return this;
-    };
-    Rect.prototype.addPoint = function (another) {
-        this.addXY(another.x, another.y);
-        return this;
-    };
-    Rect.prototype.clone = function () {
-        return new Rect(this.x, this.y, this.width, this.height);
-    };
-    Rect.prototype.toJSON = function () {
-        return { x: this.x, y: this.y, width: this.width, height: this.height };
-    };
-    Rect.prototype.fromJSON = function (x, y, width, height) {
-        this.set(x, y, width, height);
-    };
-    return Rect;
-}());
-/* harmony default export */ __webpack_exports__["a"] = (Rect);
+    var res = Math.random() * (max - min) + min;
+    if (res > max)
+        res = max;
+    else if (res < min)
+        res = min;
+    return res;
+};
+/**
+ * analog of glu unproject function
+ * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
+ */
+var unProject = function (winX, winY, width, height, viewProjectionMatrix) {
+    var x = 2.0 * winX / width - 1;
+    var y = 2.0 * winY / height - 1;
+    var viewProjectionInverse = __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__["f" /* inverse */](viewProjectionMatrix);
+    var point3D = [x, y, 0, 1];
+    var res = __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__["g" /* multMatrixVec */](viewProjectionInverse, point3D);
+    res[0] = (res[0] / 2 + 0.5) * width;
+    res[1] = (res[1] / 2 + 0.5) * height;
+    return new __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__["a" /* default */](res[0], res[1]);
+};
+// simple linear tweening - no easing, no acceleration
+var linear = function (t, b, c, d) { return c * t / d + b; };
+// quadratic easing in - accelerating from zero velocity
+var easeInQuad = function (t, b, c, d) {
+    t /= d;
+    return c * t * t + b;
+};
+// quadratic easing out - decelerating to zero velocity
+var easeOutQuad = function (t, b, c, d) {
+    t /= d;
+    return -c * t * (t - 2) + b;
+};
+// quadratic easing in/out - acceleration until halfway, then deceleration
+var easeInOutQuad = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1)
+        return c / 2 * t * t + b;
+    t--;
+    return -c / 2 * (t * (t - 2) - 1) + b;
+};
+// cubic easing in - accelerating from zero velocity
+var easeInCubic = function (t, b, c, d) {
+    t /= d;
+    return c * t * t * t + b;
+};
+// cubic easing out - decelerating to zero velocity
+var easeOutCubic = function (t, b, c, d) {
+    t /= d;
+    t--;
+    return c * (t * t * t + 1) + b;
+};
+// cubic easing in/out - acceleration until halfway, then deceleration
+var easeInOutCubic = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1)
+        return c / 2 * t * t * t + b;
+    t -= 2;
+    return c / 2 * (t * t * t + 2) + b;
+};
+// quartic easing in - accelerating from zero velocity
+var easeInQuart = function (t, b, c, d) {
+    t /= d;
+    return c * t * t * t * t + b;
+};
+// quartic easing out - decelerating to zero velocity
+var easeOutQuart = function (t, b, c, d) {
+    t /= d;
+    t--;
+    return -c * (t * t * t * t - 1) + b;
+};
+// quartic easing in/out - acceleration until halfway, then deceleration
+var easeInOutQuart = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1)
+        return c / 2 * t * t * t * t + b;
+    t -= 2;
+    return -c / 2 * (t * t * t * t - 2) + b;
+};
+// quintic easing in - accelerating from zero velocity
+var easeInQuint = function (t, b, c, d) {
+    t /= d;
+    return c * t * t * t * t * t + b;
+};
+// quintic easing out - decelerating to zero velocity
+var easeOutQuint = function (t, b, c, d) {
+    t /= d;
+    t--;
+    return c * (t * t * t * t * t + 1) + b;
+};
+// quintic easing in/out - acceleration until halfway, then deceleration
+var easeInOutQuint = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1)
+        return c / 2 * t * t * t * t * t + b;
+    t -= 2;
+    return c / 2 * (t * t * t * t * t + 2) + b;
+};
+// sinusoidal easing in - accelerating from zero velocity
+var easeInSine = function (t, b, c, d) {
+    return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
+};
+// sinusoidal easing out - decelerating to zero velocity
+var easeOutSine = function (t, b, c, d) {
+    return c * Math.sin(t / d * (Math.PI / 2)) + b;
+};
+// sinusoidal easing in/out - accelerating until halfway, then decelerating
+var easeInOutSine = function (t, b, c, d) {
+    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+};
+// exponential easing in - accelerating from zero velocity
+var easeInExpo = function (t, b, c, d) {
+    return c * Math.pow(2, 10 * (t / d - 1)) + b;
+};
+// exponential easing out - decelerating to zero velocity
+var easeOutExpo = function (t, b, c, d) {
+    return c * (-Math.pow(2, -10 * t / d) + 1) + b;
+};
+// exponential easing in/out - accelerating until halfway, then decelerating
+var easeInOutExpo = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1)
+        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
+    t--;
+    return c / 2 * (-Math.pow(2, -10 * t) + 2) + b;
+};
+// circular easing in - accelerating from zero velocity
+var easeInCirc = function (t, b, c, d) {
+    t /= d;
+    return -c * (Math.sqrt(1 - t * t) - 1) + b;
+};
+// circular easing out - decelerating to zero velocity
+var easeOutCirc = function (t, b, c, d) {
+    t /= d;
+    t--;
+    return c * Math.sqrt(1 - t * t) + b;
+};
+// circular easing in/out - acceleration until halfway, then deceleration
+var easeInOutCirc = function (t, b, c, d) {
+    t /= d / 2;
+    if (t < 1)
+        return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
+    t -= 2;
+    return c / 2 * (Math.sqrt(1 - t * t) + 1) + b;
+};
+var easeInElastic = function (t, b, c, d) {
+    var s = 1.70158;
+    var p = 0;
+    var a = c;
+    if (t === 0)
+        return b;
+    if ((t /= d) === 1)
+        return b + c;
+    if (!p)
+        p = d * .3;
+    if (a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    }
+    else
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+};
+var easeOutElastic = function (t, b, c, d) {
+    var s = 1.70158;
+    var p = 0;
+    var a = c;
+    if (t === 0)
+        return b;
+    if ((t /= d) === 1)
+        return b + c;
+    if (!p)
+        p = d * .3;
+    if (a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    }
+    else
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
+};
+var easeInOutElastic = function (t, b, c, d) {
+    var s = 1.70158;
+    var p = 0;
+    var a = c;
+    if (t === 0)
+        return b;
+    if ((t /= d / 2) === 2)
+        return b + c;
+    if (!p)
+        p = d * (.3 * 1.5);
+    if (a < Math.abs(c)) {
+        a = c;
+        s = p / 4;
+    }
+    else
+        s = p / (2 * Math.PI) * Math.asin(c / a);
+    if (t < 1)
+        return -.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+    return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * .5 + c + b;
+};
+var easeInBack = function (t, b, c, d) {
+    var s = 1.70158;
+    return c * (t /= d) * t * ((s + 1) * t - s) + b;
+};
+var easeOutBack = function (t, b, c, d) {
+    var s = 1.70158;
+    return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
+};
+var easeInOutBack = function (t, b, c, d) {
+    var s = 1.70158;
+    if ((t /= d / 2) < 1)
+        return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;
+    return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
+};
+var easeInBounce = function (t, b, c, d) {
+    return c - easeOutBounce(d - t, 0, c, d) + b;
+};
+var easeOutBounce = function (t, b, c, d) {
+    if ((t /= d) < (1 / 2.75)) {
+        return c * (7.5625 * t * t) + b;
+    }
+    else if (t < (2 / 2.75)) {
+        return c * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + b;
+    }
+    else if (t < (2.5 / 2.75)) {
+        return c * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + b;
+    }
+    else {
+        return c * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + b;
+    }
+};
+var easeInOutBounce = function (t, b, c, d) {
+    if (t < d / 2)
+        return easeInBounce(t * 2, 0, c, d) * .5 + b;
+    else
+        return easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
+};
 
 
 /***/ }),
@@ -658,316 +926,54 @@ var getUniformSetter = function (size, type) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPointInRect", function() { return isPointInRect; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "overlapTest", function() { return overlapTest; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "radToDeg", function() { return radToDeg; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "degToRad", function() { return degToRad; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "random", function() { return random; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unProject", function() { return unProject; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "linear", function() { return linear; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInQuad", function() { return easeInQuad; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutQuad", function() { return easeOutQuad; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutQuad", function() { return easeInOutQuad; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInCubic", function() { return easeInCubic; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutCubic", function() { return easeOutCubic; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutCubic", function() { return easeInOutCubic; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInQuart", function() { return easeInQuart; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutQuart", function() { return easeOutQuart; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutQuart", function() { return easeInOutQuart; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInQuint", function() { return easeInQuint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutQuint", function() { return easeOutQuint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutQuint", function() { return easeInOutQuint; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInSine", function() { return easeInSine; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutSine", function() { return easeOutSine; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutSine", function() { return easeInOutSine; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInExpo", function() { return easeInExpo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutExpo", function() { return easeOutExpo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutExpo", function() { return easeInOutExpo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInCirc", function() { return easeInCirc; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutCirc", function() { return easeOutCirc; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutCirc", function() { return easeInOutCirc; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInElastic", function() { return easeInElastic; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutElastic", function() { return easeOutElastic; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutElastic", function() { return easeInOutElastic; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInBack", function() { return easeInBack; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutBack", function() { return easeOutBack; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutBack", function() { return easeInOutBack; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInBounce", function() { return easeInBounce; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeOutBounce", function() { return easeOutBounce; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "easeInOutBounce", function() { return easeInOutBounce; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__misc_objectPool__ = __webpack_require__(20);
 
-
-var isPointInRect = function (point, rect, angle) {
-    // if (angle) {
-    //     let vec2 = new Vec2(point.x - rect.x - rect.width/2,point.y - rect.y - rect.height/2);
-    //     vec2.setAngle(vec2.getAngle() - angle);
-    //     point = {x:vec2.getX() + point.x,y:vec2.getY() + point.y};
-    //
-    // }
-    return point.x > rect.x &&
-        point.x < (rect.x + rect.width) &&
-        point.y > rect.y &&
-        point.y < (rect.y + rect.height);
-};
-var overlapTest = function (a, b) {
-    return (a.x < b.x + b.width) &&
-        (a.x + a.width > b.x) &&
-        (a.y < b.y + b.height) &&
-        (a.y + a.height > b.y);
-};
-var radToDeg = function (rad) {
-    return rad * 180 / Math.PI;
-};
-var degToRad = function (deg) {
-    return deg * Math.PI / 180;
-};
-var random = function (min, max) {
-    if (min > max) {
-        var tmp = min;
-        min = max;
-        max = tmp;
+var Rect = /** @class */ (function () {
+    function Rect(x, y, width, height) {
+        if (x === void 0) { x = 0; }
+        if (y === void 0) { y = 0; }
+        if (width === void 0) { width = 0; }
+        if (height === void 0) { height = 0; }
+        this.set(x, y, width, height);
     }
-    var res = Math.random() * (max - min) + min;
-    if (res > max)
-        res = max;
-    else if (res < min)
-        res = min;
-    return res;
-};
-/**
- * analog of glu unproject function
- * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
- */
-var unProject = function (winX, winY, width, height, viewProjectionMatrix) {
-    var x = 2.0 * winX / width - 1;
-    var y = 2.0 * winY / height - 1;
-    var viewProjectionInverse = __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__["f" /* inverse */](viewProjectionMatrix);
-    var point3D = [x, y, 0, 1];
-    var res = __WEBPACK_IMPORTED_MODULE_0__geometry_mat4__["g" /* multMatrixVec */](viewProjectionInverse, point3D);
-    res[0] = (res[0] / 2 + 0.5) * width;
-    res[1] = (res[1] / 2 + 0.5) * height;
-    return new __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__["a" /* default */](res[0], res[1]);
-};
-// simple linear tweening - no easing, no acceleration
-var linear = function (t, b, c, d) { return c * t / d + b; };
-// quadratic easing in - accelerating from zero velocity
-var easeInQuad = function (t, b, c, d) {
-    t /= d;
-    return c * t * t + b;
-};
-// quadratic easing out - decelerating to zero velocity
-var easeOutQuad = function (t, b, c, d) {
-    t /= d;
-    return -c * t * (t - 2) + b;
-};
-// quadratic easing in/out - acceleration until halfway, then deceleration
-var easeInOutQuad = function (t, b, c, d) {
-    t /= d / 2;
-    if (t < 1)
-        return c / 2 * t * t + b;
-    t--;
-    return -c / 2 * (t * (t - 2) - 1) + b;
-};
-// cubic easing in - accelerating from zero velocity
-var easeInCubic = function (t, b, c, d) {
-    t /= d;
-    return c * t * t * t + b;
-};
-// cubic easing out - decelerating to zero velocity
-var easeOutCubic = function (t, b, c, d) {
-    t /= d;
-    t--;
-    return c * (t * t * t + 1) + b;
-};
-// cubic easing in/out - acceleration until halfway, then deceleration
-var easeInOutCubic = function (t, b, c, d) {
-    t /= d / 2;
-    if (t < 1)
-        return c / 2 * t * t * t + b;
-    t -= 2;
-    return c / 2 * (t * t * t + 2) + b;
-};
-// quartic easing in - accelerating from zero velocity
-var easeInQuart = function (t, b, c, d) {
-    t /= d;
-    return c * t * t * t * t + b;
-};
-// quartic easing out - decelerating to zero velocity
-var easeOutQuart = function (t, b, c, d) {
-    t /= d;
-    t--;
-    return -c * (t * t * t * t - 1) + b;
-};
-// quartic easing in/out - acceleration until halfway, then deceleration
-var easeInOutQuart = function (t, b, c, d) {
-    t /= d / 2;
-    if (t < 1)
-        return c / 2 * t * t * t * t + b;
-    t -= 2;
-    return -c / 2 * (t * t * t * t - 2) + b;
-};
-// quintic easing in - accelerating from zero velocity
-var easeInQuint = function (t, b, c, d) {
-    t /= d;
-    return c * t * t * t * t * t + b;
-};
-// quintic easing out - decelerating to zero velocity
-var easeOutQuint = function (t, b, c, d) {
-    t /= d;
-    t--;
-    return c * (t * t * t * t * t + 1) + b;
-};
-// quintic easing in/out - acceleration until halfway, then deceleration
-var easeInOutQuint = function (t, b, c, d) {
-    t /= d / 2;
-    if (t < 1)
-        return c / 2 * t * t * t * t * t + b;
-    t -= 2;
-    return c / 2 * (t * t * t * t * t + 2) + b;
-};
-// sinusoidal easing in - accelerating from zero velocity
-var easeInSine = function (t, b, c, d) {
-    return -c * Math.cos(t / d * (Math.PI / 2)) + c + b;
-};
-// sinusoidal easing out - decelerating to zero velocity
-var easeOutSine = function (t, b, c, d) {
-    return c * Math.sin(t / d * (Math.PI / 2)) + b;
-};
-// sinusoidal easing in/out - accelerating until halfway, then decelerating
-var easeInOutSine = function (t, b, c, d) {
-    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
-};
-// exponential easing in - accelerating from zero velocity
-var easeInExpo = function (t, b, c, d) {
-    return c * Math.pow(2, 10 * (t / d - 1)) + b;
-};
-// exponential easing out - decelerating to zero velocity
-var easeOutExpo = function (t, b, c, d) {
-    return c * (-Math.pow(2, -10 * t / d) + 1) + b;
-};
-// exponential easing in/out - accelerating until halfway, then decelerating
-var easeInOutExpo = function (t, b, c, d) {
-    t /= d / 2;
-    if (t < 1)
-        return c / 2 * Math.pow(2, 10 * (t - 1)) + b;
-    t--;
-    return c / 2 * (-Math.pow(2, -10 * t) + 2) + b;
-};
-// circular easing in - accelerating from zero velocity
-var easeInCirc = function (t, b, c, d) {
-    t /= d;
-    return -c * (Math.sqrt(1 - t * t) - 1) + b;
-};
-// circular easing out - decelerating to zero velocity
-var easeOutCirc = function (t, b, c, d) {
-    t /= d;
-    t--;
-    return c * Math.sqrt(1 - t * t) + b;
-};
-// circular easing in/out - acceleration until halfway, then deceleration
-var easeInOutCirc = function (t, b, c, d) {
-    t /= d / 2;
-    if (t < 1)
-        return -c / 2 * (Math.sqrt(1 - t * t) - 1) + b;
-    t -= 2;
-    return c / 2 * (Math.sqrt(1 - t * t) + 1) + b;
-};
-var easeInElastic = function (t, b, c, d) {
-    var s = 1.70158;
-    var p = 0;
-    var a = c;
-    if (t === 0)
-        return b;
-    if ((t /= d) === 1)
-        return b + c;
-    if (!p)
-        p = d * .3;
-    if (a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
-    }
-    else
-        s = p / (2 * Math.PI) * Math.asin(c / a);
-    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-};
-var easeOutElastic = function (t, b, c, d) {
-    var s = 1.70158;
-    var p = 0;
-    var a = c;
-    if (t === 0)
-        return b;
-    if ((t /= d) === 1)
-        return b + c;
-    if (!p)
-        p = d * .3;
-    if (a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
-    }
-    else
-        s = p / (2 * Math.PI) * Math.asin(c / a);
-    return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b;
-};
-var easeInOutElastic = function (t, b, c, d) {
-    var s = 1.70158;
-    var p = 0;
-    var a = c;
-    if (t === 0)
-        return b;
-    if ((t /= d / 2) === 2)
-        return b + c;
-    if (!p)
-        p = d * (.3 * 1.5);
-    if (a < Math.abs(c)) {
-        a = c;
-        s = p / 4;
-    }
-    else
-        s = p / (2 * Math.PI) * Math.asin(c / a);
-    if (t < 1)
-        return -.5 * (a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
-    return a * Math.pow(2, -10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p) * .5 + c + b;
-};
-var easeInBack = function (t, b, c, d) {
-    var s = 1.70158;
-    return c * (t /= d) * t * ((s + 1) * t - s) + b;
-};
-var easeOutBack = function (t, b, c, d) {
-    var s = 1.70158;
-    return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b;
-};
-var easeInOutBack = function (t, b, c, d) {
-    var s = 1.70158;
-    if ((t /= d / 2) < 1)
-        return c / 2 * (t * t * (((s *= (1.525)) + 1) * t - s)) + b;
-    return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
-};
-var easeInBounce = function (t, b, c, d) {
-    return c - easeOutBounce(d - t, 0, c, d) + b;
-};
-var easeOutBounce = function (t, b, c, d) {
-    if ((t /= d) < (1 / 2.75)) {
-        return c * (7.5625 * t * t) + b;
-    }
-    else if (t < (2 / 2.75)) {
-        return c * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + b;
-    }
-    else if (t < (2.5 / 2.75)) {
-        return c * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + b;
-    }
-    else {
-        return c * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + b;
-    }
-};
-var easeInOutBounce = function (t, b, c, d) {
-    if (t < d / 2)
-        return easeInBounce(t * 2, 0, c, d) * .5 + b;
-    else
-        return easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
-};
+    Rect.prototype.onSet = function () {
+        this.right = this.x + this.width;
+        this.bottom = this.y + this.height;
+    };
+    Rect.prototype.set = function (x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.onSet();
+        return this;
+    };
+    Rect.prototype.addXY = function (x, y) {
+        this.x += x;
+        this.y += y;
+        this.onSet();
+        return this;
+    };
+    Rect.prototype.addPoint = function (another) {
+        this.addXY(another.x, another.y);
+        return this;
+    };
+    Rect.prototype.clone = function () {
+        return new Rect(this.x, this.y, this.width, this.height);
+    };
+    Rect.prototype.toJSON = function () {
+        return { x: this.x, y: this.y, width: this.width, height: this.height };
+    };
+    Rect.prototype.fromJSON = function (x, y, width, height) {
+        this.set(x, y, width, height);
+    };
+    Rect.fromPool = function () {
+        return Rect.rectPool.getNextObject();
+    };
+    Rect.rectPool = new __WEBPACK_IMPORTED_MODULE_0__misc_objectPool__["a" /* default */](Rect);
+    return Rect;
+}());
+/* harmony default export */ __webpack_exports__["a"] = (Rect);
 
 
 /***/ }),
@@ -1217,8 +1223,8 @@ var inverse = function (m) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vertexBuffer__ = __webpack_require__(64);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexBuffer__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vertexBuffer__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__indexBuffer__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__declarations__);
 
@@ -1369,7 +1375,7 @@ var AbstractFilter = /** @class */ (function () {
         var program = new __WEBPACK_IMPORTED_MODULE_0__base_shaderProgram__["a" /* default */](this.gl, gen.getVertexSource(), gen.getFragmentSource());
         this.spriteRectDrawer = new __WEBPACK_IMPORTED_MODULE_1__renderPrograms_generic_base_spriteRectDrawer__["a" /* default */](this.gl, program);
     };
-    AbstractFilter.prototype.doFilter = function (srcTexture, destFrameBuffer) {
+    AbstractFilter.prototype.doFilter = function (srcTexture, destFrameBuffer, destRect) {
         destFrameBuffer.bind();
         var w = srcTexture.size.width;
         var h = srcTexture.size.height;
@@ -1726,6 +1732,8 @@ var FrameBuffer = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__frameBuffer__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__declarations__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__geometry_size__ = __webpack_require__(54);
+
 
 
 var isPowerOf2 = function (value) {
@@ -1762,7 +1770,7 @@ var TextureFilterBuffer = /** @class */ (function () {
 var Texture = /** @class */ (function () {
     function Texture(gl) {
         this.tex = null;
-        this.size = null; // todo simple width height or structure
+        this.size = new __WEBPACK_IMPORTED_MODULE_2__geometry_size__["a" /* default */](0, 0);
         this.isPowerOfTwo = false;
         this._texFilterBuff = null;
         if (__WEBPACK_IMPORTED_MODULE_1__declarations__["DEBUG"] && !gl)
@@ -1791,9 +1799,9 @@ var Texture = /** @class */ (function () {
         }
         var gl = this.gl;
         if (img)
-            this.size = { width: img.width, height: img.height };
+            this.size.setWH(img.width, img.height);
         else
-            this.size = { width: width, height: height };
+            this.size.setWH(width, height);
         this.bind();
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         if (img) {
@@ -1818,7 +1826,7 @@ var Texture = /** @class */ (function () {
         }
         gl.bindTexture(gl.TEXTURE_2D, null);
     };
-    Texture.prototype.applyFilters = function (filters, frameBuffer) {
+    Texture.prototype.applyFilters = function (filters, frameBuffer, dstRect) {
         if (__WEBPACK_IMPORTED_MODULE_1__declarations__["DEBUG"] && frameBuffer === undefined)
             throw "can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering";
         var len = filters.length;
@@ -1827,10 +1835,10 @@ var Texture = /** @class */ (function () {
         if (this._texFilterBuff.buffers === null)
             this._texFilterBuff.instantiate(this.gl);
         var filter = filters[0];
-        filter.doFilter(this, this._texFilterBuff.getDestBuffer());
+        filter.doFilter(this, this._texFilterBuff.getDestBuffer(), dstRect);
         for (var i = 1; i < len; i++) {
             this._texFilterBuff.flip();
-            filters[i].doFilter(this._texFilterBuff.getSourceBuffer().texture, this._texFilterBuff.getDestBuffer());
+            filters[i].doFilter(this._texFilterBuff.getSourceBuffer().texture, this._texFilterBuff.getDestBuffer(), dstRect);
         }
         this._texFilterBuff.flip();
         if (frameBuffer !== null)
@@ -1849,7 +1857,9 @@ var Texture = /** @class */ (function () {
     };
     Texture.prototype.unbind = function (i) {
         if (i === void 0) { i = 0; }
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        var gl = this.gl;
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, null);
         Texture.currInstances[i] = null;
     };
     Texture.prototype.getSize = function () {
@@ -1932,7 +1942,7 @@ var ShaderGenerator = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(3);
 
 var accessByPath = function (obj, path) {
     var pathArr = path.split('.');
@@ -1968,7 +1978,7 @@ var Tween = /** @class */ (function () {
         this.startedTime = null;
         this.currTime = null;
         this.completed = false;
-        this.obj = tweenDesc.target;
+        this.target = tweenDesc.target;
         this.progressFn = tweenDesc.progress;
         this.completeFn = tweenDesc.complete;
         this.easeFnName = tweenDesc.ease || 'linear';
@@ -1998,9 +2008,9 @@ var Tween = /** @class */ (function () {
         this.propsToChange = Object.keys(allPropsMap);
         this.propsToChange.forEach(function (prp) {
             if (tweenDesc.from[prp] === undefined)
-                tweenDesc.from[prp] = getValByPath(_this.obj, prp);
+                tweenDesc.from[prp] = getValByPath(_this.target, prp);
             if (tweenDesc.to[prp] === undefined)
-                tweenDesc.to[prp] = getValByPath(_this.obj, prp);
+                tweenDesc.to[prp] = getValByPath(_this.target, prp);
         });
         return tweenDesc;
     };
@@ -2022,9 +2032,9 @@ var Tween = /** @class */ (function () {
             var valFrom = this.desc.from[prp];
             var valTo = this.desc.to[prp];
             var valCurr = __WEBPACK_IMPORTED_MODULE_0__mathEx__[this.easeFnName](curTweenTime, valFrom, valTo - valFrom, this.tweenTime);
-            setValByPath(this.obj, prp, valCurr);
+            setValByPath(this.target, prp, valCurr);
         }
-        this.progressFn && this.progressFn(this.obj);
+        this.progressFn && this.progressFn(this.target);
     };
     ;
     Tween.prototype.progress = function (_progressFn) {
@@ -2043,13 +2053,19 @@ var Tween = /** @class */ (function () {
         while (l--) {
             var prp = this.propsToChange[l];
             var valCurr = this.desc.to[prp];
-            setValByPath(this.obj, prp, valCurr);
+            setValByPath(this.target, prp, valCurr);
         }
-        this.progressFn && this.progressFn(this.obj);
-        this.completeFn && this.completeFn(this.obj);
+        this.progressFn && this.progressFn(this.target);
+        this.completeFn && this.completeFn(this.target);
         this.completed = true;
     };
     ;
+    Tween.prototype.isCompleted = function () {
+        return this.completed;
+    };
+    Tween.prototype.getTarget = function () {
+        return this.target;
+    };
     return Tween;
 }());
 /* harmony default export */ __webpack_exports__["a"] = (Tween);
@@ -2222,7 +2238,7 @@ var CommonObject = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4394,14 +4410,14 @@ var repository = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__misc_polyfills__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__misc_polyfills__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__misc_polyfills___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__misc_polyfills__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__renderer_rendererFactory__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__repository__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__renderer_rendererFactory__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__repository__ = __webpack_require__(78);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__control_mouse__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__control_keyboard__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__control_gamePad__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__physics_collider__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__physics_collider__ = __webpack_require__(60);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__misc_decorators__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__model_commonObject__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__camera__ = __webpack_require__(49);
@@ -5147,11 +5163,12 @@ var Move4Dir = /** @class */ (function (_super) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tween__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_mat4__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mathEx__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geometry_rect__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mathEx__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geometry_rect__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__declarations__);
+
 
 
 
@@ -5169,6 +5186,7 @@ var Camera = /** @class */ (function () {
         this.lastToleranceTime = 0;
         this._rect = new __WEBPACK_IMPORTED_MODULE_3__geometry_rect__["a" /* default */]();
         this._rectScaled = new __WEBPACK_IMPORTED_MODULE_3__geometry_rect__["a" /* default */]();
+        this.cameraShakeTween = null;
         this.FOLLOWING_TOLERANCE_TIME = 2000;
         this.game = game;
     }
@@ -5187,7 +5205,7 @@ var Camera = /** @class */ (function () {
             this.sceneWidth = this.game.getCurrScene().width || this.game.width;
             this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
-        this.cameraTween = new __WEBPACK_IMPORTED_MODULE_0__tween__["a" /* default */]({
+        this.cameraFollowTween = new __WEBPACK_IMPORTED_MODULE_0__tween__["a" /* default */]({
             target: this,
             ease: 'easeInQuad',
             to: { x: this.pos.x, y: this.pos.y },
@@ -5226,16 +5244,33 @@ var Camera = /** @class */ (function () {
         }
         else if (currTime - this.lastToleranceTime > this.FOLLOWING_TOLERANCE_TIME) {
             this.lastToleranceTime = currTime;
-            this.cameraTween.reuse({
+            this.cameraFollowTween.reuse({
                 to: {
                     'pos.x': x, 'pos.y': y,
                     'scale.x': scaleVal, 'scale.y': scaleVal
                 }
             });
         }
-        this.cameraTween.update(currTime);
+        this.cameraFollowTween.update(currTime);
+        if (this.cameraShakeTween)
+            this.cameraShakeTween.update(currTime);
         this._updateRect();
         this.render();
+    };
+    Camera.prototype.shake = function (amplitude, time) {
+        var _this = this;
+        var tweenTarget = { time: 0, point: new __WEBPACK_IMPORTED_MODULE_4__geometry_point2d__["a" /* default */](0, 0) };
+        this.cameraShakeTween = new __WEBPACK_IMPORTED_MODULE_0__tween__["a" /* default */]({
+            target: tweenTarget,
+            time: time,
+            to: { time: time },
+            progress: function () {
+                var r1 = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__mathEx__["random"])(-amplitude / 2, amplitude / 2);
+                var r2 = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__mathEx__["random"])(-amplitude / 2, amplitude / 2);
+                tweenTarget.point.setXY(r1, r2);
+            },
+            complete: function () { return _this.cameraShakeTween = null; }
+        });
     };
     Camera.prototype._updateRect = function () {
         var point00 = this.screenToWorld(0, 0);
@@ -5249,6 +5284,8 @@ var Camera = /** @class */ (function () {
         //this.game.renderer.rotateZ(this.angle);
         this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
         this.game.renderer.translate(-this.pos.x, -this.pos.y);
+        if (this.cameraShakeTween !== null)
+            this.game.renderer.translate(this.cameraShakeTween.getTarget().point.x, this.cameraShakeTween.getTarget().point.y);
     };
     Camera.prototype.screenToWorld = function (screenX, screenY) {
         var mScale = __WEBPACK_IMPORTED_MODULE_1__geometry_mat4__["c" /* makeScale */](this.scale.x, this.scale.y, 1);
@@ -5472,7 +5509,7 @@ var Keyboard = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__geometry_point2d__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__misc_objectPool__ = __webpack_require__(20);
 var __extends = (this && this.__extends) || (function () {
@@ -5493,13 +5530,16 @@ var MousePoint = /** @class */ (function (_super) {
     function MousePoint() {
         return _super.call(this) || this;
     }
+    MousePoint.fromPool = function () {
+        return MousePoint.mousePointsPool.getNextObject();
+    };
+    MousePoint.mousePointsPool = new __WEBPACK_IMPORTED_MODULE_2__misc_objectPool__["a" /* default */](MousePoint);
     return MousePoint;
 }(__WEBPACK_IMPORTED_MODULE_1__geometry_point2d__["a" /* default */]));
 var Mouse = /** @class */ (function () {
     function Mouse(game) {
         this.objectsCaptured = {};
         this.container = null;
-        this.mousePointsPool = new __WEBPACK_IMPORTED_MODULE_2__misc_objectPool__["a" /* default */](MousePoint);
         this.game = game;
     }
     //MouseEvent|TouchEvent|PointerEvent
@@ -5509,7 +5549,7 @@ var Mouse = /** @class */ (function () {
         var screenX = (e.clientX - game.pos.x) / game.scale.x;
         var screenY = (e.clientY - game.pos.y) / game.scale.y;
         var p = game.camera.screenToWorld(screenX, screenY);
-        var mousePoint = this.mousePointsPool.getNextObject();
+        var mousePoint = MousePoint.fromPool();
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;
@@ -5661,6 +5701,27 @@ var Device = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+var Size = /** @class */ (function () {
+    function Size(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+    Size.prototype.setW = function (width) { this.width = width; };
+    Size.prototype.setH = function (height) { this.height = height; };
+    Size.prototype.setWH = function (width, height) {
+        this.width = width;
+        this.height = height;
+    };
+    return Size;
+}());
+/* harmony default export */ __webpack_exports__["a"] = (Size);
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__point2d__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -5781,7 +5842,7 @@ var Vec2 = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5821,7 +5882,7 @@ var EventEmitter = /** @class */ (function () {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5880,7 +5941,7 @@ var Queue = /** @class */ (function () {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports) {
 
 Array.prototype['remove'] = function (callback) {
@@ -5922,11 +5983,11 @@ if (!Array.prototype['find']) {
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_vec2__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__geometry_vec2__ = __webpack_require__(55);
 // http://madebyevan.com/gamedevclass/minimal-demo/
 
 var ArcadeRigidBody = /** @class */ (function () {
@@ -5952,11 +6013,11 @@ var ArcadeRigidBody = /** @class */ (function () {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__mathEx__ = __webpack_require__(3);
 
 var Collider = /** @class */ (function () {
     function Collider(game) {
@@ -6036,7 +6097,7 @@ var Collider = /** @class */ (function () {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6045,10 +6106,6 @@ var Collider = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__misc_consts__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__declarations__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__geometry_rect__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__misc_objectPool__ = __webpack_require__(20);
-
-
 
 
 
@@ -6059,7 +6116,6 @@ var AbstractRenderer = /** @class */ (function () {
         this.container = null;
         this.debugTextField = null;
         this.fullScreenSize = { w: 0, h: 0, scaleFactor: 1 };
-        this.rectPool = new __WEBPACK_IMPORTED_MODULE_5__misc_objectPool__["a" /* default */](__WEBPACK_IMPORTED_MODULE_4__geometry_rect__["a" /* default */]);
         this.game = game;
         if (__WEBPACK_IMPORTED_MODULE_1__device__["a" /* default */].isCocoonJS) {
             this.fullScreenSize.w = window.innerWidth * __WEBPACK_IMPORTED_MODULE_1__device__["a" /* default */].scale;
@@ -6189,11 +6245,11 @@ var AbstractRenderer = /** @class */ (function () {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webGl_webGlRenderer__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webGl_webGlRenderer__ = __webpack_require__(77);
 //import HtmlRenderer from './dom/htmlRenderer'
 //import Renderer from './canvas/canvasRenderer'
 
@@ -6212,7 +6268,7 @@ var RendererFactory = /** @class */ (function () {
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6258,7 +6314,7 @@ var IndexBuffer = /** @class */ (function () {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6317,7 +6373,7 @@ var MatrixStack = /** @class */ (function () {
 
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6389,7 +6445,7 @@ var VertexBuffer = /** @class */ (function () {
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6423,7 +6479,7 @@ var BlackWhiteFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 66 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6453,7 +6509,7 @@ var ColorizeFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6487,7 +6543,7 @@ var SimpleCopyFilter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6528,7 +6584,7 @@ var Circle = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6561,7 +6617,7 @@ var Line = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6569,7 +6625,7 @@ var Line = /** @class */ (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgramUtils__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shaders_generators_generic_texShaderGenerator__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_shaderProgram__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filters_textureFilters_simpleCopyFilter__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__filters_textureFilters_simpleCopyFilter__ = __webpack_require__(68);
 
 
 
@@ -6595,7 +6651,7 @@ var AbstractBlendDrawer = /** @class */ (function () {
     // to avoid "Source and destination textures of the draw are the same" error
     AbstractBlendDrawer.prototype.draw = function (sourceTex, frameBuffer, uniforms) {
         var destTex = frameBuffer.texture;
-        destTex = destTex.applyFilters([this.simpleCopyFilter], frameBuffer);
+        destTex = destTex.applyFilters([this.simpleCopyFilter], frameBuffer, null); // todo
         destTex.bind(1);
         uniforms.texture = 0;
         uniforms.destTexture = 1;
@@ -6607,11 +6663,11 @@ var AbstractBlendDrawer = /** @class */ (function () {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_circle__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_circle__ = __webpack_require__(69);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__abstract_abstractDrawer__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__base_bufferInfo__ = __webpack_require__(9);
@@ -6650,7 +6706,7 @@ var CircleDrawer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6694,11 +6750,11 @@ var ColorRectDrawer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_line__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__primitives_line__ = __webpack_require__(70);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__base_shaderProgram__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__base_bufferInfo__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__abstract_abstractDrawer__ = __webpack_require__(7);
@@ -6737,7 +6793,7 @@ var LineDrawer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6787,11 +6843,11 @@ var TiledSpriteRectDrawer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_abstractBlendDrawer__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_abstractBlendDrawer__ = __webpack_require__(71);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6817,24 +6873,24 @@ var MultBlendDrawer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_abstractRenderer__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__abstract_abstractRenderer__ = __webpack_require__(61);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__renderPrograms_generic_base_spriteRectDrawer__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__renderPrograms_generic_base_tiledSpriteRectDrawer__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderPrograms_generic_base_colorRectDrawer__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__renderPrograms_generic_base_tiledSpriteRectDrawer__ = __webpack_require__(75);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__renderPrograms_generic_base_colorRectDrawer__ = __webpack_require__(73);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__renderPrograms_abstract_abstractDrawer__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__renderPrograms_generic_base_lineDrawer__ = __webpack_require__(73);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__renderPrograms_generic_base_circleDrawer__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__renderPrograms_generic_base_lineDrawer__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__renderPrograms_generic_base_circleDrawer__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__base_frameBuffer__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__base_matrixStack__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__base_matrixStack__ = __webpack_require__(64);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__geometry_mat4__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__mathEx__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__base_texture__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__renderPrograms_generic_blend_multBlendDrawer__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__geometry_rect__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__renderPrograms_generic_blend_multBlendDrawer__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__geometry_rect__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__geometry_point2d__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -6950,7 +7006,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
     };
     WebGlRenderer.prototype.drawTexture = function (texture, srcRect, dstPoint) {
         var camRectScaled = this.game.camera.getRectScaled();
-        if (!__WEBPACK_IMPORTED_MODULE_10__mathEx__["overlapTest"](camRectScaled, new __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */](camRectScaled.x + srcRect.x, camRectScaled.y + srcRect.y, srcRect.width, srcRect.height)))
+        if (!__WEBPACK_IMPORTED_MODULE_10__mathEx__["overlapTest"](camRectScaled, __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */].fromPool().set(camRectScaled.x + srcRect.x, camRectScaled.y + srcRect.y, srcRect.width, srcRect.height)))
             return;
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
@@ -6996,7 +7052,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         this.colorRectDrawer.draw(null, uniforms);
     };
     WebGlRenderer.prototype.drawRect = function (rect, color) {
-        var r = new __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */]();
+        var r = __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */].fromPool();
         var _a = [r.x, r.y, r.width, r.height], x = _a[0], y = _a[1], w = _a[2], h = _a[3];
         this.fillRect(r.set(x, y, w, 1), color);
         this.fillRect(r.set(x, y + h, w, 1), color);
@@ -7014,7 +7070,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
     };
     WebGlRenderer.prototype.fillCircle = function (x, y, r, color) {
         var r2 = r * 2;
-        if (!__WEBPACK_IMPORTED_MODULE_10__mathEx__["overlapTest"](this.game.camera.getRectScaled(), new __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */](x - r, y - r, r2, r2)))
+        if (!__WEBPACK_IMPORTED_MODULE_10__mathEx__["overlapTest"](this.game.camera.getRectScaled(), __WEBPACK_IMPORTED_MODULE_13__geometry_rect__["a" /* default */].fromPool().set(x - r, y - r, r2, r2)))
             return;
         var uniforms = {};
         uniforms.u_vertexMatrix = makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height);
@@ -7067,7 +7123,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         this.save();
         this.translate(0, fullScreen.h);
         this.scale(1, -1);
-        var texToDraw = this.frameBuffer.getTexture().applyFilters(filters, null);
+        var texToDraw = this.frameBuffer.getTexture().applyFilters(filters, null, null); // todo destRect
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w, fullScreen.h);
         var uniforms = {
@@ -7112,11 +7168,11 @@ var WebGlRenderer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_all__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_all__ = __webpack_require__(79);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__declarations__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__declarations__);
 
@@ -7227,21 +7283,21 @@ var Repository = /** @class */ (function () {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generic_frameAnimation__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__generic_spriteSheet__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__generic_frameAnimation__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__generic_spriteSheet__ = __webpack_require__(88);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__generic_gameObjectProto__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__generic_gameObject__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__generic_commonBehaviour__ = __webpack_require__(79);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__generic_particleSystem__ = __webpack_require__(84);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__generic_scene__ = __webpack_require__(85);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__generic_sound__ = __webpack_require__(86);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__generic_font__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__generic_layer__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__generic_gameObject__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__generic_commonBehaviour__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__generic_particleSystem__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__generic_scene__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__generic_sound__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__generic_font__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__generic_layer__ = __webpack_require__(84);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__generic_ui_textField__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__generic_tileMap__ = __webpack_require__(27);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "FrameAnimation", function() { return __WEBPACK_IMPORTED_MODULE_0__generic_frameAnimation__["a"]; });
@@ -7272,7 +7328,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7303,12 +7359,12 @@ var CommonBehaviour = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7349,7 +7405,6 @@ var Font = /** @class */ (function (_super) {
         Object.keys(s).forEach(function (key) {
             _this.fontContext.symbols[key] = new __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__["a" /* default */](s[key].x, s[key].y, s[key].width, s[key].height);
         });
-        console.log(this);
     };
     return Font;
 }(__WEBPACK_IMPORTED_MODULE_0__baseModel__["a" /* default */]));
@@ -7357,7 +7412,7 @@ var Font = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7435,14 +7490,14 @@ var FrameAnimation = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gameObjectProto__ = __webpack_require__(26);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commonBehaviour_all__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_renderer_webGl_filters_textureFilters_blackWhite__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core_renderer_webGl_filters_textureFilters_colorizeFilter__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__core_renderer_webGl_filters_textureFilters_blackWhite__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__core_renderer_webGl_filters_textureFilters_colorizeFilter__ = __webpack_require__(67);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7531,7 +7586,7 @@ var GameObject = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7589,12 +7644,12 @@ var Layer = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_mathEx__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_mathEx__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7670,13 +7725,15 @@ var ParticleSystem = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_misc_loadingQueue__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_misc_loadingQueue__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tileMap__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__declarations__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__declarations___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__declarations__);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7687,6 +7744,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -7706,7 +7764,7 @@ var Scene = /** @class */ (function (_super) {
     }
     Scene.prototype.revalidate = function () {
         _super.prototype.revalidate.call(this);
-        if (!false && this.tileMap && this.tileMap.spriteSheet) {
+        if (!__WEBPACK_IMPORTED_MODULE_3__declarations__["IN_EDITOR"] && this.tileMap && this.tileMap.spriteSheet) {
             this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
             this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
         }
@@ -7763,7 +7821,8 @@ var Scene = /** @class */ (function (_super) {
         this._individualBehaviour = instance;
     };
     Scene.prototype.update = function (currTime, deltaTime) {
-        if (true) {
+        var _this = this;
+        if (__WEBPACK_IMPORTED_MODULE_3__declarations__["DEBUG"]) {
             if (this.game.renderer.debugTextField)
                 this.game.renderer.debugTextField.setText('');
         }
@@ -7785,6 +7844,11 @@ var Scene = /** @class */ (function (_super) {
         this.game.repository.getArray('ParticleSystem').forEach(function (ps) {
             ps.update(currTime, deltaTime);
         });
+        this._tweens.forEach(function (t, index) {
+            t.update(currTime);
+            if (t.isCompleted())
+                _this._tweens.splice(index, 1);
+        });
         // this._tweenMovies.forEach(function(tweenMovie){
         //     if (tweenMovie.completed) {
         //         this._tweenMovies.remove(tweenMovie);
@@ -7793,7 +7857,7 @@ var Scene = /** @class */ (function (_super) {
         // });
         // this.__updateIndividualBehaviour__(currTime);
         this.tileMap.update();
-        if (true) {
+        if (__WEBPACK_IMPORTED_MODULE_3__declarations__["DEBUG"]) {
             this.game.renderer.restore();
             if (this.game.renderer.debugTextField)
                 this.game.renderer.debugTextField.update();
@@ -7807,7 +7871,7 @@ var Scene = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7858,12 +7922,12 @@ var Sound = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(6);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7916,7 +7980,7 @@ var SpriteSheet = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

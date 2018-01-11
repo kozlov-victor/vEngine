@@ -6,8 +6,8 @@ import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilters/b
 import Layer from "./layer";
 import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import Game from "../../core/game";
-
-declare const DEBUG:boolean, IN_EDITOR:boolean;
+import Tween from "../../core/tween";
+import {IN_EDITOR, DEBUG} from "../../declarations";
 
 export default class Scene extends BaseModel {
 
@@ -91,7 +91,7 @@ export default class Scene extends BaseModel {
         this._individualBehaviour = instance;
     }
 
-    update(currTime,deltaTime){
+    update(currTime:number,deltaTime:number){
 
         if (DEBUG) {
             if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.setText('');
@@ -112,8 +112,12 @@ export default class Scene extends BaseModel {
         while(i--){
             layers[i-l].update(currTime,deltaTime);
         }
-        this.game.repository.getArray('ParticleSystem').forEach(ps=>{
+        this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
             ps.update(currTime,deltaTime);
+        });
+        this._tweens.forEach((t:Tween,index:number)=>{
+            t.update(currTime);
+            if (t.isCompleted()) this._tweens.splice(index,1);
         });
         // this._tweenMovies.forEach(function(tweenMovie){
         //     if (tweenMovie.completed) {
