@@ -74,6 +74,12 @@ export default class BufferInfo {
         if (this.texVertexBuffer) this.texVertexBuffer.unbind();
     }
 
+    destroy(){
+        if (this.posVertexBuffer) this.posVertexBuffer.destroy();
+        if (this.posIndexBuffer) this.posIndexBuffer.destroy();
+        if (this.texVertexBuffer) this.texVertexBuffer.destroy();
+    }
+
     _getNumOfElementsToDraw(drawMethod:number){
         switch (drawMethod) {
             case this.gl.LINE_STRIP:

@@ -157,6 +157,7 @@ export default class AbstractRenderer {
         textField.setText(textField.getText()+res);
     }
 
+
     loadTextureInfo(textureId,info){}
 
     getTextureInfo(textureId){}

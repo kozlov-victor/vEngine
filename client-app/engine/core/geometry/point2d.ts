@@ -61,6 +61,14 @@ export default class Point2d {
         return this.x===val && this.y===val;
     }
 
+    equalXY(x:number,y:number) {
+        return this.x===x && this.y===y;
+    }
+
+    equalPoint(point:Point2d) {
+        return this.x===point.x && this.y===point.y;
+    }
+
     clone():Point2d {
         return new Point2d(this.x,this.y);
     }

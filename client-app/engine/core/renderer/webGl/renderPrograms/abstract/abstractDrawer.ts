@@ -13,8 +13,11 @@ export default class AbstractDrawer {
 
     bufferInfo:BufferInfo;
 
+    private static instances:Array<AbstractDrawer> = [];
+
     constructor(gl:WebGLRenderingContext){
         this.gl = gl;
+        AbstractDrawer.instances.push(this);
     }
 
     bind(){
@@ -30,6 +33,16 @@ export default class AbstractDrawer {
 
     unbind(){
         this.bufferInfo.unbind();
+    }
+
+    destroy(){
+        this.bufferInfo.destroy();
+        this.program.destroy();
+    }
+    static destroyAll(){
+        AbstractDrawer.instances.forEach((it:AbstractDrawer)=>{
+            it.destroy();
+        });
     }
 
     setUniform(name:string,value:any){

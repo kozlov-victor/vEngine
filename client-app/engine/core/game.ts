@@ -20,6 +20,7 @@ import AbstractRenderer from "./renderer/abstract/abstractRenderer";
 import {DEBUG, IN_EDITOR} from "../declarations";
 import Scene from '../model/generic/scene';
 
+
 @Transient({
     repository: true,
     renderer: true,
@@ -122,7 +123,7 @@ export default class Game extends CommonObject {
     }
 
     update(){
-        if (DEBUG && this.destroyed) return;
+        if (this.destroyed) return;
         this._lastTime = this._currTime;
         this._currTime = Date.now();
         this._deltaTime = this._currTime - this._lastTime;
@@ -143,8 +144,10 @@ export default class Game extends CommonObject {
         this.destroyed = true;
         this.keyboard.destroy();
         this.mouse.destroy();
-        this.renderer.destroy();
         this.renderer.cancelFullScreen();
+        setTimeout(()=>{ // wait for rendering stopped
+            this.renderer.destroy();
+        },1000)
     }
 
 }

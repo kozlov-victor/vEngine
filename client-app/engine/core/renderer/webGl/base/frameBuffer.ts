@@ -56,6 +56,11 @@ export default class FrameBuffer {
         FrameBuffer.currInstance = null;
     }
 
+    destroy(){
+        this.gl.deleteRenderbuffer(this.glRenderBuffer);
+        this.gl.deleteFramebuffer(this.glFrameBuffer);
+    }
+
     getTexture(){
         return this.texture;
     }

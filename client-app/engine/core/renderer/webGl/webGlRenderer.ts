@@ -354,4 +354,14 @@ export default class WebGlRenderer extends AbstractRenderer {
         }
     }
 
+    destroy(){
+        super.destroy();
+        this.frameBuffer.destroy();
+        AbstractDrawer.destroyAll();
+        Object.keys(this.renderableCache).forEach(key=>{
+            let t:Texture = this.renderableCache[key] as Texture;
+            t.destroy();
+        });
+    }
+
 }

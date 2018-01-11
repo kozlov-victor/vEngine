@@ -41,6 +41,10 @@ export default class IndexBuffer {
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
     }
 
+    destroy(){
+        this.gl.deleteBuffer(this.buffer);
+    }
+
     getBufferLength():number{
         return this.dataLength;
     }

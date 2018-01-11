@@ -248,6 +248,12 @@ var Point2d = /** @class */ (function () {
     Point2d.prototype.equal = function (val) {
         return this.x === val && this.y === val;
     };
+    Point2d.prototype.equalXY = function (x, y) {
+        return this.x === x && this.y === y;
+    };
+    Point2d.prototype.equalPoint = function (point) {
+        return this.x === point.x && this.y === point.y;
+    };
     Point2d.prototype.clone = function () {
         return new Point2d(this.x, this.y);
     };
@@ -596,6 +602,8 @@ var ShaderProgram = /** @class */ (function () {
         var vShader = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__shaderProgramUtils__["b" /* compileShader */])(gl, vertexSource, gl.VERTEX_SHADER);
         var fShader = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__shaderProgramUtils__["b" /* compileShader */])(gl, fragmentSource, gl.FRAGMENT_SHADER);
         this.program = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__shaderProgramUtils__["c" /* createProgram */])(gl, vShader, fShader);
+        gl.deleteShader(vShader);
+        gl.deleteShader(fShader);
         this.uniforms = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__shaderProgramUtils__["d" /* extractUniforms */])(gl, this.program);
         this.gl = gl;
     }
@@ -643,6 +651,9 @@ var ShaderProgram = /** @class */ (function () {
         0 // offsets to the first element
         );
         this._attrLocationCache[attrLocationName] = attrLocation;
+    };
+    ShaderProgram.prototype.destroy = function () {
+        this.gl.deleteProgram(this.program);
     };
     ShaderProgram.currentProgram = null;
     return ShaderProgram;
@@ -986,6 +997,7 @@ var AbstractDrawer = /** @class */ (function () {
         this.program = null;
         this.uniformCache = {};
         this.gl = gl;
+        AbstractDrawer.instances.push(this);
     }
     AbstractDrawer.prototype.bind = function () {
         if (AbstractDrawer.currentInstance !== null &&
@@ -997,6 +1009,15 @@ var AbstractDrawer = /** @class */ (function () {
     };
     AbstractDrawer.prototype.unbind = function () {
         this.bufferInfo.unbind();
+    };
+    AbstractDrawer.prototype.destroy = function () {
+        this.bufferInfo.destroy();
+        this.program.destroy();
+    };
+    AbstractDrawer.destroyAll = function () {
+        AbstractDrawer.instances.forEach(function (it) {
+            it.destroy();
+        });
     };
     AbstractDrawer.prototype.setUniform = function (name, value) {
         if (this.uniformCache[name] === value)
@@ -1016,6 +1037,7 @@ var AbstractDrawer = /** @class */ (function () {
         this.drawElements();
     };
     AbstractDrawer.currentInstance = null;
+    AbstractDrawer.instances = [];
     return AbstractDrawer;
 }());
 /* harmony default export */ __webpack_exports__["a"] = (AbstractDrawer);
@@ -1274,6 +1296,14 @@ var BufferInfo = /** @class */ (function () {
             this.posVertexBuffer.unbind();
         if (this.texVertexBuffer)
             this.texVertexBuffer.unbind();
+    };
+    BufferInfo.prototype.destroy = function () {
+        if (this.posVertexBuffer)
+            this.posVertexBuffer.destroy();
+        if (this.posIndexBuffer)
+            this.posIndexBuffer.destroy();
+        if (this.texVertexBuffer)
+            this.texVertexBuffer.destroy();
     };
     BufferInfo.prototype._getNumOfElementsToDraw = function (drawMethod) {
         switch (drawMethod) {
@@ -1715,6 +1745,10 @@ var FrameBuffer = /** @class */ (function () {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         FrameBuffer.currInstance = null;
     };
+    FrameBuffer.prototype.destroy = function () {
+        this.gl.deleteRenderbuffer(this.glRenderBuffer);
+        this.gl.deleteFramebuffer(this.glFrameBuffer);
+    };
     FrameBuffer.prototype.getTexture = function () {
         return this.texture;
     };
@@ -1764,6 +1798,10 @@ var TextureFilterBuffer = /** @class */ (function () {
     };
     TextureFilterBuffer.prototype.getDestBuffer = function () {
         return this.buffers[1];
+    };
+    TextureFilterBuffer.prototype.destroy = function () {
+        if (this.buffers)
+            this.buffers.forEach(function (b) { return b.destroy(); });
     };
     return TextureFilterBuffer;
 }());
@@ -1861,6 +1899,11 @@ var Texture = /** @class */ (function () {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
         Texture.currInstances[i] = null;
+    };
+    Texture.prototype.destroy = function () {
+        if (this._texFilterBuff)
+            this._texFilterBuff.destroy();
+        this.gl.deleteTexture(this.tex);
     };
     Texture.prototype.getSize = function () {
         return this.size;
@@ -4533,7 +4576,7 @@ var Game = /** @class */ (function (_super) {
         this._currentScene = scene;
     };
     Game.prototype.update = function () {
-        if (__WEBPACK_IMPORTED_MODULE_12__declarations__["DEBUG"] && this.destroyed)
+        if (this.destroyed)
             return;
         this._lastTime = this._currTime;
         this._currTime = Date.now();
@@ -4553,11 +4596,14 @@ var Game = /** @class */ (function (_super) {
         requestAnimationFrame(this.update.bind(this));
     };
     Game.prototype.destroy = function () {
+        var _this = this;
         this.destroyed = true;
         this.keyboard.destroy();
         this.mouse.destroy();
-        this.renderer.destroy();
         this.renderer.cancelFullScreen();
+        setTimeout(function () {
+            _this.renderer.destroy();
+        }, 1000);
     };
     Game = __decorate([
         __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7__misc_decorators__["a" /* Transient */])({
@@ -6305,6 +6351,9 @@ var IndexBuffer = /** @class */ (function () {
     IndexBuffer.prototype.unbind = function () {
         this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, null);
     };
+    IndexBuffer.prototype.destroy = function () {
+        this.gl.deleteBuffer(this.buffer);
+    };
     IndexBuffer.prototype.getBufferLength = function () {
         return this.dataLength;
     };
@@ -6408,6 +6457,7 @@ var VertexBuffer = /** @class */ (function () {
         }
         var gl = this.gl;
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+        // gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(bufferSubData));
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(bufferData), gl.STATIC_DRAW); // DYNAMIC_DRAW, STREAM_DRAW
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         this.bufferItemSize = itemSize;
@@ -6426,6 +6476,9 @@ var VertexBuffer = /** @class */ (function () {
     };
     VertexBuffer.prototype.unbind = function () {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+    };
+    VertexBuffer.prototype.destroy = function () {
+        this.gl.deleteBuffer(this.buffer);
     };
     VertexBuffer.prototype.getGlBuffer = function () {
         return this.buffer;
@@ -7161,6 +7214,16 @@ var WebGlRenderer = /** @class */ (function (_super) {
                 throw "Resource loading error: can not load resource \"" + resourcePath + "\"";
             };
         }
+    };
+    WebGlRenderer.prototype.destroy = function () {
+        var _this = this;
+        _super.prototype.destroy.call(this);
+        this.frameBuffer.destroy();
+        __WEBPACK_IMPORTED_MODULE_4__renderPrograms_abstract_abstractDrawer__["a" /* default */].destroyAll();
+        Object.keys(this.renderableCache).forEach(function (key) {
+            var t = _this.renderableCache[key];
+            t.destroy();
+        });
     };
     return WebGlRenderer;
 }(__WEBPACK_IMPORTED_MODULE_0__abstract_abstractRenderer__["a" /* default */]));

@@ -43,6 +43,10 @@ class TextureFilterBuffer {
         return this.buffers[1];
     }
 
+    destroy(){
+        if (this.buffers) this.buffers.forEach((b:FrameBuffer)=>b.destroy());
+    }
+
 }
 
 export default class Texture {
@@ -145,6 +149,11 @@ export default class Texture {
         gl.activeTexture(gl.TEXTURE0+i);
         gl.bindTexture(gl.TEXTURE_2D, null);
         Texture.currInstances[i] = null;
+    }
+
+    destroy(){
+        if (this._texFilterBuff) this._texFilterBuff.destroy();
+        this.gl.deleteTexture(this.tex);
     }
 
     getSize (){

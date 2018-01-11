@@ -19,6 +19,8 @@ export default class ShaderProgram {
         let vShader = compileShader(gl, vertexSource, gl.VERTEX_SHADER);
         let fShader = compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
         this.program = createProgram(gl, vShader, fShader);
+        gl.deleteShader(vShader);
+        gl.deleteShader(fShader);
         this.uniforms = extractUniforms(gl, this.program);
         this.gl = gl;
     }
@@ -75,6 +77,10 @@ export default class ShaderProgram {
             0       // offsets to the first element
         );
         this._attrLocationCache[attrLocationName] = attrLocation;
+    }
+
+    destroy(){
+        this.gl.deleteProgram(this.program);
     }
 
 }
