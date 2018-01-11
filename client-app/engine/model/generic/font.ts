@@ -1,6 +1,14 @@
 
 import BaseModel from '../baseModel'
 import Game from "../../core/game";
+import Rect from "../../core/geometry/rect";
+
+class FontContext {
+
+    width:number = 0;
+    height:number = 0;
+    symbols:Array<Rect> = [];
+}
 
 export default class Font extends BaseModel {
 
@@ -13,5 +21,14 @@ export default class Font extends BaseModel {
 
     constructor(game:Game){
         super(game);
+    }
+
+    revalidate(){ // todo must be done in serializer
+        super.revalidate();
+        let s = this.fontContext.symbols;
+        this.fontContext.symbols = {};
+        Object.keys(s).forEach(key=>{
+            this.fontContext.symbols[key] = new Rect(s[key].x,s[key].y,s[key].width,s[key].height);
+        });
     }
 }

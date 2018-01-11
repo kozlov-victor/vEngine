@@ -62,7 +62,7 @@ export default class TextField extends BaseModel {
         let posX = 0;
         let posY = 0;
         this._chars.forEach(ch=>{
-            let charInCtx = this.font.fontContext.symbols[ch]||this.font.fontContext.symbols['?'];
+            let charInCtx:Rect = this.font.fontContext.symbols[ch]||this.font.fontContext.symbols['?'];
             if (ch==='\n') {
                 posX = 0;
                 posY+= charInCtx.height;
@@ -70,10 +70,7 @@ export default class TextField extends BaseModel {
             }
             this.game.renderer.drawImage(
                 this.font.resourcePath,
-                new Rect(charInCtx.x,
-                    charInCtx.y,
-                    charInCtx.width,
-                    charInCtx.height),
+                charInCtx,
                 this.pos.clone().addXY(posX,posY)
             );
             posX+=charInCtx.width;

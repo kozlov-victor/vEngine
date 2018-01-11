@@ -2441,7 +2441,6 @@ var TileMap = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2453,7 +2452,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 /*global DEBUG:true*/
-
 
 var TextField = /** @class */ (function (_super) {
     __extends(TextField, _super);
@@ -2517,7 +2515,7 @@ var TextField = /** @class */ (function (_super) {
                 posY += charInCtx.height;
                 return;
             }
-            _this.game.renderer.drawImage(_this.font.resourcePath, new __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__["a" /* default */](charInCtx.x, charInCtx.y, charInCtx.width, charInCtx.height), _this.pos.clone().addXY(posX, posY));
+            _this.game.renderer.drawImage(_this.font.resourcePath, charInCtx, _this.pos.clone().addXY(posX, posY));
             posX += charInCtx.width;
         });
     };
@@ -7310,6 +7308,7 @@ var CommonBehaviour = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__baseModel__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -7321,6 +7320,15 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 
+
+var FontContext = /** @class */ (function () {
+    function FontContext() {
+        this.width = 0;
+        this.height = 0;
+        this.symbols = [];
+    }
+    return FontContext;
+}());
 var Font = /** @class */ (function (_super) {
     __extends(Font, _super);
     function Font(game) {
@@ -7333,6 +7341,16 @@ var Font = /** @class */ (function (_super) {
         _this.fontColor = { r: 0, g: 0, b: 0 };
         return _this;
     }
+    Font.prototype.revalidate = function () {
+        var _this = this;
+        _super.prototype.revalidate.call(this);
+        var s = this.fontContext.symbols;
+        this.fontContext.symbols = {};
+        Object.keys(s).forEach(function (key) {
+            _this.fontContext.symbols[key] = new __WEBPACK_IMPORTED_MODULE_1__core_geometry_rect__["a" /* default */](s[key].x, s[key].y, s[key].width, s[key].height);
+        });
+        console.log(this);
+    };
     return Font;
 }(__WEBPACK_IMPORTED_MODULE_0__baseModel__["a" /* default */]));
 /* harmony default export */ __webpack_exports__["a"] = (Font);
