@@ -1,3 +1,4 @@
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import * as mathEx from '../mathEx'
 import Point2d from "../geometry/point2d";

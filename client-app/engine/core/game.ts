@@ -1,4 +1,4 @@
-
+declare const DEBUG:boolean,IN_EDITOR:boolean;
 
 declare let window:any;
 declare let require:Function;
@@ -17,7 +17,6 @@ import Camera from './camera'
 import {SCALE_STRATEGY} from "./misc/consts";
 import Point2d from "./geometry/point2d";
 import AbstractRenderer from "./renderer/abstract/abstractRenderer";
-import {DEBUG, IN_EDITOR} from "../declarations";
 import Scene from '../model/generic/scene';
 
 

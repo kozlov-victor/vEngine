@@ -1,4 +1,4 @@
-
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import AbstractRenderer from '../abstract/abstractRenderer'
 import SpriteRectDrawer from './renderPrograms/generic/base/spriteRectDrawer'
@@ -19,8 +19,6 @@ import Game from "../../game";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
 import Point2d from "../../geometry/point2d";
 
-declare const DEBUG:boolean;
-declare const Image:any;
 
 const getCtx = el=>{
     return (
@@ -307,7 +305,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.translate(0,fullScreen.h);
         this.scale(1,-1);
 
-        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null,null); // todo destRect
+        let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null);
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 

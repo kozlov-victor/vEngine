@@ -1,6 +1,7 @@
 
 
-import {DEBUG} from "../../declarations";
+declare const DEBUG:boolean;
+
 import Game from "../../core/game";
 
 export default class BaseAbstractBehaviour {

@@ -1,3 +1,4 @@
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export default class Point2d {
 

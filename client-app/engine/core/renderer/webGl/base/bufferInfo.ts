@@ -1,7 +1,8 @@
 
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import VertexBuffer from "./vertexBuffer";
 import IndexBuffer from "./indexBuffer";
-import {DEBUG} from "../../../../declarations";
 import ShaderProgram from "./shaderProgram";
 
 export interface ArrayInfo {

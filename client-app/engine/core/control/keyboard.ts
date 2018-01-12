@@ -1,4 +1,4 @@
-
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import Game from "../game";
 

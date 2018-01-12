@@ -1,13 +1,13 @@
 
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import ShaderProgram from "../../base/shaderProgram";
 import SpriteRectDrawer from "../../renderPrograms/generic/base/spriteRectDrawer";
 import * as mat4 from "../../../../geometry/mat4";
 import TexShaderGenerator from "../../shaders/generators/generic/texShaderGenerator";
-import {DEBUG} from "../../../../../declarations";
 import ShaderGenerator from "../../shaders/generators/shaderGenerator";
 import Texture from "../../base/texture";
 import FrameBuffer from "../../base/frameBuffer";
-import Rect from "../../../../geometry/rect";
 
 
 const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight){
@@ -44,7 +44,7 @@ export default class AbstractFilter {
         this.spriteRectDrawer = new SpriteRectDrawer(this.gl,program);
     }
 
-    doFilter(srcTexture:Texture,destFrameBuffer:FrameBuffer,destRect:Rect){
+    doFilter(srcTexture:Texture,destFrameBuffer:FrameBuffer){
         destFrameBuffer.bind();
         let w = srcTexture.size.width;
         let h = srcTexture.size.height;

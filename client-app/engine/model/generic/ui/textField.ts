@@ -1,10 +1,9 @@
-/*global DEBUG:true*/
+declare const DEBUG:boolean;
+
 import BaseModel from '../../baseModel'
 import Font from "../font";
 import Rect from "../../../core/geometry/rect";
-import Point2d from "../../../core/geometry/point2d";
 
-declare const DEBUG:boolean;
 
 export default class TextField extends BaseModel {
 

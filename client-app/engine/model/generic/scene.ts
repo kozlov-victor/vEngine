@@ -1,4 +1,6 @@
 
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import BaseModel from '../baseModel'
 import LoadingQueue from '../../core/misc/loadingQueue'
 import TileMap from './tileMap'
@@ -7,7 +9,9 @@ import Layer from "./layer";
 import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import Game from "../../core/game";
 import Tween from "../../core/tween";
-import {IN_EDITOR, DEBUG} from "../../declarations";
+import PosterizeFilter from "../../core/renderer/webGl/filters/textureFilters/posterizeFilter";
+import SimpleBlurFilter from "../../core/renderer/webGl/filters/textureFilters/simpleBlurFilter";
+
 
 export default class Scene extends BaseModel {
 
@@ -31,7 +35,7 @@ export default class Scene extends BaseModel {
             this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
             this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
         }
-        //this.filters.push(new BlackWhiteFilter(this.game.renderer.gl));
+        this.filters.push(new SimpleBlurFilter(this.game.renderer['gl']));
     }
 
     addTweenMovie(tm){

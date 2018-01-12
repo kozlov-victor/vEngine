@@ -46,7 +46,7 @@ export default class AbstractBlendDrawer {
     // to avoid "Source and destination textures of the draw are the same" error
     draw(sourceTex:Texture,frameBuffer:FrameBuffer,uniforms){
         let destTex = frameBuffer.texture;
-        destTex = destTex.applyFilters([this.simpleCopyFilter],frameBuffer,null); // todo
+        destTex = destTex.applyFilters([this.simpleCopyFilter],frameBuffer); // todo
         destTex.bind(1);
         uniforms.texture = 0;
         uniforms.destTexture = 1;

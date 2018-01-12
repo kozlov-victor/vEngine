@@ -1,4 +1,6 @@
 
+declare const DEBUG:boolean;
+
 import CommonObject from './commonObject'
 import Tween, {TweenDescription} from '../core/tween'
 import EventEmitter from '../core/misc/eventEmitter'
@@ -7,7 +9,6 @@ import {Transient} from '../core/misc/decorators'
 import ArcadeRigidBody from '../core/physics/arcadeRigidBody'
 import Rect from "../core/geometry/rect";
 import Point2d from "../core/geometry/point2d";
-import {DEBUG} from "../declarations";
 import Game from "../core/game";
 
 @Transient({

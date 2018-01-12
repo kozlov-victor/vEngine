@@ -1,5 +1,5 @@
 
-import {DEBUG} from "../../../../declarations";
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, shaderType:number):WebGLShader=> {
     if (DEBUG) {
@@ -226,6 +226,9 @@ export const getUniformSetter = function(size,type){
                 DEBUG && expect(value,TypeInt);
                 gl.uniform1i(location, value);
             };
+            default:
+                if (DEBUG) throw `can not set uniform for type ${type} and size ${size}`;
+                break;
         }
     } else {
         switch (type) { // ie uniform vec2 u_someVec2[3]
@@ -281,6 +284,9 @@ export const getUniformSetter = function(size,type){
                 DEBUG && expect(value,TypeArray(TypeInt));
                 gl.uniform1iv(location, value);
             };
+            default:
+                if (DEBUG) throw `can not set uniform for type ${type} and size ${size}`;
+                break;
         }
     }
 };

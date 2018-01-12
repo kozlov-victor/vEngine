@@ -1,9 +1,8 @@
-/*global DEBUG:true*/
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 // todo convert to plain good oop style???
 // https://evanw.github.io/lightgl.js/docs/matrix.html
 
-import {DEBUG} from "../../declarations";
 
 export let makeIdentity = ()=> {
     return [

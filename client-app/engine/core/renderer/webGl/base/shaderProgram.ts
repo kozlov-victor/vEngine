@@ -1,7 +1,8 @@
 /*global DEBUG:true*/
 
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import {compileShader, createProgram, extractUniforms} from "./shaderProgramUtils";
-import {DEBUG} from "../../../../declarations";
 import VertexBuffer from "./vertexBuffer";
 
 export default class ShaderProgram {

@@ -1,9 +1,8 @@
-
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import TextField from '../../../model/generic/ui/textField'
 import Device from '../../device'
 import {SCALE_STRATEGY} from "../../misc/consts";
-import {DEBUG} from "../../../declarations";
 import Game from "../../game";
 import GameObject from "../../../model/generic/gameObject";
 import GameObjectProto from '../../../model/generic/gameObjectProto';

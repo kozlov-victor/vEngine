@@ -1,6 +1,6 @@
 
 
-import {DEBUG} from "../../declarations";
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export default class ObjectPool<T> {
 

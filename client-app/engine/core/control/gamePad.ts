@@ -1,5 +1,6 @@
 
-import {DEBUG} from "../../declarations";
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import Game from "../game";
 
 declare const window:any,navigator:any;

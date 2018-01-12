@@ -1,5 +1,6 @@
 
-import {DEBUG} from "../../../../declarations";
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import ShaderProgram from "./shaderProgram";
 
 export default class VertexBuffer {

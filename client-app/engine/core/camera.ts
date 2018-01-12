@@ -1,3 +1,4 @@
+declare const DEBUG:boolean;
 
 import Tween from "./tween";
 import * as mat4 from './geometry/mat4'
@@ -7,7 +8,6 @@ import Point2d from "./geometry/point2d";
 import Game from "./game";
 import GameObject from "../model/generic/gameObject";
 import Scene from "../model/generic/scene";
-import {DEBUG} from "../declarations";
 import {random} from "./mathEx";
 
 interface CameraTweenTarget {

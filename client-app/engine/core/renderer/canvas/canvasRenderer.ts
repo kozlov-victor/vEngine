@@ -1,6 +1,9 @@
 
-import AbstractRenderer from '../abstract/abstractRenderer'
 import {Image} from "../../../declarations";
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
+import AbstractRenderer from '../abstract/abstractRenderer'
 import Game from "../../game";
 import GameObject from "../../../model/generic/gameObject";
 import Rect from "../../geometry/rect";
@@ -153,7 +156,7 @@ export default class CanvasRenderer extends AbstractRenderer {
     }
 
     loadTextureInfo(resourcePath:string,onLoad:Function){
-        let img:Image = new Image(); // todo created declarations
+        let img:Image = new Image();
         img.src = resourcePath;
         img.onload = ()=>{
             let c = document.createElement('canvas');

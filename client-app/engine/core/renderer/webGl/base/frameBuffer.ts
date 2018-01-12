@@ -1,6 +1,7 @@
 
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import Texture from './texture'
-import {DEBUG} from "../../../../declarations";
 
 
 export default class FrameBuffer {

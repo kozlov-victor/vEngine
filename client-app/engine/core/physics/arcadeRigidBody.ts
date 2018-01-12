@@ -1,6 +1,7 @@
 
 // http://madebyevan.com/gamedevclass/minimal-demo/
 
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 import Vec2 from '../geometry/vec2'
 import GameObject from "../../model/generic/gameObject";
 import Game from '../game';

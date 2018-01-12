@@ -1,6 +1,6 @@
+declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import Point2d from "./point2d";
-import Size from "./size";
 import ObjectPool from "../misc/objectPool";
 
 export default class Rect {

@@ -1,6 +1,9 @@
 
+import {Image} from "../../../../declarations";
+
+declare const IN_EDITOR:boolean,DEBUG:boolean;
+
 import FrameBuffer from "./frameBuffer";
-import {DEBUG, Image} from "../../../../declarations";
 import AbstractFilter from "../filters/abstract/abstractFilter";
 import Rect from "../../../geometry/rect";
 import Size from "../../../geometry/size";
@@ -102,7 +105,6 @@ export default class Texture {
             gl.generateMipmap(gl.TEXTURE_2D);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
-            // gl.generateMipmap( gl.TEXTURE_2D );
         } else {
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -113,7 +115,7 @@ export default class Texture {
 
     }
 
-    applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer,dstRect:Rect){
+    applyFilters(filters:Array<AbstractFilter>,frameBuffer:FrameBuffer){
         if (DEBUG && frameBuffer===undefined)
             throw `can not apply filters. frameBuffer must be explicitly passed. Pass null if no frame buffer needs to bind after filtering`;
         let len = filters.length;
@@ -121,13 +123,12 @@ export default class Texture {
         if (this._texFilterBuff.buffers===null)
             this._texFilterBuff.instantiate(this.gl);
         let filter:AbstractFilter = filters[0];
-        filter.doFilter(this,this._texFilterBuff.getDestBuffer(),dstRect);
+        filter.doFilter(this,this._texFilterBuff.getDestBuffer());
         for (let i=1;i<len;i++){
             this._texFilterBuff.flip();
             filters[i].doFilter(
                 this._texFilterBuff.getSourceBuffer().texture,
-                this._texFilterBuff.getDestBuffer(),
-                dstRect
+                this._texFilterBuff.getDestBuffer()
             );
         }
         this._texFilterBuff.flip();
