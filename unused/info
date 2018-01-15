@@ -78,4 +78,15 @@ gl.UNSIGNED_BYTE, pixels);
 };
 
 
+if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.log("could not link shader program");
+    gl.detachShader(program, vs);
+    gl.detachShader(program, fs);
+    gl.deleteProgram(program);
+    program = null;
+  }
+
+
+
+
  
