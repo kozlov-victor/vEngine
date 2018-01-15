@@ -89,4 +89,15 @@ if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
 
 
 
+function glGetAttribs(gl, program, attribs) {
+  var count = /** @type {number} */ (gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES));
+  for (var index = 0; index < count; ++index) {
+    var attrib = gl.getActiveAttrib(program, index);
+    attribs[attrib.name] = gl.getAttribLocation(program, attrib.name);
+  }
+  return attribs;
+}
+
+
+
  
