@@ -99,5 +99,5 @@ function glGetAttribs(gl, program, attribs) {
 }
 
 
-
+disableVertexAttribArray
  
