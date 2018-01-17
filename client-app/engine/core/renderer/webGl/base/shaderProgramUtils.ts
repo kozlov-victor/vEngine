@@ -79,7 +79,8 @@ export const GL_TYPE = {
     FLOAT_MAT3: 'mat3',
     FLOAT_MAT4: 'mat4',
 
-    SAMPLER_2D: 'sampler2D'
+    SAMPLER_2D: 'sampler2D',
+    //SAMPLER_CUBE: 'samplerCube',
 };
 
 const mapType = (gl, type)=> {

@@ -152,6 +152,19 @@ export default class Texture {
         Texture.currInstances[i] = null;
     }
 
+
+    getColorArray():Uint8Array {
+        let gl:WebGLRenderingContext = this.gl;
+        let wxh:number = this.size.width*this.size.height;
+        if (DEBUG && gl.checkFramebufferStatus(gl.FRAMEBUFFER)!==gl.FRAMEBUFFER_COMPLETE)
+            throw `Texture.GetColorArray() failed!`;
+        let pixels = new Uint8Array(wxh * 4);
+        gl.readPixels(0, 0, this.size.width, this.size.height, gl.RGBA,
+        gl.UNSIGNED_BYTE, pixels);
+        return pixels;
+    }
+
+
     destroy(){
         if (this._texFilterBuff) this._texFilterBuff.destroy();
         this.gl.deleteTexture(this.tex);

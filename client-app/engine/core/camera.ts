@@ -28,8 +28,11 @@ export default class Camera {
     private lastToleranceTime:number = 0;
     private _rect:Rect = new Rect();
     private _rectScaled:Rect = new Rect();
-    private cameraFollowTween:Tween;
     private cameraShakeTween:Tween = null;
+    private cameraPosCorrection:any = {
+        current: new Point2d(),
+        max: new Point2d()
+    };
 
     FOLLOWING_TOLERANCE_TIME:number = 2000;
 
@@ -49,12 +52,6 @@ export default class Camera {
             this.sceneWidth = this.game.getCurrScene().width || this.game.width;
             this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
-        this.cameraFollowTween = new Tween({
-            target: this,
-            ease: 'easeInQuad',
-            to: {x:this.pos.x,y:this.pos.y},
-            time: this.FOLLOWING_TOLERANCE_TIME
-        });
     }
 
     update(currTime:number,delta:number) {
@@ -67,30 +64,36 @@ export default class Camera {
         let h = this.game.height;
         let wDiv2 = w/2;
         let hDiv2 = h/2;
-        let x = gameObject.pos.x - wDiv2;
-        let y = gameObject.pos.y - hDiv2;
-        if (gameObject['_lastDirection']==='Right') x+=cameraRect.width/2; // todo set camera follow mode // todo _lastDirection
-        if (gameObject['_lastDirection']==='Left') x-=cameraRect.height/2;
-        if (x<0) x = 0;
-        if (y<0) y = 0;
-        if (x>this.sceneWidth - w + tileWidth)  x = this.sceneWidth -w + tileWidth;
-        if (y>this.sceneHeight -h + tileHeight) y = this.sceneHeight -h + tileHeight;
-        let scaleVal = Math.abs(gameObject.rigidBody.vel.x)>0?0.95:1;
-        if (this.FOLLOWING_TOLERANCE_TIME===0) {
-            this.pos.x = x;
-            this.pos.y = y;
-        }
-        else if (currTime-this.lastToleranceTime>this.FOLLOWING_TOLERANCE_TIME) {
-            this.lastToleranceTime = currTime;
-            this.cameraFollowTween.reuse({
-                to: {
-                    'pos.x':x,'pos.y':y,
-                    'scale.x':scaleVal,'scale.y':scaleVal
-                }
-            });
-        }
 
-        this.cameraFollowTween.update(currTime);
+        if (gameObject['_lastDirection'] === 'Right')
+            this.cameraPosCorrection.max.x=w/3; // todo _lastDirection
+        if (gameObject['_lastDirection'] === 'Left')
+            this.cameraPosCorrection.max.x=-w/3;
+        let currCorrection:Point2d =
+            this.cameraPosCorrection.max.
+            substract(this.cameraPosCorrection.current).
+            multiply(0.05);
+
+        this.cameraPosCorrection.current.add(currCorrection);
+
+        let newPos:Point2d = Point2d.fromPool();
+        let pointToFollow:Point2d = Point2d.fromPool();
+        pointToFollow.set(this.objFollowTo.pos);
+        pointToFollow.addXY(-wDiv2,-hDiv2);
+        newPos.x = this.pos.x+(pointToFollow.x + this.cameraPosCorrection.current.x - this.pos.x)*0.1;
+        newPos.y = this.pos.y+(pointToFollow.y - this.pos.y)*0.1;
+        if (newPos.x < 0)
+            newPos.x = 0;
+        if (newPos.y < 0)
+            newPos.y = 0;
+        if (newPos.x > this.sceneWidth - w + tileWidth)
+            newPos.x = this.sceneWidth - w + tileWidth;
+        if (newPos.y > this.sceneHeight - h + tileHeight)
+            newPos.y = this.sceneHeight - h + tileHeight;
+
+        this.pos.setXY(newPos.x,newPos.y);
+
+
         if (this.cameraShakeTween) this.cameraShakeTween.update(currTime);
         this._updateRect();
         this.render();

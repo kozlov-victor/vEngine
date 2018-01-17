@@ -29,24 +29,11 @@ module.exports =  (params)=>{
                 },
                 {
                     test: /\.js$/,
-                    //exclude: /node_modules/,
+                    exclude: /node_modules/,
                     loader: "babel-loader",
                     query: {
                         presets: ['es2015-loose'],
-                        plugins: [
-                            "transform-async-to-generator",
-                            "transform-decorators-legacy",
-                            "transform-class-properties"
-                        ]
-                    }
-                },
-                {
-                    test: /\.js$/,
-                    exclude: /node_modules/,
-                    loader: "eslint-loader",
-                    options: {
-                        failOnWarning: true,
-                        failOnError: true
+                        plugins: []
                     }
                 },
                 {
@@ -56,10 +43,6 @@ module.exports =  (params)=>{
                         minimize: true
                     }
                 },
-                {
-                    test: /\.(json)$/,
-                    loader: 'json-to-object-loader'
-                },
                 { test: /\.scss$/, use: ExtractTextPlugin.extract(['css-loader', 'sass-loader']) },
                 {
                     test: /\.less$/,
@@ -68,11 +51,9 @@ module.exports =  (params)=>{
             ]
         },
         resolve: {
-            extensions: ['.js','.ts','.json'],
+            extensions: ['.js','.ts'],
             modules: [
-                path.resolve('node_modules'),
-                path.resolve('./client-app'),
-                path.resolve('./node-app/generator')
+                path.resolve('node_modules')
             ]
         }
     };
@@ -86,7 +67,7 @@ module.exports =  (params)=>{
         })
     ];
 
-    if (!params.debug) {
+    if (!params.debug || params.minify) {
         config.plugins.push(
             new UglifyJSPlugin({
                 output: { // http://lisperator.net/uglifyjs/codegen

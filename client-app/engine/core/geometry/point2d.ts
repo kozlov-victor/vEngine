@@ -1,9 +1,17 @@
+import ObjectPool from "../misc/objectPool";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export default class Point2d {
 
     x:number = 0;
     y:number = 0;
+
+    private static pool = new ObjectPool<Point2d>(Point2d,4);
+
+    static fromPool():Point2d{
+        return Point2d.pool.getNextObject();
+    }
 
     constructor(x:number = 0,y:number = 0){
         this.x = x;
@@ -39,6 +47,12 @@ export default class Point2d {
 
     substract(another:Point2d):Point2d{
         this.addXY(-another.x,-another.y);
+        return this;
+    }
+
+    multiply(n:number):Point2d {
+        this.x*=n;
+        this.y*=n;
         return this;
     }
 

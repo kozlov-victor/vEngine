@@ -8,10 +8,10 @@ Array.prototype['remove'] = function(callback) {
     }
 };
 
-window.requestAnimationFrame =
+(window as any).requestAnimationFrame =
     window.requestAnimationFrame||
     window.webkitRequestAnimationFrame||
-    function(f):number{return setTimeout(f,17)};
+    function(f){setTimeout(f,17)};
 
 if (!window.cancelAnimationFrame) {
     window.cancelAnimationFrame = (id) => clearTimeout(id);

@@ -4,15 +4,13 @@ import TextField from '../../../model/generic/ui/textField'
 import Device from '../../device'
 import {SCALE_STRATEGY} from "../../misc/consts";
 import Game from "../../game";
-import GameObject from "../../../model/generic/gameObject";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
-import ObjectPool from "../../misc/objectPool";
 
 declare const document:any, window:any;
 
-export default class AbstractRenderer {
+export default abstract class AbstractRenderer {
 
     renderableCache = {};
     container = null;

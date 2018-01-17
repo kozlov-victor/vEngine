@@ -35,7 +35,7 @@ export default class Scene extends BaseModel {
             this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
             this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
         }
-        this.filters.push(new SimpleBlurFilter(this.game.renderer['gl']));
+        //this.filters.push(new SimpleBlurFilter(this.game.renderer['gl']));
     }
 
     addTweenMovie(tm){

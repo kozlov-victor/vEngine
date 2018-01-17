@@ -18,7 +18,7 @@ const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight){
 
 const identity = mat4.makeIdentity();
 
-export default class AbstractFilter {
+export default abstract class AbstractFilter {
 
     programGen:ShaderGenerator;
     gl:WebGLRenderingContext;
@@ -56,4 +56,5 @@ export default class AbstractFilter {
     setParam(name:string,value){
         this.uniformsToSet[name] = value;
     }
+
 }

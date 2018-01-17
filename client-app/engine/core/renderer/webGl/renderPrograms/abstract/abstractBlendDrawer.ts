@@ -9,7 +9,7 @@ import ShaderGenerator from "../../shaders/generators/shaderGenerator";
 import Texture from "../../base/texture";
 import FrameBuffer from "../../base/frameBuffer";
 
-export default class AbstractBlendDrawer {
+export default abstract class AbstractBlendDrawer {
 
     spriteRectDrawer:SpriteRectDrawer;
     simpleCopyFilter:SimpleCopyFilter;

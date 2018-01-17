@@ -3,7 +3,7 @@ import ShaderProgram from "../../base/shaderProgram";
 import Texture from "../../base/texture";
 import BufferInfo from "../../base/bufferInfo";
 
-export default class AbstractDrawer {
+export default abstract class AbstractDrawer {
 
     static currentInstance:AbstractDrawer = null;
 

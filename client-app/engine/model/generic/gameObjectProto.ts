@@ -27,6 +27,7 @@ export default class GameObjectProto extends BaseModel {
     _individualBehaviour = null;
     filters: Array<AbstractFilter> = [];
     _layer;
+    blendMode:string;
 
     private _frameRect = new Rect();
 

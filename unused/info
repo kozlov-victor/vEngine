@@ -15,6 +15,7 @@ this.blendModes[CONST.BLEND_MODES.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+
 Add the following code to compute the color for each pixel:
 void main(void) {
  // texel color look up based on interpolated UV value in vTexCoord
@@ -39,43 +40,46 @@ var activateTexture = function (textureName) {
  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
  // Handles how magnification and minimization filters will work.
  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
- gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, 
- gl.LINEAR_MIPMAP_LINEAR);
+ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
  // For pixel-graphics where you want the texture to look "sharp" 
 // do the following:
  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
  // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
  };
-a. The retrieveAsse
 
 
-
-Shader.prototype.setTextureCoordinate = function(texCoord) {
- var gl = gEngine.Core.getGL();
- gl.bindBuffer(gl.ARRAY_BUFFER, this.mTexCoordBuffer);
- gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(texCoord));
-
-
-gl.deleteBuffer
-
-
-
-
-var getColorArray = function (textureName) {
-
- if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE) {
- var pixels = new Uint8Array(texInfo.mWidth * texInfo.mHeight * 4);
- gl.readPixels(0, 0, texInfo.mWidth, texInfo.mHeight, gl.RGBA,
-gl.UNSIGNED_BYTE, pixels);
- texInfo.mColorArray = pixels;
- } else {
- alert("WARNING: Engine.Textures.GetColorArray() failed!");
- }
- gl.bindFramebuffer(gl.FRAMEBUFFER, null);
- gl.deleteFramebuffer(fb);
- }
- return texInfo.mColorArray;
-};
 
 
  
+vec2 uv = vec2(gl_FragCoord.xy / vec2(rt_w,rt_h));
+vec2 p= vec2(floor(gl_FragCoord.x), floor(gl_FragCoord.y));
+if (mod(p.y, 2.0)==0.0)
+   gl_FragColor = blur(uv);
+else
+   gl_FragColor = vec4(0.0,0.0,0.0,1.0);
+
+
+
+this.posCorrection = this.posCorrection|| 0;
+this.posCorrectionDelta = this.posCorrectionDelta || 0;
+if (gameObject['_lastDirection'] === 'Right')
+    this.posCorrectionDelta=5; // todo _lastDirection
+if (gameObject['_lastDirection'] === 'Left')
+    this.posCorrectionDelta=-5;
+this.posCorrection+=this.posCorrectionDelta;
+let maxCorrection = w/4;
+if (this.posCorrection>maxCorrection) this.posCorrection = maxCorrection;
+if (this.posCorrection<-maxCorrection) this.posCorrection = -maxCorrection;
+
+newPos.x = this.pos.x+(pointToFollow.x + this.posCorrection - this.pos.x)*0.1;
+newPos.y = this.pos.y+(pointToFollow.y - this.pos.y)*0.1;
+if (newPos.x < 0)
+    newPos.x = 0;
+if (newPos.y < 0)
+    newPos.y = 0;
+if (newPos.x > this.sceneWidth - w + tileWidth)
+    newPos.x = this.sceneWidth - w + tileWidth;
+if (newPos.y > this.sceneHeight - h + tileHeight)
+    newPos.y = this.sceneHeight - h + tileHeight;
+
+this.pos.setXY(newPos.x,newPos.y);

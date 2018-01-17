@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "es6",
+        "module": "commonjs",
         "moduleResolution": "node",
         "target": "es5",
         "experimentalDecorators": true,
@@ -10,5 +10,8 @@
             "es6",
             "es7"
         ]
-    }
+    },
+    "exclude": [
+        "node_modules"
+    ]
 }

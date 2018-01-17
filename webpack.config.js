@@ -10,7 +10,7 @@ const debug = true;
 
 let config = {
     entry: {
-        'app.bundle':['regenerator-runtime/runtime','./client-app/app/index.ts'],
+        'app.bundle':['./client-app/app/index.ts'],
         'debug':'./client-app/debug/debug.ts'
     },
     output: {

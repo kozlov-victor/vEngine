@@ -94,6 +94,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.enable(gl.BLEND);
+        // gl.depthFunc(gl.LEQUAL);
     }
 
     draw(renderable:GameObjectProto){
@@ -283,6 +284,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     clear(){
         this.gl.clearColor(1,1,1,1);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        //this.gl.clearDepth(1.);
     }
 
     clearColor({r,g,b}){

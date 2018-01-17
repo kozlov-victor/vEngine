@@ -11,7 +11,6 @@ declare const DEBUG:boolean;
 export default class GameObject extends GameObjectProto {
 
     type:string = 'GameObject';
-    blendMode:string;
     gameObjectProto:GameObjectProto = null;
 
     constructor(game){

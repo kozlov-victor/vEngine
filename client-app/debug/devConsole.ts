@@ -1,5 +1,5 @@
 
-//import http from 'app/providers/rest/httpClient';
+import http from '../app/providers/rest/httpClient';
 
 
 let devConsole = document.createElement('div');
@@ -68,24 +68,24 @@ window.addEventListener('error',function(e){
   </div> 
   
 `;
-        // http.get(filename,{r:Math.random()},file=>{
-        //     let res='';
-        //     let strings = file.split('\n');
-        //     let linesAfter = 5;
-        //     let errorString = strings[lineNum - 1];
-        //     errorString = `${errorString.substr(0,colNum-1)}<span class="errorCol">${errorString[colNum-1]}</span>${errorString.substr(colNum)}`;
-        //     res+=`<span class="errorRow">${errorString}</span>\n`;
-        //     for (let i=0;i<linesAfter;i++) {
-        //         let index = lineNum + i;
-        //         let s = strings[index];
-        //         if (s) res+=s+'\n';
-        //     }
-        //     let errDiv = document.createElement('div');
-        //     errDiv.className = 'errorBlockHolder';
-        //     errDiv.innerHTML = tmpl.replace('$_content',res);
-        //     document.body.appendChild(errDiv);
-        //     document.title = 'runtime error!';
-        // });
+        http.get(filename,{r:Math.random()},file=>{
+            let res='';
+            let strings = file.split('\n');
+            let linesAfter = 5;
+            let errorString = strings[lineNum - 1];
+            errorString = `${errorString.substr(0,colNum-1)}<span class="errorCol">${errorString[colNum-1]}</span>${errorString.substr(colNum)}`;
+            res+=`<span class="errorRow">${errorString}</span>\n`;
+            for (let i=0;i<linesAfter;i++) {
+                let index = lineNum + i;
+                let s = strings[index];
+                if (s) res+=s+'\n';
+            }
+            let errDiv = document.createElement('div');
+            errDiv.className = 'errorBlockHolder';
+            errDiv.innerHTML = tmpl.replace('$_content',res);
+            document.body.appendChild(errDiv);
+            document.title = 'runtime error!';
+        });
     } catch (e) {
         console.error(e);
     }
