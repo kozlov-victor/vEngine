@@ -101,3 +101,4 @@ function glGetAttribs(gl, program, attribs) {
 
 disableVertexAttribArray
  
+ "@types/node": "8.5.1",
