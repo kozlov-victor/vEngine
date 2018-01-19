@@ -14,7 +14,8 @@ export class MainSceneBehaviour {
         this.scene.on('mouseMove',e=>{
           this.x = e.screenX;
           this.y = e.screenY;
-          this.points.push({x:e.screenX,y:e.screenY});
+          //this.points.push({x:e.screenX,y:e.screenY});
+          this.scene.pointLight.pos.setXY(this.x,this.y);
         });
         this.offsetX = 0;
         this.cnt=0;

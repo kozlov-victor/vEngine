@@ -1,3 +1,5 @@
+import SpriteRectLightDrawer from "./renderPrograms/generic/base/spriteRectLightDrawer";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import AbstractRenderer from '../abstract/abstractRenderer'
@@ -59,6 +61,7 @@ export default class WebGlRenderer extends AbstractRenderer {
     private matrixStack:MatrixStack;
     private circleDrawer:CircleDrawer;
     private spriteRectDrawer:SpriteRectDrawer;
+    private spriteRectLightDrawer:SpriteRectLightDrawer;
     private tiledSpriteRectDrawer:TiledSpriteRectDrawer;
     private colorRectDrawer:ColorRectDrawer;
     private lineDrawer:LineDrawer;
@@ -84,6 +87,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         this.circleDrawer = new CircleDrawer(gl);
         this.spriteRectDrawer = new SpriteRectDrawer(gl);
+        this.spriteRectLightDrawer = new SpriteRectLightDrawer(gl);
         this.tiledSpriteRectDrawer = new TiledSpriteRectDrawer(gl);
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
@@ -155,13 +159,18 @@ export default class WebGlRenderer extends AbstractRenderer {
         let uniforms = {
             u_textureMatrix: makeTextureMatrix(srcRect.x,srcRect.y,srcRect.width,srcRect.height,texWidth,texHeight),
             u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
-            u_alpha: 1
+            u_alpha: 1,
+            u_lightPos: [this.game.getCurrScene().pointLight.pos.x,this.game.getCurrScene().pointLight.pos.y],
+            u_lightRadius: 60//this.game.getCurrScene().pointLight.radius
         };
 
-        if (srcRect.width===120 || srcRect.width===174) {
-            this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
+        // if (srcRect.width===120 || srcRect.width===174) {
+        //     this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
+        // }
+        // else
+        {
+            this.spriteRectLightDrawer.draw(texture,uniforms);
         }
-        else this.spriteRectDrawer.draw(texture,uniforms);
     }
 
     drawTiledImage(texturePath:string,

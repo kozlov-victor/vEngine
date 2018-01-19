@@ -38,6 +38,12 @@ export default class ShaderProgram {
     setUniform(name:string, value) {
         let uniform = this.uniforms[name];
         if (DEBUG && !uniform) throw `no uniform with name ${name} found!`;
+        if (DEBUG) {
+            if (ShaderProgram.currentProgram!==this) {
+                console.error(this);
+                throw `can not set uniform: target program is inactive`;
+            }
+        }
         uniform.setter(this.gl, uniform.location, value);
         // if setter does not fit (ie uniform structure), invoke native gl setter,
         // ie shader:

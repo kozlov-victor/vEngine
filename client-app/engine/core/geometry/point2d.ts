@@ -8,6 +8,7 @@ export default class Point2d {
     y:number = 0;
 
     private static pool = new ObjectPool<Point2d>(Point2d,4);
+    private _arr:Array<number>;
 
     static fromPool():Point2d{
         return Point2d.pool.getNextObject();
@@ -94,6 +95,13 @@ export default class Point2d {
 
     toJSON(){
         return {x:this.x,y:this.y}
+    }
+
+    toArray(){
+        if (!this._arr) this._arr = new Array(2);
+        this._arr[0] = this.x;
+        this._arr[1] = this.y;
+        return this._arr;
     }
 
 

@@ -60,12 +60,12 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 183);
+/******/ 	return __webpack_require__(__webpack_require__.s = 182);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 183:
+/***/ 182:
 /***/ (function(module, exports) {
 
 var getPopupContainer = function () {
@@ -93,11 +93,11 @@ var _prepareMessage = function (e, lineNum) {
         msg = e;
     }
     else
-        msg = e.message;
+        msg = e.message || e.reason;
     if (!msg) {
         if (e.target) {
             ['img', 'audio', 'link'].some(function (it) {
-                if (e.target.tagName.toLowerCase() === it) {
+                if (e.target.tagName && e.target.tagName.toLowerCase() === it) {
                     msg = 'can not load ' + it + ' with location ' + (e.target.src || e.target.href);
                     return true;
                 }
@@ -170,6 +170,10 @@ window.addEventListener('error', function (e) {
     console.error(e);
     window['showError'](e, e['linenum']);
 }, true);
+window.addEventListener('unhandledrejection', function (e) {
+    console.error(e);
+    window['showError'](e, e['linenum']);
+});
 
 
 /***/ })

@@ -60,21 +60,21 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 87);
+/******/ 	return __webpack_require__(__webpack_require__.s = 89);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 87:
+/***/ 89:
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(88);
-module.exports = __webpack_require__(89);
+__webpack_require__(90);
+module.exports = __webpack_require__(91);
 
 
 /***/ }),
 
-/***/ 88:
+/***/ 90:
 /***/ (function(module, exports) {
 
 var getPopupContainer = function () {
@@ -102,11 +102,11 @@ var _prepareMessage = function (e, lineNum) {
         msg = e;
     }
     else
-        msg = e.message;
+        msg = e.message || e.reason;
     if (!msg) {
         if (e.target) {
             ['img', 'audio', 'link'].some(function (it) {
-                if (e.target.tagName.toLowerCase() === it) {
+                if (e.target.tagName && e.target.tagName.toLowerCase() === it) {
                     msg = 'can not load ' + it + ' with location ' + (e.target.src || e.target.href);
                     return true;
                 }
@@ -179,17 +179,21 @@ window.addEventListener('error', function (e) {
     console.error(e);
     window['showError'](e, e['linenum']);
 }, true);
+window.addEventListener('unhandledrejection', function (e) {
+    console.error(e);
+    window['showError'](e, e['linenum']);
+});
 
 
 /***/ }),
 
-/***/ 89:
+/***/ 91:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var httpClient_1 = __webpack_require__(90);
+var httpClient_1 = __webpack_require__(92);
 var devConsole = document.createElement('div');
 var css = {
     position: 'absolute',
@@ -244,7 +248,7 @@ window.addEventListener('error', function (e) {
 
 /***/ }),
 
-/***/ 90:
+/***/ 92:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

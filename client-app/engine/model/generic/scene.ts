@@ -1,4 +1,6 @@
 
+import PointLight from "../../core/light/pointLight";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import BaseModel from '../baseModel'
@@ -19,14 +21,19 @@ export default class Scene extends BaseModel {
     layers:Array<Layer> = [];
     useBG:boolean = false;
     colorBG = {r: 255, g: 255, b: 255};
-    _tweenMovies = [];
-    filters:Array<AbstractFilter> = [];
-    _individualBehaviour = null;
     tileMap:TileMap;
+    pointLight: PointLight;
+
+    private filters:Array<AbstractFilter> = [];
+    _tweenMovies = [];
+    _individualBehaviour = null;
 
     constructor(game:Game) {
         super(game);
         this.tileMap = new TileMap(game);
+        this.pointLight = new PointLight(game);
+        this.pointLight.pos.setXY(50,50);
+        this.pointLight.radius = 30;
     }
 
     revalidate(){

@@ -27,11 +27,11 @@ let _prepareMessage = function(e,lineNum){
     if (typeof e === 'string') {
         msg = e;
     }
-    else msg = e.message;
+    else msg = e.message || e.reason;
     if (!msg) {
         if (e.target) {
             ['img','audio','link'].some(function(it){
-                if (e.target.tagName.toLowerCase()===it) {
+                if (e.target.tagName && e.target.tagName.toLowerCase()===it) {
                     msg = 'can not load ' +it + ' with location '+ (e.target.src||e.target.href);
                     return true;
                 }
@@ -106,3 +106,8 @@ window.addEventListener('error',(e)=>{
     console.error(e);
     window['showError'](e,e['linenum']);
 },true);
+
+window.addEventListener('unhandledrejection',(e)=>{
+    console.error(e);
+    window['showError'](e,e['linenum']);
+});

@@ -27,9 +27,4 @@ export default class SpriteRectDrawer extends AbstractDrawer {
         } as BufferInfoDescription);
     }
 
-    // draw(texture,uniforms){
-    //     texture.bind();
-    //     super.draw(uniforms);
-    // }
-
 }

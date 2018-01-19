@@ -95,21 +95,37 @@
     ],
     "SpriteSheet": [
         {
+            "id": 3,
             "name": "dude",
             "width": 288,
             "height": 48,
             "type": "SpriteSheet",
             "numOfFramesH": 9,
             "resourcePath": "resources/dude.png",
-            "id": 3
+            "frameRect": {
+                "x": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0
+                }
+            }
         },
         {
+            "id": 5,
             "name": "platform",
             "width": 500,
             "height": 64,
             "type": "SpriteSheet",
             "resourcePath": "resources/platform.png",
-            "id": 5
+            "frameRect": {
+                "x": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 0,
+                    "height": 0
+                }
+            }
         },
         {
             "name": "ground",
@@ -455,8 +471,8 @@
             "id": 82,
             "name": "flare",
             "pos": {
-                "x": 602,
-                "y": 39
+                "x": 617,
+                "y": 36
             },
             "layerId": 2,
             "type": "GameObject",
@@ -483,8 +499,8 @@
             "id": 87,
             "name": "eso1611a",
             "pos": {
-                "x": 646,
-                "y": 142
+                "x": 639,
+                "y": 134
             },
             "layerId": 2,
             "type": "GameObject",
