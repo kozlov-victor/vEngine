@@ -78,4 +78,6 @@ gl.UNSIGNED_BYTE, pixels);
 };
 
 
+
+vec2 size = textureSize(sampler, lod)
  
