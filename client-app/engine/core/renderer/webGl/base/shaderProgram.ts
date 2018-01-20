@@ -45,8 +45,7 @@ export default class ShaderProgram {
             }
         }
         uniform.setter(this.gl, uniform.location, value);
-        // if setter does not fit (ie uniform structure), invoke native gl setter,
-        // ie shader:
+        // structure in shader:
         // struct SomeStruct {
         //      bool active;
         //      vec2 someVec2;

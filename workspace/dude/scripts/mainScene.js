@@ -15,10 +15,15 @@ export class MainSceneBehaviour {
           this.x = e.screenX;
           this.y = e.screenY;
           //this.points.push({x:e.screenX,y:e.screenY});
-          this.scene.pointLight.pos.setXY(this.x,this.y);
         });
         this.offsetX = 0;
         this.cnt=0;
+        
+        
+        this.scene.pointLight.color = [0.8,0.8,0.6,1];
+        this.scene.pointLight.radius = 65;
+        this.scene.ambientLight.color = [0.1,0.1,0.2,1];
+        
     }
 
     onUpdate(){

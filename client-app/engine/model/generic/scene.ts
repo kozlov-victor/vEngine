@@ -13,6 +13,7 @@ import Game from "../../core/game";
 import Tween from "../../core/tween";
 import PosterizeFilter from "../../core/renderer/webGl/filters/textureFilters/posterizeFilter";
 import SimpleBlurFilter from "../../core/renderer/webGl/filters/textureFilters/simpleBlurFilter";
+import AmbientLight from "../../core/light/ambientLight";
 
 
 export default class Scene extends BaseModel {
@@ -23,6 +24,7 @@ export default class Scene extends BaseModel {
     colorBG = {r: 255, g: 255, b: 255};
     tileMap:TileMap;
     pointLight: PointLight;
+    ambientLight:AmbientLight;
 
     private filters:Array<AbstractFilter> = [];
     _tweenMovies = [];
@@ -34,6 +36,9 @@ export default class Scene extends BaseModel {
         this.pointLight = new PointLight(game);
         this.pointLight.pos.setXY(50,50);
         this.pointLight.radius = 30;
+
+        this.ambientLight = new AmbientLight(game);
+
     }
 
     revalidate(){

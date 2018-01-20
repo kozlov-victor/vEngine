@@ -10,17 +10,30 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
 
     constructor(gl){
         let gen = new TexShaderGenerator();
-        gen.addFragmentUniform(GL_TYPE.FLOAT_VEC2,'u_lightPos');
-        gen.addFragmentUniform(GL_TYPE.FLOAT,'u_lightRadius');
-        //gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_spriteScreenRect');
+        gen.prependFragmentCodeBlock(`
+            struct PointLight {
+                vec2 pos;
+                vec4 color;
+                float radius;
+            };
+            struct AmbientLight {
+                vec4 color;
+            };
+        `);
+        gen.addFragmentUniform("PointLight",'u_pointLight');
+        gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_lightColor');
+        gen.addFragmentUniform("AmbientLight",'u_ambientLight');
+
         gen.setFragmentMainFn(`
-            vec4 colResult = texture2D(texture, v_texCoord);
-            float dist = length(u_lightPos.xy-gl_FragCoord.xy);
-            float attenuation = 0.8;
-            if (dist<u_lightRadius) {
-                attenuation = 1.;
+            vec4 texColor = texture2D(texture, v_texCoord);
+            vec4 lightResult = u_ambientLight.color;
+            float dist = length(u_pointLight.pos.xy-gl_FragCoord.xy);
+            //float attenuation = 0.8;
+            if (dist<u_pointLight.radius) {
+                lightResult+=u_pointLight.color;
             }
-            gl_FragColor = colResult*attenuation;
+            lightResult*=texColor;
+            gl_FragColor = lightResult;
             gl_FragColor.a *= u_alpha;
         `);
         let program:ShaderProgram = new ShaderProgram(

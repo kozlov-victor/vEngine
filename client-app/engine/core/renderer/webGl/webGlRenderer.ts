@@ -156,12 +156,15 @@ export default class WebGlRenderer extends AbstractRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
+        let scene = this.game.getCurrScene();
         let uniforms = {
             u_textureMatrix: makeTextureMatrix(srcRect.x,srcRect.y,srcRect.width,srcRect.height,texWidth,texHeight),
             u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
             u_alpha: 1,
-            u_lightPos: [this.game.getCurrScene().pointLight.pos.x,this.game.getCurrScene().pointLight.pos.y],
-            u_lightRadius: 60//this.game.getCurrScene().pointLight.radius
+            'u_pointLight.pos': scene.pointLight.worldToScreen().toArray(),
+            'u_pointLight.radius': scene.pointLight.radius,
+            'u_pointLight.color': scene.pointLight.color,
+            'u_ambientLight.color': scene.ambientLight.color
         };
 
         // if (srcRect.width===120 || srcRect.width===174) {

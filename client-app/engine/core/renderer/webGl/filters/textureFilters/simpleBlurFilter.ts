@@ -16,7 +16,7 @@ export default class SimpleBlurFilter extends AbstractFilter {
         programGen.addFragmentUniform(GL_TYPE.FLOAT,'rt_w'); // render target width
         programGen.addFragmentUniform(GL_TYPE.FLOAT,'rt_h'); // render target height
         programGen.addFragmentUniform(GL_TYPE.FLOAT_VEC2,' u_direction'); // render target height
-        programGen.addFragmentCodeBlock(`
+        programGen.appendFragmentCodeBlock(`
               vec4 blur(vec2 uv) {
                   vec4 color = vec4(0.0);
                   vec2 resolution = vec2(rt_w,rt_h);

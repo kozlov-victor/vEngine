@@ -5,8 +5,10 @@ export default class ShaderGenerator {
     fragmentUniforms:Array<any> = [];
     attributes:Array<any> = [];
     varyings:Array<any> = [];
-    fragCodeBlocks:Array<any> = [];
-    vertexCodeBlocks:Array<any> = [];
+    appendedFragCodeBlocks:Array<any> = [];
+    appendedVertexCodeBlocks:Array<any> = [];
+    prependedVertexCodeBlocks:Array<any> = [];
+    prependedFragCodeBlocks:Array<any> = [];
     vertexMainFn:string = '';
     fragmentMainFn:string = '';
 
@@ -32,12 +34,20 @@ export default class ShaderGenerator {
         return this;
     }
 
-    addVertexCodeBlock(code){
-        this.vertexCodeBlocks.push(code);
+    appendVertexCodeBlock(code){
+        this.appendedVertexCodeBlocks.push(code);
     }
 
-    addFragmentCodeBlock(code){
-        this.fragCodeBlocks.push(code);
+    appendFragmentCodeBlock(code){
+        this.appendedFragCodeBlocks.push(code);
+    }
+
+    prependVertexCodeBlock(code){
+        this.prependedVertexCodeBlocks.push(code);
+    }
+
+    prependFragmentCodeBlock(code){
+        this.prependedFragCodeBlocks.push(code);
     }
 
     setVertexMainFn(fnCode){
@@ -53,14 +63,16 @@ export default class ShaderGenerator {
     getVertexSource():string{
         return (
             `
+            ${this.prependedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
+            
             ${this.vertexUniforms.map(  u=>`uniform   ${u.type} ${u.name};`).join('\n')}
             ${this.attributes.map(      u=>`attribute ${u.type} ${u.name};`).join('\n')}
             ${this.varyings.map(        u=>`varying   ${u.type} ${u.name};`).join('\n')}
-            ${this.vertexCodeBlocks.map(v=>`${v}`).join('\n')}
+            ${this.appendedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
             void main() {
                ${this.vertexMainFn}
             }
-            `.replace(/\s{2,}/,' ').replace(/\t/,'')
+            `.replace(/\t/g, '')
         )
     }
 
@@ -69,13 +81,16 @@ export default class ShaderGenerator {
             // lowp, mediump, highp
             `
             precision mediump float;
+            
+            ${this.prependedFragCodeBlocks.map(v=>`${v}`).join('\n')}
+            
             ${this.fragmentUniforms.map(u=>`uniform ${u.type} ${u.name};`).join('\n')}
             ${this.varyings.map(        u=>`varying ${u.type} ${u.name};`).join('\n')}
-            ${this.fragCodeBlocks.map(  v=>`${v}`).join('\n')}
+            ${this.appendedFragCodeBlocks.map(v=>`${v}`).join('\n')}
             void main() {
                ${this.fragmentMainFn}
             }
-            `.replace(/\s{2,}/,' ').replace(/\t/,'')
+            `.replace(/\t/g, '')
         )
     }
 

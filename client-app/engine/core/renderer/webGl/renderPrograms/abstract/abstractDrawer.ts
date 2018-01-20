@@ -1,7 +1,15 @@
+declare const DEBUG:boolean;
 
 import ShaderProgram from "../../base/shaderProgram";
 import Texture from "../../base/texture";
 import BufferInfo from "../../base/bufferInfo";
+
+
+let isEqual = (a,b):boolean=>{
+    if (a===undefined) return false;
+    if (a.splice) return false; // skip array checking for now
+    return a===b;
+};
 
 export default abstract class AbstractDrawer {
 
@@ -46,7 +54,7 @@ export default abstract class AbstractDrawer {
     }
 
     setUniform(name:string,value:any){
-        if (this.uniformCache[name]===value) return;
+        if (isEqual(this.uniformCache[name],value)) return;
         this.program.setUniform(name,value);
         this.uniformCache[name]=value;
     }

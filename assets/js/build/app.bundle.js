@@ -635,8 +635,7 @@ var ShaderProgram = /** @class */ (function () {
             }
         }
         uniform.setter(this.gl, uniform.location, value);
-        // if setter does not fit (ie uniform structure), invoke native gl setter,
-        // ie shader:
+        // structure in shader:
         // struct SomeStruct {
         //      bool active;
         //      vec2 someVec2;
@@ -1013,6 +1012,13 @@ exports.default = Rect;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var isEqual = function (a, b) {
+    if (a === undefined)
+        return false;
+    if (a.splice)
+        return false; // skip array checking for now
+    return a === b;
+};
 var AbstractDrawer = /** @class */ (function () {
     function AbstractDrawer(gl) {
         this.program = null;
@@ -1041,7 +1047,7 @@ var AbstractDrawer = /** @class */ (function () {
         });
     };
     AbstractDrawer.prototype.setUniform = function (name, value) {
-        if (this.uniformCache[name] === value)
+        if (isEqual(this.uniformCache[name], value))
             return;
         this.program.setUniform(name, value);
         this.uniformCache[name] = value;
@@ -2374,6 +2380,7 @@ var pointLight_1 = __webpack_require__(185);
 var baseModel_1 = __webpack_require__(1);
 var loadingQueue_1 = __webpack_require__(74);
 var tileMap_1 = __webpack_require__(22);
+var ambientLight_1 = __webpack_require__(187);
 var Scene = /** @class */ (function (_super) {
     __extends(Scene, _super);
     function Scene(game) {
@@ -2389,6 +2396,7 @@ var Scene = /** @class */ (function (_super) {
         _this.pointLight = new pointLight_1.default(game);
         _this.pointLight.pos.setXY(50, 50);
         _this.pointLight.radius = 30;
+        _this.ambientLight = new ambientLight_1.default(game);
         return _this;
     }
     Scene.prototype.revalidate = function () {
@@ -4189,8 +4197,10 @@ var ShaderGenerator = /** @class */ (function () {
         this.fragmentUniforms = [];
         this.attributes = [];
         this.varyings = [];
-        this.fragCodeBlocks = [];
-        this.vertexCodeBlocks = [];
+        this.appendedFragCodeBlocks = [];
+        this.appendedVertexCodeBlocks = [];
+        this.prependedVertexCodeBlocks = [];
+        this.prependedFragCodeBlocks = [];
         this.vertexMainFn = '';
         this.fragmentMainFn = '';
     }
@@ -4210,11 +4220,17 @@ var ShaderGenerator = /** @class */ (function () {
         this.varyings.push({ type: type, name: name });
         return this;
     };
-    ShaderGenerator.prototype.addVertexCodeBlock = function (code) {
-        this.vertexCodeBlocks.push(code);
+    ShaderGenerator.prototype.appendVertexCodeBlock = function (code) {
+        this.appendedVertexCodeBlocks.push(code);
     };
-    ShaderGenerator.prototype.addFragmentCodeBlock = function (code) {
-        this.fragCodeBlocks.push(code);
+    ShaderGenerator.prototype.appendFragmentCodeBlock = function (code) {
+        this.appendedFragCodeBlocks.push(code);
+    };
+    ShaderGenerator.prototype.prependVertexCodeBlock = function (code) {
+        this.prependedVertexCodeBlocks.push(code);
+    };
+    ShaderGenerator.prototype.prependFragmentCodeBlock = function (code) {
+        this.prependedFragCodeBlocks.push(code);
     };
     ShaderGenerator.prototype.setVertexMainFn = function (fnCode) {
         this.vertexMainFn = fnCode;
@@ -4225,12 +4241,12 @@ var ShaderGenerator = /** @class */ (function () {
         return this;
     };
     ShaderGenerator.prototype.getVertexSource = function () {
-        return (("\n            " + this.vertexUniforms.map(function (u) { return "uniform   " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.attributes.map(function (u) { return "attribute " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.varyings.map(function (u) { return "varying   " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.vertexCodeBlocks.map(function (v) { return "" + v; }).join('\n') + "\n            void main() {\n               " + this.vertexMainFn + "\n            }\n            ").replace(/\s{2,}/, ' ').replace(/\t/, ''));
+        return (("\n            " + this.prependedVertexCodeBlocks.map(function (v) { return "" + v; }).join('\n') + "\n            \n            " + this.vertexUniforms.map(function (u) { return "uniform   " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.attributes.map(function (u) { return "attribute " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.varyings.map(function (u) { return "varying   " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.appendedVertexCodeBlocks.map(function (v) { return "" + v; }).join('\n') + "\n            void main() {\n               " + this.vertexMainFn + "\n            }\n            ").replace(/\t/g, ''));
     };
     ShaderGenerator.prototype.getFragmentSource = function () {
         return (
         // lowp, mediump, highp
-        ("\n            precision mediump float;\n            " + this.fragmentUniforms.map(function (u) { return "uniform " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.varyings.map(function (u) { return "varying " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.fragCodeBlocks.map(function (v) { return "" + v; }).join('\n') + "\n            void main() {\n               " + this.fragmentMainFn + "\n            }\n            ").replace(/\s{2,}/, ' ').replace(/\t/, ''));
+        ("\n            precision mediump float;\n            \n            " + this.prependedFragCodeBlocks.map(function (v) { return "" + v; }).join('\n') + "\n            \n            " + this.fragmentUniforms.map(function (u) { return "uniform " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.varyings.map(function (u) { return "varying " + u.type + " " + u.name + ";"; }).join('\n') + "\n            " + this.appendedFragCodeBlocks.map(function (v) { return "" + v; }).join('\n') + "\n            void main() {\n               " + this.fragmentMainFn + "\n            }\n            ").replace(/\t/g, ''));
     };
     ShaderGenerator.prototype.debug = function () {
         console.log(this.getVertexSource());
@@ -9223,12 +9239,15 @@ var WebGlRenderer = /** @class */ (function (_super) {
             return;
         var texWidth = texture.getSize().width;
         var texHeight = texture.getSize().height;
+        var scene = this.game.getCurrScene();
         var uniforms = {
             u_textureMatrix: makeTextureMatrix(srcRect.x, srcRect.y, srcRect.width, srcRect.height, texWidth, texHeight),
             u_vertexMatrix: makePositionMatrix(dstPoint.x, dstPoint.y, srcRect.width, srcRect.height, this.game.width, this.game.height),
             u_alpha: 1,
-            u_lightPos: [this.game.getCurrScene().pointLight.pos.x, this.game.getCurrScene().pointLight.pos.y],
-            u_lightRadius: 60 //this.game.getCurrScene().pointLight.radius
+            'u_pointLight.pos': scene.pointLight.worldToScreen().toArray(),
+            'u_pointLight.radius': scene.pointLight.radius,
+            'u_pointLight.color': scene.pointLight.color,
+            'u_ambientLight.color': scene.ambientLight.color
         };
         // if (srcRect.width===120 || srcRect.width===174) {
         //     this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
@@ -14640,10 +14659,11 @@ var SpriteRectLightDrawer = /** @class */ (function (_super) {
     function SpriteRectLightDrawer(gl) {
         var _this = this;
         var gen = new texShaderGenerator_1.default();
-        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC2, 'u_lightPos');
-        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT, 'u_lightRadius');
-        //gen.addFragmentUniform(GL_TYPE.FLOAT_VEC4,'u_spriteScreenRect');
-        gen.setFragmentMainFn("\n            vec4 colResult = texture2D(texture, v_texCoord);\n            float dist = length(u_lightPos.xy-gl_FragCoord.xy);\n            float attenuation = 0.8;\n            if (dist<u_lightRadius) {\n                attenuation = 1.;\n            }\n            gl_FragColor = colResult*attenuation;\n            gl_FragColor.a *= u_alpha;\n        ");
+        gen.prependFragmentCodeBlock("\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float radius;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n        ");
+        gen.addFragmentUniform("PointLight", 'u_pointLight');
+        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_lightColor');
+        gen.addFragmentUniform("AmbientLight", 'u_ambientLight');
+        gen.setFragmentMainFn("\n            vec4 texColor = texture2D(texture, v_texCoord);\n            vec4 lightResult = u_ambientLight.color;\n            float dist = length(u_pointLight.pos.xy-gl_FragCoord.xy);\n            //float attenuation = 0.8;\n            if (dist<u_pointLight.radius) {\n                lightResult+=u_pointLight.color;\n            }\n            lightResult*=texColor;\n            gl_FragColor = lightResult;\n            gl_FragColor.a *= u_alpha;\n        ");
         var program = new shaderProgram_1.default(gl, gen.getVertexSource(), gen.getFragmentSource());
         _this = _super.call(this, gl, program) || this;
         return _this;
@@ -14659,23 +14679,82 @@ exports.default = SpriteRectLightDrawer;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var point2d_1 = __webpack_require__(4);
-var PointLight = /** @class */ (function () {
+var abstractLight_1 = __webpack_require__(186);
+var PointLight = /** @class */ (function (_super) {
+    __extends(PointLight, _super);
     function PointLight(game) {
-        this.pos = new point2d_1.default();
-        this.radius = 0;
-        this._screenPoint = new point2d_1.default();
-        this.game = game;
+        var _this = _super.call(this, game) || this;
+        _this.pos = new point2d_1.default();
+        _this.radius = 0;
+        _this._screenPoint = new point2d_1.default();
+        return _this;
     }
     PointLight.prototype.worldToScreen = function () {
         var cameraRect = this.game.camera.getRectScaled();
-        this._screenPoint.setXY(cameraRect.x - this.pos.x, cameraRect.y - this.pos.y);
+        this._screenPoint.setXY(this.pos.x - cameraRect.x, this.pos.y - cameraRect.y);
         return this._screenPoint;
     };
     return PointLight;
-}());
+}(abstractLight_1.default));
 exports.default = PointLight;
+
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AbstractLight = /** @class */ (function () {
+    function AbstractLight(game) {
+        this.color = [1, 1, 1, 1];
+        this.intensivity = 1.0;
+        this.game = game;
+    }
+    return AbstractLight;
+}());
+exports.default = AbstractLight;
+
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var abstractLight_1 = __webpack_require__(186);
+var AmbientLight = /** @class */ (function (_super) {
+    __extends(AmbientLight, _super);
+    function AmbientLight(game) {
+        return _super.call(this, game) || this;
+    }
+    return AmbientLight;
+}(abstractLight_1.default));
+exports.default = AmbientLight;
 
 
 /***/ })

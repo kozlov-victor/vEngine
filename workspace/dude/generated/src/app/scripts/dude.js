@@ -8,6 +8,8 @@ export class DudeBehaviour {
 
     onUpdate(){
         
+        this.game.getCurrScene().pointLight.pos.setXY(this.gameObject.pos.x,this.gameObject.pos.y);
+        
         if (
             this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP) ||
             this.game.keyboard.isJustPressed(this.game.keyboard.KEY.GAME_PAD_1)
