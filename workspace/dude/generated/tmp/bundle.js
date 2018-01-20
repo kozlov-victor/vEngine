@@ -465,19 +465,28 @@ var TypeInt = {
             throw "can not set uniform with value " + val + ": expected argument of integer type, but " + val + " found";
     }
 };
+var TypeBool = {
+    check: function (val) {
+        if (!(val == true || val == false))
+            throw "can not set uniform with value " + val + ": expected argument of boolean type, but " + val + " found";
+    }
+};
 var TypeArray = function (ElType, size) {
     return {
         check: function (val) {
-            if (!val.splice)
-                throw "can not set uniform with value " + val + ": expected argument of type Array";
+            if (!val.splice) {
+                console.error('Can not set uniform value', val);
+                throw "can not set uniform with value [" + val + "]: expected argument of type Array";
+            }
             if (size !== undefined && val.length !== size)
-                throw "can not set uniform with value " + val + ": expected array with size " + size + ", but " + val.length + " found";
+                throw "can not set uniform with value [" + val + "]: expected array with size " + size + ", but " + val.length + " found";
             for (var i = 0; i < val.length; i++) {
                 try {
                     ElType.check(val[i]);
                 }
                 catch (e) {
-                    throw "can not set uniform with value " + val + ": unexpected array element type: " + val[i];
+                    console.error('Can not set uniform array item', val);
+                    throw "can not set uniform array item with value [" + val + "]: unexpected array element type: " + val[i];
                 }
             }
         }
@@ -522,19 +531,19 @@ exports.getUniformSetter = function (size, type) {
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
             case 'bool': return function (gl, location, value) {
-                1 && expect(value, TypeInt);
+                1 && expect(value, TypeBool);
                 gl.uniform1i(location, value);
             };
             case 'bvec2': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt, 2));
+                1 && expect(value, TypeArray(TypeBool, 2));
                 gl.uniform2i(location, value[0], value[1]);
             };
             case 'bvec3': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt, 3));
+                1 && expect(value, TypeArray(TypeBool, 3));
                 gl.uniform3i(location, value[0], value[1], value[2]);
             };
             case 'bvec4': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt, 4));
+                1 && expect(value, TypeArray(TypeBool, 4));
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
             case 'mat2': return function (gl, location, value) {
@@ -594,23 +603,23 @@ exports.getUniformSetter = function (size, type) {
                 gl.uniform4iv(location, value);
             };
             case 'bool': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt));
+                1 && expect(value, TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
             case 'bvec2': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt));
+                1 && expect(value, TypeArray(TypeBool));
                 gl.uniform2iv(location, value);
             };
             case 'bvec3': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt));
+                1 && expect(value, TypeArray(TypeBool));
                 gl.uniform3iv(location, value);
             };
             case 'bvec4': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt));
+                1 && expect(value, TypeArray(TypeBool));
                 gl.uniform4iv(location, value);
             };
             case 'sampler2D': return function (gl, location, value) {
-                1 && expect(value, TypeArray(TypeInt));
+                1 && expect(value, TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
             default:
@@ -672,9 +681,9 @@ exports.random = function (min, max) {
  * analog of glu unproject function
  * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
  */
-exports.unProject = function (winX, winY, width, height, viewProjectionMatrix) {
-    var x = 2.0 * winX / width - 1;
-    var y = 2.0 * winY / height - 1;
+exports.unProject = function (winPoint, width, height, viewProjectionMatrix) {
+    var x = 2.0 * winPoint.x / width - 1;
+    var y = 2.0 * winPoint.y / height - 1;
     var viewProjectionInverse = mat4.inverse(viewProjectionMatrix);
     var point3D = [x, y, 0, 1];
     var res = mat4.multMatrixVec(viewProjectionInverse, point3D);
@@ -2452,7 +2461,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractLight = /** @class */ (function () {
     function AbstractLight(game) {
         this.color = [1, 1, 1, 1];
-        this.intensivity = 1.0;
+        this.intensity = 1.0;
         this.game = game;
     }
     return AbstractLight;
@@ -2956,8 +2965,10 @@ var WebGlRenderer = /** @class */ (function (_super) {
             u_textureMatrix: makeTextureMatrix(srcRect.x, srcRect.y, srcRect.width, srcRect.height, texWidth, texHeight),
             u_vertexMatrix: makePositionMatrix(dstPoint.x, dstPoint.y, srcRect.width, srcRect.height, this.game.width, this.game.height),
             u_alpha: 1,
-            'u_pointLight.pos': scene.pointLight.worldToScreen().toArray(),
-            'u_pointLight.radius': scene.pointLight.radius,
+            'u_pointLight.pos': scene.pointLight.getPosScaled().toArray(),
+            'u_pointLight.nearRadius': scene.pointLight.nearRadius,
+            'u_pointLight.farRadius': scene.pointLight.farRadius,
+            'u_pointLight.isOn': scene.pointLight.isOn,
             'u_pointLight.color': scene.pointLight.color,
             'u_ambientLight.color': scene.ambientLight.color
         };
@@ -3146,17 +3157,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var spriteRectDrawer_1 = __webpack_require__(10);
 var texShaderGenerator_1 = __webpack_require__(8);
 var shaderProgram_1 = __webpack_require__(2);
-var shaderProgramUtils_1 = __webpack_require__(3);
 var SpriteRectLightDrawer = /** @class */ (function (_super) {
     __extends(SpriteRectLightDrawer, _super);
     function SpriteRectLightDrawer(gl) {
         var _this = this;
         var gen = new texShaderGenerator_1.default();
-        gen.prependFragmentCodeBlock("\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float radius;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n        ");
+        //language=GLSL
+        gen.prependFragmentCodeBlock("\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float nearRadius;\n                float farRadius;\n                bool isOn;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n            vec4 lightEffect(PointLight lgt){\n                vec4 result = vec4(0);\n                float atten = 0.0;\n                float dist = length(lgt.pos - gl_FragCoord.xy);\n                if (dist<=lgt.farRadius) {\n                    if (dist<=lgt.nearRadius) atten = 1.0;\n                    else {\n                        float n = dist - lgt.nearRadius;\n                        float d = lgt.farRadius - lgt.nearRadius;\n                        atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));\n                    }\n                }\n                result = atten * lgt.color; // * lgt.intensity\n                return result;\n            }\n        ");
         gen.addFragmentUniform("PointLight", 'u_pointLight');
-        gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_lightColor');
         gen.addFragmentUniform("AmbientLight", 'u_ambientLight');
-        gen.setFragmentMainFn("\n            vec4 texColor = texture2D(texture, v_texCoord);\n            vec4 lightResult = u_ambientLight.color;\n            float dist = length(u_pointLight.pos.xy-gl_FragCoord.xy);\n            //float attenuation = 0.8;\n            if (dist<u_pointLight.radius) {\n                lightResult+=u_pointLight.color;\n            }\n            lightResult*=texColor;\n            gl_FragColor = lightResult;\n            gl_FragColor.a *= u_alpha;\n        ");
+        gen.setFragmentMainFn("\n            vec4 texColor = texture2D(texture, v_texCoord);\n            vec4 lightResult = u_ambientLight.color;\n            \n            if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight);\n            \n            lightResult*=texColor;\n            gl_FragColor = lightResult;\n            gl_FragColor.a *= u_alpha;\n        ");
         var program = new shaderProgram_1.default(gl, gen.getVertexSource(), gen.getFragmentSource());
         _this = _super.call(this, gl, program) || this;
         return _this;
@@ -4965,8 +4975,6 @@ var Scene = /** @class */ (function (_super) {
         _this._individualBehaviour = null;
         _this.tileMap = new tileMap_1.default(game);
         _this.pointLight = new pointLight_1.default(game);
-        _this.pointLight.pos.setXY(50, 50);
-        _this.pointLight.radius = 30;
         _this.ambientLight = new ambientLight_1.default(game);
         return _this;
     }
@@ -5102,13 +5110,17 @@ var PointLight = /** @class */ (function (_super) {
     function PointLight(game) {
         var _this = _super.call(this, game) || this;
         _this.pos = new point2d_1.default();
-        _this.radius = 0;
+        _this.nearRadius = 0;
+        _this.farRadius = 0;
+        _this.isOn = true;
         _this._screenPoint = new point2d_1.default();
         return _this;
     }
-    PointLight.prototype.worldToScreen = function () {
-        var cameraRect = this.game.camera.getRectScaled();
-        this._screenPoint.setXY(this.pos.x - cameraRect.x, this.pos.y - cameraRect.y);
+    PointLight.prototype.getPosScaled = function () {
+        var camera = this.game.camera;
+        var rect = camera.getRectScaled();
+        var scale = camera.scale;
+        this._screenPoint.setXY((this.pos.x - rect.x) * scale.x, (this.pos.y - rect.y) * scale.y);
         return this._screenPoint;
     };
     return PointLight;
@@ -5409,10 +5421,9 @@ var Mouse = /** @class */ (function () {
     //MouseEvent|TouchEvent|PointerEvent
     Mouse.prototype.resolvePoint = function (e) {
         var game = this.game;
-        var camera = this.game.camera;
         var screenX = (e.clientX - game.pos.x) / game.scale.x;
         var screenY = (e.clientY - game.pos.y) / game.scale.y;
-        var p = game.camera.screenToWorld(screenX, screenY);
+        var p = game.camera.screenToWorld(point2d_1.default.fromPool().setXY(screenX, screenY));
         var mousePoint = MousePoint.fromPool();
         mousePoint.set(p);
         mousePoint.screenX = screenX;
@@ -5794,10 +5805,18 @@ var Collider = /** @class */ (function () {
                 }
             }
         }
-        if (!collidedByX)
+        if (!collidedByX) {
             player.pos.addX(deltaPoint.x);
-        if (!collidedByY)
+        }
+        else {
+            playerRigidBody.vel.setX(0);
+        }
+        if (!collidedByY) {
             player.pos.addY(deltaPoint.y);
+        }
+        else {
+            playerRigidBody.vel.setY(0);
+        }
         playerRigidBody._onFloorInCurrFrame = expectedY > player.pos.y;
         playerRigidBody.onFloor =
             playerRigidBody.vel.y >= 0 &&
@@ -5857,7 +5876,6 @@ var Camera = /** @class */ (function () {
             current: new point2d_1.default(),
             max: new point2d_1.default()
         };
-        this.FOLLOWING_TOLERANCE_TIME = 2000;
         this.game = game;
     }
     Camera.prototype.followTo = function (gameObject) {
@@ -5877,7 +5895,6 @@ var Camera = /** @class */ (function () {
         }
     };
     Camera.prototype.update = function (currTime, delta) {
-        var cameraRect = this.getRectScaled();
         var gameObject = this.objFollowTo;
         if (!gameObject)
             return;
@@ -5887,10 +5904,11 @@ var Camera = /** @class */ (function () {
         var h = this.game.height;
         var wDiv2 = w / 2;
         var hDiv2 = h / 2;
+        var wScaled = this.getRectScaled().width;
         if (gameObject['_lastDirection'] === 'Right')
-            this.cameraPosCorrection.max.x = w / 3; // todo _lastDirection
+            this.cameraPosCorrection.max.x = wScaled / 3; // todo _lastDirection
         if (gameObject['_lastDirection'] === 'Left')
-            this.cameraPosCorrection.max.x = -w / 3;
+            this.cameraPosCorrection.max.x = -wScaled / 3;
         var currCorrection = this.cameraPosCorrection.max.
             substract(this.cameraPosCorrection.current).
             multiply(0.05);
@@ -5931,8 +5949,8 @@ var Camera = /** @class */ (function () {
         });
     };
     Camera.prototype._updateRect = function () {
-        var point00 = this.screenToWorld(0, 0);
-        var pointWH = this.screenToWorld(this.game.width, this.game.height);
+        var point00 = this.screenToWorld(point2d_1.default.fromPool().setXY(0, 0));
+        var pointWH = this.screenToWorld(point2d_1.default.fromPool().setXY(this.game.width, this.game.height));
         this._rectScaled.set(point00.x, point00.y, pointWH.x - point00.x, pointWH.y - point00.y);
     };
     Camera.prototype.render = function () {
@@ -5945,9 +5963,9 @@ var Camera = /** @class */ (function () {
         if (this.cameraShakeTween !== null)
             this.game.renderer.translate(this.cameraShakeTween.getTarget().point.x, this.cameraShakeTween.getTarget().point.y);
     };
-    Camera.prototype.screenToWorld = function (screenX, screenY) {
+    Camera.prototype.screenToWorld = function (p) {
         var mScale = mat4.makeScale(this.scale.x, this.scale.y, 1);
-        var point2d = mathEx.unProject(screenX, screenY, this.game.width, this.game.height, mScale);
+        var point2d = mathEx.unProject(p, this.game.width, this.game.height, mScale);
         point2d.add(this.pos);
         return point2d;
     };
@@ -6045,7 +6063,7 @@ var DudeBehaviour = exports.DudeBehaviour = function () {
 
     DudeBehaviour.prototype.onUpdate = function onUpdate() {
 
-        this.game.getCurrScene().pointLight.pos.setXY(this.gameObject.pos.x, this.gameObject.pos.y);
+        this.game.getCurrScene().pointLight.pos.setXY(this.gameObject.pos.x + 16, this.gameObject.pos.y + 16);
 
         if (this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP) || this.game.keyboard.isJustPressed(this.game.keyboard.KEY.GAME_PAD_1)) {
             if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.addXY(0, -340);
@@ -6173,8 +6191,9 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         this.offsetX = 0;
         this.cnt = 0;
 
-        this.scene.pointLight.color = [0.8, 0.8, 0.6, 1];
-        this.scene.pointLight.radius = 65;
+        this.scene.pointLight.color = [0.8, 0.8, 0.2, 1];
+        this.scene.pointLight.nearRadius = 40;
+        this.scene.pointLight.farRadius = 100;
         this.scene.ambientLight.color = [0.1, 0.1, 0.2, 1];
     };
 
@@ -6608,8 +6627,8 @@ exports.repository = {
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 216,
-                "y": 37
+                "x": 233,
+                "y": 55
             },
             "layerId": 2,
             "type": "GameObject",
@@ -6650,8 +6669,8 @@ exports.repository = {
             "id": 65,
             "name": "platform",
             "pos": {
-                "x": 60,
-                "y": 146
+                "x": 74,
+                "y": 143
             },
             "layerId": 2,
             "type": "GameObject",
@@ -6678,8 +6697,8 @@ exports.repository = {
             "id": 68,
             "name": "ground1",
             "pos": {
-                "x": 359,
-                "y": 48
+                "x": 348,
+                "y": 47
             },
             "layerId": 2,
             "type": "GameObject",

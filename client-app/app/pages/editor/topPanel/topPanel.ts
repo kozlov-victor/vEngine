@@ -37,7 +37,7 @@ export default class TopPanel extends BaseComponent {
 
     async run(){
         let buildOpts = this.editData.buildOpts;
-        if (w) {
+        if (w && w.document && w.document.body) {
             w.document.title = w.document.body.innerHTML='loading...'
         }
         await this.http.get(

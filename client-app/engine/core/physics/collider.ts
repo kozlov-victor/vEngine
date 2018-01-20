@@ -58,8 +58,16 @@ export default class Collider {
 
             }
         }
-        if (!collidedByX) player.pos.addX(deltaPoint.x);
-        if (!collidedByY) player.pos.addY(deltaPoint.y);
+        if (!collidedByX) {
+            player.pos.addX(deltaPoint.x);
+        } else {
+            playerRigidBody.vel.setX(0);
+        }
+        if (!collidedByY) {
+            player.pos.addY(deltaPoint.y);
+        } else {
+            playerRigidBody.vel.setY(0);
+        }
 
         playerRigidBody._onFloorInCurrFrame = expectedY > player.pos.y;
         playerRigidBody.onFloor =

@@ -47,9 +47,9 @@ export let random = function(min:number, max:number){
  * analog of glu unproject function
  * https://github.com/bringhurst/webgl-unproject/blob/master/GLU.js
  */
-export let unProject = (winX,winY, width, height, viewProjectionMatrix)=>{
-    let x = 2.0 * winX / width - 1;
-    let y = 2.0 * winY / height - 1;
+export let unProject = (winPoint:Point2d, width, height, viewProjectionMatrix)=>{
+    let x = 2.0 * winPoint.x / width - 1;
+    let y = 2.0 * winPoint.y / height - 1;
     let viewProjectionInverse = mat4.inverse(viewProjectionMatrix);
 
     let point3D = [x, y, 0, 1];

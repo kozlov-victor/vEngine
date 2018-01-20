@@ -161,8 +161,11 @@ export default class WebGlRenderer extends AbstractRenderer {
             u_textureMatrix: makeTextureMatrix(srcRect.x,srcRect.y,srcRect.width,srcRect.height,texWidth,texHeight),
             u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
             u_alpha: 1,
-            'u_pointLight.pos': scene.pointLight.worldToScreen().toArray(),
-            'u_pointLight.radius': scene.pointLight.radius,
+
+            'u_pointLight.pos': scene.pointLight.getPosScaled().toArray(),
+            'u_pointLight.nearRadius': scene.pointLight.nearRadius,
+            'u_pointLight.farRadius': scene.pointLight.farRadius,
+            'u_pointLight.isOn': scene.pointLight.isOn,
             'u_pointLight.color': scene.pointLight.color,
             'u_ambientLight.color': scene.ambientLight.color
         };

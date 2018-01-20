@@ -27,10 +27,9 @@ export interface TweenDescription {
     complete?:Function,
     ease?:string,
     time:number,
-    from?:any,
-    to?:any
+    from?:{[key:string]:number},
+    to?:{[key:string]:number}
 }
-
 
 export default class Tween {
 

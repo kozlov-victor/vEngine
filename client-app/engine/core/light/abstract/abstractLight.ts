@@ -1,10 +1,10 @@
 
 import Game from "../../game";
 
-export default class AbstractLight {
+export default abstract class AbstractLight {
 
     color = [1,1,1,1];
-    intensivity:number = 1.0;
+    intensity:number = 1.0;
 
     protected game:Game;
 

@@ -4,7 +4,6 @@ import * as mathEx from '../mathEx'
 import Point2d from "../geometry/point2d";
 import ObjectPool from "../misc/objectPool";
 import Game from "../game";
-import Camera from "../camera";
 
 interface MouseEventEx extends MouseEvent {
     identifier:number,
@@ -43,12 +42,11 @@ export default class Mouse {
     //MouseEvent|TouchEvent|PointerEvent
     resolvePoint(e:MouseEventEx):MousePoint{
         let game:Game = this.game;
-        let camera:Camera = this.game.camera;
 
         let screenX:number = (e.clientX - game.pos.x ) / game.scale.x;
         let screenY:number = (e.clientY - game.pos.y ) / game.scale.y;
 
-        let p:Point2d = game.camera.screenToWorld(screenX,screenY);
+        let p:Point2d = game.camera.screenToWorld(Point2d.fromPool().setXY(screenX,screenY));
 
         let mousePoint:MousePoint = MousePoint.fromPool();
         mousePoint.set(p);

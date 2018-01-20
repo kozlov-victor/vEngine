@@ -20,8 +20,9 @@ export class MainSceneBehaviour {
         this.cnt=0;
         
         
-        this.scene.pointLight.color = [0.8,0.8,0.6,1];
-        this.scene.pointLight.radius = 65;
+        this.scene.pointLight.color = [0.8,0.8,0.2,1];
+        this.scene.pointLight.nearRadius = 40;
+        this.scene.pointLight.farRadius = 100;
         this.scene.ambientLight.color = [0.1,0.1,0.2,1];
         
     }

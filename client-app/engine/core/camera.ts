@@ -34,8 +34,6 @@ export default class Camera {
         max: new Point2d()
     };
 
-    FOLLOWING_TOLERANCE_TIME:number = 2000;
-
     constructor(game:Game){
         this.game = game;
     }
@@ -55,7 +53,7 @@ export default class Camera {
     }
 
     update(currTime:number,delta:number) {
-        let cameraRect:Rect = this.getRectScaled();
+
         let gameObject:GameObject = this.objFollowTo;
         if (!gameObject) return;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
@@ -65,10 +63,11 @@ export default class Camera {
         let wDiv2 = w/2;
         let hDiv2 = h/2;
 
+        let wScaled = this.getRectScaled().width;
         if (gameObject['_lastDirection'] === 'Right')
-            this.cameraPosCorrection.max.x=w/3; // todo _lastDirection
+            this.cameraPosCorrection.max.x=wScaled/3; // todo _lastDirection
         if (gameObject['_lastDirection'] === 'Left')
-            this.cameraPosCorrection.max.x=-w/3;
+            this.cameraPosCorrection.max.x=-wScaled/3;
         let currCorrection:Point2d =
             this.cameraPosCorrection.max.
             substract(this.cameraPosCorrection.current).
@@ -115,8 +114,8 @@ export default class Camera {
     }
 
     _updateRect(){
-        let point00 = this.screenToWorld(0,0);
-        let pointWH = this.screenToWorld(this.game.width,this.game.height);
+        let point00 = this.screenToWorld(Point2d.fromPool().setXY(0,0));
+        let pointWH = this.screenToWorld(Point2d.fromPool().setXY(this.game.width,this.game.height));
         this._rectScaled.set(
             point00.x,point00.y,
             pointWH.x - point00.x,pointWH.y - point00.y
@@ -136,11 +135,10 @@ export default class Camera {
         );
     }
 
-    screenToWorld(screenX,screenY){
+    screenToWorld(p:Point2d){
         let mScale = mat4.makeScale(this.scale.x,this.scale.y,1);
         let point2d = mathEx.unProject(
-            screenX,screenY,
-            this.game.width,this.game.height,mScale);
+            p, this.game.width,this.game.height,mScale);
         point2d.add(this.pos);
         return point2d;
     }

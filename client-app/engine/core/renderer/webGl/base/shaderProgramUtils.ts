@@ -138,18 +138,28 @@ const TypeInt = {
     }
 };
 
+const TypeBool = {
+    check: (val)=>{
+        if (!(val==true || val==false))
+            throw `can not set uniform with value ${val}: expected argument of boolean type, but ${val} found`;
+    }
+};
+
 const TypeArray = (ElType,size?)=>{
     return {
         check: (val)=>{
-            if (!val.splice)
-                throw `can not set uniform with value ${val}: expected argument of type Array`;
+            if (!val.splice) {
+                console.error('Can not set uniform value',val);
+                throw `can not set uniform with value [${val}]: expected argument of type Array`;
+            }
             if (size!==undefined && val.length!==size)
-                throw `can not set uniform with value ${val}: expected array with size ${size}, but ${val.length} found`;
+                throw `can not set uniform with value [${val}]: expected array with size ${size}, but ${val.length} found`;
             for (let i=0;i<val.length;i++) {
                 try {
                     ElType.check(val[i]);
                 } catch (e){
-                    throw `can not set uniform with value ${val}: unexpected array element type: ${val[i]}`;
+                    console.error('Can not set uniform array item',val);
+                    throw `can not set uniform array item with value [${val}]: unexpected array element type: ${val[i]}`;
                 }
             }
         }
@@ -196,19 +206,19 @@ export const getUniformSetter = function(size,type){
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
             case 'bool':  return (gl,location,value)=> {
-                DEBUG && expect(value,TypeInt);
+                DEBUG && expect(value,TypeBool);
                 gl.uniform1i(location, value);
             };
             case 'bvec2': return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt,2));
+                DEBUG && expect(value,TypeArray(TypeBool,2));
                 gl.uniform2i(location, value[0], value[1]);
             };
             case 'bvec3': return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt,3));
+                DEBUG && expect(value,TypeArray(TypeBool,3));
                 gl.uniform3i(location, value[0], value[1], value[2]);
             };
             case 'bvec4': return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt,4));
+                DEBUG && expect(value,TypeArray(TypeBool,4));
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
             case 'mat2':  return (gl,location,value)=> {
@@ -266,23 +276,23 @@ export const getUniformSetter = function(size,type){
                 gl.uniform4iv(location, value);
             };
             case 'bool':  return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt));
+                DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
             case 'bvec2': return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt));
+                DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform2iv(location, value);
             };
             case 'bvec3': return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt));
+                DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform3iv(location, value);
             };
             case 'bvec4': return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt));
+                DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform4iv(location, value);
             };
             case 'sampler2D':return (gl,location,value)=> {
-                DEBUG && expect(value,TypeArray(TypeInt));
+                DEBUG && expect(value,TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
             default:

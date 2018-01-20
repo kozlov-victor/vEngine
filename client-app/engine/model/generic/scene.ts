@@ -34,9 +34,6 @@ export default class Scene extends BaseModel {
         super(game);
         this.tileMap = new TileMap(game);
         this.pointLight = new PointLight(game);
-        this.pointLight.pos.setXY(50,50);
-        this.pointLight.radius = 30;
-
         this.ambientLight = new AmbientLight(game);
 
     }

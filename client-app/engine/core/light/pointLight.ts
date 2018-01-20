@@ -3,11 +3,14 @@ import Point2d from "../geometry/point2d";
 import Rect from "../geometry/rect";
 import Game from "../game";
 import AbstractLight from "./abstract/abstractLight";
+import Camera from "../camera";
 
 export default class PointLight extends AbstractLight {
 
     pos:Point2d = new Point2d();
-    radius: number = 0;
+    nearRadius: number = 0;
+    farRadius: number = 0;
+    isOn:boolean = true;
 
     private _screenPoint = new Point2d();
 
@@ -15,9 +18,14 @@ export default class PointLight extends AbstractLight {
         super(game);
     }
 
-    worldToScreen():Point2d {
-        let cameraRect:Rect = this.game.camera.getRectScaled();
-        this._screenPoint.setXY(this.pos.x - cameraRect.x, this.pos.y - cameraRect.y);
+    getPosScaled():Point2d {
+        let camera:Camera = this.game.camera;
+        let rect:Rect = camera.getRectScaled();
+        let scale:Point2d = camera.scale;
+        this._screenPoint.setXY(
+            (this.pos.x - rect.x) * scale.x,
+            (this.pos.y - rect.y) * scale.y
+        );
         return this._screenPoint;
     }
 

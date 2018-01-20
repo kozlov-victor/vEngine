@@ -792,19 +792,25 @@ var TypeInt = {
             throw "can not set uniform with value " + val + ": expected argument of integer type, but " + val + " found";
     }
 };
+var TypeBool = {
+    check: function (val) {
+        if (val !== true || val !== false)
+            throw "can not set uniform with value " + val + ": expected argument of boolean type, but " + val + " found";
+    }
+};
 var TypeArray = function (ElType, size) {
     return {
         check: function (val) {
             if (!val.splice)
-                throw "can not set uniform with value " + val + ": expected argument of type Array";
+                throw "can not set uniform with value [" + val + "]: expected argument of type Array";
             if (size !== undefined && val.length !== size)
-                throw "can not set uniform with value " + val + ": expected array with size " + size + ", but " + val.length + " found";
+                throw "can not set uniform with value [" + val + "]: expected array with size " + size + ", but " + val.length + " found";
             for (var i = 0; i < val.length; i++) {
                 try {
                     ElType.check(val[i]);
                 }
                 catch (e) {
-                    throw "can not set uniform with value " + val + ": unexpected array element type: " + val[i];
+                    throw "can not set uniform with value [" + val + "]: unexpected array element type: " + val[i];
                 }
             }
         }
@@ -849,19 +855,19 @@ exports.getUniformSetter = function (size, type) {
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
             case 'bool': return function (gl, location, value) {
-                true && expect(value, TypeInt);
+                true && expect(value, TypeBool);
                 gl.uniform1i(location, value);
             };
             case 'bvec2': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt, 2));
+                true && expect(value, TypeArray(TypeBool, 2));
                 gl.uniform2i(location, value[0], value[1]);
             };
             case 'bvec3': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt, 3));
+                true && expect(value, TypeArray(TypeBool, 3));
                 gl.uniform3i(location, value[0], value[1], value[2]);
             };
             case 'bvec4': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt, 4));
+                true && expect(value, TypeArray(TypeBool, 4));
                 gl.uniform4i(location, value[0], value[1], value[2], value[3]);
             };
             case 'mat2': return function (gl, location, value) {
@@ -921,23 +927,23 @@ exports.getUniformSetter = function (size, type) {
                 gl.uniform4iv(location, value);
             };
             case 'bool': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt));
+                true && expect(value, TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
             case 'bvec2': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt));
+                true && expect(value, TypeArray(TypeBool));
                 gl.uniform2iv(location, value);
             };
             case 'bvec3': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt));
+                true && expect(value, TypeArray(TypeBool));
                 gl.uniform3iv(location, value);
             };
             case 'bvec4': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt));
+                true && expect(value, TypeArray(TypeBool));
                 gl.uniform4iv(location, value);
             };
             case 'sampler2D': return function (gl, location, value) {
-                true && expect(value, TypeArray(TypeInt));
+                true && expect(value, TypeArray(TypeBool));
                 gl.uniform1iv(location, value);
             };
             default:
@@ -2394,8 +2400,6 @@ var Scene = /** @class */ (function (_super) {
         _this._individualBehaviour = null;
         _this.tileMap = new tileMap_1.default(game);
         _this.pointLight = new pointLight_1.default(game);
-        _this.pointLight.pos.setXY(50, 50);
-        _this.pointLight.radius = 30;
         _this.ambientLight = new ambientLight_1.default(game);
         return _this;
     }
@@ -9245,7 +9249,9 @@ var WebGlRenderer = /** @class */ (function (_super) {
             u_vertexMatrix: makePositionMatrix(dstPoint.x, dstPoint.y, srcRect.width, srcRect.height, this.game.width, this.game.height),
             u_alpha: 1,
             'u_pointLight.pos': scene.pointLight.worldToScreen().toArray(),
-            'u_pointLight.radius': scene.pointLight.radius,
+            'u_pointLight.nearRadius': scene.pointLight.nearRadius,
+            'u_pointLight.farRadius': scene.pointLight.farRadius,
+            'u_pointLight.isOn': scene.pointLight.isOn,
             'u_pointLight.color': scene.pointLight.color,
             'u_ambientLight.color': scene.ambientLight.color
         };
@@ -14659,11 +14665,12 @@ var SpriteRectLightDrawer = /** @class */ (function (_super) {
     function SpriteRectLightDrawer(gl) {
         var _this = this;
         var gen = new texShaderGenerator_1.default();
-        gen.prependFragmentCodeBlock("\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float radius;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n        ");
+        gen.prependFragmentCodeBlock("\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float nearRadius;\n                float farRadius;\n                bool isOn;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n            vec4 lightEffect(PointLight lgt){\n                vec4 result = vec4(0);\n                float atten = 0.0;\n                float dist = length(lgt.pos - gl_FragCoord.xy);\n                if (dist<=lgt.farRadius) {\n                    if (dist<=lgt.nearRadius) atten = 1.0;\n                    else {\n                        float n = dist - lgt.nearRadius;\n                        float d = lgt.farRadius - lgt.nearRadius;\n                        atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));\n                    }\n                }\n                result = atten * lgt.color; // * lgt.intensity\n                return result;\n            }\n        ");
         gen.addFragmentUniform("PointLight", 'u_pointLight');
         gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_lightColor');
         gen.addFragmentUniform("AmbientLight", 'u_ambientLight');
-        gen.setFragmentMainFn("\n            vec4 texColor = texture2D(texture, v_texCoord);\n            vec4 lightResult = u_ambientLight.color;\n            float dist = length(u_pointLight.pos.xy-gl_FragCoord.xy);\n            //float attenuation = 0.8;\n            if (dist<u_pointLight.radius) {\n                lightResult+=u_pointLight.color;\n            }\n            lightResult*=texColor;\n            gl_FragColor = lightResult;\n            gl_FragColor.a *= u_alpha;\n        ");
+        //language=HTML
+        gen.setFragmentMainFn("\n            vec4 texColor = texture2D(texture, v_texCoord);\n            vec4 lightResult = u_ambientLight.color;\n            \n            if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight);\n            \n            lightResult*=texColor;\n            gl_FragColor = lightResult;\n            gl_FragColor.a *= u_alpha;\n        ");
         var program = new shaderProgram_1.default(gl, gen.getVertexSource(), gen.getFragmentSource());
         _this = _super.call(this, gl, program) || this;
         return _this;
@@ -14697,7 +14704,9 @@ var PointLight = /** @class */ (function (_super) {
     function PointLight(game) {
         var _this = _super.call(this, game) || this;
         _this.pos = new point2d_1.default();
-        _this.radius = 0;
+        _this.nearRadius = 0;
+        _this.farRadius = 0;
+        _this.isOn = true;
         _this._screenPoint = new point2d_1.default();
         return _this;
     }
@@ -14721,7 +14730,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var AbstractLight = /** @class */ (function () {
     function AbstractLight(game) {
         this.color = [1, 1, 1, 1];
-        this.intensivity = 1.0;
+        this.intensity = 1.0;
         this.game = game;
     }
     return AbstractLight;

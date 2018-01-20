@@ -9,6 +9,7 @@ class GeneratorService {
 
     constructor(){
         this.cnt=0;
+        this.compilerCache = {};
     }
 
     static _createError(params,error){
@@ -19,12 +20,45 @@ class GeneratorService {
 
     }
 
+
+    static createCompiler(params){
+        let config = configFn(params);
+        config.plugins.push(
+            new webpack.DefinePlugin({
+                DEBUG: !!params.debug
+            })
+        );
+        if (params.minify && false) {
+            config.plugins.push(
+                new UglifyJSPlugin({
+                    output: { // http://lisperator.net/uglifyjs/codegen
+                        beautify: false,
+                        comments: false
+                    },
+                    compress: { // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
+                        sequences: true,
+                        booleans: true,
+                        conditionals: true,
+                        hoist_funs: false,
+                        hoist_vars: false,
+                        warnings: false
+                    },
+                })
+            )
+        }
+        return webpack(config);
+    }
+
+    getCompiler(params){
+        let key = JSON.stringify(params);
+        if (!this.compilerCache[key]) this.compilerCache[key] = GeneratorService.createCompiler(params);
+        return this.compilerCache[key];
+    }
+
     generate(params,callback){
 
         console.log('generation started',params);
         try {
-
-            let config = configFn(params);
 
             fs.createFolderSync(`workspace/${params.projectName}/out/`);
             fs.createFolderSync(`workspace/${params.projectName}/generated/src/engine`);
@@ -60,31 +94,8 @@ class GeneratorService {
 
             fs.copyFileSync('node-app/generator/index.tpl',`workspace/${params.projectName}/generated/src/index.ts`);
 
-            config.plugins.push(
-                new webpack.DefinePlugin({
-                    DEBUG: !!params.debug
-                })
-            );
-            if (params.minify && false) {
-                config.plugins.push(
-                    new UglifyJSPlugin({
-                        output: { // http://lisperator.net/uglifyjs/codegen
-                            beautify: false,
-                            comments: false
-                        },
-                        compress: { // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
-                            sequences: true,
-                            booleans: true,
-                            conditionals: true,
-                            hoist_funs: false,
-                            hoist_vars: false,
-                            warnings: false
-                        },
-                    })
-                )
-            }
 
-            let compiler = webpack(config);
+            let compiler = this.getCompiler(params);
 
             compiler.run((err, data) => {
                 if (err) {
