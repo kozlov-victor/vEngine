@@ -41,15 +41,18 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
         gen.addFragmentUniform("PointLight",'u_pointLight');
         gen.addFragmentUniform("AmbientLight",'u_ambientLight');
 
+        //language=GLSL
         gen.setFragmentMainFn(`
-            vec4 texColor = texture2D(texture, v_texCoord);
-            vec4 lightResult = u_ambientLight.color;
-            
-            if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight);
-            
-            lightResult*=texColor;
-            gl_FragColor = lightResult;
-            gl_FragColor.a *= u_alpha;
+            void main(){
+                vec4 texColor = texture2D(texture, v_texCoord);
+                vec4 lightResult = u_ambientLight.color;
+                
+                if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight);
+                
+                lightResult*=texColor;
+                gl_FragColor = lightResult;
+                gl_FragColor.a *= u_alpha;
+            }
         `);
         let program:ShaderProgram = new ShaderProgram(
             gl,

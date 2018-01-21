@@ -2,18 +2,30 @@
 import BaseAbstractBehaviour from '../abstract/baseAbstractBehaviour'
 import Game from "../../core/game";
 import GameObject from "../../model/generic/gameObject";
+import Scene from "../../model/generic/scene";
+
+interface MouseDragPoint {
+    mX: number,
+    mY: number,
+    target: GameObject,
+    preventDefault:Function,
+    dragStartX:number,
+    dragStartY:number
+}
 
 export default class DraggableBehaviour extends BaseAbstractBehaviour {
 
-    static _getEventId(e){
+    private static _getEventId(e):number{
         return e.id || 1;
     };
 
-    private points;
+    private blurListener:Function;
+
+    private points:{number:any};
 
     constructor(game:Game){
         super(game);
-        this.points = {};
+        this.points = {} as {number:any};
     }
 
     manage(gameObject:GameObject,params) {
@@ -24,13 +36,15 @@ export default class DraggableBehaviour extends BaseAbstractBehaviour {
                 target: gameObject,
                 preventDefault(){
                     this.defaultPrevented = true;
-                }
-            };
+                },
+                dragStartX:0,
+                dragStartY:0
+            } as MouseDragPoint;
         });
-        let scene = this.game.getCurrScene();
+        let scene:Scene = this.game.getCurrScene();
         scene.on('mouseDown',e=>{
-            let pointId = DraggableBehaviour._getEventId(e);
-            let point = this.points[pointId];
+            let pointId:number = DraggableBehaviour._getEventId(e);
+            let point:MouseDragPoint = this.points[pointId];
             if (!point) return;
             point.dragStartX = point.target.pos.x;
             point.dragStartY = point.target.pos.y;
@@ -66,6 +80,14 @@ export default class DraggableBehaviour extends BaseAbstractBehaviour {
             }
             delete this.points[pointId];
         });
+        this.blurListener = (e)=>{
+            scene.trigger('mouseUp',e);
+        };
+        this.game.renderer.container.addEventListener('mouseleave',this.blurListener);
+    }
+
+    destroy(){
+        this.game.renderer.container.removeEventListener('mouseleave',this.blurListener);
     }
 
 }

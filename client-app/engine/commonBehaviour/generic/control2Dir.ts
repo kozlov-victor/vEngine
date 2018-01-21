@@ -6,9 +6,6 @@ import Game from "../../core/game";
 
 export default class Control2Dir extends Move2Dir{
 
-    game:Game;
-    parameters;
-
     constructor(game:Game){
         super(game);
     }

@@ -1,13 +1,13 @@
 
 export default class EventEmitter{
 
-    events = {};
+    private events = {};
 
     constructor(){
 
     }
 
-    _on(name,callBack){
+    private _on(name,callBack){
         this.events[name] = this.events[name] || [];
         this.events[name].push(callBack);
     }

@@ -7,11 +7,9 @@ import ColorShaderGenerator from "../../../shaders/generators/generic/colorShade
 
 export default class ColorRectDrawer extends AbstractDrawer{
 
-    private plane:Plane;
-
     constructor(gl:WebGLRenderingContext){
         super(gl);
-        this.plane = new Plane();
+        this.primitive = new Plane();
         let gen = new ColorShaderGenerator();
         this.program = new ShaderProgram(
             gl,
@@ -20,8 +18,8 @@ export default class ColorRectDrawer extends AbstractDrawer{
         );
 
         this.bufferInfo = new BufferInfo(gl,{
-            posVertexInfo:{array: this.plane.vertexArr,type:gl.FLOAT,size:2,attrName:'a_position'},
-            posIndexInfo: {array: this.plane.indexArr},
+            posVertexInfo:{array: this.primitive.vertexArr,type:gl.FLOAT,size:2,attrName:'a_position'},
+            posIndexInfo: {array: this.primitive.indexArr},
             drawMethod: this.gl.TRIANGLE_STRIP
         } as BufferInfoDescription);
     }

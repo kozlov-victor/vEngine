@@ -1,31 +1,17 @@
 
-import FrameAnimation from './generic/frameAnimation'
-import SpriteSheet from './generic/spriteSheet'
-import GameObjectProto from './generic/gameObjectProto'
-import GameObject from './generic/gameObject'
-import CommonBehaviour from './generic/commonBehaviour'
-import ParticleSystem from './generic/particleSystem'
-import Scene from './generic/scene'
-import Sound from './generic/sound'
-import Font from './generic/font'
-import Layer from './generic/layer'
-import TextField from './generic/ui/textField'
-import TileMap from './generic/tileMap'
+export {default as FrameAnimation} from './generic/frameAnimation'
+export {default as SpriteSheet} from './generic/spriteSheet'
+export {default as GameObjectProto} from './generic/gameObjectProto'
+export {default as GameObject} from './generic/gameObject'
+export {default as CommonBehaviour} from './generic/commonBehaviour'
+export {default as ParticleSystem} from './generic/particleSystem'
+export {default as Scene} from './generic/scene'
+export {default as Sound} from './generic/sound'
+export {default as Font} from './generic/font'
+export {default as Layer} from './generic/layer'
+export {default as TextField} from './generic/ui/textField'
+export {default as TileMap} from './generic/tileMap'
 
-export {
-    FrameAnimation,
-    SpriteSheet,
-    GameObjectProto,
-    GameObject,
-    CommonBehaviour,
-    ParticleSystem,
-    Scene,
-    Sound,
-    Font,
-    Layer,
-    TextField,
-    TileMap
-}
 
 
 

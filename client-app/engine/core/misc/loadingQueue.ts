@@ -1,20 +1,21 @@
 export default class Queue{
 
-    tasksResolved = 0;
-    tasks = [];
-    tasksProgressById = {};
-    onResolved = null;
-    onProgress = null;
+    private tasksResolved = 0;
+    private tasks = [];
+    private tasksProgressById = {};
+
+    public onResolved = null;
+    public onProgress = null;
 
     constructor(){
 
     }
 
-    size(){
+    private size(){
         return this.tasks.length;
     }
 
-    calcProgress(){
+    private calcProgress(){
         let sum = 0;
         Object.keys(this.tasksProgressById).forEach(function(taskId){
             sum+=this.tasksProgressById[taskId]||0;
@@ -22,15 +23,12 @@ export default class Queue{
         return sum/this.tasks.length;
     }
 
-    addTask(taskFn,taskId) {
-        this.tasks.push(taskFn);
-        this.tasksProgressById[taskId] = 0;
-    };
-    progressTask(taskId,progress){
+    private progressTask(taskId,progress){
         this.tasksProgressById[taskId] = progress;
         this.onProgress && this.onProgress(this.calcProgress());
     };
-    resolveTask(taskId){
+
+    public resolveTask(taskId){
         this.tasksResolved++;
         this.tasksProgressById[taskId] = 1;
         if (this.tasks.length===this.tasksResolved) {
@@ -40,6 +38,12 @@ export default class Queue{
             this.onProgress && this.onProgress(this.calcProgress());
         }
     };
+
+    addTask(taskFn,taskId) {
+        this.tasks.push(taskFn);
+        this.tasksProgressById[taskId] = 0;
+    };
+
     start() {
         if (this.size()===0) this.onResolved();
         this.tasks.forEach(t=>{

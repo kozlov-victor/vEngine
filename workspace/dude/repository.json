@@ -14,9 +14,9 @@
             ],
             "useBG": true,
             "colorBG": {
-                "r": 50,
-                "g": 68,
-                "b": 154
+                "r": 22,
+                "g": 30,
+                "b": 67
             },
             "tileMap": {
                 "id": 52,
@@ -317,8 +317,8 @@
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 233,
-                "y": 55
+                "x": 252,
+                "y": 57
             },
             "layerId": 2,
             "type": "GameObject",

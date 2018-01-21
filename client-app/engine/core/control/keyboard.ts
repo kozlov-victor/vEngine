@@ -11,10 +11,13 @@ declare const window:any;
 
 export default class Keyboard {
 
-    keyDownListener:Function = null;
-    keyUpListener:Function = null;
+    private keyDownListener:Function = null;
+    private keyUpListener:Function = null;
 
-    KEY = {
+    private buffer = {};
+    private game:Game;
+
+    public readonly KEY = {
         SPACE: 32,
         A: 65,
         B: 66,
@@ -62,9 +65,6 @@ export default class Keyboard {
 
     };
 
-    buffer = {};
-    game:Game;
-
     constructor(game:Game) {
         this.game = game;
     }
@@ -80,20 +80,20 @@ export default class Keyboard {
         this.buffer[key] = KEY_JUST_RELEASED;
     }
 
-    isPressed(key){
+    isPressed(key):boolean{
         return this.buffer[key]>=KEY_PRESSED;
     }
 
-    isJustPressed(key){
+    isJustPressed(key):boolean{
         return this.buffer[key]===KEY_JUST_PRESSED;
     }
 
-    isReleased(key) {
+    isReleased(key):boolean{
         if (this.buffer[key]===undefined) return true;
         return  this.buffer[key]<=KEY_JUST_RELEASED;
     }
 
-    isJustReleased(key) {
+    isJustReleased(key):boolean {
         return this.buffer[key] === KEY_JUST_RELEASED;
     }
 

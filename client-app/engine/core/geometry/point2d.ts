@@ -73,6 +73,12 @@ export default class Point2d {
         return this;
     }
 
+    negative(){
+        this.x = - this.x;
+        this.y = -this.y;
+        return this;
+    }
+
     equal(val:number) {
         return this.x===val && this.y===val;
     }

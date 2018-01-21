@@ -1,6 +1,8 @@
 
 // http://madebyevan.com/gamedevclass/minimal-demo/
 
+import GameObjectProto from "../../model/generic/gameObjectProto";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 import Vec2 from '../geometry/vec2'
 import GameObject from "../../model/generic/gameObject";
@@ -13,17 +15,17 @@ export default class ArcadeRigidBody {
     onFloor:boolean = false;
     _onFloorInCurrFrame:boolean = false; // to avoid onFloor oscillation
     _onFloorInPrevFrame:boolean = false;
-    static:boolean=false; // todo reserved world
-    private game:Game;
-    private gameObject:GameObject;
+    isStatic:boolean=false;
+    protected game:Game;
+    protected gameObject:GameObjectProto;
 
-    constructor(gameObject){
-        this.game = gameObject.game;
+    constructor(game:Game,gameObject:GameObjectProto){
+        this.game = game;
         this.gameObject = gameObject;
     }
 
-    update(time,delta){
-        if (!this.gameObject.rigidBody.static) {
+    update(time:number,delta:number){
+        if (!this.gameObject.rigidBody.isStatic) {
             let deltaPoint:Point2d = this.vel.multByScalar(delta/1000);
             this.game.collider.moveBy(this.gameObject,deltaPoint);
             this.vel.addY(this.game.gravityConstant * delta / 1000);

@@ -124,8 +124,8 @@
             "id": 9,
             "name": "horse",
             "pos": {
-                "x": 318,
-                "y": 128
+                "x": 271,
+                "y": 124
             },
             "layerId": 2,
             "type": "GameObject",

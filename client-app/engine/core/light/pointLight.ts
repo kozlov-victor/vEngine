@@ -7,10 +7,10 @@ import Camera from "../camera";
 
 export default class PointLight extends AbstractLight {
 
-    pos:Point2d = new Point2d();
-    nearRadius: number = 0;
-    farRadius: number = 0;
-    isOn:boolean = true;
+    public pos:Point2d = new Point2d();
+    public nearRadius: number = 0;
+    public farRadius: number = 0;
+    public isOn:boolean = true;
 
     private _screenPoint = new Point2d();
 

@@ -1,10 +1,4 @@
 
-import Draggable from './generic/draggable';
-import Control4Dir from './generic/control4Dir';
-import Control2Dir from './generic/control2Dir';
-
-export {
-    Draggable,
-    Control4Dir,
-    Control2Dir
-}
+export {default as Draggable} from './generic/draggable';
+export {default as Control4Dir} from './generic/control4Dir';
+export {default as Control2Dir} from './generic/control2Dir';

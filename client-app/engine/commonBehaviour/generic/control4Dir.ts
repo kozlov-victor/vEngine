@@ -7,7 +7,6 @@ import GameObject from "../../model/generic/gameObject";
 
 export default class Control4Dir extends Move4Dir {
 
-
     constructor(game:Game){
         super(game);
     }
@@ -15,7 +14,6 @@ export default class Control4Dir extends Move4Dir {
     manage(gameObject:GameObject,parameters) {
         super.manage(gameObject,parameters);
     }
-
 
     onUpdate(){
         const keyboard = this.game.keyboard;

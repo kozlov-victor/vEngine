@@ -60,8 +60,8 @@ const deepCopy = (obj, _clonedObjects = [])=> {
 
 export default class CommonObject {
 
-    game:Game;
-    type:string;
+    protected game:Game;
+    public type:string;
 
     fromJSON(params = {},forceNew?){
         Object.keys(params).forEach(key=>{

@@ -13,8 +13,11 @@ export default class SimpleCopyFilter extends AbstractFilter{
 
     prepare(programGen:ShaderGenerator){
         programGen.addFragmentUniform(GL_TYPE.FLOAT,'u_mixFactor');
+        //language=GLSL
         programGen.setFragmentMainFn(`
-            gl_FragColor = texture2D(texture, v_texCoord); 
+            void main(){
+                gl_FragColor = texture2D(texture, v_texCoord);
+            }
         `);
     }
 

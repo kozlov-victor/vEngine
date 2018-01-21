@@ -6,7 +6,7 @@ import GameObject from "../../model/generic/gameObject";
 
 export default class Move4Dir extends Moveable {
 
-    static DIRS = ['Left', 'Right', 'Up','Down'];
+    private static DIRS = ['Left', 'Right', 'Up','Down'];
 
     constructor(game:Game){
         super(game);

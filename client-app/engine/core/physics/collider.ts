@@ -2,6 +2,7 @@
 import {overlapTest} from '../mathEx'
 import GameObject from "../../model/generic/gameObject";
 import Point2d from "../geometry/point2d";
+import GameObjectProto from "../../model/generic/gameObjectProto";
 
 export default class Collider {
 
@@ -11,7 +12,7 @@ export default class Collider {
         this.game = game;
     }
 
-    moveBy(player:GameObject, deltaPoint:Point2d) {
+    moveBy(player:GameObjectProto, deltaPoint:Point2d) {
 
         let rigidObjects =
             this.game.getCurrScene().getAllGameObjects().
@@ -46,27 +47,26 @@ export default class Collider {
                 else if (pathToBottom===minPath) { // closest path to move player to resolve collision is path to bottom
                     player.pos.setY(obstacleRect.bottom);
                     collidedByY = true;
+                    playerRigidBody.vel.setY(0);
                 }
                 else if (pathToLeft===minPath) { // closest path to move player to resolve collision is path to left
                     player.pos.setX(obstacleRect.x - playerRect.width);
                     collidedByX = true;
+                    playerRigidBody.vel.setX(0);
                 }
                 else if (pathToRight===minPath) { // closest path to move player to resolve collision is path to right
                     player.pos.setX(obstacleRect.x + obstacleRect.width);
                     collidedByX = true;
+                    playerRigidBody.vel.setX(0);
                 }
 
             }
         }
         if (!collidedByX) {
             player.pos.addX(deltaPoint.x);
-        } else {
-            playerRigidBody.vel.setX(0);
         }
         if (!collidedByY) {
             player.pos.addY(deltaPoint.y);
-        } else {
-            playerRigidBody.vel.setY(0);
         }
 
         playerRigidBody._onFloorInCurrFrame = expectedY > player.pos.y;

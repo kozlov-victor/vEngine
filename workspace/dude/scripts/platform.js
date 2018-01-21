@@ -3,7 +3,7 @@
 export class PlatformBehaviour {
 
     onCreate(){
-        this.gameObject.rigidBody.static = true;
+        this.gameObject.rigidBody.isStatic = true;
     }
 
     onUpdate(){

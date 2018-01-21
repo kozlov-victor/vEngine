@@ -1,4 +1,6 @@
 
+import GameObject from "./generic/gameObject";
+
 declare const DEBUG:boolean;
 
 import CommonObject from './commonObject'
@@ -6,7 +8,6 @@ import Tween, {TweenDescription} from '../core/tween'
 import EventEmitter from '../core/misc/eventEmitter'
 import {Transient} from '../core/misc/decorators'
 
-import ArcadeRigidBody from '../core/physics/arcadeRigidBody'
 import Rect from "../core/geometry/rect";
 import Point2d from "../core/geometry/point2d";
 import Game from "../core/game";
@@ -32,7 +33,6 @@ export default class BaseModel extends CommonObject {
     private _rect:Rect = new Rect(0,0);
     _emitter:EventEmitter;
     _cloner:BaseModel;
-    rigidBody:ArcadeRigidBody;
 
     constructor(game:Game){
         super();
@@ -41,10 +41,6 @@ export default class BaseModel extends CommonObject {
         );
         this.game = game;
         this._emitter = new EventEmitter();
-    }
-
-    revalidate(){
-        this.rigidBody = this.rigid?new ArcadeRigidBody(this):null;
     }
 
     setIndividualBehaviour(Clazz){}

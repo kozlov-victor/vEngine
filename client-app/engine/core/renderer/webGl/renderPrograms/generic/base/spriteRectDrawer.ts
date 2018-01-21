@@ -8,21 +8,19 @@ import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGen
 
 export default class SpriteRectDrawer extends AbstractDrawer {
 
-    private plane:Plane;
-
     constructor(gl:WebGLRenderingContext,program?:ShaderProgram) {
         super(gl);
         let gen = new TexShaderGenerator();
-        this.plane = new Plane();
+        this.primitive = new Plane();
         this.program = program || new ShaderProgram(
             gl,
             gen.getVertexSource(),
             gen.getFragmentSource()
         );
         this.bufferInfo = new BufferInfo(gl, {
-            posVertexInfo: {array: this.plane.vertexArr, type: gl.FLOAT, size: 2, attrName: 'a_position'},
-            posIndexInfo: {array: this.plane.indexArr},
-            texVertexInfo: {array: this.plane.texCoordArr, type: gl.FLOAT, size: 2, attrName: 'a_texCoord'},
+            posVertexInfo: {array: this.primitive.vertexArr, type: gl.FLOAT, size: 2, attrName: 'a_position'},
+            posIndexInfo: {array: this.primitive.indexArr},
+            texVertexInfo: {array: this.primitive.texCoordArr, type: gl.FLOAT, size: 2, attrName: 'a_texCoord'},
             drawMethod: this.gl.TRIANGLE_STRIP
         } as BufferInfoDescription);
     }

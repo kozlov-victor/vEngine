@@ -26,7 +26,10 @@ export default abstract class AbstractFilter {
     uniformsToSet:any = {};
 
     constructor(gl:WebGLRenderingContext){
-        if (DEBUG && !gl) throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
+        if (DEBUG && !gl) {
+            console.error(this);
+            throw "can not create Filter, gl context not passed to constructor, expected: Filter(gl)";
+        }
         this.gl = gl;
         let gen = new TexShaderGenerator();
         this.prepare(gen);

@@ -1,3 +1,5 @@
+import AbstractPrimitive from "../../primitives/abstractPrimitive";
+
 declare const DEBUG:boolean;
 
 import ShaderProgram from "../../base/shaderProgram";
@@ -15,11 +17,12 @@ export default abstract class AbstractDrawer {
 
     static currentInstance:AbstractDrawer = null;
 
-    gl:WebGLRenderingContext;
-    program:ShaderProgram = null;
-    uniformCache:any = {};
+    protected gl:WebGLRenderingContext;
+    protected program:ShaderProgram = null;
+    protected uniformCache:any = {};
+    protected primitive:AbstractPrimitive;
 
-    bufferInfo:BufferInfo;
+    protected bufferInfo:BufferInfo;
 
     private static instances:Array<AbstractDrawer> = [];
 

@@ -82,13 +82,13 @@ export default class CanvasRenderer extends AbstractRenderer {
         this.ctx.strokeRect(rect.x,rect.y,rect.width,rect.height);
     }
 
-    drawLine(point1:Point2d,point2:Point2d,color){
-        this.ctx.fillStyle = color;
-        this.ctx.beginPath();
-        this.ctx.moveTo(point1.x,point1.y);
-        this.ctx.lineTo(point2.x,point2.y);
-        this.ctx.stroke();
-    }
+    // drawLine(point1:Point2d,point2:Point2d,color){ // todo
+    //     this.ctx.fillStyle = color;
+    //     this.ctx.beginPath();
+    //     this.ctx.moveTo(point1.x,point1.y);
+    //     this.ctx.lineTo(point2.x,point2.y);
+    //     this.ctx.stroke();
+    // }
 
     fillCircle(x:number,y:number,r:number,color){
         let ctx = this.ctx;

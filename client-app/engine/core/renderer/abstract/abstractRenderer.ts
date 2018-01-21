@@ -81,11 +81,7 @@ export default abstract class AbstractRenderer {
 
     beginFrameBuffer(){}
 
-    flipFrameBuffer(filters){
-        if (DEBUG) {
-            if (this.debugTextField) this.debugTextField._render();
-        }
-    }
+    flipFrameBuffer(filters){}
 
     registerResize(){
         this.onResize();
@@ -103,6 +99,29 @@ export default abstract class AbstractRenderer {
     drawImage(texturePath:string,
               srcRect:Rect,
               dstPoint:Point2d){
+    }
+
+    drawTiledImage(texturePath:string,
+                   srcRect:Rect,
+                   dstRect:Rect,
+                   offset:Point2d){
+
+    }
+
+    fillRect(rect:Rect, color){
+
+    }
+
+    drawRect(rect:Rect,color){
+
+    }
+
+    drawLine(x1:number,y1:number,x2:number,y2:number,color){
+
+    }
+
+    fillCircle(x:number,y:number,r:number,color){
+
     }
 
     clear(){

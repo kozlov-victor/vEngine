@@ -7,7 +7,7 @@ import GameObject from "../../model/generic/gameObject";
 
 export default class Move2Dir extends Moveable {
 
-    static DIRS = ['Left', 'Right'];
+    private static DIRS = ['Left', 'Right'];
 
     constructor(game:Game){
         super(game);

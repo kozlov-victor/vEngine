@@ -17,15 +17,15 @@ interface CameraTweenTarget {
 
 export default class Camera {
 
-    objFollowTo:GameObject = null;
-    game:Game;
-    scene:Scene = null;
-    sceneWidth:number = 0;
-    sceneHeight:number = 0;
-    pos:Point2d = new Point2d(0,0);
-    scale:Point2d = new Point2d(1,1);
+    private objFollowTo:GameObject = null;
+    private game:Game;
+    private scene:Scene = null;
+    private sceneWidth:number = 0;
+    private sceneHeight:number = 0;
 
-    private lastToleranceTime:number = 0;
+    public pos:Point2d = new Point2d(0,0);
+    public scale:Point2d = new Point2d(1,1);
+
     private _rect:Rect = new Rect();
     private _rectScaled:Rect = new Rect();
     private cameraShakeTween:Tween = null;

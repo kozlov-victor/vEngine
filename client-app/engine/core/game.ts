@@ -1,3 +1,5 @@
+import BaseAbstractBehaviour from "../commonBehaviour/abstract/baseAbstractBehaviour";
+
 declare const DEBUG:boolean,IN_EDITOR:boolean;
 
 declare let window:any;
@@ -54,7 +56,7 @@ export default class Game extends CommonObject {
     keyboard:Keyboard;
     collider:Collider;
     camera:Camera;
-    scaleStrategy:number =SCALE_STRATEGY.FIT;
+    scaleStrategy:number = SCALE_STRATEGY.FIT;
     startSceneId:number = 0;
 
     _revalidated:boolean = false;
@@ -144,6 +146,7 @@ export default class Game extends CommonObject {
         this.keyboard.destroy();
         this.mouse.destroy();
         this.renderer.cancelFullScreen();
+        BaseAbstractBehaviour.destroyAll();
         setTimeout(()=>{ // wait for rendering stopped
             this.renderer.destroy();
         },1000)

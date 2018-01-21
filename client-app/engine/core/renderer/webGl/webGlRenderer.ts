@@ -47,10 +47,10 @@ const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewH
     return matrix;
 };
 
-const makeTextureMatrix = function(srcX,srcY,srcWidth,srcHeight,texWidth,texHeight){
+const makeTextureMatrix = function(srcRect:Rect,texWidth,texHeight){
 
-    let texScaleMatrix = mat4.makeScale(srcWidth / texWidth, srcHeight / texHeight, 1);
-    let texTranslationMatrix = mat4.makeTranslation(srcX / texWidth, srcY / texHeight, 0);
+    let texScaleMatrix = mat4.makeScale(srcRect.width / texWidth, srcRect.height / texHeight, 1);
+    let texTranslationMatrix = mat4.makeTranslation(srcRect.x / texWidth, srcRect.y / texHeight, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
 //  gl.enable(gl.CULL_FACE);
@@ -143,7 +143,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.drawTexture(texture,srcRect, dstPoint);
     }
 
-    drawTexture(texture:Texture,
+    private drawTexture(texture:Texture,
                 srcRect:Rect,
                 dstPoint:Point2d){
 
@@ -157,24 +157,31 @@ export default class WebGlRenderer extends AbstractRenderer {
         let texHeight = texture.getSize().height;
 
         let scene = this.game.getCurrScene();
-        let uniforms = {
-            u_textureMatrix: makeTextureMatrix(srcRect.x,srcRect.y,srcRect.width,srcRect.height,texWidth,texHeight),
-            u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
-            u_alpha: 1,
 
-            'u_pointLight.pos': scene.pointLight.getPosScaled().toArray(),
-            'u_pointLight.nearRadius': scene.pointLight.nearRadius,
-            'u_pointLight.farRadius': scene.pointLight.farRadius,
-            'u_pointLight.isOn': scene.pointLight.isOn,
-            'u_pointLight.color': scene.pointLight.color,
-            'u_ambientLight.color': scene.ambientLight.color
-        };
+        if (srcRect.width===120 || srcRect.width===174) {
 
-        // if (srcRect.width===120 || srcRect.width===174) {
-        //     this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
-        // }
-        // else
+            let uniforms = {
+                u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
+                u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
+                u_alpha: 1
+            };
+
+            this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
+        }
+        else
         {
+            let uniforms = {
+                u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
+                u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
+                u_alpha: 1,
+
+                'u_pointLight.pos': scene.pointLight.getPosScaled().toArray(),
+                'u_pointLight.nearRadius': scene.pointLight.nearRadius,
+                'u_pointLight.farRadius': scene.pointLight.farRadius,
+                'u_pointLight.isOn': scene.pointLight.isOn,
+                'u_pointLight.color': scene.pointLight.color,
+                'u_ambientLight.color': scene.ambientLight.color
+            };
             this.spriteRectLightDrawer.draw(texture,uniforms);
         }
     }
@@ -197,7 +204,7 @@ export default class WebGlRenderer extends AbstractRenderer {
 
         let uniforms:any = {};
         uniforms.u_textureMatrix = makeTextureMatrix(
-            0,0,dstRect.width, dstRect.height,
+            Rect.fromPool().set(0,0,dstRect.width, dstRect.height),
             texWidth,texHeight
         );
         uniforms.u_vertexMatrix = makePositionMatrix(
@@ -313,7 +320,6 @@ export default class WebGlRenderer extends AbstractRenderer {
     }
 
 
-    // gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     flipFrameBuffer(filters){
 
         let fullScreen = this.fullScreenSize;
@@ -333,7 +339,7 @@ export default class WebGlRenderer extends AbstractRenderer {
                 fullScreen.w,fullScreen.h
             ),
             u_textureMatrix: makeTextureMatrix(
-                0,0,fullScreen.w,fullScreen.h,
+                Rect.fromPool().set(0,0,fullScreen.w,fullScreen.h),
                 fullScreen.w,fullScreen.h
             ),
             u_alpha: 1

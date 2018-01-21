@@ -6,6 +6,8 @@ import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractF
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
 import {ArrayEx} from "../../declarations";
+import ArcadeRigidBody from "../../core/physics/arcadeRigidBody";
+import GameObject from "./gameObject";
 
 
 export default class GameObjectProto extends BaseModel {
@@ -28,6 +30,7 @@ export default class GameObjectProto extends BaseModel {
     filters: Array<AbstractFilter> = [];
     _layer;
     blendMode:string;
+    rigidBody:ArcadeRigidBody;
 
     private _frameRect = new Rect();
 
@@ -53,6 +56,7 @@ export default class GameObjectProto extends BaseModel {
             this.frameAnimations[i] = this.frameAnimations[i].clone(); // todo need clone?
             this.frameAnimations[i]._gameObject = this;
         });
+        this.rigidBody = this.rigid?new ArcadeRigidBody(this.game,this):null;
     }
 
     playFrameAnimation(animationName:string,opts?){

@@ -8,8 +8,6 @@ import ColorShaderGenerator from "../../../shaders/generators/generic/colorShade
 
 export default class LineDrawer extends AbstractDrawer {
 
-    private line:Line;
-
     constructor(gl:WebGLRenderingContext){
         super(gl);
         let gen = new ColorShaderGenerator();
@@ -18,10 +16,10 @@ export default class LineDrawer extends AbstractDrawer {
             gen.getVertexSource(),
             gen.getFragmentSource()
         );
-        this.line = new Line();
+        this.primitive = new Line();
 
         this.bufferInfo = new BufferInfo(gl,{
-            posVertexInfo:{array: this.line.vertexArr,type:gl.FLOAT,size:2,attrName:'a_position'},
+            posVertexInfo:{array: this.primitive.vertexArr,type:gl.FLOAT,size:2,attrName:'a_position'},
             drawMethod: this.gl.LINE_STRIP
         });
     }

@@ -17,14 +17,17 @@ export default class PosterizeFilter extends AbstractFilter {
     prepare(programGen:ShaderGenerator){
         programGen.addFragmentUniform(GL_TYPE.FLOAT,' gamma');
         programGen.addFragmentUniform(GL_TYPE.FLOAT,'numColors');
+        //language=GLSL
         programGen.setFragmentMainFn(`
-              vec3 c = texture2D(texture, v_texCoord.xy).rgb;
-              c = pow(c, vec3(gamma));
-              c = c * numColors;
-              c = floor(c);
-              c = c / numColors;
-              c = pow(c, vec3(1.0/gamma));
-              gl_FragColor = vec4(c, 1.0);
+              void main(){
+                  vec3 c = texture2D(texture, v_texCoord.xy).rgb;
+                  c = pow(c, vec3(gamma));
+                  c = c * numColors;
+                  c = floor(c);
+                  c = c / numColors;
+                  c = pow(c, vec3(1.0/gamma));
+                  gl_FragColor = vec4(c, 1.0);
+              }
             `
         );
         this.setParam('gamma',0.6);

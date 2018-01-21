@@ -13,6 +13,7 @@ export default class Rect {
     bottom:number;
 
     private static rectPool:ObjectPool<Rect> = new ObjectPool<Rect>(Rect);
+    private p:Point2d;
 
     constructor(x:number = 0,y:number = 0,width:number = 0,height:number = 0){
         this.set(x,y,width,height);
@@ -42,6 +43,12 @@ export default class Rect {
     addPoint(another:Point2d){
         this.addXY(another.x,another.y);
         return this;
+    }
+
+    getPoint(){
+        if (this.p===undefined) this.p = new Point2d();
+        this.p.setXY(this.x,this.y);
+        return this.p;
     }
 
     clone(){

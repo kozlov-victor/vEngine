@@ -4,9 +4,9 @@ import Game from "../../core/game";
 
 export default class Moveable extends BaseAbstractBehaviour {
 
-    gameObject = null;
-    parameters;
-    animations;
+    protected gameObject = null;
+    protected parameters;
+    protected animations;
 
     constructor(game:Game) {
         super(game);

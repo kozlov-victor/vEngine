@@ -1,16 +1,16 @@
 
 export default class ShaderGenerator {
 
-    vertexUniforms:Array<any> = [];
-    fragmentUniforms:Array<any> = [];
-    attributes:Array<any> = [];
-    varyings:Array<any> = [];
-    appendedFragCodeBlocks:Array<any> = [];
-    appendedVertexCodeBlocks:Array<any> = [];
-    prependedVertexCodeBlocks:Array<any> = [];
-    prependedFragCodeBlocks:Array<any> = [];
-    vertexMainFn:string = '';
-    fragmentMainFn:string = '';
+    private vertexUniforms:Array<any> = [];
+    private fragmentUniforms:Array<any> = [];
+    private attributes:Array<any> = [];
+    private varyings:Array<any> = [];
+    private appendedFragCodeBlocks:Array<any> = [];
+    private appendedVertexCodeBlocks:Array<any> = [];
+    private prependedVertexCodeBlocks:Array<any> = [];
+    private prependedFragCodeBlocks:Array<any> = [];
+    private vertexMainFn:string = '';
+    private fragmentMainFn:string = '';
 
     constructor(){}
 
@@ -69,9 +69,9 @@ export default class ShaderGenerator {
             ${this.attributes.map(      u=>`attribute ${u.type} ${u.name};`).join('\n')}
             ${this.varyings.map(        u=>`varying   ${u.type} ${u.name};`).join('\n')}
             ${this.appendedVertexCodeBlocks.map(v=>`${v}`).join('\n')}
-            void main() {
-               ${this.vertexMainFn}
-            }
+           
+            ${this.vertexMainFn}
+            
             `.replace(/\t/g, '')
         )
     }
@@ -87,9 +87,9 @@ export default class ShaderGenerator {
             ${this.fragmentUniforms.map(u=>`uniform ${u.type} ${u.name};`).join('\n')}
             ${this.varyings.map(        u=>`varying ${u.type} ${u.name};`).join('\n')}
             ${this.appendedFragCodeBlocks.map(v=>`${v}`).join('\n')}
-            void main() {
-               ${this.fragmentMainFn}
-            }
+            
+            ${this.fragmentMainFn}
+            
             `.replace(/\t/g, '')
         )
     }

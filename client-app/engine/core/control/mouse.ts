@@ -12,11 +12,12 @@ interface MouseEventEx extends MouseEvent {
 
 class MousePoint extends Point2d{
 
-    screenX:number;
-    screenY:number;
-    id:number;
-    target;
-    static mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
+    public screenX:number;
+    public screenY:number;
+    public id:number;
+    public target;
+
+    private static mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
 
     constructor(){
         super();
@@ -30,9 +31,9 @@ class MousePoint extends Point2d{
 
 export default class Mouse {
 
-    objectsCaptured = {};
-    container:HTMLElement = null;
-    game:Game;
+    private objectsCaptured = {};
+    private container:HTMLElement = null;
+    private game:Game;
 
     constructor(game:Game){
         this.game = game;

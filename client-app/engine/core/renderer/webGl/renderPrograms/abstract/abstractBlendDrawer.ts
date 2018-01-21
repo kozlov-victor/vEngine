@@ -11,19 +11,22 @@ import FrameBuffer from "../../base/frameBuffer";
 
 export default abstract class AbstractBlendDrawer {
 
-    spriteRectDrawer:SpriteRectDrawer;
-    simpleCopyFilter:SimpleCopyFilter;
-    gl:WebGLRenderingContext;
+    protected spriteRectDrawer:SpriteRectDrawer;
+    protected simpleCopyFilter:SimpleCopyFilter;
+    protected gl:WebGLRenderingContext;
 
     constructor(gl:WebGLRenderingContext) {
         this.gl = gl;
         let gen = new TexShaderGenerator();
         gen.addVarying(GL_TYPE.FLOAT_VEC4, 'v_destTexCoord');
         gen.addFragmentUniform(GL_TYPE.SAMPLER_2D,'destTexture');
+        //language=GLSL
         gen.setVertexMainFn(`
-            gl_Position = u_vertexMatrix * a_position;
-            v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy;
-            v_destTexCoord = gl_Position*0.5+0.5;  
+            void main(){
+                gl_Position = u_vertexMatrix * a_position;
+                v_texCoord = (u_textureMatrix * vec4(a_texCoord, 0, 1)).xy;
+                v_destTexCoord = gl_Position*0.5+0.5; 
+            }
         `);
         this.prepare(gen);
         this._afterPrepare(gen);
