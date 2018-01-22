@@ -69,13 +69,8 @@ class GeneratorService {
             let allScripts = fs.readDirSync(`workspace/${params.projectName}/scripts`).map(it=>it.name.split('.')[0]);
             let allScriptCode = '';
             allScripts.forEach(scriptName=>{
-                allScriptCode+=`import {${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour} from './${scriptName}'\n`
+                allScriptCode+=`export {${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour} from './${scriptName}'\n`
             });
-            allScriptCode+=`
-                export {
-                    \t${allScripts.map(scriptName=>`${scriptName[0].toUpperCase()}${scriptName.substr(1)}Behaviour`).join(',')}
-                }            
-            `;
             allScriptCode = allScriptCode.split('  ').join('');
             fs.createFileSync(`workspace/${params.projectName}/generated/src/app/scripts/allScripts.js`,allScriptCode);
 

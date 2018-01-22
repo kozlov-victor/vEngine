@@ -3,12 +3,13 @@ import {overlapTest} from '../mathEx'
 import GameObject from "../../model/generic/gameObject";
 import Point2d from "../geometry/point2d";
 import GameObjectProto from "../../model/generic/gameObjectProto";
+import Game from "../game";
 
 export default class Collider {
 
-    private game;
+    private game:Game;
 
-    constructor(game){
+    constructor(game:Game){
         this.game = game;
     }
 
@@ -16,7 +17,7 @@ export default class Collider {
 
         let rigidObjects =
             this.game.getCurrScene().getAllGameObjects().
-            concat(this.game._currentScene.tileMap.getTilesAtRect(player.getRect()));
+            concat(this.game.getCurrScene().tileMap.getTilesAtRect(player.getRect()));
 
         let playerRect = player.getRect();
         let playerRigidBody = player.rigidBody;
@@ -78,13 +79,13 @@ export default class Collider {
 
 
 
-    moveTo(player,point){ // todo not works!
+    moveTo(player:GameObject,point:Point2d){ // todo not works!
         let pRect = player.getRect();
         let collided = false;
         if (player.rigidBody) {
             this.game.getCurrScene().getAllGameObjects().
-            concat(this.game._currentScene.tileMap.getTilesAtRect(pRect)).
-            some(g=>{
+            concat(this.game.getCurrScene().tileMap.getTilesAtRect(pRect)).
+            some((g:GameObject)=>{
                 if (overlapTest(pRect,g.getRect())) {
                     collided = true;
                     return true;

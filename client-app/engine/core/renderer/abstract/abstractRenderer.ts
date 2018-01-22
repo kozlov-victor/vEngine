@@ -1,3 +1,5 @@
+import AbstractFilter from "../webGl/filters/abstract/abstractFilter";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import TextField from '../../../model/generic/ui/textField'
@@ -7,18 +9,21 @@ import Game from "../../game";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
+import Color from "../../color";
 
 declare const document:any, window:any;
 
 export default abstract class AbstractRenderer {
 
-    renderableCache = {};
-    container = null;
-    debugTextField = null;
-    fullScreenSize = {w:0,h:0,scaleFactor:1};
-    game:Game;
+    public container:HTMLElement;
+    public debugTextField:TextField;
 
-    constructor(game){
+    protected renderableCache = {};
+    protected fullScreenSize:{w:number,h:number,scaleFactor:number} =
+        {w:0,h:0,scaleFactor:1};
+    protected game:Game;
+
+    constructor(game:Game){
         this.game = game;
         if (Device.isCocoonJS) {
             this.fullScreenSize.w = window.innerWidth*Device.scale;
@@ -32,34 +37,10 @@ export default abstract class AbstractRenderer {
         //document.body.addEventListener('click',()=>this.requestFullScreen());
     }
 
-    onResize(){
-        if (this.game.scaleStrategy===SCALE_STRATEGY.NO_SCALE) return;
-        let canvasRatio = this.container.height / this.container.width;
-        let windowRatio = window.innerHeight / window.innerWidth;
-        let width;
-        let height;
-
-        if (windowRatio < canvasRatio) {
-            height = window.innerHeight;
-            width = height / canvasRatio;
-        } else {
-            width = window.innerWidth;
-            height = width * canvasRatio;
-        }
-        this.game.scale.setXY(width / this.game.width, height / this.game.height);
-        this.game.pos.setXY(
-            (window.innerWidth - width) / 2,
-            (window.innerHeight - height) / 2
-        );
-
-        this.container.style.width = width + 'px';
-        this.container.style.height = height + 'px';
-        this.container.style.marginTop = `${this.game.pos.y}px`;
-
-    }
+    onResize(){}
 
     requestFullScreen(){
-        let element = this.container;
+        let element = this.container as any;
         if(element.requestFullScreen) {
             element.requestFullScreen();
         } else if(element.mozRequestFullScreen) {
@@ -81,7 +62,7 @@ export default abstract class AbstractRenderer {
 
     beginFrameBuffer(){}
 
-    flipFrameBuffer(filters){}
+    flipFrameBuffer(filters:Array<AbstractFilter>){}
 
     registerResize(){
         this.onResize();
@@ -108,19 +89,19 @@ export default abstract class AbstractRenderer {
 
     }
 
-    fillRect(rect:Rect, color){
+    fillRect(rect:Rect, color:Color){
 
     }
 
-    drawRect(rect:Rect,color){
+    drawRect(rect:Rect,color:Color){
 
     }
 
-    drawLine(x1:number,y1:number,x2:number,y2:number,color){
+    drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){
 
     }
 
-    fillCircle(x:number,y:number,r:number,color){
+    fillCircle(x:number,y:number,r:number,color:Color){
 
     }
 
@@ -128,7 +109,7 @@ export default abstract class AbstractRenderer {
 
     }
 
-    clearColor({r,g,b}){
+    clearColor(c:Color){
 
     }
 

@@ -13,7 +13,7 @@ export let makeIdentity = ()=> {
     ];
 };
 
-export let makeZToWMatrix = fudgeFactor=> {
+export let makeZToWMatrix = (fudgeFactor:number)=> {
     return [
         1, 0, 0, 0,
         0, 1, 0, 0,
@@ -22,7 +22,7 @@ export let makeZToWMatrix = fudgeFactor=> {
     ];
 };
 
-export let make2DProjection = (width, height, depth)=> {
+export let make2DProjection = (width:number, height:number, depth:number)=> {
     // Note: This matrix flips the Y axis so 0 is at the top.
     return [
         2 / width, 0, 0, 0,
@@ -33,7 +33,11 @@ export let make2DProjection = (width, height, depth)=> {
 };
 
 
-export let ortho = (left, right, bottom, top, near, far)=> {
+export let ortho = (
+    left:number, right:number,
+    bottom:number, top:number,
+    near:number, far:number)=>
+{
     let lr = 1 / (left - right),
         bt = 1 / (bottom - top),
         nf = 1 / (near - far);
@@ -57,7 +61,7 @@ export let ortho = (left, right, bottom, top, near, far)=> {
     return out;
 };
 
-export let perspective = (fovy, aspect, near, far)=> {
+export let perspective = (fovy:number, aspect:number, near:number, far:number)=> {
     let f = 1.0 / Math.tan(fovy / 2),
         nf = 1 / (near - far);
     let out = new Array(16);
@@ -85,7 +89,7 @@ export let perspective = (fovy, aspect, near, far)=> {
 };
 
 
-export let makeTranslation = (tx, ty, tz)=> {
+export let makeTranslation = (tx:number, ty:number, tz:number)=> {
     return [
         1,  0,  0,  0,
         0,  1,  0,  0,
@@ -94,7 +98,7 @@ export let makeTranslation = (tx, ty, tz)=> {
     ];
 };
 
-export let makeXRotation = angleInRadians=> {
+export let makeXRotation = (angleInRadians:number)=> {
     let c = Math.cos(angleInRadians);
     let s = Math.sin(angleInRadians);
 
@@ -106,7 +110,7 @@ export let makeXRotation = angleInRadians=> {
     ];
 };
 
-export let makeYRotation = angleInRadians=> {
+export let makeYRotation = (angleInRadians:number)=> {
     let c = Math.cos(angleInRadians);
     let s = Math.sin(angleInRadians);
 
@@ -118,7 +122,7 @@ export let makeYRotation = angleInRadians=> {
     ];
 };
 
-export let makeZRotation = angleInRadians=> {
+export let makeZRotation = (angleInRadians:number)=> {
     let c = Math.cos(angleInRadians);
     let s = Math.sin(angleInRadians);
     return [
@@ -129,7 +133,7 @@ export let makeZRotation = angleInRadians=> {
     ];
 };
 
-export let makeScale = (sx, sy, sz)=> {
+export let makeScale = (sx:number, sy:number, sz:number)=> {
     return [
         sx, 0,  0,  0,
         0, sy,  0,  0,
@@ -139,7 +143,7 @@ export let makeScale = (sx, sy, sz)=> {
 };
 
 
-export let matrixMultiply = function(a, b) {
+export let matrixMultiply = function(a:Array<number>, b:Array<number>) {
     let r = new Array(16);
     r[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
     r[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
@@ -163,7 +167,7 @@ export let matrixMultiply = function(a, b) {
     return r;
 };
 
-export let multMatrixVec = (matrix, inp)=> {
+export let multMatrixVec = (matrix:Array<number>, inp:Array<number>)=> {
     let out = new Array(16);
     for (let i = 0; i < 4; i++) {
         out[i] =
@@ -175,7 +179,7 @@ export let multMatrixVec = (matrix, inp)=> {
     return out;
 };
 
-export let inverse = (m)=>{
+export let inverse = (m:Array<number>)=>{
     let r = new Array(16);
 
     r[0] = m[5]*m[10]*m[15] - m[5]*m[14]*m[11] - m[6]*m[9]*m[15] + m[6]*m[13]*m[11] + m[7]*m[9]*m[14] - m[7]*m[13]*m[10];

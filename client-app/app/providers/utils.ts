@@ -1,4 +1,6 @@
-declare const Blob,atob;
+import GameObject from "../../engine/model/generic/gameObject";
+
+declare const Blob:any,atob:any;
 declare let Promise:any;
 
 
@@ -12,12 +14,15 @@ import restFileSystem from '../providers/rest/fileSystem';
 import i18n from '../providers/i18n';
 
 import GameObjectProto from '../../engine/model/generic/gameObjectProto'
+import Scene from "../../engine/model/generic/scene";
+import Point2d from "../../engine/core/geometry/point2d";
+import SpriteSheet from "../../engine/model/generic/spriteSheet";
 
 export default class Utils {
-    static getGameObjectCss(gameObj){
-        if (!gameObj) gameObj = {};
-        gameObj.scale = gameObj.scale || {};
-        gameObj.spriteSheet = gameObj.spriteSheet || {};
+    static getGameObjectCss(gameObj:GameObject){
+        if (!gameObj) gameObj = {} as GameObject;
+        gameObj.scale = gameObj.scale || new Point2d(1,1);
+        gameObj.spriteSheet = gameObj.spriteSheet || {} as SpriteSheet;
         return {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
@@ -34,8 +39,8 @@ export default class Utils {
 
     }
 
-    static getCoords(elSelector,event){
-        let el = document.querySelector(elSelector);
+    static getCoords(elSelector:string,event:MouseEvent){
+        let el:HTMLElement = document.querySelector(elSelector) as HTMLElement;
         let clientRect = el.getBoundingClientRect();
         let x = event.clientX - clientRect.left;
         let y = event.clientY - clientRect.top;
@@ -60,12 +65,12 @@ export default class Utils {
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
         return editData.currSceneInEdit.tileMap.spriteSheet._frameHeight;
     }
-    static tileFramePosX(i){
+    static tileFramePosX(i:number){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
         return editData.currSceneInEdit.tileMap.spriteSheet.getFramePosX(i);
     }
-    static tileFramePosY(i){
+    static tileFramePosY(i:number){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
         return editData.currSceneInEdit.tileMap.spriteSheet.getFramePosY(i);
@@ -83,19 +88,19 @@ export default class Utils {
         return editData.currSceneInEdit.tileMap.spriteSheet.numOfFramesH;
     }
 
-    static calcZoom(gameObject) {
+    static calcZoom(gameObject:GameObject) {
         const sampleSize = 30;
-        if (!gameObject) gameObject = {width:sampleSize,height:sampleSize};
+        if (!gameObject) gameObject = {width:sampleSize,height:sampleSize} as GameObject;
         let maxSize = gameObject.width>gameObject.height?gameObject.width:gameObject.height;
         return maxSize>sampleSize?
             sampleSize/maxSize:
             1;
     }
 
-    static merge(a,b){
+    static merge(a:any,b:any){
         a = a || {};
         b = b || {};
-        let res = {};
+        let res:any = {};
         Object.keys(a).forEach(key=>{
             res[key] = a[key];
         });
@@ -105,7 +110,7 @@ export default class Utils {
         return res;
     }
 
-    static hexToRgb(hex) {
+    static hexToRgb(hex:string) {
         if (!hex) return {r:0,g:0,b:0};
         let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? {
@@ -115,23 +120,23 @@ export default class Utils {
         } : {r:0,g:0,b:0};
     }
 
-    static rgbToHex(col) {
+    static rgbToHex(col:{r:number,g:number,b:number}) {
         if (!col) return '#000000';
         let r = +col.r,g=+col.g,b=+col.b;
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 
-    static rgbToCss(objRGB){
+    static rgbToCss(objRGB:{r:number,g:number,b:number}){
         return `rgb(${objRGB.r},${objRGB.g},${objRGB.b})`
     }
 
-    static dataURItoBlob(dataURI) {
+    static dataURItoBlob(dataURI:string) {
         // convert base64/URLEncoded data component to raw binary data held in a string
         let byteString;
         if (dataURI.split(',')[0].indexOf('base64') >= 0)
             byteString = atob(dataURI.split(',')[1]);
         else
-            byteString = window['unescape'](dataURI.split(',')[1]);
+            byteString = (window as any)['unescape'](dataURI.split(',')[1]);
 
         // separate out the mime component
         let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
@@ -145,7 +150,7 @@ export default class Utils {
         return new Blob([ia], {type:mimeString});
     }
 
-    static range(rFr,rTo,step) {
+    static range(rFr:number,rTo:number,step:number) {
         if (!step) step = 1;
         let arr = [], i;
         if (rTo===undefined) {
@@ -165,8 +170,8 @@ export default class Utils {
     }
 
     static _createAceCompleter(){
-        let result = [];
-        let res = {};
+        let result:Array<any> = [];
+        let res:any = {};
         let objs = ['gameObject'];
         objs.forEach(go=>{
             let GObjClass = GameObjectProto;
@@ -187,7 +192,7 @@ export default class Utils {
         return result;
     }
 
-    static _waitForFrameAndDo(file,path){
+    static _waitForFrameAndDo(file:string,path:string){
         let frame:any = document.getElementById('scriptEditorFrame') as any;
         let contentWindow = frame && frame.contentWindow;
         if (!contentWindow || !contentWindow.ready) {
@@ -203,12 +208,12 @@ export default class Utils {
         window.addEventListener('resize',()=>{
             contentWindow && contentWindow.calcEditorSize();
         });
-        window['saveCode'] = code =>{
+        (window as any)['saveCode'] = (code:string) =>{
             restFileSystem.createFile(path,code);
         };
     };
 
-    static getArray(num) {
+    static getArray(num:number) {
         if (!num) return [];
         let res = [];
         for (let i=0;i<num;i++) {
@@ -217,13 +222,13 @@ export default class Utils {
         return res;
     }
 
-    static size(obj) {
+    static size(obj:any) {
         if (!obj) return 0;
         return Object.keys(obj).length;
     }
 
-    static deleteModel(model,callback){
-        return new Promise(resolve=>{
+    static deleteModel(model:any,callback:Function){
+        return new Promise((resolve:Function)=>{
             confirmEx(
                 i18n.getAll().confirmQuestion(model),
                 ()=>{
@@ -235,11 +240,11 @@ export default class Utils {
         });
     }
 
-    static eachGameObject(callback){
-        editData.game.repository.getArray('GameObjectProto').forEach(go=>{
+    static eachGameObject(callback:Function){
+        editData.game.repository.getArray('GameObjectProto').forEach((go:GameObjectProto)=>{
             callback(go);
         });
-        editData.game.repository.getArray('Scene').forEach(scene=>{
+        editData.game.repository.getArray('Scene').forEach((scene:Scene)=>{
             scene.layers.forEach(layer=>{
                 layer.gameObjects.forEach(go=>{
                     callback(go);
@@ -248,22 +253,22 @@ export default class Utils {
         });
     }
 
-    static openEditor(path) {
+    static openEditor(path:string) {
         editData.scriptEditorUrl = path;
-        restFileSystem.readFile(path,(file)=>{
+        restFileSystem.readFile(path,(file:string)=>{
             this._waitForFrameAndDo(file,path);
         });
     }
 
-    static assign(model,property,value){
+    static assign(model:any,property:string,value:any){
         model && (model[property] = value);
     }
 
-    static capitalise(s){
+    static capitalise(s:string){
         return s[0].toUpperCase() + s.substr(1);
     }
 
-    static deepEqual(x, y, _checkCache = []) {
+    static deepEqual(x:any, y:any, _checkCache = []):boolean {
         //if (isNaN(x) && isNaN(y)) return true;
         if (x && y && typeof x === 'object' && typeof y === 'object') {
             if (x===y) return true;

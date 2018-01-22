@@ -66,7 +66,9 @@
 /******/ ({
 
 /***/ 184:
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 var getPopupContainer = function () {
     if (!(document && document.getElementById))

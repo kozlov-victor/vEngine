@@ -81,7 +81,7 @@ export default class BaseModel extends CommonObject {
         this._emitter.on(eventName,callBack);
         return this;
     }
-    trigger(eventName,data){
+    trigger(eventName,data?){
         this._emitter.trigger(eventName,data);
     }
 

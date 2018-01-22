@@ -19,7 +19,7 @@ export default class GameObjectProto extends BaseModel {
     currFrameIndex:number = 0;
     _sprPosX:number = 0;
     _sprPosY:number = 0;
-    frameAnimations:ArrayEx<any> = [] as ArrayEx<any>;
+    frameAnimations:ArrayEx<FrameAnimation> = [] as ArrayEx<FrameAnimation>;
     _currFrameAnimation:FrameAnimation;
     startFrameAnimationName:string = null;
     _timeCreated:number = null;

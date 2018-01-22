@@ -69,7 +69,7 @@ export default class Vec2 extends Point2d {
         return this;
     }
 
-    setLength(value) {
+    setLength(value:number) {
         let _angle = this.getAngle();
         this.x = Math.cos(_angle) * value;
         this.y = Math.sin(_angle) * value;
@@ -79,14 +79,14 @@ export default class Vec2 extends Point2d {
         return Math.atan2(this.y, this.x);
     };
 
-    getAngleBetween(that){
+    getAngleBetween(that:Vec2){
         return Math.acos(
             (this.x*that.x + this.y*that.y)/
             this.getLength()*that.getLength()
         )
     }
 
-    setAngle(value) {
+    setAngle(value:number) {
         let len = this.getLength();
         this.x = Math.cos(value) * len;
         this.y = Math.sin(value) * len;
@@ -96,22 +96,22 @@ export default class Vec2 extends Point2d {
         return new Vec2(this.x, this.y);
     }
 
-    static angleBetween(v1, v2) {
+    static angleBetween(v1:Vec2, v2:Vec2) {
         v1 = v1.clone().normalize();
         v2 = v2.clone().normalize();
         return Math.acos(v1.dotProduct(v2));
     };
 
-    static normalBetween(v1,v2){
+    static normalBetween(v1:Vec2,v2:Vec2){
         let v = v1.minus(v2);
         return v.normalize();
     }
 
-    static distance(a,b) {
+    static distance(a:Vec2,b:Vec2) {
         return Math.sqrt(Vec2.distanceSquared(a,b));
     }
 
-    static distanceSquared(a, b) {
+    static distanceSquared(a:Vec2, b:Vec2) {
         return (a.x - b.x)*(a.x - b.x) + (a.y - b.y)*((a.y - b.y));
     }
 

@@ -1,8 +1,14 @@
 
 
+import GameObject from "../../model/generic/gameObject";
+
 declare const DEBUG:boolean;
 
 import Game from "../../core/game";
+
+export interface BehaviourParameters {
+    [key:string]:any
+}
 
 export default class BaseAbstractBehaviour {
 
@@ -14,7 +20,7 @@ export default class BaseAbstractBehaviour {
         BaseAbstractBehaviour.instances.push(this);
     }
 
-    manage(gameObject,parameters,dirs){
+    manage(gameObject:GameObject,parameters:BehaviourParameters,dirs:Array<string>){
         console.error(this);
         if (DEBUG) throw `BaseAbstractBehaviour: method 'manage' not implemented`;
     }

@@ -1,11 +1,11 @@
+import {_global as global} from '../../engine/core/global'
 
 export class MainSceneBehaviour {
 
-    
     onCreate(){
         this.x = 0;
         this.y = 0;
-        this.color = [1,0,0,1];//[1,0,0,1] 'rgba(255,0,0,255)'
+        this.color = global.Color.RGB(255,0,0);
         this.points = [];
         
         this.scene.on('mouseMove',e=>{
@@ -20,10 +20,10 @@ export class MainSceneBehaviour {
         this.cnt=0;
         
         
-        this.scene.pointLight.color = [0.8,0.8,0.2,1];
+        this.scene.pointLight.color = global.Color.RGB(204,51,51);
         this.scene.pointLight.nearRadius = 40;
         this.scene.pointLight.farRadius = 100;
-        this.scene.ambientLight.color = [0.1,0.1,0.2,1];
+        this.scene.ambientLight.color = global.Color.RGB(25,25,51);
         
     }
 

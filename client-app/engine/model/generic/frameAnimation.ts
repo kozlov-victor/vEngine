@@ -1,6 +1,7 @@
 import BaseModel from '../baseModel'
 import GameObject from "./gameObject";
 import Game from "../../core/game";
+import GameObjectProto from "./gameObjectProto";
 
 export default class FrameAnimation extends BaseModel {
 
@@ -8,7 +9,7 @@ export default class FrameAnimation extends BaseModel {
     _currFrame:number = 0;
     frames = [];
     duration:number = 1000;
-    _gameObject:GameObject = null;
+    _gameObject:GameObjectProto = null;
     _startTime:number = null;
     _timeForOneFrame:number;
     _isRepeat:boolean;

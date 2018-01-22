@@ -1,5 +1,5 @@
 
-Array.prototype['remove'] = function(callback) {
+(Array.prototype as any)['remove'] = function(callback:Function) {
     let i = this.length;
     while (i--) {
         if (callback(this[i], i)) {
@@ -11,14 +11,14 @@ Array.prototype['remove'] = function(callback) {
 (window as any).requestAnimationFrame =
     window.requestAnimationFrame||
     window.webkitRequestAnimationFrame||
-    function(f){setTimeout(f,17)};
+    function(f:Function){setTimeout(f,17)};
 
 if (!window.cancelAnimationFrame) {
     window.cancelAnimationFrame = (id) => clearTimeout(id);
 }
 
 if (!Array.prototype['find']) {
-    Array.prototype['find'] = function(predicate) {
+    Array.prototype['find'] = function(predicate:Function) {
         if (this == null) {
             throw new TypeError('Array.prototype.find called on null or undefined');
         }

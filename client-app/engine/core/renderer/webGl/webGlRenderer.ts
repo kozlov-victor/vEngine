@@ -2,7 +2,6 @@ import SpriteRectLightDrawer from "./renderPrograms/generic/base/spriteRectLight
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import AbstractRenderer from '../abstract/abstractRenderer'
 import SpriteRectDrawer from './renderPrograms/generic/base/spriteRectDrawer'
 import TiledSpriteRectDrawer from './renderPrograms/generic/base/tiledSpriteRectDrawer'
 import ColorRectDrawer from './renderPrograms/generic/base/colorRectDrawer'
@@ -20,6 +19,8 @@ import Rect from "../../geometry/rect";
 import Game from "../../game";
 import GameObjectProto from '../../../model/generic/gameObjectProto';
 import Point2d from "../../geometry/point2d";
+import AbstractCanvasRenderer from "../abstract/abstractCanvasRenderer";
+import Color from "../../color";
 
 
 const getCtx = el=>{
@@ -55,7 +56,7 @@ const makeTextureMatrix = function(srcRect:Rect,texWidth,texHeight){
 };
 //  gl.enable(gl.CULL_FACE);
 //   gl.enable(gl.DEPTH_TEST);
-export default class WebGlRenderer extends AbstractRenderer {
+export default class WebGlRenderer extends AbstractCanvasRenderer {
 
     private gl:WebGLRenderingContext;
     private matrixStack:MatrixStack;
@@ -179,8 +180,8 @@ export default class WebGlRenderer extends AbstractRenderer {
                 'u_pointLight.nearRadius': scene.pointLight.nearRadius,
                 'u_pointLight.farRadius': scene.pointLight.farRadius,
                 'u_pointLight.isOn': scene.pointLight.isOn,
-                'u_pointLight.color': scene.pointLight.color,
-                'u_ambientLight.color': scene.ambientLight.color
+                'u_pointLight.color': scene.pointLight.color.asGL(),
+                'u_ambientLight.color': scene.ambientLight.color.asGL()
             };
             this.spriteRectLightDrawer.draw(texture,uniforms);
         }
@@ -218,20 +219,20 @@ export default class WebGlRenderer extends AbstractRenderer {
 
     }
 
-    fillRect(rect:Rect, color){
+    fillRect(rect:Rect, color:Color){
 
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),rect)) return;
         let uniforms = {
             u_vertexMatrix: makePositionMatrix(
                 rect.x,rect.y,rect.width,rect.height,
                 this.game.width,this.game.height),
-            u_rgba: color
+            u_rgba: color.asGL()
         };
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         this.colorRectDrawer.draw(null,uniforms);
     }
 
-    drawRect(rect:Rect,color){
+    drawRect(rect:Rect,color:Color){
         let r:Rect = Rect.fromPool();
         let [x,y,w,h] = [r.x,r.y,r.width,r.height];
         this.fillRect(r.set(x, y, w, 1), color);
@@ -240,7 +241,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         this.fillRect(r.set(x + w, y, 1, h), color);
     }
 
-    drawLine(x1:number,y1:number,x2:number,y2:number,color){
+    drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){
 
         let dx = x2-x1,dy = y2-y1;
         //if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
@@ -249,12 +250,12 @@ export default class WebGlRenderer extends AbstractRenderer {
             x1,y1,dx,dy,
             this.game.width,this.game.height
         );
-        uniforms.u_rgba = color;
+        uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         this.lineDrawer.draw(null,uniforms);
     }
 
-    fillCircle(x:number,y:number,r:number,color){
+    fillCircle(x:number,y:number,r:number,color:Color){
         let r2 = r*2;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().set(x-r,y-r,r2,r2))) return;
         let uniforms:any = {};
@@ -262,7 +263,7 @@ export default class WebGlRenderer extends AbstractRenderer {
             x-r,y-r,r2,r2,
             this.game.width,this.game.height
         );
-        uniforms.u_rgba = color;
+        uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         this.circleDrawer.draw(null,uniforms);
     }
@@ -309,8 +310,9 @@ export default class WebGlRenderer extends AbstractRenderer {
         //this.gl.clearDepth(1.);
     }
 
-    clearColor({r,g,b}){
-        this.gl.clearColor(r/255.0,g/255.0,b/255.0,1.0);
+    clearColor(color:Color){
+        let arr:Array<number> = color.asGL();
+        this.gl.clearColor(arr[0],arr[1],arr[2],arr[3]);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
 
@@ -359,7 +361,7 @@ export default class WebGlRenderer extends AbstractRenderer {
         return err;
     }
 
-    loadTextureInfo(resourcePath:string,onLoad:Function){
+    loadTextureInfo(resourcePath:string,onLoad:()=>void){
         let img = new Image();
         img.src = resourcePath;
         img.onload = ()=>{

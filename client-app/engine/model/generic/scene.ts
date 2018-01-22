@@ -14,6 +14,7 @@ import Tween from "../../core/tween";
 import PosterizeFilter from "../../core/renderer/webGl/filters/textureFilters/posterizeFilter";
 import SimpleBlurFilter from "../../core/renderer/webGl/filters/textureFilters/simpleBlurFilter";
 import AmbientLight from "../../core/light/ambientLight";
+import Color from "../../core/color";
 
 
 export default class Scene extends BaseModel {
@@ -21,7 +22,7 @@ export default class Scene extends BaseModel {
     type:string = 'Scene';
     layers:Array<Layer> = [];
     useBG:boolean = false;
-    colorBG = {r: 255, g: 255, b: 255};
+    colorBG = Color.WHITE;
     tileMap:TileMap;
     pointLight: PointLight;
     ambientLight:AmbientLight;
@@ -142,7 +143,8 @@ export default class Scene extends BaseModel {
         this.tileMap.update();
         if (DEBUG) {
             this.game.renderer.restore();
-            if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.update();
+            if (this.game.renderer.debugTextField)
+                this.game.renderer.debugTextField.update(currTime,deltaTime);
             this.game.renderer.restore();
         }
         renderer.flipFrameBuffer(this.filters);

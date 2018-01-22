@@ -95,15 +95,15 @@ export default class Point2d {
         return new Point2d(this.x,this.y);
     }
 
-    fromJSON(json){
-        this.set(json);
+    fromJSON(json:{x:number,y:number}){
+        this.setXY(json.x,json.y);
     }
 
-    toJSON(){
+    toJSON():{x:number,y:number}{
         return {x:this.x,y:this.y}
     }
 
-    toArray(){
+    toArray():Array<number>{
         if (!this._arr) this._arr = new Array(2);
         this._arr[0] = this.x;
         this._arr[1] = this.y;

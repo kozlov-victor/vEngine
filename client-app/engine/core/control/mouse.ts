@@ -1,3 +1,5 @@
+import GameObject from "../../model/generic/gameObject";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import * as mathEx from '../mathEx'
@@ -15,7 +17,7 @@ class MousePoint extends Point2d{
     public screenX:number;
     public screenY:number;
     public id:number;
-    public target;
+    public target:GameObject;
 
     private static mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
 
@@ -31,8 +33,8 @@ class MousePoint extends Point2d{
 
 export default class Mouse {
 
-    private objectsCaptured = {};
-    private container:HTMLElement = null;
+    private objectsCaptured:{[pointId:number]:GameObject} = {};
+    private container:HTMLElement;
     private game:Game;
 
     constructor(game:Game){
@@ -41,11 +43,13 @@ export default class Mouse {
 
 
     //MouseEvent|TouchEvent|PointerEvent
-    resolvePoint(e:MouseEventEx):MousePoint{
+    resolvePoint(e:MouseEvent|TouchEvent|Touch):MousePoint{
         let game:Game = this.game;
+        let clientX:number = <number>(e as any).clientX;
+        let clientY:number = <number>(e as any).clientY;
 
-        let screenX:number = (e.clientX - game.pos.x ) / game.scale.x;
-        let screenY:number = (e.clientY - game.pos.y ) / game.scale.y;
+        let screenX:number = (clientX - game.pos.x ) / game.scale.x;
+        let screenY:number = (clientY - game.pos.y ) / game.scale.y;
 
         let p:Point2d = game.camera.screenToWorld(Point2d.fromPool().setXY(screenX,screenY));
 
@@ -53,15 +57,14 @@ export default class Mouse {
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;
-        mousePoint.id = e.identifier || 0;
+        mousePoint.id = (e as any).identifier || 0;
         return mousePoint;
     }
 
-    triggerEvent(e:MouseEventEx,eventName:string,isMouseDown?:boolean){
+    triggerEvent(e:MouseEvent|TouchEvent|Touch,eventName:string,isMouseDown?:boolean):MousePoint{
         if (isMouseDown===undefined) isMouseDown = false;
         let g = this.game;
         let scene = g.getCurrScene();
-        if (!scene) return;
         let point = this.resolvePoint(e);
 
         exit:
@@ -97,15 +100,15 @@ export default class Mouse {
         return point;
     }
 
-    resolveClick(e:MouseEventEx){
+    resolveClick(e:TouchEvent|MouseEvent){
         this.triggerEvent(e,'click');
         this.triggerEvent(e,'mouseDown');
     }
 
-    resolveMouseMove(e:MouseEventEx,isMouseDown:boolean){
+    resolveMouseMove(e:Touch|MouseEvent,isMouseDown:boolean){
         let point:MousePoint = this.triggerEvent(e,'mouseMove',isMouseDown);
         if (!point) return;
-        let lastMouseDownObject = this.objectsCaptured[point.id];
+        let lastMouseDownObject:GameObject = this.objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject!==point.target) {
             lastMouseDownObject.trigger('mouseLeave');
             delete this.objectsCaptured[point.id];
@@ -116,7 +119,7 @@ export default class Mouse {
         }
     }
 
-    resolveMouseUp(e:MouseEventEx){
+    resolveMouseUp(e:MouseEvent|Touch){
         let point = this.triggerEvent(e,'mouseUp');
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
@@ -125,47 +128,47 @@ export default class Mouse {
         delete this.objectsCaptured[point.id];
     }
 
-    resolveDoubleClick(e:MouseEventEx){
+    resolveDoubleClick(e:|MouseEvent){
         let point = this.triggerEvent(e,'doubleClick');
         if (!point) return;
         delete this.objectsCaptured[point.id];
     }
 
-    listenTo(container) {
+    listenTo(container:HTMLElement) {
         this.container = container;
         // mouseDown
-        container.ontouchstart = (e:MouseEventEx)=>{
+        container.ontouchstart = (e:TouchEvent)=>{
             let l = e.touches.length;
             while (l--){
-                this.resolveClick(e.touches[l]);
+                this.resolveClick((e.touches[l] as any));
             }
         };
-        container.onmousedown = e=>{
+        container.onmousedown = (e:MouseEvent)=>{
             (e.button === 0) && this.resolveClick(e);
         };
         // mouseUp
-        container.ontouchend = container.ontouchcancel = e=>{
+        container.ontouchend = container.ontouchcancel = (e:TouchEvent)=>{
             let l = e.changedTouches.length;
             while (l--){
                 this.resolveMouseUp(e.changedTouches[l]);
             }
         };
-        container.onmouseup = e=>{
+        container.onmouseup = (e:MouseEvent)=>{
             this.resolveMouseUp(e);
         };
         // mouseMove
-        container.ontouchmove = e=>{
+        container.ontouchmove = (e:TouchEvent)=>{
             let l = e.touches.length;
             while (l--){
                 this.resolveMouseMove(e.touches[l],true);
             }
         };
-        container.onmousemove = e=>{
+        container.onmousemove = (e:MouseEvent)=>{
             let isMouseDown = e.buttons === 1;
             this.resolveMouseMove(e,isMouseDown);
         };
         // other
-        container.ondblclick = e=>{ // todo now only on pc
+        container.ondblclick = (e:MouseEvent)=>{ // todo now only on pc
             this.resolveDoubleClick(e);
         }
     }
@@ -175,7 +178,7 @@ export default class Mouse {
             'mouseMove','ontouchstart','onmousedown',
             'ontouchend','onmouseup','ontouchmove',
             'onmousemove','ondblclick'].forEach(evtName=>{
-                this.container[evtName] = null;
+            (this.container as any)[evtName] = null;
         })
     }
 

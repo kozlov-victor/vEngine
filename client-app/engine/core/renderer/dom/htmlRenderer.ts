@@ -5,6 +5,7 @@ import Game from "../../game";
 import GameObject from "../../../model/generic/gameObject";
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
+import Color from "../../color";
 
 export default class HtmlRenderer extends AbstractDomRenderer {
 
@@ -63,17 +64,17 @@ export default class HtmlRenderer extends AbstractDomRenderer {
     }
 
 
-    clearColor({r, g, b}) {
-        let c = {backgroundColor:JSON.stringify({r,g,b})};
+    clearColor(color:Color) {
+        let c = color.asCSS();
         this.setPropertiesIfChanged(this.container,[
             [this,c,'backgroundColor',v=> {
-                this.bgColor = JSON.stringify({r, g, b});
-                return {backgroundColor: `rgb(${r},${g},${b})`};
+                this.bgColor = c;
+                return {backgroundColor: c};
             }]
         ]);
     }
 
-    loadTextureInfo(resourcePath:string,onLoad:Function){
+    loadTextureInfo(resourcePath:string,onLoad:()=>void){
         let img = new Image();
         img.src = resourcePath;
         img.onload = ()=>{

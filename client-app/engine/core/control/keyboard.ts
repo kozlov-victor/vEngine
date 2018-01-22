@@ -2,22 +2,29 @@ declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import Game from "../game";
 
-const KEY_JUST_PRESSED = 2;
-const KEY_PRESSED = 1;
-const KEY_JUST_RELEASED = 0;
-const KEY_RELEASED = -1;
 
 declare const window:any;
 
+enum KEY_STATE  {
+    KEY_JUST_PRESSED = 2,
+    KEY_PRESSED = 1,
+    KEY_JUST_RELEASED = 0,
+    KEY_RELEASED = -1
+}
+
+interface KeyboardBuffer {
+    [key:number]:KEY_STATE
+}
+
 export default class Keyboard {
 
-    private keyDownListener:Function = null;
-    private keyUpListener:Function = null;
+    private keyDownListener:Function;
+    private keyUpListener:Function;
 
-    private buffer = {};
+    private buffer:KeyboardBuffer = {};
     private game:Game;
 
-    public readonly KEY = {
+    public readonly KEY:{[key:string]:number} = {
         SPACE: 32,
         A: 65,
         B: 66,
@@ -69,52 +76,53 @@ export default class Keyboard {
         this.game = game;
     }
 
-    press(key){
+    press(key:number){
         if (this.isPressed(key)) return;
         //console.log('pressed',key);
-        this.buffer[key] = KEY_JUST_PRESSED;
+        this.buffer[key] = KEY_STATE.KEY_JUST_PRESSED;
     }
 
-    release(key){
+    release(key:number){
         if (this.isReleased(key)) return;
-        this.buffer[key] = KEY_JUST_RELEASED;
+        this.buffer[key] = KEY_STATE.KEY_JUST_RELEASED;
     }
 
-    isPressed(key):boolean{
-        return this.buffer[key]>=KEY_PRESSED;
+    isPressed(key:number):boolean{
+        return this.buffer[key]>=KEY_STATE.KEY_PRESSED;
     }
 
-    isJustPressed(key):boolean{
-        return this.buffer[key]===KEY_JUST_PRESSED;
+    isJustPressed(key:number):boolean{
+        return this.buffer[key]===KEY_STATE.KEY_JUST_PRESSED;
     }
 
-    isReleased(key):boolean{
+    isReleased(key:number):boolean{
         if (this.buffer[key]===undefined) return true;
-        return  this.buffer[key]<=KEY_JUST_RELEASED;
+        return  this.buffer[key]<=KEY_STATE.KEY_JUST_RELEASED;
     }
 
-    isJustReleased(key):boolean {
-        return this.buffer[key] === KEY_JUST_RELEASED;
+    isJustReleased(key:number):boolean {
+        return this.buffer[key] === KEY_STATE.KEY_JUST_RELEASED;
     }
 
     update(){
-        Object.keys(this.buffer).forEach(key=>{
-            if (this.buffer[key]===KEY_RELEASED) delete this.buffer[key];
-            else if (this.buffer[key]===KEY_JUST_RELEASED) this.buffer[key] = KEY_RELEASED;
-            if (this.buffer[key]===KEY_JUST_PRESSED) {
-                this.buffer[key] = KEY_PRESSED;
+        Object.keys(this.buffer).forEach((key:string)=>{
+            let keyNum:number = <number>(+key);
+            if (this.buffer[keyNum]===KEY_STATE.KEY_RELEASED) delete this.buffer[keyNum];
+            else if (this.buffer[keyNum]===KEY_STATE.KEY_JUST_RELEASED) this.buffer[keyNum] = KEY_STATE.KEY_RELEASED;
+            if (this.buffer[keyNum]===KEY_STATE.KEY_JUST_PRESSED) {
+                this.buffer[keyNum] = KEY_STATE.KEY_PRESSED;
             }
         });
     }
 
     listenTo(){
 
-        this.keyDownListener = e=>{
+        this.keyDownListener = (e:KeyboardEvent)=>{
             let code = e.keyCode;
             this.press(code);
         };
 
-        this.keyUpListener  = e=>{
+        this.keyUpListener  = (e:KeyboardEvent)=>{
             let code = e.keyCode;
             this.release(code);
         };

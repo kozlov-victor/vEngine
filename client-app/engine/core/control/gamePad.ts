@@ -5,12 +5,15 @@ import Game from "../game";
 
 declare const window:any,navigator:any;
 
+interface GamePadButton {
+    pressed:boolean
+}
 
 interface GamePadInfo {
     index:number,
     id:number,
-    buttons:Array<any>,
-    axes:Array<any>
+    buttons:Array<GamePadButton>,
+    axes:Array<number>
 }
 
 interface GamePadEvent {
@@ -24,7 +27,7 @@ if (DEBUG) {
             e.gamepad.index, e.gamepad.id,
             e.gamepad.buttons.length, e.gamepad.axes.length);
     });
-    window.addEventListener("gamepaddisconnected", e => {
+    window.addEventListener("gamepaddisconnected", (e:GamePadEvent) => {
         console.log("Gamepad disconnected from index %d: %s",
             e.gamepad.index, e.gamepad.id);
     });

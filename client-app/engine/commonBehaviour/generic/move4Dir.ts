@@ -3,6 +3,7 @@
 import Moveable from '../abstract/moveable'
 import Game from "../../core/game";
 import GameObject from "../../model/generic/gameObject";
+import {BehaviourParameters} from "../abstract/baseAbstractBehaviour";
 
 export default class Move4Dir extends Moveable {
 
@@ -12,7 +13,7 @@ export default class Move4Dir extends Moveable {
         super(game);
     }
 
-    manage(gameObject:GameObject, parameters) {
+    manage(gameObject:GameObject, parameters:BehaviourParameters) {
         super.manage(gameObject, parameters, Move4Dir.DIRS);
     }
 

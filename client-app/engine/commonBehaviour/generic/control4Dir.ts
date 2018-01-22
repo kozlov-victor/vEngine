@@ -11,7 +11,7 @@ export default class Control4Dir extends Move4Dir {
         super(game);
     }
 
-    manage(gameObject:GameObject,parameters) {
+    manage(gameObject:GameObject,parameters:{[key:string]:any}) {
         super.manage(gameObject,parameters);
     }
 

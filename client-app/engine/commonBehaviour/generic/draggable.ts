@@ -1,25 +1,27 @@
 
-import BaseAbstractBehaviour from '../abstract/baseAbstractBehaviour'
+import BaseAbstractBehaviour, {BehaviourParameters} from '../abstract/baseAbstractBehaviour'
 import Game from "../../core/game";
 import GameObject from "../../model/generic/gameObject";
 import Scene from "../../model/generic/scene";
+import {MouseEventEx} from "../../declarations";
 
 interface MouseDragPoint {
     mX: number,
     mY: number,
     target: GameObject,
-    preventDefault:Function,
+    preventDefault():void,
     dragStartX:number,
     dragStartY:number
 }
 
+
 export default class DraggableBehaviour extends BaseAbstractBehaviour {
 
-    private static _getEventId(e):number{
+    private static _getEventId(e:MouseEventEx):number{
         return e.id || 1;
     };
 
-    private blurListener:Function;
+    private blurListener:(e:MouseEvent)=>void;
 
     private points:{number:any};
 
@@ -28,8 +30,8 @@ export default class DraggableBehaviour extends BaseAbstractBehaviour {
         this.points = {} as {number:any};
     }
 
-    manage(gameObject:GameObject,params) {
-        gameObject.on('click',e=>{
+    manage(gameObject:GameObject,params:BehaviourParameters) {
+        gameObject.on('click',(e)=>{
             this.points[DraggableBehaviour._getEventId(e)] = {
                 mX: e.objectX,
                 mY: e.objectY,

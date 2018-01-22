@@ -12,6 +12,7 @@ declare const DEBUG:boolean;
 export default class GameObject extends GameObjectProto {
 
     type:string = 'GameObject';
+    _lastDirection:string;
     gameObjectProto:GameObjectProto = null;
 
 

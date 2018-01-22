@@ -1,38 +1,45 @@
 
-import BaseAbstractBehaviour from './baseAbstractBehaviour'
+import BaseAbstractBehaviour, {BehaviourParameters} from './baseAbstractBehaviour'
 import Game from "../../core/game";
+import GameObject from "../../model/generic/gameObject";
+import FrameAnimation from "../../model/generic/frameAnimation";
 
 export default class Moveable extends BaseAbstractBehaviour {
 
-    protected gameObject = null;
-    protected parameters;
-    protected animations;
+    protected gameObject:GameObject;
+    protected parameters:BehaviourParameters;
+    protected animations:{[key:string]:FrameAnimation};
 
     constructor(game:Game) {
         super(game);
     }
 
-    manage(gameObject, parameters,dirs) {
+    manage(gameObject:GameObject, parameters:BehaviourParameters,dirs:Array<string>) {
         this.gameObject = gameObject;
         this.parameters = parameters;
-        this.animations = {};
+        this.animations = {} as {[key:string]:FrameAnimation};
         dirs.forEach(dir => {
-            let keyWalk = 'walk' + dir + 'Animation', keyIdle = 'idle' + dir + 'Animation';
-            this.animations[keyWalk] = this.gameObject.frameAnimations.find(it => it.name === parameters[keyWalk]);
-            //if (!this.animations[keyWalk]) throw `can not find animation ${parameters[keyWalk]} at gameObject ${this.gameObject.name}`;
-            parameters[keyIdle] && (this.animations[keyIdle] = this.gameObject.frameAnimations.find(it => it.name === parameters[keyIdle]));
+            let keyWalk:string = 'walk' + dir + 'Animation', keyIdle = 'idle' + dir + 'Animation';
+            this.animations[keyWalk] = <FrameAnimation>this.gameObject.
+                    frameAnimations.
+                    find(it => it.name === parameters[keyWalk]);
+
+            parameters[keyIdle] && (this.animations[keyIdle] =
+                <FrameAnimation>this.gameObject.
+                frameAnimations.
+                find(it => it.name === parameters[keyIdle]));
         });
     }
 
     stop() {
         this.gameObject.stopFrAnimations();
-        let keyIdle = 'idle' + this.gameObject._lastDirection + 'Animation';
+        let keyIdle:string = 'idle' + this.gameObject._lastDirection + 'Animation';
         if (this.animations[keyIdle]) {
             this.animations[keyIdle].play();
         }
     }
 
-    go(direction) {
+    go(direction:string) {
         this.gameObject._lastDirection = direction;
         this.animations['walk' + direction + 'Animation'].play();
     }

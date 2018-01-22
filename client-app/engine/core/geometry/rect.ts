@@ -56,11 +56,11 @@ export default class Rect {
     }
 
 
-    toJSON(){
+    toJSON():{x:number,y:number,width:number,height:number}{
         return {x:this.x,y:this.y,width:this.width,height:this.height};
     }
 
-    fromJSON(x,y,width,height){
+    fromJSON(x:number,y:number,width:number,height:number){
         this.set(x,y,width,height);
     }
 

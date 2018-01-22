@@ -1,6 +1,6 @@
 
-export let Transient = params=> {
-    return (target) => {
+export let Transient = (params:any)=> {
+    return (target:any) => {
         target.transient = params;
     };
 };

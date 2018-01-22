@@ -1,9 +1,10 @@
 
 import Game from "../../game";
+import Color from "../../color";
 
 export default abstract class AbstractLight {
 
-    public color = [1,1,1,1];
+    public color:Color = Color.WHITE;
     public intensity:number = 1.0;
 
     protected game:Game;

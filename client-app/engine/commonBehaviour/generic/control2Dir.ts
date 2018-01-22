@@ -10,7 +10,7 @@ export default class Control2Dir extends Move2Dir{
         super(game);
     }
 
-    manage(gameObject:GameObject,parameters) {
+    manage(gameObject:GameObject,parameters:{[key:string]:any}) {
         super.manage(gameObject,parameters);
     }
 
