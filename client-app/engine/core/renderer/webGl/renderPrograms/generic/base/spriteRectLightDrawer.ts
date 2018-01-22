@@ -22,7 +22,7 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
             struct AmbientLight {
                 vec4 color;
             };
-            vec4 lightEffect(PointLight lgt, vec3 normal){
+            vec4 lightEffect(PointLight lgt, vec4 normal){
                 vec4 result = vec4(0);
                 float atten = 0.0;
                 vec3 l = vec3(lgt.pos.xy,0) - gl_FragCoord.xyz; // todo optimize
@@ -34,27 +34,34 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
                         float d = lgt.farRadius - lgt.nearRadius;
                         atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));
                     }
-                    l = l / dist;
-                    float nDotL = max(0.,dot(normal,l));
-                    atten*=nDotL;
+                    if (normal.a>0.0) {
+                        vec4 normalMap = (2.*normal) - 1.;
+                        vec3 N = normalize(normalMap.xyz);
+                        l = l / dist;
+                        float nDotL = max(0.,dot(N,l));
+                        atten*=nDotL;
+                    }
                 }
                 result = atten * lgt.color; // * lgt.intensity
                 return result;
             }
         `);
+        // program normal map gen 2 * (color - vec3(0.5))
         gen.addFragmentUniform("PointLight",'u_pointLight');
         gen.addFragmentUniform("AmbientLight",'u_ambientLight');
-
+        gen.addFragmentUniform(GL_TYPE.SAMPLER_2D,'normalTexture');
+        gen.addFragmentUniform(GL_TYPE.BOOL,'u_useNormalMap');
         //language=GLSL
         gen.setFragmentMainFn(`
             void main(){
                 vec4 texColor = texture2D(texture, v_texCoord); // todo u_texture
-                vec4 normal = texture2D(texture,v_texCoord);
-                vec4 normalMap = (2.*normal) - 1.;
-                vec3 N = normalize(normalMap.xyz);
+                vec4 normal = u_useNormalMap?
+                    texture2D(normalTexture,v_texCoord):
+                    vec4(0);
+                
                 vec4 lightResult = u_ambientLight.color; // * u_ambientLight.intensity
                 
-                if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight, N);
+                if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight, normal);
                 
                 lightResult*=texColor;
                 gl_FragColor = lightResult;

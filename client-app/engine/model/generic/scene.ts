@@ -15,6 +15,7 @@ import PosterizeFilter from "../../core/renderer/webGl/filters/textureFilters/po
 import SimpleBlurFilter from "../../core/renderer/webGl/filters/textureFilters/simpleBlurFilter";
 import AmbientLight from "../../core/light/ambientLight";
 import Color from "../../core/color";
+import SpriteSheet from "./spriteSheet";
 
 
 export default class Scene extends BaseModel {
@@ -60,8 +61,8 @@ export default class Scene extends BaseModel {
     }
     getAllSpriteSheets() {
         let dataSet = {};
-        this.layers.forEach(function(l){
-            l.getAllSpriteSheets().forEach(s=>{
+        this.layers.forEach((l:Layer)=>{
+            l.getAllSpriteSheets().forEach((s:SpriteSheet)=>{
                 dataSet[s.id] = s;
             })
         });
@@ -80,12 +81,22 @@ export default class Scene extends BaseModel {
             cb && cb();
         };
         resources.forEach(res=>{
+            let taskId = res.id;
             q.addTask(()=>{
                 this.game.renderer.loadTextureInfo(
                     res.resourcePath,
-                    ()=>q.resolveTask(res.id)
+                    ()=>q.resolveTask(taskId)
                 );
             },res.id);
+            if (res.normalMapPath) {
+                let taskId = res.id.toString() + res.normalMapPath;
+                q.addTask(()=>{
+                    this.game.renderer.loadTextureInfo(
+                        res.normalMapPath,
+                        ()=>q.resolveTask(taskId)
+                    );
+                },taskId);
+            }
         });
         q.start();
 

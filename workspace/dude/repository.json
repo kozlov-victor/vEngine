@@ -139,10 +139,11 @@
         },
         {
             "name": "clamp",
-            "width": 64,
-            "height": 64,
+            "width": 300,
+            "height": 300,
             "type": "SpriteSheet",
             "resourcePath": "resources/clamp.png",
+            "normalMapPath": "resources/clamp_normal.png",
             "id": 69
         },
         {
@@ -402,8 +403,8 @@
             "id": 71,
             "name": "clamp",
             "pos": {
-                "x": 666,
-                "y": 328
+                "x": 747,
+                "y": 124
             },
             "layerId": 2,
             "type": "GameObject",
@@ -486,8 +487,8 @@
             "id": 86,
             "name": "eso1611a",
             "pos": {
-                "x": 676,
-                "y": 202
+                "x": 616,
+                "y": 53
             },
             "layerId": 2,
             "type": "GameObject",
@@ -500,8 +501,8 @@
             "id": 87,
             "name": "eso1611a",
             "pos": {
-                "x": 639,
-                "y": 134
+                "x": 625,
+                "y": 56
             },
             "layerId": 2,
             "type": "GameObject",

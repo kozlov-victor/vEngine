@@ -5,7 +5,7 @@ declare const IN_EDITOR:boolean,DEBUG:boolean;
 import SpriteRectDrawer from './renderPrograms/generic/base/spriteRectDrawer'
 import TiledSpriteRectDrawer from './renderPrograms/generic/base/tiledSpriteRectDrawer'
 import ColorRectDrawer from './renderPrograms/generic/base/colorRectDrawer'
-import AbstractDrawer from './renderPrograms/abstract/abstractDrawer'
+import AbstractDrawer, {TextureInfo} from './renderPrograms/abstract/abstractDrawer'
 import LineDrawer from './renderPrograms/generic/base/lineDrawer'
 import CircleDrawer from './renderPrograms/generic/base/circleDrawer'
 import ModelDrawer from './renderPrograms/generic/base/modelDrawer'
@@ -121,8 +121,15 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             this.translate(-halfV, -halfH);
         }
 
-        this.drawTexture(
-            texToDraw,
+        let texInfo:Array<TextureInfo> = [{texture:texToDraw,name:'texture'}];
+        if (renderable.spriteSheet.normalMapPath) {
+            texInfo.push({
+                texture:this.renderableCache[renderable.spriteSheet.normalMapPath],
+                name: 'normalTexture'
+            });
+        }
+        this.drawTextureInfo(
+            texInfo,
             renderable.getFrameRect(),
             new Point2d(0,0)
         );
@@ -141,12 +148,13 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
         }
-        this.drawTexture(texture,srcRect, dstPoint);
+        let texInfo:Array<TextureInfo> = [{texture,name:'texture'}];
+        this.drawTextureInfo(texInfo,srcRect, dstPoint);
     }
 
-    private drawTexture(texture:Texture,
-                srcRect:Rect,
-                dstPoint:Point2d){
+    private drawTextureInfo(texInfo:Array<TextureInfo>,
+                            srcRect:Rect,
+                            dstPoint:Point2d){
 
         let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
@@ -154,8 +162,8 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             Rect.fromPool().set(camRectScaled.x+srcRect.x,camRectScaled.y+srcRect.y,srcRect.width,srcRect.height))
         ) return;
 
-        let texWidth = texture.getSize().width;
-        let texHeight = texture.getSize().height;
+        let texWidth = texInfo[0].texture.getSize().width;
+        let texHeight = texInfo[0].texture.getSize().height;
 
         let scene = this.game.getCurrScene();
 
@@ -166,16 +174,14 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
                 u_alpha: 1
             };
-
-            this.multBlendDrawer.draw(texture,this.frameBuffer,uniforms);
+            this.multBlendDrawer.draw(texInfo,this.frameBuffer,uniforms);
         }
-        else
-        {
+        else {
             let uniforms = {
                 u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
                 u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
                 u_alpha: 1,
-
+                u_useNormalMap: texInfo.length>1,
                 'u_pointLight.pos': scene.pointLight.getPosScaled().toArray(),
                 'u_pointLight.nearRadius': scene.pointLight.nearRadius,
                 'u_pointLight.farRadius': scene.pointLight.farRadius,
@@ -183,7 +189,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 'u_pointLight.color': scene.pointLight.color.asGL(),
                 'u_ambientLight.color': scene.ambientLight.color.asGL()
             };
-            this.spriteRectLightDrawer.draw(texture,uniforms);
+            this.spriteRectLightDrawer.draw(texInfo,uniforms);
         }
     }
 
@@ -203,19 +209,21 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
-        let uniforms:any = {};
-        uniforms.u_textureMatrix = makeTextureMatrix(
-            Rect.fromPool().set(0,0,dstRect.width, dstRect.height),
-            texWidth,texHeight
-        );
-        uniforms.u_vertexMatrix = makePositionMatrix(
-            dstRect.x,dstRect.y,dstRect.width, dstRect.height,
-            this.game.width,this.game.height
-        );
-        uniforms.u_frameCoords = [srcRect.x/texWidth,srcRect.y/texHeight,srcRect.width/texWidth,srcRect.height/texHeight];
-        uniforms.u_offsetCoords = [offset.x/srcRect.width,offset.y/srcRect.height];
-        uniforms.u_alpha = 1;
-        this.tiledSpriteRectDrawer.draw(texture,uniforms);
+        let uniforms:any = {
+            u_textureMatrix: makeTextureMatrix(
+                Rect.fromPool().set(0,0,dstRect.width, dstRect.height),
+                texWidth,texHeight
+            ),
+            u_vertexMatrix: makePositionMatrix(
+                dstRect.x,dstRect.y,dstRect.width, dstRect.height,
+                this.game.width,this.game.height
+            ),
+            u_frameCoords: [srcRect.x/texWidth,srcRect.y/texHeight,srcRect.width/texWidth,srcRect.height/texHeight],
+            u_offsetCoords:[offset.x/srcRect.width,offset.y/srcRect.height],
+            u_alpha: 1
+        };
+        let texInfo:Array<TextureInfo> = [{texture,name:'texture'}];
+        this.tiledSpriteRectDrawer.draw(texInfo,uniforms);
 
     }
 
@@ -346,7 +354,8 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             ),
             u_alpha: 1
         };
-        this.spriteRectDrawer.draw(texToDraw,uniforms);
+        let texInfo:Array<TextureInfo> = [{texture:texToDraw,name:'texture'}]; // todo now to make this array reusable?
+        this.spriteRectDrawer.draw(texInfo,uniforms);
         //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.restore();
     };

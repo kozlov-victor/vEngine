@@ -13,6 +13,7 @@ export default class SpriteSheet extends BaseModel {
     _frameHeight:number = 0;
     _numOfFrames:number = 0;
     resourcePath:string = '';
+    normalMapPath:string = '';
 
     private frameRect:Rect = new Rect();
 

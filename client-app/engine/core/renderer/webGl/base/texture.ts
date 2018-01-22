@@ -7,6 +7,8 @@ import FrameBuffer from "./frameBuffer";
 import AbstractFilter from "../filters/abstract/abstractFilter";
 import Rect from "../../../geometry/rect";
 import Size from "../../../geometry/size";
+import ShaderProgram from "./shaderProgram";
+import {TextureInfo} from "../renderPrograms/abstract/abstractDrawer";
 
 const isPowerOf2 = function(value) {
     return (value & (value - 1)) === 0;
@@ -60,11 +62,19 @@ export default class Texture {
     isPowerOfTwo:boolean = false;
     _texFilterBuff:TextureFilterBuffer = null;
 
+    private static MAX_TEXTURE_IMAGE_UNITS:number = 0;
+
     static currInstances = {};
 
     constructor(gl:WebGLRenderingContext){
         if (DEBUG && !gl) throw "can not create Texture, gl context not passed to constructor, expected: Texture(gl)";
         this.gl = gl;
+
+        if (DEBUG) {
+            // define max texture units supported
+            if (!Texture.MAX_TEXTURE_IMAGE_UNITS)
+                Texture.MAX_TEXTURE_IMAGE_UNITS =  gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        }
 
         this.tex = gl.createTexture();
         if (DEBUG && !this.tex) throw `can not allocate memory for texture`;
@@ -92,7 +102,8 @@ export default class Texture {
         const gl = this.gl;
         if (img) this.size.setWH(img.width,img.height);
         else this.size.setWH(width,height);
-        this.bind();
+        //gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.tex);
         gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         if (img) {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img as HTMLImageElement);
@@ -123,12 +134,14 @@ export default class Texture {
         if (this._texFilterBuff.buffers===null)
             this._texFilterBuff.instantiate(this.gl);
         let filter:AbstractFilter = filters[0];
-        filter.doFilter(this,this._texFilterBuff.getDestBuffer());
+
+        let texInfo:Array<TextureInfo> = [{texture:this,name:'texture'}]; // todo now to make this array reusable?
+        filter.doFilter(texInfo,this._texFilterBuff.getDestBuffer());
         for (let i=1;i<len;i++){
             this._texFilterBuff.flip();
+            let texInfo:Array<TextureInfo> = [{texture:this._texFilterBuff.getSourceBuffer().texture,name:'texture'}];
             filters[i].doFilter(
-                this._texFilterBuff.getSourceBuffer().texture,
-                this._texFilterBuff.getDestBuffer()
+                texInfo, this._texFilterBuff.getDestBuffer()
             );
         }
         this._texFilterBuff.flip();
@@ -136,8 +149,13 @@ export default class Texture {
         return this._texFilterBuff.getSourceBuffer().texture;
     }
 
-    bind(i:number = 0) { // uniform eq to 0 by default
-        // to define max texture units supported gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+    bind(name:string,i:number,program:ShaderProgram) { // uniform eq to 0 by default
+        if (DEBUG) {
+            if (i>Texture.MAX_TEXTURE_IMAGE_UNITS - 1) {
+                throw `can not bind texture with index ${i}. Max supported value by device is ${Texture.MAX_TEXTURE_IMAGE_UNITS}`;
+            }
+        }
+        program.setUniform(name,i);
         if (Texture.currInstances[i]===this) return;
         let gl = this.gl;
         gl.activeTexture(gl.TEXTURE0+i);

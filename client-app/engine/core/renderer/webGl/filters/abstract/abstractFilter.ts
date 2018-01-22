@@ -1,4 +1,6 @@
 
+import {TextureInfo} from "../../renderPrograms/abstract/abstractDrawer";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import ShaderProgram from "../../base/shaderProgram";
@@ -47,13 +49,13 @@ export default abstract class AbstractFilter {
         this.spriteRectDrawer = new SpriteRectDrawer(this.gl,program);
     }
 
-    doFilter(srcTexture:Texture,destFrameBuffer:FrameBuffer){
+    doFilter(textureInfos:Array<TextureInfo>,destFrameBuffer:FrameBuffer){
         destFrameBuffer.bind();
-        let w = srcTexture.size.width;
-        let h = srcTexture.size.height;
+        let w = textureInfos[0].texture.size.width;
+        let h = textureInfos[0].texture.size.height;
         this.uniformsToSet.u_textureMatrix = identity;
         this.uniformsToSet.u_vertexMatrix = makePositionMatrix(0,0,w,h);
-        this.spriteRectDrawer.draw(srcTexture,this.uniformsToSet);
+        this.spriteRectDrawer.draw(textureInfos,this.uniformsToSet);
     }
 
     setParam(name:string,value){

@@ -7,6 +7,7 @@ import ShaderGenerator from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
 import Texture from "../../base/texture";
 import FrameBuffer from "../../base/frameBuffer";
+import {TextureInfo} from "../../renderPrograms/abstract/abstractDrawer";
 
 export default class PixelFilter extends AbstractFilter {
 
@@ -37,10 +38,10 @@ export default class PixelFilter extends AbstractFilter {
         this.setParam('pixel_h',5);
     }
 
-    doFilter(srcTexture:Texture,destFrameBuffer:FrameBuffer){
-        this.setParam('rt_w',srcTexture.size.width);
-        this.setParam('rt_h',srcTexture.size.height);
-        super.doFilter(srcTexture,destFrameBuffer);
+    doFilter(textureInfos:Array<TextureInfo>,destFrameBuffer:FrameBuffer){
+        this.setParam('rt_w',textureInfos[0].texture.size.width);
+        this.setParam('rt_h',textureInfos[0].texture.size.height);
+        super.doFilter(textureInfos,destFrameBuffer);
     }
 
 }

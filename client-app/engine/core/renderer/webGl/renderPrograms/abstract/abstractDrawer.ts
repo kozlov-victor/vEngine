@@ -13,6 +13,11 @@ let isEqual = (a,b):boolean=>{
     return a===b;
 };
 
+export interface TextureInfo {
+    texture:Texture,
+    name:string
+}
+
 export default abstract class AbstractDrawer {
 
     static currentInstance:AbstractDrawer = null;
@@ -66,10 +71,14 @@ export default abstract class AbstractDrawer {
         this.bufferInfo.draw();
     }
 
-    draw(texture:Texture,uniforms){
-        if (texture!==null) texture.bind();
+    draw(textureInfos:Array<TextureInfo>,uniforms){
         this.bind();
         Object.keys(uniforms).forEach(name=>this.setUniform(name,uniforms[name]));
+        if (textureInfos) {
+            textureInfos.forEach((t,i)=>{
+                t.texture.bind(t.name,i,this.program);
+            });
+        }
         this.drawElements();
     }
 

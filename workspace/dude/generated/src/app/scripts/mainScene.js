@@ -20,7 +20,7 @@ export class MainSceneBehaviour {
         this.cnt=0;
         
         
-        this.scene.pointLight.color = global.Color.RGB(204,51,51);
+        this.scene.pointLight.color = global.Color.RGB(244,251,51);
         this.scene.pointLight.nearRadius = 40;
         this.scene.pointLight.farRadius = 100;
         this.scene.ambientLight.color = global.Color.RGB(25,25,51);
