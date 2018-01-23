@@ -10,7 +10,7 @@ export default class PointLight extends AbstractLight {
     public pos:Point2d = new Point2d();
     public nearRadius: number = 0;
     public farRadius: number = 0;
-    public isOn:boolean = true;
+    public isOn:boolean = false;
 
     private _screenPoint = new Point2d();
 

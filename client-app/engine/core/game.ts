@@ -20,6 +20,7 @@ import {SCALE_STRATEGY} from "./misc/consts";
 import Point2d from "./geometry/point2d";
 import AbstractRenderer from "./renderer/abstract/abstractRenderer";
 import Scene from '../model/generic/scene';
+import LightArray from "./light/lightArray";
 
 
 @Transient({
@@ -32,7 +33,8 @@ import Scene from '../model/generic/scene';
     camera: true,
     scaleStrategy: true,
     fps: true,
-    destroyed: true
+    destroyed: true,
+    lightArray: true
 })
 export default class Game extends CommonObject {
 
@@ -51,6 +53,7 @@ export default class Game extends CommonObject {
     gravityConstant:number = 0;
     fps:number = 0;
     gamePad:GamePad = null;
+    lightArray:LightArray;
     repository:Repository;
     mouse:Mouse;
     keyboard:Keyboard;
@@ -73,6 +76,7 @@ export default class Game extends CommonObject {
         this.gamePad = new GamePad(this);
         this.collider = new Collider(this);
         this.camera = new Camera(this);
+        this.lightArray = new LightArray(this);
     }
 
     revalidate(){

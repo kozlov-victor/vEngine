@@ -19,10 +19,20 @@ export class MainSceneBehaviour {
         this.offsetX = 0;
         this.cnt=0;
         
-        
-        this.scene.pointLight.color = global.Color.RGB(244,251,51);
-        this.scene.pointLight.nearRadius = 40;
-        this.scene.pointLight.farRadius = 100;
+        let p1 = this.game.lightArray.getLightAt(0);
+        p1.color = global.Color.RGB(244,251,51);
+        p1.nearRadius = 40;
+        p1.farRadius = 100;
+        p1.isOn = true;
+        p1.pos.setXY(100,100);
+
+        let p2 = this.game.lightArray.getLightAt(1);
+        p2.color = global.Color.RGB(255,255,122);
+        p2.nearRadius = 50;
+        p2.farRadius = 120;
+        p2.isOn = true;
+        p2.pos.setXY(100,100);
+
         this.scene.ambientLight.color = global.Color.RGB(25,25,51);
         
     }

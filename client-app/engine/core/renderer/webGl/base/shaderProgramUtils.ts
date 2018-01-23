@@ -99,21 +99,29 @@ const mapType = (gl, type)=> {
     return GL_TABLE[type];
 };
 
+interface UniformWrapper {
+    type:string,
+    size:number,
+    location: WebGLUniformLocation,
+    setter: (gl:WebGLRenderingContext,location:WebGLUniformLocation,value:any)=>void
+}
+
+
 export const extractUniforms = (gl, program)=> {
-    let uniforms = {};
+    let uniforms:{[key:string]:UniformWrapper} = {};
 
-    let totalUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    let activeUniforms:number = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS) as number;
 
-    for (let i = 0; i < totalUniforms; i++) {
-        let uniformData = gl.getActiveUniform(program, i);
-        let name = uniformData.name.replace(/\[.*?]/, "");
+    for (let i = 0; i < activeUniforms; i++) {
+        let uniformData:WebGLActiveInfo = gl.getActiveUniform(program, i);
         let type = mapType(gl, uniformData.type);
+        let location:WebGLUniformLocation = gl.getUniformLocation(program, uniformData.name);
+        if (DEBUG && location===null) throw `error finding uniform location: ${uniformData.name}`;
 
-        uniforms[name] = {
-            type: type,
+        uniforms[uniformData.name] = {
+            type,
             size: uniformData.size,
-            name: name,
-            location: gl.getUniformLocation(program, name),
+            location,
             setter: getUniformSetter(uniformData.size,type)
         };
     }

@@ -10,7 +10,8 @@
             "es6",
             "es7"
         ],
-        "strict": false
+        "strict": false,
+        "noImplicitAny": false
     },
     "exclude": [
         "node_modules"

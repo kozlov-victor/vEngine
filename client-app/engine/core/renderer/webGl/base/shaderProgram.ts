@@ -37,7 +37,10 @@ export default class ShaderProgram {
 
     setUniform(name:string, value) {
         let uniform = this.uniforms[name];
-        if (DEBUG && !uniform) throw `no uniform with name ${name} found!`;
+        if (DEBUG && !uniform) {
+            console.error(this);
+            throw `no uniform with name ${name} found!`;
+        }
         if (DEBUG) {
             if (ShaderProgram.currentProgram!==this) {
                 console.error(this);
@@ -64,7 +67,7 @@ export default class ShaderProgram {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
         let attrLocation =
             this._attrLocationCache[attrLocationName] ||
-            this.gl.getAttribLocation(this.program, attrLocationName);
+            this.gl.getAttribLocation(this.program, attrLocationName); // todo extract attributes like uniforms
 
         if (DEBUG) {
             if (attrLocation < 0) {

@@ -182,13 +182,9 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
                 u_alpha: 1,
                 u_useNormalMap: texInfo.length>1,
-                'u_pointLight.pos': scene.pointLight.getPosScaled().toArray(),
-                'u_pointLight.nearRadius': scene.pointLight.nearRadius,
-                'u_pointLight.farRadius': scene.pointLight.farRadius,
-                'u_pointLight.isOn': scene.pointLight.isOn,
-                'u_pointLight.color': scene.pointLight.color.asGL(),
                 'u_ambientLight.color': scene.ambientLight.color.asGL()
             };
+            this.game.lightArray.setUniforms(uniforms);
             this.spriteRectLightDrawer.draw(texInfo,uniforms);
         }
     }

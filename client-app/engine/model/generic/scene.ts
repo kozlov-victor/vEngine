@@ -25,7 +25,6 @@ export default class Scene extends BaseModel {
     useBG:boolean = false;
     colorBG = Color.WHITE;
     tileMap:TileMap;
-    pointLight: PointLight;
     ambientLight:AmbientLight;
 
     private filters:Array<AbstractFilter> = [];
@@ -35,7 +34,6 @@ export default class Scene extends BaseModel {
     constructor(game:Game) {
         super(game);
         this.tileMap = new TileMap(game);
-        this.pointLight = new PointLight(game);
         this.ambientLight = new AmbientLight(game);
 
     }

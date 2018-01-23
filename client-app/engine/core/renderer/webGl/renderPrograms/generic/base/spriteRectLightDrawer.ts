@@ -4,6 +4,7 @@ import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGen
 import ShaderProgram from "../../../base/shaderProgram";
 import {GL_TYPE} from "../../../base/shaderProgramUtils";
 import Texture from "../../../base/texture";
+import LightArray from "../../../../../light/lightArray";
 
 
 export default class SpriteRectLightDrawer extends SpriteRectDrawer {
@@ -12,6 +13,7 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
         let gen = new TexShaderGenerator();
         //language=GLSL
         gen.prependFragmentCodeBlock(`
+            #define NUM_OF_LIGHT_IN_VIEW ${LightArray.NUM_OF_LIGHT_IN_VIEW}
             struct PointLight {
                 vec2 pos;
                 vec4 color;
@@ -47,7 +49,7 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
             }
         `);
         // program normal map gen 2 * (color - vec3(0.5))
-        gen.addFragmentUniform("PointLight",'u_pointLight');
+        gen.addFragmentUniform("PointLight",'u_pointLights[NUM_OF_LIGHT_IN_VIEW]');
         gen.addFragmentUniform("AmbientLight",'u_ambientLight');
         gen.addFragmentUniform(GL_TYPE.SAMPLER_2D,'normalTexture');
         gen.addFragmentUniform(GL_TYPE.BOOL,'u_useNormalMap');
@@ -61,7 +63,10 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
                 
                 vec4 lightResult = u_ambientLight.color; // * u_ambientLight.intensity
                 
-                if (u_pointLight.isOn) lightResult+=lightEffect(u_pointLight, normal);
+                // chech .a
+                for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {
+                    if (u_pointLights[i].isOn) lightResult+=lightEffect(u_pointLights[i], normal);
+                }
                 
                 lightResult*=texColor;
                 gl_FragColor = lightResult;
