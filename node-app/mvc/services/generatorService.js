@@ -30,11 +30,10 @@ class GeneratorService {
         let compiler = webpack(config);
         let lastMsg = '';
         let cb = null;
-        compiler.apply(new ProgressPlugin(function(percentage, msg) {
+        compiler.apply(new ProgressPlugin((percentage, msg)=> {
             let m = (~~(percentage * 100)) + '% ' + msg;
             if (lastMsg!==m) {
                 lastMsg = m;
-                console.log(m);
                 if (cb) cb(m);
             }
         }));

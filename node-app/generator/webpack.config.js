@@ -2,7 +2,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const UglifyJSPlugin = webpack.optimize.UglifyJsPlugin;
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 module.exports =  (params)=>{
 
@@ -23,7 +24,7 @@ module.exports =  (params)=>{
             rules: [
                 {
                     test: /\.ts$/,
-                    loader: "ts-loader",
+                    loader: "awesome-typescript-loader", // ts-loader
                     options: {}
                 },
                 {
@@ -63,7 +64,8 @@ module.exports =  (params)=>{
             IN_EDITOR: false,
             DEBUG: params.debug || false,
             PROJECT_NAME: params.projectName
-        })
+        }),
+        new HardSourceWebpackPlugin()
     ];
 
     if (!params.debug || params.minify) {
