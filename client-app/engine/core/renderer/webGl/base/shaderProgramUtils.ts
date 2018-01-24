@@ -1,4 +1,6 @@
 
+import ShaderProgram from "./shaderProgram";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, shaderType:number):WebGLShader=> {
@@ -106,11 +108,18 @@ interface UniformWrapper {
     setter: (gl:WebGLRenderingContext,location:WebGLUniformLocation,value:any)=>void
 }
 
+export interface UniformsMap {
+    [key:string]:UniformWrapper
+}
 
-export const extractUniforms = (gl, program)=> {
-    let uniforms:{[key:string]:UniformWrapper} = {};
+export interface AttributesMap {
+    [key:string]:number
+}
+
+export const extractUniforms = (gl:WebGLRenderingContext, program:WebGLProgram):UniformsMap=> {
 
     let activeUniforms:number = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS) as number;
+    let uniforms:UniformsMap = {};
 
     for (let i = 0; i < activeUniforms; i++) {
         let uniformData:WebGLActiveInfo = gl.getActiveUniform(program, i);
@@ -130,6 +139,20 @@ export const extractUniforms = (gl, program)=> {
 
 };
 
+
+export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram):AttributesMap=>{
+
+    let activeAttributes:number = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES) as number;
+    let attrMap:AttributesMap = {};
+    for (let i = 0; i < activeAttributes; i++) {
+        let attrData:WebGLActiveInfo = gl.getActiveAttrib(program, i);
+        let location:number = gl.getAttribLocation(program, attrData.name);
+        if (DEBUG && location<0) throw `error finding attribute location: ${attrData.name}`;
+        attrMap[attrData.name] = location;
+    }
+    console.log(attrMap);
+    return attrMap;
+};
 
 const TypeNumber = {
     check: (val)=>{

@@ -282,13 +282,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgramUtils_1 = __webpack_require__(3);
 var ShaderProgram = /** @class */ (function () {
     function ShaderProgram(gl, vertexSource, fragmentSource) {
-        this._attrLocationCache = {};
         var vShader = shaderProgramUtils_1.compileShader(gl, vertexSource, gl.VERTEX_SHADER);
         var fShader = shaderProgramUtils_1.compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
         this.program = shaderProgramUtils_1.createProgram(gl, vShader, fShader);
         gl.deleteShader(vShader);
         gl.deleteShader(fShader);
         this.uniforms = shaderProgramUtils_1.extractUniforms(gl, this.program);
+        this.attributes = shaderProgramUtils_1.extractAttributes(gl, this.program);
         this.gl = gl;
     }
     ShaderProgram.prototype.getProgram = function () {
@@ -321,27 +321,23 @@ var ShaderProgram = /** @class */ (function () {
         // gl.getUniformLocation(program,'u_someThing.active')
         // gl.getUniformLocation(program,'u_someThing.someVec2')
     };
-    ShaderProgram.prototype.bindBuffer = function (buffer, attrLocationName) {
+    ShaderProgram.prototype.bindBuffer = function (buffer, attrName) {
         if (true) {
-            if (!attrLocationName)
+            if (!attrName)
                 throw "can not found attribute location: attrLocationName not defined";
-        }
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
-        var attrLocation = this._attrLocationCache[attrLocationName] ||
-            this.gl.getAttribLocation(this.program, attrLocationName); // todo extract attributes like uniforms
-        if (true) {
-            if (attrLocation < 0) {
+            if (this.attributes[attrName] === undefined) {
                 console.log(this);
-                throw "can not found attribute location for  " + attrLocationName;
+                throw "can not found attribute location for  " + attrName;
             }
         }
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
+        var attrLocation = this.attributes[attrName];
         this.gl.enableVertexAttribArray(attrLocation);
         this.gl.vertexAttribPointer(attrLocation, buffer.getItemSize(), buffer.getItemType(), // type of data
         false, // if the content is normalized [0..1] vectors
         0, // number of bytes to skip in between elements
         0 // offsets to the first element
         );
-        this._attrLocationCache[attrLocationName] = attrLocation;
     };
     ShaderProgram.prototype.destroy = function () {
         this.gl.deleteProgram(this.program);
@@ -439,8 +435,8 @@ var mapType = function (gl, type) {
     return GL_TABLE[type];
 };
 exports.extractUniforms = function (gl, program) {
-    var uniforms = {};
     var activeUniforms = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    var uniforms = {};
     for (var i = 0; i < activeUniforms; i++) {
         var uniformData = gl.getActiveUniform(program, i);
         var type = mapType(gl, uniformData.type);
@@ -455,6 +451,19 @@ exports.extractUniforms = function (gl, program) {
         };
     }
     return uniforms;
+};
+exports.extractAttributes = function (gl, program) {
+    var activeAttributes = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+    var attrMap = {};
+    for (var i = 0; i < activeAttributes; i++) {
+        var attrData = gl.getActiveAttrib(program, i);
+        var location_2 = gl.getAttribLocation(program, attrData.name);
+        if (1 && location_2 < 0)
+            throw "error finding attribute location: " + attrData.name;
+        attrMap[attrData.name] = location_2;
+    }
+    console.log(attrMap);
+    return attrMap;
 };
 var TypeNumber = {
     check: function (val) {
@@ -3292,14 +3301,14 @@ var SpriteRectLightDrawer = /** @class */ (function (_super) {
         var _this = this;
         var gen = new texShaderGenerator_1.default();
         //language=GLSL
-        gen.prependFragmentCodeBlock("\n            #define NUM_OF_LIGHT_IN_VIEW " + lightArray_1.default.NUM_OF_LIGHT_IN_VIEW + "\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float nearRadius;\n                float farRadius;\n                bool isOn;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n            vec4 lightEffect(PointLight lgt, vec4 normal){\n                vec4 result = vec4(0);\n                float atten = 0.0;\n                vec3 l = vec3(lgt.pos.xy,0) - gl_FragCoord.xyz; // todo optimize\n                float dist = length(lgt.pos - gl_FragCoord.xy);\n                if (dist<=lgt.farRadius) {\n                    if (dist<=lgt.nearRadius) atten = 1.0;\n                    else {\n                        float n = dist - lgt.nearRadius;\n                        float d = lgt.farRadius - lgt.nearRadius;\n                        atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));\n                    }\n                    if (normal.a>0.0) {\n                        vec4 normalMap = (2.*normal) - 1.;\n                        vec3 N = normalize(normalMap.xyz);\n                        l = l / dist;\n                        float nDotL = max(0.,dot(N,l));\n                        atten*=nDotL;\n                    }\n                }\n                result = atten * lgt.color; // * lgt.intensity\n                return result;\n            }\n        ");
+        gen.prependFragmentCodeBlock("\n            #define NUM_OF_LIGHT_IN_VIEW " + lightArray_1.default.NUM_OF_LIGHT_IN_VIEW + "\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float nearRadius;\n                float farRadius;\n                bool isOn;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n            vec4 lightEffect(PointLight lgt, vec4 normal){\n                vec4 result = vec4(0);\n                float atten = 0.0;\n                vec3 l = vec3(lgt.pos.xy,0) - gl_FragCoord.xyz;\n                float dist = length(l);\n                if (dist<=lgt.farRadius) {\n                    if (dist<=lgt.nearRadius) atten = 1.0;\n                    else {\n                        float n = dist - lgt.nearRadius;\n                        float d = lgt.farRadius - lgt.nearRadius;\n                        atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));\n                    }\n                    if (normal.a>0.0) {\n                        vec4 normalMap = (2.*normal) - 1.;\n                        vec3 N = normalize(normalMap.xyz);\n                        l = l / dist;\n                        float nDotL = max(0.,dot(N,l));\n                        atten*=nDotL;\n                    }\n                }\n                result = atten * lgt.color; // * lgt.intensity\n                return result;\n            }\n        ");
         // program normal map gen 2 * (color - vec3(0.5))
         gen.addFragmentUniform("PointLight", 'u_pointLights[NUM_OF_LIGHT_IN_VIEW]');
         gen.addFragmentUniform("AmbientLight", 'u_ambientLight');
         gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.SAMPLER_2D, 'normalTexture');
         gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.BOOL, 'u_useNormalMap');
         //language=GLSL
-        gen.setFragmentMainFn("\n            void main(){\n                vec4 texColor = texture2D(texture, v_texCoord); // todo u_texture\n                vec4 normal = u_useNormalMap?\n                    texture2D(normalTexture,v_texCoord):\n                    vec4(0);\n                \n                vec4 lightResult = u_ambientLight.color; // * u_ambientLight.intensity\n                \n                // chech .a\n                for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {\n                    if (u_pointLights[i].isOn) lightResult+=lightEffect(u_pointLights[i], normal);\n                }\n                \n                lightResult*=texColor;\n                gl_FragColor = lightResult;\n                gl_FragColor.a *= u_alpha;\n            }\n        ");
+        gen.setFragmentMainFn("\n            void main(){\n                vec4 texColor = texture2D(texture, v_texCoord); // todo u_texture\n                vec4 normal = u_useNormalMap?\n                    texture2D(normalTexture,v_texCoord):\n                    vec4(0);\n                \n                vec4 lightResult = u_ambientLight.color; // * u_ambientLight.intensity\n                \n                if (lightResult.a>0.) {\n                    for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {\n                        if (u_pointLights[i].isOn) lightResult+=lightEffect(u_pointLights[i], normal);\n                    } \n                }\n                \n                lightResult*=texColor;\n                gl_FragColor = lightResult;\n                gl_FragColor.a *= u_alpha;\n            }\n        ");
         var program = new shaderProgram_1.default(gl, gen.getVertexSource(), gen.getFragmentSource());
         _this = _super.call(this, gl, program) || this;
         return _this;

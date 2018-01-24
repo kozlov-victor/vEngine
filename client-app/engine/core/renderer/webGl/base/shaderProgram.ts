@@ -2,17 +2,19 @@
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import {compileShader, createProgram, extractUniforms} from "./shaderProgramUtils";
+import {
+    AttributesMap, compileShader, createProgram, extractAttributes, extractUniforms,
+    UniformsMap
+} from "./shaderProgramUtils";
 import VertexBuffer from "./vertexBuffer";
 
 export default class ShaderProgram {
 
     static currentProgram:ShaderProgram = null;
 
-    _attrLocationCache = {};
-
     private program:WebGLProgram;
-    private uniforms;
+    private uniforms:UniformsMap;
+    private attributes:AttributesMap;
     private gl:WebGLRenderingContext;
 
 
@@ -23,6 +25,7 @@ export default class ShaderProgram {
         gl.deleteShader(vShader);
         gl.deleteShader(fShader);
         this.uniforms = extractUniforms(gl, this.program);
+        this.attributes = extractAttributes(gl,this.program);
         this.gl = gl;
     }
 
@@ -59,23 +62,17 @@ export default class ShaderProgram {
         // gl.getUniformLocation(program,'u_someThing.someVec2')
     }
 
-    bindBuffer(buffer:VertexBuffer, attrLocationName:string) {
+    bindBuffer(buffer:VertexBuffer, attrName:string) {
         if (DEBUG) {
-            if (!attrLocationName) throw `can not found attribute location: attrLocationName not defined`;
-        }
-
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
-        let attrLocation =
-            this._attrLocationCache[attrLocationName] ||
-            this.gl.getAttribLocation(this.program, attrLocationName); // todo extract attributes like uniforms
-
-        if (DEBUG) {
-            if (attrLocation < 0) {
+            if (!attrName) throw `can not found attribute location: attrLocationName not defined`;
+            if (this.attributes[attrName]===undefined) {
                 console.log(this);
-                throw `can not found attribute location for  ${attrLocationName}`;
+                throw `can not found attribute location for  ${attrName}`;
             }
         }
 
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer.getGlBuffer());
+        let attrLocation:number = this.attributes[attrName];
         this.gl.enableVertexAttribArray(attrLocation);
         this.gl.vertexAttribPointer(
             attrLocation,
@@ -85,7 +82,6 @@ export default class ShaderProgram {
             0,      // number of bytes to skip in between elements
             0       // offsets to the first element
         );
-        this._attrLocationCache[attrLocationName] = attrLocation;
     }
 
     destroy(){

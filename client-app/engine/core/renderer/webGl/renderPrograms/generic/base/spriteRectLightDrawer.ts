@@ -27,8 +27,8 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
             vec4 lightEffect(PointLight lgt, vec4 normal){
                 vec4 result = vec4(0);
                 float atten = 0.0;
-                vec3 l = vec3(lgt.pos.xy,0) - gl_FragCoord.xyz; // todo optimize
-                float dist = length(lgt.pos - gl_FragCoord.xy);
+                vec3 l = vec3(lgt.pos.xy,0) - gl_FragCoord.xyz;
+                float dist = length(l);
                 if (dist<=lgt.farRadius) {
                     if (dist<=lgt.nearRadius) atten = 1.0;
                     else {
@@ -63,9 +63,10 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
                 
                 vec4 lightResult = u_ambientLight.color; // * u_ambientLight.intensity
                 
-                // chech .a
-                for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {
-                    if (u_pointLights[i].isOn) lightResult+=lightEffect(u_pointLights[i], normal);
+                if (lightResult.a>0.) {
+                    for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {
+                        if (u_pointLights[i].isOn) lightResult+=lightEffect(u_pointLights[i], normal);
+                    } 
                 }
                 
                 lightResult*=texColor;
