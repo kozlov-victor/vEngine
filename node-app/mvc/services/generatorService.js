@@ -1,9 +1,8 @@
 const fs = require.main.require('./node-app/base/fs');
 const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const configFn = require.main.require('./node-app/generator/webpack.config');
 const termToHtml = require('./termToHtml');
-
+const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 
 class GeneratorService {
 
@@ -28,25 +27,23 @@ class GeneratorService {
                 DEBUG: !!params.debug
             })
         );
-        if (params.minify && false) {
-            config.plugins.push(
-                new UglifyJSPlugin({
-                    output: { // http://lisperator.net/uglifyjs/codegen
-                        beautify: false,
-                        comments: false
-                    },
-                    compress: { // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
-                        sequences: true,
-                        booleans: true,
-                        conditionals: true,
-                        hoist_funs: false,
-                        hoist_vars: false,
-                        warnings: false
-                    },
-                })
-            )
-        }
-        return webpack(config);
+        let compiler = webpack(config);
+        let lastMsg = '';
+        let cb = null;
+        compiler.apply(new ProgressPlugin(function(percentage, msg) {
+            let m = (~~(percentage * 100)) + '% ' + msg;
+            if (lastMsg!==m) {
+                lastMsg = m;
+                console.log(m);
+                if (cb) cb(m);
+            }
+        }));
+        return {
+            nativeCompiler:compiler,
+            onProgress: (fn)=>{
+                cb = fn;
+            }
+        };
     }
 
     getCompiler(params){
@@ -55,7 +52,7 @@ class GeneratorService {
         return this.compilerCache[key];
     }
 
-    generate(params,callback){
+    generate(params,resp,callback){
 
         console.log('generation started',params);
         try {
@@ -91,8 +88,11 @@ class GeneratorService {
 
 
             let compiler = this.getCompiler(params);
-
-            compiler.run((err, data) => {
+            resp.setHeader('Content-Type', 'text/html');
+            compiler.onProgress((msg)=>{
+                resp.write(msg + '<br>');
+            });
+            compiler.nativeCompiler.run((err, data) => {
                 if (err) {
                     console.error('compiler run error: ',err);
                     GeneratorService._createError(params,err);
@@ -135,7 +135,8 @@ class GeneratorService {
                         fs.createFileSync(`workspace/${params.projectName}/out/bundle.js`,appBundleJs);
                         //fs.deleteFolderSync(`./workspace/${params.projectName}/generated/tmp`);
                         console.log('compiled with no errors');
-                        callback({success:true});
+                        //callback({success:true});
+                        resp.end();
                     }
                 }
             });

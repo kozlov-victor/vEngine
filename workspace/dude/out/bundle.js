@@ -2711,8 +2711,8 @@ exports.default = TileMap;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var game_1 = __webpack_require__(32);
-var gameProps_1 = __webpack_require__(91);
-var repository_1 = __webpack_require__(92);
+var gameProps_1 = __webpack_require__(89);
+var repository_1 = __webpack_require__(90);
 if (1 && gameProps_1.gameProps.startSceneId === undefined)
     throw 'start scene not specified';
 var game = new game_1.default();
@@ -6182,25 +6182,7 @@ Object.defineProperty(exports, 'DudeBehaviour', {
   }
 });
 
-var _eso1611a = __webpack_require__(85);
-
-Object.defineProperty(exports, 'Eso1611aBehaviour', {
-  enumerable: true,
-  get: function get() {
-    return _eso1611a.Eso1611aBehaviour;
-  }
-});
-
-var _flare = __webpack_require__(86);
-
-Object.defineProperty(exports, 'FlareBehaviour', {
-  enumerable: true,
-  get: function get() {
-    return _flare.FlareBehaviour;
-  }
-});
-
-var _ground = __webpack_require__(87);
+var _ground = __webpack_require__(85);
 
 Object.defineProperty(exports, 'Ground1Behaviour', {
   enumerable: true,
@@ -6209,7 +6191,7 @@ Object.defineProperty(exports, 'Ground1Behaviour', {
   }
 });
 
-var _mainScene = __webpack_require__(88);
+var _mainScene = __webpack_require__(86);
 
 Object.defineProperty(exports, 'MainSceneBehaviour', {
   enumerable: true,
@@ -6218,7 +6200,7 @@ Object.defineProperty(exports, 'MainSceneBehaviour', {
   }
 });
 
-var _platform = __webpack_require__(89);
+var _platform = __webpack_require__(87);
 
 Object.defineProperty(exports, 'PlatformBehaviour', {
   enumerable: true,
@@ -6227,7 +6209,7 @@ Object.defineProperty(exports, 'PlatformBehaviour', {
   }
 });
 
-var _tile = __webpack_require__(90);
+var _tile = __webpack_require__(88);
 
 Object.defineProperty(exports, 'TileBehaviour', {
   enumerable: true,
@@ -6311,56 +6293,6 @@ exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Eso1611aBehaviour = exports.Eso1611aBehaviour = function () {
-    function Eso1611aBehaviour() {
-        _classCallCheck(this, Eso1611aBehaviour);
-    }
-
-    Eso1611aBehaviour.prototype.onCreate = function onCreate() {};
-
-    Eso1611aBehaviour.prototype.onUpdate = function onUpdate() {};
-
-    Eso1611aBehaviour.prototype.onDestroy = function onDestroy() {};
-
-    return Eso1611aBehaviour;
-}();
-
-/***/ }),
-/* 86 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var FlareBehaviour = exports.FlareBehaviour = function () {
-    function FlareBehaviour() {
-        _classCallCheck(this, FlareBehaviour);
-    }
-
-    FlareBehaviour.prototype.onCreate = function onCreate() {};
-
-    FlareBehaviour.prototype.onUpdate = function onUpdate() {};
-
-    FlareBehaviour.prototype.onDestroy = function onDestroy() {};
-
-    return FlareBehaviour;
-}();
-
-/***/ }),
-/* 87 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.__esModule = true;
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var Ground1Behaviour = exports.Ground1Behaviour = function () {
     function Ground1Behaviour() {
         _classCallCheck(this, Ground1Behaviour);
@@ -6378,7 +6310,7 @@ var Ground1Behaviour = exports.Ground1Behaviour = function () {
 }();
 
 /***/ }),
-/* 88 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6461,7 +6393,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
 }();
 
 /***/ }),
-/* 89 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6488,7 +6420,7 @@ var PlatformBehaviour = exports.PlatformBehaviour = function () {
 }();
 
 /***/ }),
-/* 90 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6513,7 +6445,7 @@ var TileBehaviour = exports.TileBehaviour = function () {
 }();
 
 /***/ }),
-/* 91 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6537,7 +6469,7 @@ exports.gameProps = {
 
 
 /***/ }),
-/* 92 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

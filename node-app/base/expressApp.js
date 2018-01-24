@@ -49,7 +49,7 @@ const createResponse = (opts,res,params)=>{
             res.send(codeResult);
         }
     };
-    codeResult = opts.ctrl[opts.methodName](params,callback);
+    codeResult = opts.ctrl[opts.methodName](params,callback,res);
     if (typeof codeResult === 'function') {
         // do nothing, callback will be invoked
     } else {

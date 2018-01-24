@@ -85,12 +85,12 @@ class ResourceController {
      * @Method("generate");
      * @Request({"type":"get"});
      */
-    generate(params,callback){
+    generate(params,callback,resp){
         let onGenerated = res=>{
             if (!res.success) params.error = res.error;
             callback();
         };
-        generatorService.generate(params,onGenerated);
+        generatorService.generate(params,resp,onGenerated);
         return callback;
     }
 
