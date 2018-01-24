@@ -4,8 +4,8 @@ declare const RF;
 import './sceneCentralPanel.less'
 
 import BaseComponent from "../../../../baseComponent";
-import GameObjectProto from "../../../../../engine/model/generic/gameObjectProto";
-import GameObject from "../../../../../engine/model/generic/gameObject";
+import GameObjectProto from "../../../../../engine/model/impl/gameObjectProto";
+import GameObject from "../../../../../engine/model/impl/gameObject";
 
 @RF.decorateComponent({
     name: 'app-scene-central-panel',

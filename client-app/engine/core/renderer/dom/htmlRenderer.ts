@@ -2,7 +2,7 @@
 import AbstractDomRenderer from './abstractDomRender'
 import * as mathEx from '../../../core/mathEx'
 import Game from "../../game";
-import GameObject from "../../../model/generic/gameObject";
+import GameObject from "../../../model/impl/gameObject";
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
 import Color from "../../color";

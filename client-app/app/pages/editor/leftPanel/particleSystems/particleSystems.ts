@@ -1,5 +1,5 @@
 import BaseComponent from "../../../../baseComponent";
-import ParticleSystem from "../../../../../engine/model/generic/particleSystem";
+import ParticleSystem from "../../../../../engine/model/impl/particleSystem";
 import {alertEx} from "../../../../providers/userDefinedFns";
 
 declare const RF;

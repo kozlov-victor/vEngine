@@ -4,7 +4,7 @@ import {Image} from "../../../declarations";
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import Game from "../../game";
-import GameObject from "../../../model/generic/gameObject";
+import GameObject from "../../../model/impl/gameObject";
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
 import AbstractCanvasRenderer from "../abstract/abstractCanvasRenderer";

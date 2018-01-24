@@ -23,13 +23,14 @@ export default class Color {
     private bNorm:number;
     private aNorm:number;
 
-    public static WHITE = Color.RGB(1,1,1);
+    public static WHITE = Color.RGB(255,255,255);
+    public static GREY  = Color.RGB(127,127,127);
     public static BLACK = Color.RGB(0,0,0);
 
     private static objectPool:ObjectPool<Color>;
     private _arr:Array<number> = null;
 
-    constructor(r:number,g:number,b:number,a:number = 1){
+    constructor(r:number,g:number,b:number,a?:number){
         this.setRGBA(r,g,b,a);
     }
 
@@ -40,7 +41,7 @@ export default class Color {
         this.aNorm = this.a / 0xff;
     }
 
-    setRGBA(r:number,g:number,b:number,a:number = 1){
+    setRGBA(r:number,g:number,b:number,a:number = 255){
         this.r = r;
         this.g = g;
         this.b = b;
@@ -53,7 +54,7 @@ export default class Color {
         return Color.objectPool.getNextObject();
     }
 
-    static RGB(r:number,g:number,b:number,a:number = 255):Color{
+    static RGB(r:number,g:number,b:number,a?:number):Color{
         let c:Color = Color.getFromPool();
         c.setRGBA(r,g,b,a);
         return c;

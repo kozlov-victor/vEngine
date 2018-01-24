@@ -3,7 +3,7 @@
 
 import Move4Dir from './move4Dir'
 import Game from "../../core/game";
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 
 export default class Control4Dir extends Move4Dir {
 

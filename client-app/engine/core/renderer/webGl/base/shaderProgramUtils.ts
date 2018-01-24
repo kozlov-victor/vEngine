@@ -150,7 +150,6 @@ export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram
         if (DEBUG && location<0) throw `error finding attribute location: ${attrData.name}`;
         attrMap[attrData.name] = location;
     }
-    console.log(attrMap);
     return attrMap;
 };
 

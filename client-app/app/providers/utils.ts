@@ -1,4 +1,4 @@
-import GameObject from "../../engine/model/generic/gameObject";
+import GameObject from "../../engine/model/impl/gameObject";
 
 declare const Blob:any,atob:any;
 declare let Promise:any;
@@ -13,10 +13,10 @@ import restResource from '../providers/rest/resource';
 import restFileSystem from '../providers/rest/fileSystem';
 import i18n from '../providers/i18n';
 
-import GameObjectProto from '../../engine/model/generic/gameObjectProto'
-import Scene from "../../engine/model/generic/scene";
+import GameObjectProto from '../../engine/model/impl/gameObjectProto'
+import Scene from "../../engine/model/impl/scene";
 import Point2d from "../../engine/core/geometry/point2d";
-import SpriteSheet from "../../engine/model/generic/spriteSheet";
+import SpriteSheet from "../../engine/model/impl/spriteSheet";
 
 export default class Utils {
     static getGameObjectCss(gameObj:GameObject){

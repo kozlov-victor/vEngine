@@ -1,6 +1,6 @@
 
 
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 
 declare const DEBUG:boolean;
 

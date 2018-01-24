@@ -1,5 +1,5 @@
 import BaseComponent from "../../../../baseComponent";
-import Font from "../../../../../engine/model/generic/font";
+import Font from "../../../../../engine/model/impl/font";
 
 declare const RF;
 

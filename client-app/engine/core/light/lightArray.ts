@@ -26,11 +26,7 @@ export default class LightArray {
 
         for (let i=0;i<this.lights.length;i++){
             let p:PointLight = this.lights[i];
-            uniform[`u_pointLights[${i}].pos`] =  p.getPosScaled().toArray();
-            uniform[`u_pointLights[${i}].nearRadius`] = p.nearRadius;
-            uniform[`u_pointLights[${i}].farRadius`] = p.farRadius;
-            uniform[`u_pointLights[${i}].isOn`] = p.isOn;
-            uniform[`u_pointLights[${i}].color`] = p.color.asGL();
+            p.setUniforms(uniform,i);
         }
     }
 

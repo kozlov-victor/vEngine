@@ -4,7 +4,7 @@ import Plane from '../../../primitives/plane'
 import ShaderProgram from '../../../base/shaderProgram'
 import AbstractDrawer from "../../abstract/abstractDrawer";
 import BufferInfo, {BufferInfoDescription} from "../../../base/bufferInfo";
-import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGenerator";
+import TexShaderGenerator from "../../../shaders/generators/impl/texShaderGenerator";
 
 export default class SpriteRectDrawer extends AbstractDrawer {
 

@@ -1,8 +1,8 @@
 
 import BaseAbstractBehaviour, {BehaviourParameters} from '../abstract/baseAbstractBehaviour'
 import Game from "../../core/game";
-import GameObject from "../../model/generic/gameObject";
-import Scene from "../../model/generic/scene";
+import GameObject from "../../model/impl/gameObject";
+import Scene from "../../model/impl/scene";
 import {MouseEventEx} from "../../declarations";
 
 interface MouseDragPoint {

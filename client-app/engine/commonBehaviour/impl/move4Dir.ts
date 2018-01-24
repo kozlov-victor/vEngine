@@ -2,7 +2,7 @@
 
 import Moveable from '../abstract/moveable'
 import Game from "../../core/game";
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 import {BehaviourParameters} from "../abstract/baseAbstractBehaviour";
 
 export default class Move4Dir extends Moveable {

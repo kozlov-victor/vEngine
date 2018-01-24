@@ -1,8 +1,8 @@
 
 
-import SpriteRectDrawer from "../generic/base/spriteRectDrawer";
+import SpriteRectDrawer from "../impl/base/spriteRectDrawer";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
-import TexShaderGenerator from "../../shaders/generators/generic/texShaderGenerator";
+import TexShaderGenerator from "../../shaders/generators/impl/texShaderGenerator";
 import ShaderProgram from "../../base/shaderProgram";
 import SimpleCopyFilter from "../../filters/textureFilters/simpleCopyFilter";
 import ShaderGenerator from "../../shaders/generators/shaderGenerator";

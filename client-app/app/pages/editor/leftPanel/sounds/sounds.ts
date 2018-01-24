@@ -1,5 +1,5 @@
 import BaseComponent from "../../../../baseComponent";
-import Sound from "../../../../../engine/model/generic/sound";
+import Sound from "../../../../../engine/model/impl/sound";
 
 declare const RF;
 

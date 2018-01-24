@@ -11,11 +11,7 @@ export class MainSceneBehaviour {
         this.scene.on('mouseMove',e=>{
             //console.log(e.isMouseDown);
         });
-        this.scene.on('mouseMove',e=>{
-          this.x = e.screenX;
-          this.y = e.screenY;
-          //this.points.push({x:e.screenX,y:e.screenY});
-        });
+    
         this.offsetX = 0;
         this.cnt=0;
         
@@ -34,6 +30,13 @@ export class MainSceneBehaviour {
         p2.pos.setXY(100,100);
 
         this.scene.ambientLight.color = global.Color.RGB(25,25,51);
+        
+        this.scene.on('mouseMove',e=>{
+          this.x = e.screenX;
+          this.y = e.screenY;
+          //this.points.push({x:e.screenX,y:e.screenY});
+          p1.pos.setXY(e.screenX,e.screenY);
+        });
         
     }
 

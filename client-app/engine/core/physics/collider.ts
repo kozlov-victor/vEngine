@@ -1,8 +1,8 @@
 
 import {overlapTest} from '../mathEx'
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 import Point2d from "../geometry/point2d";
-import GameObjectProto from "../../model/generic/gameObjectProto";
+import GameObjectProto from "../../model/impl/gameObjectProto";
 import Game from "../game";
 
 export default class Collider {

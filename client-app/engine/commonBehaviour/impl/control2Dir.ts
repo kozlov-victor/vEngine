@@ -1,6 +1,6 @@
 
 import Move2Dir from './move2Dir'
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 import Game from "../../core/game";
 
 

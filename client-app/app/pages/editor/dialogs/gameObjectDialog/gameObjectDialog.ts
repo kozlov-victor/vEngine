@@ -1,5 +1,5 @@
 import BaseComponent from "../../../../baseComponent";
-import FrameAnimation from "../../../../../engine/model/generic/frameAnimation";
+import FrameAnimation from "../../../../../engine/model/impl/frameAnimation";
 import {alertEx} from "../../../../providers/userDefinedFns";
 
 declare const RF;

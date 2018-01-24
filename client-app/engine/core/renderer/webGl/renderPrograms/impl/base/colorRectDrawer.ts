@@ -1,27 +1,27 @@
 
-import Line from '../../../primitives/line'
+import Plane from '../../../primitives/plane'
 import ShaderProgram from '../../../base/shaderProgram'
-import BufferInfo from "../../../base/bufferInfo";
-
+import BufferInfo, {BufferInfoDescription} from "../../../base/bufferInfo";
 import AbstractDrawer from "../../abstract/abstractDrawer";
-import ColorShaderGenerator from "../../../shaders/generators/generic/colorShaderGenerator";
+import ColorShaderGenerator from "../../../shaders/generators/impl/colorShaderGenerator";
 
-export default class LineDrawer extends AbstractDrawer {
+export default class ColorRectDrawer extends AbstractDrawer{
 
     constructor(gl:WebGLRenderingContext){
         super(gl);
+        this.primitive = new Plane();
         let gen = new ColorShaderGenerator();
         this.program = new ShaderProgram(
             gl,
             gen.getVertexSource(),
             gen.getFragmentSource()
         );
-        this.primitive = new Line();
 
         this.bufferInfo = new BufferInfo(gl,{
             posVertexInfo:{array: this.primitive.vertexArr,type:gl.FLOAT,size:2,attrName:'a_position'},
-            drawMethod: this.gl.LINE_STRIP
-        });
+            posIndexInfo: {array: this.primitive.indexArr},
+            drawMethod: this.gl.TRIANGLE_STRIP
+        } as BufferInfoDescription);
     }
 
 }

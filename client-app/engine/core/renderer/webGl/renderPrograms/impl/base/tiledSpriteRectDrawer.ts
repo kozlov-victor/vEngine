@@ -4,7 +4,7 @@ import ShaderProgram from '../../../base/shaderProgram'
 import BufferInfo, {BufferInfoDescription} from "../../../base/bufferInfo";
 import AbstractDrawer from "../../abstract/abstractDrawer";
 import {GL_TYPE} from "../../../base/shaderProgramUtils";
-import TexShaderGenerator from "../../../shaders/generators/generic/texShaderGenerator";
+import TexShaderGenerator from "../../../shaders/generators/impl/texShaderGenerator";
 
 
 export default class TiledSpriteRectDrawer extends AbstractDrawer {

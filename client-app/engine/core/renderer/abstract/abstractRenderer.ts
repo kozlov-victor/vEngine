@@ -2,11 +2,11 @@ import AbstractFilter from "../webGl/filters/abstract/abstractFilter";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import TextField from '../../../model/generic/ui/textField'
+import TextField from '../../../model/impl/ui/textField'
 import Device from '../../device'
 import {SCALE_STRATEGY} from "../../misc/consts";
 import Game from "../../game";
-import GameObjectProto from '../../../model/generic/gameObjectProto';
+import GameObjectProto from '../../../model/impl/gameObjectProto';
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
 import Color from "../../color";

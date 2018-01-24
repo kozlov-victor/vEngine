@@ -402,12 +402,24 @@
         {
             "id": 71,
             "name": "clamp",
+            "width": 300,
+            "height": 300,
             "pos": {
                 "x": 747,
                 "y": 124
             },
             "layerId": 2,
             "type": "GameObject",
+            "spriteSheet": {
+                "id": 69,
+                "type": "SpriteSheet"
+            },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 75
+                }
+            ],
             "gameObjectProto": {
                 "id": 70,
                 "type": "GameObjectProto"

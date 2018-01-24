@@ -3,7 +3,7 @@ import BaseComponent from "../../../../baseComponent";
 declare const RF;
 
 import './spriteSheets.scss'
-import SpriteSheet from "../../../../../engine/model/generic/spriteSheet";
+import SpriteSheet from "../../../../../engine/model/impl/spriteSheet";
 import {alertEx} from "../../../../providers/userDefinedFns";
 
 @RF.decorateComponent({

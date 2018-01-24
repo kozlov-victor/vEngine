@@ -8,4 +8,8 @@ export default class AmbientLight extends AbstractLight{
         super(game);
     }
 
+    setUniforms(uniform){
+        uniform['u_ambientLight.color'] = this.color.asGL()
+    }
+
 }

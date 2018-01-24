@@ -9,7 +9,7 @@ export class DudeBehaviour {
     onUpdate(){
 
         let p1 = this.game.lightArray.getLightAt(0);
-        p1.pos.setXY(this.gameObject.pos.x + 16,this.gameObject.pos.y + 16);
+        //p1.pos.setXY(this.gameObject.pos.x + 16,this.gameObject.pos.y + 16);
 
         if (
             this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP) ||

@@ -3,7 +3,7 @@ import BaseComponent from "../../../../baseComponent";
 declare const RF;
 
 import './sceneRightPanel.less'
-import TileMap from "../../../../../engine/model/generic/tileMap";
+import TileMap from "../../../../../engine/model/impl/tileMap";
 
 @RF.decorateComponent({
     name: 'app-scene-right-panel',

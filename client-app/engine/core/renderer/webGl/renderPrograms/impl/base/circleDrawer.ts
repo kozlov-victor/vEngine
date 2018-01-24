@@ -3,7 +3,7 @@ import Circle from "../../../primitives/circle"
 import ShaderProgram from "../../../base/shaderProgram"
 import AbstractDrawer from "./../../abstract/abstractDrawer"
 import BufferInfo from "../../../base/bufferInfo";
-import ColorShaderGenerator from "../../../shaders/generators/generic/colorShaderGenerator";
+import ColorShaderGenerator from "../../../shaders/generators/impl/colorShaderGenerator";
 
 export default class CircleDrawer extends AbstractDrawer {
 

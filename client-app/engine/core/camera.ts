@@ -6,8 +6,8 @@ import * as mathEx from './mathEx'
 import Rect from "./geometry/rect";
 import Point2d from "./geometry/point2d";
 import Game from "./game";
-import GameObject from "../model/generic/gameObject";
-import Scene from "../model/generic/scene";
+import GameObject from "../model/impl/gameObject";
+import Scene from "../model/impl/scene";
 import {random} from "./mathEx";
 
 interface CameraTweenTarget {

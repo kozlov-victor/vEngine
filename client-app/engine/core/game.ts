@@ -19,7 +19,7 @@ import Camera from './camera'
 import {SCALE_STRATEGY} from "./misc/consts";
 import Point2d from "./geometry/point2d";
 import AbstractRenderer from "./renderer/abstract/abstractRenderer";
-import Scene from '../model/generic/scene';
+import Scene from '../model/impl/scene';
 import LightArray from "./light/lightArray";
 
 

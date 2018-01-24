@@ -1,26 +1,27 @@
-import SpriteRectLightDrawer from "./renderPrograms/generic/base/spriteRectLightDrawer";
+import SpriteRectLightDrawer from "./renderPrograms/impl/base/spriteRectLightDrawer";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import SpriteRectDrawer from './renderPrograms/generic/base/spriteRectDrawer'
-import TiledSpriteRectDrawer from './renderPrograms/generic/base/tiledSpriteRectDrawer'
-import ColorRectDrawer from './renderPrograms/generic/base/colorRectDrawer'
+import SpriteRectDrawer from './renderPrograms/impl/base/spriteRectDrawer'
+import TiledSpriteRectDrawer from './renderPrograms/impl/base/tiledSpriteRectDrawer'
+import ColorRectDrawer from './renderPrograms/impl/base/colorRectDrawer'
 import AbstractDrawer, {TextureInfo} from './renderPrograms/abstract/abstractDrawer'
-import LineDrawer from './renderPrograms/generic/base/lineDrawer'
-import CircleDrawer from './renderPrograms/generic/base/circleDrawer'
-import ModelDrawer from './renderPrograms/generic/base/modelDrawer'
+import LineDrawer from './renderPrograms/impl/base/lineDrawer'
+import CircleDrawer from './renderPrograms/impl/base/circleDrawer'
+import ModelDrawer from './renderPrograms/impl/base/modelDrawer'
 import FrameBuffer from './base/frameBuffer'
 import MatrixStack from './base/matrixStack'
 import * as mat4 from '../../geometry/mat4'
 import * as matEx from '../../mathEx'
 import Texture from './base/texture'
-import MultBlendDrawer from "./renderPrograms/generic/blend/multBlendDrawer";
+import MultBlendDrawer from "./renderPrograms/impl/blend/multBlendDrawer";
 import Rect from "../../geometry/rect";
 import Game from "../../game";
-import GameObjectProto from '../../../model/generic/gameObjectProto';
+import GameObjectProto from '../../../model/impl/gameObjectProto';
 import Point2d from "../../geometry/point2d";
 import AbstractCanvasRenderer from "../abstract/abstractCanvasRenderer";
 import Color from "../../color";
+import OpticMaterial from "../../light/opticMaterial";
 
 
 const getCtx = el=>{
@@ -181,10 +182,12 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
                 u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
                 u_alpha: 1,
-                u_useNormalMap: texInfo.length>1,
-                'u_ambientLight.color': scene.ambientLight.color.asGL()
+                u_useNormalMap: texInfo.length>1
             };
+            scene.ambientLight.setUniforms(uniforms);
             this.game.lightArray.setUniforms(uniforms);
+            new OpticMaterial().setUniforms(uniforms);
+            //if (1) throw uniforms;
             this.spriteRectLightDrawer.draw(texInfo,uniforms);
         }
     }

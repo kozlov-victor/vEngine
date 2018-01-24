@@ -1,8 +1,8 @@
 
 import BaseAbstractBehaviour, {BehaviourParameters} from './baseAbstractBehaviour'
 import Game from "../../core/game";
-import GameObject from "../../model/generic/gameObject";
-import FrameAnimation from "../../model/generic/frameAnimation";
+import GameObject from "../../model/impl/gameObject";
+import FrameAnimation from "../../model/impl/frameAnimation";
 
 export default class Moveable extends BaseAbstractBehaviour {
 

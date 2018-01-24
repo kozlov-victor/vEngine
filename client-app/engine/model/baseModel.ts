@@ -1,5 +1,4 @@
 
-import GameObject from "./generic/gameObject";
 
 declare const DEBUG:boolean;
 

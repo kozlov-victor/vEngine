@@ -4,9 +4,9 @@ import {TextureInfo} from "../../renderPrograms/abstract/abstractDrawer";
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import ShaderProgram from "../../base/shaderProgram";
-import SpriteRectDrawer from "../../renderPrograms/generic/base/spriteRectDrawer";
+import SpriteRectDrawer from "../../renderPrograms/impl/base/spriteRectDrawer";
 import * as mat4 from "../../../../geometry/mat4";
-import TexShaderGenerator from "../../shaders/generators/generic/texShaderGenerator";
+import TexShaderGenerator from "../../shaders/generators/impl/texShaderGenerator";
 import ShaderGenerator from "../../shaders/generators/shaderGenerator";
 import Texture from "../../base/texture";
 import FrameBuffer from "../../base/frameBuffer";

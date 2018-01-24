@@ -6,8 +6,8 @@ declare const RF;
 
 import './scenes.less'
 import {alertEx} from "../../../../providers/userDefinedFns";
-import Layer from "../../../../../engine/model/generic/layer";
-import Scene from "../../../../../engine/model/generic/scene";
+import Layer from "../../../../../engine/model/impl/layer";
+import Scene from "../../../../../engine/model/impl/scene";
 
 @RF.decorateComponent({
     name: 'app-scenes',

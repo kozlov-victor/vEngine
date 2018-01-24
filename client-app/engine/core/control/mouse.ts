@@ -1,4 +1,4 @@
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 

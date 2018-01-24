@@ -1,11 +1,11 @@
 
 // http://madebyevan.com/gamedevclass/minimal-demo/
 
-import GameObjectProto from "../../model/generic/gameObjectProto";
+import GameObjectProto from "../../model/impl/gameObjectProto";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 import Vec2 from '../geometry/vec2'
-import GameObject from "../../model/generic/gameObject";
+import GameObject from "../../model/impl/gameObject";
 import Game from '../game';
 import Point2d from "../geometry/point2d";
 

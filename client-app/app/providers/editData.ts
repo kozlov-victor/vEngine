@@ -1,14 +1,14 @@
 
-import GameObjectProto from '../../engine/model/generic/gameObjectProto'
-import SpriteSheet from '../../engine/model/generic/spriteSheet'
-import FrameAnimation from '../../engine/model/generic/frameAnimation'
-import Scene from '../../engine/model/generic/scene'
-import Layer from '../../engine/model/generic/layer'
-import Font from '../../engine/model/generic/font'
-import Sound from '../../engine/model/generic/sound'
-import ParticleSystem from '../../engine/model/generic/particleSystem'
+import GameObjectProto from '../../engine/model/impl/gameObjectProto'
+import SpriteSheet from '../../engine/model/impl/spriteSheet'
+import FrameAnimation from '../../engine/model/impl/frameAnimation'
+import Scene from '../../engine/model/impl/scene'
+import Layer from '../../engine/model/impl/layer'
+import Font from '../../engine/model/impl/font'
+import Sound from '../../engine/model/impl/sound'
+import ParticleSystem from '../../engine/model/impl/particleSystem'
 import Game from '../../engine/core/game';
-import GameObject from "../../engine/model/generic/gameObject";
+import GameObject from "../../engine/model/impl/gameObject";
 
 class EditData {
 

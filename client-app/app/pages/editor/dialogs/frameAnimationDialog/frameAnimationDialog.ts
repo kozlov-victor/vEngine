@@ -1,6 +1,6 @@
 import BaseComponent from "../../../../baseComponent";
-import GameObject from "../../../../../engine/model/generic/gameObject";
-import SpriteSheet from "../../../../../engine/model/generic/spriteSheet";
+import GameObject from "../../../../../engine/model/impl/gameObject";
+import SpriteSheet from "../../../../../engine/model/impl/spriteSheet";
 
 declare const RF;
 

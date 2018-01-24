@@ -5,8 +5,8 @@ import {editData} from './editData';
 import resourceRest from './rest/resource';
 import projectRest from './rest/project';
 
-import CommonBehaviour from '../../engine/model/generic/commonBehaviour';
-import TextField from '../../engine/model/generic/ui/textField'
+import CommonBehaviour from '../../engine/model/impl/commonBehaviour';
+import TextField from '../../engine/model/impl/ui/textField'
 
 let cnt:number = 0;
 
