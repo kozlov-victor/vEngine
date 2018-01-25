@@ -29,7 +29,7 @@ export class MainSceneBehaviour {
         p2.isOn = true;
         p2.pos.setXY(100,100);
 
-        this.scene.ambientLight.color = global.Color.RGB(25,25,51);
+        this.scene.ambientLight.color = global.Color.RGB(122,122,51);
         
         this.scene.on('mouseMove',e=>{
           this.x = e.screenX;

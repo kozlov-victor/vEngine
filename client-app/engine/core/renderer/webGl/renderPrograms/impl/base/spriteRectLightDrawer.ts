@@ -23,6 +23,7 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
             };
             struct AmbientLight {
                 vec4 color;
+                vec3 direction;
             };
             struct Material {
                 vec4  ambient;
@@ -43,20 +44,20 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
                 }
                 return atten;
             }
-            vec4 specularResult(Material m, float dot, float dist) {
-                return m.specular * dot * m.shininess / dist;
+            vec4 specularResult(Material m, float dotProduct, float dist) {
+                return m.specular * dotProduct * m.shininess / dist;
             }
-            vec4 diffuseResult(Material m, float dot, vec4 texColor) {
-                return m.diffuse * dot * texColor;
+            vec4 diffuseResult(Material m, float dotProduct, vec4 texColor) {
+                return m.diffuse * dotProduct * texColor;
             }
             vec4 shadedResult(PointLight lgt, Material m, vec4 N4,vec4 texColor) {
                 vec3 L = vec3(lgt.pos.xy - gl_FragCoord.xy,0.0);
                 float dist = length(L);
                 L = L / dist;
-                float dot = (N4.a>0.)? max(0.0,dot(N4.xyz,L)): 1.;
+                float dotProduct = (N4.a>0.)? max(0.0,dot(N4.xyz,L)): 1.;
                 float atten = lightAttenuation(lgt,dist);
-                vec4 diffuse = diffuseResult(m, dot, texColor);
-                vec4 specular = specularResult(m, dot, dist);
+                vec4 diffuse = diffuseResult(m, dotProduct, texColor);
+                vec4 specular = specularResult(m, dotProduct, dist);
                 vec4 result = atten * lgt.color * (diffuse + specular);
                 return result;
             }
@@ -73,15 +74,19 @@ export default class SpriteRectLightDrawer extends SpriteRectDrawer {
                 vec4 texColor = texture2D(texture, v_texCoord); // todo u_texture
                 
                 vec4 N4;
+                float dotProduct;
                 if (u_useNormalMap) {
                     vec4 normal = texture2D(normalTexture,v_texCoord);
                     vec4 normalMap = (2.0 * normal) - 1.0;
-                    N4 = vec4(normalize(normalMap.xyz),1); 
+                    N4 = vec4(normalize(normalMap.xyz),1);
+                    vec3 N = N4.xyz;
+                    dotProduct = max(0.,dot(N,normalize(u_ambientLight.direction))); 
                 } else {
                     N4 = vec4(0.0);
+                    dotProduct = 1.;
                 }
                    
-                vec4 lightResult = u_material.ambient + (texColor * u_ambientLight.color);
+               vec4 lightResult = (texColor * u_ambientLight.color) * (u_material.ambient + dotProduct);
                 // * u_ambientLight.intensity
                 
                 if (texColor.a>0.) {

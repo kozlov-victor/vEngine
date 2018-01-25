@@ -178,6 +178,8 @@ const TypeBool = {
 const TypeArray = (ElType,size?)=>{
     return {
         check: (val)=>{
+            if (!val)
+                throw `can not set uniform  value: ${val}`;
             if (!val.splice) {
                 console.error('Can not set uniform value',val);
                 throw `can not set uniform with value [${val}]: expected argument of type Array`;

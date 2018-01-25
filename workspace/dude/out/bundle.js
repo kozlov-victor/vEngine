@@ -486,6 +486,8 @@ var TypeBool = {
 var TypeArray = function (ElType, size) {
     return {
         check: function (val) {
+            if (!val)
+                throw "can not set uniform  value: " + val;
             if (!val.splice) {
                 console.error('Can not set uniform value', val);
                 throw "can not set uniform with value [" + val + "]: expected argument of type Array";
@@ -3954,10 +3956,13 @@ var abstractLight_1 = __webpack_require__(18);
 var AmbientLight = /** @class */ (function (_super) {
     __extends(AmbientLight, _super);
     function AmbientLight(game) {
-        return _super.call(this, game) || this;
+        var _this = _super.call(this, game) || this;
+        _this.direction = [1, 1, 1];
+        return _this;
     }
     AmbientLight.prototype.setUniforms = function (uniform) {
         uniform['u_ambientLight.color'] = this.color.asGL();
+        uniform['u_ambientLight.direction'] = this.direction;
     };
     return AmbientLight;
 }(abstractLight_1.default));
@@ -4834,7 +4839,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         p2.isOn = true;
         p2.pos.setXY(100, 100);
 
-        this.scene.ambientLight.color = _global._global.Color.RGB(25, 25, 51);
+        this.scene.ambientLight.color = _global._global.Color.RGB(122, 122, 51);
 
         this.scene.on('mouseMove', function (e) {
             _this.x = e.screenX;
@@ -6977,7 +6982,7 @@ var SpriteRectLightDrawer = /** @class */ (function (_super) {
         var _this = this;
         var gen = new texShaderGenerator_1.default();
         //language=GLSL
-        gen.prependFragmentCodeBlock("\n            #define NUM_OF_LIGHT_IN_VIEW " + lightArray_1.default.NUM_OF_LIGHT_IN_VIEW + "\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float nearRadius;\n                float farRadius;\n                bool isOn;\n            };\n            struct AmbientLight {\n                vec4 color;\n            };\n            struct Material {\n                vec4  ambient;\n                vec4  diffuse;\n                vec4  specular;\n                float shininess;\n            };\n            \n            float lightAttenuation(PointLight lgt,float dist){\n                float atten = 0.0;\n                if (dist<=lgt.farRadius) {\n                    if (dist<=lgt.nearRadius) atten = 1.0;\n                    else {\n                        float n = dist - lgt.nearRadius;\n                        float d = lgt.farRadius - lgt.nearRadius;\n                        atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));\n                    }\n                }\n                return atten;\n            }\n            vec4 specularResult(Material m, float dot, float dist) {\n                return m.specular * dot * m.shininess / dist;\n            }\n            vec4 diffuseResult(Material m, float dot, vec4 texColor) {\n                return m.diffuse * dot * texColor;\n            }\n            vec4 shadedResult(PointLight lgt, Material m, vec4 N4,vec4 texColor) {\n                vec3 L = vec3(lgt.pos.xy - gl_FragCoord.xy,0.0);\n                float dist = length(L);\n                L = L / dist;\n                float dot = (N4.a>0.)? max(0.0,dot(N4.xyz,L)): 1.;\n                float atten = lightAttenuation(lgt,dist);\n                vec4 diffuse = diffuseResult(m, dot, texColor);\n                vec4 specular = specularResult(m, dot, dist);\n                vec4 result = atten * lgt.color * (diffuse + specular);\n                return result;\n            }\n        ");
+        gen.prependFragmentCodeBlock("\n            #define NUM_OF_LIGHT_IN_VIEW " + lightArray_1.default.NUM_OF_LIGHT_IN_VIEW + "\n            struct PointLight {\n                vec2 pos;\n                vec4 color;\n                float nearRadius;\n                float farRadius;\n                bool isOn;\n            };\n            struct AmbientLight {\n                vec4 color;\n                vec3 direction;\n            };\n            struct Material {\n                vec4  ambient;\n                vec4  diffuse;\n                vec4  specular;\n                float shininess;\n            };\n            \n            float lightAttenuation(PointLight lgt,float dist){\n                float atten = 0.0;\n                if (dist<=lgt.farRadius) {\n                    if (dist<=lgt.nearRadius) atten = 1.0;\n                    else {\n                        float n = dist - lgt.nearRadius;\n                        float d = lgt.farRadius - lgt.nearRadius;\n                        atten = smoothstep(0.0,1.0,1.0 - (n*n)/(d*d));\n                    }\n                }\n                return atten;\n            }\n            vec4 specularResult(Material m, float dotProduct, float dist) {\n                return m.specular * dotProduct * m.shininess / dist;\n            }\n            vec4 diffuseResult(Material m, float dotProduct, vec4 texColor) {\n                return m.diffuse * dotProduct * texColor;\n            }\n            vec4 shadedResult(PointLight lgt, Material m, vec4 N4,vec4 texColor) {\n                vec3 L = vec3(lgt.pos.xy - gl_FragCoord.xy,0.0);\n                float dist = length(L);\n                L = L / dist;\n                float dotProduct = (N4.a>0.)? max(0.0,dot(N4.xyz,L)): 1.;\n                float atten = lightAttenuation(lgt,dist);\n                vec4 diffuse = diffuseResult(m, dotProduct, texColor);\n                vec4 specular = specularResult(m, dotProduct, dist);\n                vec4 result = atten * lgt.color * (diffuse + specular);\n                return result;\n            }\n        ");
         // program normal map gen 2 * (color - vec3(0.5))
         gen.addFragmentUniform("PointLight", 'u_pointLights[NUM_OF_LIGHT_IN_VIEW]');
         gen.addFragmentUniform("AmbientLight", 'u_ambientLight');
@@ -6985,7 +6990,7 @@ var SpriteRectLightDrawer = /** @class */ (function (_super) {
         gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.SAMPLER_2D, 'normalTexture');
         gen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.BOOL, 'u_useNormalMap');
         //language=GLSL
-        gen.setFragmentMainFn("\n            void main(){\n                vec4 texColor = texture2D(texture, v_texCoord); // todo u_texture\n                \n                vec4 N4;\n                if (u_useNormalMap) {\n                    vec4 normal = texture2D(normalTexture,v_texCoord);\n                    vec4 normalMap = (2.0 * normal) - 1.0;\n                    N4 = vec4(normalize(normalMap.xyz),1); \n                } else {\n                    N4 = vec4(0.0);\n                }\n                   \n                vec4 lightResult = u_material.ambient + (texColor * u_ambientLight.color);\n                // * u_ambientLight.intensity\n                \n                if (texColor.a>0.) {\n                    for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {\n                        if (u_pointLights[i].isOn) lightResult+=shadedResult(\n                            u_pointLights[i], u_material, N4, texColor\n                        );\n                    } \n                }\n                \n                gl_FragColor = lightResult;\n                gl_FragColor.a = texColor.a;\n                gl_FragColor.a *= u_alpha;\n            }\n        ");
+        gen.setFragmentMainFn("\n            void main(){\n                vec4 texColor = texture2D(texture, v_texCoord); // todo u_texture\n                \n                vec4 N4;\n                float dotProduct;\n                if (u_useNormalMap) {\n                    vec4 normal = texture2D(normalTexture,v_texCoord);\n                    vec4 normalMap = (2.0 * normal) - 1.0;\n                    N4 = vec4(normalize(normalMap.xyz),1);\n                    vec3 N = N4.xyz;\n                    dotProduct = max(0.,dot(N,normalize(u_ambientLight.direction))); \n                } else {\n                    N4 = vec4(0.0);\n                    dotProduct = 1.;\n                }\n                   \n               vec4 lightResult = (texColor * u_ambientLight.color) * (u_material.ambient + dotProduct);\n                // * u_ambientLight.intensity\n                \n                if (texColor.a>0.) {\n                    for (int i=0;i<NUM_OF_LIGHT_IN_VIEW;i++) {\n                        if (u_pointLights[i].isOn) lightResult+=shadedResult(\n                            u_pointLights[i], u_material, N4, texColor\n                        );\n                    } \n                }\n                \n                gl_FragColor = lightResult;\n                gl_FragColor.a = texColor.a;\n                gl_FragColor.a *= u_alpha;\n            }\n        ");
         var program = new shaderProgram_1.default(gl, gen.getVertexSource(), gen.getFragmentSource());
         _this = _super.call(this, gl, program) || this;
         return _this;
