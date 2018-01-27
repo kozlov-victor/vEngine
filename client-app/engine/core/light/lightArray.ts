@@ -22,7 +22,7 @@ export default class LightArray {
         return this.lights[i];
     }
 
-    setUniforms(uniform){
+    setUniforms(uniform:Object){
 
         for (let i=0;i<this.lights.length;i++){
             let p:PointLight = this.lights[i];

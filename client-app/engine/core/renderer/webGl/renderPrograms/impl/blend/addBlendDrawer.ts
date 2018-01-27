@@ -2,7 +2,7 @@
 import AbstractBlendDrawer from "../../abstract/abstractBlendDrawer";
 import ShaderGenerator from "../../../shaders/generators/shaderGenerator";
 
-export default class MultBlendDrawer extends AbstractBlendDrawer{
+export default class AddBlendDrawer extends AbstractBlendDrawer {
 
     constructor(gl:WebGLRenderingContext){
         super(gl);
@@ -19,5 +19,6 @@ export default class MultBlendDrawer extends AbstractBlendDrawer{
             }
         `);
     }
-    
+
+
 }

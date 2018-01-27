@@ -29,7 +29,7 @@ export default class PointLight extends AbstractLight {
         return this._screenPoint;
     }
 
-    setUniforms(uniform,i){
+    setUniforms(uniform:Object,i:number){
         uniform[`u_pointLights[${i}].pos`] =  this.getPosScaled().toArray();
         uniform[`u_pointLights[${i}].nearRadius`] = this.nearRadius;
         uniform[`u_pointLights[${i}].farRadius`] = this.farRadius;

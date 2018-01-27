@@ -11,7 +11,7 @@ export default class IndexBuffer {
         if (DEBUG && !gl) throw "can not create IndexBuffer, gl context not passed to constructor, expected: IndexBuffer(gl)";
 
         this.gl = gl;
-        this.buffer = gl.createBuffer();
+        this.buffer = gl.createBuffer() as WebGLRenderbuffer;
         if (DEBUG && !this.buffer) throw `can not allocate memory for index buffer`;
         this.dataLength = null;
     }

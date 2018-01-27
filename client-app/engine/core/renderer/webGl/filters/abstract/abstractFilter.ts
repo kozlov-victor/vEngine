@@ -55,7 +55,7 @@ export default abstract class AbstractFilter {
         let h = textureInfos[0].texture.size.height;
         this.uniformsToSet.u_textureMatrix = identity;
         this.uniformsToSet.u_vertexMatrix = makePositionMatrix(0,0,w,h);
-        this.spriteRectDrawer.draw(textureInfos,this.uniformsToSet);
+        this.spriteRectDrawer.draw(textureInfos,this.uniformsToSet,null);
     }
 
     setParam(name:string,value){

@@ -14,15 +14,17 @@ import MatrixStack from './base/matrixStack'
 import * as mat4 from '../../geometry/mat4'
 import * as matEx from '../../mathEx'
 import Texture from './base/texture'
-import MultBlendDrawer from "./renderPrograms/impl/blend/multBlendDrawer";
+import AddBlendDrawer from "./renderPrograms/impl/blend/addBlendDrawer";
 import Rect from "../../geometry/rect";
 import Game from "../../game";
 import GameObjectProto from '../../../model/impl/gameObjectProto';
 import Point2d from "../../geometry/point2d";
 import AbstractCanvasRenderer from "../abstract/abstractCanvasRenderer";
 import Color from "../../color";
-import OpticMaterial from "../../light/opticMaterial";
-
+import ShaderMaterial from "../../light/shaderMaterial";
+import {DrawableInfo} from "./renderPrograms/interface/drawableInfo";
+import {IDrawer} from "./renderPrograms/interface/iDrawer";
+import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 
 const getCtx = el=>{
     return (
@@ -56,7 +58,7 @@ const makeTextureMatrix = function(srcRect:Rect,texWidth,texHeight){
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
 //  gl.enable(gl.CULL_FACE);
-//   gl.enable(gl.DEPTH_TEST);
+//  gl.enable(gl.DEPTH_TEST);
 export default class WebGlRenderer extends AbstractCanvasRenderer {
 
     private gl:WebGLRenderingContext;
@@ -67,7 +69,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
     private tiledSpriteRectDrawer:TiledSpriteRectDrawer;
     private colorRectDrawer:ColorRectDrawer;
     private lineDrawer:LineDrawer;
-    private multBlendDrawer:MultBlendDrawer;
+    private addBlendDrawer:AddBlendDrawer;
     private frameBuffer:FrameBuffer;
 
     constructor(game:Game){
@@ -94,7 +96,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         this.colorRectDrawer = new ColorRectDrawer(gl);
         this.lineDrawer = new LineDrawer(gl);
         //this.modelDrawer = new ModelDrawer(gl);
-        this.multBlendDrawer = new MultBlendDrawer(gl);
+        this.addBlendDrawer = new AddBlendDrawer(gl);
 
         this.frameBuffer = new FrameBuffer(gl,this.game.width,this.game.height);
 
@@ -129,8 +131,13 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 name: 'normalTexture'
             });
         }
+        let drawableInfo:DrawableInfo = {
+            blendMode:renderable.blendMode,
+            acceptLight:renderable.acceptLight};
         this.drawTextureInfo(
             texInfo,
+            drawableInfo,
+            renderable.shaderMaterial,
             renderable.getFrameRect(),
             new Point2d(0,0)
         );
@@ -150,10 +157,13 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             else throw `can not find texture with path ${texturePath}`;
         }
         let texInfo:Array<TextureInfo> = [{texture,name:'texture'}];
-        this.drawTextureInfo(texInfo,srcRect, dstPoint);
+        let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false};
+        this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstPoint);
     }
 
     private drawTextureInfo(texInfo:Array<TextureInfo>,
+                            drawableInfo:DrawableInfo,
+                            shaderMaterial:ShaderMaterial,
                             srcRect:Rect,
                             dstPoint:Point2d){
 
@@ -168,28 +178,24 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
 
         let scene = this.game.getCurrScene();
 
-        if (srcRect.width===120 || srcRect.width===174) {
+        let drawer:IDrawer;
+        let uniforms:UniformsInfo = {
+            u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
+            u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
+            u_alpha: 1
+        };
 
-            let uniforms = {
-                u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
-                u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
-                u_alpha: 1
-            };
-            this.multBlendDrawer.draw(texInfo,this.frameBuffer,uniforms);
-        }
-        else {
-            let uniforms = {
-                u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
-                u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
-                u_alpha: 1,
-                u_useNormalMap: texInfo.length>1
-            };
+        if (drawableInfo.blendMode==='add') drawer = this.addBlendDrawer; // todo extract to separate class method
+        else if (drawableInfo.acceptLight || texInfo.length>1) { // todo
+            drawer = this.spriteRectLightDrawer;
+            uniforms.u_useNormalMap = texInfo.length>1;
             scene.ambientLight.setUniforms(uniforms);
             this.game.lightArray.setUniforms(uniforms);
-            new OpticMaterial().setUniforms(uniforms);
-            //if (1) throw uniforms;
-            this.spriteRectLightDrawer.draw(texInfo,uniforms);
+            shaderMaterial.setUniforms(uniforms);
+        } else {
+            drawer = this.spriteRectDrawer;
         }
+        drawer.draw(texInfo,uniforms,this.frameBuffer);
     }
 
     drawTiledImage(texturePath:string,
@@ -208,7 +214,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         let texWidth = texture.getSize().width;
         let texHeight = texture.getSize().height;
 
-        let uniforms:any = {
+        let uniforms:UniformsInfo = {
             u_textureMatrix: makeTextureMatrix(
                 Rect.fromPool().set(0,0,dstRect.width, dstRect.height),
                 texWidth,texHeight
@@ -222,7 +228,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             u_alpha: 1
         };
         let texInfo:Array<TextureInfo> = [{texture,name:'texture'}];
-        this.tiledSpriteRectDrawer.draw(texInfo,uniforms);
+        this.tiledSpriteRectDrawer.draw(texInfo,uniforms,null);
 
     }
 
@@ -236,7 +242,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             u_rgba: color.asGL()
         };
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        this.colorRectDrawer.draw(null,uniforms);
+        this.colorRectDrawer.draw(null,uniforms,null);
     }
 
     drawRect(rect:Rect,color:Color){
@@ -259,20 +265,20 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         );
         uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        this.lineDrawer.draw(null,uniforms);
+        this.lineDrawer.draw(null,uniforms,null);
     }
 
     fillCircle(x:number,y:number,r:number,color:Color){
         let r2 = r*2;
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().set(x-r,y-r,r2,r2))) return;
-        let uniforms:any = {};
+        let uniforms:UniformsInfo = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
             x-r,y-r,r2,r2,
             this.game.width,this.game.height
         );
         uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        this.circleDrawer.draw(null,uniforms);
+        this.circleDrawer.draw(null,uniforms,null);
     }
 
     setAlpha(a:number){
@@ -341,7 +347,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
 
-        let uniforms = {
+        let uniforms:UniformsInfo = {
             u_vertexMatrix: makePositionMatrix(
                 0,0,
                 this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor,
@@ -354,7 +360,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             u_alpha: 1
         };
         let texInfo:Array<TextureInfo> = [{texture:texToDraw,name:'texture'}]; // todo now to make this array reusable?
-        this.spriteRectDrawer.draw(texInfo,uniforms);
+        this.spriteRectDrawer.draw(texInfo,uniforms,null);
         //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.restore();
     };

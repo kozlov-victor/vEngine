@@ -19,8 +19,8 @@ export default class ShaderProgram {
 
 
     constructor(gl:WebGLRenderingContext,vertexSource:string,fragmentSource:string) {
-        let vShader = compileShader(gl, vertexSource, gl.VERTEX_SHADER);
-        let fShader = compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER);
+        let vShader:WebGLShader = compileShader(gl, vertexSource, gl.VERTEX_SHADER) as WebGLShader;
+        let fShader:WebGLShader = compileShader(gl, fragmentSource, gl.FRAGMENT_SHADER) as WebGLShader;
         this.program = createProgram(gl, vShader, fShader);
         gl.deleteShader(vShader);
         gl.deleteShader(fShader);
@@ -51,15 +51,6 @@ export default class ShaderProgram {
             }
         }
         uniform.setter(this.gl, uniform.location, value);
-        // structure in shader:
-        // struct SomeStruct {
-        //      bool active;
-        //      vec2 someVec2;
-        // }
-        // uniform SomeStruct u_someThing;
-        // js:
-        // gl.getUniformLocation(program,'u_someThing.active')
-        // gl.getUniformLocation(program,'u_someThing.someVec2')
     }
 
     bindBuffer(buffer:VertexBuffer, attrName:string) {

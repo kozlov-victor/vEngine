@@ -94,7 +94,7 @@ export default class Texture {
      * @param width -unused if image specified
      * @param height -unused if image specified
      */
-    setImage(img:Image,width?:number,height?:number){
+    setImage(img:Image|null,width:number = 0,height:number = 0){
         if (DEBUG) {
             if (!(img || width || height)) throw "texture.setImage: if image is null, width and height must be specified: tex.setImage(null,w,h)";
         }
@@ -110,7 +110,7 @@ export default class Texture {
         } else {
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         }
-        this.isPowerOfTwo = img && isPowerOf2(img.width) && isPowerOf2(img.height);
+        this.isPowerOfTwo = img?(isPowerOf2(img.width) && isPowerOf2(img.height)):false;
         // Check if the image is a power of 2 in both dimensions.
         if (this.isPowerOfTwo) {
             gl.generateMipmap(gl.TEXTURE_2D);

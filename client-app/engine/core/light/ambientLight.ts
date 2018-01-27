@@ -11,7 +11,7 @@ export default class AmbientLight extends AbstractLight{
         this.direction = [1,1,1];
     }
 
-    setUniforms(uniform){
+    setUniforms(uniform:Object){
         uniform['u_ambientLight.color'] = this.color.asGL();
         uniform['u_ambientLight.direction'] = this.direction;
     }

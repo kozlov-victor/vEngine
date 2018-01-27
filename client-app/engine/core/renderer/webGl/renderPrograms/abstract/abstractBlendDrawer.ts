@@ -8,9 +8,11 @@ import SimpleCopyFilter from "../../filters/textureFilters/simpleCopyFilter";
 import ShaderGenerator from "../../shaders/generators/shaderGenerator";
 import Texture from "../../base/texture";
 import FrameBuffer from "../../base/frameBuffer";
-import {TextureInfo} from "./abstractDrawer";
+import {default as AbstractDrawer, TextureInfo} from "./abstractDrawer";
+import {IDrawer} from "../interface/iDrawer";
+import {UniformsInfo} from "../interface/uniformsInfo";
 
-export default abstract class AbstractBlendDrawer {
+export default abstract class AbstractBlendDrawer implements IDrawer {
 
     protected spriteRectDrawer:SpriteRectDrawer;
     protected simpleCopyFilter:SimpleCopyFilter;
@@ -49,10 +51,10 @@ export default abstract class AbstractBlendDrawer {
 
     // destTex is copy or current destination texture
     // to avoid "Source and destination textures of the draw are the same" error
-    draw(textureInfos:Array<TextureInfo>,frameBuffer:FrameBuffer,uniforms){
+    draw(textureInfos:Array<TextureInfo>,uniforms:UniformsInfo,frameBuffer:FrameBuffer){
         let destTex = frameBuffer.texture.applyFilters([this.simpleCopyFilter],frameBuffer);
         textureInfos.push({texture:destTex,name:'destTexture'});
-        this.spriteRectDrawer.draw(textureInfos,uniforms);
+        this.spriteRectDrawer.draw(textureInfos,uniforms,frameBuffer);
     }
 
 }

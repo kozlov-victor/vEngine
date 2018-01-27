@@ -5,6 +5,9 @@ declare const DEBUG:boolean;
 import ShaderProgram from "../../base/shaderProgram";
 import Texture from "../../base/texture";
 import BufferInfo from "../../base/bufferInfo";
+import FrameBuffer from "../../base/frameBuffer";
+import {IDrawer} from "../interface/iDrawer";
+import {UniformsInfo} from "../interface/uniformsInfo";
 
 
 let isEqual = (a,b):boolean=>{
@@ -18,7 +21,7 @@ export interface TextureInfo {
     name:string
 }
 
-export default abstract class AbstractDrawer {
+export default abstract class AbstractDrawer implements IDrawer{
 
     static currentInstance:AbstractDrawer = null;
 
@@ -71,7 +74,7 @@ export default abstract class AbstractDrawer {
         this.bufferInfo.draw();
     }
 
-    draw(textureInfos:Array<TextureInfo>,uniforms){
+    draw(textureInfos:Array<TextureInfo>,uniforms:UniformsInfo,unused:FrameBuffer|null){
         this.bind();
         Object.keys(uniforms).forEach(name=>this.setUniform(name,uniforms[name]));
         if (textureInfos) {

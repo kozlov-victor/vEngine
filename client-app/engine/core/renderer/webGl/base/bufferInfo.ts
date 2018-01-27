@@ -33,7 +33,7 @@ export default class BufferInfo {
     constructor(gl:WebGLRenderingContext,description:BufferInfoDescription){
         this.gl = gl;
 
-        if (this.drawMethod===undefined)
+        if (DEBUG && description.drawMethod===undefined)
             throw `can not create BufferInfo: drawMethod not defined`;
         this.drawMethod = description.drawMethod;
 

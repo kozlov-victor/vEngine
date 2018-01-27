@@ -31,18 +31,24 @@ export interface TweenDescription {
     to?:{[key:string]:number}
 }
 
+export interface TweenDescriptionNormalized extends TweenDescription{
+    ease:string,
+    from:{[key:string]:number},
+    to:{[key:string]:number}
+}
+
 export default class Tween {
 
     private propsToChange:Array<any> = [];
-    private startedTime = null;
-    private currTime = null;
-    private completed = false;
+    private startedTime:number = 0;
+    private currTime:number = 0;
+    private completed:boolean = false;
     private target: any;
-    private progressFn:Function;
-    private completeFn: Function;
+    private progressFn:Function|undefined;
+    private completeFn: Function|undefined;
     private easeFnName:string;
     private tweenTime: number;
-    private desc:any;
+    private desc:TweenDescriptionNormalized;
 
     /**
      * @param tweenDesc
@@ -63,7 +69,7 @@ export default class Tween {
         this.desc = this.normalizeDesc(tweenDesc);
     }
 
-    reuse(newTweenDesc){
+    reuse(newTweenDesc):void{
         this.startedTime = this.currTime;
         this.completed = false;
 
@@ -73,7 +79,7 @@ export default class Tween {
         this.desc = this.normalizeDesc(newTweenDesc);
     }
 
-    normalizeDesc(tweenDesc){
+    normalizeDesc(tweenDesc):TweenDescriptionNormalized{
         tweenDesc.from = tweenDesc.from || {};
         tweenDesc.to = tweenDesc.to || {};
         let allPropsMap = {};

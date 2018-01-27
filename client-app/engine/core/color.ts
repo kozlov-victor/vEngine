@@ -49,6 +49,10 @@ export default class Color {
         this.normalizeToZeroOne();
     }
 
+    clone(){
+        return new Color(this.r,this.g,this.b,this.a);
+    }
+
     private static getFromPool():Color{
         if (Color.objectPool===undefined) Color.objectPool = new ObjectPool<Color>(Color);
         return Color.objectPool.getNextObject();

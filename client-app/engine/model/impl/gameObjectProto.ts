@@ -8,6 +8,7 @@ import Rect from "../../core/geometry/rect";
 import {ArrayEx} from "../../declarations";
 import ArcadeRigidBody from "../../core/physics/arcadeRigidBody";
 import GameObject from "./gameObject";
+import ShaderMaterial from "../../core/light/shaderMaterial";
 
 
 export default class GameObjectProto extends BaseModel {
@@ -30,6 +31,8 @@ export default class GameObjectProto extends BaseModel {
     filters: Array<AbstractFilter> = [];
     _layer;
     blendMode:string;
+    acceptLight:boolean;
+    shaderMaterial:ShaderMaterial = new ShaderMaterial();
     rigidBody:ArcadeRigidBody;
 
     private _frameRect = new Rect();

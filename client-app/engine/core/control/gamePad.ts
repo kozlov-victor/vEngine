@@ -6,7 +6,8 @@ import Game from "../game";
 declare const window:any,navigator:any;
 
 interface GamePadButton {
-    pressed:boolean
+    pressed:boolean,
+    value:number
 }
 
 interface GamePadInfo {
@@ -44,7 +45,7 @@ export default class GamePad {
 
     update(){
 
-        this.gamepads =
+        this.gamepads = // todo remove from runtime
             (navigator.getGamepads && navigator.getGamepads()) ||
             (navigator.webkitGetGamepads && navigator.webkitGetGamepads()) ||
             navigator.webkitGamepads || navigator.mozGamepads ||
@@ -63,7 +64,7 @@ export default class GamePad {
                     this.game.keyboard.release(j);
                 }
             }
-            if (gp.axes[0]===0) continue; // to avoid oscillations
+            if (gp.axes[0]===0) continue; // to avoid oscillations, skip integer zero value
             if (gp.axes[1]===0) continue;
 
             let axis0 = ~~(gp.axes[0]);

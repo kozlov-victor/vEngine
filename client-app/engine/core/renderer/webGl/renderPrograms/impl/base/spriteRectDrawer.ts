@@ -25,4 +25,5 @@ export default class SpriteRectDrawer extends AbstractDrawer {
         } as BufferInfoDescription);
     }
 
+
 }

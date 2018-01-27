@@ -1,16 +1,18 @@
 
 import Color from "../color";
 
-export default class OpticMaterial {
+export default class ShaderMaterial {
 
-    ambient:Color = Color.BLACK;
-    specular:Color = Color.GREY;
-    diffuse:Color = Color.WHITE;
-    shininess:number = 60;
+    static DEFAULT = new ShaderMaterial();
+
+    ambient:Color = Color.BLACK.clone();
+    specular:Color = Color.GREY.clone();
+    diffuse:Color = Color.WHITE.clone();
+    shininess:number = 10;
 
     constructor(){}
 
-    setUniforms(uniforms){
+    setUniforms(uniforms:Object){
         uniforms['u_material.ambient'] = this.ambient.asGL();
         uniforms['u_material.specular'] = this.specular.asGL();
         uniforms['u_material.diffuse'] = this.diffuse.asGL();

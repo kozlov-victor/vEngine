@@ -3,12 +3,13 @@ import ShaderProgram from "./shaderProgram";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, shaderType:number):WebGLShader=> {
+export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, shaderType:number):WebGLShader|null=> {
     if (DEBUG) {
         if (!shaderSource) throw `can not compile shader: shader source not specified for type ${shaderType}`;
     }
     // Create the shader object
     let shader = gl.createShader(shaderType);
+    if (DEBUG && !shader) throw `can not allocate memory for shader: gl.createShader(shaderType)`;
 
     // Load the shader source
     gl.shaderSource(shader, shaderSource);
@@ -36,7 +37,9 @@ export const compileShader = (gl:WebGLRenderingContext, shaderSource:string, sha
 
 
 export const createProgram = (gl:WebGLRenderingContext, vertexShader:WebGLShader,fragmentShader:WebGLShader):WebGLProgram=> {
-    let program:WebGLProgram = gl.createProgram();
+    let program:WebGLProgram = gl.createProgram() as WebGLProgram;
+    if (DEBUG && !program) throw `can not allocate memory for gl.createProgram()`;
+
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
@@ -59,7 +62,7 @@ export const createProgram = (gl:WebGLRenderingContext, vertexShader:WebGLShader
     return program;
 };
 
-let GL_TABLE = null;
+let GL_TABLE:{[key:number]:string}|null = null;
 
 export const GL_TYPE = {
     FLOAT:      'float',
@@ -122,9 +125,10 @@ export const extractUniforms = (gl:WebGLRenderingContext, program:WebGLProgram):
     let uniforms:UniformsMap = {};
 
     for (let i = 0; i < activeUniforms; i++) {
-        let uniformData:WebGLActiveInfo = gl.getActiveUniform(program, i);
+        let uniformData:WebGLActiveInfo = gl.getActiveUniform(program, i) as WebGLActiveInfo;
+        if (DEBUG && !uniformData) throw `can not receive active uniforms info: gl.getActiveUniform()`;
         let type = mapType(gl, uniformData.type);
-        let location:WebGLUniformLocation = gl.getUniformLocation(program, uniformData.name);
+        let location:WebGLUniformLocation = gl.getUniformLocation(program, uniformData.name) as WebGLUniformLocation;
         if (DEBUG && location===null) throw `error finding uniform location: ${uniformData.name}`;
 
         uniforms[uniformData.name] = {
@@ -132,7 +136,7 @@ export const extractUniforms = (gl:WebGLRenderingContext, program:WebGLProgram):
             size: uniformData.size,
             location,
             setter: getUniformSetter(uniformData.size,type)
-        };
+        } as UniformWrapper;
     }
 
     return uniforms;
@@ -145,7 +149,8 @@ export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram
     let activeAttributes:number = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES) as number;
     let attrMap:AttributesMap = {};
     for (let i = 0; i < activeAttributes; i++) {
-        let attrData:WebGLActiveInfo = gl.getActiveAttrib(program, i);
+        let attrData:WebGLActiveInfo = gl.getActiveAttrib(program, i) as WebGLActiveInfo;
+        if (DEBUG && !attrData) throw `can not receive active attribute info: gl.getActiveAttrib()`;
         let location:number = gl.getAttribLocation(program, attrData.name);
         if (DEBUG && location<0) throw `error finding attribute location: ${attrData.name}`;
         attrMap[attrData.name] = location;
