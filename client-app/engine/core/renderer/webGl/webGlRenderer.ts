@@ -112,18 +112,6 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         let texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
         texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer);
 
-        this.save();
-        this.translate(renderable.pos.x,renderable.pos.y);
-        if (!(renderable.angle===0 && renderable.scale.equal(1))) {
-            let halfV = renderable.width /2;
-            let halfH = renderable.height/2;
-            this.translate(halfV,halfH);
-            this.scale(renderable.scale.x,renderable.scale.y);
-            this.rotateZ(renderable.angle);
-            //ctx.rotateY(a);
-            this.translate(-halfV, -halfH);
-        }
-
         let texInfo:Array<TextureInfo> = [{texture:texToDraw,name:'texture'}];
         if (renderable.spriteSheet.normalMapPath) {
             texInfo.push({
@@ -141,7 +129,6 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             renderable.getFrameRect(),
             new Point2d(0,0)
         );
-        this.restore();
     }
 
     drawImage(texturePath:string,

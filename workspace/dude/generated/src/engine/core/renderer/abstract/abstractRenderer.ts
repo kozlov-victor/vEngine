@@ -79,47 +79,34 @@ export default abstract class AbstractRenderer {
 
     drawImage(texturePath:string,
               srcRect:Rect,
-              dstPoint:Point2d){
-    }
+              dstPoint:Point2d){}
 
     drawTiledImage(texturePath:string,
                    srcRect:Rect,
                    dstRect:Rect,
-                   offset:Point2d){
+                   offset:Point2d){}
 
-    }
+    fillRect(rect:Rect, color:Color){}
 
-    fillRect(rect:Rect, color:Color){
+    drawRect(rect:Rect,color:Color){}
 
-    }
+    drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){}
 
-    drawRect(rect:Rect,color:Color){
+    fillCircle(x:number,y:number,r:number,color:Color){}
 
-    }
+    clear(){}
 
-    drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){
+    clearColor(c:Color){}
 
-    }
+    save(){}
 
-    fillCircle(x:number,y:number,r:number,color:Color){
-
-    }
-
-    clear(){
-
-    }
-
-    clearColor(c:Color){
-
-    }
-
-    restore(){
-
-    }
+    restore(){}
 
     translate(x,y,z?){}
 
     scale(x,y,z?){}
+
+    rotateZ(a:number){}
 
     draw(renderable:GameObjectProto){
 

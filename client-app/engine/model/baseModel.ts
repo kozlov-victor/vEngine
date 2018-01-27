@@ -33,6 +33,14 @@ export default class BaseModel extends CommonObject {
     _emitter:EventEmitter;
     _cloner:BaseModel;
 
+    protected children:BaseModel[] = [];
+    protected parent:BaseModel|null = null;
+
+    appendChild(c:BaseModel){
+        this.children.push(c);
+        c.parent = this;
+    }
+
     constructor(game:Game){
         super();
         if (DEBUG && !game) throw (
@@ -50,6 +58,12 @@ export default class BaseModel extends CommonObject {
 
     getRect():Rect{
         this._rect.set(this.pos.x,this.pos.y,this.width,this.height);
+
+        let parent:BaseModel = this.parent;
+        while (parent) {
+            this._rect.addXY(parent.pos.x,parent.pos.y);
+            parent = parent.parent;
+        }
         return this._rect;
     }
 
@@ -62,7 +76,7 @@ export default class BaseModel extends CommonObject {
         this._tweens.push(t);
     }
 
-    update(time,delta){
+    update(time:number,delta:number){
         this._tweens.forEach((t:Tween, index:number)=>{
             t.update(time);
             if (t.isCompleted()) this._tweens.splice(index,1);

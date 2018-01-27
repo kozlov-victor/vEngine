@@ -29,7 +29,7 @@ export default class VertexBuffer {
             if (!itemType) throw 'can not set data to buffer: itemType not specified';
             if (!itemSize) throw 'can not set data to buffer: itemSize not specified';
         }
-        const gl = this.gl;
+        const gl:WebGLRenderingContext = this.gl;
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
         // gl.bufferSubData(gl.ARRAY_BUFFER, 0, new Float32Array(bufferSubData));

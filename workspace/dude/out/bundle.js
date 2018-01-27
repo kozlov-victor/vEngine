@@ -109,17 +109,28 @@ var BaseModel = /** @class */ (function (_super) {
         _this.rigid = false;
         _this._tweens = [];
         _this._rect = new rect_1.default(0, 0);
+        _this.children = [];
+        _this.parent = null;
         if (1 && !game)
             throw ("can not create model '" + _this.type + "': game instance not passed to model constructor");
         _this.game = game;
         _this._emitter = new eventEmitter_1.default();
         return _this;
     }
+    BaseModel.prototype.appendChild = function (c) {
+        this.children.push(c);
+        c.parent = this;
+    };
     BaseModel.prototype.setIndividualBehaviour = function (Clazz) { };
     BaseModel.prototype.setCommonBehaviour = function () { };
     BaseModel.prototype.onShow = function () { };
     BaseModel.prototype.getRect = function () {
         this._rect.set(this.pos.x, this.pos.y, this.width, this.height);
+        var parent = this.parent;
+        while (parent) {
+            this._rect.addXY(parent.pos.x, parent.pos.y);
+            parent = parent.parent;
+        }
         return this._rect;
     };
     /**
@@ -2481,21 +2492,23 @@ var GameObjectProto = /** @class */ (function (_super) {
         var _this = _super.call(this, game) || this;
         _this.type = 'GameObjectProto';
         _this.spriteSheet = null;
-        _this._behaviour = null;
         _this.commonBehaviour = [];
         _this.currFrameIndex = 0;
-        _this._sprPosX = 0;
-        _this._sprPosY = 0;
         _this.frameAnimations = [];
         _this.startFrameAnimationName = null;
-        _this._timeCreated = null;
         _this.tileOffset = { x: 0, y: 0 };
         _this.tileRepeat = false;
         _this.groupName = '';
-        _this._individualBehaviour = null;
         _this.filters = [];
+        _this.blendMode = null;
+        _this.acceptLight = false;
         _this.shaderMaterial = new shaderMaterial_1.default();
-        _this._frameRect = new rect_1.default();
+        _this._frameRect = new rect_1.default(); // todo make all private
+        _this._behaviour = null;
+        _this._sprPosX = 0;
+        _this._sprPosY = 0;
+        _this._timeCreated = null;
+        _this._individualBehaviour = null;
         return _this;
     }
     GameObjectProto.find = function (name) {
@@ -2540,11 +2553,32 @@ var GameObjectProto = /** @class */ (function (_super) {
         if (this._individualBehaviour)
             this._individualBehaviour.onUpdate(time, delta);
         for (var i = 0, max = this.commonBehaviour.length; i < max; i++) {
-            this.commonBehaviour[i].onUpdate(time, delta);
+            if (this.commonBehaviour[i].onUpdate)
+                this.commonBehaviour[i].onUpdate(time, delta); // todo its undefined when clone
         }
         if (this.rigidBody !== null)
             this.rigidBody.update(time, delta);
-        this.game.renderer.draw(this);
+        var renderer = this.game.renderer;
+        renderer.save();
+        renderer.translate(this.pos.x, this.pos.y);
+        if (!(this.angle === 0 && this.scale.equal(1))) {
+            var halfV = this.width / 2;
+            var halfH = this.height / 2;
+            renderer.translate(halfV, halfH);
+            renderer.scale(this.scale.x, this.scale.y);
+            renderer.rotateZ(this.angle);
+            //ctx.rotateY(a);
+            renderer.translate(-halfV, -halfH);
+        }
+        renderer.draw(this);
+        if (this.children.length > 0) {
+            renderer.save();
+            for (var i = 0, max = this.children.length; i < max; i++) {
+                this.children[i].update(time, delta);
+            }
+            renderer.restore();
+        }
+        renderer.restore();
     };
     GameObjectProto.prototype.onShow = function () {
         if (this._individualBehaviour)
@@ -2556,7 +2590,7 @@ var GameObjectProto = /** @class */ (function (_super) {
         this._currFrameAnimation && this._currFrameAnimation.stop();
     };
     GameObjectProto.prototype.kill = function () {
-        this._layer.kill(this);
+        this._layer.kill(this.id);
     };
     return GameObjectProto;
 }(baseModel_1.default));
@@ -3083,17 +3117,6 @@ var WebGlRenderer = /** @class */ (function (_super) {
             return;
         var texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
         texToDraw = texToDraw.applyFilters(renderable.filters, this.frameBuffer);
-        this.save();
-        this.translate(renderable.pos.x, renderable.pos.y);
-        if (!(renderable.angle === 0 && renderable.scale.equal(1))) {
-            var halfV = renderable.width / 2;
-            var halfH = renderable.height / 2;
-            this.translate(halfV, halfH);
-            this.scale(renderable.scale.x, renderable.scale.y);
-            this.rotateZ(renderable.angle);
-            //ctx.rotateY(a);
-            this.translate(-halfV, -halfH);
-        }
         var texInfo = [{ texture: texToDraw, name: 'texture' }];
         if (renderable.spriteSheet.normalMapPath) {
             texInfo.push({
@@ -3106,7 +3129,6 @@ var WebGlRenderer = /** @class */ (function (_super) {
             acceptLight: renderable.acceptLight
         };
         this.drawTextureInfo(texInfo, drawableInfo, renderable.shaderMaterial, renderable.getFrameRect(), new point2d_1.default(0, 0));
-        this.restore();
     };
     WebGlRenderer.prototype.drawImage = function (texturePath, srcRect, dstPoint) {
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
@@ -4128,26 +4150,19 @@ var AbstractRenderer = /** @class */ (function () {
     AbstractRenderer.prototype.getError = function () {
         return 0;
     };
-    AbstractRenderer.prototype.drawImage = function (texturePath, srcRect, dstPoint) {
-    };
-    AbstractRenderer.prototype.drawTiledImage = function (texturePath, srcRect, dstRect, offset) {
-    };
-    AbstractRenderer.prototype.fillRect = function (rect, color) {
-    };
-    AbstractRenderer.prototype.drawRect = function (rect, color) {
-    };
-    AbstractRenderer.prototype.drawLine = function (x1, y1, x2, y2, color) {
-    };
-    AbstractRenderer.prototype.fillCircle = function (x, y, r, color) {
-    };
-    AbstractRenderer.prototype.clear = function () {
-    };
-    AbstractRenderer.prototype.clearColor = function (c) {
-    };
-    AbstractRenderer.prototype.restore = function () {
-    };
+    AbstractRenderer.prototype.drawImage = function (texturePath, srcRect, dstPoint) { };
+    AbstractRenderer.prototype.drawTiledImage = function (texturePath, srcRect, dstRect, offset) { };
+    AbstractRenderer.prototype.fillRect = function (rect, color) { };
+    AbstractRenderer.prototype.drawRect = function (rect, color) { };
+    AbstractRenderer.prototype.drawLine = function (x1, y1, x2, y2, color) { };
+    AbstractRenderer.prototype.fillCircle = function (x, y, r, color) { };
+    AbstractRenderer.prototype.clear = function () { };
+    AbstractRenderer.prototype.clearColor = function (c) { };
+    AbstractRenderer.prototype.save = function () { };
+    AbstractRenderer.prototype.restore = function () { };
     AbstractRenderer.prototype.translate = function (x, y, z) { };
     AbstractRenderer.prototype.scale = function (x, y, z) { };
+    AbstractRenderer.prototype.rotateZ = function (a) { };
     AbstractRenderer.prototype.draw = function (renderable) {
     };
     AbstractRenderer.prototype.log = function (args) {
@@ -5590,8 +5605,8 @@ var Layer = /** @class */ (function (_super) {
             g.onShow();
         });
     };
-    Layer.prototype.kill = function (gObj) {
-        this.gameObjects.remove(function (it) { return it.id === gObj.id; }); //todo
+    Layer.prototype.kill = function (gObjId) {
+        this.gameObjects.remove(function (it) { return it.id === gObjId; });
     };
     Layer.prototype.update = function (currTime, deltaTime) {
         var all = this.gameObjects;

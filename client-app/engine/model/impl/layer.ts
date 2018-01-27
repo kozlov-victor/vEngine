@@ -29,8 +29,8 @@ export default class Layer extends BaseModel {
         })
     }
 
-    kill(gObj:GameObject){
-        this.gameObjects.remove(it=>it.id===gObj.id); //todo
+    kill(gObjId:number){
+        this.gameObjects.remove(it=>it.id===gObjId);
     }
 
     update(currTime,deltaTime){

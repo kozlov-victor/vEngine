@@ -98,7 +98,7 @@ export default class Tween {
     };
 
 
-    update(time){
+    update(time:number){
         if (this.completed) return;
         this.currTime = time;
         if (!this.startedTime) this.startedTime = time;
@@ -123,7 +123,7 @@ export default class Tween {
 
     };
 
-    private progress(_progressFn){
+    private progress(_progressFn:(val:number)=>void){
         this.progressFn = _progressFn;
     };
 
@@ -145,11 +145,11 @@ export default class Tween {
         this.completed = true;
     };
 
-    public isCompleted(){
+    public isCompleted():boolean{
         return this.completed;
     }
 
-    public getTarget(){
+    public getTarget():any{
         return this.target;
     }
 
