@@ -73,3 +73,31 @@ a. The retrieveAsse
    },
    externals: nodeModules
  }
+
+
+// thanks Felipe http://www.html5gamedevs.com/topic/1828-how-to-calculate-fps-in-plain-javascript/
+var fps = {
+	startTime : 0,
+	frameNumber : 0,
+	getFPS : function(){
+		this.frameNumber++;
+		var d = new Date().getTime(),
+		currentTime = ( d - this.startTime ) / 1000,
+		result = Math.floor( ( this.frameNumber / currentTime ) );
+		if( currentTime > 1 ) {
+			this.startTime = new Date().getTime();
+			this.frameNumber = 0;
+		}
+		return result;
+	}
+};
+
+
+
+declare type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
+
+declare type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
+
+declare type MethodDecorator = <T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> | void;
+
+declare type ParameterDecorator = (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
