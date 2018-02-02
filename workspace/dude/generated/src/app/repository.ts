@@ -91,6 +91,10 @@ export let repository:any =
                 {
                     "type": "GameObject",
                     "id": 87
+                },
+                {
+                    "type": "GameObject",
+                    "id": 91
                 }
             ]
         }
@@ -170,6 +174,20 @@ export let repository:any =
             "type": "SpriteSheet",
             "resourcePath": "resources/eso1611a.png",
             "id": 84
+        },
+        {
+            "name": "nineP",
+            "width": 120,
+            "height": 105,
+            "type": "SpriteSheet",
+            "resourcePath": "resources/nineP.png",
+            "frameRect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+            },
+            "id": 89
         }
     ],
     "GameObjectProto": [
@@ -313,6 +331,26 @@ export let repository:any =
                     "id": 88
                 }
             ]
+        },
+        {
+            "id": 90,
+            "name": "nineP",
+            "width": 120,
+            "height": 105,
+            "type": "GameObjectProto",
+            "spriteSheet": {
+                "id": 89,
+                "type": "SpriteSheet"
+            },
+            "commonBehaviour": [
+                {
+                    "type": "CommonBehaviour",
+                    "id": 92
+                }
+            ],
+            "shaderMaterial": {
+                "shininess": 10
+            }
         }
     ],
     "GameObject": [
@@ -320,8 +358,8 @@ export let repository:any =
             "id": 7,
             "name": "dude",
             "pos": {
-                "x": 252,
-                "y": 57
+                "x": 232,
+                "y": 60
             },
             "layerId": 2,
             "type": "GameObject",
@@ -523,6 +561,20 @@ export let repository:any =
                 "id": 85,
                 "type": "GameObjectProto"
             }
+        },
+        {
+            "id": 91,
+            "name": "nineP",
+            "pos": {
+                "x": 8,
+                "y": 463
+            },
+            "layerId": 2,
+            "type": "GameObject",
+            "gameObjectProto": {
+                "id": 90,
+                "type": "GameObjectProto"
+            }
         }
     ],
     "FrameAnimation": [
@@ -607,6 +659,11 @@ export let repository:any =
             "name": "Draggable",
             "type": "CommonBehaviour",
             "id": 88
+        },
+        {
+            "name": "Draggable",
+            "type": "CommonBehaviour",
+            "id": 92
         }
     ],
     "Font": [

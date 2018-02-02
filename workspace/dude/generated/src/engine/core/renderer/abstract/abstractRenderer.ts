@@ -2,7 +2,7 @@ import AbstractFilter from "../webGl/filters/abstract/abstractFilter";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import TextField from '../../../model/impl/ui/textField'
+import TextField from '../../../model/impl/ui/components/textField'
 import Device from '../../device'
 import {SCALE_STRATEGY} from "../../misc/consts";
 import Game from "../../game";
@@ -34,7 +34,7 @@ export default abstract class AbstractRenderer {
             this.fullScreenSize.w = game.width;
             this.fullScreenSize.h = game.height;
         }
-        //document.body.addEventListener('click',()=>this.requestFullScreen());
+
     }
 
     onResize(){}

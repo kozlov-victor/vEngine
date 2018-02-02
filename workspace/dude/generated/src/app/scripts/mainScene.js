@@ -58,12 +58,17 @@ export class MainSceneBehaviour {
         //this.game.renderer.log({a:2});
         let camera = this.game.camera;
         let camRect = this.game.camera.getRectScaled();
-        this.game.renderer.drawTiledImage('resources/tile.jpg',
-            {x:130,y:0,width:130,height:61},
-            {x:camRect.x, y:camRect.y, width:100, height:100},
-            {x:this.offsetX,y:this.offsetX}
+        // this.game.renderer.drawTiledImage('resources/tile.jpg',
+        //     {x:130,y:0,width:130,height:61},
+        //     {x:camRect.x, y:camRect.y, width:100, height:100},
+        //     {x:this.offsetX,y:this.offsetX}
+        // );
+        this.game.renderer.draw9Patch(
+            'resources/nineP.png',
+            new global.Rect(12,12,100,420),
+            45
         );
-        this.game.renderer.log(camRect);
+        //this.game.renderer.log(camRect);
         this.offsetX+=0.1;
     }
 

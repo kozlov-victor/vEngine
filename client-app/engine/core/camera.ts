@@ -116,7 +116,7 @@ export default class Camera {
     _updateRect(){
         let point00 = this.screenToWorld(Point2d.fromPool().setXY(0,0));
         let pointWH = this.screenToWorld(Point2d.fromPool().setXY(this.game.width,this.game.height));
-        this._rectScaled.set(
+        this._rectScaled.setXYWH(
             point00.x,point00.y,
             pointWH.x - point00.x,pointWH.y - point00.y
         );
@@ -144,7 +144,7 @@ export default class Camera {
     }
 
     getRect(){
-        this._rect.set(this.pos.x,this.pos.y,this.game.width,this.game.height);
+        this._rect.setXYWH(this.pos.x,this.pos.y,this.game.width,this.game.height);
         return this._rect;
     }
 

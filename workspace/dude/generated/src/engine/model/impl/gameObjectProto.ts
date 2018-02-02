@@ -79,7 +79,7 @@ export default class GameObjectProto extends BaseModel {
     }
 
     getFrameRect(){
-        this._frameRect.set(
+        this._frameRect.setXYWH(
             this._sprPosX,
             this._sprPosY,
             this.width,

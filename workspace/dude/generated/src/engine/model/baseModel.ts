@@ -29,10 +29,10 @@ export default class BaseModel extends CommonObject {
     fixedToCamera:boolean = false;
     rigid:boolean = false;
     _tweens:Array<Tween> = [];
-    private _rect:Rect = new Rect(0,0);
     _emitter:EventEmitter;
     _cloner:BaseModel;
 
+    protected _rect:Rect = new Rect(0,0);
     protected children:BaseModel[] = [];
     protected parent:BaseModel|null = null;
 
@@ -57,7 +57,7 @@ export default class BaseModel extends CommonObject {
     onShow(){}
 
     getRect():Rect{
-        this._rect.set(this.pos.x,this.pos.y,this.width,this.height);
+        this._rect.setXYWH(this.pos.x,this.pos.y,this.width,this.height);
 
         let parent:BaseModel = this.parent;
         while (parent) {

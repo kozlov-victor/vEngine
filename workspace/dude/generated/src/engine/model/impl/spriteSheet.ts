@@ -38,7 +38,7 @@ export default class SpriteSheet extends BaseModel {
 
     getFrameRect(index:number):Rect{
         let fr:Rect = this.frameRect;
-        fr.set(
+        fr.setXYWH(
             this.getFramePosX(index),
             this.getFramePosY(index),
             this._frameWidth,

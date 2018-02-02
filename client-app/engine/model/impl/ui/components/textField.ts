@@ -1,13 +1,18 @@
+import Container from "./container";
+
 declare const DEBUG:boolean;
 
-import BaseModel from '../../baseModel'
-import Font from "../font";
-import Rect from "../../../core/geometry/rect";
+import BaseModel from '../../../baseModel'
+import Font from "../../font";
+import Rect from "../../../../core/geometry/rect";
+import Point2d from "../../../../core/geometry/point2d";
+import Size from "../../../../core/geometry/size";
+import Color from "../../../../core/color";
 
 
-export default class TextField extends BaseModel {
+export default class TextField extends Container {
 
-    type ='TextField';
+    readonly type ='TextField';
     _chars:Array<string> = null;
     text:string = '';
     font:Font = null;
@@ -47,6 +52,7 @@ export default class TextField extends BaseModel {
             }
         }
         this.width = Math.max.apply(Math,rows.map(function(o){return o.width;}));
+        this._dirty = true;
     }
     getText(){return this.text}
     setFont(font){
@@ -58,22 +64,36 @@ export default class TextField extends BaseModel {
         this.render();
     }
     render(){
-        let posX = 0;
-        let posY = 0;
-        this._chars.forEach(ch=>{
+        let initialPosX:number = this.paddingLeft + this.marginLeft;
+        let initialPosY:number = this.paddingTop + this.marginTop;
+        let posX:number = initialPosX;
+        let posY:number = initialPosY;
+        for (let i=0,max=this._chars.length;i<max;i++) {
+            let ch = this._chars[i];
             let charInCtx:Rect = this.font.fontContext.symbols[ch]||this.font.fontContext.symbols['?'];
             if (ch==='\n') {
-                posX = 0;
+                posX = initialPosX;
                 posY+= charInCtx.height;
-                return;
+                continue;
             }
+            let pos:Point2d = Point2d.fromPool();
+            pos.set(this.pos);
+            pos.addXY(posX,posY);
             this.game.renderer.drawImage(
-                this.font.resourcePath,
-                charInCtx,
-                this.pos.clone().addXY(posX,posY)
+                this.font.resourcePath, charInCtx, pos
             );
             posX+=charInCtx.width;
-        });
+        }
+        // todo
+        let rToDraw:Rect = Rect.fromPool();
+        let rect = this.getRect();
+        rToDraw.setXYWH(
+            rect.getPoint().x + this.marginLeft,
+            rect.getPoint().y + this.marginTop,
+            rect.getSize().width - this.marginLeft - this.marginRight,
+            rect.getSize().height - this.marginTop - this.marginBottom
+        );
+        this.game.renderer.drawRect(rToDraw,Color.GREY);
 
     }
 

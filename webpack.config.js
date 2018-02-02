@@ -4,7 +4,6 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const debug = true;
 
@@ -100,23 +99,23 @@ config.plugins = [
     }
 ];
 
-if (!debug) {
-    config.plugins.push(
-        new UglifyJSPlugin({
-            output: { // http://lisperator.net/uglifyjs/codegen
-                beautify: debug,
-                comments: false
-            },
-            compress: { // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
-                sequences: !debug,
-                booleans: !debug,
-                conditionals: !debug,
-                hoist_funs: false,
-                hoist_vars: debug,
-                warnings: debug
-            },
-        })
-    )
-}
+// if (!debug) {
+//     config.plugins.push(
+//         new UglifyJSPlugin({
+//             output: { // http://lisperator.net/uglifyjs/codegen
+//                 beautify: debug,
+//                 comments: false
+//             },
+//             compress: { // http://lisperator.net/uglifyjs/compress, http://davidwalsh.name/compress-uglify
+//                 sequences: !debug,
+//                 booleans: !debug,
+//                 conditionals: !debug,
+//                 hoist_funs: false,
+//                 hoist_vars: debug,
+//                 warnings: debug
+//             },
+//         })
+//     )
+// }
 
 module.exports = config;

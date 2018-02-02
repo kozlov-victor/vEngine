@@ -6,7 +6,7 @@ import resourceRest from './rest/resource';
 import projectRest from './rest/project';
 
 import CommonBehaviour from '../../engine/model/impl/commonBehaviour';
-import TextField from '../../engine/model/impl/ui/textField'
+import TextField from '../../engine/model/impl/ui/components/textField'
 
 let cnt:number = 0;
 

@@ -1,7 +1,10 @@
+import Size from "./size";
+
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import Point2d from "./point2d";
 import ObjectPool from "../misc/objectPool";
+import {_global} from "../global";
 
 export default class Rect {
 
@@ -14,29 +17,34 @@ export default class Rect {
 
     private static rectPool:ObjectPool<Rect> = new ObjectPool<Rect>(Rect);
     private p:Point2d;
+    private size:Size;
 
     constructor(x:number = 0,y:number = 0,width:number = 0,height:number = 0){
-        this.set(x,y,width,height);
+        this.setXYWH(x,y,width,height);
     }
 
-    private onSet(){
+    revalidate(){
         this.right = this.x+this.width;
         this.bottom = this.y+this.height;
     }
 
-    set(x:number,y:number,width:number,height:number){
+    setXYWH(x:number,y:number,width:number,height:number){
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.onSet();
+        this.revalidate();
         return this;
+    }
+
+    set(another:Rect) {
+        this.setXYWH(another.x,another.y,another.width,another.height);
     }
 
     addXY(x:number,y:number):Rect{
         this.x+=x;
         this.y+=y;
-        this.onSet();
+        this.revalidate();
         return this;
     }
 
@@ -51,6 +59,12 @@ export default class Rect {
         return this.p;
     }
 
+    getSize(){
+        if (this.size===undefined) this.size = new Size();
+        this.size.setWH(this.width,this.height);
+        return this.size;
+    }
+
     clone(){
         return new Rect(this.x,this.y,this.width,this.height);
     }
@@ -61,7 +75,7 @@ export default class Rect {
     }
 
     fromJSON(x:number,y:number,width:number,height:number){
-        this.set(x,y,width,height);
+        this.setXYWH(x,y,width,height);
     }
 
     static fromPool():Rect {
@@ -69,3 +83,5 @@ export default class Rect {
     }
 
 }
+
+_global.Rect = Rect;
