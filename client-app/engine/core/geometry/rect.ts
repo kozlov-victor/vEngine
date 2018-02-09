@@ -41,6 +41,13 @@ export default class Rect {
         this.setXYWH(another.x,another.y,another.width,another.height);
     }
 
+    setSize(s:Size):Rect{
+        this.width = s.width;
+        this.height = s.height;
+        this.revalidate();
+        return this;
+    }
+
     addXY(x:number,y:number):Rect{
         this.x+=x;
         this.y+=y;

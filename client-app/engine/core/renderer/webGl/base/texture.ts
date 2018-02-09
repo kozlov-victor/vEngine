@@ -135,11 +135,11 @@ export default class Texture {
             this._texFilterBuff.instantiate(this.gl);
         let filter:AbstractFilter = filters[0];
 
-        let texInfo:Array<TextureInfo> = [{texture:this,name:'texture'}]; // todo now to make this array reusable?
+        let texInfo:TextureInfo[] = [{texture:this,name:'texture'}]; // todo now to make this array reusable?
         filter.doFilter(texInfo,this._texFilterBuff.getDestBuffer());
         for (let i=1;i<len;i++){
             this._texFilterBuff.flip();
-            let texInfo:Array<TextureInfo> = [{texture:this._texFilterBuff.getSourceBuffer().texture,name:'texture'}];
+            let texInfo:TextureInfo[] = [{texture:this._texFilterBuff.getSourceBuffer().texture,name:'texture'}];
             filters[i].doFilter(
                 texInfo, this._texFilterBuff.getDestBuffer()
             );

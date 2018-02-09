@@ -22,7 +22,7 @@ export default class SvgRenderer extends AbstractDomRenderer {
         if (!this.renderableCache[renderable.id]) {
             item = {};
             this.renderableCache[renderable.id] = item;
-            let domEl = this.renderableCache[renderable.spriteSheet.resourcePath].cloneNode(true);
+            let domEl = this.renderableCache[renderable.spriteSheet.resourcePath].texture.cloneNode(true);
             this.container.appendChild(domEl);
             item.state = {pos:{},spriteSheet:{}};
             item.domEl = domEl;
@@ -45,12 +45,6 @@ export default class SvgRenderer extends AbstractDomRenderer {
 
                 }
             }],
-            // [state.spriteSheet,renderable.spriteSheet,'resourcePath',v=>{return {backgroundImage:`url(${v})`}}],
-            // [state,renderable,'_sprPosX',v=>{return {backgroundPositionX:`-${v}px`}}],
-            // [state,renderable,'_sprPosY',v=>{return {backgroundPositionY:`-${v}px`}}],
-            // [state,renderable,'alpha',v=>{return {opacity:`${v}`}}],
-            // [state,renderable,undefined,(v,obj)=>{return {backgroundSize:`${obj.spriteSheet.numOfFramesH*obj.width}px ${obj.spriteSheet.numOfFramesV*obj.height}px`}}],
-            // [state,renderable,undefined,(v,obj)=>{return {transform:`scale(${obj.scale.x},${obj.scale.y}) rotateZ(${mathEx.radToDeg(obj.angle)}deg)`}}]
         ]);
     }
 
@@ -59,7 +53,8 @@ export default class SvgRenderer extends AbstractDomRenderer {
             let resDomId = resourcePath.split(/[/.]/).join('_');
             let svgEmbeddedInDom = document.getElementById(resDomId);
             if (!svgEmbeddedInDom) throw `not found embedded svg with id ${resDomId}_svg`;
-            this.renderableCache[resourcePath] = svgEmbeddedInDom.querySelector('svg').cloneNode(true);
+            this.renderableCache[resourcePath].texture =
+                svgEmbeddedInDom.querySelector('svg').cloneNode(true) as SVGElement;
             svgEmbeddedInDom.parentNode.removeChild(svgEmbeddedInDom);
             onLoad();
         },0);

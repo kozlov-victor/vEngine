@@ -3,8 +3,15 @@ import BaseModel from "../../../baseModel";
 import Rect from "../../../../core/geometry/rect";
 import Point2d from "../../../../core/geometry/point2d";
 import Size from "../../../../core/geometry/size";
+import {Renderable} from "../../../../renderable/renderable";
+import {isUndefined} from "util";
 
-export default class Container extends BaseModel {
+export enum ALIGN_CONTENT {
+    NONE, VERTICAL,
+    HORIZONTAL,BOTH
+}
+
+export default class Container extends BaseModel implements Renderable {
 
     marginLeft: number = 0;
     marginTop: number = 0;
@@ -15,7 +22,7 @@ export default class Container extends BaseModel {
     paddingRight: number = 0;
     paddingBottom: number = 0;
 
-    protected _dirty = true;
+    alignContent:ALIGN_CONTENT = ALIGN_CONTENT.NONE;
 
     private static normalizeBorders(top:number,right:number,bottom:number,left:number){
         if (right===undefined && bottom===undefined && left===undefined) {
@@ -34,7 +41,9 @@ export default class Container extends BaseModel {
     setMargins(top:number);
     setMargins(top:number,right:number);
     setMargins(top:number,right:number,bottom:number);
+    setMargins(top:number,right:number,bottom:number,left:number);
     setMargins(top:number,right?:number,bottom?:number,left?:number){
+
         ({top,right,bottom,left} = Container.normalizeBorders(top,right,bottom,left));
         this.marginTop = top;
         this.marginRight = right;
@@ -43,15 +52,46 @@ export default class Container extends BaseModel {
         this._dirty = true;
     }
 
+    setMarginsTopBottom(top:number,bottom?:number){
+        if (bottom===undefined) bottom = top;
+        this.paddingTop = top;
+        this.paddingBottom = bottom;
+        this._dirty = true;
+    }
+
+    setMarginsLeftRight(left:number,right?:number){
+        if (right===undefined) left = right;
+        this.marginLeft = left;
+        this.marginRight = right;
+        this._dirty = true;
+    }
+
     setPaddings(top:number);
     setPaddings(top:number,right:number);
     setPaddings(top:number,right:number,bottom:number);
+    setPaddings(top:number,right:number,bottom:number,left:number);
     setPaddings(top:number,right?:number,bottom?:number,left?:number){
+
         ({top,right,bottom,left} = Container.normalizeBorders(top,right,bottom,left));
+
         this.paddingTop = top;
         this.paddingRight = right;
         this.paddingBottom = bottom;
         this.paddingLeft = left;
+        this._dirty = true;
+    }
+
+    setPaddingsTopBottom(top:number,bottom?:number){
+        if (bottom===undefined) bottom = top;
+        this.paddingTop = top;
+        this.paddingBottom = bottom;
+        this._dirty = true;
+    }
+
+    setPaddingsLeftRight(left:number,right?:number){
+        if (right===undefined) left = right;
+        this.paddingLeft = left;
+        this.paddingRight = right;
         this._dirty = true;
     }
 
@@ -71,6 +111,22 @@ export default class Container extends BaseModel {
         this._rect.set(rect);
         this._dirty = false;
         return rect;
+    }
+
+    getRectMargined():Rect{ // todo optimize cache
+        let rToDraw:Rect = Rect.fromPool();
+        let rect = this.getRect();
+        rToDraw.setXYWH(
+            rect.getPoint().x + this.marginLeft,
+            rect.getPoint().y + this.marginTop,
+            rect.getSize().width - this.marginLeft - this.marginRight,
+            rect.getSize().height - this.marginTop - this.marginBottom
+        );
+        return rToDraw;
+    }
+
+    render(){
+
     }
 
 }

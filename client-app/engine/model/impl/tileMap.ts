@@ -87,10 +87,15 @@ export default class TileMap extends BaseModel {
             for (let x=tilePosX;x<w;x++) {
                 let index = this.data[y] && this.data[y][x];
                 if (index===null || index===undefined) continue;
+                let destRect:Rect = Rect.fromPool();
+                destRect.setXYWH(
+                    x*spriteSheet._frameWidth, y*spriteSheet._frameHeight,
+                    spriteSheet._frameWidth, spriteSheet._frameHeight
+                );
                 renderer.drawImage(
                     spriteSheet.resourcePath,
                     spriteSheet.getFrameRect(index),
-                    new Point2d(x*spriteSheet._frameWidth, y*spriteSheet._frameHeight)
+                    destRect
                 );
             }
         }

@@ -103,7 +103,7 @@ var CanvasContext = Class.extend(function(it){
     it.lockRect = function(rect) {
         ctx.save();
         ctx.beginPath();
-        ctx.rect(rect.x,rect.y,rect.width,rect.height);
+        ctx.drawingRect(rect.x,rect.y,rect.width,rect.height);
         ctx.clip();
     };
 
@@ -120,7 +120,7 @@ var CanvasContext = Class.extend(function(it){
         if (gameProps.scaleStrategy==SCALE_STRATEGY.HARDWARE_PRESERVE_ASPECT_RATIO) {
             ctx.translate(gameProps.globalScale.left,gameProps.globalScale.top);
             ctx.beginPath();
-            ctx.rect(0,0,gameProps.width,gameProps.height);
+            ctx.drawingRect(0,0,gameProps.width,gameProps.height);
             ctx.clip();
         }
     };

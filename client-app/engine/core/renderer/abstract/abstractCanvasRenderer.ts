@@ -3,7 +3,7 @@ import AbstractRenderer from "./abstractRenderer";
 import Game from "../../game";
 import {SCALE_STRATEGY} from "../../misc/consts";
 
-export default abstract class AbstractCanvasRenderer extends AbstractRenderer {
+export default abstract class AbstractCanvasRenderer<T> extends AbstractRenderer {
 
     constructor(game:Game) {
         super(game);

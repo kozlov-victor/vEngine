@@ -43,7 +43,7 @@ export default class SimpleBlurFilter extends AbstractFilter {
         this.setParam("u_direction",[0.5,0.5]);
     }
 
-    doFilter(textureInfos:Array<TextureInfo>,destFrameBuffer:FrameBuffer){
+    doFilter(textureInfos:TextureInfo[],destFrameBuffer:FrameBuffer){
         this.setParam('rt_w',textureInfos[0].texture.size.width);
         this.setParam('rt_h',textureInfos[0].texture.size.height);
         super.doFilter(textureInfos,destFrameBuffer);

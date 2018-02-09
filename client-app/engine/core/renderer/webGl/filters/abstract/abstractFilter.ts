@@ -49,7 +49,7 @@ export default abstract class AbstractFilter {
         this.spriteRectDrawer = new SpriteRectDrawer(this.gl,program);
     }
 
-    doFilter(textureInfos:Array<TextureInfo>,destFrameBuffer:FrameBuffer){
+    doFilter(textureInfos:TextureInfo[],destFrameBuffer:FrameBuffer){
         destFrameBuffer.bind();
         let w = textureInfos[0].texture.size.width;
         let h = textureInfos[0].texture.size.height;

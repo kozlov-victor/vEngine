@@ -8,6 +8,7 @@ import BufferInfo from "../../base/bufferInfo";
 import FrameBuffer from "../../base/frameBuffer";
 import {IDrawer} from "../interface/iDrawer";
 import {UniformsInfo} from "../interface/uniformsInfo";
+import Size from "../../../../geometry/size";
 
 
 let isEqual = (a,b):boolean=>{
@@ -17,8 +18,9 @@ let isEqual = (a,b):boolean=>{
 };
 
 export interface TextureInfo {
-    texture:Texture,
-    name:string
+    texture:any,
+    size?:Size,
+    name?:string
 }
 
 export default abstract class AbstractDrawer implements IDrawer{
@@ -74,7 +76,7 @@ export default abstract class AbstractDrawer implements IDrawer{
         this.bufferInfo.draw();
     }
 
-    draw(textureInfos:Array<TextureInfo>,uniforms:UniformsInfo,unused:FrameBuffer|null){
+    draw(textureInfos:TextureInfo[],uniforms:UniformsInfo,unused:FrameBuffer|null){
         this.bind();
         Object.keys(uniforms).forEach(name=>this.setUniform(name,uniforms[name]));
         if (textureInfos) {

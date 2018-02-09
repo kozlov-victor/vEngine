@@ -69,6 +69,10 @@ export let repository:any =
                     "id": 76
                 },
                 {
+                    "type": "Button",
+                    "id": 9000
+                },
+                {
                     "type": "GameObject",
                     "id": 77
                 },
@@ -1912,6 +1916,25 @@ export let repository:any =
             "layerId": 2,
             "type": "TextField",
             "text": "textField1",
+            "font": {
+                "id": 22,
+                "type": "Font"
+            }
+        }
+    ],
+    "Button": [
+        {
+            "id": 9000,
+            "name": "button1",
+            "width": 320,
+            "height": 124,
+            "pos": {
+                "x": 122,
+                "y": 125
+            },
+            "layerId": 2,
+            "type": "Button",
+            "text": "button>>>",
             "font": {
                 "id": 22,
                 "type": "Font"

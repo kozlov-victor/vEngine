@@ -10,6 +10,7 @@ export {default as Sound} from './impl/sound'
 export {default as Font} from './impl/font'
 export {default as Layer} from './impl/layer'
 export {default as TextField} from './impl/ui/components/textField'
+export {default as Button} from './impl/ui/components/button'
 export {default as TileMap} from './impl/tileMap'
 
 

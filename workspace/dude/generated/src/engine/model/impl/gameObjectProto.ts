@@ -11,9 +11,10 @@ import GameObject from "./gameObject";
 import ShaderMaterial from "../../core/light/shaderMaterial";
 import Layer from "./layer";
 import AbstractRenderer from "../../core/renderer/abstract/abstractRenderer";
+import {Renderable} from "../../renderable/renderable";
 
 
-export default class GameObjectProto extends BaseModel {
+export default class GameObjectProto extends BaseModel implements Renderable {
 
     type:string = 'GameObjectProto';
     spriteSheet:SpriteSheet = null;
@@ -112,7 +113,7 @@ export default class GameObjectProto extends BaseModel {
             renderer.translate(-halfV, -halfH);
         }
 
-        renderer.draw(this);
+        this.render();
 
         if (this.children.length>0) {
             renderer.save();
@@ -125,6 +126,12 @@ export default class GameObjectProto extends BaseModel {
         renderer.restore();
 
     }
+
+
+    render(){
+        this.game.renderer.draw(this);
+    }
+
 
     onShow(){
         if (this._individualBehaviour) this._individualBehaviour.onCreate();

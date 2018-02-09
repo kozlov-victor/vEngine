@@ -60,7 +60,7 @@ const makeTextureMatrix = function(srcRect:Rect,texWidth,texHeight){
 };
 //  gl.enable(gl.CULL_FACE);
 //  gl.enable(gl.DEPTH_TEST);
-export default class WebGlRenderer extends AbstractCanvasRenderer {
+export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
 
     private gl:WebGLRenderingContext;
     private matrixStack:MatrixStack;
@@ -110,13 +110,13 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
 
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
 
-        let texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath];
+        let texToDraw:Texture = this.renderableCache[renderable.spriteSheet.resourcePath].texture;
         texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer);
 
-        let texInfo:Array<TextureInfo> = [{texture:texToDraw,name:'texture'}];
+        let texInfo:TextureInfo[] = [{texture:texToDraw,name:'texture'}];
         if (renderable.spriteSheet.normalMapPath) {
             texInfo.push({
-                texture:this.renderableCache[renderable.spriteSheet.normalMapPath],
+                texture:this.renderableCache[renderable.spriteSheet.normalMapPath].texture,
                 name: 'normalTexture'
             });
         }
@@ -128,25 +128,25 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             drawableInfo,
             renderable.shaderMaterial,
             renderable.getFrameRect(),
-            new Point2d(0,0)
+            Rect.fromPool().setXYWH(0,0,renderable.getFrameRect().width,renderable.getFrameRect().height)
         );
     }
 
     drawImage(texturePath:string,
               srcRect:Rect,
-              dstPoint:Point2d){
+              dstRect:Rect){
 
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
-        let texture = this.renderableCache[texturePath];
+        let texture:Texture = this.renderableCache[texturePath].texture;
         if (DEBUG && !texture) {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
         }
-        let texInfo:Array<TextureInfo> = [{texture,name:'texture'}];
+        let texInfo:TextureInfo[] = [{texture,name:'texture'}];
         let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false};
-        this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstPoint);
+        this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
     }
 
 
@@ -161,68 +161,61 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
      D|-7-|---8----|-9-|
       |---|--------|---|
      */
-    draw9Patch(
+    drawNinePatch(
         texturePath:string,
         destRect:Rect,
-        a:number,b?:number,c?:number,d?:number
+        a:number,b:number,c:number,d:number
     ){
-        if (b===undefined) b = a;
-        if (c===undefined) c = b;
-        if (d===undefined) d = c;
-        if (destRect.width<a+b) destRect.width = a + b;
-        if (destRect.height<c+d) destRect.height = c + d;
+        // if (destRect.width<a+b) destRect.width = a + b;
+        // if (destRect.height<c+d) destRect.height = c + d;
 
         let r:Rect = Rect.fromPool();
         let rDst:Rect = Rect.fromPool();
-        let p:Point2d = Point2d.fromPool();
-        let texSize:Size = this.renderableCache[texturePath].getSize();
+        let texSize:Size = this.renderableCache[texturePath].texture.getSize();
         // patch 1
-        p.set(destRect.getPoint());
         r.setXYWH(0,0,a,c);
-        this.drawImage(texturePath,r,p);
+        rDst.setXYWH(destRect.getPoint().x,destRect.getPoint().y,a,c);
+        this.drawImage(texturePath,r,rDst);
         // patch 2
-        p.setXY(0,0);
         r.setXYWH(a,0,texSize.width-a-b,c);
         rDst.setXYWH(destRect.x+a,destRect.y,destRect.width-a-c,c);
-        this.drawTiledImage(texturePath,r,rDst,p);
+        this.drawImage(texturePath,r,rDst);
         // patch 3
-        p.setXY(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y);
         r.setXYWH(texSize.width-b,0,b,c);
-        this.drawImage(texturePath,r,p);
+        rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y,b,c);
+        this.drawImage(texturePath,r,rDst);
         // patch 4
-        p.setXY(0,0);
         r.setXYWH(0, c, a,texSize.height - c - d);
         rDst.setXYWH(destRect.x,destRect.y+c,a,destRect.height-c-d);
-        this.drawTiledImage(texturePath,r,rDst,p);
+        this.drawImage(texturePath,r,rDst);
         // patch 5
         r.setXYWH(a, c, texSize.width - a - b,texSize.height - c - d);
         rDst.setXYWH(destRect.x + a,destRect.y+c,destRect.width - a - b,destRect.height-c-d);
-        this.drawTiledImage(texturePath,r,rDst,p);
+        this.drawImage(texturePath,r,rDst);
         // patch 6
         r.setXYWH(texSize.width - b, c, b,texSize.height - c - d);
         rDst.setXYWH(destRect.x + destRect.width - b,destRect.y+c,b,destRect.height-c-d);
-        this.drawTiledImage(texturePath,r,rDst,p);
+        this.drawImage(texturePath,r,rDst);
         // patch 7
-        p.setXY(destRect.getPoint().x,destRect.getPoint().y+destRect.height - d);
         r.setXYWH(0,texSize.height - d,a,d);
-        this.drawImage(texturePath,r,p);
+        rDst.setXYWH(destRect.getPoint().x,destRect.getPoint().y+destRect.height - d,a,d);
+        this.drawImage(texturePath,r,rDst);
         // patch 8
-        p.setXY(0,0);
         r.setXYWH(a,texSize.height - d,texSize.width-a-b,d);
         rDst.setXYWH(destRect.x + a,destRect.y+destRect.height-d,destRect.width-a-b,d);
-        this.drawTiledImage(texturePath,r,rDst,p);
+        this.drawImage(texturePath,r,rDst);
         // patch 9
-        p.setXY(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y+destRect.height-d);
         r.setXYWH(texSize.width-b,texSize.height-d,b,d);
-        this.drawImage(texturePath,r,p);
+        rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y+destRect.height-d,b,d);
+        this.drawImage(texturePath,r,rDst);
     }
 
 
-    private drawTextureInfo(texInfo:Array<TextureInfo>,
+    private drawTextureInfo(texInfo:TextureInfo[],
                             drawableInfo:DrawableInfo,
                             shaderMaterial:ShaderMaterial,
                             srcRect:Rect,
-                            dstPoint:Point2d){
+                            dstRect:Rect){
 
         let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
@@ -238,7 +231,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         let drawer:IDrawer;
         let uniforms:UniformsInfo = {
             u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
-            u_vertexMatrix: makePositionMatrix(dstPoint.x,dstPoint.y,srcRect.width,srcRect.height, this.game.width,this.game.height),
+            u_vertexMatrix: makePositionMatrix(dstRect.x,dstRect.y,dstRect.width,dstRect.height, this.game.width,this.game.height),
             u_alpha: 1
         };
 
@@ -263,7 +256,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
         //gl.blendColor(0, 0.5, 1, 1);
 
-        let texture:Texture = this.renderableCache[texturePath];
+        let texture:Texture = this.renderableCache[texturePath].texture;
         if (DEBUG && !texture) {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
@@ -284,7 +277,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             u_offsetCoords:[offset.x/srcRect.width,offset.y/srcRect.height],
             u_alpha: 1
         };
-        let texInfo:Array<TextureInfo> = [{texture,name:'texture'}];
+        let texInfo:TextureInfo[] = [{texture,name:'texture'}];
         this.tiledSpriteRectDrawer.draw(texInfo,uniforms,null);
 
     }
@@ -416,7 +409,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             ),
             u_alpha: 1
         };
-        let texInfo:Array<TextureInfo> = [{texture:texToDraw,name:'texture'}]; // todo now to make this array reusable?
+        let texInfo:TextureInfo[] = [{texture:texToDraw,name:'texture'}]; // todo now to make this array reusable?
         this.spriteRectDrawer.draw(texInfo,uniforms,null);
         //this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.restore();
@@ -438,7 +431,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         img.onload = ()=>{
             let texture = new Texture(this.gl);
             texture.setImage(img);
-            this.renderableCache[resourcePath] = texture;
+            this.renderableCache[resourcePath] = {texture,size:texture.size};
             onLoad();
         };
         if (DEBUG) {
@@ -453,7 +446,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         this.frameBuffer.destroy();
         AbstractDrawer.destroyAll();
         Object.keys(this.renderableCache).forEach(key=>{
-            let t:Texture = this.renderableCache[key] as Texture;
+            let t:Texture = this.renderableCache[key].texture;
             t.destroy();
         });
     }

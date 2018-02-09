@@ -38,7 +38,7 @@ export default class PixelFilter extends AbstractFilter {
         this.setParam('pixel_h',5);
     }
 
-    doFilter(textureInfos:Array<TextureInfo>,destFrameBuffer:FrameBuffer){
+    doFilter(textureInfos:TextureInfo[],destFrameBuffer:FrameBuffer){
         this.setParam('rt_w',textureInfos[0].texture.size.width);
         this.setParam('rt_h',textureInfos[0].texture.size.height);
         super.doFilter(textureInfos,destFrameBuffer);

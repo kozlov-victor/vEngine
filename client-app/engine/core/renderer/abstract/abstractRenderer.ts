@@ -10,15 +10,17 @@ import GameObjectProto from '../../../model/impl/gameObjectProto';
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
 import Color from "../../color";
+import {TextureInfo} from "../webGl/renderPrograms/abstract/abstractDrawer";
+import Texture from "../webGl/base/texture";
 
 declare const document:any, window:any;
 
-export default abstract class AbstractRenderer {
+export default abstract class AbstractRendere {
 
     public container:HTMLElement;
     public debugTextField:TextField;
 
-    protected renderableCache = {};
+    protected renderableCache:{[path:string]:TextureInfo} = {};
     protected fullScreenSize:{w:number,h:number,scaleFactor:number} =
         {w:0,h:0,scaleFactor:1};
     protected game:Game;
@@ -79,7 +81,13 @@ export default abstract class AbstractRenderer {
 
     drawImage(texturePath:string,
               srcRect:Rect,
-              dstPoint:Point2d){}
+              dstRect:Rect){}
+
+    drawNinePatch(
+        texturePath:string,
+        destRect:Rect,
+        a:number,b:number,c:number,d:number
+    ){}
 
     drawTiledImage(texturePath:string,
                    srcRect:Rect,
@@ -144,5 +152,7 @@ export default abstract class AbstractRenderer {
 
     loadTextureInfo(textureId,info){}
 
-    getTextureInfo(textureId){}
+    getTextureInfo(textureId:string):TextureInfo{
+        return this.renderableCache[textureId];
+    }
 }

@@ -9,8 +9,9 @@ import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
 import AbstractCanvasRenderer from "../abstract/abstractCanvasRenderer";
 import Color from "../../color";
+import Size from "../../geometry/size";
 
-export default class CanvasRenderer extends AbstractCanvasRenderer {
+export default class CanvasRenderer extends AbstractCanvasRenderer<HTMLCanvasElement> {
 
     private ctx;
 
@@ -52,17 +53,17 @@ export default class CanvasRenderer extends AbstractCanvasRenderer {
     drawImage(
         imgPath:string,
         srcRect:Rect,
-        dstPoint:Point2d){
+        dstRect:Rect){
         this.ctx.drawImage(
             this.renderableCache[imgPath],
             srcRect.x,
             srcRect.y,
             srcRect.width,
             srcRect.height,
-            dstPoint.x,
-            dstPoint.y,
-            srcRect.width,
-            srcRect.height
+            dstRect.x,
+            dstRect.y,
+            dstRect.width,
+            dstRect.height
         );
     }
 
@@ -110,7 +111,7 @@ export default class CanvasRenderer extends AbstractCanvasRenderer {
     lockRect(rect:Rect) {
         this.ctx.save();
         this.ctx.beginPath();
-        this.ctx.rect(rect.x,rect.y,rect.width,rect.height);
+        this.ctx.drawingRect(rect.x,rect.y,rect.width,rect.height);
         this.ctx.clip();
     }
 
@@ -166,7 +167,8 @@ export default class CanvasRenderer extends AbstractCanvasRenderer {
             c.setAttribute('height',img.height.toString());
             let ctx = c.getContext('2d');
             ctx.drawImage(img as HTMLImageElement,0,0);
-            this.renderableCache[resourcePath] = c;
+            this.renderableCache[resourcePath].texture = c;
+            this.renderableCache[resourcePath].size = new Size(img.width,img.height);
             onLoad();
         }
     }

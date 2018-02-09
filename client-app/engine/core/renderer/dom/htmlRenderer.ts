@@ -6,6 +6,8 @@ import GameObject from "../../../model/impl/gameObject";
 import Rect from "../../geometry/rect";
 import Point2d from "../../geometry/point2d";
 import Color from "../../color";
+import {Image} from "../../../declarations";
+import Size from "../../geometry/size";
 
 export default class HtmlRenderer extends AbstractDomRenderer {
 
@@ -78,7 +80,8 @@ export default class HtmlRenderer extends AbstractDomRenderer {
         let img = new Image();
         img.src = resourcePath;
         img.onload = ()=>{
-            this.renderableCache[resourcePath] = img;
+            this.renderableCache[resourcePath].texture = img;
+            this.renderableCache[resourcePath].size = new Size(img.width,img.height);
             onLoad();
         }
     }

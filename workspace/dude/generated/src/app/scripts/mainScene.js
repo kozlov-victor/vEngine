@@ -63,11 +63,11 @@ export class MainSceneBehaviour {
         //     {x:camRect.x, y:camRect.y, width:100, height:100},
         //     {x:this.offsetX,y:this.offsetX}
         // );
-        this.game.renderer.draw9Patch(
-            'resources/nineP.png',
-            new global.Rect(12,12,100,420),
-            45
-        );
+        // this.game.renderer.draw9Patch(
+        //     'resources/nineP.png',
+        //     new global.Rect(12,12,400,320),
+        //     45
+        // );
         //this.game.renderer.log(camRect);
         this.offsetX+=0.1;
     }

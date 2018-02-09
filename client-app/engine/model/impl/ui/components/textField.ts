@@ -13,7 +13,7 @@ import Color from "../../../../core/color";
 export default class TextField extends Container {
 
     readonly type ='TextField';
-    _chars:Array<string> = null;
+    _chars:string[] = null;
     text:string = '';
     font:Font = null;
 
@@ -33,7 +33,7 @@ export default class TextField extends Container {
         this.setFont(this.font);
     }
 
-    setText(text) {
+    setText(text:string) {
         text+='';
         this._chars = [];
         this.text = text;
@@ -76,24 +76,15 @@ export default class TextField extends Container {
                 posY+= charInCtx.height;
                 continue;
             }
-            let pos:Point2d = Point2d.fromPool();
-            pos.set(this.pos);
-            pos.addXY(posX,posY);
+            let destRect:Rect = Rect.fromPool();
+            destRect.getPoint().set(this.pos);
+            destRect.getPoint().addXY(posX,posY);
+            destRect.setXYWH(this.pos.x+posX,this.pos.y+posY,charInCtx.width,charInCtx.height);
             this.game.renderer.drawImage(
-                this.font.resourcePath, charInCtx, pos
+                this.font.resourcePath, charInCtx, destRect
             );
             posX+=charInCtx.width;
         }
-        // todo
-        let rToDraw:Rect = Rect.fromPool();
-        let rect = this.getRect();
-        rToDraw.setXYWH(
-            rect.getPoint().x + this.marginLeft,
-            rect.getPoint().y + this.marginTop,
-            rect.getSize().width - this.marginLeft - this.marginRight,
-            rect.getSize().height - this.marginTop - this.marginBottom
-        );
-        this.game.renderer.drawRect(rToDraw,Color.GREY);
 
     }
 
