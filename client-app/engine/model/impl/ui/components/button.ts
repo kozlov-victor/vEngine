@@ -42,6 +42,7 @@ export default class Button extends Container {
         this.background.drawingRect = this.getRectMargined().clone();
         this.background.onGeometryChanged();
         this.setPaddingsTopBottom((this.background.drawingRect.height - this._textField.height)/2);
+        this.setPaddingsLeftRight((this.background.drawingRect.width - this._textField.width)/2);
     }
 
     setText(text:string){

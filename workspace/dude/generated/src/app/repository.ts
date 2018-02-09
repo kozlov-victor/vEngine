@@ -1929,8 +1929,8 @@ export let repository:any =
             "width": 320,
             "height": 124,
             "pos": {
-                "x": 122,
-                "y": 125
+                "x": 12,
+                "y": 12
             },
             "layerId": 2,
             "type": "Button",

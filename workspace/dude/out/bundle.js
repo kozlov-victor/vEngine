@@ -2264,7 +2264,7 @@ var Container = /** @class */ (function (_super) {
     };
     Container.prototype.setMarginsLeftRight = function (left, right) {
         if (right === undefined)
-            left = right;
+            right = left;
         this.marginLeft = left;
         this.marginRight = right;
         this._dirty = true;
@@ -2287,7 +2287,7 @@ var Container = /** @class */ (function (_super) {
     };
     Container.prototype.setPaddingsLeftRight = function (left, right) {
         if (right === undefined)
-            left = right;
+            right = left;
         this.paddingLeft = left;
         this.paddingRight = right;
         this._dirty = true;
@@ -5908,6 +5908,7 @@ var Button = /** @class */ (function (_super) {
         this.background.drawingRect = this.getRectMargined().clone();
         this.background.onGeometryChanged();
         this.setPaddingsTopBottom((this.background.drawingRect.height - this._textField.height) / 2);
+        this.setPaddingsLeftRight((this.background.drawingRect.width - this._textField.width) / 2);
     };
     Button.prototype.setText = function (text) {
         this._textField.setText(text);
@@ -8895,8 +8896,8 @@ exports.repository = {
             "width": 320,
             "height": 124,
             "pos": {
-                "x": 122,
-                "y": 125
+                "x": 12,
+                "y": 12
             },
             "layerId": 2,
             "type": "Button",

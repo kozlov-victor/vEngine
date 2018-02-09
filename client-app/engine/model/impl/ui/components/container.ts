@@ -60,7 +60,7 @@ export default class Container extends BaseModel implements Renderable {
     }
 
     setMarginsLeftRight(left:number,right?:number){
-        if (right===undefined) left = right;
+        if (right===undefined) right = left;
         this.marginLeft = left;
         this.marginRight = right;
         this._dirty = true;
@@ -89,7 +89,7 @@ export default class Container extends BaseModel implements Renderable {
     }
 
     setPaddingsLeftRight(left:number,right?:number){
-        if (right===undefined) left = right;
+        if (right===undefined) right = left;
         this.paddingLeft = left;
         this.paddingRight = right;
         this._dirty = true;
