@@ -19,11 +19,6 @@ export default class NinePatchImage extends Image {
     }
 
     revalidate(){
-        this.onGeometryChanged();
-    }
-
-    onGeometryChanged(){
-        super.onGeometryChanged();
         let r:Rect = this.drawingRect;
         if (r.width<this.a+this.b) r.width = this.a + this.b;
         if (r.height<this.c+this.d) r.height = this.c + this.d;
@@ -39,6 +34,8 @@ export default class NinePatchImage extends Image {
         this.b = b;
         this.c = c;
         this.d = d;
+
+        this.revalidate();
 
     }
 

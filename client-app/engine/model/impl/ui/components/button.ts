@@ -6,6 +6,7 @@ import AbstractRenderer from "../../../../core/renderer/abstract/abstractRendere
 import {Renderable} from "../../../../renderable/renderable";
 import NinePatchImage from "../../../../renderable/ninePatchImage";
 import Resource from "../../../resource";
+import ColorizeFilter from "../../../../core/renderer/webGl/filters/textureFilters/colorizeFilter";
 
 export default class Button extends Container {
 
@@ -22,6 +23,14 @@ export default class Button extends Container {
         this.background = new NinePatchImage(game);
         this.background.resourcePath = 'resources/nineP.png';
         this.background.setABCD(45);
+        let colorize = new ColorizeFilter(this.game.renderer['gl']);
+        this.background.filters.push(colorize);
+        this.on('mouseEnter',()=>{
+
+        });
+        this.on('mouseLeave',()=>{
+
+        });
     }
 
     revalidate(){
@@ -32,17 +41,20 @@ export default class Button extends Container {
     }
 
     protected onGeometryChanged(){
-        super.onGeometryChanged();
         this.width = this._textField.width;
         this.height = this._textField.height;
+
+        this.background.drawingRect.set(this.getRectMargined());
+        this.background.revalidate(); // todo
+        this._rect.setWH(this.background.drawingRect.width,this.background.drawingRect.height);
+
+        let dx = (this.background.drawingRect.width - this._textField.width)/2;
+        let dy = (this.background.drawingRect.height - this._textField.height)/2;
+
         this._textField.pos.setXY(
-            this.pos.x+this.paddingLeft+this.marginLeft,
-            this.pos.y+this.paddingTop + this.marginTop
+            this.pos.x + this.marginLeft + dx,
+            this.pos.y + this.marginTop + dy
         );
-        this.background.drawingRect = this.getRectMargined().clone();
-        this.background.onGeometryChanged();
-        this.setPaddingsTopBottom((this.background.drawingRect.height - this._textField.height)/2);
-        this.setPaddingsLeftRight((this.background.drawingRect.width - this._textField.width)/2);
     }
 
     setText(text:string){
@@ -53,7 +65,7 @@ export default class Button extends Container {
         return this._textField.getText();
     }
 
-    update(time,delta){
+    update(time:number,delta:number){
         super.update(time,delta);
         this.render();
     }

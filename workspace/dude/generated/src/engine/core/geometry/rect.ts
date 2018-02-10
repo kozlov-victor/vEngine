@@ -37,6 +37,20 @@ export default class Rect {
         return this;
     }
 
+    setXY(x:number,y:number){
+        this.x = x;
+        this.y = y;
+        this.revalidate();
+        return this;
+    }
+
+    setWH(width:number,height:number){
+        this.width = width;
+        this.height = height;
+        this.revalidate();
+        return this;
+    }
+
     set(another:Rect) {
         this.setXYWH(another.x,another.y,another.width,another.height);
     }

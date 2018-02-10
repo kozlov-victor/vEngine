@@ -136,9 +136,6 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
               srcRect:Rect,
               dstRect:Rect){
 
-        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-        //gl.blendColor(0, 0.5, 1, 1);
-
         let texture:Texture = this.renderableCache[texturePath].texture;
         if (DEBUG && !texture) {
             if (!texturePath) throw `no texture path provided`;
@@ -166,8 +163,6 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
         destRect:Rect,
         a:number,b:number,c:number,d:number
     ){
-        // if (destRect.width<a+b) destRect.width = a + b;
-        // if (destRect.height<c+d) destRect.height = c + d;
 
         let r:Rect = Rect.fromPool();
         let rDst:Rect = Rect.fromPool();

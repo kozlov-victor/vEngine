@@ -99,6 +99,8 @@ export default class Container extends BaseModel implements Renderable {
         super(game);
     }
 
+    protected onGeometryChanged(){}
+
     getRect():Rect{
         if (!this._dirty) return this._rect;
         let rect:Rect = super.getRect();
@@ -109,12 +111,11 @@ export default class Container extends BaseModel implements Renderable {
             rect.getSize().height +  this.marginBottom + this.paddingBottom + this.marginTop + this.paddingTop
         );
         this._rect.set(rect);
-        this._dirty = false;
         return rect;
     }
 
     getRectMargined():Rect{ // todo optimize cache
-        let rToDraw:Rect = Rect.fromPool();
+        let rToDraw:Rect = new Rect();
         let rect = this.getRect();
         rToDraw.setXYWH(
             rect.getPoint().x + this.marginLeft,
@@ -123,6 +124,14 @@ export default class Container extends BaseModel implements Renderable {
             rect.getSize().height - this.marginTop - this.marginBottom
         );
         return rToDraw;
+    }
+
+    update(time:number,delta:number){
+        super.update(time,delta);
+        if (this._dirty) {
+            this.onGeometryChanged();
+            this._dirty = false;
+        }
     }
 
     render(){

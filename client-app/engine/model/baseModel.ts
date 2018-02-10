@@ -21,7 +21,7 @@ export default class BaseModel extends CommonObject {
     name:string = null;
     width:number = 0;
     height:number = 0;
-    pos:Point2d = new Point2d(0,0,()=>{this.onGeometryChanged()});
+    pos:Point2d = new Point2d(0,0,()=>this._dirty=true);
     scale:Point2d = new Point2d(1,1);
     angle:number = 0;
     alpha:number = 1;
@@ -32,21 +32,16 @@ export default class BaseModel extends CommonObject {
     _emitter:EventEmitter;
     _cloner:BaseModel;
 
-    protected _dirty = true;
-
     protected _rect:Rect = new Rect(0,0);
     protected children:BaseModel[] = [];
     protected parent:BaseModel|null = null;
+    protected _dirty = true;
 
     appendChild(c:BaseModel){
         this.children.push(c);
         c.parent = this;
     }
 
-    protected onGeometryChanged(){
-        this._dirty = true;
-        if (this.children) this.children.forEach((c:BaseModel)=>c._dirty = true);
-    }
 
     constructor(game:Game){
         super();

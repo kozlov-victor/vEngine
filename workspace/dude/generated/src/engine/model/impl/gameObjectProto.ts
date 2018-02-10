@@ -26,7 +26,7 @@ export default class GameObjectProto extends BaseModel implements Renderable {
     tileOffset =  {x:0,y:0};
     tileRepeat:boolean = false;
     groupName:string = '';
-    filters: Array<AbstractFilter> = [];
+    filters: AbstractFilter[] = [];
     blendMode:string = null;
     acceptLight:boolean = false;
     shaderMaterial:ShaderMaterial = new ShaderMaterial();

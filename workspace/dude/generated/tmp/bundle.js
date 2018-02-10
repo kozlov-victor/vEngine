@@ -100,7 +100,7 @@ var BaseModel = /** @class */ (function (_super) {
         _this.name = null;
         _this.width = 0;
         _this.height = 0;
-        _this.pos = new point2d_1.default(0, 0, function () { _this.onGeometryChanged(); });
+        _this.pos = new point2d_1.default(0, 0, function () { return _this._dirty = true; });
         _this.scale = new point2d_1.default(1, 1);
         _this.angle = 0;
         _this.alpha = 1;
@@ -108,10 +108,10 @@ var BaseModel = /** @class */ (function (_super) {
         _this.fixedToCamera = false;
         _this.rigid = false;
         _this._tweens = [];
-        _this._dirty = true;
         _this._rect = new rect_1.default(0, 0);
         _this.children = [];
         _this.parent = null;
+        _this._dirty = true;
         if (1 && !game)
             throw ("can not create model '" + _this.type + "': game instance not passed to model constructor");
         _this.game = game;
@@ -121,11 +121,6 @@ var BaseModel = /** @class */ (function (_super) {
     BaseModel.prototype.appendChild = function (c) {
         this.children.push(c);
         c.parent = this;
-    };
-    BaseModel.prototype.onGeometryChanged = function () {
-        this._dirty = true;
-        if (this.children)
-            this.children.forEach(function (c) { return c._dirty = true; });
     };
     BaseModel.prototype.setIndividualBehaviour = function (Clazz) { };
     BaseModel.prototype.setCommonBehaviour = function () { };
@@ -215,6 +210,18 @@ var Rect = /** @class */ (function () {
     Rect.prototype.setXYWH = function (x, y, width, height) {
         this.x = x;
         this.y = y;
+        this.width = width;
+        this.height = height;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.setXY = function (x, y) {
+        this.x = x;
+        this.y = y;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.setWH = function (width, height) {
         this.width = width;
         this.height = height;
         this.revalidate();
@@ -2292,20 +2299,27 @@ var Container = /** @class */ (function (_super) {
         this.paddingRight = right;
         this._dirty = true;
     };
+    Container.prototype.onGeometryChanged = function () { };
     Container.prototype.getRect = function () {
         if (!this._dirty)
             return this._rect;
         var rect = _super.prototype.getRect.call(this);
         rect.setXYWH(rect.getPoint().x, rect.getPoint().y, rect.getSize().width + this.marginRight + this.paddingRight + this.marginLeft + this.paddingLeft, rect.getSize().height + this.marginBottom + this.paddingBottom + this.marginTop + this.paddingTop);
         this._rect.set(rect);
-        this._dirty = false;
         return rect;
     };
     Container.prototype.getRectMargined = function () {
-        var rToDraw = rect_1.default.fromPool();
+        var rToDraw = new rect_1.default();
         var rect = this.getRect();
         rToDraw.setXYWH(rect.getPoint().x + this.marginLeft, rect.getPoint().y + this.marginTop, rect.getSize().width - this.marginLeft - this.marginRight, rect.getSize().height - this.marginTop - this.marginBottom);
         return rToDraw;
+    };
+    Container.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        if (this._dirty) {
+            this.onGeometryChanged();
+            this._dirty = false;
+        }
     };
     Container.prototype.render = function () {
     };
@@ -5881,6 +5895,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var container_1 = __webpack_require__(25);
 var textField_1 = __webpack_require__(18);
 var ninePatchImage_1 = __webpack_require__(101);
+var colorizeFilter_1 = __webpack_require__(104);
 var Button = /** @class */ (function (_super) {
     __extends(Button, _super);
     function Button(game) {
@@ -5892,6 +5907,12 @@ var Button = /** @class */ (function (_super) {
         _this.background = new ninePatchImage_1.default(game);
         _this.background.resourcePath = 'resources/nineP.png';
         _this.background.setABCD(45);
+        var colorize = new colorizeFilter_1.default(_this.game.renderer['gl']);
+        _this.background.filters.push(colorize);
+        _this.on('mouseEnter', function () {
+        });
+        _this.on('mouseLeave', function () {
+        });
         return _this;
     }
     Button.prototype.revalidate = function () {
@@ -5901,14 +5922,14 @@ var Button = /** @class */ (function (_super) {
         this.onGeometryChanged();
     };
     Button.prototype.onGeometryChanged = function () {
-        _super.prototype.onGeometryChanged.call(this);
         this.width = this._textField.width;
         this.height = this._textField.height;
-        this._textField.pos.setXY(this.pos.x + this.paddingLeft + this.marginLeft, this.pos.y + this.paddingTop + this.marginTop);
-        this.background.drawingRect = this.getRectMargined().clone();
-        this.background.onGeometryChanged();
-        this.setPaddingsTopBottom((this.background.drawingRect.height - this._textField.height) / 2);
-        this.setPaddingsLeftRight((this.background.drawingRect.width - this._textField.width) / 2);
+        this.background.drawingRect.set(this.getRectMargined());
+        this.background.revalidate(); // todo
+        this._rect.setWH(this.background.drawingRect.width, this.background.drawingRect.height);
+        var dx = (this.background.drawingRect.width - this._textField.width) / 2;
+        var dy = (this.background.drawingRect.height - this._textField.height) / 2;
+        this._textField.pos.setXY(this.pos.x + this.marginLeft + dx, this.pos.y + this.marginTop + dy);
     };
     Button.prototype.setText = function (text) {
         this._textField.setText(text);
@@ -5987,11 +6008,13 @@ var Mouse = /** @class */ (function () {
         var g = this.game;
         var scene = g.getCurrScene();
         var point = this.resolvePoint(e);
+        point.target = undefined;
         exit: for (var i = 0; i < scene.layers.length; i++) {
             var layer = scene.layers[scene.layers.length - 1 - i];
             for (var j = 0; j < layer.gameObjects.length; j++) {
                 var go = layer.gameObjects[j];
                 if (mathEx.isPointInRect(point, go.getRect())) {
+                    point.target = go;
                     go.trigger(eventName, {
                         screenX: point.x,
                         screenY: point.y,
@@ -6005,6 +6028,8 @@ var Mouse = /** @class */ (function () {
                 }
             }
         }
+        if (point.target === undefined)
+            point.target = scene;
         scene.trigger(eventName, {
             screenX: point.x,
             screenY: point.y,
@@ -8946,10 +8971,6 @@ var NinePatchImage = /** @class */ (function (_super) {
         return _this;
     }
     NinePatchImage.prototype.revalidate = function () {
-        this.onGeometryChanged();
-    };
-    NinePatchImage.prototype.onGeometryChanged = function () {
-        _super.prototype.onGeometryChanged.call(this);
         var r = this.drawingRect;
         if (r.width < this.a + this.b)
             r.width = this.a + this.b;
@@ -8967,6 +8988,7 @@ var NinePatchImage = /** @class */ (function (_super) {
         this.b = b;
         this.c = c;
         this.d = d;
+        this.revalidate();
     };
     NinePatchImage.prototype.render = function () {
         this.game.renderer.drawNinePatch(this.resourcePath, this.drawingRect, this.a, this.b, this.c, this.d);
@@ -9031,22 +9053,48 @@ var Image = /** @class */ (function (_super) {
         var _this = _super.call(this, game) || this;
         _this.destRect = new rect_1.default();
         _this.srcRect = new rect_1.default();
+        _this.filters = [];
+        _this.blendMode = '';
         return _this;
     }
-    Image.prototype.revalidate = function () {
-        this.onGeometryChanged();
-    };
-    Image.prototype.onGeometryChanged = function () {
-        _super.prototype.onGeometryChanged.call(this);
-        //let size = this.game.renderer.getTextureInfo(this.resourcePath).size;
-        //this.destRect.setXYWH(this.pos.x,this.pos.y,size.width,size.height);
-    };
     Image.prototype.render = function () {
         this.game.renderer.drawImage(this.resourcePath, this.srcRect, this.destRect);
     };
     return Image;
 }(resource_1.default));
 exports.default = Image;
+
+
+/***/ }),
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var abstractFilter_1 = __webpack_require__(53);
+var ColorizeFilter = /** @class */ (function (_super) {
+    __extends(ColorizeFilter, _super);
+    function ColorizeFilter(gl) {
+        return _super.call(this, gl) || this;
+    }
+    //language=GLSL
+    ColorizeFilter.prototype.prepare = function (programGen) {
+        programGen.setFragmentMainFn("\n            void main(){\n                vec4 col = texture2D(texture, v_texCoord);\n                col.g = 0.9;\n                gl_FragColor = col;\n            }\n        ");
+    };
+    return ColorizeFilter;
+}(abstractFilter_1.default));
+exports.default = ColorizeFilter;
 
 
 /***/ })
