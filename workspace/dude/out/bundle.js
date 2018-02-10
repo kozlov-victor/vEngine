@@ -1655,6 +1655,7 @@ var Color = /** @class */ (function () {
     Color.WHITE = Color.RGB(255, 255, 255);
     Color.GREY = Color.RGB(127, 127, 127);
     Color.BLACK = Color.RGB(0, 0, 0);
+    Color.NONE = Color.RGB(0, 0, 0, 0);
     return Color;
 }());
 exports.default = Color;
@@ -1961,7 +1962,7 @@ var FrameBuffer = /** @class */ (function () {
         gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
         // Init Frame Buffer
         this.glFrameBuffer = gl.createFramebuffer();
-        if (1 && !this.glRenderBuffer)
+        if (1 && !this.glFrameBuffer)
             throw "can not allocate memory for glFrameBuffer";
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.glFrameBuffer);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getGlTexture(), 0);
@@ -2181,6 +2182,7 @@ exports.default = Texture;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var objectPool_1 = __webpack_require__(11);
 var Size = /** @class */ (function () {
     function Size(width, height) {
         if (width === void 0) { width = 0; }
@@ -2188,12 +2190,23 @@ var Size = /** @class */ (function () {
         this.width = width;
         this.height = height;
     }
-    Size.prototype.setW = function (width) { this.width = width; };
-    Size.prototype.setH = function (height) { this.height = height; };
+    Size.prototype.setW = function (width) {
+        this.width = width;
+        return this;
+    };
+    Size.prototype.setH = function (height) {
+        this.height = height;
+        return this;
+    };
     Size.prototype.setWH = function (width, height) {
         this.width = width;
         this.height = height;
+        return this;
     };
+    Size.fromPool = function () {
+        return Size.rectPool.getNextObject();
+    };
+    Size.rectPool = new objectPool_1.default(Size);
     return Size;
 }());
 exports.default = Size;
@@ -2237,6 +2250,8 @@ var Container = /** @class */ (function (_super) {
         _this.paddingTop = 0;
         _this.paddingRight = 0;
         _this.paddingBottom = 0;
+        _this.filters = [];
+        _this.blendMode = '';
         _this.alignContent = ALIGN_CONTENT.NONE;
         return _this;
     }
@@ -3274,6 +3289,7 @@ var addBlendDrawer_1 = __webpack_require__(50);
 var rect_1 = __webpack_require__(1);
 var abstractCanvasRenderer_1 = __webpack_require__(54);
 var shaderMaterial_1 = __webpack_require__(30);
+var size_1 = __webpack_require__(24);
 var getCtx = function (el) {
     return (el.getContext("webgl", { alpha: false }) ||
         el.getContext('experimental-webgl', { alpha: false }) ||
@@ -3282,21 +3298,21 @@ var getCtx = function (el) {
 };
 var SCENE_DEPTH = 1000;
 var matrixStack = new matrixStack_1.default();
-var makePositionMatrix = function (dstX, dstY, dstWidth, dstHeight, viewWidth, viewHeight) {
+var makePositionMatrix = function (rect, viewSize) {
     // proj * modelView
     var zToWMatrix = mat4.makeZToWMatrix(1);
-    var projectionMatrix = mat4.ortho(0, viewWidth, 0, viewHeight, -SCENE_DEPTH, SCENE_DEPTH);
-    var scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
-    var translationMatrix = mat4.makeTranslation(dstX, dstY, 0);
+    var projectionMatrix = mat4.ortho(0, viewSize.width, 0, viewSize.height, -SCENE_DEPTH, SCENE_DEPTH);
+    var scaleMatrix = mat4.makeScale(rect.width, rect.height, 1);
+    var translationMatrix = mat4.makeTranslation(rect.x, rect.y, 0);
     var matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
     matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
     matrix = mat4.matrixMultiply(matrix, projectionMatrix);
     matrix = mat4.matrixMultiply(matrix, zToWMatrix);
     return matrix;
 };
-var makeTextureMatrix = function (srcRect, texWidth, texHeight) {
-    var texScaleMatrix = mat4.makeScale(srcRect.width / texWidth, srcRect.height / texHeight, 1);
-    var texTranslationMatrix = mat4.makeTranslation(srcRect.x / texWidth, srcRect.y / texHeight, 0);
+var makeTextureMatrix = function (srcRect, texSize) {
+    var texScaleMatrix = mat4.makeScale(srcRect.width / texSize.width, srcRect.height / texSize.height, 1);
+    var texTranslationMatrix = mat4.makeTranslation(srcRect.x / texSize.width, srcRect.y / texSize.height, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
 //  gl.enable(gl.CULL_FACE);
@@ -3351,9 +3367,20 @@ var WebGlRenderer = /** @class */ (function (_super) {
         this.drawTextureInfo(texInfo, drawableInfo, renderable.shaderMaterial, renderable.getFrameRect(), rect_1.default.fromPool().setXYWH(0, 0, renderable.getFrameRect().width, renderable.getFrameRect().height));
     };
     WebGlRenderer.prototype.drawImage = function (texturePath, srcRect, dstRect) {
-        //this.gl.blendFunc(this.gl.ONE, this.gl.ONE_MINUS_SRC_ALPHA);
-        //gl.blendColor(0, 0.5, 1, 1);
         var texture = this.renderableCache[texturePath].texture;
+        if (1 && !texture) {
+            if (!texturePath)
+                throw "no texture path provided";
+            else
+                throw "can not find texture with path " + texturePath;
+        }
+        var texInfo = [{ texture: texture, name: 'texture' }];
+        var drawableInfo = { blendMode: 'normal', acceptLight: false };
+        this.drawTextureInfo(texInfo, drawableInfo, shaderMaterial_1.default.DEFAULT, srcRect, dstRect);
+    };
+    WebGlRenderer.prototype.drawImageEx = function (texturePath, srcRect, dstRect, filters) {
+        var texture = this.renderableCache[texturePath].texture;
+        texture = texture.applyFilters(filters, this.frameBuffer);
         if (1 && !texture) {
             if (!texturePath)
                 throw "no texture path provided";
@@ -3375,60 +3402,56 @@ var WebGlRenderer = /** @class */ (function (_super) {
      D|-7-|---8----|-9-|
       |---|--------|---|
      */
-    WebGlRenderer.prototype.drawNinePatch = function (texturePath, destRect, a, b, c, d) {
-        // if (destRect.width<a+b) destRect.width = a + b;
-        // if (destRect.height<c+d) destRect.height = c + d;
+    WebGlRenderer.prototype.drawNinePatch = function (texturePath, destRect, filters, a, b, c, d) {
         var r = rect_1.default.fromPool();
         var rDst = rect_1.default.fromPool();
         var texSize = this.renderableCache[texturePath].texture.getSize();
         // patch 1
         r.setXYWH(0, 0, a, c);
         rDst.setXYWH(destRect.getPoint().x, destRect.getPoint().y, a, c);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 2
         r.setXYWH(a, 0, texSize.width - a - b, c);
         rDst.setXYWH(destRect.x + a, destRect.y, destRect.width - a - c, c);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 3
         r.setXYWH(texSize.width - b, 0, b, c);
         rDst.setXYWH(destRect.getPoint().x + destRect.width - b, destRect.getPoint().y, b, c);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 4
         r.setXYWH(0, c, a, texSize.height - c - d);
         rDst.setXYWH(destRect.x, destRect.y + c, a, destRect.height - c - d);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 5
         r.setXYWH(a, c, texSize.width - a - b, texSize.height - c - d);
         rDst.setXYWH(destRect.x + a, destRect.y + c, destRect.width - a - b, destRect.height - c - d);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 6
         r.setXYWH(texSize.width - b, c, b, texSize.height - c - d);
         rDst.setXYWH(destRect.x + destRect.width - b, destRect.y + c, b, destRect.height - c - d);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 7
         r.setXYWH(0, texSize.height - d, a, d);
         rDst.setXYWH(destRect.getPoint().x, destRect.getPoint().y + destRect.height - d, a, d);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 8
         r.setXYWH(a, texSize.height - d, texSize.width - a - b, d);
         rDst.setXYWH(destRect.x + a, destRect.y + destRect.height - d, destRect.width - a - b, d);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
         // patch 9
         r.setXYWH(texSize.width - b, texSize.height - d, b, d);
         rDst.setXYWH(destRect.getPoint().x + destRect.width - b, destRect.getPoint().y + destRect.height - d, b, d);
-        this.drawImage(texturePath, r, rDst);
+        this.drawImageEx(texturePath, r, rDst, filters);
     };
     WebGlRenderer.prototype.drawTextureInfo = function (texInfo, drawableInfo, shaderMaterial, srcRect, dstRect) {
         var camRectScaled = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(camRectScaled, rect_1.default.fromPool().setXYWH(camRectScaled.x + srcRect.x, camRectScaled.y + srcRect.y, srcRect.width, srcRect.height)))
             return;
-        var texWidth = texInfo[0].texture.getSize().width;
-        var texHeight = texInfo[0].texture.getSize().height;
         var scene = this.game.getCurrScene();
         var drawer;
         var uniforms = {
-            u_textureMatrix: makeTextureMatrix(srcRect, texWidth, texHeight),
-            u_vertexMatrix: makePositionMatrix(dstRect.x, dstRect.y, dstRect.width, dstRect.height, this.game.width, this.game.height),
+            u_textureMatrix: makeTextureMatrix(srcRect, texInfo[0].texture.getSize()),
+            u_vertexMatrix: makePositionMatrix(dstRect, size_1.default.fromPool().setWH(this.game.width, this.game.height)),
             u_alpha: 1
         };
         if (drawableInfo.blendMode === 'add')
@@ -3455,12 +3478,15 @@ var WebGlRenderer = /** @class */ (function (_super) {
             else
                 throw "can not find texture with path " + texturePath;
         }
-        var texWidth = texture.getSize().width;
-        var texHeight = texture.getSize().height;
         var uniforms = {
-            u_textureMatrix: makeTextureMatrix(rect_1.default.fromPool().setXYWH(0, 0, dstRect.width, dstRect.height), texWidth, texHeight),
-            u_vertexMatrix: makePositionMatrix(dstRect.x, dstRect.y, dstRect.width, dstRect.height, this.game.width, this.game.height),
-            u_frameCoords: [srcRect.x / texWidth, srcRect.y / texHeight, srcRect.width / texWidth, srcRect.height / texHeight],
+            u_textureMatrix: makeTextureMatrix(rect_1.default.fromPool().setXYWH(0, 0, dstRect.width, dstRect.height), texture.getSize()),
+            u_vertexMatrix: makePositionMatrix(dstRect, size_1.default.fromPool().setWH(this.game.width, this.game.height)),
+            u_frameCoords: [
+                srcRect.x / texture.size.width,
+                srcRect.y / texture.size.height,
+                srcRect.width / texture.size.width,
+                srcRect.height / texture.size.height
+            ],
             u_offsetCoords: [offset.x / srcRect.width, offset.y / srcRect.height],
             u_alpha: 1
         };
@@ -3471,7 +3497,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(), rect))
             return;
         var uniforms = {
-            u_vertexMatrix: makePositionMatrix(rect.x, rect.y, rect.width, rect.height, this.game.width, this.game.height),
+            u_vertexMatrix: makePositionMatrix(rect, size_1.default.fromPool().setWH(this.game.width, this.game.height)),
             u_rgba: color.asGL()
         };
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -3489,7 +3515,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         var dx = x2 - x1, dy = y2 - y1;
         //if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
         var uniforms = {};
-        uniforms.u_vertexMatrix = makePositionMatrix(x1, y1, dx, dy, this.game.width, this.game.height);
+        uniforms.u_vertexMatrix = makePositionMatrix(rect_1.default.fromPool().setXYWH(x1, y1, dx, dy), size_1.default.fromPool().setWH(this.game.width, this.game.height));
         uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         this.lineDrawer.draw(null, uniforms, null);
@@ -3499,7 +3525,8 @@ var WebGlRenderer = /** @class */ (function (_super) {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(), rect_1.default.fromPool().setXYWH(x - r, y - r, r2, r2)))
             return;
         var uniforms = {};
-        uniforms.u_vertexMatrix = makePositionMatrix(x - r, y - r, r2, r2, this.game.width, this.game.height);
+        uniforms.u_vertexMatrix = makePositionMatrix(new rect_1.default(x - r, y - r, r2, r2), new size_1.default(this.game.width, this.game.height) // tofo
+        );
         uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         this.circleDrawer.draw(null, uniforms, null);
@@ -3553,8 +3580,8 @@ var WebGlRenderer = /** @class */ (function (_super) {
         this.frameBuffer.unbind();
         this.gl.viewport(0, 0, fullScreen.w, fullScreen.h);
         var uniforms = {
-            u_vertexMatrix: makePositionMatrix(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor, fullScreen.w, fullScreen.h),
-            u_textureMatrix: makeTextureMatrix(rect_1.default.fromPool().setXYWH(0, 0, fullScreen.w, fullScreen.h), fullScreen.w, fullScreen.h),
+            u_vertexMatrix: makePositionMatrix(new rect_1.default(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor), new size_1.default(fullScreen.w, fullScreen.h)),
+            u_textureMatrix: makeTextureMatrix(rect_1.default.fromPool().setXYWH(0, 0, fullScreen.w, fullScreen.h), size_1.default.fromPool().setWH(fullScreen.w, fullScreen.h)),
             u_alpha: 1
         };
         var texInfo = [{ texture: texToDraw, name: 'texture' }]; // todo now to make this array reusable?
@@ -4399,7 +4426,8 @@ var AbstractRendere = /** @class */ (function () {
         return 0;
     };
     AbstractRendere.prototype.drawImage = function (texturePath, srcRect, dstRect) { };
-    AbstractRendere.prototype.drawNinePatch = function (texturePath, destRect, a, b, c, d) { };
+    AbstractRendere.prototype.drawImageEx = function (texturePath, srcRect, dstRect, filters) { };
+    AbstractRendere.prototype.drawNinePatch = function (texturePath, destRect, filters, a, b, c, d) { };
     AbstractRendere.prototype.drawTiledImage = function (texturePath, srcRect, dstRect, offset) { };
     AbstractRendere.prototype.fillRect = function (rect, color) { };
     AbstractRendere.prototype.drawRect = function (rect, color) { };
@@ -5896,6 +5924,7 @@ var container_1 = __webpack_require__(25);
 var textField_1 = __webpack_require__(18);
 var ninePatchImage_1 = __webpack_require__(101);
 var colorizeFilter_1 = __webpack_require__(104);
+var color_1 = __webpack_require__(15);
 var Button = /** @class */ (function (_super) {
     __extends(Button, _super);
     function Button(game) {
@@ -5909,9 +5938,14 @@ var Button = /** @class */ (function (_super) {
         _this.background.setABCD(45);
         var colorize = new colorizeFilter_1.default(_this.game.renderer['gl']);
         _this.background.filters.push(colorize);
+        var c = new color_1.default(12, 12, 12, 0);
         _this.on('mouseEnter', function () {
+            c.setRGBA(20, 220, 12, 100);
+            colorize.setColor(c);
         });
         _this.on('mouseLeave', function () {
+            c.setRGBA(12, 12, 12, 0);
+            colorize.setColor(c);
         });
         return _this;
     }
@@ -8991,7 +9025,7 @@ var NinePatchImage = /** @class */ (function (_super) {
         this.revalidate();
     };
     NinePatchImage.prototype.render = function () {
-        this.game.renderer.drawNinePatch(this.resourcePath, this.drawingRect, this.a, this.b, this.c, this.d);
+        this.game.renderer.drawNinePatch(this.resourcePath, this.drawingRect, this.filters, this.a, this.b, this.c, this.d);
     };
     return NinePatchImage;
 }(image_1.default));
@@ -9083,14 +9117,21 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var abstractFilter_1 = __webpack_require__(53);
+var shaderProgramUtils_1 = __webpack_require__(4);
+var color_1 = __webpack_require__(15);
 var ColorizeFilter = /** @class */ (function (_super) {
     __extends(ColorizeFilter, _super);
     function ColorizeFilter(gl) {
         return _super.call(this, gl) || this;
     }
-    //language=GLSL
     ColorizeFilter.prototype.prepare = function (programGen) {
-        programGen.setFragmentMainFn("\n            void main(){\n                vec4 col = texture2D(texture, v_texCoord);\n                col.g = 0.9;\n                gl_FragColor = col;\n            }\n        ");
+        programGen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'uPixelColor');
+        this.setColor(color_1.default.NONE);
+        //language=GLSL
+        programGen.setFragmentMainFn("\n            void main(){\n                vec4 col = texture2D(texture, v_texCoord);\n                vec3 r = vec3(col) * (1.0-uPixelColor.a) + vec3(uPixelColor) * uPixelColor.a;\n                vec4 result = vec4(r, col.a);\n                gl_FragColor = result;\n            }\n        ");
+    };
+    ColorizeFilter.prototype.setColor = function (c) {
+        this.setParam('uPixelColor', c.clone().asGL());
     };
     return ColorizeFilter;
 }(abstractFilter_1.default));

@@ -7,6 +7,7 @@ import {Renderable} from "../../../../renderable/renderable";
 import NinePatchImage from "../../../../renderable/ninePatchImage";
 import Resource from "../../../resource";
 import ColorizeFilter from "../../../../core/renderer/webGl/filters/textureFilters/colorizeFilter";
+import Color from "../../../../core/color";
 
 export default class Button extends Container {
 
@@ -25,11 +26,14 @@ export default class Button extends Container {
         this.background.setABCD(45);
         let colorize = new ColorizeFilter(this.game.renderer['gl']);
         this.background.filters.push(colorize);
+        let c:Color = new Color(12,12,12,0);
         this.on('mouseEnter',()=>{
-
+            c.setRGBA(20,220,12,100);
+            colorize.setColor(c);
         });
         this.on('mouseLeave',()=>{
-
+            c.setRGBA(12,12,12,0);
+            colorize.setColor(c);
         });
     }
 

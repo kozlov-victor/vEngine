@@ -26,6 +26,7 @@ import {DrawableInfo} from "./renderPrograms/interface/drawableInfo";
 import {IDrawer} from "./renderPrograms/interface/iDrawer";
 import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 import Size from "../../geometry/size";
+import AbstractFilter from "./filters/abstract/abstractFilter";
 
 const getCtx = el=>{
     return (
@@ -38,12 +39,12 @@ const getCtx = el=>{
 const SCENE_DEPTH:number = 1000;
 const matrixStack:MatrixStack = new MatrixStack();
 
-const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewHeight){
+const makePositionMatrix = function(rect:Rect,viewSize:Size){
     // proj * modelView
     let zToWMatrix = mat4.makeZToWMatrix(1);
-    let projectionMatrix = mat4.ortho(0,viewWidth,0,viewHeight,-SCENE_DEPTH,SCENE_DEPTH);
-    let scaleMatrix = mat4.makeScale(dstWidth, dstHeight, 1);
-    let translationMatrix = mat4.makeTranslation(dstX, dstY, 0);
+    let projectionMatrix = mat4.ortho(0,viewSize.width,0,viewSize.height,-SCENE_DEPTH,SCENE_DEPTH);
+    let scaleMatrix = mat4.makeScale(rect.width, rect.height, 1);
+    let translationMatrix = mat4.makeTranslation(rect.x, rect.y, 0);
 
     let matrix = mat4.matrixMultiply(scaleMatrix, translationMatrix);
     matrix = mat4.matrixMultiply(matrix, matrixStack.getCurrentMatrix());
@@ -52,15 +53,15 @@ const makePositionMatrix = function(dstX,dstY,dstWidth,dstHeight,viewWidth,viewH
     return matrix;
 };
 
-const makeTextureMatrix = function(srcRect:Rect,texWidth,texHeight){
+const makeTextureMatrix = function(srcRect:Rect,texSize:Size){
 
-    let texScaleMatrix = mat4.makeScale(srcRect.width / texWidth, srcRect.height / texHeight, 1);
-    let texTranslationMatrix = mat4.makeTranslation(srcRect.x / texWidth, srcRect.y / texHeight, 0);
+    let texScaleMatrix = mat4.makeScale(srcRect.width / texSize.width, srcRect.height / texSize.height, 1);
+    let texTranslationMatrix = mat4.makeTranslation(srcRect.x / texSize.width, srcRect.y / texSize.height, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
 //  gl.enable(gl.CULL_FACE);
 //  gl.enable(gl.DEPTH_TEST);
-export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
+export default class WebGlRenderer extends AbstractCanvasRenderer {
 
     private gl:WebGLRenderingContext;
     private matrixStack:MatrixStack;
@@ -147,6 +148,23 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
     }
 
 
+    drawImageEx(texturePath:string,
+                srcRect:Rect,
+                dstRect:Rect,
+                filters:AbstractFilter[]
+    ){
+        let texture:Texture = this.renderableCache[texturePath].texture;
+        texture = texture.applyFilters(filters,this.frameBuffer);
+        if (DEBUG && !texture) {
+            if (!texturePath) throw `no texture path provided`;
+            else throw `can not find texture with path ${texturePath}`;
+        }
+        let texInfo:TextureInfo[] = [{texture,name:'texture'}];
+        let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false};
+        this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
+    }
+
+
     /**
      *
       |-A-|--------|-B-|
@@ -161,6 +179,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
     drawNinePatch(
         texturePath:string,
         destRect:Rect,
+        filters:AbstractFilter[],
         a:number,b:number,c:number,d:number
     ){
 
@@ -170,39 +189,39 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
         // patch 1
         r.setXYWH(0,0,a,c);
         rDst.setXYWH(destRect.getPoint().x,destRect.getPoint().y,a,c);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 2
         r.setXYWH(a,0,texSize.width-a-b,c);
         rDst.setXYWH(destRect.x+a,destRect.y,destRect.width-a-c,c);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 3
         r.setXYWH(texSize.width-b,0,b,c);
         rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y,b,c);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 4
         r.setXYWH(0, c, a,texSize.height - c - d);
         rDst.setXYWH(destRect.x,destRect.y+c,a,destRect.height-c-d);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 5
         r.setXYWH(a, c, texSize.width - a - b,texSize.height - c - d);
         rDst.setXYWH(destRect.x + a,destRect.y+c,destRect.width - a - b,destRect.height-c-d);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 6
         r.setXYWH(texSize.width - b, c, b,texSize.height - c - d);
         rDst.setXYWH(destRect.x + destRect.width - b,destRect.y+c,b,destRect.height-c-d);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 7
         r.setXYWH(0,texSize.height - d,a,d);
         rDst.setXYWH(destRect.getPoint().x,destRect.getPoint().y+destRect.height - d,a,d);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 8
         r.setXYWH(a,texSize.height - d,texSize.width-a-b,d);
         rDst.setXYWH(destRect.x + a,destRect.y+destRect.height-d,destRect.width-a-b,d);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
         // patch 9
         r.setXYWH(texSize.width-b,texSize.height-d,b,d);
         rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y+destRect.height-d,b,d);
-        this.drawImage(texturePath,r,rDst);
+        this.drawImageEx(texturePath,r,rDst,filters);
     }
 
 
@@ -218,15 +237,12 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
             Rect.fromPool().setXYWH(camRectScaled.x+srcRect.x,camRectScaled.y+srcRect.y,srcRect.width,srcRect.height))
         ) return;
 
-        let texWidth = texInfo[0].texture.getSize().width;
-        let texHeight = texInfo[0].texture.getSize().height;
-
         let scene = this.game.getCurrScene();
 
         let drawer:IDrawer;
         let uniforms:UniformsInfo = {
-            u_textureMatrix: makeTextureMatrix(srcRect,texWidth,texHeight),
-            u_vertexMatrix: makePositionMatrix(dstRect.x,dstRect.y,dstRect.width,dstRect.height, this.game.width,this.game.height),
+            u_textureMatrix: makeTextureMatrix(srcRect,texInfo[0].texture.getSize()),
+            u_vertexMatrix: makePositionMatrix(dstRect, Size.fromPool().setWH(this.game.width,this.game.height)), // todo
             u_alpha: 1
         };
 
@@ -256,19 +272,21 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
             if (!texturePath) throw `no texture path provided`;
             else throw `can not find texture with path ${texturePath}`;
         }
-        let texWidth = texture.getSize().width;
-        let texHeight = texture.getSize().height;
 
         let uniforms:UniformsInfo = {
             u_textureMatrix: makeTextureMatrix(
                 Rect.fromPool().setXYWH(0,0,dstRect.width, dstRect.height),
-                texWidth,texHeight
+                texture.getSize()
             ),
             u_vertexMatrix: makePositionMatrix(
-                dstRect.x,dstRect.y,dstRect.width, dstRect.height,
-                this.game.width,this.game.height
+                dstRect,
+                Size.fromPool().setWH(this.game.width,this.game.height)
             ),
-            u_frameCoords: [srcRect.x/texWidth,srcRect.y/texHeight,srcRect.width/texWidth,srcRect.height/texHeight],
+            u_frameCoords: [
+                srcRect.x/texture.size.width,
+                srcRect.y/texture.size.height,
+                srcRect.width/texture.size.width,
+                srcRect.height/texture.size.height],
             u_offsetCoords:[offset.x/srcRect.width,offset.y/srcRect.height],
             u_alpha: 1
         };
@@ -282,8 +300,8 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),rect)) return;
         let uniforms = {
             u_vertexMatrix: makePositionMatrix(
-                rect.x,rect.y,rect.width,rect.height,
-                this.game.width,this.game.height),
+                rect,
+                Size.fromPool().setWH(this.game.width,this.game.height)),
             u_rgba: color.asGL()
         };
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -305,8 +323,8 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
         //if (!matEx.overlapTest(this.game.camera.getRectScaled(),new Rect(x1,y1,dx,dy))) return;
         let uniforms:any = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
-            x1,y1,dx,dy,
-            this.game.width,this.game.height
+            Rect.fromPool().setXYWH(x1,y1,dx,dy),
+            Size.fromPool().setWH(this.game.width,this.game.height)
         );
         uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -318,8 +336,8 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),Rect.fromPool().setXYWH(x-r,y-r,r2,r2))) return;
         let uniforms:UniformsInfo = {};
         uniforms.u_vertexMatrix = makePositionMatrix(
-            x-r,y-r,r2,r2,
-            this.game.width,this.game.height
+            new Rect(x-r,y-r,r2,r2),
+            new Size(this.game.width,this.game.height) // tofo
         );
         uniforms.u_rgba = color.asGL();
         //gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -394,13 +412,13 @@ export default class WebGlRenderer extends AbstractCanvasRenderer<Texture> {
 
         let uniforms:UniformsInfo = {
             u_vertexMatrix: makePositionMatrix(
-                0,0,
-                this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor,
-                fullScreen.w,fullScreen.h
+                new Rect(0,0,
+                this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor),
+                new Size(fullScreen.w,fullScreen.h)
             ),
             u_textureMatrix: makeTextureMatrix(
                 Rect.fromPool().setXYWH(0,0,fullScreen.w,fullScreen.h),
-                fullScreen.w,fullScreen.h
+                Size.fromPool().setWH(fullScreen.w,fullScreen.h)
             ),
             u_alpha: 1
         };

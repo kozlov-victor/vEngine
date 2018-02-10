@@ -83,9 +83,16 @@ export default abstract class AbstractRendere {
               srcRect:Rect,
               dstRect:Rect){}
 
+    drawImageEx(texturePath:string,
+              srcRect:Rect,
+              dstRect:Rect,
+              filters:AbstractFilter[]
+            ){}
+
     drawNinePatch(
         texturePath:string,
         destRect:Rect,
+        filters:AbstractFilter[],
         a:number,b:number,c:number,d:number
     ){}
 

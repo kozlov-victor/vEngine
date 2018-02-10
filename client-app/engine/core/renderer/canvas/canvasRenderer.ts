@@ -11,7 +11,7 @@ import AbstractCanvasRenderer from "../abstract/abstractCanvasRenderer";
 import Color from "../../color";
 import Size from "../../geometry/size";
 
-export default class CanvasRenderer extends AbstractCanvasRenderer<HTMLCanvasElement> {
+export default class CanvasRenderer extends AbstractCanvasRenderer {
 
     private ctx;
 

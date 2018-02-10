@@ -40,7 +40,7 @@ export default class NinePatchImage extends Image {
     }
 
     render(){
-        this.game.renderer.drawNinePatch(this.resourcePath,this.drawingRect,this.a,this.b,this.c,this.d);
+        this.game.renderer.drawNinePatch(this.resourcePath,this.drawingRect,this.filters,this.a,this.b,this.c,this.d);
     }
 
 }

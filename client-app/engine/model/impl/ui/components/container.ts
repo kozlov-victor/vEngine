@@ -5,6 +5,7 @@ import Point2d from "../../../../core/geometry/point2d";
 import Size from "../../../../core/geometry/size";
 import {Renderable} from "../../../../renderable/renderable";
 import {isUndefined} from "util";
+import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 
 export enum ALIGN_CONTENT {
     NONE, VERTICAL,
@@ -21,6 +22,9 @@ export default class Container extends BaseModel implements Renderable {
     paddingTop: number = 0;
     paddingRight: number = 0;
     paddingBottom: number = 0;
+
+    filters:AbstractFilter[] = [];
+    blendMode:string = '';
 
     alignContent:ALIGN_CONTENT = ALIGN_CONTENT.NONE;
 

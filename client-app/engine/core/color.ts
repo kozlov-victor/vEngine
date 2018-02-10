@@ -26,6 +26,7 @@ export default class Color {
     public static WHITE = Color.RGB(255,255,255);
     public static GREY  = Color.RGB(127,127,127);
     public static BLACK = Color.RGB(0,0,0);
+    public static NONE = Color.RGB(0,0,0,0);
 
     private static objectPool:ObjectPool<Color>;
     private _arr:Array<number> = null;
