@@ -3060,6 +3060,7 @@ var camera_1 = __webpack_require__(84);
 var consts_1 = __webpack_require__(29);
 var point2d_1 = __webpack_require__(3);
 var lightArray_1 = __webpack_require__(20);
+var uiBuilder_1 = __webpack_require__(105);
 var Game = /** @class */ (function (_super) {
     __extends(Game, _super);
     function Game() {
@@ -3092,6 +3093,7 @@ var Game = /** @class */ (function (_super) {
         _this.collider = new collider_1.default(_this);
         _this.camera = new camera_1.default(_this);
         _this.lightArray = new lightArray_1.default(_this);
+        _this.uiBuilder = new uiBuilder_1.default(_this);
         return _this;
     }
     Game.prototype.revalidate = function () {
@@ -3182,7 +3184,8 @@ var Game = /** @class */ (function (_super) {
             scaleStrategy: true,
             fps: true,
             destroyed: true,
-            lightArray: true
+            lightArray: true,
+            uiBuilder: true
         })
     ], Game);
     return Game;
@@ -5922,32 +5925,33 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var container_1 = __webpack_require__(25);
 var textField_1 = __webpack_require__(18);
-var ninePatchImage_1 = __webpack_require__(101);
-var colorizeFilter_1 = __webpack_require__(104);
-var color_1 = __webpack_require__(15);
 var Button = /** @class */ (function (_super) {
     __extends(Button, _super);
     function Button(game) {
         var _this = _super.call(this, game) || this;
         _this.text = '';
         _this.font = null;
+        _this.onClick = function () { };
         _this.alignContent = container_1.ALIGN_CONTENT.VERTICAL;
         _this._textField = new textField_1.default(game);
-        _this.background = new ninePatchImage_1.default(game);
-        _this.background.resourcePath = 'resources/nineP.png';
-        _this.background.setABCD(45);
-        var colorize = new colorizeFilter_1.default(_this.game.renderer['gl']);
-        _this.background.filters.push(colorize);
-        var c = new color_1.default(12, 12, 12, 0);
-        _this.on('mouseEnter', function () {
-            c.setRGBA(20, 220, 12, 100);
-            colorize.setColor(c);
-        });
-        _this.on('mouseLeave', function () {
-            c.setRGBA(12, 12, 12, 0);
-            colorize.setColor(c);
+        _this.on('click', function () {
+            _this.onClick();
         });
         return _this;
+        // this._background = new NinePatchImage(game);
+        // this._background.resourcePath = 'resources/nineP.png';
+        // this._background.setABCD(45);
+        // let colorize = new ColorizeFilter(this.game.renderer['gl']);
+        // this._background.filters.push(colorize);
+        // let c:Color = new Color(12,12,12,0);
+        // this.on('mouseEnter',()=>{
+        //     c.setRGBA(20,220,12,100);
+        //     colorize.setColor(c);
+        // });
+        // this.on('mouseLeave',()=>{
+        //     c.setRGBA(12,12,12,0);
+        //     colorize.setColor(c);
+        // });
     }
     Button.prototype.revalidate = function () {
         _super.prototype.revalidate.call(this);
@@ -5958,16 +5962,22 @@ var Button = /** @class */ (function (_super) {
     Button.prototype.onGeometryChanged = function () {
         this.width = this._textField.width;
         this.height = this._textField.height;
-        this.background.drawingRect.set(this.getRectMargined());
-        this.background.revalidate(); // todo
-        this._rect.setWH(this.background.drawingRect.width, this.background.drawingRect.height);
-        var dx = (this.background.drawingRect.width - this._textField.width) / 2;
-        var dy = (this.background.drawingRect.height - this._textField.height) / 2;
+        this._background.drawingRect.set(this.getRectMargined());
+        this._background.revalidate(); // todo
+        this._rect.setWH(this._background.drawingRect.width, this._background.drawingRect.height);
+        var dx = (this._background.drawingRect.width - this._textField.width) / 2;
+        var dy = (this._background.drawingRect.height - this._textField.height) / 2;
         this._textField.pos.setXY(this.pos.x + this.marginLeft + dx, this.pos.y + this.marginTop + dy);
     };
     Button.prototype.setText = function (text) {
         this._textField.setText(text);
         this._dirty = true;
+    };
+    Button.prototype.setFont = function (f) {
+        this._textField.setFont(f);
+    };
+    Button.prototype.setBackground = function (value) {
+        this._background = value;
     };
     Button.prototype.getText = function () {
         return this._textField.getText();
@@ -5977,7 +5987,7 @@ var Button = /** @class */ (function (_super) {
         this.render();
     };
     Button.prototype.render = function () {
-        this.background.render();
+        this._background.render();
         this._textField.render();
     };
     return Button;
@@ -6033,7 +6043,7 @@ var Mouse = /** @class */ (function () {
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;
-        mousePoint.id = e.identifier || 0;
+        mousePoint.id = e.identifier || 0; // (e as PointerEvent).pointerId
         return mousePoint;
     };
     Mouse.prototype.triggerEvent = function (e, eventName, isMouseDown) {
@@ -6046,7 +6056,7 @@ var Mouse = /** @class */ (function () {
         exit: for (var i = 0; i < scene.layers.length; i++) {
             var layer = scene.layers[scene.layers.length - 1 - i];
             for (var j = 0; j < layer.gameObjects.length; j++) {
-                var go = layer.gameObjects[j];
+                var go = layer.gameObjects[layer.gameObjects.length - 1 - j];
                 if (mathEx.isPointInRect(point, go.getRect())) {
                     point.target = go;
                     go.trigger(eventName, {
@@ -6083,11 +6093,11 @@ var Mouse = /** @class */ (function () {
             return;
         var lastMouseDownObject = this.objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject !== point.target) {
-            lastMouseDownObject.trigger('mouseLeave');
+            lastMouseDownObject.trigger('mouseLeave', point);
             delete this.objectsCaptured[point.id];
         }
         if (point.target && lastMouseDownObject !== point.target) {
-            point.target.trigger('mouseEnter');
+            point.target.trigger('mouseEnter', point);
             this.objectsCaptured[point.id] = point.target;
         }
     };
@@ -6098,7 +6108,7 @@ var Mouse = /** @class */ (function () {
         var lastMouseDownObject = this.objectsCaptured[point.id];
         if (!lastMouseDownObject)
             return;
-        lastMouseDownObject.trigger('mouseUp');
+        lastMouseDownObject.trigger('mouseUp', point);
         delete this.objectsCaptured[point.id];
     };
     Mouse.prototype.resolveDoubleClick = function (e) {
@@ -6877,6 +6887,24 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
             //this.points.push({x:e.screenX,y:e.screenY});
             p1.pos.setXY(e.screenX, e.screenY);
         });
+
+        var widget = this.game.uiBuilder.build({
+            Button: {
+                pos: { x: 12, y: 30 },
+                font: { type: 'Font', name: 'font1' },
+                text: 'button1',
+                paddings: 50,
+                background: {
+                    type: 'NinePatchImage',
+                    resourcePath: 'resources/nineP.png',
+                    ABCD: 45
+                },
+                onClick: function onClick() {
+                    console.log('clicked', _this);
+                }
+            }
+        });
+        this.scene.layers[0].gameObjects.push(widget);
     };
 
     MainSceneBehaviour.prototype.onUpdate = function onUpdate() {
@@ -7093,10 +7121,6 @@ exports.repository = {
                 {
                     "type": "TextField",
                     "id": 76
-                },
-                {
-                    "type": "Button",
-                    "id": 9000
                 },
                 {
                     "type": "GameObject",
@@ -8947,25 +8971,6 @@ exports.repository = {
                 "type": "Font"
             }
         }
-    ],
-    "Button": [
-        {
-            "id": 9000,
-            "name": "button1",
-            "width": 320,
-            "height": 124,
-            "pos": {
-                "x": 12,
-                "y": 12
-            },
-            "layerId": 2,
-            "type": "Button",
-            "text": "button>>>",
-            "font": {
-                "id": 22,
-                "type": "Font"
-            }
-        }
     ]
 };
 
@@ -8991,7 +8996,6 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var rect_1 = __webpack_require__(1);
 var image_1 = __webpack_require__(103);
 var NinePatchImage = /** @class */ (function (_super) {
     __extends(NinePatchImage, _super);
@@ -9001,7 +9005,6 @@ var NinePatchImage = /** @class */ (function (_super) {
         _this.b = 0;
         _this.c = 0;
         _this.d = 0;
-        _this.drawingRect = new rect_1.default();
         return _this;
     }
     NinePatchImage.prototype.revalidate = function () {
@@ -9087,6 +9090,7 @@ var Image = /** @class */ (function (_super) {
         var _this = _super.call(this, game) || this;
         _this.destRect = new rect_1.default();
         _this.srcRect = new rect_1.default();
+        _this.drawingRect = new rect_1.default();
         _this.filters = [];
         _this.blendMode = '';
         return _this;
@@ -9100,42 +9104,86 @@ exports.default = Image;
 
 
 /***/ }),
-/* 104 */
+/* 104 */,
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractFilter_1 = __webpack_require__(53);
-var shaderProgramUtils_1 = __webpack_require__(4);
-var color_1 = __webpack_require__(15);
-var ColorizeFilter = /** @class */ (function (_super) {
-    __extends(ColorizeFilter, _super);
-    function ColorizeFilter(gl) {
-        return _super.call(this, gl) || this;
+var allUIClasses = __webpack_require__(106);
+var UIBuilder = /** @class */ (function () {
+    function UIBuilder(game) {
+        this.game = game;
     }
-    ColorizeFilter.prototype.prepare = function (programGen) {
-        programGen.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'uPixelColor');
-        this.setColor(color_1.default.NONE);
-        //language=GLSL
-        programGen.setFragmentMainFn("\n            void main(){\n                vec4 col = texture2D(texture, v_texCoord);\n                vec3 r = vec3(col) * (1.0-uPixelColor.a) + vec3(uPixelColor) * uPixelColor.a;\n                vec4 result = vec4(r, col.a);\n                gl_FragColor = result;\n            }\n        ");
+    UIBuilder.normalizeSetterName = function (name) {
+        return "set" + name[0].toUpperCase() + name.substr(1);
     };
-    ColorizeFilter.prototype.setColor = function (c) {
-        this.setParam('uPixelColor', c.clone().asGL());
+    UIBuilder.prototype.resolveObj = function (key, obj) {
+        var _this = this;
+        var clazz = allUIClasses[key];
+        if (1 && !clazz)
+            throw "no such ui class: " + key;
+        var instance = new clazz(this.game);
+        Object.keys(obj).forEach(function (propName) {
+            if (propName === 'type')
+                return; //reserved word, just skip
+            if (obj[propName].type) {
+                if (obj[propName].name) {
+                    obj[propName] = _this.game.repository.getArray(obj[propName].type).find(function (it) { return it.name == obj[propName].name; });
+                    if (!obj[propName])
+                        throw "can not find object {type:" + obj[propName].type + ",name:" + obj[propName].type + "}";
+                }
+                else
+                    obj[propName] = _this.resolveObj(obj[propName].type, obj[propName]);
+            }
+            var setterName = UIBuilder.normalizeSetterName(propName);
+            var hasSetter = instance[setterName] && instance[setterName].call;
+            var hasProperty = propName in obj;
+            if (1 && !hasProperty && !hasSetter) {
+                console.error(instance);
+                throw "nor method " + setterName + " not property " + propName + " found";
+            }
+            if (hasSetter)
+                (_a = instance[setterName]).call.apply(_a, [instance].concat(obj[propName]));
+            else {
+                if (instance[propName] && instance[propName].fromJSON)
+                    instance[propName].fromJSON(obj[propName]);
+                else
+                    instance[propName] = obj[propName];
+            }
+            var _a;
+        });
+        return instance;
     };
-    return ColorizeFilter;
-}(abstractFilter_1.default));
-exports.default = ColorizeFilter;
+    UIBuilder.prototype.build = function (desc) {
+        var allKeys = Object.keys(desc);
+        if (1 && allKeys.length > 1)
+            throw "only one root element is supported. Found: " + allKeys;
+        var firstKey = Object.keys(desc)[0];
+        var rootObj = desc[firstKey];
+        return this.resolveObj(firstKey, rootObj);
+    };
+    return UIBuilder;
+}());
+exports.default = UIBuilder;
+
+
+/***/ }),
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var button_1 = __webpack_require__(79);
+exports.Button = button_1.default;
+var textField_1 = __webpack_require__(18);
+exports.TextField = textField_1.default;
+var container_1 = __webpack_require__(25);
+exports.Container = container_1.default;
+var ninePatchImage_1 = __webpack_require__(101);
+exports.NinePatchImage = ninePatchImage_1.default;
 
 
 /***/ })

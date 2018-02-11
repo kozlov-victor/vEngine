@@ -45,7 +45,7 @@ export default class Mouse {
 
 
     //MouseEvent|TouchEvent|PointerEvent
-    resolvePoint(e:MouseEvent|TouchEvent|Touch):MousePoint{
+    resolvePoint(e:MouseEvent|TouchEvent|Touch|PointerEvent):MousePoint{
         let game:Game = this.game;
         let clientX:number = <number>(e as any).clientX;
         let clientY:number = <number>(e as any).clientY;
@@ -59,7 +59,7 @@ export default class Mouse {
         mousePoint.set(p);
         mousePoint.screenX = screenX;
         mousePoint.screenY = screenY;
-        mousePoint.id = (e as any).identifier || 0;
+        mousePoint.id = (e as Touch).identifier  || 0; // (e as PointerEvent).pointerId
         return mousePoint;
     }
 
@@ -74,7 +74,7 @@ export default class Mouse {
         for (let i=0;i<scene.layers.length;i++){
             let layer = scene.layers[scene.layers.length - 1 - i];
             for (let j=0;j<layer.gameObjects.length;j++){
-                let go = layer.gameObjects[j];
+                let go = layer.gameObjects[layer.gameObjects.length - 1 - j];
                 if (
                     mathEx.isPointInRect(point,go.getRect())
                 ) {
@@ -114,11 +114,12 @@ export default class Mouse {
         if (!point) return;
         let lastMouseDownObject:BaseModel = this.objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject!==point.target) {
-            lastMouseDownObject.trigger('mouseLeave');
+            lastMouseDownObject.trigger('mouseLeave',point);
             delete this.objectsCaptured[point.id];
         }
+
         if (point.target && lastMouseDownObject!==point.target) {
-            point.target.trigger('mouseEnter');
+            point.target.trigger('mouseEnter',point);
             this.objectsCaptured[point.id] = point.target;
         }
     }
@@ -128,7 +129,7 @@ export default class Mouse {
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
-        lastMouseDownObject.trigger('mouseUp');
+        lastMouseDownObject.trigger('mouseUp',point);
         delete this.objectsCaptured[point.id];
     }
 

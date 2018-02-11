@@ -9,13 +9,13 @@ export default class Image extends Resource implements Renderable {
 
     destRect:Rect = new Rect();
     srcRect:Rect = new Rect();
+    drawingRect:Rect = new Rect();
     filters:AbstractFilter[] = [];
     blendMode:string = '';
 
     constructor(game: Game) {
         super(game);
     }
-
 
     render(){
         this.game.renderer.drawImage(this.resourcePath,this.srcRect,this.destRect);

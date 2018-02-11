@@ -8,33 +8,38 @@ import NinePatchImage from "../../../../renderable/ninePatchImage";
 import Resource from "../../../resource";
 import ColorizeFilter from "../../../../core/renderer/webGl/filters/textureFilters/colorizeFilter";
 import Color from "../../../../core/color";
+import Image from "../../../../renderable/image";
 
 export default class Button extends Container {
 
     text:string = '';
     font:Font = null;
-    background:NinePatchImage;
+    onClick:()=>void = ()=>{};
 
+    private _background:NinePatchImage;
     private _textField:TextField;
 
     constructor(game) {
         super(game);
         this.alignContent = ALIGN_CONTENT.VERTICAL;
         this._textField = new TextField(game);
-        this.background = new NinePatchImage(game);
-        this.background.resourcePath = 'resources/nineP.png';
-        this.background.setABCD(45);
-        let colorize = new ColorizeFilter(this.game.renderer['gl']);
-        this.background.filters.push(colorize);
-        let c:Color = new Color(12,12,12,0);
-        this.on('mouseEnter',()=>{
-            c.setRGBA(20,220,12,100);
-            colorize.setColor(c);
+        this.on('click',()=>{
+            this.onClick();
         });
-        this.on('mouseLeave',()=>{
-            c.setRGBA(12,12,12,0);
-            colorize.setColor(c);
-        });
+        // this._background = new NinePatchImage(game);
+        // this._background.resourcePath = 'resources/nineP.png';
+        // this._background.setABCD(45);
+        // let colorize = new ColorizeFilter(this.game.renderer['gl']);
+        // this._background.filters.push(colorize);
+        // let c:Color = new Color(12,12,12,0);
+        // this.on('mouseEnter',()=>{
+        //     c.setRGBA(20,220,12,100);
+        //     colorize.setColor(c);
+        // });
+        // this.on('mouseLeave',()=>{
+        //     c.setRGBA(12,12,12,0);
+        //     colorize.setColor(c);
+        // });
     }
 
     revalidate(){
@@ -48,12 +53,12 @@ export default class Button extends Container {
         this.width = this._textField.width;
         this.height = this._textField.height;
 
-        this.background.drawingRect.set(this.getRectMargined());
-        this.background.revalidate(); // todo
-        this._rect.setWH(this.background.drawingRect.width,this.background.drawingRect.height);
+        this._background.drawingRect.set(this.getRectMargined());
+        this._background.revalidate(); // todo
+        this._rect.setWH(this._background.drawingRect.width,this._background.drawingRect.height);
 
-        let dx = (this.background.drawingRect.width - this._textField.width)/2;
-        let dy = (this.background.drawingRect.height - this._textField.height)/2;
+        let dx = (this._background.drawingRect.width - this._textField.width)/2;
+        let dy = (this._background.drawingRect.height - this._textField.height)/2;
 
         this._textField.pos.setXY(
             this.pos.x + this.marginLeft + dx,
@@ -65,6 +70,15 @@ export default class Button extends Container {
         this._textField.setText(text);
         this._dirty = true;
     }
+
+    setFont(f:Font){
+        this._textField.setFont(f);
+    }
+
+    setBackground(value: NinePatchImage) {
+        this._background = value;
+    }
+
     getText(){
         return this._textField.getText();
     }
@@ -75,9 +89,8 @@ export default class Button extends Container {
     }
 
     render(){
-        this.background.render();
+        this._background.render();
         this._textField.render();
     }
-
 
 }

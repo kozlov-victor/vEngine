@@ -12,8 +12,6 @@ export default class NinePatchImage extends Image {
     private c:number = 0;
     private d:number = 0;
 
-    drawingRect:Rect = new Rect();
-
     constructor(game: Game) {
         super(game);
     }

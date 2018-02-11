@@ -21,6 +21,7 @@ import Point2d from "./geometry/point2d";
 import AbstractRenderer from "./renderer/abstract/abstractRenderer";
 import Scene from '../model/impl/scene';
 import LightArray from "./light/lightArray";
+import UIBuilder from "../model/impl/ui/uiBuilder";
 
 
 @Transient({
@@ -34,7 +35,8 @@ import LightArray from "./light/lightArray";
     scaleStrategy: true,
     fps: true,
     destroyed: true,
-    lightArray: true
+    lightArray: true,
+    uiBuilder: true
 })
 export default class Game extends CommonObject {
 
@@ -59,6 +61,7 @@ export default class Game extends CommonObject {
     keyboard:Keyboard;
     collider:Collider;
     camera:Camera;
+    uiBuilder:UIBuilder;
     scaleStrategy:number = SCALE_STRATEGY.FIT;
     startSceneId:number = 0;
 
@@ -77,6 +80,7 @@ export default class Game extends CommonObject {
         this.collider = new Collider(this);
         this.camera = new Camera(this);
         this.lightArray = new LightArray(this);
+        this.uiBuilder = new UIBuilder(this);
     }
 
     revalidate(){

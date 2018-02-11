@@ -37,6 +37,26 @@ export class MainSceneBehaviour {
           //this.points.push({x:e.screenX,y:e.screenY});
           p1.pos.setXY(e.screenX,e.screenY);
         });
+
+
+
+        let widget = this.game.uiBuilder.build({
+            Button: {
+                pos: {x:12,y:30},
+                font: {type:'Font',name:'font1'},
+                text: 'button1',
+                paddings: 50,
+                background: {
+                    type: 'NinePatchImage',
+                    resourcePath: 'resources/nineP.png',
+                    ABCD: 45
+                },
+                onClick: ()=>{
+                    console.log('clicked',this);
+                }
+            }
+        });
+        this.scene.layers[0].gameObjects.push(widget);
         
     }
 
