@@ -49,7 +49,7 @@ export default class Button extends Container {
         this.onGeometryChanged();
     }
 
-    protected onGeometryChanged(){
+    onGeometryChanged(){
         this.width = this._textField.width;
         this.height = this._textField.height;
 
@@ -61,8 +61,8 @@ export default class Button extends Container {
         let dy = (this._background.drawingRect.height - this._textField.height)/2;
 
         this._textField.pos.setXY(
-            this.pos.x + this.marginLeft + dx,
-            this.pos.y + this.marginTop + dy
+            this.getRect().x + this.marginLeft + dx,
+            this.getRect().y + this.marginTop + dy
         );
     }
 

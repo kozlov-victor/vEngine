@@ -62,6 +62,10 @@ export default class Rect {
         return this;
     }
 
+    setPoint(p:Point2d){
+        p.setXY(p.x,p.y);
+    }
+
     addXY(x:number,y:number):Rect{
         this.x+=x;
         this.y+=y;

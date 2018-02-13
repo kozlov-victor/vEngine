@@ -14,7 +14,7 @@ interface MouseEventEx extends MouseEvent {
     touches:Array<any>
 }
 
-class MousePoint extends Point2d{
+export class MousePoint extends Point2d{
 
     public screenX:number;
     public screenY:number;

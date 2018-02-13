@@ -41,21 +41,50 @@ export class MainSceneBehaviour {
 
 
         let widget = this.game.uiBuilder.build({
-            Button: {
-                pos: {x:12,y:30},
-                font: {type:'Font',name:'font1'},
-                text: 'button1',
-                paddings: 50,
-                background: {
-                    type: 'NinePatchImage',
-                    resourcePath: 'resources/nineP.png',
-                    ABCD: 45
+            AbsoluteLayout: {
+                properties: {
+                    pos: {x:10,y:10},
+                    width:12,
+                    height:12
                 },
-                onClick: ()=>{
-                    console.log('clicked',this);
-                }
+                children: [
+                    {
+                        Button: {
+                            pos: {x: 10, y: 0},
+                            font: {type: 'Font', name: 'font1'},
+                            text: 'button1',
+                            paddings: 10,
+                            background: {
+                                type: 'NinePatchImage',
+                                resourcePath: 'resources/nineP.png',
+                                ABCD: 45
+                            },
+                            onClick: () => {
+                                console.log('clicked', this);
+                            }
+                        }
+                    },
+                    {
+                        Button: {
+                            pos: {x: 120, y: 0},
+                            font: {type: 'Font', name: 'font1'},
+                            text: 'button2',
+                            paddings: 10,
+                            background: {
+                                type: 'NinePatchImage',
+                                resourcePath: 'resources/nineP.png',
+                                ABCD: 45
+                            },
+                            onClick: () => {
+                                console.log('clicked', this);
+                            }
+                        }
+                    }
+                ]
             }
         });
+        console.log(widget);
+        window.w = widget;
         this.scene.layers[0].gameObjects.push(widget);
         
     }

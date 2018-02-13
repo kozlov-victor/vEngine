@@ -31,11 +31,11 @@ export default class BaseModel extends CommonObject {
     _tweens:Array<Tween> = [];
     _emitter:EventEmitter;
     _cloner:BaseModel;
+    parent:BaseModel|null = null;
+    _dirty = true;
 
     protected _rect:Rect = new Rect(0,0);
     protected children:BaseModel[] = [];
-    protected parent:BaseModel|null = null;
-    protected _dirty = true;
 
     appendChild(c:BaseModel){
         this.children.push(c);

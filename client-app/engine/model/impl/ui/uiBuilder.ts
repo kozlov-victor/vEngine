@@ -26,7 +26,8 @@ interface UIDescription {
     [key:string]:any
 }
 
-import * as allUIClasses from './components/all';
+import * as allUIClasses from './all';
+import AbsoluteLayout from "./layouts/absoluteLayout";
 
 export default class UIBuilder {
 
@@ -40,10 +41,7 @@ export default class UIBuilder {
         return `set${name[0].toUpperCase()}${name.substr(1)}`;
     }
 
-    private resolveObj(key,obj){
-        let clazz = allUIClasses[key];
-        if (DEBUG && !clazz) throw `no such ui class: ${key}`;
-        let instance = new clazz(this.game);
+    private resolveObjProperties(instance,obj) {
         Object.keys(obj).forEach(propName=>{
             if (propName==='type') return; //reserved word, just skip
             if (obj[propName].type) {
@@ -66,7 +64,25 @@ export default class UIBuilder {
                 else instance[propName] = obj[propName];
             }
         });
+    }
+
+    private resolveObj(key,obj){
+        let clazz = allUIClasses[key];
+        if (DEBUG && !clazz) throw `no such ui class: ${key}`;
+        let instance = new clazz(this.game);
+        this.resolveObjProperties(instance,obj);
         return instance;
+    }
+
+
+    private resolveAbsoluteLayout(props,arr){
+        let l:AbsoluteLayout = new AbsoluteLayout(this.game);
+        this.resolveObjProperties(l,props);
+        arr.forEach(v=>{
+            let firstKey = Object.keys(v)[0];
+            l.addView(this.resolveObj(firstKey,v[firstKey]));
+        });
+        return l;
     }
 
     build(desc:UIDescription){
@@ -74,7 +90,8 @@ export default class UIBuilder {
         if (DEBUG && allKeys.length>1) throw `only one root element is supported. Found: ${allKeys}`;
         let firstKey = Object.keys(desc)[0];
         let rootObj = desc[firstKey];
-        return this.resolveObj(firstKey,rootObj);
+        if (firstKey==='AbsoluteLayout') return this.resolveAbsoluteLayout(rootObj.properties,rootObj.children);
+        else return this.resolveObj(firstKey,rootObj);
     }
 
 }

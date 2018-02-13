@@ -108,10 +108,10 @@ var BaseModel = /** @class */ (function (_super) {
         _this.fixedToCamera = false;
         _this.rigid = false;
         _this._tweens = [];
-        _this._rect = new rect_1.default(0, 0);
-        _this.children = [];
         _this.parent = null;
         _this._dirty = true;
+        _this._rect = new rect_1.default(0, 0);
+        _this.children = [];
         if (1 && !game)
             throw ("can not create model '" + _this.type + "': game instance not passed to model constructor");
         _this.game = game;
@@ -235,6 +235,9 @@ var Rect = /** @class */ (function () {
         this.height = s.height;
         this.revalidate();
         return this;
+    };
+    Rect.prototype.setPoint = function (p) {
+        p.setXY(p.x, p.y);
     };
     Rect.prototype.addXY = function (x, y) {
         this.x += x;
@@ -2238,6 +2241,11 @@ var ALIGN_CONTENT;
     ALIGN_CONTENT[ALIGN_CONTENT["HORIZONTAL"] = 2] = "HORIZONTAL";
     ALIGN_CONTENT[ALIGN_CONTENT["BOTH"] = 3] = "BOTH";
 })(ALIGN_CONTENT = exports.ALIGN_CONTENT || (exports.ALIGN_CONTENT = {}));
+var OVERFLOW;
+(function (OVERFLOW) {
+    OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
+    OVERFLOW[OVERFLOW["VISIBLE"] = 1] = "VISIBLE";
+})(OVERFLOW = exports.OVERFLOW || (exports.OVERFLOW = {}));
 var Container = /** @class */ (function (_super) {
     __extends(Container, _super);
     function Container(game) {
@@ -2250,8 +2258,10 @@ var Container = /** @class */ (function (_super) {
         _this.paddingTop = 0;
         _this.paddingRight = 0;
         _this.paddingBottom = 0;
+        _this._rectMargined = new rect_1.default();
         _this.filters = [];
         _this.blendMode = '';
+        _this.overflow = OVERFLOW.HIDDEN;
         _this.alignContent = ALIGN_CONTENT.NONE;
         return _this;
     }
@@ -2324,10 +2334,11 @@ var Container = /** @class */ (function (_super) {
         return rect;
     };
     Container.prototype.getRectMargined = function () {
-        var rToDraw = new rect_1.default();
+        if (!this._dirty)
+            return this._rectMargined;
         var rect = this.getRect();
-        rToDraw.setXYWH(rect.getPoint().x + this.marginLeft, rect.getPoint().y + this.marginTop, rect.getSize().width - this.marginLeft - this.marginRight, rect.getSize().height - this.marginTop - this.marginBottom);
-        return rToDraw;
+        this._rectMargined.setXYWH(rect.getPoint().x + this.marginLeft, rect.getPoint().y + this.marginTop, rect.getSize().width - this.marginLeft - this.marginRight, rect.getSize().height - this.marginTop - this.marginBottom);
+        return this._rectMargined;
     };
     Container.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
@@ -2336,8 +2347,7 @@ var Container = /** @class */ (function (_super) {
             this._dirty = false;
         }
     };
-    Container.prototype.render = function () {
-    };
+    Container.prototype.render = function () { };
     return Container;
 }(baseModel_1.default));
 exports.default = Container;
@@ -4434,6 +4444,8 @@ var AbstractRendere = /** @class */ (function () {
     AbstractRendere.prototype.drawTiledImage = function (texturePath, srcRect, dstRect, offset) { };
     AbstractRendere.prototype.fillRect = function (rect, color) { };
     AbstractRendere.prototype.drawRect = function (rect, color) { };
+    AbstractRendere.prototype.lockRect = function (rect) { };
+    AbstractRendere.prototype.unlockRect = function () { };
     AbstractRendere.prototype.drawLine = function (x1, y1, x2, y2, color) { };
     AbstractRendere.prototype.fillCircle = function (x, y, r, color) { };
     AbstractRendere.prototype.clear = function () { };
@@ -5967,7 +5979,7 @@ var Button = /** @class */ (function (_super) {
         this._rect.setWH(this._background.drawingRect.width, this._background.drawingRect.height);
         var dx = (this._background.drawingRect.width - this._textField.width) / 2;
         var dy = (this._background.drawingRect.height - this._textField.height) / 2;
-        this._textField.pos.setXY(this.pos.x + this.marginLeft + dx, this.pos.y + this.marginTop + dy);
+        this._textField.pos.setXY(this.getRect().x + this.marginLeft + dx, this.getRect().y + this.marginTop + dy);
     };
     Button.prototype.setText = function (text) {
         this._textField.setText(text);
@@ -6026,6 +6038,7 @@ var MousePoint = /** @class */ (function (_super) {
     MousePoint.mousePointsPool = new objectPool_1.default(MousePoint);
     return MousePoint;
 }(point2d_1.default));
+exports.MousePoint = MousePoint;
 var Mouse = /** @class */ (function () {
     function Mouse(game) {
         this.objectsCaptured = {};
@@ -6889,21 +6902,47 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         });
 
         var widget = this.game.uiBuilder.build({
-            Button: {
-                pos: { x: 12, y: 30 },
-                font: { type: 'Font', name: 'font1' },
-                text: 'button1',
-                paddings: 50,
-                background: {
-                    type: 'NinePatchImage',
-                    resourcePath: 'resources/nineP.png',
-                    ABCD: 45
+            AbsoluteLayout: {
+                properties: {
+                    pos: { x: 10, y: 10 },
+                    width: 12,
+                    height: 12
                 },
-                onClick: function onClick() {
-                    console.log('clicked', _this);
-                }
+                children: [{
+                    Button: {
+                        pos: { x: 10, y: 0 },
+                        font: { type: 'Font', name: 'font1' },
+                        text: 'button1',
+                        paddings: 10,
+                        background: {
+                            type: 'NinePatchImage',
+                            resourcePath: 'resources/nineP.png',
+                            ABCD: 45
+                        },
+                        onClick: function onClick() {
+                            console.log('clicked', _this);
+                        }
+                    }
+                }, {
+                    Button: {
+                        pos: { x: 120, y: 0 },
+                        font: { type: 'Font', name: 'font1' },
+                        text: 'button2',
+                        paddings: 10,
+                        background: {
+                            type: 'NinePatchImage',
+                            resourcePath: 'resources/nineP.png',
+                            ABCD: 45
+                        },
+                        onClick: function onClick() {
+                            console.log('clicked', _this);
+                        }
+                    }
+                }]
             }
         });
+        console.log(widget);
+        window.w = widget;
         this.scene.layers[0].gameObjects.push(widget);
     };
 
@@ -9110,8 +9149,27 @@ exports.default = Image;
 
 "use strict";
 
+/**
+ * let widget = this.game.uiBuilder.build({
+            Button: {
+                pos: {x:12,y:30},
+                font: {type:'Font',name:'font1'},
+                text: 'button1',
+                paddings: 50,
+                background: {
+                    type: 'NinePatchImage',
+                    resourcePath: 'resources/nineP.png',
+                    ABCD: 45
+                },
+                onClick: ()=>{
+                    console.log('clicked',this);
+                }
+            }
+        });
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
-var allUIClasses = __webpack_require__(106);
+var allUIClasses = __webpack_require__(108);
+var absoluteLayout_1 = __webpack_require__(107);
 var UIBuilder = /** @class */ (function () {
     function UIBuilder(game) {
         this.game = game;
@@ -9119,12 +9177,8 @@ var UIBuilder = /** @class */ (function () {
     UIBuilder.normalizeSetterName = function (name) {
         return "set" + name[0].toUpperCase() + name.substr(1);
     };
-    UIBuilder.prototype.resolveObj = function (key, obj) {
+    UIBuilder.prototype.resolveObjProperties = function (instance, obj) {
         var _this = this;
-        var clazz = allUIClasses[key];
-        if (1 && !clazz)
-            throw "no such ui class: " + key;
-        var instance = new clazz(this.game);
         Object.keys(obj).forEach(function (propName) {
             if (propName === 'type')
                 return; //reserved word, just skip
@@ -9154,7 +9208,24 @@ var UIBuilder = /** @class */ (function () {
             }
             var _a;
         });
+    };
+    UIBuilder.prototype.resolveObj = function (key, obj) {
+        var clazz = allUIClasses[key];
+        if (1 && !clazz)
+            throw "no such ui class: " + key;
+        var instance = new clazz(this.game);
+        this.resolveObjProperties(instance, obj);
         return instance;
+    };
+    UIBuilder.prototype.resolveAbsoluteLayout = function (props, arr) {
+        var _this = this;
+        var l = new absoluteLayout_1.default(this.game);
+        this.resolveObjProperties(l, props);
+        arr.forEach(function (v) {
+            var firstKey = Object.keys(v)[0];
+            l.addView(_this.resolveObj(firstKey, v[firstKey]));
+        });
+        return l;
     };
     UIBuilder.prototype.build = function (desc) {
         var allKeys = Object.keys(desc);
@@ -9162,7 +9233,10 @@ var UIBuilder = /** @class */ (function () {
             throw "only one root element is supported. Found: " + allKeys;
         var firstKey = Object.keys(desc)[0];
         var rootObj = desc[firstKey];
-        return this.resolveObj(firstKey, rootObj);
+        if (firstKey === 'AbsoluteLayout')
+            return this.resolveAbsoluteLayout(rootObj.properties, rootObj.children);
+        else
+            return this.resolveObj(firstKey, rootObj);
     };
     return UIBuilder;
 }());
@@ -9170,7 +9244,65 @@ exports.default = UIBuilder;
 
 
 /***/ }),
-/* 106 */
+/* 106 */,
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var container_1 = __webpack_require__(25);
+var AbsoluteLayout = /** @class */ (function (_super) {
+    __extends(AbsoluteLayout, _super);
+    function AbsoluteLayout(game) {
+        var _this = _super.call(this, game) || this;
+        _this.views = [];
+        _this.width = 200;
+        _this.height = 200;
+        return _this;
+        // this.on('click',(e:MousePoint)=>{
+        //     for (let v of this.views) {
+        //         v.trigger('click',e);
+        //     }
+        // }); // todo
+    }
+    AbsoluteLayout.prototype.addView = function (v) {
+        v.parent = this;
+        this.views.push(v);
+    };
+    AbsoluteLayout.prototype.onGeometryChanged = function () {
+        _super.prototype.onGeometryChanged.call(this);
+        for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
+            var v = _a[_i];
+            v._dirty = true;
+        }
+    };
+    AbsoluteLayout.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.lockRect(this.getRect());
+        for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
+            var v = _a[_i];
+            v.update(time, delta);
+        }
+        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
+    };
+    return AbsoluteLayout;
+}(container_1.default));
+exports.default = AbsoluteLayout;
+
+
+/***/ }),
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9184,6 +9316,8 @@ var container_1 = __webpack_require__(25);
 exports.Container = container_1.default;
 var ninePatchImage_1 = __webpack_require__(101);
 exports.NinePatchImage = ninePatchImage_1.default;
+var absoluteLayout_1 = __webpack_require__(107);
+exports.AbsoluteLayout = absoluteLayout_1.default;
 
 
 /***/ })

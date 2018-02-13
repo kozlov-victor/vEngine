@@ -105,6 +105,10 @@ export default abstract class AbstractRendere {
 
     drawRect(rect:Rect,color:Color){}
 
+    lockRect(rect:Rect) {}
+
+    unlockRect(){}
+
     drawLine(x1:number,y1:number,x2:number,y2:number,color:Color){}
 
     fillCircle(x:number,y:number,r:number,color:Color){}

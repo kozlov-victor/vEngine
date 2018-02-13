@@ -12,6 +12,10 @@ export enum ALIGN_CONTENT {
     HORIZONTAL,BOTH
 }
 
+export enum OVERFLOW {
+    HIDDEN,VISIBLE
+}
+
 export default class Container extends BaseModel implements Renderable {
 
     marginLeft: number = 0;
@@ -23,8 +27,11 @@ export default class Container extends BaseModel implements Renderable {
     paddingRight: number = 0;
     paddingBottom: number = 0;
 
+    private _rectMargined:Rect = new Rect();
+
     filters:AbstractFilter[] = [];
     blendMode:string = '';
+    overflow:OVERFLOW = OVERFLOW.HIDDEN;
 
     alignContent:ALIGN_CONTENT = ALIGN_CONTENT.NONE;
 
@@ -103,7 +110,7 @@ export default class Container extends BaseModel implements Renderable {
         super(game);
     }
 
-    protected onGeometryChanged(){}
+    onGeometryChanged(){}
 
     getRect():Rect{
         if (!this._dirty) return this._rect;
@@ -119,15 +126,15 @@ export default class Container extends BaseModel implements Renderable {
     }
 
     getRectMargined():Rect{ // todo optimize cache
-        let rToDraw:Rect = new Rect();
+        if (!this._dirty) return this._rectMargined;
         let rect = this.getRect();
-        rToDraw.setXYWH(
+        this._rectMargined.setXYWH(
             rect.getPoint().x + this.marginLeft,
             rect.getPoint().y + this.marginTop,
             rect.getSize().width - this.marginLeft - this.marginRight,
             rect.getSize().height - this.marginTop - this.marginBottom
         );
-        return rToDraw;
+        return this._rectMargined;
     }
 
     update(time:number,delta:number){
@@ -138,8 +145,6 @@ export default class Container extends BaseModel implements Renderable {
         }
     }
 
-    render(){
-
-    }
+    render(){}
 
 }
