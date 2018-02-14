@@ -35,13 +35,6 @@ export default class BaseModel extends CommonObject {
     _dirty = true;
 
     protected _rect:Rect = new Rect(0,0);
-    protected children:BaseModel[] = [];
-
-    appendChild(c:BaseModel){
-        this.children.push(c);
-        c.parent = this;
-    }
-
 
     constructor(game:Game){
         super();

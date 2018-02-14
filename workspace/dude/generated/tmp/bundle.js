@@ -111,17 +111,12 @@ var BaseModel = /** @class */ (function (_super) {
         _this.parent = null;
         _this._dirty = true;
         _this._rect = new rect_1.default(0, 0);
-        _this.children = [];
         if (1 && !game)
             throw ("can not create model '" + _this.type + "': game instance not passed to model constructor");
         _this.game = game;
         _this._emitter = new eventEmitter_1.default();
         return _this;
     }
-    BaseModel.prototype.appendChild = function (c) {
-        this.children.push(c);
-        c.parent = this;
-    };
     BaseModel.prototype.setIndividualBehaviour = function (Clazz) { };
     BaseModel.prototype.setCommonBehaviour = function () { };
     BaseModel.prototype.onShow = function () { };
@@ -229,6 +224,7 @@ var Rect = /** @class */ (function () {
     };
     Rect.prototype.set = function (another) {
         this.setXYWH(another.x, another.y, another.width, another.height);
+        return this;
     };
     Rect.prototype.setSize = function (s) {
         this.width = s.width;
@@ -238,6 +234,7 @@ var Rect = /** @class */ (function () {
     };
     Rect.prototype.setPoint = function (p) {
         p.setXY(p.x, p.y);
+        return this;
     };
     Rect.prototype.addXY = function (x, y) {
         this.x += x;
@@ -250,8 +247,9 @@ var Rect = /** @class */ (function () {
         return this;
     };
     Rect.prototype.getPoint = function () {
+        var _this = this;
         if (this.p === undefined)
-            this.p = new point2d_1.default();
+            this.p = new point2d_1.default(0, 0, function () { return _this.setXY(_this.p.x, _this.p.y); });
         this.p.setXY(this.x, this.y);
         return this.p;
     };
@@ -2246,6 +2244,12 @@ var OVERFLOW;
     OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
     OVERFLOW[OVERFLOW["VISIBLE"] = 1] = "VISIBLE";
 })(OVERFLOW = exports.OVERFLOW || (exports.OVERFLOW = {}));
+var LAYOUT_SIZE;
+(function (LAYOUT_SIZE) {
+    LAYOUT_SIZE[LAYOUT_SIZE["FIXED"] = 0] = "FIXED";
+    LAYOUT_SIZE[LAYOUT_SIZE["WRAP_CONTENT"] = 1] = "WRAP_CONTENT";
+    LAYOUT_SIZE[LAYOUT_SIZE["MATCH_PARENT"] = 2] = "MATCH_PARENT";
+})(LAYOUT_SIZE = exports.LAYOUT_SIZE || (exports.LAYOUT_SIZE = {}));
 var Container = /** @class */ (function (_super) {
     __extends(Container, _super);
     function Container(game) {
@@ -2258,6 +2262,8 @@ var Container = /** @class */ (function (_super) {
         _this.paddingTop = 0;
         _this.paddingRight = 0;
         _this.paddingBottom = 0;
+        _this.layoutWidth = LAYOUT_SIZE.WRAP_CONTENT;
+        _this.layoutHeight = LAYOUT_SIZE.WRAP_CONTENT;
         _this._rectMargined = new rect_1.default();
         _this.filters = [];
         _this.blendMode = '';
@@ -2744,6 +2750,7 @@ var GameObjectProto = /** @class */ (function (_super) {
         _this.blendMode = null;
         _this.acceptLight = false;
         _this.shaderMaterial = new shaderMaterial_1.default();
+        _this.children = [];
         _this._frameRect = new rect_1.default(); // todo make all private
         _this._behaviour = null;
         _this._sprPosX = 0;
@@ -2786,6 +2793,10 @@ var GameObjectProto = /** @class */ (function (_super) {
     GameObjectProto.prototype.getFrameRect = function () {
         this._frameRect.setXYWH(this._sprPosX, this._sprPosY, this.width, this.height);
         return this._frameRect;
+    };
+    GameObjectProto.prototype.appendChild = function (c) {
+        this.children.push(c);
+        c.parent = this;
     };
     GameObjectProto.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
@@ -3566,8 +3577,12 @@ var WebGlRenderer = /** @class */ (function (_super) {
         this.matrixStack.restore();
     };
     WebGlRenderer.prototype.lockRect = function (rect) {
+        this.gl.enable(this.gl.SCISSOR_TEST);
+        var camPoint = this.game.camera.getRect().getPoint();
+        this.gl.scissor(rect.x - camPoint.x, rect.y - camPoint.y, rect.width, rect.height);
     };
     WebGlRenderer.prototype.unlockRect = function () {
+        this.gl.disable(this.gl.SCISSOR_TEST);
     };
     WebGlRenderer.prototype.clear = function () {
         this.gl.clearColor(1, 1, 1, 1);
@@ -5976,7 +5991,9 @@ var Button = /** @class */ (function (_super) {
         this.height = this._textField.height;
         this._background.drawingRect.set(this.getRectMargined());
         this._background.revalidate(); // todo
-        this._rect.setWH(this._background.drawingRect.width, this._background.drawingRect.height);
+        this.width = this._background.drawingRect.width;
+        this.height = this._background.drawingRect.height;
+        this.getRect().setWH(this.width, this.height); // todo
         var dx = (this._background.drawingRect.width - this._textField.width) / 2;
         var dy = (this._background.drawingRect.height - this._textField.height) / 2;
         this._textField.pos.setXY(this.getRect().x + this.marginLeft + dx, this.getRect().y + this.marginTop + dy);
@@ -6059,6 +6076,22 @@ var Mouse = /** @class */ (function () {
         mousePoint.id = e.identifier || 0; // (e as PointerEvent).pointerId
         return mousePoint;
     };
+    Mouse.triggerGameObjectEvent = function (eventName, point, isMouseDown, go) {
+        if (mathEx.isPointInRect(point, go.getRect())) {
+            point.target = go;
+            go.trigger(eventName, {
+                screenX: point.x,
+                screenY: point.y,
+                objectX: point.x - go.pos.x,
+                objectY: point.y - go.pos.y,
+                id: point.id,
+                target: go,
+                isMouseDown: isMouseDown
+            });
+            return true;
+        }
+        return false;
+    };
     Mouse.prototype.triggerEvent = function (e, eventName, isMouseDown) {
         if (isMouseDown === undefined)
             isMouseDown = false;
@@ -6070,19 +6103,26 @@ var Mouse = /** @class */ (function () {
             var layer = scene.layers[scene.layers.length - 1 - i];
             for (var j = 0; j < layer.gameObjects.length; j++) {
                 var go = layer.gameObjects[layer.gameObjects.length - 1 - j];
-                if (mathEx.isPointInRect(point, go.getRect())) {
-                    point.target = go;
-                    go.trigger(eventName, {
-                        screenX: point.x,
-                        screenY: point.y,
-                        objectX: point.x - go.pos.x,
-                        objectY: point.y - go.pos.y,
-                        id: point.id,
-                        target: go,
-                        isMouseDown: isMouseDown
-                    });
-                    break exit;
+                var isCaptured = Mouse.triggerGameObjectEvent(eventName, point, isMouseDown, go);
+                if (!isCaptured)
+                    continue;
+                var k = void 0;
+                if (go.children) {
+                    for (k = 0; k < go.children.length; k++) {
+                        var ch = go.children[go.children.length - 1 - k];
+                        if (Mouse.triggerGameObjectEvent(eventName, point, isMouseDown, ch))
+                            break;
+                    }
                 }
+                if (go.views) {
+                    for (k = 0; k < go.views.length; k++) {
+                        var c = go.views[go.views.length - 1 - k];
+                        if (Mouse.triggerGameObjectEvent(eventName, point, isMouseDown, c))
+                            break;
+                    }
+                }
+                if (isCaptured)
+                    break exit;
             }
         }
         if (point.target === undefined)
@@ -6905,8 +6945,8 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
             AbsoluteLayout: {
                 properties: {
                     pos: { x: 10, y: 10 },
-                    width: 12,
-                    height: 12
+                    width: 100,
+                    height: 100
                 },
                 children: [{
                     Button: {
@@ -6920,7 +6960,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                             ABCD: 45
                         },
                         onClick: function onClick() {
-                            console.log('clicked', _this);
+                            console.log('clicked1');
                         }
                     }
                 }, {
@@ -6935,7 +6975,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                             ABCD: 45
                         },
                         onClick: function onClick() {
-                            console.log('clicked', _this);
+                            console.log('clicked2');
                         }
                     }
                 }]
@@ -9270,11 +9310,6 @@ var AbsoluteLayout = /** @class */ (function (_super) {
         _this.width = 200;
         _this.height = 200;
         return _this;
-        // this.on('click',(e:MousePoint)=>{
-        //     for (let v of this.views) {
-        //         v.trigger('click',e);
-        //     }
-        // }); // todo
     }
     AbsoluteLayout.prototype.addView = function (v) {
         v.parent = this;
@@ -9289,12 +9324,14 @@ var AbsoluteLayout = /** @class */ (function (_super) {
     };
     AbsoluteLayout.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
-        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.lockRect(this.getRect());
+        if (this.overflow === container_1.OVERFLOW.HIDDEN)
+            this.game.renderer.lockRect(this.getRect());
         for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
             var v = _a[_i];
             v.update(time, delta);
         }
-        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
+        if (this.overflow === container_1.OVERFLOW.HIDDEN)
+            this.game.renderer.unlockRect();
     };
     return AbsoluteLayout;
 }(container_1.default));

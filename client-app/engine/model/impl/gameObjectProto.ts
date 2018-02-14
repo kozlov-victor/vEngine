@@ -32,6 +32,8 @@ export default class GameObjectProto extends BaseModel implements Renderable {
     shaderMaterial:ShaderMaterial = new ShaderMaterial();
     rigidBody:ArcadeRigidBody;
 
+    protected children:BaseModel[] = [];
+
     _frameRect = new Rect(); // todo make all private
     _layer:Layer;
     _behaviour = null;
@@ -87,6 +89,11 @@ export default class GameObjectProto extends BaseModel implements Renderable {
             this.height
         );
         return this._frameRect;
+    }
+
+    appendChild(c:BaseModel){
+        this.children.push(c);
+        c.parent = this;
     }
 
     update(time:number,delta:number) {

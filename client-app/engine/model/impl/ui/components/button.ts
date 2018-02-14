@@ -55,7 +55,9 @@ export default class Button extends Container {
 
         this._background.drawingRect.set(this.getRectMargined());
         this._background.revalidate(); // todo
-        this._rect.setWH(this._background.drawingRect.width,this._background.drawingRect.height);
+        this.width = this._background.drawingRect.width;
+        this.height = this._background.drawingRect.height;
+        this.getRect().setWH(this.width,this.height); // todo
 
         let dx = (this._background.drawingRect.width - this._textField.width)/2;
         let dy = (this._background.drawingRect.height - this._textField.height)/2;

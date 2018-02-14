@@ -51,8 +51,9 @@ export default class Rect {
         return this;
     }
 
-    set(another:Rect) {
+    set(another:Rect):Rect {
         this.setXYWH(another.x,another.y,another.width,another.height);
+        return this;
     }
 
     setSize(s:Size):Rect{
@@ -62,8 +63,9 @@ export default class Rect {
         return this;
     }
 
-    setPoint(p:Point2d){
+    setPoint(p:Point2d):Rect{
         p.setXY(p.x,p.y);
+        return this;
     }
 
     addXY(x:number,y:number):Rect{
@@ -78,19 +80,19 @@ export default class Rect {
         return this;
     }
 
-    getPoint(){
-        if (this.p===undefined) this.p = new Point2d();
+    getPoint():Point2d{
+        if (this.p===undefined) this.p = new Point2d(0,0,()=>this.setXY(this.p.x,this.p.y));
         this.p.setXY(this.x,this.y);
         return this.p;
     }
 
-    getSize(){
+    getSize():Size{
         if (this.size===undefined) this.size = new Size();
         this.size.setWH(this.width,this.height);
         return this.size;
     }
 
-    clone(){
+    clone():Rect{
         return new Rect(this.x,this.y,this.width,this.height);
     }
 

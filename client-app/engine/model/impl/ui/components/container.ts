@@ -16,6 +16,10 @@ export enum OVERFLOW {
     HIDDEN,VISIBLE
 }
 
+export enum LAYOUT_SIZE {
+    FIXED,WRAP_CONTENT,MATCH_PARENT
+}
+
 export default class Container extends BaseModel implements Renderable {
 
     marginLeft: number = 0;
@@ -26,6 +30,9 @@ export default class Container extends BaseModel implements Renderable {
     paddingTop: number = 0;
     paddingRight: number = 0;
     paddingBottom: number = 0;
+
+    layoutWidth :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
+    layoutHeight:LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
 
     private _rectMargined:Rect = new Rect();
 

@@ -373,11 +373,14 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
     }
 
     lockRect(rect:Rect) {
+        this.gl.enable(this.gl.SCISSOR_TEST);
+        let camPoint:Point2d = this.game.camera.getRect().getPoint();
+        this.gl.scissor(rect.x - camPoint.x, rect.y - camPoint.y, rect.width, rect.height);
 
     }
 
     unlockRect(){
-
+        this.gl.disable(this.gl.SCISSOR_TEST);
     }
 
     clear(){

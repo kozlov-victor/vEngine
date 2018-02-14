@@ -63,6 +63,25 @@ export default class Mouse {
         return mousePoint;
     }
 
+    private static triggerGameObjectEvent(eventName:string,point:MousePoint,isMouseDown:boolean,go:GameObject):boolean{
+        if (
+            mathEx.isPointInRect(point,go.getRect())
+        ) {
+            point.target = go;
+            go.trigger(eventName,{
+                screenX:point.x,
+                screenY:point.y,
+                objectX:point.x - go.pos.x,
+                objectY:point.y - go.pos.y,
+                id:point.id,
+                target:go,
+                isMouseDown
+            });
+            return true;
+        }
+        return false;
+    }
+
     triggerEvent(e:MouseEvent|TouchEvent|Touch,eventName:string,isMouseDown?:boolean):MousePoint{
         if (isMouseDown===undefined) isMouseDown = false;
         let g = this.game;
@@ -75,21 +94,22 @@ export default class Mouse {
             let layer = scene.layers[scene.layers.length - 1 - i];
             for (let j=0;j<layer.gameObjects.length;j++){
                 let go = layer.gameObjects[layer.gameObjects.length - 1 - j];
-                if (
-                    mathEx.isPointInRect(point,go.getRect())
-                ) {
-                    point.target = go;
-                    go.trigger(eventName,{
-                        screenX:point.x,
-                        screenY:point.y,
-                        objectX:point.x - go.pos.x,
-                        objectY:point.y - go.pos.y,
-                        id:point.id,
-                        target:go,
-                        isMouseDown
-                    });
-                    break exit;
+                let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,go);
+                if (!isCaptured) continue;
+                let k;
+                if (go.children) {
+                    for (k=0;k<go.children.length;k++){
+                        let ch = go.children[go.children.length - 1 - k];
+                        if (Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,ch)) break;
+                    }
                 }
+                if (go.views) {
+                    for (k=0;k<go.views.length;k++){
+                        let c = go.views[go.views.length - 1 - k];
+                        if (Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,c)) break;
+                    }
+                }
+                if (isCaptured) break exit;
             }
         }
 

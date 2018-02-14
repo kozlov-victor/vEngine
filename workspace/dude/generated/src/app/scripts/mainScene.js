@@ -44,8 +44,8 @@ export class MainSceneBehaviour {
             AbsoluteLayout: {
                 properties: {
                     pos: {x:10,y:10},
-                    width:12,
-                    height:12
+                    width:100,
+                    height:100
                 },
                 children: [
                     {
@@ -60,7 +60,7 @@ export class MainSceneBehaviour {
                                 ABCD: 45
                             },
                             onClick: () => {
-                                console.log('clicked', this);
+                                console.log('clicked1');
                             }
                         }
                     },
@@ -76,7 +76,7 @@ export class MainSceneBehaviour {
                                 ABCD: 45
                             },
                             onClick: () => {
-                                console.log('clicked', this);
+                                console.log('clicked2');
                             }
                         }
                     }
