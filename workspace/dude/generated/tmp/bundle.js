@@ -1742,6 +1742,7 @@ var TextField = /** @class */ (function (_super) {
         return _this;
     }
     TextField.prototype.revalidate = function () {
+        _super.prototype.revalidate.call(this);
         if (1 && !this.name) {
             console.error(this);
             throw "property 'name' not set at object of type " + this.type;
@@ -2264,13 +2265,21 @@ var Container = /** @class */ (function (_super) {
         _this.paddingBottom = 0;
         _this.layoutWidth = LAYOUT_SIZE.WRAP_CONTENT;
         _this.layoutHeight = LAYOUT_SIZE.WRAP_CONTENT;
-        _this._rectMargined = new rect_1.default();
+        _this.overflow = OVERFLOW.HIDDEN; // todo change
         _this.filters = [];
         _this.blendMode = '';
-        _this.overflow = OVERFLOW.HIDDEN;
         _this.alignContent = ALIGN_CONTENT.NONE;
+        _this._rectMargined = new rect_1.default();
         return _this;
     }
+    Container.prototype.testLayout = function () {
+        if (true) {
+            if (this.layoutWidth === LAYOUT_SIZE.FIXED && this.width === 0)
+                throw "layoutWidth is LAYOUT_SIZE.FIXED so width must be specified";
+            if (this.layoutHeight === LAYOUT_SIZE.FIXED && this.height === 0)
+                throw "layoutHeight is LAYOUT_SIZE.FIXED so height must be specified";
+        }
+    };
     Container.normalizeBorders = function (top, right, bottom, left) {
         if (right === undefined && bottom === undefined && left === undefined) {
             right = bottom = left = top;
@@ -9265,6 +9274,7 @@ var UIBuilder = /** @class */ (function () {
             var firstKey = Object.keys(v)[0];
             l.addView(_this.resolveObj(firstKey, v[firstKey]));
         });
+        l.testLayout();
         return l;
     };
     UIBuilder.prototype.build = function (desc) {
@@ -9307,11 +9317,10 @@ var AbsoluteLayout = /** @class */ (function (_super) {
     function AbsoluteLayout(game) {
         var _this = _super.call(this, game) || this;
         _this.views = [];
-        _this.width = 200;
-        _this.height = 200;
         return _this;
     }
     AbsoluteLayout.prototype.addView = function (v) {
+        v.testLayout();
         v.parent = this;
         this.views.push(v);
     };

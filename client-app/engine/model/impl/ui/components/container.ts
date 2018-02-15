@@ -1,10 +1,9 @@
 
+declare const DEBUG:boolean;
+
 import BaseModel from "../../../baseModel";
 import Rect from "../../../../core/geometry/rect";
-import Point2d from "../../../../core/geometry/point2d";
-import Size from "../../../../core/geometry/size";
 import {Renderable} from "../../../../renderable/renderable";
-import {isUndefined} from "util";
 import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 
 export enum ALIGN_CONTENT {
@@ -22,25 +21,34 @@ export enum LAYOUT_SIZE {
 
 export default class Container extends BaseModel implements Renderable {
 
-    marginLeft: number = 0;
-    marginTop: number = 0;
-    marginRight: number = 0;
-    marginBottom: number = 0;
-    paddingLeft: number = 0;
-    paddingTop: number = 0;
-    paddingRight: number = 0;
-    paddingBottom: number = 0;
+    marginLeft      : number = 0;
+    marginTop       : number = 0;
+    marginRight     : number = 0;
+    marginBottom    : number = 0;
+    paddingLeft     : number = 0;
+    paddingTop      : number = 0;
+    paddingRight    : number = 0;
+    paddingBottom   : number = 0;
 
-    layoutWidth :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
-    layoutHeight:LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
+    layoutWidth     :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
+    layoutHeight    :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
+    overflow        :OVERFLOW = OVERFLOW.HIDDEN; // todo change
+
+    filters         :AbstractFilter[] = [];
+    blendMode       :string = '';
+
+    alignContent    :ALIGN_CONTENT = ALIGN_CONTENT.NONE;
 
     private _rectMargined:Rect = new Rect();
 
-    filters:AbstractFilter[] = [];
-    blendMode:string = '';
-    overflow:OVERFLOW = OVERFLOW.HIDDEN;
-
-    alignContent:ALIGN_CONTENT = ALIGN_CONTENT.NONE;
+    testLayout(){
+        if (DEBUG) {
+            if (this.layoutWidth===LAYOUT_SIZE.FIXED && this.width===0)
+                throw `layoutWidth is LAYOUT_SIZE.FIXED so width must be specified`;
+            if (this.layoutHeight===LAYOUT_SIZE.FIXED && this.height===0)
+                throw `layoutHeight is LAYOUT_SIZE.FIXED so height must be specified`
+        }
+    }
 
     private static normalizeBorders(top:number,right:number,bottom:number,left:number){
         if (right===undefined && bottom===undefined && left===undefined) {

@@ -82,6 +82,7 @@ export default class UIBuilder {
             let firstKey = Object.keys(v)[0];
             l.addView(this.resolveObj(firstKey,v[firstKey]));
         });
+        l.testLayout();
         return l;
     }
 

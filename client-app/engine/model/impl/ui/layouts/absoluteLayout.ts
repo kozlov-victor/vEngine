@@ -1,5 +1,7 @@
 
-import Container, {OVERFLOW} from "../components/container";
+declare const DEBUG:boolean;
+
+import Container, {LAYOUT_SIZE, OVERFLOW} from "../components/container";
 import {MousePoint} from "../../../../core/control/mouse";
 import Rect from "../../../../core/geometry/rect";
 
@@ -10,11 +12,10 @@ export default class AbsoluteLayout extends Container {
 
     constructor(game) {
         super(game);
-        this.width = 200;
-        this.height = 200;
     }
 
     addView(v:Container){
+        v.testLayout();
         v.parent = this;
         this.views.push(v);
     }

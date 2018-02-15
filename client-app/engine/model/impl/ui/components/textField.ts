@@ -23,6 +23,7 @@ export default class TextField extends Container {
 
 
     revalidate(){
+        super.revalidate();
         if (DEBUG && !this.name) {
             console.error(this);
             throw `property 'name' not set at object of type ${this.type}`;
