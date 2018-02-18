@@ -31,6 +31,15 @@ export class MousePoint extends Point2d{
         return MousePoint.mousePointsPool.getNextObject();
     }
 
+    static fromPoint(another:MousePoint):MousePoint{
+        let p:MousePoint = MousePoint.fromPool();
+        p.screenX = another.screenX;
+        p.screenY = another.screenY;
+        p.id = another.id;
+        p.target = another.target;
+        return p;
+    }
+
 }
 
 export default class Mouse {
@@ -103,13 +112,24 @@ export default class Mouse {
                         if (Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,ch)) break;
                     }
                 }
-                if (go.views) {
-                    for (k=0;k<go.views.length;k++){
-                        let c = go.views[go.views.length - 1 - k];
-                        if (Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,c)) break;
+                if (isCaptured) break exit;
+            }
+        }
+
+        let untransformedPoint = MousePoint.fromPoint(point);
+        untransformedPoint.setXY(point.screenX,point.screenY);
+        exitUILayer:
+        for (let j=0;j<scene.uiLayer.gameObjects.length;j++){
+            let go = scene.uiLayer.gameObjects[scene.uiLayer.gameObjects.length - 1 - j];
+            if (go.views) {
+                for (let k=0;k<go.views.length;k++){
+                    let c = go.views[go.views.length - 1 - k];
+
+                    if (Mouse.triggerGameObjectEvent(eventName,untransformedPoint,isMouseDown,c)) {
+                        point.target = untransformedPoint.target;
+                        break exitUILayer;
                     }
                 }
-                if (isCaptured) break exit;
             }
         }
 

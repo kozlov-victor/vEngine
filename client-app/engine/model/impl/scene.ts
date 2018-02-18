@@ -16,6 +16,7 @@ import SimpleBlurFilter from "../../core/renderer/webGl/filters/textureFilters/s
 import AmbientLight from "../../core/light/ambientLight";
 import Color from "../../core/color";
 import SpriteSheet from "./spriteSheet";
+import {CAMERA_MATRIX_MODE} from "../../core/camera";
 
 
 export default class Scene extends BaseModel {
@@ -129,19 +130,22 @@ export default class Scene extends BaseModel {
         let i = this.layers.length;
         let l = i -1;
 
+        this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
         this.game.camera.update(currTime,deltaTime);
 
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
-        while(i--){
+        while(i--) {
             layers[i-l].update(currTime,deltaTime);
         }
         this.tileMap.update();
 
         renderer.save();
         renderer.resetTransform();
+        this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_IDENTITY;
         this.uiLayer.update(currTime,deltaTime);
         renderer.restore();
 
+        this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
         this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
             ps.update(currTime,deltaTime);
         });

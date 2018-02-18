@@ -86,6 +86,7 @@ export default class Game extends CommonObject {
     revalidate(){
         this.renderer = RendererFactory.getRenderer(this);
         this.mouse.listenTo(this.renderer.container);
+        this.camera.revalidate();
         this._revalidated = true;
     }
 

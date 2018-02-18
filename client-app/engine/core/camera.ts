@@ -15,6 +15,11 @@ interface CameraTweenTarget {
     point:Point2d
 }
 
+export enum CAMERA_MATRIX_MODE {
+    MODE_TRANSFORM,
+    MODE_IDENTITY
+}
+
 export default class Camera {
 
     private objFollowTo:GameObject = null;
@@ -26,7 +31,12 @@ export default class Camera {
     public pos:Point2d = new Point2d(0,0);
     public scale:Point2d = new Point2d(1,1);
 
+    // flag to defined camera rect for transform mode (for dynamic objects)
+    // and identity mode (for fixed objects)
+    public matrixMode:CAMERA_MATRIX_MODE = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
+
     private _rect:Rect = new Rect();
+    private _rectIdentity:Rect = new Rect();
     private _rectScaled:Rect = new Rect();
     private cameraShakeTween:Tween = null;
     private cameraPosCorrection:any = {
@@ -37,15 +47,16 @@ export default class Camera {
     constructor(game:Game){
         this.game = game;
         this.scale.observe(()=>{
-            if (this.scene.tileMap) this.scene.tileMap.revalidate();
+            this.revalidate();
         });
     }
 
-    followTo(gameObject) {
-        if (gameObject===null) return;
-        if (DEBUG && gameObject===undefined) throw `Camera:followTo(gameObject) - gameObject not provided`;
-        this.objFollowTo = gameObject;
+
+    revalidate(){
         this.scene = this.game.getCurrScene();
+        if (!this.scene) return;
+        if (this.scene.tileMap) this.scene.tileMap.revalidate();
+        this._rectIdentity.setXYWH(0,0,this.game.width,this.game.height);
         if (this.scene.tileMap.spriteSheet) {
             this.sceneWidth = this.scene.tileMap.spriteSheet._frameWidth*this.scene.tileMap.width;
             this.sceneHeight = this.scene.tileMap.spriteSheet._frameHeight*this.scene.tileMap.height;
@@ -53,6 +64,14 @@ export default class Camera {
             this.sceneWidth = this.game.getCurrScene().width || this.game.width;
             this.sceneHeight = this.game.getCurrScene().height || this.game.height;
         }
+    }
+
+
+    followTo(gameObject) {
+        if (gameObject===null) return;
+        if (DEBUG && gameObject===undefined) throw `Camera:followTo(gameObject) - gameObject not provided`;
+        this.objFollowTo = gameObject;
+        this.revalidate();
     }
 
     update(currTime:number,delta:number) {
@@ -147,12 +166,19 @@ export default class Camera {
     }
 
     getRect(){
-        this._rect.setXYWH(this.pos.x,this.pos.y,this.game.width,this.game.height);
-        return this._rect;
+        if (this.matrixMode===CAMERA_MATRIX_MODE.MODE_IDENTITY)
+            return this._rectIdentity;
+        else {
+            this._rect.setXYWH(this.pos.x,this.pos.y,this.game.width,this.game.height);
+            return this._rect;
+        }
     }
 
     getRectScaled(){
-        return this._rectScaled;
+        if (this.matrixMode===CAMERA_MATRIX_MODE.MODE_IDENTITY)
+            return this._rectIdentity;
+        else
+            return this._rectScaled;
     }
 
 }

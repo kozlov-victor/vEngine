@@ -27,6 +27,7 @@ import {IDrawer} from "./renderPrograms/interface/iDrawer";
 import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 import Size from "../../geometry/size";
 import AbstractFilter from "./filters/abstract/abstractFilter";
+import {CAMERA_MATRIX_MODE} from "../../camera";
 
 const getCtx = el=>{
     return (
@@ -163,6 +164,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 filters:AbstractFilter[],
                 drawableInfo:DrawableInfo,
     ){
+        if (!matEx.overlapTest(this.game.camera.getRectScaled(),dstRect)) return;
         let texture:Texture = this.renderableCache[texturePath].texture;
         texture = texture.applyFilters(filters,this.frameBuffer);
         if (DEBUG && !texture) {
@@ -388,9 +390,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
 
     lockRect(rect:Rect) {
         this.gl.enable(this.gl.SCISSOR_TEST);
-        let camPoint:Point2d = this.game.camera.getRect().getPoint();
-        this.gl.scissor(rect.x - camPoint.x, rect.y - camPoint.y, rect.width, rect.height);
-
+        this.gl.scissor(rect.x, rect.y, rect.width, rect.height);
     }
 
     unlockRect(){

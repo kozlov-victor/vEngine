@@ -135,6 +135,10 @@ export default class CanvasRenderer extends AbstractCanvasRenderer {
         this.ctx.scale(x,y);
     }
 
+    resetTransform(){
+        this.ctx.resetTransform();
+    }
+
     rotateZ(angleInRadians:number) {
         this.ctx.rotateZ(angleInRadians);
     }

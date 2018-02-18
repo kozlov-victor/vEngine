@@ -1,4 +1,6 @@
 
+declare const DEBUG:boolean;
+
 import BaseModel from '../baseModel'
 import SpriteSheet from "./spriteSheet";
 import Game from "../../core/game";
@@ -28,6 +30,14 @@ export default class TileMap extends BaseModel {
                 this.data[j][i] = val;
             }
         }
+        if (!DEBUG) return;
+        let found = cnt;
+        let expected = source.length;
+        if (expected!==found) {
+            throw `incorrect mapWidth/mapHeight provided. Expected ${expected} tiles, but ${found} found (${mapWidth}*${mapHeight})`;
+        }
+        this.width = mapWidth;
+        this.height = mapHeight;
     }
 
     revalidate(){
