@@ -1,10 +1,13 @@
 
+import {UIRenderable} from "../../../../renderable/interface/uiRenderable";
+
 declare const DEBUG:boolean;
 
 import BaseModel from "../../../baseModel";
 import Rect from "../../../../core/geometry/rect";
-import {Renderable} from "../../../../renderable/renderable";
+import {Renderable} from "../../../../renderable/interface/renderable";
 import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
+import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 
 export enum ALIGN_CONTENT {
     NONE, VERTICAL,
@@ -19,16 +22,16 @@ export enum LAYOUT_SIZE {
     FIXED,WRAP_CONTENT,MATCH_PARENT
 }
 
-export default class Container extends BaseModel implements Renderable {
+export default class Container extends BaseModel implements UIRenderable {
 
-    marginLeft      : number = 0;
-    marginTop       : number = 0;
-    marginRight     : number = 0;
-    marginBottom    : number = 0;
-    paddingLeft     : number = 0;
-    paddingTop      : number = 0;
-    paddingRight    : number = 0;
-    paddingBottom   : number = 0;
+    marginLeft      :number = 0;
+    marginTop       :number = 0;
+    marginRight     :number = 0;
+    marginBottom    :number = 0;
+    paddingLeft     :number = 0;
+    paddingTop      :number = 0;
+    paddingRight    :number = 0;
+    paddingBottom   :number = 0;
 
     layoutWidth     :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
     layoutHeight    :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
@@ -38,8 +41,9 @@ export default class Container extends BaseModel implements Renderable {
     blendMode       :string = '';
 
     alignContent    :ALIGN_CONTENT = ALIGN_CONTENT.NONE;
+    background      :UIRenderable;
 
-    private _rectMargined:Rect = new Rect();
+    drawingRect:Rect = new Rect();
 
     testLayout(){
         if (DEBUG) {
@@ -75,21 +79,21 @@ export default class Container extends BaseModel implements Renderable {
         this.marginRight = right;
         this.marginBottom = bottom;
         this.marginLeft = left;
-        this._dirty = true;
+        this._setDirty();
     }
 
     setMarginsTopBottom(top:number,bottom?:number){
         if (bottom===undefined) bottom = top;
         this.paddingTop = top;
         this.paddingBottom = bottom;
-        this._dirty = true;
+        this._setDirty();
     }
 
     setMarginsLeftRight(left:number,right?:number){
         if (right===undefined) right = left;
         this.marginLeft = left;
         this.marginRight = right;
-        this._dirty = true;
+        this._setDirty();
     }
 
     setPaddings(top:number);
@@ -104,7 +108,7 @@ export default class Container extends BaseModel implements Renderable {
         this.paddingRight = right;
         this.paddingBottom = bottom;
         this.paddingLeft = left;
-        this._dirty = true;
+        this._setDirty();
     }
 
     setPaddingsTopBottom(top:number,bottom?:number){
@@ -118,7 +122,11 @@ export default class Container extends BaseModel implements Renderable {
         if (right===undefined) right = left;
         this.paddingLeft = left;
         this.paddingRight = right;
-        this._dirty = true;
+        this._setDirty();
+    }
+
+    getDrawableInfo():DrawableInfo {
+        return {blendMode:this.blendMode,acceptLight:false};
     }
 
     constructor(game){
@@ -128,7 +136,9 @@ export default class Container extends BaseModel implements Renderable {
     onGeometryChanged(){}
 
     getRect():Rect{
-        if (!this._dirty) return this._rect;
+        if (!this._dirty) {
+            return this._rect;
+        }
         let rect:Rect = super.getRect();
         rect.setXYWH(
             rect.getPoint().x,
@@ -140,16 +150,16 @@ export default class Container extends BaseModel implements Renderable {
         return rect;
     }
 
-    getRectMargined():Rect{ // todo optimize cache
-        if (!this._dirty) return this._rectMargined;
+    getRectMargined():Rect{
+        if (!this._dirty) return this.drawingRect;
         let rect = this.getRect();
-        this._rectMargined.setXYWH(
+        this.drawingRect.setXYWH(
             rect.getPoint().x + this.marginLeft,
             rect.getPoint().y + this.marginTop,
             rect.getSize().width - this.marginLeft - this.marginRight,
             rect.getSize().height - this.marginTop - this.marginBottom
         );
-        return this._rectMargined;
+        return this.drawingRect;
     }
 
     update(time:number,delta:number){

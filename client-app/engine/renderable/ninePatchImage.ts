@@ -1,6 +1,6 @@
 
 import Resource from "../model/resource";
-import {Renderable} from "./renderable";
+import {Renderable} from "./interface/renderable";
 import Game from "../core/game";
 import Rect from "../core/geometry/rect";
 import Image from "./image";
@@ -14,6 +14,7 @@ export default class NinePatchImage extends Image {
 
     constructor(game: Game) {
         super(game);
+        this.drawingRect.observe(()=>{this.revalidate()});
     }
 
     revalidate(){
@@ -38,7 +39,12 @@ export default class NinePatchImage extends Image {
     }
 
     render(){
-        this.game.renderer.drawNinePatch(this.resourcePath,this.drawingRect,this.filters,this.a,this.b,this.c,this.d);
+        this.game.renderer.drawNinePatch(
+            this.resourcePath,
+            this.drawingRect,
+            this.filters,
+            this.getDrawableInfo(),
+            this.a,this.b,this.c,this.d);
     }
 
 }

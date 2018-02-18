@@ -36,6 +36,9 @@ export default class Camera {
 
     constructor(game:Game){
         this.game = game;
+        this.scale.observe(()=>{
+            if (this.scene.tileMap) this.scene.tileMap.revalidate();
+        });
     }
 
     followTo(gameObject) {

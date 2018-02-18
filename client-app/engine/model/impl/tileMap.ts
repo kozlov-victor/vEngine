@@ -17,6 +17,26 @@ export default class TileMap extends BaseModel {
         super(game);
     }
 
+    fromTiledJSON(source:number[],mapWidth:number,mapHeight:number){
+        this.data = [];
+        let cnt:number = 0;
+        for (let j=0;j<mapHeight;j++){
+            this.data[j] = [];
+            for (let i=0;i<mapWidth;i++) {
+                let val:number|null = source[cnt++];
+                if (!val) val = null;
+                this.data[j][i] = val;
+            }
+        }
+    }
+
+    revalidate(){
+        this.game.camera._updateRect();
+        let camRect = this.game.camera.getRectScaled();
+        this._tilesInScreenX = ~~(camRect.width / this.spriteSheet._frameWidth);
+        this._tilesInScreenY = ~~(camRect.height / this.spriteSheet._frameHeight);
+    }
+
     getTileAt(x:number,y:number){
         if (!this.spriteSheet) return;
         let tilePosX = ~~(x / this.spriteSheet._frameWidth);
@@ -83,8 +103,8 @@ export default class TileMap extends BaseModel {
         if (tilePosY<0) tilePosY = 0;
         let w = tilePosX + this._tilesInScreenX + 1;
         let h = tilePosY + this._tilesInScreenY + 1;
-        for (let y=tilePosY;y<h;y++) {
-            for (let x=tilePosX;x<w;x++) {
+        for (let y=tilePosY;y<=h;y++) {
+            for (let x=tilePosX;x<=w;x++) {
                 let index = this.data[y] && this.data[y][x];
                 if (index===null || index===undefined) continue;
                 let destRect:Rect = Rect.fromPool();

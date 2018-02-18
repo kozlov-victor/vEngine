@@ -39,6 +39,11 @@ export default class FrameBuffer {
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.glFrameBuffer);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getGlTexture(), 0);
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.glRenderBuffer);
+        // check
+        let fbStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+        if (DEBUG && fbStatus!==gl.FRAMEBUFFER_COMPLETE) {
+            throw `frame buffer status error: ${fbStatus} (expected gl.FRAMEBUFFER_COMPLETE(${gl.FRAMEBUFFER_COMPLETE}))`;
+        }
         // Clean up
         this.texture.unbind();
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);

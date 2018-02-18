@@ -5,8 +5,9 @@ declare const IN_EDITOR:boolean,DEBUG:boolean;
 import Point2d from "./point2d";
 import ObjectPool from "../misc/objectPool";
 import {_global} from "../global";
+import ObservableEntity from "./abstract/observableEntity";
 
-export default class Rect {
+export default class Rect extends ObservableEntity {
 
     x:number;
     y:number;
@@ -19,13 +20,20 @@ export default class Rect {
     private p:Point2d;
     private size:Size;
 
-    constructor(x:number = 0,y:number = 0,width:number = 0,height:number = 0){
+    constructor(x:number = 0,y:number = 0,width:number = 0,height:number = 0,onChangedFn?:()=>void){
+        super();
         this.setXYWH(x,y,width,height);
+        if (onChangedFn) this.addListener(onChangedFn);
+    }
+
+    observe(onChangedFn:()=>void){
+        this.addListener(onChangedFn);
     }
 
     revalidate(){
         this.right = this.x+this.width;
         this.bottom = this.y+this.height;
+        this.triggerObservable();
     }
 
     setXYWH(x:number,y:number,width:number,height:number){

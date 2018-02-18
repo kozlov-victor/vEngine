@@ -45,6 +45,11 @@ export default class BaseModel extends CommonObject {
         this._emitter = new EventEmitter();
     }
 
+     _setDirty(){
+        this._dirty = true;
+        if (this.parent) this.parent._dirty = true;
+    }
+
     setIndividualBehaviour(Clazz){}
 
     setCommonBehaviour(){}

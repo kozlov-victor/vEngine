@@ -210,3 +210,5 @@ export let inverse = (m:Array<number>)=>{
     for (let i = 0; i < 16; i++) r[i] /= det;
     return r;
 };
+
+export let IDENTITY = makeIdentity();

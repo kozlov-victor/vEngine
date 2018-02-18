@@ -60,7 +60,7 @@ export default class Color {
     }
 
     static RGB(r:number,g:number,b:number,a?:number):Color{
-        let c:Color = Color.getFromPool();
+        let c:Color = new Color(0,0,0);
         c.setRGBA(r,g,b,a);
         return c;
     }

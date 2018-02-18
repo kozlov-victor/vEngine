@@ -117,6 +117,11 @@ var BaseModel = /** @class */ (function (_super) {
         _this._emitter = new eventEmitter_1.default();
         return _this;
     }
+    BaseModel.prototype._setDirty = function () {
+        this._dirty = true;
+        if (this.parent)
+            this.parent._dirty = true;
+    };
     BaseModel.prototype.setIndividualBehaviour = function (Clazz) { };
     BaseModel.prototype.setCommonBehaviour = function () { };
     BaseModel.prototype.onShow = function () { };
@@ -185,22 +190,42 @@ exports.default = BaseModel;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var size_1 = __webpack_require__(24);
 var point2d_1 = __webpack_require__(3);
 var objectPool_1 = __webpack_require__(11);
 var global_1 = __webpack_require__(16);
-var Rect = /** @class */ (function () {
-    function Rect(x, y, width, height) {
+var observableEntity_1 = __webpack_require__(111);
+var Rect = /** @class */ (function (_super) {
+    __extends(Rect, _super);
+    function Rect(x, y, width, height, onChangedFn) {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
         if (width === void 0) { width = 0; }
         if (height === void 0) { height = 0; }
-        this.setXYWH(x, y, width, height);
+        var _this = _super.call(this) || this;
+        _this.setXYWH(x, y, width, height);
+        if (onChangedFn)
+            _this.addListener(onChangedFn);
+        return _this;
     }
+    Rect.prototype.observe = function (onChangedFn) {
+        this.addListener(onChangedFn);
+    };
     Rect.prototype.revalidate = function () {
         this.right = this.x + this.width;
         this.bottom = this.y + this.height;
+        this.triggerObservable();
     };
     Rect.prototype.setXYWH = function (x, y, width, height) {
         this.x = x;
@@ -273,7 +298,7 @@ var Rect = /** @class */ (function () {
     };
     Rect.rectPool = new objectPool_1.default(Rect);
     return Rect;
-}());
+}(observableEntity_1.default));
 exports.default = Rect;
 global_1._global.Rect = Rect;
 
@@ -352,89 +377,98 @@ exports.default = ShaderProgram;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var objectPool_1 = __webpack_require__(11);
-var Point2d = /** @class */ (function () {
+var observableEntity_1 = __webpack_require__(111);
+var Point2d = /** @class */ (function (_super) {
+    __extends(Point2d, _super);
     function Point2d(x, y, onChangedFn) {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
-        this.x = 0;
-        this.y = 0;
-        this.x = x;
-        this.y = y;
-        this._onChanged = onChangedFn;
+        var _this = _super.call(this) || this;
+        _this.x = 0;
+        _this.y = 0;
+        _this.x = x;
+        _this.y = y;
+        if (onChangedFn)
+            _this.addListener(onChangedFn);
+        return _this;
     }
     Point2d.fromPool = function () {
         return Point2d.pool.getNextObject();
     };
+    Point2d.prototype.observe = function (onChangedFn) {
+        this.addListener(onChangedFn);
+    };
     Point2d.prototype.setXY = function (x, y) {
+        if (y === undefined)
+            y = this.x;
         this.x = x;
         this.y = y;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.setX = function (x) {
         this.x = x;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.setY = function (y) {
         this.y = y;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.set = function (another) {
         this.setXY(another.x, another.y);
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.add = function (another) {
         this.addXY(another.x, another.y);
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.substract = function (another) {
         this.addXY(-another.x, -another.y);
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.multiply = function (n) {
         this.x *= n;
         this.y *= n;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.addXY = function (x, y) {
         this.x += x;
         this.y += y;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.addX = function (x) {
         this.x += x;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.addY = function (y) {
         this.y += y;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.negative = function () {
         this.x = -this.x;
         this.y = -this.y;
-        if (this._onChanged)
-            this._onChanged();
+        this.triggerObservable();
         return this;
     };
     Point2d.prototype.equal = function (val) {
@@ -464,7 +498,7 @@ var Point2d = /** @class */ (function () {
     };
     Point2d.pool = new objectPool_1.default(Point2d, 4);
     return Point2d;
-}());
+}(observableEntity_1.default));
 exports.default = Point2d;
 
 
@@ -1428,6 +1462,7 @@ exports.inverse = function (m) {
         r[i] /= det;
     return r;
 };
+exports.IDENTITY = exports.makeIdentity();
 
 
 /***/ }),
@@ -1631,7 +1666,7 @@ var Color = /** @class */ (function () {
         return Color.objectPool.getNextObject();
     };
     Color.RGB = function (r, g, b, a) {
-        var c = Color.getFromPool();
+        var c = new Color(0, 0, 0);
         c.setRGBA(r, g, b, a);
         return c;
     };
@@ -1729,7 +1764,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(25);
+var container_1 = __webpack_require__(109);
 var rect_1 = __webpack_require__(1);
 var TextField = /** @class */ (function (_super) {
     __extends(TextField, _super);
@@ -1969,6 +2004,11 @@ var FrameBuffer = /** @class */ (function () {
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.glFrameBuffer);
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture.getGlTexture(), 0);
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.glRenderBuffer);
+        // check
+        var fbStatus = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+        if (1 && fbStatus !== gl.FRAMEBUFFER_COMPLETE) {
+            throw "frame buffer status error: " + fbStatus + " (expected gl.FRAMEBUFFER_COMPLETE(" + gl.FRAMEBUFFER_COMPLETE + "))";
+        }
         // Clean up
         this.texture.unbind();
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
@@ -2215,160 +2255,7 @@ exports.default = Size;
 
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var rect_1 = __webpack_require__(1);
-var ALIGN_CONTENT;
-(function (ALIGN_CONTENT) {
-    ALIGN_CONTENT[ALIGN_CONTENT["NONE"] = 0] = "NONE";
-    ALIGN_CONTENT[ALIGN_CONTENT["VERTICAL"] = 1] = "VERTICAL";
-    ALIGN_CONTENT[ALIGN_CONTENT["HORIZONTAL"] = 2] = "HORIZONTAL";
-    ALIGN_CONTENT[ALIGN_CONTENT["BOTH"] = 3] = "BOTH";
-})(ALIGN_CONTENT = exports.ALIGN_CONTENT || (exports.ALIGN_CONTENT = {}));
-var OVERFLOW;
-(function (OVERFLOW) {
-    OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
-    OVERFLOW[OVERFLOW["VISIBLE"] = 1] = "VISIBLE";
-})(OVERFLOW = exports.OVERFLOW || (exports.OVERFLOW = {}));
-var LAYOUT_SIZE;
-(function (LAYOUT_SIZE) {
-    LAYOUT_SIZE[LAYOUT_SIZE["FIXED"] = 0] = "FIXED";
-    LAYOUT_SIZE[LAYOUT_SIZE["WRAP_CONTENT"] = 1] = "WRAP_CONTENT";
-    LAYOUT_SIZE[LAYOUT_SIZE["MATCH_PARENT"] = 2] = "MATCH_PARENT";
-})(LAYOUT_SIZE = exports.LAYOUT_SIZE || (exports.LAYOUT_SIZE = {}));
-var Container = /** @class */ (function (_super) {
-    __extends(Container, _super);
-    function Container(game) {
-        var _this = _super.call(this, game) || this;
-        _this.marginLeft = 0;
-        _this.marginTop = 0;
-        _this.marginRight = 0;
-        _this.marginBottom = 0;
-        _this.paddingLeft = 0;
-        _this.paddingTop = 0;
-        _this.paddingRight = 0;
-        _this.paddingBottom = 0;
-        _this.layoutWidth = LAYOUT_SIZE.WRAP_CONTENT;
-        _this.layoutHeight = LAYOUT_SIZE.WRAP_CONTENT;
-        _this.overflow = OVERFLOW.HIDDEN; // todo change
-        _this.filters = [];
-        _this.blendMode = '';
-        _this.alignContent = ALIGN_CONTENT.NONE;
-        _this._rectMargined = new rect_1.default();
-        return _this;
-    }
-    Container.prototype.testLayout = function () {
-        if (true) {
-            if (this.layoutWidth === LAYOUT_SIZE.FIXED && this.width === 0)
-                throw "layoutWidth is LAYOUT_SIZE.FIXED so width must be specified";
-            if (this.layoutHeight === LAYOUT_SIZE.FIXED && this.height === 0)
-                throw "layoutHeight is LAYOUT_SIZE.FIXED so height must be specified";
-        }
-    };
-    Container.normalizeBorders = function (top, right, bottom, left) {
-        if (right === undefined && bottom === undefined && left === undefined) {
-            right = bottom = left = top;
-        }
-        else if (bottom === undefined && left === undefined) {
-            bottom = top;
-            left = right;
-        }
-        else if (left === undefined) {
-            left = right;
-        }
-        return { top: top, right: right, bottom: bottom, left: left };
-    };
-    Container.prototype.setMargins = function (top, right, bottom, left) {
-        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
-        this.marginTop = top;
-        this.marginRight = right;
-        this.marginBottom = bottom;
-        this.marginLeft = left;
-        this._dirty = true;
-        var _a;
-    };
-    Container.prototype.setMarginsTopBottom = function (top, bottom) {
-        if (bottom === undefined)
-            bottom = top;
-        this.paddingTop = top;
-        this.paddingBottom = bottom;
-        this._dirty = true;
-    };
-    Container.prototype.setMarginsLeftRight = function (left, right) {
-        if (right === undefined)
-            right = left;
-        this.marginLeft = left;
-        this.marginRight = right;
-        this._dirty = true;
-    };
-    Container.prototype.setPaddings = function (top, right, bottom, left) {
-        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
-        this.paddingTop = top;
-        this.paddingRight = right;
-        this.paddingBottom = bottom;
-        this.paddingLeft = left;
-        this._dirty = true;
-        var _a;
-    };
-    Container.prototype.setPaddingsTopBottom = function (top, bottom) {
-        if (bottom === undefined)
-            bottom = top;
-        this.paddingTop = top;
-        this.paddingBottom = bottom;
-        this._dirty = true;
-    };
-    Container.prototype.setPaddingsLeftRight = function (left, right) {
-        if (right === undefined)
-            right = left;
-        this.paddingLeft = left;
-        this.paddingRight = right;
-        this._dirty = true;
-    };
-    Container.prototype.onGeometryChanged = function () { };
-    Container.prototype.getRect = function () {
-        if (!this._dirty)
-            return this._rect;
-        var rect = _super.prototype.getRect.call(this);
-        rect.setXYWH(rect.getPoint().x, rect.getPoint().y, rect.getSize().width + this.marginRight + this.paddingRight + this.marginLeft + this.paddingLeft, rect.getSize().height + this.marginBottom + this.paddingBottom + this.marginTop + this.paddingTop);
-        this._rect.set(rect);
-        return rect;
-    };
-    Container.prototype.getRectMargined = function () {
-        if (!this._dirty)
-            return this._rectMargined;
-        var rect = this.getRect();
-        this._rectMargined.setXYWH(rect.getPoint().x + this.marginLeft, rect.getPoint().y + this.marginTop, rect.getSize().width - this.marginLeft - this.marginRight, rect.getSize().height - this.marginTop - this.marginBottom);
-        return this._rectMargined;
-    };
-    Container.prototype.update = function (time, delta) {
-        _super.prototype.update.call(this, time, delta);
-        if (this._dirty) {
-            this.onGeometryChanged();
-            this._dirty = false;
-        }
-    };
-    Container.prototype.render = function () { };
-    return Container;
-}(baseModel_1.default));
-exports.default = Container;
-
-
-/***/ }),
+/* 25 */,
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2944,6 +2831,25 @@ var TileMap = /** @class */ (function (_super) {
         _this.data = [];
         return _this;
     }
+    TileMap.prototype.fromTiledJSON = function (source, mapWidth, mapHeight) {
+        this.data = [];
+        var cnt = 0;
+        for (var j = 0; j < mapHeight; j++) {
+            this.data[j] = [];
+            for (var i = 0; i < mapWidth; i++) {
+                var val = source[cnt++];
+                if (!val)
+                    val = null;
+                this.data[j][i] = val;
+            }
+        }
+    };
+    TileMap.prototype.revalidate = function () {
+        this.game.camera._updateRect();
+        var camRect = this.game.camera.getRectScaled();
+        this._tilesInScreenX = ~~(camRect.width / this.spriteSheet._frameWidth);
+        this._tilesInScreenY = ~~(camRect.height / this.spriteSheet._frameHeight);
+    };
     TileMap.prototype.getTileAt = function (x, y) {
         var _this = this;
         if (!this.spriteSheet)
@@ -3016,8 +2922,8 @@ var TileMap = /** @class */ (function (_super) {
             tilePosY = 0;
         var w = tilePosX + this._tilesInScreenX + 1;
         var h = tilePosY + this._tilesInScreenY + 1;
-        for (var y = tilePosY; y < h; y++) {
-            for (var x = tilePosX; x < w; x++) {
+        for (var y = tilePosY; y <= h; y++) {
+            for (var x = tilePosX; x <= w; x++) {
                 var index = this.data[y] && this.data[y][x];
                 if (index === null || index === undefined)
                     continue;
@@ -3348,6 +3254,11 @@ var makeTextureMatrix = function (srcRect, texSize) {
     var texTranslationMatrix = mat4.makeTranslation(srcRect.x / texSize.width, srcRect.y / texSize.height, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
+var FRAME_TO_SCREEN_MATRIX = new matrixStack_1.default().
+    scale(1, -1, 1).
+    translate(-1, -1, 0).
+    scale(2, 2, 1).
+    getCurrentMatrix();
 //  gl.enable(gl.CULL_FACE);
 //  gl.enable(gl.DEPTH_TEST);
 var WebGlRenderer = /** @class */ (function (_super) {
@@ -3411,7 +3322,7 @@ var WebGlRenderer = /** @class */ (function (_super) {
         var drawableInfo = { blendMode: 'normal', acceptLight: false };
         this.drawTextureInfo(texInfo, drawableInfo, shaderMaterial_1.default.DEFAULT, srcRect, dstRect);
     };
-    WebGlRenderer.prototype.drawImageEx = function (texturePath, srcRect, dstRect, filters) {
+    WebGlRenderer.prototype.drawImageEx = function (texturePath, srcRect, dstRect, filters, drawableInfo) {
         var texture = this.renderableCache[texturePath].texture;
         texture = texture.applyFilters(filters, this.frameBuffer);
         if (1 && !texture) {
@@ -3421,7 +3332,6 @@ var WebGlRenderer = /** @class */ (function (_super) {
                 throw "can not find texture with path " + texturePath;
         }
         var texInfo = [{ texture: texture, name: 'texture' }];
-        var drawableInfo = { blendMode: 'normal', acceptLight: false };
         this.drawTextureInfo(texInfo, drawableInfo, shaderMaterial_1.default.DEFAULT, srcRect, dstRect);
     };
     /**
@@ -3435,46 +3345,46 @@ var WebGlRenderer = /** @class */ (function (_super) {
      D|-7-|---8----|-9-|
       |---|--------|---|
      */
-    WebGlRenderer.prototype.drawNinePatch = function (texturePath, destRect, filters, a, b, c, d) {
+    WebGlRenderer.prototype.drawNinePatch = function (texturePath, destRect, filters, drawableInfo, a, b, c, d) {
         var r = rect_1.default.fromPool();
         var rDst = rect_1.default.fromPool();
         var texSize = this.renderableCache[texturePath].texture.getSize();
         // patch 1
         r.setXYWH(0, 0, a, c);
         rDst.setXYWH(destRect.getPoint().x, destRect.getPoint().y, a, c);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 2
         r.setXYWH(a, 0, texSize.width - a - b, c);
         rDst.setXYWH(destRect.x + a, destRect.y, destRect.width - a - c, c);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 3
         r.setXYWH(texSize.width - b, 0, b, c);
         rDst.setXYWH(destRect.getPoint().x + destRect.width - b, destRect.getPoint().y, b, c);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 4
         r.setXYWH(0, c, a, texSize.height - c - d);
         rDst.setXYWH(destRect.x, destRect.y + c, a, destRect.height - c - d);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 5
         r.setXYWH(a, c, texSize.width - a - b, texSize.height - c - d);
         rDst.setXYWH(destRect.x + a, destRect.y + c, destRect.width - a - b, destRect.height - c - d);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 6
         r.setXYWH(texSize.width - b, c, b, texSize.height - c - d);
         rDst.setXYWH(destRect.x + destRect.width - b, destRect.y + c, b, destRect.height - c - d);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 7
         r.setXYWH(0, texSize.height - d, a, d);
         rDst.setXYWH(destRect.getPoint().x, destRect.getPoint().y + destRect.height - d, a, d);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 8
         r.setXYWH(a, texSize.height - d, texSize.width - a - b, d);
         rDst.setXYWH(destRect.x + a, destRect.y + destRect.height - d, destRect.width - a - b, d);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
         // patch 9
         r.setXYWH(texSize.width - b, texSize.height - d, b, d);
         rDst.setXYWH(destRect.getPoint().x + destRect.width - b, destRect.getPoint().y + destRect.height - d, b, d);
-        this.drawImageEx(texturePath, r, rDst, filters);
+        this.drawImageEx(texturePath, r, rDst, filters, drawableInfo);
     };
     WebGlRenderer.prototype.drawTextureInfo = function (texInfo, drawableInfo, shaderMaterial, srcRect, dstRect) {
         var camRectScaled = this.game.camera.getRectScaled();
@@ -3573,6 +3483,9 @@ var WebGlRenderer = /** @class */ (function (_super) {
     WebGlRenderer.prototype.scale = function (x, y) {
         this.matrixStack.scale(x, y);
     };
+    WebGlRenderer.prototype.resetTransform = function () {
+        this.matrixStack.resetTransform();
+    };
     WebGlRenderer.prototype.rotateZ = function (angleInRadians) {
         this.matrixStack.rotateZ(angleInRadians);
     };
@@ -3611,14 +3524,14 @@ var WebGlRenderer = /** @class */ (function (_super) {
         var fullScreen = this.fullScreenSize;
         this.restore();
         this.save();
-        this.translate(0, fullScreen.h);
+        this.translate(0, this.game.height);
         this.scale(1, -1);
         var texToDraw = this.frameBuffer.getTexture().applyFilters(filters, null);
         this.frameBuffer.unbind();
-        this.gl.viewport(0, 0, fullScreen.w, fullScreen.h);
+        this.gl.viewport(0, 0, fullScreen.width, fullScreen.height);
         var uniforms = {
-            u_vertexMatrix: makePositionMatrix(new rect_1.default(0, 0, this.game.width * fullScreen.scaleFactor, this.game.height * fullScreen.scaleFactor), new size_1.default(fullScreen.w, fullScreen.h)),
-            u_textureMatrix: makeTextureMatrix(rect_1.default.fromPool().setXYWH(0, 0, fullScreen.w, fullScreen.h), size_1.default.fromPool().setWH(fullScreen.w, fullScreen.h)),
+            u_vertexMatrix: FRAME_TO_SCREEN_MATRIX,
+            u_textureMatrix: mat4.IDENTITY,
             u_alpha: 1
         };
         var texInfo = [{ texture: texToDraw, name: 'texture' }]; // todo now to make this array reusable?
@@ -4166,16 +4079,19 @@ var MatrixStack = /** @class */ (function () {
         var t = mat4.makeTranslation(x, y, z);
         var m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+        return this;
     };
     MatrixStack.prototype.rotateZ = function (angleInRadians) {
         var t = mat4.makeZRotation(angleInRadians);
         var m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+        return this;
     };
     MatrixStack.prototype.rotateY = function (angleInRadians) {
         var t = mat4.makeYRotation(angleInRadians);
         var m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+        return this;
     };
     MatrixStack.prototype.scale = function (x, y, z) {
         if (z === undefined) {
@@ -4184,6 +4100,12 @@ var MatrixStack = /** @class */ (function () {
         var t = mat4.makeScale(x, y, z);
         var m = this.getCurrentMatrix();
         this.setCurrentMatrix(mat4.matrixMultiply(t, m));
+        return this;
+    };
+    MatrixStack.prototype.resetTransform = function () {
+        var identity = mat4.makeIdentity();
+        this.setCurrentMatrix(identity);
+        return this;
     };
     return MatrixStack;
 }());
@@ -4409,20 +4331,19 @@ exports.default = AbstractCanvasRenderer;
 Object.defineProperty(exports, "__esModule", { value: true });
 var textField_1 = __webpack_require__(18);
 var device_1 = __webpack_require__(57);
+var size_1 = __webpack_require__(24);
 var AbstractRendere = /** @class */ (function () {
     function AbstractRendere(game) {
         this.renderableCache = {};
-        this.fullScreenSize = { w: 0, h: 0, scaleFactor: 1 };
+        this.fullScreenSize = new size_1.default(0, 0);
         this.game = game;
         if (device_1.default.isCocoonJS) {
-            this.fullScreenSize.w = window.innerWidth * device_1.default.scale;
-            this.fullScreenSize.h = window.innerHeight * device_1.default.scale;
-            this.fullScreenSize.scaleFactor =
-                Math.min(this.fullScreenSize.w / this.game.width, this.fullScreenSize.h / this.game.height);
+            var dpr = window.devicePixelRatio || 1;
+            this.fullScreenSize.setW(window.innerWidth * dpr);
+            this.fullScreenSize.setH(window.innerHeight * dpr);
         }
         else {
-            this.fullScreenSize.w = game.width;
-            this.fullScreenSize.h = game.height;
+            this.fullScreenSize.setWH(this.game.width, this.game.height);
         }
     }
     AbstractRendere.prototype.onResize = function () { };
@@ -4463,8 +4384,8 @@ var AbstractRendere = /** @class */ (function () {
         return 0;
     };
     AbstractRendere.prototype.drawImage = function (texturePath, srcRect, dstRect) { };
-    AbstractRendere.prototype.drawImageEx = function (texturePath, srcRect, dstRect, filters) { };
-    AbstractRendere.prototype.drawNinePatch = function (texturePath, destRect, filters, a, b, c, d) { };
+    AbstractRendere.prototype.drawImageEx = function (texturePath, srcRect, dstRect, filters, drawableInfo) { };
+    AbstractRendere.prototype.drawNinePatch = function (texturePath, destRect, filters, drawableInfo, a, b, c, d) { };
     AbstractRendere.prototype.drawTiledImage = function (texturePath, srcRect, dstRect, offset) { };
     AbstractRendere.prototype.fillRect = function (rect, color) { };
     AbstractRendere.prototype.drawRect = function (rect, color) { };
@@ -4472,6 +4393,7 @@ var AbstractRendere = /** @class */ (function () {
     AbstractRendere.prototype.unlockRect = function () { };
     AbstractRendere.prototype.drawLine = function (x1, y1, x2, y2, color) { };
     AbstractRendere.prototype.fillCircle = function (x, y, r, color) { };
+    AbstractRendere.prototype.resetTransform = function () { };
     AbstractRendere.prototype.clear = function () { };
     AbstractRendere.prototype.clearColor = function (c) { };
     AbstractRendere.prototype.save = function () { };
@@ -4934,6 +4856,8 @@ var Vec2 = /** @class */ (function (_super) {
         return this.x * another.y - this.y * another.x;
     };
     Vec2.prototype.setXY = function (x, y) {
+        if (y === undefined)
+            y = this.x;
         this.x = x;
         this.y = y;
         return this;
@@ -5552,6 +5476,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var baseModel_1 = __webpack_require__(0);
 var loadingQueue_1 = __webpack_require__(74);
 var tileMap_1 = __webpack_require__(33);
+var layer_1 = __webpack_require__(78);
 var ambientLight_1 = __webpack_require__(75);
 var color_1 = __webpack_require__(15);
 var Scene = /** @class */ (function (_super) {
@@ -5567,15 +5492,14 @@ var Scene = /** @class */ (function (_super) {
         _this._individualBehaviour = null;
         _this.tileMap = new tileMap_1.default(game);
         _this.ambientLight = new ambientLight_1.default(game);
+        _this.uiLayer = new layer_1.default(_this.game);
         return _this;
     }
     Scene.prototype.revalidate = function () {
         _super.prototype.revalidate.call(this);
         if (!false && this.tileMap && this.tileMap.spriteSheet) {
-            this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
-            this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
+            this.tileMap.revalidate();
         }
-        //this.filters.push(new SimpleBlurFilter(this.game.renderer['gl']));
     };
     Scene.prototype.addTweenMovie = function (tm) {
         this._tweenMovies.push(tm);
@@ -5655,6 +5579,11 @@ var Scene = /** @class */ (function (_super) {
         while (i--) {
             layers[i - l].update(currTime, deltaTime);
         }
+        this.tileMap.update();
+        renderer.save();
+        renderer.resetTransform();
+        this.uiLayer.update(currTime, deltaTime);
+        renderer.restore();
         this.game.repository.getArray('ParticleSystem').forEach(function (ps) {
             ps.update(currTime, deltaTime);
         });
@@ -5670,7 +5599,6 @@ var Scene = /** @class */ (function (_super) {
         //     tweenMovie._update(currTime);
         // });
         // this.__updateIndividualBehaviour__(currTime);
-        this.tileMap.update();
         if (true) {
             this.game.renderer.restore();
             if (this.game.renderer.debugTextField)
@@ -5959,7 +5887,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(25);
+var container_1 = __webpack_require__(109);
 var textField_1 = __webpack_require__(18);
 var Button = /** @class */ (function (_super) {
     __extends(Button, _super);
@@ -5967,27 +5895,9 @@ var Button = /** @class */ (function (_super) {
         var _this = _super.call(this, game) || this;
         _this.text = '';
         _this.font = null;
-        _this.onClick = function () { };
         _this.alignContent = container_1.ALIGN_CONTENT.VERTICAL;
         _this._textField = new textField_1.default(game);
-        _this.on('click', function () {
-            _this.onClick();
-        });
         return _this;
-        // this._background = new NinePatchImage(game);
-        // this._background.resourcePath = 'resources/nineP.png';
-        // this._background.setABCD(45);
-        // let colorize = new ColorizeFilter(this.game.renderer['gl']);
-        // this._background.filters.push(colorize);
-        // let c:Color = new Color(12,12,12,0);
-        // this.on('mouseEnter',()=>{
-        //     c.setRGBA(20,220,12,100);
-        //     colorize.setColor(c);
-        // });
-        // this.on('mouseLeave',()=>{
-        //     c.setRGBA(12,12,12,0);
-        //     colorize.setColor(c);
-        // });
     }
     Button.prototype.revalidate = function () {
         _super.prototype.revalidate.call(this);
@@ -5998,13 +5908,13 @@ var Button = /** @class */ (function (_super) {
     Button.prototype.onGeometryChanged = function () {
         this.width = this._textField.width;
         this.height = this._textField.height;
-        this._background.drawingRect.set(this.getRectMargined());
-        this._background.revalidate(); // todo
-        this.width = this._background.drawingRect.width;
-        this.height = this._background.drawingRect.height;
+        this.background.drawingRect.set(this.getRectMargined());
+        this.width = this.background.drawingRect.width - this.paddingLeft - this.paddingRight;
+        this.height = this.background.drawingRect.height - this.paddingTop - this.paddingBottom; // todo???
+        console.log('before calc', this.width);
         this.getRect().setWH(this.width, this.height); // todo
-        var dx = (this._background.drawingRect.width - this._textField.width) / 2;
-        var dy = (this._background.drawingRect.height - this._textField.height) / 2;
+        var dx = (this.background.drawingRect.width - this._textField.width) / 2;
+        var dy = (this.background.drawingRect.height - this._textField.height) / 2;
         this._textField.pos.setXY(this.getRect().x + this.marginLeft + dx, this.getRect().y + this.marginTop + dy);
     };
     Button.prototype.setText = function (text) {
@@ -6014,9 +5924,6 @@ var Button = /** @class */ (function (_super) {
     Button.prototype.setFont = function (f) {
         this._textField.setFont(f);
     };
-    Button.prototype.setBackground = function (value) {
-        this._background = value;
-    };
     Button.prototype.getText = function () {
         return this._textField.getText();
     };
@@ -6025,7 +5932,7 @@ var Button = /** @class */ (function (_super) {
         this.render();
     };
     Button.prototype.render = function () {
-        this._background.render();
+        this.background.render();
         this._textField.render();
     };
     return Button;
@@ -6060,6 +5967,14 @@ var MousePoint = /** @class */ (function (_super) {
     }
     MousePoint.fromPool = function () {
         return MousePoint.mousePointsPool.getNextObject();
+    };
+    MousePoint.fromPoint = function (another) {
+        var p = MousePoint.fromPool();
+        p.screenX = another.screenX;
+        p.screenY = another.screenY;
+        p.id = another.id;
+        p.target = another.target;
+        return p;
     };
     MousePoint.mousePointsPool = new objectPool_1.default(MousePoint);
     return MousePoint;
@@ -6123,15 +6038,22 @@ var Mouse = /** @class */ (function () {
                             break;
                     }
                 }
-                if (go.views) {
-                    for (k = 0; k < go.views.length; k++) {
-                        var c = go.views[go.views.length - 1 - k];
-                        if (Mouse.triggerGameObjectEvent(eventName, point, isMouseDown, c))
-                            break;
-                    }
-                }
                 if (isCaptured)
                     break exit;
+            }
+        }
+        var untransformedPoint = MousePoint.fromPoint(point);
+        untransformedPoint.setXY(point.screenX, point.screenY);
+        exitUILayer: for (var j = 0; j < scene.uiLayer.gameObjects.length; j++) {
+            var go = scene.uiLayer.gameObjects[scene.uiLayer.gameObjects.length - 1 - j];
+            if (go.views) {
+                for (var k = 0; k < go.views.length; k++) {
+                    var c = go.views[go.views.length - 1 - k];
+                    if (Mouse.triggerGameObjectEvent(eventName, untransformedPoint, isMouseDown, c)) {
+                        point.target = untransformedPoint.target;
+                        break exitUILayer;
+                    }
+                }
             }
         }
         if (point.target === undefined)
@@ -6540,6 +6462,7 @@ var point2d_1 = __webpack_require__(3);
 var mathEx_1 = __webpack_require__(5);
 var Camera = /** @class */ (function () {
     function Camera(game) {
+        var _this = this;
         this.objFollowTo = null;
         this.scene = null;
         this.sceneWidth = 0;
@@ -6554,6 +6477,10 @@ var Camera = /** @class */ (function () {
             max: new point2d_1.default()
         };
         this.game = game;
+        this.scale.observe(function () {
+            if (_this.scene.tileMap)
+                _this.scene.tileMap.revalidate();
+        });
     }
     Camera.prototype.followTo = function (gameObject) {
         if (gameObject === null)
@@ -6920,6 +6847,8 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         this.color = _global._global.Color.RGB(255, 0, 0);
         this.points = [];
 
+        this.game.getCurrScene().tileMap.fromTiledJSON([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 5, 3, 3, 3, 3, 0, 0, 0, 6, 3, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 12, 0, 5, 5, 3, 5, 5, 0, 0, 0, 3, 2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 13, 13, 12, 13, 13, 0, 0, 0, 0, 12, 12, 12, 0, 0, 12, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 12, 13, 0, 0, 0, 0, 12, 12, 12, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 0, 13, 13, 0, 0, 0, 12, 12, 12, 12, 12, 0, 0, 0, 12, 0, 13, 13, 13, 13, 13, 13, 13, 13, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 0, 13, 0, 0, 0, 0, 0, 12, 12, 12, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 12, 0, 13, 0, 0, 0, 0, 0, 11, 11, 11, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 11, 0, 12, 13, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 0, 12, 13, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 13, 13, 13, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 0, 0, 12, 12, 12, 12, 12, 0, 12, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 12, 12, 12, 12, 0, 12, 12, 12, 12, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 12, 0, 0, 12, 12, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 12, 12, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], 50, 20);
+
         this.scene.on('mouseMove', function (e) {
             //console.log(e.isMouseDown);
         });
@@ -6954,8 +6883,9 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
             AbsoluteLayout: {
                 properties: {
                     pos: { x: 10, y: 10 },
-                    width: 100,
-                    height: 100
+                    background: {
+                        type: 'Rectangle'
+                    }
                 },
                 children: [{
                     Button: {
@@ -6968,9 +6898,9 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                             resourcePath: 'resources/nineP.png',
                             ABCD: 45
                         },
-                        onClick: function onClick() {
+                        on: ['click', function () {
                             console.log('clicked1');
-                        }
+                        }]
                     }
                 }, {
                     Button: {
@@ -6983,16 +6913,16 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                             resourcePath: 'resources/nineP.png',
                             ABCD: 45
                         },
-                        onClick: function onClick() {
+                        on: ['click', function () {
                             console.log('clicked2');
-                        }
+                        }]
                     }
                 }]
             }
         });
         console.log(widget);
         window.w = widget;
-        this.scene.layers[0].gameObjects.push(widget);
+        this.scene.uiLayer.gameObjects.push(widget);
     };
 
     MainSceneBehaviour.prototype.onUpdate = function onUpdate() {
@@ -9093,6 +9023,7 @@ var NinePatchImage = /** @class */ (function (_super) {
         _this.b = 0;
         _this.c = 0;
         _this.d = 0;
+        _this.drawingRect.observe(function () { _this.revalidate(); });
         return _this;
     }
     NinePatchImage.prototype.revalidate = function () {
@@ -9116,7 +9047,7 @@ var NinePatchImage = /** @class */ (function (_super) {
         this.revalidate();
     };
     NinePatchImage.prototype.render = function () {
-        this.game.renderer.drawNinePatch(this.resourcePath, this.drawingRect, this.filters, this.a, this.b, this.c, this.d);
+        this.game.renderer.drawNinePatch(this.resourcePath, this.drawingRect, this.filters, this.getDrawableInfo(), this.a, this.b, this.c, this.d);
     };
     return NinePatchImage;
 }(image_1.default));
@@ -9178,11 +9109,14 @@ var Image = /** @class */ (function (_super) {
         var _this = _super.call(this, game) || this;
         _this.destRect = new rect_1.default();
         _this.srcRect = new rect_1.default();
-        _this.drawingRect = new rect_1.default();
         _this.filters = [];
+        _this.drawingRect = new rect_1.default();
         _this.blendMode = '';
         return _this;
     }
+    Image.prototype.getDrawableInfo = function () {
+        return { blendMode: this.blendMode, acceptLight: false };
+    };
     Image.prototype.render = function () {
         this.game.renderer.drawImage(this.resourcePath, this.srcRect, this.destRect);
     };
@@ -9252,10 +9186,12 @@ var UIBuilder = /** @class */ (function () {
             else {
                 if (instance[propName] && instance[propName].fromJSON)
                     instance[propName].fromJSON(obj[propName]);
+                else if (instance[propName] && instance[propName].call)
+                    (_b = instance[propName]).call.apply(_b, [instance].concat(obj[propName]));
                 else
                     instance[propName] = obj[propName];
             }
-            var _a;
+            var _a, _b;
         });
     };
     UIBuilder.prototype.resolveObj = function (key, obj) {
@@ -9311,7 +9247,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(25);
+var container_1 = __webpack_require__(109);
 var AbsoluteLayout = /** @class */ (function (_super) {
     __extends(AbsoluteLayout, _super);
     function AbsoluteLayout(game) {
@@ -9326,15 +9262,34 @@ var AbsoluteLayout = /** @class */ (function (_super) {
     };
     AbsoluteLayout.prototype.onGeometryChanged = function () {
         _super.prototype.onGeometryChanged.call(this);
+        var maxX = 0, maxY = 0;
         for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
             var v = _a[_i];
+            v.onGeometryChanged();
             v._dirty = true;
+            var r = v.getRect();
+            if (r.right > maxX)
+                maxX = r.right;
+            if (r.bottom > maxY)
+                maxY = r.bottom;
         }
+        if (this.layoutWidth === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
+            this.width = maxX - this.pos.x;
+        }
+        if (this.layoutHeight === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
+            this.height = maxY - this.pos.y;
+        }
+        this._dirty = true;
+        this.getRect().setWH(this.width, this.height);
+        if (this.background)
+            this.background.drawingRect.set(this.getRect());
     };
     AbsoluteLayout.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
         if (this.overflow === container_1.OVERFLOW.HIDDEN)
             this.game.renderer.lockRect(this.getRect());
+        if (this.background)
+            this.background.render();
         for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
             var v = _a[_i];
             v.update(time, delta);
@@ -9358,12 +9313,229 @@ var button_1 = __webpack_require__(79);
 exports.Button = button_1.default;
 var textField_1 = __webpack_require__(18);
 exports.TextField = textField_1.default;
-var container_1 = __webpack_require__(25);
+var container_1 = __webpack_require__(109);
 exports.Container = container_1.default;
+var image_1 = __webpack_require__(103);
+exports.Image = image_1.default;
+var rectangle_1 = __webpack_require__(110);
+exports.Rectangle = rectangle_1.default;
 var ninePatchImage_1 = __webpack_require__(101);
 exports.NinePatchImage = ninePatchImage_1.default;
 var absoluteLayout_1 = __webpack_require__(107);
 exports.AbsoluteLayout = absoluteLayout_1.default;
+
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var baseModel_1 = __webpack_require__(0);
+var rect_1 = __webpack_require__(1);
+var ALIGN_CONTENT;
+(function (ALIGN_CONTENT) {
+    ALIGN_CONTENT[ALIGN_CONTENT["NONE"] = 0] = "NONE";
+    ALIGN_CONTENT[ALIGN_CONTENT["VERTICAL"] = 1] = "VERTICAL";
+    ALIGN_CONTENT[ALIGN_CONTENT["HORIZONTAL"] = 2] = "HORIZONTAL";
+    ALIGN_CONTENT[ALIGN_CONTENT["BOTH"] = 3] = "BOTH";
+})(ALIGN_CONTENT = exports.ALIGN_CONTENT || (exports.ALIGN_CONTENT = {}));
+var OVERFLOW;
+(function (OVERFLOW) {
+    OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
+    OVERFLOW[OVERFLOW["VISIBLE"] = 1] = "VISIBLE";
+})(OVERFLOW = exports.OVERFLOW || (exports.OVERFLOW = {}));
+var LAYOUT_SIZE;
+(function (LAYOUT_SIZE) {
+    LAYOUT_SIZE[LAYOUT_SIZE["FIXED"] = 0] = "FIXED";
+    LAYOUT_SIZE[LAYOUT_SIZE["WRAP_CONTENT"] = 1] = "WRAP_CONTENT";
+    LAYOUT_SIZE[LAYOUT_SIZE["MATCH_PARENT"] = 2] = "MATCH_PARENT";
+})(LAYOUT_SIZE = exports.LAYOUT_SIZE || (exports.LAYOUT_SIZE = {}));
+var Container = /** @class */ (function (_super) {
+    __extends(Container, _super);
+    function Container(game) {
+        var _this = _super.call(this, game) || this;
+        _this.marginLeft = 0;
+        _this.marginTop = 0;
+        _this.marginRight = 0;
+        _this.marginBottom = 0;
+        _this.paddingLeft = 0;
+        _this.paddingTop = 0;
+        _this.paddingRight = 0;
+        _this.paddingBottom = 0;
+        _this.layoutWidth = LAYOUT_SIZE.WRAP_CONTENT;
+        _this.layoutHeight = LAYOUT_SIZE.WRAP_CONTENT;
+        _this.overflow = OVERFLOW.HIDDEN; // todo change
+        _this.filters = [];
+        _this.blendMode = '';
+        _this.alignContent = ALIGN_CONTENT.NONE;
+        _this.drawingRect = new rect_1.default();
+        return _this;
+    }
+    Container.prototype.testLayout = function () {
+        if (true) {
+            if (this.layoutWidth === LAYOUT_SIZE.FIXED && this.width === 0)
+                throw "layoutWidth is LAYOUT_SIZE.FIXED so width must be specified";
+            if (this.layoutHeight === LAYOUT_SIZE.FIXED && this.height === 0)
+                throw "layoutHeight is LAYOUT_SIZE.FIXED so height must be specified";
+        }
+    };
+    Container.normalizeBorders = function (top, right, bottom, left) {
+        if (right === undefined && bottom === undefined && left === undefined) {
+            right = bottom = left = top;
+        }
+        else if (bottom === undefined && left === undefined) {
+            bottom = top;
+            left = right;
+        }
+        else if (left === undefined) {
+            left = right;
+        }
+        return { top: top, right: right, bottom: bottom, left: left };
+    };
+    Container.prototype.setMargins = function (top, right, bottom, left) {
+        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
+        this.marginTop = top;
+        this.marginRight = right;
+        this.marginBottom = bottom;
+        this.marginLeft = left;
+        this._setDirty();
+        var _a;
+    };
+    Container.prototype.setMarginsTopBottom = function (top, bottom) {
+        if (bottom === undefined)
+            bottom = top;
+        this.paddingTop = top;
+        this.paddingBottom = bottom;
+        this._setDirty();
+    };
+    Container.prototype.setMarginsLeftRight = function (left, right) {
+        if (right === undefined)
+            right = left;
+        this.marginLeft = left;
+        this.marginRight = right;
+        this._setDirty();
+    };
+    Container.prototype.setPaddings = function (top, right, bottom, left) {
+        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
+        this.paddingTop = top;
+        this.paddingRight = right;
+        this.paddingBottom = bottom;
+        this.paddingLeft = left;
+        this._setDirty();
+        var _a;
+    };
+    Container.prototype.setPaddingsTopBottom = function (top, bottom) {
+        if (bottom === undefined)
+            bottom = top;
+        this.paddingTop = top;
+        this.paddingBottom = bottom;
+        this._dirty = true;
+    };
+    Container.prototype.setPaddingsLeftRight = function (left, right) {
+        if (right === undefined)
+            right = left;
+        this.paddingLeft = left;
+        this.paddingRight = right;
+        this._setDirty();
+    };
+    Container.prototype.getDrawableInfo = function () {
+        return { blendMode: this.blendMode, acceptLight: false };
+    };
+    Container.prototype.onGeometryChanged = function () { };
+    Container.prototype.getRect = function () {
+        if (!this._dirty) {
+            return this._rect;
+        }
+        var rect = _super.prototype.getRect.call(this);
+        rect.setXYWH(rect.getPoint().x, rect.getPoint().y, rect.getSize().width + this.marginRight + this.paddingRight + this.marginLeft + this.paddingLeft, rect.getSize().height + this.marginBottom + this.paddingBottom + this.marginTop + this.paddingTop);
+        this._rect.set(rect);
+        return rect;
+    };
+    Container.prototype.getRectMargined = function () {
+        if (!this._dirty)
+            return this.drawingRect;
+        var rect = this.getRect();
+        this.drawingRect.setXYWH(rect.getPoint().x + this.marginLeft, rect.getPoint().y + this.marginTop, rect.getSize().width - this.marginLeft - this.marginRight, rect.getSize().height - this.marginTop - this.marginBottom);
+        return this.drawingRect;
+    };
+    Container.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        if (this._dirty) {
+            this.onGeometryChanged();
+            this._dirty = false;
+        }
+    };
+    Container.prototype.render = function () { };
+    return Container;
+}(baseModel_1.default));
+exports.default = Container;
+
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var rect_1 = __webpack_require__(1);
+var color_1 = __webpack_require__(15);
+var Rectangle = /** @class */ (function () {
+    function Rectangle(game) {
+        this.filters = [];
+        this.blendMode = '';
+        this.drawingRect = new rect_1.default();
+        this.game = game;
+    }
+    Rectangle.prototype.getDrawableInfo = function () {
+        return { blendMode: this.blendMode, acceptLight: false };
+    };
+    Rectangle.prototype.render = function () {
+        this.game.renderer.fillRect(this.drawingRect, color_1.default.RGB(12, 222, 100));
+    };
+    return Rectangle;
+}());
+exports.default = Rectangle;
+
+
+/***/ }),
+/* 111 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ObservableEntity = /** @class */ (function () {
+    function ObservableEntity() {
+        this._onChanged = [];
+    }
+    ObservableEntity.prototype.triggerObservable = function () {
+        for (var _i = 0, _a = this._onChanged; _i < _a.length; _i++) {
+            var fn = _a[_i];
+            fn();
+        }
+    };
+    ObservableEntity.prototype.addListener = function (f) {
+        this._onChanged.push(f);
+    };
+    ObservableEntity.prototype.removeListener = function (f) {
+        this._onChanged.remove(f);
+    };
+    return ObservableEntity;
+}());
+exports.default = ObservableEntity;
 
 
 /***/ })

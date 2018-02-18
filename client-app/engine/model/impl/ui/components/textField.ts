@@ -1,4 +1,4 @@
-import Container from "./container";
+import Container from "../generic/container";
 
 declare const DEBUG:boolean;
 

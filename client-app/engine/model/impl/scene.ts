@@ -22,6 +22,7 @@ export default class Scene extends BaseModel {
 
     type:string = 'Scene';
     layers:Array<Layer> = [];
+    uiLayer:Layer; //todo
     useBG:boolean = false;
     colorBG = Color.WHITE;
     tileMap:TileMap;
@@ -35,16 +36,15 @@ export default class Scene extends BaseModel {
         super(game);
         this.tileMap = new TileMap(game);
         this.ambientLight = new AmbientLight(game);
+        this.uiLayer = new Layer(this.game);
 
     }
 
     revalidate(){
         super.revalidate();
         if (!IN_EDITOR && this.tileMap && this.tileMap.spriteSheet) {
-            this.tileMap._tilesInScreenX = ~~(this.game.width / this.tileMap.spriteSheet._frameWidth);
-            this.tileMap._tilesInScreenY = ~~(this.game.height / this.tileMap.spriteSheet._frameHeight);
+            this.tileMap.revalidate();
         }
-        //this.filters.push(new SimpleBlurFilter(this.game.renderer['gl']));
     }
 
     addTweenMovie(tm){
@@ -135,6 +135,13 @@ export default class Scene extends BaseModel {
         while(i--){
             layers[i-l].update(currTime,deltaTime);
         }
+        this.tileMap.update();
+
+        renderer.save();
+        renderer.resetTransform();
+        this.uiLayer.update(currTime,deltaTime);
+        renderer.restore();
+
         this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
             ps.update(currTime,deltaTime);
         });
@@ -149,7 +156,6 @@ export default class Scene extends BaseModel {
         //     tweenMovie._update(currTime);
         // });
         // this.__updateIndividualBehaviour__(currTime);
-        this.tileMap.update();
         if (DEBUG) {
             this.game.renderer.restore();
             if (this.game.renderer.debugTextField)

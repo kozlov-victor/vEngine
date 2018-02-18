@@ -59,6 +59,14 @@ const makeTextureMatrix = function(srcRect:Rect,texSize:Size){
     let texTranslationMatrix = mat4.makeTranslation(srcRect.x / texSize.width, srcRect.y / texSize.height, 0);
     return mat4.matrixMultiply(texScaleMatrix, texTranslationMatrix);
 };
+
+const FRAME_TO_SCREEN_MATRIX =
+    new MatrixStack().
+        scale(1,-1,1).
+        translate(-1,-1,0).
+        scale(2,2,1).
+        getCurrentMatrix();
+
 //  gl.enable(gl.CULL_FACE);
 //  gl.enable(gl.DEPTH_TEST);
 export default class WebGlRenderer extends AbstractCanvasRenderer {
@@ -121,9 +129,10 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
                 name: 'normalTexture'
             });
         }
-        let drawableInfo:DrawableInfo = {
+        let drawableInfo:DrawableInfo = { // todo move to renderable
             blendMode:renderable.blendMode,
-            acceptLight:renderable.acceptLight};
+            acceptLight:renderable.acceptLight
+        };
         this.drawTextureInfo(
             texInfo,
             drawableInfo,
@@ -151,7 +160,8 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
     drawImageEx(texturePath:string,
                 srcRect:Rect,
                 dstRect:Rect,
-                filters:AbstractFilter[]
+                filters:AbstractFilter[],
+                drawableInfo:DrawableInfo,
     ){
         let texture:Texture = this.renderableCache[texturePath].texture;
         texture = texture.applyFilters(filters,this.frameBuffer);
@@ -160,7 +170,6 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             else throw `can not find texture with path ${texturePath}`;
         }
         let texInfo:TextureInfo[] = [{texture,name:'texture'}];
-        let drawableInfo:DrawableInfo = {blendMode:'normal',acceptLight:false};
         this.drawTextureInfo(texInfo,drawableInfo,ShaderMaterial.DEFAULT,srcRect, dstRect);
     }
 
@@ -180,6 +189,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         texturePath:string,
         destRect:Rect,
         filters:AbstractFilter[],
+        drawableInfo:DrawableInfo,
         a:number,b:number,c:number,d:number
     ){
 
@@ -189,39 +199,39 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         // patch 1
         r.setXYWH(0,0,a,c);
         rDst.setXYWH(destRect.getPoint().x,destRect.getPoint().y,a,c);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 2
         r.setXYWH(a,0,texSize.width-a-b,c);
         rDst.setXYWH(destRect.x+a,destRect.y,destRect.width-a-c,c);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 3
         r.setXYWH(texSize.width-b,0,b,c);
         rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y,b,c);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 4
         r.setXYWH(0, c, a,texSize.height - c - d);
         rDst.setXYWH(destRect.x,destRect.y+c,a,destRect.height-c-d);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 5
         r.setXYWH(a, c, texSize.width - a - b,texSize.height - c - d);
         rDst.setXYWH(destRect.x + a,destRect.y+c,destRect.width - a - b,destRect.height-c-d);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 6
         r.setXYWH(texSize.width - b, c, b,texSize.height - c - d);
         rDst.setXYWH(destRect.x + destRect.width - b,destRect.y+c,b,destRect.height-c-d);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 7
         r.setXYWH(0,texSize.height - d,a,d);
         rDst.setXYWH(destRect.getPoint().x,destRect.getPoint().y+destRect.height - d,a,d);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 8
         r.setXYWH(a,texSize.height - d,texSize.width-a-b,d);
         rDst.setXYWH(destRect.x + a,destRect.y+destRect.height-d,destRect.width-a-b,d);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
         // patch 9
         r.setXYWH(texSize.width-b,texSize.height-d,b,d);
         rDst.setXYWH(destRect.getPoint().x+destRect.width-b,destRect.getPoint().y+destRect.height-d,b,d);
-        this.drawImageEx(texturePath,r,rDst,filters);
+        this.drawImageEx(texturePath,r,rDst,filters,drawableInfo);
     }
 
 
@@ -356,6 +366,10 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         this.matrixStack.scale(x,y);
     }
 
+    resetTransform(){
+        this.matrixStack.resetTransform();
+    }
+
     rotateZ(angleInRadians:number) {
         this.matrixStack.rotateZ(angleInRadians);
     }
@@ -406,23 +420,17 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
         let fullScreen = this.fullScreenSize;
         this.restore();
         this.save();
-        this.translate(0,fullScreen.h);
+        this.translate(0,this.game.height);
         this.scale(1,-1);
 
         let texToDraw = this.frameBuffer.getTexture().applyFilters(filters,null);
         this.frameBuffer.unbind();
-        this.gl.viewport(0, 0, fullScreen.w,fullScreen.h);
+        this.gl.viewport(0, 0, fullScreen.width,fullScreen.height);
+
 
         let uniforms:UniformsInfo = {
-            u_vertexMatrix: makePositionMatrix(
-                new Rect(0,0,
-                this.game.width*fullScreen.scaleFactor, this.game.height*fullScreen.scaleFactor),
-                new Size(fullScreen.w,fullScreen.h)
-            ),
-            u_textureMatrix: makeTextureMatrix(
-                Rect.fromPool().setXYWH(0,0,fullScreen.w,fullScreen.h),
-                Size.fromPool().setWH(fullScreen.w,fullScreen.h)
-            ),
+            u_vertexMatrix: FRAME_TO_SCREEN_MATRIX,
+            u_textureMatrix: mat4.IDENTITY,
             u_alpha: 1
         };
         let texInfo:TextureInfo[] = [{texture:texToDraw,name:'texture'}]; // todo now to make this array reusable?

@@ -1,13 +1,12 @@
 import ObjectPool from "../misc/objectPool";
+import ObservableEntity from "./abstract/observableEntity";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-export default class Point2d {
+export default class Point2d extends ObservableEntity{
 
     x:number = 0;
     y:number = 0;
-
-    private _onChanged:()=>void;
 
     private static pool = new ObjectPool<Point2d>(Point2d,4);
     private _arr:Array<number>;
@@ -16,80 +15,87 @@ export default class Point2d {
         return Point2d.pool.getNextObject();
     }
 
+
     constructor(x:number = 0,y:number = 0,onChangedFn?:()=>void){
+        super();
         this.x = x;
         this.y = y;
-        this._onChanged = onChangedFn;
+        if (onChangedFn) this.addListener(onChangedFn);
     }
 
-    setXY(x:number,y:number):Point2d{
+    observe(onChangedFn:()=>void){
+        this.addListener(onChangedFn);
+    }
+
+    setXY(x:number,y?:number):Point2d{
+        if (y===undefined) y = this.x;
         this.x = x;
         this.y = y;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     setX(x:number):Point2d{
         this.x = x;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     setY(y:number):Point2d{
         this.y = y;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     set(another:Point2d):Point2d{
         this.setXY(another.x,another.y);
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
 
     add(another:Point2d):Point2d{
         this.addXY(another.x,another.y);
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     substract(another:Point2d):Point2d{
         this.addXY(-another.x,-another.y);
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     multiply(n:number):Point2d {
         this.x*=n;
         this.y*=n;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     addXY(x:number,y:number):Point2d{
         this.x+=x;
         this.y+=y;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     addX(x:number):Point2d{
         this.x+=x;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     addY(y:number):Point2d{
         this.y+=y;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 
     negative(){
         this.x = - this.x;
         this.y = -this.y;
-        if (this._onChanged) this._onChanged();
+        this.triggerObservable();
         return this;
     }
 

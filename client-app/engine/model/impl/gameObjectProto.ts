@@ -11,7 +11,7 @@ import GameObject from "./gameObject";
 import ShaderMaterial from "../../core/light/shaderMaterial";
 import Layer from "./layer";
 import AbstractRenderer from "../../core/renderer/abstract/abstractRenderer";
-import {Renderable} from "../../renderable/renderable";
+import {Renderable} from "../../renderable/interface/renderable";
 
 
 export default class GameObjectProto extends BaseModel implements Renderable {
