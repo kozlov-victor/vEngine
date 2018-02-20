@@ -80,6 +80,15 @@ export class MainSceneBehaviour {
                             },
                             on: ['click',()=>{console.log('clicked2');}]
                         }
+                    },
+                    {
+                        TextField: {
+                            pos: {x: 250, y: 0},
+                            font: {type: 'Font', name: 'font1'},
+                            text: 'line 1 text here\nline2\nline3\n',
+                            paddings: 10,
+                            on: ['click',()=>{console.log('clicked text field');}]
+                        }
                     }
                 ]
             }

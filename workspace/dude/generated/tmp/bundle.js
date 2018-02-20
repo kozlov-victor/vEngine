@@ -1766,14 +1766,76 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var container_1 = __webpack_require__(109);
 var rect_1 = __webpack_require__(1);
+var TEXT_ALIGN;
+(function (TEXT_ALIGN) {
+    TEXT_ALIGN[TEXT_ALIGN["LEFT"] = 0] = "LEFT";
+    TEXT_ALIGN[TEXT_ALIGN["RIGHT"] = 1] = "RIGHT";
+    TEXT_ALIGN[TEXT_ALIGN["CENTER"] = 2] = "CENTER";
+    TEXT_ALIGN[TEXT_ALIGN["JUSTIFY"] = 3] = "JUSTIFY";
+})(TEXT_ALIGN = exports.TEXT_ALIGN || (exports.TEXT_ALIGN = {}));
+var TextInfo = /** @class */ (function () {
+    function TextInfo() {
+        this.allCharsCached = [];
+        this.width = 0;
+        this.height = 0;
+        this.strings = [];
+    }
+    TextInfo.prototype.reset = function () {
+        this.allCharsCached = [];
+        this.strings = [];
+    };
+    TextInfo.prototype.newString = function () {
+        this.strings.push(new StringInfo());
+    };
+    TextInfo.prototype.newChar = function (c) {
+        this.strings[this.strings.length - 1].chars.push(c);
+        this.allCharsCached.push(c);
+    };
+    TextInfo.prototype.revalidate = function () {
+        this.height = 0;
+        this.width = 0;
+        for (var _i = 0, _a = this.strings; _i < _a.length; _i++) {
+            var s = _a[_i];
+            s.calcSize();
+            this.height += s.height;
+            if (s.width > this.width)
+                this.width = s.width;
+        }
+    };
+    return TextInfo;
+}());
+var CharInfo = /** @class */ (function () {
+    function CharInfo() {
+        this.destRect = new rect_1.default();
+        this.sourceRect = new rect_1.default();
+    }
+    return CharInfo;
+}());
+var StringInfo = /** @class */ (function () {
+    function StringInfo() {
+        this.chars = [];
+        this.width = 0;
+        this.height = 0;
+    }
+    StringInfo.prototype.calcSize = function () {
+        this.width = 0;
+        this.height = this.chars.length ? this.chars[0].sourceRect.height : 0;
+        for (var _i = 0, _a = this.chars; _i < _a.length; _i++) {
+            var ch = _a[_i];
+            this.width += ch.sourceRect.width;
+        }
+    };
+    return StringInfo;
+}());
 var TextField = /** @class */ (function (_super) {
     __extends(TextField, _super);
     function TextField(game) {
         var _this = _super.call(this, game) || this;
         _this.type = 'TextField';
-        _this._chars = null;
+        _this._textInfo = new TextInfo();
         _this.text = '';
         _this.font = null;
+        _this.textAlign = TEXT_ALIGN.LEFT;
         return _this;
     }
     TextField.prototype.revalidate = function () {
@@ -1787,27 +1849,40 @@ var TextField = /** @class */ (function (_super) {
         if (1 && !this.font)
             throw "at least one Font must be created";
         this.setFont(this.font);
+        this._dirty = true;
     };
-    TextField.prototype.setText = function (text) {
-        text += '';
-        this._chars = [];
-        this.text = text;
-        var rows = [{ width: 0 }];
-        var currRowIndex = 0;
-        this.height = this.font.fontContext.symbols[' '].height;
+    TextField.prototype.onGeometryChanged = function () {
+        _super.prototype.onGeometryChanged.call(this);
+        var initialPosX = this.pos.x + this.paddingLeft + this.marginLeft;
+        var initialPosY = this.pos.y + this.paddingTop + this.marginTop;
+        var posX = initialPosX;
+        var posY = initialPosY;
+        var textInfo = this._textInfo;
+        textInfo.reset();
+        textInfo.newString();
+        var defaultHeight = this.font.fontContext.symbols[' '].height;
+        var text = this.text;
         for (var i = 0, max = text.length; i < max; i++) {
-            this._chars.push(text[i]);
-            var currSymbolInFont = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
             if (text[i] === '\n') {
-                currRowIndex++;
-                this.height += currSymbolInFont.height;
-                rows[currRowIndex] = { width: 0 };
+                textInfo.newString();
+                posX = initialPosX;
+                posY += defaultHeight;
             }
             else {
-                rows[currRowIndex].width += currSymbolInFont.width;
+                var charRect = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
+                var charInfo = new CharInfo();
+                charInfo.sourceRect = charRect;
+                charInfo.destRect.setXYWH(posX, posY, charRect.width, charRect.height);
+                textInfo.newChar(charInfo);
+                posX += charRect.width;
             }
         }
-        this.width = Math.max.apply(Math, rows.map(function (o) { return o.width; }));
+        textInfo.revalidate();
+        this.width = textInfo.width;
+        this.height = textInfo.height;
+    };
+    TextField.prototype.setText = function (text) {
+        this.text = text;
         this._dirty = true;
     };
     TextField.prototype.getText = function () { return this.text; };
@@ -1820,24 +1895,9 @@ var TextField = /** @class */ (function (_super) {
         this.render();
     };
     TextField.prototype.render = function () {
-        var initialPosX = this.paddingLeft + this.marginLeft;
-        var initialPosY = this.paddingTop + this.marginTop;
-        var posX = initialPosX;
-        var posY = initialPosY;
-        for (var i = 0, max = this._chars.length; i < max; i++) {
-            var ch = this._chars[i];
-            var charInCtx = this.font.fontContext.symbols[ch] || this.font.fontContext.symbols['?'];
-            if (ch === '\n') {
-                posX = initialPosX;
-                posY += charInCtx.height;
-                continue;
-            }
-            var destRect = rect_1.default.fromPool();
-            destRect.getPoint().set(this.pos);
-            destRect.getPoint().addXY(posX, posY);
-            destRect.setXYWH(this.pos.x + posX, this.pos.y + posY, charInCtx.width, charInCtx.height);
-            this.game.renderer.drawImage(this.font.resourcePath, charInCtx, destRect);
-            posX += charInCtx.width;
+        for (var _i = 0, _a = this._textInfo.allCharsCached; _i < _a.length; _i++) {
+            var charInfo = _a[_i];
+            this.game.renderer.drawImage(this.font.resourcePath, charInfo.sourceRect, charInfo.destRect);
         }
     };
     return TextField;
@@ -5921,12 +5981,12 @@ var Button = /** @class */ (function (_super) {
         this.onGeometryChanged();
     };
     Button.prototype.onGeometryChanged = function () {
+        this._textField.onGeometryChanged();
         this.width = this._textField.width;
         this.height = this._textField.height;
         this.background.drawingRect.set(this.getRectMargined());
         this.width = this.background.drawingRect.width - this.paddingLeft - this.paddingRight;
         this.height = this.background.drawingRect.height - this.paddingTop - this.paddingBottom; // todo???
-        console.log('before calc', this.width);
         this.getRect().setWH(this.width, this.height); // todo
         var dx = (this.background.drawingRect.width - this._textField.width) / 2;
         var dy = (this.background.drawingRect.height - this._textField.height) / 2;
@@ -6953,6 +7013,16 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                         },
                         on: ['click', function () {
                             console.log('clicked2');
+                        }]
+                    }
+                }, {
+                    TextField: {
+                        pos: { x: 250, y: 0 },
+                        font: { type: 'Font', name: 'font1' },
+                        text: 'line 1 text here\nline2\nline3\n',
+                        paddings: 10,
+                        on: ['click', function () {
+                            console.log('clicked text field');
                         }]
                     }
                 }]

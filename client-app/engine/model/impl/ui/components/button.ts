@@ -32,6 +32,7 @@ export default class Button extends Container {
     }
 
     onGeometryChanged(){
+        this._textField.onGeometryChanged();
         this.width = this._textField.width;
         this.height = this._textField.height;
 
@@ -39,7 +40,7 @@ export default class Button extends Container {
 
         this.width = this.background.drawingRect.width - this.paddingLeft - this.paddingRight;
         this.height = this.background.drawingRect.height  - this.paddingTop - this.paddingBottom; // todo???
-        console.log('before calc',this.width);
+
         this.getRect().setWH(
             this.width,
             this.height
