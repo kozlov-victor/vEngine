@@ -3001,20 +3001,21 @@ var TileMap = /** @class */ (function (_super) {
             this.data[j] = [];
             for (var i = 0; i < mapWidth; i++) {
                 var val = source[cnt++];
-                if (!val)
-                    val = null;
-                this.data[j][i] = val;
+                if (val === 0)
+                    this.data[j][i] = undefined;
+                else
+                    this.data[j][i] = val - 1;
             }
-        }
-        if (false)
-            return;
-        var found = cnt;
-        var expected = source.length;
-        if (expected !== found) {
-            throw "incorrect mapWidth/mapHeight provided. Expected " + expected + " tiles, but " + found + " found (" + mapWidth + "*" + mapHeight + ")";
         }
         this.width = mapWidth;
         this.height = mapHeight;
+        if (true) {
+            var found = cnt;
+            var expected = source.length;
+            if (expected !== found) {
+                throw "incorrect mapWidth/mapHeight provided. Expected " + expected + " tiles, but " + found + " found (" + mapWidth + "*" + mapHeight + ")";
+            }
+        }
     };
     TileMap.prototype.revalidate = function () {
         this.game.camera._updateRect();
@@ -9165,12 +9166,12 @@ exports.repository = {
                     3,
                     null,
                     null,
-                    1,
-                    1,
-                    1,
-                    1,
-                    1,
-                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
                     1,
                     1,
                     1

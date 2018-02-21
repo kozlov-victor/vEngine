@@ -25,19 +25,21 @@ export default class TileMap extends BaseModel {
         for (let j=0;j<mapHeight;j++){
             this.data[j] = [];
             for (let i=0;i<mapWidth;i++) {
-                let val:number|null = source[cnt++];
-                if (!val) val = null;
-                this.data[j][i] = val;
+                let val:number = source[cnt++];
+                if (val===0) this.data[j][i] = undefined;
+                else this.data[j][i] = val - 1;
             }
-        }
-        if (!DEBUG) return;
-        let found = cnt;
-        let expected = source.length;
-        if (expected!==found) {
-            throw `incorrect mapWidth/mapHeight provided. Expected ${expected} tiles, but ${found} found (${mapWidth}*${mapHeight})`;
         }
         this.width = mapWidth;
         this.height = mapHeight;
+        if (DEBUG) {
+            let found = cnt;
+            let expected = source.length;
+            if (expected!==found) {
+                throw `incorrect mapWidth/mapHeight provided. Expected ${expected} tiles, but ${found} found (${mapWidth}*${mapHeight})`;
+            }
+        }
+
     }
 
     revalidate(){

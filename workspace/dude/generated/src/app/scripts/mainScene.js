@@ -43,7 +43,6 @@ export class MainSceneBehaviour {
         });
 
 
-
         let widget = this.game.uiBuilder.build({
             AbsoluteLayout: {
                 properties: {
