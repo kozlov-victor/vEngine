@@ -1791,15 +1791,21 @@ var TextInfo = /** @class */ (function () {
         this.strings[this.strings.length - 1].chars.push(c);
         this.allCharsCached.push(c);
     };
-    TextInfo.prototype.revalidate = function () {
+    TextInfo.prototype.revalidate = function (defaultSymbolHeight) {
         this.height = 0;
         this.width = 0;
         for (var _i = 0, _a = this.strings; _i < _a.length; _i++) {
             var s = _a[_i];
-            s.calcSize();
+            s.calcSize(defaultSymbolHeight);
             this.height += s.height;
             if (s.width > this.width)
                 this.width = s.width;
+        }
+    };
+    TextInfo.prototype.align = function (textAlign) {
+        for (var _i = 0, _a = this.strings; _i < _a.length; _i++) {
+            var s = _a[_i];
+            s.align(textAlign, this.width);
         }
     };
     return TextInfo;
@@ -1811,22 +1817,117 @@ var CharInfo = /** @class */ (function () {
     }
     return CharInfo;
 }());
-var StringInfo = /** @class */ (function () {
-    function StringInfo() {
+var CharsHolder = /** @class */ (function () {
+    function CharsHolder() {
         this.chars = [];
-        this.width = 0;
-        this.height = 0;
     }
-    StringInfo.prototype.calcSize = function () {
+    CharsHolder.prototype.moveBy = function (dx, dy) {
+        for (var _i = 0, _a = this.chars; _i < _a.length; _i++) {
+            var ch = _a[_i];
+            ch.destRect.getPoint().addXY(dx, dy);
+        }
+    };
+    CharsHolder.prototype.moveTo = function (x, y) {
+        var initialOffsetX = 0;
+        for (var _i = 0, _a = this.chars; _i < _a.length; _i++) {
+            var ch = _a[_i];
+            ch.destRect.getPoint().setXY(initialOffsetX + x, y);
+            initialOffsetX += ch.sourceRect.width;
+        }
+    };
+    return CharsHolder;
+}());
+var WordInfo = /** @class */ (function (_super) {
+    __extends(WordInfo, _super);
+    function WordInfo() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    WordInfo.prototype.revalidate = function () {
         this.width = 0;
-        this.height = this.chars.length ? this.chars[0].sourceRect.height : 0;
+        for (var _i = 0, _a = this.chars; _i < _a.length; _i++) {
+            var ch = _a[_i];
+            this.width += ch.destRect.width;
+        }
+    };
+    return WordInfo;
+}(CharsHolder));
+var StringInfo = /** @class */ (function (_super) {
+    __extends(StringInfo, _super);
+    function StringInfo() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.chars = [];
+        _this.width = 0;
+        _this.height = 0;
+        return _this;
+    }
+    StringInfo.prototype.calcSize = function (defaultSymbolHeight) {
+        this.width = 0;
+        this.height = defaultSymbolHeight;
         for (var _i = 0, _a = this.chars; _i < _a.length; _i++) {
             var ch = _a[_i];
             this.width += ch.sourceRect.width;
         }
     };
+    StringInfo.prototype.toWords = function () {
+        var res = [];
+        var currWord = new WordInfo();
+        for (var _i = 0, _a = this.chars; _i < _a.length; _i++) {
+            var ch = _a[_i];
+            if (ch.symbol === ' ') {
+                if (currWord.chars.length) {
+                    res.push(currWord);
+                    currWord = new WordInfo();
+                }
+            }
+            else {
+                currWord.chars.push(ch);
+            }
+        }
+        if (res.indexOf(currWord) === -1)
+            res.push(currWord);
+        return res;
+    };
+    StringInfo.prototype.align = function (textAlign, textRectWidth) {
+        switch (textAlign) {
+            case TEXT_ALIGN.LEFT:
+                break;
+            case TEXT_ALIGN.CENTER:
+                var offset = textRectWidth - this.width;
+                if (offset < 0)
+                    return;
+                offset /= 2;
+                this.moveBy(offset, 0);
+                break;
+            case TEXT_ALIGN.RIGHT:
+                offset = textRectWidth - this.width;
+                if (offset < 0)
+                    return;
+                this.moveBy(offset, 0);
+                break;
+            case TEXT_ALIGN.JUSTIFY:
+                var words = this.toWords();
+                if (words.length <= 1)
+                    return;
+                if (!words[0].chars.length)
+                    return;
+                var totalWordsWidth_1 = 0;
+                words.forEach(function (w) {
+                    w.revalidate();
+                    totalWordsWidth_1 += w.width;
+                });
+                var totalSpaceWidth = textRectWidth - totalWordsWidth_1;
+                var oneSpaceWidth = totalSpaceWidth / (words.length - 1);
+                var initialPosY = this.chars[0].destRect.getPoint().y;
+                var currXPointer = this.chars[0].destRect.getPoint().x;
+                for (var i = 0; i < words.length; i++) {
+                    var w = words[i];
+                    w.moveTo(currXPointer, initialPosY);
+                    currXPointer += w.width + oneSpaceWidth;
+                }
+        }
+    };
     return StringInfo;
-}());
+}(CharsHolder));
 var TextField = /** @class */ (function (_super) {
     __extends(TextField, _super);
     function TextField(game) {
@@ -1860,7 +1961,7 @@ var TextField = /** @class */ (function (_super) {
         var textInfo = this._textInfo;
         textInfo.reset();
         textInfo.newString();
-        var defaultHeight = this.font.fontContext.symbols[' '].height;
+        var defaultHeight = this.font.getDefaultSymbolHeight();
         var text = this.text;
         for (var i = 0, max = text.length; i < max; i++) {
             if (text[i] === '\n') {
@@ -1871,13 +1972,15 @@ var TextField = /** @class */ (function (_super) {
             else {
                 var charRect = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
                 var charInfo = new CharInfo();
+                charInfo.symbol = text[i];
                 charInfo.sourceRect = charRect;
                 charInfo.destRect.setXYWH(posX, posY, charRect.width, charRect.height);
                 textInfo.newChar(charInfo);
                 posX += charRect.width;
             }
         }
-        textInfo.revalidate();
+        textInfo.revalidate(this.font.getDefaultSymbolHeight());
+        textInfo.align(this.textAlign);
         this.width = textInfo.width;
         this.height = textInfo.height;
     };
@@ -5881,6 +5984,9 @@ var Font = /** @class */ (function (_super) {
             _this.fontContext.symbols[key] = new rect_1.default(s[key].x, s[key].y, s[key].width, s[key].height);
         });
     };
+    Font.prototype.getDefaultSymbolHeight = function () {
+        return this.fontContext.symbols[' '].height;
+    };
     return Font;
 }(baseModel_1.default));
 exports.default = Font;
@@ -7019,8 +7125,8 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                     TextField: {
                         pos: { x: 250, y: 0 },
                         font: { type: 'Font', name: 'font1' },
-                        text: 'line 1 text here\nline2\nline3\n',
-                        paddings: 10,
+                        text: '1',
+                        paddings: 0,
                         on: ['click', function () {
                             console.log('clicked text field');
                         }]

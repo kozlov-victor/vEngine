@@ -32,4 +32,8 @@ export default class Font extends BaseModel {
             this.fontContext.symbols[key] = new Rect(s[key].x,s[key].y,s[key].width,s[key].height);
         });
     }
+
+    getDefaultSymbolHeight():number{
+        return this.fontContext.symbols[' '].height;
+    }
 }

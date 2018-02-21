@@ -1,9 +1,11 @@
 import Container from "../generic/container";
 
 declare const DEBUG:boolean;
+type char = string;
 
 import Font from "../../font";
 import Rect from "../../../../core/geometry/rect";
+import Point2d from "../../../../core/geometry/point2d";
 
 export enum TEXT_ALIGN {
     LEFT,RIGHT,CENTER,JUSTIFY
@@ -25,31 +27,115 @@ class TextInfo {
         this.strings[this.strings.length-1].chars.push(c);
         this.allCharsCached.push(c);
     }
-    revalidate(){
+    revalidate(defaultSymbolHeight:number){
         this.height = 0;
         this.width = 0;
         for (let s of this.strings) {
-            s.calcSize();
+            s.calcSize(defaultSymbolHeight);
             this.height+=s.height;
             if (s.width>this.width) this.width = s.width;
+        }
+    }
+    align(textAlign:TEXT_ALIGN) {
+        for (let s of this.strings) {
+            s.align(textAlign,this.width);
         }
     }
 }
 
 class CharInfo {
+    symbol:char;
     destRect:Rect = new Rect();
     sourceRect:Rect = new Rect();
 }
 
-class StringInfo {
+class CharsHolder {
+    chars:CharInfo[] = [];
+    moveBy(dx:number,dy:number){
+        for (let ch of this.chars) {
+            ch.destRect.getPoint().addXY(dx,dy);
+        }
+    }
+    moveTo(x:number,y:number){
+        let initialOffsetX:number = 0;
+        for (let ch of this.chars) {
+            ch.destRect.getPoint().setXY(initialOffsetX + x,y);
+            initialOffsetX+=ch.sourceRect.width;
+        }
+    }
+}
+
+class WordInfo extends CharsHolder {
+    width:number;
+    revalidate(){
+        this.width = 0;
+        for (let ch of this.chars) {
+            this.width+=ch.destRect.width;
+        }
+    }
+}
+
+class StringInfo extends CharsHolder {
     chars:CharInfo[] = [];
     width:number = 0;
     height:number = 0;
-    calcSize(){
+    calcSize(defaultSymbolHeight:number){
         this.width = 0;
-        this.height = this.chars.length?this.chars[0].sourceRect.height:0;
+        this.height = defaultSymbolHeight;
         for (let ch of this.chars) {
             this.width+=ch.sourceRect.width;
+        }
+    }
+    private toWords():WordInfo[] {
+        let res:WordInfo[] = [];
+        let currWord:WordInfo = new WordInfo();
+        for (let ch of this.chars) {
+            if (ch.symbol===' ') {
+                if (currWord.chars.length) {
+                    res.push(currWord);
+                    currWord = new WordInfo();
+                }
+            } else {
+                currWord.chars.push(ch);
+            }
+        }
+        if (res.indexOf(currWord)===-1) res.push(currWord);
+        return res;
+    }
+    align(textAlign:TEXT_ALIGN,textRectWidth:number){
+        switch (textAlign) {
+            case TEXT_ALIGN.LEFT:
+                break;
+            case TEXT_ALIGN.CENTER:
+                let offset = textRectWidth - this.width;
+                if (offset<0) return;
+                offset/=2;
+                this.moveBy(offset,0);
+                break;
+            case TEXT_ALIGN.RIGHT:
+                offset = textRectWidth - this.width;
+                if (offset<0) return;
+                this.moveBy(offset,0);
+                break;
+            case TEXT_ALIGN.JUSTIFY:
+                let words:WordInfo[] = this.toWords();
+                if (words.length<=1) return;
+                if (!words[0].chars.length) return;
+                let totalWordsWidth:number = 0;
+                words.forEach((w:WordInfo)=>{
+                    w.revalidate();
+                    totalWordsWidth+=w.width;
+                });
+                let totalSpaceWidth:number = textRectWidth - totalWordsWidth;
+                let oneSpaceWidth:number = totalSpaceWidth / (words.length - 1);
+                let initialPosY = this.chars[0].destRect.getPoint().y;
+                let currXPointer:number = this.chars[0].destRect.getPoint().x;
+                for (let i=0;i<words.length;i++) {
+                    let w:WordInfo = words[i];
+                    w.moveTo(currXPointer,initialPosY);
+                    currXPointer+=w.width+oneSpaceWidth;
+                }
+
         }
     }
 }
@@ -65,7 +151,6 @@ export default class TextField extends Container {
     constructor(game){
         super(game);
     }
-
 
     revalidate(){
         super.revalidate();
@@ -90,7 +175,7 @@ export default class TextField extends Container {
         let textInfo = this._textInfo;
         textInfo.reset();
         textInfo.newString();
-        let defaultHeight:number = this.font.fontContext.symbols[' '].height;
+        let defaultHeight:number = this.font.getDefaultSymbolHeight();
         let text:string = this.text;
         for (let i=0,max=text.length;i<max;i++) {
             if (text[i]==='\n') {
@@ -100,13 +185,15 @@ export default class TextField extends Container {
             } else {
                 let charRect:Rect = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
                 let charInfo = new CharInfo();
+                charInfo.symbol = text[i];
                 charInfo.sourceRect = charRect;
                 charInfo.destRect.setXYWH(posX,posY,charRect.width,charRect.height);
                 textInfo.newChar(charInfo);
                 posX+=charRect.width;
             }
         }
-        textInfo.revalidate();
+        textInfo.revalidate(this.font.getDefaultSymbolHeight());
+        textInfo.align(this.textAlign);
         this.width = textInfo.width;
         this.height = textInfo.height;
     }
