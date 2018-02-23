@@ -127,11 +127,6 @@ var BaseModel = /** @class */ (function (_super) {
     BaseModel.prototype.onShow = function () { };
     BaseModel.prototype.getRect = function () {
         this._rect.setXYWH(this.pos.x, this.pos.y, this.width, this.height);
-        var parent = this.parent;
-        while (parent) {
-            this._rect.addXY(parent.pos.x, parent.pos.y);
-            parent = parent.parent;
-        }
         return this._rect;
     };
     /**
@@ -1954,8 +1949,8 @@ var TextField = /** @class */ (function (_super) {
     };
     TextField.prototype.onGeometryChanged = function () {
         _super.prototype.onGeometryChanged.call(this);
-        var initialPosX = this.pos.x + this.paddingLeft + this.marginLeft;
-        var initialPosY = this.pos.y + this.paddingTop + this.marginTop;
+        var initialPosX = 0;
+        var initialPosY = 0;
         var posX = initialPosX;
         var posY = initialPosY;
         var textInfo = this._textInfo;
@@ -1998,6 +1993,7 @@ var TextField = /** @class */ (function (_super) {
         this.render();
     };
     TextField.prototype.render = function () {
+        this.game.renderer.translate(this.pos.x, this.pos.y);
         for (var _i = 0, _a = this._textInfo.allCharsCached; _i < _a.length; _i++) {
             var charInfo = _a[_i];
             this.game.renderer.drawImage(this.font.resourcePath, charInfo.sourceRect, charInfo.destRect);
@@ -6089,15 +6085,10 @@ var Button = /** @class */ (function (_super) {
     };
     Button.prototype.onGeometryChanged = function () {
         this._textField.onGeometryChanged();
-        this.width = this._textField.width;
-        this.height = this._textField.height;
-        this.background.drawingRect.set(this.getRectMargined());
-        this.width = this.background.drawingRect.width - this.paddingLeft - this.paddingRight;
-        this.height = this.background.drawingRect.height - this.paddingTop - this.paddingBottom; // todo???
-        this.getRect().setWH(this.width, this.height); // todo
+        this.calcBgRectWithPadding(this._textField.width, this._textField.height);
         var dx = (this.background.drawingRect.width - this._textField.width) / 2;
         var dy = (this.background.drawingRect.height - this._textField.height) / 2;
-        this._textField.pos.setXY(this.getRect().x + this.marginLeft + dx, this.getRect().y + this.marginTop + dy);
+        this._textField.pos.setXY(dx, dy);
     };
     Button.prototype.setText = function (text) {
         this._textField.setText(text);
@@ -6114,6 +6105,8 @@ var Button = /** @class */ (function (_super) {
         this.render();
     };
     Button.prototype.render = function () {
+        var renderer = this.game.renderer;
+        renderer.translate(this.pos.x + this.marginLeft, this.pos.y + this.marginTop);
         this.background.render();
         this._textField.render();
     };
@@ -7087,14 +7080,15 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
         var widget = this.game.uiBuilder.build({
             AbsoluteLayout: {
                 properties: {
-                    pos: { x: 10, y: 10 },
+                    pos: { x: 0, y: 0 },
+                    width: 200, height: 200,
                     background: {
                         type: 'Rectangle'
                     }
                 },
                 children: [{
                     Button: {
-                        pos: { x: 10, y: 0 },
+                        pos: { x: 0, y: 0 },
                         font: { type: 'Font', name: 'font1' },
                         text: 'button1',
                         paddings: 10,
@@ -7126,7 +7120,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                     TextField: {
                         pos: { x: 250, y: 0 },
                         font: { type: 'Font', name: 'font1' },
-                        text: '1',
+                        text: '12345\n12345\n54321',
                         paddings: 0,
                         on: ['click', function () {
                             console.log('clicked text field');
@@ -7135,6 +7129,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                 }]
             }
         });
+
         console.log(widget);
         window.w = widget;
         this.scene.uiLayer.gameObjects.push(widget);
@@ -9423,7 +9418,7 @@ var UIBuilder = /** @class */ (function () {
         this.resolveObjProperties(l, props);
         arr.forEach(function (v) {
             var firstKey = Object.keys(v)[0];
-            l.addView(_this.resolveObj(firstKey, v[firstKey]));
+            l.appendChild(_this.resolveObj(firstKey, v[firstKey]));
         });
         l.testLayout();
         return l;
@@ -9466,19 +9461,17 @@ var container_1 = __webpack_require__(109);
 var AbsoluteLayout = /** @class */ (function (_super) {
     __extends(AbsoluteLayout, _super);
     function AbsoluteLayout(game) {
-        var _this = _super.call(this, game) || this;
-        _this.views = [];
-        return _this;
+        return _super.call(this, game) || this;
     }
-    AbsoluteLayout.prototype.addView = function (v) {
-        v.testLayout();
-        v.parent = this;
-        this.views.push(v);
+    AbsoluteLayout.prototype.appendChild = function (c) {
+        c.testLayout();
+        c.parent = this;
+        _super.prototype.appendChild.call(this, c);
     };
     AbsoluteLayout.prototype.onGeometryChanged = function () {
         _super.prototype.onGeometryChanged.call(this);
         var maxX = 0, maxY = 0;
-        for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
             var v = _a[_i];
             v.onGeometryChanged();
             v._dirty = true;
@@ -9489,28 +9482,31 @@ var AbsoluteLayout = /** @class */ (function (_super) {
                 maxY = r.bottom;
         }
         if (this.layoutWidth === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
-            this.width = maxX - this.pos.x;
+            this.width = maxX;
         }
         if (this.layoutHeight === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
-            this.height = maxY - this.pos.y;
+            this.height = maxY;
         }
-        this._dirty = true;
-        this.getRect().setWH(this.width, this.height);
-        if (this.background)
-            this.background.drawingRect.set(this.getRect());
+        this.calcBgRectWithPadding(this.width, this.height);
+        //this._dirty = true;
     };
     AbsoluteLayout.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
-        if (this.overflow === container_1.OVERFLOW.HIDDEN)
-            this.game.renderer.lockRect(this.getRect());
+        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.lockRect(this.getRect());
+        var renderer = this.game.renderer;
+        renderer.translate(this.pos.x + this.marginLeft, this.pos.y + this.marginTop);
         if (this.background)
             this.background.render();
-        for (var _i = 0, _a = this.views; _i < _a.length; _i++) {
-            var v = _a[_i];
-            v.update(time, delta);
+        renderer.translate(this.paddingLeft, this.paddingTop);
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var c = _a[_i];
+            renderer.save();
+            if (c._dirty)
+                c.parent._dirty = true;
+            c.update(time, delta);
+            renderer.restore();
         }
-        if (this.overflow === container_1.OVERFLOW.HIDDEN)
-            this.game.renderer.unlockRect();
+        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
     };
     return AbsoluteLayout;
 }(container_1.default));
@@ -9596,6 +9592,7 @@ var Container = /** @class */ (function (_super) {
         _this.blendMode = '';
         _this.alignContent = ALIGN_CONTENT.NONE;
         _this.drawingRect = new rect_1.default();
+        _this.children = [];
         return _this;
     }
     Container.prototype.testLayout = function () {
@@ -9605,6 +9602,9 @@ var Container = /** @class */ (function (_super) {
             if (this.layoutHeight === LAYOUT_SIZE.FIXED && this.height === 0)
                 throw "layoutHeight is LAYOUT_SIZE.FIXED so height must be specified";
         }
+    };
+    Container.prototype.appendChild = function (c) {
+        this.children.push(c);
     };
     Container.normalizeBorders = function (top, right, bottom, left) {
         if (right === undefined && bottom === undefined && left === undefined) {
@@ -9674,17 +9674,34 @@ var Container = /** @class */ (function (_super) {
             return this._rect;
         }
         var rect = _super.prototype.getRect.call(this);
-        rect.setXYWH(rect.getPoint().x, rect.getPoint().y, rect.getSize().width + this.marginRight + this.paddingRight + this.marginLeft + this.paddingLeft, rect.getSize().height + this.marginBottom + this.paddingBottom + this.marginTop + this.paddingTop);
+        rect.setXYWH(this.pos.x, this.pos.y, this.width + this.marginRight + this.marginLeft, this.height + this.marginBottom + this.marginTop);
         this._rect.set(rect);
         return rect;
     };
-    Container.prototype.getRectMargined = function () {
-        if (!this._dirty)
-            return this.drawingRect;
-        var rect = this.getRect();
-        this.drawingRect.setXYWH(rect.getPoint().x + this.marginLeft, rect.getPoint().y + this.marginTop, rect.getSize().width - this.marginLeft - this.marginRight, rect.getSize().height - this.marginTop - this.marginBottom);
-        return this.drawingRect;
+    Container.prototype.calcBgRectWithPadding = function (contentWidth, contentHeight) {
+        var paddedWidth = contentWidth + this.paddingLeft + this.paddingRight;
+        var paddedHeight = contentHeight + this.paddingTop + this.paddingBottom;
+        if (this.background) {
+            this.background.drawingRect.setWH(paddedWidth, paddedHeight);
+            this.width = this.background.drawingRect.width;
+            this.height = this.background.drawingRect.height;
+        }
+        else {
+            this.width = paddedWidth;
+            this.height = paddedHeight;
+        }
     };
+    // getRectMargined():Rect{
+    //     if (!this._dirty) return this.drawingRect;
+    //     let rect = this.getRect();
+    //     this.drawingRect.setXYWH(
+    //         rect.getPoint().x + this.marginLeft,
+    //         rect.getPoint().y + this.marginTop,
+    //         rect.getSize().width - this.marginLeft - this.marginRight,
+    //         rect.getSize().height - this.marginTop - this.marginBottom
+    //     );
+    //     return this.drawingRect;
+    // }
     Container.prototype.update = function (time, delta) {
         _super.prototype.update.call(this, time, delta);
         if (this._dirty) {

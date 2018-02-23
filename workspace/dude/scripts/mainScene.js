@@ -46,7 +46,8 @@ export class MainSceneBehaviour {
         let widget = this.game.uiBuilder.build({
             AbsoluteLayout: {
                 properties: {
-                    pos: {x:10,y:10},
+                    pos: {x:0,y:0},
+                    width:200,height:200,
                     background: {
                         type: 'Rectangle',
                     },
@@ -54,7 +55,7 @@ export class MainSceneBehaviour {
                 children: [
                     {
                         Button: {
-                            pos: {x: 10, y: 0},
+                            pos: {x: 0, y: 0},
                             font: {type: 'Font', name: 'font1'},
                             text: 'button1',
                             paddings: 10,
@@ -84,7 +85,7 @@ export class MainSceneBehaviour {
                         TextField: {
                             pos: {x: 250, y: 0},
                             font: {type: 'Font', name: 'font1'},
-                            text: '1',
+                            text: '12345\n12345\n54321',
                             paddings: 0,
                             on: ['click',()=>{console.log('clicked text field');}]
                         }
@@ -92,6 +93,10 @@ export class MainSceneBehaviour {
                 ]
             }
         });
+
+
+
+
         console.log(widget);
         window.w = widget;
         this.scene.uiLayer.gameObjects.push(widget);

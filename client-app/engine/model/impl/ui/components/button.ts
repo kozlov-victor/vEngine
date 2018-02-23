@@ -33,26 +33,12 @@ export default class Button extends Container {
 
     onGeometryChanged(){
         this._textField.onGeometryChanged();
-        this.width = this._textField.width;
-        this.height = this._textField.height;
-
-        this.background.drawingRect.set(this.getRectMargined());
-
-        this.width = this.background.drawingRect.width - this.paddingLeft - this.paddingRight;
-        this.height = this.background.drawingRect.height  - this.paddingTop - this.paddingBottom; // todo???
-
-        this.getRect().setWH(
-            this.width,
-            this.height
-        ); // todo
+        this.calcBgRectWithPadding(this._textField.width,this._textField.height);
 
         let dx = (this.background.drawingRect.width - this._textField.width)/2;
         let dy = (this.background.drawingRect.height - this._textField.height)/2;
 
-        this._textField.pos.setXY(
-            this.getRect().x + this.marginLeft + dx,
-            this.getRect().y + this.marginTop + dy
-        );
+        this._textField.pos.setXY(dx,dy);
     }
 
     setText(text:string){
@@ -64,7 +50,6 @@ export default class Button extends Container {
         this._textField.setFont(f);
     }
 
-
     getText(){
         return this._textField.getText();
     }
@@ -75,6 +60,11 @@ export default class Button extends Container {
     }
 
     render(){
+        let renderer = this.game.renderer;
+        renderer.translate(
+            this.pos.x + this.marginLeft,
+            this.pos.y + this.marginTop
+        );
         this.background.render();
         this._textField.render();
     }

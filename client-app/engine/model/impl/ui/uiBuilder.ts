@@ -82,7 +82,7 @@ export default class UIBuilder {
         this.resolveObjProperties(l,props);
         arr.forEach(v=>{
             let firstKey = Object.keys(v)[0];
-            l.addView(this.resolveObj(firstKey,v[firstKey]));
+            l.appendChild(this.resolveObj(firstKey,v[firstKey]));
         });
         l.testLayout();
         return l;

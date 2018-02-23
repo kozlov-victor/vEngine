@@ -167,8 +167,8 @@ export default class TextField extends Container {
 
     onGeometryChanged(){
         super.onGeometryChanged();
-        let initialPosX:number = this.pos.x + this.paddingLeft + this.marginLeft;
-        let initialPosY:number = this.pos.y + this.paddingTop + this.marginTop;
+        let initialPosX:number = 0;
+        let initialPosY:number = 0;
         let posX:number = initialPosX;
         let posY:number = initialPosY;
 
@@ -213,6 +213,7 @@ export default class TextField extends Container {
         this.render();
     }
     render(){
+        this.game.renderer.translate(this.pos.x, this.pos.y);
         for (let charInfo of this._textInfo.allCharsCached) {
             this.game.renderer.drawImage(
                 this.font.resourcePath, charInfo.sourceRect, charInfo.destRect

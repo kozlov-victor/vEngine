@@ -58,12 +58,6 @@ export default class BaseModel extends CommonObject {
 
     getRect():Rect{
         this._rect.setXYWH(this.pos.x,this.pos.y,this.width,this.height);
-
-        let parent:BaseModel = this.parent;
-        while (parent) {
-            this._rect.addXY(parent.pos.x,parent.pos.y);
-            parent = parent.parent;
-        }
         return this._rect;
     }
 

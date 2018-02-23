@@ -44,6 +44,7 @@ export default class Container extends BaseModel implements UIRenderable {
     background      :UIRenderable;
 
     drawingRect:Rect = new Rect();
+    children:Container[] = [];
 
     testLayout(){
         if (DEBUG) {
@@ -52,6 +53,10 @@ export default class Container extends BaseModel implements UIRenderable {
             if (this.layoutHeight===LAYOUT_SIZE.FIXED && this.height===0)
                 throw `layoutHeight is LAYOUT_SIZE.FIXED so height must be specified`
         }
+    }
+
+    appendChild(c:Container){
+        this.children.push(c);
     }
 
     private static normalizeBorders(top:number,right:number,bottom:number,left:number){
@@ -141,26 +146,40 @@ export default class Container extends BaseModel implements UIRenderable {
         }
         let rect:Rect = super.getRect();
         rect.setXYWH(
-            rect.getPoint().x,
-            rect.getPoint().y,
-            rect.getSize().width + this.marginRight + this.paddingRight + this.marginLeft + this.paddingLeft ,
-            rect.getSize().height +  this.marginBottom + this.paddingBottom + this.marginTop + this.paddingTop
+            this.pos.x,
+            this.pos.y,
+            this.width + this.marginRight + this.marginLeft,
+            this.height +  this.marginBottom + this.marginTop
         );
         this._rect.set(rect);
         return rect;
     }
 
-    getRectMargined():Rect{
-        if (!this._dirty) return this.drawingRect;
-        let rect = this.getRect();
-        this.drawingRect.setXYWH(
-            rect.getPoint().x + this.marginLeft,
-            rect.getPoint().y + this.marginTop,
-            rect.getSize().width - this.marginLeft - this.marginRight,
-            rect.getSize().height - this.marginTop - this.marginBottom
-        );
-        return this.drawingRect;
+    calcBgRectWithPadding(contentWidth:number,contentHeight:number){
+        let paddedWidth = contentWidth  + this.paddingLeft + this.paddingRight;
+        let paddedHeight = contentHeight +  this.paddingTop +  this.paddingBottom;
+        if (this.background) {
+            this.background.drawingRect.setWH(paddedWidth,paddedHeight);
+            this.width = this.background.drawingRect.width;
+            this.height = this.background.drawingRect.height;
+        } else {
+            this.width = paddedWidth;
+            this.height = paddedHeight;
+        }
+
     }
+
+    // getRectMargined():Rect{
+    //     if (!this._dirty) return this.drawingRect;
+    //     let rect = this.getRect();
+    //     this.drawingRect.setXYWH(
+    //         rect.getPoint().x + this.marginLeft,
+    //         rect.getPoint().y + this.marginTop,
+    //         rect.getSize().width - this.marginLeft - this.marginRight,
+    //         rect.getSize().height - this.marginTop - this.marginBottom
+    //     );
+    //     return this.drawingRect;
+    // }
 
     update(time:number,delta:number){
         super.update(time,delta);
