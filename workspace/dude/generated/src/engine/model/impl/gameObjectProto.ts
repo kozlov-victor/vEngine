@@ -32,8 +32,6 @@ export default class GameObjectProto extends BaseModel implements Renderable {
     shaderMaterial:ShaderMaterial = new ShaderMaterial();
     rigidBody:ArcadeRigidBody;
 
-    protected children:BaseModel[] = [];
-
     _frameRect = new Rect(); // todo make all private
     _layer:Layer;
     _behaviour = null;

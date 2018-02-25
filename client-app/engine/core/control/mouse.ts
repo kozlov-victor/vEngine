@@ -8,6 +8,8 @@ import ObjectPool from "../misc/objectPool";
 import Game from "../game";
 import Scene from "../../model/impl/scene";
 import BaseModel from "../../model/baseModel";
+import Rect from "../geometry/rect";
+import Container from "../../model/impl/ui/generic/container";
 
 interface MouseEventEx extends MouseEvent {
     identifier:number,
@@ -20,6 +22,7 @@ export class MousePoint extends Point2d{
     public screenY:number;
     public id:number;
     public target:BaseModel;
+    public isMouseDown:boolean;
 
     private static mousePointsPool:ObjectPool<MousePoint> = new ObjectPool<MousePoint>(MousePoint);
 
@@ -27,16 +30,18 @@ export class MousePoint extends Point2d{
         super();
     }
 
+
     static fromPool():MousePoint{
         return MousePoint.mousePointsPool.getNextObject();
     }
 
-    static fromPoint(another:MousePoint):MousePoint{
+    static unTransform(another:MousePoint):MousePoint{
         let p:MousePoint = MousePoint.fromPool();
         p.screenX = another.screenX;
         p.screenY = another.screenY;
         p.id = another.id;
         p.target = another.target;
+        p.setXY(p.screenX,p.screenY);
         return p;
     }
 
@@ -72,9 +77,10 @@ export default class Mouse {
         return mousePoint;
     }
 
-    private static triggerGameObjectEvent(eventName:string,point:MousePoint,isMouseDown:boolean,go:GameObject):boolean{
+    private static triggerGameObjectEvent(eventName:string,point:MousePoint,go:BaseModel,offsetX = 0, offsetY = 0):boolean{
+        let rectWithOffset = Rect.fromPool().set(go.getRect()).addXY(offsetX,offsetY);
         if (
-            mathEx.isPointInRect(point,go.getRect())
+            mathEx.isPointInRect(point,rectWithOffset)
         ) {
             point.target = go;
             go.trigger(eventName,{
@@ -84,11 +90,28 @@ export default class Mouse {
                 objectY:point.y - go.pos.y,
                 id:point.id,
                 target:go,
-                isMouseDown
+                isMouseDown: point.isMouseDown
             });
             return true;
         }
         return false;
+    }
+
+
+    private triggerPossibleChildren(c:BaseModel[],eventName:string,point:MousePoint,offsetX:number,offsetY:number){
+        for (let i=0;i<c.length;i++){
+            let go = c[c.length - 1 - i];
+            let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,go,offsetX,offsetY);
+            if (isCaptured) {
+                if (go.children) this.triggerPossibleChildren(
+                    go.children,
+                    eventName,
+                    point,
+                    offsetX+go.pos.x,
+                    offsetY+go.pos.y);
+                break;
+            }
+        }
     }
 
     triggerEvent(e:MouseEvent|TouchEvent|Touch,eventName:string,isMouseDown?:boolean):MousePoint{
@@ -96,40 +119,24 @@ export default class Mouse {
         let g = this.game;
         let scene = g.getCurrScene();
         let point:MousePoint = this.resolvePoint(e);
+        point.isMouseDown = isMouseDown;
         point.target = undefined;
 
-        exit:
-        for (let i=0;i<scene.layers.length;i++){
-            let layer = scene.layers[scene.layers.length - 1 - i];
-            for (let j=0;j<layer.gameObjects.length;j++){
-                let go = layer.gameObjects[layer.gameObjects.length - 1 - j];
-                let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,go);
-                if (!isCaptured) continue;
-                let k;
-                if (go.children) {
-                    for (k=0;k<go.children.length;k++){
-                        let ch = go.children[go.children.length - 1 - k];
-                        if (Mouse.triggerGameObjectEvent(eventName,point,isMouseDown,ch)) break;
-                    }
-                }
-                if (isCaptured) break exit;
+        for (let go of scene.getAllGameObjects()) {
+            let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,go);
+            if (isCaptured) {
+                if (go.children) this.triggerPossibleChildren(go.children,eventName,point,go.pos.x,go.pos.y);
+                break;
             }
         }
 
-        let untransformedPoint = MousePoint.fromPoint(point);
-        untransformedPoint.setXY(point.screenX,point.screenY);
-        exitUILayer:
+        let untransformedPoint = MousePoint.unTransform(point);
         for (let j=0;j<scene.uiLayer.gameObjects.length;j++){
             let go = scene.uiLayer.gameObjects[scene.uiLayer.gameObjects.length - 1 - j];
-            if (go.views) {
-                for (let k=0;k<go.views.length;k++){
-                    let c = go.views[go.views.length - 1 - k];
-
-                    if (Mouse.triggerGameObjectEvent(eventName,untransformedPoint,isMouseDown,c)) {
-                        point.target = untransformedPoint.target;
-                        break exitUILayer;
-                    }
-                }
+            let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,untransformedPoint,go);
+            if (isCaptured) {
+                if (go.children) this.triggerPossibleChildren(go.children,eventName,untransformedPoint,go.pos.x,go.pos.y);
+                break;
             }
         }
 

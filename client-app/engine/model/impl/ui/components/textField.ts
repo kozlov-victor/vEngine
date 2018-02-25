@@ -5,7 +5,6 @@ type char = string;
 
 import Font from "../../font";
 import Rect from "../../../../core/geometry/rect";
-import Point2d from "../../../../core/geometry/point2d";
 
 export enum TEXT_ALIGN {
     LEFT,RIGHT,CENTER,JUSTIFY
@@ -198,8 +197,8 @@ export default class TextField extends Container {
         this.height = textInfo.height;
     }
 
-    setText(text){
-        this.text  = text;
+    setText(text = ''){
+        this.text  = text.toString();
         this._dirty = true;
     }
 
@@ -213,12 +212,15 @@ export default class TextField extends Container {
         this.render();
     }
     render(){
-        this.game.renderer.translate(this.pos.x, this.pos.y);
+        let renderer = this.game.renderer;
+        renderer.save();
+        renderer.translate(this.pos.x, this.pos.y);
         for (let charInfo of this._textInfo.allCharsCached) {
             this.game.renderer.drawImage(
-                this.font.resourcePath, charInfo.sourceRect, charInfo.destRect
+                this.font.getDefaultResourcePath(), charInfo.sourceRect, charInfo.destRect
             );
         }
+        renderer.restore();
     }
 
 }

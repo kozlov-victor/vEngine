@@ -1,7 +1,7 @@
 
-import BaseModel from '../baseModel'
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
+import Resource from "../resource";
 
 class FontContext {
 
@@ -11,10 +11,9 @@ class FontContext {
 }
 
 
-export default class Font extends BaseModel {
+export default class Font extends Resource {
 
     type:string = 'Font';
-    resourcePath:string = null;
     fontSize:number=12;
     fontFamily:string='Monospace';
     fontContext:{symbols:{[key:string]:Rect}}=null;

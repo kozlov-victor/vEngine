@@ -37,7 +37,7 @@ export default class CanvasRenderer extends AbstractCanvasRenderer {
         ctx.globalAlpha = renderable.alpha;
         ctx.globalCompositeOperation = renderable.blendMode || 'source-over';
         ctx.drawImage(
-            this.renderableCache[renderable.spriteSheet.resourcePath],
+            this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()],
             renderable._sprPosX,
             renderable._sprPosY,
             renderable.width,

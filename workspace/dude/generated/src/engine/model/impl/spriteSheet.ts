@@ -1,8 +1,9 @@
 import BaseModel from '../baseModel'
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
+import Resource from "../resource";
 
-export default class SpriteSheet extends BaseModel {
+export default class SpriteSheet extends Resource {
 
     type:string = 'SpriteSheet';
     width:number = 0;
@@ -12,8 +13,6 @@ export default class SpriteSheet extends BaseModel {
     _frameWidth:number = 0;
     _frameHeight:number = 0;
     _numOfFrames:number = 0;
-    resourcePath:string = '';
-    normalMapPath:string = '';
 
     private frameRect:Rect = new Rect();
 

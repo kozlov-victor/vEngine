@@ -39,7 +39,7 @@ export default class Queue{
         }
     };
 
-    addTask(taskFn:Function,taskId:number) {
+    addTask(taskFn:()=>void,taskId:number) {
         this.tasks.push(taskFn);
         this.tasksProgressById[taskId] = 0;
     };

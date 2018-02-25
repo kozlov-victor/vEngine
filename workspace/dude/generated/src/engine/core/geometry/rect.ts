@@ -22,8 +22,12 @@ export default class Rect extends ObservableEntity {
 
     constructor(x:number = 0,y:number = 0,width:number = 0,height:number = 0,onChangedFn?:()=>void){
         super();
-        this.setXYWH(x,y,width,height);
         if (onChangedFn) this.addListener(onChangedFn);
+        this.setXYWH(x,y,width,height);
+    }
+
+    protected checkObservableChanged():boolean{
+        return this._state.setState(this.x,this.y,this.width,this.height);
     }
 
     observe(onChangedFn:()=>void){
@@ -89,8 +93,9 @@ export default class Rect extends ObservableEntity {
     }
 
     getPoint():Point2d{
-        if (this.p===undefined) this.p = new Point2d(0,0,()=>this.setXY(this.p.x,this.p.y));
+        if (this.p===undefined) this.p = new Point2d(0,0);
         this.p.setXY(this.x,this.y);
+        this.p.addListener(()=>this.setXY(this.p.x,this.p.y));
         return this.p;
     }
 

@@ -27,8 +27,8 @@ export default class Utils {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
             backgroundImage:       gameObj.spriteSheet &&
-            gameObj.spriteSheet.resourcePath &&
-            `url(${editData.projectName}/${gameObj.spriteSheet.resourcePath})`,
+            gameObj.spriteSheet.getDefaultResourcePath() &&
+            `url(${editData.projectName}/${gameObj.spriteSheet.getDefaultResourcePath()})`,
             backgroundPositionY:  -gameObj._sprPosY+'px',
             backgroundPositionX:  -gameObj._sprPosX+'px',
             backgroundRepeat:     'no-repeat',
@@ -78,9 +78,9 @@ export default class Utils {
     static tileResourcePath(opts = {strict:false}){
         if (!editData.currSceneInEdit.tileMap) return null;
         if (!editData.currSceneInEdit.tileMap.spriteSheet) return null;
-        if (!editData.currSceneInEdit.tileMap.spriteSheet.resourcePath) return null;
+        if (!editData.currSceneInEdit.tileMap.spriteSheet.getDefaultResourcePath()) return null;
         if (opts.strict && editData.currTileIndexInEdit==null) return;
-        return `url(${editData.projectName}/${editData.currSceneInEdit.tileMap.spriteSheet.resourcePath})`;
+        return `url(${editData.projectName}/${editData.currSceneInEdit.tileMap.spriteSheet.getDefaultResourcePath()})`;
     }
     static tileNumOfFramesH(){
         if (!editData.currSceneInEdit.tileMap) return null;

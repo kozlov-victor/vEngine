@@ -51,6 +51,7 @@ export class MainSceneBehaviour {
                     background: {
                         type: 'Rectangle',
                     },
+                    on: ['click',()=>{console.log('clicked on layout');}]
                 },
                 children: [
                     {
@@ -64,7 +65,7 @@ export class MainSceneBehaviour {
                                 resourcePath: 'resources/nineP.png',
                                 ABCD: 45
                             },
-                            on: ['click',()=>{console.log('clicked1');}]
+                            on: ['click',()=>{console.log('clicked on button 1');}]
                         }
                     },
                     {
@@ -78,7 +79,7 @@ export class MainSceneBehaviour {
                                 resourcePath: 'resources/nineP.png',
                                 ABCD: 45
                             },
-                            on: ['click',()=>{console.log('clicked2');}]
+                            on: ['click',()=>{console.log('clicked on button 2');}]
                         }
                     },
                     {
@@ -93,9 +94,6 @@ export class MainSceneBehaviour {
                 ]
             }
         });
-
-
-
 
         console.log(widget);
         window.w = widget;

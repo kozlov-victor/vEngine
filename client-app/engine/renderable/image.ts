@@ -24,7 +24,7 @@ export default class Image extends Resource implements UIRenderable {
     }
 
     render(){
-        this.game.renderer.drawImage(this.resourcePath,this.srcRect,this.destRect);
+        this.game.renderer.drawImage(this.getDefaultResourcePath(),this.srcRect,this.destRect);
     }
 
 

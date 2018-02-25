@@ -1,18 +1,12 @@
 
-import {UIRenderable} from "../../../../renderable/interface/uiRenderable";
-
 declare const DEBUG:boolean;
 
+import {UIRenderable} from "../../../../renderable/interface/uiRenderable";
 import BaseModel from "../../../baseModel";
 import Rect from "../../../../core/geometry/rect";
-import {Renderable} from "../../../../renderable/interface/renderable";
 import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 
-export enum ALIGN_CONTENT {
-    NONE, VERTICAL,
-    HORIZONTAL,BOTH
-}
 
 export enum OVERFLOW {
     HIDDEN,VISIBLE
@@ -40,8 +34,7 @@ export default class Container extends BaseModel implements UIRenderable {
     filters         :AbstractFilter[] = [];
     blendMode       :string = '';
 
-    alignContent    :ALIGN_CONTENT = ALIGN_CONTENT.NONE;
-    background      :UIRenderable;
+    background      :UIRenderable = undefined;
 
     drawingRect:Rect = new Rect();
     children:Container[] = [];
@@ -141,21 +134,21 @@ export default class Container extends BaseModel implements UIRenderable {
     onGeometryChanged(){}
 
     getRect():Rect{
-        if (!this._dirty) {
-            return this._rect;
+        if (this._dirty) {
+             this.calcLayoutRect();
         }
-        let rect:Rect = super.getRect();
-        rect.setXYWH(
-            this.pos.x,
-            this.pos.y,
-            this.width + this.marginRight + this.marginLeft,
-            this.height +  this.marginBottom + this.marginTop
-        );
-        this._rect.set(rect);
-        return rect;
+        return this._rect;
     }
 
-    calcBgRectWithPadding(contentWidth:number,contentHeight:number){
+    private calcLayoutRect(){
+        this._rect.setXYWH(
+            this.pos.x,this.pos.y,
+            this.width + this.marginLeft + this.marginRight,
+            this.height + this.marginTop + this.marginBottom
+        )
+    }
+
+    calcDrawableRect(contentWidth:number, contentHeight:number){
         let paddedWidth = contentWidth  + this.paddingLeft + this.paddingRight;
         let paddedHeight = contentHeight +  this.paddingTop +  this.paddingBottom;
         if (this.background) {
@@ -166,20 +159,9 @@ export default class Container extends BaseModel implements UIRenderable {
             this.width = paddedWidth;
             this.height = paddedHeight;
         }
+        this.calcLayoutRect();
 
     }
-
-    // getRectMargined():Rect{
-    //     if (!this._dirty) return this.drawingRect;
-    //     let rect = this.getRect();
-    //     this.drawingRect.setXYWH(
-    //         rect.getPoint().x + this.marginLeft,
-    //         rect.getPoint().y + this.marginTop,
-    //         rect.getSize().width - this.marginLeft - this.marginRight,
-    //         rect.getSize().height - this.marginTop - this.marginBottom
-    //     );
-    //     return this.drawingRect;
-    // }
 
     update(time:number,delta:number){
         super.update(time,delta);

@@ -98,6 +98,13 @@ export default class Game extends CommonObject {
         return this._deltaTime;
     }
 
+    cnt=0;
+    debug2(...val){
+        this.cnt++;
+        console.log(...val);
+        if (this.cnt>10) throw 'stoped';
+    }
+
     runScene(scene){
         if (DEBUG && !this._revalidated)
             throw `game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly`;

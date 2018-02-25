@@ -60,11 +60,134 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 34);
+/******/ 	return __webpack_require__(__webpack_require__.s = 41);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var size_1 = __webpack_require__(13);
+var point2d_1 = __webpack_require__(3);
+var objectPool_1 = __webpack_require__(9);
+var global_1 = __webpack_require__(19);
+var observableEntity_1 = __webpack_require__(23);
+var Rect = /** @class */ (function (_super) {
+    __extends(Rect, _super);
+    function Rect(x, y, width, height, onChangedFn) {
+        if (x === void 0) { x = 0; }
+        if (y === void 0) { y = 0; }
+        if (width === void 0) { width = 0; }
+        if (height === void 0) { height = 0; }
+        var _this = _super.call(this) || this;
+        if (onChangedFn)
+            _this.addListener(onChangedFn);
+        _this.setXYWH(x, y, width, height);
+        return _this;
+    }
+    Rect.prototype.checkObservableChanged = function () {
+        return this._state.setState(this.x, this.y, this.width, this.height);
+    };
+    Rect.prototype.observe = function (onChangedFn) {
+        this.addListener(onChangedFn);
+    };
+    Rect.prototype.revalidate = function () {
+        this.right = this.x + this.width;
+        this.bottom = this.y + this.height;
+        this.triggerObservable();
+    };
+    Rect.prototype.setXYWH = function (x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.setXY = function (x, y) {
+        this.x = x;
+        this.y = y;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.setWH = function (width, height) {
+        this.width = width;
+        this.height = height;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.set = function (another) {
+        this.setXYWH(another.x, another.y, another.width, another.height);
+        return this;
+    };
+    Rect.prototype.setSize = function (s) {
+        this.width = s.width;
+        this.height = s.height;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.setPoint = function (p) {
+        p.setXY(p.x, p.y);
+        return this;
+    };
+    Rect.prototype.addXY = function (x, y) {
+        this.x += x;
+        this.y += y;
+        this.revalidate();
+        return this;
+    };
+    Rect.prototype.addPoint = function (another) {
+        this.addXY(another.x, another.y);
+        return this;
+    };
+    Rect.prototype.getPoint = function () {
+        var _this = this;
+        if (this.p === undefined)
+            this.p = new point2d_1.default(0, 0);
+        this.p.setXY(this.x, this.y);
+        this.p.addListener(function () { return _this.setXY(_this.p.x, _this.p.y); });
+        return this.p;
+    };
+    Rect.prototype.getSize = function () {
+        if (this.size === undefined)
+            this.size = new size_1.default();
+        this.size.setWH(this.width, this.height);
+        return this.size;
+    };
+    Rect.prototype.clone = function () {
+        return new Rect(this.x, this.y, this.width, this.height);
+    };
+    Rect.prototype.toJSON = function () {
+        return { x: this.x, y: this.y, width: this.width, height: this.height };
+    };
+    Rect.prototype.fromJSON = function (x, y, width, height) {
+        this.setXYWH(x, y, width, height);
+    };
+    Rect.fromPool = function () {
+        return Rect.rectPool.getNextObject();
+    };
+    Rect.rectPool = new objectPool_1.default(Rect);
+    return Rect;
+}(observableEntity_1.default));
+exports.default = Rect;
+global_1._global.Rect = Rect;
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86,11 +209,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var commonObject_1 = __webpack_require__(26);
-var tween_1 = __webpack_require__(27);
-var eventEmitter_1 = __webpack_require__(56);
-var decorators_1 = __webpack_require__(28);
-var rect_1 = __webpack_require__(1);
+var commonObject_1 = __webpack_require__(27);
+var tween_1 = __webpack_require__(28);
+var eventEmitter_1 = __webpack_require__(63);
+var decorators_1 = __webpack_require__(29);
+var rect_1 = __webpack_require__(0);
 var point2d_1 = __webpack_require__(3);
 var BaseModel = /** @class */ (function (_super) {
     __extends(BaseModel, _super);
@@ -109,6 +232,7 @@ var BaseModel = /** @class */ (function (_super) {
         _this.rigid = false;
         _this._tweens = [];
         _this.parent = null;
+        _this.children = [];
         _this._dirty = true;
         _this._rect = new rect_1.default(0, 0);
         if (1 && !game)
@@ -177,125 +301,6 @@ var BaseModel = /** @class */ (function (_super) {
     return BaseModel;
 }(commonObject_1.default));
 exports.default = BaseModel;
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var size_1 = __webpack_require__(24);
-var point2d_1 = __webpack_require__(3);
-var objectPool_1 = __webpack_require__(11);
-var global_1 = __webpack_require__(16);
-var observableEntity_1 = __webpack_require__(111);
-var Rect = /** @class */ (function (_super) {
-    __extends(Rect, _super);
-    function Rect(x, y, width, height, onChangedFn) {
-        if (x === void 0) { x = 0; }
-        if (y === void 0) { y = 0; }
-        if (width === void 0) { width = 0; }
-        if (height === void 0) { height = 0; }
-        var _this = _super.call(this) || this;
-        _this.setXYWH(x, y, width, height);
-        if (onChangedFn)
-            _this.addListener(onChangedFn);
-        return _this;
-    }
-    Rect.prototype.observe = function (onChangedFn) {
-        this.addListener(onChangedFn);
-    };
-    Rect.prototype.revalidate = function () {
-        this.right = this.x + this.width;
-        this.bottom = this.y + this.height;
-        this.triggerObservable();
-    };
-    Rect.prototype.setXYWH = function (x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.revalidate();
-        return this;
-    };
-    Rect.prototype.setXY = function (x, y) {
-        this.x = x;
-        this.y = y;
-        this.revalidate();
-        return this;
-    };
-    Rect.prototype.setWH = function (width, height) {
-        this.width = width;
-        this.height = height;
-        this.revalidate();
-        return this;
-    };
-    Rect.prototype.set = function (another) {
-        this.setXYWH(another.x, another.y, another.width, another.height);
-        return this;
-    };
-    Rect.prototype.setSize = function (s) {
-        this.width = s.width;
-        this.height = s.height;
-        this.revalidate();
-        return this;
-    };
-    Rect.prototype.setPoint = function (p) {
-        p.setXY(p.x, p.y);
-        return this;
-    };
-    Rect.prototype.addXY = function (x, y) {
-        this.x += x;
-        this.y += y;
-        this.revalidate();
-        return this;
-    };
-    Rect.prototype.addPoint = function (another) {
-        this.addXY(another.x, another.y);
-        return this;
-    };
-    Rect.prototype.getPoint = function () {
-        var _this = this;
-        if (this.p === undefined)
-            this.p = new point2d_1.default(0, 0, function () { return _this.setXY(_this.p.x, _this.p.y); });
-        this.p.setXY(this.x, this.y);
-        return this.p;
-    };
-    Rect.prototype.getSize = function () {
-        if (this.size === undefined)
-            this.size = new size_1.default();
-        this.size.setWH(this.width, this.height);
-        return this.size;
-    };
-    Rect.prototype.clone = function () {
-        return new Rect(this.x, this.y, this.width, this.height);
-    };
-    Rect.prototype.toJSON = function () {
-        return { x: this.x, y: this.y, width: this.width, height: this.height };
-    };
-    Rect.prototype.fromJSON = function (x, y, width, height) {
-        this.setXYWH(x, y, width, height);
-    };
-    Rect.fromPool = function () {
-        return Rect.rectPool.getNextObject();
-    };
-    Rect.rectPool = new objectPool_1.default(Rect);
-    return Rect;
-}(observableEntity_1.default));
-exports.default = Rect;
-global_1._global.Rect = Rect;
 
 
 /***/ }),
@@ -383,8 +388,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(11);
-var observableEntity_1 = __webpack_require__(111);
+var objectPool_1 = __webpack_require__(9);
+var observableEntity_1 = __webpack_require__(23);
 var Point2d = /** @class */ (function (_super) {
     __extends(Point2d, _super);
     function Point2d(x, y, onChangedFn) {
@@ -401,6 +406,9 @@ var Point2d = /** @class */ (function (_super) {
     }
     Point2d.fromPool = function () {
         return Point2d.pool.getNextObject();
+    };
+    Point2d.prototype.checkObservableChanged = function () {
+        return this._state.setState(this.x, this.y);
     };
     Point2d.prototype.observe = function (onChangedFn) {
         this.addListener(onChangedFn);
@@ -809,7 +817,7 @@ exports.getUniformSetter = function (size, type) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mat4 = __webpack_require__(9);
+var mat4 = __webpack_require__(10);
 var point2d_1 = __webpack_require__(3);
 exports.isPointInRect = function (point, rect, angle) {
     // if (angle) {
@@ -1156,8 +1164,8 @@ exports.default = AbstractDrawer;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var vertexBuffer_1 = __webpack_require__(40);
-var indexBuffer_1 = __webpack_require__(41);
+var vertexBuffer_1 = __webpack_require__(47);
+var indexBuffer_1 = __webpack_require__(48);
 var BufferInfo = /** @class */ (function () {
     function BufferInfo(gl, description) {
         this.posVertexBuffer = null;
@@ -1251,7 +1259,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgramUtils_1 = __webpack_require__(4);
-var shaderGenerator_1 = __webpack_require__(19);
+var shaderGenerator_1 = __webpack_require__(21);
 //position and texture
 var TexShaderGenerator = /** @class */ (function (_super) {
     __extends(TexShaderGenerator, _super);
@@ -1279,6 +1287,37 @@ exports.default = TexShaderGenerator;
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ObjectPool = /** @class */ (function () {
+    /**
+     * 16 - nice magic value for default pool size
+     * @param Class
+     * @param {number} numberOfInstances
+     */
+    function ObjectPool(Class, numberOfInstances) {
+        if (numberOfInstances === void 0) { numberOfInstances = 16; }
+        this._pool = [];
+        this._cnt = 0;
+        if (1 && !Class)
+            throw "can not instantiate ObjectPool: class not provided in constructor";
+        for (var i = 0; i < numberOfInstances; i++) {
+            this._pool.push(new Class());
+        }
+    }
+    ObjectPool.prototype.getNextObject = function () {
+        return this._pool[this._cnt++ % this._pool.length];
+    };
+    return ObjectPool;
+}());
+exports.default = ObjectPool;
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1461,7 +1500,7 @@ exports.IDENTITY = exports.makeIdentity();
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1477,7 +1516,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var plane_1 = __webpack_require__(13);
+var plane_1 = __webpack_require__(17);
 var shaderProgram_1 = __webpack_require__(2);
 var abstractDrawer_1 = __webpack_require__(6);
 var bufferInfo_1 = __webpack_require__(7);
@@ -1503,136 +1542,14 @@ exports.default = SpriteRectDrawer;
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ObjectPool = /** @class */ (function () {
-    /**
-     * 16 - nice magic value for default pool size
-     * @param Class
-     * @param {number} numberOfInstances
-     */
-    function ObjectPool(Class, numberOfInstances) {
-        if (numberOfInstances === void 0) { numberOfInstances = 16; }
-        this._pool = [];
-        this._cnt = 0;
-        if (1 && !Class)
-            throw "can not instantiate ObjectPool: class not provided in constructor";
-        for (var i = 0; i < numberOfInstances; i++) {
-            this._pool.push(new Class());
-        }
-    }
-    ObjectPool.prototype.getNextObject = function () {
-        return this._pool[this._cnt++ % this._pool.length];
-    };
-    return ObjectPool;
-}());
-exports.default = ObjectPool;
-
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseAbstractBehaviour = /** @class */ (function () {
-    function BaseAbstractBehaviour(game) {
-        this.game = game;
-        BaseAbstractBehaviour.instances.push(this);
-    }
-    BaseAbstractBehaviour.prototype.manage = function (gameObject, parameters, dirs) {
-        console.error(this);
-        if (true)
-            throw "BaseAbstractBehaviour: method 'manage' not implemented";
-    };
-    BaseAbstractBehaviour.prototype.onUpdate = function () { };
-    BaseAbstractBehaviour.prototype.destroy = function () { };
-    BaseAbstractBehaviour.destroyAll = function () {
-        BaseAbstractBehaviour.instances.forEach(function (it) {
-            it.destroy();
-        });
-    };
-    BaseAbstractBehaviour.instances = [];
-    return BaseAbstractBehaviour;
-}());
-exports.default = BaseAbstractBehaviour;
-
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var abstractPrimitive_1 = __webpack_require__(14);
-var Plane = /** @class */ (function (_super) {
-    __extends(Plane, _super);
-    function Plane() {
-        var _this = _super.call(this) || this;
-        _this.vertexArr = [
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ];
-        _this.indexArr = [0, 1, 2, 3];
-        _this.texCoordArr = [
-            0, 0,
-            0, 1,
-            1, 0,
-            1, 1
-        ];
-        return _this;
-    }
-    return Plane;
-}(abstractPrimitive_1.default));
-exports.default = Plane;
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var AbstractPrimitive = /** @class */ (function () {
-    function AbstractPrimitive() {
-        this.vertexArr = null;
-        this.normalArr = null;
-        this.texCoordArr = null;
-        this.indexArr = null;
-    }
-    return AbstractPrimitive;
-}());
-exports.default = AbstractPrimitive;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(11);
-var global_1 = __webpack_require__(16);
+var objectPool_1 = __webpack_require__(9);
+var global_1 = __webpack_require__(19);
 var Color = /** @class */ (function () {
     function Color(r, g, b, a) {
         this._arr = null;
@@ -1694,56 +1611,44 @@ global_1._global.Color = Color;
 
 
 /***/ }),
-/* 16 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._global = {};
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var shaderProgramUtils_1 = __webpack_require__(4);
-var shaderGenerator_1 = __webpack_require__(19);
-//position and color
-var ColorShaderGenerator = /** @class */ (function (_super) {
-    __extends(ColorShaderGenerator, _super);
-    function ColorShaderGenerator() {
-        var _this = _super.call(this) || this;
-        _this.addAttribute(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'a_position');
-        _this.addVertexUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_MAT4, 'u_vertexMatrix');
-        //language=GLSL
-        _this.setVertexMainFn("\n            void main(){\n                gl_Position = u_vertexMatrix * a_position;   \n            }\n        ");
-        _this.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT, 'u_alpha');
-        _this.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_rgba');
-        //language=GLSL
-        _this.setFragmentMainFn("\n            void main(){\n                gl_FragColor = u_rgba;\n            }\n        ");
-        return _this;
+var objectPool_1 = __webpack_require__(9);
+var Size = /** @class */ (function () {
+    function Size(width, height) {
+        if (width === void 0) { width = 0; }
+        if (height === void 0) { height = 0; }
+        this.width = width;
+        this.height = height;
     }
-    return ColorShaderGenerator;
-}(shaderGenerator_1.default));
-exports.default = ColorShaderGenerator;
+    Size.prototype.setW = function (width) {
+        this.width = width;
+        return this;
+    };
+    Size.prototype.setH = function (height) {
+        this.height = height;
+        return this;
+    };
+    Size.prototype.setWH = function (width, height) {
+        this.width = width;
+        this.height = height;
+        return this;
+    };
+    Size.fromPool = function () {
+        return Size.rectPool.getNextObject();
+    };
+    Size.rectPool = new objectPool_1.default(Size);
+    return Size;
+}());
+exports.default = Size;
 
 
 /***/ }),
-/* 18 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1759,8 +1664,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(109);
-var rect_1 = __webpack_require__(1);
+var container_1 = __webpack_require__(15);
+var rect_1 = __webpack_require__(0);
 var TEXT_ALIGN;
 (function (TEXT_ALIGN) {
     TEXT_ALIGN[TEXT_ALIGN["LEFT"] = 0] = "LEFT";
@@ -1980,7 +1885,8 @@ var TextField = /** @class */ (function (_super) {
         this.height = textInfo.height;
     };
     TextField.prototype.setText = function (text) {
-        this.text = text;
+        if (text === void 0) { text = ''; }
+        this.text = text.toString();
         this._dirty = true;
     };
     TextField.prototype.getText = function () { return this.text; };
@@ -1993,11 +1899,14 @@ var TextField = /** @class */ (function (_super) {
         this.render();
     };
     TextField.prototype.render = function () {
-        this.game.renderer.translate(this.pos.x, this.pos.y);
+        var renderer = this.game.renderer;
+        renderer.save();
+        renderer.translate(this.pos.x, this.pos.y);
         for (var _i = 0, _a = this._textInfo.allCharsCached; _i < _a.length; _i++) {
             var charInfo = _a[_i];
-            this.game.renderer.drawImage(this.font.resourcePath, charInfo.sourceRect, charInfo.destRect);
+            this.game.renderer.drawImage(this.font.getDefaultResourcePath(), charInfo.sourceRect, charInfo.destRect);
         }
+        renderer.restore();
     };
     return TextField;
 }(container_1.default));
@@ -2005,7 +1914,309 @@ exports.default = TextField;
 
 
 /***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var baseModel_1 = __webpack_require__(1);
+var rect_1 = __webpack_require__(0);
+var OVERFLOW;
+(function (OVERFLOW) {
+    OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
+    OVERFLOW[OVERFLOW["VISIBLE"] = 1] = "VISIBLE";
+})(OVERFLOW = exports.OVERFLOW || (exports.OVERFLOW = {}));
+var LAYOUT_SIZE;
+(function (LAYOUT_SIZE) {
+    LAYOUT_SIZE[LAYOUT_SIZE["FIXED"] = 0] = "FIXED";
+    LAYOUT_SIZE[LAYOUT_SIZE["WRAP_CONTENT"] = 1] = "WRAP_CONTENT";
+    LAYOUT_SIZE[LAYOUT_SIZE["MATCH_PARENT"] = 2] = "MATCH_PARENT";
+})(LAYOUT_SIZE = exports.LAYOUT_SIZE || (exports.LAYOUT_SIZE = {}));
+var Container = /** @class */ (function (_super) {
+    __extends(Container, _super);
+    function Container(game) {
+        var _this = _super.call(this, game) || this;
+        _this.marginLeft = 0;
+        _this.marginTop = 0;
+        _this.marginRight = 0;
+        _this.marginBottom = 0;
+        _this.paddingLeft = 0;
+        _this.paddingTop = 0;
+        _this.paddingRight = 0;
+        _this.paddingBottom = 0;
+        _this.layoutWidth = LAYOUT_SIZE.WRAP_CONTENT;
+        _this.layoutHeight = LAYOUT_SIZE.WRAP_CONTENT;
+        _this.overflow = OVERFLOW.HIDDEN; // todo change
+        _this.filters = [];
+        _this.blendMode = '';
+        _this.background = undefined;
+        _this.drawingRect = new rect_1.default();
+        _this.children = [];
+        return _this;
+    }
+    Container.prototype.testLayout = function () {
+        if (true) {
+            if (this.layoutWidth === LAYOUT_SIZE.FIXED && this.width === 0)
+                throw "layoutWidth is LAYOUT_SIZE.FIXED so width must be specified";
+            if (this.layoutHeight === LAYOUT_SIZE.FIXED && this.height === 0)
+                throw "layoutHeight is LAYOUT_SIZE.FIXED so height must be specified";
+        }
+    };
+    Container.prototype.appendChild = function (c) {
+        this.children.push(c);
+    };
+    Container.normalizeBorders = function (top, right, bottom, left) {
+        if (right === undefined && bottom === undefined && left === undefined) {
+            right = bottom = left = top;
+        }
+        else if (bottom === undefined && left === undefined) {
+            bottom = top;
+            left = right;
+        }
+        else if (left === undefined) {
+            left = right;
+        }
+        return { top: top, right: right, bottom: bottom, left: left };
+    };
+    Container.prototype.setMargins = function (top, right, bottom, left) {
+        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
+        this.marginTop = top;
+        this.marginRight = right;
+        this.marginBottom = bottom;
+        this.marginLeft = left;
+        this._setDirty();
+        var _a;
+    };
+    Container.prototype.setMarginsTopBottom = function (top, bottom) {
+        if (bottom === undefined)
+            bottom = top;
+        this.paddingTop = top;
+        this.paddingBottom = bottom;
+        this._setDirty();
+    };
+    Container.prototype.setMarginsLeftRight = function (left, right) {
+        if (right === undefined)
+            right = left;
+        this.marginLeft = left;
+        this.marginRight = right;
+        this._setDirty();
+    };
+    Container.prototype.setPaddings = function (top, right, bottom, left) {
+        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
+        this.paddingTop = top;
+        this.paddingRight = right;
+        this.paddingBottom = bottom;
+        this.paddingLeft = left;
+        this._setDirty();
+        var _a;
+    };
+    Container.prototype.setPaddingsTopBottom = function (top, bottom) {
+        if (bottom === undefined)
+            bottom = top;
+        this.paddingTop = top;
+        this.paddingBottom = bottom;
+        this._dirty = true;
+    };
+    Container.prototype.setPaddingsLeftRight = function (left, right) {
+        if (right === undefined)
+            right = left;
+        this.paddingLeft = left;
+        this.paddingRight = right;
+        this._setDirty();
+    };
+    Container.prototype.getDrawableInfo = function () {
+        return { blendMode: this.blendMode, acceptLight: false };
+    };
+    Container.prototype.onGeometryChanged = function () { };
+    Container.prototype.getRect = function () {
+        if (this._dirty) {
+            this.calcLayoutRect();
+        }
+        return this._rect;
+    };
+    Container.prototype.calcLayoutRect = function () {
+        this._rect.setXYWH(this.pos.x, this.pos.y, this.width + this.marginLeft + this.marginRight, this.height + this.marginTop + this.marginBottom);
+    };
+    Container.prototype.calcDrawableRect = function (contentWidth, contentHeight) {
+        var paddedWidth = contentWidth + this.paddingLeft + this.paddingRight;
+        var paddedHeight = contentHeight + this.paddingTop + this.paddingBottom;
+        if (this.background) {
+            this.background.drawingRect.setWH(paddedWidth, paddedHeight);
+            this.width = this.background.drawingRect.width;
+            this.height = this.background.drawingRect.height;
+        }
+        else {
+            this.width = paddedWidth;
+            this.height = paddedHeight;
+        }
+        this.calcLayoutRect();
+    };
+    Container.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        if (this._dirty) {
+            this.onGeometryChanged();
+            this._dirty = false;
+        }
+    };
+    Container.prototype.render = function () { };
+    return Container;
+}(baseModel_1.default));
+exports.default = Container;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BaseAbstractBehaviour = /** @class */ (function () {
+    function BaseAbstractBehaviour(game) {
+        this.game = game;
+        BaseAbstractBehaviour.instances.push(this);
+    }
+    BaseAbstractBehaviour.prototype.manage = function (gameObject, parameters, dirs) {
+        console.error(this);
+        if (true)
+            throw "BaseAbstractBehaviour: method 'manage' not implemented";
+    };
+    BaseAbstractBehaviour.prototype.onUpdate = function () { };
+    BaseAbstractBehaviour.prototype.destroy = function () { };
+    BaseAbstractBehaviour.destroyAll = function () {
+        BaseAbstractBehaviour.instances.forEach(function (it) {
+            it.destroy();
+        });
+    };
+    BaseAbstractBehaviour.instances = [];
+    return BaseAbstractBehaviour;
+}());
+exports.default = BaseAbstractBehaviour;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var abstractPrimitive_1 = __webpack_require__(18);
+var Plane = /** @class */ (function (_super) {
+    __extends(Plane, _super);
+    function Plane() {
+        var _this = _super.call(this) || this;
+        _this.vertexArr = [
+            0, 0,
+            0, 1,
+            1, 0,
+            1, 1
+        ];
+        _this.indexArr = [0, 1, 2, 3];
+        _this.texCoordArr = [
+            0, 0,
+            0, 1,
+            1, 0,
+            1, 1
+        ];
+        return _this;
+    }
+    return Plane;
+}(abstractPrimitive_1.default));
+exports.default = Plane;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var AbstractPrimitive = /** @class */ (function () {
+    function AbstractPrimitive() {
+        this.vertexArr = null;
+        this.normalArr = null;
+        this.texCoordArr = null;
+        this.indexArr = null;
+    }
+    return AbstractPrimitive;
+}());
+exports.default = AbstractPrimitive;
+
+
+/***/ }),
 /* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports._global = {};
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var shaderProgramUtils_1 = __webpack_require__(4);
+var shaderGenerator_1 = __webpack_require__(21);
+//position and color
+var ColorShaderGenerator = /** @class */ (function (_super) {
+    __extends(ColorShaderGenerator, _super);
+    function ColorShaderGenerator() {
+        var _this = _super.call(this) || this;
+        _this.addAttribute(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'a_position');
+        _this.addVertexUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_MAT4, 'u_vertexMatrix');
+        //language=GLSL
+        _this.setVertexMainFn("\n            void main(){\n                gl_Position = u_vertexMatrix * a_position;   \n            }\n        ");
+        _this.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT, 'u_alpha');
+        _this.addFragmentUniform(shaderProgramUtils_1.GL_TYPE.FLOAT_VEC4, 'u_rgba');
+        //language=GLSL
+        _this.setFragmentMainFn("\n            void main(){\n                gl_FragColor = u_rgba;\n            }\n        ");
+        return _this;
+    }
+    return ColorShaderGenerator;
+}(shaderGenerator_1.default));
+exports.default = ColorShaderGenerator;
+
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2078,13 +2289,13 @@ exports.default = ShaderGenerator;
 
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var pointLight_1 = __webpack_require__(42);
+var pointLight_1 = __webpack_require__(49);
 var LightArray = /** @class */ (function () {
     function LightArray(game) {
         if (1 && !game)
@@ -2110,13 +2321,70 @@ exports.default = LightArray;
 
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(15);
+var State = /** @class */ (function () {
+    function State() {
+        var values = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            values[_i] = arguments[_i];
+        }
+        this.currState = [];
+        this.setState.apply(this, values);
+    }
+    State.prototype.setState = function () {
+        var _this = this;
+        var newState = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            newState[_i] = arguments[_i];
+        }
+        var changed = false;
+        newState.forEach(function (val, i) {
+            if (_this.currState[i] !== val)
+                changed = true;
+            _this.currState[i] = val;
+        });
+        return changed;
+    };
+    return State;
+}());
+var ObservableEntity = /** @class */ (function () {
+    function ObservableEntity() {
+        this._state = new State();
+        this._onChanged = [];
+    }
+    ObservableEntity.prototype.triggerObservable = function () {
+        var changed = this.checkObservableChanged();
+        if (!changed)
+            return;
+        for (var _i = 0, _a = this._onChanged; _i < _a.length; _i++) {
+            var fn = _a[_i];
+            fn();
+        }
+    };
+    ObservableEntity.prototype.addListener = function (f) {
+        this._onChanged.push(f);
+    };
+    ObservableEntity.prototype.removeListener = function (f) {
+        this._onChanged.remove(f);
+    };
+    return ObservableEntity;
+}());
+exports.default = ObservableEntity;
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = __webpack_require__(12);
 var AbstractLight = /** @class */ (function () {
     function AbstractLight(game) {
         this.color = color_1.default.WHITE;
@@ -2131,13 +2399,13 @@ exports.default = AbstractLight;
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var texture_1 = __webpack_require__(23);
+var texture_1 = __webpack_require__(26);
 var FrameBuffer = /** @class */ (function () {
     function FrameBuffer(gl, width, height) {
         if (1 && !gl)
@@ -2198,14 +2466,14 @@ exports.default = FrameBuffer;
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var frameBuffer_1 = __webpack_require__(22);
-var size_1 = __webpack_require__(24);
+var frameBuffer_1 = __webpack_require__(25);
+var size_1 = __webpack_require__(13);
 var isPowerOf2 = function (value) {
     return (value & (value - 1)) === 0;
 };
@@ -2377,45 +2645,7 @@ exports.default = Texture;
 
 
 /***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var objectPool_1 = __webpack_require__(11);
-var Size = /** @class */ (function () {
-    function Size(width, height) {
-        if (width === void 0) { width = 0; }
-        if (height === void 0) { height = 0; }
-        this.width = width;
-        this.height = height;
-    }
-    Size.prototype.setW = function (width) {
-        this.width = width;
-        return this;
-    };
-    Size.prototype.setH = function (height) {
-        this.height = height;
-        return this;
-    };
-    Size.prototype.setWH = function (width, height) {
-        this.width = width;
-        this.height = height;
-        return this;
-    };
-    Size.fromPool = function () {
-        return Size.rectPool.getNextObject();
-    };
-    Size.rectPool = new objectPool_1.default(Size);
-    return Size;
-}());
-exports.default = Size;
-
-
-/***/ }),
-/* 25 */,
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2578,7 +2808,7 @@ exports.default = CommonObject;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2713,7 +2943,7 @@ exports.default = Tween;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2727,7 +2957,7 @@ exports.Transient = function (params) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2741,13 +2971,13 @@ var SCALE_STRATEGY;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(15);
+var color_1 = __webpack_require__(12);
 var ShaderMaterial = /** @class */ (function () {
     function ShaderMaterial() {
         this.ambient = color_1.default.BLACK.clone();
@@ -2768,7 +2998,7 @@ exports.default = ShaderMaterial;
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2784,10 +3014,68 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var rect_1 = __webpack_require__(1);
-var arcadeRigidBody_1 = __webpack_require__(62);
-var shaderMaterial_1 = __webpack_require__(30);
+var baseModel_1 = __webpack_require__(1);
+var Resource = /** @class */ (function (_super) {
+    __extends(Resource, _super);
+    function Resource(game) {
+        var _this = _super.call(this, game) || this;
+        _this.resourceMap = {};
+        return _this;
+    }
+    Resource.prototype.getDefaultResourcePath = function () {
+        if (true) {
+            if (!this.resourceMap['main']) {
+                console.error(this);
+                throw "can not get resource path: resource with name \"" + 'main' + "\" not provided";
+            }
+        }
+        return this.resourceMap['main'];
+    };
+    Resource.prototype.setResourcePath = function (path) {
+        this.resourceMap['main'] = path;
+    };
+    Resource.prototype.getResourcePathByName = function (name) {
+        if (true) {
+            if (!this.resourceMap[name]) {
+                console.error(this);
+                throw "can not get resource path: resource with name \"" + name + "\" not provided";
+            }
+        }
+        return this.resourceMap[name];
+    };
+    Resource.prototype.hasResourceWithName = function (name) {
+        return !!this.resourceMap[name];
+    };
+    Resource.prototype.getAllResourcePathes = function () {
+        var _this = this;
+        return Object.keys(this.resourceMap).map(function (k) { return _this.resourceMap[k]; });
+    };
+    return Resource;
+}(baseModel_1.default));
+exports.default = Resource;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var baseModel_1 = __webpack_require__(1);
+var rect_1 = __webpack_require__(0);
+var arcadeRigidBody_1 = __webpack_require__(69);
+var shaderMaterial_1 = __webpack_require__(31);
 var GameObjectProto = /** @class */ (function (_super) {
     __extends(GameObjectProto, _super);
     function GameObjectProto(game) {
@@ -2805,7 +3093,6 @@ var GameObjectProto = /** @class */ (function (_super) {
         _this.blendMode = null;
         _this.acceptLight = false;
         _this.shaderMaterial = new shaderMaterial_1.default();
-        _this.children = [];
         _this._frameRect = new rect_1.default(); // todo make all private
         _this._behaviour = null;
         _this._sprPosX = 0;
@@ -2908,7 +3195,7 @@ exports.default = GameObjectProto;
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2924,7 +3211,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseAbstractBehaviour_1 = __webpack_require__(12);
+var baseAbstractBehaviour_1 = __webpack_require__(16);
 var Moveable = /** @class */ (function (_super) {
     __extends(Moveable, _super);
     function Moveable(game) {
@@ -2963,7 +3250,7 @@ exports.default = Moveable;
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2979,8 +3266,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var rect_1 = __webpack_require__(1);
+var baseModel_1 = __webpack_require__(1);
+var rect_1 = __webpack_require__(0);
 var TileMap = /** @class */ (function (_super) {
     __extends(TileMap, _super);
     function TileMap(game) {
@@ -3072,8 +3359,6 @@ var TileMap = /** @class */ (function (_super) {
             if (x > maxX)
                 x = maxX;
         }
-        //if (result.length) result = [result[0]];
-        //if (result.length) console.log('collided with',result.length);
         return result;
     };
     TileMap.prototype.update = function () {
@@ -3096,9 +3381,9 @@ var TileMap = /** @class */ (function (_super) {
                 var index = this.data[y] && this.data[y][x];
                 if (index === null || index === undefined)
                     continue;
-                var destRect = rect_1.default.fromPool();
+                var destRect = rect_1.default.fromPool().clone();
                 destRect.setXYWH(x * spriteSheet._frameWidth, y * spriteSheet._frameHeight, spriteSheet._frameWidth, spriteSheet._frameHeight);
-                renderer.drawImage(spriteSheet.resourcePath, spriteSheet.getFrameRect(index), destRect);
+                renderer.drawImage(spriteSheet.getDefaultResourcePath(), spriteSheet.getFrameRect(index), destRect);
             }
         }
     };
@@ -3108,15 +3393,416 @@ exports.default = TileMap;
 
 
 /***/ }),
-/* 34 */
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var baseModel_1 = __webpack_require__(1);
+var Layer = /** @class */ (function (_super) {
+    __extends(Layer, _super);
+    function Layer(game) {
+        var _this = _super.call(this, game) || this;
+        _this.type = 'Layer';
+        _this.gameObjects = [];
+        return _this;
+    }
+    Layer.prototype.addGameObject = function (go) {
+        go._layer = this;
+        this.gameObjects.push(go);
+    };
+    Layer.prototype.getAllSpriteSheets = function () {
+        var dataSet = [];
+        this.gameObjects.forEach(function (obj) {
+            obj.spriteSheet && !dataSet.find(function (it) { return obj.id === it.id; }) && dataSet.push(obj.spriteSheet);
+        });
+        return dataSet;
+    };
+    Layer.prototype.onShow = function () {
+        this.gameObjects.forEach(function (g) {
+            g.onShow();
+        });
+    };
+    Layer.prototype.kill = function (gObjId) {
+        this.gameObjects.remove(function (it) { return it.id === gObjId; });
+    };
+    Layer.prototype.update = function (currTime, deltaTime) {
+        var all = this.gameObjects;
+        var i = all.length;
+        var l = i - 1;
+        while (i--) {
+            var obj = all[l - i];
+            obj && obj.update(currTime, deltaTime);
+        }
+    };
+    return Layer;
+}(baseModel_1.default));
+exports.default = Layer;
+
+
+/***/ }),
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var game_1 = __webpack_require__(35);
-var gameProps_1 = __webpack_require__(95);
-var repository_1 = __webpack_require__(96);
+var tween_1 = __webpack_require__(28);
+var mat4 = __webpack_require__(10);
+var mathEx = __webpack_require__(5);
+var rect_1 = __webpack_require__(0);
+var point2d_1 = __webpack_require__(3);
+var mathEx_1 = __webpack_require__(5);
+var CAMERA_MATRIX_MODE;
+(function (CAMERA_MATRIX_MODE) {
+    CAMERA_MATRIX_MODE[CAMERA_MATRIX_MODE["MODE_TRANSFORM"] = 0] = "MODE_TRANSFORM";
+    CAMERA_MATRIX_MODE[CAMERA_MATRIX_MODE["MODE_IDENTITY"] = 1] = "MODE_IDENTITY";
+})(CAMERA_MATRIX_MODE = exports.CAMERA_MATRIX_MODE || (exports.CAMERA_MATRIX_MODE = {}));
+var Camera = /** @class */ (function () {
+    function Camera(game) {
+        var _this = this;
+        this.objFollowTo = null;
+        this.scene = null;
+        this.sceneWidth = 0;
+        this.sceneHeight = 0;
+        this.pos = new point2d_1.default(0, 0);
+        this.scale = new point2d_1.default(1, 1);
+        // flag to defined camera rect for transform mode (for dynamic objects)
+        // and identity mode (for fixed objects)
+        this.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
+        this._rect = new rect_1.default();
+        this._rectIdentity = new rect_1.default();
+        this._rectScaled = new rect_1.default();
+        this.cameraShakeTween = null;
+        this.cameraPosCorrection = {
+            current: new point2d_1.default(),
+            max: new point2d_1.default()
+        };
+        this.game = game;
+        this.scale.observe(function () {
+            _this.revalidate();
+        });
+    }
+    Camera.prototype.revalidate = function () {
+        this.scene = this.game.getCurrScene();
+        if (!this.scene)
+            return;
+        if (this.scene.tileMap)
+            this.scene.tileMap.revalidate();
+        this._rectIdentity.setXYWH(0, 0, this.game.width, this.game.height);
+        if (this.scene.tileMap.spriteSheet) {
+            this.sceneWidth = this.scene.tileMap.spriteSheet._frameWidth * this.scene.tileMap.width;
+            this.sceneHeight = this.scene.tileMap.spriteSheet._frameHeight * this.scene.tileMap.height;
+        }
+        else {
+            this.sceneWidth = this.game.getCurrScene().width || this.game.width;
+            this.sceneHeight = this.game.getCurrScene().height || this.game.height;
+        }
+    };
+    Camera.prototype.followTo = function (gameObject) {
+        if (gameObject === null)
+            return;
+        if (1 && gameObject === undefined)
+            throw "Camera:followTo(gameObject) - gameObject not provided";
+        this.objFollowTo = gameObject;
+        this.revalidate();
+    };
+    Camera.prototype.update = function (currTime, delta) {
+        var gameObject = this.objFollowTo;
+        if (!gameObject)
+            return;
+        var tileWidth = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0; // todo ?
+        var tileHeight = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
+        var w = this.game.width;
+        var h = this.game.height;
+        var wDiv2 = w / 2;
+        var hDiv2 = h / 2;
+        var wScaled = this.getRectScaled().width;
+        if (gameObject['_lastDirection'] === 'Right')
+            this.cameraPosCorrection.max.x = wScaled / 3; // todo _lastDirection
+        if (gameObject['_lastDirection'] === 'Left')
+            this.cameraPosCorrection.max.x = -wScaled / 3;
+        var currCorrection = this.cameraPosCorrection.max.
+            substract(this.cameraPosCorrection.current).
+            multiply(0.05);
+        this.cameraPosCorrection.current.add(currCorrection);
+        var newPos = point2d_1.default.fromPool();
+        var pointToFollow = point2d_1.default.fromPool();
+        pointToFollow.set(this.objFollowTo.pos);
+        pointToFollow.addXY(-wDiv2, -hDiv2);
+        newPos.x = this.pos.x + (pointToFollow.x + this.cameraPosCorrection.current.x - this.pos.x) * 0.1;
+        newPos.y = this.pos.y + (pointToFollow.y - this.pos.y) * 0.1;
+        if (newPos.x < 0)
+            newPos.x = 0;
+        if (newPos.y < 0)
+            newPos.y = 0;
+        if (newPos.x > this.sceneWidth - w + tileWidth)
+            newPos.x = this.sceneWidth - w + tileWidth;
+        if (newPos.y > this.sceneHeight - h + tileHeight)
+            newPos.y = this.sceneHeight - h + tileHeight;
+        this.pos.setXY(newPos.x, newPos.y);
+        if (this.cameraShakeTween)
+            this.cameraShakeTween.update(currTime);
+        this._updateRect();
+        this.render();
+    };
+    Camera.prototype.shake = function (amplitude, time) {
+        var _this = this;
+        var tweenTarget = { time: 0, point: new point2d_1.default(0, 0) };
+        this.cameraShakeTween = new tween_1.default({
+            target: tweenTarget,
+            time: time,
+            to: { time: time },
+            progress: function () {
+                var r1 = mathEx_1.random(-amplitude / 2, amplitude / 2);
+                var r2 = mathEx_1.random(-amplitude / 2, amplitude / 2);
+                tweenTarget.point.setXY(r1, r2);
+            },
+            complete: function () { return _this.cameraShakeTween = null; }
+        });
+    };
+    Camera.prototype._updateRect = function () {
+        var point00 = this.screenToWorld(point2d_1.default.fromPool().setXY(0, 0));
+        var pointWH = this.screenToWorld(point2d_1.default.fromPool().setXY(this.game.width, this.game.height));
+        this._rectScaled.setXYWH(point00.x, point00.y, pointWH.x - point00.x, pointWH.y - point00.y);
+    };
+    Camera.prototype.render = function () {
+        this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
+        this.game.renderer.scale(this.scale.x, this.scale.y);
+        // todo rotation does not work correctly yet
+        //this.game.renderer.rotateZ(this.angle);
+        this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
+        this.game.renderer.translate(-this.pos.x, -this.pos.y);
+        if (this.cameraShakeTween !== null)
+            this.game.renderer.translate(this.cameraShakeTween.getTarget().point.x, this.cameraShakeTween.getTarget().point.y);
+    };
+    Camera.prototype.screenToWorld = function (p) {
+        var mScale = mat4.makeScale(this.scale.x, this.scale.y, 1);
+        var point2d = mathEx.unProject(p, this.game.width, this.game.height, mScale);
+        point2d.add(this.pos);
+        return point2d;
+    };
+    Camera.prototype.getRect = function () {
+        if (this.matrixMode === CAMERA_MATRIX_MODE.MODE_IDENTITY)
+            return this._rectIdentity;
+        else {
+            this._rect.setXYWH(this.pos.x, this.pos.y, this.game.width, this.game.height);
+            return this._rect;
+        }
+    };
+    Camera.prototype.getRectScaled = function () {
+        if (this.matrixMode === CAMERA_MATRIX_MODE.MODE_IDENTITY)
+            return this._rectIdentity;
+        else
+            return this._rectScaled;
+    };
+    return Camera;
+}());
+exports.default = Camera;
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var container_1 = __webpack_require__(15);
+var textField_1 = __webpack_require__(14);
+var Button = /** @class */ (function (_super) {
+    __extends(Button, _super);
+    function Button(game) {
+        var _this = _super.call(this, game) || this;
+        _this.text = '';
+        _this.font = null;
+        _this._textField = new textField_1.default(game);
+        return _this;
+    }
+    Button.prototype.revalidate = function () {
+        _super.prototype.revalidate.call(this);
+        this._textField.setFont(this.font);
+        this._textField.setText(this.text);
+        this.onGeometryChanged();
+    };
+    Button.prototype.onGeometryChanged = function () {
+        this._textField.onGeometryChanged();
+        this.calcDrawableRect(this._textField.width, this._textField.height);
+        var dx = (this.background.drawingRect.width - this._textField.width) / 2;
+        var dy = (this.background.drawingRect.height - this._textField.height) / 2;
+        this._textField.pos.setXY(dx, dy);
+    };
+    Button.prototype.setText = function (text) {
+        this._textField.setText(text);
+        this._dirty = true;
+    };
+    Button.prototype.setFont = function (f) {
+        this._textField.setFont(f);
+    };
+    Button.prototype.getText = function () {
+        return this._textField.getText();
+    };
+    Button.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        this.render();
+    };
+    Button.prototype.render = function () {
+        var renderer = this.game.renderer;
+        renderer.translate(this.pos.x + this.marginLeft, this.pos.y + this.marginTop);
+        this.background.render();
+        this._textField.render();
+    };
+    return Button;
+}(container_1.default));
+exports.default = Button;
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var rect_1 = __webpack_require__(0);
+var resource_1 = __webpack_require__(32);
+var Image = /** @class */ (function (_super) {
+    __extends(Image, _super);
+    function Image(game) {
+        var _this = _super.call(this, game) || this;
+        _this.destRect = new rect_1.default();
+        _this.srcRect = new rect_1.default();
+        _this.filters = [];
+        _this.drawingRect = new rect_1.default();
+        _this.blendMode = '';
+        return _this;
+    }
+    Image.prototype.getDrawableInfo = function () {
+        return { blendMode: this.blendMode, acceptLight: false };
+    };
+    Image.prototype.render = function () {
+        this.game.renderer.drawImage(this.getDefaultResourcePath(), this.srcRect, this.destRect);
+    };
+    return Image;
+}(resource_1.default));
+exports.default = Image;
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var container_1 = __webpack_require__(15);
+var AbsoluteLayout = /** @class */ (function (_super) {
+    __extends(AbsoluteLayout, _super);
+    function AbsoluteLayout(game) {
+        return _super.call(this, game) || this;
+    }
+    AbsoluteLayout.prototype.appendChild = function (c) {
+        c.testLayout();
+        c.parent = this;
+        _super.prototype.appendChild.call(this, c);
+    };
+    AbsoluteLayout.prototype.onGeometryChanged = function () {
+        _super.prototype.onGeometryChanged.call(this);
+        var maxX = 0, maxY = 0;
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var v = _a[_i];
+            v.onGeometryChanged();
+            v._dirty = true;
+            var r = v.getRect();
+            if (r.right > maxX)
+                maxX = r.right;
+            if (r.bottom > maxY)
+                maxY = r.bottom;
+        }
+        if (this.layoutWidth === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
+            this.width = maxX;
+        }
+        if (this.layoutHeight === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
+            this.height = maxY;
+        }
+        this.calcDrawableRect(this.width, this.height);
+    };
+    AbsoluteLayout.prototype.update = function (time, delta) {
+        _super.prototype.update.call(this, time, delta);
+        var renderer = this.game.renderer;
+        renderer.translate(this.pos.x + this.marginLeft, this.pos.y + this.marginTop);
+        if (this.overflow === container_1.OVERFLOW.HIDDEN)
+            renderer.lockRect(this.getRect());
+        if (this.background)
+            this.background.render();
+        renderer.translate(this.paddingLeft, this.paddingTop);
+        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
+            var c = _a[_i];
+            renderer.save();
+            if (c._dirty)
+                c.parent._dirty = true;
+            c.update(time, delta);
+            renderer.restore();
+        }
+        if (this.overflow === container_1.OVERFLOW.HIDDEN)
+            this.game.renderer.unlockRect();
+    };
+    return AbsoluteLayout;
+}(container_1.default));
+exports.default = AbsoluteLayout;
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var game_1 = __webpack_require__(42);
+var gameProps_1 = __webpack_require__(103);
+var repository_1 = __webpack_require__(104);
 if (1 && gameProps_1.gameProps.startSceneId === undefined)
     throw 'start scene not specified';
 var game = new game_1.default();
@@ -3129,7 +3815,7 @@ if (true)
 
 
 /***/ }),
-/* 35 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3151,21 +3837,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseAbstractBehaviour_1 = __webpack_require__(12);
-__webpack_require__(36);
-var rendererFactory_1 = __webpack_require__(37);
-var repository_1 = __webpack_require__(58);
-var mouse_1 = __webpack_require__(80);
-var keyboard_1 = __webpack_require__(81);
-var gamePad_1 = __webpack_require__(82);
-var collider_1 = __webpack_require__(83);
-var decorators_1 = __webpack_require__(28);
-var commonObject_1 = __webpack_require__(26);
-var camera_1 = __webpack_require__(84);
-var consts_1 = __webpack_require__(29);
+var baseAbstractBehaviour_1 = __webpack_require__(16);
+__webpack_require__(43);
+var rendererFactory_1 = __webpack_require__(44);
+var repository_1 = __webpack_require__(65);
+var mouse_1 = __webpack_require__(85);
+var keyboard_1 = __webpack_require__(86);
+var gamePad_1 = __webpack_require__(87);
+var collider_1 = __webpack_require__(88);
+var decorators_1 = __webpack_require__(29);
+var commonObject_1 = __webpack_require__(27);
+var camera_1 = __webpack_require__(37);
+var consts_1 = __webpack_require__(30);
 var point2d_1 = __webpack_require__(3);
-var lightArray_1 = __webpack_require__(20);
-var uiBuilder_1 = __webpack_require__(105);
+var lightArray_1 = __webpack_require__(22);
+var uiBuilder_1 = __webpack_require__(89);
 var Game = /** @class */ (function (_super) {
     __extends(Game, _super);
     function Game() {
@@ -3187,6 +3873,7 @@ var Game = /** @class */ (function (_super) {
         _this.scaleStrategy = consts_1.SCALE_STRATEGY.FIT;
         _this.startSceneId = 0;
         _this._revalidated = false;
+        _this.cnt = 0;
         var time = Date.now();
         _this._lastTime = _this._currTime = time;
         _this._deltaTime = 0;
@@ -3213,13 +3900,23 @@ var Game = /** @class */ (function (_super) {
     Game.prototype.getDeltaTime = function () {
         return this._deltaTime;
     };
+    Game.prototype.debug2 = function () {
+        var val = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            val[_i] = arguments[_i];
+        }
+        this.cnt++;
+        console.log.apply(console, val);
+        if (this.cnt > 10)
+            throw 'stoped';
+    };
     Game.prototype.runScene = function (scene) {
         var _this = this;
         if (1 && !this._revalidated)
             throw "game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly";
         this._currentScene = scene;
         if (true) {
-            var allScripts_1 = __webpack_require__(85);
+            var allScripts_1 = __webpack_require__(93);
             var sceneBhScriptName = "" + scene.name[0].toUpperCase() + scene.name.substr(1) + "Behaviour";
             if (sceneBhScriptName)
                 scene.setIndividualBehaviour(allScripts_1[sceneBhScriptName]);
@@ -3300,7 +3997,7 @@ exports.default = Game;
 
 
 /***/ }),
-/* 36 */
+/* 43 */
 /***/ (function(module, exports) {
 
 Array.prototype['remove'] = function (callback) {
@@ -3342,7 +4039,7 @@ if (!Array.prototype['find']) {
 
 
 /***/ }),
-/* 37 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3350,7 +4047,7 @@ if (!Array.prototype['find']) {
 Object.defineProperty(exports, "__esModule", { value: true });
 //import Renderer from './dom/htmlRenderer'
 //import Renderer from './canvas/canvasRenderer'
-var webGlRenderer_1 = __webpack_require__(38);
+var webGlRenderer_1 = __webpack_require__(45);
 //import Renderer from './dom/svgRenderer'
 var RendererFactory = /** @class */ (function () {
     function RendererFactory() {
@@ -3366,7 +4063,7 @@ exports.default = RendererFactory;
 
 
 /***/ }),
-/* 38 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3382,23 +4079,23 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var spriteRectLightDrawer_1 = __webpack_require__(39);
-var spriteRectDrawer_1 = __webpack_require__(10);
-var tiledSpriteRectDrawer_1 = __webpack_require__(43);
-var colorRectDrawer_1 = __webpack_require__(44);
+var spriteRectLightDrawer_1 = __webpack_require__(46);
+var spriteRectDrawer_1 = __webpack_require__(11);
+var tiledSpriteRectDrawer_1 = __webpack_require__(50);
+var colorRectDrawer_1 = __webpack_require__(51);
 var abstractDrawer_1 = __webpack_require__(6);
-var lineDrawer_1 = __webpack_require__(45);
-var circleDrawer_1 = __webpack_require__(47);
-var frameBuffer_1 = __webpack_require__(22);
-var matrixStack_1 = __webpack_require__(49);
-var mat4 = __webpack_require__(9);
+var lineDrawer_1 = __webpack_require__(52);
+var circleDrawer_1 = __webpack_require__(54);
+var frameBuffer_1 = __webpack_require__(25);
+var matrixStack_1 = __webpack_require__(56);
+var mat4 = __webpack_require__(10);
 var matEx = __webpack_require__(5);
-var texture_1 = __webpack_require__(23);
-var addBlendDrawer_1 = __webpack_require__(50);
-var rect_1 = __webpack_require__(1);
-var abstractCanvasRenderer_1 = __webpack_require__(54);
-var shaderMaterial_1 = __webpack_require__(30);
-var size_1 = __webpack_require__(24);
+var texture_1 = __webpack_require__(26);
+var addBlendDrawer_1 = __webpack_require__(57);
+var rect_1 = __webpack_require__(0);
+var abstractCanvasRenderer_1 = __webpack_require__(61);
+var shaderMaterial_1 = __webpack_require__(31);
+var size_1 = __webpack_require__(13);
 var getCtx = function (el) {
     return (el.getContext("webgl", { alpha: false }) ||
         el.getContext('experimental-webgl', { alpha: false }) ||
@@ -3465,12 +4162,12 @@ var WebGlRenderer = /** @class */ (function (_super) {
     WebGlRenderer.prototype.draw = function (renderable) {
         if (!matEx.overlapTest(this.game.camera.getRectScaled(), renderable.getRect()))
             return;
-        var texToDraw = this.renderableCache[renderable.spriteSheet.resourcePath].texture;
+        var texToDraw = this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()].texture;
         texToDraw = texToDraw.applyFilters(renderable.filters, this.frameBuffer);
         var texInfo = [{ texture: texToDraw, name: 'texture' }];
-        if (renderable.spriteSheet.normalMapPath) {
+        if (renderable.spriteSheet.hasResourceWithName('normalMap')) {
             texInfo.push({
-                texture: this.renderableCache[renderable.spriteSheet.normalMapPath].texture,
+                texture: this.renderableCache[renderable.spriteSheet.getResourcePathByName('normalMap')].texture,
                 name: 'normalTexture'
             });
         }
@@ -3753,7 +4450,7 @@ exports.default = WebGlRenderer;
 
 
 /***/ }),
-/* 39 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3769,11 +4466,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var spriteRectDrawer_1 = __webpack_require__(10);
+var spriteRectDrawer_1 = __webpack_require__(11);
 var texShaderGenerator_1 = __webpack_require__(8);
 var shaderProgram_1 = __webpack_require__(2);
 var shaderProgramUtils_1 = __webpack_require__(4);
-var lightArray_1 = __webpack_require__(20);
+var lightArray_1 = __webpack_require__(22);
 var SpriteRectLightDrawer = /** @class */ (function (_super) {
     __extends(SpriteRectLightDrawer, _super);
     function SpriteRectLightDrawer(gl) {
@@ -3799,7 +4496,7 @@ exports.default = SpriteRectLightDrawer;
 
 
 /***/ }),
-/* 40 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3874,7 +4571,7 @@ exports.default = VertexBuffer;
 
 
 /***/ }),
-/* 41 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3922,7 +4619,7 @@ exports.default = IndexBuffer;
 
 
 /***/ }),
-/* 42 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3939,7 +4636,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var point2d_1 = __webpack_require__(3);
-var abstractLight_1 = __webpack_require__(21);
+var abstractLight_1 = __webpack_require__(24);
 var PointLight = /** @class */ (function (_super) {
     __extends(PointLight, _super);
     function PointLight(game) {
@@ -3971,7 +4668,7 @@ exports.default = PointLight;
 
 
 /***/ }),
-/* 43 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3987,7 +4684,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var plane_1 = __webpack_require__(13);
+var plane_1 = __webpack_require__(17);
 var shaderProgram_1 = __webpack_require__(2);
 var bufferInfo_1 = __webpack_require__(7);
 var abstractDrawer_1 = __webpack_require__(6);
@@ -4018,7 +4715,7 @@ exports.default = TiledSpriteRectDrawer;
 
 
 /***/ }),
-/* 44 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4034,11 +4731,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var plane_1 = __webpack_require__(13);
+var plane_1 = __webpack_require__(17);
 var shaderProgram_1 = __webpack_require__(2);
 var bufferInfo_1 = __webpack_require__(7);
 var abstractDrawer_1 = __webpack_require__(6);
-var colorShaderGenerator_1 = __webpack_require__(17);
+var colorShaderGenerator_1 = __webpack_require__(20);
 var ColorRectDrawer = /** @class */ (function (_super) {
     __extends(ColorRectDrawer, _super);
     function ColorRectDrawer(gl) {
@@ -4059,7 +4756,7 @@ exports.default = ColorRectDrawer;
 
 
 /***/ }),
-/* 45 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4075,11 +4772,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var line_1 = __webpack_require__(46);
+var line_1 = __webpack_require__(53);
 var shaderProgram_1 = __webpack_require__(2);
 var bufferInfo_1 = __webpack_require__(7);
 var abstractDrawer_1 = __webpack_require__(6);
-var colorShaderGenerator_1 = __webpack_require__(17);
+var colorShaderGenerator_1 = __webpack_require__(20);
 var LineDrawer = /** @class */ (function (_super) {
     __extends(LineDrawer, _super);
     function LineDrawer(gl) {
@@ -4099,7 +4796,7 @@ exports.default = LineDrawer;
 
 
 /***/ }),
-/* 46 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4115,7 +4812,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractPrimitive_1 = __webpack_require__(14);
+var abstractPrimitive_1 = __webpack_require__(18);
 var Line = /** @class */ (function (_super) {
     __extends(Line, _super);
     function Line() {
@@ -4133,7 +4830,7 @@ exports.default = Line;
 
 
 /***/ }),
-/* 47 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4149,11 +4846,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = __webpack_require__(48);
+var circle_1 = __webpack_require__(55);
 var shaderProgram_1 = __webpack_require__(2);
 var abstractDrawer_1 = __webpack_require__(6);
 var bufferInfo_1 = __webpack_require__(7);
-var colorShaderGenerator_1 = __webpack_require__(17);
+var colorShaderGenerator_1 = __webpack_require__(20);
 var CircleDrawer = /** @class */ (function (_super) {
     __extends(CircleDrawer, _super);
     function CircleDrawer(gl) {
@@ -4173,7 +4870,7 @@ exports.default = CircleDrawer;
 
 
 /***/ }),
-/* 48 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4189,7 +4886,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractPrimitive_1 = __webpack_require__(14);
+var abstractPrimitive_1 = __webpack_require__(18);
 var Circle = /** @class */ (function (_super) {
     __extends(Circle, _super);
     function Circle() {
@@ -4215,13 +4912,13 @@ exports.default = Circle;
 
 
 /***/ }),
-/* 49 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var mat4 = __webpack_require__(9);
+var mat4 = __webpack_require__(10);
 var MatrixStack = /** @class */ (function () {
     function MatrixStack() {
         this.stack = [];
@@ -4284,7 +4981,7 @@ exports.default = MatrixStack;
 
 
 /***/ }),
-/* 50 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4300,7 +4997,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractBlendDrawer_1 = __webpack_require__(51);
+var abstractBlendDrawer_1 = __webpack_require__(58);
 var AddBlendDrawer = /** @class */ (function (_super) {
     __extends(AddBlendDrawer, _super);
     function AddBlendDrawer(gl) {
@@ -4316,17 +5013,17 @@ exports.default = AddBlendDrawer;
 
 
 /***/ }),
-/* 51 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var spriteRectDrawer_1 = __webpack_require__(10);
+var spriteRectDrawer_1 = __webpack_require__(11);
 var shaderProgramUtils_1 = __webpack_require__(4);
 var texShaderGenerator_1 = __webpack_require__(8);
 var shaderProgram_1 = __webpack_require__(2);
-var simpleCopyFilter_1 = __webpack_require__(52);
+var simpleCopyFilter_1 = __webpack_require__(59);
 var AbstractBlendDrawer = /** @class */ (function () {
     function AbstractBlendDrawer(gl) {
         this.gl = gl;
@@ -4357,7 +5054,7 @@ exports.default = AbstractBlendDrawer;
 
 
 /***/ }),
-/* 52 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4374,7 +5071,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractFilter_1 = __webpack_require__(53);
+var abstractFilter_1 = __webpack_require__(60);
 var shaderProgramUtils_1 = __webpack_require__(4);
 var SimpleCopyFilter = /** @class */ (function (_super) {
     __extends(SimpleCopyFilter, _super);
@@ -4392,15 +5089,15 @@ exports.default = SimpleCopyFilter;
 
 
 /***/ }),
-/* 53 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var shaderProgram_1 = __webpack_require__(2);
-var spriteRectDrawer_1 = __webpack_require__(10);
-var mat4 = __webpack_require__(9);
+var spriteRectDrawer_1 = __webpack_require__(11);
+var mat4 = __webpack_require__(10);
 var texShaderGenerator_1 = __webpack_require__(8);
 var makePositionMatrix = function (dstX, dstY, dstWidth, dstHeight) {
     var projectionMatrix = mat4.ortho(0, dstWidth, 0, dstHeight, -1, 1);
@@ -4443,7 +5140,7 @@ exports.default = AbstractFilter;
 
 
 /***/ }),
-/* 54 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4459,8 +5156,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractRenderer_1 = __webpack_require__(55);
-var consts_1 = __webpack_require__(29);
+var abstractRenderer_1 = __webpack_require__(62);
+var consts_1 = __webpack_require__(30);
 var AbstractCanvasRenderer = /** @class */ (function (_super) {
     __extends(AbstractCanvasRenderer, _super);
     function AbstractCanvasRenderer(game) {
@@ -4494,15 +5191,15 @@ exports.default = AbstractCanvasRenderer;
 
 
 /***/ }),
-/* 55 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var textField_1 = __webpack_require__(18);
-var device_1 = __webpack_require__(57);
-var size_1 = __webpack_require__(24);
+var textField_1 = __webpack_require__(14);
+var device_1 = __webpack_require__(64);
+var size_1 = __webpack_require__(13);
 var AbstractRendere = /** @class */ (function () {
     function AbstractRendere(game) {
         this.renderableCache = {};
@@ -4607,7 +5304,7 @@ var AbstractRendere = /** @class */ (function () {
         textField.pos.y = 10;
         textField.setText(textField.getText() + res);
     };
-    AbstractRendere.prototype.loadTextureInfo = function (textureId, info) { };
+    AbstractRendere.prototype.loadTextureInfo = function (textureId, onLoaded) { };
     AbstractRendere.prototype.getTextureInfo = function (textureId) {
         return this.renderableCache[textureId];
     };
@@ -4617,7 +5314,7 @@ exports.default = AbstractRendere;
 
 
 /***/ }),
-/* 56 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4660,7 +5357,7 @@ exports.default = EventEmitter;
 
 
 /***/ }),
-/* 57 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4679,13 +5376,13 @@ exports.default = Device;
 
 
 /***/ }),
-/* 58 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var models = __webpack_require__(59);
+var models = __webpack_require__(66);
 var Repository = /** @class */ (function () {
     function Repository(game) {
         this._game = game;
@@ -4792,42 +5489,42 @@ exports.default = Repository;
 
 
 /***/ }),
-/* 59 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var frameAnimation_1 = __webpack_require__(60);
+var frameAnimation_1 = __webpack_require__(67);
 exports.FrameAnimation = frameAnimation_1.default;
-var spriteSheet_1 = __webpack_require__(61);
+var spriteSheet_1 = __webpack_require__(68);
 exports.SpriteSheet = spriteSheet_1.default;
-var gameObjectProto_1 = __webpack_require__(31);
+var gameObjectProto_1 = __webpack_require__(33);
 exports.GameObjectProto = gameObjectProto_1.default;
-var gameObject_1 = __webpack_require__(64);
+var gameObject_1 = __webpack_require__(71);
 exports.GameObject = gameObject_1.default;
-var commonBehaviour_1 = __webpack_require__(71);
+var commonBehaviour_1 = __webpack_require__(78);
 exports.CommonBehaviour = commonBehaviour_1.default;
-var particleSystem_1 = __webpack_require__(72);
+var particleSystem_1 = __webpack_require__(79);
 exports.ParticleSystem = particleSystem_1.default;
-var scene_1 = __webpack_require__(73);
+var scene_1 = __webpack_require__(80);
 exports.Scene = scene_1.default;
-var sound_1 = __webpack_require__(76);
+var sound_1 = __webpack_require__(83);
 exports.Sound = sound_1.default;
-var font_1 = __webpack_require__(77);
+var font_1 = __webpack_require__(84);
 exports.Font = font_1.default;
-var layer_1 = __webpack_require__(78);
+var layer_1 = __webpack_require__(36);
 exports.Layer = layer_1.default;
-var textField_1 = __webpack_require__(18);
+var textField_1 = __webpack_require__(14);
 exports.TextField = textField_1.default;
-var button_1 = __webpack_require__(79);
+var button_1 = __webpack_require__(38);
 exports.Button = button_1.default;
-var tileMap_1 = __webpack_require__(33);
+var tileMap_1 = __webpack_require__(35);
 exports.TileMap = tileMap_1.default;
 
 
 /***/ }),
-/* 60 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4843,7 +5540,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
+var baseModel_1 = __webpack_require__(1);
 var FrameAnimation = /** @class */ (function (_super) {
     __extends(FrameAnimation, _super);
     function FrameAnimation(game) {
@@ -4906,7 +5603,7 @@ exports.default = FrameAnimation;
 
 
 /***/ }),
-/* 61 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4922,8 +5619,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var rect_1 = __webpack_require__(1);
+var rect_1 = __webpack_require__(0);
+var resource_1 = __webpack_require__(32);
 var SpriteSheet = /** @class */ (function (_super) {
     __extends(SpriteSheet, _super);
     function SpriteSheet(game) {
@@ -4936,8 +5633,6 @@ var SpriteSheet = /** @class */ (function (_super) {
         _this._frameWidth = 0;
         _this._frameHeight = 0;
         _this._numOfFrames = 0;
-        _this.resourcePath = '';
-        _this.normalMapPath = '';
         _this.frameRect = new rect_1.default();
         return _this;
     }
@@ -4960,19 +5655,19 @@ var SpriteSheet = /** @class */ (function (_super) {
         return fr;
     };
     return SpriteSheet;
-}(baseModel_1.default));
+}(resource_1.default));
 exports.default = SpriteSheet;
 
 
 /***/ }),
-/* 62 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // http://madebyevan.com/gamedevclass/minimal-demo/
 Object.defineProperty(exports, "__esModule", { value: true });
-var vec2_1 = __webpack_require__(63);
+var vec2_1 = __webpack_require__(70);
 var ArcadeRigidBody = /** @class */ (function () {
     function ArcadeRigidBody(game, gameObject) {
         this.vel = new vec2_1.default();
@@ -4996,7 +5691,7 @@ exports.default = ArcadeRigidBody;
 
 
 /***/ }),
-/* 63 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5123,7 +5818,7 @@ exports.default = Vec2;
 
 
 /***/ }),
-/* 64 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5139,8 +5834,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var gameObjectProto_1 = __webpack_require__(31);
-var commonBehaviours = __webpack_require__(65);
+var gameObjectProto_1 = __webpack_require__(33);
+var commonBehaviours = __webpack_require__(72);
 var noop = function () { };
 var GameObject = /** @class */ (function (_super) {
     __extends(GameObject, _super);
@@ -5215,22 +5910,22 @@ exports.default = GameObject;
 
 
 /***/ }),
-/* 65 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var draggable_1 = __webpack_require__(66);
+var draggable_1 = __webpack_require__(73);
 exports.Draggable = draggable_1.default;
-var control4Dir_1 = __webpack_require__(67);
+var control4Dir_1 = __webpack_require__(74);
 exports.Control4Dir = control4Dir_1.default;
-var control2Dir_1 = __webpack_require__(69);
+var control2Dir_1 = __webpack_require__(76);
 exports.Control2Dir = control2Dir_1.default;
 
 
 /***/ }),
-/* 66 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5246,7 +5941,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseAbstractBehaviour_1 = __webpack_require__(12);
+var baseAbstractBehaviour_1 = __webpack_require__(16);
 var DraggableBehaviour = /** @class */ (function (_super) {
     __extends(DraggableBehaviour, _super);
     function DraggableBehaviour(game) {
@@ -5328,7 +6023,7 @@ exports.default = DraggableBehaviour;
 
 
 /***/ }),
-/* 67 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5344,7 +6039,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var move4Dir_1 = __webpack_require__(68);
+var move4Dir_1 = __webpack_require__(75);
 var Control4Dir = /** @class */ (function (_super) {
     __extends(Control4Dir, _super);
     function Control4Dir(game) {
@@ -5392,7 +6087,7 @@ exports.default = Control4Dir;
 
 
 /***/ }),
-/* 68 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5408,7 +6103,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var moveable_1 = __webpack_require__(32);
+var moveable_1 = __webpack_require__(34);
 var Move4Dir = /** @class */ (function (_super) {
     __extends(Move4Dir, _super);
     function Move4Dir(game) {
@@ -5429,7 +6124,7 @@ exports.default = Move4Dir;
 
 
 /***/ }),
-/* 69 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5445,7 +6140,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var move2Dir_1 = __webpack_require__(70);
+var move2Dir_1 = __webpack_require__(77);
 var Control2Dir = /** @class */ (function (_super) {
     __extends(Control2Dir, _super);
     function Control2Dir(game) {
@@ -5479,7 +6174,7 @@ exports.default = Control2Dir;
 
 
 /***/ }),
-/* 70 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5495,7 +6190,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var moveable_1 = __webpack_require__(32);
+var moveable_1 = __webpack_require__(34);
 var Move2Dir = /** @class */ (function (_super) {
     __extends(Move2Dir, _super);
     function Move2Dir(game) {
@@ -5515,7 +6210,7 @@ exports.default = Move2Dir;
 
 
 /***/ }),
-/* 71 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5531,7 +6226,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
+var baseModel_1 = __webpack_require__(1);
 var CommonBehaviour = /** @class */ (function (_super) {
     __extends(CommonBehaviour, _super);
     function CommonBehaviour(game) {
@@ -5547,7 +6242,7 @@ exports.default = CommonBehaviour;
 
 
 /***/ }),
-/* 72 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5563,7 +6258,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
+var baseModel_1 = __webpack_require__(1);
 var mathEx = __webpack_require__(5);
 var r = function (obj) {
     return mathEx.random(obj.from, obj.to);
@@ -5628,7 +6323,7 @@ exports.default = ParticleSystem;
 
 
 /***/ }),
-/* 73 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5644,13 +6339,13 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var loadingQueue_1 = __webpack_require__(74);
-var tileMap_1 = __webpack_require__(33);
-var layer_1 = __webpack_require__(78);
-var ambientLight_1 = __webpack_require__(75);
-var color_1 = __webpack_require__(15);
-var camera_1 = __webpack_require__(84);
+var baseModel_1 = __webpack_require__(1);
+var loadingQueue_1 = __webpack_require__(81);
+var tileMap_1 = __webpack_require__(35);
+var layer_1 = __webpack_require__(36);
+var ambientLight_1 = __webpack_require__(82);
+var color_1 = __webpack_require__(12);
+var camera_1 = __webpack_require__(37);
 var Scene = /** @class */ (function (_super) {
     __extends(Scene, _super);
     function Scene(game) {
@@ -5678,9 +6373,14 @@ var Scene = /** @class */ (function (_super) {
     };
     Scene.prototype.getAllGameObjects = function () {
         var res = [];
-        this.layers.forEach(function (l) {
-            res = res.concat(res, l.gameObjects);
-        });
+        var ONE = 1;
+        for (var i = 0; i < this.layers.length; i++) {
+            var layer = this.layers[this.layers.length - ONE - i];
+            for (var j = 0; j < layer.gameObjects.length; j++) {
+                var go = layer.gameObjects[layer.gameObjects.length - ONE - j];
+                res.push(go);
+            }
+        }
         return res;
     };
     Scene.prototype.getAllSpriteSheets = function () {
@@ -5704,16 +6404,15 @@ var Scene = /** @class */ (function (_super) {
             cb && cb();
         };
         resources.forEach(function (res) {
-            var taskId = res.id;
-            q.addTask(function () {
-                _this.game.renderer.loadTextureInfo(res.resourcePath, function () { return q.resolveTask(taskId); });
-            }, res.id);
-            if (res.normalMapPath) {
-                var taskId_1 = res.id.toString() + res.normalMapPath;
-                q.addTask(function () {
-                    _this.game.renderer.loadTextureInfo(res.normalMapPath, function () { return q.resolveTask(taskId_1); });
-                }, taskId_1);
-            }
+            var id = 0;
+            res.getAllResourcePathes().forEach(function (path) {
+                (function (id) {
+                    q.addTask(function () {
+                        _this.game.renderer.loadTextureInfo(path, function () { return q.resolveTask(id); });
+                    }, id);
+                })(id);
+                id++;
+            });
         });
         q.start();
     };
@@ -5788,7 +6487,7 @@ exports.default = Scene;
 
 
 /***/ }),
-/* 74 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5848,7 +6547,7 @@ exports.default = Queue;
 
 
 /***/ }),
-/* 75 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5864,7 +6563,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var abstractLight_1 = __webpack_require__(21);
+var abstractLight_1 = __webpack_require__(24);
 var AmbientLight = /** @class */ (function (_super) {
     __extends(AmbientLight, _super);
     function AmbientLight(game) {
@@ -5882,7 +6581,7 @@ exports.default = AmbientLight;
 
 
 /***/ }),
-/* 76 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5898,7 +6597,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
+var baseModel_1 = __webpack_require__(1);
 var Sound = /** @class */ (function (_super) {
     __extends(Sound, _super);
     function Sound(game) {
@@ -5934,7 +6633,7 @@ exports.default = Sound;
 
 
 /***/ }),
-/* 77 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5950,8 +6649,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var rect_1 = __webpack_require__(1);
+var rect_1 = __webpack_require__(0);
+var resource_1 = __webpack_require__(32);
 var FontContext = /** @class */ (function () {
     function FontContext() {
         this.width = 0;
@@ -5965,7 +6664,6 @@ var Font = /** @class */ (function (_super) {
     function Font(game) {
         var _this = _super.call(this, game) || this;
         _this.type = 'Font';
-        _this.resourcePath = null;
         _this.fontSize = 12;
         _this.fontFamily = 'Monospace';
         _this.fontContext = null;
@@ -5985,138 +6683,12 @@ var Font = /** @class */ (function (_super) {
         return this.fontContext.symbols[' '].height;
     };
     return Font;
-}(baseModel_1.default));
+}(resource_1.default));
 exports.default = Font;
 
 
 /***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var Layer = /** @class */ (function (_super) {
-    __extends(Layer, _super);
-    function Layer(game) {
-        var _this = _super.call(this, game) || this;
-        _this.type = 'Layer';
-        _this.gameObjects = [];
-        return _this;
-    }
-    Layer.prototype.addGameObject = function (go) {
-        go._layer = this;
-        this.gameObjects.push(go);
-    };
-    Layer.prototype.getAllSpriteSheets = function () {
-        var dataSet = [];
-        this.gameObjects.forEach(function (obj) {
-            obj.spriteSheet && !dataSet.find(function (it) { return obj.id === it.id; }) && dataSet.push(obj.spriteSheet);
-        });
-        return dataSet;
-    };
-    Layer.prototype.onShow = function () {
-        this.gameObjects.forEach(function (g) {
-            g.onShow();
-        });
-    };
-    Layer.prototype.kill = function (gObjId) {
-        this.gameObjects.remove(function (it) { return it.id === gObjId; });
-    };
-    Layer.prototype.update = function (currTime, deltaTime) {
-        var all = this.gameObjects;
-        var i = all.length;
-        var l = i - 1;
-        while (i--) {
-            var obj = all[l - i];
-            obj && obj.update(currTime, deltaTime);
-        }
-    };
-    return Layer;
-}(baseModel_1.default));
-exports.default = Layer;
-
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(109);
-var textField_1 = __webpack_require__(18);
-var Button = /** @class */ (function (_super) {
-    __extends(Button, _super);
-    function Button(game) {
-        var _this = _super.call(this, game) || this;
-        _this.text = '';
-        _this.font = null;
-        _this.alignContent = container_1.ALIGN_CONTENT.VERTICAL;
-        _this._textField = new textField_1.default(game);
-        return _this;
-    }
-    Button.prototype.revalidate = function () {
-        _super.prototype.revalidate.call(this);
-        this._textField.setFont(this.font);
-        this._textField.setText(this.text);
-        this.onGeometryChanged();
-    };
-    Button.prototype.onGeometryChanged = function () {
-        this._textField.onGeometryChanged();
-        this.calcBgRectWithPadding(this._textField.width, this._textField.height);
-        var dx = (this.background.drawingRect.width - this._textField.width) / 2;
-        var dy = (this.background.drawingRect.height - this._textField.height) / 2;
-        this._textField.pos.setXY(dx, dy);
-    };
-    Button.prototype.setText = function (text) {
-        this._textField.setText(text);
-        this._dirty = true;
-    };
-    Button.prototype.setFont = function (f) {
-        this._textField.setFont(f);
-    };
-    Button.prototype.getText = function () {
-        return this._textField.getText();
-    };
-    Button.prototype.update = function (time, delta) {
-        _super.prototype.update.call(this, time, delta);
-        this.render();
-    };
-    Button.prototype.render = function () {
-        var renderer = this.game.renderer;
-        renderer.translate(this.pos.x + this.marginLeft, this.pos.y + this.marginTop);
-        this.background.render();
-        this._textField.render();
-    };
-    return Button;
-}(container_1.default));
-exports.default = Button;
-
-
-/***/ }),
-/* 80 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6134,7 +6706,8 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var mathEx = __webpack_require__(5);
 var point2d_1 = __webpack_require__(3);
-var objectPool_1 = __webpack_require__(11);
+var objectPool_1 = __webpack_require__(9);
+var rect_1 = __webpack_require__(0);
 var MousePoint = /** @class */ (function (_super) {
     __extends(MousePoint, _super);
     function MousePoint() {
@@ -6143,12 +6716,13 @@ var MousePoint = /** @class */ (function (_super) {
     MousePoint.fromPool = function () {
         return MousePoint.mousePointsPool.getNextObject();
     };
-    MousePoint.fromPoint = function (another) {
+    MousePoint.unTransform = function (another) {
         var p = MousePoint.fromPool();
         p.screenX = another.screenX;
         p.screenY = another.screenY;
         p.id = another.id;
         p.target = another.target;
+        p.setXY(p.screenX, p.screenY);
         return p;
     };
     MousePoint.mousePointsPool = new objectPool_1.default(MousePoint);
@@ -6175,8 +6749,11 @@ var Mouse = /** @class */ (function () {
         mousePoint.id = e.identifier || 0; // (e as PointerEvent).pointerId
         return mousePoint;
     };
-    Mouse.triggerGameObjectEvent = function (eventName, point, isMouseDown, go) {
-        if (mathEx.isPointInRect(point, go.getRect())) {
+    Mouse.triggerGameObjectEvent = function (eventName, point, go, offsetX, offsetY) {
+        if (offsetX === void 0) { offsetX = 0; }
+        if (offsetY === void 0) { offsetY = 0; }
+        var rectWithOffset = rect_1.default.fromPool().set(go.getRect()).addXY(offsetX, offsetY);
+        if (mathEx.isPointInRect(point, rectWithOffset)) {
             point.target = go;
             go.trigger(eventName, {
                 screenX: point.x,
@@ -6185,11 +6762,22 @@ var Mouse = /** @class */ (function () {
                 objectY: point.y - go.pos.y,
                 id: point.id,
                 target: go,
-                isMouseDown: isMouseDown
+                isMouseDown: point.isMouseDown
             });
             return true;
         }
         return false;
+    };
+    Mouse.prototype.triggerPossibleChildren = function (c, eventName, point, offsetX, offsetY) {
+        for (var i = 0; i < c.length; i++) {
+            var go = c[c.length - 1 - i];
+            var isCaptured = Mouse.triggerGameObjectEvent(eventName, point, go, offsetX, offsetY);
+            if (isCaptured) {
+                if (go.children)
+                    this.triggerPossibleChildren(go.children, eventName, point, offsetX + go.pos.x, offsetY + go.pos.y);
+                break;
+            }
+        }
     };
     Mouse.prototype.triggerEvent = function (e, eventName, isMouseDown) {
         if (isMouseDown === undefined)
@@ -6197,38 +6785,25 @@ var Mouse = /** @class */ (function () {
         var g = this.game;
         var scene = g.getCurrScene();
         var point = this.resolvePoint(e);
+        point.isMouseDown = isMouseDown;
         point.target = undefined;
-        exit: for (var i = 0; i < scene.layers.length; i++) {
-            var layer = scene.layers[scene.layers.length - 1 - i];
-            for (var j = 0; j < layer.gameObjects.length; j++) {
-                var go = layer.gameObjects[layer.gameObjects.length - 1 - j];
-                var isCaptured = Mouse.triggerGameObjectEvent(eventName, point, isMouseDown, go);
-                if (!isCaptured)
-                    continue;
-                var k = void 0;
-                if (go.children) {
-                    for (k = 0; k < go.children.length; k++) {
-                        var ch = go.children[go.children.length - 1 - k];
-                        if (Mouse.triggerGameObjectEvent(eventName, point, isMouseDown, ch))
-                            break;
-                    }
-                }
-                if (isCaptured)
-                    break exit;
+        for (var _i = 0, _a = scene.getAllGameObjects(); _i < _a.length; _i++) {
+            var go = _a[_i];
+            var isCaptured = Mouse.triggerGameObjectEvent(eventName, point, go);
+            if (isCaptured) {
+                if (go.children)
+                    this.triggerPossibleChildren(go.children, eventName, point, go.pos.x, go.pos.y);
+                break;
             }
         }
-        var untransformedPoint = MousePoint.fromPoint(point);
-        untransformedPoint.setXY(point.screenX, point.screenY);
-        exitUILayer: for (var j = 0; j < scene.uiLayer.gameObjects.length; j++) {
+        var untransformedPoint = MousePoint.unTransform(point);
+        for (var j = 0; j < scene.uiLayer.gameObjects.length; j++) {
             var go = scene.uiLayer.gameObjects[scene.uiLayer.gameObjects.length - 1 - j];
-            if (go.views) {
-                for (var k = 0; k < go.views.length; k++) {
-                    var c = go.views[go.views.length - 1 - k];
-                    if (Mouse.triggerGameObjectEvent(eventName, untransformedPoint, isMouseDown, c)) {
-                        point.target = untransformedPoint.target;
-                        break exitUILayer;
-                    }
-                }
+            var isCaptured = Mouse.triggerGameObjectEvent(eventName, untransformedPoint, go);
+            if (isCaptured) {
+                if (go.children)
+                    this.triggerPossibleChildren(go.children, eventName, untransformedPoint, go.pos.x, go.pos.y);
+                break;
             }
         }
         if (point.target === undefined)
@@ -6331,7 +6906,7 @@ exports.default = Mouse;
 
 
 /***/ }),
-/* 81 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6455,7 +7030,7 @@ exports.default = Keyboard;
 
 
 /***/ }),
-/* 82 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6533,7 +7108,7 @@ exports.default = GamePad;
 
 
 /***/ }),
-/* 83 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6623,168 +7198,225 @@ exports.default = Collider;
 
 
 /***/ }),
-/* 84 */
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * let widget = this.game.uiBuilder.build({
+            Button: {
+                pos: {x:12,y:30},
+                font: {type:'Font',name:'font1'},
+                text: 'button1',
+                paddings: 50,
+                background: {
+                    type: 'NinePatchImage',
+                    resourcePath: 'resources/nineP.png',
+                    ABCD: 45
+                },
+                onClick: ()=>{
+                    console.log('clicked',this);
+                }
+            }
+        });
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+var allUIClasses = __webpack_require__(90);
+var absoluteLayout_1 = __webpack_require__(40);
+var UIBuilder = /** @class */ (function () {
+    function UIBuilder(game) {
+        this.game = game;
+    }
+    UIBuilder.normalizeSetterName = function (name) {
+        return "set" + name[0].toUpperCase() + name.substr(1);
+    };
+    UIBuilder.prototype.resolveObjProperties = function (instance, obj) {
+        var _this = this;
+        Object.keys(obj).forEach(function (propName) {
+            if (propName === 'type')
+                return; //reserved word, just skip
+            if (obj[propName].type) {
+                if (obj[propName].name) {
+                    obj[propName] = _this.game.repository.getArray(obj[propName].type).find(function (it) { return it.name == obj[propName].name; });
+                    if (!obj[propName])
+                        throw "can not find object {type:" + obj[propName].type + ",name:" + obj[propName].type + "}";
+                }
+                else
+                    obj[propName] = _this.resolveObj(obj[propName].type, obj[propName]);
+            }
+            var setterName = UIBuilder.normalizeSetterName(propName);
+            var hasSetter = instance[setterName] && instance[setterName].call;
+            var hasProperty = propName in obj;
+            if (1 && !hasProperty && !hasSetter) {
+                console.error(instance);
+                throw "nor method " + setterName + " not property " + propName + " found";
+            }
+            if (hasSetter)
+                (_a = instance[setterName]).call.apply(_a, [instance].concat(obj[propName]));
+            else {
+                if (instance[propName] && instance[propName].fromJSON)
+                    instance[propName].fromJSON(obj[propName]);
+                else if (instance[propName] && instance[propName].call)
+                    (_b = instance[propName]).call.apply(_b, [instance].concat(obj[propName]));
+                else {
+                    if (!(propName in instance)) {
+                        console.error(instance);
+                        var constructorName = (instance.constructor && instance.constructor.name) || '';
+                        throw "uiBuilder error: object " + constructorName + " has not property " + propName;
+                    }
+                    instance[propName] = obj[propName];
+                }
+            }
+            var _a, _b;
+        });
+    };
+    UIBuilder.prototype.resolveObj = function (key, obj) {
+        var clazz = allUIClasses[key];
+        if (1 && !clazz)
+            throw "no such ui class: " + key;
+        var instance = new clazz(this.game);
+        this.resolveObjProperties(instance, obj);
+        return instance;
+    };
+    UIBuilder.prototype.resolveAbsoluteLayout = function (props, arr) {
+        var _this = this;
+        var l = new absoluteLayout_1.default(this.game);
+        this.resolveObjProperties(l, props);
+        arr.forEach(function (v) {
+            var firstKey = Object.keys(v)[0];
+            l.appendChild(_this.resolveObj(firstKey, v[firstKey]));
+        });
+        l.testLayout();
+        return l;
+    };
+    UIBuilder.prototype.build = function (desc) {
+        var allKeys = Object.keys(desc);
+        if (1 && allKeys.length > 1)
+            throw "only one root element is supported. Found: " + allKeys;
+        var firstKey = Object.keys(desc)[0];
+        var rootObj = desc[firstKey];
+        if (firstKey === 'AbsoluteLayout')
+            return this.resolveAbsoluteLayout(rootObj.properties, rootObj.children);
+        else
+            return this.resolveObj(firstKey, rootObj);
+    };
+    return UIBuilder;
+}());
+exports.default = UIBuilder;
+
+
+/***/ }),
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var tween_1 = __webpack_require__(27);
-var mat4 = __webpack_require__(9);
-var mathEx = __webpack_require__(5);
-var rect_1 = __webpack_require__(1);
-var point2d_1 = __webpack_require__(3);
-var mathEx_1 = __webpack_require__(5);
-var CAMERA_MATRIX_MODE;
-(function (CAMERA_MATRIX_MODE) {
-    CAMERA_MATRIX_MODE[CAMERA_MATRIX_MODE["MODE_TRANSFORM"] = 0] = "MODE_TRANSFORM";
-    CAMERA_MATRIX_MODE[CAMERA_MATRIX_MODE["MODE_IDENTITY"] = 1] = "MODE_IDENTITY";
-})(CAMERA_MATRIX_MODE = exports.CAMERA_MATRIX_MODE || (exports.CAMERA_MATRIX_MODE = {}));
-var Camera = /** @class */ (function () {
-    function Camera(game) {
-        var _this = this;
-        this.objFollowTo = null;
-        this.scene = null;
-        this.sceneWidth = 0;
-        this.sceneHeight = 0;
-        this.pos = new point2d_1.default(0, 0);
-        this.scale = new point2d_1.default(1, 1);
-        // flag to defined camera rect for transform mode (for dynamic objects)
-        // and identity mode (for fixed objects)
-        this.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
-        this._rect = new rect_1.default();
-        this._rectIdentity = new rect_1.default();
-        this._rectScaled = new rect_1.default();
-        this.cameraShakeTween = null;
-        this.cameraPosCorrection = {
-            current: new point2d_1.default(),
-            max: new point2d_1.default()
-        };
-        this.game = game;
-        this.scale.observe(function () {
-            _this.revalidate();
-        });
-    }
-    Camera.prototype.revalidate = function () {
-        this.scene = this.game.getCurrScene();
-        if (!this.scene)
-            return;
-        if (this.scene.tileMap)
-            this.scene.tileMap.revalidate();
-        this._rectIdentity.setXYWH(0, 0, this.game.width, this.game.height);
-        if (this.scene.tileMap.spriteSheet) {
-            this.sceneWidth = this.scene.tileMap.spriteSheet._frameWidth * this.scene.tileMap.width;
-            this.sceneHeight = this.scene.tileMap.spriteSheet._frameHeight * this.scene.tileMap.height;
-        }
-        else {
-            this.sceneWidth = this.game.getCurrScene().width || this.game.width;
-            this.sceneHeight = this.game.getCurrScene().height || this.game.height;
-        }
-    };
-    Camera.prototype.followTo = function (gameObject) {
-        if (gameObject === null)
-            return;
-        if (1 && gameObject === undefined)
-            throw "Camera:followTo(gameObject) - gameObject not provided";
-        this.objFollowTo = gameObject;
-        this.revalidate();
-    };
-    Camera.prototype.update = function (currTime, delta) {
-        var gameObject = this.objFollowTo;
-        if (!gameObject)
-            return;
-        var tileWidth = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameWidth : 0; // todo ?
-        var tileHeight = this.scene.tileMap.spriteSheet ? this.scene.tileMap.spriteSheet._frameHeight : 0;
-        var w = this.game.width;
-        var h = this.game.height;
-        var wDiv2 = w / 2;
-        var hDiv2 = h / 2;
-        var wScaled = this.getRectScaled().width;
-        if (gameObject['_lastDirection'] === 'Right')
-            this.cameraPosCorrection.max.x = wScaled / 3; // todo _lastDirection
-        if (gameObject['_lastDirection'] === 'Left')
-            this.cameraPosCorrection.max.x = -wScaled / 3;
-        var currCorrection = this.cameraPosCorrection.max.
-            substract(this.cameraPosCorrection.current).
-            multiply(0.05);
-        this.cameraPosCorrection.current.add(currCorrection);
-        var newPos = point2d_1.default.fromPool();
-        var pointToFollow = point2d_1.default.fromPool();
-        pointToFollow.set(this.objFollowTo.pos);
-        pointToFollow.addXY(-wDiv2, -hDiv2);
-        newPos.x = this.pos.x + (pointToFollow.x + this.cameraPosCorrection.current.x - this.pos.x) * 0.1;
-        newPos.y = this.pos.y + (pointToFollow.y - this.pos.y) * 0.1;
-        if (newPos.x < 0)
-            newPos.x = 0;
-        if (newPos.y < 0)
-            newPos.y = 0;
-        if (newPos.x > this.sceneWidth - w + tileWidth)
-            newPos.x = this.sceneWidth - w + tileWidth;
-        if (newPos.y > this.sceneHeight - h + tileHeight)
-            newPos.y = this.sceneHeight - h + tileHeight;
-        this.pos.setXY(newPos.x, newPos.y);
-        if (this.cameraShakeTween)
-            this.cameraShakeTween.update(currTime);
-        this._updateRect();
-        this.render();
-    };
-    Camera.prototype.shake = function (amplitude, time) {
-        var _this = this;
-        var tweenTarget = { time: 0, point: new point2d_1.default(0, 0) };
-        this.cameraShakeTween = new tween_1.default({
-            target: tweenTarget,
-            time: time,
-            to: { time: time },
-            progress: function () {
-                var r1 = mathEx_1.random(-amplitude / 2, amplitude / 2);
-                var r2 = mathEx_1.random(-amplitude / 2, amplitude / 2);
-                tweenTarget.point.setXY(r1, r2);
-            },
-            complete: function () { return _this.cameraShakeTween = null; }
-        });
-    };
-    Camera.prototype._updateRect = function () {
-        var point00 = this.screenToWorld(point2d_1.default.fromPool().setXY(0, 0));
-        var pointWH = this.screenToWorld(point2d_1.default.fromPool().setXY(this.game.width, this.game.height));
-        this._rectScaled.setXYWH(point00.x, point00.y, pointWH.x - point00.x, pointWH.y - point00.y);
-    };
-    Camera.prototype.render = function () {
-        this.game.renderer.translate(this.game.width / 2, this.game.height / 2);
-        this.game.renderer.scale(this.scale.x, this.scale.y);
-        // todo rotation does not work correctly yet
-        //this.game.renderer.rotateZ(this.angle);
-        this.game.renderer.translate(-this.game.width / 2, -this.game.height / 2);
-        this.game.renderer.translate(-this.pos.x, -this.pos.y);
-        if (this.cameraShakeTween !== null)
-            this.game.renderer.translate(this.cameraShakeTween.getTarget().point.x, this.cameraShakeTween.getTarget().point.y);
-    };
-    Camera.prototype.screenToWorld = function (p) {
-        var mScale = mat4.makeScale(this.scale.x, this.scale.y, 1);
-        var point2d = mathEx.unProject(p, this.game.width, this.game.height, mScale);
-        point2d.add(this.pos);
-        return point2d;
-    };
-    Camera.prototype.getRect = function () {
-        if (this.matrixMode === CAMERA_MATRIX_MODE.MODE_IDENTITY)
-            return this._rectIdentity;
-        else {
-            this._rect.setXYWH(this.pos.x, this.pos.y, this.game.width, this.game.height);
-            return this._rect;
-        }
-    };
-    Camera.prototype.getRectScaled = function () {
-        if (this.matrixMode === CAMERA_MATRIX_MODE.MODE_IDENTITY)
-            return this._rectIdentity;
-        else
-            return this._rectScaled;
-    };
-    return Camera;
-}());
-exports.default = Camera;
+var button_1 = __webpack_require__(38);
+exports.Button = button_1.default;
+var textField_1 = __webpack_require__(14);
+exports.TextField = textField_1.default;
+var container_1 = __webpack_require__(15);
+exports.Container = container_1.default;
+var image_1 = __webpack_require__(39);
+exports.Image = image_1.default;
+var rectangle_1 = __webpack_require__(91);
+exports.Rectangle = rectangle_1.default;
+var ninePatchImage_1 = __webpack_require__(92);
+exports.NinePatchImage = ninePatchImage_1.default;
+var absoluteLayout_1 = __webpack_require__(40);
+exports.AbsoluteLayout = absoluteLayout_1.default;
 
 
 /***/ }),
-/* 85 */
+/* 91 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var rect_1 = __webpack_require__(0);
+var color_1 = __webpack_require__(12);
+var Rectangle = /** @class */ (function () {
+    function Rectangle(game) {
+        this.filters = [];
+        this.blendMode = '';
+        this.drawingRect = new rect_1.default();
+        this.game = game;
+    }
+    Rectangle.prototype.getDrawableInfo = function () {
+        return { blendMode: this.blendMode, acceptLight: false };
+    };
+    Rectangle.prototype.render = function () {
+        this.game.renderer.fillRect(this.drawingRect, color_1.default.RGB(12, 222, 100));
+    };
+    return Rectangle;
+}());
+exports.default = Rectangle;
+
+
+/***/ }),
+/* 92 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var image_1 = __webpack_require__(39);
+var NinePatchImage = /** @class */ (function (_super) {
+    __extends(NinePatchImage, _super);
+    function NinePatchImage(game) {
+        var _this = _super.call(this, game) || this;
+        _this.a = 0;
+        _this.b = 0;
+        _this.c = 0;
+        _this.d = 0;
+        _this.drawingRect.observe(function () { _this.revalidate(); });
+        return _this;
+    }
+    NinePatchImage.prototype.revalidate = function () {
+        var r = this.drawingRect;
+        var width = r.width, height = r.height;
+        if (width < this.a + this.b)
+            width = this.a + this.b;
+        if (height < this.c + this.d)
+            height = this.c + this.d;
+        r.setWH(width, height);
+    };
+    NinePatchImage.prototype.setABCD = function (a, b, c, d) {
+        if (b === undefined)
+            b = a;
+        if (c === undefined)
+            c = b;
+        if (d === undefined)
+            d = c;
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.revalidate();
+    };
+    NinePatchImage.prototype.render = function () {
+        this.game.renderer.drawNinePatch(this.getDefaultResourcePath(), this.drawingRect, this.filters, this.getDrawableInfo(), this.a, this.b, this.c, this.d);
+    };
+    return NinePatchImage;
+}(image_1.default));
+exports.default = NinePatchImage;
+
+
+/***/ }),
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6792,7 +7424,7 @@ exports.default = Camera;
 
 exports.__esModule = true;
 
-var _clamp = __webpack_require__(86);
+var _clamp = __webpack_require__(94);
 
 Object.defineProperty(exports, 'ClampBehaviour', {
   enumerable: true,
@@ -6801,7 +7433,7 @@ Object.defineProperty(exports, 'ClampBehaviour', {
   }
 });
 
-var _dude = __webpack_require__(87);
+var _dude = __webpack_require__(95);
 
 Object.defineProperty(exports, 'DudeBehaviour', {
   enumerable: true,
@@ -6810,7 +7442,7 @@ Object.defineProperty(exports, 'DudeBehaviour', {
   }
 });
 
-var _eso1611a = __webpack_require__(88);
+var _eso1611a = __webpack_require__(96);
 
 Object.defineProperty(exports, 'Eso1611aBehaviour', {
   enumerable: true,
@@ -6819,7 +7451,7 @@ Object.defineProperty(exports, 'Eso1611aBehaviour', {
   }
 });
 
-var _flare = __webpack_require__(89);
+var _flare = __webpack_require__(97);
 
 Object.defineProperty(exports, 'FlareBehaviour', {
   enumerable: true,
@@ -6828,7 +7460,7 @@ Object.defineProperty(exports, 'FlareBehaviour', {
   }
 });
 
-var _ground = __webpack_require__(90);
+var _ground = __webpack_require__(98);
 
 Object.defineProperty(exports, 'Ground1Behaviour', {
   enumerable: true,
@@ -6837,7 +7469,7 @@ Object.defineProperty(exports, 'Ground1Behaviour', {
   }
 });
 
-var _mainScene = __webpack_require__(91);
+var _mainScene = __webpack_require__(99);
 
 Object.defineProperty(exports, 'MainSceneBehaviour', {
   enumerable: true,
@@ -6846,7 +7478,7 @@ Object.defineProperty(exports, 'MainSceneBehaviour', {
   }
 });
 
-var _nineP = __webpack_require__(92);
+var _nineP = __webpack_require__(100);
 
 Object.defineProperty(exports, 'NinePBehaviour', {
   enumerable: true,
@@ -6855,7 +7487,7 @@ Object.defineProperty(exports, 'NinePBehaviour', {
   }
 });
 
-var _platform = __webpack_require__(93);
+var _platform = __webpack_require__(101);
 
 Object.defineProperty(exports, 'PlatformBehaviour', {
   enumerable: true,
@@ -6864,7 +7496,7 @@ Object.defineProperty(exports, 'PlatformBehaviour', {
   }
 });
 
-var _tile = __webpack_require__(94);
+var _tile = __webpack_require__(102);
 
 Object.defineProperty(exports, 'TileBehaviour', {
   enumerable: true,
@@ -6874,7 +7506,7 @@ Object.defineProperty(exports, 'TileBehaviour', {
 });
 
 /***/ }),
-/* 86 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6899,7 +7531,7 @@ var ClampBehaviour = exports.ClampBehaviour = function () {
 }();
 
 /***/ }),
-/* 87 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6938,7 +7570,7 @@ var DudeBehaviour = exports.DudeBehaviour = function () {
 }();
 
 /***/ }),
-/* 88 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6965,7 +7597,7 @@ var Eso1611aBehaviour = exports.Eso1611aBehaviour = function () {
 }();
 
 /***/ }),
-/* 89 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6992,7 +7624,7 @@ var FlareBehaviour = exports.FlareBehaviour = function () {
 }();
 
 /***/ }),
-/* 90 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7019,7 +7651,7 @@ var Ground1Behaviour = exports.Ground1Behaviour = function () {
 }();
 
 /***/ }),
-/* 91 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7028,7 +7660,7 @@ var Ground1Behaviour = exports.Ground1Behaviour = function () {
 exports.__esModule = true;
 exports.MainSceneBehaviour = undefined;
 
-var _global = __webpack_require__(16);
+var _global = __webpack_require__(19);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -7084,7 +7716,10 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                     width: 200, height: 200,
                     background: {
                         type: 'Rectangle'
-                    }
+                    },
+                    on: ['click', function () {
+                        console.log('clicked on layout');
+                    }]
                 },
                 children: [{
                     Button: {
@@ -7098,7 +7733,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                             ABCD: 45
                         },
                         on: ['click', function () {
-                            console.log('clicked1');
+                            console.log('clicked on button 1');
                         }]
                     }
                 }, {
@@ -7113,7 +7748,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
                             ABCD: 45
                         },
                         on: ['click', function () {
-                            console.log('clicked2');
+                            console.log('clicked on button 2');
                         }]
                     }
                 }, {
@@ -7173,7 +7808,7 @@ var MainSceneBehaviour = exports.MainSceneBehaviour = function () {
 }();
 
 /***/ }),
-/* 92 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7198,7 +7833,7 @@ var NinePBehaviour = exports.NinePBehaviour = function () {
 }();
 
 /***/ }),
-/* 93 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7226,7 +7861,7 @@ var PlatformBehaviour = exports.PlatformBehaviour = function () {
 }();
 
 /***/ }),
-/* 94 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7251,7 +7886,7 @@ var TileBehaviour = exports.TileBehaviour = function () {
 }();
 
 /***/ }),
-/* 95 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7275,7 +7910,7 @@ exports.gameProps = {
 
 
 /***/ }),
-/* 96 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7389,7 +8024,9 @@ exports.repository = {
             "height": 48,
             "type": "SpriteSheet",
             "numOfFramesH": 9,
-            "resourcePath": "resources/dude.png",
+            "resourceMap": {
+                "main": "resources/dude.png"
+            },
             "frameRect": {
                 "x": {
                     "x": 0,
@@ -7405,7 +8042,9 @@ exports.repository = {
             "width": 500,
             "height": 64,
             "type": "SpriteSheet",
-            "resourcePath": "resources/platform.png",
+            "resourceMap": {
+                "main": "resources/platform.png"
+            },
             "frameRect": {
                 "x": {
                     "x": 0,
@@ -7421,7 +8060,9 @@ exports.repository = {
             "height": 32,
             "type": "SpriteSheet",
             "numOfFramesH": 25,
-            "resourcePath": "resources/ground.png",
+            "resourceMap": {
+                "main": "resources/ground.png"
+            },
             "id": 57
         },
         {
@@ -7429,8 +8070,10 @@ exports.repository = {
             "width": 300,
             "height": 300,
             "type": "SpriteSheet",
-            "resourcePath": "resources/clamp.png",
-            "normalMapPath": "resources/clamp_normal.png",
+            "resourceMap": {
+                "main": "resources/clamp.png",
+                "normalMap": "resources/clamp_normal.png"
+            },
             "id": 69
         },
         {
@@ -7438,7 +8081,9 @@ exports.repository = {
             "width": 262,
             "height": 192,
             "type": "SpriteSheet",
-            "resourcePath": "resources/tile.jpg",
+            "resourceMap": {
+                "main": "resources/tile.jpg"
+            },
             "id": 72
         },
         {
@@ -7446,7 +8091,9 @@ exports.repository = {
             "width": 174,
             "height": 173,
             "type": "SpriteSheet",
-            "resourcePath": "resources/flare.png",
+            "resourceMap": {
+                "main": "resources/flare.png"
+            },
             "id": 79
         },
         {
@@ -7454,7 +8101,9 @@ exports.repository = {
             "width": 120,
             "height": 120,
             "type": "SpriteSheet",
-            "resourcePath": "resources/eso1611a.png",
+            "resourceMap": {
+                "main": "resources/eso1611a.png"
+            },
             "id": 84
         },
         {
@@ -7462,7 +8111,9 @@ exports.repository = {
             "width": 120,
             "height": 105,
             "type": "SpriteSheet",
-            "resourcePath": "resources/nineP.png",
+            "resourceMap": {
+                "main": "resources/nineP.png"
+            },
             "frameRect": {
                 "x": 0,
                 "y": 0,
@@ -7555,7 +8206,7 @@ exports.repository = {
             "name": "clamp",
             "width": 64,
             "height": 64,
-            "rigid": true,
+            "rigid": false,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 69,
@@ -7953,7 +8604,9 @@ exports.repository = {
             "id": 22,
             "name": "font1",
             "type": "Font",
-            "resourcePath": "resources/font1.png",
+            "resourceMap": {
+                "main": "resources/font1.png"
+            },
             "fontSize": 21,
             "fontFamily": "monospace",
             "fontContext": {
@@ -9139,7 +9792,9 @@ exports.repository = {
                 "type": "SpriteSheet"
             },
             "data": [
-                [],
+                [
+                    1
+                ],
                 null,
                 null,
                 [
@@ -9147,7 +9802,7 @@ exports.repository = {
                     null,
                     null,
                     null,
-                    2,
+                    null,
                     null,
                     null
                 ],
@@ -9156,27 +9811,18 @@ exports.repository = {
                     null
                 ],
                 [
-                    1,
-                    null,
-                    3,
                     null,
                     null,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    1,
-                    1,
-                    1
+                    null,
+                    null,
+                    null
                 ],
                 null,
                 [
                     null,
-                    1,
                     null,
-                    1
+                    null,
+                    null
                 ]
             ]
         }
@@ -9201,573 +9847,6 @@ exports.repository = {
         }
     ]
 };
-
-
-/***/ }),
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */,
-/* 101 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var image_1 = __webpack_require__(103);
-var NinePatchImage = /** @class */ (function (_super) {
-    __extends(NinePatchImage, _super);
-    function NinePatchImage(game) {
-        var _this = _super.call(this, game) || this;
-        _this.a = 0;
-        _this.b = 0;
-        _this.c = 0;
-        _this.d = 0;
-        _this.drawingRect.observe(function () { _this.revalidate(); });
-        return _this;
-    }
-    NinePatchImage.prototype.revalidate = function () {
-        var r = this.drawingRect;
-        if (r.width < this.a + this.b)
-            r.width = this.a + this.b;
-        if (r.height < this.c + this.d)
-            r.height = this.c + this.d;
-    };
-    NinePatchImage.prototype.setABCD = function (a, b, c, d) {
-        if (b === undefined)
-            b = a;
-        if (c === undefined)
-            c = b;
-        if (d === undefined)
-            d = c;
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
-        this.revalidate();
-    };
-    NinePatchImage.prototype.render = function () {
-        this.game.renderer.drawNinePatch(this.resourcePath, this.drawingRect, this.filters, this.getDrawableInfo(), this.a, this.b, this.c, this.d);
-    };
-    return NinePatchImage;
-}(image_1.default));
-exports.default = NinePatchImage;
-
-
-/***/ }),
-/* 102 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var Resource = /** @class */ (function (_super) {
-    __extends(Resource, _super);
-    function Resource(game) {
-        var _this = _super.call(this, game) || this;
-        _this.resourcePath = ''; // todo map
-        return _this;
-    }
-    return Resource;
-}(baseModel_1.default));
-exports.default = Resource;
-
-
-/***/ }),
-/* 103 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var rect_1 = __webpack_require__(1);
-var resource_1 = __webpack_require__(102);
-var Image = /** @class */ (function (_super) {
-    __extends(Image, _super);
-    function Image(game) {
-        var _this = _super.call(this, game) || this;
-        _this.destRect = new rect_1.default();
-        _this.srcRect = new rect_1.default();
-        _this.filters = [];
-        _this.drawingRect = new rect_1.default();
-        _this.blendMode = '';
-        return _this;
-    }
-    Image.prototype.getDrawableInfo = function () {
-        return { blendMode: this.blendMode, acceptLight: false };
-    };
-    Image.prototype.render = function () {
-        this.game.renderer.drawImage(this.resourcePath, this.srcRect, this.destRect);
-    };
-    return Image;
-}(resource_1.default));
-exports.default = Image;
-
-
-/***/ }),
-/* 104 */,
-/* 105 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * let widget = this.game.uiBuilder.build({
-            Button: {
-                pos: {x:12,y:30},
-                font: {type:'Font',name:'font1'},
-                text: 'button1',
-                paddings: 50,
-                background: {
-                    type: 'NinePatchImage',
-                    resourcePath: 'resources/nineP.png',
-                    ABCD: 45
-                },
-                onClick: ()=>{
-                    console.log('clicked',this);
-                }
-            }
-        });
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-var allUIClasses = __webpack_require__(108);
-var absoluteLayout_1 = __webpack_require__(107);
-var UIBuilder = /** @class */ (function () {
-    function UIBuilder(game) {
-        this.game = game;
-    }
-    UIBuilder.normalizeSetterName = function (name) {
-        return "set" + name[0].toUpperCase() + name.substr(1);
-    };
-    UIBuilder.prototype.resolveObjProperties = function (instance, obj) {
-        var _this = this;
-        Object.keys(obj).forEach(function (propName) {
-            if (propName === 'type')
-                return; //reserved word, just skip
-            if (obj[propName].type) {
-                if (obj[propName].name) {
-                    obj[propName] = _this.game.repository.getArray(obj[propName].type).find(function (it) { return it.name == obj[propName].name; });
-                    if (!obj[propName])
-                        throw "can not find object {type:" + obj[propName].type + ",name:" + obj[propName].type + "}";
-                }
-                else
-                    obj[propName] = _this.resolveObj(obj[propName].type, obj[propName]);
-            }
-            var setterName = UIBuilder.normalizeSetterName(propName);
-            var hasSetter = instance[setterName] && instance[setterName].call;
-            var hasProperty = propName in obj;
-            if (1 && !hasProperty && !hasSetter) {
-                console.error(instance);
-                throw "nor method " + setterName + " not property " + propName + " found";
-            }
-            if (hasSetter)
-                (_a = instance[setterName]).call.apply(_a, [instance].concat(obj[propName]));
-            else {
-                if (instance[propName] && instance[propName].fromJSON)
-                    instance[propName].fromJSON(obj[propName]);
-                else if (instance[propName] && instance[propName].call)
-                    (_b = instance[propName]).call.apply(_b, [instance].concat(obj[propName]));
-                else
-                    instance[propName] = obj[propName];
-            }
-            var _a, _b;
-        });
-    };
-    UIBuilder.prototype.resolveObj = function (key, obj) {
-        var clazz = allUIClasses[key];
-        if (1 && !clazz)
-            throw "no such ui class: " + key;
-        var instance = new clazz(this.game);
-        this.resolveObjProperties(instance, obj);
-        return instance;
-    };
-    UIBuilder.prototype.resolveAbsoluteLayout = function (props, arr) {
-        var _this = this;
-        var l = new absoluteLayout_1.default(this.game);
-        this.resolveObjProperties(l, props);
-        arr.forEach(function (v) {
-            var firstKey = Object.keys(v)[0];
-            l.appendChild(_this.resolveObj(firstKey, v[firstKey]));
-        });
-        l.testLayout();
-        return l;
-    };
-    UIBuilder.prototype.build = function (desc) {
-        var allKeys = Object.keys(desc);
-        if (1 && allKeys.length > 1)
-            throw "only one root element is supported. Found: " + allKeys;
-        var firstKey = Object.keys(desc)[0];
-        var rootObj = desc[firstKey];
-        if (firstKey === 'AbsoluteLayout')
-            return this.resolveAbsoluteLayout(rootObj.properties, rootObj.children);
-        else
-            return this.resolveObj(firstKey, rootObj);
-    };
-    return UIBuilder;
-}());
-exports.default = UIBuilder;
-
-
-/***/ }),
-/* 106 */,
-/* 107 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var container_1 = __webpack_require__(109);
-var AbsoluteLayout = /** @class */ (function (_super) {
-    __extends(AbsoluteLayout, _super);
-    function AbsoluteLayout(game) {
-        return _super.call(this, game) || this;
-    }
-    AbsoluteLayout.prototype.appendChild = function (c) {
-        c.testLayout();
-        c.parent = this;
-        _super.prototype.appendChild.call(this, c);
-    };
-    AbsoluteLayout.prototype.onGeometryChanged = function () {
-        _super.prototype.onGeometryChanged.call(this);
-        var maxX = 0, maxY = 0;
-        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
-            var v = _a[_i];
-            v.onGeometryChanged();
-            v._dirty = true;
-            var r = v.getRect();
-            if (r.right > maxX)
-                maxX = r.right;
-            if (r.bottom > maxY)
-                maxY = r.bottom;
-        }
-        if (this.layoutWidth === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
-            this.width = maxX;
-        }
-        if (this.layoutHeight === container_1.LAYOUT_SIZE.WRAP_CONTENT) {
-            this.height = maxY;
-        }
-        this.calcBgRectWithPadding(this.width, this.height);
-        //this._dirty = true;
-    };
-    AbsoluteLayout.prototype.update = function (time, delta) {
-        _super.prototype.update.call(this, time, delta);
-        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.lockRect(this.getRect());
-        var renderer = this.game.renderer;
-        renderer.translate(this.pos.x + this.marginLeft, this.pos.y + this.marginTop);
-        if (this.background)
-            this.background.render();
-        renderer.translate(this.paddingLeft, this.paddingTop);
-        for (var _i = 0, _a = this.children; _i < _a.length; _i++) {
-            var c = _a[_i];
-            renderer.save();
-            if (c._dirty)
-                c.parent._dirty = true;
-            c.update(time, delta);
-            renderer.restore();
-        }
-        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
-    };
-    return AbsoluteLayout;
-}(container_1.default));
-exports.default = AbsoluteLayout;
-
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var button_1 = __webpack_require__(79);
-exports.Button = button_1.default;
-var textField_1 = __webpack_require__(18);
-exports.TextField = textField_1.default;
-var container_1 = __webpack_require__(109);
-exports.Container = container_1.default;
-var image_1 = __webpack_require__(103);
-exports.Image = image_1.default;
-var rectangle_1 = __webpack_require__(110);
-exports.Rectangle = rectangle_1.default;
-var ninePatchImage_1 = __webpack_require__(101);
-exports.NinePatchImage = ninePatchImage_1.default;
-var absoluteLayout_1 = __webpack_require__(107);
-exports.AbsoluteLayout = absoluteLayout_1.default;
-
-
-/***/ }),
-/* 109 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var baseModel_1 = __webpack_require__(0);
-var rect_1 = __webpack_require__(1);
-var ALIGN_CONTENT;
-(function (ALIGN_CONTENT) {
-    ALIGN_CONTENT[ALIGN_CONTENT["NONE"] = 0] = "NONE";
-    ALIGN_CONTENT[ALIGN_CONTENT["VERTICAL"] = 1] = "VERTICAL";
-    ALIGN_CONTENT[ALIGN_CONTENT["HORIZONTAL"] = 2] = "HORIZONTAL";
-    ALIGN_CONTENT[ALIGN_CONTENT["BOTH"] = 3] = "BOTH";
-})(ALIGN_CONTENT = exports.ALIGN_CONTENT || (exports.ALIGN_CONTENT = {}));
-var OVERFLOW;
-(function (OVERFLOW) {
-    OVERFLOW[OVERFLOW["HIDDEN"] = 0] = "HIDDEN";
-    OVERFLOW[OVERFLOW["VISIBLE"] = 1] = "VISIBLE";
-})(OVERFLOW = exports.OVERFLOW || (exports.OVERFLOW = {}));
-var LAYOUT_SIZE;
-(function (LAYOUT_SIZE) {
-    LAYOUT_SIZE[LAYOUT_SIZE["FIXED"] = 0] = "FIXED";
-    LAYOUT_SIZE[LAYOUT_SIZE["WRAP_CONTENT"] = 1] = "WRAP_CONTENT";
-    LAYOUT_SIZE[LAYOUT_SIZE["MATCH_PARENT"] = 2] = "MATCH_PARENT";
-})(LAYOUT_SIZE = exports.LAYOUT_SIZE || (exports.LAYOUT_SIZE = {}));
-var Container = /** @class */ (function (_super) {
-    __extends(Container, _super);
-    function Container(game) {
-        var _this = _super.call(this, game) || this;
-        _this.marginLeft = 0;
-        _this.marginTop = 0;
-        _this.marginRight = 0;
-        _this.marginBottom = 0;
-        _this.paddingLeft = 0;
-        _this.paddingTop = 0;
-        _this.paddingRight = 0;
-        _this.paddingBottom = 0;
-        _this.layoutWidth = LAYOUT_SIZE.WRAP_CONTENT;
-        _this.layoutHeight = LAYOUT_SIZE.WRAP_CONTENT;
-        _this.overflow = OVERFLOW.HIDDEN; // todo change
-        _this.filters = [];
-        _this.blendMode = '';
-        _this.alignContent = ALIGN_CONTENT.NONE;
-        _this.drawingRect = new rect_1.default();
-        _this.children = [];
-        return _this;
-    }
-    Container.prototype.testLayout = function () {
-        if (true) {
-            if (this.layoutWidth === LAYOUT_SIZE.FIXED && this.width === 0)
-                throw "layoutWidth is LAYOUT_SIZE.FIXED so width must be specified";
-            if (this.layoutHeight === LAYOUT_SIZE.FIXED && this.height === 0)
-                throw "layoutHeight is LAYOUT_SIZE.FIXED so height must be specified";
-        }
-    };
-    Container.prototype.appendChild = function (c) {
-        this.children.push(c);
-    };
-    Container.normalizeBorders = function (top, right, bottom, left) {
-        if (right === undefined && bottom === undefined && left === undefined) {
-            right = bottom = left = top;
-        }
-        else if (bottom === undefined && left === undefined) {
-            bottom = top;
-            left = right;
-        }
-        else if (left === undefined) {
-            left = right;
-        }
-        return { top: top, right: right, bottom: bottom, left: left };
-    };
-    Container.prototype.setMargins = function (top, right, bottom, left) {
-        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
-        this.marginTop = top;
-        this.marginRight = right;
-        this.marginBottom = bottom;
-        this.marginLeft = left;
-        this._setDirty();
-        var _a;
-    };
-    Container.prototype.setMarginsTopBottom = function (top, bottom) {
-        if (bottom === undefined)
-            bottom = top;
-        this.paddingTop = top;
-        this.paddingBottom = bottom;
-        this._setDirty();
-    };
-    Container.prototype.setMarginsLeftRight = function (left, right) {
-        if (right === undefined)
-            right = left;
-        this.marginLeft = left;
-        this.marginRight = right;
-        this._setDirty();
-    };
-    Container.prototype.setPaddings = function (top, right, bottom, left) {
-        (_a = Container.normalizeBorders(top, right, bottom, left), top = _a.top, right = _a.right, bottom = _a.bottom, left = _a.left);
-        this.paddingTop = top;
-        this.paddingRight = right;
-        this.paddingBottom = bottom;
-        this.paddingLeft = left;
-        this._setDirty();
-        var _a;
-    };
-    Container.prototype.setPaddingsTopBottom = function (top, bottom) {
-        if (bottom === undefined)
-            bottom = top;
-        this.paddingTop = top;
-        this.paddingBottom = bottom;
-        this._dirty = true;
-    };
-    Container.prototype.setPaddingsLeftRight = function (left, right) {
-        if (right === undefined)
-            right = left;
-        this.paddingLeft = left;
-        this.paddingRight = right;
-        this._setDirty();
-    };
-    Container.prototype.getDrawableInfo = function () {
-        return { blendMode: this.blendMode, acceptLight: false };
-    };
-    Container.prototype.onGeometryChanged = function () { };
-    Container.prototype.getRect = function () {
-        if (!this._dirty) {
-            return this._rect;
-        }
-        var rect = _super.prototype.getRect.call(this);
-        rect.setXYWH(this.pos.x, this.pos.y, this.width + this.marginRight + this.marginLeft, this.height + this.marginBottom + this.marginTop);
-        this._rect.set(rect);
-        return rect;
-    };
-    Container.prototype.calcBgRectWithPadding = function (contentWidth, contentHeight) {
-        var paddedWidth = contentWidth + this.paddingLeft + this.paddingRight;
-        var paddedHeight = contentHeight + this.paddingTop + this.paddingBottom;
-        if (this.background) {
-            this.background.drawingRect.setWH(paddedWidth, paddedHeight);
-            this.width = this.background.drawingRect.width;
-            this.height = this.background.drawingRect.height;
-        }
-        else {
-            this.width = paddedWidth;
-            this.height = paddedHeight;
-        }
-    };
-    // getRectMargined():Rect{
-    //     if (!this._dirty) return this.drawingRect;
-    //     let rect = this.getRect();
-    //     this.drawingRect.setXYWH(
-    //         rect.getPoint().x + this.marginLeft,
-    //         rect.getPoint().y + this.marginTop,
-    //         rect.getSize().width - this.marginLeft - this.marginRight,
-    //         rect.getSize().height - this.marginTop - this.marginBottom
-    //     );
-    //     return this.drawingRect;
-    // }
-    Container.prototype.update = function (time, delta) {
-        _super.prototype.update.call(this, time, delta);
-        if (this._dirty) {
-            this.onGeometryChanged();
-            this._dirty = false;
-        }
-    };
-    Container.prototype.render = function () { };
-    return Container;
-}(baseModel_1.default));
-exports.default = Container;
-
-
-/***/ }),
-/* 110 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var rect_1 = __webpack_require__(1);
-var color_1 = __webpack_require__(15);
-var Rectangle = /** @class */ (function () {
-    function Rectangle(game) {
-        this.filters = [];
-        this.blendMode = '';
-        this.drawingRect = new rect_1.default();
-        this.game = game;
-    }
-    Rectangle.prototype.getDrawableInfo = function () {
-        return { blendMode: this.blendMode, acceptLight: false };
-    };
-    Rectangle.prototype.render = function () {
-        this.game.renderer.fillRect(this.drawingRect, color_1.default.RGB(12, 222, 100));
-    };
-    return Rectangle;
-}());
-exports.default = Rectangle;
-
-
-/***/ }),
-/* 111 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ObservableEntity = /** @class */ (function () {
-    function ObservableEntity() {
-        this._onChanged = [];
-    }
-    ObservableEntity.prototype.triggerObservable = function () {
-        for (var _i = 0, _a = this._onChanged; _i < _a.length; _i++) {
-            var fn = _a[_i];
-            fn();
-        }
-    };
-    ObservableEntity.prototype.addListener = function (f) {
-        this._onChanged.push(f);
-    };
-    ObservableEntity.prototype.removeListener = function (f) {
-        this._onChanged.remove(f);
-    };
-    return ObservableEntity;
-}());
-exports.default = ObservableEntity;
 
 
 /***/ })

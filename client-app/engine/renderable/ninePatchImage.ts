@@ -19,8 +19,11 @@ export default class NinePatchImage extends Image {
 
     revalidate(){
         let r:Rect = this.drawingRect;
-        if (r.width<this.a+this.b) r.width = this.a + this.b;
-        if (r.height<this.c+this.d) r.height = this.c + this.d;
+        let {width,height} = r;
+        if (width<this.a+this.b) width = this.a + this.b;
+        if (height<this.c+this.d) height = this.c + this.d;
+        r.setWH(width,height);
+
     }
 
     setABCD(a:number);
@@ -40,7 +43,7 @@ export default class NinePatchImage extends Image {
 
     render(){
         this.game.renderer.drawNinePatch(
-            this.resourcePath,
+            this.getDefaultResourcePath(),
             this.drawingRect,
             this.filters,
             this.getDrawableInfo(),

@@ -63,7 +63,14 @@ export default class UIBuilder {
             else {
                 if (instance[propName] && instance[propName].fromJSON) instance[propName].fromJSON(obj[propName]);
                 else if (instance[propName] && instance[propName].call) instance[propName].call(instance,...obj[propName]);
-                else instance[propName] = obj[propName];
+                else {
+                    if (!(propName in instance)) {
+                        console.error(instance);
+                        let constructorName = (instance.constructor && instance.constructor.name)||'';
+                        throw `uiBuilder error: object ${constructorName} has not property ${propName}`;
+                    }
+                    instance[propName] = obj[propName];
+                }
             }
         });
     }

@@ -107,7 +107,9 @@ export let repository:any =
             "height": 48,
             "type": "SpriteSheet",
             "numOfFramesH": 9,
-            "resourcePath": "resources/dude.png",
+            "resourceMap": {
+                "main": "resources/dude.png"
+            },
             "frameRect": {
                 "x": {
                     "x": 0,
@@ -123,7 +125,9 @@ export let repository:any =
             "width": 500,
             "height": 64,
             "type": "SpriteSheet",
-            "resourcePath": "resources/platform.png",
+            "resourceMap": {
+                "main": "resources/platform.png"
+            },
             "frameRect": {
                 "x": {
                     "x": 0,
@@ -139,7 +143,9 @@ export let repository:any =
             "height": 32,
             "type": "SpriteSheet",
             "numOfFramesH": 25,
-            "resourcePath": "resources/ground.png",
+            "resourceMap": {
+                "main": "resources/ground.png"
+            },
             "id": 57
         },
         {
@@ -147,8 +153,10 @@ export let repository:any =
             "width": 300,
             "height": 300,
             "type": "SpriteSheet",
-            "resourcePath": "resources/clamp.png",
-            "normalMapPath": "resources/clamp_normal.png",
+            "resourceMap": {
+                "main": "resources/clamp.png",
+                "normalMap": "resources/clamp_normal.png"
+            },
             "id": 69
         },
         {
@@ -156,7 +164,9 @@ export let repository:any =
             "width": 262,
             "height": 192,
             "type": "SpriteSheet",
-            "resourcePath": "resources/tile.jpg",
+            "resourceMap": {
+                "main": "resources/tile.jpg"
+            },
             "id": 72
         },
         {
@@ -164,7 +174,9 @@ export let repository:any =
             "width": 174,
             "height": 173,
             "type": "SpriteSheet",
-            "resourcePath": "resources/flare.png",
+            "resourceMap": {
+                "main": "resources/flare.png"
+            },
             "id": 79
         },
         {
@@ -172,7 +184,9 @@ export let repository:any =
             "width": 120,
             "height": 120,
             "type": "SpriteSheet",
-            "resourcePath": "resources/eso1611a.png",
+            "resourceMap": {
+                "main": "resources/eso1611a.png"
+            },
             "id": 84
         },
         {
@@ -180,7 +194,9 @@ export let repository:any =
             "width": 120,
             "height": 105,
             "type": "SpriteSheet",
-            "resourcePath": "resources/nineP.png",
+            "resourceMap": {
+                "main": "resources/nineP.png"
+            },
             "frameRect": {
                 "x": 0,
                 "y": 0,
@@ -273,7 +289,7 @@ export let repository:any =
             "name": "clamp",
             "width": 64,
             "height": 64,
-            "rigid": true,
+            "rigid": false,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 69,
@@ -671,7 +687,9 @@ export let repository:any =
             "id": 22,
             "name": "font1",
             "type": "Font",
-            "resourcePath": "resources/font1.png",
+            "resourceMap": {
+                "main": "resources/font1.png"
+            },
             "fontSize": 21,
             "fontFamily": "monospace",
             "fontContext": {
@@ -1857,7 +1875,9 @@ export let repository:any =
                 "type": "SpriteSheet"
             },
             "data": [
-                [],
+                [
+                    1
+                ],
                 null,
                 null,
                 [
@@ -1865,7 +1885,7 @@ export let repository:any =
                     null,
                     null,
                     null,
-                    2,
+                    null,
                     null,
                     null
                 ],
@@ -1874,27 +1894,18 @@ export let repository:any =
                     null
                 ],
                 [
-                    1,
-                    null,
-                    3,
                     null,
                     null,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                    1,
-                    1,
-                    1
+                    null,
+                    null,
+                    null
                 ],
                 null,
                 [
                     null,
-                    1,
                     null,
-                    1
+                    null,
+                    null
                 ]
             ]
         }

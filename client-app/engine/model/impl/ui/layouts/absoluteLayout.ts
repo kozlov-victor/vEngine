@@ -34,18 +34,17 @@ export default class AbsoluteLayout extends Container {
         if (this.layoutHeight===LAYOUT_SIZE.WRAP_CONTENT) {
             this.height = maxY;
         }
-        this.calcBgRectWithPadding(this.width,this.height);
-        //this._dirty = true;
+        this.calcDrawableRect(this.width,this.height);
     }
 
     update(time:number,delta:number){
         super.update(time,delta);
-        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.lockRect(this.getRect());
         let renderer = this.game.renderer;
         renderer.translate(
             this.pos.x + this.marginLeft,
             this.pos.y + this.marginTop
         );
+        if (this.overflow===OVERFLOW.HIDDEN) renderer.lockRect(this.getRect());
         if (this.background) this.background.render();
         renderer.translate(
             this.paddingLeft,
@@ -57,7 +56,7 @@ export default class AbsoluteLayout extends Container {
             c.update(time,delta);
             renderer.restore();
         }
-        //if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
+        if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
     }
 
 }

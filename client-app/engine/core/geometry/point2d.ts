@@ -23,6 +23,10 @@ export default class Point2d extends ObservableEntity{
         if (onChangedFn) this.addListener(onChangedFn);
     }
 
+    protected checkObservableChanged():boolean{
+        return this._state.setState(this.x,this.y);
+    }
+
     observe(onChangedFn:()=>void){
         this.addListener(onChangedFn);
     }

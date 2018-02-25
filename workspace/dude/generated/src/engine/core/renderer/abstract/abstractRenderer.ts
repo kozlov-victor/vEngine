@@ -164,7 +164,7 @@ export default abstract class AbstractRendere {
     }
 
 
-    loadTextureInfo(textureId,info){}
+    loadTextureInfo(textureId:string,onLoaded:()=>void){}
 
     getTextureInfo(textureId:string):TextureInfo{
         return this.renderableCache[textureId];

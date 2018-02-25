@@ -32,6 +32,7 @@ export default class BaseModel extends CommonObject {
     _emitter:EventEmitter;
     _cloner:BaseModel;
     parent:BaseModel|null = null;
+    children:BaseModel[] = [];
     _dirty = true;
 
     protected _rect:Rect = new Rect(0,0);

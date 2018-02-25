@@ -17,6 +17,7 @@ import AmbientLight from "../../core/light/ambientLight";
 import Color from "../../core/color";
 import SpriteSheet from "./spriteSheet";
 import {CAMERA_MATRIX_MODE} from "../../core/camera";
+import Resource from "../resource";
 
 
 export default class Scene extends BaseModel {
@@ -53,9 +54,14 @@ export default class Scene extends BaseModel {
     }
     getAllGameObjects(){
         let res = [];
-        this.layers.forEach(l=>{
-            res = res.concat(res,l.gameObjects);
-        });
+        const ONE = 1;
+        for (let i=0;i<this.layers.length;i++) {
+            let layer = this.layers[this.layers.length - ONE - i];
+            for (let j = 0; j < layer.gameObjects.length; j++) {
+                let go = layer.gameObjects[layer.gameObjects.length - ONE - j];
+                res.push(go);
+            }
+        }
         return res;
     }
     getAllSpriteSheets() {
@@ -79,23 +85,19 @@ export default class Scene extends BaseModel {
         q.onResolved = ()=>{
             cb && cb();
         };
-        resources.forEach(res=>{
-            let taskId = res.id;
-            q.addTask(()=>{
-                this.game.renderer.loadTextureInfo(
-                    res.resourcePath,
-                    ()=>q.resolveTask(taskId)
-                );
-            },res.id);
-            if (res.normalMapPath) {
-                let taskId = res.id.toString() + res.normalMapPath;
-                q.addTask(()=>{
-                    this.game.renderer.loadTextureInfo(
-                        res.normalMapPath,
-                        ()=>q.resolveTask(taskId)
-                    );
-                },taskId);
-            }
+        resources.forEach((res:Resource)=>{
+            let id = 0;
+            res.getAllResourcePathes().forEach((path:string)=>{
+                ((id)=>{ // auto genera
+                    q.addTask(()=>{
+                        this.game.renderer.loadTextureInfo(
+                            path,
+                            ()=>q.resolveTask(id)
+                        );
+                    },id);
+                })(id);
+                id++;
+            });
         });
         q.start();
 
@@ -134,9 +136,11 @@ export default class Scene extends BaseModel {
         this.game.camera.update(currTime,deltaTime);
 
         if (this._individualBehaviour) this._individualBehaviour.onUpdate();
+
         while(i--) {
             layers[i-l].update(currTime,deltaTime);
         }
+
         this.tileMap.update();
 
         renderer.save();

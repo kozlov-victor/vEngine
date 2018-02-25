@@ -1,11 +1,35 @@
 
 import {ArrayEx} from "../../../declarations";
 
-export default class ObservableEntity {
+class State<T> {
 
+    private currState:T[] = [];
+
+    setState(...newState:T[]){
+        let changed:boolean = false;
+        newState.forEach((val:T,i:number)=>{
+            if (this.currState[i]!==val) changed = true;
+            this.currState[i] = val;
+        });
+        return changed;
+    }
+
+    constructor(...values:T[]){
+        this.setState(...values);
+    }
+
+}
+
+export default abstract class ObservableEntity {
+
+    protected _state = new State<number>();
     private _onChanged:Array<()=>void> = [];
 
+    protected abstract checkObservableChanged():boolean;
+
     protected triggerObservable(){
+        let changed:boolean = this.checkObservableChanged();
+        if (!changed) return;
         for (let fn of this._onChanged) {
             fn();
         }

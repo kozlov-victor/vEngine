@@ -5,7 +5,6 @@ import BaseModel from '../baseModel'
 import SpriteSheet from "./spriteSheet";
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
-import Point2d from "../../core/geometry/point2d";
 
 export default class TileMap extends BaseModel {
 
@@ -39,7 +38,6 @@ export default class TileMap extends BaseModel {
                 throw `incorrect mapWidth/mapHeight provided. Expected ${expected} tiles, but ${found} found (${mapWidth}*${mapHeight})`;
             }
         }
-
     }
 
     revalidate(){
@@ -98,8 +96,6 @@ export default class TileMap extends BaseModel {
             x+=this.spriteSheet._frameWidth;
             if (x>maxX) x = maxX;
         }
-        //if (result.length) result = [result[0]];
-        //if (result.length) console.log('collided with',result.length);
         return result;
     }
 
@@ -119,13 +115,13 @@ export default class TileMap extends BaseModel {
             for (let x=tilePosX;x<=w;x++) {
                 let index = this.data[y] && this.data[y][x];
                 if (index===null || index===undefined) continue;
-                let destRect:Rect = Rect.fromPool();
+                let destRect:Rect = Rect.fromPool().clone();
                 destRect.setXYWH(
                     x*spriteSheet._frameWidth, y*spriteSheet._frameHeight,
                     spriteSheet._frameWidth, spriteSheet._frameHeight
                 );
                 renderer.drawImage(
-                    spriteSheet.resourcePath,
+                    spriteSheet.getDefaultResourcePath(),
                     spriteSheet.getFrameRect(index),
                     destRect
                 );

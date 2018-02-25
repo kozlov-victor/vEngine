@@ -120,13 +120,13 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
 
         if (!matEx.overlapTest(this.game.camera.getRectScaled(),renderable.getRect())) return;
 
-        let texToDraw:Texture = this.renderableCache[renderable.spriteSheet.resourcePath].texture;
+        let texToDraw:Texture = this.renderableCache[renderable.spriteSheet.getDefaultResourcePath()].texture;
         texToDraw = texToDraw.applyFilters(renderable.filters,this.frameBuffer);
 
         let texInfo:TextureInfo[] = [{texture:texToDraw,name:'texture'}];
-        if (renderable.spriteSheet.normalMapPath) {
+        if (renderable.spriteSheet.hasResourceWithName('normalMap')) {
             texInfo.push({
-                texture:this.renderableCache[renderable.spriteSheet.normalMapPath].texture,
+                texture:this.renderableCache[renderable.spriteSheet.getResourcePathByName('normalMap')].texture,
                 name: 'normalTexture'
             });
         }
@@ -142,6 +142,7 @@ export default class WebGlRenderer extends AbstractCanvasRenderer {
             Rect.fromPool().setXYWH(0,0,renderable.getFrameRect().width,renderable.getFrameRect().height)
         );
     }
+
 
     drawImage(texturePath:string,
               srcRect:Rect,
