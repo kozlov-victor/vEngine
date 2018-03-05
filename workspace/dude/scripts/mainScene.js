@@ -60,10 +60,17 @@ export class MainSceneBehaviour {
                             font: {type: 'Font', name: 'font1'},
                             text: 'button1',
                             paddings: 10,
-                            background: {
-                                type: 'NinePatchImage',
-                                resourcePath: 'resources/nineP.png',
-                                ABCD: 45
+                            describeStates: {
+                                NORMAL: {
+                                    type: 'NinePatchImage',
+                                    resourceMap: {main:'resources/nineP.png'},
+                                    setABCD: 45
+                                },
+                                ACTIVE: {
+                                    type: 'NinePatchImage',
+                                    resourceMap: {main:'resources/ninePactive.png'},
+                                    setABCD: 45
+                                }
                             },
                             on: ['click',()=>{console.log('clicked on button 1');}]
                         }
@@ -76,7 +83,7 @@ export class MainSceneBehaviour {
                             paddings: 10,
                             background: {
                                 type: 'NinePatchImage',
-                                resourcePath: 'resources/nineP.png',
+                                resourceMap: {main:'resources/nineP.png'},
                                 ABCD: 45
                             },
                             on: ['click',()=>{console.log('clicked on button 2');}]

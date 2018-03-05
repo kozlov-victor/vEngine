@@ -1,12 +1,13 @@
 
+import Resource from "../../../resource";
+
 declare const DEBUG:boolean;
 
 import {UIRenderable} from "../../../../renderable/interface/uiRenderable";
-import BaseModel from "../../../baseModel";
 import Rect from "../../../../core/geometry/rect";
 import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
-
+import {MOUSE_EVENTS} from "../../../../core/control/mouse";
 
 export enum OVERFLOW {
     HIDDEN,VISIBLE
@@ -16,7 +17,11 @@ export enum LAYOUT_SIZE {
     FIXED,WRAP_CONTENT,MATCH_PARENT
 }
 
-export default class Container extends BaseModel implements UIRenderable {
+export enum STATE {
+    NORMAL,ACTIVE,DISABLED
+}
+
+export default class Container extends Resource implements UIRenderable {
 
     marginLeft      :number = 0;
     marginTop       :number = 0;
@@ -38,6 +43,9 @@ export default class Container extends BaseModel implements UIRenderable {
 
     drawingRect:Rect = new Rect();
     children:Container[] = [];
+
+    private bgByState :{[state:number]:UIRenderable} = {};
+    private state     :STATE = STATE.NORMAL;
 
     testLayout(){
         if (DEBUG) {
@@ -123,12 +131,34 @@ export default class Container extends BaseModel implements UIRenderable {
         this._setDirty();
     }
 
+
+    describeStates(description:{[state:string]:any}){
+        let allUIRenderable = require('../all');
+        Object.keys(description).forEach(stateName=>{
+            let state:STATE = STATE[stateName];
+            let clazz = allUIRenderable[description[stateName].type];
+            let instance = new clazz(this.game);
+            instance.fromJSON(description[stateName]);
+            this.bgByState[state] = instance;
+        });
+    }
+
+
     getDrawableInfo():DrawableInfo {
         return {blendMode:this.blendMode,acceptLight:false};
     }
 
     constructor(game){
         super(game);
+        this.on(MOUSE_EVENTS.mouseDown,()=>{
+           this.state = STATE.ACTIVE;
+        });
+        this.on(MOUSE_EVENTS.mouseUp,()=>{
+            this.state = STATE.NORMAL;
+        });
+        this.on(MOUSE_EVENTS.mouseLeave,()=>{
+            this.state = STATE.NORMAL;
+        });
     }
 
     onGeometryChanged(){}
@@ -148,6 +178,12 @@ export default class Container extends BaseModel implements UIRenderable {
         )
     }
 
+    private getBgByState():UIRenderable {
+        let possibleBg:UIRenderable = this.bgByState[this.state];
+        if (!possibleBg) possibleBg = this.background;
+        return possibleBg;
+    }
+
     calcDrawableRect(contentWidth:number, contentHeight:number){
         let paddedWidth = contentWidth  + this.paddingLeft + this.paddingRight;
         let paddedHeight = contentHeight +  this.paddingTop +  this.paddingBottom;
@@ -165,6 +201,7 @@ export default class Container extends BaseModel implements UIRenderable {
 
     update(time:number,delta:number){
         super.update(time,delta);
+        this.background = this.getBgByState();
         if (this._dirty) {
             this.onGeometryChanged();
             this._dirty = false;

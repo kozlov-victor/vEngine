@@ -1,5 +1,6 @@
 
 
+import {Renderable} from "../renderable/interface/renderable";
 declare const DEBUG:boolean;
 
 import CommonObject from './commonObject'
@@ -15,7 +16,7 @@ import Game from "../core/game";
     game: true,
     rigidBody: true
 })
-export default class BaseModel extends CommonObject {
+export default abstract class BaseModel extends CommonObject {
 
     id:number = null;
     name:string = null;
@@ -101,4 +102,6 @@ export default class BaseModel extends CommonObject {
         cloner.updateCloner(opts);
         delete this._cloner;
     }
+
+    render(){}
 }

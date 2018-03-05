@@ -47,6 +47,16 @@ export class MousePoint extends Point2d{
 
 }
 
+export let MOUSE_EVENTS = {
+    click       :   'click',
+    mouseDown   :   'mouseDown',
+    mouseMove   :   'mouseMove',
+    mouseLeave  :   'mouseLeave',
+    mouseEnter  :   'mouseEnter',
+    mouseUp     :   'mouseUp',
+    doubleClick :   'doubleClick'
+};
+
 export default class Mouse {
 
     private objectsCaptured:{[pointId:number]:BaseModel} = {};
@@ -139,6 +149,7 @@ export default class Mouse {
                 break;
             }
         }
+        if (untransformedPoint.target) point.target = untransformedPoint.target;
 
         if (point.target===undefined) point.target = scene;
         scene.trigger(eventName,{
@@ -152,36 +163,36 @@ export default class Mouse {
     }
 
     resolveClick(e:TouchEvent|MouseEvent){
-        this.triggerEvent(e,'click');
-        this.triggerEvent(e,'mouseDown');
+        this.triggerEvent(e,MOUSE_EVENTS.click);
+        this.triggerEvent(e,MOUSE_EVENTS.mouseDown);
     }
 
     resolveMouseMove(e:Touch|MouseEvent,isMouseDown:boolean){
-        let point:MousePoint = this.triggerEvent(e,'mouseMove',isMouseDown);
+        let point:MousePoint = this.triggerEvent(e,MOUSE_EVENTS.mouseMove,isMouseDown);
         if (!point) return;
         let lastMouseDownObject:BaseModel = this.objectsCaptured[point.id];
         if (lastMouseDownObject && lastMouseDownObject!==point.target) {
-            lastMouseDownObject.trigger('mouseLeave',point);
+            lastMouseDownObject.trigger(MOUSE_EVENTS.mouseLeave,point);
             delete this.objectsCaptured[point.id];
         }
 
         if (point.target && lastMouseDownObject!==point.target) {
-            point.target.trigger('mouseEnter',point);
+            point.target.trigger(MOUSE_EVENTS.mouseEnter,point);
             this.objectsCaptured[point.id] = point.target;
         }
     }
 
     resolveMouseUp(e:MouseEvent|Touch){
-        let point = this.triggerEvent(e,'mouseUp');
+        let point = this.triggerEvent(e,MOUSE_EVENTS.mouseUp);
         if (!point) return;
         let lastMouseDownObject = this.objectsCaptured[point.id];
         if (!lastMouseDownObject) return;
-        lastMouseDownObject.trigger('mouseUp',point);
+        lastMouseDownObject.trigger(MOUSE_EVENTS.mouseUp,point);
         delete this.objectsCaptured[point.id];
     }
 
     resolveDoubleClick(e:|MouseEvent){
-        let point = this.triggerEvent(e,'doubleClick');
+        let point = this.triggerEvent(e,MOUSE_EVENTS.doubleClick);
         if (!point) return;
         delete this.objectsCaptured[point.id];
     }

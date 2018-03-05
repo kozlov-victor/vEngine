@@ -307,7 +307,7 @@ export let repository:any =
             "name": "tile",
             "width": 262,
             "height": 192,
-            "rigid": true,
+            "rigid": false,
             "type": "GameObjectProto",
             "spriteSheet": {
                 "id": 72,

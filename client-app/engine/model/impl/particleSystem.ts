@@ -3,6 +3,8 @@ import BaseModel from '../baseModel'
 import * as mathEx from '../../core/mathEx'
 import Game from "../../core/game";
 import GameObjectProto from './gameObjectProto';
+import {Renderable} from "../../renderable/interface/renderable";
+import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 
 let r = obj=>{
     return mathEx.random(obj.from,obj.to);
@@ -13,7 +15,7 @@ interface ParticlePropertyDesc {
     to:number
 }
 
-export default class ParticleSystem extends BaseModel {
+export default class ParticleSystem extends BaseModel implements Renderable {
 
     type:string = 'ParticleSystem';
     gameObjectProto:GameObjectProto = null;
@@ -23,6 +25,9 @@ export default class ParticleSystem extends BaseModel {
     particleVelocity:ParticlePropertyDesc = {from:1,to:100};
     particleLiveTime:ParticlePropertyDesc = {from:100,to:1000};
     emissionRadius:number = 0;
+
+    filters: AbstractFilter[] = null;
+    blendMode:string = '';
 
     constructor(game:Game){
         super(game);
@@ -65,6 +70,17 @@ export default class ParticleSystem extends BaseModel {
                 this._particles.splice(this._particles.indexOf(p),1);
             }
             p.update(time,delta);
+        }
+    }
+
+    render(){
+        let all = this._particles;
+        let i = all.length;
+        let l = i - 1;
+        while(i--){
+            let p = all[l-i];
+            if (!p) continue;
+            p.render();
         }
     }
 }

@@ -18,19 +18,21 @@ import Color from "../../core/color";
 import SpriteSheet from "./spriteSheet";
 import {CAMERA_MATRIX_MODE} from "../../core/camera";
 import Resource from "../resource";
+import {Renderable} from "../../renderable/interface/renderable";
 
 
-export default class Scene extends BaseModel {
+export default class Scene extends BaseModel implements Renderable {
 
     type:string = 'Scene';
     layers:Array<Layer> = [];
-    uiLayer:Layer; //todo
+    uiLayer:Layer;
     useBG:boolean = false;
     colorBG = Color.WHITE;
     tileMap:TileMap;
     ambientLight:AmbientLight;
 
-    private filters:Array<AbstractFilter> = [];
+    filters:Array<AbstractFilter> = [];
+    blendMode:string = ''; // todo
     _tweenMovies = [];
     _individualBehaviour = null;
 
@@ -119,6 +121,28 @@ export default class Scene extends BaseModel {
 
     update(currTime:number,deltaTime:number){
 
+        let layers = this.layers;
+        let i = this.layers.length;
+        let l = i - 1;
+
+        if (this._individualBehaviour) this._individualBehaviour.onUpdate();
+
+        while(i--) {
+            layers[i-l].update(currTime,deltaTime);
+        }
+
+        this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
+            ps.update(currTime,deltaTime);
+        });
+        this._tweens.forEach((t:Tween,index:number)=>{
+            t.update(currTime);
+            if (t.isCompleted()) this._tweens.splice(index,1);
+        });
+
+    }
+
+    render(){
+
         if (DEBUG) {
             if (this.game.renderer.debugTextField) this.game.renderer.debugTextField.setText('');
         }
@@ -130,58 +154,34 @@ export default class Scene extends BaseModel {
 
         let layers = this.layers;
         let i = this.layers.length;
-        let l = i -1;
+        let l = i - 1;
 
         this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
-        this.game.camera.update(currTime,deltaTime);
-
-        if (this._individualBehaviour) this._individualBehaviour.onUpdate();
+        this.game.camera.update(this.game.getTime(),this.game.getDeltaTime());
 
         while(i--) {
-            layers[i-l].update(currTime,deltaTime);
+            layers[i-l].render();
         }
 
-        this.tileMap.update();
+        this.tileMap.render();
 
         renderer.save();
         renderer.resetTransform();
         this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_IDENTITY;
-        this.uiLayer.update(currTime,deltaTime);
+        this.uiLayer.render();
         renderer.restore();
 
         this.game.camera.matrixMode = CAMERA_MATRIX_MODE.MODE_TRANSFORM;
         this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
-            ps.update(currTime,deltaTime);
+            ps.render();
         });
-        this._tweens.forEach((t:Tween,index:number)=>{
-            t.update(currTime);
-            if (t.isCompleted()) this._tweens.splice(index,1);
-        });
-        // this._tweenMovies.forEach(function(tweenMovie){
-        //     if (tweenMovie.completed) {
-        //         this._tweenMovies.remove(tweenMovie);
-        //     }
-        //     tweenMovie._update(currTime);
-        // });
-        // this.__updateIndividualBehaviour__(currTime);
+
         if (DEBUG) {
             this.game.renderer.restore();
             if (this.game.renderer.debugTextField)
-                this.game.renderer.debugTextField.update(currTime,deltaTime);
+                this.game.renderer.debugTextField.update(this.game.getTime(),this.game.getDeltaTime());
             this.game.renderer.restore();
         }
         renderer.flipFrameBuffer(this.filters);
     }
-    // fadeIn(time,easeFnName){
-    //     return this.tween(this,{to:{alpha:1}},time,easeFnName);
-    // }
-    // fadeOut(time,easeFnName){
-    //     return this.tween(this,{to:{alpha:0}},time,easeFnName);
-    // }
-    // tween(obj,fromToVal,tweenTime,easeFnName){
-    //     // let movie = new tweenMovieModule.TweenMovie();
-    //     // let tween = new tweenModule.Tween(obj,fromToVal,tweenTime,easeFnName);
-    //     // movie.tween(0,tween);
-    //     // movie.play();
-    // }
 }

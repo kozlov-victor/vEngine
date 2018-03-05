@@ -3,7 +3,7 @@
 export class PlatformBehaviour {
 
     onCreate(){
-        this.gameObject.rigidBody.isStatic = true;
+        this.gameObject.rigidBody.fixed = true;
         this.gameObject.acceptLight = true;
     }
 

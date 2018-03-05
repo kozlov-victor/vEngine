@@ -95,7 +95,8 @@ class GeneratorService {
                 if (err) {
                     console.error('compiler run error: ',err);
                     GeneratorService._createError(params,err);
-                    callback({success:false,error:error})
+                    resp.write("error<br>");
+                    resp.end();
                 }
                 else {
 
@@ -110,7 +111,8 @@ class GeneratorService {
                             return msg;
                         }).join('\n\t---------\t\n');
                         GeneratorService._createError(params,errorMsg);
-                        callback({success:false});
+                        resp.write("error<br>");
+                        resp.end();
                     } else {
                         let embeddedResources = [];
                         // fs.readDirSync(`workspace/${params.projectName}/out/`).forEach(res=>{
@@ -142,7 +144,9 @@ class GeneratorService {
         } catch (e){
             console.error(e);
             GeneratorService._createError(params,e.toString());
-            callback({success:false});
+            //callback({success:false});
+            resp.write("error<br>");
+            resp.end();
         }
 
     }

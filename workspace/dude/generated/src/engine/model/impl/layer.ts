@@ -42,4 +42,14 @@ export default class Layer extends BaseModel {
             obj && obj.update(currTime,deltaTime);
         }
     }
+
+    render(){
+        let all = this.gameObjects;
+        let i = all.length;
+        let l = i-1;
+        while(i--){
+            let obj = all[l-i];
+            obj && obj.render();
+        }
+    }
 }

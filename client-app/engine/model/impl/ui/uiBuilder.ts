@@ -75,6 +75,8 @@ export default class UIBuilder {
         });
     }
 
+
+
     private resolveObj(key:string,obj:any):Container{
         let clazz = allUIClasses[key];
         if (DEBUG && !clazz) throw `no such ui class: ${key}`;

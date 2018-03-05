@@ -20,7 +20,8 @@ export default class Move2Dir extends Moveable {
 
     stop() {
         super.stop();
-        this.gameObject.rigidBody.vel.x = 0;
+        this.gameObject.rigidBody.mAcceleration.x = 0;
+        this.gameObject.rigidBody.mVelocity.x = 0;
     }
 
 }

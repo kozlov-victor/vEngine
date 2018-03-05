@@ -1,10 +1,6 @@
 
 import GameObjectProto from './gameObjectProto'
 import * as commonBehaviours from '../../commonBehaviour/all'
-import BlackWhiteFilter from "../../core/renderer/webGl/filters/textureFilters/blackWhite";
-import ColorizeFilter from "../../core/renderer/webGl/filters/textureFilters/colorizeFilter";
-import PixelFilter from "../../core/renderer/webGl/filters/textureFilters/pixelFilter";
-import ArcadeRigidBody from "../../core/physics/arcadeRigidBody";
 
 const noop = ()=>{};
 declare const DEBUG:boolean;
@@ -36,12 +32,10 @@ export default class GameObject extends GameObjectProto {
             this[key] = ownProps[key];
         });
         super.revalidate();
-        // if (this.id===71) {
         //     let filter1 = new BlackWhiteFilter(this.game.renderer['gl']); // todo
         //     let filter2 = new ColorizeFilter(this.game.renderer['gl']);
         //     this.filters.push(filter1);
         //     this.filters.push(filter2);
-        // }
     }
 
     setIndividualBehaviour(Clazz){

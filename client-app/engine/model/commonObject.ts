@@ -85,7 +85,11 @@ export default class CommonObject {
                 });
             } else if (this[key] && this[key].fromJSON) {
                 this[key].fromJSON(params[key]);
-            } else this[key] = params[key];
+            } else if (this[key] && this[key].call) {
+                this[key].call(this,...params[key]);
+            } else {
+                this[key] = params[key];
+            }
         });
         this.revalidate();
         return this;

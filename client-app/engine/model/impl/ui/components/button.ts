@@ -25,6 +25,7 @@ export default class Button extends Container {
     onGeometryChanged(){
         this._textField.onGeometryChanged();
         this.calcDrawableRect(this._textField.width,this._textField.height);
+        if (!this.background) return;
 
         let dx = (this.background.drawingRect.width - this._textField.width)/2;
         let dy = (this.background.drawingRect.height - this._textField.height)/2;
@@ -56,7 +57,7 @@ export default class Button extends Container {
             this.pos.x + this.marginLeft,
             this.pos.y + this.marginTop
         );
-        this.background.render();
+        if (this.background) this.background.render();
         this._textField.render();
     }
 

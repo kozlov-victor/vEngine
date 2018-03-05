@@ -19,8 +19,8 @@ export default class Move4Dir extends Moveable {
 
     stop() {
         super.stop();
-        this.gameObject.rigidBody.vel.x = 0;
-        this.gameObject.rigidBody.vel.y = 0;
+        this.gameObject.rigidBody.velocity.x = 0;
+        this.gameObject.rigidBody.velocity.y = 0;
     }
 
 }

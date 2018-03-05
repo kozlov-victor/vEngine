@@ -1,19 +1,28 @@
 
+import {Renderable} from "../../renderable/interface/renderable";
 declare const DEBUG:boolean;
 
 import BaseModel from '../baseModel'
 import SpriteSheet from "./spriteSheet";
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
+import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
+import {RigidRectangle,V2} from '../../core/physics/rigidShapes';
 
-export default class TileMap extends BaseModel {
+let Vec2 = V2;
+
+export default class TileMap extends BaseModel implements Renderable {
 
     type:string = "TileMap";
     spriteSheet:SpriteSheet = null;
     data:Array<any> = [];
     _tilesInScreenX:number;
     _tilesInScreenY:number;
-    
+
+    filters: AbstractFilter[] = null; // todo
+    blendMode:string = '';
+    rigidBodies = [];
+
     constructor(game:Game){
         super(game);
     }
@@ -26,7 +35,18 @@ export default class TileMap extends BaseModel {
             for (let i=0;i<mapWidth;i++) {
                 let val:number = source[cnt++];
                 if (val===0) this.data[j][i] = undefined;
-                else this.data[j][i] = val - 1;
+                else {
+                    this.data[j][i] = {};
+                    this.data[j][i].val = val - 1;
+                    let w = this.spriteSheet._frameWidth;
+                    let h = this.spriteSheet._frameHeight;
+                    let x = i*w;
+                    let y = j*h;
+                    let c = new Vec2(x+w/2,y+h/2);
+                    let r = new RigidRectangle(c,w,h,0);
+                    r.fixedAngle = true;
+                    this.data[j][i].rect = r;
+                }
             }
         }
         this.width = mapWidth;
@@ -52,22 +72,11 @@ export default class TileMap extends BaseModel {
         let tilePosX = ~~(x / this.spriteSheet._frameWidth);
         let tilePosY = ~~(y / this.spriteSheet._frameHeight);
         if (!this.data[tilePosY]) return;
-        let value = this.data[tilePosY][tilePosX];
-        if (value==null) return;
+        let tile = this.data[tilePosY][tilePosX];
+        if (!tile) return;
         return {
-            getRect: ()=>{
-                let x = tilePosX * this.spriteSheet._frameWidth + 1,
-                    y = tilePosY * this.spriteSheet._frameHeight + 1,
-                    width =  this.spriteSheet._frameWidth-2,
-                    height = this.spriteSheet._frameHeight-2;
-                return {
-                    x,y,width,height,
-                    right: x + width,
-                    bottom: y + height
-                }
-            },
             tileIndex: this.spriteSheet.numOfFramesH * tilePosY + tilePosX + 1,
-            value
+            tile
         }
     }
 
@@ -84,7 +93,7 @@ export default class TileMap extends BaseModel {
                 let tileInfo = this.getTileAt(x,y);
                 if (tileInfo) {
                     if (!alreadyCheckedTiles[tileInfo.tileIndex]) {
-                        result.push(tileInfo);
+                        result.push(tileInfo.tile);
                         alreadyCheckedTiles[tileInfo.tileIndex] = true;
                     }
                 }
@@ -99,7 +108,7 @@ export default class TileMap extends BaseModel {
         return result;
     }
 
-    update(){
+    render(){
         let spriteSheet = this.spriteSheet;
         if (!spriteSheet) return;
         let camera = this.game.camera;
@@ -113,8 +122,8 @@ export default class TileMap extends BaseModel {
         let h = tilePosY + this._tilesInScreenY + 1;
         for (let y=tilePosY;y<=h;y++) {
             for (let x=tilePosX;x<=w;x++) {
-                let index = this.data[y] && this.data[y][x];
-                if (index===null || index===undefined) continue;
+                let tileVal = this.data[y] && this.data[y][x] && this.data[y][x].val;
+                if (tileVal===false || tileVal===null || tileVal===undefined) continue;
                 let destRect:Rect = Rect.fromPool().clone();
                 destRect.setXYWH(
                     x*spriteSheet._frameWidth, y*spriteSheet._frameHeight,
@@ -122,7 +131,7 @@ export default class TileMap extends BaseModel {
                 );
                 renderer.drawImage(
                     spriteSheet.getDefaultResourcePath(),
-                    spriteSheet.getFrameRect(index),
+                    spriteSheet.getFrameRect(tileVal),
                     destRect
                 );
             }

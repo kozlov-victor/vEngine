@@ -44,4 +44,5 @@ export default class SpriteSheet extends Resource {
             this._frameHeight);
         return fr;
     }
+
 }

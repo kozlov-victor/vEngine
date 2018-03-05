@@ -3,6 +3,7 @@
 export class DudeBehaviour {
 
     onCreate(){
+        this.gameObject.rigidBody.fixedAngle = true;
         this.game.camera.followTo(this.gameObject);
     }
 
@@ -22,7 +23,7 @@ export class DudeBehaviour {
             this.game.keyboard.isPressed(this.game.keyboard.KEY.A) ||
             this.game.keyboard.isPressed(this.game.keyboard.KEY.GAME_PAD_5)
         ){
-            this.gameObject.rigidBody.vel.addXY(0,-50);
+            //this.gameObject.rigidBody.fixedAngle = true;
         }
 
 

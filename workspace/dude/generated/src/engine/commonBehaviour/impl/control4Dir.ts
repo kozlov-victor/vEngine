@@ -20,19 +20,19 @@ export default class Control4Dir extends Move4Dir {
         const parameters  = this.parameters;
         const go = this.gameObject;
         if (keyboard.isPressed(keyboard.KEY.UP) || keyboard.isPressed(keyboard.KEY.GAME_PAD_AXIS_UP)) {
-            go.rigidBody.vel.y = -parameters.velocity;
+            go.rigidBody.velocity.y = -parameters.velocity;
             this.go('Up');
         }
         if (keyboard.isPressed(keyboard.KEY.DOWN) || keyboard.isPressed(keyboard.KEY.GAME_PAD_AXIS_DOWN)) {
-            go.rigidBody.vel.y = parameters.velocity;
+            go.rigidBody.velocity.y = parameters.velocity;
             this.go('Down');
         }
         if (keyboard.isPressed(keyboard.KEY.LEFT) || keyboard.isPressed(keyboard.KEY.GAME_PAD_AXIS_LEFT)) {
-            go.rigidBody.vel.x = -parameters.velocity;
+            go.rigidBody.velocity.x = -parameters.velocity;
             this.go('Left');
         }
         if (keyboard.isPressed(keyboard.KEY.RIGHT) || keyboard.isPressed(keyboard.KEY.GAME_PAD_AXIS_RIGHT)) {
-            go.rigidBody.vel.x = parameters.velocity;
+            go.rigidBody.velocity.x = parameters.velocity;
             this.go('Right');
         }
 

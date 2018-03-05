@@ -11,7 +11,6 @@ import Repository from './repository';
 import Mouse from './control/mouse'
 import Keyboard from './control/keyboard'
 import GamePad from './control/gamePad'
-import Collider from './physics/collider'
 import {Transient} from './misc/decorators'
 
 import CommonObject from '../model/commonObject'
@@ -22,6 +21,7 @@ import AbstractRenderer from "./renderer/abstract/abstractRenderer";
 import Scene from '../model/impl/scene';
 import LightArray from "./light/lightArray";
 import UIBuilder from "../model/impl/ui/uiBuilder";
+import ColliderEngine from "./physics/colliderEngine";
 
 
 @Transient({
@@ -59,13 +59,15 @@ export default class Game extends CommonObject {
     repository:Repository;
     mouse:Mouse;
     keyboard:Keyboard;
-    collider:Collider;
+    collider:ColliderEngine;
     camera:Camera;
     uiBuilder:UIBuilder;
     scaleStrategy:number = SCALE_STRATEGY.FIT;
     startSceneId:number = 0;
 
     _revalidated:boolean = false;
+
+    static UPDATE_TIME_RATE = 20;
 
     constructor(){
         super();
@@ -77,7 +79,7 @@ export default class Game extends CommonObject {
         this.keyboard = new Keyboard(this);
         this.keyboard.listenTo();
         this.gamePad = new GamePad(this);
-        this.collider = new Collider(this);
+        this.collider = new ColliderEngine(this);
         this.camera = new Camera(this);
         this.lightArray = new LightArray(this);
         this.uiBuilder = new UIBuilder(this);
@@ -90,11 +92,11 @@ export default class Game extends CommonObject {
         this._revalidated = true;
     }
 
-    getTime(){
+    getTime():number{
         return this._lastTime;
     }
 
-    getDeltaTime(){
+    getDeltaTime():number{
         return this._deltaTime;
     }
 
@@ -144,16 +146,31 @@ export default class Game extends CommonObject {
         this._lastTime = this._currTime;
         this._currTime = Date.now();
         this._deltaTime = this._currTime - this._lastTime;
+
+
         if (DEBUG) {
             this.fps = ~~(1000 / this._deltaTime);
             window.fps = this.fps;
             let renderError = this.renderer.getError();
             if (renderError) throw `render error with code ${renderError}`;
         }
-        if (this._deltaTime>20) this._deltaTime = 20;
-        this._currentScene && this._currentScene.update(this._currTime,this._deltaTime);
-        this.keyboard.update();
-        this.gamePad.update();
+
+        let dTime = Math.min(this._deltaTime,Game.UPDATE_TIME_RATE);
+        let numOfLoops = (~~(this._deltaTime / Game.UPDATE_TIME_RATE))||1;
+        let currTime   = this._currTime - numOfLoops * Game.UPDATE_TIME_RATE;
+        let loopCnt = 0;
+        do {
+            this._currentScene && this._currentScene.update(currTime,dTime);
+            this.collider.collision();
+            currTime += Game.UPDATE_TIME_RATE;
+            this.keyboard.update();
+            this.gamePad.update();
+            loopCnt++;
+        } while (loopCnt<numOfLoops);
+
+
+        this._currentScene && this._currentScene.render();
+
         requestAnimationFrame(this.update.bind(this));
     }
 

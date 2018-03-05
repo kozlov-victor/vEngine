@@ -6,13 +6,13 @@ import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractF
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
 import {ArrayEx} from "../../declarations";
-import ArcadeRigidBody from "../../core/physics/arcadeRigidBody";
-import GameObject from "./gameObject";
 import ShaderMaterial from "../../core/light/shaderMaterial";
 import Layer from "./layer";
 import AbstractRenderer from "../../core/renderer/abstract/abstractRenderer";
 import {Renderable} from "../../renderable/interface/renderable";
+import {RigidRectangle,V2} from "../../core/physics/rigidShapes";
 
+let Vec2 = V2;
 
 export default class GameObjectProto extends BaseModel implements Renderable {
 
@@ -30,7 +30,7 @@ export default class GameObjectProto extends BaseModel implements Renderable {
     blendMode:string = null;
     acceptLight:boolean = false;
     shaderMaterial:ShaderMaterial = new ShaderMaterial();
-    rigidBody:ArcadeRigidBody;
+    rigidBody = null;
 
     _frameRect = new Rect(); // todo make all private
     _layer:Layer;
@@ -63,11 +63,15 @@ export default class GameObjectProto extends BaseModel implements Renderable {
             this.frameAnimations[i] = this.frameAnimations[i].clone(); // todo need clone?
             this.frameAnimations[i]._gameObject = this;
         });
-        this.rigidBody = this.rigid?new ArcadeRigidBody(this.game,this):null;
+        if (this.rigid) {
+            let center = new Vec2(this.pos.x+this.width/2,this.pos.y+this.height/2);
+            let mass = this.name=='platform'?0:10;
+            this.rigidBody = new RigidRectangle(center,this.width,this.height,mass);
+        }
     }
 
     playFrameAnimation(animationName:string,opts?){
-        let fr = this.frameAnimations.find(it=>it.name===animationName);
+        let fr:FrameAnimation = this.frameAnimations.find(it=>it.name===animationName);
         fr._gameObject = this;
         this._currFrameAnimation = fr;
         fr.play(opts);
@@ -103,7 +107,23 @@ export default class GameObjectProto extends BaseModel implements Renderable {
         for (let i=0,max = this.commonBehaviour.length;i<max;i++){
             if (this.commonBehaviour[i].onUpdate) this.commonBehaviour[i].onUpdate(time,delta); // todo its undefined when clone
         }
-        if (this.rigidBody!==null) this.rigidBody.update(time,delta);
+        if (this.rigidBody!==null) {
+            this.rigidBody.update(time,delta);
+            this.pos.x = this.rigidBody.mCenter.x - this.rigidBody.mWidth/2;
+            this.pos.y = this.rigidBody.mCenter.y - this.rigidBody.mHeight/2;
+            this.angle = this.rigidBody.mAngle;
+        }
+
+
+        if (this.children.length>0) {
+            for(let i=0,max=this.children.length;i<max;i++) {
+                this.children[i].update(time,delta);
+            }
+        }
+    }
+
+
+    render(){
         let renderer:AbstractRenderer = this.game.renderer;
 
         renderer.save();
@@ -118,23 +138,17 @@ export default class GameObjectProto extends BaseModel implements Renderable {
             renderer.translate(-halfV, -halfH);
         }
 
-        this.render();
+        this.game.renderer.draw(this);
 
         if (this.children.length>0) {
             renderer.save();
             for(let i=0,max=this.children.length;i<max;i++) {
-                this.children[i].update(time,delta);
+                this.children[i].render();
             }
             renderer.restore();
         }
 
         renderer.restore();
-
-    }
-
-
-    render(){
-        this.game.renderer.draw(this);
     }
 
 
