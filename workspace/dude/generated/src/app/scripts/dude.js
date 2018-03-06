@@ -16,7 +16,8 @@ export class DudeBehaviour {
             this.game.keyboard.isJustPressed(this.game.keyboard.KEY.UP) ||
             this.game.keyboard.isJustPressed(this.game.keyboard.KEY.GAME_PAD_1)
         ){
-            if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.addXY(0,-340);
+            //if (this.gameObject.rigidBody.onFloor) this.gameObject.rigidBody.vel.addXY(0,-340);
+            this.gameObject.rigidBody.mVelocity.y = -100;
         }
 
         if (
