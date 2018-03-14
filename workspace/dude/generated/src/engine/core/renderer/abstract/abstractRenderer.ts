@@ -17,7 +17,7 @@ import {DrawableInfo} from "../webGl/renderPrograms/interface/drawableInfo";
 
 declare const document:any, window:any;
 
-export default abstract class AbstractRendere {
+export default abstract class AbstractRenderer {
 
     public container:HTMLElement;
     public debugTextField:TextField;

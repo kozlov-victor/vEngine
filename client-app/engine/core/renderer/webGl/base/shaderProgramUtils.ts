@@ -160,7 +160,7 @@ export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram
 
 const TypeNumber = {
     check: (val)=>{
-        if (isNaN(val))
+        if (isNaN(parseFloat(val)) || !isFinite(val))
             throw `can not set uniform with value ${val}: expected argument of type number`;
     }
 };

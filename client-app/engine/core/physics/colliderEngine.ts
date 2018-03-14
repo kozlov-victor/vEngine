@@ -1,11 +1,9 @@
 
 
-import GameObject from "../../model/impl/gameObject";
 import Game from "../game";
-import {V2,CollisionInfo} from './rigidShapes';
+import {Vec2,CollisionInfo} from './rigidShapes';
 import Rect from "../geometry/rect";
 
-let Vec2 = V2;
 
 export default class ColliderEngine {
 

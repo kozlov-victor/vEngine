@@ -4,13 +4,10 @@ import Game from "../core/game";
 
 declare const DEBUG:boolean;
 
-export default class Resource extends BaseModel {
+export default abstract class Resource extends BaseModel {
 
     private resourceMap:{[key:string]:string} = {};
 
-    constructor(game:Game){
-        super(game);
-    }
 
     getDefaultResourcePath(){
         if (DEBUG) {

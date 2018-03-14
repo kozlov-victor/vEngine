@@ -18,7 +18,7 @@ import Color from "../../core/color";
 import SpriteSheet from "./spriteSheet";
 import {CAMERA_MATRIX_MODE} from "../../core/camera";
 import Resource from "../resource";
-import {Renderable} from "../../renderable/interface/renderable";
+import {Renderable} from "../../drawable/interface/renderable";
 
 
 export default class Scene extends BaseModel implements Renderable {
@@ -130,6 +130,7 @@ export default class Scene extends BaseModel implements Renderable {
         while(i--) {
             layers[i-l].update(currTime,deltaTime);
         }
+        this.uiLayer.update(currTime,deltaTime);
 
         this.game.repository.getArray('ParticleSystem').forEach(ps=>{ // todo also while? or foreach
             ps.update(currTime,deltaTime);

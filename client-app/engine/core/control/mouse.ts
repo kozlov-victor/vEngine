@@ -10,6 +10,7 @@ import Scene from "../../model/impl/scene";
 import BaseModel from "../../model/baseModel";
 import Rect from "../geometry/rect";
 import Container from "../../model/impl/ui/generic/container";
+import RenderableModel from "../../model/renderableModel";
 
 interface MouseEventEx extends MouseEvent {
     identifier:number,
@@ -108,9 +109,9 @@ export default class Mouse {
     }
 
 
-    private triggerPossibleChildren(c:BaseModel[],eventName:string,point:MousePoint,offsetX:number,offsetY:number){
+    private triggerPossibleChildren(c:RenderableModel[],eventName:string,point:MousePoint,offsetX:number,offsetY:number){
         for (let i=0;i<c.length;i++){
-            let go = c[c.length - 1 - i];
+            let go:RenderableModel = c[c.length - 1 - i];
             let isCaptured:boolean = Mouse.triggerGameObjectEvent(eventName,point,go,offsetX,offsetY);
             if (isCaptured) {
                 if (go.children) this.triggerPossibleChildren(

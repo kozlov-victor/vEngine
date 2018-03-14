@@ -71,9 +71,6 @@ export default class Game extends CommonObject {
 
     constructor(){
         super();
-        let time = Date.now();
-        this._lastTime = this._currTime = time;
-        this._deltaTime = 0;
         this.repository = new Repository(this);
         this.mouse = new Mouse(this);
         this.keyboard = new Keyboard(this);
@@ -145,6 +142,7 @@ export default class Game extends CommonObject {
         if (this.destroyed) return;
         this._lastTime = this._currTime;
         this._currTime = Date.now();
+        if (!this._lastTime) this._lastTime = this._currTime;
         this._deltaTime = this._currTime - this._lastTime;
 
 
@@ -166,6 +164,10 @@ export default class Game extends CommonObject {
             this.keyboard.update();
             this.gamePad.update();
             loopCnt++;
+            if (loopCnt>50) { // to avoid to much iterations
+                this._lastTime = this._currTime;
+                break;
+            }
         } while (loopCnt<numOfLoops);
 
 

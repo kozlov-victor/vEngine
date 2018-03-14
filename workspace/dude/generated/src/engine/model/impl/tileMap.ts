@@ -1,5 +1,5 @@
 
-import {Renderable} from "../../renderable/interface/renderable";
+import {Renderable} from "../../drawable/interface/renderable";
 declare const DEBUG:boolean;
 
 import BaseModel from '../baseModel'
@@ -7,9 +7,7 @@ import SpriteSheet from "./spriteSheet";
 import Game from "../../core/game";
 import Rect from "../../core/geometry/rect";
 import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
-import {RigidRectangle,V2} from '../../core/physics/rigidShapes';
-
-let Vec2 = V2;
+import {RigidRectangle,Vec2} from '../../core/physics/rigidShapes';
 
 export default class TileMap extends BaseModel implements Renderable {
 
@@ -21,7 +19,6 @@ export default class TileMap extends BaseModel implements Renderable {
 
     filters: AbstractFilter[] = null; // todo
     blendMode:string = '';
-    rigidBodies = [];
 
     constructor(game:Game){
         super(game);

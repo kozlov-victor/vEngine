@@ -207,20 +207,17 @@ export default class TextField extends Container {
         this.font = font;
         this.setText(this.text);
     }
+
     update(time,delta){
         super.update(time,delta);
-        this.render();
     }
-    render(){
-        let renderer = this.game.renderer;
-        renderer.save();
-        renderer.translate(this.pos.x, this.pos.y);
+
+    draw(){
         for (let charInfo of this._textInfo.allCharsCached) {
             this.game.renderer.drawImage(
                 this.font.getDefaultResourcePath(), charInfo.sourceRect, charInfo.destRect
             );
         }
-        renderer.restore();
     }
 
 }

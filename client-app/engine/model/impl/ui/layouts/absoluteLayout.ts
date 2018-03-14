@@ -39,23 +39,20 @@ export default class AbsoluteLayout extends Container {
 
     update(time:number,delta:number){
         super.update(time,delta);
+        for (let c of this.children) {
+            if (c._dirty) c.parent._dirty = true;
+            c.update(time,delta);
+        }
+    }
+
+    draw(){
         let renderer = this.game.renderer;
-        renderer.translate(
-            this.pos.x + this.marginLeft,
-            this.pos.y + this.marginTop
-        );
         if (this.overflow===OVERFLOW.HIDDEN) renderer.lockRect(this.getRect());
-        if (this.background) this.background.render();
+        if (this.background) this.background.draw();
         renderer.translate(
             this.paddingLeft,
             this.paddingTop
         );
-        for (let c of this.children) {
-            renderer.save();
-            if (c._dirty) c.parent._dirty = true;
-            c.update(time,delta);
-            renderer.restore();
-        }
         if (this.overflow===OVERFLOW.HIDDEN) this.game.renderer.unlockRect();
     }
 

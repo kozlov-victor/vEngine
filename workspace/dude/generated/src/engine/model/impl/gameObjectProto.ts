@@ -1,5 +1,4 @@
 
-import BaseModel from '../baseModel'
 import FrameAnimation from "./frameAnimation";
 import SpriteSheet from "./spriteSheet";
 import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
@@ -8,13 +7,12 @@ import Rect from "../../core/geometry/rect";
 import {ArrayEx} from "../../declarations";
 import ShaderMaterial from "../../core/light/shaderMaterial";
 import Layer from "./layer";
-import AbstractRenderer from "../../core/renderer/abstract/abstractRenderer";
-import {Renderable} from "../../renderable/interface/renderable";
-import {RigidRectangle,V2} from "../../core/physics/rigidShapes";
+import {Renderable} from "../../drawable/interface/renderable";
+import {RigidRectangle,Vec2} from "../../core/physics/rigidShapes";
+import RenderableModel from "../renderableModel";
 
-let Vec2 = V2;
 
-export default class GameObjectProto extends BaseModel implements Renderable {
+export default class GameObjectProto extends RenderableModel implements Renderable {
 
     type:string = 'GameObjectProto';
     spriteSheet:SpriteSheet = null;
@@ -65,7 +63,7 @@ export default class GameObjectProto extends BaseModel implements Renderable {
         });
         if (this.rigid) {
             let center = new Vec2(this.pos.x+this.width/2,this.pos.y+this.height/2);
-            let mass = this.name=='platform'?0:10;
+            let mass = this.name=='platform'?0:10; // todo
             this.rigidBody = new RigidRectangle(center,this.width,this.height,mass);
         }
     }
@@ -93,7 +91,7 @@ export default class GameObjectProto extends BaseModel implements Renderable {
         return this._frameRect;
     }
 
-    appendChild(c:BaseModel){
+    appendChild(c:RenderableModel){
         this.children.push(c);
         c.parent = this;
     }
@@ -109,11 +107,10 @@ export default class GameObjectProto extends BaseModel implements Renderable {
         }
         if (this.rigidBody!==null) {
             this.rigidBody.update(time,delta);
-            this.pos.x = this.rigidBody.mCenter.x - this.rigidBody.mWidth/2;
-            this.pos.y = this.rigidBody.mCenter.y - this.rigidBody.mHeight/2;
+            this.pos.x = ~~(this.rigidBody.mCenter.x - this.rigidBody.mWidth/2);
+            this.pos.y = ~~(this.rigidBody.mCenter.y - this.rigidBody.mHeight/2);
             this.angle = this.rigidBody.mAngle;
         }
-
 
         if (this.children.length>0) {
             for(let i=0,max=this.children.length;i<max;i++) {
@@ -123,32 +120,8 @@ export default class GameObjectProto extends BaseModel implements Renderable {
     }
 
 
-    render(){
-        let renderer:AbstractRenderer = this.game.renderer;
-
-        renderer.save();
-        renderer.translate(this.pos.x,this.pos.y);
-        if (!(this.angle===0 && this.scale.equal(1))) {
-            let halfV = this.width /2;
-            let halfH = this.height/2;
-            renderer.translate(halfV,halfH);
-            renderer.scale(this.scale.x,this.scale.y);
-            renderer.rotateZ(this.angle);
-            //ctx.rotateY(a);
-            renderer.translate(-halfV, -halfH);
-        }
-
+    draw(){
         this.game.renderer.draw(this);
-
-        if (this.children.length>0) {
-            renderer.save();
-            for(let i=0,max=this.children.length;i<max;i++) {
-                this.children[i].render();
-            }
-            renderer.restore();
-        }
-
-        renderer.restore();
     }
 
 

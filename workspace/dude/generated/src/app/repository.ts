@@ -195,7 +195,8 @@ export let repository:any =
             "height": 105,
             "type": "SpriteSheet",
             "resourceMap": {
-                "main": "resources/nineP.png"
+                "main": "resources/nineP.png",
+                "main1": "resources/ninePactive.png"
             },
             "frameRect": {
                 "x": 0,

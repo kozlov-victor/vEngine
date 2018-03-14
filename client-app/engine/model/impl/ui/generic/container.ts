@@ -3,11 +3,12 @@ import Resource from "../../../resource";
 
 declare const DEBUG:boolean;
 
-import {UIRenderable} from "../../../../renderable/interface/uiRenderable";
+import {UIDrawable} from "../../../../drawable/interface/uiDrawable";
 import Rect from "../../../../core/geometry/rect";
 import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 import {MOUSE_EVENTS} from "../../../../core/control/mouse";
+import RenderableModel from "../../../renderableModel";
 
 export enum OVERFLOW {
     HIDDEN,VISIBLE
@@ -21,7 +22,7 @@ export enum STATE {
     NORMAL,ACTIVE,DISABLED
 }
 
-export default class Container extends Resource implements UIRenderable {
+export default abstract class Container extends RenderableModel implements UIDrawable {
 
     marginLeft      :number = 0;
     marginTop       :number = 0;
@@ -39,12 +40,12 @@ export default class Container extends Resource implements UIRenderable {
     filters         :AbstractFilter[] = [];
     blendMode       :string = '';
 
-    background      :UIRenderable = undefined;
+    background      :UIDrawable = undefined;
 
     drawingRect:Rect = new Rect();
     children:Container[] = [];
 
-    private bgByState :{[state:number]:UIRenderable} = {};
+    private bgByState :{[state:number]:UIDrawable} = {};
     private state     :STATE = STATE.NORMAL;
 
     testLayout(){
@@ -178,8 +179,8 @@ export default class Container extends Resource implements UIRenderable {
         )
     }
 
-    private getBgByState():UIRenderable {
-        let possibleBg:UIRenderable = this.bgByState[this.state];
+    private getBgByState():UIDrawable {
+        let possibleBg:UIDrawable = this.bgByState[this.state];
         if (!possibleBg) possibleBg = this.background;
         return possibleBg;
     }
@@ -200,14 +201,19 @@ export default class Container extends Resource implements UIRenderable {
     }
 
     update(time:number,delta:number){
-        super.update(time,delta);
         this.background = this.getBgByState();
         if (this._dirty) {
             this.onGeometryChanged();
             this._dirty = false;
         }
+        super.update(time,delta);
     }
 
-    render(){}
+    beforeRender(){
+        this.game.renderer.translate(
+            this.pos.x + this.marginLeft,
+            this.pos.y + this.marginTop
+        );
+    }
 
 }

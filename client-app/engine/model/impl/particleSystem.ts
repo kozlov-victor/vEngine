@@ -3,7 +3,7 @@ import BaseModel from '../baseModel'
 import * as mathEx from '../../core/mathEx'
 import Game from "../../core/game";
 import GameObjectProto from './gameObjectProto';
-import {Renderable} from "../../renderable/interface/renderable";
+import {Renderable} from "../../drawable/interface/renderable";
 import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 
 let r = obj=>{

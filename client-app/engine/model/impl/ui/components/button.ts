@@ -48,16 +48,10 @@ export default class Button extends Container {
 
     update(time:number,delta:number){
         super.update(time,delta);
-        this.render();
     }
 
-    render(){
-        let renderer = this.game.renderer;
-        renderer.translate(
-            this.pos.x + this.marginLeft,
-            this.pos.y + this.marginTop
-        );
-        if (this.background) this.background.render();
+    draw(){
+        if (this.background) this.background.draw();
         this._textField.render();
     }
 

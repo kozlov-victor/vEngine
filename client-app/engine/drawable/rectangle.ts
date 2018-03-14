@@ -3,10 +3,10 @@ import AbstractFilter from "../core/renderer/webGl/filters/abstract/abstractFilt
 import Rect from "../core/geometry/rect";
 import Color from "../core/color";
 import Game from "../core/game";
-import {UIRenderable} from "./interface/uiRenderable";
+import {UIDrawable} from "./interface/uiDrawable";
 import {DrawableInfo} from "../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 
-export default class Rectangle implements UIRenderable {
+export default class Rectangle implements UIDrawable {
 
     filters:AbstractFilter[] = [];
     blendMode:string = '';
@@ -22,7 +22,7 @@ export default class Rectangle implements UIRenderable {
         return {blendMode:this.blendMode,acceptLight:false};
     }
 
-    render(){
+    draw(){
         this.game.renderer.fillRect(this.drawingRect,Color.RGB(12,222,100))
     }
 

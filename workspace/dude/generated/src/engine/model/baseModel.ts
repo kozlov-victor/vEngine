@@ -1,6 +1,6 @@
 
 
-import {Renderable} from "../renderable/interface/renderable";
+import {Renderable} from "../drawable/interface/renderable";
 declare const DEBUG:boolean;
 
 import CommonObject from './commonObject'
@@ -11,6 +11,7 @@ import {Transient} from '../core/misc/decorators'
 import Rect from "../core/geometry/rect";
 import Point2d from "../core/geometry/point2d";
 import Game from "../core/game";
+import AbstractRenderer from "../core/renderer/abstract/abstractRenderer";
 
 @Transient({
     game: true,
@@ -32,8 +33,6 @@ export default abstract class BaseModel extends CommonObject {
     _tweens:Array<Tween> = [];
     _emitter:EventEmitter;
     _cloner:BaseModel;
-    parent:BaseModel|null = null;
-    children:BaseModel[] = [];
     _dirty = true;
 
     protected _rect:Rect = new Rect(0,0);
@@ -47,10 +46,6 @@ export default abstract class BaseModel extends CommonObject {
         this._emitter = new EventEmitter();
     }
 
-     _setDirty(){
-        this._dirty = true;
-        if (this.parent) this.parent._dirty = true;
-    }
 
     setIndividualBehaviour(Clazz){}
 
@@ -102,6 +97,4 @@ export default abstract class BaseModel extends CommonObject {
         cloner.updateCloner(opts);
         delete this._cloner;
     }
-
-    render(){}
 }

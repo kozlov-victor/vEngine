@@ -6,4 +6,6 @@ export default class CheckBox extends Container {
     constructor(game) {
         super(game);
     }
+
+    draw(){}
 }

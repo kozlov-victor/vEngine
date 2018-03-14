@@ -3,10 +3,10 @@ import Game from "../core/game";
 import Rect from "../core/geometry/rect";
 import Resource from "../model/resource";
 import AbstractFilter from "../core/renderer/webGl/filters/abstract/abstractFilter";
-import {UIRenderable} from "./interface/uiRenderable";
+import {UIDrawable} from "./interface/uiDrawable";
 import {DrawableInfo} from "../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 
-export default class Image extends Resource implements UIRenderable {
+export default class Image extends Resource implements UIDrawable {
 
     destRect:Rect = new Rect();
     srcRect:Rect = new Rect();
@@ -23,7 +23,7 @@ export default class Image extends Resource implements UIRenderable {
         return {blendMode:this.blendMode,acceptLight:false};
     }
 
-    render(){
+    draw(){
         this.game.renderer.drawImage(this.getDefaultResourcePath(),this.srcRect,this.destRect);
     }
 
