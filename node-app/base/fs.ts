@@ -150,7 +150,7 @@ class FS {
         });
     }
 
-    copyFolder( source, target ) {
+    async copyFolder( source, target ) {
         return new Promise((resolve,reject)=>{
             //check if folder needs to be created or integrated
             let targetFolder = path.join( target, path.basename( source ) );
@@ -188,7 +188,7 @@ class FS {
                 resolve();
             }).catch(err=>{
                 console.error('copyFolder catch error',err);
-                reject(err)
+                reject(err);
             });
         }).catch(err=>{
             console.error('copyFolder catch error',err);
@@ -293,7 +293,7 @@ class FS {
                     if(isDir) { // recurse
                         await this.deleteFolder(curPath);
                     } else { // delete file
-                        await fs.unlinkSync(curPath);
+                        await unlink(curPath);
                     }
                 });
                 await unlink(path);
@@ -307,10 +307,12 @@ class FS {
 
     async createFolder(path) {
 
+        await this.deleteFolder(path);
+
         let mkdir = async (path)=>{
             return new Promise((resolve,reject)=>{
                 fs.mkdir(path,error=>{
-                    if (error) reject();
+                    if (error) reject(error);
                     else resolve();
                 });
             }).catch(e=>{
@@ -324,7 +326,7 @@ class FS {
                 if (!fldr) return;
                 pathSeq+=fldr;
                 let exists = await this.exists(pathSeq);
-                if (!exists) await fs.mkdir(pathSeq);
+                if (!exists) await mkdir(pathSeq);
                 pathSeq+='/';
             });
             if (path) await mkdir(path);

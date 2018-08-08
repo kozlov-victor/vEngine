@@ -14,6 +14,7 @@ class GeneratorService {
 
     cnt:number = 0;
     compilerCache:any  = {};
+    processCache:any = {};
 
 
     static async _createError(params,error){
@@ -46,11 +47,17 @@ class GeneratorService {
     }
 
     getCompiler(params){
-        let key = JSON.stringify(params);
-        if (!this.compilerCache[key]) this.compilerCache[key] = GeneratorService.createCompiler(params);
-        return this.compilerCache[key];
+        // let key = JSON.stringify(params);
+        // if (!this.compilerCache[key]) this.compilerCache[key] = GeneratorService.createCompiler(params);
+        // return this.compilerCache[key];
+        return GeneratorService.createCompiler(params);
     }
 
+
+    private async clearFolders(params){
+       console.log('clear folders');
+       await fs.deleteFolder(`workspace/${params.projectName}/generated/`);
+    }
 
     private async createFolders(params){
         console.log('creating folders');
@@ -130,7 +137,7 @@ class GeneratorService {
                                 msg+=`\n\t at file ${err.module.resource}`;
                             return msg;
                         }).join('\n\t---------\t\n');
-                        await GeneratorService._createError(params,errorMsg);
+                        //await GeneratorService._createError(params,errorMsg); todo need??????
                         response.write("error<br>");
                         response.end();
                         reject(errorMsg);
@@ -162,14 +169,22 @@ class GeneratorService {
 
     async generate(params,response){
 
-        console.log('generation started with params',params);
+        console.log('cache',this.processCache);
+        if (this.processCache[params.projectName]) {
+            let message = `generation of ${params.projectName} already started`;
+            console.error('generator error',message);
+            return;
+        }
         try {
-
+            this.processCache[params.projectName] = true;
+            //await this.clearFolders(params);
             await this.createFolders(params);
             await this.generateData(params);
             await this.compile(params,response);
+            delete this.processCache[params.projectName];
 
         } catch (e){
+            delete this.processCache[params.projectName];
             console.error('generator error',e);
             await GeneratorService._createError(params,e.toString());
             response.write("error<br>");

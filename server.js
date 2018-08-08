@@ -527,74 +527,78 @@ var FS = (function () {
         });
     };
     FS.prototype.copyFolder = function (source, target) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var targetFolder = path.join(target, path.basename(source));
-            Promise.resolve().then(function () {
-                return _this.exists(targetFolder);
-            }).then(function (exists) {
-                if (!exists)
-                    return new Promise(function (resolve, reject) {
-                        fs.mkdir(targetFolder, function (error) {
-                            if (error) {
-                                console.error('copyFolder targetFolder error', targetFolder);
-                                console.error('copyFolder mkdir error', error);
-                                reject(error);
-                            }
-                            else
-                                resolve();
-                        });
-                    });
-            }).then(function () {
-                return new Promise(function (resolve, reject) {
-                    fs.readdir(source, function (err, files) {
-                        if (err) {
-                            console.error('readdir source error', source);
-                            console.error('copyFolder readdir error', err);
-                            reject(err);
-                        }
-                        else
-                            resolve(files);
-                    });
-                });
-            }).then(function (files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                var _this = this;
-                return tslib_1.__generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0: return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                var curSource, isDirectory;
-                                return tslib_1.__generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0:
-                                            curSource = path.join(source, file);
-                                            return [4, this._isDirectory(curSource)];
-                                        case 1:
-                                            isDirectory = _a.sent();
-                                            if (!isDirectory) return [3, 3];
-                                            return [4, this.copyFolder(curSource, targetFolder)];
-                                        case 2:
-                                            _a.sent();
-                                            return [3, 5];
-                                        case 3: return [4, this._copyFilesToFolder(curSource, targetFolder)];
-                                        case 4:
-                                            _a.sent();
-                                            _a.label = 5;
-                                        case 5: return [2];
-                                    }
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return tslib_1.__generator(this, function (_a) {
+                return [2, new Promise(function (resolve, reject) {
+                        var targetFolder = path.join(target, path.basename(source));
+                        Promise.resolve().then(function () {
+                            return _this.exists(targetFolder);
+                        }).then(function (exists) {
+                            if (!exists)
+                                return new Promise(function (resolve, reject) {
+                                    fs.mkdir(targetFolder, function (error) {
+                                        if (error) {
+                                            console.error('copyFolder targetFolder error', targetFolder);
+                                            console.error('copyFolder mkdir error', error);
+                                            reject(error);
+                                        }
+                                        else
+                                            resolve();
+                                    });
                                 });
-                            }); })];
-                        case 1:
-                            _a.sent();
-                            resolve();
-                            return [2];
-                    }
-                });
-            }); }).catch(function (err) {
-                console.error('copyFolder catch error', err);
-                reject(err);
+                        }).then(function () {
+                            return new Promise(function (resolve, reject) {
+                                fs.readdir(source, function (err, files) {
+                                    if (err) {
+                                        console.error('readdir source error', source);
+                                        console.error('copyFolder readdir error', err);
+                                        reject(err);
+                                    }
+                                    else
+                                        resolve(files);
+                                });
+                            });
+                        }).then(function (files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                            var _this = this;
+                            return tslib_1.__generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                            var curSource, isDirectory;
+                                            return tslib_1.__generator(this, function (_a) {
+                                                switch (_a.label) {
+                                                    case 0:
+                                                        curSource = path.join(source, file);
+                                                        return [4, this._isDirectory(curSource)];
+                                                    case 1:
+                                                        isDirectory = _a.sent();
+                                                        if (!isDirectory) return [3, 3];
+                                                        return [4, this.copyFolder(curSource, targetFolder)];
+                                                    case 2:
+                                                        _a.sent();
+                                                        return [3, 5];
+                                                    case 3: return [4, this._copyFilesToFolder(curSource, targetFolder)];
+                                                    case 4:
+                                                        _a.sent();
+                                                        _a.label = 5;
+                                                    case 5: return [2];
+                                                }
+                                            });
+                                        }); })];
+                                    case 1:
+                                        _a.sent();
+                                        resolve();
+                                        return [2];
+                                }
+                            });
+                        }); }).catch(function (err) {
+                            console.error('copyFolder catch error', err);
+                            reject(err);
+                        });
+                    }).catch(function (err) {
+                        console.error('copyFolder catch error', err);
+                    })];
             });
-        }).catch(function (err) {
-            console.error('copyFolder catch error', err);
         });
     };
     FS.prototype._read = function (path, res, contentType, deep) {
@@ -777,7 +781,7 @@ var FS = (function () {
                                                                 case 2:
                                                                     _a.sent();
                                                                     return [3, 5];
-                                                                case 3: return [4, fs.unlinkSync(curPath)];
+                                                                case 3: return [4, unlink(curPath)];
                                                                 case 4:
                                                                     _a.sent();
                                                                     _a.label = 5;
@@ -809,13 +813,15 @@ var FS = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
+                    case 0: return [4, this.deleteFolder(path)];
+                    case 1:
+                        _a.sent();
                         mkdir = function (path) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                             return tslib_1.__generator(this, function (_a) {
                                 return [2, new Promise(function (resolve, reject) {
                                         fs.mkdir(path, function (error) {
                                             if (error)
-                                                reject();
+                                                reject(error);
                                             else
                                                 resolve();
                                         });
@@ -825,9 +831,9 @@ var FS = (function () {
                             });
                         }); };
                         pathSeq = '';
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 5, , 6]);
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 6, , 7]);
                         return [4, fns_1.forEach(path.split('/'), function (fldr) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                 var exists;
                                 return tslib_1.__generator(this, function (_a) {
@@ -840,7 +846,7 @@ var FS = (function () {
                                         case 1:
                                             exists = _a.sent();
                                             if (!!exists) return [3, 3];
-                                            return [4, fs.mkdir(pathSeq)];
+                                            return [4, mkdir(pathSeq)];
                                         case 2:
                                             _a.sent();
                                             _a.label = 3;
@@ -850,20 +856,20 @@ var FS = (function () {
                                     }
                                 });
                             }); })];
-                    case 2:
-                        _a.sent();
-                        if (!path) return [3, 4];
-                        return [4, mkdir(path)];
                     case 3:
                         _a.sent();
-                        _a.label = 4;
-                    case 4: return [3, 6];
-                    case 5:
+                        if (!path) return [3, 5];
+                        return [4, mkdir(path)];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [3, 7];
+                    case 6:
                         error_1 = _a.sent();
                         console.error('createFolder error', error_1);
                         console.error(error_1);
-                        return [3, 6];
-                    case 6: return [2];
+                        return [3, 7];
+                    case 7: return [2];
                 }
             });
         });
@@ -3330,6 +3336,7 @@ var GeneratorService = (function () {
     function GeneratorService() {
         this.cnt = 0;
         this.compilerCache = {};
+        this.processCache = {};
     }
     GeneratorService._createError = function (params, error) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -3373,10 +3380,21 @@ var GeneratorService = (function () {
         };
     };
     GeneratorService.prototype.getCompiler = function (params) {
-        var key = JSON.stringify(params);
-        if (!this.compilerCache[key])
-            this.compilerCache[key] = GeneratorService.createCompiler(params);
-        return this.compilerCache[key];
+        return GeneratorService.createCompiler(params);
+    };
+    GeneratorService.prototype.clearFolders = function (params) {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log('clear folders');
+                        return [4, fs_1.default.deleteFolder("workspace/" + params.projectName + "/generated/")];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
     };
     GeneratorService.prototype.createFolders = function (params) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
@@ -3485,9 +3503,9 @@ var GeneratorService = (function () {
                                         response.write("error<br>");
                                         response.end();
                                         reject(err);
-                                        return [3, 11];
+                                        return [3, 10];
                                     case 2:
-                                        if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 4];
+                                        if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
                                         console.error('compiled with errors');
                                         errorMsg = data.compilation.errors.map(function (err) {
                                             var msg = (err.details || err.message || err.toString());
@@ -3497,43 +3515,40 @@ var GeneratorService = (function () {
                                                 msg += "\n\t at file " + err.module.resource;
                                             return msg;
                                         }).join('\n\t---------\t\n');
-                                        return [4, GeneratorService._createError(params, errorMsg)];
-                                    case 3:
-                                        _a.sent();
                                         response.write("error<br>");
                                         response.end();
                                         reject(errorMsg);
-                                        return [3, 11];
-                                    case 4:
+                                        return [3, 10];
+                                    case 3:
                                         console.log('creating index.html');
                                         return [4, fs_1.default.readFile('./node-app/generator/index.html')];
-                                    case 5:
+                                    case 4:
                                         indexHtml = _a.sent();
                                         debugJs = '';
-                                        if (!params.debug) return [3, 7];
+                                        if (!params.debug) return [3, 6];
                                         return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/debug.js")];
-                                    case 6:
+                                    case 5:
                                         debugJs = (_a.sent());
-                                        _a.label = 7;
-                                    case 7:
+                                        _a.label = 6;
+                                    case 6:
                                         indexHtml = indexHtml.replace('${debug}', params.debug ? "<script>" + debugJs + "</script>" : '');
                                         indexHtml = indexHtml.replace('${hash}', (this.cnt++).toString());
                                         indexHtml = indexHtml.replace('${projectName}', params.projectName);
                                         return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/index.html", indexHtml)];
-                                    case 8:
+                                    case 7:
                                         _a.sent();
                                         console.log('creating bundle');
                                         return [4, fs_1.default.readFile("./workspace/" + params.projectName + "/generated/tmp/bundle.js")];
-                                    case 9:
+                                    case 8:
                                         appBundleJs = _a.sent();
                                         return [4, fs_1.default.createFile("workspace/" + params.projectName + "/out/bundle.js", appBundleJs)];
-                                    case 10:
+                                    case 9:
                                         _a.sent();
                                         console.log('compiled with no errors');
                                         response.end();
                                         resolve();
-                                        _a.label = 11;
-                                    case 11: return [2];
+                                        _a.label = 10;
+                                    case 10: return [2];
                                 }
                             });
                         }); });
@@ -3545,14 +3560,20 @@ var GeneratorService = (function () {
     };
     GeneratorService.prototype.generate = function (params, response) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var e_1;
+            var message, e_1;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        console.log('generation started with params', params);
+                        console.log('cache', this.processCache);
+                        if (this.processCache[params.projectName]) {
+                            message = "generation of " + params.projectName + " already started";
+                            console.error('generator error', message);
+                            return [2];
+                        }
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 5, , 7]);
+                        this.processCache[params.projectName] = true;
                         return [4, this.createFolders(params)];
                     case 2:
                         _a.sent();
@@ -3562,9 +3583,11 @@ var GeneratorService = (function () {
                         return [4, this.compile(params, response)];
                     case 4:
                         _a.sent();
+                        delete this.processCache[params.projectName];
                         return [3, 7];
                     case 5:
                         e_1 = _a.sent();
+                        delete this.processCache[params.projectName];
                         console.error('generator error', e_1);
                         return [4, GeneratorService._createError(params, e_1.toString())];
                     case 6:

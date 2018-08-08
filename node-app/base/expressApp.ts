@@ -50,7 +50,7 @@ export class ExpressApp {
         return this.app;
     }
 
-    setHeader(res,responseObj){
+    private setHeader(res,responseObj){
         if (typeof responseObj == 'object')
             res.setHeader('Content-Type', 'application/json');
     }
@@ -74,7 +74,8 @@ export class ExpressApp {
                 callback(data);
             }).catch((error)=>{
                 console.error('catch method promise error',error);
-                // write 500
+                response.statusCode = 500;
+                response.end(error);
             });
         }
         else if (typeof codeResult === 'function') {
