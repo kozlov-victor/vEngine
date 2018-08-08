@@ -3,7 +3,7 @@ import {BaseComponent} from "../../baseComponent";
 
 declare const RF;
 
-import './explorer.less'
+import './explorer.scss'
 import {confirmEx} from "../../providers/userDefinedFns";
 
 @RF.decorateComponent({

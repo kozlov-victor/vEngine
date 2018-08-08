@@ -359,7 +359,8 @@ let HTMLtoDOM = html=> {
         },
         comment: function( text ) {
             let c = new Comment(text);
-            currElement.parentNode.appendChild(c);
+            let el = currElement.parentNode || currElement;
+            el.appendChild(c);
         }
     });
     return result;

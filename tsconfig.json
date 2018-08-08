@@ -6,6 +6,7 @@
         "experimentalDecorators": true,
         "lib": [
             "dom",
+            "es2015",
             "es5",
             "es6",
             "es7"
@@ -13,7 +14,8 @@
         "importHelpers": true,
         "strict": false,
         "noImplicitAny": false,
-        "noEmitOnError": true
+        "noEmitOnError": true,
+        "removeComments": true
     },
     "exclude": [
         "node_modules"

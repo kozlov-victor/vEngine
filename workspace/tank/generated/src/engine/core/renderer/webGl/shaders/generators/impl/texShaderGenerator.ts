@@ -34,7 +34,7 @@ export  class TexShaderGenerator extends ShaderGenerator{
         this.setFragmentMainFn(`
             void main(){
                 gl_FragColor = texture2D(texture, v_texCoord);
-                gl_FragColor.r *= u_alpha;
+                gl_FragColor.a *= u_alpha;
             }
         `);
     }

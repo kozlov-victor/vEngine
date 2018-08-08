@@ -34,7 +34,7 @@ export const configFn = (params)=>{
                     exclude: /node_modules/,
                     loader: "babel-loader",
                     query: {
-                        presets: ['es2015-loose'],
+                        presets: ['es2015'],
                         plugins: []
                     }
                 },
@@ -64,7 +64,7 @@ export const configFn = (params)=>{
                 PROJECT_NAME: params.projectName,
                 EMBED_RESOURCES: !!params.embedResources
             }),
-            new HardSourceWebpackPlugin()
+            //new HardSourceWebpackPlugin()
         ],
     };
 

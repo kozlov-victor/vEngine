@@ -6,6 +6,18 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const debug = true;
 
+class WebpackDonePlugin{
+    apply(compiler){
+        compiler.hooks.done.tap('compilation',  (stats)=> {
+            if (stats.compilation.errors && stats.compilation.errors.length ) {
+                console.error(`errors: ${stats.compilation.errors.length}`);
+            } else {
+                console.log(`build at ${new Date()}`);
+            }
+        });
+    }
+}
+
 module.exports = (env={})=>{
 
     console.log('run builder with env:',env);
@@ -63,11 +75,7 @@ module.exports = (env={})=>{
                     test: /\.(html)$/,
                     loader: 'html-normalize-loader'
                 },
-                { test: /\.scss$/, use: ExtractTextPlugin.extract(['css-loader?url=false', 'sass-loader?url=false']) },
-                {
-                    test: /\.less$/,
-                    loader: ExtractTextPlugin.extract(['css-loader?url=false', 'less-loader?url=false']),
-                },
+                { test: /\.scss$/, use: ExtractTextPlugin.extract(['css-loader?url=false', 'sass-loader?url=false']) }
             ]
         },
         resolve: {
@@ -92,18 +100,7 @@ module.exports = (env={})=>{
             EMBED_RESOURCES: false
         }),
         new ExtractTextPlugin('css/styles.css'),
-        function() {
-            this.plugin("done", function(stats)
-            {
-                // && process.argv.indexOf('--watch') == -1
-                if (stats.compilation.errors && stats.compilation.errors.length ) {
-                    console.error(`errors: ${stats.compilation.errors.length}`);
-                    console.error(stats.compilation.errors);
-                } else {
-                    console.log(`build at ${new Date()}`);
-                }
-            });
-        }
+        new WebpackDonePlugin()
     ];
 
     return config;

@@ -56,7 +56,6 @@ import './index.scss'
 import {ScriptDialog} from "./pages/editor/dialogs/scriptDialog/scriptDialog";
 import {EditableArray} from "./pages/editor/dialogs/_editableArray/editableArray";
 
-
 declare const RF:any,BUILD_AT:Date,regeneratorRuntime:any;
 
 RF.registerDirectives([
