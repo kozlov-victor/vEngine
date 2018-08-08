@@ -1,5 +1,5 @@
-import Utils from "../../providers/utils";
-import I18n from "../../providers/i18n";
+import {Utils} from "../../providers/utils";
+import {I18n} from "../../providers/i18n";
 
 declare const RF;
 
@@ -10,7 +10,7 @@ let defaultColor = {r:0,g:0,b:0};
     name: 'app-color-picker-dialog',
     template: require('./colorPickerDialog.html')
 })
-export default class ColorPickerDialog {
+export class ColorPickerDialog {
 
     colorEnums = [
         {left:'red',right:'cyan',key:'r'},

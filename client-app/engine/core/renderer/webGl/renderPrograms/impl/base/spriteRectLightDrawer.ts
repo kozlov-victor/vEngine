@@ -1,13 +1,13 @@
 
-import SpriteRectDrawer from "./spriteRectDrawer";
-import TexShaderGenerator from "../../../shaders/generators/impl/texShaderGenerator";
-import ShaderProgram from "../../../base/shaderProgram";
+import {SpriteRectDrawer} from "./spriteRectDrawer";
+import {TexShaderGenerator} from "../../../shaders/generators/impl/texShaderGenerator";
+import {ShaderProgram} from "../../../base/shaderProgram";
 import {GL_TYPE} from "../../../base/shaderProgramUtils";
-import Texture from "../../../base/texture";
-import LightArray from "../../../../../light/lightArray";
+import {Texture} from "../../../base/texture";
+import {LightArray} from "../../../../../light/lightArray";
 
 
-export default class SpriteRectLightDrawer extends SpriteRectDrawer {
+export class SpriteRectLightDrawer extends SpriteRectDrawer {
 
     constructor(gl){
         let gen = new TexShaderGenerator();

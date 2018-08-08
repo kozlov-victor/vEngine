@@ -18,7 +18,7 @@
  */
 
 
-import Game from "../../../core/game";
+import {Game} from "../../../core/game";
 
 declare const DEBUG:boolean;
 
@@ -27,10 +27,10 @@ interface UIDescription {
 }
 
 import * as allUIClasses from './all';
-import AbsoluteLayout from "./layouts/absoluteLayout";
-import Container from "./generic/container";
+import {AbsoluteLayout} from "./layouts/absoluteLayout";
+import {Container} from "./generic/container";
 
-export default class UIBuilder {
+export class UIBuilder {
 
     private game:Game;
 

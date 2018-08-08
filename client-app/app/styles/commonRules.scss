@@ -1,0 +1,265 @@
+@mixin inlineBlock() {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+table.stripped {
+  border-collapse: collapse;
+  & td {
+    margin: 0;
+    padding: 3px;
+  }
+  & td, & th {
+    border: 1px solid #b2b2b2;
+  }
+}
+
+.subFullScreen {
+  width: 70vw;
+  height: 70vh;
+}
+
+#app,.template,.route {
+  height: 100%;
+}
+
+.pointer {
+  cursor:pointer;
+}
+.small {
+  font-size: 10px;
+}
+.gray {
+  background-color: #aaa;
+}
+
+
+input.error {
+  color:red;
+  outline: 1px solid red;
+}
+
+select.error {
+  outline: 1px solid red;
+}
+
+.table {
+  display: table;
+  border-collapse: collapse;
+}
+
+.noSelect {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.underLine {
+  text-decoration: underline;
+}
+
+.smallXX {
+  font-size: 7px;
+}
+
+.noDisplay {
+  display: none;
+}
+
+.noOverFlow {
+  overflow: hidden !important;
+}
+
+.withMargin {
+  margin: 5px;
+}
+
+.withPadding {
+  padding: 5px;
+}
+
+.withPaddingX {
+  padding: 10px;
+}
+
+.withPaddingTop {
+  padding-top: 5px;
+}
+
+.withPaddingBottom {
+  padding-bottom: 5px;
+}
+
+.withPaddingTopX {
+  padding-top: 10px;
+}
+
+.withPaddingBottomX {
+  padding-bottom: 10px;
+}
+
+.withPaddingLeft {
+  padding-left: 5px;
+}
+
+.withPaddingRight {
+  padding-right: 5px;
+}
+
+.withPaddingLeftX {
+  padding-left: 10px;
+}
+
+.withPaddingRightX {
+  padding-right: 10px;
+}
+
+.marginAuto {
+  margin: auto;
+}
+
+
+.block {
+  display: block;
+}
+
+.inlineBlock {
+  display: inline-block;
+}
+
+.fixed {
+  position: fixed;
+}
+
+.rightAlign {
+  text-align: right;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+[draggable="true"] {
+  cursor: copy;
+}
+
+.droppable {
+  outline: 1px dashed green;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.leftText {
+  text-align: left;
+}
+
+.rightText {
+  text-align: right;
+}
+
+
+.noBrake {
+  white-space: nowrap;
+}
+
+[click],label,[type=checkbox],[type=radio] {
+  cursor: pointer;
+}
+
+$icons: 'delete', 'edit', 'script', 'eye', 'add';
+
+@each $icon in $icons {
+  .#{$icon} {
+    background: url('../images/#{$icon}.png') no-repeat;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transform: scale(0.5);
+    @include inlineBlock();
+  }
+}
+
+
+.width100 {
+  width: 100%;
+}
+
+.width50 {
+  width:50%;
+}
+
+.width20 {
+  width:20%;
+}
+
+.width30 {
+  width:30%;
+}
+
+.width10 {
+  width:10%;
+}
+
+.width1 {
+  width:1px;
+}
+
+.height100 {
+  height:100%;
+}
+
+.height10 {
+  height:10%;
+}
+
+.height90 {
+  height:90%;
+}
+
+.table {
+  display: table;
+}
+
+.borderBottom {
+  border-bottom: 1px solid grey;
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.vAlign {
+  vertical-align: middle;
+}
+
+.topAlign {
+  vertical-align: top;
+}
+
+.textOverflow {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gray {
+  background-color: #aaa;
+}
+
+.lightGray {
+  background-color: #ddd;
+}

@@ -1,7 +1,7 @@
 
-import Point2d from "./point2d";
+import {Point2d} from "./point2d";
 
-export default class Vec2 extends Point2d {
+export class Vec2 extends Point2d {
 
     constructor(x?:number,y?:number){
         // xyzw stpq rgba

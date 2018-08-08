@@ -1,6 +1,6 @@
-import BaseComponent from "../../../../baseComponent";
-import GameObject from "../../../../../engine/model/impl/gameObject";
-import SpriteSheet from "../../../../../engine/model/impl/spriteSheet";
+import {BaseComponent} from "../../../../baseComponent";
+import {GameObject} from "../../../../../engine/model/impl/gameObject";
+import {SpriteSheet} from "../../../../../engine/model/impl/spriteSheet";
 
 declare const RF;
 
@@ -8,7 +8,7 @@ declare const RF;
     name: 'app-frame-animation-dialog',
     template: require('./frameAnimationDialog.html')
 })
-export default class FrameAnimationDialog extends BaseComponent {
+export class FrameAnimationDialog extends BaseComponent {
 
     isStopped = true;
     from = 0;

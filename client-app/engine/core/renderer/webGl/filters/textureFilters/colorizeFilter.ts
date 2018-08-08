@@ -1,10 +1,10 @@
 
 
 
-import AbstractFilter from "../abstract/abstractFilter";
-import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import {AbstractFilter} from "../abstract/abstractFilter";
+import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
-import Color from "../../../../color";
+import {Color} from "../../../../color";
 
 export default class ColorizeFilter extends AbstractFilter{
 

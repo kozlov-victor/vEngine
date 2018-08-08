@@ -2,33 +2,34 @@
 declare const RF:any;
 
 import {editData} from './editData';
-import resourceRest from './rest/resource';
-import projectRest from './rest/project';
+import {RestResource as restResource} from './rest/restResource';
+import {RestProject as restProject} from './rest/restProject';
 
-import CommonBehaviour from '../../engine/model/impl/commonBehaviour';
-import TextField from '../../engine/model/impl/ui/components/textField'
+import {CommonBehaviour} from '../../engine/model/impl/commonBehaviour';
+import {TextField} from '../../engine/model/impl/ui/components/textField'
 
 let cnt:number = 0;
 
-export default class ResourceHelper {
+export class ResourceHelper {
 
      static async loadProject(projectName){
 
-         let exist = await projectRest.exist(projectName);
+         let exist = await restProject.exist(projectName);
          if (!exist) {
-             delete sessionStorage.projectName;
+             delete sessionStorage['projectName'];
              RF.Router.navigateTo('explorer');
          } else {
              document.title = projectName;
-             sessionStorage.projectName = projectName;
+             sessionStorage['projectName'] = projectName;
              editData.reset();
-             let allData =  await resourceRest.getAll(projectName);
+             let allData =  await restResource.getAll(projectName);
              editData.reset(allData.gameProps);
              editData.projectName = projectName;
              editData.commonBehaviourProtos = allData.commonBehaviourProtos.map(it=>{
                  return new CommonBehaviour(editData.game).fromJSON(it);
              });
              editData.game.repository.setDescriptions(allData.repository);
+             editData.customScripts = allData.customScripts.map(it=>({name:it}));
 
              editData.ui = [
                  (()=>{

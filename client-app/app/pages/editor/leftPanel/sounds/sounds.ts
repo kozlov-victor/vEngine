@@ -1,5 +1,5 @@
-import BaseComponent from "../../../../baseComponent";
-import Sound from "../../../../../engine/model/impl/sound";
+import {BaseComponent} from "../../../../baseComponent";
+import {Sound} from "../../../../../engine/model/impl/sound";
 
 declare const RF;
 
@@ -7,7 +7,7 @@ declare const RF;
     name: 'app-sounds',
     template: require('./sounds.html')
 })
-export default class Sounds extends BaseComponent {
+export class Sounds extends BaseComponent {
 
     constructor(){
         super();
@@ -20,9 +20,9 @@ export default class Sounds extends BaseComponent {
         this.editData.currSoundInEdit = sound.clone();
         RF.getComponentById('soundDialog').open();
     }
-    deleteSound(model){
-        this.utils.deleteModel(model,()=>{
-            this.restFileSystem.removeFile(model.resourcePath);
-        });
+    async deleteSound(model){
+        let res = await this.utils.deleteModel(model);
+        if (!res) return;
+        this.restFileSystem.removeFile(model.resourcePath);
     }
 }

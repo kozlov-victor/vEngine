@@ -1,5 +1,5 @@
 
-import BaseComponent from "../../baseComponent";
+import {BaseComponent} from "../../baseComponent";
 
 declare const RF;
 
@@ -10,8 +10,7 @@ import {confirmEx} from "../../providers/userDefinedFns";
     name: 'explorer',
     template: require('./explorer.html')
 })
-export default class Explorer extends BaseComponent {
-
+export class Explorer extends BaseComponent {
 
     constructor(){
         super();
@@ -42,18 +41,16 @@ export default class Explorer extends BaseComponent {
         RF.getComponentById('projectDialog').open();
     }
 
-    openProject(project){
-        this.resourceHelper.loadProject(project.name);
+    async openProject(project){
+        await this.resourceHelper.loadProject(project.name);
     }
 
-    deleteProject(proj){
-        confirmEx(
-            this.i18n.get('confirmQuestion')(proj),
-            async()=>{
-                await this.restFileSystem.deleteFolder('workspace/'+proj.name);
-                this.editData.projects = await this.restProject.getAll();
-            }
-        );
+    async deleteProject(proj){
+        let res = await confirmEx(this.i18n.get('confirmQuestion')(proj));
+        if (res) {
+            await this.restFileSystem.deleteFolder('workspace/'+proj.name);
+            this.editData.projects = await this.restProject.getAll();
+        }
     }
 
 }

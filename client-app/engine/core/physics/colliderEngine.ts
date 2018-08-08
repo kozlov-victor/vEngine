@@ -1,11 +1,12 @@
 
 
-import Game from "../game";
+import {Game} from "../game";
 import {Vec2,CollisionInfo} from './rigidShapes';
-import Rect from "../geometry/rect";
+import {Rect} from "../geometry/rect";
+import * as mathEx from '../mathEx'
+import {GameObject} from "../../model/impl/gameObject";
 
-
-export default class ColliderEngine {
+export class ColliderEngine {
 
     relaxationCount:number = 15;
     // percentage of separation to project objects
@@ -150,6 +151,51 @@ export default class ColliderEngine {
                 for (j = i + 1; j < rigidObjects.length; j++) {
                     if (!rigidObjects[j]) continue;
                     this.boundAndCollide(rigidObjects[i],rigidObjects[j],collisionInfo);
+                }
+            }
+        }
+    }
+
+    private isIntersect(arr1:string[], arr2:string[]):boolean{
+        return arr1.filter(value => arr2.indexOf(value)!==-1).length>0;
+    }
+
+    private boundAndCollideAcrade(a:GameObject,b:GameObject){
+        if (a.velocity.equal(0) && b.velocity.equal(0)) return;
+        let numOfIterations = 0;
+        let isOverlapped = mathEx.overlapTest(a.getRect(),b.getRect());
+        if (!isOverlapped) return;
+        if (!a.rigid || !b.rigid) {
+            a.trigger('overlap',b);
+            b.trigger('overlap',a);
+            return;
+        }
+        while (isOverlapped) {
+            if (numOfIterations>3) break;
+            const dt = 0.01;
+            a.pos.x += -a.velocity.x*dt;
+            a.pos.y += -a.velocity.y*dt;
+            b.pos.x += -b.velocity.x*dt;
+            b.pos.y += -b.velocity.y*dt;
+            isOverlapped = mathEx.overlapTest(a.getRect(),b.getRect());
+            numOfIterations++;
+        }
+        a.trigger('collide',b);
+        b.trigger('collide',a);
+    }
+
+    collisionArcade() {
+        let rigidObjects =
+            this.game.getCurrScene().getAllGameObjects();
+
+        for (let i = 0; i < rigidObjects.length; i++) {
+            for (let j = i + 1; j < rigidObjects.length; j++) {
+                let a = rigidObjects[i], b = rigidObjects[j];
+                if (
+                    this.isIntersect(a.collideWith,b.groupNames) ||
+                    this.isIntersect(b.collideWith,a.groupNames)
+                ) {
+                    this.boundAndCollideAcrade(a,b);
                 }
             }
         }

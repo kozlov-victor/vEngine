@@ -1,10 +1,10 @@
 
-import BaseAbstractBehaviour, {BehaviourParameters} from './baseAbstractBehaviour'
-import Game from "../../core/game";
-import GameObject from "../../model/impl/gameObject";
-import FrameAnimation from "../../model/impl/frameAnimation";
+import {BaseAbstractBehaviour, BehaviourParameters} from './baseAbstractBehaviour'
+import {Game} from "../../core/game";
+import {GameObject} from "../../model/impl/gameObject";
+import {FrameAnimation} from "../../model/impl/frameAnimation";
 
-export default class Moveable extends BaseAbstractBehaviour {
+export class Moveable extends BaseAbstractBehaviour {
 
     protected gameObject:GameObject;
     protected parameters:BehaviourParameters;

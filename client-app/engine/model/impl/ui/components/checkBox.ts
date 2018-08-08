@@ -1,7 +1,7 @@
 
-import Container from "../generic/container";
+import {Container} from "../generic/container";
 
-export default class CheckBox extends Container {
+export class CheckBox extends Container {
 
     constructor(game) {
         super(game);

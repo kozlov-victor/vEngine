@@ -3,7 +3,7 @@ declare const RF;
     name: 'app-color-picker',
     template: require('./colorPicker.html')
 })
-export default class ColorPicker {
+export class ColorPicker {
 
     model = {field:''};
     field = 'field';

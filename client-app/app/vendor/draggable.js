@@ -1,5 +1,5 @@
 
-export let draggable = (el,objVal)=>{
+export const draggable = (el,objVal)=>{
 
     let draggableContainer = el.closest('[data-draggable-container]');
     if (!draggableContainer) throw `[data-draggable-container] not specified`;

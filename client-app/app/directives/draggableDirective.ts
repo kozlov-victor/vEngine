@@ -1,11 +1,11 @@
 
-import {draggable} from '../vendor/draggable'
+import {draggable} from '../vendor/draggable.js'
 
 declare const RF;
 @RF.decorateComponent({
     name: 'app-draggable'
 })
-export default class DraggableDirective {
+export class DraggableDirective {
 
     onMount(el,objVal){
         draggable(el,objVal);

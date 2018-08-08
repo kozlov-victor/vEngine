@@ -1,9 +1,9 @@
 
-import Container from "../generic/container";
-import TextField from "./textField";
-import Font from "../../font";
+import {Container} from "../generic/container";
+import {TextField} from "./textField";
+import {Font} from "../../font";
 
-export default class Button extends Container {
+export class Button extends Container {
 
     text:string = '';
     font:Font = null;

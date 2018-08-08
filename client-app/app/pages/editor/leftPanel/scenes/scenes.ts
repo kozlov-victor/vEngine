@@ -1,19 +1,19 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 /*global alertEx:true*/
 
 
-import './scenes.less'
+import './scenes.scss'
 import {alertEx} from "../../../../providers/userDefinedFns";
-import Layer from "../../../../../engine/model/impl/layer";
-import Scene from "../../../../../engine/model/impl/scene";
+import {Layer} from "../../../../../engine/model/impl/layer";
+import {Scene} from "../../../../../engine/model/impl/scene";
 
 @RF.decorateComponent({
     name: 'app-scenes',
     template: require('./scenes.html')
 })
-export default class Scenes extends BaseComponent {
+export class Scenes extends BaseComponent {
     constructor(){
         super();
     }
@@ -35,14 +35,14 @@ export default class Scenes extends BaseComponent {
         this.editData.currSceneInEdit = scene.clone();
         RF.getComponentById('sceneModal').open();
     }
-    deleteScene(scene){
+    async deleteScene(scene){
         if (scene.layers && scene.layers.length>0) {
             alertEx(this.i18n.get('canNotDelete')(scene,scene.layers.rs));
             return;
         }
-        this.utils.deleteModel(scene,()=>{
-            this.restFileSystem.removeFile(`scripts/${scene.name}.js`);
-        });
+        let res = await this.utils.deleteModel(scene);
+        if (!res) return;
+        await this.restFileSystem.removeFile(`scripts/${scene.name}.js`);
     }
     createLayer(scene){
         this.editData.currLayerInEdit = new Layer(this.editData.game);
@@ -57,15 +57,15 @@ export default class Scenes extends BaseComponent {
     editScript(scene){
         this.utils.openEditor(`scripts/${scene.name}.js`);
     }
-    deleteLayer(layer,scene){
-        if (layer.gameObjects.length)
-            return alertEx(this.i18n.get('canNotDelete')(layer,layer.gameObjects));
-        this.utils.deleteModel(layer,()=>{
-            scene.layers.remove(it=>it.id==layer.id);
-            scene.updateCloner();
-            this.editData.game.repository.updateObject(scene);
-            this.restResource.save(scene);
-        });
+    async deleteLayer(layer,scene){
+        if (layer.children.length)
+            return alertEx(this.i18n.get('canNotDelete')(layer,layer.children));
+        let res = await this.utils.deleteModel(layer);
+        if (!res) return;
+        scene.layers.remove(it=>it.id==layer.id);
+        scene.updateCloner();
+        this.editData.game.repository.updateObject(scene);
+        this.restResource.save(scene);
     }
     createGameObject(){
         console.log('create go invoked');
@@ -73,13 +73,13 @@ export default class Scenes extends BaseComponent {
     editGameObject(scene){
         console.log('edit go invoked',scene);
     }
-    deleteGameObject(model){
+    async deleteGameObject(model){
         let l = this.editData.currLayerInEdit;
-        this.utils.deleteModel(model,()=>{
-            l.gameObjects.remove(it=>it.id==model.id);
-            l.updateCloner();
-            this.editData.game.repository.updateObject(l);
-            this.restResource.save(l);
-        });
+        let res = await this.utils.deleteModel(model);
+        if (!res) return;
+        l.children.remove(it=>it.id==model.id);
+        l.updateCloner();
+        this.editData.game.repository.updateObject(l);
+        this.restResource.save(l);
     }
 }

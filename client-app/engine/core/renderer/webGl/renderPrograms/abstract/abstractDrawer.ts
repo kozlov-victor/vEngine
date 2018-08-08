@@ -1,14 +1,15 @@
-import AbstractPrimitive from "../../primitives/abstractPrimitive";
+
 
 declare const DEBUG:boolean;
 
-import ShaderProgram from "../../base/shaderProgram";
-import Texture from "../../base/texture";
-import BufferInfo from "../../base/bufferInfo";
-import FrameBuffer from "../../base/frameBuffer";
+import {AbstractPrimitive} from "../../primitives/abstractPrimitive";
+import {ShaderProgram} from "../../base/shaderProgram";
+import {Texture} from "../../base/texture";
+import {BufferInfo} from "../../base/bufferInfo";
+import {FrameBuffer} from "../../base/frameBuffer";
 import {IDrawer} from "../interface/iDrawer";
 import {UniformsInfo} from "../interface/uniformsInfo";
-import Size from "../../../../geometry/size";
+import {Size} from "../../../../geometry/size";
 
 
 let isEqual = (a,b):boolean=>{
@@ -23,7 +24,7 @@ export interface TextureInfo {
     name?:string
 }
 
-export default abstract class AbstractDrawer implements IDrawer{
+export class AbstractDrawer implements IDrawer{
 
     static currentInstance:AbstractDrawer = null;
 

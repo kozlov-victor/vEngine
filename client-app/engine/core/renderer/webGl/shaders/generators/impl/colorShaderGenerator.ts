@@ -1,9 +1,9 @@
 
 import {GL_TYPE} from '../../../base/shaderProgramUtils'
-import ShaderGenerator from '../shaderGenerator'
+import {ShaderGenerator} from '../shaderGenerator'
 
 //position and color
-export default class ColorShaderGenerator extends ShaderGenerator{
+export class ColorShaderGenerator extends ShaderGenerator{
 
     constructor(){
         super();

@@ -1,4 +1,4 @@
-import I18n from "../../providers/i18n";
+import {I18n} from "../../providers/i18n";
 
 declare const RF;
 
@@ -6,7 +6,7 @@ declare const RF;
     name: 'app-alert-dialog',
     template: require('./alertDialog.html')
 })
-export default class AlertDialog {
+export class AlertDialog {
 
     message = '';
     i18n = I18n;

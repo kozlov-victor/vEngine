@@ -1,17 +1,17 @@
-import BaseComponent from "../../baseComponent";
+
 
 declare const RF;
 
+import {BaseComponent} from "../../baseComponent";
+import './editor.scss'
 
-import './editor.less'
-
-import * as Split from '../../vendor/split';
+import * as Split from '../../vendor/split.js';
 
 @RF.decorateComponent({
     name: 'editor',
     template: require('./editor.html')
 })
-export default class Editor extends BaseComponent {
+export class Editor extends BaseComponent {
 
     splitMounted = false;
 

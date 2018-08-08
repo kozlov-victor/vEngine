@@ -1,11 +1,11 @@
 
 // this filter needs to copy texture to framebuffer
 
-import AbstractFilter from "../abstract/abstractFilter";
-import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import {AbstractFilter} from "../abstract/abstractFilter";
+import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
 
-export default class SimpleCopyFilter extends AbstractFilter{
+export class SimpleCopyFilter extends AbstractFilter{
 
     constructor(gl:WebGLRenderingContext){
         super(gl);

@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 import {GameObjectProto} from "../../../../../engine/model/all";
 import {alertEx} from "../../../../providers/userDefinedFns";
 
@@ -9,7 +9,7 @@ declare const RF;
     name: 'app-game-objects',
     template: require('./gameObjects.html')
 })
-export default class GameObject extends BaseComponent {
+export class GameObjects extends BaseComponent {
     constructor(){
         super();
     }
@@ -24,7 +24,7 @@ export default class GameObject extends BaseComponent {
         this.editData.currGameObjectInEdit =  go.clone();
         RF.getComponentById('gameObjectModal').open();
     }
-    deleteGameObject(model){
+    async deleteGameObject(model){
         let scenesUsed = [];
         this.editData.game.repository.getArray('Scene').forEach(s=>{
             s.layers.forEach(l=>{
@@ -38,8 +38,8 @@ export default class GameObject extends BaseComponent {
         });
         if (scenesUsed.length)
             return alertEx(this.i18n.get('canNotDelete')(model,scenesUsed));
-        this.utils.deleteModel(model,()=>{
-            this.restFileSystem.removeFile(`scripts/${model.name}.js`);
-        });
+        let res = await this.utils.deleteModel(model);
+        if (!res) return;
+        this.restFileSystem.removeFile(`scripts/${model.name}.js`);
     }
 }

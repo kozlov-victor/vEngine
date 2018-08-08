@@ -28,11 +28,12 @@ let _prepareMessage = function(e,lineNum){
         msg = e;
     }
     else msg = e.message || e.reason;
+    if (msg && msg.message) msg = msg.message;
     if (!msg) {
         if (e.target) {
             ['img','audio','link'].some(function(it){
                 if (e.target.tagName && e.target.tagName.toLowerCase()===it) {
-                    msg = 'can not load ' +it + ' with location '+ (e.target.src||e.target.href);
+                    msg = `can not load ${it} with location ${(e.target.src||e.target.href)}`;
                     return true;
                 }
             });
@@ -41,7 +42,6 @@ let _prepareMessage = function(e,lineNum){
     if (!msg) msg = '';
     if (msg.indexOf('Uncaught')===0) msg = msg.replace('Uncaught','').trim();
     if (!msg) {
-        console.error(e);
         msg = 'Unknown error: ' + e.toString();
     }
     if (lineNum) msg+=' in line ' + lineNum;
@@ -103,7 +103,6 @@ window['showError'] = function _err(e,lineNum){
 
 
 window.addEventListener('error',(e)=>{
-    console.error(e);
     window['showError'](e,e['linenum']);
 },true);
 

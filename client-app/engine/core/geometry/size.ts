@@ -1,7 +1,7 @@
 
-import ObjectPool from "../misc/objectPool";
+import {ObjectPool} from "../misc/objectPool";
 
-export default class Size {
+export class Size {
 
     width:number;
     height:number;

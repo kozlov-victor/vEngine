@@ -1,0 +1,29 @@
+<app-modal id="scriptModal">
+
+    <div data-transclusion="content">
+
+        <form data-submit="createOrEditScript(editData.currScriptInEdit)">
+            <div class="withPadding">
+                <div class="table">
+                    <div class="row">
+                        <div class="cell">
+                            {{i18n.get('name')}}
+                        </div>
+                        <div class="cell">
+                            <input
+                                    required
+                                    data-model="editData.currScriptInEdit.name"/>
+                        </div>
+                    </div>
+                </div>
+                <button
+                        data-disabled="!form.valid()"
+                >
+                    {{editData.currScriptInEdit.id?i18n.get('edit'):i18n.get('create')}}
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+</app-modal>

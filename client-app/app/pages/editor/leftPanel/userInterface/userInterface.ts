@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -7,7 +7,7 @@ declare const RF;
     name: 'app-user-interface',
     template: require('./userInterface.html')
 })
-export default class UserInterface extends BaseComponent {
+export class UserInterface extends BaseComponent {
     constructor(){
         super();
     }

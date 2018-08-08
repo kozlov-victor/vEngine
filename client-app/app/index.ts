@@ -1,72 +1,74 @@
 
 
-declare const RF:any,BUILD_AT:Date,regeneratorRuntime:any;
-
 import 'engine/core/misc/polyfills'
 import 'app/vendor/polyfills';
 
 import 'app/vendor/split'
 import 'app/vendor/reactiveForms'
 
-import Modal from '../app/components/modal/modal'
-import Collapsible from '../app/components/collapsible/collapsible'
-import AlertDialog from '../app/components/alertDialog/alertDialog'
-import ConfirmDialog from '../app/components/confirmDialog/confirmDialog'
-import InputFile from '../app/components/inputFile/inputFile'
-import ColorPicker from '../app/components/colorPicker/colorPicker'
-import ColorPickerDialog from '../app/components/colorPicker/colorPickerDialog'
-import AnglePicker from '../app/components/anglePicker/anglePicker'
+import {AppModal} from './components/modal/modal'
+import {Collapsible} from './components/collapsible/collapsible'
+import {AlertDialog} from './components/alertDialog/alertDialog'
+import {ConfirmDialog} from './components/confirmDialog/confirmDialog'
+import {InputFile} from './components/inputFile/inputFile'
+import {ColorPicker} from './components/colorPicker/colorPicker'
+import {ColorPickerDialog} from './components/colorPicker/colorPickerDialog'
+import {AnglePicker} from './components/anglePicker/anglePicker'
 
-import DraggableDirective from '../app/directives/draggableDirective'
+import {DraggableDirective} from './directives/draggableDirective'
 
-import '../app/providers/userDefinedFns'
+import {ResourceHelper as resourceHelper} from './providers/resourceHelper'
 
-import resourceHelper from '../app/providers/resourceHelper'
+import {Explorer} from './pages/explorer/explorer'
+import {Editor} from './pages/editor/editor'
+import {ProjectDialog} from './pages/explorer/dialogs/projectDialog/projectDialog'
+import {GameProps} from './pages/editor/leftPanel/gameProps/gameProps'
+import {ParticleSystems} from './pages/editor/leftPanel/particleSystems/particleSystems'
+import {Sounds} from './pages/editor/leftPanel/sounds/sounds'
+import {Fonts} from './pages/editor/leftPanel/fonts/fonts'
+import {SpriteSheets} from './pages/editor/leftPanel/spriteSheets/spriteSheets'
+import {Scripts} from "./pages/editor/leftPanel/scripts/scripts"
+import {GameObjects} from './pages/editor/leftPanel/gameObjects/gameObjects'
+import {Scenes} from './pages/editor/leftPanel/scenes/scenes'
+import {UserInterface} from './pages/editor/leftPanel/userInterface/userInterface'
+import {TopPanel} from './pages/editor/topPanel/topPanel'
+import {PopupBlocked} from './pages/editor/topPanel/popupBlocked'
+import {ScriptEditor} from './pages/editor/centralPanel/scriptEditor/scriptEditor'
+import {SceneCentralPanel} from './pages/editor/centralPanel/scene/sceneCentralPanel'
+import {SceneCursor} from './pages/editor/centralPanel/sceneCursor/sceneCursor'
+import {SceneRightPanel} from './pages/editor/rightPanel/scene/sceneRightPanel'
+import {GameObjectRightPanel} from './pages/editor/rightPanel/gameObject/gameObjectRightPanel'
+import {GameObjectRow} from './pages/editor/leftPanel/_gameObjectRow/gameObjectRow'
+import {Dialogs} from './pages/editor/dialogs/dialogs'
+import {ParticleSystemDialog} from './pages/editor/dialogs/particleSystemDialog/particleSystemDialog'
+import {SoundDialog} from './pages/editor/dialogs/soundDialog/soundDialog'
+import {FontDialog} from './pages/editor/dialogs/fontDialog/fontDialog'
+import {SpriteSheetDialog} from './pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog'
+import {GameObjectDialog} from './pages/editor/dialogs/gameObjectDialog/gameObjectDialog'
+import {SceneDialog} from './pages/editor/dialogs/sceneDialog/sceneDialog'
+import {LayerDialog} from './pages/editor/dialogs/layerDialog/layerDialog'
+import {ParticleSystemPreviewDialog} from './pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog'
+import {FrameAnimationDialog} from './pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog'
+import {CommonBehaviourDialog} from './pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog'
+import {BuildDialog} from './pages/editor/dialogs/buildDialog/buildDialog'
 
-import Explorer from '../app/pages/explorer/explorer'
-import Editor from '../app/pages/editor/editor'
-import ProjectDialog from '../app/pages/explorer/dialogs/projectDialog/projectDialog'
-import GameProps from '../app/pages/editor/leftPanel/gameProps/gameProps'
-import ParticleSystems from '../app/pages/editor/leftPanel/particleSystems/particleSystems'
-import Sounds from '../app/pages/editor/leftPanel/sounds/sounds'
-import Fonts from '../app/pages/editor/leftPanel/fonts/fonts'
-import SpriteSheets from '../app/pages/editor/leftPanel/spriteSheets/spriteSheets'
-import GameObjects from '../app/pages/editor/leftPanel/gameObjects/gameObjects'
-import Scenes from '../app/pages/editor/leftPanel/scenes/scenes'
-import UserInterface from '../app/pages/editor/leftPanel/userInterface/userInterface'
-import TopPanel from '../app/pages/editor/topPanel/topPanel'
-import PopupBlocked from '../app/pages/editor/topPanel/popupBlocked'
-import ScriptEditor from '../app/pages/editor/centralPanel/scriptEditor/scriptEditor'
-import SceneCentralPanel from '../app/pages/editor/centralPanel/scene/sceneCentralPanel'
-import SceneCursor from '../app/pages/editor/centralPanel/sceneCursor/sceneCursor'
-import SceneRightPanel from '../app/pages/editor/rightPanel/scene/sceneRightPanel'
-import GameObjectRightPanel from '../app/pages/editor/rightPanel/gameObject/gameObjectRightPanel'
-import GameObjectRow from '../app/pages/editor/leftPanel/_gameObjectRow/gameObjectRow'
-import Dialogs from '../app/pages/editor/dialogs/dialogs'
-import ParticleSystemDialog from '../app/pages/editor/dialogs/particleSystemDialog/particleSystemDialog'
-import SoundDialog from '../app/pages/editor/dialogs/soundDialog/soundDialog'
-import FontDialog from '../app/pages/editor/dialogs/fontDialog/fontDialog'
-import SpriteSheetDialog from '../app/pages/editor/dialogs/spriteSheetDialog/spriteSheetDialog'
-import GameObjectDialog from '../app/pages/editor/dialogs/gameObjectDialog/gameObjectDialog'
-import SceneDialog from '../app/pages/editor/dialogs/sceneDialog/sceneDialog'
-import LayerDialog from '../app/pages/editor/dialogs/layerDialog/layerDialog'
-import ParticleSystemPreviewDialog from '../app/pages/editor/dialogs/particleSystemPreviewDialog/particleSystemPreviewDialog'
-import FrameAnimationDialog from '../app/pages/editor/dialogs/frameAnimationDialog/frameAnimationDialog'
-import CommonBehaviourDialog from '../app/pages/editor/dialogs/commonBehaviourDialog/commonBehaviourDialog'
-import BuildDialog from '../app/pages/editor/dialogs/buildDialog/buildDialog'
+import './index.scss'
+import {ScriptDialog} from "./pages/editor/dialogs/scriptDialog/scriptDialog";
+import {EditableArray} from "./pages/editor/dialogs/_editableArray/editableArray";
 
 
-import './index.less'
+declare const RF:any,BUILD_AT:Date,regeneratorRuntime:any;
 
 RF.registerDirectives([
     DraggableDirective
 ]);
 RF.registerComponents([
-    Modal, Collapsible, AlertDialog,
+    AppModal, Collapsible, AlertDialog,
     ConfirmDialog, InputFile, ColorPicker,
     AnglePicker, ColorPickerDialog, Explorer,
     ProjectDialog, Editor, GameProps,
-    ParticleSystems, Sounds, Fonts,
+    ScriptDialog, EditableArray,
+    ParticleSystems, Sounds, Fonts, Scripts,
     SpriteSheets, GameObjects, Scenes,
     UserInterface, TopPanel, PopupBlocked, ScriptEditor,
     SceneCentralPanel, SceneRightPanel, GameObjectRightPanel,
@@ -83,8 +85,8 @@ RF.Router.setup({
 });
 
 RF.applyBindings('body');
-if (sessionStorage.projectName) {
-    resourceHelper.loadProject(sessionStorage.projectName);
+if (sessionStorage['projectName']) {
+    resourceHelper.loadProject(sessionStorage['projectName']);
 }
 else RF.Router.navigateTo('explorer');
 

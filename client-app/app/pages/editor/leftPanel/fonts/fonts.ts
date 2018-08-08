@@ -1,5 +1,5 @@
-import BaseComponent from "../../../../baseComponent";
-import Font from "../../../../../engine/model/impl/font";
+import {BaseComponent} from "../../../../baseComponent";
+import {Font} from "../../../../../engine/model/impl/font";
 
 declare const RF;
 
@@ -8,7 +8,7 @@ declare const RF;
     name: 'app-fonts',
     template: require('./fonts.html')
 })
-export default class Fonts extends BaseComponent {
+export class Fonts extends BaseComponent {
     constructor(){
         super();
     }
@@ -21,7 +21,8 @@ export default class Fonts extends BaseComponent {
         RF.getComponentById('fontDialog').open();
     }
     async deleteFont(model){
-        await this.utils.deleteModel(model);
+        let res = await this.utils.deleteModel(model);
+        if (!res) return;
         this.restFileSystem.removeFile(model.resourcePath);
     }
 }

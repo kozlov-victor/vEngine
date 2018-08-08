@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -6,7 +6,7 @@ declare const RF;
     name: 'app-particle-system-dialog',
     template: require('./particleSystemDialog.html')
 })
-export default class ParticleSystemDialog extends BaseComponent{
+export class ParticleSystemDialog extends BaseComponent{
     constructor(){
         super();
     }

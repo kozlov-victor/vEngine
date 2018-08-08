@@ -1,5 +1,5 @@
 
-import http from '../app/providers/rest/httpClient';
+import {httpClient as http} from '../app/providers/rest/httpClient';
 
 
 let devConsole = document.createElement('div');
@@ -27,7 +27,7 @@ window.addEventListener('load',(e:Event)=>{
 
 });
 
-window.addEventListener('error',function(e){
+window.addEventListener('error',function(e:any){
     try {
         let lineNum = e.lineno;
         let colNum = e.colno;
@@ -72,7 +72,7 @@ window.addEventListener('error',function(e){
             let res='';
             let strings = file.split('\n');
             let linesAfter = 5;
-            let errorString = strings[lineNum - 1];
+            let errorString = strings[lineNum - 1] || '';
             errorString = `${errorString.substr(0,colNum-1)}<span class="errorCol">${errorString[colNum-1]}</span>${errorString.substr(colNum)}`;
             res+=`<span class="errorRow">${errorString}</span>\n`;
             for (let i=0;i<linesAfter;i++) {

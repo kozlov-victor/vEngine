@@ -1,9 +1,9 @@
 
-import Game from "../core/game";
-import Rect from "../core/geometry/rect";
-import Image from "./image";
+import {Game} from "../core/game";
+import {Rect} from "../core/geometry/rect";
+import {Image} from "./image";
 
-export default class NinePatchImage extends Image {
+export class NinePatchImage extends Image {
 
     private a:number = 0;
     private b:number = 0;

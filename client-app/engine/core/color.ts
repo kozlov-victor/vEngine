@@ -1,6 +1,6 @@
 
 
-import ObjectPool from "./misc/objectPool";
+import {ObjectPool} from "./misc/objectPool";
 import {_global} from "./global";
 declare const DEBUG:boolean;
 
@@ -11,7 +11,7 @@ interface ColorJSON {
     a:number
 }
 
-export default class Color {
+export class Color {
 
     private r:number;
     private g:number;
@@ -47,6 +47,34 @@ export default class Color {
         this.g = g;
         this.b = b;
         this.a = a;
+        this.normalizeToZeroOne();
+    }
+
+    setRGB(r:number,g:number,b:number){
+        this.r = r;
+        this.g = g;
+        this.b = b;
+        this.a = 255;
+        this.normalizeToZeroOne();
+    }
+
+    setR(val:number){
+        this.r = val;
+        this.normalizeToZeroOne();
+    }
+
+    setG(val:number){
+        this.g = val;
+        this.normalizeToZeroOne();
+    }
+
+    setB(val:number){
+        this.b = val;
+        this.normalizeToZeroOne();
+    }
+
+    setA(val:number){
+        this.a = val;
         this.normalizeToZeroOne();
     }
 
@@ -89,4 +117,4 @@ export default class Color {
 
 }
 
-_global.Color = Color;
+_global['Color'] = Color;

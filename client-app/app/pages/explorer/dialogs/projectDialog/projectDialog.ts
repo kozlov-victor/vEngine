@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -7,7 +7,7 @@ declare const RF;
     name: 'app-project-dialog',
     template: require('./projectDialog.html')
 })
-export default class ProjectDialog extends BaseComponent {
+export class ProjectDialog extends BaseComponent {
 
     constructor(){
         super();

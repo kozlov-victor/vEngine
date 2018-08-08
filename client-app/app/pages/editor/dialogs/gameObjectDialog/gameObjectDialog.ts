@@ -1,16 +1,17 @@
-import BaseComponent from "../../../../baseComponent";
-import FrameAnimation from "../../../../../engine/model/impl/frameAnimation";
+import {BaseComponent} from "../../../../baseComponent";
+import {FrameAnimation} from "../../../../../engine/model/impl/frameAnimation";
 import {alertEx} from "../../../../providers/userDefinedFns";
+import {getDefaultCodeScript} from "../../../../providers/codeTemplates";
+
 
 declare const RF;
-/*global alertEx:true*/
 
 
 @RF.decorateComponent({
     name: 'app-game-object-dialog',
     template: require('./gameObjectDialog.html')
 })
-export default class GameObjectDialog extends BaseComponent {
+export class GameObjectDialog extends BaseComponent {
 
     selectedBehaviourId = '';
 
@@ -27,7 +28,7 @@ export default class GameObjectDialog extends BaseComponent {
             let name = this.utils.capitalise(this.editData.currGameObjectInEdit.name);
             await this.restFileSystem.createFile(
                 `scripts/${g.name}.js`,
-                document.getElementById('defaultCodeScript').textContent.replace('${name}',name)
+                getDefaultCodeScript(name)
             );
         }
         else {
@@ -79,14 +80,8 @@ export default class GameObjectDialog extends BaseComponent {
         RF.getComponentById('frameAnimationDialog').open();
     }
 
-    deleteFrameAnimation(fa){
-        this.utils.deleteModel(fa,()=>{
-            let go = this.editData.currGameObjectInEdit;
-            go.frameAnimations.remove(it=>it.id==fa.id);
-            go.updateCloner();
-            this.editData.game.repository.updateObject(go);
-            this.restResource.save(go);
-        });
+    async deleteFrameAnimation(fa){
+        await this.utils.deleteModel(fa);
     }
 
     onSpriteSheetSelected(spriteSheet){
@@ -112,17 +107,18 @@ export default class GameObjectDialog extends BaseComponent {
         RF.getComponentById('commonBehaviourModal').open();
     }
 
-    deleteCommonBehaviour(cb){
-        this.utils.deleteModel(cb,()=>{
-            let model = this.editData.currGameObjectInEdit;
-            model.commonBehaviour.remove(it=>it.id==cb.id);
-            model.updateCloner();
-            this.editData.game.repository.updateObject(model);
-            this.restResource.save(model);
-        });
+    async deleteCommonBehaviour(cb){
+        let res = await this.utils.deleteModel(cb);
+        if (!res) return;
+        let model = this.editData.currGameObjectInEdit;
+        model.commonBehaviour.remove(it=>it.id==cb.id);
+        model.updateCloner();
+        this.editData.game.repository.updateObject(model);
+        this.restResource.save(model);
     }
 
     isCbItemDisabled(cb){
         return !!this.editData.currGameObjectInEdit.commonBehaviour.find(it=>it.name==cb.name)
     }
+
 }

@@ -1,0 +1,16 @@
+<div>
+    <span data-for="name,index of array">
+                            <span data-if="!editableMap[index]" class="groupName">
+                                <span>{{array[index]}}</span>
+                                <span data-click="setItemEditable(index)" class="edit"></span>
+                                <span data-click="removeItem(index)" class="delete"></span>
+                            </span>
+                            <form data-if="editableMap[index]" class="groupName" data-submit="updateItem(array[index],index)">
+                                <input data-model="array[index]">
+                            </form>
+                    </span>
+    <form>
+        <input data-click="setItemEditable(index)" class="itemInput" data-model="newItemName">
+        <button data-click="addNewItem()">+</button>
+    </form>
+</div>

@@ -61,8 +61,24 @@
                     {{i18n.get('groupName')}}
                 </td>
                 <td>
-                    <input
-                            data-model="editData.currGameObjectInEdit.groupName"/>
+                    <app-editable-array
+                        data-state="{
+                            array: editData.currGameObjectInEdit.groupNames
+                        }"
+                    ></app-editable-array>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    {{i18n.get('collideWith')}}
+                </td>
+                <td>
+                    <app-editable-array
+                            data-state="{
+                            array: editData.currGameObjectInEdit.collideWith
+                        }"
+                    ></app-editable-array>
                 </td>
                 <td></td>
             </tr>

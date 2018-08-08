@@ -1,7 +1,7 @@
 
-import Color from "../color";
+import {Color} from "../color";
 
-export default class ShaderMaterial {
+export class ShaderMaterial {
 
     static DEFAULT = new ShaderMaterial();
 

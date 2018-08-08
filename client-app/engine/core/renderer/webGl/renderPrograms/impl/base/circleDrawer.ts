@@ -1,11 +1,11 @@
 
-import Circle from "../../../primitives/circle"
-import ShaderProgram from "../../../base/shaderProgram"
-import AbstractDrawer from "./../../abstract/abstractDrawer"
-import BufferInfo from "../../../base/bufferInfo";
-import ColorShaderGenerator from "../../../shaders/generators/impl/colorShaderGenerator";
+import {Circle} from "../../../primitives/circle"
+import {ShaderProgram} from "../../../base/shaderProgram"
+import {AbstractDrawer} from "../../abstract/abstractDrawer"
+import {BufferInfo} from "../../../base/bufferInfo";
+import {ColorShaderGenerator} from "../../../shaders/generators/impl/colorShaderGenerator";
 
-export default class CircleDrawer extends AbstractDrawer {
+export class CircleDrawer extends AbstractDrawer {
 
     constructor(gl:WebGLRenderingContext){
         super(gl);

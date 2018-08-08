@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -8,7 +8,7 @@ declare const RF;
     name: 'app-sound-dialog',
     template: require('./soundDialog.html')
 })
-export default class SoundDialog extends BaseComponent {
+export class SoundDialog extends BaseComponent {
 
     soundUrl = '';
     _file = null;

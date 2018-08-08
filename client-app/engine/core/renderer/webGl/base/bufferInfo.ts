@@ -1,9 +1,9 @@
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import VertexBuffer from "./vertexBuffer";
-import IndexBuffer from "./indexBuffer";
-import ShaderProgram from "./shaderProgram";
+import {VertexBuffer} from "./vertexBuffer";
+import {IndexBuffer} from "./indexBuffer";
+import {ShaderProgram} from "./shaderProgram";
 
 export interface ArrayInfo {
     array:Array<number>,
@@ -20,7 +20,7 @@ export interface BufferInfoDescription {
     drawMethod:number
 }
 
-export default class BufferInfo {
+export class BufferInfo {
 
     gl:WebGLRenderingContext;
 

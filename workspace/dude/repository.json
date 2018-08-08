@@ -30,7 +30,7 @@
             "id": 2,
             "name": "layer1",
             "type": "Layer",
-            "gameObjects": [
+            "children": [
                 {
                     "type": "GameObject",
                     "id": 7
@@ -106,14 +106,8 @@
             "height": 48,
             "type": "SpriteSheet",
             "numOfFramesH": 9,
-            "resourceMap": {"main": "resources/dude.png"},
-            "frameRect": {
-                "x": {
-                    "x": 0,
-                    "y": 0,
-                    "width": 0,
-                    "height": 0
-                }
+            "resourceMap": {
+                "main": "resources/dude.png"
             }
         },
         {
@@ -122,14 +116,8 @@
             "width": 500,
             "height": 64,
             "type": "SpriteSheet",
-            "resourceMap": {"main": "resources/platform.png"},
-            "frameRect": {
-                "x": {
-                    "x": 0,
-                    "y": 0,
-                    "width": 0,
-                    "height": 0
-                }
+            "resourceMap": {
+                "main": "resources/platform.png"
             }
         },
         {
@@ -138,7 +126,9 @@
             "height": 32,
             "type": "SpriteSheet",
             "numOfFramesH": 25,
-            "resourceMap": {"main": "resources/ground.png"},
+            "resourceMap": {
+                "main": "resources/ground.png"
+            },
             "id": 57
         },
         {
@@ -146,7 +136,10 @@
             "width": 300,
             "height": 300,
             "type": "SpriteSheet",
-            "resourceMap": {"main": "resources/clamp.png","normalMap": "resources/clamp_normal.png" },
+            "resourceMap": {
+                "main": "resources/clamp.png",
+                "normalMap": "resources/clamp_normal.png"
+            },
             "id": 69
         },
         {
@@ -154,7 +147,9 @@
             "width": 262,
             "height": 192,
             "type": "SpriteSheet",
-            "resourceMap": {"main": "resources/tile.jpg"},
+            "resourceMap": {
+                "main": "resources/tile.jpg"
+            },
             "id": 72
         },
         {
@@ -162,7 +157,9 @@
             "width": 174,
             "height": 173,
             "type": "SpriteSheet",
-            "resourceMap": {"main": "resources/flare.png"},
+            "resourceMap": {
+                "main": "resources/flare.png"
+            },
             "id": 79
         },
         {
@@ -170,7 +167,9 @@
             "width": 120,
             "height": 120,
             "type": "SpriteSheet",
-            "resourceMap": {"main": "resources/eso1611a.png"},
+            "resourceMap": {
+                "main": "resources/eso1611a.png"
+            },
             "id": 84
         },
         {
@@ -178,12 +177,9 @@
             "width": 120,
             "height": 105,
             "type": "SpriteSheet",
-            "resourceMap": {"main": "resources/nineP.png","main1": "resources/ninePactive.png"},
-            "frameRect": {
-                "x": 0,
-                "y": 0,
-                "width": 0,
-                "height": 0
+            "resourceMap": {
+                "main": "resources/nineP.png",
+                "main1": "resources/ninePactive.png"
             },
             "id": 89
         }
@@ -564,8 +560,12 @@
             "id": 91,
             "name": "nineP",
             "pos": {
-                "x": 8,
-                "y": 463
+                "x": 11,
+                "y": 371
+            },
+            "scale": {
+                "x": 1,
+                "y": 1
             },
             "layerId": 2,
             "type": "GameObject",
@@ -669,7 +669,9 @@
             "id": 22,
             "name": "font1",
             "type": "Font",
-            "resourceMap": {"main": "resources/font1.png"},
+            "resourceMap": {
+                "main": "resources/font1.png"
+            },
             "fontSize": 21,
             "fontFamily": "monospace",
             "fontContext": {
@@ -1855,7 +1857,9 @@
                 "type": "SpriteSheet"
             },
             "data": [
-                [1],
+                [
+                    1
+                ],
                 null,
                 null,
                 [

@@ -1,11 +1,11 @@
 
 
 
-import AbstractFilter from "../abstract/abstractFilter";
-import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import {AbstractFilter} from "../abstract/abstractFilter";
+import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
 
-export default class BlackWhiteFilter extends AbstractFilter{
+export class BlackWhiteFilter extends AbstractFilter{
 
     constructor(gl:WebGLRenderingContext){
         super(gl);

@@ -1,17 +1,21 @@
-import {alertEx} from "../../../../providers/userDefinedFns";
 
+
+import {Font} from "../../../../../engine/model/impl/font";
 declare const RF;
-import './sceneCentralPanel.less'
+import './sceneCentralPanel.scss'
 
-import BaseComponent from "../../../../baseComponent";
-import GameObjectProto from "../../../../../engine/model/impl/gameObjectProto";
-import GameObject from "../../../../../engine/model/impl/gameObject";
+import {alertEx} from "../../../../providers/userDefinedFns";
+import {BaseComponent} from "../../../../baseComponent";
+import {GameObjectProto} from "../../../../../engine/model/impl/gameObjectProto";
+import {GameObject} from "../../../../../engine/model/impl/gameObject";
+import {Point2d} from "../../../../../engine/core/geometry/point2d";
+import {TextField} from "../../../../../engine/model/impl/ui/components/textField";
 
 @RF.decorateComponent({
     name: 'app-scene-central-panel',
     template: require('./sceneCentralPanel.html')
 })
-export default class SceneCentralPanel extends BaseComponent {
+export class SceneCentralPanel extends BaseComponent {
     constructor(){
         super();
     }
@@ -62,6 +66,7 @@ export default class SceneCentralPanel extends BaseComponent {
         go.pos = {x,y};
         let json = go.toJSON();
         json.type==='GameObject' && Object.keys(json).forEach(key=>{
+            //noinspection TypeScriptUnresolvedFunction
             if (!['id','name','pos','font','scale','angle','alpha','type','layerId', 'gameObjectProto'].includes(key))
                 delete json[key];
         });
@@ -76,26 +81,27 @@ export default class SceneCentralPanel extends BaseComponent {
 
         let editData = this.editData;
         let Clazz = droppedObj.obj instanceof GameObjectProto?GameObject:droppedObj.obj.constructor;
-        let objInScene = new Clazz(editData.game);
-        if ('font' in objInScene && !objInScene.font) {
-            let firstFont = editData.game.repository.getFirst('Font');
+        let objInScene:GameObject = new Clazz(editData.game) as GameObject;
+        if (('font' in objInScene) && !(objInScene as TextField).font) {
+            let firstFont:Font = editData.game.repository.getFirst('Font') as Font;
             if (!firstFont) {
                 alertEx(this.i18n.get('noFont'));
+                return;
             }
-            objInScene.setFont(firstFont);
+            (objInScene as TextField).setFont(firstFont);
             let allTextFields = editData.game.repository.getArray('TextField');
             let size = (allTextFields && allTextFields.length) || 1;
-            objInScene.name = `textField${size}`;
-            objInScene.setText(objInScene.name);
+            (objInScene as GameObject)['name'] = `textField${size}`;
+            (objInScene as TextField).setText(objInScene['name']);
         }
-        objInScene.pos =  {x,y};
+        objInScene.pos =  new Point2d(x,y);
         objInScene.layerId = editData.currLayerInEdit.id;
         if (objInScene instanceof GameObject) objInScene.gameObjectProto = droppedObj.obj;
 
         let resp = await this.restResource.save(objInScene);
         objInScene.id = resp.id;
         editData.game.repository.addObject(objInScene);
-        editData.currLayerInEdit.addGameObject(objInScene);
+        editData.currLayerInEdit.appendChild(objInScene);
         let l = editData.currLayerInEdit;
         l.updateCloner();
         editData.game.repository.updateObject(l);

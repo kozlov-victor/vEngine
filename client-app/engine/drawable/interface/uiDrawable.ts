@@ -1,5 +1,5 @@
 
-import Rect from "../../core/geometry/rect";
+import {Rect} from "../../core/geometry/rect";
 import {DrawableInfo} from "../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 
 export interface UIDrawable {

@@ -1,6 +1,6 @@
 
 
-export default abstract class I18n {
+export abstract class I18n {
     static locale:string = 'en';
 
     static bundle = {
@@ -106,7 +106,9 @@ export default abstract class I18n {
             tryAgain: 'try again',
             unset: 'unset',
             gravityConstant: 'gravity constant',
-            gravityConstantTitle: 'acceleration in pixels per second'
+            gravityConstantTitle: 'acceleration in pixels per second',
+            scripts: 'scripts',
+            collideWith: 'collide with'
         }
     };
 

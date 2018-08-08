@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -6,7 +6,7 @@ declare const RF;
     name: 'app-game-object-row',
     template: require('./gameObjectRow.html')
 })
-export default class GameObjectRow extends BaseComponent {
+export class GameObjectRow extends BaseComponent {
 
     crud = null;
     gameObject = {};

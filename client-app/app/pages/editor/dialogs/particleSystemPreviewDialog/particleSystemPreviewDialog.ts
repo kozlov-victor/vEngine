@@ -1,4 +1,6 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
+import {GameObjectProto} from "../../../../../engine/model/impl/gameObjectProto";
+import {GameObject} from "../../../../../engine/model/impl/gameObject";
 
 declare const RF;
 
@@ -8,7 +10,7 @@ let tid;
     name: 'app-particle-system-preview-dialog',
     template: require('./particleSystemPreviewDialog.html')
 })
-export default class ParticleSystemPreviewDialog extends BaseComponent {
+export class ParticleSystemPreviewDialog extends BaseComponent {
     constructor(){
         super();
     }
@@ -34,16 +36,16 @@ export default class ParticleSystemPreviewDialog extends BaseComponent {
             if (!prevTime) prevTime = currTime;
             let delta = currTime - prevTime;
             prevTime = currTime;
-            editData.currParticleSystemInEdit._particles.forEach(p=>{
+            editData.currParticleSystemInEdit._particles.forEach((p:GameObject)=>{
 
                 p._currFrameAnimation && p._currFrameAnimation.update(currTime);
-                let deltaX = p.vel.x * delta / 1000;
-                let deltaY = p.vel.y * delta / 1000;
+                let deltaX = p.velocity.x * delta / 1000;
+                let deltaY = p.velocity.y * delta / 1000;
                 p.pos.x = p.pos.x+deltaX;
                 p.pos.y = p.pos.y+deltaY;
 
                 if (!p._timeCreated) p._timeCreated = currTime;
-                if (currTime - p._timeCreated > p.liveTime) {
+                if (currTime - p._timeCreated > p['liveTime']) { // todo
                     editData.currParticleSystemInEdit._particles.
                         splice(editData.currParticleSystemInEdit._particles.indexOf(p),1);
                 }

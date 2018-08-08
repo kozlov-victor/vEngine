@@ -1,13 +1,13 @@
 //https://github.com/Jam3/glsl-fast-gaussian-blur/blob/master/5.glsl
 
-import AbstractFilter from "../abstract/abstractFilter";
-import ShaderGenerator from "../../shaders/generators/shaderGenerator";
+import {AbstractFilter} from "../abstract/abstractFilter";
+import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
-import Texture from "../../base/texture";
-import FrameBuffer from "../../base/frameBuffer";
+import {Texture} from "../../base/texture";
+import {FrameBuffer} from "../../base/frameBuffer";
 import {TextureInfo} from "../../renderPrograms/abstract/abstractDrawer";
 
-export default class SimpleBlurFilter extends AbstractFilter {
+export class SimpleBlurFilter extends AbstractFilter {
 
     constructor(gl: WebGLRenderingContext) {
         super(gl);

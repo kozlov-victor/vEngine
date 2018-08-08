@@ -1,5 +1,5 @@
-import BaseComponent from "../../../../baseComponent";
-import ParticleSystem from "../../../../../engine/model/impl/particleSystem";
+import {BaseComponent} from "../../../../baseComponent";
+import {ParticleSystem} from "../../../../../engine/model/impl/particleSystem";
 import {alertEx} from "../../../../providers/userDefinedFns";
 
 declare const RF;
@@ -9,7 +9,7 @@ declare const RF;
     name: 'app-particle-systems',
     template: require('./particleSystems.html')
 })
-export default class ParticleSystems extends BaseComponent {
+export class ParticleSystems extends BaseComponent {
     constructor(){
         super();
     }
@@ -29,7 +29,7 @@ export default class ParticleSystems extends BaseComponent {
         this.editData.currParticleSystemInEdit = ps.clone();
         RF.getComponentById('particleSystemModal').open();
     }
-    deleteParticleSystem(model){
-        this.utils.deleteModel(model);
+    async deleteParticleSystem(model){
+        await this.utils.deleteModel(model);
     }
 }

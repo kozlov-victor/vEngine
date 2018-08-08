@@ -1,5 +1,4 @@
 
-import ShaderProgram from "./shaderProgram";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
@@ -88,7 +87,7 @@ export const GL_TYPE = {
     //SAMPLER_CUBE: 'samplerCube',
 };
 
-const mapType = (gl, type)=> {
+const mapType = (gl:WebGLRenderingContext, type:number):string=> {
 
     if (!GL_TABLE) {
         let typeNames = Object.keys(GL_TYPE);
@@ -158,31 +157,36 @@ export const extractAttributes = (gl:WebGLRenderingContext, program:WebGLProgram
     return attrMap;
 };
 
-const TypeNumber = {
-    check: (val)=>{
+interface IChecker {
+    check:(val:any)=>void;
+}
+
+const TypeNumber:IChecker = {
+    check: (val:any):void=>{
         if (isNaN(parseFloat(val)) || !isFinite(val))
             throw `can not set uniform with value ${val}: expected argument of type number`;
     }
 };
 
-const TypeInt = {
-    check: (val)=>{
+const TypeInt:IChecker = {
+    check: (val:any):void=>{
         TypeNumber.check(val);
         if (val!==~~val)
             throw `can not set uniform with value ${val}: expected argument of integer type, but ${val} found`;
     }
 };
 
-const TypeBool = {
-    check: (val)=>{
+const TypeBool:IChecker = {
+    check: (val:any):void=>{
         if (!(val==true || val==false))
             throw `can not set uniform with value ${val}: expected argument of boolean type, but ${val} found`;
     }
 };
 
-const TypeArray = (ElType,size?)=>{
+
+const TypeArray = (checker:IChecker,size?:number):IChecker=>{
     return {
-        check: (val)=>{
+        check: (val:any)=>{
             if (!val)
                 throw `can not set uniform  value: ${val}`;
             if (!val.splice) {
@@ -193,7 +197,7 @@ const TypeArray = (ElType,size?)=>{
                 throw `can not set uniform with value [${val}]: expected array with size ${size}, but ${val.length} found`;
             for (let i=0;i<val.length;i++) {
                 try {
-                    ElType.check(val[i]);
+                    checker.check(val[i]);
                 } catch (e){
                     console.error('Can not set uniform array item',val);
                     throw `can not set uniform array item with value [${val}]: unexpected array element type: ${val[i]}`;
@@ -203,11 +207,11 @@ const TypeArray = (ElType,size?)=>{
     }
 };
 
-const expect = (value,typeChecker)=>{
+const expect = (value:any,typeChecker:IChecker)=>{
     typeChecker.check(value);
 };
 
-export const getUniformSetter = function(size,type){
+export const getUniformSetter = function(size:number,type:string){
     if (size===1) {
         switch (type) {
             case 'float': return (gl,location,value)=> {

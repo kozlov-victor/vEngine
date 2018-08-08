@@ -1,5 +1,5 @@
 
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -7,7 +7,7 @@ declare const RF;
     name: 'app-layer-dialog',
     template: require('./layerDialog.html')
 })
-export default class LayerDialog extends BaseComponent {
+export class LayerDialog extends BaseComponent {
     constructor(){
         super();
     }

@@ -1,24 +1,23 @@
-import GameObject from "../../engine/model/impl/gameObject";
 
 declare const Blob:any,atob:any;
 declare let Promise:any;
 
 
-
+import {GameObject} from "../../engine/model/impl/gameObject";
 import {confirmEx} from "./userDefinedFns";
 import * as mathEx from '../../engine/core/mathEx';
 
 import {editData} from './editData';
-import restResource from '../providers/rest/resource';
-import restFileSystem from '../providers/rest/fileSystem';
-import i18n from '../providers/i18n';
+import {RestResource as restResource} from './rest/restResource';
+import {RestFileSystem as restFileSystem} from './rest/restFileSystem';
+import {I18n as i18n} from './i18n';
 
-import GameObjectProto from '../../engine/model/impl/gameObjectProto'
-import Scene from "../../engine/model/impl/scene";
-import Point2d from "../../engine/core/geometry/point2d";
-import SpriteSheet from "../../engine/model/impl/spriteSheet";
+import {GameObjectProto} from '../../engine/model/impl/gameObjectProto'
+import {Scene} from "../../engine/model/impl/scene";
+import {Point2d} from "../../engine/core/geometry/point2d";
+import {SpriteSheet} from "../../engine/model/impl/spriteSheet";
 
-export default class Utils {
+export class Utils {
     static getGameObjectCss(gameObj:GameObject){
         if (!gameObj) gameObj = {} as GameObject;
         gameObj.scale = gameObj.scale || new Point2d(1,1);
@@ -27,8 +26,8 @@ export default class Utils {
             width:                 gameObj.width+'px',
             height:                gameObj.height+'px',
             backgroundImage:       gameObj.spriteSheet &&
-            gameObj.spriteSheet.getDefaultResourcePath() &&
-            `url(${editData.projectName}/${gameObj.spriteSheet.getDefaultResourcePath()})`,
+            gameObj.spriteSheet.getDefaultResourcePath &&
+            `url(${editData.projectName}/${gameObj.spriteSheet.getDefaultResourcePath()}?lastRevalidated=${gameObj.spriteSheet['_lastRevalidated']})`,
             backgroundPositionY:  -gameObj._sprPosY+'px',
             backgroundPositionX:  -gameObj._sprPosX+'px',
             backgroundRepeat:     'no-repeat',
@@ -227,17 +226,12 @@ export default class Utils {
         return Object.keys(obj).length;
     }
 
-    static deleteModel(model:any,callback:Function){
-        return new Promise((resolve:Function)=>{
-            confirmEx(
-                i18n.getAll().confirmQuestion(model),
-                ()=>{
-                    restResource.remove(model,callback);
-                    editData.game.repository.removeObject(model);
-                    resolve();
-                }
-            )
-        });
+    static async deleteModel(model:any){
+        let res = await confirmEx(i18n.getAll().confirmQuestion(model));
+        if (!res) return false;
+        restResource.remove(model);
+        editData.game.repository.removeObject(model);
+        return true;
     }
 
     static eachGameObject(callback:Function){
@@ -246,7 +240,7 @@ export default class Utils {
         });
         editData.game.repository.getArray('Scene').forEach((scene:Scene)=>{
             scene.layers.forEach(layer=>{
-                layer.gameObjects.forEach(go=>{
+                layer.children.forEach(go=>{
                     callback(go);
                 });
             });
@@ -266,6 +260,10 @@ export default class Utils {
 
     static capitalise(s:string){
         return s[0].toUpperCase() + s.substr(1);
+    }
+
+    static decapitalise(s:string){
+        return s[0].toLowerCase() + s.substr(1);
     }
 
     static deepEqual(x:any, y:any, _checkCache = []):boolean {

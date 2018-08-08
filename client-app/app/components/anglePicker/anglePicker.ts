@@ -3,7 +3,7 @@ declare const RF;
     name: 'app-angle-picker',
     template: require('./anglePicker.html')
 })
-export default class AnglePicker {
+export class AnglePicker {
 
     object = {val:0};
     value = 'val';

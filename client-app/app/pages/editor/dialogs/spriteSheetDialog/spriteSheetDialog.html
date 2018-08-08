@@ -100,7 +100,7 @@
         </table>
         <button
                 data-click="createOrEditSpriteSheet(editData.currSpriteSheetInEdit)"
-                data-disabled="!(form.valid() && editData.currSpriteSheetInEdit.resourcePath)">
+                data-disabled="!(form.valid() && editData.currSpriteSheetInEdit.getDefaultResourcePath())">
             {{editData.currSpriteSheetInEdit.id?i18n.get('edit'):i18n.get('create')}}
         </button>
 

@@ -1,13 +1,13 @@
-import I18n from "../../providers/i18n";
+import {I18n} from "../../providers/i18n";
 
 declare const RF;
-import './confirmDialog.less'
+import './confirmDialog.scss'
 
 @RF.decorateComponent({
     name: 'app-confirm-dialog',
     template: require('./confirmDialog.html')
 })
-export default class ConfirmDialog {
+export class ConfirmDialog {
 
     message = 'default message';
     confirm =  function(){};
@@ -24,9 +24,9 @@ export default class ConfirmDialog {
         this.confirm();
         this.close();
     }
-    open(message,callback){
+    open(message,resolveFn){
         RF.getComponentById('confirmModal').open();
         this.message = message;
-        this.confirm = callback;
+        this.confirm = ()=>{resolveFn(true)};
     }
 }

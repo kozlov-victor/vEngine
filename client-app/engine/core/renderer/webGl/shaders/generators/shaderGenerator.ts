@@ -1,5 +1,5 @@
 
-export default class ShaderGenerator {
+export class ShaderGenerator {
 
     private vertexUniforms:Array<any> = [];
     private fragmentUniforms:Array<any> = [];

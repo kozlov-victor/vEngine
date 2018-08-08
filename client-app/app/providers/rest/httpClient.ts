@@ -105,4 +105,4 @@ let postMultiPart = function(url,file,data,success?,error?){
     });
 };
 
-export default {get,post,postMultiPart};
+export const httpClient = {get,post,postMultiPart};

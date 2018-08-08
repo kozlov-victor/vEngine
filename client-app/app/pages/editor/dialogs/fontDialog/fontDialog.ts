@@ -1,8 +1,8 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
-import chrome from '../../../../providers/chrome';
+import * as chrome from '../../../../providers/chrome';
 
 const SYMBOL_PADDING = 4;
 const fontSample = 'Test me! Text here';
@@ -71,7 +71,7 @@ const getFontImage = function(symbolsContext,strFont,color){
     name: 'app-font-dialog',
     template: require('./fontDialog.html')
 })
-export default class FontDialog extends BaseComponent {
+export class FontDialog extends BaseComponent {
 
     fontSample;
     systemFontList = [];
@@ -101,12 +101,12 @@ export default class FontDialog extends BaseComponent {
         let strFont = model.fontSize +'px'+' '+model.fontFamily;
         model.fontContext = getFontContext([{from: 32, to: 150}, {from: 1040, to: 1116}], strFont, 320);
         let file = this.utils.dataURItoBlob(getFontImage(model.fontContext,strFont,this.utils.rgbToHex(model.fontColor)));
-        model.resourcePath =  `resources/${model.name}.png`;
+        model.setDefaultResourcePath(`resources/${model.name}.png`);
 
         await this.restFileSystem.uploadFile(
             file,
             {
-                path:model.resourcePath
+                path:model.getDefaultResourcePath()
             }
         );
         let resp = await this.restResource.save(model);

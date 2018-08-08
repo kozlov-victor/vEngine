@@ -1,12 +1,12 @@
 
 declare const RF;
-import BaseComponent from '../../../../baseComponent'
+import {BaseComponent} from '../../../../baseComponent'
 
 @RF.decorateComponent({
     name: 'app-scene-cursor',
     template: require('./sceneCursor.html')
 })
-export default class SceneCursor extends BaseComponent {
+export class SceneCursor extends BaseComponent {
 
     constructor(){
         super();

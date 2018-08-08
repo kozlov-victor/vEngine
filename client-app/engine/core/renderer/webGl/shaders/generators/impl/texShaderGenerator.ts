@@ -1,9 +1,9 @@
 
 import {GL_TYPE} from '../../../base/shaderProgramUtils'
-import ShaderGenerator from '../shaderGenerator'
+import {ShaderGenerator} from '../shaderGenerator'
 
 //position and texture
-export default class TexShaderGenerator extends ShaderGenerator{
+export  class TexShaderGenerator extends ShaderGenerator{
 
     constructor(){
         super();

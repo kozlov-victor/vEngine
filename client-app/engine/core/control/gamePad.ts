@@ -1,7 +1,7 @@
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import Game from "../game";
+import {Game} from "../game";
 
 declare const window:any,navigator:any;
 
@@ -34,7 +34,7 @@ if (DEBUG) {
     });
 }
 
-export default class GamePad {
+export class GamePad {
 
     private game:Game;
     private gamepads:Array<GamePadInfo>;

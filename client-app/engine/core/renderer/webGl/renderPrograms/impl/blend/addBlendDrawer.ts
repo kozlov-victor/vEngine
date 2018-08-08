@@ -1,8 +1,8 @@
 
-import AbstractBlendDrawer from "../../abstract/abstractBlendDrawer";
-import ShaderGenerator from "../../../shaders/generators/shaderGenerator";
+import {AbstractBlendDrawer} from "../../abstract/abstractBlendDrawer";
+import {ShaderGenerator} from "../../../shaders/generators/shaderGenerator";
 
-export default class AddBlendDrawer extends AbstractBlendDrawer {
+export  class AddBlendDrawer extends AbstractBlendDrawer {
 
     constructor(gl:WebGLRenderingContext){
         super(gl);

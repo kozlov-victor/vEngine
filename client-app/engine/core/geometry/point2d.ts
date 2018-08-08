@@ -1,9 +1,11 @@
-import ObjectPool from "../misc/objectPool";
-import ObservableEntity from "./abstract/observableEntity";
+
+import {ObjectPool} from "../misc/objectPool";
+import {ObservableEntity} from "./abstract/observableEntity";
+import {_global} from "../global";
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-export default class Point2d extends ObservableEntity{
+export class Point2d extends ObservableEntity{
 
     x:number = 0;
     y:number = 0;
@@ -32,7 +34,9 @@ export default class Point2d extends ObservableEntity{
     }
 
     setXY(x:number,y?:number):Point2d{
-        if (y===undefined) y = this.x;
+        if (y===undefined) { //noinspection JSSuspiciousNameCombination
+            y = x;
+        }
         this.x = x;
         this.y = y;
         this.triggerObservable();
@@ -137,3 +141,5 @@ export default class Point2d extends ObservableEntity{
 
 
 }
+
+_global['Point2d'] = Point2d;

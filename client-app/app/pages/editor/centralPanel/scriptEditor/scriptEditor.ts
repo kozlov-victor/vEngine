@@ -1,13 +1,13 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
-import './scriptEditor.less'
+import './scriptEditor.scss'
 
 @RF.decorateComponent({
     name: 'app-script-editor',
     template: require('./scriptEditor.html')
 })
-export default class ScriptEditor extends BaseComponent {
+export class ScriptEditor extends BaseComponent {
     constructor(){
         super();
     }

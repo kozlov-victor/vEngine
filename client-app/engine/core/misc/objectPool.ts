@@ -2,7 +2,7 @@
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-export default class ObjectPool<T> {
+export class ObjectPool<T> {
 
     private _pool:Array<T> = [];
     private _cnt = 0;

@@ -15,7 +15,7 @@
                         <img
                             class="spriteSheetThumb"
                             data-attributes="{
-                                src:    editData.projectName+'/'+spriteSheet.resourcePath,
+                                src:    editData.projectName+'/'+spriteSheet.getDefaultResourcePath() + '?lastRevalidated=' + spriteSheet._lastRevalidated,
                                 width:  spriteSheet.width,
                                 height: spriteSheet.height
                             }"/>

@@ -1,10 +1,18 @@
 
-import Move2Dir from './move2Dir'
-import GameObject from "../../model/impl/gameObject";
-import Game from "../../core/game";
+import {Move2Dir} from './move2Dir'
+import {GameObject} from "../../model/impl/gameObject";
+import {Game} from "../../core/game";
 
 
-export default class Control2Dir extends Move2Dir{
+export class Parameters {
+    velocity: number = 100;
+    walkLeftAnimation: string = 'left';
+    walkRightAnimation: string = 'right';
+    idleLeftAnimation: string = 'idleLeft';
+    idleRightAnimation: string = 'idleRight';
+}
+
+export class Control2Dir extends Move2Dir{
 
     constructor(game:Game){
         super(game);

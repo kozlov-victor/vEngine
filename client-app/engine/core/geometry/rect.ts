@@ -1,13 +1,14 @@
-import Size from "./size";
+
 
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
-import Point2d from "./point2d";
-import ObjectPool from "../misc/objectPool";
+import {Size} from "./size";
+import {Point2d} from "./point2d";
+import {ObjectPool} from "../misc/objectPool";
 import {_global} from "../global";
-import ObservableEntity from "./abstract/observableEntity";
+import {ObservableEntity} from "./abstract/observableEntity";
 
-export default class Rect extends ObservableEntity {
+export class Rect extends ObservableEntity {
 
     x:number;
     y:number;
@@ -124,4 +125,4 @@ export default class Rect extends ObservableEntity {
 
 }
 
-_global.Rect = Rect;
+_global['Rect'] = Rect;

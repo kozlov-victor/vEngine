@@ -1,12 +1,12 @@
 
 
 
-import Moveable from '../abstract/moveable'
-import Game from "../../core/game";
-import GameObject from "../../model/impl/gameObject";
+import {Moveable} from '../abstract/moveable'
+import {Game} from "../../core/game";
+import {GameObject} from "../../model/impl/gameObject";
 import {BehaviourParameters} from "../abstract/baseAbstractBehaviour";
 
-export default class Move2Dir extends Moveable {
+export class Move2Dir extends Moveable {
 
     private static DIRS = ['Left', 'Right'];
 

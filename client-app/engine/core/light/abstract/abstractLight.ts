@@ -1,10 +1,10 @@
 
 declare const DEBUG:boolean;
 
-import Game from "../../game";
-import Color from "../../color";
+import {Game} from "../../game";
+import {Color} from "../../color";
 
-export default abstract class AbstractLight {
+export abstract class AbstractLight {
 
     public color:Color = Color.WHITE;
     public intensity:number = 1.0;

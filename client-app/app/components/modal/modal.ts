@@ -1,11 +1,11 @@
 declare const RF;
-import './modal.less'
+import './modal.scss'
 
 @RF.decorateComponent({
     name: 'app-modal',
     template: require('./modal.html')
 })
-export default class AppModal {
+export class AppModal {
 
     opened:boolean = false;
 

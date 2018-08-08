@@ -1,8 +1,8 @@
 
-import AbstractLight from "./abstract/abstractLight";
-import Game from "../game";
+import {AbstractLight} from "./abstract/abstractLight";
+import {Game} from "../game";
 
-export default class AmbientLight extends AbstractLight{
+export class AmbientLight extends AbstractLight{
 
     direction;
 

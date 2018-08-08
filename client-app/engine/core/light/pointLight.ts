@@ -1,11 +1,11 @@
 
-import Point2d from "../geometry/point2d";
-import Rect from "../geometry/rect";
-import Game from "../game";
-import AbstractLight from "./abstract/abstractLight";
-import Camera from "../camera";
+import {Point2d} from "../geometry/point2d";
+import {Rect} from "../geometry/rect";
+import {Game} from "../game";
+import {AbstractLight} from "./abstract/abstractLight";
+import {Camera} from "../camera";
 
-export default class PointLight extends AbstractLight {
+export class PointLight extends AbstractLight {
 
     public pos:Point2d = new Point2d();
     public nearRadius: number = 0;

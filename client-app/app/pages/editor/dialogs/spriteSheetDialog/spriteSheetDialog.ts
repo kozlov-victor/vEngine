@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -6,7 +6,7 @@ declare const RF;
     name: 'app-sprite-sheet-dialog',
     template: require('./spriteSheetDialog.html')
 })
-export default class SpriteSheetDialog extends BaseComponent {
+export class SpriteSheetDialog extends BaseComponent {
 
     spriteSheetUrl='';
     _file='';
@@ -22,7 +22,7 @@ export default class SpriteSheetDialog extends BaseComponent {
         this._file = null;
         if (editData.currSpriteSheetInEdit.id)
             this.spriteSheetUrl =
-                `${editData.projectName}/${editData.currSpriteSheetInEdit.resourcePath}?${Math.random()}`;
+                `${editData.projectName}/${editData.currSpriteSheetInEdit.getDefaultResourcePath()}?${Math.random()}`;
         else this.spriteSheetUrl = '';
         this.refreshNumOfCells();
         RF.getComponentById('spriteSheetModal').open();
@@ -35,11 +35,12 @@ export default class SpriteSheetDialog extends BaseComponent {
 
         this._file = file;
         this.spriteSheetUrl = src;
-        editData.currSpriteSheetInEdit._lastPath = this.editData.currSpriteSheetInEdit.resourcePath;
-        editData.currSpriteSheetInEdit.resourcePath =
+        editData.currSpriteSheetInEdit._lastPath = this.editData.currSpriteSheetInEdit.getDefaultResourcePath();
+        let currPath =
             `resources/${editData.currSpriteSheetInEdit.name}.${ext}`;
-        if (editData.currSpriteSheetInEdit._lastPath == editData.currSpriteSheetInEdit.resourcePath)
+        if (editData.currSpriteSheetInEdit._lastPath == currPath)
             editData.currSpriteSheetInEdit._lastPath = null;
+        editData.currSpriteSheetInEdit.setDefaultResourcePath(currPath);
 
         let img = new Image();
         img.onload =()=> {
@@ -65,7 +66,7 @@ export default class SpriteSheetDialog extends BaseComponent {
 
         if (this._file) await this.restFileSystem.uploadFile(
             this._file,
-            {path:this.editData.currSpriteSheetInEdit.resourcePath}
+            {path:this.editData.currSpriteSheetInEdit.getDefaultResourcePath()}
         );
         if (this.editData.currSpriteSheetInEdit._lastPath) {
             await this.restFileSystem.removeFile(this.editData.currSpriteSheetInEdit._lastPath);
@@ -75,7 +76,9 @@ export default class SpriteSheetDialog extends BaseComponent {
             model.id = resp.id;
             this.editData.game.repository.addObject(model);
         } else if (resp.updated) {
+            let cloner = model._cloner;
             model.updateCloner();
+            cloner['_lastRevalidated'] = new Date().getTime().toString(16);
             this.editData.game.repository.updateObject(model);
             this.utils.eachGameObject(g=>{
                 if (g.spriteSheet.id==model.id) {

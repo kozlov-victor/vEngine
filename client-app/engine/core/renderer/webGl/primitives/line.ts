@@ -1,7 +1,7 @@
 
-import AbstractPrimitive from './abstractPrimitive'
+import {AbstractPrimitive} from './abstractPrimitive'
 
-export default class Line extends AbstractPrimitive {
+export class Line extends AbstractPrimitive {
 
     constructor(){
         super();

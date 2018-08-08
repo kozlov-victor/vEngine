@@ -104,7 +104,7 @@ export class MainSceneBehaviour {
 
         console.log(widget);
         window.w = widget;
-        this.scene.uiLayer.gameObjects.push(widget);
+        this.scene.uiLayer.children.push(widget);
         
     }
 

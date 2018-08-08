@@ -1,15 +1,16 @@
-import BaseComponent from "../../../../baseComponent";
+
 
 declare const RF;
 
-import './sceneRightPanel.less'
-import TileMap from "../../../../../engine/model/impl/tileMap";
+import {BaseComponent} from "../../../../baseComponent";
+import './sceneRightPanel.scss'
+import {TileMap} from "../../../../../engine/model/impl/tileMap";
 
 @RF.decorateComponent({
     name: 'app-scene-right-panel',
     template: require('./sceneRightPanel.html')
 })
-export default class SceneRightPanel extends BaseComponent {
+export class SceneRightPanel extends BaseComponent {
 
     constructor(){
         super();
@@ -55,8 +56,8 @@ export default class SceneRightPanel extends BaseComponent {
     setCurrSelectedTile(i){
         this.editData.currTileIndexInEdit = i;
     }
-    editScene(){
-        this.restResource.save(this.editData.currSceneInEdit);
+    async editScene(){
+        await this.restResource.save(this.editData.currSceneInEdit);
     }
     toggleEditMode(){
         this.editData.editTileMapModeOn = !this.editData.editTileMapModeOn;

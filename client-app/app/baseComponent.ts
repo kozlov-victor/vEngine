@@ -1,14 +1,14 @@
 
-import Utils from './providers/utils'
+import {Utils as utils} from './providers/utils'
 import {editData} from './providers/editData'
-import restProject from './providers/rest/project'
-import restFileSystem from './providers/rest/fileSystem'
-import restResource from './providers/rest/resource'
-import resourceHelper from './providers/resourceHelper'
-import i18n from './providers/i18n'
-import http from './providers/rest/httpClient'
+import {RestProject as restProject} from './providers/rest/restProject'
+import {RestFileSystem as restFileSystem} from './providers/rest/restFileSystem'
+import {RestResource as restResource} from './providers/rest/restResource'
+import {ResourceHelper as resourceHelper} from './providers/resourceHelper'
+import {I18n as i18n} from './providers/i18n'
+import {httpClient as http} from './providers/rest/httpClient'
 
-export default class BaseComponent {
+export class BaseComponent {
 
     editData;
     restProject;
@@ -29,7 +29,7 @@ export default class BaseComponent {
         this.i18n = i18n;
         this.http = http;
         this.form ={valid: ()=>{return true;}};
-        this.utils = Utils;
+        this.utils = utils;
     }
 
 }

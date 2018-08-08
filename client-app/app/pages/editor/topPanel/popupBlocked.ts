@@ -1,9 +1,8 @@
 
-import BaseComponent from "../../../baseComponent";
+import {BaseComponent} from "../../../baseComponent";
 
 declare const RF;
 
-let w;
 @RF.decorateComponent({
     name: 'app-popup-blocked',
     template: `
@@ -17,7 +16,7 @@ let w;
         </app-modal>
     `
 })
-export default class PopupBlocked extends BaseComponent {
+export class PopupBlocked extends BaseComponent {
 
     constructor(){
         super();

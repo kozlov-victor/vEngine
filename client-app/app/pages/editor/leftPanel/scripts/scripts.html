@@ -1,0 +1,40 @@
+<app-collapsible
+        data-state="{
+            crud: {
+                create:createScript
+            },
+            title: i18n.get('scripts')
+        }">
+    <div data-transclusion="content">
+
+        <div>
+            ./custom
+        </div>
+
+        <div class="withPadding">
+            <div class="table width100">
+                <div class="row"
+                     data-for="script,i in editData.customScripts">
+
+                    <div class="cell">
+                    <span class="inlineBlock withPaddingTop withPaddingBottom">
+                        {{script.name}}
+                    </span>
+                    </div>
+
+                    <div class="cell width1">
+                        <div class="script" data-click="editScript(script)"></div>
+                    </div>
+                    <div class="cell width1">
+                        <div class="edit" data-click="editScriptName(script,i)"></div>
+                    </div>
+                    <div class="cell width1">
+                        <div class="delete" data-click="deleteScript(script)"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</app-collapsible>

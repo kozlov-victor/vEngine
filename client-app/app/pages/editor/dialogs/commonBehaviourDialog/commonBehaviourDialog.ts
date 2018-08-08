@@ -1,4 +1,4 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
 
 declare const RF;
 
@@ -6,7 +6,7 @@ declare const RF;
     name: 'app-common-behaviour-dialog',
     template: require('./commonBehaviourDialog.html')
 })
-export default class CommonBehaviourDialog extends BaseComponent {
+export class CommonBehaviourDialog extends BaseComponent {
     constructor(){
         super();
     }

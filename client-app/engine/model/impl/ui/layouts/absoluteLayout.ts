@@ -1,18 +1,19 @@
+import {RenderableModel} from "../../../renderableModel";
 
-import Rect from "../../../../core/geometry/rect";
 
 declare const DEBUG:boolean;
 
-import Container, {LAYOUT_SIZE, OVERFLOW} from "../generic/container";
+import {Rect} from "../../../../core/geometry/rect";
+import {Container,LAYOUT_SIZE, OVERFLOW} from "../generic/container";
 
-export default class AbsoluteLayout extends Container {
+export class AbsoluteLayout extends Container {
 
     constructor(game) {
         super(game);
     }
 
-    appendChild(c:Container){
-        c.testLayout();
+    appendChild(c:RenderableModel){
+        (c as Container).testLayout();
         c.parent = this;
         super.appendChild(c);
     }
@@ -22,7 +23,7 @@ export default class AbsoluteLayout extends Container {
 
         let maxX = 0, maxY = 0;
         for (let v of this.children) {
-            v.onGeometryChanged();
+            (v as Container).onGeometryChanged();
             v._dirty = true;
             let r:Rect = v.getRect();
             if (r.right>maxX) maxX = r.right;

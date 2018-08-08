@@ -36,12 +36,32 @@
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -59,13 +79,14 @@
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 190);
+/******/ 	return __webpack_require__(__webpack_require__.s = 171);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 190:
+/***/ 171:
 /***/ (function(module, exports) {
 
 var getPopupContainer = function () {
@@ -94,11 +115,13 @@ var _prepareMessage = function (e, lineNum) {
     }
     else
         msg = e.message || e.reason;
+    if (msg && msg.message)
+        msg = msg.message;
     if (!msg) {
         if (e.target) {
             ['img', 'audio', 'link'].some(function (it) {
                 if (e.target.tagName && e.target.tagName.toLowerCase() === it) {
-                    msg = 'can not load ' + it + ' with location ' + (e.target.src || e.target.href);
+                    msg = "can not load " + it + " with location " + (e.target.src || e.target.href);
                     return true;
                 }
             });
@@ -109,7 +132,6 @@ var _prepareMessage = function (e, lineNum) {
     if (msg.indexOf('Uncaught') === 0)
         msg = msg.replace('Uncaught', '').trim();
     if (!msg) {
-        console.error(e);
         msg = 'Unknown error: ' + e.toString();
     }
     if (lineNum)
@@ -167,7 +189,6 @@ window['showError'] = function _err(e, lineNum) {
     }
 };
 window.addEventListener('error', function (e) {
-    console.error(e);
     window['showError'](e, e['linenum']);
 }, true);
 window.addEventListener('unhandledrejection', function (e) {

@@ -1,13 +1,13 @@
 
-import Plane from '../../../primitives/plane'
-import ShaderProgram from '../../../base/shaderProgram'
-import BufferInfo, {BufferInfoDescription} from "../../../base/bufferInfo";
-import AbstractDrawer from "../../abstract/abstractDrawer";
+import {Plane} from '../../../primitives/plane'
+import {ShaderProgram} from '../../../base/shaderProgram'
+import {BufferInfo,BufferInfoDescription} from "../../../base/bufferInfo";
+import {AbstractDrawer} from "../../abstract/abstractDrawer";
 import {GL_TYPE} from "../../../base/shaderProgramUtils";
-import TexShaderGenerator from "../../../shaders/generators/impl/texShaderGenerator";
+import {TexShaderGenerator} from "../../../shaders/generators/impl/texShaderGenerator";
 
 
-export default class TiledSpriteRectDrawer extends AbstractDrawer {
+export class TiledSpriteRectDrawer extends AbstractDrawer {
 
     constructor(gl:WebGLRenderingContext){
         super(gl);

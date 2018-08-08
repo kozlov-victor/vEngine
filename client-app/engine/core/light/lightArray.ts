@@ -1,10 +1,10 @@
 
 declare const DEBUG:boolean;
 
-import PointLight from "./pointLight";
-import Game from "../game";
+import {PointLight} from "./pointLight";
+import {Game} from "../game";
 
-export default class LightArray {
+export class LightArray {
 
     static NUM_OF_LIGHT_IN_VIEW = 4;
 

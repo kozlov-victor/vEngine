@@ -20,7 +20,7 @@ class State<T> {
 
 }
 
-export default abstract class ObservableEntity {
+export abstract class ObservableEntity {
 
     protected _state = new State<number>();
     private _onChanged:Array<()=>void> = [];

@@ -15,6 +15,83 @@ this.blendModes[CONST.BLEND_MODES.HUE] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.SATURATION] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.COLOR] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
 this.blendModes[CONST.BLEND_MODES.LUMINOSITY] = [gl.ONE, gl.ONE_MINUS_SRC_ALPHA];
+
+
+
+ cr.setGLBlend = function(this_, effect, gl) {
+        if (!gl)
+            return;
+        this_.srcBlend = gl.ONE;
+        this_.destBlend = gl.ONE_MINUS_SRC_ALPHA;
+        switch (effect) {
+            case 1: // lighter (additive)
+                this_.srcBlend = gl.ONE;
+                this_.destBlend = gl.ONE;
+                break;
+            case 2: // xor
+                break; // todo
+            case 3: // copy
+                this_.srcBlend = gl.ONE;
+                this_.destBlend = gl.ZERO;
+                break;
+            case 4: // destination-over
+                this_.srcBlend = gl.ONE_MINUS_DST_ALPHA;
+                this_.destBlend = gl.ONE;
+                break;
+            case 5: // source-in
+                this_.srcBlend = gl.DST_ALPHA;
+                this_.destBlend = gl.ZERO;
+                break;
+            case 6: // destination-in
+                this_.srcBlend = gl.ZERO;
+                this_.destBlend = gl.SRC_ALPHA;
+                break;
+            case 7: // source-out
+                this_.srcBlend = gl.ONE_MINUS_DST_ALPHA;
+                this_.destBlend = gl.ZERO;
+                break;
+            case 8: // destination-out
+                this_.srcBlend = gl.ZERO;
+                this_.destBlend = gl.ONE_MINUS_SRC_ALPHA;
+                break;
+            case 9: // source-atop
+                this_.srcBlend = gl.DST_ALPHA;
+                this_.destBlend = gl.ONE_MINUS_SRC_ALPHA;
+                break;
+            case 10: // destination-atop
+                this_.srcBlend = gl.ONE_MINUS_DST_ALPHA;
+                this_.destBlend = gl.SRC_ALPHA;
+                break;
+        }
+    };
+
+this.isWindows10 = !!window["cr_windows10"];
+
+Runtime.prototype.tryLockOrientation = function() {
+        if (!this.autoLockOrientation || this.orientations === 0)
+            return;
+        var orientation = "portrait";
+        if (this.orientations === 2)
+            orientation = "landscape";
+        try {
+            if (screen["orientation"] && screen["orientation"]["lock"])
+                screen["orientation"]["lock"](orientation);
+            else if (screen["lockOrientation"])
+                screen["lockOrientation"](orientation);
+            else if (screen["webkitLockOrientation"])
+                screen["webkitLockOrientation"](orientation);
+            else if (screen["mozLockOrientation"])
+                screen["mozLockOrientation"](orientation);
+            else if (screen["msLockOrientation"])
+                screen["msLockOrientation"](orientation);
+        } catch (e) {
+            if (console && console.warn)
+                console.warn("Failed to lock orientation: ", e);
+        }
+    };
+
+
+
 Add the following code to compute the color for each pixel:
 void main(void) {
  // texel color look up based on interpolated UV value in vTexCoord

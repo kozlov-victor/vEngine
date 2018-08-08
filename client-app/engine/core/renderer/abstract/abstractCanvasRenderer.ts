@@ -1,12 +1,17 @@
 
-import AbstractRenderer from "./abstractRenderer";
-import Game from "../../game";
+import {AbstractRenderer} from "./abstractRenderer";
+import {Game} from "../../game";
 import {SCALE_STRATEGY} from "../../misc/consts";
 
-export default abstract class AbstractCanvasRenderer extends AbstractRenderer {
+export class AbstractCanvasRenderer extends AbstractRenderer {
 
     constructor(game:Game) {
         super(game);
+        let container = document.createElement('canvas');
+        document.body.appendChild(container);
+        container.setAttribute('width',game.width.toString());
+        container.setAttribute('height',game.height.toString());
+        this.container = container;
     }
 
     onResize(){

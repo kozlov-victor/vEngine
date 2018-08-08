@@ -1,4 +1,5 @@
-import BaseComponent from "../../../../baseComponent";
+import {BaseComponent} from "../../../../baseComponent";
+import {getDefaultCodeScript} from "../../../../providers/codeTemplates";
 
 declare const RF;
 
@@ -7,7 +8,7 @@ declare const RF;
     name: 'app-scene-dialog',
     template: require('./sceneDialog.html')
 })
-export default class SceneDialog extends BaseComponent {
+export class SceneDialog extends BaseComponent {
     constructor(){
         super();
     }
@@ -20,7 +21,7 @@ export default class SceneDialog extends BaseComponent {
             let name = this.utils.capitalise(this.editData.currSceneInEdit.name);
             await this.restFileSystem.createFile(
                 `scripts/${s.name}.js`,
-                document.getElementById('defaultCodeScript').textContent.replace('${name}',name));
+               getDefaultCodeScript(name))
         } else {
             s.updateCloner();
         }

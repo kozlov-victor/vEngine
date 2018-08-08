@@ -1,14 +1,14 @@
 
-import GameObjectProto from '../../engine/model/impl/gameObjectProto'
-import SpriteSheet from '../../engine/model/impl/spriteSheet'
-import FrameAnimation from '../../engine/model/impl/frameAnimation'
-import Scene from '../../engine/model/impl/scene'
-import Layer from '../../engine/model/impl/layer'
-import Font from '../../engine/model/impl/font'
-import Sound from '../../engine/model/impl/sound'
-import ParticleSystem from '../../engine/model/impl/particleSystem'
-import Game from '../../engine/core/game';
-import GameObject from "../../engine/model/impl/gameObject";
+import {GameObjectProto} from '../../engine/model/impl/gameObjectProto'
+import {SpriteSheet} from '../../engine/model/impl/spriteSheet'
+import {FrameAnimation} from '../../engine/model/impl/frameAnimation'
+import {Scene} from '../../engine/model/impl/scene'
+import {Layer} from '../../engine/model/impl/layer'
+import {Font} from '../../engine/model/impl/font'
+import {Sound} from '../../engine/model/impl/sound'
+import {ParticleSystem} from '../../engine/model/impl/particleSystem'
+import {Game} from '../../engine/core/game';
+import {GameObject} from "../../engine/model/impl/gameObject";
 
 class EditData {
 
@@ -30,6 +30,7 @@ class EditData {
     currSoundInEdit:Sound;
     currParticleSystemInEdit:ParticleSystem;
     currProjectInEdit;
+    currScriptInEdit;
     currTileIndexInEdit;
     commonBehaviourProto;
     tileMapPosX:number;
@@ -39,6 +40,7 @@ class EditData {
     projectName = '';
     projects;
     buildOpts;
+    customScripts;
 
     constructor(){
         this.reset(null);
@@ -81,7 +83,7 @@ class EditData {
 
 
         try {
-            this.buildOpts = JSON.parse(localStorage.buildOpts)
+            this.buildOpts = JSON.parse(localStorage['buildOpts'])
         } catch (e){
             this.buildOpts = {
                 debug: false,
@@ -95,3 +97,4 @@ class EditData {
 
 export let editData:EditData = new EditData();
 
+(window as any).editData = editData;

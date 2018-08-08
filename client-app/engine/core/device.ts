@@ -1,11 +1,11 @@
-import Game from "./game";
+import {Game} from "./game";
 
 declare let navigator:any;
 
 const isCocoonJS = !!(navigator.isCocoonJS);
 
 
-export default class Device {
+export class Device {
 
     constructor(game:Game){
     }

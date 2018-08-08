@@ -1,17 +1,20 @@
 
-function SimpleHtmlParser() {}
+const emptyTags = "area,base,basefont,br,col,frame,iframe,hr,img,input,isindex,link,meta,param,embed".split(',');
 
-SimpleHtmlParser.prototype = {
+class SimpleHtmlParser {
 
-    handler:	null,
+    constructor(){
+        this.handler = null;
 
-    // regexps
+        // regexps
 
-    startTagRe:	/^<([^>\s\/]+)((\s+[^=>\s]+(\s*=\s*((\"[^"]*\")|(\'[^']*\')|[^>\s]+))?)*)\s*\/?\s*>/m,
-    endTagRe:	/^<\/([^>\s]+)[^>]*>/m,
-    attrRe:		/([^=\s]+)(\s*=\s*((\"([^"]*)\")|(\'([^']*)\')|[^>\s]+))?/gm,
+        this.startTagRe =  /^<([^>\s\/]+)((\s+[^=>\s]+(\s*=\s*((\"[^"]*\")|(\'[^']*\')|[^>\s]+))?)*)\s*\/?\s*>/m;
+        this.endTagRe =    /^<\/([^>\s]+)[^>]*>/m;
+        this.attrRe =     /([^=\s]+)(\s*=\s*((\"([^"]*)\")|(\'([^']*)\')|[^>\s]+))?/gm;
+    }
 
-    parse:	function (s, oHandler) {
+
+    parse(s, oHandler) {
         if (oHandler)
             this.contentHandler = oHandler;
 
@@ -99,27 +102,27 @@ SimpleHtmlParser.prototype = {
 
             treatAsChars = true;
         }
-    },
+    }
 
-    parseStartTag:	function (sTag, sTagName, sRest) {
+    parseStartTag(sTag, sTagName, sRest) {
         let attrs = this.parseAttributes(sTagName, sRest);
         this.contentHandler.startElement(sTagName, attrs);
-    },
+    }
 
-    parseEndTag:	function (sTag, sTagName) {
+    parseEndTag(sTag, sTagName) {
         this.contentHandler.endElement(sTagName);
-    },
+    }
 
-    parseAttributes:	function (sTagName, s) {
+    parseAttributes(sTagName, s) {
         let oThis = this;
         let attrs = [];
         s.replace(this.attrRe, function (a0, a1, a2, a3, a4, a5, a6) {
             attrs.push(oThis.parseAttribute(sTagName, a0, a1, a2, a3, a4, a5, a6));
         });
         return attrs;
-    },
+    }
 
-    parseAttribute: function (sTagName, sAttribute, sName) {
+    parseAttribute(sTagName, sAttribute, sName) {
         let value = "";
         if (arguments[7])
             value = arguments[8];
@@ -137,9 +140,9 @@ SimpleHtmlParser.prototype = {
         let empty = !value && !arguments[3];
         return {name: sName, value: empty ? null : value};
     }
-};
 
-const emptyTags = "area,base,basefont,br,col,frame,iframe,hr,img,input,isindex,link,meta,param,embed".split(',');
+}
+
 
 
 class Element {
@@ -199,7 +202,6 @@ class Element {
     cloneNode(deep){
         let el = new Element();
         el.id=this.id;
-        // noinspection JSAnnotator
         el.tagName = this.tagName;
         el.attributes = this.attributes;
         if (deep) {
@@ -228,6 +230,12 @@ class TextNode{
     }
 }
 
+class Comment {
+    constructor(text){
+        this.data = text;
+    }
+}
+
 class Document extends Element {
 
     constructor(){
@@ -249,7 +257,7 @@ class Document extends Element {
         tagName = tagName.toLowerCase();
         let res = [];
         Element.__iterateAll(this,(el)=>{
-            if (el.tagName.toLowerCase()===tagName)
+            if (el.tagName && el.tagName.toLowerCase()===tagName)
                 res.push(el);
         });
         return res;
@@ -260,9 +268,9 @@ class Document extends Element {
         this.parentNode.children.splice(indexOfMe,1);
     }
 
+    //noinspection JSMethodCanBeStatic
     createElement(tagName){
         let el = new Element();
-        // noinspection JSAnnotator
         el.tagName = tagName;
         return el;
     }
@@ -273,6 +281,9 @@ const trim = (str)=>{
     return str.replace(/[\n\r\s\t]+/gi,' ').trim();
 };
 
+/**
+ * @return {string}
+ */
 let HTMLtoXML = html=> {
     let results = "";
     let lastTag = null;
@@ -333,7 +344,6 @@ let HTMLtoDOM = html=> {
             }
         },
         endElement: function(tag) {
-            //console.log('end',tag);
             if (hasClosed) {
                 currRoot =  currRoot.parentNode || currRoot;
             } else {
@@ -342,18 +352,20 @@ let HTMLtoDOM = html=> {
             hasClosed = true;
         },
         characters: function( characters ) {
-            //console.log('characters',characters,currElement);
             let textNode = new TextNode();
             textNode.innerHTML = trim(characters);
-            if (!hasClosed) currElement.appendChild(textNode);
-            else if (emptyTags.indexOf(currElement.tagName)>-1) currElement.parentNode.appendChild(textNode);
+            if (!hasClosed || emptyTags.indexOf(currElement.tagName)>-1) currElement.appendChild(textNode);
+            else currElement.parentNode.appendChild(textNode);
         },
         comment: function( text ) {
-
+            let c = new Comment(text);
+            currElement.parentNode.appendChild(c);
         }
     });
     return result;
 };
+
+
 
 module.exports.createDocument = (html)=>{
     let doc = new Document();

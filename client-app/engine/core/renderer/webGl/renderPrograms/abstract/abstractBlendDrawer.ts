@@ -1,18 +1,17 @@
 
 
-import SpriteRectDrawer from "../impl/base/spriteRectDrawer";
+import {SpriteRectDrawer} from "../impl/base/spriteRectDrawer";
 import {GL_TYPE} from "../../base/shaderProgramUtils";
-import TexShaderGenerator from "../../shaders/generators/impl/texShaderGenerator";
-import ShaderProgram from "../../base/shaderProgram";
-import SimpleCopyFilter from "../../filters/textureFilters/simpleCopyFilter";
-import ShaderGenerator from "../../shaders/generators/shaderGenerator";
-import Texture from "../../base/texture";
-import FrameBuffer from "../../base/frameBuffer";
-import {default as AbstractDrawer, TextureInfo} from "./abstractDrawer";
+import {TexShaderGenerator} from "../../shaders/generators/impl/texShaderGenerator";
+import {ShaderProgram} from "../../base/shaderProgram";
+import {SimpleCopyFilter} from "../../filters/textureFilters/simpleCopyFilter";
+import {ShaderGenerator} from "../../shaders/generators/shaderGenerator";
+import {FrameBuffer} from "../../base/frameBuffer";
+import {TextureInfo} from "./abstractDrawer";
 import {IDrawer} from "../interface/iDrawer";
 import {UniformsInfo} from "../interface/uniformsInfo";
 
-export default abstract class AbstractBlendDrawer implements IDrawer {
+export abstract class AbstractBlendDrawer implements IDrawer {
 
     protected spriteRectDrawer:SpriteRectDrawer;
     protected simpleCopyFilter:SimpleCopyFilter;
@@ -21,7 +20,7 @@ export default abstract class AbstractBlendDrawer implements IDrawer {
 
     constructor(gl:WebGLRenderingContext) {
         this.gl = gl;
-        let gen = new TexShaderGenerator();
+        let gen:TexShaderGenerator = new TexShaderGenerator();
         gen.addVarying(GL_TYPE.FLOAT_VEC4, 'v_destTexCoord');
         gen.addFragmentUniform(GL_TYPE.SAMPLER_2D,'destTexture');
         //language=GLSL

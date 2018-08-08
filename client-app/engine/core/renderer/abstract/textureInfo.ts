@@ -1,5 +1,5 @@
 
-import Size from "../../geometry/size";
+import {Size} from "../../geometry/size";
 
 export interface TextureInfo<T> {
     size:Size,

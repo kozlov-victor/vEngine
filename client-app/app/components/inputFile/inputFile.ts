@@ -1,11 +1,11 @@
 declare const RF;
-import './inputFile.less'
+import './inputFile.scss'
 
 @RF.decorateComponent({
     name: 'app-input-file',
     template: require('./inputFile.html')
 })
-export default class InputFile {
+export class InputFile {
 
     title = '';
     accept = '';

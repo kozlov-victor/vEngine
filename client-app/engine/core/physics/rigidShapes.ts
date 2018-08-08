@@ -1,7 +1,8 @@
 
+import {Game} from "../game";
+import {Point2d} from "../geometry/point2d";
 declare const DEBUG:boolean;
 
-const gravityAcceleration:number = 50;
 
 export class Vec2 {
 
@@ -108,7 +109,7 @@ export class CollisionInfo {
 }
 
 
-abstract class RigidShape {
+export abstract class RigidShape {
 
     mCenter:Vec2;
     mInertia:number;
@@ -122,9 +123,11 @@ abstract class RigidShape {
     mAngularVelocity:number = 0; //negetive-- clockwise, postive-- counterclockwise
     mAngularAcceleration:number = 0;
     mBoundRadius:number = 0;
+    game:Game;
     readonly abstract mType:string;
 
-    constructor(center:Vec2, mass?:number, friction?:number, restitution?:number){
+    constructor(game:Game,center:Vec2, mass?:number, friction?:number, restitution?:number){
+        this.game = game;
         this.mCenter = center;
         this.mInertia = 0;
         this.fixedAngle = false;
@@ -148,7 +151,7 @@ abstract class RigidShape {
 
         if (this.mInvMass !== 0) {
             this.mInvMass = 1 / this.mInvMass;
-            this.mAcceleration = new Vec2(0, gravityAcceleration);
+            this.mAcceleration = new Vec2(0, game.gravityConstant);
         } else {
             this.mAcceleration = new Vec2(0, 0);
         }
@@ -171,7 +174,7 @@ abstract class RigidShape {
             this.mAngularAcceleration = 0;
         } else {
             this.mInvMass = 1 / mass;
-            this.mAcceleration = new Vec2(0, gravityAcceleration); // todo const
+            this.mAcceleration = new Vec2(0, this.game.gravityConstant);
         }
         this.updateInertia();
     }
@@ -208,8 +211,8 @@ export class RigidCircle extends RigidShape {
     mRadius:number;
     mStartpoint:Vec2;
 
-    constructor(center: Vec2, radius: number, mass?: number, friction?: number, restitution?: number) {
-        super(center, mass, friction, restitution);
+    constructor(game:Game,center: Vec2, radius: number, mass?: number, friction?: number, restitution?: number) {
+        super(game,center, mass, friction, restitution);
         this.mRadius = radius;
         this.mBoundRadius = radius;
         //The start point of line in circle
@@ -301,8 +304,8 @@ export class RigidRectangle extends RigidShape {
     mFaceNormal:Vec2[] = [];
 
 
-    constructor(center: Vec2, width: number, height: number, mass?: number, friction?: number, restitution?: number) {
-        super(center, mass, friction, restitution);
+    constructor(game:Game,center: Vec2, width: number, height: number, mass?: number, friction?: number, restitution?: number) {
+        super(game,center, mass, friction, restitution);
 
         this.mWidth = width;
         this.mHeight = height;

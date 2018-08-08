@@ -1,14 +1,13 @@
 
-import Resource from "../../../resource";
 
 declare const DEBUG:boolean;
 
 import {UIDrawable} from "../../../../drawable/interface/uiDrawable";
-import Rect from "../../../../core/geometry/rect";
-import AbstractFilter from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
+import {Rect} from "../../../../core/geometry/rect";
+import {AbstractFilter} from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 import {MOUSE_EVENTS} from "../../../../core/control/mouse";
-import RenderableModel from "../../../renderableModel";
+import {RenderableModel} from "../../../renderableModel";
 
 export enum OVERFLOW {
     HIDDEN,VISIBLE
@@ -22,7 +21,7 @@ export enum STATE {
     NORMAL,ACTIVE,DISABLED
 }
 
-export default abstract class Container extends RenderableModel implements UIDrawable {
+export abstract class Container extends RenderableModel implements UIDrawable {
 
     marginLeft      :number = 0;
     marginTop       :number = 0;
@@ -43,7 +42,7 @@ export default abstract class Container extends RenderableModel implements UIDra
     background      :UIDrawable = undefined;
 
     drawingRect:Rect = new Rect();
-    children:Container[] = [];
+
 
     private bgByState :{[state:number]:UIDrawable} = {};
     private state     :STATE = STATE.NORMAL;
@@ -57,9 +56,6 @@ export default abstract class Container extends RenderableModel implements UIDra
         }
     }
 
-    appendChild(c:Container){
-        this.children.push(c);
-    }
 
     private static normalizeBorders(top:number,right:number,bottom:number,left:number){
         if (right===undefined && bottom===undefined && left===undefined) {

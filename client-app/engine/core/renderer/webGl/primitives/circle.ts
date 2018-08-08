@@ -1,6 +1,6 @@
-import AbstractPrimitive from './abstractPrimitive'
+import {AbstractPrimitive} from './abstractPrimitive'
 
-export default class Circle extends AbstractPrimitive {
+export class Circle extends AbstractPrimitive {
 
     constructor(){
         super();

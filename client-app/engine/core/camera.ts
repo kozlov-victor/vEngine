@@ -1,13 +1,13 @@
 declare const DEBUG:boolean;
 
-import Tween from "./tween";
+import {Tween} from "./tween";
 import * as mat4 from './geometry/mat4'
 import * as mathEx from './mathEx'
-import Rect from "./geometry/rect";
-import Point2d from "./geometry/point2d";
-import Game from "./game";
-import GameObject from "../model/impl/gameObject";
-import Scene from "../model/impl/scene";
+import {Rect} from "./geometry/rect";
+import {Point2d} from "./geometry/point2d";
+import {Game} from "./game";
+import {GameObject} from "../model/impl/gameObject";
+import {Scene} from "../model/impl/scene";
 import {random} from "./mathEx";
 
 interface CameraTweenTarget {
@@ -20,7 +20,7 @@ export enum CAMERA_MATRIX_MODE {
     MODE_IDENTITY
 }
 
-export default class Camera {
+export class Camera {
 
     private objFollowTo:GameObject = null;
     private game:Game;
@@ -46,6 +46,9 @@ export default class Camera {
 
     constructor(game:Game){
         this.game = game;
+        this._updateRect();
+        this.sceneWidth = game.width;
+        this.sceneHeight = game.height;
         this.scale.observe(()=>{
             this.revalidate();
         });
@@ -75,9 +78,9 @@ export default class Camera {
     }
 
     update(currTime:number,delta:number) {
+        this.scene = this.game.getCurrScene();
+        if (!this.scene) return;
 
-        let gameObject:GameObject = this.objFollowTo;
-        if (!gameObject) return;
         let tileWidth = this.scene.tileMap.spriteSheet?this.scene.tileMap.spriteSheet._frameWidth:0; // todo ?
         let tileHeight = this.scene.tileMap.spriteSheet? this.scene.tileMap.spriteSheet._frameHeight:0;
         let w = this.game.width;
@@ -86,36 +89,42 @@ export default class Camera {
         let hDiv2 = h/2;
 
         let wScaled = this.getRectScaled().width;
-        if (gameObject['_lastDirection'] === 'Right')
-            this.cameraPosCorrection.max.x=wScaled/3; // todo _lastDirection
-        if (gameObject['_lastDirection'] === 'Left')
-            this.cameraPosCorrection.max.x=-wScaled/3;
-        let currCorrection:Point2d =
-            this.cameraPosCorrection.max.
-            substract(this.cameraPosCorrection.current).
-            multiply(0.05);
 
-        this.cameraPosCorrection.current.add(currCorrection);
+        let gameObject:GameObject = this.objFollowTo;
+        if (gameObject) {
+            if (gameObject['_lastDirection'] === 'Right')
+                this.cameraPosCorrection.max.x=wScaled/3; // todo _lastDirection
+            if (gameObject['_lastDirection'] === 'Left')
+                this.cameraPosCorrection.max.x=-wScaled/3;
 
-        let newPos:Point2d = Point2d.fromPool();
-        let pointToFollow:Point2d = Point2d.fromPool();
-        pointToFollow.set(this.objFollowTo.pos);
-        pointToFollow.addXY(-wDiv2,-hDiv2);
-        newPos.x = this.pos.x+(pointToFollow.x + this.cameraPosCorrection.current.x - this.pos.x)*0.1;
-        newPos.y = this.pos.y+(pointToFollow.y - this.pos.y)*0.1;
-        if (newPos.x < 0)
-            newPos.x = 0;
-        if (newPos.y < 0)
-            newPos.y = 0;
-        if (newPos.x > this.sceneWidth - w + tileWidth)
-            newPos.x = this.sceneWidth - w + tileWidth;
-        if (newPos.y > this.sceneHeight - h + tileHeight)
-            newPos.y = this.sceneHeight - h + tileHeight;
+            let currCorrection:Point2d =
+                this.cameraPosCorrection.max.
+                substract(this.cameraPosCorrection.current).
+                multiply(0.05);
 
-        this.pos.setXY(newPos.x,newPos.y);
+            this.cameraPosCorrection.current.add(currCorrection);
+
+            let newPos:Point2d = Point2d.fromPool();
+            let pointToFollow:Point2d = Point2d.fromPool();
+            pointToFollow.set(this.objFollowTo.pos);
+            pointToFollow.addXY(-wDiv2,-hDiv2);
+            newPos.x = this.pos.x+(pointToFollow.x + this.cameraPosCorrection.current.x - this.pos.x)*0.1;
+            newPos.y = this.pos.y+(pointToFollow.y - this.pos.y)*0.1;
+            if (newPos.x < 0)
+                newPos.x = 0;
+            if (newPos.y < 0)
+                newPos.y = 0;
+            if (newPos.x > this.sceneWidth - w + tileWidth)
+                newPos.x = this.sceneWidth - w + tileWidth;
+            if (newPos.y > this.sceneHeight - h + tileHeight)
+                newPos.y = this.sceneHeight - h + tileHeight;
+
+            this.pos.setXY(newPos.x,newPos.y);
 
 
-        if (this.cameraShakeTween) this.cameraShakeTween.update(currTime);
+            if (this.cameraShakeTween) this.cameraShakeTween.update(currTime);
+        }
+
         this._updateRect();
         this.render();
     }

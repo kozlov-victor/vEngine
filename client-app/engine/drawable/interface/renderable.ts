@@ -1,5 +1,5 @@
 
-import AbstractFilter from "../../core/renderer/webGl/filters/abstract/abstractFilter";
+import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 
 export interface Renderable {
     filters: AbstractFilter[],
