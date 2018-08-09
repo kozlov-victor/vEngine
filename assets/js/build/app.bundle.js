@@ -4102,8 +4102,13 @@ var Scene = (function (_super) {
         return this.layers[0];
     };
     Scene.prototype.addGameObject = function (go) {
+        console.trace('scene:addGameObject is deprecated');
         this.getDefaultLayer().appendChild(go);
     };
+    Scene.prototype.appendChild = function (go) {
+        this.getDefaultLayer().appendChild(go);
+    };
+    ;
     Scene.prototype.preload = function (cb) {
         var _this = this;
         var resources = this.getAllSpriteSheets().
@@ -8761,7 +8766,7 @@ var GameObjects = (function (_super) {
                         scenesUsed = [];
                         this.editData.game.repository.getArray('Scene').forEach(function (s) {
                             s.layers.forEach(function (l) {
-                                l.gameObjects.forEach(function (go) {
+                                l.children.forEach(function (go) {
                                     if (go.name == model.name) {
                                         if (scenesUsed.indexOf(s) == -1)
                                             scenesUsed.push(s);
@@ -15604,7 +15609,7 @@ if (sessionStorage['projectName']) {
 }
 else
     RF.Router.navigateTo('explorer');
-console.log("built at: " + new Date(+1533737381724));
+console.log("built at: " + new Date(+1533829766578));
 
 
 /***/ }),

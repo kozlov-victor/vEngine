@@ -161,7 +161,7 @@ export class ExpressApp {
         this.app.use((err, req, res, next)=> {
             if (err) console.error(err);
             res.status(500).send(
-                'error 500: ' + err.message
+                'error 500: ' + (err.message || err)
             );
         });
     }

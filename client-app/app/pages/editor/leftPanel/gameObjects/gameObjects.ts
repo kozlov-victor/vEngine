@@ -28,7 +28,7 @@ export class GameObjects extends BaseComponent {
         let scenesUsed = [];
         this.editData.game.repository.getArray('Scene').forEach(s=>{
             s.layers.forEach(l=>{
-                l.gameObjects.forEach(go=>{
+                l.children.forEach(go=>{
                     if (go.name==model.name) {
                         if (scenesUsed.indexOf(s)==-1) scenesUsed.push(s);
                     }
