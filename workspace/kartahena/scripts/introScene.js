@@ -12,9 +12,9 @@ export class IntroSceneBehaviour {
                     layoutWidth: 0,
                     layoutHeight: 0,
                     background: {
-                        type: 'NinePatchImage',
+                        type: 'Image', // NinePatchImage
                         resourceMap: {main:'resources/button.png'},
-                        ABCD: 20
+                        //ABCD: 20
                     },
                     on: ['click',()=>{console.log('clicked on layout');}]
                 },

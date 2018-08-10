@@ -28,7 +28,6 @@ export class Rectangle extends RenderableModel{
         return {blendMode:this.blendMode,acceptLight:false};
     }
 
-
     draw(){
         let r:AbstractRenderer = this.game.renderer;
         let rect = this.getRect();

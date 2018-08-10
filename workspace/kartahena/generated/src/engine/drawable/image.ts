@@ -1,16 +1,15 @@
 
 import {Game} from "../core/game";
 import {Rect} from "../core/geometry/rect";
-import {Resource} from "../model/resource";
 import {AbstractFilter} from "../core/renderer/webGl/filters/abstract/abstractFilter";
 import {UIDrawable} from "./interface/uiDrawable";
 import {DrawableInfo} from "../core/renderer/webGl/renderPrograms/interface/drawableInfo";
+import {Container} from "../model/impl/ui/generic/container";
 
 declare const DEBUG: boolean;
 
-export class Image extends Resource implements UIDrawable {
+export class Image extends Container implements UIDrawable {
 
-    destRect:Rect = new Rect();
     srcRect:Rect = new Rect();
     filters:AbstractFilter[] = [];
     drawingRect:Rect = new Rect();
@@ -31,7 +30,7 @@ export class Image extends Resource implements UIDrawable {
     }
 
     draw(){
-        this.game.renderer.drawImage(this.getDefaultResourcePath(),this.srcRect,this.destRect);
+        this.game.renderer.drawImage(this.getDefaultResourcePath(),this.srcRect,this.drawingRect);
     }
 
 

@@ -5,5 +5,6 @@ import {DrawableInfo} from "../../core/renderer/webGl/renderPrograms/interface/d
 export interface UIDrawable {
     drawingRect:Rect,
     getDrawableInfo:()=>DrawableInfo
-    draw:()=>void
+    draw:()=>void,
+    setWH:(w:number,h:number)=>void
 }
