@@ -14,9 +14,7 @@ export class IntroSceneBehaviour {
                     resourceMap: {main:'resources/button.png'},
                     ABCD: 20
                 },
-                onClick: ()=>{
-                    console.log('clicked',widget);
-                }
+                on: ['click',()=>{console.log('clicked on btn');}]
             }
         });
         this.scene.appendChild(widget);

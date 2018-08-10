@@ -34,9 +34,6 @@ export class Button extends Container {
         this._textField.pos.setXY(dx,dy);
     }
 
-    onClick(callBack:()=>{}){
-        this.on('click',callBack);
-    }
 
     setText(text:string){
         this._textField.setText(text);

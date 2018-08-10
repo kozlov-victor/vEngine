@@ -18,6 +18,66 @@
  */
 
 
+// let widget = this.game.uiBuilder.build({
+//     AbsoluteLayout: {
+//         properties: {
+//             pos: {x:0,y:0},
+//             width:200,height:200,
+//             background: {
+//                 type: 'Rectangle',
+//             },
+//             on: ['click',()=>{console.log('clicked on layout');}]
+//         },
+//         children: [
+//             {
+//                 Button: {
+//                     pos: {x: 0, y: 0},
+//                     font: {type: 'Font', name: 'font1'},
+//                     text: 'button1',
+//                     paddings: 10,
+//                     describeStates: {
+//                         NORMAL: {
+//                             type: 'NinePatchImage',
+//                             resourceMap: {main:'resources/nineP.png'},
+//                             setABCD: 45
+//                         },
+//                         ACTIVE: {
+//                             type: 'NinePatchImage',
+//                             resourceMap: {main:'resources/ninePactive.png'},
+//                             setABCD: 45
+//                         }
+//                     },
+//                     on: ['click',()=>{console.log('clicked on button 1');}]
+//                 }
+//             },
+//             {
+//                 Button: {
+//                     pos: {x: 120, y: 0},
+//                     font: {type: 'Font', name: 'font1'},
+//                     text: 'button2',
+//                     paddings: 10,
+//                     background: {
+//                         type: 'NinePatchImage',
+//                         resourceMap: {main:'resources/nineP.png'},
+//                         ABCD: 45
+//                     },
+//                     on: ['click',()=>{console.log('clicked on button 2');}]
+//                 }
+//             },
+//             {
+//                 TextField: {
+//                     pos: {x: 250, y: 0},
+//                     font: {type: 'Font', name: 'font1'},
+//                     text: '12345\n12345\n54321',
+//                     paddings: 0,
+//                     on: ['click',()=>{console.log('clicked text field');}]
+//                 }
+//             }
+//         ]
+//     }
+// });
+
+
 import {Game} from "../../../core/game";
 
 declare const DEBUG:boolean;

@@ -1,7 +1,7 @@
 
 //import {HtmlRenderer as Renderer} from './dom/htmlRenderer'
-import {CanvasRenderer as Renderer} from './canvas/canvasRenderer'
-//import {WebGlRenderer as Renderer} from './webGl/webGlRenderer'
+//import {CanvasRenderer as Renderer} from './canvas/canvasRenderer'
+import {WebGlRenderer as Renderer} from './webGl/webGlRenderer'
 import {Game} from "../game";
 //import Renderer from './dom/svgRenderer'
 
