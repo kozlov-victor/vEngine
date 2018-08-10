@@ -182,7 +182,9 @@ export class TextField extends Container {
                 posX = initialPosX;
                 posY+= defaultHeight;
             } else {
-                let charRect:Rect = this.font.fontContext.symbols[text[i]] || this.font.fontContext.symbols[' '];
+                let charRect:Rect = 
+                    this.font.fontContext.symbols[text[i]] || 
+                    this.font.fontContext.symbols[' '];
                 let charInfo = new CharInfo();
                 charInfo.symbol = text[i];
                 charInfo.sourceRect = charRect;

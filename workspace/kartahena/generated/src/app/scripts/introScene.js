@@ -7,20 +7,19 @@ export class IntroSceneBehaviour {
             Button: {
                 pos: {x:12,y:30},
                 font: {type:'Font',name:'scriptFont'},
-                text: "123",
+                text: "Продолжить",
                 paddings: 50,
                 background: {
                     type: 'NinePatchImage',
                     resourceMap: {main:'resources/button.png'},
-                    ABCD: 45
+                    ABCD: 20
                 },
-                // onClick: ()=>{
-                //     console.log('clicked',this);
-                // }
+                onClick: ()=>{
+                    console.log('clicked',widget);
+                }
             }
         });
         this.scene.appendChild(widget);
-        console.log(widget);
     }
 
     onUpdate(){

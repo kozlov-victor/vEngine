@@ -10,7 +10,9 @@ import {Point2d} from "../../geometry/point2d";
 import {AbstractCanvasRenderer} from "../abstract/abstractCanvasRenderer";
 import {Color} from "../../color";
 import {Size} from "../../geometry/size";
-
+import { AbstractFilter } from '../webGl/filters/abstract/abstractFilter';
+import { DrawableInfo } from '../webGl/renderPrograms/interface/drawableInfo';
+ 
 const getCtx = el=>{
     return (
         el.getContext("2d")
@@ -67,6 +69,16 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
                    dstRect:Rect,
                    offset:Point2d){
 
+    }
+
+
+    drawImageEx(texturePath:string,
+        srcRect:Rect,
+        dstRect:Rect,
+        filters:AbstractFilter[],
+        drawableInfo:DrawableInfo,
+    ){
+        this.drawImage(texturePath,srcRect,dstRect);
     }
 
     fillRect(rect:Rect,color:Color){
@@ -167,8 +179,12 @@ export class CanvasRenderer extends AbstractCanvasRenderer {
             c.setAttribute('height',img.height.toString());
             let ctx = c.getContext('2d');
             ctx.drawImage(img as HTMLImageElement,0,0);
-            this.renderableCache[resourcePath].texture = c;
-            this.renderableCache[resourcePath].size = new Size(img.width,img.height);
+            let size = new Size(img.width,img.height);
+            this.renderableCache[resourcePath] = {
+                texture: c,
+                size
+            };
+            (c as any).getSize = ()=>size;
             onLoad();
         }
     }

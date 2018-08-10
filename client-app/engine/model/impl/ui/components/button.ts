@@ -8,6 +8,7 @@ export class Button extends Container {
     text:string = '';
     font:Font = null;
 
+
     private _textField:TextField;
 
     constructor(game) {
@@ -31,6 +32,10 @@ export class Button extends Container {
         let dy = (this.background.drawingRect.height - this._textField.height)/2;
 
         this._textField.pos.setXY(dx,dy);
+    }
+
+    onClick(callBack:()=>{}){
+        this.on('click',callBack);
     }
 
     setText(text:string){

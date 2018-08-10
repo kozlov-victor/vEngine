@@ -246,7 +246,7 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
         let camRectScaled:Rect = this.game.camera.getRectScaled();
         if (!matEx.overlapTest(
             camRectScaled,
-            Rect.fromPool().setXYWH(camRectScaled.x+srcRect.x,camRectScaled.y+srcRect.y,srcRect.width,srcRect.height))
+            dstRect)
         ) return;
 
         let scene = this.game.getCurrScene();

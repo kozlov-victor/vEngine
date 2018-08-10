@@ -25,20 +25,20 @@ export class Font extends Resource {
         super(game);
     }
 
-    // revalidate(){
-    //     super.revalidate();
-    //     let s = this.fontContext.symbols;
-    //     this.fontContext.symbols = {};
-    //     Object.keys(s).forEach(key=>{
-    //         if (DEBUG) {
-    //             if (!s[key]) {
-    //                 console.error(s);
-    //                 throw `can not find proper object for key ${key}`;
-    //             }
-    //         }
-    //         this.fontContext.symbols[key] = new Rect(s[key].x,s[key].y,s[key].width,s[key].height);
-    //     });
-    // }  // todo is it really need???
+    revalidate(){
+        super.revalidate();
+        let s = this.fontContext.symbols;
+        this.fontContext.symbols = {};
+        Object.keys(s).forEach(key=>{
+            if (DEBUG) {
+                if (!s[key]) {
+                    console.error(s);
+                    throw `can not find proper object for key ${key}`;
+                }
+            }
+            this.fontContext.symbols[key] = new Rect(s[key].x,s[key].y,s[key].width,s[key].height);
+        });
+    }  // todo is it really need???
 
     getDefaultSymbolHeight():number{
         return this.fontContext.symbols[' '].height;

@@ -47,8 +47,10 @@ export class UIBuilder {
             if (propName==='type') return; //reserved word, just skip
             if (obj[propName].type) {
                 if (obj[propName].name) {
-                    obj[propName] = this.game.repository.getArray(obj[propName].type).find(it=>it.name==obj[propName].name);
-                    if (!obj[propName]) throw `can not find object {type:${obj[propName].type},name:${obj[propName].type}}`;
+                    let typeToFind = obj[propName].type;
+                    let nameToFind = obj[propName].name;
+                    obj[propName] = this.game.repository.getArray(typeToFind).find(it=>it.name==nameToFind);
+                    if (!obj[propName]) throw `can not find object {type:${typeToFind},name:${nameToFind}}`;
                 }
                 else obj[propName] = this.resolveObj(obj[propName].type,obj[propName]);
             }
