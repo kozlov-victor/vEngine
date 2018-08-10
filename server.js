@@ -3506,7 +3506,7 @@ var GeneratorService = (function () {
                                         return [3, 10];
                                     case 2:
                                         if (!(data.compilation && data.compilation.errors && data.compilation.errors[0])) return [3, 3];
-                                        console.error('compiled with errors');
+                                        console.error("compiled with " + data.compilation.errors.length + " error(s)");
                                         errorMsg = data.compilation.errors.map(function (err) {
                                             var msg = (err.details || err.message || err.toString());
                                             if (err.file)
@@ -3552,8 +3552,6 @@ var GeneratorService = (function () {
                                 }
                             });
                         }); });
-                    }).catch(function (error) {
-                        console.error('compilation error', error);
                     })];
             });
         });
@@ -3812,6 +3810,7 @@ var SCALE_STRATEGY;
 (function (SCALE_STRATEGY) {
     SCALE_STRATEGY[SCALE_STRATEGY["NO_SCALE"] = 0] = "NO_SCALE";
     SCALE_STRATEGY[SCALE_STRATEGY["FIT"] = 1] = "FIT";
+    SCALE_STRATEGY[SCALE_STRATEGY["STRETCH"] = 2] = "STRETCH";
 })(SCALE_STRATEGY = exports.SCALE_STRATEGY || (exports.SCALE_STRATEGY = {}));
 
 
@@ -4251,6 +4250,8 @@ var ExpressApp = (function () {
                 callback(data);
             }).catch(function (error) {
                 console.error('catch method promise error', error);
+                response.statusCode = 500;
+                response.end(error);
             });
         }
         else if (typeof codeResult === 'function') {
@@ -4335,7 +4336,7 @@ var ExpressApp = (function () {
         this.app.use(function (err, req, res, next) {
             if (err)
                 console.error(err);
-            res.status(500).send('error 500: ' + err.message);
+            res.status(500).send('error 500: ' + (err.message || err));
         });
     };
     return ExpressApp;

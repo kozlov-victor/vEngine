@@ -186,6 +186,8 @@ export abstract class Container extends RenderableModel implements UIDrawable {
         let paddedHeight = contentHeight +  this.paddingTop +  this.paddingBottom;
         if (this.background) {
             this.background.drawingRect.setWH(paddedWidth,paddedHeight);
+            this.background.width = paddedWidth;
+            this.background.height = paddedHeight;
             this.width = this.background.drawingRect.width;
             this.height = this.background.drawingRect.height;
         } else {

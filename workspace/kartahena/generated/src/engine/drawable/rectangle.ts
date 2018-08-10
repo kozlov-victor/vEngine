@@ -13,7 +13,7 @@ export class Rectangle extends RenderableModel{
 
     filters:AbstractFilter[] = [];
     blendMode:string = '';
-    drawingRect:Rect = new Rect(); // todo need?
+    drawingRect:Rect = new Rect();
     color:Color = Color.BLACK.clone();
     lineWidth:number = 1;
     fillColor:Color = Color.RGB(100,100,100);

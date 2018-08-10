@@ -128,8 +128,7 @@ class GeneratorService {
                 }
                 else {
                     if (data.compilation && data.compilation.errors && data.compilation.errors[0]) {
-                        console.error('compiled with errors');
-                        //console.error(data.compilation.errors);
+                        console.error(`compiled with ${data.compilation.errors.length} error(s)`);
                         let errorMsg = data.compilation.errors.map(err=>{
                             let msg = (err.details || err.message || err.toString());
                             if (err.file) msg+=`\n\t at file ${err.file}`;
@@ -137,7 +136,7 @@ class GeneratorService {
                                 msg+=`\n\t at file ${err.module.resource}`;
                             return msg;
                         }).join('\n\t---------\t\n');
-                        //await GeneratorService._createError(params,errorMsg); todo need??????
+                        //await GeneratorService._createError(params,errorMsg); // todo need??????
                         response.write("error<br>");
                         response.end();
                         reject(errorMsg);
@@ -162,8 +161,6 @@ class GeneratorService {
                     }
                 }
             });
-        }).catch(error=>{
-            console.error('compilation error',error);
         });
     }
 

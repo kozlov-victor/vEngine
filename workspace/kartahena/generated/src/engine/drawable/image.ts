@@ -6,6 +6,8 @@ import {AbstractFilter} from "../core/renderer/webGl/filters/abstract/abstractFi
 import {UIDrawable} from "./interface/uiDrawable";
 import {DrawableInfo} from "../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 
+declare const DEBUG: boolean;
+
 export class Image extends Resource implements UIDrawable {
 
     destRect:Rect = new Rect();
@@ -18,6 +20,11 @@ export class Image extends Resource implements UIDrawable {
         super(game);
     }
 
+    revalidate(){
+        if (DEBUG && !this.getDefaultResourcePath()) {
+            throw `can not render Image: default resource path not specified in resourceMap property`;
+        }
+    }
 
     getDrawableInfo():DrawableInfo {
         return {blendMode:this.blendMode,acceptLight:false};
