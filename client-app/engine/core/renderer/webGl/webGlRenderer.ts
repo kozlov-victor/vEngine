@@ -3,22 +3,21 @@
 declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import {SpriteRectLightDrawer} from "./renderPrograms/impl/base/spriteRectLightDrawer";
-import {SpriteRectDrawer} from './renderPrograms/impl/base/spriteRectDrawer'
-import {TiledSpriteRectDrawer} from './renderPrograms/impl/base/tiledSpriteRectDrawer'
-import {ColorRectDrawer} from './renderPrograms/impl/base/colorRectDrawer'
-import {AbstractDrawer,TextureInfo} from './renderPrograms/abstract/abstractDrawer'
-import {LineDrawer} from './renderPrograms/impl/base/lineDrawer'
-import {CircleDrawer} from './renderPrograms/impl/base/circleDrawer'
-import {ModelDrawer} from './renderPrograms/impl/base/modelDrawer'
-import {FrameBuffer} from './base/frameBuffer'
-import {MatrixStack} from './base/matrixStack'
-import * as mat4 from '../../geometry/mat4'
-import * as matEx from '../../mathEx'
-import {Texture} from './base/texture'
+import {SpriteRectDrawer} from "./renderPrograms/impl/base/spriteRectDrawer";
+import {TiledSpriteRectDrawer} from "./renderPrograms/impl/base/tiledSpriteRectDrawer";
+import {ColorRectDrawer} from "./renderPrograms/impl/base/colorRectDrawer";
+import {AbstractDrawer, TextureInfo} from "./renderPrograms/abstract/abstractDrawer";
+import {LineDrawer} from "./renderPrograms/impl/base/lineDrawer";
+import {CircleDrawer} from "./renderPrograms/impl/base/circleDrawer";
+import {FrameBuffer} from "./base/frameBuffer";
+import {MatrixStack} from "./base/matrixStack";
+import * as mat4 from "../../geometry/mat4";
+import * as matEx from "../../mathEx";
+import {Texture} from "./base/texture";
 import {AddBlendDrawer} from "./renderPrograms/impl/blend/addBlendDrawer";
 import {Rect} from "../../geometry/rect";
 import {Game} from "../../game";
-import {GameObjectProto} from '../../../model/impl/gameObjectProto';
+import {GameObjectProto} from "../../../model/impl/gameObjectProto";
 import {Point2d} from "../../geometry/point2d";
 import {AbstractCanvasRenderer} from "../abstract/abstractCanvasRenderer";
 import {Color} from "../../color";
@@ -28,7 +27,6 @@ import {IDrawer} from "./renderPrograms/interface/iDrawer";
 import {UniformsInfo} from "./renderPrograms/interface/uniformsInfo";
 import {Size} from "../../geometry/size";
 import {AbstractFilter} from "./filters/abstract/abstractFilter";
-import {CAMERA_MATRIX_MODE} from "../../camera";
 
 const getCtx = el=>{
     return (
@@ -451,7 +449,9 @@ export class WebGlRenderer extends AbstractCanvasRenderer {
 
     loadTextureInfo(resourcePath:string,onLoad:()=>void){
         let img = new Image();
-        img.src = this.getResource(resourcePath);
+        let resource = this.getResource(resourcePath);
+        if (DEBUG && !resource) throw `can not find resource with path ${resourcePath}`;
+        img.src = resource;
         img.onload = ()=>{
             let texture = new Texture(this.gl);
             texture.setImage(img);

@@ -279,24 +279,49 @@ select.error {
 
 .lightGray {
   background-color: #ddd; }
-.collapsible_header {
-  padding: 5px 0 5px 5px;
-  margin: 0;
-  border-bottom: 1px solid grey;
-  background-color: #9f9f9f;
-  cursor: pointer; }
+.fullscreen {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100; }
 
-.collapsible_content {
-  display: none;
-  background-color: #f2f2f2; }
-  .collapsible_content.opened {
-    display: block; }
+.shadow {
+  background-color: rgba(0, 0, 0, 0.3); }
 
-.collapsible_point {
+.dialogWrapper {
+  display: table;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  text-align: center;
+  z-index: 200; }
+
+.dialog {
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  width: 100%; }
+
+.dialogContent {
   display: inline-block;
-  vertical-align: bottom; }
-  .collapsible_point.rotated {
-    transform: rotate(90deg); }
+  position: relative;
+  background-color: #f8f8f8;
+  max-height: 90vh;
+  max-width: 95vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 300; }
+
+.dialogClose {
+  text-align: right;
+  background-color: #bdbdbd;
+  border-bottom: 1px solid #767676; }
 .alert_body {
   margin: 10px;
   min-width: 300px;
@@ -345,49 +370,24 @@ input[type="file"] {
 
 [draggable] {
   cursor: hand; }
-.fullscreen {
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 100; }
+.collapsible_header {
+  padding: 5px 0 5px 5px;
+  margin: 0;
+  border-bottom: 1px solid grey;
+  background-color: #9f9f9f;
+  cursor: pointer; }
 
-.shadow {
-  background-color: rgba(0, 0, 0, 0.3); }
+.collapsible_content {
+  display: none;
+  background-color: #f2f2f2; }
+  .collapsible_content.opened {
+    display: block; }
 
-.dialogWrapper {
-  display: table;
-  width: 100%;
-  position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  text-align: center;
-  z-index: 200; }
-
-.dialog {
-  display: table-cell;
-  vertical-align: middle;
-  position: relative;
-  width: 100%; }
-
-.dialogContent {
+.collapsible_point {
   display: inline-block;
-  position: relative;
-  background-color: #f8f8f8;
-  max-height: 90vh;
-  max-width: 95vw;
-  overflow-x: hidden;
-  overflow-y: auto;
-  z-index: 300; }
-
-.dialogClose {
-  text-align: right;
-  background-color: #bdbdbd;
-  border-bottom: 1px solid #767676; }
+  vertical-align: bottom; }
+  .collapsible_point.rotated {
+    transform: rotate(90deg); }
 .spriteSheetThumb {
   max-width: 30px;
   max-height: 30px;

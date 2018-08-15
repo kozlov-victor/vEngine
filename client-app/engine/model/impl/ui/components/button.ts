@@ -1,7 +1,7 @@
-
 import {Container} from "../generic/container";
 import {TextField} from "./textField";
 import {Font} from "../../font";
+import {random} from "../../../../core/mathEx";
 
 export class Button extends Container {
 
@@ -14,12 +14,12 @@ export class Button extends Container {
     constructor(game) {
         super(game);
         this._textField = new TextField(game);
+        this._textField.name = 'textField_' + random(0,1000);
     }
 
     revalidate(){
         super.revalidate();
         this._textField.setFont(this.font);
-        this._textField.setText(this.text);
         this.onGeometryChanged();
     }
 
@@ -41,7 +41,14 @@ export class Button extends Container {
     }
 
     setFont(f:Font){
+        this.font = f;
         this._textField.setFont(f);
+    }
+
+    setFontName(name){
+        let font = this.game.repository.getArray('Font').find(it=>it.name==name);
+        if (!font) throw `can not find font with name ${name}`;
+        this.setFont(font);
     }
 
     getText(){

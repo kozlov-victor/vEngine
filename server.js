@@ -358,9 +358,7 @@ var FS = (function () {
                                     return [2];
                             }
                         });
-                    }); }).catch(function (err) {
-                        console.error('copyFile catch error', err);
-                    })];
+                    }); })];
             });
         });
     };
@@ -371,8 +369,6 @@ var FS = (function () {
                         fs.exists(target, function (exists) {
                             resolve(exists);
                         });
-                    }).catch(function (err) {
-                        console.error('exists catch error', err);
                     })];
             });
         });
@@ -395,8 +391,6 @@ var FS = (function () {
                                         else
                                             resolve();
                                     });
-                                }).catch(function (err) {
-                                    console.error('deleteFile catch error', err);
                                 })];
                         return [2];
                 }
@@ -415,8 +409,6 @@ var FS = (function () {
                             else
                                 resolve(content);
                         });
-                    }).catch(function (err) {
-                        console.error('readFile catch error', err);
                     })];
             });
         });
@@ -450,8 +442,6 @@ var FS = (function () {
                             else
                                 resolve();
                         });
-                    }).catch(function (err) {
-                        console.error('writeFile catch error', err);
                     })];
             });
         });
@@ -495,9 +485,7 @@ var FS = (function () {
                                         case 3: return [2];
                                     }
                                 });
-                            }); }).catch(function (err) {
-                                console.error('_copyFileToFolder catch error', err);
-                            })];
+                            }); })];
                 }
             });
         });
@@ -519,8 +507,6 @@ var FS = (function () {
                                     else
                                         resolve(stat.isDirectory());
                                 });
-                            }).catch(function (err) {
-                                console.error('_isDirectory catch error', err);
                             })];
                 }
             });
@@ -595,8 +581,6 @@ var FS = (function () {
                             console.error('copyFolder catch error', err);
                             reject(err);
                         });
-                    }).catch(function (err) {
-                        console.error('copyFolder catch error', err);
                     })];
             });
         });
@@ -606,57 +590,60 @@ var FS = (function () {
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
-                        fs.readdir(path, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                            var _this = this;
-                            return tslib_1.__generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        if (error) {
-                                            console.error(error);
-                                            return [2, reject(error)];
-                                        }
-                                        return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-                                                var isDir, fullPath, content, splitted, ext, nameNoExt;
-                                                return tslib_1.__generator(this, function (_a) {
-                                                    switch (_a.label) {
-                                                        case 0: return [4, this._isDirectory(path + '/' + file)];
-                                                        case 1:
-                                                            isDir = _a.sent();
-                                                            if (!isDir) return [3, 4];
-                                                            if (!deep) return [3, 3];
-                                                            return [4, this._read(path + '/' + file, res)];
-                                                        case 2:
-                                                            _a.sent();
-                                                            _a.label = 3;
-                                                        case 3: return [3, 6];
-                                                        case 4:
-                                                            fullPath = (path + '/' + file).split('/').filter(function (s) { return !!s.length; }).join('/');
-                                                            if (path.indexOf('/') == 0)
-                                                                fullPath = '/' + fullPath;
-                                                            return [4, this.readFile(fullPath, contentType)];
-                                                        case 5:
-                                                            content = _a.sent();
-                                                            splitted = file.split('.');
-                                                            ext = '', nameNoExt = file;
-                                                            if (splitted.length >= 1) {
-                                                                ext = splitted.pop();
-                                                                nameNoExt = splitted.join('.');
-                                                            }
-                                                            res.push({ name: file, fullName: fullPath, content: content, ext: ext, nameNoExt: nameNoExt });
-                                                            _a.label = 6;
-                                                        case 6: return [2];
-                                                    }
-                                                });
-                                            }); })];
-                                    case 1:
-                                        _a.sent();
-                                        resolve(res);
-                                        return [2];
-                                }
-                            });
-                        }); });
-                    }).catch(function (err) {
-                        console.error('_read catch error', err);
+                        try {
+                            fs.readdir(path, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                var _this = this;
+                                return tslib_1.__generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            if (error) {
+                                                console.error(error);
+                                                return [2, reject(error)];
+                                            }
+                                            return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                                    var isDir, fullPath, content, splitted, ext, nameNoExt;
+                                                    return tslib_1.__generator(this, function (_a) {
+                                                        switch (_a.label) {
+                                                            case 0: return [4, this._isDirectory(path + '/' + file)];
+                                                            case 1:
+                                                                isDir = _a.sent();
+                                                                if (!isDir) return [3, 4];
+                                                                if (!deep) return [3, 3];
+                                                                return [4, this._read(path + '/' + file, res)];
+                                                            case 2:
+                                                                _a.sent();
+                                                                _a.label = 3;
+                                                            case 3: return [3, 6];
+                                                            case 4:
+                                                                fullPath = (path + '/' + file).split('/').filter(function (s) { return !!s.length; }).join('/');
+                                                                if (path.indexOf('/') == 0)
+                                                                    fullPath = '/' + fullPath;
+                                                                return [4, this.readFile(fullPath, contentType)];
+                                                            case 5:
+                                                                content = _a.sent();
+                                                                splitted = file.split('.');
+                                                                ext = '', nameNoExt = file;
+                                                                if (splitted.length >= 1) {
+                                                                    ext = splitted.pop();
+                                                                    nameNoExt = splitted.join('.');
+                                                                }
+                                                                res.push({ name: file, fullName: fullPath, content: content, ext: ext, nameNoExt: nameNoExt });
+                                                                _a.label = 6;
+                                                            case 6: return [2];
+                                                        }
+                                                    });
+                                                }); })];
+                                        case 1:
+                                            _a.sent();
+                                            resolve(res);
+                                            return [2];
+                                    }
+                                });
+                            }); });
+                        }
+                        catch (e) {
+                            reject(e);
+                        }
                     })];
             });
         });
@@ -683,10 +670,12 @@ var FS = (function () {
             return tslib_1.__generator(this, function (_a) {
                 return [2, new Promise(function (resolve, reject) {
                         fs.readdir(srcpath, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                            var e_1;
                             var _this = this;
                             return tslib_1.__generator(this, function (_a) {
                                 switch (_a.label) {
                                     case 0:
+                                        _a.trys.push([0, 2, , 3]);
                                         if (error) {
                                             console.error('getDirList error', error);
                                             reject(error);
@@ -706,12 +695,15 @@ var FS = (function () {
                                     case 1:
                                         files = _a.sent();
                                         resolve(files);
-                                        return [2];
+                                        return [3, 3];
+                                    case 2:
+                                        e_1 = _a.sent();
+                                        reject(e_1);
+                                        return [3, 3];
+                                    case 3: return [2];
                                 }
                             });
                         }); });
-                    }).catch(function (err) {
-                        console.error('getDirList catch error', err);
                     })];
             });
         });
@@ -732,8 +724,6 @@ var FS = (function () {
                                             else
                                                 resolve();
                                         });
-                                    }).catch(function (err) {
-                                        console.error('rmdir error', err);
                                     })];
                             });
                         }); };
@@ -746,8 +736,6 @@ var FS = (function () {
                                             else
                                                 resolve();
                                         });
-                                    }).catch(function (err) {
-                                        console.error('unlink error', err);
                                     })];
                             });
                         }); };
@@ -758,6 +746,7 @@ var FS = (function () {
                             return [2];
                         return [2, new Promise(function (resolve, reject) {
                                 fs.readdir(path, function (error, files) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                                    var e_2;
                                     var _this = this;
                                     return tslib_1.__generator(this, function (_a) {
                                         switch (_a.label) {
@@ -767,6 +756,9 @@ var FS = (function () {
                                                     reject(error);
                                                     return [2];
                                                 }
+                                                _a.label = 1;
+                                            case 1:
+                                                _a.trys.push([1, 4, , 5]);
                                                 return [4, fns_1.forEach(files, function (file) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                                         var curPath, isDir;
                                                         return tslib_1.__generator(this, function (_a) {
@@ -789,18 +781,21 @@ var FS = (function () {
                                                             }
                                                         });
                                                     }); })];
-                                            case 1:
-                                                _a.sent();
-                                                return [4, unlink(path)];
                                             case 2:
                                                 _a.sent();
+                                                return [4, rmdir(path)];
+                                            case 3:
+                                                _a.sent();
                                                 resolve();
-                                                return [2];
+                                                return [3, 5];
+                                            case 4:
+                                                e_2 = _a.sent();
+                                                reject(e_2);
+                                                return [3, 5];
+                                            case 5: return [2];
                                         }
                                     });
                                 }); });
-                            }).catch(function (err) {
-                                console.error('deleteFolder catch error', err);
                             })];
                 }
             });
@@ -809,7 +804,7 @@ var FS = (function () {
     ;
     FS.prototype.createFolder = function (path) {
         return tslib_1.__awaiter(this, void 0, void 0, function () {
-            var mkdir, pathSeq, error_1;
+            var mkdir, pathSeq;
             var _this = this;
             return tslib_1.__generator(this, function (_a) {
                 switch (_a.label) {
@@ -820,20 +815,15 @@ var FS = (function () {
                             return tslib_1.__generator(this, function (_a) {
                                 return [2, new Promise(function (resolve, reject) {
                                         fs.mkdir(path, function (error) {
-                                            if (error)
+                                            if (error && error.code !== 'EEXIST')
                                                 reject(error);
                                             else
                                                 resolve();
                                         });
-                                    }).catch(function (e) {
-                                        console.error('mkdir error', e);
                                     })];
                             });
                         }); };
                         pathSeq = '';
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 6, , 7]);
                         return [4, fns_1.forEach(path.split('/'), function (fldr) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
                                 var exists;
                                 return tslib_1.__generator(this, function (_a) {
@@ -856,20 +846,14 @@ var FS = (function () {
                                     }
                                 });
                             }); })];
+                    case 2:
+                        _a.sent();
+                        if (!path) return [3, 4];
+                        return [4, mkdir(path)];
                     case 3:
                         _a.sent();
-                        if (!path) return [3, 5];
-                        return [4, mkdir(path)];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: return [3, 7];
-                    case 6:
-                        error_1 = _a.sent();
-                        console.error('createFolder error', error_1);
-                        console.error(error_1);
-                        return [3, 7];
-                    case 7: return [2];
+                        _a.label = 4;
+                    case 4: return [2];
                 }
             });
         });
@@ -885,11 +869,7 @@ var FS = (function () {
                             }
                             else
                                 resolve();
-                        }).catch(function (err) {
-                            console.error('rename catch error', err);
                         });
-                    }).catch(function (err) {
-                        console.error('rename catch error', err);
                     })];
             });
         });
@@ -3570,30 +3550,33 @@ var GeneratorService = (function () {
                         }
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 5, , 7]);
+                        _a.trys.push([1, 6, , 8]);
                         this.processCache[params.projectName] = true;
-                        return [4, this.createFolders(params)];
+                        return [4, this.clearFolders(params)];
                     case 2:
                         _a.sent();
-                        return [4, this.generateData(params)];
+                        return [4, this.createFolders(params)];
                     case 3:
                         _a.sent();
-                        return [4, this.compile(params, response)];
+                        return [4, this.generateData(params)];
                     case 4:
                         _a.sent();
-                        delete this.processCache[params.projectName];
-                        return [3, 7];
+                        return [4, this.compile(params, response)];
                     case 5:
+                        _a.sent();
+                        delete this.processCache[params.projectName];
+                        return [3, 8];
+                    case 6:
                         e_1 = _a.sent();
                         delete this.processCache[params.projectName];
                         console.error('generator error', e_1);
                         return [4, GeneratorService._createError(params, e_1.toString())];
-                    case 6:
+                    case 7:
                         _a.sent();
                         response.write("error<br>");
                         response.end();
-                        return [3, 7];
-                    case 7: return [2];
+                        return [3, 8];
+                    case 8: return [2];
                 }
             });
         });

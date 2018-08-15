@@ -3,28 +3,43 @@
 export class IntroSceneBehaviour {
 
     onCreate(){
+        let self = this;
         let widget = this.game.uiBuilder.build({
             AbsoluteLayout: {
-                properties: {
-                    pos: {x:0,y:0},
-                    width:this.game.width,
-                    height:this.game.height,
-                    layoutWidth: 0,
-                    layoutHeight: 0,
-                    background: {
-                        type: 'Image', // NinePatchImage
-                        resourceMap: {main:'resources/button.png'},
-                        //ABCD: 20
-                    },
-                    on: ['click',()=>{console.log('clicked on layout');}]
+                pos: {x:0,y:0},
+                width:this.game.width,
+                height:this.game.height,
+                layoutWidth: 0,
+                layoutHeight: 0,
+                background: {
+                    type: 'Image', // NinePatchImage Image
+                    resourceMap: {main:'resources/bg.jpg'},
+                    //ABCD: 20
                 },
+                on: ['click',()=>{
+                    self.toGameScene();
+                }],
                 children: [
                     {
+                        Image: {
+                            pos: {x:180,y:-40},
+                            resourceMap: {main:'resources/pirate-flag.png'},
+                        }
+                    },
+                    {
+                        TextField: {
+                            pos: {x:330,y:300},
+                            fontName: 'cartahena_large',
+                            name: '1',
+                            text: 'Cartahena'
+                        }
+                    },
+                    {
                         Button: {
-                            pos: {x:12,y:30},
-                            font: {type:'Font',name:'scriptFont'},
+                            pos: {x:360,y:522},
+                            fontName: 'scriptFont', 
                             text: "Продолжить",
-                            paddings: 50,
+                            paddings:15,
                             background: {
                                 type: 'NinePatchImage',
                                 resourceMap: {main:'resources/button.png'},
@@ -32,7 +47,7 @@ export class IntroSceneBehaviour {
                             },
                             on: ['click',()=>{console.log('clicked on btn');}]
                         }
-                    }
+                    },
                 ]
             }
         });
@@ -40,12 +55,12 @@ export class IntroSceneBehaviour {
         window.w = widget;
     }
 
-    onUpdate(){
 
+    toGameScene(){
+        let gameScene = this.game.repository.getArray('Scene').find(it=>it.name=='gameScene');
+        this.game.runScene(gameScene);
     }
 
-    onDestroy(){
 
-    }
 
 }

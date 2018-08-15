@@ -1,5 +1,6 @@
 
 import {httpClient as http} from '../app/providers/rest/httpClient';
+import {DebugError} from "../engine/debugError";
 
 
 let devConsole = document.createElement('div');
@@ -28,6 +29,7 @@ window.addEventListener('load',(e:Event)=>{
 });
 
 window.addEventListener('error',function(e:any){
+    if (e.error && e.error.stack && e.error.stack.indexOf('new DebugError')>-1) return;
     try {
         let lineNum = e.lineno;
         let colNum = e.colno;

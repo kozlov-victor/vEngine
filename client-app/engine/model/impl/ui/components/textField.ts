@@ -205,9 +205,16 @@ export class TextField extends Container {
     }
 
     getText(){return this.text}
+
     setFont(font){
         this.font = font;
         this.setText(this.text);
+    }
+
+    setFontName(name){
+        let font = this.game.repository.getArray('Font').find(it=>it.name==name);
+        if (!font) throw `can not find font with name ${name}`;
+        this.setFont(font);
     }
 
     update(time,delta){

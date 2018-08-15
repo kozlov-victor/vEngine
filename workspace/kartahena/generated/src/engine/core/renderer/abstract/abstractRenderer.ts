@@ -15,6 +15,7 @@ import {TextureInfo} from "../webGl/renderPrograms/abstract/abstractDrawer";
 import {Texture} from "../webGl/base/texture";
 import {Size} from "../../geometry/size";
 import {DrawableInfo} from "../webGl/renderPrograms/interface/drawableInfo";
+import {DebugError} from "../../../debugError";
 
 declare const document:any, window:any;
 
@@ -174,7 +175,9 @@ export class AbstractRenderer {
     loadTextureInfo(textureId:string,onLoaded:()=>void){}
 
     getTextureInfo(textureId:string):TextureInfo{
-        return this.renderableCache[textureId];
+        let t:TextureInfo =  this.renderableCache[textureId];
+        if (!t) throw new DebugError(`can not find resource ${textureId}`);
+        return t;
     }
 
     getResource(resourcePath){

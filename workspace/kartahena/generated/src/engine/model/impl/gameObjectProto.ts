@@ -4,19 +4,17 @@ declare const IN_EDITOR:boolean,DEBUG:boolean;
 
 import {FrameAnimation} from "./frameAnimation";
 import {SpriteSheet} from "./spriteSheet";
-import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {Game} from "../../core/game";
 import {Rect} from "../../core/geometry/rect";
 import {ArrayEx} from "../../declarations";
 import {ShaderMaterial} from "../../core/light/shaderMaterial";
-import {Renderable} from "../../drawable/interface/renderable";
 import {RigidShape} from "../../core/physics/rigidShapes";
 import {RenderableModel} from "../renderableModel";
 import {_global} from "../../core/global";
 
 let cloneId:number = 0;
 
-export class GameObjectProto extends RenderableModel implements Renderable {
+export class GameObjectProto extends RenderableModel {
 
     type:string = 'GameObjectProto';
     spriteSheet:SpriteSheet = null;
@@ -29,9 +27,6 @@ export class GameObjectProto extends RenderableModel implements Renderable {
     tileRepeat:boolean = false;
     groupNames:string[] = [];
     collideWith:string[] = [];
-    filters: AbstractFilter[] = [];
-    blendMode:string = null;
-    acceptLight:boolean = false;
     shaderMaterial:ShaderMaterial = new ShaderMaterial();
     rigidBody:RigidShape = null;
     velocity = new Point2d(0,0);

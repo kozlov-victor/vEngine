@@ -1,13 +1,9 @@
-
-
-declare const DEBUG:boolean;
-
-import {UIDrawable} from "../../../../drawable/interface/uiDrawable";
 import {Rect} from "../../../../core/geometry/rect";
-import {AbstractFilter} from "../../../../core/renderer/webGl/filters/abstract/abstractFilter";
 import {DrawableInfo} from "../../../../core/renderer/webGl/renderPrograms/interface/drawableInfo";
 import {MOUSE_EVENTS} from "../../../../core/control/mouse";
 import {RenderableModel} from "../../../renderableModel";
+
+declare const DEBUG:boolean;
 
 export enum OVERFLOW {
     HIDDEN,VISIBLE
@@ -21,7 +17,7 @@ export enum STATE {
     NORMAL,ACTIVE,DISABLED
 }
 
-export abstract class Container extends RenderableModel implements UIDrawable {
+export abstract class Container extends RenderableModel {
 
     marginLeft      :number = 0;
     marginTop       :number = 0;
@@ -36,15 +32,12 @@ export abstract class Container extends RenderableModel implements UIDrawable {
     layoutHeight    :LAYOUT_SIZE =  LAYOUT_SIZE.WRAP_CONTENT;
     overflow        :OVERFLOW = OVERFLOW.HIDDEN; // todo change
 
-    filters         :AbstractFilter[] = [];
-    blendMode       :string = '';
-
-    background      :UIDrawable = undefined;
+    background      :Container = undefined;
 
     drawingRect:Rect = new Rect();
 
 
-    private bgByState :{[state:number]:UIDrawable} = {};
+    private bgByState :{[state:number]:Container} = {};
     private state     :STATE = STATE.NORMAL;
 
     testLayout(){
@@ -158,7 +151,9 @@ export abstract class Container extends RenderableModel implements UIDrawable {
         });
     }
 
-    onGeometryChanged(){}
+    onGeometryChanged(){
+        this.revalidate();
+    }
 
     getRect():Rect{
         if (this._dirty) {
@@ -175,8 +170,8 @@ export abstract class Container extends RenderableModel implements UIDrawable {
         )
     }
 
-    private getBgByState():UIDrawable {
-        let possibleBg:UIDrawable = this.bgByState[this.state];
+    private getBgByState():Container {
+        let possibleBg:Container = this.bgByState[this.state];
         if (!possibleBg) possibleBg = this.background;
         return possibleBg;
     }

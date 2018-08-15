@@ -1,5 +1,4 @@
 
-import {Renderable} from "../../drawable/interface/renderable";
 import {SpriteSheet} from "./spriteSheet";
 import {Game} from "../../core/game";
 import {Rect} from "../../core/geometry/rect";
@@ -13,7 +12,7 @@ declare const DEBUG:boolean;
 @Transient({
     game: true
 })
-export class TileMap extends CommonObject implements Renderable {
+export class TileMap extends CommonObject  {
 
     type:string = "TileMap";
     spriteSheet:SpriteSheet = null;

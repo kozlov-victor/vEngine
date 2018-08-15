@@ -126,7 +126,10 @@ export class Game extends CommonObject {
     runScene(scene){
         if (DEBUG && !this._revalidated)
             throw `game.revalidate() method not invoked. Invoke game.fromJSON(gameParams) or call game.revalidate() method directly`;
-        this._currentScene = scene;
+        if (scene.prepared) {
+            this._currentScene = scene;
+            return;
+        }
         if (!IN_EDITOR) {
             let allScripts = require(`../../app/scripts/allScripts`);
             let sceneBhScriptName = `${scene.name[0].toUpperCase()}${scene.name.substr(1)}Behaviour`;
@@ -135,14 +138,16 @@ export class Game extends CommonObject {
             scene.layers.forEach((l:Layer)=>{
                 l.children.forEach((go:GameObject)=>{
                     go.setCommonBehaviour();
-                    let scriptName = `${go.name[0].toUpperCase()}${go.name.substr(1)}Behaviour`;
+                    let scriptName = go.name && `${go.name[0].toUpperCase()}${go.name.substr(1)}Behaviour`;
                     let BhClass = allScripts[scriptName];
                     if (BhClass && !go.getIndividualBehaviour()) go.setIndividualBehaviour(new BhClass());
                 });
             });
         }
         scene.preload(()=>{
-            this._currentScene.onShow();
+            scene.onShow();
+            scene.prepared = true;
+            this._currentScene = scene;
             if (!this._running) {
                 this.update();
                 this._running = true;

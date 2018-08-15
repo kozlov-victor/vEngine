@@ -22,11 +22,10 @@ import {Color} from "../../core/color";
 import {SpriteSheet} from "./spriteSheet";
 import {CAMERA_MATRIX_MODE} from "../../core/camera";
 import {Resource} from "../resource";
-import {Renderable} from "../../drawable/interface/renderable";
 import {TextField} from "./ui/components/textField";
 
 
-export class Scene extends BaseModel implements Renderable {
+export class Scene extends BaseModel  {
 
     type:string = 'Scene';
     layers:Array<Layer> = [];
@@ -35,6 +34,7 @@ export class Scene extends BaseModel implements Renderable {
     colorBG = Color.WHITE;
     tileMap:TileMap;
     ambientLight:AmbientLight;
+    prepared:boolean = false;
 
     filters:Array<AbstractFilter> = [];
     blendMode:string = ''; // todo
@@ -104,6 +104,7 @@ export class Scene extends BaseModel implements Renderable {
 
         // todo more smart preload
         resources = resources.concat(this.game.repository.getArray('GameObjectProto').map(it=>it.spriteSheet));
+        resources = resources.concat(this.game.repository.getArray('SpriteSheet'));
 
         let q = new Queue();
         q.onResolved = ()=>{

@@ -226,6 +226,7 @@ window.addEventListener('load', function (e) {
     }, 1000);
 });
 window.addEventListener('error', function (e) {
+    if (e.error && e.error.stack && e.error.stack.indexOf('new DebugError') > -1) return;
     try {
         var lineNum_1 = e.lineno;
         var colNum_1 = e.colno;

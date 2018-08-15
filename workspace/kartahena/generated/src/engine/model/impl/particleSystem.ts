@@ -3,7 +3,6 @@ import {BaseModel} from '../baseModel'
 import * as mathEx from '../../core/mathEx'
 import {Game} from "../../core/game";
 import {GameObjectProto} from './gameObjectProto';
-import {Renderable} from "../../drawable/interface/renderable";
 import {AbstractFilter} from "../../core/renderer/webGl/filters/abstract/abstractFilter";
 
 let r = obj=>mathEx.random(obj.from,obj.to);
@@ -13,7 +12,7 @@ interface ParticlePropertyDesc {
     to:number
 }
 
-export class ParticleSystem extends BaseModel implements Renderable {
+export class ParticleSystem extends BaseModel  {
 
     type:string = 'ParticleSystem';
     gameObjectProto:GameObjectProto = null;

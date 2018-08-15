@@ -174,7 +174,7 @@ class GeneratorService {
         }
         try {
             this.processCache[params.projectName] = true;
-            //await this.clearFolders(params);
+            await this.clearFolders(params);
             await this.createFolders(params);
             await this.generateData(params);
             await this.compile(params,response);

@@ -11,6 +11,7 @@ import {Transient} from '../core/misc/decorators'
 import {Rect} from "../core/geometry/rect";
 import {Point2d} from "../core/geometry/point2d";
 import {Game} from "../core/game";
+import {AbstractFilter} from "../core/renderer/webGl/filters/abstract/abstractFilter";
 
 @Transient({
     game: true,
@@ -25,6 +26,10 @@ export abstract class BaseModel extends CommonObject {
     anchor:Point2d = new Point2d(0,0); // todo show in ui interface
     angle:number = 0;
     alpha:number = 1;
+    filters: AbstractFilter[] = [];
+    blendMode:string = null;
+    acceptLight:boolean = false;
+
     layerId:number =  null;
     fixedToCamera:boolean = false;
     rigid:boolean = false;

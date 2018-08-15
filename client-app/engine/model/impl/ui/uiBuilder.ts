@@ -140,18 +140,22 @@ export class UIBuilder {
 
 
     private resolveObj(key:string,obj:any):Container{
-        let clazz = allUIClasses[key];
-        if (DEBUG && !clazz) throw `no such ui class: ${key}`;
-        let instance = new clazz(this.game);
+        let Clazz = allUIClasses[key];
+        if (DEBUG && !Clazz) throw `no such ui class: ${key}`;
+        let instance = new Clazz(this.game);
         this.resolveObjProperties(instance,obj);
+        instance.revalidate();
         return instance;
     }
 
 
-    private resolveAbsoluteLayout(props,arr):AbsoluteLayout{
+    private resolveAbsoluteLayout(props):AbsoluteLayout{
+        let children = props.children || [];
+        delete props.children;
+
         let l:AbsoluteLayout = new AbsoluteLayout(this.game);
         this.resolveObjProperties(l,props);
-        arr.forEach(v=>{
+        children.forEach(v=>{
             let firstKey = Object.keys(v)[0];
             l.appendChild(this.resolveObj(firstKey,v[firstKey]));
         });
@@ -164,7 +168,7 @@ export class UIBuilder {
         if (DEBUG && allKeys.length>1) throw `only one root element is supported. Found: ${allKeys}`;
         let firstKey = Object.keys(desc)[0];
         let rootObj = desc[firstKey];
-        if (firstKey==='AbsoluteLayout') return this.resolveAbsoluteLayout(rootObj.properties,rootObj.children);
+        if (firstKey==='AbsoluteLayout') return this.resolveAbsoluteLayout(rootObj);
         else return this.resolveObj(firstKey,rootObj);
     }
 

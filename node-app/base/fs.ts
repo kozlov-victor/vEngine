@@ -45,8 +45,6 @@ class FS {
                 }
                 else resolve();
             }
-        }).catch(err=>{
-            console.error('copyFile catch error',err);
         });
 
     }
@@ -56,8 +54,6 @@ class FS {
             fs.exists(target,(exists)=>{
                 resolve(exists);
             });
-        }).catch(err=>{
-            console.error('exists catch error',err);
         });
     }
 
@@ -71,8 +67,6 @@ class FS {
                 }
                 else resolve();
             })
-        }).catch(err=>{
-            console.error('deleteFile catch error',err);
         });
     }
 
@@ -85,8 +79,6 @@ class FS {
                 }
                 else resolve(content);
             });
-        }).catch(err=>{
-            console.error('readFile catch error',err);
         });
     }
 
@@ -108,8 +100,6 @@ class FS {
                 }
                 else resolve();
             });
-        }).catch(err=>{
-            console.error('writeFile catch error',err);
         });
     }
 
@@ -132,8 +122,6 @@ class FS {
             } else {
                 reject(`${target} not exists`);
             }
-        }).catch(err=>{
-            console.error('_copyFileToFolder catch error',err);
         });
     }
 
@@ -145,8 +133,6 @@ class FS {
                if (err) reject(err);
                else resolve(stat.isDirectory());
             });
-        }).catch(err=>{
-            console.error('_isDirectory catch error',err);
         });
     }
 
@@ -190,41 +176,41 @@ class FS {
                 console.error('copyFolder catch error',err);
                 reject(err);
             });
-        }).catch(err=>{
-            console.error('copyFolder catch error',err);
         });
     }
 
 
     async _read(path,res,contentType?,deep?){
         return new Promise((resolve,reject)=>{
-            fs.readdir(path,async (error,files)=>{
-                if (error) {
-                    console.error(error);
-                    return reject(error);
-                }
-                await forEach(files,async file=>{
-                    let isDir = await this._isDirectory(path+'/'+file);
-                    if (isDir) {
-                        if (deep) await this._read(path+'/'+file,res);
+            try {
+                fs.readdir(path,async (error,files)=>{
+                    if (error) {
+                        console.error(error);
+                        return reject(error);
                     }
-                    else {
-                        let fullPath = (path+'/'+file).split('/').filter(s=>{return !!s.length}).join('/');
-                        if (path.indexOf('/')==0) fullPath = '/'+fullPath;
-                        let content = await this.readFile(fullPath, contentType);
-                        let splitted = file.split('.');
-                        let ext = '', nameNoExt = file;
-                        if (splitted.length>=1) {
-                            ext = splitted.pop();
-                            nameNoExt = splitted.join('.');
+                    await forEach(files,async file=>{
+                        let isDir = await this._isDirectory(path+'/'+file);
+                        if (isDir) {
+                            if (deep) await this._read(path+'/'+file,res);
                         }
-                        res.push({name:file,fullName: fullPath, content,ext,nameNoExt});
-                    }
+                        else {
+                            let fullPath = (path+'/'+file).split('/').filter(s=>{return !!s.length}).join('/');
+                            if (path.indexOf('/')==0) fullPath = '/'+fullPath;
+                            let content = await this.readFile(fullPath, contentType);
+                            let splitted = file.split('.');
+                            let ext = '', nameNoExt = file;
+                            if (splitted.length>=1) {
+                                ext = splitted.pop();
+                                nameNoExt = splitted.join('.');
+                            }
+                            res.push({name:file,fullName: fullPath, content,ext,nameNoExt});
+                        }
+                    });
+                    resolve(res);
                 });
-                resolve(res);
-            });
-        }).catch(err=>{
-            console.error('_read catch error',err);
+            } catch (e){
+                reject(e);
+            }
         });
     }
 
@@ -237,19 +223,21 @@ class FS {
     async getDirList(srcpath){
         return new Promise((resolve,reject)=>{
             fs.readdir(srcpath,async (error,files:Array<any>)=>{
-                if (error) {
-                    console.error('getDirList error',error);
-                    reject(error);
-                    return;
+                try {
+                    if (error) {
+                        console.error('getDirList error',error);
+                        reject(error);
+                        return;
+                    }
+                    files = await filter(files,async file=>{
+                        let isDir = (await this._isDirectory(path.join(srcpath, file)) as boolean);
+                        return isDir;
+                    });
+                    resolve(files);
+                } catch (e){
+                    reject(e);
                 }
-                files = await filter(files,async file=>{
-                    let isDir = (await this._isDirectory(path.join(srcpath, file)) as boolean);
-                    return isDir;
-                });
-                resolve(files);
             })
-        }).catch(err=>{
-            console.error('getDirList catch error',err);
         });
     }
 
@@ -261,8 +249,6 @@ class FS {
                     if (error) reject(error);
                     else resolve();
                 });
-            }).catch(err=>{
-                console.error('rmdir error',err);
             });
         };
 
@@ -272,8 +258,6 @@ class FS {
                      if (error) reject(error);
                      else resolve();
                  });
-             }).catch(err=>{
-                 console.error('unlink error',err);
              });
          };
 
@@ -287,20 +271,22 @@ class FS {
                     reject(error);
                     return;
                 }
-                await forEach(files,async (file)=>{
-                    let curPath = path + "/" + file;
-                    let isDir = await this._isDirectory(curPath);
-                    if(isDir) { // recurse
-                        await this.deleteFolder(curPath);
-                    } else { // delete file
-                        await unlink(curPath);
-                    }
-                });
-                await unlink(path);
-                resolve();
+                try {
+                    await forEach(files,async (file)=>{
+                        let curPath = path + "/" + file;
+                        let isDir = await this._isDirectory(curPath);
+                        if(isDir) { // recurse
+                            await this.deleteFolder(curPath);
+                        } else { // delete file
+                            await unlink(curPath);
+                        }
+                    });
+                    await rmdir(path);
+                    resolve();
+                } catch (e){
+                    reject(e);
+                }
             });
-        }).catch(err=>{
-            console.error('deleteFolder catch error',err);
         });
 
     };
@@ -312,28 +298,21 @@ class FS {
         let mkdir = async (path)=>{
             return new Promise((resolve,reject)=>{
                 fs.mkdir(path,error=>{
-                    if (error) reject(error);
+                    if (error && error.code !== 'EEXIST') reject(error);
                     else resolve();
                 });
-            }).catch(e=>{
-                console.error('mkdir error',e);
             });
         };
 
         let pathSeq = '';
-        try {
-            await forEach(path.split('/'),async (fldr)=>{
-                if (!fldr) return;
-                pathSeq+=fldr;
-                let exists = await this.exists(pathSeq);
-                if (!exists) await mkdir(pathSeq);
-                pathSeq+='/';
-            });
-            if (path) await mkdir(path);
-        } catch (error){
-            console.error('createFolder error',error);
-            console.error(error);
-        }
+        await forEach(path.split('/'),async (fldr)=>{
+            if (!fldr) return;
+            pathSeq+=fldr;
+            let exists = await this.exists(pathSeq);
+            if (!exists) await mkdir(pathSeq);
+            pathSeq+='/';
+        });
+        if (path) await mkdir(path);
     }
 
     async rename(oldName,newName){
@@ -344,11 +323,7 @@ class FS {
                     reject(error);
                 }
                 else resolve();
-            }).catch(err=>{
-                console.error('rename catch error',err);
             });
-        }).catch(err=>{
-            console.error('rename catch error',err);
         });
     }
 
